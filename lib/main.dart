@@ -1,4 +1,4 @@
-import 'package:cmo/ui/screen/splash_screen.dart';
+import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'CMO',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.create(),
-      home: const SplashScreen(),
+      home: const LoginScreen(),
     );
   }
 }
