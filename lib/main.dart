@@ -1,5 +1,5 @@
-import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/screen/splash_screen.dart';
+import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'CMO',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.create(context),
+      theme: AppTheme.create(),
       home: const SplashScreen(),
     );
   }
