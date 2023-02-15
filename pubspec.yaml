@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
+  flutter_svg: 2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -27,6 +28,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/icons/
 
   fonts:
     - family: Montserrat
@@ -37,3 +39,7 @@ flutter:
           weight: 700
         - asset: fonts/Montserrat-Italic.ttf
           style: italic
+
+flutter_gen:
+  integrations:
+    flutter_svg: true

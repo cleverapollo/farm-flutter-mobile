@@ -1,5 +1,6 @@
 import 'package:cmo/gen/fonts.gen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'app_color.dart';
 
@@ -17,6 +18,12 @@ abstract class AppTheme {
       extensions: const [ColorExt()],
     );
   }
+
+  static SystemUiOverlayStyle get uiOverlayStyle => const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      );
 }
 
 class ColorExt extends ThemeExtension<ColorExt> {

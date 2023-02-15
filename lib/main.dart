@@ -1,8 +1,11 @@
 import 'package:cmo/ui/screen/splash_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(AppTheme.uiOverlayStyle);
+
   runApp(const MyApp());
 }
 
