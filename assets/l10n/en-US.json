@@ -1,3 +1,9 @@
 {
-  "empower": "Empower"
+  "empower": "Empower",
+  "username": "Username",
+  "password": "Password",
+  "forgotPassword": "Forgot Password?",
+  "login": "Login",
+  "english": "English",
+  "french": "French"
 }

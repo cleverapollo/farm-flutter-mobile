@@ -60,6 +60,9 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/ic_lang.png
+  AssetGenImage get icLang => const AssetGenImage('assets/images/ic_lang.png');
+
   /// File path: assets/images/logo.jpg
   AssetGenImage get logo => const AssetGenImage('assets/images/logo.jpg');
 
@@ -68,7 +71,20 @@ class $AssetsImagesGen {
       const AssetGenImage('assets/images/splash_bg.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [logo, splashBg];
+  List<AssetGenImage> get values => [icLang, logo, splashBg];
+}
+
+class $AssetsL10nGen {
+  const $AssetsL10nGen();
+
+  /// File path: assets/l10n/en-US.json
+  String get enUS => 'assets/l10n/en-US.json';
+
+  /// File path: assets/l10n/fr-FR.json
+  String get frFR => 'assets/l10n/fr-FR.json';
+
+  /// List of all assets
+  List<String> get values => [enUS, frFR];
 }
 
 class Assets {
@@ -76,6 +92,7 @@ class Assets {
 
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $AssetsL10nGen l10n = $AssetsL10nGen();
 }
 
 class AssetGenImage {
