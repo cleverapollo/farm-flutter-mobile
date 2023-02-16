@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class ScreenBase extends StatelessWidget {
   const ScreenBase({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
 

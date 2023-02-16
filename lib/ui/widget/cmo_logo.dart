@@ -1,5 +1,6 @@
 import 'package:cmo/gen/assets.gen.dart';
-import 'package:cmo/ui/theme/app_theme.dart';
+import 'package:cmo/l10n/locale_keys.g.dart';
+import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class CmoLogo extends StatelessWidget {
@@ -14,12 +15,8 @@ class CmoLogo extends StatelessWidget {
         Assets.images.logo.image(fit: BoxFit.scaleDown),
         const SizedBox(height: 19),
         Text(
-          'Empower',
-          style: TextStyle(
-            fontSize: 48,
-            fontWeight: FontWeight.bold,
-            color: context.colors.blue,
-          ),
+          LocaleKeys.empower,
+          style: context.textStyles.headlineBold,
         ),
       ],
     );
