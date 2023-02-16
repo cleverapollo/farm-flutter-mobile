@@ -10,6 +10,7 @@ abstract class  LocaleKeys {
   static const french = 'french';
   static const entity = 'entity';
   static const sync = 'sync';
+  static const search = 'search';
   static const groupSchemeManagement = 'groupSchemeManagement';
   static const groupScheme = 'groupScheme';
   static const resourceManagementUnit = 'resourceManagementUnit';

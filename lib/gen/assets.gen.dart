@@ -41,6 +41,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_search.svg
   SvgGenImage get icSearch => const SvgGenImage('assets/icons/ic_search.svg');
 
+  /// File path: assets/icons/ic_tick.svg
+  SvgGenImage get icTick => const SvgGenImage('assets/icons/ic_tick.svg');
+
   /// File path: assets/icons/ic_user.svg
   SvgGenImage get icUser => const SvgGenImage('assets/icons/ic_user.svg');
 
@@ -61,6 +64,7 @@ class $AssetsIconsGen {
         icLang,
         icPassword,
         icSearch,
+        icTick,
         icUser,
         icUsername,
         icVisible
