@@ -1,9 +1,8 @@
-import 'package:cmo/ui/screen/auth/login_screen.dart';
+import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screen/entity/entity_search_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:cmo/l10n/l10n.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +31,7 @@ class CmoApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      home: const LoginScreen(),
+      home: const EntitySearchScreen(),
     );
   }
 }

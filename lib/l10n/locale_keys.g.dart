@@ -8,5 +8,19 @@ abstract class  LocaleKeys {
   static const login = 'login';
   static const english = 'english';
   static const french = 'french';
+  static const entity = 'entity';
+  static const sync = 'sync';
+  static const groupSchemeManagement = 'groupSchemeManagement';
+  static const groupScheme = 'groupScheme';
+  static const resourceManagementUnit = 'resourceManagementUnit';
+  static const operationsManagement = 'operationsManagement';
+  static const company = 'company';
+  static const dashboard = 'dashboard';
+  static const memberManagement = 'memberManagement';
+  static const stakeholders = 'stakeholders';
+  static const settings = 'settings';
+  static const support = 'support';
+  static const legal = 'legal';
+  static const signOut = 'signOut';
 
 }

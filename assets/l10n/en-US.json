@@ -5,5 +5,19 @@
   "forgotPassword": "Forgot Password?",
   "login": "Login",
   "english": "English",
-  "french": "French"
+  "french": "French",
+  "entity": "Entity",
+  "sync": "Sync",
+  "groupSchemeManagement": "Group Scheme Management",
+  "groupScheme": "Group Scheme",
+  "resourceManagementUnit": "Resource Management Unit",
+  "operationsManagement": "Operations Management",
+  "company": "Company",
+  "dashboard": "Dashboard",
+  "memberManagement": "Member Management",
+  "stakeholders": "Stakeholders",
+  "settings": "Settings",
+  "support": "Support",
+  "legal": "Legal",
+  "signOut": "Sign Out"
 }
