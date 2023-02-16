@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.superhero.cmo.cmo">
+    package="com.superhero.cmo">
    <application
         android:label="cmo"
         android:name="${applicationName}"
