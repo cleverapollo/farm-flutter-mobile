@@ -20,8 +20,21 @@ class DashboardScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
-          children: [
-            CmoCard(),
+          children: const [
+            CmoCard(
+              content: [
+                CmoCardHeader(title: 'Member/s'),
+                CmoCardItem(title: 'Onboarded', value: '5/10'),
+                CmoCardItem(title: 'Incomplete', value: '8/10'),
+              ],
+            ),
+            SizedBox(height: 20),
+            CmoCard(
+              content: [
+                CmoCardHeader(title: 'Sync'),
+                CmoCardItem(title: 'Synced', value: '5'),
+              ],
+            ),
           ],
         ),
       ),
