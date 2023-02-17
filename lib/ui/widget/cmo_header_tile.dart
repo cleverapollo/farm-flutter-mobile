@@ -20,7 +20,7 @@ class CmoHeaderTile extends StatelessWidget {
               fit: BoxFit.scaleDown,
               child: Text(
                 title,
-                style: context.textStyles.bodyBold.copyWith(color: context.colors.white),
+                style: context.textStyles.bodyBold.white,
               ),
             ),
           ),

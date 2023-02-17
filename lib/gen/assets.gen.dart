@@ -77,8 +77,8 @@ class $AssetsImagesGen {
   /// File path: assets/images/ic_lang.png
   AssetGenImage get icLang => const AssetGenImage('assets/images/ic_lang.png');
 
-  /// File path: assets/images/logo.jpg
-  AssetGenImage get logo => const AssetGenImage('assets/images/logo.jpg');
+  /// File path: assets/images/logo.png
+  AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
 
   /// File path: assets/images/splash_bg.png
   AssetGenImage get splashBg =>

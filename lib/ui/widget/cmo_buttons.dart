@@ -16,8 +16,8 @@ class CmoTappable extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      child: child,
       onTap: onTap,
+      child: child,
     );
   }
 }
@@ -35,29 +35,22 @@ class CmoFilledButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Ink(
-      decoration: BoxDecoration(
-        color: context.colors.blue,
-        borderRadius: BorderRadius.circular(10),
+    return FilledButton(
+      style: FilledButton.styleFrom(
+        minimumSize: const Size(140, 39),
+        backgroundColor: context.colors.blue,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(10),
-        onTap: onTap,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            minHeight: 39,
-            minWidth: 140,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                title,
-                style: context.textStyles.bodyBold
-                    .copyWith(color: context.colors.white),
-              ),
-            ),
+      onPressed: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            title,
+            style: context.textStyles.bodyBold.white,
           ),
         ),
       ),

@@ -32,9 +32,7 @@ class CmoCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          Assets.icons.icArrowRight.svg(
-              colorFilter:
-                  ColorFilter.mode(context.colors.white, BlendMode.srcIn)),
+          Assets.icons.icArrowRight.svgWhite,
           const SizedBox(width: 12),
         ],
       ),
@@ -54,7 +52,7 @@ class CmoCardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: context.textStyles.bodyBold.copyWith(color: context.colors.white),
+      style: context.textStyles.bodyBold.white,
     );
   }
 }
@@ -73,15 +71,13 @@ class CmoCardItem extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: context.textStyles.bodyNormal
-                .copyWith(color: context.colors.white),
+            style: context.textStyles.bodyNormal.white,
           ),
         ),
         Expanded(
           child: Text(
             value,
-            style: context.textStyles.bodyNormal
-                .copyWith(color: context.colors.white),
+            style: context.textStyles.bodyNormal.white,
           ),
         ),
       ],

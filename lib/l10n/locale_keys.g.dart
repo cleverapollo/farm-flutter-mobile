@@ -18,7 +18,11 @@ abstract class  LocaleKeys {
   static const company = 'company';
   static const dashboard = 'dashboard';
   static const memberManagement = 'memberManagement';
+  static const createNew = 'createNew';
+  static const compartments = 'compartments';
+  static const audit_s = 'audit_s';
   static const stakeholders = 'stakeholders';
+  static const createNewStakeholder = 'createNewStakeholder';
   static const settings = 'settings';
   static const support = 'support';
   static const legal = 'legal';
