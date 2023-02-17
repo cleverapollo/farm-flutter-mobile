@@ -35,9 +35,9 @@ class CmoTextField extends StatelessWidget {
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(8),
         prefixIconConstraints: BoxConstraints.tight(const Size(56, 38)),
-        prefixIcon: prefixIcon,
+        prefixIcon: Center(child: prefixIcon),
         suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-        suffixIcon: suffixIcon,
+        suffixIcon: Center(child: suffixIcon),
         isDense: true,
         hintText: hintText,
       ),

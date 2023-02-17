@@ -1,6 +1,8 @@
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/gen/fonts.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart' hide svg;
 
 abstract class _AppColor {
   static const white = Color(0xFFFFFFFF);
@@ -16,14 +18,14 @@ abstract class _AppColor {
 }
 
 extension BuildContextExt on BuildContext {
-  ColorExt get colors => Theme.of(this).extension<ColorExt>()!;
+  ColorThemeExt get colors => Theme.of(this).extension<ColorThemeExt>()!;
 
-  TextStyleExt get textStyles => Theme.of(this).extension<TextStyleExt>()!;
+  TextThemeExt get textStyles => Theme.of(this).extension<TextThemeExt>()!;
 }
 
 abstract class AppTheme {
   static ThemeData create() {
-    const textStyleExt = TextStyleExt();
+    const textStyleExt = TextThemeExt();
     return ThemeData(
       fontFamily: FontFamily.montserrat,
       scaffoldBackgroundColor: _AppColor.white,
@@ -45,8 +47,8 @@ abstract class AppTheme {
         contentPadding: const EdgeInsets.all(8),
       ),
       extensions: const [
-        ColorExt(),
-        TextStyleExt(),
+        ColorThemeExt(),
+        TextThemeExt(),
       ],
     );
   }
@@ -58,8 +60,8 @@ abstract class AppTheme {
       );
 }
 
-class ColorExt extends ThemeExtension<ColorExt> {
-  const ColorExt();
+class ColorThemeExt extends ThemeExtension<ColorThemeExt> {
+  const ColorThemeExt();
 
   final white = _AppColor.white;
   final greyLight1 = _AppColor.greyLight1;
@@ -73,14 +75,14 @@ class ColorExt extends ThemeExtension<ColorExt> {
   final yellow = _AppColor.yellow;
 
   @override
-  ThemeExtension<ColorExt> copyWith() => this;
+  ThemeExtension<ColorThemeExt> copyWith() => this;
 
   @override
-  ThemeExtension<ColorExt> lerp(other, t) => this;
+  ThemeExtension<ColorThemeExt> lerp(other, t) => this;
 }
 
-class TextStyleExt extends ThemeExtension<TextStyleExt> {
-  const TextStyleExt();
+class TextThemeExt extends ThemeExtension<TextThemeExt> {
+  const TextThemeExt();
 
   TextStyle get bodyNormal => const TextStyle(
         color: _AppColor.black,
@@ -109,8 +111,20 @@ class TextStyleExt extends ThemeExtension<TextStyleExt> {
       );
 
   @override
-  ThemeExtension<TextStyleExt> copyWith() => this;
+  ThemeExtension<TextThemeExt> copyWith() => this;
 
   @override
-  ThemeExtension<TextStyleExt> lerp(other, t) => this;
+  ThemeExtension<TextThemeExt> lerp(other, t) => this;
+}
+
+extension TextStyleExt on TextStyle {
+  TextStyle get white => copyWith(color: _AppColor.white);
+}
+
+extension SvgGen on SvgGenImage {
+  SvgPicture get svgWhite => svg(
+      colorFilter: const ColorFilter.mode(_AppColor.white, BlendMode.srcIn));
+
+  SvgPicture get svgBlack => svg(
+      colorFilter: const ColorFilter.mode(_AppColor.black, BlendMode.srcIn));
 }

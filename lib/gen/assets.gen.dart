@@ -17,6 +17,14 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_add.svg
   SvgGenImage get icAdd => const SvgGenImage('assets/icons/ic_add.svg');
 
+  /// File path: assets/icons/ic_arrow_left.svg
+  SvgGenImage get icArrowLeft =>
+      const SvgGenImage('assets/icons/ic_arrow_left.svg');
+
+  /// File path: assets/icons/ic_arrow_right.svg
+  SvgGenImage get icArrowRight =>
+      const SvgGenImage('assets/icons/ic_arrow_right.svg');
+
   /// File path: assets/icons/ic_close.svg
   SvgGenImage get icClose => const SvgGenImage('assets/icons/ic_close.svg');
 
@@ -33,6 +41,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_search.svg
   SvgGenImage get icSearch => const SvgGenImage('assets/icons/ic_search.svg');
 
+  /// File path: assets/icons/ic_tick.svg
+  SvgGenImage get icTick => const SvgGenImage('assets/icons/ic_tick.svg');
+
   /// File path: assets/icons/ic_user.svg
   SvgGenImage get icUser => const SvgGenImage('assets/icons/ic_user.svg');
 
@@ -46,11 +57,14 @@ class $AssetsIconsGen {
   /// List of all assets
   List<SvgGenImage> get values => [
         icAdd,
+        icArrowLeft,
+        icArrowRight,
         icClose,
         icDrawer,
         icLang,
         icPassword,
         icSearch,
+        icTick,
         icUser,
         icUsername,
         icVisible
@@ -63,8 +77,8 @@ class $AssetsImagesGen {
   /// File path: assets/images/ic_lang.png
   AssetGenImage get icLang => const AssetGenImage('assets/images/ic_lang.png');
 
-  /// File path: assets/images/logo.jpg
-  AssetGenImage get logo => const AssetGenImage('assets/images/logo.jpg');
+  /// File path: assets/images/logo.png
+  AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
 
   /// File path: assets/images/splash_bg.png
   AssetGenImage get splashBg =>
