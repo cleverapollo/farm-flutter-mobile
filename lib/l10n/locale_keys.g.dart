@@ -27,5 +27,15 @@ abstract class  LocaleKeys {
   static const support = 'support';
   static const legal = 'legal';
   static const signOut = 'signOut';
+  static const information = 'information';
+  static const termsConditions = 'termsConditions';
+  static const privacyPolicy = 'privacyPolicy';
+  static const landingPage = 'landingPage';
+  static const language = 'language';
+  static const appearance = 'appearance';
+  static const distanceUnits = 'distanceUnits';
+  static const area = 'area';
+  static const preferences = 'preferences';
+  static const units = 'units';
 
 }

@@ -3,6 +3,8 @@ import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/screen/entity/entity_screen.dart';
 import 'package:cmo/ui/screen/entity/entity_search_screen.dart';
+import 'package:cmo/ui/screen/legal/legal_screen.dart';
+import 'package:cmo/ui/screen/settings/settings_screen.dart';
 import 'package:cmo/ui/screen/splash_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +41,9 @@ class CmoApp extends StatelessWidget {
       // home: LoginScreen(),
       // home: EntityScreen(),
       // home: EntitySearchScreen(),
-      home: DashboardScreen(entity: 'Border Timbers'),
+      // home: DashboardScreen(entity: 'Border Timbers'),
+      // home: LegalScreen(),
+      home: SettingsScreen(),
     );
   }
 }

@@ -53,7 +53,8 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
               subtitle!,
               maxLines: 1,
               textAlign: TextAlign.center,
-              style: context.textStyles.bodyBold.copyWith(color: context.colors.blue),
+              style: context.textStyles.bodyBold
+                  .copyWith(color: context.colors.blue),
             ),
           )
         ],
@@ -74,7 +75,7 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: leading,
     );
 
-    final Widget trailing = this.trailing != null
+    Widget trailing = this.trailing != null
         ? CmoTappable(
             onTap: onTapTrailing ?? () {},
             child: SizedBox.square(
@@ -83,6 +84,10 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           )
         : const SizedBox(width: _h1);
+    trailing = Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: trailing,
+    );
 
     return Padding(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),

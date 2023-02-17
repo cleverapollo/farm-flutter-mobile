@@ -6,9 +6,15 @@ class CmoOptionTile extends StatelessWidget {
   const CmoOptionTile({
     super.key,
     required this.title,
+    this.value,
+    this.shouldShowArrow = true,
   });
 
   final String title;
+
+  final String? value;
+
+  final bool shouldShowArrow;
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +31,15 @@ class CmoOptionTile extends StatelessWidget {
                   style: context.textStyles.bodyBold,
                 ),
               ),
-              Assets.icons.icArrowRight.svg(),
-              const SizedBox(width: 24),
+              if (value != null)
+                Expanded(
+                  child: Text(
+                    value!,
+                    style: context.textStyles.bodyNormal,
+                  ),
+                ),
+              if (shouldShowArrow) Assets.icons.icArrowRight.svg(),
+              if (shouldShowArrow) const SizedBox(width: 24),
             ],
           ),
         ),

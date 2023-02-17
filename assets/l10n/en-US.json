@@ -24,5 +24,15 @@
   "settings": "Settings",
   "support": "Support",
   "legal": "Legal",
-  "signOut": "Sign Out"
+  "signOut": "Sign Out",
+  "information": "Information",
+  "termsConditions": "Terms & Conditions",
+  "privacyPolicy": "Privacy Policy",
+  "landingPage": "Landing Page",
+  "language": "Language",
+  "appearance": "Appearance",
+  "distanceUnits": "Distance Units",
+  "area": "Area",
+  "preferences": "Preferences",
+  "units": "Units"
 }

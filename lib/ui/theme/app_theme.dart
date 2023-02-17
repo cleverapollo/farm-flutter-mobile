@@ -124,4 +124,7 @@ extension TextStyleExt on TextStyle {
 extension SvgGen on SvgGenImage {
   SvgPicture get svgWhite => svg(
       colorFilter: const ColorFilter.mode(_AppColor.white, BlendMode.srcIn));
+
+  SvgPicture get svgBlack => svg(
+      colorFilter: const ColorFilter.mode(_AppColor.black, BlendMode.srcIn));
 }
