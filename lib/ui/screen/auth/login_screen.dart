@@ -9,6 +9,12 @@ import 'package:flutter/material.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
+  static void push(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

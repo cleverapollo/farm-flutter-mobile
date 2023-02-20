@@ -37,13 +37,7 @@ class CmoApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      // home: SplashScreen(),
-      // home: LoginScreen(),
-      // home: EntityScreen(),
-      // home: EntitySearchScreen(),
-      // home: DashboardScreen(entity: 'Border Timbers'),
-      // home: LegalScreen(),
-      home: SettingsScreen(),
+      home: const SplashScreen(),
     );
   }
 }
