@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 enum AppLocale {
-  en(Locale('en', 'US'));
+  en(Locale('en', 'US')),
+  fr(Locale('fr', 'FR'));
 
   const AppLocale(this.locale);
 

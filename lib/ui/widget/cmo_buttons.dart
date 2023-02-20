@@ -42,6 +42,7 @@ class CmoFilledButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
+        elevation: 4,
       ),
       onPressed: onTap,
       child: Padding(

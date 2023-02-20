@@ -10,6 +10,9 @@ class CmoTextField extends StatelessWidget {
     this.onChanged,
     this.obscureText = false,
     this.keyboardType,
+    this.autofillHints,
+    this.onEditingComplete,
+    this.textInputAction,
   });
 
   final Widget? prefixIcon;
@@ -24,6 +27,12 @@ class CmoTextField extends StatelessWidget {
 
   final TextInputType? keyboardType;
 
+  final List<String>? autofillHints;
+
+  final Function()? onEditingComplete;
+
+  final TextInputAction? textInputAction;
+
   @override
   Widget build(BuildContext context) {
     return TextField(
@@ -32,6 +41,9 @@ class CmoTextField extends StatelessWidget {
       cursorColor: context.colors.blue,
       keyboardType: keyboardType,
       obscureText: obscureText,
+      autofillHints: autofillHints,
+      onEditingComplete: onEditingComplete,
+      textInputAction: textInputAction,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(8),
         prefixIconConstraints: BoxConstraints.tight(const Size(56, 38)),
