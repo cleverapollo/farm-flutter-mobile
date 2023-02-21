@@ -71,7 +71,7 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
           )
         : const SizedBox(width: _h1);
     leading = Padding(
-      padding: const EdgeInsets.only(left: 4),
+      padding: const EdgeInsets.only(left: 10),
       child: leading,
     );
 

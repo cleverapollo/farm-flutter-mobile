@@ -15,6 +15,8 @@ abstract class _AppColor {
   static const red = Color(0xFFFF0000);
   static const green = Color(0xFF04C504);
   static const yellow = Color(0xFFFFC122);
+
+  static const shadow = Color(0x40000000);
 }
 
 extension BuildContextExt on BuildContext {
@@ -73,6 +75,8 @@ class ColorThemeExt extends ThemeExtension<ColorThemeExt> {
   final red = _AppColor.red;
   final green = _AppColor.green;
   final yellow = _AppColor.yellow;
+
+  final shadow = _AppColor.shadow;
 
   @override
   ThemeExtension<ColorThemeExt> copyWith() => this;

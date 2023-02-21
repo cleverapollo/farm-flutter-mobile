@@ -16,6 +16,13 @@ class CmoCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.colors.blueDark1,
         borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: context.colors.shadow,
+            offset: const Offset(0, 4),
+            blurRadius: 4,
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -25,7 +32,7 @@ class CmoCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(5, 0, 0, 6),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: content,
                 ),
               ),
@@ -81,6 +88,46 @@ class CmoCardItem extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class CmoCardItemHighlighted extends StatelessWidget {
+  const CmoCardItemHighlighted({
+    super.key,
+    required this.title,
+    required this.value,
+  });
+
+  final String title;
+
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Row(
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(minWidth: constraints.minWidth / 2),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 19),
+                child: Text(
+                  title,
+                  style: context.textStyles.bodyNormal
+                      .copyWith(color: context.colors.yellow),
+                ),
+              ),
+            ),
+            Text(
+              value,
+              style: context.textStyles.bodyNormal
+                  .copyWith(color: context.colors.yellow),
+            ),
+          ],
+        );
+      },
     );
   }
 }

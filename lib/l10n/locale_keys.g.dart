@@ -20,8 +20,17 @@ abstract class  LocaleKeys {
   static const memberManagement = 'memberManagement';
   static const createNew = 'createNew';
   static const compartments = 'compartments';
+  static const member_s = 'member_s';
   static const audit_s = 'audit_s';
   static const stakeholders = 'stakeholders';
+  static const cars = 'cars';
+  static const onboarded = 'onboarded';
+  static const incomplete = 'incomplete';
+  static const membersOutstanding = 'membersOutstanding';
+  static const national = 'national';
+  static const opened = 'opened';
+  static const overdue = 'overdue';
+  static const synced = 'synced';
   static const createNewStakeholder = 'createNewStakeholder';
   static const settings = 'settings';
   static const support = 'support';
