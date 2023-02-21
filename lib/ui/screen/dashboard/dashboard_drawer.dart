@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/entity.dart';
+import 'package:cmo/service/app_info_service.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/screen/legal/legal_screen.dart';
+import 'package:cmo/ui/screen/support/support_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +75,7 @@ class DashboardDrawer extends StatelessWidget {
                 ),
                 _CmoOptionTile(
                   title: LocaleKeys.support.tr(),
-                  onTap: () {},
+                  onTap: () => SupportScreen.push(context),
                 ),
                 _CmoOptionTile(
                   title: LocaleKeys.legal.tr(),
@@ -89,16 +92,21 @@ class DashboardDrawer extends StatelessWidget {
                 const SizedBox(height: 24),
                 Assets.images.logo.image(height: 47, fit: BoxFit.contain),
                 const SizedBox(height: 12),
-                Text(
-                  'V1.01',
-                  style: context.textStyles.bodyNormal.white,
-                ),
+                buildVersionText(context),
                 const SizedBox(height: 16),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Text buildVersionText(BuildContext context) {
+    final version = get<AppInfoService>().version;
+    return Text(
+      'V$version',
+      style: context.textStyles.bodyNormal.white,
     );
   }
 

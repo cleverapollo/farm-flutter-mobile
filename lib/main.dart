@@ -4,9 +4,13 @@ import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'di.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(AppTheme.uiOverlayStyle);
+
+  await registerGetIt();
 
   EasyLocalization.logger.enableLevels = [];
   await EasyLocalization.ensureInitialized();

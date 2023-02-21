@@ -9,7 +9,7 @@ class CmoHeaderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: context.colors.blueDark2,
+      color: context.colors.blueDark1,
       child: SizedBox(
         height: 35,
         child: Align(

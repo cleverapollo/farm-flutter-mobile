@@ -59,6 +59,7 @@ abstract class  LocaleKeys {
   static const done = 'done';
   static const effectiveArea = 'effectiveArea';
   static const email = 'email';
+  static const emailAddress = 'emailAddress';
   static const empower = 'empower';
   static const english = 'english';
   static const entity = 'entity';
@@ -119,6 +120,7 @@ abstract class  LocaleKeys {
   static const onboarded = 'onboarded';
   static const opened = 'opened';
   static const operationsManagement = 'operationsManagement';
+  static const os = 'os';
   static const overdue = 'overdue';
   static const panMap = 'panMap';
   static const password = 'password';
