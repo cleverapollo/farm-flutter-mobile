@@ -1,8 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/service/app_info_service.dart';
-import 'package:cmo/service/device_info_service.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
@@ -25,10 +23,6 @@ class SupportScreen extends StatefulWidget {
 }
 
 class _SupportScreenState extends State<SupportScreen> {
-  DeviceInfoService get deviceInfoService => get();
-
-  AppInfoService get appInfoService => get();
-
   @override
   void initState() {
     super.initState();

@@ -1,15 +1,9 @@
 import 'dart:ui';
 
-enum AppLocale {
-  en(Locale('en', 'US')),
-  fr(Locale('fr', 'FR'));
+abstract class AppLocale {
+  static const en = Locale('en', 'US');
 
-  const AppLocale(this.locale);
+  static const fr = Locale('fr', 'FR');
 
-  final Locale locale;
-
-  static Locale get fallback => en.locale;
-
-  static List<Locale> get all =>
-      values.map((e) => e.locale).toList(growable: false);
+  static List<Locale> get all => [en, fr];
 }

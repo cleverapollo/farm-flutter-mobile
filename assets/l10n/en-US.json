@@ -175,6 +175,10 @@
   "termsConditions": "Terms & Conditions",
   "termsUse": "Terms of Usage",
   "thai": "Thai",
+  "theme": {
+    "light": "Light",
+    "dark": "Dark"
+  },
   "total": "Total",
   "town": "Town",
   "transactions": "Transactions",

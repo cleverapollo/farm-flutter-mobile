@@ -1,8 +1,10 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/settings_cubit.dart';
 import 'package:cmo/ui/screen/splash_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'di.dart';
 
@@ -18,7 +20,7 @@ Future<void> main() async {
   runApp(EasyLocalization(
     supportedLocales: AppLocale.all,
     path: 'assets/l10n',
-    fallbackLocale: AppLocale.fallback,
+    fallbackLocale: AppLocale.en,
     child: const CmoApp(),
   ));
 }
@@ -28,14 +30,19 @@ class CmoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'CMO',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.create(),
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      home: const SplashScreen(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => SettingsCubit(locale: context.locale)),
+      ],
+      child: MaterialApp(
+        title: 'CMO',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.create(),
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        home: const SplashScreen(),
+      ),
     );
   }
 }

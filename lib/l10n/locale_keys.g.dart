@@ -61,7 +61,6 @@ abstract class  LocaleKeys {
   static const email = 'email';
   static const emailAddress = 'emailAddress';
   static const empower = 'empower';
-  static const english = 'english';
   static const entity = 'entity';
   static const entityName = 'entityName';
   static const espacement = 'espacement';
@@ -71,7 +70,6 @@ abstract class  LocaleKeys {
   static const forecast = 'forecast';
   static const forestManagement = 'forestManagement';
   static const forgotPassword = 'forgotPassword';
-  static const french = 'french';
   static const groupScheme = 'groupScheme';
   static const groupSchemeManagement = 'groupSchemeManagement';
   static const ha = 'ha';
@@ -90,6 +88,9 @@ abstract class  LocaleKeys {
   static const lastName = 'lastName';
   static const lat = 'lat';
   static const legal = 'legal';
+  static const locale_en = 'locale.en';
+  static const locale_fr = 'locale.fr';
+  static const locale = 'locale';
   static const locationName = 'locationName';
   static const login = 'login';
   static const long = 'long';
@@ -175,6 +176,9 @@ abstract class  LocaleKeys {
   static const termsConditions = 'termsConditions';
   static const termsUse = 'termsUse';
   static const thai = 'thai';
+  static const theme_light = 'theme.light';
+  static const theme_dark = 'theme.dark';
+  static const theme = 'theme';
   static const total = 'total';
   static const town = 'town';
   static const transactions = 'transactions';

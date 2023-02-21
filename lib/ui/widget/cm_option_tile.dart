@@ -8,6 +8,7 @@ class CmoOptionTile extends StatelessWidget {
     required this.title,
     this.value,
     this.shouldShowArrow = true,
+    this.shouldShowDivider = true,
   });
 
   final String title;
@@ -15,6 +16,8 @@ class CmoOptionTile extends StatelessWidget {
   final String? value;
 
   final bool shouldShowArrow;
+
+  final bool shouldShowDivider;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +29,7 @@ class CmoOptionTile extends StatelessWidget {
             children: [
               const SizedBox(width: 24),
               Expanded(
+                flex: 2,
                 child: Text(
                   title,
                   style: context.textStyles.bodyBold,
@@ -33,23 +37,34 @@ class CmoOptionTile extends StatelessWidget {
               ),
               if (value != null)
                 Expanded(
-                  child: Text(
-                    value!,
-                    style: context.textStyles.bodyNormal,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      value!,
+                      style: context.textStyles.bodyNormal,
+                    ),
                   ),
                 ),
-              if (shouldShowArrow) Assets.icons.icArrowRight.svg(),
-              if (shouldShowArrow) const SizedBox(width: 24),
+              Padding(
+                padding: const EdgeInsets.only(right: 24),
+                child: SizedBox(
+                  width: 20,
+                  child:
+                      shouldShowArrow ? Assets.icons.icArrowRight.svg() : null,
+                ),
+              ),
             ],
           ),
         ),
-        Divider(
-          height: 1,
-          thickness: 1,
-          indent: 24,
-          endIndent: 24,
-          color: context.colors.grey,
-        ),
+        if (shouldShowDivider)
+          Divider(
+            height: 1,
+            thickness: 1,
+            indent: 24,
+            endIndent: 24,
+            color: context.colors.grey,
+          ),
       ],
     );
   }

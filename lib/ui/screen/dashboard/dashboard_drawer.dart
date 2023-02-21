@@ -3,9 +3,9 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/entity.dart';
-import 'package:cmo/service/app_info_service.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/screen/legal/legal_screen.dart';
+import 'package:cmo/ui/screen/settings/settings_screen.dart';
 import 'package:cmo/ui/screen/support/support_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
@@ -71,7 +71,7 @@ class DashboardDrawer extends StatelessWidget {
                 const _Divider(),
                 _CmoOptionTile(
                   title: LocaleKeys.settings.tr(),
-                  onTap: () {},
+                  onTap: () => SettingsScreen.push(context),
                 ),
                 _CmoOptionTile(
                   title: LocaleKeys.support.tr(),
@@ -103,7 +103,7 @@ class DashboardDrawer extends StatelessWidget {
   }
 
   Text buildVersionText(BuildContext context) {
-    final version = get<AppInfoService>().version;
+    final version = appInfoService.version;
     return Text(
       'V$version',
       style: context.textStyles.bodyNormal.white,

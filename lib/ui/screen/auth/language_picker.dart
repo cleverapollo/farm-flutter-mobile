@@ -1,7 +1,9 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/settings_cubit.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LanguagePicker extends StatefulWidget {
   const LanguagePicker({super.key, this.hidden = true, this.onPick});
@@ -68,15 +70,9 @@ class _LanguagePickerState extends State<LanguagePicker>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 42),
-              buildOption(
-                title: LocaleKeys.english.tr(),
-                locale: AppLocale.en,
-              ),
+              buildOption(locale: AppLocale.en),
               const SizedBox(height: 4),
-              buildOption(
-                title: LocaleKeys.french.tr(),
-                locale: AppLocale.fr,
-              ),
+              buildOption(locale: AppLocale.fr),
               const SizedBox(height: 42),
             ],
           ),
@@ -85,14 +81,14 @@ class _LanguagePickerState extends State<LanguagePicker>
     );
   }
 
-  Widget buildOption({required String title, required AppLocale locale}) {
+  Widget buildOption({required Locale locale}) {
     return CmoTappable(
       onTap: () {
-        context.setLocale(locale.locale);
+        context.read<SettingsCubit>().changeLanguage(context, locale);
         widget.onPick?.call();
       },
       child: Text(
-        title,
+        LocaleKeys.locale.tr(gender: locale.languageCode),
         textAlign: TextAlign.center,
       ),
     );
