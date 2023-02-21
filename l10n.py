@@ -12,8 +12,8 @@ fr_path = "assets/l10n/fr-FR.json"
 
 with open(en_path) as en_f:
     en_decoded = json.load(en_f)
-with open(fr_path) as en_f:
-    fr_decoded = json.load(en_f)
+with open(fr_path) as fr_f:
+    fr_decoded = json.load(fr_f)
 
 for i in range(0, len(data), count + 1):
     key = data[i]
@@ -27,8 +27,8 @@ for i in range(0, len(data), count + 1):
     fr_decoded[key] = fr
 
 with open(en_path, 'w') as f:
-    json.dump(en_decoded, f, indent=2)
+    json.dump(en_decoded, f, indent=2, sort_keys=True)
 with open(fr_path, 'w') as f:
-    json.dump(fr_decoded, f, indent=2)
+    json.dump(fr_decoded, f, indent=2, sort_keys=True)
 
 os.system('flutter pub run easy_localization:generate -S assets/l10n -O lib/l10n -f keys -o locale_keys.g.dart')
