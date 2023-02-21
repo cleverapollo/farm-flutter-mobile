@@ -11,10 +11,8 @@
   "dashboard": "Tableau de bord",
   "distanceUnits": "Distance Units",
   "empower": "Habiliter",
-  "english": "Anglaise",
   "entity": "Entity",
   "forgotPassword": "Mot de passe oublié?",
-  "french": "français",
   "groupScheme": "Group Scheme",
   "groupSchemeManagement": "Group Scheme Management",
   "incomplete": "Incomplete",
@@ -22,6 +20,10 @@
   "landingPage": "Landing Page",
   "language": "Language",
   "legal": "Legal",
+  "locale": {
+    "en": "Anglaise",
+    "fr": "Français"
+  },
   "login": "Connexion",
   "memberManagement": "Member Management",
   "member_s": "Member/s",

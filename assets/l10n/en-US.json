@@ -59,7 +59,6 @@
   "email": "Email",
   "emailAddress": "Email Address",
   "empower": "Empower",
-  "english": "English",
   "entity": "Entity",
   "entityName": "Entity Name",
   "espacement": "Espacement",
@@ -69,7 +68,6 @@
   "forecast": "Forecast",
   "forestManagement": "Forest Management",
   "forgotPassword": "Forgot Password?",
-  "french": "French",
   "groupScheme": "Group Scheme",
   "groupSchemeManagement": "Group Scheme Management",
   "ha": "Hectar",
@@ -88,6 +86,10 @@
   "lastName": "Last Name",
   "lat": "Latitude",
   "legal": "Legal",
+  "locale": {
+    "en": "English",
+    "fr": "French"
+  },
   "locationName": "Location Name",
   "login": "Login",
   "long": "Longitude",
