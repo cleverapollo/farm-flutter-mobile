@@ -1,12 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/entity.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
 
 class DashboardDrawer extends StatelessWidget {
-  const DashboardDrawer({super.key, required this.onTapClose});
+  const DashboardDrawer({
+    super.key,
+    required this.entity,
+    required this.onTapClose,
+  });
+
+  final Entity entity;
 
   final VoidCallback onTapClose;
 
@@ -38,7 +45,7 @@ class DashboardDrawer extends StatelessWidget {
               children: [
                 buildUserRow(context),
                 buildHeader(context, title: LocaleKeys.entity.tr()),
-                buildOptionArrow(context, title: 'Border Timbers'),
+                buildOptionArrow(context, title: entity.name),
                 const SizedBox(height: 7),
                 const _Divider(),
                 buildHeader(context, title: LocaleKeys.dashboard.tr()),

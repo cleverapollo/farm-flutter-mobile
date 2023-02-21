@@ -33,6 +33,7 @@ class DashboardScreen extends StatelessWidget {
         onTapLeading: () => scaffoldKey.currentState?.openDrawer(),
       ),
       drawer: DashboardDrawer(
+        entity: entity,
         onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
       ),
       drawerScrimColor: Colors.transparent,
