@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/entity.dart';
+import 'package:cmo/ui/screen/auth/login_screen.dart';
+import 'package:cmo/ui/screen/legal/legal_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
@@ -64,13 +66,25 @@ class DashboardDrawer extends StatelessWidget {
                     title: LocaleKeys.createNewStakeholder.tr()),
                 const SizedBox(height: 7),
                 const _Divider(),
-                _CmoOptionTile(title: LocaleKeys.settings.tr()),
-                _CmoOptionTile(title: LocaleKeys.support.tr()),
-                _CmoOptionTile(title: LocaleKeys.legal.tr()),
+                _CmoOptionTile(
+                  title: LocaleKeys.settings.tr(),
+                  onTap: () {},
+                ),
+                _CmoOptionTile(
+                  title: LocaleKeys.support.tr(),
+                  onTap: () {},
+                ),
+                _CmoOptionTile(
+                  title: LocaleKeys.legal.tr(),
+                  onTap: () => LegalScreen.push(context),
+                ),
                 const SizedBox(height: 55),
                 CmoFilledButton(
                   title: LocaleKeys.signOut.tr(),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    LoginScreen.push(context);
+                  },
                 ),
                 const SizedBox(height: 24),
                 Assets.images.logo.image(height: 47, fit: BoxFit.contain),
@@ -220,32 +234,38 @@ class _CmoOptionTile extends StatelessWidget {
   const _CmoOptionTile({
     super.key,
     required this.title,
+    required this.onTap,
   });
 
   final String title;
 
+  final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 43,
-          child: Row(
-            children: [
-              const SizedBox(width: 5),
-              Expanded(
-                child: Text(
-                  title,
-                  style: context.textStyles.bodyBold.white,
+    return CmoTappable(
+      onTap: onTap,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 43,
+            child: Row(
+              children: [
+                const SizedBox(width: 5),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: context.textStyles.bodyBold.white,
+                  ),
                 ),
-              ),
-              Assets.icons.icArrowRight.svgWhite,
-              const SizedBox(width: 16),
-            ],
+                Assets.icons.icArrowRight.svgWhite,
+                const SizedBox(width: 16),
+              ],
+            ),
           ),
-        ),
-        const _Divider(),
-      ],
+          const _Divider(),
+        ],
+      ),
     );
   }
 }
