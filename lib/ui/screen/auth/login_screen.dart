@@ -1,8 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/entity.dart';
 import 'package:cmo/ui/screen/auth/language_picker.dart';
-import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
+import 'package:cmo/ui/screen/entity/entity_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
@@ -29,11 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final scroller = ScrollController();
 
   void onSubmit() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => DashboardScreen(entity: Entity(name: 'Border Timbers')),
-      ),
-    );
+    EntityScreen.push(context);
   }
 
   void toggleSelectingLang() {

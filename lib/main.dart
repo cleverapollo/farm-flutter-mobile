@@ -1,4 +1,5 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/entity_cubit.dart';
 import 'package:cmo/state/settings_cubit.dart';
 import 'package:cmo/ui/screen/splash_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
@@ -33,6 +34,7 @@ class CmoApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => SettingsCubit(locale: context.locale)),
+        BlocProvider(create: (_) => EntityCubit()),
       ],
       child: MaterialApp(
         title: 'CMO',

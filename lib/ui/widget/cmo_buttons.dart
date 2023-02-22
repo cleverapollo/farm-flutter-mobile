@@ -43,6 +43,7 @@ class CmoFilledButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         elevation: 4,
+        disabledBackgroundColor: context.colors.grey,
       ),
       onPressed: onTap,
       child: Padding(

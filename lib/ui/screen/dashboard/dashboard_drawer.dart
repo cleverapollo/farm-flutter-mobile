@@ -2,23 +2,22 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/entity.dart';
+import 'package:cmo/state/entity_cubit.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
+import 'package:cmo/ui/screen/entity/entity_screen.dart';
 import 'package:cmo/ui/screen/legal/legal_screen.dart';
 import 'package:cmo/ui/screen/settings/settings_screen.dart';
 import 'package:cmo/ui/screen/support/support_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DashboardDrawer extends StatelessWidget {
   const DashboardDrawer({
     super.key,
-    required this.entity,
     required this.onTapClose,
   });
-
-  final Entity entity;
 
   final VoidCallback onTapClose;
 
@@ -50,7 +49,7 @@ class DashboardDrawer extends StatelessWidget {
               children: [
                 buildUserRow(context),
                 buildHeader(context, title: LocaleKeys.entity.tr()),
-                buildOptionArrow(context, title: entity.name),
+                buildEntity(context),
                 const SizedBox(height: 7),
                 const _Divider(),
                 buildHeader(context, title: LocaleKeys.dashboard.tr()),
@@ -110,25 +109,39 @@ class DashboardDrawer extends StatelessWidget {
     );
   }
 
-  Widget buildOptionArrow(BuildContext context, {required String title}) {
-    return SizedBox(
-      height: 34,
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Text(
-                  title,
-                  style: context.textStyles.bodyNormal.white,
+  Widget buildEntity(BuildContext context) {
+    return CmoTappable(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const EntityScreen(),
+          ),
+        );
+      },
+      child: SizedBox(
+        height: 34,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: BlocSelector<EntityCubit, EntityState, String?>(
+                    selector: (state) => state.entity?.name,
+                    builder: (context, name) {
+                      return Text(
+                        name ?? '--',
+                        style: context.textStyles.bodyNormal.white,
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-            Assets.icons.icArrowRight.svgWhite,
-            const SizedBox(width: 16),
-          ],
+              Assets.icons.icArrowRight.svgWhite,
+              const SizedBox(width: 16),
+            ],
+          ),
         ),
       ),
     );

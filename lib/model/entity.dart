@@ -1,5 +1,12 @@
 class Entity {
   final String name;
 
-  const Entity({required this.name});
+  final EntityType type;
+
+  const Entity({
+    required this.name,
+    required this.type,
+  });
 }
+
+enum EntityType { gs, rmu, cpy }
