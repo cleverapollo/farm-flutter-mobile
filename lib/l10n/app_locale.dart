@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 abstract class AppLocale {
+  static const fallback = en;
+
   static const en = Locale('en', 'US');
 
   static const fr = Locale('fr', 'FR');

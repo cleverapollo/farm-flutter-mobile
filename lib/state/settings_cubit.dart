@@ -1,18 +1,11 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-enum LandingPage {
-  dashboard('dashboard'),
-  auditS('audit_s'),
-  memberManagement('memberManagement');
+part 'settings_state.dart';
 
-  const LandingPage(this.localeKey);
-
-  final String localeKey;
-}
-
-class SettingsCubit extends Cubit<SettingsState> {
+class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit({required Locale locale})
       : super(SettingsState(
           locale: locale,
@@ -34,30 +27,35 @@ class SettingsCubit extends Cubit<SettingsState> {
   void changeThemeMode(ThemeMode mode) {
     emit(state.copyWith(themeMode: mode));
   }
-}
 
-class SettingsState {
-  final Locale locale;
+  @override
+  SettingsState? fromJson(Map<String, dynamic> json) {
+    final locale = json['locale'] as String?;
+    final landingPage = json['landingPage'] as String?;
+    final themeMode = json['themeMode'] as String?;
 
-  final LandingPage landingPage;
-
-  final ThemeMode themeMode;
-
-  SettingsState({
-    required this.locale,
-    required this.landingPage,
-    required this.themeMode,
-  });
-
-  SettingsState copyWith({
-    Locale? locale,
-    LandingPage? landingPage,
-    ThemeMode? themeMode,
-  }) {
     return SettingsState(
-      locale: locale ?? this.locale,
-      landingPage: landingPage ?? this.landingPage,
-      themeMode: themeMode ?? this.themeMode,
+      locale: AppLocale.all.firstWhere(
+        (e) => e.languageCode == locale,
+        orElse: () => AppLocale.en,
+      ),
+      landingPage: LandingPage.values.firstWhere(
+        (e) => e.name == landingPage,
+        orElse: () => LandingPage.dashboard,
+      ),
+      themeMode: ThemeMode.values.firstWhere(
+        (e) => e.name == themeMode,
+        orElse: () => ThemeMode.light,
+      ),
     );
+  }
+
+  @override
+  Map<String, dynamic>? toJson(SettingsState state) {
+    return {
+      'locale': state.locale.languageCode,
+      'landingPage': state.landingPage.localeKey,
+      'themeMode': state.themeMode.name,
+    };
   }
 }
