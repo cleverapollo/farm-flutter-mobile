@@ -1,5 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
+import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
+import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
@@ -23,14 +25,23 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.microtask(
       () async {
         final authState = context.read<AuthCubit>().state;
+        final userInfoData = context.read<UserInfoCubit>().data;
+        final userDeviceData = context.read<UserDeviceCubit>().data;
+        final haveInternet = (await Connectivity().checkConnectivity()) != ConnectivityResult.none;
 
         authState.continued(
-          (authorized) {
+          (authorized) async {
+            if (context.mounted && haveInternet && userInfoData == null) {
+              await context.read<UserInfoCubit>().getUser(context);
+            }
+            if (context.mounted && haveInternet && userDeviceData == null) {
+              await context.read<UserDeviceCubit>().createUserDevice(context);
+            }
+
             _pushDashboard();
             return;
           },
           (unauthorized) async {
-            final haveInternet = (await Connectivity().checkConnectivity()) != ConnectivityResult.none;
             if (!haveInternet) {
               _pushLogin();
               return;

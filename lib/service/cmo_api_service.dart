@@ -6,6 +6,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
+import 'package:cmo/model/user_info.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:cmo/utils/json_converter.dart';
@@ -55,11 +56,10 @@ class CmoApi {
   Future<String?> _getAccessToken(BuildContext context) async {
     final state = context.read<AuthCubit>().state;
 
-    if (state is AuthorizedAuthState) {
-      return await secureStorage.read(key: 'accessToken');
-    } else {
-      return null;
-    }
+    return state.join(
+      (authorized) => secureStorage.read(key: 'accessToken'),
+      (unauthorized) => null,
+    );
   }
 
   // curl 'https://logistics.myeu.africa/cmo/DesktopModules/JwtAuth/API/mobile/login' \
@@ -100,7 +100,7 @@ class CmoApi {
   // curl 'https://logistics.myeu.africa/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetUser' \
   // -H 'user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Mobile Safari/537.36' \
   // --compressed
-  Future<UserAuth?> getUser({
+  Future<UserInfo?> getUser({
     required BuildContext context,
   }) async {
     final accessToken = await _getAccessToken(context);
@@ -121,7 +121,7 @@ class CmoApi {
 
     if (response.statusCode == 200) {
       final stringData = await response.transform(utf8.decoder).join();
-      return UserAuth.fromJson(Json.tryDecode(stringData));
+      return UserInfo.fromJson(Json.tryDecode(stringData));
     } else if (response.statusCode == 401) {
       if (context.mounted) _loginAgainWithSavedCredentials(context);
       return null;
@@ -142,12 +142,11 @@ class CmoApi {
   // --compressed
   Future<UserDevice?> createUserDevice({
     required BuildContext context,
-    required String deviceId,
-    required String deviceOS,
-    required String deviceVersion,
-    required String userDeviceId,
-    required String appName,
-    required String appVersionNumber,
+    required String? deviceId,
+    required String? deviceOS,
+    required String? deviceVersion,
+    required String? appName,
+    required String? appVersionNumber,
   }) async {
     final accessToken = await _getAccessToken(context);
     if (accessToken == null) return null;
@@ -156,7 +155,6 @@ class CmoApi {
       'DeviceId': deviceId,
       'DeviceOS': deviceOS,
       'DeviceVersion': deviceVersion,
-      'UserDeviceId': userDeviceId,
       'AppName': appName,
       'AppVersionNumber': appVersionNumber,
     };
@@ -167,11 +165,12 @@ class CmoApi {
         '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/CreateUserDevice',
       ),
     );
-    request.add(utf8.encode(json.encode(body)));
 
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');
     request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
+    request.add(utf8.encode(json.encode(body)));
+
     HttpClientResponse response = await request.close();
 
     if (response.statusCode == 200) {

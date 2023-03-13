@@ -1,6 +1,8 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
+import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
+import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/auth/language_picker.dart';
 import 'package:cmo/ui/screen/entity/entity_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
@@ -54,10 +56,12 @@ class _LoginScreenState extends State<LoginScreen> {
         if (context.mounted) {
           await context.read<AuthCubit>().logInAuthEvent(
                 LogInAuthEvent(
-                  onFailure: () {
-                    // if (context.mounted) EntityScreen.push(context);
-                  },
-                  onSuccess: () {
+                  onFailure: () {},
+                  onSuccess: () async {
+                    Future.wait([
+                      context.read<UserInfoCubit>().getUser(context),
+                      context.read<UserDeviceCubit>().createUserDevice(context),
+                    ]);
                     if (context.mounted) EntityScreen.push(context);
                   },
                   password: password,

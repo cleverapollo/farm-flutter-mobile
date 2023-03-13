@@ -2,6 +2,7 @@
 //
 //     final userInfo = userInfoFromJson(jsonString);
 
+import 'package:cmo/extensions/string.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'user_info.freezed.dart';
@@ -26,4 +27,14 @@ class UserInfo with _$UserInfo {
   }) = _UserInfo;
 
   factory UserInfo.fromJson(Map<String, dynamic> json) => _$UserInfoFromJson(json);
+}
+
+extension UserInfoX on UserInfo {
+  String get fullName {
+    if (firstName.isBlank && lastName.isBlank) {
+      return userName ?? '';
+    }
+
+    return '${firstName ?? ''} ${lastName ?? ''}'.trim();
+  }
 }

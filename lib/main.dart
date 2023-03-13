@@ -2,6 +2,8 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit.dart';
 import 'package:cmo/state/settings_cubit.dart';
+import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
+import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/splash_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/utils/helpers.dart';
@@ -39,6 +41,7 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
 
   await hideInputMethod();
+  await deviceInfoService.init();
 
   Bloc.observer = CmoGlobalObserver();
 
@@ -62,6 +65,8 @@ class CmoApp extends StatelessWidget {
         BlocProvider(create: (_) => SettingsCubit(locale: context.locale)),
         BlocProvider(create: (_) => EntityCubit()),
         BlocProvider(create: (_) => AuthCubit()),
+        BlocProvider(create: (_) => UserInfoCubit()),
+        BlocProvider(create: (_) => UserDeviceCubit()),
       ],
       child: MaterialApp(
         title: 'CMO',

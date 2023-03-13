@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 class DeviceInfoService {
   BaseDeviceInfo? _info;
+
+  String? androidId;
 
   Future<void> init() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -12,6 +15,8 @@ class DeviceInfoService {
     } else {
       _info = await deviceInfo.iosInfo;
     }
+
+    androidId = await const AndroidId().getId();
   }
 
   T? _getInfoByOS<T>(
@@ -28,7 +33,7 @@ class DeviceInfoService {
   }
 
   String? get deviceId => _getInfoByOS<String?>(
-        (i) => i.id,
+        (i) => androidId ?? i.id,
         (i) => i.identifierForVendor,
       );
 
@@ -39,6 +44,11 @@ class DeviceInfoService {
 
   String? get os => _getInfoByOS<String?>(
         (i) => 'Android ${i.version.release}',
-        (i) => 'iOS ${i.systemVersion}',
+        (i) => 'iOS ${i.model}',
+      );
+
+  String? get version => _getInfoByOS<String?>(
+        (i) => i.version.sdkInt.toString(),
+        (i) => i.systemName.toString(),
       );
 }

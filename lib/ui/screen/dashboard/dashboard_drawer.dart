@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/user_info.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit.dart';
+import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/screen/entity/entity_screen.dart';
 import 'package:cmo/ui/screen/legal/legal_screen.dart';
@@ -185,7 +187,7 @@ class DashboardDrawer extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
       child: Row(
         children: [
-          _UserAvatar(imageUrl: 'https://placekitten.com/200/200'),
+          const _UserAvatar(imageUrl: 'https://placekitten.com/200/200'),
           const SizedBox(width: 18),
           Expanded(
             child: FittedBox(
@@ -194,14 +196,35 @@ class DashboardDrawer extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Leon Chetty',
-                    maxLines: 1,
-                    style: context.textStyles.bodyBold.white,
+                  BlocSelector<UserInfoCubit, UserInfoState, String?>(
+                    selector: (state) => state.join(
+                      (p0) => null,
+                      (p0) => p0.userInfo?.fullName,
+                      (p0) => null,
+                    ),
+                    builder: (context, state) {
+                      if (state == null) return const SizedBox();
+                      return Text(
+                        state,
+                        maxLines: 1,
+                        style: context.textStyles.bodyBold.white,
+                      );
+                    },
                   ),
-                  Text(
-                    'leon@cmogroup.io',
-                    style: context.textStyles.bodyBold.white,
+                  BlocSelector<UserInfoCubit, UserInfoState, String?>(
+                    selector: (state) => state.join(
+                      (p0) => null,
+                      (p0) => p0.userInfo?.userEmail,
+                      (p0) => null,
+                    ),
+                    builder: (context, state) {
+                      if (state == null) return const SizedBox();
+
+                      return Text(
+                        state,
+                        style: context.textStyles.bodyBold.white,
+                      );
+                    },
                   ),
                 ],
               ),
@@ -222,7 +245,6 @@ class DashboardDrawer extends StatelessWidget {
 
 class _UserAvatar extends StatelessWidget {
   const _UserAvatar({
-    super.key,
     required this.imageUrl,
   });
 
@@ -254,7 +276,6 @@ class _UserAvatar extends StatelessWidget {
 
 class _CmoOptionTile extends StatelessWidget {
   const _CmoOptionTile({
-    super.key,
     required this.title,
     required this.onTap,
   });
@@ -293,7 +314,7 @@ class _CmoOptionTile extends StatelessWidget {
 }
 
 class _Divider extends StatelessWidget {
-  const _Divider({super.key});
+  const _Divider();
 
   @override
   Widget build(BuildContext context) {

@@ -6,24 +6,24 @@ class CmoGlobalObserver extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object? event) {
     super.onEvent(bloc, event);
-    debugPrint('${bloc.runtimeType} $event');
+    debugPrint('${bloc.runtimeType} Event: ${event.toString()}');
   }
 
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    debugPrint('${bloc.runtimeType} $change');
+    debugPrint('${bloc.runtimeType} Change: currentState: ${change.currentState} nextState: ${change.nextState}');
   }
 
   @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
-    debugPrint('${bloc.runtimeType} $transition');
+    debugPrint('${bloc.runtimeType} Transition: currentState: ${transition.currentState} nextState: ${transition.nextState}');
   }
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    debugPrint('${bloc.runtimeType} $error $stackTrace');
+    debugPrint('${bloc.runtimeType} Error: $error $stackTrace');
     super.onError(bloc, error, stackTrace);
   }
 }
