@@ -4,6 +4,9 @@ import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
+import 'package:cmo/ui/screen/entity/entity_screen.dart';
+import 'package:cmo/ui/screen/entity/entity_behave_screen.dart';
+import 'package:cmo/ui/screen/entity/utils.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +30,8 @@ class _SplashScreenState extends State<SplashScreen> {
         final authState = context.read<AuthCubit>().state;
         final userInfoData = context.read<UserInfoCubit>().data;
         final userDeviceData = context.read<UserDeviceCubit>().data;
-        final haveInternet = (await Connectivity().checkConnectivity()) != ConnectivityResult.none;
+        final haveInternet = (await Connectivity().checkConnectivity()) !=
+            ConnectivityResult.none;
 
         authState.continued(
           (authorized) async {
@@ -48,7 +52,9 @@ class _SplashScreenState extends State<SplashScreen> {
             }
 
             if (haveInternet && context.mounted) {
-              await context.read<AuthCubit>().logInWithSavedCredentialsAuthEvent(
+              await context
+                  .read<AuthCubit>()
+                  .logInWithSavedCredentials(
                 onFailure: () {
                   _pushLogin();
                 },
@@ -64,7 +70,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _pushDashboard() {
-    if (context.mounted) DashboardScreen.push(context);
+    // if (context.mounted) DashboardScreen.push(context);
+    if (context.mounted) pushEntityScreen(context);
   }
 
   void _pushLogin() {

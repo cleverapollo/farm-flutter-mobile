@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:cmo/main.dart';
+import 'package:cmo/model/company.dart';
 import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
 import 'package:cmo/model/user_info.dart';
@@ -50,7 +51,7 @@ class CmoApi {
   }
 
   _loginAgainWithSavedCredentials(BuildContext context) {
-    BlocProvider.of<AuthCubit>(context).logInWithSavedCredentialsAuthEvent();
+    BlocProvider.of<AuthCubit>(context).logInWithSavedCredentials();
   }
 
   Future<String?> _getAccessToken(BuildContext context) async {
@@ -188,6 +189,98 @@ class CmoApi {
       }
 
       return null;
+    }
+  }
+
+  Future<List<Company>?> getCompaniesByUserId({
+    required BuildContext context,
+    required int userId,
+  }) async {
+    final accessToken = await _getAccessToken(context);
+    if (accessToken == null) return null;
+
+    final uri = Uri.https(
+      cmoUrl,
+      '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetCompanyByUserId',
+      {"userId": userId.toString()},
+    );
+
+    HttpClientRequest request = await client.getUrl(uri);
+
+    request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
+    request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+    request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
+
+    HttpClientResponse response = await request.close();
+
+    if (response.statusCode == 200) {
+      final stringData = await response.transform(utf8.decoder).join();
+      final data = Json.tryDecode(stringData);
+      if (data is List) {
+        return data
+            .map((e) => Company.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+      return <Company>[];
+    } else if (response.statusCode == 401) {
+      if (context.mounted) _loginAgainWithSavedCredentials(context);
+      return null;
+    } else {
+      if (context.mounted) {
+        _showFlushBar(
+          context,
+          'Unknow error: ${response.statusCode}',
+        );
+      }
+
+      return null;
+    }
+  }
+
+  Future<bool> createSystemEvent({
+    required BuildContext context,
+    required String systemEventName,
+    required int primaryKey,
+    required int userDeviceId,
+  }) async {
+    final accessToken = await _getAccessToken(context);
+    if (accessToken == null) return false;
+
+    final uri = Uri.https(
+      cmoUrl,
+      '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/CreateSystemEvent',
+    );
+
+    final body = {
+      "SystemEventName": "SyncAssessmentMasterData",
+      "PrimaryKey": primaryKey,
+      "UserDeviceId": userDeviceId
+    };
+
+    HttpClientRequest request = await client.postUrl(uri);
+
+    request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
+    request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+    request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
+    request.add(utf8.encode(json.encode(body)));
+
+    HttpClientResponse response = await request.close();
+
+    if (response.statusCode == 200) {
+      // final stringData = await response.transform(utf8.decoder).join();
+      return true;
+    } else if (response.statusCode == 401) {
+      if (context.mounted) _loginAgainWithSavedCredentials(context);
+      return false;
+    } else {
+      if (context.mounted) {
+        _showFlushBar(
+          context,
+          'Unknow error: ${response.statusCode}',
+        );
+      }
+
+      return false;
     }
   }
 }

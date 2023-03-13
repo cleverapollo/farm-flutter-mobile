@@ -4,7 +4,7 @@ import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/auth/language_picker.dart';
-import 'package:cmo/ui/screen/entity/entity_screen.dart';
+import 'package:cmo/ui/screen/entity/utils.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
@@ -54,15 +54,16 @@ class _LoginScreenState extends State<LoginScreen> {
         final username = _formKey.currentState?.value['email'];
         final password = _formKey.currentState?.value['password'];
         if (context.mounted) {
-          await context.read<AuthCubit>().logInAuthEvent(
+          await context.read<AuthCubit>().logIn(
                 LogInAuthEvent(
                   onFailure: () {},
                   onSuccess: () async {
-                    Future.wait([
+                    await Future.wait([
                       context.read<UserInfoCubit>().getUser(context),
                       context.read<UserDeviceCubit>().createUserDevice(context),
                     ]);
-                    if (context.mounted) EntityScreen.push(context);
+
+                    if (context.mounted) pushEntityScreen(context);
                   },
                   password: password,
                   username: username,
@@ -118,7 +119,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 14),
                         Text(
                           LocaleKeys.forgotPassword.tr(),
-                          style: context.textStyles.bodyNormal.copyWith(color: context.colors.blueDark2),
+                          style: context.textStyles.bodyNormal
+                              .copyWith(color: context.colors.blueDark2),
                         ),
                         const SizedBox(height: 16),
                         CmoFilledButton(

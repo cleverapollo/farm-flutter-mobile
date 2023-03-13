@@ -1,9 +1,10 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/company.dart';
-import 'package:cmo/model/entity.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
+import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
+import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
@@ -11,36 +12,24 @@ import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EntitySearchScreen extends StatefulWidget {
-  const EntitySearchScreen({
+class EntityBehaveScreen extends StatefulWidget {
+  const EntityBehaveScreen({
     super.key,
-    required this.type,
-    this.selected,
   });
 
-  final EntityType type;
-
-  final Entity? selected;
-
-  static dynamic push(
-    BuildContext context, {
-    required EntityType type,
-    Entity? selected,
-  }) {
+  static dynamic push(BuildContext context) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (_) => EntitySearchScreen(
-                type: type,
-                selected: selected,
-              )),
+        builder: (_) => const EntityBehaveScreen(),
+      ),
     );
   }
 
   @override
-  State<EntitySearchScreen> createState() => _EntitySearchScreenState();
+  State<EntityBehaveScreen> createState() => _EntityBehaveScreenState();
 }
 
-class _EntitySearchScreenState extends State<EntitySearchScreen> {
+class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
   late final entityCubit = context.read<EntityCubit>();
 
   bool isReady = false;
@@ -49,20 +38,24 @@ class _EntitySearchScreenState extends State<EntitySearchScreen> {
 
   String prevQuery = '';
 
+  Company? selected;
+
   @override
   void initState() {
     super.initState();
+    selected = entityCubit.state.company;
     companies = entityCubit.state.companies;
     isReady = companies.isNotEmpty;
     if (!isReady) {
+      final userId = context.read<UserInfoCubit>().state.join(
+            (p0) => null,
+            (p0) => p0.userInfo?.userId,
+            (p0) => null,
+          );
       entityCubit
           .getCompanies(
         context: context,
-        userId: context.read<UserInfoCubit>().state.join(
-              (p0) => null,
-              (p0) => p0.userInfo?.userId,
-              (p0) => null,
-            ),
+        userId: userId,
       )
           .then((_) {
         companies = entityCubit.state.companies;
@@ -91,8 +84,6 @@ class _EntitySearchScreenState extends State<EntitySearchScreen> {
       child: Scaffold(
         appBar: CmoAppBar(
           title: LocaleKeys.entity.tr(),
-          leading: Assets.icons.icArrowLeft.svg(),
-          onTapLeading: () => Navigator.of(context).pop(),
         ),
         body: Column(
           children: [
@@ -106,6 +97,34 @@ class _EntitySearchScreenState extends State<EntitySearchScreen> {
               ),
             ),
             Expanded(child: buildNameList()),
+            Padding(
+              padding: const EdgeInsets.only(top: 40, bottom: 40),
+              child: BlocSelector<EntityCubit, EntityState, bool>(
+                selector: (state) {
+                  return state.isLoadingSync;
+                },
+                builder: (context, state) {
+                  return CmoFilledButton(
+                    title: LocaleKeys.sync.tr(),
+                    loading: state,
+                    onTap: selected != null
+                        ? () async {
+                            await context.read<EntityCubit>().syncBehave(
+                                context: context,
+                                company: selected!,
+                                userDeviceId:
+                                    context.read<UserDeviceCubit>().state.join(
+                                          (p0) => null,
+                                          (p0) => p0.userDevice?.userDeviceId,
+                                          (p0) => null,
+                                        ));
+                            if (context.mounted) DashboardScreen.push(context);
+                          }
+                        : null,
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -125,20 +144,15 @@ class _EntitySearchScreenState extends State<EntitySearchScreen> {
       return Text('None', style: context.textStyles.bodyNormal);
     }
 
-    void onTapTile(Company name) {
-      Navigator.of(context).pop(
-        Entity(
-          name: name.companyName ?? '',
-          type: widget.type,
-        ),
-      );
+    void onTapTile(Company company) {
+      setState(() {
+        selected = company;
+      });
     }
 
     bool isSelected(Company company) {
-      final selected = widget.selected;
       if (selected == null) return false;
-      return company.companyName == selected.name &&
-          widget.type == selected.type;
+      return company == selected;
     }
 
     return ListView(

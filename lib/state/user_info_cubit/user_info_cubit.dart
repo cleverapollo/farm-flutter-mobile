@@ -30,6 +30,12 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
       );
 
   @override
+  Future<void> clear() async {
+    emit(UserInfoState.loading());
+    return super.clear();
+  }
+
+  @override
   UserInfoState? fromJson(Map<String, dynamic>? json) {
     if (json == null) return null;
     return UserInfoState.data(userInfo: UserInfo.fromJson(json));

@@ -13,7 +13,7 @@ part 'auth_event.dart';
 class AuthCubit extends HydratedCubit<AuthState> {
   AuthCubit() : super(AuthState.unauthorized());
 
-  Future<void> logInAuthEvent(LogInAuthEvent event) async {
+  Future<void> logIn(LogInAuthEvent event) async {
     final login = await _login(event.username, event.password);
 
     if (login == null) {
@@ -36,12 +36,12 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
-  Future<void> logOutAuthEvent() async {
+  Future<void> logOut() async {
     await _clearSecureStorage();
     emit(AuthState.unauthorized());
   }
 
-  Future<void> logInWithSavedCredentialsAuthEvent({
+  Future<void> logInWithSavedCredentials({
     Function()? onSuccess,
     Function()? onFailure,
   }) async {

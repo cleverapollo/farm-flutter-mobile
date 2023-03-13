@@ -1,12 +1,16 @@
-class Entity {
-  final String name;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final EntityType type;
+part 'entity.freezed.dart';
+part 'entity.g.dart';
 
-  const Entity({
-    required this.name,
-    required this.type,
-  });
+@freezed
+class Entity with _$Entity {
+  const factory Entity({
+    required String name,
+    required EntityType type,
+  }) = _Entity;
+
+  factory Entity.fromJson(Map<String, dynamic> json) => _$EntityFromJson(json);
 }
 
 enum EntityType { gs, rmu, cpy }

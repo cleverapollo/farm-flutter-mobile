@@ -16,7 +16,9 @@ class DeviceInfoService {
       _info = await deviceInfo.iosInfo;
     }
 
-    androidId = await const AndroidId().getId();
+    if (Platform.isAndroid) {
+      androidId = await const AndroidId().getId();
+    }
   }
 
   T? _getInfoByOS<T>(

@@ -1,6 +1,6 @@
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/entity.dart';
-import 'package:cmo/state/entity_cubit.dart';
+import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/screen/entity/entity_search_screen.dart';
 import 'package:cmo/ui/widget/cm_option_tile.dart';
@@ -29,7 +29,8 @@ class _EntityScreenState extends State<EntityScreen> {
   Entity? selected;
 
   Future<void> toEntitySearchScreen(EntityType type) async {
-    final result = await EntitySearchScreen.push(context, type: type, selected: selected);
+    final result =
+        await EntitySearchScreen.push(context, type: type, selected: selected);
     if (result is! Entity) return;
 
     selected = result;
@@ -77,7 +78,7 @@ class _EntityScreenState extends State<EntityScreen> {
                 onTap: selected != null
                     ? () async {
                         await context.read<EntityCubit>().sync(selected!);
-                        DashboardScreen.push(context);
+                        if (context.mounted) DashboardScreen.push(context);
                       }
                     : null,
               ),

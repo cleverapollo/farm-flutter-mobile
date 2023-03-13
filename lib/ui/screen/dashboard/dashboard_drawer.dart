@@ -4,10 +4,12 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/user_info.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
-import 'package:cmo/state/entity_cubit.dart';
+import 'package:cmo/state/entity_cubit/entity_cubit.dart';
+import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/screen/entity/entity_screen.dart';
+import 'package:cmo/ui/screen/entity/utils.dart';
 import 'package:cmo/ui/screen/legal/legal_screen.dart';
 import 'package:cmo/ui/screen/settings/settings_screen.dart';
 import 'package:cmo/ui/screen/support/support_screen.dart';
@@ -67,7 +69,8 @@ class DashboardDrawer extends StatelessWidget {
                 const SizedBox(height: 7),
                 const _Divider(),
                 buildHeader(context, title: LocaleKeys.stakeholders.tr()),
-                buildOption(context, title: LocaleKeys.createNewStakeholder.tr()),
+                buildOption(context,
+                    title: LocaleKeys.createNewStakeholder.tr()),
                 const SizedBox(height: 7),
                 const _Divider(),
                 _CmoOptionTile(
@@ -86,7 +89,14 @@ class DashboardDrawer extends StatelessWidget {
                 CmoFilledButton(
                   title: LocaleKeys.signOut.tr(),
                   onTap: () async {
-                    await context.read<AuthCubit>().logOutAuthEvent();
+                    await context.read<AuthCubit>().logOut();
+                    if (context.mounted) {
+                      Future.wait([
+                        context.read<EntityCubit>().clear(),
+                        context.read<UserDeviceCubit>().clear(),
+                        context.read<UserInfoCubit>().clear(),
+                      ]);
+                    }
                     if (context.mounted) Navigator.of(context).pop();
                     if (context.mounted) LoginScreen.push(context);
                   },
@@ -115,11 +125,14 @@ class DashboardDrawer extends StatelessWidget {
   Widget buildEntity(BuildContext context) {
     return CmoTappable(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => const EntityScreen(),
-          ),
-        );
+        final screen = entityScreenByType();
+        if (screen != null) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => screen,
+            ),
+          );
+        }
       },
       child: SizedBox(
         height: 34,

@@ -36,6 +36,12 @@ class UserDeviceCubit extends HydratedCubit<UserDeviceState> {
       );
 
   @override
+  Future<void> clear() async {
+    emit(UserDeviceState.loading());
+    return super.clear();
+  }
+
+  @override
   UserDeviceState? fromJson(Map<String, dynamic>? json) {
     if (json == null) return null;
     return UserDeviceState.data(userDevice: UserDevice.fromJson(json));
