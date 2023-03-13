@@ -10,58 +10,64 @@ import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 part 'auth_state.dart';
 part 'auth_event.dart';
 
-class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthState.unauthorized()) {
-    on<LogInAuthEvent>((event, emit) async {
-      final login = await _login(event.username, event.password);
+class AuthCubit extends HydratedCubit<AuthState> {
+  AuthCubit() : super(AuthState.unauthorized());
 
-      if (login == null) {
-        emit(AuthState.unauthorized());
-        event.onFailure();
-        return;
-      }
+  Future<void> logInAuthEvent(LogInAuthEvent event) async {
+    final login = await _login(event.username, event.password);
 
-      debugPrint('[AuthBloc] LogInAuthEvent: $login');
-
-      if (login.accessToken != null && login.renewalToken != null) {
-        await _saveUsernameAndPassword(event.username, event.password);
-        await _saveAccessRevewalToken(login.accessToken!, login.renewalToken!);
-        emit(AuthState.authorized());
-
-        event.onSuccess();
-      } else {
-        emit(AuthState.unauthorized());
-        event.onFailure();
-      }
-    });
-    on<LogOutAuthEvent>((event, emit) async {
-      await _clearSecureStorage();
+    if (login == null) {
       emit(AuthState.unauthorized());
-    });
-    on<LogInWithSavedCredentialsAuthEvent>((event, emit) async {
-      final username = await _readUsername();
-      final password = await _readPassword();
+      event.onFailure();
+      return;
+    }
 
-      if (username == null || password == null) {
-        emit(AuthState.unauthorized());
-        return;
-      }
+    debugPrint('[AuthCubit] LogInAuthEvent: $login');
 
-      final login = await _login(username, password);
-
-      if (login == null) {
-        emit(AuthState.unauthorized());
-        event.onFailure?.call();
-        return;
-      }
-
-      if (login.accessToken != null && login.renewalToken != null) {
-        await _saveAccessRevewalToken(login.accessToken!, login.renewalToken!);
-      }
-
+    if (login.accessToken != null && login.renewalToken != null) {
+      await _saveUsernameAndPassword(event.username, event.password);
+      await _saveAccessRevewalToken(login.accessToken!, login.renewalToken!);
       emit(AuthState.authorized());
-      event.onSuccess?.call();
-    });
+
+      event.onSuccess();
+    } else {
+      emit(AuthState.unauthorized());
+      event.onFailure();
+    }
+  }
+
+  Future<void> logOutAuthEvent() async {
+    await _clearSecureStorage();
+    emit(AuthState.unauthorized());
+  }
+
+  Future<void> logInWithSavedCredentialsAuthEvent({
+    Function()? onSuccess,
+    Function()? onFailure,
+  }) async {
+    final username = await _readUsername();
+    final password = await _readPassword();
+
+    if (username == null || password == null) {
+      emit(AuthState.unauthorized());
+      onFailure?.call();
+      return;
+    }
+
+    final login = await _login(username, password);
+
+    if (login == null) {
+      emit(AuthState.unauthorized());
+      onFailure?.call();
+      return;
+    }
+
+    if (login.accessToken != null && login.renewalToken != null) {
+      await _saveAccessRevewalToken(login.accessToken!, login.renewalToken!);
+    }
+
+    emit(AuthState.authorized());
+    onSuccess?.call();
   }
 
   Future<UserAuth?> _login(

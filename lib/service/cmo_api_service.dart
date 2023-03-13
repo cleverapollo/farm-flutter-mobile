@@ -6,7 +6,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
-import 'package:cmo/state/auth_bloc/auth_bloc.dart';
+import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:cmo/utils/json_converter.dart';
 
@@ -49,13 +49,11 @@ class CmoApi {
   }
 
   _loginAgainWithSavedCredentials(BuildContext context) {
-    BlocProvider.of<AuthBloc>(context).add(
-      const LogInWithSavedCredentialsAuthEvent(),
-    );
+    BlocProvider.of<AuthCubit>(context).logInWithSavedCredentialsAuthEvent();
   }
 
   Future<String?> _getAccessToken(BuildContext context) async {
-    final state = context.read<AuthBloc>().state;
+    final state = context.read<AuthCubit>().state;
 
     if (state is AuthorizedAuthState) {
       return await secureStorage.read(key: 'accessToken');

@@ -1,4 +1,4 @@
-part of 'auth_bloc.dart';
+part of 'auth_cubit.dart';
 
 class AuthState extends Union2Impl<AuthorizedAuthState, UnauthorizedAuthState> {
   AuthState._(

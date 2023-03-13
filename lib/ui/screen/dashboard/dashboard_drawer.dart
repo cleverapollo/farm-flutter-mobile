@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/screen/entity/entity_screen.dart';
@@ -64,8 +65,7 @@ class DashboardDrawer extends StatelessWidget {
                 const SizedBox(height: 7),
                 const _Divider(),
                 buildHeader(context, title: LocaleKeys.stakeholders.tr()),
-                buildOption(context,
-                    title: LocaleKeys.createNewStakeholder.tr()),
+                buildOption(context, title: LocaleKeys.createNewStakeholder.tr()),
                 const SizedBox(height: 7),
                 const _Divider(),
                 _CmoOptionTile(
@@ -83,9 +83,10 @@ class DashboardDrawer extends StatelessWidget {
                 const SizedBox(height: 55),
                 CmoFilledButton(
                   title: LocaleKeys.signOut.tr(),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    LoginScreen.push(context);
+                  onTap: () async {
+                    await context.read<AuthCubit>().logOutAuthEvent();
+                    if (context.mounted) Navigator.of(context).pop();
+                    if (context.mounted) LoginScreen.push(context);
                   },
                 ),
                 const SizedBox(height: 24),

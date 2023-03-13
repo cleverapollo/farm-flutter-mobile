@@ -1,5 +1,5 @@
 import 'package:cmo/gen/assets.gen.dart';
-import 'package:cmo/state/auth_bloc/auth_bloc.dart';
+import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
@@ -21,16 +21,14 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.microtask(
       () async {
-        context.read<AuthBloc>().add(
-              LogInWithSavedCredentialsAuthEvent(
-                onFailure: () {
-                  if (context.mounted) DashboardScreen.push(context);
-                },
-                onSuccess: () {
-                  if (context.mounted) LoginScreen.push(context);
-                },
-              ),
-            );
+        context.read<AuthCubit>().logInWithSavedCredentialsAuthEvent(
+          onFailure: () {
+            if (context.mounted) LoginScreen.push(context);
+          },
+          onSuccess: () {
+            if (context.mounted) DashboardScreen.push(context);
+          },
+        );
       },
     );
   }

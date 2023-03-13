@@ -1,4 +1,4 @@
-part of 'auth_bloc.dart';
+part of 'auth_cubit.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
@@ -43,17 +43,6 @@ class LogInWithSavedCredentialsAuthEvent extends AuthEvent {
 
 class LogOutAuthEvent extends AuthEvent {
   const LogOutAuthEvent();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class SkipLoginAuthEvent extends AuthEvent {
-  const SkipLoginAuthEvent({
-    required this.onSuccess,
-  });
-
-  final Function() onSuccess;
 
   @override
   List<Object?> get props => [];

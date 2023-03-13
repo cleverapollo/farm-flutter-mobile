@@ -1,13 +1,13 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/state/auth_bloc/auth_bloc.dart';
+import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/ui/screen/auth/language_picker.dart';
-import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/screen/entity/entity_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
 import 'package:cmo/ui/widget/cmo_text_field.dart';
+import 'package:cmo/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -34,30 +34,45 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   final scroller = ScrollController();
+  bool isLoading = false;
 
-  void onSubmit() {
+  Future<void> onSubmit() async {
     setState(() {
       autoValidateMode = AutovalidateMode.always;
     });
 
     if (_formKey.currentState?.saveAndValidate() ?? false) {
-      debugPrint(_formKey.currentState?.value.toString());
-      final username = _formKey.currentState?.value['email'];
-      final password = _formKey.currentState?.value['password'];
-      if (context.mounted) {
-        context.read<AuthBloc>().add(
-              LogInAuthEvent(
-                onFailure: () {
-                  // if (context.mounted) EntityScreen.push(context);
-                },
-                onSuccess: () {
-                  if (context.mounted) EntityScreen.push(context);
-                },
-                password: password,
-                username: username,
-              ),
-            );
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        debugPrint(_formKey.currentState?.value.toString());
+        hideInputMethod();
+        final username = _formKey.currentState?.value['email'];
+        final password = _formKey.currentState?.value['password'];
+        if (context.mounted) {
+          await context.read<AuthCubit>().logInAuthEvent(
+                LogInAuthEvent(
+                  onFailure: () {
+                    // if (context.mounted) EntityScreen.push(context);
+                  },
+                  onSuccess: () {
+                    if (context.mounted) EntityScreen.push(context);
+                  },
+                  password: password,
+                  username: username,
+                ),
+              );
+        }
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
       }
+      setState(() {
+        isLoading = false;
+      });
     } else {
       debugPrint(_formKey.currentState?.value.toString());
       debugPrint('validation failed');
@@ -105,6 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         CmoFilledButton(
                           title: LocaleKeys.login.tr(),
                           onTap: onSubmit,
+                          loading: isLoading,
                         ),
                         const SizedBox(height: 16),
                         LanguagePicker(

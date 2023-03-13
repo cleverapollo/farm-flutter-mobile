@@ -1,5 +1,5 @@
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/state/auth_bloc/auth_bloc.dart';
+import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit.dart';
 import 'package:cmo/state/settings_cubit.dart';
 import 'package:cmo/ui/screen/splash_screen.dart';
@@ -38,6 +38,8 @@ Future<void> main() async {
   EasyLocalization.logger.enableLevels = [];
   await EasyLocalization.ensureInitialized();
 
+  await hideInputMethod();
+
   Bloc.observer = CmoGlobalObserver();
 
   runApp(
@@ -59,7 +61,7 @@ class CmoApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => SettingsCubit(locale: context.locale)),
         BlocProvider(create: (_) => EntityCubit()),
-        BlocProvider(create: (_) => AuthBloc()),
+        BlocProvider(create: (_) => AuthCubit()),
       ],
       child: MaterialApp(
         title: 'CMO',

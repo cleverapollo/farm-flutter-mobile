@@ -53,6 +53,7 @@ class CmoTextField extends StatelessWidget {
       autofillHints: autofillHints,
       onEditingComplete: onEditingComplete,
       textInputAction: textInputAction,
+      scrollPadding: const EdgeInsets.only(bottom: 100),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(8),
         prefixIconConstraints: BoxConstraints.tight(const Size(56, 38)),

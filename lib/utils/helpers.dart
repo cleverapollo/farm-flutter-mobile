@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CmoGlobalObserver extends BlocObserver {
@@ -25,4 +26,50 @@ class CmoGlobalObserver extends BlocObserver {
     debugPrint('${bloc.runtimeType} $error $stackTrace');
     super.onError(bloc, error, stackTrace);
   }
+}
+
+final bool isDebug = () {
+  var result = false;
+  assert(() {
+    result = true;
+
+    return true;
+  }());
+
+  return result;
+}();
+
+Future<void> showInputMethod() async {
+  try {
+    await SystemChannels.textInput.invokeMethod(
+      'TextInput.setClient',
+      <dynamic>[
+        1,
+        <String, dynamic>{
+          'keyboardAppearance': 'Brightness.dark',
+        }
+      ],
+    );
+  } catch (e, s) {
+    debugPrint('$e $s');
+  }
+  return SystemChannels.textInput.invokeMethod('TextInput.show');
+}
+
+Future<void> hideInputMethod() {
+  return SystemChannels.textInput.invokeMethod('TextInput.hide');
+}
+
+void clearFocus() {
+  FocusManager.instance.primaryFocus?.unfocus();
+}
+
+Future<void> copyText2Clipboard(String text) {
+  return Clipboard.setData(ClipboardData(text: text));
+}
+
+Future<String?> pasteTextFromClipboard() {
+  return Clipboard.getData('text/plain').then<String?>(
+    (value) => value?.text,
+  );
 }
