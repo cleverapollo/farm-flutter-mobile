@@ -1,36 +1,43 @@
 name: cmo
 description: Supply chain integrity.
 
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.0 <3.0.0'
+  sdk: ">=2.19.0 <3.0.0"
 
 dependencies:
+  another_flushbar: ^1.12.29
+  cached_network_image: ^3.2.3
+  cookie_jar: ^3.0.1
+  cupertino_icons: ^1.0.2
+  device_info_plus: ^8.1.0
+  easy_localization: ^3.0.1
+  equatable: ^2.0.5
   flutter:
     sdk: flutter
-
-  cupertino_icons: ^1.0.2
-  flutter_svg: ^2.0.1
-  easy_localization: ^3.0.1
-  cached_network_image: ^3.2.3
-  url_launcher: ^6.1.9
-  device_info_plus: ^8.1.0
-  get_it: ^7.2.0
   flutter_bloc: ^8.1.2
+  flutter_secure_storage: ^8.0.0
+  flutter_svg: ^2.0.1
+  freezed_annotation: null
+  json_annotation: ^4.7.0
+  get_it: ^7.2.0
   hydrated_bloc: ^9.1.0
   path_provider: ^2.0.13
-  equatable: ^2.0.5
+  sealed_flutter_bloc: ^8.0.1
+  url_launcher: ^6.1.9
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  build_runner:
-  flutter_gen_runner:
+  build_runner: null
+  flutter_gen_runner: null
+  freezed: null
+  json_serializable: null
 
   flutter_lints: ^2.0.0
+  flutter_test:
+    sdk: flutter
 
 flutter:
   uses-material-design: true

@@ -1,7 +1,10 @@
 import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/state/auth_bloc/auth_bloc.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
+import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'screen_base.dart';
 
@@ -16,24 +19,41 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      LoginScreen.push(context);
+    // Future.delayed(const Duration(seconds: 2), () {
+    //   LoginScreen.push(context);
+    // });
+
+    Future.microtask(() {
+      context.read<AuthBloc>().add(
+            LogInAuthEvent(
+              username: 'anthonyp@apstory.co.za',
+              password: 'test1234',
+              onSuccess: () {
+                DashboardScreen.push(context);
+              },
+              onFailure: () {
+                LoginScreen.push(context);
+              },
+            ),
+          );
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return ScreenBase(
-      child: Column(
-        children: [
-          const CmoLogo(),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Assets.images.splashBg.image(fit: BoxFit.contain),
+      child: Scaffold(
+        body: Column(
+          children: [
+            const CmoLogo(),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Assets.images.splashBg.image(fit: BoxFit.contain),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

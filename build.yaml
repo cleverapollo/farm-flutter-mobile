@@ -1,0 +1,19 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # Method generation toJson/fromJson for nested list
+          explicit_to_json: true
+        generate_for:
+          include:
+            - lib/model/**.dart
+      freezed:
+        options:
+          union_key: custom-key
+          union_value_case: pascal
+          maybe_map: true
+          maybe_when: true
+        generate_for:
+          include:
+            - lib/model/**.dart
