@@ -89,7 +89,7 @@ class CmoApi {
 
     if (response.statusCode != 200) {
       _showSnackBar(
-        'Login error: (${response.statusCode} - ${response.reasonPhrase})',
+        '${response.statusCode} - ${response.reasonPhrase}',
       );
       return null;
     }

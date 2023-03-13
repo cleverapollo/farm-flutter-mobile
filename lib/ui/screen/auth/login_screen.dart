@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 const CmoLogo(),
-                const SizedBox(height: 42),
+                // const SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.all(18),
                   child: DecoratedBox(
@@ -104,9 +104,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 24),
                         Assets.icons.icUser.svg(),
-                        const SizedBox(height: 77),
+                        const SizedBox(height: 32),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: buildInputArea(),

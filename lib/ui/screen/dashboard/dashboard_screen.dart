@@ -23,66 +23,69 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final entityName = context
-        .select<EntityCubit, String?>((cubit) => cubit.state.entity?.name);
+    final entityName = context.select<EntityCubit, String?>((cubit) => cubit.state.entity?.name);
 
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: CmoAppBar(
-        title: LocaleKeys.dashboard.tr(),
-        subtitle: entityName,
-        leading: Assets.icons.icDrawer.svg(),
-        onTapLeading: () => scaffoldKey.currentState?.openDrawer(),
-      ),
-      drawer: DashboardDrawer(
-        onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
-      ),
-      drawerScrimColor: Colors.transparent,
-      body: ListView(
-        clipBehavior: Clip.none,
-        physics: const ClampingScrollPhysics(),
-        padding: const EdgeInsets.all(20),
-        children: [
-          CmoCard(
-            content: [
-              CmoCardHeader(title: LocaleKeys.member_s.tr()),
-              CmoCardItem(title: LocaleKeys.onboarded.tr(), value: '5/10'),
-              CmoCardItem(title: LocaleKeys.incomplete.tr(), value: '8/10'),
-            ],
-          ),
-          const SizedBox(height: 20),
-          CmoCard(
-            content: [
-              CmoCardHeader(title: LocaleKeys.audit_s.tr()),
-              CmoCardItem(title: LocaleKeys.onboarded.tr(), value: '5/10'),
-              CmoCardItem(title: LocaleKeys.incomplete.tr(), value: '8/10'),
-              CmoCardItemHighlighted(
-                  title: LocaleKeys.membersOutstanding.tr(), value: '8/10'),
-            ],
-          ),
-          const SizedBox(height: 20),
-          CmoCard(
-            content: [
-              CmoCardHeader(title: LocaleKeys.stakeholders.tr()),
-              CmoCardItem(title: LocaleKeys.national.tr(), value: '50'),
-            ],
-          ),
-          const SizedBox(height: 20),
-          CmoCard(
-            content: [
-              CmoCardHeader(title: LocaleKeys.cars.tr()),
-              CmoCardItem(title: LocaleKeys.opened.tr(), value: '5'),
-              CmoCardItem(title: LocaleKeys.overdue.tr(), value: '5'),
-            ],
-          ),
-          const SizedBox(height: 20),
-          CmoCard(
-            content: [
-              CmoCardHeader(title: LocaleKeys.sync.tr()),
-              CmoCardItem(title: LocaleKeys.synced.tr(), value: '5'),
-            ],
-          ),
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        appBar: CmoAppBar(
+          title: LocaleKeys.dashboard.tr(),
+          subtitle: entityName,
+          leading: Assets.icons.icDrawer.svg(),
+          onTapLeading: () => scaffoldKey.currentState?.openDrawer(),
+        ),
+        drawer: DashboardDrawer(
+          onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
+        ),
+        drawerScrimColor: Colors.transparent,
+        body: ListView(
+          clipBehavior: Clip.none,
+          physics: const ClampingScrollPhysics(),
+          padding: const EdgeInsets.all(20),
+          children: [
+            CmoCard(
+              content: [
+                CmoCardHeader(title: LocaleKeys.member_s.tr()),
+                CmoCardItem(title: LocaleKeys.onboarded.tr(), value: '5/10'),
+                CmoCardItem(title: LocaleKeys.incomplete.tr(), value: '8/10'),
+              ],
+            ),
+            const SizedBox(height: 20),
+            CmoCard(
+              content: [
+                CmoCardHeader(title: LocaleKeys.audit_s.tr()),
+                CmoCardItem(title: LocaleKeys.onboarded.tr(), value: '5/10'),
+                CmoCardItem(title: LocaleKeys.incomplete.tr(), value: '8/10'),
+                CmoCardItemHighlighted(title: LocaleKeys.membersOutstanding.tr(), value: '8/10'),
+              ],
+            ),
+            const SizedBox(height: 20),
+            CmoCard(
+              content: [
+                CmoCardHeader(title: LocaleKeys.stakeholders.tr()),
+                CmoCardItem(title: LocaleKeys.national.tr(), value: '50'),
+              ],
+            ),
+            const SizedBox(height: 20),
+            CmoCard(
+              content: [
+                CmoCardHeader(title: LocaleKeys.cars.tr()),
+                CmoCardItem(title: LocaleKeys.opened.tr(), value: '5'),
+                CmoCardItem(title: LocaleKeys.overdue.tr(), value: '5'),
+              ],
+            ),
+            const SizedBox(height: 20),
+            CmoCard(
+              content: [
+                CmoCardHeader(title: LocaleKeys.sync.tr()),
+                CmoCardItem(title: LocaleKeys.synced.tr(), value: '5'),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

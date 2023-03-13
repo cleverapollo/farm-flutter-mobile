@@ -29,8 +29,7 @@ class _EntityScreenState extends State<EntityScreen> {
   Entity? selected;
 
   Future<void> toEntitySearchScreen(EntityType type) async {
-    final result =
-        await EntitySearchScreen.push(context, type: type, selected: selected);
+    final result = await EntitySearchScreen.push(context, type: type, selected: selected);
     if (result is! Entity) return;
 
     selected = result;
@@ -46,40 +45,45 @@ class _EntityScreenState extends State<EntityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBar(title: LocaleKeys.entity.tr()),
-      resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [
-          CmoHeaderTile(title: LocaleKeys.groupSchemeManagement.tr()),
-          buildOptionType(
-            type: EntityType.gs,
-            title: LocaleKeys.groupScheme.tr(),
-          ),
-          buildOptionType(
-            type: EntityType.rmu,
-            title: LocaleKeys.resourceManagementUnit.tr(),
-          ),
-          const SizedBox(height: 51),
-          CmoHeaderTile(title: LocaleKeys.operationsManagement.tr()),
-          buildOptionType(
-            type: EntityType.cpy,
-            title: LocaleKeys.company.tr(),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 40),
-            child: CmoFilledButton(
-              title: LocaleKeys.sync.tr(),
-              onTap: selected != null
-                  ? () async {
-                      await context.read<EntityCubit>().sync(selected!);
-                      DashboardScreen.push(context);
-                    }
-                  : null,
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        appBar: CmoAppBar(title: LocaleKeys.entity.tr()),
+        resizeToAvoidBottomInset: false,
+        body: Column(
+          children: [
+            CmoHeaderTile(title: LocaleKeys.groupSchemeManagement.tr()),
+            buildOptionType(
+              type: EntityType.gs,
+              title: LocaleKeys.groupScheme.tr(),
             ),
-          ),
-        ],
+            buildOptionType(
+              type: EntityType.rmu,
+              title: LocaleKeys.resourceManagementUnit.tr(),
+            ),
+            const SizedBox(height: 51),
+            CmoHeaderTile(title: LocaleKeys.operationsManagement.tr()),
+            buildOptionType(
+              type: EntityType.cpy,
+              title: LocaleKeys.company.tr(),
+            ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 40),
+              child: CmoFilledButton(
+                title: LocaleKeys.sync.tr(),
+                onTap: selected != null
+                    ? () async {
+                        await context.read<EntityCubit>().sync(selected!);
+                        DashboardScreen.push(context);
+                      }
+                    : null,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
