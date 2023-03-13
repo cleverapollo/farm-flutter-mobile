@@ -61,13 +61,12 @@ class _EntitySearchScreenState extends State<EntitySearchScreen> {
     }
   }
 
-  void filter(String input) {
+  void filter(String? input) {
+    if (input == null) return;
     final query = input.trim().toLowerCase();
     if (query == prevQuery) return;
 
-    names = entityCubit.state.names
-        .where((e) => e.toLowerCase().contains(query))
-        .toList();
+    names = entityCubit.state.names.where((e) => e.toLowerCase().contains(query)).toList();
     setState(() {});
     prevQuery = query;
   }
@@ -87,6 +86,7 @@ class _EntitySearchScreenState extends State<EntitySearchScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
               child: CmoTextField(
+                name: 'search_entity',
                 prefixIcon: Assets.icons.icSearch.svg(),
                 hintText: LocaleKeys.search.tr(),
                 onChanged: filter,

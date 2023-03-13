@@ -19,12 +19,14 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.2
+  flutter_form_builder: ^7.8.0
   flutter_secure_storage: ^8.0.0
   flutter_svg: ^2.0.1
+  form_builder_validators: ^8.5.0
   freezed_annotation: null
-  json_annotation: ^4.7.0
   get_it: ^7.2.0
   hydrated_bloc: ^9.1.0
+  json_annotation: ^4.7.0
   path_provider: ^2.0.13
   sealed_flutter_bloc: ^8.0.1
   url_launcher: ^6.1.9
@@ -32,12 +34,12 @@ dependencies:
 dev_dependencies:
   build_runner: null
   flutter_gen_runner: null
-  freezed: null
-  json_serializable: null
 
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
+  freezed: null
+  json_serializable: null
 
 flutter:
   uses-material-design: true

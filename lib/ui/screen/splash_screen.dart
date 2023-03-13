@@ -19,24 +19,20 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Future.delayed(const Duration(seconds: 2), () {
-    //   LoginScreen.push(context);
-    // });
-
-    Future.microtask(() {
-      context.read<AuthBloc>().add(
-            LogInAuthEvent(
-              username: 'anthonyp@apstory.co.za',
-              password: 'test1234',
-              onSuccess: () {
-                DashboardScreen.push(context);
-              },
-              onFailure: () {
-                LoginScreen.push(context);
-              },
-            ),
-          );
-    });
+    Future.microtask(
+      () async {
+        context.read<AuthBloc>().add(
+              LogInWithSavedCredentialsAuthEvent(
+                onFailure: () {
+                  if (context.mounted) DashboardScreen.push(context);
+                },
+                onSuccess: () {
+                  if (context.mounted) LoginScreen.push(context);
+                },
+              ),
+            );
+      },
+    );
   }
 
   @override

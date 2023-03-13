@@ -20,6 +20,7 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
         event.onFailure();
         return;
       }
+
       debugPrint('[AuthBloc] LogInAuthEvent: $login');
 
       if (login.accessToken != null && login.renewalToken != null) {
@@ -50,6 +51,7 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
 
       if (login == null) {
         emit(AuthState.unauthorized());
+        event.onFailure?.call();
         return;
       }
 
@@ -58,6 +60,7 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
       }
 
       emit(AuthState.authorized());
+      event.onSuccess?.call();
     });
   }
 

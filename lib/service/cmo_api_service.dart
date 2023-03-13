@@ -20,6 +20,7 @@ class CmoApi {
 
   void _showSnackBar(String msg) {
     SnackBar snackBar = SnackBar(content: Text(msg));
+    snackbarKey.currentState?.clearSnackBars();
     snackbarKey.currentState?.showSnackBar(snackBar);
   }
 

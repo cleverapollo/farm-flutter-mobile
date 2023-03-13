@@ -1,12 +1,17 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/auth_bloc/auth_bloc.dart';
 import 'package:cmo/ui/screen/auth/language_picker.dart';
+import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/screen/entity/entity_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
 import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,10 +30,38 @@ class _LoginScreenState extends State<LoginScreen> {
   bool passwordShown = false;
   bool selectingLang = false;
 
+  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
+  final _formKey = GlobalKey<FormBuilderState>();
+
   final scroller = ScrollController();
 
   void onSubmit() {
-    EntityScreen.push(context);
+    setState(() {
+      autoValidateMode = AutovalidateMode.always;
+    });
+
+    if (_formKey.currentState?.saveAndValidate() ?? false) {
+      debugPrint(_formKey.currentState?.value.toString());
+      final username = _formKey.currentState?.value['email'];
+      final password = _formKey.currentState?.value['password'];
+      if (context.mounted) {
+        context.read<AuthBloc>().add(
+              LogInAuthEvent(
+                onFailure: () {
+                  // if (context.mounted) EntityScreen.push(context);
+                },
+                onSuccess: () {
+                  if (context.mounted) EntityScreen.push(context);
+                },
+                password: password,
+                username: username,
+              ),
+            );
+      }
+    } else {
+      debugPrint(_formKey.currentState?.value.toString());
+      debugPrint('validation failed');
+    }
   }
 
   void toggleSelectingLang() {
@@ -66,8 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 14),
                         Text(
                           LocaleKeys.forgotPassword.tr(),
-                          style: context.textStyles.bodyNormal
-                              .copyWith(color: context.colors.blueDark2),
+                          style: context.textStyles.bodyNormal.copyWith(color: context.colors.blueDark2),
                         ),
                         const SizedBox(height: 16),
                         CmoFilledButton(
@@ -107,31 +139,49 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildInputArea() {
-    return AutofillGroup(
-      child: Column(
-        children: [
-          CmoTextField(
-            prefixIcon: Center(child: Assets.icons.icUsername.svg()),
-            hintText: LocaleKeys.username.tr(),
-            textInputAction: TextInputAction.next,
-            autofillHints: const [AutofillHints.email, AutofillHints.name],
-          ),
-          const SizedBox(height: 14),
-          CmoTextField(
-            prefixIcon: Center(child: Assets.icons.icPassword.svg()),
-            suffixIcon: CmoTappable(
-              onTap: () {
-                setState(() => passwordShown = !passwordShown);
-              },
-              child: Center(child: Assets.icons.icVisible.svg()),
+    return FormBuilder(
+      key: _formKey,
+      // enabled: false,
+      onChanged: () {
+        _formKey.currentState!.save();
+        debugPrint(_formKey.currentState!.value.toString());
+      },
+      autovalidateMode: autoValidateMode,
+      child: AutofillGroup(
+        child: Column(
+          children: [
+            CmoTextField(
+              name: 'email',
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(),
+                FormBuilderValidators.email(),
+              ]),
+              prefixIcon: Center(child: Assets.icons.icUsername.svg()),
+              hintText: LocaleKeys.username.tr(),
+              textInputAction: TextInputAction.next,
+              autofillHints: const [AutofillHints.email, AutofillHints.name],
             ),
-            hintText: LocaleKeys.password.tr(),
-            obscureText: !passwordShown,
-            textInputAction: TextInputAction.done,
-            autofillHints: const [AutofillHints.password],
-            onEditingComplete: onSubmit,
-          ),
-        ],
+            const SizedBox(height: 14),
+            CmoTextField(
+              name: 'password',
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(),
+              ]),
+              prefixIcon: Center(child: Assets.icons.icPassword.svg()),
+              suffixIcon: CmoTappable(
+                onTap: () {
+                  setState(() => passwordShown = !passwordShown);
+                },
+                child: Center(child: Assets.icons.icVisible.svg()),
+              ),
+              hintText: LocaleKeys.password.tr(),
+              obscureText: !passwordShown,
+              textInputAction: TextInputAction.done,
+              autofillHints: const [AutofillHints.password],
+              onEditingComplete: onSubmit,
+            ),
+          ],
+        ),
       ),
     );
   }

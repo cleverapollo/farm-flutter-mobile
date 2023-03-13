@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 import 'package:path_provider/path_provider.dart';
@@ -64,7 +65,10 @@ class CmoApp extends StatelessWidget {
         title: 'CMO',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.create(),
-        localizationsDelegates: context.localizationDelegates,
+        localizationsDelegates: [
+          FormBuilderLocalizations.delegate,
+          ...context.localizationDelegates,
+        ],
         supportedLocales: context.supportedLocales,
         locale: context.locale,
         home: const SplashScreen(),

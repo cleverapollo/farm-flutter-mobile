@@ -26,10 +26,19 @@ class LogInAuthEvent extends AuthEvent {
 }
 
 class LogInWithSavedCredentialsAuthEvent extends AuthEvent {
-  const LogInWithSavedCredentialsAuthEvent();
+  const LogInWithSavedCredentialsAuthEvent({
+    this.onSuccess,
+    this.onFailure,
+  });
+
+  final Function()? onSuccess;
+  final Function()? onFailure;
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [
+        onSuccess,
+        onFailure,
+      ];
 }
 
 class LogOutAuthEvent extends AuthEvent {

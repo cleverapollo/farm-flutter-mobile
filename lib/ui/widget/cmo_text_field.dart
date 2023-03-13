@@ -1,9 +1,12 @@
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class CmoTextField extends StatelessWidget {
   const CmoTextField({
     super.key,
+    required this.name,
+    this.validator,
     this.prefixIcon,
     this.suffixIcon,
     this.hintText,
@@ -19,9 +22,11 @@ class CmoTextField extends StatelessWidget {
 
   final Widget? suffixIcon;
 
+  final String name;
+
   final String? hintText;
 
-  final Function(String)? onChanged;
+  final Function(String?)? onChanged;
 
   final bool obscureText;
 
@@ -33,9 +38,13 @@ class CmoTextField extends StatelessWidget {
 
   final TextInputAction? textInputAction;
 
+  final FormFieldValidator<String?>? validator;
+
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return FormBuilderTextField(
+      name: name,
+      validator: validator,
       style: context.textStyles.bodyNormal,
       onChanged: onChanged,
       cursorColor: context.colors.blue,
