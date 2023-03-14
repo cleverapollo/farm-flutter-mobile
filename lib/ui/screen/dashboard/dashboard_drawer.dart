@@ -8,7 +8,7 @@ import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
-import 'package:cmo/ui/screen/entity/entity_screen.dart';
+import 'package:cmo/ui/screen/sync_summary/sync_summary_screen.dart';
 import 'package:cmo/ui/screen/entity/utils.dart';
 import 'package:cmo/ui/screen/legal/legal_screen.dart';
 import 'package:cmo/ui/screen/settings/settings_screen.dart';
@@ -69,8 +69,7 @@ class DashboardDrawer extends StatelessWidget {
                 const SizedBox(height: 7),
                 const _Divider(),
                 buildHeader(context, title: LocaleKeys.stakeholders.tr()),
-                buildOption(context,
-                    title: LocaleKeys.createNewStakeholder.tr()),
+                buildOption(context, title: LocaleKeys.createNewStakeholder.tr()),
                 const SizedBox(height: 7),
                 const _Divider(),
                 _CmoOptionTile(
@@ -85,11 +84,16 @@ class DashboardDrawer extends StatelessWidget {
                   title: LocaleKeys.legal.tr(),
                   onTap: () => LegalScreen.push(context),
                 ),
+                _CmoOptionTile(
+                  title: LocaleKeys.syncSummary.tr(),
+                  onTap: () => SyncSummaryScreen.push(context),
+                ),
                 const SizedBox(height: 55),
                 CmoFilledButton(
                   title: LocaleKeys.signOut.tr(),
                   onTap: () async {
-                    await context.read<AuthCubit>().logOut();
+                    await cmoDatabaseService.deleteAll();
+                    if (context.mounted) await context.read<AuthCubit>().logOut();
                     if (context.mounted) {
                       Future.wait([
                         context.read<EntityCubit>().clear(),

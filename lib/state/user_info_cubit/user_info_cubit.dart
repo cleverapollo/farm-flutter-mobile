@@ -1,5 +1,5 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/model/user_info.dart';
-import 'package:cmo/service/cmo_api_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -11,7 +11,7 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
   UserInfoCubit() : super(UserInfoState.loading());
 
   Future<void> getUser(BuildContext context) async {
-    final res = await cmoApi.getUser(context: context);
+    final res = await cmoApiService.getUser(context: context);
     debugPrint('[UserInfoCubit] data: $res');
 
     if (res != null) {

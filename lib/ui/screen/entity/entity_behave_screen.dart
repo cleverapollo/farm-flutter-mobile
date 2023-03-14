@@ -43,26 +43,21 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
   @override
   void initState() {
     super.initState();
-    selected = entityCubit.state.company;
-    companies = entityCubit.state.companies;
-    isReady = companies.isNotEmpty;
-    if (!isReady) {
+    Future.microtask(() async {
       final userId = context.read<UserInfoCubit>().state.join(
             (p0) => null,
             (p0) => p0.userInfo?.userId,
             (p0) => null,
           );
-      entityCubit
-          .getCompanies(
-        context: context,
-        userId: userId,
-      )
-          .then((_) {
+
+      await entityCubit.getCompanies(context: context, userId: userId);
+
+      setState(() {
         companies = entityCubit.state.companies;
         isReady = true;
-        setState(() {});
+        selected = entityCubit.state.company;
       });
-    }
+    });
   }
 
   void filter(String? input) {
@@ -70,9 +65,7 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
     final query = input.trim().toLowerCase();
     if (query == prevQuery) return;
 
-    companies = entityCubit.state.companies
-        .where((e) => e.companyName?.toLowerCase().contains(query) ?? false)
-        .toList();
+    companies = entityCubit.state.companies.where((e) => e.companyName?.toLowerCase().contains(query) ?? false).toList();
     setState(() {});
     prevQuery = query;
   }
@@ -97,6 +90,14 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
               ),
             ),
             Expanded(child: buildNameList()),
+            BlocSelector<EntityCubit, EntityState, String?>(
+              selector: (state) {
+                return state.syncMessage;
+              },
+              builder: (context, state) {
+                return Text(state ?? '');
+              },
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 40, bottom: 40),
               child: BlocSelector<EntityCubit, EntityState, bool>(
@@ -112,12 +113,11 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
                             await context.read<EntityCubit>().syncBehave(
                                 context: context,
                                 company: selected!,
-                                userDeviceId:
-                                    context.read<UserDeviceCubit>().state.join(
-                                          (p0) => null,
-                                          (p0) => p0.userDevice?.userDeviceId,
-                                          (p0) => null,
-                                        ));
+                                userDeviceId: context.read<UserDeviceCubit>().state.join(
+                                      (p0) => null,
+                                      (p0) => p0.userDevice?.userDeviceId,
+                                      (p0) => null,
+                                    ));
                             if (context.mounted) DashboardScreen.push(context);
                           }
                         : null,
@@ -160,9 +160,7 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
           .map(
             (e) => CmoTappable(
               onTap: () => onTapTile(e),
-              child: _ResultTile(
-                  title: e.companyName ?? e.companyId?.toString() ?? '',
-                  selected: isSelected(e)),
+              child: _ResultTile(title: e.companyName ?? e.companyId?.toString() ?? '', selected: isSelected(e)),
             ),
           )
           .toList(),

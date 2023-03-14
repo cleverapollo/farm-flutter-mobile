@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/company.dart';
+import 'package:cmo/model/master_data_message.dart';
 import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
 import 'package:cmo/model/user_info.dart';
@@ -15,9 +16,7 @@ import 'package:cmo/utils/json_converter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-final cmoApi = CmoApi();
-
-class CmoApi {
+class CmoApiService {
   var client = HttpClient();
 
   void _showSnackBar(String msg) {
@@ -217,9 +216,7 @@ class CmoApi {
       final stringData = await response.transform(utf8.decoder).join();
       final data = Json.tryDecode(stringData);
       if (data is List) {
-        return data
-            .map((e) => Company.fromJson(e as Map<String, dynamic>))
-            .toList();
+        return data.map((e) => Company.fromJson(e as Map<String, dynamic>)).toList();
       }
       return <Company>[];
     } else if (response.statusCode == 401) {
@@ -251,11 +248,7 @@ class CmoApi {
       '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/CreateSystemEvent',
     );
 
-    final body = {
-      "SystemEventName": "SyncAssessmentMasterData",
-      "PrimaryKey": primaryKey,
-      "UserDeviceId": userDeviceId
-    };
+    final body = {"SystemEventName": "SyncAssessmentMasterData", "PrimaryKey": primaryKey, "UserDeviceId": userDeviceId};
 
     HttpClientRequest request = await client.postUrl(uri);
 
@@ -281,6 +274,100 @@ class CmoApi {
       }
 
       return false;
+    }
+  }
+
+  Future<MasterDataMessage?> pullMessage({
+    required BuildContext context,
+    required String pubsubApiKey,
+    required String topicMasterDataSync,
+    required int currentClientId, // = UserDeviceId
+    int pageSize = 200,
+  }) async {
+    final accessToken = await _getAccessToken(context);
+    if (accessToken == null) return null;
+
+    final uri = Uri.https(
+      cmoUrl,
+      '/pubsubapi/api/v1/message',
+      {
+        'key': pubsubApiKey,
+        'client': '$currentClientId',
+        'topic': '$topicMasterDataSync*.$currentClientId',
+        'pageSize': '$pageSize',
+      },
+    );
+
+    HttpClientRequest request = await client.getUrl(uri);
+
+    request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
+    request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+    request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
+
+    HttpClientResponse response = await request.close();
+
+    if (response.statusCode == 200) {
+      final stringData = await response.transform(utf8.decoder).join();
+      return MasterDataMessage.fromJson(Json.tryDecode(stringData));
+    } else if (response.statusCode == 401) {
+      if (context.mounted) _loginAgainWithSavedCredentials(context);
+      return null;
+    } else {
+      if (context.mounted) {
+        _showFlushBar(
+          context,
+          'Unknow error: ${response.statusCode} - ${response.reasonPhrase}',
+        );
+      }
+
+      return null;
+    }
+  }
+
+  Future<bool?> deleteMessage({
+    required BuildContext context,
+    required String pubsubApiKey,
+    required int currentClientId, // = UserDeviceId
+    required List<Message> messages,
+  }) async {
+    final accessToken = await _getAccessToken(context);
+    if (accessToken == null) return null;
+
+    final uri = Uri.https(
+      cmoUrl,
+      '/pubsubapi/api/v1/message',
+      {
+        'key': pubsubApiKey,
+        'client': '$currentClientId',
+        'topic': 'Cmo.MasterDataDeviceSync.*.$currentClientId',
+      },
+    );
+    final body = messages.map((e) => e.toJson()).toList();
+
+    HttpClientRequest request = await client.deleteUrl(uri);
+
+    request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
+    request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+    request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
+
+    request.add(utf8.encode(json.encode(body)));
+
+    HttpClientResponse response = await request.close();
+
+    if (response.statusCode == 200) {
+      return true;
+    } else if (response.statusCode == 401) {
+      if (context.mounted) _loginAgainWithSavedCredentials(context);
+      return null;
+    } else {
+      if (context.mounted) {
+        _showFlushBar(
+          context,
+          'Unknow error: ${response.statusCode} - ${response.reasonPhrase}',
+        );
+      }
+
+      return null;
     }
   }
 }

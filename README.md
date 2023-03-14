@@ -1,5 +1,6 @@
 # CMO - Supply Chain Integrity
 
+## L10n
 Use `flutter_gen` to generate assets and fonts:
 
 ```
@@ -13,3 +14,18 @@ flutter pub run easy_localization:generate -S assets/l10n -O lib/l10n -f keys -o
 ```
 
 or run `python l10n.py <key> <en> <fr>` to add strings and generate `LocaleKeys`.
+
+## ENV
+Use `envied` to generate .env:
+
+Create `.env` file
+```
+PUBSUB_APIKEY=xxx
+```
+
+Run this to generate file lib/env/env.g.dart
+```
+flutter packages pub run build_runner build --delete-conflicting-outputs
+```
+
+Protip: add `obfuscate:true` not hardcoded & making it much harder to extract if an attacker decompiles our app .

@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'package:flutter/material.dart';
+
 extension IterableExtensions<T> on Iterable<T>? {
   bool get isNull => this == null;
 
@@ -40,4 +42,13 @@ extension IterableExtensions<T> on Iterable<T>? {
       return null;
     }
   }
+}
+
+extension ListWidgetExtension on List<Widget> {
+  List<Widget> withSpaceBetween({double? width, double? height}) => [
+        for (int i = 0; i < length; i++) ...[
+          if (i > 0) SizedBox(width: width, height: height),
+          this[i],
+        ],
+      ];
 }

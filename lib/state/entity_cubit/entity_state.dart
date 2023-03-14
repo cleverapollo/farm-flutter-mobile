@@ -8,6 +8,10 @@ class EntityState {
 
   final bool isLoading;
   final bool isLoadingSync;
+  final String? syncMessage;
+  final int countSchedules;
+  final int countWorkers;
+  final int countQuestion;
 
   const EntityState({
     this.entity,
@@ -15,6 +19,10 @@ class EntityState {
     this.companies = const [],
     this.isLoading = false,
     this.isLoadingSync = false,
+    this.syncMessage,
+    this.countSchedules = 0,
+    this.countWorkers = 0,
+    this.countQuestion = 0,
   });
 
   EntityState copyWith({
@@ -23,6 +31,10 @@ class EntityState {
     List<Company>? companies,
     bool? isLoading,
     bool? isLoadingSync,
+    String? syncMessage,
+    int? countSchedules,
+    int? countWorkers,
+    int? countQuestion,
   }) {
     return EntityState(
       entity: entity ?? this.entity,
@@ -30,6 +42,10 @@ class EntityState {
       companies: companies ?? this.companies,
       isLoading: isLoading ?? this.isLoading,
       isLoadingSync: isLoadingSync ?? this.isLoadingSync,
+      syncMessage: syncMessage ?? this.syncMessage,
+      countSchedules: countSchedules ?? this.countSchedules,
+      countWorkers: countWorkers ?? this.countWorkers,
+      countQuestion: countQuestion ?? this.countQuestion,
     );
   }
 }

@@ -1,6 +1,6 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/user_auth.dart';
-import 'package:cmo/service/cmo_api_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -74,7 +74,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     String username,
     String password,
   ) async {
-    return await cmoApi.login(
+    return await cmoApiService.login(
       username,
       password,
     );

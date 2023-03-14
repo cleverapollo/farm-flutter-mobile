@@ -1,6 +1,5 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/model/user_device.dart';
-import 'package:cmo/service/cmo_api_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -12,7 +11,7 @@ class UserDeviceCubit extends HydratedCubit<UserDeviceState> {
   UserDeviceCubit() : super(UserDeviceState.loading());
 
   Future<void> createUserDevice(BuildContext context) async {
-    final res = await cmoApi.createUserDevice(
+    final res = await cmoApiService.createUserDevice(
       context: context,
       appName: appInfoService.appName,
       appVersionNumber: appInfoService.version,

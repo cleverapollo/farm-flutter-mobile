@@ -51,5 +51,11 @@
     "dark": "Sombre"
   },
   "units": "Unités",
-  "username": "Nom d'utilisateur"
+  "username": "Nom d'utilisateur",
+  "debugInfo": "Informations de débogage",
+  "syncSummary": "Synthèse de la synchronisation",
+  "deviceID": "Reference de l'appareil",
+  "device": "Appareil",
+  "copyToClipBoard": "Copier dans le presse-papier",
+  "email": "Email"
 }
