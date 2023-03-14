@@ -72,60 +72,65 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CmoTappable(
-      onTap: FocusScope.of(context).unfocus,
-      child: Scaffold(
-        appBar: CmoAppBar(
-          title: LocaleKeys.entity.tr(),
-        ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-              child: CmoTextField(
-                name: 'search_entity',
-                prefixIcon: Assets.icons.icSearch.svg(),
-                hintText: LocaleKeys.search.tr(),
-                onChanged: filter,
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: CmoTappable(
+        onTap: FocusScope.of(context).unfocus,
+        child: Scaffold(
+          appBar: CmoAppBar(
+            title: LocaleKeys.entity.tr(),
+          ),
+          body: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+                child: CmoTextField(
+                  name: 'search_entity',
+                  prefixIcon: Assets.icons.icSearch.svg(),
+                  hintText: LocaleKeys.search.tr(),
+                  onChanged: filter,
+                ),
               ),
-            ),
-            Expanded(child: buildNameList()),
-            BlocSelector<EntityCubit, EntityState, String?>(
-              selector: (state) {
-                return state.syncMessage;
-              },
-              builder: (context, state) {
-                return Text(state ?? '');
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 40, bottom: 40),
-              child: BlocSelector<EntityCubit, EntityState, bool>(
+              Expanded(child: buildNameList()),
+              BlocSelector<EntityCubit, EntityState, String?>(
                 selector: (state) {
-                  return state.isLoadingSync;
+                  return state.syncMessage;
                 },
                 builder: (context, state) {
-                  return CmoFilledButton(
-                    title: LocaleKeys.sync.tr(),
-                    loading: state,
-                    onTap: selected != null
-                        ? () async {
-                            await context.read<EntityCubit>().syncBehave(
-                                context: context,
-                                company: selected!,
-                                userDeviceId: context.read<UserDeviceCubit>().state.join(
-                                      (p0) => null,
-                                      (p0) => p0.userDevice?.userDeviceId,
-                                      (p0) => null,
-                                    ));
-                            if (context.mounted) DashboardScreen.push(context);
-                          }
-                        : null,
-                  );
+                  return Text(state ?? '');
                 },
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.only(top: 40, bottom: 40),
+                child: BlocSelector<EntityCubit, EntityState, bool>(
+                  selector: (state) {
+                    return state.isLoadingSync;
+                  },
+                  builder: (context, state) {
+                    return CmoFilledButton(
+                      title: LocaleKeys.sync.tr(),
+                      loading: state,
+                      onTap: selected != null
+                          ? () async {
+                              await context.read<EntityCubit>().syncBehave(
+                                  context: context,
+                                  company: selected!,
+                                  userDeviceId: context.read<UserDeviceCubit>().state.join(
+                                        (p0) => null,
+                                        (p0) => p0.userDevice?.userDeviceId,
+                                        (p0) => null,
+                                      ));
+                              if (context.mounted) DashboardScreen.push(context);
+                            }
+                          : null,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
