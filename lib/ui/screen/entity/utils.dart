@@ -1,5 +1,4 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/service/app_info_service.dart';
 import 'package:cmo/ui/screen/entity/entity_behave_screen.dart';
 import 'package:cmo/ui/screen/entity/entity_screen.dart';
 import 'package:flutter/material.dart';
