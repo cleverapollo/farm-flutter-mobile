@@ -11,9 +11,8 @@ import 'package:cmo/ui/widget/cmo_company_service_builder.dart';
 import 'package:cmo/ui/widget/cmo_date_picker.dart';
 import 'package:cmo/ui/widget/cmo_dropdown.dart';
 import 'package:cmo/ui/widget/cmo_header_tile.dart';
+import 'package:cmo/ui/widget/cmo_option_tile.dart';
 import 'package:cmo/ui/widget/cmo_text_field.dart';
-import 'package:cmo/utils/helpers.dart';
-import 'package:cmo/utils/json_converter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -130,209 +129,80 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-    );
-  }
-
-  Widget buildInputArea() {
-    return FormBuilder(
-      key: _formKey,
-      onChanged: () {
-        _formKey.currentState!.save();
-        debugPrint(_formKey.currentState!.value.toString());
-      },
-      autovalidateMode: autoValidateMode,
-      child: AutofillGroup(
-        child: Column(
-          children: [
-            CmoTextField(
-              name: 'FirstName',
-              hintText: LocaleKeys.firstName.tr(),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
+      body: Column(
+        children: [
+          Row(),
+          CmoHeaderTile(title: LocaleKeys.details.tr()),
+          const SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              children: [
+                CmoTextField(
+                  name: 'firstName',
+                  hintText: LocaleKeys.firstName.tr(),
+                ),
+                CmoTextField(
+                  name: 'surname',
+                  hintText: LocaleKeys.surname.tr(),
+                ),
+                CmoTextField(
+                  name: 'surname',
+                  hintText: LocaleKeys.idNumber.tr(),
+                ),
+                CmoTextField(
+                  name: 'dob',
+                  hintText: LocaleKeys.dateOfBirth.tr(),
+                ),
+                // CmoOptionTile(
+                //   title: LocaleKeys.dateOfBirth.tr(),
+                // ),
+                CmoTextField(
+                  name: 'contactNumber',
+                  hintText: LocaleKeys.contactNumber.tr(),
+                ),
+                CmoTextField(
+                  name: 'email',
+                  hintText: LocaleKeys.email.tr(),
+                ),
+                CmoTextField(
+                  name: 'race',
+                  hintText: LocaleKeys.race.tr(),
+                ),
+                CmoTextField(
+                  name: 'gender',
+                  hintText: LocaleKeys.gender.tr(),
+                ),
+                CmoTextField(
+                  name: 'disability',
+                  hintText: LocaleKeys.disability.tr(),
+                ),
+                CmoTextField(
+                  name: 'municipality',
+                  hintText: LocaleKeys.municipality.tr(),
+                ),
+                CmoTextField(
+                  name: 'province',
+                  hintText: LocaleKeys.province.tr(),
+                ),
+                CmoTextField(
+                  name: 'contractor',
+                  hintText: LocaleKeys.contractor.tr(),
+                ),
+                CmoTextField(
+                  name: 'jobDescription',
+                  hintText: LocaleKeys.jobDescription.tr(),
+                ),
+                CmoTextField(
+                  name: 'notes',
+                  hintText: LocaleKeys.notes.tr(),
+                ),
+              ].withSpaceBetween(
+                height: 16,
+              ),
             ),
-            CmoTextField(
-              name: 'Surname',
-              hintText: LocaleKeys.surname.tr(),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
-            ),
-            CmoTextField(
-              name: 'IdNumber',
-              hintText: LocaleKeys.idNumber.tr(),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
-            ),
-            CmoDatePicker(
-              name: 'DOB',
-              hintText: LocaleKeys.dateOfBirth.tr(),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
-            ),
-            CmoTextField(
-              name: 'ContactNumber',
-              hintText: LocaleKeys.contactNumber.tr(),
-            ),
-            CmoTextField(
-              name: 'Email',
-              hintText: LocaleKeys.email.tr(),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.email(),
-              ]),
-            ),
-            CmoDropdown(
-              name: 'RaceId',
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
-              hintText: LocaleKeys.race.tr(),
-              itemsData: [
-                CmoDropdownItem(id: 1, name: 'black'),
-                CmoDropdownItem(id: 2, name: 'white'),
-              ],
-            ),
-            CmoDropdown(
-              name: 'GenderId',
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
-              hintText: LocaleKeys.gender.tr(),
-              itemsData: [
-                CmoDropdownItem(id: 1, name: 'Male'),
-                CmoDropdownItem(id: 2, name: 'Female'),
-                CmoDropdownItem(id: 3, name: 'Unknown'),
-              ],
-            ),
-            CmoDropdown(
-              name: 'DisabilityId',
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
-              hintText: LocaleKeys.disability.tr(),
-              itemsData: [
-                CmoDropdownItem(id: 1, name: 'None'),
-              ],
-            ),
-            CmoCompanyServiceBuilder(
-              builder: (context, service) {
-                return FutureBuilder(
-                  future: service.getMunicipalitys(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return CmoDropdown(
-                        name: 'MunicipalityId',
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
-                        hintText: LocaleKeys.municipality.tr(),
-                        itemsData: snapshot.data
-                            ?.map(
-                              (e) => CmoDropdownItem(
-                                id: e.id,
-                                name: e.municipalityName ?? '',
-                              ),
-                            )
-                            .toList(),
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                );
-              },
-            ),
-            CmoCompanyServiceBuilder(
-              builder: (context, service) {
-                return FutureBuilder(
-                  future: service.getProvinces(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return CmoDropdown(
-                        name: 'ProvinceId',
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
-                        hintText: LocaleKeys.province.tr(),
-                        itemsData: snapshot.data
-                            ?.map(
-                              (e) => CmoDropdownItem(
-                                id: e.id,
-                                name: e.provinceName ?? '',
-                              ),
-                            )
-                            .toList(),
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                );
-              },
-            ),
-            CmoCompanyServiceBuilder(
-              builder: (context, service) {
-                return FutureBuilder(
-                  future: service.getContractors(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return CmoDropdown(
-                        name: 'ContractorId',
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
-                        hintText: LocaleKeys.contractor.tr(),
-                        itemsData: snapshot.data
-                            ?.map(
-                              (e) => CmoDropdownItem(
-                                id: e.id,
-                                name: e.contractorName ?? '',
-                              ),
-                            )
-                            .toList(),
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                );
-              },
-            ),
-            CmoCompanyServiceBuilder(
-              builder: (context, service) {
-                return FutureBuilder(
-                  future: service.getJobDescriptions(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return CmoDropdown(
-                        name: 'JobDescriptionId',
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
-                        hintText: LocaleKeys.jobDescription.tr(),
-                        itemsData: snapshot.data
-                            ?.map(
-                              (e) => CmoDropdownItem(
-                                id: e.id,
-                                name: e.jobDescriptionName ?? '',
-                              ),
-                            )
-                            .toList(),
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                );
-              },
-            ),
-            CmoTextField(
-              name: 'Notes',
-              hintText: LocaleKeys.notes.tr(),
-              maxLines: 2,
-            ),
-          ].withSpaceBetween(
-            height: 16,
           ),
-        ),
+        ],
       ),
     );
   }

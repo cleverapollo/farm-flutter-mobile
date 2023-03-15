@@ -43,7 +43,7 @@ Future<void> main() async {
 
   await hideInputMethod();
   await deviceInfoService.init();
-  await cmoDatabaseService.db;
+  await cmoDatabaseService.initializeDatabase();
 
   Bloc.observer = CmoGlobalObserver();
 
