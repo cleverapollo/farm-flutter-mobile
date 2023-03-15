@@ -14,7 +14,6 @@ import 'package:cmo/ui/screen/entity/utils.dart';
 import 'package:cmo/ui/screen/legal/legal_screen.dart';
 import 'package:cmo/ui/screen/settings/settings_screen.dart';
 import 'package:cmo/ui/screen/support/support_screen.dart';
-import 'package:cmo/ui/screen/sync_summary/sync_summary_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
@@ -122,15 +121,6 @@ class DashboardDrawer extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 7),
-                const _Divider(),
-                buildHeader(context, title: LocaleKeys.audit_s.tr()),
-                buildOption(context, title: LocaleKeys.createNew.tr()),
-                const SizedBox(height: 7),
-                const _Divider(),
-                buildHeader(context, title: LocaleKeys.stakeholders.tr()),
-                buildOption(context,
-                    title: LocaleKeys.createNewStakeholder.tr(),),
                 const SizedBox(height: 7),
                 const _Divider(),
                 _CmoOptionTile(
