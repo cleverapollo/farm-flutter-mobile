@@ -36,7 +36,7 @@ abstract class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: _AppColor.grey, width: 1),
+          borderSide: const BorderSide(color: _AppColor.grey),
         ),
         hintStyle: textStyleExt.bodyNormal.copyWith(
           fontStyle: FontStyle.italic,
@@ -75,14 +75,17 @@ class ColorThemeExt extends ThemeExtension<ColorThemeExt> {
   final red = _AppColor.red;
   final green = _AppColor.green;
   final yellow = _AppColor.yellow;
-
   final shadow = _AppColor.shadow;
 
   @override
   ThemeExtension<ColorThemeExt> copyWith() => this;
 
   @override
-  ThemeExtension<ColorThemeExt> lerp(other, t) => this;
+  ThemeExtension<ColorThemeExt> lerp(
+    ThemeExtension<ColorThemeExt>? other,
+    double t,
+  ) =>
+      this;
 }
 
 class TextThemeExt extends ThemeExtension<TextThemeExt> {
@@ -118,7 +121,11 @@ class TextThemeExt extends ThemeExtension<TextThemeExt> {
   ThemeExtension<TextThemeExt> copyWith() => this;
 
   @override
-  ThemeExtension<TextThemeExt> lerp(other, t) => this;
+  ThemeExtension<TextThemeExt> lerp(
+    ThemeExtension<TextThemeExt>? other,
+    double t,
+  ) =>
+      this;
 }
 
 extension TextStyleExt on TextStyle {
@@ -127,8 +134,10 @@ extension TextStyleExt on TextStyle {
 
 extension SvgGen on SvgGenImage {
   SvgPicture get svgWhite => svg(
-      colorFilter: const ColorFilter.mode(_AppColor.white, BlendMode.srcIn));
+        colorFilter: const ColorFilter.mode(_AppColor.white, BlendMode.srcIn),
+      );
 
   SvgPicture get svgBlack => svg(
-      colorFilter: const ColorFilter.mode(_AppColor.black, BlendMode.srcIn));
+        colorFilter: const ColorFilter.mode(_AppColor.black, BlendMode.srcIn),
+      );
 }

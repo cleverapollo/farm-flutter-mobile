@@ -11,17 +11,17 @@ enum LandingPage {
 }
 
 class SettingsState extends Equatable {
-  final Locale locale;
-
-  final LandingPage landingPage;
-
-  final ThemeMode themeMode;
 
   const SettingsState({
     required this.locale,
     required this.landingPage,
     required this.themeMode,
   });
+  final Locale locale;
+
+  final LandingPage landingPage;
+
+  final ThemeMode themeMode;
 
   SettingsState copyWith({
     Locale? locale,

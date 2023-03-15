@@ -61,7 +61,7 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
-    Widget leading = this.leading != null
+    var leading = this.leading != null
         ? CmoTappable(
             onTap: onTapLeading ?? () {},
             child: SizedBox.square(
@@ -75,7 +75,7 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: leading,
     );
 
-    Widget trailing = this.trailing != null
+    var trailing = this.trailing != null
         ? CmoTappable(
             onTap: onTapTrailing ?? () {},
             child: SizedBox.square(

@@ -4,12 +4,11 @@ import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
+import 'package:cmo/ui/screen/screen_base.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'screen_base.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -27,7 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
         final authState = context.read<AuthCubit>().state;
         final userInfoData = context.read<UserInfoCubit>().data;
         final userDeviceData = context.read<UserDeviceCubit>().data;
-        final haveInternet = (await Connectivity().checkConnectivity()) != ConnectivityResult.none;
+        final haveInternet = (await Connectivity().checkConnectivity()) !=
+            ConnectivityResult.none;
 
         authState.continued(
           (authorized) async {

@@ -24,10 +24,12 @@ class EntityCubit extends HydratedCubit<EntityState> {
 
     await Future.delayed(const Duration(seconds: 1));
 
-    emit(state.copyWith(
-      entity: entity,
-      isLoadingSync: false,
-    ));
+    emit(
+      state.copyWith(
+        entity: entity,
+        isLoadingSync: false,
+      ),
+    );
   }
 
   Future<void> syncBehave({
@@ -36,13 +38,15 @@ class EntityCubit extends HydratedCubit<EntityState> {
     required int? userDeviceId,
   }) async {
     if (userDeviceId == null) return;
-    emit(state.copyWith(
-      isLoadingSync: true,
-      syncMessage: '',
-      countSchedules: 0,
-      countWorkers: 0,
-      countQuestion: 0,
-    ));
+    emit(
+      state.copyWith(
+        isLoadingSync: true,
+        syncMessage: '',
+        countSchedules: 0,
+        countWorkers: 0,
+        countQuestion: 0,
+      ),
+    );
 
     await cmoApiService.createSystemEvent(
       context: context,
@@ -72,7 +76,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
           break;
         }
 
-        for (var item in messages) {
+        for (final item in messages) {
           log('Looping through messageId ${item.header?.messageId} original topic ${item.header?.originalTopic}');
 
           try {
@@ -162,7 +166,8 @@ class EntityCubit extends HydratedCubit<EntityState> {
               await insertRejectReason(item);
             }
 
-            if (topic == '${topicMasterDataSync}TrainingProvider.$userDeviceId') {
+            if (topic ==
+                '${topicMasterDataSync}TrainingProvider.$userDeviceId') {
               emit(state.copyWith(syncMessage: 'Syncing Training Provider...'));
               await insertTrainingProvider(item);
             }
@@ -173,31 +178,38 @@ class EntityCubit extends HydratedCubit<EntityState> {
             }
 
             if (topic == '${topicMasterDataSync}Schedule.$userDeviceId') {
-              emit(state.copyWith(
-                countSchedules: state.countSchedules + 1,
-                syncMessage: 'Syncing Schedule...${state.countSchedules + 1}',
-              ));
+              emit(
+                state.copyWith(
+                  countSchedules: state.countSchedules + 1,
+                  syncMessage: 'Syncing Schedule...${state.countSchedules + 1}',
+                ),
+              );
               await insertSchedule(item);
             }
 
-            if (topic == '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
+            if (topic ==
+                '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
               emit(state.copyWith(syncMessage: 'Syncing Schedule Activity...'));
               await insertScheduleActivity(item);
             }
 
             if (topic == '${topicMasterDataSync}Worker.$userDeviceId') {
-              emit(state.copyWith(
-                countWorkers: state.countWorkers + 1,
-                syncMessage: 'Syncing Workers...${state.countWorkers + 1}',
-              ));
+              emit(
+                state.copyWith(
+                  countWorkers: state.countWorkers + 1,
+                  syncMessage: 'Syncing Workers...${state.countWorkers + 1}',
+                ),
+              );
               await insertWorker(item);
             }
 
             if (topic == '${topicMasterDataSync}Question.$userDeviceId') {
-              emit(state.copyWith(
-                countQuestion: state.countQuestion + 1,
-                syncMessage: 'Syncing Questions...${state.countQuestion + 1}',
-              ));
+              emit(
+                state.copyWith(
+                  countQuestion: state.countQuestion + 1,
+                  syncMessage: 'Syncing Questions...${state.countQuestion + 1}',
+                ),
+              );
               await insertQuestion(item);
             }
           } catch (e, s) {
@@ -255,8 +267,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertPlantation(Message item) async {
     log('Insert Plantation $item');
     try {
-      Plantation plantation = Plantation.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cachePlantation(plantation);
+      final plantation = Plantation.fromJson(
+        Json.tryDecode(item.body) as Map<String, dynamic>,
+      );
+      await cmoDatabaseService.cachePlantation(plantation);
     } catch (e, s) {
       log('Insert Plantation Error: $e $s');
     }
@@ -265,8 +279,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertUnit(Message item) async {
     log('Insert Unit $item');
     try {
-      Unit unit = Unit.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheUnit(unit);
+      final unit =
+          Unit.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
+      await cmoDatabaseService.cacheUnit(unit);
     } catch (e, s) {
       log('Insert Unit Error: $e $s');
     }
@@ -275,8 +290,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertContractor(Message item) async {
     log('Insert Contractor $item');
     try {
-      Contractor contractor = Contractor.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheContractor(contractor);
+      final contractor = Contractor.fromJson(
+        Json.tryDecode(item.body) as Map<String, dynamic>,
+      );
+      await cmoDatabaseService.cacheContractor(contractor);
     } catch (e, s) {
       log('Insert Contractor Error: $e $s');
     }
@@ -285,8 +302,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertProvince(Message item) async {
     log('Insert Province $item');
     try {
-      Province province = Province.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheProvince(province);
+      final province =
+          Province.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
+      await cmoDatabaseService.cacheProvince(province);
     } catch (e, s) {
       log('Insert Province Error: $e $s');
     }
@@ -295,8 +313,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertMunicipality(Message item) async {
     log('Insert Municipality $item');
     try {
-      Municipality municipality = Municipality.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheMunicipality(municipality);
+      final municipality = Municipality.fromJson(
+        Json.tryDecode(item.body) as Map<String, dynamic>,
+      );
+      await cmoDatabaseService.cacheMunicipality(municipality);
     } catch (e, s) {
       log('Insert Municipality Error: $e $s');
     }
@@ -305,8 +325,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertImpactCaused(Message item) async {
     log('Insert ImpactCaused $item');
     try {
-      ImpactCaused impactCaused = ImpactCaused.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheImpactCaused(impactCaused);
+      final impactCaused = ImpactCaused.fromJson(
+        Json.tryDecode(item.body) as Map<String, dynamic>,
+      );
+      await cmoDatabaseService.cacheImpactCaused(impactCaused);
     } catch (e, s) {
       log('Insert ImpactCaused Error: $e $s');
     }
@@ -315,8 +337,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertImpactOn(Message item) async {
     log('Insert ImpactOn $item');
     try {
-      ImpactOn impactOn = ImpactOn.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheImpactOn(impactOn);
+      final impactOn =
+          ImpactOn.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
+      await cmoDatabaseService.cacheImpactOn(impactOn);
     } catch (e, s) {
       log('Insert ImpactOn Error: $e $s');
     }
@@ -325,8 +348,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertJobCategory(Message item) async {
     log('Insert JobCategory $item');
     try {
-      JobCategory jobCategory = JobCategory.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheJobCategory(jobCategory);
+      final jobCategory = JobCategory.fromJson(
+        Json.tryDecode(item.body) as Map<String, dynamic>,
+      );
+      await cmoDatabaseService.cacheJobCategory(jobCategory);
     } catch (e, s) {
       log('Insert JobCategory Error: $e $s');
     }
@@ -335,8 +360,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertJobDescription(Message item) async {
     log('Insert JobDescription $item');
     try {
-      JobDescription jobDescription = JobDescription.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheJobDescription(jobDescription);
+      final jobDescription = JobDescription.fromJson(
+        Json.tryDecode(item.body) as Map<String, dynamic>,
+      );
+      await cmoDatabaseService.cacheJobDescription(jobDescription);
     } catch (e, s) {
       log('Insert JobDescription Error: $e $s');
     }
@@ -345,8 +372,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertJobElement(Message item) async {
     log('Insert JobElement $item');
     try {
-      JobElement jobElement = JobElement.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheJobElement(jobElement);
+      final jobElement = JobElement.fromJson(
+        Json.tryDecode(item.body) as Map<String, dynamic>,
+      );
+      await cmoDatabaseService.cacheJobElement(jobElement);
     } catch (e, s) {
       log('Insert JobElement Error: $e $s');
     }
@@ -355,8 +384,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertMmm(Message item) async {
     log('Insert Mmm $item');
     try {
-      Mmm mmm = Mmm.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheMmm(mmm);
+      final mmm =
+          Mmm.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
+      await cmoDatabaseService.cacheMmm(mmm);
     } catch (e, s) {
       log('Insert Mmm Error: $e $s');
     }
@@ -365,8 +395,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertPdca(Message item) async {
     log('Insert Pdca $item');
     try {
-      Pdca pdca = Pdca.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cachePdca(pdca);
+      final pdca =
+          Pdca.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
+      await cmoDatabaseService.cachePdca(pdca);
     } catch (e, s) {
       log('Insert Pdca Error: $e $s');
     }
@@ -375,8 +406,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertSeverity(Message item) async {
     log('Insert Severity $item');
     try {
-      Severity severity = Severity.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheSeverity(severity);
+      final severity =
+          Severity.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
+      await cmoDatabaseService.cacheSeverity(severity);
     } catch (e, s) {
       log('Insert Severity Error: $e $s');
     }
@@ -385,8 +417,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertSpeqs(Message item) async {
     log('Insert Speqs $item');
     try {
-      Speqs speqs = Speqs.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheSpeqs(speqs);
+      final speqs =
+          Speqs.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
+      await cmoDatabaseService.cacheSpeqs(speqs);
     } catch (e, s) {
       log('Insert Speqs Error: $e $s');
     }
@@ -395,8 +428,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertCompliance(Message item) async {
     log('Insert Compliance $item');
     try {
-      Compliance compliance = Compliance.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheCompliance(compliance);
+      final compliance = Compliance.fromJson(
+        Json.tryDecode(item.body) as Map<String, dynamic>,
+      );
+      await cmoDatabaseService.cacheCompliance(compliance);
     } catch (e, s) {
       log('Insert Compliance Error: $e $s');
     }
@@ -405,8 +440,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertTeam(Message item) async {
     log('Insert Team $item');
     try {
-      Team team = Team.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheTeam(team);
+      final team =
+          Team.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
+      await cmoDatabaseService.cacheTeam(team);
     } catch (e, s) {
       log('Insert Team Error: $e $s');
     }
@@ -415,8 +451,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertRejectReason(Message item) async {
     log('Insert RejectReason $item');
     try {
-      RejectReason rejectReason = RejectReason.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheRejectReason(rejectReason);
+      final rejectReason = RejectReason.fromJson(
+        Json.tryDecode(item.body) as Map<String, dynamic>,
+      );
+      await cmoDatabaseService.cacheRejectReason(rejectReason);
     } catch (e, s) {
       log('Insert RejectReason Error: $e $s');
     }
@@ -425,8 +463,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertTrainingProvider(Message item) async {
     log('Insert TrainingProvider $item');
     try {
-      TrainingProvider trainingProvider = TrainingProvider.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheTrainingProvider(trainingProvider);
+      final trainingProvider = TrainingProvider.fromJson(
+        Json.tryDecode(item.body) as Map<String, dynamic>,
+      );
+      await cmoDatabaseService.cacheTrainingProvider(trainingProvider);
     } catch (e, s) {
       log('Insert TrainingProvider Error: $e $s');
     }
@@ -435,8 +475,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertCourse(Message item) async {
     log('Insert Course $item');
     try {
-      Course course = Course.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheCourse(course);
+      final course =
+          Course.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
+      await cmoDatabaseService.cacheCourse(course);
     } catch (e, s) {
       log('Insert Course Error: $e $s');
     }
@@ -445,8 +486,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertSchedule(Message item) async {
     log('Insert Schedule $item');
     try {
-      Schedule schedule = Schedule.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheSchedule(schedule);
+      final schedule =
+          Schedule.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
+      await cmoDatabaseService.cacheSchedule(schedule);
     } catch (e, s) {
       log('Insert Schedule Error: $e $s');
     }
@@ -455,8 +497,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertScheduleActivity(Message item) async {
     log('Insert ScheduleActivity $item');
     try {
-      ScheduleActivity scheduleActivity = ScheduleActivity.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheScheduleActivity(scheduleActivity);
+      final scheduleActivity = ScheduleActivity.fromJson(
+        Json.tryDecode(item.body) as Map<String, dynamic>,
+      );
+      await cmoDatabaseService.cacheScheduleActivity(scheduleActivity);
     } catch (e, s) {
       log('Insert ScheduleActivity Error: $e $s');
     }
@@ -465,8 +509,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertWorker(Message item) async {
     log('Insert Worker $item');
     try {
-      Worker worker = Worker.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheWorker(worker);
+      final worker =
+          Worker.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
+      await cmoDatabaseService.cacheWorker(worker);
     } catch (e, s) {
       log('Insert Worker Error: $e $s');
     }
@@ -475,8 +520,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> insertQuestion(Message item) async {
     log('Insert Question $item');
     try {
-      CompanyQuestion question = CompanyQuestion.fromJson(Json.tryDecode(item.body));
-      cmoDatabaseService.cacheCompanyQuestion(question);
+      final question = CompanyQuestion.fromJson(
+        Json.tryDecode(item.body) as Map<String, dynamic>,
+      );
+      await cmoDatabaseService.cacheCompanyQuestion(question);
     } catch (e, s) {
       log('Insert Question Error: $e $s');
     }
@@ -490,8 +537,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
 
   @override
   EntityState? fromJson(Map<String, dynamic> json) {
-    final entityRaw = Json.tryDecode(json['entity']) as Map<String, dynamic>?;
-    final companyRaw = Json.tryDecode(json['company']) as Map<String, dynamic>?;
+    final entityRaw =
+        Json.tryDecode(json['entity'].toString()) as Map<String, dynamic>?;
+    final companyRaw =
+        Json.tryDecode(json['company'].toString()) as Map<String, dynamic>?;
     final entity = entityRaw != null ? Entity.fromJson(entityRaw) : null;
     final company = companyRaw != null ? Company.fromJson(companyRaw) : null;
 

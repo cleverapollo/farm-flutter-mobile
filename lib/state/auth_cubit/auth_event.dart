@@ -14,8 +14,8 @@ class LogInAuthEvent extends AuthEvent {
 
   final String username;
   final String password;
-  final Function() onSuccess;
-  final Function() onFailure;
+  final void Function() onSuccess;
+  final void Function() onFailure;
 
   @override
   List<Object?> get props => [
@@ -31,8 +31,8 @@ class LogInWithSavedCredentialsAuthEvent extends AuthEvent {
     this.onFailure,
   });
 
-  final Function()? onSuccess;
-  final Function()? onFailure;
+  final void Function()? onSuccess;
+  final void Function()? onFailure;
 
   @override
   List<Object?> get props => [

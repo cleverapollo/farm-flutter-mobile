@@ -1,15 +1,24 @@
 part of 'user_device_cubit.dart';
 
-class UserDeviceState extends Union3Impl<UserDeviceLoadingState, UserDeviceDataState, UserDeviceErrorState> {
-  UserDeviceState._(Union3<UserDeviceLoadingState, UserDeviceDataState, UserDeviceErrorState> union) : super(union);
+class UserDeviceState extends Union3Impl<UserDeviceLoadingState,
+    UserDeviceDataState, UserDeviceErrorState> {
+  UserDeviceState._(
+    super.union,
+  );
 
-  static const unions = Triplet<UserDeviceLoadingState, UserDeviceDataState, UserDeviceErrorState>();
+  factory UserDeviceState.data({required UserDevice? userDevice}) =>
+      UserDeviceState._(
+        unions.second(UserDeviceDataState(userDevice: userDevice)),
+      );
 
-  factory UserDeviceState.loading() => UserDeviceState._(unions.first(const UserDeviceLoadingState()));
+  factory UserDeviceState.error() =>
+      UserDeviceState._(unions.third(const UserDeviceErrorState()));
 
-  factory UserDeviceState.data({required UserDevice? userDevice}) => UserDeviceState._(unions.second(UserDeviceDataState(userDevice: userDevice)));
+  factory UserDeviceState.loading() =>
+      UserDeviceState._(unions.first(const UserDeviceLoadingState()));
 
-  factory UserDeviceState.error() => UserDeviceState._(unions.third(const UserDeviceErrorState()));
+  static const unions = Triplet<UserDeviceLoadingState, UserDeviceDataState,
+      UserDeviceErrorState>();
 }
 
 class UserDeviceLoadingState extends Equatable {

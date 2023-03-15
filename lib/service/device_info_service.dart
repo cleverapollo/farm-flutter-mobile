@@ -9,7 +9,7 @@ class DeviceInfoService {
   String? androidId;
 
   Future<void> init() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    final deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
       _info = await deviceInfo.androidInfo;
     } else {
@@ -25,12 +25,13 @@ class DeviceInfoService {
     T Function(AndroidDeviceInfo) android,
     T Function(IosDeviceInfo) ios,
   ) {
-    if (_info == null) return null;
+    final info = _info;
+    if (info == null) return null;
 
     if (Platform.isAndroid) {
-      return android(_info as AndroidDeviceInfo);
+      return android(info as AndroidDeviceInfo);
     } else {
-      return ios(_info as IosDeviceInfo);
+      return ios(info as IosDeviceInfo);
     }
   }
 

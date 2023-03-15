@@ -42,8 +42,8 @@ class AuthCubit extends HydratedCubit<AuthState> {
   }
 
   Future<void> logInWithSavedCredentials({
-    Function()? onSuccess,
-    Function()? onFailure,
+    void Function()? onSuccess,
+    void Function()? onFailure,
   }) async {
     final username = await _readUsername();
     final password = await _readPassword();
@@ -74,13 +74,16 @@ class AuthCubit extends HydratedCubit<AuthState> {
     String username,
     String password,
   ) async {
-    return await cmoApiService.login(
+    return cmoApiService.login(
       username,
       password,
     );
   }
 
-  _saveUsernameAndPassword(String username, String password) async {
+  Future<void> _saveUsernameAndPassword(
+    String username,
+    String password,
+  ) async {
     await secureStorage.write(
       key: 'user_name',
       value: username,
@@ -93,18 +96,18 @@ class AuthCubit extends HydratedCubit<AuthState> {
   }
 
   Future<String?> _readUsername() async {
-    return await secureStorage.read(
+    return secureStorage.read(
       key: 'user_name',
     );
   }
 
   Future<String?> _readPassword() async {
-    return await secureStorage.read(
+    return secureStorage.read(
       key: 'user_password',
     );
   }
 
-  _clearSecureStorage() async {
+  Future<void> _clearSecureStorage() async {
     await secureStorage.write(
       key: 'accessToken',
       value: null,
@@ -126,7 +129,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
     );
   }
 
-  _saveAccessRevewalToken(String accessToken, String renewalToken) async {
+  Future<void> _saveAccessRevewalToken(
+    String accessToken,
+    String renewalToken,
+  ) async {
     await secureStorage.write(
       key: 'accessToken',
       value: accessToken,

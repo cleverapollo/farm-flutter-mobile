@@ -105,7 +105,7 @@ class _SettingsOptionPicker<T> extends StatelessWidget {
             .context
             .findRenderObject()! as RenderBox;
 
-        final RelativeRect position = RelativeRect.fromRect(
+        final position = RelativeRect.fromRect(
           Rect.fromPoints(
             button.localToGlobal(const Offset(1, 0), ancestor: overlay),
             button.localToGlobal(
@@ -119,13 +119,15 @@ class _SettingsOptionPicker<T> extends StatelessWidget {
           context: context,
           position: position,
           items: items
-              .map((i) => PopupMenuItem<T>(
-                    onTap: () => onTap(i),
-                    child: Text(
-                      itemToString(i),
-                      style: context.textStyles.bodyNormal,
-                    ),
-                  ))
+              .map(
+                (i) => PopupMenuItem<T>(
+                  onTap: () => onTap(i),
+                  child: Text(
+                    itemToString(i),
+                    style: context.textStyles.bodyNormal,
+                  ),
+                ),
+              )
               .toList(),
         );
       },

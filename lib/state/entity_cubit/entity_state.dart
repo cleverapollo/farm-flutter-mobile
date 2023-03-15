@@ -1,17 +1,6 @@
 part of 'entity_cubit.dart';
 
 class EntityState {
-  final Entity? entity;
-  final Company? company;
-
-  final List<Company> companies;
-
-  final bool isLoading;
-  final bool isLoadingSync;
-  final String? syncMessage;
-  final int countSchedules;
-  final int countWorkers;
-  final int countQuestion;
 
   const EntityState({
     this.entity,
@@ -24,6 +13,17 @@ class EntityState {
     this.countWorkers = 0,
     this.countQuestion = 0,
   });
+  final Entity? entity;
+  final Company? company;
+
+  final List<Company> companies;
+
+  final bool isLoading;
+  final bool isLoadingSync;
+  final String? syncMessage;
+  final int countSchedules;
+  final int countWorkers;
+  final int countQuestion;
 
   EntityState copyWith({
     Entity? entity,

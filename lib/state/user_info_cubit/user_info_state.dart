@@ -1,15 +1,20 @@
 part of 'user_info_cubit.dart';
 
-class UserInfoState extends Union3Impl<UserInfoLoadingState, UserInfoDataState, UserInfoErrorState> {
-  UserInfoState._(Union3<UserInfoLoadingState, UserInfoDataState, UserInfoErrorState> union) : super(union);
+class UserInfoState extends Union3Impl<UserInfoLoadingState, UserInfoDataState,
+    UserInfoErrorState> {
+  UserInfoState._(super.union);
 
-  static const unions = Triplet<UserInfoLoadingState, UserInfoDataState, UserInfoErrorState>();
+  factory UserInfoState.data({required UserInfo? userInfo}) =>
+      UserInfoState._(unions.second(UserInfoDataState(userInfo: userInfo)));
 
-  factory UserInfoState.loading() => UserInfoState._(unions.first(const UserInfoLoadingState()));
+  factory UserInfoState.error() =>
+      UserInfoState._(unions.third(const UserInfoErrorState()));
 
-  factory UserInfoState.data({required UserInfo? userInfo}) => UserInfoState._(unions.second(UserInfoDataState(userInfo: userInfo)));
+  factory UserInfoState.loading() =>
+      UserInfoState._(unions.first(const UserInfoLoadingState()));
 
-  factory UserInfoState.error() => UserInfoState._(unions.third(const UserInfoErrorState()));
+  static const unions =
+      Triplet<UserInfoLoadingState, UserInfoDataState, UserInfoErrorState>();
 }
 
 class UserInfoLoadingState extends Equatable {

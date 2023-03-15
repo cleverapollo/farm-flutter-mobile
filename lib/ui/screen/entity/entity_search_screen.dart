@@ -29,10 +29,11 @@ class EntitySearchScreen extends StatefulWidget {
   }) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (_) => EntitySearchScreen(
-                type: type,
-                selected: selected,
-              )),
+        builder: (_) => EntitySearchScreen(
+          type: type,
+          selected: selected,
+        ),
+      ),
     );
   }
 
@@ -147,8 +148,9 @@ class _EntitySearchScreenState extends State<EntitySearchScreen> {
             (e) => CmoTappable(
               onTap: () => onTapTile(e),
               child: _ResultTile(
-                  title: e.companyName ?? e.companyId?.toString() ?? '',
-                  selected: isSelected(e)),
+                title: e.companyName ?? e.companyId?.toString() ?? '',
+                selected: isSelected(e),
+              ),
             ),
           )
           .toList(),

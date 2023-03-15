@@ -26,7 +26,7 @@ class CmoTextField extends StatelessWidget {
 
   final String? hintText;
 
-  final Function(String?)? onChanged;
+  final void Function(String?)? onChanged;
 
   final bool obscureText;
 
@@ -34,7 +34,7 @@ class CmoTextField extends StatelessWidget {
 
   final List<String>? autofillHints;
 
-  final Function()? onEditingComplete;
+  final void Function()? onEditingComplete;
 
   final TextInputAction? textInputAction;
 

@@ -50,34 +50,42 @@ class _LoginScreenState extends State<LoginScreen> {
 
       try {
         debugPrint(_formKey.currentState?.value.toString());
-        hideInputMethod();
+        await hideInputMethod();
         final username = _formKey.currentState?.value['email'];
         final password = _formKey.currentState?.value['password'];
+        var success = false;
+
         if (context.mounted) {
           await context.read<AuthCubit>().logIn(
                 LogInAuthEvent(
-                  onFailure: () {},
-                  onSuccess: () async {
-                    await Future.wait([
-                      context.read<UserInfoCubit>().getUser(context),
-                      context.read<UserDeviceCubit>().createUserDevice(context),
-                    ]);
-
-                    if (context.mounted) pushEntityScreen(context);
+                  onFailure: () {
+                    success = true;
                   },
-                  password: password,
-                  username: username,
+                  onSuccess: () {},
+                  password: password.toString(),
+                  username: username.toString(),
                 ),
               );
+        }
+
+        if (success && context.mounted) {
+          await Future.wait([
+            context.read<UserInfoCubit>().getUser(context),
+            context.read<UserDeviceCubit>().createUserDevice(context),
+          ]);
+        }
+
+        if (context.mounted) {
+          setState(() {
+            isLoading = false;
+          });
+          pushEntityScreen(context);
         }
       } finally {
         setState(() {
           isLoading = false;
         });
       }
-      setState(() {
-        isLoading = false;
-      });
     } else {
       debugPrint(_formKey.currentState?.value.toString());
       debugPrint('validation failed');
@@ -104,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: context.colors.grey, width: 1),
+                      border: Border.all(color: context.colors.grey),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,

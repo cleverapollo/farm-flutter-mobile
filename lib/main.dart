@@ -1,3 +1,4 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
@@ -13,10 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-
 import 'package:path_provider/path_provider.dart';
-
-import 'di.dart';
 
 late FlutterSecureStorage secureStorage;
 final GlobalKey<ScaffoldMessengerState> snackbarKey = GlobalKey<ScaffoldMessengerState>();

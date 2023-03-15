@@ -7,11 +7,13 @@ part 'settings_state.dart';
 
 class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit({required Locale locale})
-      : super(SettingsState(
-          locale: locale,
-          landingPage: LandingPage.dashboard,
-          themeMode: ThemeMode.light,
-        ));
+      : super(
+          SettingsState(
+            locale: locale,
+            landingPage: LandingPage.dashboard,
+            themeMode: ThemeMode.light,
+          ),
+        );
 
   void changeLanguage(BuildContext context, Locale locale) {
     if (locale == state.locale) return;

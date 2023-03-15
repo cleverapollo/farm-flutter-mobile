@@ -4,25 +4,32 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CmoGlobalObserver extends BlocObserver {
   @override
-  void onEvent(Bloc bloc, Object? event) {
+  void onEvent(Bloc<dynamic, dynamic> bloc, Object? event) {
     super.onEvent(bloc, event);
     debugPrint('${bloc.runtimeType} Event: ${event.toString()}');
   }
 
   @override
-  void onChange(BlocBase bloc, Change change) {
+  void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
     super.onChange(bloc, change);
-    debugPrint('${bloc.runtimeType} Change: currentState: ${change.currentState} nextState: ${change.nextState}');
+    debugPrint(
+      '${bloc.runtimeType} Change: currentState: ${change.currentState} nextState: ${change.nextState}',
+    );
   }
 
   @override
-  void onTransition(Bloc bloc, Transition transition) {
+  void onTransition(
+    Bloc<dynamic, dynamic> bloc,
+    Transition<dynamic, dynamic> transition,
+  ) {
     super.onTransition(bloc, transition);
-    debugPrint('${bloc.runtimeType} Transition: currentState: ${transition.currentState} nextState: ${transition.nextState}');
+    debugPrint(
+      '${bloc.runtimeType} Transition: currentState: ${transition.currentState} nextState: ${transition.nextState}',
+    );
   }
 
   @override
-  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+  void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
     debugPrint('${bloc.runtimeType} Error: $error $stackTrace');
     super.onError(bloc, error, stackTrace);
   }
@@ -30,11 +37,13 @@ class CmoGlobalObserver extends BlocObserver {
 
 final bool isDebug = () {
   var result = false;
-  assert(() {
-    result = true;
-
-    return true;
-  }());
+  assert(
+    () {
+      result = true;
+      return true;
+    }(),
+    '',
+  );
 
   return result;
 }();

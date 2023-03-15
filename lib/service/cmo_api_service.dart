@@ -17,16 +17,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CmoApiService {
-  var client = HttpClient();
+  HttpClient client = HttpClient();
 
   void _showSnackBar(String msg) {
-    SnackBar snackBar = SnackBar(content: Text(msg));
+    final snackBar = SnackBar(content: Text(msg));
     snackbarKey.currentState?.clearSnackBars();
     snackbarKey.currentState?.showSnackBar(snackBar);
   }
 
-  _showFlushBar(BuildContext context, String msg) {
-    late Flushbar flush;
+  void _showFlushBar(BuildContext context, String msg) {
+    late Flushbar<bool?> flush;
     flush = Flushbar(
       message: msg,
       duration: const Duration(seconds: 3),
@@ -42,14 +42,14 @@ class CmoApiService {
         onPressed: () {
           flush.dismiss(true);
         },
-        child: const Text("OK"),
+        child: const Text('OK'),
       ),
     );
 
     flush.show(context);
   }
 
-  _loginAgainWithSavedCredentials(BuildContext context) {
+  void _loginAgainWithSavedCredentials(BuildContext context) {
     BlocProvider.of<AuthCubit>(context).logInWithSavedCredentials();
   }
 
@@ -74,7 +74,7 @@ class CmoApiService {
       'p': password,
     };
 
-    HttpClientRequest request = await client.postUrl(
+    final request = await client.postUrl(
       Uri.https(
         cmoUrl,
         '/cmo/DesktopModules/JwtAuth/API/mobile/login',
@@ -84,7 +84,7 @@ class CmoApiService {
     request.headers.set('content-type', 'application/json');
     request.add(utf8.encode(json.encode(body)));
 
-    HttpClientResponse response = await request.close();
+    final response = await request.close();
     final stringData = await response.transform(utf8.decoder).join();
 
     if (response.statusCode != 200) {
@@ -106,7 +106,7 @@ class CmoApiService {
     final accessToken = await _getAccessToken(context);
     if (accessToken == null) return null;
 
-    HttpClientRequest request = await client.getUrl(
+    final request = await client.getUrl(
       Uri.https(
         cmoUrl,
         '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetUser',
@@ -117,7 +117,7 @@ class CmoApiService {
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');
     request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
 
-    HttpClientResponse response = await request.close();
+    final response = await request.close();
 
     if (response.statusCode == 200) {
       final stringData = await response.transform(utf8.decoder).join();
@@ -159,7 +159,7 @@ class CmoApiService {
       'AppVersionNumber': appVersionNumber,
     };
 
-    HttpClientRequest request = await client.postUrl(
+    final request = await client.postUrl(
       Uri.https(
         cmoUrl,
         '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/CreateUserDevice',
@@ -171,7 +171,7 @@ class CmoApiService {
     request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
     request.add(utf8.encode(json.encode(body)));
 
-    HttpClientResponse response = await request.close();
+    final response = await request.close();
 
     if (response.statusCode == 200) {
       final stringData = await response.transform(utf8.decoder).join();
@@ -201,22 +201,24 @@ class CmoApiService {
     final uri = Uri.https(
       cmoUrl,
       '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetCompanyByUserId',
-      {"userId": userId.toString()},
+      {'userId': userId.toString()},
     );
 
-    HttpClientRequest request = await client.getUrl(uri);
+    final request = await client.getUrl(uri);
 
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');
     request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
 
-    HttpClientResponse response = await request.close();
+    final response = await request.close();
 
     if (response.statusCode == 200) {
       final stringData = await response.transform(utf8.decoder).join();
       final data = Json.tryDecode(stringData);
       if (data is List) {
-        return data.map((e) => Company.fromJson(e as Map<String, dynamic>)).toList();
+        return data
+            .map((e) => Company.fromJson(e as Map<String, dynamic>))
+            .toList();
       }
       return <Company>[];
     } else if (response.statusCode == 401) {
@@ -248,16 +250,20 @@ class CmoApiService {
       '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/CreateSystemEvent',
     );
 
-    final body = {"SystemEventName": "SyncAssessmentMasterData", "PrimaryKey": primaryKey, "UserDeviceId": userDeviceId};
+    final body = {
+      'SystemEventName': 'SyncAssessmentMasterData',
+      'PrimaryKey': primaryKey,
+      'UserDeviceId': userDeviceId
+    };
 
-    HttpClientRequest request = await client.postUrl(uri);
+    final request = await client.postUrl(uri);
 
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');
     request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
     request.add(utf8.encode(json.encode(body)));
 
-    HttpClientResponse response = await request.close();
+    final response = await request.close();
 
     if (response.statusCode == 200) {
       // final stringData = await response.transform(utf8.decoder).join();
@@ -298,13 +304,13 @@ class CmoApiService {
       },
     );
 
-    HttpClientRequest request = await client.getUrl(uri);
+    final request = await client.getUrl(uri);
 
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');
     request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
 
-    HttpClientResponse response = await request.close();
+    final response = await request.close();
 
     if (response.statusCode == 200) {
       final stringData = await response.transform(utf8.decoder).join();
@@ -344,7 +350,7 @@ class CmoApiService {
     );
     final body = messages.map((e) => e.toJson()).toList();
 
-    HttpClientRequest request = await client.deleteUrl(uri);
+    final request = await client.deleteUrl(uri);
 
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');
@@ -352,7 +358,7 @@ class CmoApiService {
 
     request.add(utf8.encode(json.encode(body)));
 
-    HttpClientResponse response = await request.close();
+    final response = await request.close();
 
     if (response.statusCode == 200) {
       return true;

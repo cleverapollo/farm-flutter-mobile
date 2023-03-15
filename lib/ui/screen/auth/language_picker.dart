@@ -10,7 +10,7 @@ class LanguagePicker extends StatefulWidget {
 
   final bool hidden;
 
-  final Function()? onPick;
+  final void Function()? onPick;
 
   @override
   State<LanguagePicker> createState() => _LanguagePickerState();
@@ -26,7 +26,9 @@ class _LanguagePickerState extends State<LanguagePicker>
   void initState() {
     super.initState();
     _controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300));
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
     _heightValue = Tween(begin: 0.0, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
@@ -64,7 +66,7 @@ class _LanguagePickerState extends State<LanguagePicker>
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: context.colors.grey, width: 1),
+            border: Border.all(color: context.colors.grey),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

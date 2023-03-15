@@ -144,7 +144,7 @@ class _SummaryTite extends StatelessWidget {
     required this.title,
   });
 
-  final Future<List> future;
+  final Future<List<dynamic>> future;
   final String title;
 
   @override
@@ -165,7 +165,9 @@ class _SummaryTite extends StatelessWidget {
           );
         }
         if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error.toString()}  ${snapshot.stackTrace.toString()}');
+          return Text(
+            'Error: ${snapshot.error}  ${snapshot.stackTrace}',
+          );
         }
         return const Text('loading...');
       },

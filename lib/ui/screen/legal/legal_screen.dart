@@ -31,15 +31,21 @@ class LegalScreen extends StatelessWidget {
           CmoHeaderTile(title: LocaleKeys.information.tr()),
           CmoTappable(
             onTap: () {
-              launchUrl(Uri.parse(
-                  'https://cmologistics.azurewebsites.net/behave/Terms'));
+              launchUrl(
+                Uri.parse(
+                  'https://cmologistics.azurewebsites.net/behave/Terms',
+                ),
+              );
             },
             child: CmoOptionTile(title: LocaleKeys.termsConditions.tr()),
           ),
           CmoTappable(
             onTap: () {
-              launchUrl(Uri.parse(
-                  'https://cmologistics.azurewebsites.net/behave/Privacy'));
+              launchUrl(
+                Uri.parse(
+                  'https://cmologistics.azurewebsites.net/behave/Privacy',
+                ),
+              );
             },
             child: CmoOptionTile(title: LocaleKeys.privacyPolicy.tr()),
           ),

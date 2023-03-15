@@ -1,12 +1,11 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
+import 'package:cmo/ui/screen/dashboard/dashboard_drawer.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'dashboard_drawer.dart';
 
 class DashboardScreen extends StatelessWidget {
   DashboardScreen({super.key});

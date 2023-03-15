@@ -8,11 +8,11 @@ import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
-import 'package:cmo/ui/screen/sync_summary/sync_summary_screen.dart';
 import 'package:cmo/ui/screen/entity/utils.dart';
 import 'package:cmo/ui/screen/legal/legal_screen.dart';
 import 'package:cmo/ui/screen/settings/settings_screen.dart';
 import 'package:cmo/ui/screen/support/support_screen.dart';
+import 'package:cmo/ui/screen/sync_summary/sync_summary_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +32,7 @@ class DashboardDrawer extends StatelessWidget {
       child: Drawer(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
-          side: BorderSide(color: context.colors.grey, width: 1),
+          side: BorderSide(color: context.colors.grey),
         ),
         elevation: 0,
         child: DecoratedBox(
@@ -69,7 +69,8 @@ class DashboardDrawer extends StatelessWidget {
                 const SizedBox(height: 7),
                 const _Divider(),
                 buildHeader(context, title: LocaleKeys.stakeholders.tr()),
-                buildOption(context, title: LocaleKeys.createNewStakeholder.tr()),
+                buildOption(context,
+                    title: LocaleKeys.createNewStakeholder.tr(),),
                 const SizedBox(height: 7),
                 const _Divider(),
                 _CmoOptionTile(
@@ -89,22 +90,7 @@ class DashboardDrawer extends StatelessWidget {
                   onTap: () => SyncSummaryScreen.push(context),
                 ),
                 const SizedBox(height: 55),
-                CmoFilledButton(
-                  title: LocaleKeys.signOut.tr(),
-                  onTap: () async {
-                    await cmoDatabaseService.deleteAll();
-                    if (context.mounted) await context.read<AuthCubit>().logOut();
-                    if (context.mounted) {
-                      Future.wait([
-                        context.read<EntityCubit>().clear(),
-                        context.read<UserDeviceCubit>().clear(),
-                        context.read<UserInfoCubit>().clear(),
-                      ]);
-                    }
-                    if (context.mounted) Navigator.of(context).pop();
-                    if (context.mounted) LoginScreen.push(context);
-                  },
-                ),
+                const _LogoutButton(),
                 const SizedBox(height: 24),
                 Assets.images.logo.image(height: 47, fit: BoxFit.contain),
                 const SizedBox(height: 12),
@@ -341,6 +327,48 @@ class _Divider extends StatelessWidget {
       indent: 3,
       endIndent: 3,
       color: context.colors.grey,
+    );
+  }
+}
+
+class _LogoutButton extends StatefulWidget {
+  const _LogoutButton();
+
+  @override
+  State<_LogoutButton> createState() => __LogoutButtonState();
+}
+
+class __LogoutButtonState extends State<_LogoutButton> {
+  bool loading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return CmoFilledButton(
+      loading: loading,
+      title: LocaleKeys.signOut.tr(),
+      onTap: () async {
+        if (loading) return;
+        try {
+          setState(() {
+            loading = true;
+          });
+          await cmoDatabaseService.deleteAll();
+          if (context.mounted) await context.read<AuthCubit>().logOut();
+          if (context.mounted) {
+            await Future.wait([
+              context.read<EntityCubit>().clear(),
+              context.read<UserDeviceCubit>().clear(),
+              context.read<UserInfoCubit>().clear(),
+            ]);
+          }
+          if (context.mounted) Navigator.of(context).pop();
+          if (context.mounted) LoginScreen.push(context);
+        } finally {
+          setState(() {
+            loading = false;
+          });
+        }
+      },
     );
   }
 }
