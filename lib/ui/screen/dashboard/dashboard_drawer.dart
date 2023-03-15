@@ -7,12 +7,13 @@ import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
+import 'package:cmo/ui/screen/assessments/new_assessment_screen.dart';
 import 'package:cmo/ui/screen/auth/login_screen.dart';
+import 'package:cmo/ui/screen/create_worker/create_worker_screen.dart';
 import 'package:cmo/ui/screen/entity/utils.dart';
 import 'package:cmo/ui/screen/legal/legal_screen.dart';
 import 'package:cmo/ui/screen/settings/settings_screen.dart';
 import 'package:cmo/ui/screen/support/support_screen.dart';
-import 'package:cmo/ui/screen/sync_summary/sync_summary_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
@@ -59,18 +60,67 @@ class DashboardDrawer extends StatelessWidget {
                 const _Divider(),
                 buildHeader(context, title: LocaleKeys.dashboard.tr()),
                 const _Divider(),
-                buildHeader(context, title: LocaleKeys.memberManagement.tr()),
-                buildOption(context, title: LocaleKeys.createNew.tr()),
-                buildOption(context, title: LocaleKeys.compartments.tr()),
-                const SizedBox(height: 7),
-                const _Divider(),
-                buildHeader(context, title: LocaleKeys.audit_s.tr()),
-                buildOption(context, title: LocaleKeys.createNew.tr()),
-                const SizedBox(height: 7),
-                const _Divider(),
-                buildHeader(context, title: LocaleKeys.stakeholders.tr()),
-                buildOption(context,
-                    title: LocaleKeys.createNewStakeholder.tr(),),
+                ...appInfoService.mode.join(
+                  (p0) => [
+                    buildHeader(context, title: LocaleKeys.assessments.tr()),
+                    CmoTappable(
+                      onTap: () => NewAssessmentScreen.push(context),
+                      child: buildOption(
+                        context,
+                        title: LocaleKeys.createNew.tr(),
+                      ),
+                    ),
+                    const SizedBox(height: 7),
+                    const _Divider(),
+                    buildHeader(context, title: LocaleKeys.workers.tr()),
+                    CmoTappable(
+                      onTap: () => CreateWorkerScreen.push(context),
+                      child: buildOption(
+                        context,
+                        title: LocaleKeys.createNew.tr(),
+                      ),
+                    ),
+                  ],
+                  (p0) => [
+                    buildHeader(
+                      context,
+                      title: LocaleKeys.memberManagement.tr(),
+                    ),
+                    buildOption(context, title: LocaleKeys.createNew.tr()),
+                    buildOption(context, title: LocaleKeys.compartments.tr()),
+                    const SizedBox(height: 7),
+                    const _Divider(),
+                    buildHeader(context, title: LocaleKeys.audit_s.tr()),
+                    buildOption(context, title: LocaleKeys.createNew.tr()),
+                    const SizedBox(height: 7),
+                    const _Divider(),
+                    buildHeader(context, title: LocaleKeys.stakeholders.tr()),
+                    buildOption(
+                      context,
+                      title: LocaleKeys.createNewStakeholder.tr(),
+                    ),
+                  ],
+                  (p0) => [
+                    buildHeader(context, title: LocaleKeys.managementPlan.tr()),
+                    buildOption(
+                      context,
+                      title: LocaleKeys.labourManagement.tr(),
+                    ),
+                    buildOption(context, title: LocaleKeys.campManagement.tr()),
+                    buildOption(
+                      context,
+                      title: LocaleKeys.annualProduction.tr(),
+                    ),
+                    buildHeader(context, title: LocaleKeys.compartments.tr()),
+                    const SizedBox(height: 7),
+                    const _Divider(),
+                    buildHeader(context, title: LocaleKeys.stakeholders.tr()),
+                    buildOption(
+                      context,
+                      title: LocaleKeys.createNewStakeholder.tr(),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 7),
                 const _Divider(),
                 _CmoOptionTile(
@@ -84,10 +134,6 @@ class DashboardDrawer extends StatelessWidget {
                 _CmoOptionTile(
                   title: LocaleKeys.legal.tr(),
                   onTap: () => LegalScreen.push(context),
-                ),
-                _CmoOptionTile(
-                  title: LocaleKeys.syncSummary.tr(),
-                  onTap: () => SyncSummaryScreen.push(context),
                 ),
                 const SizedBox(height: 55),
                 const _LogoutButton(),
@@ -191,7 +237,7 @@ class DashboardDrawer extends StatelessWidget {
       child: Row(
         children: [
           const _UserAvatar(imageUrl: 'https://placekitten.com/200/200'),
-          const SizedBox(width: 18),
+          const SizedBox(width: 8),
           Expanded(
             child: FittedBox(
               fit: BoxFit.scaleDown,

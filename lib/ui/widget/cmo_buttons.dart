@@ -29,6 +29,7 @@ class CmoFilledButton extends StatelessWidget {
     this.loading = false,
     this.disable = false,
     required this.title,
+    this.titleStyle,
   });
 
   final VoidCallback? onTap;
@@ -36,6 +37,7 @@ class CmoFilledButton extends StatelessWidget {
   final String title;
   final bool loading;
   final bool disable;
+  final TextStyle? titleStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,7 @@ class CmoFilledButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         elevation: 4,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         disabledBackgroundColor: context.colors.grey,
       ),
       onPressed: onTap,
@@ -60,12 +63,12 @@ class CmoFilledButton extends StatelessWidget {
                   width: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: context.colors.white ,
+                    color: context.colors.white,
                   ),
                 )
               : Text(
                   title,
-                  style: context.textStyles.bodyBold.white,
+                  style: titleStyle ?? context.textStyles.bodyBold.white,
                 ),
         ),
       ),

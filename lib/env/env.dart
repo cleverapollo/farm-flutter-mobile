@@ -6,4 +6,7 @@ part 'env.g.dart';
 abstract class Env {
   @EnviedField(varName: 'PUBSUB_APIKEY', obfuscate: true)
   static final pubsubApiKey = _Env.pubsubApiKey;
+
+  @EnviedField(varName: 'APP_MODE', obfuscate: true)
+  static final appMode = _Env.appMode;
 }

@@ -21,6 +21,7 @@ Use `envied` to generate .env:
 Create `.env` file
 ```
 PUBSUB_APIKEY=xxx
+APP_MODE=behave; (behave, resource_manager, farmer)
 ```
 
 Run this to generate file lib/env/env.g.dart

@@ -95,6 +95,7 @@
   "long": "Longitude",
   "mai": "MAI",
   "malay": "Malay Bahasa",
+  "managementPlan": "Management Plan",
   "measured": "measured",
   "memberDetails": "Member Details",
   "memberFarmObjective": "Member Farm Objectives",
@@ -141,6 +142,7 @@
   "province": "Province",
   "race": "Race",
   "reason": "Reason",
+  "registerCaseManagement": "Register / Case Management",
   "registers": "Registers",
   "resourceManagementUnit": "Resource Management Unit",
   "retake": "Retake",
@@ -156,6 +158,7 @@
   "siteDetails": "Site Details",
   "siteLocation": "Site Location",
   "siteManagement": "Site Management",
+  "siteManagementPlan": "Site management plan",
   "siteName": "Site Name",
   "slimf": "SLIMF Compliance",
   "speciesGroup": "Species Group",
@@ -169,6 +172,7 @@
   "surname": "Surname",
   "survival": "Survival",
   "sync": "Sync",
+  "syncSummary": "Sync Summary",
   "synced": "synced",
   "takePhoto": "Take Photo",
   "team": "Team",
@@ -188,6 +192,5 @@
   "whatPercentage": "What percentage of land is",
   "workers": "Workers",
   "yes": "Yes",
-  "zulu": "Zulu",
-  "syncSummary": "Sync Summary"
+  "zulu": "Zulu"
 }
