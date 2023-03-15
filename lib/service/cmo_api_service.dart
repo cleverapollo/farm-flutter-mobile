@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
@@ -62,6 +63,26 @@ class CmoApiService {
     );
   }
 
+  Future<HttpClientRequest> _get(Uri url) {
+    log('[GET]: $url');
+    return client.getUrl(url);
+  }
+
+  Future<HttpClientRequest> _post(Uri url) {
+    log('[POST]: $url');
+    return client.postUrl(url);
+  }
+
+  // Future<HttpClientRequest> _put(Uri url) {
+  //   log('[PUT]: $url');
+  //   return client.putUrl(url);
+  // }
+
+  Future<HttpClientRequest> _delete(Uri url) {
+    log('[DELETE]: $url');
+    return client.deleteUrl(url);
+  }
+
   // curl 'https://logistics.myeu.africa/cmo/DesktopModules/JwtAuth/API/mobile/login' \
   // --data-raw '{"u":"anthonyp@apstory.co.za","p":"test1234"}' \
   // --compressed
@@ -74,7 +95,7 @@ class CmoApiService {
       'p': password,
     };
 
-    final request = await client.postUrl(
+    final request = await _post(
       Uri.https(
         cmoUrl,
         '/cmo/DesktopModules/JwtAuth/API/mobile/login',
@@ -106,7 +127,7 @@ class CmoApiService {
     final accessToken = await _getAccessToken(context);
     if (accessToken == null) return null;
 
-    final request = await client.getUrl(
+    final request = await _get(
       Uri.https(
         cmoUrl,
         '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetUser',
@@ -159,7 +180,7 @@ class CmoApiService {
       'AppVersionNumber': appVersionNumber,
     };
 
-    final request = await client.postUrl(
+    final request = await _post(
       Uri.https(
         cmoUrl,
         '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/CreateUserDevice',
@@ -204,7 +225,7 @@ class CmoApiService {
       {'userId': userId.toString()},
     );
 
-    final request = await client.getUrl(uri);
+    final request = await _get(uri);
 
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');
@@ -256,7 +277,7 @@ class CmoApiService {
       'UserDeviceId': userDeviceId
     };
 
-    final request = await client.postUrl(uri);
+    final request = await _post(uri);
 
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');
@@ -304,7 +325,7 @@ class CmoApiService {
       },
     );
 
-    final request = await client.getUrl(uri);
+    final request = await _get(uri);
 
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');
@@ -350,7 +371,7 @@ class CmoApiService {
     );
     final body = messages.map((e) => e.toJson()).toList();
 
-    final request = await client.deleteUrl(uri);
+    final request = await _delete(uri);
 
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');

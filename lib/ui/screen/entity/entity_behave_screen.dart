@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:after_layout/after_layout.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/company.dart';
@@ -29,9 +32,8 @@ class EntityBehaveScreen extends StatefulWidget {
   State<EntityBehaveScreen> createState() => _EntityBehaveScreenState();
 }
 
-class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
-  late final entityCubit = context.read<EntityCubit>();
-
+class _EntityBehaveScreenState extends State<EntityBehaveScreen>
+    with AfterLayoutMixin {
   bool isReady = false;
 
   List<Company> companies = [];
@@ -41,23 +43,24 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
   Company? selected;
 
   @override
-  void initState() {
-    super.initState();
-    Future.microtask(() async {
-      final userId = context.read<UserInfoCubit>().state.join(
-            (p0) => null,
-            (p0) => p0.userInfo?.userId,
-            (p0) => null,
-          );
+  FutureOr<void> afterFirstLayout(BuildContext context) async {
+    final entityCubit = context.read<EntityCubit>();
+    final userId = context.read<UserInfoCubit>().state.join(
+          (p0) => null,
+          (p0) => p0.userInfo?.userId,
+          (p0) => null,
+        );
 
-      await entityCubit.getCompanies(context: context, userId: userId);
-
+    await entityCubit.getCompanies(context: context, userId: userId);
+    await Future.delayed(const Duration(milliseconds: 100));
+    if (context.mounted) {
+      final newEntityCubit = context.read<EntityCubit>();
       setState(() {
-        companies = entityCubit.state.companies;
+        companies = newEntityCubit.state.companies;
+        selected = newEntityCubit.state.company;
         isReady = true;
-        selected = entityCubit.state.company;
       });
-    });
+    }
   }
 
   void filter(String? input) {
@@ -65,6 +68,7 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
     final query = input.trim().toLowerCase();
     if (query == prevQuery) return;
 
+    final entityCubit = context.read<EntityCubit>();
     companies = entityCubit.state.companies
         .where((e) => e.companyName?.toLowerCase().contains(query) ?? false)
         .toList();
@@ -165,7 +169,7 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
 
     bool isSelected(Company company) {
       if (selected == null) return false;
-      return company == selected;
+      return company.companyId == selected?.companyId;
     }
 
     return ListView(

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/service/cmo_database_company_service.dart';
 import 'package:cmo/service/entity_service.dart';
 import 'package:cmo/utils/json_converter.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,20 @@ class EntityCubit extends HydratedCubit<EntityState> {
   final String topicTrickleFeedMasterDataByCompanyId = 'Cmo.MasterData.';
 
   late final EntityService service;
+
+  Future<void> init() async {
+    final cachedCompanies = await cmoDatabaseService.getAllCachedCompanys();
+    final userCompany =
+        cachedCompanies.firstWhereOrNull((e) => e.isInUse ?? false);
+    if (userCompany != null) {
+      emit(
+        state.copyWith(
+          company: userCompany,
+          entity: userCompany.entity,
+        ),
+      );
+    }
+  }
 
   Future<void> sync(Entity entity) async {
     emit(state.copyWith(isLoadingSync: true));
@@ -229,16 +244,16 @@ class EntityCubit extends HydratedCubit<EntityState> {
       }
     }
 
-    await syncMasterData();
+    if (company.isMasterDataSynced == null ||
+        company.isMasterDataSynced == false) {
+      await syncMasterData();
+    }
 
     emit(
       state.copyWith(
-        entity: Entity(
-          name: company.companyName ?? '',
-          type: EntityType.cpy,
-        ),
         syncMessage: '',
-        company: company,
+        entity: company.entity,
+        company: company.copyWith(isInUse: true, isMasterDataSynced: true),
         isLoadingSync: false,
       ),
     );
@@ -251,10 +266,29 @@ class EntityCubit extends HydratedCubit<EntityState> {
     if (userId == null) return;
     emit(state.copyWith(isLoading: true));
 
-    final companies = await cmoApiService.getCompaniesByUserId(
-      context: context,
-      userId: userId,
-    );
+    List<Company>? companies;
+
+    if (context.mounted) {
+      companies = await cmoApiService.getCompaniesByUserId(
+        context: context,
+        userId: userId,
+      );
+    }
+
+    if (companies != null && companies.isNotEmpty) {
+      final cachedCompanies = await cmoDatabaseService.getAllCachedCompanys();
+      for (final company in companies) {
+        final find = cachedCompanies.firstWhereOrNull(
+          (e) => e.companyId == company.companyId,
+        );
+
+        if (find == null || (find.isMasterDataSynced ?? false)) {
+          await cmoDatabaseService.cacheCompany(company);
+          await CmoDatabaseCompanyService(companyId: company.companyId)
+              .initializeDatabase();
+        }
+      }
+    }
 
     emit(
       state.copyWith(
@@ -270,7 +304,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       final plantation = Plantation.fromJson(
         Json.tryDecode(item.body) as Map<String, dynamic>,
       );
-      await cmoDatabaseService.cachePlantation(plantation);
+      await state.companyService?.cachePlantation(plantation);
     } catch (e, s) {
       log('Insert Plantation Error: $e $s');
     }
@@ -281,7 +315,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     try {
       final unit =
           Unit.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await cmoDatabaseService.cacheUnit(unit);
+      await state.companyService?.cacheUnit(unit);
     } catch (e, s) {
       log('Insert Unit Error: $e $s');
     }
@@ -293,7 +327,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       final contractor = Contractor.fromJson(
         Json.tryDecode(item.body) as Map<String, dynamic>,
       );
-      await cmoDatabaseService.cacheContractor(contractor);
+      await state.companyService?.cacheContractor(contractor);
     } catch (e, s) {
       log('Insert Contractor Error: $e $s');
     }
@@ -304,7 +338,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     try {
       final province =
           Province.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await cmoDatabaseService.cacheProvince(province);
+      await state.companyService?.cacheProvince(province);
     } catch (e, s) {
       log('Insert Province Error: $e $s');
     }
@@ -316,7 +350,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       final municipality = Municipality.fromJson(
         Json.tryDecode(item.body) as Map<String, dynamic>,
       );
-      await cmoDatabaseService.cacheMunicipality(municipality);
+      await state.companyService?.cacheMunicipality(municipality);
     } catch (e, s) {
       log('Insert Municipality Error: $e $s');
     }
@@ -328,7 +362,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       final impactCaused = ImpactCaused.fromJson(
         Json.tryDecode(item.body) as Map<String, dynamic>,
       );
-      await cmoDatabaseService.cacheImpactCaused(impactCaused);
+      await state.companyService?.cacheImpactCaused(impactCaused);
     } catch (e, s) {
       log('Insert ImpactCaused Error: $e $s');
     }
@@ -339,7 +373,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     try {
       final impactOn =
           ImpactOn.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await cmoDatabaseService.cacheImpactOn(impactOn);
+      await state.companyService?.cacheImpactOn(impactOn);
     } catch (e, s) {
       log('Insert ImpactOn Error: $e $s');
     }
@@ -351,7 +385,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       final jobCategory = JobCategory.fromJson(
         Json.tryDecode(item.body) as Map<String, dynamic>,
       );
-      await cmoDatabaseService.cacheJobCategory(jobCategory);
+      await state.companyService?.cacheJobCategory(jobCategory);
     } catch (e, s) {
       log('Insert JobCategory Error: $e $s');
     }
@@ -363,7 +397,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       final jobDescription = JobDescription.fromJson(
         Json.tryDecode(item.body) as Map<String, dynamic>,
       );
-      await cmoDatabaseService.cacheJobDescription(jobDescription);
+      await state.companyService?.cacheJobDescription(jobDescription);
     } catch (e, s) {
       log('Insert JobDescription Error: $e $s');
     }
@@ -375,7 +409,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       final jobElement = JobElement.fromJson(
         Json.tryDecode(item.body) as Map<String, dynamic>,
       );
-      await cmoDatabaseService.cacheJobElement(jobElement);
+      await state.companyService?.cacheJobElement(jobElement);
     } catch (e, s) {
       log('Insert JobElement Error: $e $s');
     }
@@ -386,7 +420,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     try {
       final mmm =
           Mmm.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await cmoDatabaseService.cacheMmm(mmm);
+      await state.companyService?.cacheMmm(mmm);
     } catch (e, s) {
       log('Insert Mmm Error: $e $s');
     }
@@ -397,7 +431,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     try {
       final pdca =
           Pdca.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await cmoDatabaseService.cachePdca(pdca);
+      await state.companyService?.cachePdca(pdca);
     } catch (e, s) {
       log('Insert Pdca Error: $e $s');
     }
@@ -408,7 +442,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     try {
       final severity =
           Severity.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await cmoDatabaseService.cacheSeverity(severity);
+      await state.companyService?.cacheSeverity(severity);
     } catch (e, s) {
       log('Insert Severity Error: $e $s');
     }
@@ -419,7 +453,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     try {
       final speqs =
           Speqs.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await cmoDatabaseService.cacheSpeqs(speqs);
+      await state.companyService?.cacheSpeqs(speqs);
     } catch (e, s) {
       log('Insert Speqs Error: $e $s');
     }
@@ -431,7 +465,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       final compliance = Compliance.fromJson(
         Json.tryDecode(item.body) as Map<String, dynamic>,
       );
-      await cmoDatabaseService.cacheCompliance(compliance);
+      await state.companyService?.cacheCompliance(compliance);
     } catch (e, s) {
       log('Insert Compliance Error: $e $s');
     }
@@ -442,7 +476,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     try {
       final team =
           Team.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await cmoDatabaseService.cacheTeam(team);
+      await state.companyService?.cacheTeam(team);
     } catch (e, s) {
       log('Insert Team Error: $e $s');
     }
@@ -454,7 +488,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       final rejectReason = RejectReason.fromJson(
         Json.tryDecode(item.body) as Map<String, dynamic>,
       );
-      await cmoDatabaseService.cacheRejectReason(rejectReason);
+      await state.companyService?.cacheRejectReason(rejectReason);
     } catch (e, s) {
       log('Insert RejectReason Error: $e $s');
     }
@@ -466,7 +500,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       final trainingProvider = TrainingProvider.fromJson(
         Json.tryDecode(item.body) as Map<String, dynamic>,
       );
-      await cmoDatabaseService.cacheTrainingProvider(trainingProvider);
+      await state.companyService?.cacheTrainingProvider(trainingProvider);
     } catch (e, s) {
       log('Insert TrainingProvider Error: $e $s');
     }
@@ -477,7 +511,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     try {
       final course =
           Course.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await cmoDatabaseService.cacheCourse(course);
+      await state.companyService?.cacheCourse(course);
     } catch (e, s) {
       log('Insert Course Error: $e $s');
     }
@@ -488,7 +522,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     try {
       final schedule =
           Schedule.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await cmoDatabaseService.cacheSchedule(schedule);
+      await state.companyService?.cacheSchedule(schedule);
     } catch (e, s) {
       log('Insert Schedule Error: $e $s');
     }
@@ -500,7 +534,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       final scheduleActivity = ScheduleActivity.fromJson(
         Json.tryDecode(item.body) as Map<String, dynamic>,
       );
-      await cmoDatabaseService.cacheScheduleActivity(scheduleActivity);
+      await state.companyService?.cacheScheduleActivity(scheduleActivity);
     } catch (e, s) {
       log('Insert ScheduleActivity Error: $e $s');
     }
@@ -511,7 +545,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     try {
       final worker =
           Worker.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await cmoDatabaseService.cacheWorker(worker);
+      await state.companyService?.cacheWorker(worker);
     } catch (e, s) {
       log('Insert Worker Error: $e $s');
     }
@@ -523,7 +557,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       final question = CompanyQuestion.fromJson(
         Json.tryDecode(item.body) as Map<String, dynamic>,
       );
-      await cmoDatabaseService.cacheCompanyQuestion(question);
+      await state.companyService?.cacheCompanyQuestion(question);
     } catch (e, s) {
       log('Insert Question Error: $e $s');
     }

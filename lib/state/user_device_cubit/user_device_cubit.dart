@@ -15,7 +15,7 @@ class UserDeviceCubit extends HydratedCubit<UserDeviceState> {
       context: context,
       appName: appInfoService.appName,
       appVersionNumber: appInfoService.version,
-      deviceId: deviceInfoService.deviceId,
+      deviceId: deviceInfoService.deviceId ?? '',
       deviceOS: deviceInfoService.os,
       deviceVersion: deviceInfoService.version,
     );

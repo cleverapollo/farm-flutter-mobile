@@ -15,13 +15,9 @@ void pushEntityScreen(BuildContext context) {
 }
 
 Widget? entityScreenByType() {
-  Widget? screen;
-
-  appInfoService.mode.continued(
+  return appInfoService.mode.join(
     (behave) => const EntityBehaveScreen(),
     (resourceManager) => const EntityScreen(),
     (farmer) => const EntityScreen(),
   );
-
-  return screen;
 }

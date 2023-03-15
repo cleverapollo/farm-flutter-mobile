@@ -9,6 +9,7 @@ environment:
   sdk: ">=2.19.0 <3.0.0"
 
 dependencies:
+  after_layout: ^1.2.0
   android_id: ^0.1.3+1
   another_flushbar: ^1.12.29
   cached_network_image: ^3.2.3
@@ -33,6 +34,8 @@ dependencies:
   path_provider: ^2.0.13
   sealed_flutter_bloc: ^8.0.1
   sembast: ^3.4.1+1
+  sembast_sqflite: ^2.1.0+1
+  sqflite: ^2.2.6
   url_launcher: ^6.1.9
   very_good_analysis: ^4.0.0+1
 
@@ -71,4 +74,5 @@ flutter_gen:
 
 scripts:
   build: flutter pub run build_runner build --delete-conflicting-outputs
-  l10n: flutter pub run easy_localization:generate -S assets/l10n -O lib/l10n -f keys -o locale_keys.g.dart
+  l10n: flutter pub run easy_localization:generate -S assets/l10n -O lib/l10n -f
+    keys -o locale_keys.g.dart

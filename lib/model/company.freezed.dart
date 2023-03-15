@@ -24,6 +24,10 @@ mixin _$Company {
   int? get companyId => throw _privateConstructorUsedError;
   @JsonKey(name: 'CompanyName')
   String? get companyName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IsInUse')
+  bool? get isInUse => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IsMasterDataSynced')
+  bool? get isMasterDataSynced => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
   @JsonKey(name: 'CreateDT')
@@ -44,6 +48,8 @@ abstract class $CompanyCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'CompanyId') int? companyId,
       @JsonKey(name: 'CompanyName') String? companyName,
+      @JsonKey(name: 'IsInUse') bool? isInUse,
+      @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'CreateDT') String? createDT,
       @JsonKey(name: 'UpdateDT') String? updateDT});
@@ -64,6 +70,8 @@ class _$CompanyCopyWithImpl<$Res, $Val extends Company>
   $Res call({
     Object? companyId = freezed,
     Object? companyName = freezed,
+    Object? isInUse = freezed,
+    Object? isMasterDataSynced = freezed,
     Object? isActive = freezed,
     Object? createDT = freezed,
     Object? updateDT = freezed,
@@ -77,6 +85,14 @@ class _$CompanyCopyWithImpl<$Res, $Val extends Company>
           ? _value.companyName
           : companyName // ignore: cast_nullable_to_non_nullable
               as String?,
+      isInUse: freezed == isInUse
+          ? _value.isInUse
+          : isInUse // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      isMasterDataSynced: freezed == isMasterDataSynced
+          ? _value.isMasterDataSynced
+          : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
+              as bool?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -103,6 +119,8 @@ abstract class _$$_CompanyCopyWith<$Res> implements $CompanyCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'CompanyId') int? companyId,
       @JsonKey(name: 'CompanyName') String? companyName,
+      @JsonKey(name: 'IsInUse') bool? isInUse,
+      @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'CreateDT') String? createDT,
       @JsonKey(name: 'UpdateDT') String? updateDT});
@@ -120,6 +138,8 @@ class __$$_CompanyCopyWithImpl<$Res>
   $Res call({
     Object? companyId = freezed,
     Object? companyName = freezed,
+    Object? isInUse = freezed,
+    Object? isMasterDataSynced = freezed,
     Object? isActive = freezed,
     Object? createDT = freezed,
     Object? updateDT = freezed,
@@ -133,6 +153,14 @@ class __$$_CompanyCopyWithImpl<$Res>
           ? _value.companyName
           : companyName // ignore: cast_nullable_to_non_nullable
               as String?,
+      isInUse: freezed == isInUse
+          ? _value.isInUse
+          : isInUse // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      isMasterDataSynced: freezed == isMasterDataSynced
+          ? _value.isMasterDataSynced
+          : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
+              as bool?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -155,6 +183,8 @@ class _$_Company implements _Company {
   const _$_Company(
       {@JsonKey(name: 'CompanyId') this.companyId,
       @JsonKey(name: 'CompanyName') this.companyName,
+      @JsonKey(name: 'IsInUse') this.isInUse,
+      @JsonKey(name: 'IsMasterDataSynced') this.isMasterDataSynced,
       @JsonKey(name: 'IsActive') this.isActive,
       @JsonKey(name: 'CreateDT') this.createDT,
       @JsonKey(name: 'UpdateDT') this.updateDT});
@@ -169,6 +199,12 @@ class _$_Company implements _Company {
   @JsonKey(name: 'CompanyName')
   final String? companyName;
   @override
+  @JsonKey(name: 'IsInUse')
+  final bool? isInUse;
+  @override
+  @JsonKey(name: 'IsMasterDataSynced')
+  final bool? isMasterDataSynced;
+  @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
   @override
@@ -180,7 +216,7 @@ class _$_Company implements _Company {
 
   @override
   String toString() {
-    return 'Company(companyId: $companyId, companyName: $companyName, isActive: $isActive, createDT: $createDT, updateDT: $updateDT)';
+    return 'Company(companyId: $companyId, companyName: $companyName, isInUse: $isInUse, isMasterDataSynced: $isMasterDataSynced, isActive: $isActive, createDT: $createDT, updateDT: $updateDT)';
   }
 
   @override
@@ -192,6 +228,9 @@ class _$_Company implements _Company {
                 other.companyId == companyId) &&
             (identical(other.companyName, companyName) ||
                 other.companyName == companyName) &&
+            (identical(other.isInUse, isInUse) || other.isInUse == isInUse) &&
+            (identical(other.isMasterDataSynced, isMasterDataSynced) ||
+                other.isMasterDataSynced == isMasterDataSynced) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive) &&
             (identical(other.createDT, createDT) ||
@@ -202,8 +241,8 @@ class _$_Company implements _Company {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, companyId, companyName, isActive, createDT, updateDT);
+  int get hashCode => Object.hash(runtimeType, companyId, companyName, isInUse,
+      isMasterDataSynced, isActive, createDT, updateDT);
 
   @JsonKey(ignore: true)
   @override
@@ -223,6 +262,8 @@ abstract class _Company implements Company {
   const factory _Company(
       {@JsonKey(name: 'CompanyId') final int? companyId,
       @JsonKey(name: 'CompanyName') final String? companyName,
+      @JsonKey(name: 'IsInUse') final bool? isInUse,
+      @JsonKey(name: 'IsMasterDataSynced') final bool? isMasterDataSynced,
       @JsonKey(name: 'IsActive') final bool? isActive,
       @JsonKey(name: 'CreateDT') final String? createDT,
       @JsonKey(name: 'UpdateDT') final String? updateDT}) = _$_Company;
@@ -235,6 +276,12 @@ abstract class _Company implements Company {
   @override
   @JsonKey(name: 'CompanyName')
   String? get companyName;
+  @override
+  @JsonKey(name: 'IsInUse')
+  bool? get isInUse;
+  @override
+  @JsonKey(name: 'IsMasterDataSynced')
+  bool? get isMasterDataSynced;
   @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;

@@ -59,9 +59,11 @@ class _LoginScreenState extends State<LoginScreen> {
           await context.read<AuthCubit>().logIn(
                 LogInAuthEvent(
                   onFailure: () {
+                    success = false;
+                  },
+                  onSuccess: () {
                     success = true;
                   },
-                  onSuccess: () {},
                   password: password.toString(),
                   username: username.toString(),
                 ),

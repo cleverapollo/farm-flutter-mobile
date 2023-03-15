@@ -1,7 +1,6 @@
 part of 'entity_cubit.dart';
 
 class EntityState {
-
   const EntityState({
     this.entity,
     this.company,
@@ -24,6 +23,9 @@ class EntityState {
   final int countSchedules;
   final int countWorkers;
   final int countQuestion;
+
+  CmoDatabaseCompanyService? get companyService =>
+      cmoDatabaseCompanyService(companyId: company?.companyId);
 
   EntityState copyWith({
     Entity? entity,
