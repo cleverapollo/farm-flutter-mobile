@@ -78,6 +78,7 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Scaffold(
         body: Column(
           children: [
+            Row(),
             const CmoLogo(),
             Expanded(
               child: Padding(

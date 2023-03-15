@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
@@ -17,11 +18,13 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
 late FlutterSecureStorage secureStorage;
-final GlobalKey<ScaffoldMessengerState> snackbarKey = GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<ScaffoldMessengerState> snackbarKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(AppTheme.uiOverlayStyle);
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getTemporaryDirectory(),
@@ -42,6 +45,13 @@ Future<void> main() async {
   await deviceInfoService.init();
 
   Bloc.observer = CmoGlobalObserver();
+
+  try {
+    final context = widgetsBinding.renderViewElement;
+    if (context != null) {
+      await precacheImage(Assets.images.logo.provider(), context);
+    }
+  } finally {}
 
   runApp(
     EasyLocalization(
