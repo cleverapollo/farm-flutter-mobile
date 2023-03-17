@@ -7,10 +7,10 @@ part 'worker.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Worker with _$Worker {
-  const Worker._();
+    const Worker._();
 
   @override
-  Id get id => int.tryParse(workerId) ?? Isar.autoIncrement;
+  Id get id => Isar.autoIncrement;
 
   const factory Worker({
     @JsonKey(name: 'WorkerId') required String workerId,

@@ -52,7 +52,6 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen>
         );
 
     await entityCubit.getCompanies(context: context, userId: userId);
-    await Future.delayed(const Duration(milliseconds: 100));
     if (context.mounted) {
       final newEntityCubit = context.read<EntityCubit>();
       setState(() {

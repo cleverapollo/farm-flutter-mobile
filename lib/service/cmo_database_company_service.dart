@@ -2,842 +2,619 @@
 
 import 'dart:io';
 
-import 'package:cmo/di.dart';
 import 'package:cmo/model/model.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:sembast/sembast.dart';
-import 'package:sembast_sqflite/sembast_sqflite.dart';
-import 'package:sqflite/sqflite.dart' as sqflite;
-
-export 'package:sembast/sembast.dart';
+import 'package:isar/isar.dart';
 
 /// [CmoDatabaseCompanyService] is for storing master data
 class CmoDatabaseCompanyService {
-  CmoDatabaseCompanyService({
-    required this.companyId,
-  }) {
-    initializeDatabase();
+  factory CmoDatabaseCompanyService({required int? companyId}) {
+    _inst.companyId = companyId;
+    return _inst;
   }
 
-  final int? companyId;
-  String get _databaseName => 'cmo_company_${companyId ?? 'unknown'}.db';
+  CmoDatabaseCompanyService._internal();
+  static final CmoDatabaseCompanyService _inst =
+      CmoDatabaseCompanyService._internal();
 
-  static const String _cachePlantationKey = 'cachePlantation';
-  static const String _cacheUnitKey = 'cacheUnit';
-  static const String _cacheContractorKey = 'cacheContractor';
-  static const String _cacheProvinceKey = 'cacheProvince';
-  static const String _cacheMunicipalityKey = 'cacheMunicipality';
-  static const String _cacheImpactCausedKey = 'cacheImpactCaused';
-  static const String _cacheImpactOnKey = 'cacheImpactOn';
-  static const String _cacheJobCategoryKey = 'cacheJobCategory';
-  static const String _cacheJobDescriptionKey = 'cacheJobDescription';
-  static const String _cacheJobElementKey = 'cacheJobElement';
-  static const String _cacheMmmKey = 'cacheMmm';
-  static const String _cachePdcaKey = 'cachePdca';
-  static const String _cacheSeverityKey = 'cacheSeverity';
-  static const String _cacheSpeqsKey = 'cacheSpeqs';
-  static const String _cacheComplianceKey = 'cacheCompliance';
-  static const String _cacheTeamKey = 'cacheTeam';
-  static const String _cacheRejectReasonKey = 'cacheRejectReason';
-  static const String _cacheTrainingProviderKey = 'cacheTrainingProvider';
-  static const String _cacheCourseKey = 'cacheCourse';
-  static const String _cacheScheduleKey = 'cacheSchedule';
-  static const String _cacheScheduleActivityKey = 'cacheScheduleActivity';
-  static const String _cacheWorkerKey = 'cacheWorker';
-  static const String _cacheCompanyQuestionKey = 'cacheQuestion';
+  late int? companyId;
+  String get _databaseName => 'cmo_company_$companyId';
 
-  Future<Database> initializeDatabase() async {
-    final dir = await getApplicationDocumentsDirectory();
-    await dir.create(recursive: true);
-    final dbPath = join(dir.path, _databaseName);
-    final dbFactory = getDatabaseFactorySqflite(sqflite.databaseFactory);
-    dbFactory.sqfliteImportPageSize = appInfoService.sqfliteImportPageSize;
-    final db = await dbFactory.openDatabase(dbPath);
+  Isar? _database;
+
+  Future<Isar> initializeDatabase() async {
+    final isar = await Isar.open(
+      [
+        PlantationSchema,
+        UnitSchema,
+        ContractorSchema,
+        ProvinceSchema,
+        MunicipalitySchema,
+        ImpactCausedSchema,
+        ImpactOnSchema,
+        JobCategorySchema,
+        JobDescriptionSchema,
+        JobElementSchema,
+        MmmSchema,
+        PdcaSchema,
+        SeveritySchema,
+        SpeqsSchema,
+        ComplianceSchema,
+        TeamSchema,
+        RejectReasonSchema,
+        TrainingProviderSchema,
+        CourseSchema,
+        ScheduleSchema,
+        ScheduleActivitySchema,
+        WorkerSchema,
+        CompanyQuestionSchema,
+      ],
+      name: _databaseName,
+    );
+    _database = isar;
+    return isar;
+  }
+
+  Future<Isar> _db() async {
+    final db = _database ?? await initializeDatabase();
     return db;
   }
 
-  Future<Database> _db() async {
-    final db = await initializeDatabase();
-    return db;
-  }
-
-  Future<StoreRef<int, Map<String, Object?>>> _store(String key) async {
-    final store = intMapStoreFactory.store(key);
-    return store;
-  }
-
-  Future<StoreRef<String, Map<String, Object?>>> _storeString(
-    String key,
-  ) async {
-    final store = stringMapStoreFactory.store(key);
-    return store;
-  }
-
-  Future<Map<String, Object?>> _cacheItem(
-    String key,
-    int id,
-    Map<String, dynamic> json,
-  ) async {
-    final db = await _db();
-    final store = await _store(key);
-    return store.record(id).put(db, json);
-  }
-
-  Future<Map<String, Object?>> _cacheItemDbString(
-    String key,
-    String id,
-    Map<String, dynamic> json,
-  ) async {
-    final db = await _db();
-    final store = await _storeString(key);
-    return store.record(id).put(db, json);
-  }
-
-  Future<Map<String, Object?>?> _getItem(String key, int id) async {
-    final db = await _db();
-    final store = await _store(key);
-    final snapshot = await store.record(id).getSnapshot(db);
-    return snapshot?.value;
-  }
-
-  Future<Map<String, Object?>?> _getItemDbString(String key, String id) async {
-    final db = await _db();
-    final store = await _storeString(key);
-    final snapshot = await store.record(id).getSnapshot(db);
-    return snapshot?.value;
-  }
-
-  Future<List<RecordSnapshot<int, Map<String, Object?>>>> _getAll(
-    String key,
-  ) async {
-    final db = await _db();
-    final store = await _store(key);
-    final snapshot = await store.find(db);
-    return snapshot;
-  }
-
-  Future<List<RecordSnapshot<String, Map<String, Object?>>>> _getAllDbString(
-    String key,
-  ) async {
-    final db = await _db();
-    final store = await _storeString(key);
-    final snapshot = await store.find(db);
-    return snapshot;
-  }
-
-  Future<int> _deleteAll(String key) async {
-    final db = await _db();
-    final store = await _store(key);
-    return store.delete(db);
-  }
-
-  Future<int> _deleteAllDbString(String key) async {
-    final db = await _db();
-    final store = await _storeString(key);
-    return store.delete(db);
-  }
+  Future<Isar> get db => _db();
 
   //#region Cached plantations
-  Future<Map<String, Object?>?> cachePlantation(Plantation item) async {
-    final id = item.plantationId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cachePlantationKey, id, json);
+  Future<int> cachePlantation(Plantation item) async {
+    final db = await _db();
+    return db.plantations.put(item);
   }
 
-  Future<Plantation?> getCachedPlantation({required int id}) async {
-    final value = await _getItem(_cachePlantationKey, id);
-    if (value == null) return null;
-    final plantation = Plantation.fromJson(value);
-    return plantation;
+  // Future<Plantation?> getCachedPlantation({required int id}) async {
+  //   final value = await _getItem(_cachePlantationKey, id);
+  //   if (value == null) return null;
+  //   final plantation = Plantation.fromJson(value);
+  //   return plantation;
+  // }
+
+  Future<List<Plantation>> getPlantations() async {
+    final db = await _db();
+    return db.plantations.where().findAll();
   }
 
-  Future<List<Plantation>> getAllCachedPlantations() async {
-    final snapshot = await _getAll(_cachePlantationKey);
-    final plantations = <Plantation>[];
-    for (final item in snapshot) {
-      final plantation = Plantation.fromJson(item.value);
-      plantations.add(plantation);
-    }
-    return plantations;
-  }
-
-  Future<int> deleteAllCachedPlantations() async {
-    return _deleteAll(_cachePlantationKey);
-  }
+  // Future<int> deletePlantations() async {
+  //   return _deleteAll(_cachePlantationKey);
+  // }
   //#endregion
 
   //#region Cached Units
-  Future<Map<String, Object?>?> cacheUnit(Unit item) async {
-    final id = item.unitId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheUnitKey, id, json);
+  Future<int> cacheUnit(Unit item) async {
+    final db = await _db();
+    return db.units.put(item);
   }
 
-  Future<Unit?> getCachedUnit({required int id}) async {
-    final value = await _getItem(_cacheUnitKey, id);
-    if (value == null) return null;
-    final unit = Unit.fromJson(value);
-    return unit;
+  // Future<Unit?> getCachedUnit({required int id}) async {
+  //   final value = await _getItem(_cacheUnitKey, id);
+  //   if (value == null) return null;
+  //   final unit = Unit.fromJson(value);
+  //   return unit;
+  // }
+
+  Future<List<Unit>> getUnits() async {
+    final db = await _db();
+    return db.units.where().findAll();
   }
 
-  Future<List<Unit>> getAllCachedUnits() async {
-    final snapshot = await _getAll(_cacheUnitKey);
-    final units = <Unit>[];
-    for (final item in snapshot) {
-      final unit = Unit.fromJson(item.value);
-      units.add(unit);
-    }
-    return units;
-  }
-
-  Future<int> deleteAllCachedUnits() async {
-    return _deleteAll(_cacheUnitKey);
-  }
+  // Future<int> deleteUnits() async {
+  //   return _deleteAll(_cacheUnitKey);
+  // }
   //#endregion
 
   //#region Cached Contractors
-  Future<Map<String, Object?>?> cacheContractor(Contractor item) async {
-    final id = item.contractorId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheContractorKey, id, json);
+  Future<int> cacheContractor(Contractor item) async {
+    final db = await _db();
+    return db.contractors.put(item);
   }
 
-  Future<Contractor?> getCachedContractor({required int id}) async {
-    final value = await _getItem(_cacheContractorKey, id);
-    if (value == null) return null;
-    final contractor = Contractor.fromJson(value);
-    return contractor;
+  // Future<Contractor?> getCachedContractor({required int id}) async {
+  //   final value = await _getItem(_cacheContractorKey, id);
+  //   if (value == null) return null;
+  //   final contractor = Contractor.fromJson(value);
+  //   return contractor;
+  // }
+
+  Future<List<Contractor>> getContractors() async {
+    final db = await _db();
+    return db.contractors.where().findAll();
   }
 
-  Future<List<Contractor>> getAllCachedContractors() async {
-    final snapshot = await _getAll(_cacheContractorKey);
-    final contractors = <Contractor>[];
-    for (final item in snapshot) {
-      final contractor = Contractor.fromJson(item.value);
-      contractors.add(contractor);
-    }
-    return contractors;
-  }
-
-  Future<int> deleteAllCachedContractors() async {
-    return _deleteAll(_cacheContractorKey);
-  }
+  // Future<int> deleteContractors() async {
+  //   return _deleteAll(_cacheContractorKey);
+  // }
   //#endregion
 
   //#region Cached Provinces
-  Future<Map<String, Object?>?> cacheProvince(Province item) async {
-    final id = item.provinceId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheProvinceKey, id, json);
+  Future<int> cacheProvince(Province item) async {
+    final db = await _db();
+    return db.provinces.put(item);
   }
 
-  Future<Province?> getCachedProvince({required int id}) async {
-    final value = await _getItem(_cacheProvinceKey, id);
-    if (value == null) return null;
-    final province = Province.fromJson(value);
-    return province;
+  // Future<Province?> getCachedProvince({required int id}) async {
+  //   final value = await _getItem(_cacheProvinceKey, id);
+  //   if (value == null) return null;
+  //   final province = Province.fromJson(value);
+  //   return province;
+  // }
+
+  Future<List<Province>> getProvinces() async {
+    final db = await _db();
+    return db.provinces.where().findAll();
   }
 
-  Future<List<Province>> getAllCachedProvinces() async {
-    final snapshot = await _getAll(_cacheProvinceKey);
-    final provinces = <Province>[];
-    for (final item in snapshot) {
-      final province = Province.fromJson(item.value);
-      provinces.add(province);
-    }
-    return provinces;
-  }
-
-  Future<int> deleteAllCachedProvinces() async {
-    return _deleteAll(_cacheProvinceKey);
-  }
+  // Future<int> deleteProvinces() async {
+  //   return _deleteAll(_cacheProvinceKey);
+  // }
   //#endregion
 
   //#region Cached Municipalitys
-  Future<Map<String, Object?>?> cacheMunicipality(Municipality item) async {
-    final id = item.municipalityId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheMunicipalityKey, id, json);
+  Future<int> cacheMunicipality(Municipality item) async {
+    final db = await _db();
+    return db.municipalitys.put(item);
   }
 
-  Future<Municipality?> getCachedMunicipality({required int id}) async {
-    final value = await _getItem(_cacheMunicipalityKey, id);
-    if (value == null) return null;
-    final municipality = Municipality.fromJson(value);
-    return municipality;
+  // Future<Municipality?> getCachedMunicipality({required int id}) async {
+  //   final value = await _getItem(_cacheMunicipalityKey, id);
+  //   if (value == null) return null;
+  //   final municipality = Municipality.fromJson(value);
+  //   return municipality;
+  // }
+
+  Future<List<Municipality>> getMunicipalitys() async {
+    final db = await _db();
+
+    return db.municipalitys.where().findAll();
   }
 
-  Future<List<Municipality>> getAllCachedMunicipalitys() async {
-    final snapshot = await _getAll(_cacheMunicipalityKey);
-    final municipalitys = <Municipality>[];
-    for (final item in snapshot) {
-      final municipality = Municipality.fromJson(item.value);
-      municipalitys.add(municipality);
-    }
-    return municipalitys;
-  }
-
-  Future<int> deleteAllCachedMunicipalitys() async {
-    return _deleteAll(_cacheMunicipalityKey);
-  }
+  // Future<int> deleteMunicipalitys() async {
+  //   return _deleteAll(_cacheMunicipalityKey);
+  // }
   //#endregion
 
   //#region Cached ImpactCauseds
-  Future<Map<String, Object?>?> cacheImpactCaused(ImpactCaused item) async {
-    final id = item.impactCausedId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheImpactCausedKey, id, json);
+  Future<int> cacheImpactCaused(ImpactCaused item) async {
+    final db = await _db();
+    return db.impactCauseds.put(item);
   }
 
-  Future<ImpactCaused?> getCachedImpactCaused({required int id}) async {
-    final value = await _getItem(_cacheImpactCausedKey, id);
-    if (value == null) return null;
-    final impactCaused = ImpactCaused.fromJson(value);
-    return impactCaused;
+  // Future<ImpactCaused?> getCachedImpactCaused({required int id}) async {
+  //   final value = await _getItem(_cacheImpactCausedKey, id);
+  //   if (value == null) return null;
+  //   final impactCaused = ImpactCaused.fromJson(value);
+  //   return impactCaused;
+  // }
+
+  Future<List<ImpactCaused>> getImpactCauseds() async {
+    final db = await _db();
+
+    return db.impactCauseds.where().findAll();
   }
 
-  Future<List<ImpactCaused>> getAllCachedImpactCauseds() async {
-    final snapshot = await _getAll(_cacheImpactCausedKey);
-    final impactCauseds = <ImpactCaused>[];
-    for (final item in snapshot) {
-      final impactCaused = ImpactCaused.fromJson(item.value);
-      impactCauseds.add(impactCaused);
-    }
-    return impactCauseds;
-  }
-
-  Future<int> deleteAllCachedImpactCauseds() async {
-    return _deleteAll(_cacheImpactCausedKey);
-  }
+  // Future<int> deleteImpactCauseds() async {
+  //   return _deleteAll(_cacheImpactCausedKey);
+  // }
   //#endregion
 
   //#region Cached ImpactOns
-  Future<Map<String, Object?>?> cacheImpactOn(ImpactOn item) async {
-    final id = item.impactOnId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheImpactOnKey, id, json);
+  Future<int> cacheImpactOn(ImpactOn item) async {
+    final db = await _db();
+    return db.impactOns.put(item);
   }
 
-  Future<ImpactOn?> getCachedImpactOn({required int id}) async {
-    final value = await _getItem(_cacheImpactOnKey, id);
-    if (value == null) return null;
-    final impactOn = ImpactOn.fromJson(value);
-    return impactOn;
+  // Future<ImpactOn?> getCachedImpactOn({required int id}) async {
+  //   final value = await _getItem(_cacheImpactOnKey, id);
+  //   if (value == null) return null;
+  //   final impactOn = ImpactOn.fromJson(value);
+  //   return impactOn;
+  // }
+
+  Future<List<ImpactOn>> getImpactOns() async {
+    final db = await _db();
+
+    return db.impactOns.where().findAll();
   }
 
-  Future<List<ImpactOn>> getAllCachedImpactOns() async {
-    final snapshot = await _getAll(_cacheImpactOnKey);
-    final impactOns = <ImpactOn>[];
-    for (final item in snapshot) {
-      final impactOn = ImpactOn.fromJson(item.value);
-      impactOns.add(impactOn);
-    }
-    return impactOns;
-  }
-
-  Future<int> deleteAllCachedImpactOns() async {
-    return _deleteAll(_cacheImpactOnKey);
-  }
+  // Future<int> deleteImpactOns() async {
+  //   return _deleteAll(_cacheImpactOnKey);
+  // }
   //#endregion
 
   //#region Cached JobCategorys
-  Future<Map<String, Object?>?> cacheJobCategory(JobCategory item) async {
-    final id = item.jobCategoryId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheJobCategoryKey, id, json);
+  Future<int> cacheJobCategory(JobCategory item) async {
+    final db = await _db();
+    return db.jobCategorys.put(item);
   }
 
-  Future<JobCategory?> getCachedJobCategory({required int id}) async {
-    final value = await _getItem(_cacheJobCategoryKey, id);
-    if (value == null) return null;
-    final jobCategory = JobCategory.fromJson(value);
-    return jobCategory;
+  // Future<JobCategory?> getCachedJobCategory({required int id}) async {
+  //   final value = await _getItem(_cacheJobCategoryKey, id);
+  //   if (value == null) return null;
+  //   final jobCategory = JobCategory.fromJson(value);
+  //   return jobCategory;
+  // }
+
+  Future<List<JobCategory>> getJobCategorys() async {
+    final db = await _db();
+
+    return db.jobCategorys.where().findAll();
   }
 
-  Future<List<JobCategory>> getAllCachedJobCategorys() async {
-    final snapshot = await _getAll(_cacheJobCategoryKey);
-    final jobCategorys = <JobCategory>[];
-    for (final item in snapshot) {
-      final jobCategory = JobCategory.fromJson(item.value);
-      jobCategorys.add(jobCategory);
-    }
-    return jobCategorys;
-  }
-
-  Future<int> deleteAllCachedJobCategorys() async {
-    return _deleteAll(_cacheJobCategoryKey);
-  }
+  // Future<int> deleteJobCategorys() async {
+  //   return _deleteAll(_cacheJobCategoryKey);
+  // }
   //#endregion
 
   //#region Cached JobDescriptions
-  Future<Map<String, Object?>?> cacheJobDescription(JobDescription item) async {
-    final id = item.jobDescriptionId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheJobDescriptionKey, id, json);
+  Future<int> cacheJobDescription(JobDescription item) async {
+    final db = await _db();
+    return db.jobDescriptions.put(item);
   }
 
-  Future<JobDescription?> getCachedJobDescription({required int id}) async {
-    final value = await _getItem(_cacheJobDescriptionKey, id);
-    if (value == null) return null;
-    final jobDescription = JobDescription.fromJson(value);
-    return jobDescription;
+  // Future<JobDescription?> getCachedJobDescription({required int id}) async {
+  //   final value = await _getItem(_cacheJobDescriptionKey, id);
+  //   if (value == null) return null;
+  //   final jobDescription = JobDescription.fromJson(value);
+  //   return jobDescription;
+  // }
+
+  Future<List<JobDescription>> getJobDescriptions() async {
+    final db = await _db();
+
+    return db.jobDescriptions.where().findAll();
   }
 
-  Future<List<JobDescription>> getAllCachedJobDescriptions() async {
-    final snapshot = await _getAll(_cacheJobDescriptionKey);
-    final jobDescriptions = <JobDescription>[];
-    for (final item in snapshot) {
-      final jobDescription = JobDescription.fromJson(item.value);
-      jobDescriptions.add(jobDescription);
-    }
-    return jobDescriptions;
-  }
-
-  Future<int> deleteAllCachedJobDescriptions() async {
-    return _deleteAll(_cacheJobDescriptionKey);
-  }
+  // Future<int> deleteJobDescriptions() async {
+  //   return _deleteAll(_cacheJobDescriptionKey);
+  // }
   //#endregion
 
   //#region Cached JobElements
-  Future<Map<String, Object?>?> cacheJobElement(JobElement item) async {
-    final id = item.jobElementId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheJobElementKey, id, json);
+  Future<int> cacheJobElement(JobElement item) async {
+    final db = await _db();
+    return db.jobElements.put(item);
   }
 
-  Future<JobElement?> getCachedJobElement({required int id}) async {
-    final value = await _getItem(_cacheJobElementKey, id);
-    if (value == null) return null;
-    final jobElement = JobElement.fromJson(value);
-    return jobElement;
+  // Future<JobElement?> getCachedJobElement({required int id}) async {
+  //   final value = await _getItem(_cacheJobElementKey, id);
+  //   if (value == null) return null;
+  //   final jobElement = JobElement.fromJson(value);
+  //   return jobElement;
+  // }
+
+  Future<List<JobElement>> getJobElements() async {
+    final db = await _db();
+
+    return db.jobElements.where().findAll();
   }
 
-  Future<List<JobElement>> getAllCachedJobElements() async {
-    final snapshot = await _getAll(_cacheJobElementKey);
-    final jobElements = <JobElement>[];
-    for (final item in snapshot) {
-      final jobElement = JobElement.fromJson(item.value);
-      jobElements.add(jobElement);
-    }
-    return jobElements;
-  }
-
-  Future<int> deleteAllCachedJobElements() async {
-    return _deleteAll(_cacheJobElementKey);
-  }
+  // Future<int> deleteJobElements() async {
+  //   return _deleteAll(_cacheJobElementKey);
+  // }
   //#endregion
 
   //#region Cached Mmms
-  Future<Map<String, Object?>?> cacheMmm(Mmm item) async {
-    final id = item.mmmId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheMmmKey, id, json);
+  Future<int> cacheMmm(Mmm item) async {
+    final db = await _db();
+    return db.mmms.put(item);
   }
 
-  Future<Mmm?> getCachedMmm({required int id}) async {
-    final value = await _getItem(_cacheMmmKey, id);
-    if (value == null) return null;
-    final mmm = Mmm.fromJson(value);
-    return mmm;
+  // Future<Mmm?> getCachedMmm({required int id}) async {
+  //   final value = await _getItem(_cacheMmmKey, id);
+  //   if (value == null) return null;
+  //   final mmm = Mmm.fromJson(value);
+  //   return mmm;
+  // }
+
+  Future<List<Mmm>> getMmms() async {
+    final db = await _db();
+
+    return db.mmms.where().findAll();
   }
 
-  Future<List<Mmm>> getAllCachedMmms() async {
-    final snapshot = await _getAll(_cacheMmmKey);
-    final mmms = <Mmm>[];
-    for (final item in snapshot) {
-      final mmm = Mmm.fromJson(item.value);
-      mmms.add(mmm);
-    }
-    return mmms;
-  }
-
-  Future<int> deleteAllCachedMmms() async {
-    return _deleteAll(_cacheMmmKey);
-  }
+  // Future<int> deleteMmms() async {
+  //   return _deleteAll(_cacheMmmKey);
+  // }
   //#endregion
 
   //#region Cached Pdcas
-  Future<Map<String, Object?>?> cachePdca(Pdca item) async {
-    final id = item.pdcaId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cachePdcaKey, id, json);
+  Future<int> cachePdca(Pdca item) async {
+    final db = await _db();
+    return db.pdcas.put(item);
   }
 
-  Future<Pdca?> getCachedPdca({required int id}) async {
-    final value = await _getItem(_cachePdcaKey, id);
-    if (value == null) return null;
-    final pdca = Pdca.fromJson(value);
-    return pdca;
+  // Future<Pdca?> getCachedPdca({required int id}) async {
+  //   final value = await _getItem(_cachePdcaKey, id);
+  //   if (value == null) return null;
+  //   final pdca = Pdca.fromJson(value);
+  //   return pdca;
+  // }
+
+  Future<List<Pdca>> getPdcas() async {
+    final db = await _db();
+
+    return db.pdcas.where().findAll();
   }
 
-  Future<List<Pdca>> getAllCachedPdcas() async {
-    final snapshot = await _getAll(_cachePdcaKey);
-    final pdcas = <Pdca>[];
-    for (final item in snapshot) {
-      final pdca = Pdca.fromJson(item.value);
-      pdcas.add(pdca);
-    }
-    return pdcas;
-  }
-
-  Future<int> deleteAllCachedPdcas() async {
-    return _deleteAll(_cachePdcaKey);
-  }
+  // Future<int> deletePdcas() async {
+  //   return _deleteAll(_cachePdcaKey);
+  // }
   //#endregion
 
   //#region Cached Severitys
-  Future<Map<String, Object?>?> cacheSeverity(Severity item) async {
-    final id = item.severityId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheSeverityKey, id, json);
+  Future<int> cacheSeverity(Severity item) async {
+    final db = await _db();
+    return db.severitys.put(item);
   }
 
-  Future<Severity?> getCachedSeverity({required int id}) async {
-    final value = await _getItem(_cacheSeverityKey, id);
-    if (value == null) return null;
-    final severity = Severity.fromJson(value);
-    return severity;
+  // Future<Severity?> getCachedSeverity({required int id}) async {
+  //   final value = await _getItem(_cacheSeverityKey, id);
+  //   if (value == null) return null;
+  //   final severity = Severity.fromJson(value);
+  //   return severity;
+  // }
+
+  Future<List<Severity>> getSeveritys() async {
+    final db = await _db();
+
+    return db.severitys.where().findAll();
   }
 
-  Future<List<Severity>> getAllCachedSeveritys() async {
-    final snapshot = await _getAll(_cacheSeverityKey);
-    final severitys = <Severity>[];
-    for (final item in snapshot) {
-      final severity = Severity.fromJson(item.value);
-      severitys.add(severity);
-    }
-    return severitys;
-  }
-
-  Future<int> deleteAllCachedSeveritys() async {
-    return _deleteAll(_cacheSeverityKey);
-  }
+  // Future<int> deleteSeveritys() async {
+  //   return _deleteAll(_cacheSeverityKey);
+  // }
   //#endregion
 
   //#region Cached Speqss
-  Future<Map<String, Object?>?> cacheSpeqs(Speqs item) async {
-    final id = item.speqsId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheSpeqsKey, id, json);
+  Future<int> cacheSpeqs(Speqs item) async {
+    final db = await _db();
+    return db.speqs.put(item);
   }
 
-  Future<Speqs?> getCachedSpeqs({required int id}) async {
-    final value = await _getItem(_cacheSpeqsKey, id);
-    if (value == null) return null;
-    final speqs = Speqs.fromJson(value);
-    return speqs;
+  // Future<Speqs?> getCachedSpeqs({required int id}) async {
+  //   final value = await _getItem(_cacheSpeqsKey, id);
+  //   if (value == null) return null;
+  //   final speqs = Speqs.fromJson(value);
+  //   return speqs;
+  // }
+
+  Future<List<Speqs>> getSpeqss() async {
+    final db = await _db();
+    return db.speqs.where().findAll();
   }
 
-  Future<List<Speqs>> getAllCachedSpeqss() async {
-    final snapshot = await _getAll(_cacheSpeqsKey);
-    final speqss = <Speqs>[];
-    for (final item in snapshot) {
-      final speqs = Speqs.fromJson(item.value);
-      speqss.add(speqs);
-    }
-    return speqss;
-  }
-
-  Future<int> deleteAllCachedSpeqss() async {
-    return _deleteAll(_cacheSpeqsKey);
-  }
+  // Future<int> deleteSpeqss() async {
+  //   return _deleteAll(_cacheSpeqsKey);
+  // }
   //#endregion
 
   //#region Cached Compliances
-  Future<Map<String, Object?>?> cacheCompliance(Compliance item) async {
-    final id = item.complianceId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheComplianceKey, id, json);
+  Future<int> cacheCompliance(Compliance item) async {
+    final db = await _db();
+    return db.compliances.put(item);
   }
 
-  Future<Compliance?> getCachedCompliance({required int id}) async {
-    final value = await _getItem(_cacheComplianceKey, id);
-    if (value == null) return null;
-    final compliance = Compliance.fromJson(value);
-    return compliance;
+  // Future<Compliance?> getCachedCompliance({required int id}) async {
+  //   final value = await _getItem(_cacheComplianceKey, id);
+  //   if (value == null) return null;
+  //   final compliance = Compliance.fromJson(value);
+  //   return compliance;
+  // }
+
+  Future<List<Compliance>> getCompliances() async {
+    final db = await _db();
+
+    return db.compliances.where().findAll();
   }
 
-  Future<List<Compliance>> getAllCachedCompliances() async {
-    final snapshot = await _getAll(_cacheComplianceKey);
-    final compliances = <Compliance>[];
-    for (final item in snapshot) {
-      final compliance = Compliance.fromJson(item.value);
-      compliances.add(compliance);
-    }
-    return compliances;
-  }
-
-  Future<int> deleteAllCachedCompliances() async {
-    return _deleteAll(_cacheComplianceKey);
-  }
+  // Future<int> deleteCompliances() async {
+  //   return _deleteAll(_cacheComplianceKey);
+  // }
   //#endregion
 
   //#region Cached Teams
-  Future<Map<String, Object?>?> cacheTeam(Team item) async {
-    final id = item.teamId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheTeamKey, id, json);
+  Future<int> cacheTeam(Team item) async {
+    final db = await _db();
+    return db.teams.put(item);
   }
 
-  Future<Team?> getCachedTeam({required int id}) async {
-    final value = await _getItem(_cacheTeamKey, id);
-    if (value == null) return null;
-    final team = Team.fromJson(value);
-    return team;
+  // Future<Team?> getCachedTeam({required int id}) async {
+  //   final value = await _getItem(_cacheTeamKey, id);
+  //   if (value == null) return null;
+  //   final team = Team.fromJson(value);
+  //   return team;
+  // }
+
+  Future<List<Team>> getTeams() async {
+    final db = await _db();
+
+    return db.teams.where().findAll();
   }
 
-  Future<List<Team>> getAllCachedTeams() async {
-    final snapshot = await _getAll(_cacheTeamKey);
-    final teams = <Team>[];
-    for (final item in snapshot) {
-      final team = Team.fromJson(item.value);
-      teams.add(team);
-    }
-    return teams;
-  }
-
-  Future<int> deleteAllCachedTeams() async {
-    return _deleteAll(_cacheTeamKey);
-  }
+  // Future<int> deleteTeams() async {
+  //   return _deleteAll(_cacheTeamKey);
+  // }
   //#endregion
 
   //#region Cached RejectReasons
-  Future<Map<String, Object?>?> cacheRejectReason(RejectReason item) async {
-    final id = item.rejectReasonId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheRejectReasonKey, id, json);
+  Future<int> cacheRejectReason(RejectReason item) async {
+    final db = await _db();
+    return db.rejectReasons.put(item);
   }
 
-  Future<RejectReason?> getCachedRejectReason({required int id}) async {
-    final value = await _getItem(_cacheRejectReasonKey, id);
-    if (value == null) return null;
-    final rejectReason = RejectReason.fromJson(value);
-    return rejectReason;
+  // Future<RejectReason?> getCachedRejectReason({required int id}) async {
+  //   final value = await _getItem(_cacheRejectReasonKey, id);
+  //   if (value == null) return null;
+  //   final rejectReason = RejectReason.fromJson(value);
+  //   return rejectReason;
+  // }
+
+  Future<List<RejectReason>> getRejectReasons() async {
+    final db = await _db();
+
+    return db.rejectReasons.where().findAll();
   }
 
-  Future<List<RejectReason>> getAllCachedRejectReasons() async {
-    final snapshot = await _getAll(_cacheRejectReasonKey);
-    final rejectReasons = <RejectReason>[];
-    for (final item in snapshot) {
-      final rejectReason = RejectReason.fromJson(item.value);
-      rejectReasons.add(rejectReason);
-    }
-    return rejectReasons;
-  }
-
-  Future<int> deleteAllCachedRejectReasons() async {
-    return _deleteAll(_cacheRejectReasonKey);
-  }
+  // Future<int> deleteRejectReasons() async {
+  //   return _deleteAll(_cacheRejectReasonKey);
+  // }
   //#endregion
 
   //#region Cached TrainingProviders
-  Future<Map<String, Object?>?> cacheTrainingProvider(
+  Future<int> cacheTrainingProvider(
     TrainingProvider item,
   ) async {
-    final id = item.trainingProviderId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheTrainingProviderKey, id, json);
+    final db = await _db();
+    return db.trainingProviders.put(item);
   }
 
-  Future<TrainingProvider?> getCachedTrainingProvider({required int id}) async {
-    final value = await _getItem(_cacheTrainingProviderKey, id);
-    if (value == null) return null;
-    final trainingProvider = TrainingProvider.fromJson(value);
-    return trainingProvider;
+  // Future<TrainingProvider?> getCachedTrainingProvider({required int id}) async {
+  //   final value = await _getItem(_cacheTrainingProviderKey, id);
+  //   if (value == null) return null;
+  //   final trainingProvider = TrainingProvider.fromJson(value);
+  //   return trainingProvider;
+  // }
+
+  Future<List<TrainingProvider>> getTrainingProviders() async {
+    final db = await _db();
+
+    return db.trainingProviders.where().findAll();
   }
 
-  Future<List<TrainingProvider>> getAllCachedTrainingProviders() async {
-    final snapshot = await _getAll(_cacheTrainingProviderKey);
-    final trainingProviders = <TrainingProvider>[];
-    for (final item in snapshot) {
-      final trainingProvider = TrainingProvider.fromJson(item.value);
-      trainingProviders.add(trainingProvider);
-    }
-    return trainingProviders;
-  }
-
-  Future<int> deleteAllCachedTrainingProviders() async {
-    return _deleteAll(_cacheTrainingProviderKey);
-  }
+  // Future<int> deleteTrainingProviders() async {
+  //   return _deleteAll(_cacheTrainingProviderKey);
+  // }
   //#endregion
 
   //#region Cached Courses
-  Future<Map<String, Object?>?> cacheCourse(Course item) async {
-    final id = item.courseId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheCourseKey, id, json);
+  Future<int> cacheCourse(Course item) async {
+    final db = await _db();
+    return db.courses.put(item);
   }
 
-  Future<Course?> getCachedCourse({required int id}) async {
-    final value = await _getItem(_cacheCourseKey, id);
-    if (value == null) return null;
-    final course = Course.fromJson(value);
-    return course;
+  // Future<Course?> getCachedCourse({required int id}) async {
+  //   final value = await _getItem(_cacheCourseKey, id);
+  //   if (value == null) return null;
+  //   final course = Course.fromJson(value);
+  //   return course;
+  // }
+
+  Future<List<Course>> getCourses() async {
+    final db = await _db();
+
+    return db.courses.where().findAll();
   }
 
-  Future<List<Course>> getAllCachedCourses() async {
-    final snapshot = await _getAll(_cacheCourseKey);
-    final courses = <Course>[];
-    for (final item in snapshot) {
-      final course = Course.fromJson(item.value);
-      courses.add(course);
-    }
-    return courses;
-  }
-
-  Future<int> deleteAllCachedCourses() async {
-    return _deleteAll(_cacheCourseKey);
-  }
+  // Future<int> deleteCourses() async {
+  //   return _deleteAll(_cacheCourseKey);
+  // }
   //#endregion
 
   //#region Cached Schedules
-  Future<Map<String, Object?>?> cacheSchedule(Schedule item) async {
-    final id = item.scheduleId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItemDbString(_cacheScheduleKey, id, json);
+  Future<int> cacheSchedule(Schedule item) async {
+    final db = await _db();
+    return db.schedules.put(item);
   }
 
-  Future<Schedule?> getCachedSchedule({required String id}) async {
-    final value = await _getItemDbString(_cacheScheduleKey, id);
-    if (value == null) return null;
-    final schedule = Schedule.fromJson(value);
-    return schedule;
+  // Future<Schedule?> getCachedSchedule({required String id}) async {
+  //   final value = await _getItemDbString(_cacheScheduleKey, id);
+  //   if (value == null) return null;
+  //   final schedule = Schedule.fromJson(value);
+  //   return schedule;
+  // }
+
+  Future<List<Schedule>> getSchedules() async {
+    final db = await _db();
+
+    return db.schedules.where().findAll();
   }
 
-  Future<List<Schedule>> getAllCachedSchedules() async {
-    final snapshot = await _getAllDbString(_cacheScheduleKey);
-    final schedules = <Schedule>[];
-    for (final item in snapshot) {
-      final schedule = Schedule.fromJson(item.value);
-      schedules.add(schedule);
-    }
-    return schedules;
-  }
-
-  Future<int> deleteAllCachedSchedules() async {
-    return _deleteAllDbString(_cacheScheduleKey);
-  }
+  // Future<int> deleteSchedules() async {
+  //   return _deleteAllDbString(_cacheScheduleKey);
+  // }
   //#endregion
 
   //#region Cached ScheduleActivitys
-  Future<Map<String, Object?>?> cacheScheduleActivity(
+  Future<int> cacheScheduleActivity(
     ScheduleActivity item,
   ) async {
-    final id = item.scheduleActivityId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheScheduleActivityKey, id, json);
+    final db = await _db();
+    return db.scheduleActivitys.put(item);
   }
 
-  Future<ScheduleActivity?> getCachedScheduleActivity({required int id}) async {
-    final value = await _getItem(_cacheScheduleActivityKey, id);
-    if (value == null) return null;
-    final scheduleActivity = ScheduleActivity.fromJson(value);
-    return scheduleActivity;
+  // Future<ScheduleActivity?> getCachedScheduleActivity({required int id}) async {
+  //   final value = await _getItem(_cacheScheduleActivityKey, id);
+  //   if (value == null) return null;
+  //   final scheduleActivity = ScheduleActivity.fromJson(value);
+  //   return scheduleActivity;
+  // }
+
+  Future<List<ScheduleActivity>> getScheduleActivitys() async {
+    final db = await _db();
+
+    return db.scheduleActivitys.where().findAll();
   }
 
-  Future<List<ScheduleActivity>> getAllCachedScheduleActivitys() async {
-    final snapshot = await _getAll(_cacheScheduleActivityKey);
-    final scheduleActivitys = <ScheduleActivity>[];
-    for (final item in snapshot) {
-      final scheduleActivity = ScheduleActivity.fromJson(item.value);
-      scheduleActivitys.add(scheduleActivity);
-    }
-    return scheduleActivitys;
-  }
-
-  Future<int> deleteAllCachedScheduleActivitys() async {
-    return _deleteAll(_cacheScheduleActivityKey);
-  }
+  // Future<int> deleteScheduleActivitys() async {
+  //   return _deleteAll(_cacheScheduleActivityKey);
+  // }
   //#endregion
 
   //#region Cached Workers
-  Future<Map<String, Object?>?> cacheWorker(Worker item) async {
-    final id = item.workerId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItemDbString(_cacheWorkerKey, id, json);
+  Future<int> cacheWorker(Worker item) async {
+    final db = await _db();
+    return db.workers.put(item);
   }
 
-  Future<Worker?> getCachedWorker({required String id}) async {
-    final value = await _getItemDbString(_cacheWorkerKey, id);
-    if (value == null) return null;
-    final worker = Worker.fromJson(value);
-    return worker;
+  // Future<Worker?> getCachedWorker({required String id}) async {
+  //   final value = await _getItemDbString(_cacheWorkerKey, id);
+  //   if (value == null) return null;
+  //   final worker = Worker.fromJson(value);
+  //   return worker;
+  // }
+
+  Future<List<Worker>> getWorkers() async {
+    final db = await _db();
+
+    return db.workers.where().findAll();
   }
 
-  Future<List<Worker>> getAllCachedWorkers() async {
-    final snapshot = await _getAllDbString(_cacheWorkerKey);
-    final workers = <Worker>[];
-    for (final item in snapshot) {
-      final worker = Worker.fromJson(item.value);
-      workers.add(worker);
-    }
-    return workers;
-  }
-
-  Future<int> deleteAllCachedWorkers() async {
-    return _deleteAllDbString(_cacheWorkerKey);
-  }
+  // Future<int> deleteWorkers() async {
+  //   return _deleteAllDbString(_cacheWorkerKey);
+  // }
   //#endregion
 
   //#region Cached CompanyQuestions
-  Future<Map<String, Object?>?> cacheCompanyQuestion(
+  Future<int> cacheCompanyQuestion(
     CompanyQuestion item,
   ) async {
-    final id = item.companyQuestionId;
-    if (id == null) return null;
-    final json = item.toJson();
-    return _cacheItem(_cacheCompanyQuestionKey, id, json);
+    final db = await _db();
+    return db.companyQuestions.put(item);
   }
 
-  Future<CompanyQuestion?> getCachedCompanyQuestion({required int id}) async {
-    final value = await _getItem(_cacheCompanyQuestionKey, id);
-    if (value == null) return null;
-    final companyQuestion = CompanyQuestion.fromJson(value);
-    return companyQuestion;
+  // Future<CompanyQuestion?> getCachedCompanyQuestion({required int id}) async {
+  //   final value = await _getItem(_cacheCompanyQuestionKey, id);
+  //   if (value == null) return null;
+  //   final companyQuestion = CompanyQuestion.fromJson(value);
+  //   return companyQuestion;
+  // }
+
+  Future<List<CompanyQuestion>> getCompanyQuestions() async {
+    final db = await _db();
+
+    return db.companyQuestions.where().findAll();
   }
 
-  Future<List<CompanyQuestion>> getAllCachedCompanyQuestions() async {
-    final snapshot = await _getAll(_cacheCompanyQuestionKey);
-    final companyQuestions = <CompanyQuestion>[];
-    for (final item in snapshot) {
-      final companyQuestion = CompanyQuestion.fromJson(item.value);
-      companyQuestions.add(companyQuestion);
-    }
-    return companyQuestions;
-  }
-
-  Future<int> deleteAllCachedCompanyQuestions() async {
-    return _deleteAll(_cacheCompanyQuestionKey);
-  }
-  //#endregion
-
-  Future<FileSystemEntity> deleteAll() async {
-    final dir = await getApplicationDocumentsDirectory();
-    await dir.create(recursive: true);
-    final dbPath = join(dir.path, _databaseName);
-    return File(dbPath).delete();
+  Future<FileSystemEntity?> deleteAll() async {
+    final db = await _db();
+    await db.writeTxn(() async {
+      await db.clear();
+    });
+    _database = null;
+    return null;
   }
 }
