@@ -84,7 +84,7 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
           if (context.mounted) {
             showSnackSuccess(
               msg:
-                  '${LocaleKeys.save.tr()} ${LocaleKeys.createWorker.tr()} $resultId',
+                  '${LocaleKeys.createWorker.tr()} $resultId',
             );
             Navigator.of(context).pop();
           }
