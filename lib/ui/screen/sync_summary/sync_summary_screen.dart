@@ -1,7 +1,6 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/service/cmo_database_company_service.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
@@ -60,6 +59,11 @@ class SyncSummaryScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     ...[
+                      _SummaryTite(
+                        future: databaseService.getWorkersLocal(),
+                        title: 'Workers unsync',
+                      ),
+                      const Divider(),
                       _SummaryTite(
                         future: databaseService.getCompliances(),
                         title: 'Company',

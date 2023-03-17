@@ -244,7 +244,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
                 await insertQuestion(item);
               }
 
-              await Future.delayed(const Duration(milliseconds: 100));
+              // await Future.delayed(const Duration(milliseconds: 100));
             } catch (e, s) {
               log('Failed to sync tricklefeed master data');
               log('$e $s');
