@@ -51,6 +51,9 @@
     <array>
     	<string>en</string>
     	<string>fr</string>
+    	<string>ms</string>
+    	<string>th</string>
+    	<string>zu</string>
     </array>
 </dict>
 </plist>

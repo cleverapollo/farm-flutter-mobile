@@ -17,6 +17,7 @@ class CmoLogo extends StatelessWidget {
         Text(
           LocaleKeys.empower.tr(),
           style: context.textStyles.headlineBold,
+          textAlign: TextAlign.center,
         ),
       ],
     );

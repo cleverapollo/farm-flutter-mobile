@@ -88,7 +88,10 @@
   "legal": "Legal",
   "locale": {
     "en": "English",
-    "fr": "French"
+    "fr": "French",
+    "ms": "Malaysia",
+    "th": "Thai",
+    "zu": "Zulu"
   },
   "locationName": "Location Name",
   "login": "Login",
@@ -180,8 +183,8 @@
   "termsUse": "Terms of Usage",
   "thai": "Thai",
   "theme": {
-    "light": "Light",
-    "dark": "Dark"
+    "dark": "Dark",
+    "light": "Light"
   },
   "total": "Total",
   "town": "Town",

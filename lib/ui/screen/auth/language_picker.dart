@@ -71,11 +71,14 @@ class _LanguagePickerState extends State<LanguagePicker>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 42),
-              buildOption(locale: AppLocale.en),
-              const SizedBox(height: 4),
-              buildOption(locale: AppLocale.fr),
-              const SizedBox(height: 42),
+              const SizedBox(height: 32),
+              ...AppLocale.all.map(
+                (e) => Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: buildOption(locale: e),
+                ),
+              ),
+              const SizedBox(height: 24),
             ],
           ),
         ),

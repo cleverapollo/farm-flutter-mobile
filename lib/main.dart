@@ -58,6 +58,7 @@ Future<void> main() async {
       supportedLocales: AppLocale.all,
       path: 'assets/l10n',
       fallbackLocale: AppLocale.fallback,
+      useOnlyLangCode: true,
       child: const CmoApp(),
     ),
   );

@@ -61,6 +61,7 @@ abstract class  LocaleKeys {
   static const email = 'email';
   static const emailAddress = 'emailAddress';
   static const empower = 'empower';
+  static const english = 'english';
   static const entity = 'entity';
   static const entityName = 'entityName';
   static const espacement = 'espacement';
@@ -70,6 +71,8 @@ abstract class  LocaleKeys {
   static const forecast = 'forecast';
   static const forestManagement = 'forestManagement';
   static const forgotPassword = 'forgotPassword';
+  static const french = 'french';
+  static const gender = 'gender';
   static const groupScheme = 'groupScheme';
   static const groupSchemeManagement = 'groupSchemeManagement';
   static const ha = 'ha';
@@ -90,12 +93,16 @@ abstract class  LocaleKeys {
   static const legal = 'legal';
   static const locale_en = 'locale.en';
   static const locale_fr = 'locale.fr';
+  static const locale_ms = 'locale.ms';
+  static const locale_th = 'locale.th';
+  static const locale_zu = 'locale.zu';
   static const locale = 'locale';
   static const locationName = 'locationName';
   static const login = 'login';
   static const long = 'long';
   static const mai = 'mai';
   static const malay = 'malay';
+  static const managementPlan = 'managementPlan';
   static const measured = 'measured';
   static const memberDetails = 'memberDetails';
   static const memberFarmObjective = 'memberFarmObjective';
@@ -142,6 +149,7 @@ abstract class  LocaleKeys {
   static const province = 'province';
   static const race = 'race';
   static const reason = 'reason';
+  static const registerCaseManagement = 'registerCaseManagement';
   static const registers = 'registers';
   static const resourceManagementUnit = 'resourceManagementUnit';
   static const retake = 'retake';
@@ -157,6 +165,7 @@ abstract class  LocaleKeys {
   static const siteDetails = 'siteDetails';
   static const siteLocation = 'siteLocation';
   static const siteManagement = 'siteManagement';
+  static const siteManagementPlan = 'siteManagementPlan';
   static const siteName = 'siteName';
   static const slimf = 'slimf';
   static const speciesGroup = 'speciesGroup';
@@ -170,14 +179,15 @@ abstract class  LocaleKeys {
   static const surname = 'surname';
   static const survival = 'survival';
   static const sync = 'sync';
+  static const syncSummary = 'syncSummary';
   static const synced = 'synced';
   static const takePhoto = 'takePhoto';
   static const team = 'team';
   static const termsConditions = 'termsConditions';
   static const termsUse = 'termsUse';
   static const thai = 'thai';
-  static const theme_light = 'theme.light';
   static const theme_dark = 'theme.dark';
+  static const theme_light = 'theme.light';
   static const theme = 'theme';
   static const total = 'total';
   static const town = 'town';
@@ -189,9 +199,5 @@ abstract class  LocaleKeys {
   static const workers = 'workers';
   static const yes = 'yes';
   static const zulu = 'zulu';
-  static const syncSummary = 'syncSummary';
-  static const managementPlan = 'managementPlan';
-  static const registerCaseManagement = 'registerCaseManagement';
-  static const siteManagementPlan = 'siteManagementPlan';
 
 }

@@ -3,9 +3,17 @@ import 'dart:ui';
 abstract class AppLocale {
   static const fallback = en;
 
-  static const en = Locale('en', 'US');
+  static const en = Locale('en');
+  static const fr = Locale('fr');
+  static const ms = Locale('ms');
+  static const th = Locale('th');
+  static const zu = Locale('zu');
 
-  static const fr = Locale('fr', 'FR');
-
-  static List<Locale> get all => [en, fr];
+  static List<Locale> get all => [
+        en,
+        fr,
+        ms,
+        th,
+        zu,
+      ];
 }
