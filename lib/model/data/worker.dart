@@ -1,12 +1,19 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar/isar.dart';
 
 part 'worker.freezed.dart';
 part 'worker.g.dart';
 
 @freezed
+@Collection(ignore: {'copyWith'})
 class Worker with _$Worker {
+    const Worker._();
+
+  @override
+  Id get id => Isar.autoIncrement;
+
   const factory Worker({
-    @JsonKey(name: 'WorkerId') String? workerId,
+    @JsonKey(name: 'WorkerId') required String workerId,
     @JsonKey(name: 'FirstName') String? firstName,
     @JsonKey(name: 'Surname') String? surname,
     @JsonKey(name: 'CompanyId') int? companyId,

@@ -1,12 +1,19 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar/isar.dart';
 
 part 'pdca.freezed.dart';
 part 'pdca.g.dart';
 
 @freezed
+@Collection(ignore: {'copyWith'})
 class Pdca with _$Pdca {
+    const Pdca._();
+
+  @override
+  Id get id => pdcaId;
+
   const factory Pdca({
-    @JsonKey(name: 'PDCAId') int? pdcaId,
+    @JsonKey(name: 'PDCAId') required int  pdcaId,
     @JsonKey(name: 'PDCAName') String? pdcaName,
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _Pdca;

@@ -21,7 +21,7 @@ Municipality _$MunicipalityFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Municipality {
   @JsonKey(name: 'MunicipalityId')
-  int? get municipalityId => throw _privateConstructorUsedError;
+  int get municipalityId => throw _privateConstructorUsedError;
   @JsonKey(name: 'MunicipalityName')
   String? get municipalityName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -40,7 +40,7 @@ abstract class $MunicipalityCopyWith<$Res> {
       _$MunicipalityCopyWithImpl<$Res, Municipality>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'MunicipalityId') int? municipalityId,
+      {@JsonKey(name: 'MunicipalityId') int municipalityId,
       @JsonKey(name: 'MunicipalityName') String? municipalityName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -58,15 +58,15 @@ class _$MunicipalityCopyWithImpl<$Res, $Val extends Municipality>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? municipalityId = freezed,
+    Object? municipalityId = null,
     Object? municipalityName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      municipalityId: freezed == municipalityId
+      municipalityId: null == municipalityId
           ? _value.municipalityId
           : municipalityId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       municipalityName: freezed == municipalityName
           ? _value.municipalityName
           : municipalityName // ignore: cast_nullable_to_non_nullable
@@ -88,7 +88,7 @@ abstract class _$$_MunicipalityCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'MunicipalityId') int? municipalityId,
+      {@JsonKey(name: 'MunicipalityId') int municipalityId,
       @JsonKey(name: 'MunicipalityName') String? municipalityName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -104,15 +104,15 @@ class __$$_MunicipalityCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? municipalityId = freezed,
+    Object? municipalityId = null,
     Object? municipalityName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_Municipality(
-      municipalityId: freezed == municipalityId
+      municipalityId: null == municipalityId
           ? _value.municipalityId
           : municipalityId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       municipalityName: freezed == municipalityName
           ? _value.municipalityName
           : municipalityName // ignore: cast_nullable_to_non_nullable
@@ -127,18 +127,19 @@ class __$$_MunicipalityCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Municipality implements _Municipality {
+class _$_Municipality extends _Municipality {
   const _$_Municipality(
-      {@JsonKey(name: 'MunicipalityId') this.municipalityId,
+      {@JsonKey(name: 'MunicipalityId') required this.municipalityId,
       @JsonKey(name: 'MunicipalityName') this.municipalityName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_Municipality.fromJson(Map<String, dynamic> json) =>
       _$$_MunicipalityFromJson(json);
 
   @override
   @JsonKey(name: 'MunicipalityId')
-  final int? municipalityId;
+  final int municipalityId;
   @override
   @JsonKey(name: 'MunicipalityName')
   final String? municipalityName;
@@ -183,18 +184,19 @@ class _$_Municipality implements _Municipality {
   }
 }
 
-abstract class _Municipality implements Municipality {
+abstract class _Municipality extends Municipality {
   const factory _Municipality(
-      {@JsonKey(name: 'MunicipalityId') final int? municipalityId,
+      {@JsonKey(name: 'MunicipalityId') required final int municipalityId,
       @JsonKey(name: 'MunicipalityName') final String? municipalityName,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Municipality;
+  const _Municipality._() : super._();
 
   factory _Municipality.fromJson(Map<String, dynamic> json) =
       _$_Municipality.fromJson;
 
   @override
   @JsonKey(name: 'MunicipalityId')
-  int? get municipalityId;
+  int get municipalityId;
   @override
   @JsonKey(name: 'MunicipalityName')
   String? get municipalityName;

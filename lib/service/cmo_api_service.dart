@@ -115,7 +115,9 @@ class CmoApiService {
       return null;
     }
 
-    return UserAuth.fromJson(Json.tryDecode(stringData));
+    return UserAuth.fromJson(
+      Json.tryDecode(stringData) as Map<String, dynamic>,
+    );
   }
 
   // curl 'https://logistics.myeu.africa/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetUser' \
@@ -142,7 +144,9 @@ class CmoApiService {
 
     if (response.statusCode == 200) {
       final stringData = await response.transform(utf8.decoder).join();
-      return UserInfo.fromJson(Json.tryDecode(stringData));
+      return UserInfo.fromJson(
+        Json.tryDecode(stringData) as Map<String, dynamic>,
+      );
     } else if (response.statusCode == 401) {
       if (context.mounted) _loginAgainWithSavedCredentials(context);
       return null;
@@ -196,7 +200,9 @@ class CmoApiService {
 
     if (response.statusCode == 200) {
       final stringData = await response.transform(utf8.decoder).join();
-      return UserDevice.fromJson(Json.tryDecode(stringData));
+      return UserDevice.fromJson(
+        Json.tryDecode(stringData) as Map<String, dynamic>,
+      );
     } else if (response.statusCode == 401) {
       if (context.mounted) _loginAgainWithSavedCredentials(context);
       return null;
@@ -335,7 +341,9 @@ class CmoApiService {
 
     if (response.statusCode == 200) {
       final stringData = await response.transform(utf8.decoder).join();
-      return MasterDataMessage.fromJson(Json.tryDecode(stringData));
+      return MasterDataMessage.fromJson(
+        Json.tryDecode(stringData) as Map<String, dynamic>,
+      );
     } else if (response.statusCode == 401) {
       if (context.mounted) _loginAgainWithSavedCredentials(context);
       return null;

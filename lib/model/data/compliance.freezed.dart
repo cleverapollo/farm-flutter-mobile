@@ -21,7 +21,7 @@ Compliance _$ComplianceFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Compliance {
   @JsonKey(name: 'ComplianceId')
-  int? get complianceId => throw _privateConstructorUsedError;
+  int get complianceId => throw _privateConstructorUsedError;
   @JsonKey(name: 'ComplianceName')
   String? get complianceName => throw _privateConstructorUsedError;
   @JsonKey(name: 'CompanyId')
@@ -29,7 +29,7 @@ mixin _$Compliance {
   @JsonKey(name: 'HasRejectReason')
   bool? get hasRejectReason => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobCategoryId')
-  bool? get jobCategoryId => throw _privateConstructorUsedError;
+  int? get jobCategoryId => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
 
@@ -46,11 +46,11 @@ abstract class $ComplianceCopyWith<$Res> {
       _$ComplianceCopyWithImpl<$Res, Compliance>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'ComplianceId') int? complianceId,
+      {@JsonKey(name: 'ComplianceId') int complianceId,
       @JsonKey(name: 'ComplianceName') String? complianceName,
       @JsonKey(name: 'CompanyId') int? companyId,
       @JsonKey(name: 'HasRejectReason') bool? hasRejectReason,
-      @JsonKey(name: 'JobCategoryId') bool? jobCategoryId,
+      @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -67,7 +67,7 @@ class _$ComplianceCopyWithImpl<$Res, $Val extends Compliance>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? complianceId = freezed,
+    Object? complianceId = null,
     Object? complianceName = freezed,
     Object? companyId = freezed,
     Object? hasRejectReason = freezed,
@@ -75,10 +75,10 @@ class _$ComplianceCopyWithImpl<$Res, $Val extends Compliance>
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      complianceId: freezed == complianceId
+      complianceId: null == complianceId
           ? _value.complianceId
           : complianceId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       complianceName: freezed == complianceName
           ? _value.complianceName
           : complianceName // ignore: cast_nullable_to_non_nullable
@@ -94,7 +94,7 @@ class _$ComplianceCopyWithImpl<$Res, $Val extends Compliance>
       jobCategoryId: freezed == jobCategoryId
           ? _value.jobCategoryId
           : jobCategoryId // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -112,11 +112,11 @@ abstract class _$$_ComplianceCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'ComplianceId') int? complianceId,
+      {@JsonKey(name: 'ComplianceId') int complianceId,
       @JsonKey(name: 'ComplianceName') String? complianceName,
       @JsonKey(name: 'CompanyId') int? companyId,
       @JsonKey(name: 'HasRejectReason') bool? hasRejectReason,
-      @JsonKey(name: 'JobCategoryId') bool? jobCategoryId,
+      @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -131,7 +131,7 @@ class __$$_ComplianceCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? complianceId = freezed,
+    Object? complianceId = null,
     Object? complianceName = freezed,
     Object? companyId = freezed,
     Object? hasRejectReason = freezed,
@@ -139,10 +139,10 @@ class __$$_ComplianceCopyWithImpl<$Res>
     Object? isActive = freezed,
   }) {
     return _then(_$_Compliance(
-      complianceId: freezed == complianceId
+      complianceId: null == complianceId
           ? _value.complianceId
           : complianceId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       complianceName: freezed == complianceName
           ? _value.complianceName
           : complianceName // ignore: cast_nullable_to_non_nullable
@@ -158,7 +158,7 @@ class __$$_ComplianceCopyWithImpl<$Res>
       jobCategoryId: freezed == jobCategoryId
           ? _value.jobCategoryId
           : jobCategoryId // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -169,21 +169,22 @@ class __$$_ComplianceCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Compliance implements _Compliance {
+class _$_Compliance extends _Compliance {
   const _$_Compliance(
-      {@JsonKey(name: 'ComplianceId') this.complianceId,
+      {@JsonKey(name: 'ComplianceId') required this.complianceId,
       @JsonKey(name: 'ComplianceName') this.complianceName,
       @JsonKey(name: 'CompanyId') this.companyId,
       @JsonKey(name: 'HasRejectReason') this.hasRejectReason,
       @JsonKey(name: 'JobCategoryId') this.jobCategoryId,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_Compliance.fromJson(Map<String, dynamic> json) =>
       _$$_ComplianceFromJson(json);
 
   @override
   @JsonKey(name: 'ComplianceId')
-  final int? complianceId;
+  final int complianceId;
   @override
   @JsonKey(name: 'ComplianceName')
   final String? complianceName;
@@ -195,7 +196,7 @@ class _$_Compliance implements _Compliance {
   final bool? hasRejectReason;
   @override
   @JsonKey(name: 'JobCategoryId')
-  final bool? jobCategoryId;
+  final int? jobCategoryId;
   @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
@@ -243,21 +244,22 @@ class _$_Compliance implements _Compliance {
   }
 }
 
-abstract class _Compliance implements Compliance {
+abstract class _Compliance extends Compliance {
   const factory _Compliance(
-      {@JsonKey(name: 'ComplianceId') final int? complianceId,
+      {@JsonKey(name: 'ComplianceId') required final int complianceId,
       @JsonKey(name: 'ComplianceName') final String? complianceName,
       @JsonKey(name: 'CompanyId') final int? companyId,
       @JsonKey(name: 'HasRejectReason') final bool? hasRejectReason,
-      @JsonKey(name: 'JobCategoryId') final bool? jobCategoryId,
+      @JsonKey(name: 'JobCategoryId') final int? jobCategoryId,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Compliance;
+  const _Compliance._() : super._();
 
   factory _Compliance.fromJson(Map<String, dynamic> json) =
       _$_Compliance.fromJson;
 
   @override
   @JsonKey(name: 'ComplianceId')
-  int? get complianceId;
+  int get complianceId;
   @override
   @JsonKey(name: 'ComplianceName')
   String? get complianceName;
@@ -269,7 +271,7 @@ abstract class _Compliance implements Compliance {
   bool? get hasRejectReason;
   @override
   @JsonKey(name: 'JobCategoryId')
-  bool? get jobCategoryId;
+  int? get jobCategoryId;
   @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;

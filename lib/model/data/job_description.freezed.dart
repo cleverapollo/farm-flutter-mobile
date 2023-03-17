@@ -21,7 +21,7 @@ JobDescription _$JobDescriptionFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$JobDescription {
   @JsonKey(name: 'JobDescriptionId')
-  int? get jobDescriptionId => throw _privateConstructorUsedError;
+  int get jobDescriptionId => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobDescriptionName')
   String? get jobDescriptionName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -40,7 +40,7 @@ abstract class $JobDescriptionCopyWith<$Res> {
       _$JobDescriptionCopyWithImpl<$Res, JobDescription>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'JobDescriptionId') int? jobDescriptionId,
+      {@JsonKey(name: 'JobDescriptionId') int jobDescriptionId,
       @JsonKey(name: 'JobDescriptionName') String? jobDescriptionName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -58,15 +58,15 @@ class _$JobDescriptionCopyWithImpl<$Res, $Val extends JobDescription>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? jobDescriptionId = freezed,
+    Object? jobDescriptionId = null,
     Object? jobDescriptionName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      jobDescriptionId: freezed == jobDescriptionId
+      jobDescriptionId: null == jobDescriptionId
           ? _value.jobDescriptionId
           : jobDescriptionId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       jobDescriptionName: freezed == jobDescriptionName
           ? _value.jobDescriptionName
           : jobDescriptionName // ignore: cast_nullable_to_non_nullable
@@ -88,7 +88,7 @@ abstract class _$$_JobDescriptionCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'JobDescriptionId') int? jobDescriptionId,
+      {@JsonKey(name: 'JobDescriptionId') int jobDescriptionId,
       @JsonKey(name: 'JobDescriptionName') String? jobDescriptionName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -104,15 +104,15 @@ class __$$_JobDescriptionCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? jobDescriptionId = freezed,
+    Object? jobDescriptionId = null,
     Object? jobDescriptionName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_JobDescription(
-      jobDescriptionId: freezed == jobDescriptionId
+      jobDescriptionId: null == jobDescriptionId
           ? _value.jobDescriptionId
           : jobDescriptionId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       jobDescriptionName: freezed == jobDescriptionName
           ? _value.jobDescriptionName
           : jobDescriptionName // ignore: cast_nullable_to_non_nullable
@@ -127,18 +127,19 @@ class __$$_JobDescriptionCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_JobDescription implements _JobDescription {
+class _$_JobDescription extends _JobDescription {
   const _$_JobDescription(
-      {@JsonKey(name: 'JobDescriptionId') this.jobDescriptionId,
+      {@JsonKey(name: 'JobDescriptionId') required this.jobDescriptionId,
       @JsonKey(name: 'JobDescriptionName') this.jobDescriptionName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_JobDescription.fromJson(Map<String, dynamic> json) =>
       _$$_JobDescriptionFromJson(json);
 
   @override
   @JsonKey(name: 'JobDescriptionId')
-  final int? jobDescriptionId;
+  final int jobDescriptionId;
   @override
   @JsonKey(name: 'JobDescriptionName')
   final String? jobDescriptionName;
@@ -183,18 +184,19 @@ class _$_JobDescription implements _JobDescription {
   }
 }
 
-abstract class _JobDescription implements JobDescription {
+abstract class _JobDescription extends JobDescription {
   const factory _JobDescription(
-      {@JsonKey(name: 'JobDescriptionId') final int? jobDescriptionId,
+      {@JsonKey(name: 'JobDescriptionId') required final int jobDescriptionId,
       @JsonKey(name: 'JobDescriptionName') final String? jobDescriptionName,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_JobDescription;
+  const _JobDescription._() : super._();
 
   factory _JobDescription.fromJson(Map<String, dynamic> json) =
       _$_JobDescription.fromJson;
 
   @override
   @JsonKey(name: 'JobDescriptionId')
-  int? get jobDescriptionId;
+  int get jobDescriptionId;
   @override
   @JsonKey(name: 'JobDescriptionName')
   String? get jobDescriptionName;

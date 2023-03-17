@@ -21,7 +21,7 @@ TrainingProvider _$TrainingProviderFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$TrainingProvider {
   @JsonKey(name: 'TrainingProviderId')
-  int? get trainingProviderId => throw _privateConstructorUsedError;
+  int get trainingProviderId => throw _privateConstructorUsedError;
   @JsonKey(name: 'TrainingProviderName')
   String? get trainingProviderName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -40,7 +40,7 @@ abstract class $TrainingProviderCopyWith<$Res> {
       _$TrainingProviderCopyWithImpl<$Res, TrainingProvider>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'TrainingProviderId') int? trainingProviderId,
+      {@JsonKey(name: 'TrainingProviderId') int trainingProviderId,
       @JsonKey(name: 'TrainingProviderName') String? trainingProviderName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -58,15 +58,15 @@ class _$TrainingProviderCopyWithImpl<$Res, $Val extends TrainingProvider>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? trainingProviderId = freezed,
+    Object? trainingProviderId = null,
     Object? trainingProviderName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      trainingProviderId: freezed == trainingProviderId
+      trainingProviderId: null == trainingProviderId
           ? _value.trainingProviderId
           : trainingProviderId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       trainingProviderName: freezed == trainingProviderName
           ? _value.trainingProviderName
           : trainingProviderName // ignore: cast_nullable_to_non_nullable
@@ -88,7 +88,7 @@ abstract class _$$_TrainingProviderCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'TrainingProviderId') int? trainingProviderId,
+      {@JsonKey(name: 'TrainingProviderId') int trainingProviderId,
       @JsonKey(name: 'TrainingProviderName') String? trainingProviderName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -104,15 +104,15 @@ class __$$_TrainingProviderCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? trainingProviderId = freezed,
+    Object? trainingProviderId = null,
     Object? trainingProviderName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_TrainingProvider(
-      trainingProviderId: freezed == trainingProviderId
+      trainingProviderId: null == trainingProviderId
           ? _value.trainingProviderId
           : trainingProviderId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       trainingProviderName: freezed == trainingProviderName
           ? _value.trainingProviderName
           : trainingProviderName // ignore: cast_nullable_to_non_nullable
@@ -127,18 +127,19 @@ class __$$_TrainingProviderCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_TrainingProvider implements _TrainingProvider {
+class _$_TrainingProvider extends _TrainingProvider {
   const _$_TrainingProvider(
-      {@JsonKey(name: 'TrainingProviderId') this.trainingProviderId,
+      {@JsonKey(name: 'TrainingProviderId') required this.trainingProviderId,
       @JsonKey(name: 'TrainingProviderName') this.trainingProviderName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_TrainingProvider.fromJson(Map<String, dynamic> json) =>
       _$$_TrainingProviderFromJson(json);
 
   @override
   @JsonKey(name: 'TrainingProviderId')
-  final int? trainingProviderId;
+  final int trainingProviderId;
   @override
   @JsonKey(name: 'TrainingProviderName')
   final String? trainingProviderName;
@@ -183,18 +184,22 @@ class _$_TrainingProvider implements _TrainingProvider {
   }
 }
 
-abstract class _TrainingProvider implements TrainingProvider {
+abstract class _TrainingProvider extends TrainingProvider {
   const factory _TrainingProvider(
-      {@JsonKey(name: 'TrainingProviderId') final int? trainingProviderId,
-      @JsonKey(name: 'TrainingProviderName') final String? trainingProviderName,
-      @JsonKey(name: 'IsActive') final bool? isActive}) = _$_TrainingProvider;
+      {@JsonKey(name: 'TrainingProviderId')
+          required final int trainingProviderId,
+      @JsonKey(name: 'TrainingProviderName')
+          final String? trainingProviderName,
+      @JsonKey(name: 'IsActive')
+          final bool? isActive}) = _$_TrainingProvider;
+  const _TrainingProvider._() : super._();
 
   factory _TrainingProvider.fromJson(Map<String, dynamic> json) =
       _$_TrainingProvider.fromJson;
 
   @override
   @JsonKey(name: 'TrainingProviderId')
-  int? get trainingProviderId;
+  int get trainingProviderId;
   @override
   @JsonKey(name: 'TrainingProviderName')
   String? get trainingProviderName;

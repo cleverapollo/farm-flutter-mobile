@@ -21,7 +21,7 @@ ScheduleActivity _$ScheduleActivityFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ScheduleActivity {
   @JsonKey(name: 'ScheduleActivityId')
-  int? get scheduleActivityId => throw _privateConstructorUsedError;
+  int get scheduleActivityId => throw _privateConstructorUsedError;
   @JsonKey(name: 'ScheduleActivityName')
   String? get scheduleActivityName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -40,7 +40,7 @@ abstract class $ScheduleActivityCopyWith<$Res> {
       _$ScheduleActivityCopyWithImpl<$Res, ScheduleActivity>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'ScheduleActivityId') int? scheduleActivityId,
+      {@JsonKey(name: 'ScheduleActivityId') int scheduleActivityId,
       @JsonKey(name: 'ScheduleActivityName') String? scheduleActivityName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -58,15 +58,15 @@ class _$ScheduleActivityCopyWithImpl<$Res, $Val extends ScheduleActivity>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? scheduleActivityId = freezed,
+    Object? scheduleActivityId = null,
     Object? scheduleActivityName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      scheduleActivityId: freezed == scheduleActivityId
+      scheduleActivityId: null == scheduleActivityId
           ? _value.scheduleActivityId
           : scheduleActivityId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       scheduleActivityName: freezed == scheduleActivityName
           ? _value.scheduleActivityName
           : scheduleActivityName // ignore: cast_nullable_to_non_nullable
@@ -88,7 +88,7 @@ abstract class _$$_ScheduleActivityCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'ScheduleActivityId') int? scheduleActivityId,
+      {@JsonKey(name: 'ScheduleActivityId') int scheduleActivityId,
       @JsonKey(name: 'ScheduleActivityName') String? scheduleActivityName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -104,15 +104,15 @@ class __$$_ScheduleActivityCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? scheduleActivityId = freezed,
+    Object? scheduleActivityId = null,
     Object? scheduleActivityName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_ScheduleActivity(
-      scheduleActivityId: freezed == scheduleActivityId
+      scheduleActivityId: null == scheduleActivityId
           ? _value.scheduleActivityId
           : scheduleActivityId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       scheduleActivityName: freezed == scheduleActivityName
           ? _value.scheduleActivityName
           : scheduleActivityName // ignore: cast_nullable_to_non_nullable
@@ -127,18 +127,19 @@ class __$$_ScheduleActivityCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_ScheduleActivity implements _ScheduleActivity {
+class _$_ScheduleActivity extends _ScheduleActivity {
   const _$_ScheduleActivity(
-      {@JsonKey(name: 'ScheduleActivityId') this.scheduleActivityId,
+      {@JsonKey(name: 'ScheduleActivityId') required this.scheduleActivityId,
       @JsonKey(name: 'ScheduleActivityName') this.scheduleActivityName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_ScheduleActivity.fromJson(Map<String, dynamic> json) =>
       _$$_ScheduleActivityFromJson(json);
 
   @override
   @JsonKey(name: 'ScheduleActivityId')
-  final int? scheduleActivityId;
+  final int scheduleActivityId;
   @override
   @JsonKey(name: 'ScheduleActivityName')
   final String? scheduleActivityName;
@@ -183,18 +184,22 @@ class _$_ScheduleActivity implements _ScheduleActivity {
   }
 }
 
-abstract class _ScheduleActivity implements ScheduleActivity {
+abstract class _ScheduleActivity extends ScheduleActivity {
   const factory _ScheduleActivity(
-      {@JsonKey(name: 'ScheduleActivityId') final int? scheduleActivityId,
-      @JsonKey(name: 'ScheduleActivityName') final String? scheduleActivityName,
-      @JsonKey(name: 'IsActive') final bool? isActive}) = _$_ScheduleActivity;
+      {@JsonKey(name: 'ScheduleActivityId')
+          required final int scheduleActivityId,
+      @JsonKey(name: 'ScheduleActivityName')
+          final String? scheduleActivityName,
+      @JsonKey(name: 'IsActive')
+          final bool? isActive}) = _$_ScheduleActivity;
+  const _ScheduleActivity._() : super._();
 
   factory _ScheduleActivity.fromJson(Map<String, dynamic> json) =
       _$_ScheduleActivity.fromJson;
 
   @override
   @JsonKey(name: 'ScheduleActivityId')
-  int? get scheduleActivityId;
+  int get scheduleActivityId;
   @override
   @JsonKey(name: 'ScheduleActivityName')
   String? get scheduleActivityName;

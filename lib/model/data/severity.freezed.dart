@@ -21,7 +21,7 @@ Severity _$SeverityFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Severity {
   @JsonKey(name: 'SeverityId')
-  int? get severityId => throw _privateConstructorUsedError;
+  int get severityId => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
 
@@ -37,7 +37,7 @@ abstract class $SeverityCopyWith<$Res> {
       _$SeverityCopyWithImpl<$Res, Severity>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'SeverityId') int? severityId,
+      {@JsonKey(name: 'SeverityId') int severityId,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -54,14 +54,14 @@ class _$SeverityCopyWithImpl<$Res, $Val extends Severity>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? severityId = freezed,
+    Object? severityId = null,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      severityId: freezed == severityId
+      severityId: null == severityId
           ? _value.severityId
           : severityId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -78,7 +78,7 @@ abstract class _$$_SeverityCopyWith<$Res> implements $SeverityCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'SeverityId') int? severityId,
+      {@JsonKey(name: 'SeverityId') int severityId,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -93,14 +93,14 @@ class __$$_SeverityCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? severityId = freezed,
+    Object? severityId = null,
     Object? isActive = freezed,
   }) {
     return _then(_$_Severity(
-      severityId: freezed == severityId
+      severityId: null == severityId
           ? _value.severityId
           : severityId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -111,17 +111,18 @@ class __$$_SeverityCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Severity implements _Severity {
+class _$_Severity extends _Severity {
   const _$_Severity(
-      {@JsonKey(name: 'SeverityId') this.severityId,
-      @JsonKey(name: 'IsActive') this.isActive});
+      {@JsonKey(name: 'SeverityId') required this.severityId,
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_Severity.fromJson(Map<String, dynamic> json) =>
       _$$_SeverityFromJson(json);
 
   @override
   @JsonKey(name: 'SeverityId')
-  final int? severityId;
+  final int severityId;
   @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
@@ -160,16 +161,17 @@ class _$_Severity implements _Severity {
   }
 }
 
-abstract class _Severity implements Severity {
+abstract class _Severity extends Severity {
   const factory _Severity(
-      {@JsonKey(name: 'SeverityId') final int? severityId,
+      {@JsonKey(name: 'SeverityId') required final int severityId,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Severity;
+  const _Severity._() : super._();
 
   factory _Severity.fromJson(Map<String, dynamic> json) = _$_Severity.fromJson;
 
   @override
   @JsonKey(name: 'SeverityId')
-  int? get severityId;
+  int get severityId;
   @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;

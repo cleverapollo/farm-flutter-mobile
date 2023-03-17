@@ -9,6 +9,7 @@ import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_header_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:isar/isar.dart';
 
 class SyncSummaryScreen extends StatelessWidget {
   const SyncSummaryScreen({super.key});
@@ -37,15 +38,16 @@ class SyncSummaryScreen extends StatelessWidget {
             if (databaseService == null) return const SizedBox();
 
             return FutureBuilder(
-              future: databaseService.initializeDatabase(),
-              builder:
-                  (BuildContext context, AsyncSnapshot<Database> snapshot) {
+              future: databaseService.db,
+              builder: (BuildContext context, AsyncSnapshot<Isar> snapshot) {
                 if (snapshot.hasError) {
                   return Text(
                     'Open db error: ${snapshot.error} - ${snapshot.stackTrace}',
                   );
                 }
                 if (!snapshot.hasData) return const Text('loading db...');
+                // print store content
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -58,99 +60,99 @@ class SyncSummaryScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     ...[
                       _SummaryTite(
-                        future: databaseService.getAllCachedCompliances(),
+                        future: databaseService.getCompliances(),
                         title: 'Company',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedPlantations(),
+                        future: databaseService.getPlantations(),
                         title: 'Plantations',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedUnits(),
+                        future: databaseService.getUnits(),
                         title: 'Units',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedContractors(),
+                        future: databaseService.getContractors(),
                         title: 'Contractors',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedProvinces(),
+                        future: databaseService.getProvinces(),
                         title: 'Provinces',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedMunicipalitys(),
+                        future: databaseService.getMunicipalitys(),
                         title: 'Municipalitys',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedImpactCauseds(),
+                        future: databaseService.getImpactCauseds(),
                         title: 'Impact causeds',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedImpactOns(),
+                        future: databaseService.getImpactOns(),
                         title: 'Impact ons',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedJobCategorys(),
+                        future: databaseService.getJobCategorys(),
                         title: 'Job categorys',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedJobDescriptions(),
+                        future: databaseService.getJobDescriptions(),
                         title: 'Job descriptions',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedJobElements(),
+                        future: databaseService.getJobElements(),
                         title: 'Job elements',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedMmms(),
+                        future: databaseService.getMmms(),
                         title: 'Mmms',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedPdcas(),
+                        future: databaseService.getPdcas(),
                         title: 'Pdcas',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedSeveritys(),
+                        future: databaseService.getSeveritys(),
                         title: 'Severitys',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedSpeqss(),
+                        future: databaseService.getSpeqss(),
                         title: 'Speqss',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedCompliances(),
+                        future: databaseService.getCompliances(),
                         title: 'Compliances',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedTeams(),
+                        future: databaseService.getTeams(),
                         title: 'Teams',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedRejectReasons(),
+                        future: databaseService.getRejectReasons(),
                         title: 'Reject reasons',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedTrainingProviders(),
+                        future: databaseService.getTrainingProviders(),
                         title: 'Training providers',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedCourses(),
+                        future: databaseService.getCourses(),
                         title: 'Courses',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedSchedules(),
+                        future: databaseService.getSchedules(),
                         title: 'Schedules',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedScheduleActivitys(),
+                        future: databaseService.getScheduleActivitys(),
                         title: 'Schedule activitys',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedWorkers(),
+                        future: databaseService.getWorkers(),
                         title: 'Workers',
                       ),
                       _SummaryTite(
-                        future: databaseService.getAllCachedCompanyQuestions(),
+                        future: databaseService.getCompanyQuestions(),
                         title: 'Company questions',
                       ),
                     ].withSpaceBetween(height: 16),

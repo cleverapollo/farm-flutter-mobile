@@ -31,6 +31,7 @@ linter:
     always_put_required_named_parameters_first: false
     noop_primitive_operations: false
     avoid_field_initializers_in_const_classes: false
+    recursive_getters: false
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 
@@ -41,7 +42,10 @@ analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
-  errors:
-    invalid_annotation_target: ignore
-    inference_failure_on_instance_creation: ignore
-    argument_type_not_assignable: ignore
+  # errors:
+  #   invalid_annotation_target: ignore
+  #   inference_failure_on_instance_creation: ignore
+  #   argument_type_not_assignable: ignore
+  #   override_on_non_overriding_member: ignore
+  #   sort_constructors_first: ignore
+  #   sort_unnamed_constructors_first: ignore

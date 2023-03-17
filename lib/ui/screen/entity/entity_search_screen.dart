@@ -148,7 +148,7 @@ class _EntitySearchScreenState extends State<EntitySearchScreen> {
             (e) => CmoTappable(
               onTap: () => onTapTile(e),
               child: _ResultTile(
-                title: e.companyName ?? e.companyId?.toString() ?? '',
+                title: e.companyName ?? e.companyId.toString(),
                 selected: isSelected(e),
               ),
             ),

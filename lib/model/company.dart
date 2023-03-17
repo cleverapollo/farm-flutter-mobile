@@ -4,14 +4,21 @@
 
 import 'package:cmo/model/entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar/isar.dart';
 
 part 'company.freezed.dart';
 part 'company.g.dart';
 
 @freezed
+@Collection(ignore: {'copyWith'})
 class Company with _$Company {
+  const Company._();
+
+  @override
+  Id get id => companyId;
+
   const factory Company({
-    @JsonKey(name: 'CompanyId') int? companyId,
+    @JsonKey(name: 'CompanyId') required int companyId,
     @JsonKey(name: 'CompanyName') String? companyName,
     @JsonKey(name: 'IsInUse') bool? isInUse,
     @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,

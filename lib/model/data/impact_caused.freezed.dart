@@ -21,7 +21,7 @@ ImpactCaused _$ImpactCausedFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ImpactCaused {
   @JsonKey(name: 'ImpactCausedId')
-  int? get impactCausedId => throw _privateConstructorUsedError;
+  int get impactCausedId => throw _privateConstructorUsedError;
   @JsonKey(name: 'ImpactCausedName')
   String? get impactCausedName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -40,7 +40,7 @@ abstract class $ImpactCausedCopyWith<$Res> {
       _$ImpactCausedCopyWithImpl<$Res, ImpactCaused>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'ImpactCausedId') int? impactCausedId,
+      {@JsonKey(name: 'ImpactCausedId') int impactCausedId,
       @JsonKey(name: 'ImpactCausedName') String? impactCausedName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -58,15 +58,15 @@ class _$ImpactCausedCopyWithImpl<$Res, $Val extends ImpactCaused>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? impactCausedId = freezed,
+    Object? impactCausedId = null,
     Object? impactCausedName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      impactCausedId: freezed == impactCausedId
+      impactCausedId: null == impactCausedId
           ? _value.impactCausedId
           : impactCausedId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       impactCausedName: freezed == impactCausedName
           ? _value.impactCausedName
           : impactCausedName // ignore: cast_nullable_to_non_nullable
@@ -88,7 +88,7 @@ abstract class _$$_ImpactCausedCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'ImpactCausedId') int? impactCausedId,
+      {@JsonKey(name: 'ImpactCausedId') int impactCausedId,
       @JsonKey(name: 'ImpactCausedName') String? impactCausedName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -104,15 +104,15 @@ class __$$_ImpactCausedCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? impactCausedId = freezed,
+    Object? impactCausedId = null,
     Object? impactCausedName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_ImpactCaused(
-      impactCausedId: freezed == impactCausedId
+      impactCausedId: null == impactCausedId
           ? _value.impactCausedId
           : impactCausedId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       impactCausedName: freezed == impactCausedName
           ? _value.impactCausedName
           : impactCausedName // ignore: cast_nullable_to_non_nullable
@@ -127,18 +127,19 @@ class __$$_ImpactCausedCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_ImpactCaused implements _ImpactCaused {
+class _$_ImpactCaused extends _ImpactCaused {
   const _$_ImpactCaused(
-      {@JsonKey(name: 'ImpactCausedId') this.impactCausedId,
+      {@JsonKey(name: 'ImpactCausedId') required this.impactCausedId,
       @JsonKey(name: 'ImpactCausedName') this.impactCausedName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_ImpactCaused.fromJson(Map<String, dynamic> json) =>
       _$$_ImpactCausedFromJson(json);
 
   @override
   @JsonKey(name: 'ImpactCausedId')
-  final int? impactCausedId;
+  final int impactCausedId;
   @override
   @JsonKey(name: 'ImpactCausedName')
   final String? impactCausedName;
@@ -183,18 +184,19 @@ class _$_ImpactCaused implements _ImpactCaused {
   }
 }
 
-abstract class _ImpactCaused implements ImpactCaused {
+abstract class _ImpactCaused extends ImpactCaused {
   const factory _ImpactCaused(
-      {@JsonKey(name: 'ImpactCausedId') final int? impactCausedId,
+      {@JsonKey(name: 'ImpactCausedId') required final int impactCausedId,
       @JsonKey(name: 'ImpactCausedName') final String? impactCausedName,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_ImpactCaused;
+  const _ImpactCaused._() : super._();
 
   factory _ImpactCaused.fromJson(Map<String, dynamic> json) =
       _$_ImpactCaused.fromJson;
 
   @override
   @JsonKey(name: 'ImpactCausedId')
-  int? get impactCausedId;
+  int get impactCausedId;
   @override
   @JsonKey(name: 'ImpactCausedName')
   String? get impactCausedName;

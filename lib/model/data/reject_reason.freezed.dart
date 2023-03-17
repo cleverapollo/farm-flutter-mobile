@@ -21,7 +21,7 @@ RejectReason _$RejectReasonFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$RejectReason {
   @JsonKey(name: 'RejectReasonId')
-  int? get rejectReasonId => throw _privateConstructorUsedError;
+  int get rejectReasonId => throw _privateConstructorUsedError;
   @JsonKey(name: 'RejectReasonName')
   String? get rejectReasonName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -40,7 +40,7 @@ abstract class $RejectReasonCopyWith<$Res> {
       _$RejectReasonCopyWithImpl<$Res, RejectReason>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'RejectReasonId') int? rejectReasonId,
+      {@JsonKey(name: 'RejectReasonId') int rejectReasonId,
       @JsonKey(name: 'RejectReasonName') String? rejectReasonName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -58,15 +58,15 @@ class _$RejectReasonCopyWithImpl<$Res, $Val extends RejectReason>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? rejectReasonId = freezed,
+    Object? rejectReasonId = null,
     Object? rejectReasonName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      rejectReasonId: freezed == rejectReasonId
+      rejectReasonId: null == rejectReasonId
           ? _value.rejectReasonId
           : rejectReasonId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       rejectReasonName: freezed == rejectReasonName
           ? _value.rejectReasonName
           : rejectReasonName // ignore: cast_nullable_to_non_nullable
@@ -88,7 +88,7 @@ abstract class _$$_RejectReasonCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'RejectReasonId') int? rejectReasonId,
+      {@JsonKey(name: 'RejectReasonId') int rejectReasonId,
       @JsonKey(name: 'RejectReasonName') String? rejectReasonName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -104,15 +104,15 @@ class __$$_RejectReasonCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? rejectReasonId = freezed,
+    Object? rejectReasonId = null,
     Object? rejectReasonName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_RejectReason(
-      rejectReasonId: freezed == rejectReasonId
+      rejectReasonId: null == rejectReasonId
           ? _value.rejectReasonId
           : rejectReasonId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       rejectReasonName: freezed == rejectReasonName
           ? _value.rejectReasonName
           : rejectReasonName // ignore: cast_nullable_to_non_nullable
@@ -127,18 +127,19 @@ class __$$_RejectReasonCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_RejectReason implements _RejectReason {
+class _$_RejectReason extends _RejectReason {
   const _$_RejectReason(
-      {@JsonKey(name: 'RejectReasonId') this.rejectReasonId,
+      {@JsonKey(name: 'RejectReasonId') required this.rejectReasonId,
       @JsonKey(name: 'RejectReasonName') this.rejectReasonName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_RejectReason.fromJson(Map<String, dynamic> json) =>
       _$$_RejectReasonFromJson(json);
 
   @override
   @JsonKey(name: 'RejectReasonId')
-  final int? rejectReasonId;
+  final int rejectReasonId;
   @override
   @JsonKey(name: 'RejectReasonName')
   final String? rejectReasonName;
@@ -183,18 +184,19 @@ class _$_RejectReason implements _RejectReason {
   }
 }
 
-abstract class _RejectReason implements RejectReason {
+abstract class _RejectReason extends RejectReason {
   const factory _RejectReason(
-      {@JsonKey(name: 'RejectReasonId') final int? rejectReasonId,
+      {@JsonKey(name: 'RejectReasonId') required final int rejectReasonId,
       @JsonKey(name: 'RejectReasonName') final String? rejectReasonName,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_RejectReason;
+  const _RejectReason._() : super._();
 
   factory _RejectReason.fromJson(Map<String, dynamic> json) =
       _$_RejectReason.fromJson;
 
   @override
   @JsonKey(name: 'RejectReasonId')
-  int? get rejectReasonId;
+  int get rejectReasonId;
   @override
   @JsonKey(name: 'RejectReasonName')
   String? get rejectReasonName;

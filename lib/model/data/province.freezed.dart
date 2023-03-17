@@ -21,7 +21,7 @@ Province _$ProvinceFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Province {
   @JsonKey(name: 'ProvinceId')
-  int? get provinceId => throw _privateConstructorUsedError;
+  int get provinceId => throw _privateConstructorUsedError;
   @JsonKey(name: 'ProvinceName')
   String? get provinceName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -39,7 +39,7 @@ abstract class $ProvinceCopyWith<$Res> {
       _$ProvinceCopyWithImpl<$Res, Province>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'ProvinceId') int? provinceId,
+      {@JsonKey(name: 'ProvinceId') int provinceId,
       @JsonKey(name: 'ProvinceName') String? provinceName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -57,15 +57,15 @@ class _$ProvinceCopyWithImpl<$Res, $Val extends Province>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? provinceId = freezed,
+    Object? provinceId = null,
     Object? provinceName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      provinceId: freezed == provinceId
+      provinceId: null == provinceId
           ? _value.provinceId
           : provinceId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       provinceName: freezed == provinceName
           ? _value.provinceName
           : provinceName // ignore: cast_nullable_to_non_nullable
@@ -86,7 +86,7 @@ abstract class _$$_ProvinceCopyWith<$Res> implements $ProvinceCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'ProvinceId') int? provinceId,
+      {@JsonKey(name: 'ProvinceId') int provinceId,
       @JsonKey(name: 'ProvinceName') String? provinceName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -102,15 +102,15 @@ class __$$_ProvinceCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? provinceId = freezed,
+    Object? provinceId = null,
     Object? provinceName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_Province(
-      provinceId: freezed == provinceId
+      provinceId: null == provinceId
           ? _value.provinceId
           : provinceId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       provinceName: freezed == provinceName
           ? _value.provinceName
           : provinceName // ignore: cast_nullable_to_non_nullable
@@ -125,18 +125,19 @@ class __$$_ProvinceCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Province implements _Province {
+class _$_Province extends _Province {
   const _$_Province(
-      {@JsonKey(name: 'ProvinceId') this.provinceId,
+      {@JsonKey(name: 'ProvinceId') required this.provinceId,
       @JsonKey(name: 'ProvinceName') this.provinceName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_Province.fromJson(Map<String, dynamic> json) =>
       _$$_ProvinceFromJson(json);
 
   @override
   @JsonKey(name: 'ProvinceId')
-  final int? provinceId;
+  final int provinceId;
   @override
   @JsonKey(name: 'ProvinceName')
   final String? provinceName;
@@ -181,17 +182,18 @@ class _$_Province implements _Province {
   }
 }
 
-abstract class _Province implements Province {
+abstract class _Province extends Province {
   const factory _Province(
-      {@JsonKey(name: 'ProvinceId') final int? provinceId,
+      {@JsonKey(name: 'ProvinceId') required final int provinceId,
       @JsonKey(name: 'ProvinceName') final String? provinceName,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Province;
+  const _Province._() : super._();
 
   factory _Province.fromJson(Map<String, dynamic> json) = _$_Province.fromJson;
 
   @override
   @JsonKey(name: 'ProvinceId')
-  int? get provinceId;
+  int get provinceId;
   @override
   @JsonKey(name: 'ProvinceName')
   String? get provinceName;

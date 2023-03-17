@@ -21,7 +21,7 @@ ImpactOn _$ImpactOnFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ImpactOn {
   @JsonKey(name: 'ImpactOnId')
-  int? get impactOnId => throw _privateConstructorUsedError;
+  int get impactOnId => throw _privateConstructorUsedError;
   @JsonKey(name: 'ImpactOnName')
   String? get impactOnName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -39,7 +39,7 @@ abstract class $ImpactOnCopyWith<$Res> {
       _$ImpactOnCopyWithImpl<$Res, ImpactOn>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'ImpactOnId') int? impactOnId,
+      {@JsonKey(name: 'ImpactOnId') int impactOnId,
       @JsonKey(name: 'ImpactOnName') String? impactOnName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -57,15 +57,15 @@ class _$ImpactOnCopyWithImpl<$Res, $Val extends ImpactOn>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? impactOnId = freezed,
+    Object? impactOnId = null,
     Object? impactOnName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      impactOnId: freezed == impactOnId
+      impactOnId: null == impactOnId
           ? _value.impactOnId
           : impactOnId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       impactOnName: freezed == impactOnName
           ? _value.impactOnName
           : impactOnName // ignore: cast_nullable_to_non_nullable
@@ -86,7 +86,7 @@ abstract class _$$_ImpactOnCopyWith<$Res> implements $ImpactOnCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'ImpactOnId') int? impactOnId,
+      {@JsonKey(name: 'ImpactOnId') int impactOnId,
       @JsonKey(name: 'ImpactOnName') String? impactOnName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -102,15 +102,15 @@ class __$$_ImpactOnCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? impactOnId = freezed,
+    Object? impactOnId = null,
     Object? impactOnName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_ImpactOn(
-      impactOnId: freezed == impactOnId
+      impactOnId: null == impactOnId
           ? _value.impactOnId
           : impactOnId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       impactOnName: freezed == impactOnName
           ? _value.impactOnName
           : impactOnName // ignore: cast_nullable_to_non_nullable
@@ -125,18 +125,19 @@ class __$$_ImpactOnCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_ImpactOn implements _ImpactOn {
+class _$_ImpactOn extends _ImpactOn {
   const _$_ImpactOn(
-      {@JsonKey(name: 'ImpactOnId') this.impactOnId,
+      {@JsonKey(name: 'ImpactOnId') required this.impactOnId,
       @JsonKey(name: 'ImpactOnName') this.impactOnName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_ImpactOn.fromJson(Map<String, dynamic> json) =>
       _$$_ImpactOnFromJson(json);
 
   @override
   @JsonKey(name: 'ImpactOnId')
-  final int? impactOnId;
+  final int impactOnId;
   @override
   @JsonKey(name: 'ImpactOnName')
   final String? impactOnName;
@@ -181,17 +182,18 @@ class _$_ImpactOn implements _ImpactOn {
   }
 }
 
-abstract class _ImpactOn implements ImpactOn {
+abstract class _ImpactOn extends ImpactOn {
   const factory _ImpactOn(
-      {@JsonKey(name: 'ImpactOnId') final int? impactOnId,
+      {@JsonKey(name: 'ImpactOnId') required final int impactOnId,
       @JsonKey(name: 'ImpactOnName') final String? impactOnName,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_ImpactOn;
+  const _ImpactOn._() : super._();
 
   factory _ImpactOn.fromJson(Map<String, dynamic> json) = _$_ImpactOn.fromJson;
 
   @override
   @JsonKey(name: 'ImpactOnId')
-  int? get impactOnId;
+  int get impactOnId;
   @override
   @JsonKey(name: 'ImpactOnName')
   String? get impactOnName;

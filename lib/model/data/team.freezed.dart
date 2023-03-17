@@ -21,7 +21,7 @@ Team _$TeamFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Team {
   @JsonKey(name: 'TeamId')
-  int? get teamId => throw _privateConstructorUsedError;
+  int get teamId => throw _privateConstructorUsedError;
   @JsonKey(name: 'TeamName')
   String? get teamName => throw _privateConstructorUsedError;
   @JsonKey(name: 'CompanyId')
@@ -42,7 +42,7 @@ abstract class $TeamCopyWith<$Res> {
       _$TeamCopyWithImpl<$Res, Team>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'TeamId') int? teamId,
+      {@JsonKey(name: 'TeamId') int teamId,
       @JsonKey(name: 'TeamName') String? teamName,
       @JsonKey(name: 'CompanyId') int? companyId,
       @JsonKey(name: 'ContractorId') int? contractorId,
@@ -62,17 +62,17 @@ class _$TeamCopyWithImpl<$Res, $Val extends Team>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? teamId = freezed,
+    Object? teamId = null,
     Object? teamName = freezed,
     Object? companyId = freezed,
     Object? contractorId = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      teamId: freezed == teamId
+      teamId: null == teamId
           ? _value.teamId
           : teamId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       teamName: freezed == teamName
           ? _value.teamName
           : teamName // ignore: cast_nullable_to_non_nullable
@@ -100,7 +100,7 @@ abstract class _$$_TeamCopyWith<$Res> implements $TeamCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'TeamId') int? teamId,
+      {@JsonKey(name: 'TeamId') int teamId,
       @JsonKey(name: 'TeamName') String? teamName,
       @JsonKey(name: 'CompanyId') int? companyId,
       @JsonKey(name: 'ContractorId') int? contractorId,
@@ -116,17 +116,17 @@ class __$$_TeamCopyWithImpl<$Res> extends _$TeamCopyWithImpl<$Res, _$_Team>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? teamId = freezed,
+    Object? teamId = null,
     Object? teamName = freezed,
     Object? companyId = freezed,
     Object? contractorId = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_Team(
-      teamId: freezed == teamId
+      teamId: null == teamId
           ? _value.teamId
           : teamId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       teamName: freezed == teamName
           ? _value.teamName
           : teamName // ignore: cast_nullable_to_non_nullable
@@ -149,19 +149,20 @@ class __$$_TeamCopyWithImpl<$Res> extends _$TeamCopyWithImpl<$Res, _$_Team>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Team implements _Team {
+class _$_Team extends _Team {
   const _$_Team(
-      {@JsonKey(name: 'TeamId') this.teamId,
+      {@JsonKey(name: 'TeamId') required this.teamId,
       @JsonKey(name: 'TeamName') this.teamName,
       @JsonKey(name: 'CompanyId') this.companyId,
       @JsonKey(name: 'ContractorId') this.contractorId,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_Team.fromJson(Map<String, dynamic> json) => _$$_TeamFromJson(json);
 
   @override
   @JsonKey(name: 'TeamId')
-  final int? teamId;
+  final int teamId;
   @override
   @JsonKey(name: 'TeamName')
   final String? teamName;
@@ -215,19 +216,20 @@ class _$_Team implements _Team {
   }
 }
 
-abstract class _Team implements Team {
+abstract class _Team extends Team {
   const factory _Team(
-      {@JsonKey(name: 'TeamId') final int? teamId,
+      {@JsonKey(name: 'TeamId') required final int teamId,
       @JsonKey(name: 'TeamName') final String? teamName,
       @JsonKey(name: 'CompanyId') final int? companyId,
       @JsonKey(name: 'ContractorId') final int? contractorId,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Team;
+  const _Team._() : super._();
 
   factory _Team.fromJson(Map<String, dynamic> json) = _$_Team.fromJson;
 
   @override
   @JsonKey(name: 'TeamId')
-  int? get teamId;
+  int get teamId;
   @override
   @JsonKey(name: 'TeamName')
   String? get teamName;

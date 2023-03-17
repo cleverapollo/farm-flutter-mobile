@@ -53,6 +53,8 @@ class EntityCubit extends HydratedCubit<EntityState> {
     required int? userDeviceId,
   }) async {
     if (userDeviceId == null) return;
+    final companyId = company.companyId;
+    if (companyId == null) return;
     emit(
       state.copyWith(
         isLoadingSync: true,
@@ -65,7 +67,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
 
     await cmoApiService.createSystemEvent(
       context: context,
-      primaryKey: 8,
+      primaryKey: companyId,
       systemEventName: 'SyncAssessmentMasterData',
       userDeviceId: userDeviceId,
     );
@@ -91,147 +93,164 @@ class EntityCubit extends HydratedCubit<EntityState> {
           break;
         }
 
-        for (final item in messages) {
-          log('Looping through messageId ${item.header?.messageId} original topic ${item.header?.originalTopic}');
+        final dbCompany = await state.companyService?.db;
+        await dbCompany?.writeTxn(() async {
+          for (var i = 0; i < messages.length; i++) {
+            final item = messages[i];
+            log('Looping through messageId ${item.header?.messageId} original topic ${item.header?.originalTopic}');
 
-          try {
-            final topic = item.header?.originalTopic;
-            if (topic == '${topicMasterDataSync}Plantation.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Plantations...'));
-              await insertPlantation(item);
-            }
+            try {
+              final topic = item.header?.originalTopic;
+              if (topic == '${topicMasterDataSync}Plantation.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Plantations...'));
+                await insertPlantation(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Unit.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Units...'));
-              await insertUnit(item);
-            }
+              if (topic == '${topicMasterDataSync}Unit.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Units...'));
+                await insertUnit(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Contractor.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Contractors...'));
-              await insertContractor(item);
-            }
+              if (topic == '${topicMasterDataSync}Contractor.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Contractors...'));
+                await insertContractor(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Province.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Province...'));
-              await insertProvince(item);
-            }
+              if (topic == '${topicMasterDataSync}Province.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Province...'));
+                await insertProvince(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Municipality.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Municipality...'));
-              await insertMunicipality(item);
-            }
+              if (topic == '${topicMasterDataSync}Municipality.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Municipality...'));
+                await insertMunicipality(item);
+              }
 
-            if (topic == '${topicMasterDataSync}ImpactCaused.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Impact Caused...'));
-              await insertImpactCaused(item);
-            }
+              if (topic == '${topicMasterDataSync}ImpactCaused.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Impact Caused...'));
+                await insertImpactCaused(item);
+              }
 
-            if (topic == '${topicMasterDataSync}ImpactOn.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Impact On...'));
-              await insertImpactOn(item);
-            }
+              if (topic == '${topicMasterDataSync}ImpactOn.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Impact On...'));
+                await insertImpactOn(item);
+              }
 
-            if (topic == '${topicMasterDataSync}JobCategory.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Job Types...'));
-              await insertJobCategory(item);
-            }
+              if (topic == '${topicMasterDataSync}JobCategory.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Job Types...'));
+                await insertJobCategory(item);
+              }
 
-            if (topic == '${topicMasterDataSync}JobDescription.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
-              await insertJobDescription(item);
-            }
+              if (topic ==
+                  '${topicMasterDataSync}JobDescription.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
+                await insertJobDescription(item);
+              }
 
-            if (topic == '${topicMasterDataSync}JobElement.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Job Elements...'));
-              await insertJobElement(item);
-            }
+              if (topic == '${topicMasterDataSync}JobElement.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Job Elements...'));
+                await insertJobElement(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Mmm.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Mmm...'));
-              await insertMmm(item);
-            }
+              if (topic == '${topicMasterDataSync}Mmm.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Mmm...'));
+                await insertMmm(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Pdca.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Pdca...'));
-              await insertPdca(item);
-            }
+              if (topic == '${topicMasterDataSync}Pdca.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Pdca...'));
+                await insertPdca(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Severity.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Severity...'));
-              await insertSeverity(item);
-            }
+              if (topic == '${topicMasterDataSync}Severity.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Severity...'));
+                await insertSeverity(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Speqs.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Speqs...'));
-              await insertSpeqs(item);
-            }
+              if (topic == '${topicMasterDataSync}Speqs.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Speqs...'));
+                await insertSpeqs(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Compliance.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Compliance...'));
-              await insertCompliance(item);
-            }
+              if (topic == '${topicMasterDataSync}Compliance.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Compliance...'));
+                await insertCompliance(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Team.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Team...'));
-              await insertTeam(item);
-            }
+              if (topic == '${topicMasterDataSync}Team.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Team...'));
+                await insertTeam(item);
+              }
 
-            if (topic == '${topicMasterDataSync}RejectReason.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Reject Reason...'));
-              await insertRejectReason(item);
-            }
+              if (topic == '${topicMasterDataSync}RejectReason.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Reject Reason...'));
+                await insertRejectReason(item);
+              }
 
-            if (topic ==
-                '${topicMasterDataSync}TrainingProvider.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Training Provider...'));
-              await insertTrainingProvider(item);
-            }
+              if (topic ==
+                  '${topicMasterDataSync}TrainingProvider.$userDeviceId') {
+                emit(
+                  state.copyWith(
+                    syncMessage: 'Syncing Training Provider...',
+                  ),
+                );
+                await insertTrainingProvider(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Course.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Course...'));
-              await insertCourse(item);
-            }
+              if (topic == '${topicMasterDataSync}Course.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Course...'));
+                await insertCourse(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Schedule.$userDeviceId') {
-              emit(
-                state.copyWith(
-                  countSchedules: state.countSchedules + 1,
-                  syncMessage: 'Syncing Schedule...${state.countSchedules + 1}',
-                ),
-              );
-              await insertSchedule(item);
-            }
+              if (topic == '${topicMasterDataSync}Schedule.$userDeviceId') {
+                emit(
+                  state.copyWith(
+                    countSchedules: state.countSchedules + 1,
+                    syncMessage:
+                        'Syncing Schedule...${state.countSchedules + 1}',
+                  ),
+                );
+                await insertSchedule(item);
+              }
 
-            if (topic ==
-                '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Schedule Activity...'));
-              await insertScheduleActivity(item);
-            }
+              if (topic ==
+                  '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
+                emit(
+                  state.copyWith(
+                    syncMessage: 'Syncing Schedule Activity...',
+                  ),
+                );
+                await insertScheduleActivity(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Worker.$userDeviceId') {
-              emit(
-                state.copyWith(
-                  countWorkers: state.countWorkers + 1,
-                  syncMessage: 'Syncing Workers...${state.countWorkers + 1}',
-                ),
-              );
-              await insertWorker(item);
-            }
+              if (topic == '${topicMasterDataSync}Worker.$userDeviceId') {
+                emit(
+                  state.copyWith(
+                    countWorkers: state.countWorkers + 1,
+                    syncMessage: 'Syncing Workers...${state.countWorkers + 1}',
+                  ),
+                );
+                await insertWorker(item);
+              }
 
-            if (topic == '${topicMasterDataSync}Question.$userDeviceId') {
-              emit(
-                state.copyWith(
-                  countQuestion: state.countQuestion + 1,
-                  syncMessage: 'Syncing Questions...${state.countQuestion + 1}',
-                ),
-              );
-              await insertQuestion(item);
+              if (topic == '${topicMasterDataSync}Question.$userDeviceId') {
+                emit(
+                  state.copyWith(
+                    countQuestion: state.countQuestion + 1,
+                    syncMessage:
+                        'Syncing Questions...${state.countQuestion + 1}',
+                  ),
+                );
+                await insertQuestion(item);
+              }
+
+              await Future.delayed(const Duration(milliseconds: 100));
+            } catch (e, s) {
+              log('Failed to sync tricklefeed master data');
+              log('$e $s');
             }
-          } catch (e, s) {
-            log('Failed to sync tricklefeed master data');
-            log('$e $s');
           }
-        }
+        });
 
         if (context.mounted) {
           await cmoApiService.deleteMessage(
@@ -244,10 +263,21 @@ class EntityCubit extends HydratedCubit<EntityState> {
       }
     }
 
-    if (company.isMasterDataSynced == null ||
-        company.isMasterDataSynced == false) {
-      await syncMasterData();
-    }
+    await syncMasterData();
+
+    final db = await cmoDatabaseService.db;
+    final cachedCompanies = await cmoDatabaseService.getAllCachedCompanys();
+    await db.writeTxn(() async {
+      for (final cachedCompany in cachedCompanies) {
+        await cmoDatabaseService.cacheCompany(
+          cachedCompany.copyWith(isInUse: false, isMasterDataSynced: false),
+        );
+      }
+      await cmoDatabaseService.cacheCompany(
+        company.copyWith(isInUse: true, isMasterDataSynced: true),
+      );
+    });
+    final cachedCompanies2 = await cmoDatabaseService.getAllCachedCompanys();
 
     emit(
       state.copyWith(
@@ -255,6 +285,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
         entity: company.entity,
         company: company.copyWith(isInUse: true, isMasterDataSynced: true),
         isLoadingSync: false,
+        companies: cachedCompanies2,
       ),
     );
   }
@@ -277,17 +308,20 @@ class EntityCubit extends HydratedCubit<EntityState> {
 
     if (companies != null && companies.isNotEmpty) {
       final cachedCompanies = await cmoDatabaseService.getAllCachedCompanys();
-      for (final company in companies) {
-        final find = cachedCompanies.firstWhereOrNull(
-          (e) => e.companyId == company.companyId,
-        );
 
-        if (find == null || (find.isMasterDataSynced ?? false)) {
-          await cmoDatabaseService.cacheCompany(company);
-          await CmoDatabaseCompanyService(companyId: company.companyId)
-              .initializeDatabase();
+      final db = await cmoDatabaseService.db;
+      await db.writeTxn(() async {
+        for (final company in companies ?? <Company>[]) {
+          final find = cachedCompanies.firstWhereOrNull(
+            (e) => e.companyId == company.companyId,
+          );
+
+          if (find == null) {
+            await cmoDatabaseService.cacheCompany(company);
+          }
+          await CmoDatabaseCompanyService(companyId: company.companyId).db;
         }
-      }
+      });
     }
 
     emit(
@@ -298,269 +332,303 @@ class EntityCubit extends HydratedCubit<EntityState> {
     );
   }
 
-  Future<void> insertPlantation(Message item) async {
+  Future<int?> insertPlantation(Message item) async {
     log('Insert Plantation $item');
     try {
-      final plantation = Plantation.fromJson(
-        Json.tryDecode(item.body) as Map<String, dynamic>,
-      );
-      await state.companyService?.cachePlantation(plantation);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final plantation = Plantation.fromJson(bodyJson);
+      return state.companyService?.cachePlantation(plantation);
     } catch (e, s) {
       log('Insert Plantation Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertUnit(Message item) async {
+  Future<int?> insertUnit(Message item) async {
     log('Insert Unit $item');
     try {
-      final unit =
-          Unit.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await state.companyService?.cacheUnit(unit);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final unit = Unit.fromJson(bodyJson);
+      return state.companyService?.cacheUnit(unit);
     } catch (e, s) {
       log('Insert Unit Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertContractor(Message item) async {
+  Future<int?> insertContractor(Message item) async {
     log('Insert Contractor $item');
     try {
-      final contractor = Contractor.fromJson(
-        Json.tryDecode(item.body) as Map<String, dynamic>,
-      );
-      await state.companyService?.cacheContractor(contractor);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final contractor = Contractor.fromJson(bodyJson);
+      return state.companyService?.cacheContractor(contractor);
     } catch (e, s) {
       log('Insert Contractor Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertProvince(Message item) async {
+  Future<int?> insertProvince(Message item) async {
     log('Insert Province $item');
     try {
-      final province =
-          Province.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await state.companyService?.cacheProvince(province);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final province = Province.fromJson(bodyJson);
+      return state.companyService?.cacheProvince(province);
     } catch (e, s) {
       log('Insert Province Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertMunicipality(Message item) async {
+  Future<int?> insertMunicipality(Message item) async {
     log('Insert Municipality $item');
     try {
-      final municipality = Municipality.fromJson(
-        Json.tryDecode(item.body) as Map<String, dynamic>,
-      );
-      await state.companyService?.cacheMunicipality(municipality);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final municipality = Municipality.fromJson(bodyJson);
+      return state.companyService?.cacheMunicipality(municipality);
     } catch (e, s) {
       log('Insert Municipality Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertImpactCaused(Message item) async {
+  Future<int?> insertImpactCaused(Message item) async {
     log('Insert ImpactCaused $item');
     try {
-      final impactCaused = ImpactCaused.fromJson(
-        Json.tryDecode(item.body) as Map<String, dynamic>,
-      );
-      await state.companyService?.cacheImpactCaused(impactCaused);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final impactCaused = ImpactCaused.fromJson(bodyJson);
+      return state.companyService?.cacheImpactCaused(impactCaused);
     } catch (e, s) {
       log('Insert ImpactCaused Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertImpactOn(Message item) async {
+  Future<int?> insertImpactOn(Message item) async {
     log('Insert ImpactOn $item');
     try {
-      final impactOn =
-          ImpactOn.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await state.companyService?.cacheImpactOn(impactOn);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final impactOn = ImpactOn.fromJson(bodyJson);
+      return state.companyService?.cacheImpactOn(impactOn);
     } catch (e, s) {
       log('Insert ImpactOn Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertJobCategory(Message item) async {
+  Future<int?> insertJobCategory(Message item) async {
     log('Insert JobCategory $item');
     try {
-      final jobCategory = JobCategory.fromJson(
-        Json.tryDecode(item.body) as Map<String, dynamic>,
-      );
-      await state.companyService?.cacheJobCategory(jobCategory);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final jobCategory = JobCategory.fromJson(bodyJson);
+      return state.companyService?.cacheJobCategory(jobCategory);
     } catch (e, s) {
       log('Insert JobCategory Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertJobDescription(Message item) async {
+  Future<int?> insertJobDescription(Message item) async {
     log('Insert JobDescription $item');
     try {
-      final jobDescription = JobDescription.fromJson(
-        Json.tryDecode(item.body) as Map<String, dynamic>,
-      );
-      await state.companyService?.cacheJobDescription(jobDescription);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final jobDescription = JobDescription.fromJson(bodyJson);
+      return state.companyService?.cacheJobDescription(jobDescription);
     } catch (e, s) {
       log('Insert JobDescription Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertJobElement(Message item) async {
+  Future<int?> insertJobElement(Message item) async {
     log('Insert JobElement $item');
     try {
-      final jobElement = JobElement.fromJson(
-        Json.tryDecode(item.body) as Map<String, dynamic>,
-      );
-      await state.companyService?.cacheJobElement(jobElement);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final jobElement = JobElement.fromJson(bodyJson);
+      return state.companyService?.cacheJobElement(jobElement);
     } catch (e, s) {
       log('Insert JobElement Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertMmm(Message item) async {
+  Future<int?> insertMmm(Message item) async {
     log('Insert Mmm $item');
     try {
-      final mmm =
-          Mmm.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await state.companyService?.cacheMmm(mmm);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final mmm = Mmm.fromJson(bodyJson);
+      return state.companyService?.cacheMmm(mmm);
     } catch (e, s) {
       log('Insert Mmm Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertPdca(Message item) async {
+  Future<int?> insertPdca(Message item) async {
     log('Insert Pdca $item');
     try {
-      final pdca =
-          Pdca.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await state.companyService?.cachePdca(pdca);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final pdca = Pdca.fromJson(bodyJson);
+      return state.companyService?.cachePdca(pdca);
     } catch (e, s) {
       log('Insert Pdca Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertSeverity(Message item) async {
+  Future<int?> insertSeverity(Message item) async {
     log('Insert Severity $item');
     try {
-      final severity =
-          Severity.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await state.companyService?.cacheSeverity(severity);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final severity = Severity.fromJson(bodyJson);
+      return state.companyService?.cacheSeverity(severity);
     } catch (e, s) {
       log('Insert Severity Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertSpeqs(Message item) async {
+  Future<int?> insertSpeqs(Message item) async {
     log('Insert Speqs $item');
     try {
-      final speqs =
-          Speqs.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await state.companyService?.cacheSpeqs(speqs);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final speqs = Speqs.fromJson(bodyJson);
+      return state.companyService?.cacheSpeqs(speqs);
     } catch (e, s) {
       log('Insert Speqs Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertCompliance(Message item) async {
+  Future<int?> insertCompliance(Message item) async {
     log('Insert Compliance $item');
     try {
-      final compliance = Compliance.fromJson(
-        Json.tryDecode(item.body) as Map<String, dynamic>,
-      );
-      await state.companyService?.cacheCompliance(compliance);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final compliance = Compliance.fromJson(bodyJson);
+      return state.companyService?.cacheCompliance(compliance);
     } catch (e, s) {
       log('Insert Compliance Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertTeam(Message item) async {
+  Future<int?> insertTeam(Message item) async {
     log('Insert Team $item');
     try {
-      final team =
-          Team.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await state.companyService?.cacheTeam(team);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final team = Team.fromJson(bodyJson);
+      return state.companyService?.cacheTeam(team);
     } catch (e, s) {
       log('Insert Team Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertRejectReason(Message item) async {
+  Future<int?> insertRejectReason(Message item) async {
     log('Insert RejectReason $item');
     try {
-      final rejectReason = RejectReason.fromJson(
-        Json.tryDecode(item.body) as Map<String, dynamic>,
-      );
-      await state.companyService?.cacheRejectReason(rejectReason);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final rejectReason = RejectReason.fromJson(bodyJson);
+      return state.companyService?.cacheRejectReason(rejectReason);
     } catch (e, s) {
       log('Insert RejectReason Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertTrainingProvider(Message item) async {
+  Future<int?> insertTrainingProvider(Message item) async {
     log('Insert TrainingProvider $item');
     try {
-      final trainingProvider = TrainingProvider.fromJson(
-        Json.tryDecode(item.body) as Map<String, dynamic>,
-      );
-      await state.companyService?.cacheTrainingProvider(trainingProvider);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final trainingProvider = TrainingProvider.fromJson(bodyJson);
+      return state.companyService?.cacheTrainingProvider(trainingProvider);
     } catch (e, s) {
       log('Insert TrainingProvider Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertCourse(Message item) async {
+  Future<int?> insertCourse(Message item) async {
     log('Insert Course $item');
     try {
-      final course =
-          Course.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await state.companyService?.cacheCourse(course);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final course = Course.fromJson(bodyJson);
+      return state.companyService?.cacheCourse(course);
     } catch (e, s) {
       log('Insert Course Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertSchedule(Message item) async {
+  Future<int?> insertSchedule(Message item) async {
     log('Insert Schedule $item');
     try {
-      final schedule =
-          Schedule.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await state.companyService?.cacheSchedule(schedule);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final schedule = Schedule.fromJson(bodyJson);
+      return state.companyService?.cacheSchedule(schedule);
     } catch (e, s) {
       log('Insert Schedule Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertScheduleActivity(Message item) async {
+  Future<int?> insertScheduleActivity(Message item) async {
     log('Insert ScheduleActivity $item');
     try {
-      final scheduleActivity = ScheduleActivity.fromJson(
-        Json.tryDecode(item.body) as Map<String, dynamic>,
-      );
-      await state.companyService?.cacheScheduleActivity(scheduleActivity);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final scheduleActivity = ScheduleActivity.fromJson(bodyJson);
+      return state.companyService?.cacheScheduleActivity(scheduleActivity);
     } catch (e, s) {
       log('Insert ScheduleActivity Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertWorker(Message item) async {
+  Future<int?> insertWorker(Message item) async {
     log('Insert Worker $item');
     try {
-      final worker =
-          Worker.fromJson(Json.tryDecode(item.body) as Map<String, dynamic>);
-      await state.companyService?.cacheWorker(worker);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final worker = Worker.fromJson(bodyJson);
+      return state.companyService?.cacheWorker(worker);
     } catch (e, s) {
       log('Insert Worker Error: $e $s');
     }
+    return null;
   }
 
-  Future<void> insertQuestion(Message item) async {
+  Future<int?> insertQuestion(Message item) async {
     log('Insert Question $item');
     try {
-      final question = CompanyQuestion.fromJson(
-        Json.tryDecode(item.body) as Map<String, dynamic>,
-      );
-      await state.companyService?.cacheCompanyQuestion(question);
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final question = CompanyQuestion.fromJson(bodyJson);
+      return state.companyService?.cacheCompanyQuestion(question);
     } catch (e, s) {
       log('Insert Question Error: $e $s');
     }
+    return null;
   }
 
   @override

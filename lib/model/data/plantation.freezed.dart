@@ -21,7 +21,7 @@ Plantation _$PlantationFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Plantation {
   @JsonKey(name: 'PlantationId')
-  int? get plantationId => throw _privateConstructorUsedError;
+  int get plantationId => throw _privateConstructorUsedError;
   @JsonKey(name: 'PlantationName')
   String? get plantationName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -42,7 +42,7 @@ abstract class $PlantationCopyWith<$Res> {
       _$PlantationCopyWithImpl<$Res, Plantation>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'PlantationId') int? plantationId,
+      {@JsonKey(name: 'PlantationId') int plantationId,
       @JsonKey(name: 'PlantationName') String? plantationName,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'CompanyId') int? companyId});
@@ -61,16 +61,16 @@ class _$PlantationCopyWithImpl<$Res, $Val extends Plantation>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? plantationId = freezed,
+    Object? plantationId = null,
     Object? plantationName = freezed,
     Object? isActive = freezed,
     Object? companyId = freezed,
   }) {
     return _then(_value.copyWith(
-      plantationId: freezed == plantationId
+      plantationId: null == plantationId
           ? _value.plantationId
           : plantationId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       plantationName: freezed == plantationName
           ? _value.plantationName
           : plantationName // ignore: cast_nullable_to_non_nullable
@@ -96,7 +96,7 @@ abstract class _$$_PlantationCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'PlantationId') int? plantationId,
+      {@JsonKey(name: 'PlantationId') int plantationId,
       @JsonKey(name: 'PlantationName') String? plantationName,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'CompanyId') int? companyId});
@@ -113,16 +113,16 @@ class __$$_PlantationCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? plantationId = freezed,
+    Object? plantationId = null,
     Object? plantationName = freezed,
     Object? isActive = freezed,
     Object? companyId = freezed,
   }) {
     return _then(_$_Plantation(
-      plantationId: freezed == plantationId
+      plantationId: null == plantationId
           ? _value.plantationId
           : plantationId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       plantationName: freezed == plantationName
           ? _value.plantationName
           : plantationName // ignore: cast_nullable_to_non_nullable
@@ -141,19 +141,20 @@ class __$$_PlantationCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Plantation implements _Plantation {
+class _$_Plantation extends _Plantation {
   const _$_Plantation(
-      {@JsonKey(name: 'PlantationId') this.plantationId,
+      {@JsonKey(name: 'PlantationId') required this.plantationId,
       @JsonKey(name: 'PlantationName') this.plantationName,
       @JsonKey(name: 'IsActive') this.isActive,
-      @JsonKey(name: 'CompanyId') this.companyId});
+      @JsonKey(name: 'CompanyId') this.companyId})
+      : super._();
 
   factory _$_Plantation.fromJson(Map<String, dynamic> json) =>
       _$$_PlantationFromJson(json);
 
   @override
   @JsonKey(name: 'PlantationId')
-  final int? plantationId;
+  final int plantationId;
   @override
   @JsonKey(name: 'PlantationName')
   final String? plantationName;
@@ -203,19 +204,20 @@ class _$_Plantation implements _Plantation {
   }
 }
 
-abstract class _Plantation implements Plantation {
+abstract class _Plantation extends Plantation {
   const factory _Plantation(
-      {@JsonKey(name: 'PlantationId') final int? plantationId,
+      {@JsonKey(name: 'PlantationId') required final int plantationId,
       @JsonKey(name: 'PlantationName') final String? plantationName,
       @JsonKey(name: 'IsActive') final bool? isActive,
       @JsonKey(name: 'CompanyId') final int? companyId}) = _$_Plantation;
+  const _Plantation._() : super._();
 
   factory _Plantation.fromJson(Map<String, dynamic> json) =
       _$_Plantation.fromJson;
 
   @override
   @JsonKey(name: 'PlantationId')
-  int? get plantationId;
+  int get plantationId;
   @override
   @JsonKey(name: 'PlantationName')
   String? get plantationName;

@@ -21,7 +21,7 @@ JobElement _$JobElementFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$JobElement {
   @JsonKey(name: 'JobElementId')
-  int? get jobElementId => throw _privateConstructorUsedError;
+  int get jobElementId => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobElementName')
   String? get jobElementName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -40,7 +40,7 @@ abstract class $JobElementCopyWith<$Res> {
       _$JobElementCopyWithImpl<$Res, JobElement>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'JobElementId') int? jobElementId,
+      {@JsonKey(name: 'JobElementId') int jobElementId,
       @JsonKey(name: 'JobElementName') String? jobElementName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -58,15 +58,15 @@ class _$JobElementCopyWithImpl<$Res, $Val extends JobElement>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? jobElementId = freezed,
+    Object? jobElementId = null,
     Object? jobElementName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      jobElementId: freezed == jobElementId
+      jobElementId: null == jobElementId
           ? _value.jobElementId
           : jobElementId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       jobElementName: freezed == jobElementName
           ? _value.jobElementName
           : jobElementName // ignore: cast_nullable_to_non_nullable
@@ -88,7 +88,7 @@ abstract class _$$_JobElementCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'JobElementId') int? jobElementId,
+      {@JsonKey(name: 'JobElementId') int jobElementId,
       @JsonKey(name: 'JobElementName') String? jobElementName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -104,15 +104,15 @@ class __$$_JobElementCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? jobElementId = freezed,
+    Object? jobElementId = null,
     Object? jobElementName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_JobElement(
-      jobElementId: freezed == jobElementId
+      jobElementId: null == jobElementId
           ? _value.jobElementId
           : jobElementId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       jobElementName: freezed == jobElementName
           ? _value.jobElementName
           : jobElementName // ignore: cast_nullable_to_non_nullable
@@ -127,18 +127,19 @@ class __$$_JobElementCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_JobElement implements _JobElement {
+class _$_JobElement extends _JobElement {
   const _$_JobElement(
-      {@JsonKey(name: 'JobElementId') this.jobElementId,
+      {@JsonKey(name: 'JobElementId') required this.jobElementId,
       @JsonKey(name: 'JobElementName') this.jobElementName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_JobElement.fromJson(Map<String, dynamic> json) =>
       _$$_JobElementFromJson(json);
 
   @override
   @JsonKey(name: 'JobElementId')
-  final int? jobElementId;
+  final int jobElementId;
   @override
   @JsonKey(name: 'JobElementName')
   final String? jobElementName;
@@ -183,18 +184,19 @@ class _$_JobElement implements _JobElement {
   }
 }
 
-abstract class _JobElement implements JobElement {
+abstract class _JobElement extends JobElement {
   const factory _JobElement(
-      {@JsonKey(name: 'JobElementId') final int? jobElementId,
+      {@JsonKey(name: 'JobElementId') required final int jobElementId,
       @JsonKey(name: 'JobElementName') final String? jobElementName,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_JobElement;
+  const _JobElement._() : super._();
 
   factory _JobElement.fromJson(Map<String, dynamic> json) =
       _$_JobElement.fromJson;
 
   @override
   @JsonKey(name: 'JobElementId')
-  int? get jobElementId;
+  int get jobElementId;
   @override
   @JsonKey(name: 'JobElementName')
   String? get jobElementName;

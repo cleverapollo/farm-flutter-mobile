@@ -1,12 +1,19 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar/isar.dart';
 
 part 'company_question.freezed.dart';
 part 'company_question.g.dart';
 
 @freezed
+@Collection(ignore: {'copyWith'})
 class CompanyQuestion with _$CompanyQuestion {
+  const CompanyQuestion._();
+
+  @override
+  Id get id => companyId;
+
   const factory CompanyQuestion({
-    @JsonKey(name: 'CompanyId') int? companyId,
+    @JsonKey(name: 'CompanyId') required int companyId,
     @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
     @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
     @JsonKey(name: 'CompanyQuestionId') int? companyQuestionId,
@@ -31,5 +38,6 @@ class CompanyQuestion with _$CompanyQuestion {
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _CompanyQuestion;
 
-  factory CompanyQuestion.fromJson(Map<String, dynamic> json) => _$CompanyQuestionFromJson(json);
+  factory CompanyQuestion.fromJson(Map<String, dynamic> json) =>
+      _$CompanyQuestionFromJson(json);
 }

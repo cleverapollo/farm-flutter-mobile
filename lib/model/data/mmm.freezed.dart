@@ -21,7 +21,7 @@ Mmm _$MmmFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Mmm {
   @JsonKey(name: 'MMMId')
-  int? get mmmId => throw _privateConstructorUsedError;
+  int get mmmId => throw _privateConstructorUsedError;
   @JsonKey(name: 'MMMName')
   String? get mmmName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -38,7 +38,7 @@ abstract class $MmmCopyWith<$Res> {
       _$MmmCopyWithImpl<$Res, Mmm>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'MMMId') int? mmmId,
+      {@JsonKey(name: 'MMMId') int mmmId,
       @JsonKey(name: 'MMMName') String? mmmName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -55,15 +55,15 @@ class _$MmmCopyWithImpl<$Res, $Val extends Mmm> implements $MmmCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? mmmId = freezed,
+    Object? mmmId = null,
     Object? mmmName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      mmmId: freezed == mmmId
+      mmmId: null == mmmId
           ? _value.mmmId
           : mmmId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       mmmName: freezed == mmmName
           ? _value.mmmName
           : mmmName // ignore: cast_nullable_to_non_nullable
@@ -83,7 +83,7 @@ abstract class _$$_MmmCopyWith<$Res> implements $MmmCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'MMMId') int? mmmId,
+      {@JsonKey(name: 'MMMId') int mmmId,
       @JsonKey(name: 'MMMName') String? mmmName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -97,15 +97,15 @@ class __$$_MmmCopyWithImpl<$Res> extends _$MmmCopyWithImpl<$Res, _$_Mmm>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? mmmId = freezed,
+    Object? mmmId = null,
     Object? mmmName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_Mmm(
-      mmmId: freezed == mmmId
+      mmmId: null == mmmId
           ? _value.mmmId
           : mmmId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       mmmName: freezed == mmmName
           ? _value.mmmName
           : mmmName // ignore: cast_nullable_to_non_nullable
@@ -120,17 +120,18 @@ class __$$_MmmCopyWithImpl<$Res> extends _$MmmCopyWithImpl<$Res, _$_Mmm>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Mmm implements _Mmm {
+class _$_Mmm extends _Mmm {
   const _$_Mmm(
-      {@JsonKey(name: 'MMMId') this.mmmId,
+      {@JsonKey(name: 'MMMId') required this.mmmId,
       @JsonKey(name: 'MMMName') this.mmmName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_Mmm.fromJson(Map<String, dynamic> json) => _$$_MmmFromJson(json);
 
   @override
   @JsonKey(name: 'MMMId')
-  final int? mmmId;
+  final int mmmId;
   @override
   @JsonKey(name: 'MMMName')
   final String? mmmName;
@@ -172,17 +173,18 @@ class _$_Mmm implements _Mmm {
   }
 }
 
-abstract class _Mmm implements Mmm {
+abstract class _Mmm extends Mmm {
   const factory _Mmm(
-      {@JsonKey(name: 'MMMId') final int? mmmId,
+      {@JsonKey(name: 'MMMId') required final int mmmId,
       @JsonKey(name: 'MMMName') final String? mmmName,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Mmm;
+  const _Mmm._() : super._();
 
   factory _Mmm.fromJson(Map<String, dynamic> json) = _$_Mmm.fromJson;
 
   @override
   @JsonKey(name: 'MMMId')
-  int? get mmmId;
+  int get mmmId;
   @override
   @JsonKey(name: 'MMMName')
   String? get mmmName;

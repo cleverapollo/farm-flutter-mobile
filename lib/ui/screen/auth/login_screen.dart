@@ -173,7 +173,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget buildInputArea() {
     return FormBuilder(
       key: _formKey,
-      // enabled: false,
       onChanged: () {
         _formKey.currentState!.save();
         debugPrint(_formKey.currentState!.value.toString());

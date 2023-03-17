@@ -21,7 +21,7 @@ Speqs _$SpeqsFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Speqs {
   @JsonKey(name: 'SPEQSId')
-  int? get speqsId => throw _privateConstructorUsedError;
+  int get speqsId => throw _privateConstructorUsedError;
   @JsonKey(name: 'SPEQSName')
   String? get speqsName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -38,7 +38,7 @@ abstract class $SpeqsCopyWith<$Res> {
       _$SpeqsCopyWithImpl<$Res, Speqs>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'SPEQSId') int? speqsId,
+      {@JsonKey(name: 'SPEQSId') int speqsId,
       @JsonKey(name: 'SPEQSName') String? speqsName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -56,15 +56,15 @@ class _$SpeqsCopyWithImpl<$Res, $Val extends Speqs>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? speqsId = freezed,
+    Object? speqsId = null,
     Object? speqsName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      speqsId: freezed == speqsId
+      speqsId: null == speqsId
           ? _value.speqsId
           : speqsId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       speqsName: freezed == speqsName
           ? _value.speqsName
           : speqsName // ignore: cast_nullable_to_non_nullable
@@ -84,7 +84,7 @@ abstract class _$$_SpeqsCopyWith<$Res> implements $SpeqsCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'SPEQSId') int? speqsId,
+      {@JsonKey(name: 'SPEQSId') int speqsId,
       @JsonKey(name: 'SPEQSName') String? speqsName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -98,15 +98,15 @@ class __$$_SpeqsCopyWithImpl<$Res> extends _$SpeqsCopyWithImpl<$Res, _$_Speqs>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? speqsId = freezed,
+    Object? speqsId = null,
     Object? speqsName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_Speqs(
-      speqsId: freezed == speqsId
+      speqsId: null == speqsId
           ? _value.speqsId
           : speqsId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       speqsName: freezed == speqsName
           ? _value.speqsName
           : speqsName // ignore: cast_nullable_to_non_nullable
@@ -121,18 +121,19 @@ class __$$_SpeqsCopyWithImpl<$Res> extends _$SpeqsCopyWithImpl<$Res, _$_Speqs>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Speqs implements _Speqs {
+class _$_Speqs extends _Speqs {
   const _$_Speqs(
-      {@JsonKey(name: 'SPEQSId') this.speqsId,
+      {@JsonKey(name: 'SPEQSId') required this.speqsId,
       @JsonKey(name: 'SPEQSName') this.speqsName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_Speqs.fromJson(Map<String, dynamic> json) =>
       _$$_SpeqsFromJson(json);
 
   @override
   @JsonKey(name: 'SPEQSId')
-  final int? speqsId;
+  final int speqsId;
   @override
   @JsonKey(name: 'SPEQSName')
   final String? speqsName;
@@ -175,17 +176,18 @@ class _$_Speqs implements _Speqs {
   }
 }
 
-abstract class _Speqs implements Speqs {
+abstract class _Speqs extends Speqs {
   const factory _Speqs(
-      {@JsonKey(name: 'SPEQSId') final int? speqsId,
+      {@JsonKey(name: 'SPEQSId') required final int speqsId,
       @JsonKey(name: 'SPEQSName') final String? speqsName,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Speqs;
+  const _Speqs._() : super._();
 
   factory _Speqs.fromJson(Map<String, dynamic> json) = _$_Speqs.fromJson;
 
   @override
   @JsonKey(name: 'SPEQSId')
-  int? get speqsId;
+  int get speqsId;
   @override
   @JsonKey(name: 'SPEQSName')
   String? get speqsName;

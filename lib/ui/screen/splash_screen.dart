@@ -1,4 +1,7 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/model/model.dart';
+import 'package:cmo/service/cmo_database_company_service.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
@@ -31,6 +34,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
         final haveInternet = (await Connectivity().checkConnectivity()) !=
             ConnectivityResult.none;
+
+        // final db = CmoDatabaseCompanyService(companyId: 15);
+        // await (await db.db)?.writeTxn(() async {
+        //   await db.cachePlantation(Plantation(plantationId: 3));
+        // });
+        // final q = await db.getPlantations();
+
+        
+        
+        // await (await cmoDatabaseService.db)?.writeTxn(() async {
+        //   await cmoDatabaseService.cacheCompany(Company(companyId: 1234));
+        // });
+        // final q2 = await cmoDatabaseService.getAllCachedCompanys();
 
         authState.continued(
           (authorized) async {

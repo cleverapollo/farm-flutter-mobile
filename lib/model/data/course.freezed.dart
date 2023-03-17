@@ -21,7 +21,7 @@ Course _$CourseFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Course {
   @JsonKey(name: 'CourseId')
-  int? get courseId => throw _privateConstructorUsedError;
+  int get courseId => throw _privateConstructorUsedError;
   @JsonKey(name: 'CourseName')
   String? get courseName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -38,7 +38,7 @@ abstract class $CourseCopyWith<$Res> {
       _$CourseCopyWithImpl<$Res, Course>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'CourseId') int? courseId,
+      {@JsonKey(name: 'CourseId') int courseId,
       @JsonKey(name: 'CourseName') String? courseName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -56,15 +56,15 @@ class _$CourseCopyWithImpl<$Res, $Val extends Course>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? courseId = freezed,
+    Object? courseId = null,
     Object? courseName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      courseId: freezed == courseId
+      courseId: null == courseId
           ? _value.courseId
           : courseId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       courseName: freezed == courseName
           ? _value.courseName
           : courseName // ignore: cast_nullable_to_non_nullable
@@ -84,7 +84,7 @@ abstract class _$$_CourseCopyWith<$Res> implements $CourseCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'CourseId') int? courseId,
+      {@JsonKey(name: 'CourseId') int courseId,
       @JsonKey(name: 'CourseName') String? courseName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -99,15 +99,15 @@ class __$$_CourseCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? courseId = freezed,
+    Object? courseId = null,
     Object? courseName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_Course(
-      courseId: freezed == courseId
+      courseId: null == courseId
           ? _value.courseId
           : courseId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       courseName: freezed == courseName
           ? _value.courseName
           : courseName // ignore: cast_nullable_to_non_nullable
@@ -122,18 +122,19 @@ class __$$_CourseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Course implements _Course {
+class _$_Course extends _Course {
   const _$_Course(
-      {@JsonKey(name: 'CourseId') this.courseId,
+      {@JsonKey(name: 'CourseId') required this.courseId,
       @JsonKey(name: 'CourseName') this.courseName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_Course.fromJson(Map<String, dynamic> json) =>
       _$$_CourseFromJson(json);
 
   @override
   @JsonKey(name: 'CourseId')
-  final int? courseId;
+  final int courseId;
   @override
   @JsonKey(name: 'CourseName')
   final String? courseName;
@@ -177,17 +178,18 @@ class _$_Course implements _Course {
   }
 }
 
-abstract class _Course implements Course {
+abstract class _Course extends Course {
   const factory _Course(
-      {@JsonKey(name: 'CourseId') final int? courseId,
+      {@JsonKey(name: 'CourseId') required final int courseId,
       @JsonKey(name: 'CourseName') final String? courseName,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Course;
+  const _Course._() : super._();
 
   factory _Course.fromJson(Map<String, dynamic> json) = _$_Course.fromJson;
 
   @override
   @JsonKey(name: 'CourseId')
-  int? get courseId;
+  int get courseId;
   @override
   @JsonKey(name: 'CourseName')
   String? get courseName;

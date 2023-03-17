@@ -1,12 +1,20 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar/isar.dart';
 
 part 'course.freezed.dart';
 part 'course.g.dart';
 
 @freezed
+@Collection(ignore: {'copyWith'})
 class Course with _$Course {
+    const Course._();
+
+  @override
+  
+  Id get id => courseId;
+
   const factory Course({
-    @JsonKey(name: 'CourseId') int? courseId,
+    @JsonKey(name: 'CourseId') required int courseId,
     @JsonKey(name: 'CourseName') String? courseName,
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _Course;

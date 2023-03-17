@@ -21,7 +21,7 @@ CompanyQuestion _$CompanyQuestionFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$CompanyQuestion {
   @JsonKey(name: 'CompanyId')
-  int? get companyId => throw _privateConstructorUsedError;
+  int get companyId => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobCategoryId')
   int? get jobCategoryId => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobCategoryName')
@@ -81,7 +81,7 @@ abstract class $CompanyQuestionCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'CompanyId')
-          int? companyId,
+          int companyId,
       @JsonKey(name: 'JobCategoryId')
           int? jobCategoryId,
       @JsonKey(name: 'JobCategoryName')
@@ -141,7 +141,7 @@ class _$CompanyQuestionCopyWithImpl<$Res, $Val extends CompanyQuestion>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? companyId = freezed,
+    Object? companyId = null,
     Object? jobCategoryId = freezed,
     Object? jobCategoryName = freezed,
     Object? companyQuestionId = freezed,
@@ -166,10 +166,10 @@ class _$CompanyQuestionCopyWithImpl<$Res, $Val extends CompanyQuestion>
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      companyId: freezed == companyId
+      companyId: null == companyId
           ? _value.companyId
           : companyId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       jobCategoryId: freezed == jobCategoryId
           ? _value.jobCategoryId
           : jobCategoryId // ignore: cast_nullable_to_non_nullable
@@ -272,7 +272,7 @@ abstract class _$$_CompanyQuestionCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'CompanyId')
-          int? companyId,
+          int companyId,
       @JsonKey(name: 'JobCategoryId')
           int? jobCategoryId,
       @JsonKey(name: 'JobCategoryName')
@@ -330,7 +330,7 @@ class __$$_CompanyQuestionCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? companyId = freezed,
+    Object? companyId = null,
     Object? jobCategoryId = freezed,
     Object? jobCategoryName = freezed,
     Object? companyQuestionId = freezed,
@@ -355,10 +355,10 @@ class __$$_CompanyQuestionCopyWithImpl<$Res>
     Object? isActive = freezed,
   }) {
     return _then(_$_CompanyQuestion(
-      companyId: freezed == companyId
+      companyId: null == companyId
           ? _value.companyId
           : companyId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       jobCategoryId: freezed == jobCategoryId
           ? _value.jobCategoryId
           : jobCategoryId // ignore: cast_nullable_to_non_nullable
@@ -453,10 +453,10 @@ class __$$_CompanyQuestionCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_CompanyQuestion implements _CompanyQuestion {
+class _$_CompanyQuestion extends _CompanyQuestion {
   const _$_CompanyQuestion(
       {@JsonKey(name: 'CompanyId')
-          this.companyId,
+          required this.companyId,
       @JsonKey(name: 'JobCategoryId')
           this.jobCategoryId,
       @JsonKey(name: 'JobCategoryName')
@@ -500,14 +500,15 @@ class _$_CompanyQuestion implements _CompanyQuestion {
       @JsonKey(name: 'IsCompanyQuestionComplete')
           this.isCompanyQuestionComplete,
       @JsonKey(name: 'IsActive')
-          this.isActive});
+          this.isActive})
+      : super._();
 
   factory _$_CompanyQuestion.fromJson(Map<String, dynamic> json) =>
       _$$_CompanyQuestionFromJson(json);
 
   @override
   @JsonKey(name: 'CompanyId')
-  final int? companyId;
+  final int companyId;
   @override
   @JsonKey(name: 'JobCategoryId')
   final int? jobCategoryId;
@@ -672,10 +673,10 @@ class _$_CompanyQuestion implements _CompanyQuestion {
   }
 }
 
-abstract class _CompanyQuestion implements CompanyQuestion {
+abstract class _CompanyQuestion extends CompanyQuestion {
   const factory _CompanyQuestion(
       {@JsonKey(name: 'CompanyId')
-          final int? companyId,
+          required final int companyId,
       @JsonKey(name: 'JobCategoryId')
           final int? jobCategoryId,
       @JsonKey(name: 'JobCategoryName')
@@ -720,13 +721,14 @@ abstract class _CompanyQuestion implements CompanyQuestion {
           final bool? isCompanyQuestionComplete,
       @JsonKey(name: 'IsActive')
           final bool? isActive}) = _$_CompanyQuestion;
+  const _CompanyQuestion._() : super._();
 
   factory _CompanyQuestion.fromJson(Map<String, dynamic> json) =
       _$_CompanyQuestion.fromJson;
 
   @override
   @JsonKey(name: 'CompanyId')
-  int? get companyId;
+  int get companyId;
   @override
   @JsonKey(name: 'JobCategoryId')
   int? get jobCategoryId;

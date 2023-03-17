@@ -21,7 +21,7 @@ Pdca _$PdcaFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Pdca {
   @JsonKey(name: 'PDCAId')
-  int? get pdcaId => throw _privateConstructorUsedError;
+  int get pdcaId => throw _privateConstructorUsedError;
   @JsonKey(name: 'PDCAName')
   String? get pdcaName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -38,7 +38,7 @@ abstract class $PdcaCopyWith<$Res> {
       _$PdcaCopyWithImpl<$Res, Pdca>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'PDCAId') int? pdcaId,
+      {@JsonKey(name: 'PDCAId') int pdcaId,
       @JsonKey(name: 'PDCAName') String? pdcaName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -56,15 +56,15 @@ class _$PdcaCopyWithImpl<$Res, $Val extends Pdca>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? pdcaId = freezed,
+    Object? pdcaId = null,
     Object? pdcaName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      pdcaId: freezed == pdcaId
+      pdcaId: null == pdcaId
           ? _value.pdcaId
           : pdcaId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       pdcaName: freezed == pdcaName
           ? _value.pdcaName
           : pdcaName // ignore: cast_nullable_to_non_nullable
@@ -84,7 +84,7 @@ abstract class _$$_PdcaCopyWith<$Res> implements $PdcaCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'PDCAId') int? pdcaId,
+      {@JsonKey(name: 'PDCAId') int pdcaId,
       @JsonKey(name: 'PDCAName') String? pdcaName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -98,15 +98,15 @@ class __$$_PdcaCopyWithImpl<$Res> extends _$PdcaCopyWithImpl<$Res, _$_Pdca>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? pdcaId = freezed,
+    Object? pdcaId = null,
     Object? pdcaName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_Pdca(
-      pdcaId: freezed == pdcaId
+      pdcaId: null == pdcaId
           ? _value.pdcaId
           : pdcaId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       pdcaName: freezed == pdcaName
           ? _value.pdcaName
           : pdcaName // ignore: cast_nullable_to_non_nullable
@@ -121,17 +121,18 @@ class __$$_PdcaCopyWithImpl<$Res> extends _$PdcaCopyWithImpl<$Res, _$_Pdca>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Pdca implements _Pdca {
+class _$_Pdca extends _Pdca {
   const _$_Pdca(
-      {@JsonKey(name: 'PDCAId') this.pdcaId,
+      {@JsonKey(name: 'PDCAId') required this.pdcaId,
       @JsonKey(name: 'PDCAName') this.pdcaName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_Pdca.fromJson(Map<String, dynamic> json) => _$$_PdcaFromJson(json);
 
   @override
   @JsonKey(name: 'PDCAId')
-  final int? pdcaId;
+  final int pdcaId;
   @override
   @JsonKey(name: 'PDCAName')
   final String? pdcaName;
@@ -174,17 +175,18 @@ class _$_Pdca implements _Pdca {
   }
 }
 
-abstract class _Pdca implements Pdca {
+abstract class _Pdca extends Pdca {
   const factory _Pdca(
-      {@JsonKey(name: 'PDCAId') final int? pdcaId,
+      {@JsonKey(name: 'PDCAId') required final int pdcaId,
       @JsonKey(name: 'PDCAName') final String? pdcaName,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Pdca;
+  const _Pdca._() : super._();
 
   factory _Pdca.fromJson(Map<String, dynamic> json) = _$_Pdca.fromJson;
 
   @override
   @JsonKey(name: 'PDCAId')
-  int? get pdcaId;
+  int get pdcaId;
   @override
   @JsonKey(name: 'PDCAName')
   String? get pdcaName;

@@ -21,7 +21,7 @@ Worker _$WorkerFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Worker {
   @JsonKey(name: 'WorkerId')
-  String? get workerId => throw _privateConstructorUsedError;
+  String get workerId => throw _privateConstructorUsedError;
   @JsonKey(name: 'FirstName')
   String? get firstName => throw _privateConstructorUsedError;
   @JsonKey(name: 'Surname')
@@ -84,7 +84,7 @@ abstract class $WorkerCopyWith<$Res> {
       _$WorkerCopyWithImpl<$Res, Worker>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'WorkerId') String? workerId,
+      {@JsonKey(name: 'WorkerId') String workerId,
       @JsonKey(name: 'FirstName') String? firstName,
       @JsonKey(name: 'Surname') String? surname,
       @JsonKey(name: 'CompanyId') int? companyId,
@@ -125,7 +125,7 @@ class _$WorkerCopyWithImpl<$Res, $Val extends Worker>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? workerId = freezed,
+    Object? workerId = null,
     Object? firstName = freezed,
     Object? surname = freezed,
     Object? companyId = freezed,
@@ -153,10 +153,10 @@ class _$WorkerCopyWithImpl<$Res, $Val extends Worker>
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      workerId: freezed == workerId
+      workerId: null == workerId
           ? _value.workerId
           : workerId // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       firstName: freezed == firstName
           ? _value.firstName
           : firstName // ignore: cast_nullable_to_non_nullable
@@ -268,7 +268,7 @@ abstract class _$$_WorkerCopyWith<$Res> implements $WorkerCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'WorkerId') String? workerId,
+      {@JsonKey(name: 'WorkerId') String workerId,
       @JsonKey(name: 'FirstName') String? firstName,
       @JsonKey(name: 'Surname') String? surname,
       @JsonKey(name: 'CompanyId') int? companyId,
@@ -306,7 +306,7 @@ class __$$_WorkerCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? workerId = freezed,
+    Object? workerId = null,
     Object? firstName = freezed,
     Object? surname = freezed,
     Object? companyId = freezed,
@@ -334,10 +334,10 @@ class __$$_WorkerCopyWithImpl<$Res>
     Object? isActive = freezed,
   }) {
     return _then(_$_Worker(
-      workerId: freezed == workerId
+      workerId: null == workerId
           ? _value.workerId
           : workerId // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       firstName: freezed == firstName
           ? _value.firstName
           : firstName // ignore: cast_nullable_to_non_nullable
@@ -444,9 +444,9 @@ class __$$_WorkerCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Worker implements _Worker {
+class _$_Worker extends _Worker {
   const _$_Worker(
-      {@JsonKey(name: 'WorkerId') this.workerId,
+      {@JsonKey(name: 'WorkerId') required this.workerId,
       @JsonKey(name: 'FirstName') this.firstName,
       @JsonKey(name: 'Surname') this.surname,
       @JsonKey(name: 'CompanyId') this.companyId,
@@ -471,14 +471,15 @@ class _$_Worker implements _Worker {
       @JsonKey(name: 'CreateDT') this.createDt,
       @JsonKey(name: 'UpStringDT') this.upStringDt,
       @JsonKey(name: 'IsLocal') this.isLocal,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_Worker.fromJson(Map<String, dynamic> json) =>
       _$$_WorkerFromJson(json);
 
   @override
   @JsonKey(name: 'WorkerId')
-  final String? workerId;
+  final String workerId;
   @override
   @JsonKey(name: 'FirstName')
   final String? firstName;
@@ -655,9 +656,9 @@ class _$_Worker implements _Worker {
   }
 }
 
-abstract class _Worker implements Worker {
+abstract class _Worker extends Worker {
   const factory _Worker(
-      {@JsonKey(name: 'WorkerId') final String? workerId,
+      {@JsonKey(name: 'WorkerId') required final String workerId,
       @JsonKey(name: 'FirstName') final String? firstName,
       @JsonKey(name: 'Surname') final String? surname,
       @JsonKey(name: 'CompanyId') final int? companyId,
@@ -683,12 +684,13 @@ abstract class _Worker implements Worker {
       @JsonKey(name: 'UpStringDT') final String? upStringDt,
       @JsonKey(name: 'IsLocal') final bool? isLocal,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Worker;
+  const _Worker._() : super._();
 
   factory _Worker.fromJson(Map<String, dynamic> json) = _$_Worker.fromJson;
 
   @override
   @JsonKey(name: 'WorkerId')
-  String? get workerId;
+  String get workerId;
   @override
   @JsonKey(name: 'FirstName')
   String? get firstName;

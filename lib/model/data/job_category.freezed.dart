@@ -21,7 +21,7 @@ JobCategory _$JobCategoryFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$JobCategory {
   @JsonKey(name: 'JobCategoryId')
-  int? get jobCategoryId => throw _privateConstructorUsedError;
+  int get jobCategoryId => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobCategoryName')
   String? get jobCategoryName => throw _privateConstructorUsedError;
   @JsonKey(name: 'UnitId')
@@ -42,7 +42,7 @@ abstract class $JobCategoryCopyWith<$Res> {
       _$JobCategoryCopyWithImpl<$Res, JobCategory>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'JobCategoryId') int? jobCategoryId,
+      {@JsonKey(name: 'JobCategoryId') int jobCategoryId,
       @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
       @JsonKey(name: 'UnitId') int? unitId,
       @JsonKey(name: 'IsActive') bool? isActive});
@@ -61,16 +61,16 @@ class _$JobCategoryCopyWithImpl<$Res, $Val extends JobCategory>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? jobCategoryId = freezed,
+    Object? jobCategoryId = null,
     Object? jobCategoryName = freezed,
     Object? unitId = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      jobCategoryId: freezed == jobCategoryId
+      jobCategoryId: null == jobCategoryId
           ? _value.jobCategoryId
           : jobCategoryId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       jobCategoryName: freezed == jobCategoryName
           ? _value.jobCategoryName
           : jobCategoryName // ignore: cast_nullable_to_non_nullable
@@ -96,7 +96,7 @@ abstract class _$$_JobCategoryCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'JobCategoryId') int? jobCategoryId,
+      {@JsonKey(name: 'JobCategoryId') int jobCategoryId,
       @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
       @JsonKey(name: 'UnitId') int? unitId,
       @JsonKey(name: 'IsActive') bool? isActive});
@@ -113,16 +113,16 @@ class __$$_JobCategoryCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? jobCategoryId = freezed,
+    Object? jobCategoryId = null,
     Object? jobCategoryName = freezed,
     Object? unitId = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_JobCategory(
-      jobCategoryId: freezed == jobCategoryId
+      jobCategoryId: null == jobCategoryId
           ? _value.jobCategoryId
           : jobCategoryId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       jobCategoryName: freezed == jobCategoryName
           ? _value.jobCategoryName
           : jobCategoryName // ignore: cast_nullable_to_non_nullable
@@ -141,19 +141,20 @@ class __$$_JobCategoryCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_JobCategory implements _JobCategory {
+class _$_JobCategory extends _JobCategory {
   const _$_JobCategory(
-      {@JsonKey(name: 'JobCategoryId') this.jobCategoryId,
+      {@JsonKey(name: 'JobCategoryId') required this.jobCategoryId,
       @JsonKey(name: 'JobCategoryName') this.jobCategoryName,
       @JsonKey(name: 'UnitId') this.unitId,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_JobCategory.fromJson(Map<String, dynamic> json) =>
       _$$_JobCategoryFromJson(json);
 
   @override
   @JsonKey(name: 'JobCategoryId')
-  final int? jobCategoryId;
+  final int jobCategoryId;
   @override
   @JsonKey(name: 'JobCategoryName')
   final String? jobCategoryName;
@@ -202,19 +203,20 @@ class _$_JobCategory implements _JobCategory {
   }
 }
 
-abstract class _JobCategory implements JobCategory {
+abstract class _JobCategory extends JobCategory {
   const factory _JobCategory(
-      {@JsonKey(name: 'JobCategoryId') final int? jobCategoryId,
+      {@JsonKey(name: 'JobCategoryId') required final int jobCategoryId,
       @JsonKey(name: 'JobCategoryName') final String? jobCategoryName,
       @JsonKey(name: 'UnitId') final int? unitId,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_JobCategory;
+  const _JobCategory._() : super._();
 
   factory _JobCategory.fromJson(Map<String, dynamic> json) =
       _$_JobCategory.fromJson;
 
   @override
   @JsonKey(name: 'JobCategoryId')
-  int? get jobCategoryId;
+  int get jobCategoryId;
   @override
   @JsonKey(name: 'JobCategoryName')
   String? get jobCategoryName;

@@ -1,12 +1,19 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar/isar.dart';
 
 part 'schedule.freezed.dart';
 part 'schedule.g.dart';
 
 @freezed
+@Collection(ignore: {'copyWith'})
 class Schedule with _$Schedule {
+  const Schedule._();
+
+  @override
+  Id get id => Isar.autoIncrement;
+
   const factory Schedule({
-    @JsonKey(name: 'ScheduleId') String? scheduleId,
+    @JsonKey(name: 'ScheduleId') required String scheduleId,
     @JsonKey(name: 'Start') String? start,
     @JsonKey(name: 'End') String? end,
     @JsonKey(name: 'UserId') int? userId,
@@ -34,5 +41,6 @@ class Schedule with _$Schedule {
     @JsonKey(name: 'PotentialCompany') String? potentialCompany,
   }) = _Schedule;
 
-  factory Schedule.fromJson(Map<String, dynamic> json) => _$ScheduleFromJson(json);
+  factory Schedule.fromJson(Map<String, dynamic> json) =>
+      _$ScheduleFromJson(json);
 }

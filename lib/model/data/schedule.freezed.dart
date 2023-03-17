@@ -21,7 +21,7 @@ Schedule _$ScheduleFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Schedule {
   @JsonKey(name: 'ScheduleId')
-  String? get scheduleId => throw _privateConstructorUsedError;
+  String get scheduleId => throw _privateConstructorUsedError;
   @JsonKey(name: 'Start')
   String? get start => throw _privateConstructorUsedError;
   @JsonKey(name: 'End')
@@ -85,7 +85,7 @@ abstract class $ScheduleCopyWith<$Res> {
       _$ScheduleCopyWithImpl<$Res, Schedule>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'ScheduleId') String? scheduleId,
+      {@JsonKey(name: 'ScheduleId') String scheduleId,
       @JsonKey(name: 'Start') String? start,
       @JsonKey(name: 'End') String? end,
       @JsonKey(name: 'UserId') int? userId,
@@ -126,7 +126,7 @@ class _$ScheduleCopyWithImpl<$Res, $Val extends Schedule>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? scheduleId = freezed,
+    Object? scheduleId = null,
     Object? start = freezed,
     Object? end = freezed,
     Object? userId = freezed,
@@ -154,10 +154,10 @@ class _$ScheduleCopyWithImpl<$Res, $Val extends Schedule>
     Object? potentialCompany = freezed,
   }) {
     return _then(_value.copyWith(
-      scheduleId: freezed == scheduleId
+      scheduleId: null == scheduleId
           ? _value.scheduleId
           : scheduleId // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       start: freezed == start
           ? _value.start
           : start // ignore: cast_nullable_to_non_nullable
@@ -270,7 +270,7 @@ abstract class _$$_ScheduleCopyWith<$Res> implements $ScheduleCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'ScheduleId') String? scheduleId,
+      {@JsonKey(name: 'ScheduleId') String scheduleId,
       @JsonKey(name: 'Start') String? start,
       @JsonKey(name: 'End') String? end,
       @JsonKey(name: 'UserId') int? userId,
@@ -309,7 +309,7 @@ class __$$_ScheduleCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? scheduleId = freezed,
+    Object? scheduleId = null,
     Object? start = freezed,
     Object? end = freezed,
     Object? userId = freezed,
@@ -337,10 +337,10 @@ class __$$_ScheduleCopyWithImpl<$Res>
     Object? potentialCompany = freezed,
   }) {
     return _then(_$_Schedule(
-      scheduleId: freezed == scheduleId
+      scheduleId: null == scheduleId
           ? _value.scheduleId
           : scheduleId // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       start: freezed == start
           ? _value.start
           : start // ignore: cast_nullable_to_non_nullable
@@ -447,9 +447,9 @@ class __$$_ScheduleCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Schedule implements _Schedule {
+class _$_Schedule extends _Schedule {
   const _$_Schedule(
-      {@JsonKey(name: 'ScheduleId') this.scheduleId,
+      {@JsonKey(name: 'ScheduleId') required this.scheduleId,
       @JsonKey(name: 'Start') this.start,
       @JsonKey(name: 'End') this.end,
       @JsonKey(name: 'UserId') this.userId,
@@ -474,14 +474,15 @@ class _$_Schedule implements _Schedule {
       @JsonKey(name: 'CourseName') this.courseName,
       @JsonKey(name: 'TrainingProviderName') this.trainingProviderName,
       @JsonKey(name: 'PlantationName') this.plantationName,
-      @JsonKey(name: 'PotentialCompany') this.potentialCompany});
+      @JsonKey(name: 'PotentialCompany') this.potentialCompany})
+      : super._();
 
   factory _$_Schedule.fromJson(Map<String, dynamic> json) =>
       _$$_ScheduleFromJson(json);
 
   @override
   @JsonKey(name: 'ScheduleId')
-  final String? scheduleId;
+  final String scheduleId;
   @override
   @JsonKey(name: 'Start')
   final String? start;
@@ -663,10 +664,10 @@ class _$_Schedule implements _Schedule {
   }
 }
 
-abstract class _Schedule implements Schedule {
+abstract class _Schedule extends Schedule {
   const factory _Schedule(
       {@JsonKey(name: 'ScheduleId')
-          final String? scheduleId,
+          required final String scheduleId,
       @JsonKey(name: 'Start')
           final String? start,
       @JsonKey(name: 'End')
@@ -717,12 +718,13 @@ abstract class _Schedule implements Schedule {
           final String? plantationName,
       @JsonKey(name: 'PotentialCompany')
           final String? potentialCompany}) = _$_Schedule;
+  const _Schedule._() : super._();
 
   factory _Schedule.fromJson(Map<String, dynamic> json) = _$_Schedule.fromJson;
 
   @override
   @JsonKey(name: 'ScheduleId')
-  String? get scheduleId;
+  String get scheduleId;
   @override
   @JsonKey(name: 'Start')
   String? get start;

@@ -21,7 +21,7 @@ Unit _$UnitFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Unit {
   @JsonKey(name: 'UnitId')
-  int? get unitId => throw _privateConstructorUsedError;
+  int get unitId => throw _privateConstructorUsedError;
   @JsonKey(name: 'UnitName')
   String? get unitName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -38,7 +38,7 @@ abstract class $UnitCopyWith<$Res> {
       _$UnitCopyWithImpl<$Res, Unit>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'UnitId') int? unitId,
+      {@JsonKey(name: 'UnitId') int unitId,
       @JsonKey(name: 'UnitName') String? unitName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -56,15 +56,15 @@ class _$UnitCopyWithImpl<$Res, $Val extends Unit>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? unitId = freezed,
+    Object? unitId = null,
     Object? unitName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
-      unitId: freezed == unitId
+      unitId: null == unitId
           ? _value.unitId
           : unitId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       unitName: freezed == unitName
           ? _value.unitName
           : unitName // ignore: cast_nullable_to_non_nullable
@@ -84,7 +84,7 @@ abstract class _$$_UnitCopyWith<$Res> implements $UnitCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'UnitId') int? unitId,
+      {@JsonKey(name: 'UnitId') int unitId,
       @JsonKey(name: 'UnitName') String? unitName,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
@@ -98,15 +98,15 @@ class __$$_UnitCopyWithImpl<$Res> extends _$UnitCopyWithImpl<$Res, _$_Unit>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? unitId = freezed,
+    Object? unitId = null,
     Object? unitName = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_Unit(
-      unitId: freezed == unitId
+      unitId: null == unitId
           ? _value.unitId
           : unitId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       unitName: freezed == unitName
           ? _value.unitName
           : unitName // ignore: cast_nullable_to_non_nullable
@@ -121,17 +121,18 @@ class __$$_UnitCopyWithImpl<$Res> extends _$UnitCopyWithImpl<$Res, _$_Unit>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Unit implements _Unit {
+class _$_Unit extends _Unit {
   const _$_Unit(
-      {@JsonKey(name: 'UnitId') this.unitId,
+      {@JsonKey(name: 'UnitId') required this.unitId,
       @JsonKey(name: 'UnitName') this.unitName,
-      @JsonKey(name: 'IsActive') this.isActive});
+      @JsonKey(name: 'IsActive') this.isActive})
+      : super._();
 
   factory _$_Unit.fromJson(Map<String, dynamic> json) => _$$_UnitFromJson(json);
 
   @override
   @JsonKey(name: 'UnitId')
-  final int? unitId;
+  final int unitId;
   @override
   @JsonKey(name: 'UnitName')
   final String? unitName;
@@ -174,17 +175,18 @@ class _$_Unit implements _Unit {
   }
 }
 
-abstract class _Unit implements Unit {
+abstract class _Unit extends Unit {
   const factory _Unit(
-      {@JsonKey(name: 'UnitId') final int? unitId,
+      {@JsonKey(name: 'UnitId') required final int unitId,
       @JsonKey(name: 'UnitName') final String? unitName,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Unit;
+  const _Unit._() : super._();
 
   factory _Unit.fromJson(Map<String, dynamic> json) = _$_Unit.fromJson;
 
   @override
   @JsonKey(name: 'UnitId')
-  int? get unitId;
+  int get unitId;
   @override
   @JsonKey(name: 'UnitName')
   String? get unitName;
