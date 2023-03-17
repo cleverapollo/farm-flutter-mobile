@@ -1,12 +1,12 @@
-import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/service/cmo_database_company_service.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_header_tile.dart';
+import 'package:cmo/utils/json_converter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar/isar.dart';
@@ -59,6 +59,11 @@ class SyncSummaryScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     ...[
+                      _SummaryTite(
+                        future: databaseService.getWorkersLocal(),
+                        title: 'Workers unsync',
+                      ),
+                      const Divider(),
                       _SummaryTite(
                         future: databaseService.getCompliances(),
                         title: 'Company',
@@ -190,6 +195,10 @@ class _SummaryTite extends StatelessWidget {
               children: [
                 Row(),
                 Text('$title: ${snapshot.data?.length ?? '---'}'),
+                if (kDebugMode)
+                  SelectableText(
+                    '$title: ${Json.tryEncode(snapshot.data?.lastOrNull?.toJson())?.toString() ?? '---'}',
+                  ),
               ],
             ),
           );

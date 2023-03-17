@@ -71,10 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
 
         if (success && context.mounted) {
-          await Future.wait([
-            context.read<UserInfoCubit>().getUser(context),
-            context.read<UserDeviceCubit>().createUserDevice(context),
-          ]);
+          await context.read<UserInfoCubit>().getUser(context);
         }
 
         if (context.mounted) {

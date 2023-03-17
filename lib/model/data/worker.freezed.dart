@@ -26,6 +26,8 @@ mixin _$Worker {
   String? get firstName => throw _privateConstructorUsedError;
   @JsonKey(name: 'Surname')
   String? get surname => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IdNumber')
+  String? get idNumber => throw _privateConstructorUsedError;
   @JsonKey(name: 'CompanyId')
   int? get companyId => throw _privateConstructorUsedError;
   @JsonKey(name: 'ContractorId')
@@ -36,6 +38,8 @@ mixin _$Worker {
   int? get jobDescriptionId => throw _privateConstructorUsedError;
   @JsonKey(name: 'DOB')
   String? get dob => throw _privateConstructorUsedError;
+  @JsonKey(name: 'ContactNumber')
+  String? get contactNumber => throw _privateConstructorUsedError;
   @JsonKey(name: 'Phoneint')
   String? get phoneint => throw _privateConstructorUsedError;
   @JsonKey(name: 'Email')
@@ -87,11 +91,13 @@ abstract class $WorkerCopyWith<$Res> {
       {@JsonKey(name: 'WorkerId') String workerId,
       @JsonKey(name: 'FirstName') String? firstName,
       @JsonKey(name: 'Surname') String? surname,
+      @JsonKey(name: 'IdNumber') String? idNumber,
       @JsonKey(name: 'CompanyId') int? companyId,
       @JsonKey(name: 'ContractorId') int? contractorId,
       @JsonKey(name: 'Idint') String? idint,
       @JsonKey(name: 'JobDescriptionId') int? jobDescriptionId,
       @JsonKey(name: 'DOB') String? dob,
+      @JsonKey(name: 'ContactNumber') String? contactNumber,
       @JsonKey(name: 'Phoneint') String? phoneint,
       @JsonKey(name: 'Email') String? email,
       @JsonKey(name: 'MunicipalityId') int? municipalityId,
@@ -128,11 +134,13 @@ class _$WorkerCopyWithImpl<$Res, $Val extends Worker>
     Object? workerId = null,
     Object? firstName = freezed,
     Object? surname = freezed,
+    Object? idNumber = freezed,
     Object? companyId = freezed,
     Object? contractorId = freezed,
     Object? idint = freezed,
     Object? jobDescriptionId = freezed,
     Object? dob = freezed,
+    Object? contactNumber = freezed,
     Object? phoneint = freezed,
     Object? email = freezed,
     Object? municipalityId = freezed,
@@ -165,6 +173,10 @@ class _$WorkerCopyWithImpl<$Res, $Val extends Worker>
           ? _value.surname
           : surname // ignore: cast_nullable_to_non_nullable
               as String?,
+      idNumber: freezed == idNumber
+          ? _value.idNumber
+          : idNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
       companyId: freezed == companyId
           ? _value.companyId
           : companyId // ignore: cast_nullable_to_non_nullable
@@ -184,6 +196,10 @@ class _$WorkerCopyWithImpl<$Res, $Val extends Worker>
       dob: freezed == dob
           ? _value.dob
           : dob // ignore: cast_nullable_to_non_nullable
+              as String?,
+      contactNumber: freezed == contactNumber
+          ? _value.contactNumber
+          : contactNumber // ignore: cast_nullable_to_non_nullable
               as String?,
       phoneint: freezed == phoneint
           ? _value.phoneint
@@ -271,11 +287,13 @@ abstract class _$$_WorkerCopyWith<$Res> implements $WorkerCopyWith<$Res> {
       {@JsonKey(name: 'WorkerId') String workerId,
       @JsonKey(name: 'FirstName') String? firstName,
       @JsonKey(name: 'Surname') String? surname,
+      @JsonKey(name: 'IdNumber') String? idNumber,
       @JsonKey(name: 'CompanyId') int? companyId,
       @JsonKey(name: 'ContractorId') int? contractorId,
       @JsonKey(name: 'Idint') String? idint,
       @JsonKey(name: 'JobDescriptionId') int? jobDescriptionId,
       @JsonKey(name: 'DOB') String? dob,
+      @JsonKey(name: 'ContactNumber') String? contactNumber,
       @JsonKey(name: 'Phoneint') String? phoneint,
       @JsonKey(name: 'Email') String? email,
       @JsonKey(name: 'MunicipalityId') int? municipalityId,
@@ -309,11 +327,13 @@ class __$$_WorkerCopyWithImpl<$Res>
     Object? workerId = null,
     Object? firstName = freezed,
     Object? surname = freezed,
+    Object? idNumber = freezed,
     Object? companyId = freezed,
     Object? contractorId = freezed,
     Object? idint = freezed,
     Object? jobDescriptionId = freezed,
     Object? dob = freezed,
+    Object? contactNumber = freezed,
     Object? phoneint = freezed,
     Object? email = freezed,
     Object? municipalityId = freezed,
@@ -346,6 +366,10 @@ class __$$_WorkerCopyWithImpl<$Res>
           ? _value.surname
           : surname // ignore: cast_nullable_to_non_nullable
               as String?,
+      idNumber: freezed == idNumber
+          ? _value.idNumber
+          : idNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
       companyId: freezed == companyId
           ? _value.companyId
           : companyId // ignore: cast_nullable_to_non_nullable
@@ -365,6 +389,10 @@ class __$$_WorkerCopyWithImpl<$Res>
       dob: freezed == dob
           ? _value.dob
           : dob // ignore: cast_nullable_to_non_nullable
+              as String?,
+      contactNumber: freezed == contactNumber
+          ? _value.contactNumber
+          : contactNumber // ignore: cast_nullable_to_non_nullable
               as String?,
       phoneint: freezed == phoneint
           ? _value.phoneint
@@ -449,11 +477,13 @@ class _$_Worker extends _Worker {
       {@JsonKey(name: 'WorkerId') required this.workerId,
       @JsonKey(name: 'FirstName') this.firstName,
       @JsonKey(name: 'Surname') this.surname,
+      @JsonKey(name: 'IdNumber') this.idNumber,
       @JsonKey(name: 'CompanyId') this.companyId,
       @JsonKey(name: 'ContractorId') this.contractorId,
       @JsonKey(name: 'Idint') this.idint,
       @JsonKey(name: 'JobDescriptionId') this.jobDescriptionId,
       @JsonKey(name: 'DOB') this.dob,
+      @JsonKey(name: 'ContactNumber') this.contactNumber,
       @JsonKey(name: 'Phoneint') this.phoneint,
       @JsonKey(name: 'Email') this.email,
       @JsonKey(name: 'MunicipalityId') this.municipalityId,
@@ -487,6 +517,9 @@ class _$_Worker extends _Worker {
   @JsonKey(name: 'Surname')
   final String? surname;
   @override
+  @JsonKey(name: 'IdNumber')
+  final String? idNumber;
+  @override
   @JsonKey(name: 'CompanyId')
   final int? companyId;
   @override
@@ -501,6 +534,9 @@ class _$_Worker extends _Worker {
   @override
   @JsonKey(name: 'DOB')
   final String? dob;
+  @override
+  @JsonKey(name: 'ContactNumber')
+  final String? contactNumber;
   @override
   @JsonKey(name: 'Phoneint')
   final String? phoneint;
@@ -558,7 +594,7 @@ class _$_Worker extends _Worker {
 
   @override
   String toString() {
-    return 'Worker(workerId: $workerId, firstName: $firstName, surname: $surname, companyId: $companyId, contractorId: $contractorId, idint: $idint, jobDescriptionId: $jobDescriptionId, dob: $dob, phoneint: $phoneint, email: $email, municipalityId: $municipalityId, provinceId: $provinceId, gender: $gender, image: $image, notes: $notes, raceId: $raceId, genderId: $genderId, disabilityId: $disabilityId, driverint: $driverint, driverExpiryDt: $driverExpiryDt, pdpint: $pdpint, pdpExpiryDt: $pdpExpiryDt, createDt: $createDt, upStringDt: $upStringDt, isLocal: $isLocal, isActive: $isActive)';
+    return 'Worker(workerId: $workerId, firstName: $firstName, surname: $surname, idNumber: $idNumber, companyId: $companyId, contractorId: $contractorId, idint: $idint, jobDescriptionId: $jobDescriptionId, dob: $dob, contactNumber: $contactNumber, phoneint: $phoneint, email: $email, municipalityId: $municipalityId, provinceId: $provinceId, gender: $gender, image: $image, notes: $notes, raceId: $raceId, genderId: $genderId, disabilityId: $disabilityId, driverint: $driverint, driverExpiryDt: $driverExpiryDt, pdpint: $pdpint, pdpExpiryDt: $pdpExpiryDt, createDt: $createDt, upStringDt: $upStringDt, isLocal: $isLocal, isActive: $isActive)';
   }
 
   @override
@@ -571,6 +607,8 @@ class _$_Worker extends _Worker {
             (identical(other.firstName, firstName) ||
                 other.firstName == firstName) &&
             (identical(other.surname, surname) || other.surname == surname) &&
+            (identical(other.idNumber, idNumber) ||
+                other.idNumber == idNumber) &&
             (identical(other.companyId, companyId) ||
                 other.companyId == companyId) &&
             (identical(other.contractorId, contractorId) ||
@@ -579,6 +617,8 @@ class _$_Worker extends _Worker {
             (identical(other.jobDescriptionId, jobDescriptionId) ||
                 other.jobDescriptionId == jobDescriptionId) &&
             (identical(other.dob, dob) || other.dob == dob) &&
+            (identical(other.contactNumber, contactNumber) ||
+                other.contactNumber == contactNumber) &&
             (identical(other.phoneint, phoneint) ||
                 other.phoneint == phoneint) &&
             (identical(other.email, email) || other.email == email) &&
@@ -617,11 +657,13 @@ class _$_Worker extends _Worker {
         workerId,
         firstName,
         surname,
+        idNumber,
         companyId,
         contractorId,
         idint,
         jobDescriptionId,
         dob,
+        contactNumber,
         phoneint,
         email,
         municipalityId,
@@ -661,11 +703,13 @@ abstract class _Worker extends Worker {
       {@JsonKey(name: 'WorkerId') required final String workerId,
       @JsonKey(name: 'FirstName') final String? firstName,
       @JsonKey(name: 'Surname') final String? surname,
+      @JsonKey(name: 'IdNumber') final String? idNumber,
       @JsonKey(name: 'CompanyId') final int? companyId,
       @JsonKey(name: 'ContractorId') final int? contractorId,
       @JsonKey(name: 'Idint') final String? idint,
       @JsonKey(name: 'JobDescriptionId') final int? jobDescriptionId,
       @JsonKey(name: 'DOB') final String? dob,
+      @JsonKey(name: 'ContactNumber') final String? contactNumber,
       @JsonKey(name: 'Phoneint') final String? phoneint,
       @JsonKey(name: 'Email') final String? email,
       @JsonKey(name: 'MunicipalityId') final int? municipalityId,
@@ -698,6 +742,9 @@ abstract class _Worker extends Worker {
   @JsonKey(name: 'Surname')
   String? get surname;
   @override
+  @JsonKey(name: 'IdNumber')
+  String? get idNumber;
+  @override
   @JsonKey(name: 'CompanyId')
   int? get companyId;
   @override
@@ -712,6 +759,9 @@ abstract class _Worker extends Worker {
   @override
   @JsonKey(name: 'DOB')
   String? get dob;
+  @override
+  @JsonKey(name: 'ContactNumber')
+  String? get contactNumber;
   @override
   @JsonKey(name: 'Phoneint')
   String? get phoneint;

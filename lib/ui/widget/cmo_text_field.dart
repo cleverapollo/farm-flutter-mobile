@@ -16,6 +16,9 @@ class CmoTextField extends StatelessWidget {
     this.autofillHints,
     this.onEditingComplete,
     this.textInputAction,
+    this.maxLines = 1,
+    this.autofocus = false,
+    this.focusNode,
   });
 
   final Widget? prefixIcon;
@@ -40,6 +43,12 @@ class CmoTextField extends StatelessWidget {
 
   final FormFieldValidator<String?>? validator;
 
+  final int? maxLines;
+
+  final bool autofocus;
+
+  final FocusNode? focusNode;
+
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
@@ -63,6 +72,9 @@ class CmoTextField extends StatelessWidget {
         isDense: true,
         hintText: hintText,
       ),
+      maxLines: maxLines,
+      autofocus: autofocus,
+      focusNode: focusNode,
     );
   }
 }

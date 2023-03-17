@@ -22,128 +22,138 @@ const WorkerSchema = CollectionSchema(
       name: r'companyId',
       type: IsarType.long,
     ),
-    r'contractorId': PropertySchema(
+    r'contactNumber': PropertySchema(
       id: 1,
+      name: r'contactNumber',
+      type: IsarType.string,
+    ),
+    r'contractorId': PropertySchema(
+      id: 2,
       name: r'contractorId',
       type: IsarType.long,
     ),
     r'createDt': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'createDt',
       type: IsarType.string,
     ),
     r'disabilityId': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'disabilityId',
       type: IsarType.long,
     ),
     r'dob': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'dob',
       type: IsarType.string,
     ),
     r'driverExpiryDt': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'driverExpiryDt',
       type: IsarType.string,
     ),
     r'driverint': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'driverint',
       type: IsarType.string,
     ),
     r'email': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'email',
       type: IsarType.string,
     ),
     r'firstName': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'firstName',
       type: IsarType.string,
     ),
     r'gender': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'gender',
       type: IsarType.string,
     ),
     r'genderId': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'genderId',
       type: IsarType.long,
     ),
+    r'idNumber': PropertySchema(
+      id: 12,
+      name: r'idNumber',
+      type: IsarType.string,
+    ),
     r'idint': PropertySchema(
-      id: 11,
+      id: 13,
       name: r'idint',
       type: IsarType.string,
     ),
     r'image': PropertySchema(
-      id: 12,
+      id: 14,
       name: r'image',
       type: IsarType.string,
     ),
     r'isActive': PropertySchema(
-      id: 13,
+      id: 15,
       name: r'isActive',
       type: IsarType.bool,
     ),
     r'isLocal': PropertySchema(
-      id: 14,
+      id: 16,
       name: r'isLocal',
       type: IsarType.bool,
     ),
     r'jobDescriptionId': PropertySchema(
-      id: 15,
+      id: 17,
       name: r'jobDescriptionId',
       type: IsarType.long,
     ),
     r'municipalityId': PropertySchema(
-      id: 16,
+      id: 18,
       name: r'municipalityId',
       type: IsarType.long,
     ),
     r'notes': PropertySchema(
-      id: 17,
+      id: 19,
       name: r'notes',
       type: IsarType.string,
     ),
     r'pdpExpiryDt': PropertySchema(
-      id: 18,
+      id: 20,
       name: r'pdpExpiryDt',
       type: IsarType.string,
     ),
     r'pdpint': PropertySchema(
-      id: 19,
+      id: 21,
       name: r'pdpint',
       type: IsarType.string,
     ),
     r'phoneint': PropertySchema(
-      id: 20,
+      id: 22,
       name: r'phoneint',
       type: IsarType.string,
     ),
     r'provinceId': PropertySchema(
-      id: 21,
+      id: 23,
       name: r'provinceId',
       type: IsarType.long,
     ),
     r'raceId': PropertySchema(
-      id: 22,
+      id: 24,
       name: r'raceId',
       type: IsarType.long,
     ),
     r'surname': PropertySchema(
-      id: 23,
+      id: 25,
       name: r'surname',
       type: IsarType.string,
     ),
     r'upStringDt': PropertySchema(
-      id: 24,
+      id: 26,
       name: r'upStringDt',
       type: IsarType.string,
     ),
     r'workerId': PropertySchema(
-      id: 25,
+      id: 27,
       name: r'workerId',
       type: IsarType.string,
     )
@@ -168,6 +178,12 @@ int _workerEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  {
+    final value = object.contactNumber;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.createDt;
     if (value != null) {
@@ -206,6 +222,12 @@ int _workerEstimateSize(
   }
   {
     final value = object.gender;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.idNumber;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -269,31 +291,33 @@ void _workerSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.companyId);
-  writer.writeLong(offsets[1], object.contractorId);
-  writer.writeString(offsets[2], object.createDt);
-  writer.writeLong(offsets[3], object.disabilityId);
-  writer.writeString(offsets[4], object.dob);
-  writer.writeString(offsets[5], object.driverExpiryDt);
-  writer.writeString(offsets[6], object.driverint);
-  writer.writeString(offsets[7], object.email);
-  writer.writeString(offsets[8], object.firstName);
-  writer.writeString(offsets[9], object.gender);
-  writer.writeLong(offsets[10], object.genderId);
-  writer.writeString(offsets[11], object.idint);
-  writer.writeString(offsets[12], object.image);
-  writer.writeBool(offsets[13], object.isActive);
-  writer.writeBool(offsets[14], object.isLocal);
-  writer.writeLong(offsets[15], object.jobDescriptionId);
-  writer.writeLong(offsets[16], object.municipalityId);
-  writer.writeString(offsets[17], object.notes);
-  writer.writeString(offsets[18], object.pdpExpiryDt);
-  writer.writeString(offsets[19], object.pdpint);
-  writer.writeString(offsets[20], object.phoneint);
-  writer.writeLong(offsets[21], object.provinceId);
-  writer.writeLong(offsets[22], object.raceId);
-  writer.writeString(offsets[23], object.surname);
-  writer.writeString(offsets[24], object.upStringDt);
-  writer.writeString(offsets[25], object.workerId);
+  writer.writeString(offsets[1], object.contactNumber);
+  writer.writeLong(offsets[2], object.contractorId);
+  writer.writeString(offsets[3], object.createDt);
+  writer.writeLong(offsets[4], object.disabilityId);
+  writer.writeString(offsets[5], object.dob);
+  writer.writeString(offsets[6], object.driverExpiryDt);
+  writer.writeString(offsets[7], object.driverint);
+  writer.writeString(offsets[8], object.email);
+  writer.writeString(offsets[9], object.firstName);
+  writer.writeString(offsets[10], object.gender);
+  writer.writeLong(offsets[11], object.genderId);
+  writer.writeString(offsets[12], object.idNumber);
+  writer.writeString(offsets[13], object.idint);
+  writer.writeString(offsets[14], object.image);
+  writer.writeBool(offsets[15], object.isActive);
+  writer.writeBool(offsets[16], object.isLocal);
+  writer.writeLong(offsets[17], object.jobDescriptionId);
+  writer.writeLong(offsets[18], object.municipalityId);
+  writer.writeString(offsets[19], object.notes);
+  writer.writeString(offsets[20], object.pdpExpiryDt);
+  writer.writeString(offsets[21], object.pdpint);
+  writer.writeString(offsets[22], object.phoneint);
+  writer.writeLong(offsets[23], object.provinceId);
+  writer.writeLong(offsets[24], object.raceId);
+  writer.writeString(offsets[25], object.surname);
+  writer.writeString(offsets[26], object.upStringDt);
+  writer.writeString(offsets[27], object.workerId);
 }
 
 Worker _workerDeserialize(
@@ -304,31 +328,33 @@ Worker _workerDeserialize(
 ) {
   final object = Worker(
     companyId: reader.readLongOrNull(offsets[0]),
-    contractorId: reader.readLongOrNull(offsets[1]),
-    createDt: reader.readStringOrNull(offsets[2]),
-    disabilityId: reader.readLongOrNull(offsets[3]),
-    dob: reader.readStringOrNull(offsets[4]),
-    driverExpiryDt: reader.readStringOrNull(offsets[5]),
-    driverint: reader.readStringOrNull(offsets[6]),
-    email: reader.readStringOrNull(offsets[7]),
-    firstName: reader.readStringOrNull(offsets[8]),
-    gender: reader.readStringOrNull(offsets[9]),
-    genderId: reader.readLongOrNull(offsets[10]),
-    idint: reader.readStringOrNull(offsets[11]),
-    image: reader.readStringOrNull(offsets[12]),
-    isActive: reader.readBoolOrNull(offsets[13]),
-    isLocal: reader.readBoolOrNull(offsets[14]),
-    jobDescriptionId: reader.readLongOrNull(offsets[15]),
-    municipalityId: reader.readLongOrNull(offsets[16]),
-    notes: reader.readStringOrNull(offsets[17]),
-    pdpExpiryDt: reader.readStringOrNull(offsets[18]),
-    pdpint: reader.readStringOrNull(offsets[19]),
-    phoneint: reader.readStringOrNull(offsets[20]),
-    provinceId: reader.readLongOrNull(offsets[21]),
-    raceId: reader.readLongOrNull(offsets[22]),
-    surname: reader.readStringOrNull(offsets[23]),
-    upStringDt: reader.readStringOrNull(offsets[24]),
-    workerId: reader.readString(offsets[25]),
+    contactNumber: reader.readStringOrNull(offsets[1]),
+    contractorId: reader.readLongOrNull(offsets[2]),
+    createDt: reader.readStringOrNull(offsets[3]),
+    disabilityId: reader.readLongOrNull(offsets[4]),
+    dob: reader.readStringOrNull(offsets[5]),
+    driverExpiryDt: reader.readStringOrNull(offsets[6]),
+    driverint: reader.readStringOrNull(offsets[7]),
+    email: reader.readStringOrNull(offsets[8]),
+    firstName: reader.readStringOrNull(offsets[9]),
+    gender: reader.readStringOrNull(offsets[10]),
+    genderId: reader.readLongOrNull(offsets[11]),
+    idNumber: reader.readStringOrNull(offsets[12]),
+    idint: reader.readStringOrNull(offsets[13]),
+    image: reader.readStringOrNull(offsets[14]),
+    isActive: reader.readBoolOrNull(offsets[15]),
+    isLocal: reader.readBoolOrNull(offsets[16]),
+    jobDescriptionId: reader.readLongOrNull(offsets[17]),
+    municipalityId: reader.readLongOrNull(offsets[18]),
+    notes: reader.readStringOrNull(offsets[19]),
+    pdpExpiryDt: reader.readStringOrNull(offsets[20]),
+    pdpint: reader.readStringOrNull(offsets[21]),
+    phoneint: reader.readStringOrNull(offsets[22]),
+    provinceId: reader.readLongOrNull(offsets[23]),
+    raceId: reader.readLongOrNull(offsets[24]),
+    surname: reader.readStringOrNull(offsets[25]),
+    upStringDt: reader.readStringOrNull(offsets[26]),
+    workerId: reader.readString(offsets[27]),
   );
   return object;
 }
@@ -343,13 +369,13 @@ P _workerDeserializeProp<P>(
     case 0:
       return (reader.readLongOrNull(offset)) as P;
     case 1:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
-    case 3:
       return (reader.readLongOrNull(offset)) as P;
-    case 4:
+    case 3:
       return (reader.readStringOrNull(offset)) as P;
+    case 4:
+      return (reader.readLongOrNull(offset)) as P;
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
@@ -361,36 +387,40 @@ P _workerDeserializeProp<P>(
     case 9:
       return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readLongOrNull(offset)) as P;
-    case 11:
       return (reader.readStringOrNull(offset)) as P;
+    case 11:
+      return (reader.readLongOrNull(offset)) as P;
     case 12:
       return (reader.readStringOrNull(offset)) as P;
     case 13:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 14:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 15:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 16:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 17:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 18:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 19:
       return (reader.readStringOrNull(offset)) as P;
     case 20:
       return (reader.readStringOrNull(offset)) as P;
     case 21:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 22:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 23:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 24:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 25:
+      return (reader.readStringOrNull(offset)) as P;
+    case 26:
+      return (reader.readStringOrNull(offset)) as P;
+    case 27:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -548,6 +578,153 @@ extension WorkerQueryFilter on QueryBuilder<Worker, Worker, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> contactNumberIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'contactNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> contactNumberIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'contactNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> contactNumberEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'contactNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> contactNumberGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'contactNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> contactNumberLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'contactNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> contactNumberBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'contactNumber',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> contactNumberStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'contactNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> contactNumberEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'contactNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> contactNumberContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'contactNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> contactNumberMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'contactNumber',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> contactNumberIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'contactNumber',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition>
+      contactNumberIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'contactNumber',
+        value: '',
       ));
     });
   }
@@ -1829,6 +2006,152 @@ extension WorkerQueryFilter on QueryBuilder<Worker, Worker, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> idNumberIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'idNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> idNumberIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'idNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> idNumberEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'idNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> idNumberGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'idNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> idNumberLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'idNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> idNumberBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'idNumber',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> idNumberStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'idNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> idNumberEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'idNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> idNumberContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'idNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> idNumberMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'idNumber',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> idNumberIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'idNumber',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterFilterCondition> idNumberIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'idNumber',
+        value: '',
       ));
     });
   }
@@ -3480,6 +3803,18 @@ extension WorkerQuerySortBy on QueryBuilder<Worker, Worker, QSortBy> {
     });
   }
 
+  QueryBuilder<Worker, Worker, QAfterSortBy> sortByContactNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'contactNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterSortBy> sortByContactNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'contactNumber', Sort.desc);
+    });
+  }
+
   QueryBuilder<Worker, Worker, QAfterSortBy> sortByContractorId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'contractorId', Sort.asc);
@@ -3597,6 +3932,18 @@ extension WorkerQuerySortBy on QueryBuilder<Worker, Worker, QSortBy> {
   QueryBuilder<Worker, Worker, QAfterSortBy> sortByGenderIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'genderId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterSortBy> sortByIdNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'idNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterSortBy> sortByIdNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'idNumber', Sort.desc);
     });
   }
 
@@ -3794,6 +4141,18 @@ extension WorkerQuerySortThenBy on QueryBuilder<Worker, Worker, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Worker, Worker, QAfterSortBy> thenByContactNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'contactNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterSortBy> thenByContactNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'contactNumber', Sort.desc);
+    });
+  }
+
   QueryBuilder<Worker, Worker, QAfterSortBy> thenByContractorId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'contractorId', Sort.asc);
@@ -3923,6 +4282,18 @@ extension WorkerQuerySortThenBy on QueryBuilder<Worker, Worker, QSortThenBy> {
   QueryBuilder<Worker, Worker, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterSortBy> thenByIdNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'idNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QAfterSortBy> thenByIdNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'idNumber', Sort.desc);
     });
   }
 
@@ -4114,6 +4485,14 @@ extension WorkerQueryWhereDistinct on QueryBuilder<Worker, Worker, QDistinct> {
     });
   }
 
+  QueryBuilder<Worker, Worker, QDistinct> distinctByContactNumber(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'contactNumber',
+          caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Worker, Worker, QDistinct> distinctByContractorId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'contractorId');
@@ -4179,6 +4558,13 @@ extension WorkerQueryWhereDistinct on QueryBuilder<Worker, Worker, QDistinct> {
   QueryBuilder<Worker, Worker, QDistinct> distinctByGenderId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'genderId');
+    });
+  }
+
+  QueryBuilder<Worker, Worker, QDistinct> distinctByIdNumber(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'idNumber', caseSensitive: caseSensitive);
     });
   }
 
@@ -4295,6 +4681,12 @@ extension WorkerQueryProperty on QueryBuilder<Worker, Worker, QQueryProperty> {
     });
   }
 
+  QueryBuilder<Worker, String?, QQueryOperations> contactNumberProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'contactNumber');
+    });
+  }
+
   QueryBuilder<Worker, int?, QQueryOperations> contractorIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'contractorId');
@@ -4352,6 +4744,12 @@ extension WorkerQueryProperty on QueryBuilder<Worker, Worker, QQueryProperty> {
   QueryBuilder<Worker, int?, QQueryOperations> genderIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'genderId');
+    });
+  }
+
+  QueryBuilder<Worker, String?, QQueryOperations> idNumberProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'idNumber');
     });
   }
 
@@ -4454,11 +4852,13 @@ _$_Worker _$$_WorkerFromJson(Map<String, dynamic> json) => _$_Worker(
       workerId: json['WorkerId'] as String,
       firstName: json['FirstName'] as String?,
       surname: json['Surname'] as String?,
+      idNumber: json['IdNumber'] as String?,
       companyId: json['CompanyId'] as int?,
       contractorId: json['ContractorId'] as int?,
       idint: json['Idint'] as String?,
       jobDescriptionId: json['JobDescriptionId'] as int?,
       dob: json['DOB'] as String?,
+      contactNumber: json['ContactNumber'] as String?,
       phoneint: json['Phoneint'] as String?,
       email: json['Email'] as String?,
       municipalityId: json['MunicipalityId'] as int?,
@@ -4483,11 +4883,13 @@ Map<String, dynamic> _$$_WorkerToJson(_$_Worker instance) => <String, dynamic>{
       'WorkerId': instance.workerId,
       'FirstName': instance.firstName,
       'Surname': instance.surname,
+      'IdNumber': instance.idNumber,
       'CompanyId': instance.companyId,
       'ContractorId': instance.contractorId,
       'Idint': instance.idint,
       'JobDescriptionId': instance.jobDescriptionId,
       'DOB': instance.dob,
+      'ContactNumber': instance.contactNumber,
       'Phoneint': instance.phoneint,
       'Email': instance.email,
       'MunicipalityId': instance.municipalityId,

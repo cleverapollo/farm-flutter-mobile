@@ -1,6 +1,7 @@
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/entity.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
+import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/screen/entity/entity_search_screen.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
@@ -44,6 +45,15 @@ class _EntityScreenState extends State<EntityScreen> {
     );
   }
 
+  Future<void> submit() async {
+    if (selected == null) return;
+    await context.read<UserDeviceCubit>().createUserDevice(context);
+    if (context.mounted) {
+      await context.read<EntityCubit>().sync(selected!);
+    }
+    if (context.mounted) DashboardScreen.push(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -75,12 +85,7 @@ class _EntityScreenState extends State<EntityScreen> {
               padding: const EdgeInsets.only(bottom: 40),
               child: CmoFilledButton(
                 title: LocaleKeys.sync.tr(),
-                onTap: selected != null
-                    ? () async {
-                        await context.read<EntityCubit>().sync(selected!);
-                        if (context.mounted) DashboardScreen.push(context);
-                      }
-                    : null,
+                onTap: () => submit(),
               ),
             ),
           ],

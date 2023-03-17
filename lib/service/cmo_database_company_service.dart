@@ -579,8 +579,12 @@ class CmoDatabaseCompanyService {
 
   Future<List<Worker>> getWorkers() async {
     final db = await _db();
-
     return db.workers.where().findAll();
+  }
+
+  Future<List<Worker>> getWorkersLocal() async {
+    final db = await _db();
+    return db.workers.filter().isLocalEqualTo(true).findAll();
   }
 
   // Future<int> deleteWorkers() async {

@@ -91,14 +91,23 @@ class $AssetsImagesGen {
 class $AssetsL10nGen {
   const $AssetsL10nGen();
 
-  /// File path: assets/l10n/en-US.json
-  String get enUS => 'assets/l10n/en-US.json';
+  /// File path: assets/l10n/en.json
+  String get en => 'assets/l10n/en.json';
 
-  /// File path: assets/l10n/fr-FR.json
-  String get frFR => 'assets/l10n/fr-FR.json';
+  /// File path: assets/l10n/fr.json
+  String get fr => 'assets/l10n/fr.json';
+
+  /// File path: assets/l10n/ms.json
+  String get ms => 'assets/l10n/ms.json';
+
+  /// File path: assets/l10n/th.json
+  String get th => 'assets/l10n/th.json';
+
+  /// File path: assets/l10n/zu.json
+  String get zu => 'assets/l10n/zu.json';
 
   /// List of all assets
-  List<String> get values => [enUS, frFR];
+  List<String> get values => [en, fr, ms, th, zu];
 }
 
 class Assets {

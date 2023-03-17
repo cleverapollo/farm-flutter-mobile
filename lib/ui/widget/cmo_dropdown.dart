@@ -1,29 +1,41 @@
-import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class CmoDatePicker extends StatelessWidget {
-  const CmoDatePicker({
+class CmoDropdownItem {
+  CmoDropdownItem({
+    required this.id,
+    required this.name,
+  });
+
+  final int id;
+  final String name;
+}
+
+class CmoDropdown extends StatelessWidget {
+  const CmoDropdown({
     super.key,
     required this.name,
     this.hintText,
-    this.validator,
     this.prefixIcon,
     this.suffixIcon,
+    this.itemsData,
+    this.validator,
   });
 
   final String name;
   final String? hintText;
-  final FormFieldValidator<DateTime?>? validator;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final List<CmoDropdownItem>? itemsData;
+  final FormFieldValidator<int?>? validator;
 
   @override
   Widget build(BuildContext context) {
-    return FormBuilderDateTimePicker(
+    return FormBuilderDropdown<int>(
       name: name,
-      inputType: InputType.date,
+      validator: validator,
+      style: context.textStyles.bodyNormal,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(8),
         prefixIconConstraints: BoxConstraints.tight(const Size(56, 38)),
@@ -33,10 +45,18 @@ class CmoDatePicker extends StatelessWidget {
         isDense: true,
         hintText: hintText,
       ),
-      style: context.textStyles.bodyNormal,
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
-      validator: validator,
-      format: DateFormat('dd/MM/yyyy'),
+      focusColor: Theme.of(context).scaffoldBackgroundColor,
+      items: (itemsData ?? <CmoDropdownItem>[])
+          .map(
+            (data) => DropdownMenuItem(
+              value: data.id,
+              child: Text(
+                data.name,
+                style: context.textStyles.bodyNormal,
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }
