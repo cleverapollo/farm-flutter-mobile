@@ -24,9 +24,6 @@ class EntityState {
   final int countWorkers;
   final int countQuestion;
 
-  CmoDatabaseCompanyService? get companyService =>
-      CmoDatabaseCompanyService(companyId: company?.companyId);
-
   EntityState copyWith({
     Entity? entity,
     Company? company,

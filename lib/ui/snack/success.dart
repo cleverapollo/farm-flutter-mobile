@@ -13,3 +13,16 @@ void showSnackSuccess({
   snackbarKey.currentState?.clearSnackBars();
   snackbarKey.currentState?.showSnackBar(snackBar);
 }
+
+void showSnackError({
+  required String msg,
+}) {
+  final snackBar = SnackBar(
+    content: Text(msg),
+    showCloseIcon: true,
+    backgroundColor: Colors.red,
+    duration: const Duration(seconds: 3),
+  );
+  snackbarKey.currentState?.clearSnackBars();
+  snackbarKey.currentState?.showSnackBar(snackBar);
+}

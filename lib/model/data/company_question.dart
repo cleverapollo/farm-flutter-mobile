@@ -1,3 +1,5 @@
+// ignore_for_file: override_on_non_overriding_member, invalid_annotation_target, sort_unnamed_constructors_first, sort_constructors_first
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -10,14 +12,14 @@ class CompanyQuestion with _$CompanyQuestion {
   const CompanyQuestion._();
 
   @override
-  Id get id => companyId;
+  Id get id => questionId ?? Isar.autoIncrement;
 
   const factory CompanyQuestion({
     @JsonKey(name: 'CompanyId') required int companyId,
     @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
     @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
-    @JsonKey(name: 'CompanyQuestionId') int? companyQuestionId,
-    @JsonKey(name: 'CompanyQuestionValue') String? companyQuestionValue,
+    @JsonKey(name: 'QuestionId') int? questionId,
+    @JsonKey(name: 'QuestionValue') String? questionValue,
     @JsonKey(name: 'JobElementId') int? jobElementId,
     @JsonKey(name: 'JobElementName') String? jobElementName,
     @JsonKey(name: 'PDCAId') int? pdcaId,
@@ -34,7 +36,7 @@ class CompanyQuestion with _$CompanyQuestion {
     @JsonKey(name: 'MMMName') String? mmmName,
     @JsonKey(name: 'ComplianceName') String? complianceName,
     @JsonKey(name: 'ComplianceId') int? complianceId,
-    @JsonKey(name: 'IsCompanyQuestionComplete') bool? isCompanyQuestionComplete,
+    @JsonKey(name: 'IsQuestionComplete') bool? isQuestionComplete,
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _CompanyQuestion;
 

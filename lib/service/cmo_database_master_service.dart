@@ -1,23 +1,22 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, inference_failure_on_function_invocation
 
 import 'dart:io';
 
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:isar/isar.dart';
 
-/// [CmoDatabaseCompanyService] is for storing master data
-class CmoDatabaseCompanyService {
-  factory CmoDatabaseCompanyService({required int? companyId}) {
-    _inst.companyId = companyId;
+/// [CmoDatabaseMasterService] is for storing master data
+class CmoDatabaseMasterService {
+  factory CmoDatabaseMasterService() {
     return _inst;
   }
 
-  CmoDatabaseCompanyService._internal();
-  static final CmoDatabaseCompanyService _inst =
-      CmoDatabaseCompanyService._internal();
+  CmoDatabaseMasterService._internal();
+  static final CmoDatabaseMasterService _inst =
+      CmoDatabaseMasterService._internal();
 
-  late int? companyId;
-  String get _databaseName => 'cmo_company_$companyId';
+  String get _databaseName => 'cmo_company';
 
   Isar? _database;
 
@@ -67,16 +66,25 @@ class CmoDatabaseCompanyService {
     return db.plantations.put(item);
   }
 
-  // Future<Plantation?> getCachedPlantation({required int id}) async {
-  //   final value = await _getItem(_cachePlantationKey, id);
-  //   if (value == null) return null;
-  //   final plantation = Plantation.fromJson(value);
-  //   return plantation;
-  // }
+  Future<Plantation?> getPlantationById(int? id) async {
+    if (id == null) return null;
+    final db = await _db();
+    return db.plantations.filter().plantationIdEqualTo(id).findFirst();
+  }
 
   Future<List<Plantation>> getPlantations() async {
     final db = await _db();
-    return db.plantations.where().findAll();
+    return db.plantations.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<Plantation>> getPlantationsByCompanyId(int companyId) async {
+    final db = await _db();
+    return db.plantations
+        .filter()
+        .isActiveEqualTo(true)
+        .companyIdEqualTo(companyId)
+        .sortByPlantationName()
+        .findAll();
   }
 
   // Future<int> deletePlantations() async {
@@ -99,7 +107,7 @@ class CmoDatabaseCompanyService {
 
   Future<List<Unit>> getUnits() async {
     final db = await _db();
-    return db.units.where().findAll();
+    return db.units.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteUnits() async {
@@ -113,16 +121,25 @@ class CmoDatabaseCompanyService {
     return db.contractors.put(item);
   }
 
-  // Future<Contractor?> getCachedContractor({required int id}) async {
-  //   final value = await _getItem(_cacheContractorKey, id);
-  //   if (value == null) return null;
-  //   final contractor = Contractor.fromJson(value);
-  //   return contractor;
-  // }
+  Future<Contractor?> getContractorById(int? id) async {
+    if (id == null) return null;
+    final db = await _db();
+    return db.contractors.filter().companyIdEqualTo(id).findFirst();
+  }
 
   Future<List<Contractor>> getContractors() async {
     final db = await _db();
-    return db.contractors.where().findAll();
+    return db.contractors.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<Contractor>> getContractorsByCompanyId(int companyId) async {
+    final db = await _db();
+    return db.contractors
+        .filter()
+        .isActiveEqualTo(true)
+        .companyIdEqualTo(companyId)
+        .sortByContractorName()
+        .findAll();
   }
 
   // Future<int> deleteContractors() async {
@@ -145,7 +162,7 @@ class CmoDatabaseCompanyService {
 
   Future<List<Province>> getProvinces() async {
     final db = await _db();
-    return db.provinces.where().findAll();
+    return db.provinces.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteProvinces() async {
@@ -169,7 +186,7 @@ class CmoDatabaseCompanyService {
   Future<List<Municipality>> getMunicipalitys() async {
     final db = await _db();
 
-    return db.municipalitys.where().findAll();
+    return db.municipalitys.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteMunicipalitys() async {
@@ -193,7 +210,7 @@ class CmoDatabaseCompanyService {
   Future<List<ImpactCaused>> getImpactCauseds() async {
     final db = await _db();
 
-    return db.impactCauseds.where().findAll();
+    return db.impactCauseds.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteImpactCauseds() async {
@@ -217,7 +234,7 @@ class CmoDatabaseCompanyService {
   Future<List<ImpactOn>> getImpactOns() async {
     final db = await _db();
 
-    return db.impactOns.where().findAll();
+    return db.impactOns.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteImpactOns() async {
@@ -231,17 +248,32 @@ class CmoDatabaseCompanyService {
     return db.jobCategorys.put(item);
   }
 
-  // Future<JobCategory?> getCachedJobCategory({required int id}) async {
-  //   final value = await _getItem(_cacheJobCategoryKey, id);
-  //   if (value == null) return null;
-  //   final jobCategory = JobCategory.fromJson(value);
-  //   return jobCategory;
-  // }
+  Future<JobCategory?> getJobCategoryById(int? id) async {
+    if (id == null) return null;
+    final db = await _db();
+    return db.jobCategorys.filter().jobCategoryIdEqualTo(id).findFirst();
+  }
 
-  Future<List<JobCategory>> getJobCategorys() async {
+  Future<List<JobCategory>> getJobCategories() async {
     final db = await _db();
 
-    return db.jobCategorys.where().findAll();
+    return db.jobCategorys.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<JobCategory>> getJobCategoriesByCompanyId(int id) async {
+    final db = await _db();
+    final ids = await getJobCategoryIdsByCompanyId(id);
+
+    final x = db.jobCategorys
+        .filter()
+        .isActiveEqualTo(true)
+        .anyOf(
+          ids,
+          (q, int jobCategoryId) => q.jobCategoryIdEqualTo(jobCategoryId),
+        )
+        .sortByJobCategoryName()
+        .findAll();
+    return x;
   }
 
   // Future<int> deleteJobCategorys() async {
@@ -255,17 +287,20 @@ class CmoDatabaseCompanyService {
     return db.jobDescriptions.put(item);
   }
 
-  // Future<JobDescription?> getCachedJobDescription({required int id}) async {
-  //   final value = await _getItem(_cacheJobDescriptionKey, id);
-  //   if (value == null) return null;
-  //   final jobDescription = JobDescription.fromJson(value);
-  //   return jobDescription;
-  // }
+  Future<JobDescription?> getJobDescriptionById(int? id) async {
+    if (id == null) return null;
+    final db = await _db();
+    return db.jobDescriptions.filter().jobDescriptionIdEqualTo(id).findFirst();
+  }
 
   Future<List<JobDescription>> getJobDescriptions() async {
     final db = await _db();
 
-    return db.jobDescriptions.where().findAll();
+    return db.jobDescriptions
+        .filter()
+        .isActiveEqualTo(true)
+        .sortByJobDescriptionName()
+        .findAll();
   }
 
   // Future<int> deleteJobDescriptions() async {
@@ -289,7 +324,7 @@ class CmoDatabaseCompanyService {
   Future<List<JobElement>> getJobElements() async {
     final db = await _db();
 
-    return db.jobElements.where().findAll();
+    return db.jobElements.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteJobElements() async {
@@ -313,7 +348,7 @@ class CmoDatabaseCompanyService {
   Future<List<Mmm>> getMmms() async {
     final db = await _db();
 
-    return db.mmms.where().findAll();
+    return db.mmms.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteMmms() async {
@@ -337,7 +372,7 @@ class CmoDatabaseCompanyService {
   Future<List<Pdca>> getPdcas() async {
     final db = await _db();
 
-    return db.pdcas.where().findAll();
+    return db.pdcas.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deletePdcas() async {
@@ -361,7 +396,7 @@ class CmoDatabaseCompanyService {
   Future<List<Severity>> getSeveritys() async {
     final db = await _db();
 
-    return db.severitys.where().findAll();
+    return db.severitys.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteSeveritys() async {
@@ -384,7 +419,7 @@ class CmoDatabaseCompanyService {
 
   Future<List<Speqs>> getSpeqss() async {
     final db = await _db();
-    return db.speqs.where().findAll();
+    return db.speqs.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteSpeqss() async {
@@ -408,7 +443,7 @@ class CmoDatabaseCompanyService {
   Future<List<Compliance>> getCompliances() async {
     final db = await _db();
 
-    return db.compliances.where().findAll();
+    return db.compliances.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteCompliances() async {
@@ -422,19 +457,42 @@ class CmoDatabaseCompanyService {
     return db.teams.put(item);
   }
 
-  // Future<Team?> getCachedTeam({required int id}) async {
-  //   final value = await _getItem(_cacheTeamKey, id);
-  //   if (value == null) return null;
-  //   final team = Team.fromJson(value);
-  //   return team;
-  // }
+  Future<Team?> getTeamById(int? id) async {
+    if (id == null) return null;
+    final db = await _db();
+    return db.teams.filter().teamIdEqualTo(id).findFirst();
+  }
 
   Future<List<Team>> getTeams() async {
     final db = await _db();
 
-    return db.teams.where().findAll();
+    return db.teams.filter().isActiveEqualTo(true).findAll();
   }
 
+  Future<List<Team>> getTeamsByCompanyId(int companyId) async {
+    final db = await _db();
+    return db.teams
+        .filter()
+        .isActiveEqualTo(true)
+        .companyIdEqualTo(companyId)
+        .sortByTeamName()
+        .findAll();
+  }
+
+  Future<List<Team>> getTeamsByCompanyIdAndContractorId(
+    int companyId,
+    int? contractorId,
+  ) async {
+    if (contractorId == null) return <Team>[];
+    final db = await _db();
+    return db.teams
+        .filter()
+        .isActiveEqualTo(true)
+        .companyIdEqualTo(companyId)
+        .contractorIdEqualTo(contractorId)
+        .sortByTeamName()
+        .findAll();
+  }
   // Future<int> deleteTeams() async {
   //   return _deleteAll(_cacheTeamKey);
   // }
@@ -456,7 +514,7 @@ class CmoDatabaseCompanyService {
   Future<List<RejectReason>> getRejectReasons() async {
     final db = await _db();
 
-    return db.rejectReasons.where().findAll();
+    return db.rejectReasons.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteRejectReasons() async {
@@ -482,7 +540,7 @@ class CmoDatabaseCompanyService {
   Future<List<TrainingProvider>> getTrainingProviders() async {
     final db = await _db();
 
-    return db.trainingProviders.where().findAll();
+    return db.trainingProviders.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteTrainingProviders() async {
@@ -506,7 +564,7 @@ class CmoDatabaseCompanyService {
   Future<List<Course>> getCourses() async {
     final db = await _db();
 
-    return db.courses.where().findAll();
+    return db.courses.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteCourses() async {
@@ -530,7 +588,7 @@ class CmoDatabaseCompanyService {
   Future<List<Schedule>> getSchedules() async {
     final db = await _db();
 
-    return db.schedules.where().findAll();
+    return db.schedules.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteSchedules() async {
@@ -556,7 +614,7 @@ class CmoDatabaseCompanyService {
   Future<List<ScheduleActivity>> getScheduleActivitys() async {
     final db = await _db();
 
-    return db.scheduleActivitys.where().findAll();
+    return db.scheduleActivitys.filter().isActiveEqualTo(true).findAll();
   }
 
   // Future<int> deleteScheduleActivitys() async {
@@ -570,21 +628,49 @@ class CmoDatabaseCompanyService {
     return db.workers.put(item);
   }
 
-  // Future<Worker?> getCachedWorker({required String id}) async {
-  //   final value = await _getItemDbString(_cacheWorkerKey, id);
-  //   if (value == null) return null;
-  //   final worker = Worker.fromJson(value);
-  //   return worker;
-  // }
+  Future<Worker?> getWorkerById(String? id) async {
+    if (id == null) return null;
+    final db = await _db();
+    return db.workers.filter().workerIdEqualTo(id).findFirst();
+  }
 
   Future<List<Worker>> getWorkers() async {
     final db = await _db();
-    return db.workers.where().findAll();
+    return db.workers.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<Worker>> getWorkersByCompanyId(int companyId) async {
+    final db = await _db();
+    return db.workers
+        .filter()
+        .isActiveEqualTo(true)
+        .companyIdEqualTo(companyId)
+        .sortBySurname()
+        .findAll();
+  }
+
+  Future<List<Worker>> getWorkersByCompanyIdAndContractorId(
+    int companyId,
+    int? contractorId,
+  ) async {
+    if (contractorId == null) return <Worker>[];
+    final db = await _db();
+    return db.workers
+        .filter()
+        .isActiveEqualTo(true)
+        .companyIdEqualTo(companyId)
+        .contractorIdEqualTo(contractorId)
+        .sortBySurname()
+        .findAll();
   }
 
   Future<List<Worker>> getWorkersLocal() async {
     final db = await _db();
-    return db.workers.filter().isLocalEqualTo(true).findAll();
+    return db.workers
+        .filter()
+        .isActiveEqualTo(true)
+        .isLocalEqualTo(true)
+        .findAll();
   }
 
   // Future<int> deleteWorkers() async {
@@ -610,7 +696,19 @@ class CmoDatabaseCompanyService {
   Future<List<CompanyQuestion>> getCompanyQuestions() async {
     final db = await _db();
 
-    return db.companyQuestions.where().findAll();
+    return db.companyQuestions.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<int>> getJobCategoryIdsByCompanyId(int id) async {
+    final db = await _db();
+    final ids = await db.companyQuestions
+        .filter()
+        .isActiveEqualTo(true)
+        .companyIdEqualTo(id)
+        .jobCategoryIdProperty()
+        .findAll();
+
+    return listRemoveNull(ids);
   }
 
   Future<FileSystemEntity?> deleteAll() async {
@@ -618,7 +716,6 @@ class CmoDatabaseCompanyService {
     await db.writeTxn(() async {
       await db.clear();
     });
-    _database = null;
     return null;
   }
 }

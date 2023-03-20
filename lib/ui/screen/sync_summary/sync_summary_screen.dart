@@ -1,3 +1,4 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -34,8 +35,7 @@ class SyncSummaryScreen extends StatelessWidget {
             return state;
           },
           builder: (context, state) {
-            final databaseService = state?.companyService;
-            if (databaseService == null) return const SizedBox();
+            final databaseService = cmoDatabaseMasterService;
 
             return FutureBuilder(
               future: databaseService.db,
@@ -55,7 +55,7 @@ class SyncSummaryScreen extends StatelessWidget {
                     const SizedBox(height: 24),
                     CmoHeaderTile(
                       title:
-                          'Master Data: ${state?.company?.companyName} - Synced: ${state?.company?.isMasterDataSynced}',
+                          'Master Data: ${state?.company?.companyName} ${state?.company?.companyId} - Synced: ${state?.company?.isMasterDataSynced}',
                     ),
                     const SizedBox(height: 16),
                     ...[
@@ -97,7 +97,7 @@ class SyncSummaryScreen extends StatelessWidget {
                         title: 'Impact ons',
                       ),
                       _SummaryTite(
-                        future: databaseService.getJobCategorys(),
+                        future: databaseService.getJobCategories(),
                         title: 'Job categorys',
                       ),
                       _SummaryTite(

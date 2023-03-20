@@ -11,8 +11,8 @@ class UserDeviceCubit extends HydratedCubit<UserDeviceState> {
   UserDeviceCubit() : super(UserDeviceState.loading());
 
   Future<void> createUserDevice(BuildContext context) async {
+    emit(UserDeviceState.loading());
     final res = await cmoApiService.createUserDevice(
-      context: context,
       appName: appInfoService.appName,
       appVersionNumber: appInfoService.version,
       deviceId: deviceInfoService.deviceId ?? '',

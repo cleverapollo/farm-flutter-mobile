@@ -1,4 +1,5 @@
 import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
+import 'package:cmo/ui/screen/assessments/widgets/assessment_tile.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class _ListCompletedState extends State<ListCompleted> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (BuildContext context, int index) {
               final item = state.dataCompleted[index];
-              return Text('$item');
+              return AssessmentTile(data: item);
             },
           ),
         );

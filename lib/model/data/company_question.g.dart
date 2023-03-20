@@ -22,94 +22,94 @@ const CompanyQuestionSchema = CollectionSchema(
       name: r'companyId',
       type: IsarType.long,
     ),
-    r'companyQuestionId': PropertySchema(
-      id: 1,
-      name: r'companyQuestionId',
-      type: IsarType.long,
-    ),
-    r'companyQuestionValue': PropertySchema(
-      id: 2,
-      name: r'companyQuestionValue',
-      type: IsarType.string,
-    ),
     r'complianceId': PropertySchema(
-      id: 3,
+      id: 1,
       name: r'complianceId',
       type: IsarType.long,
     ),
     r'complianceName': PropertySchema(
-      id: 4,
+      id: 2,
       name: r'complianceName',
       type: IsarType.string,
     ),
     r'impactCausedId': PropertySchema(
-      id: 5,
+      id: 3,
       name: r'impactCausedId',
       type: IsarType.long,
     ),
     r'impactCausedName': PropertySchema(
-      id: 6,
+      id: 4,
       name: r'impactCausedName',
       type: IsarType.string,
     ),
     r'impactOnId': PropertySchema(
-      id: 7,
+      id: 5,
       name: r'impactOnId',
       type: IsarType.long,
     ),
     r'impactOnName': PropertySchema(
-      id: 8,
+      id: 6,
       name: r'impactOnName',
       type: IsarType.string,
     ),
     r'isActive': PropertySchema(
-      id: 9,
+      id: 7,
       name: r'isActive',
       type: IsarType.bool,
     ),
-    r'isCompanyQuestionComplete': PropertySchema(
-      id: 10,
-      name: r'isCompanyQuestionComplete',
+    r'isQuestionComplete': PropertySchema(
+      id: 8,
+      name: r'isQuestionComplete',
       type: IsarType.bool,
     ),
     r'jobCategoryId': PropertySchema(
-      id: 11,
+      id: 9,
       name: r'jobCategoryId',
       type: IsarType.long,
     ),
     r'jobCategoryName': PropertySchema(
-      id: 12,
+      id: 10,
       name: r'jobCategoryName',
       type: IsarType.string,
     ),
     r'jobElementId': PropertySchema(
-      id: 13,
+      id: 11,
       name: r'jobElementId',
       type: IsarType.long,
     ),
     r'jobElementName': PropertySchema(
-      id: 14,
+      id: 12,
       name: r'jobElementName',
       type: IsarType.string,
     ),
     r'mmmId': PropertySchema(
-      id: 15,
+      id: 13,
       name: r'mmmId',
       type: IsarType.long,
     ),
     r'mmmName': PropertySchema(
-      id: 16,
+      id: 14,
       name: r'mmmName',
       type: IsarType.string,
     ),
     r'pdcaId': PropertySchema(
-      id: 17,
+      id: 15,
       name: r'pdcaId',
       type: IsarType.long,
     ),
     r'pdcaName': PropertySchema(
-      id: 18,
+      id: 16,
       name: r'pdcaName',
+      type: IsarType.string,
+    ),
+    r'questionId': PropertySchema(
+      id: 17,
+      name: r'questionId',
+      type: IsarType.long,
+    ),
+    r'questionValue': PropertySchema(
+      id: 18,
+      name: r'questionValue',
       type: IsarType.string,
     ),
     r'severityId': PropertySchema(
@@ -154,12 +154,6 @@ int _companyQuestionEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
-    final value = object.companyQuestionValue;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.complianceName;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -202,6 +196,12 @@ int _companyQuestionEstimateSize(
     }
   }
   {
+    final value = object.questionValue;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.speqsName;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -217,24 +217,24 @@ void _companyQuestionSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.companyId);
-  writer.writeLong(offsets[1], object.companyQuestionId);
-  writer.writeString(offsets[2], object.companyQuestionValue);
-  writer.writeLong(offsets[3], object.complianceId);
-  writer.writeString(offsets[4], object.complianceName);
-  writer.writeLong(offsets[5], object.impactCausedId);
-  writer.writeString(offsets[6], object.impactCausedName);
-  writer.writeLong(offsets[7], object.impactOnId);
-  writer.writeString(offsets[8], object.impactOnName);
-  writer.writeBool(offsets[9], object.isActive);
-  writer.writeBool(offsets[10], object.isCompanyQuestionComplete);
-  writer.writeLong(offsets[11], object.jobCategoryId);
-  writer.writeString(offsets[12], object.jobCategoryName);
-  writer.writeLong(offsets[13], object.jobElementId);
-  writer.writeString(offsets[14], object.jobElementName);
-  writer.writeLong(offsets[15], object.mmmId);
-  writer.writeString(offsets[16], object.mmmName);
-  writer.writeLong(offsets[17], object.pdcaId);
-  writer.writeString(offsets[18], object.pdcaName);
+  writer.writeLong(offsets[1], object.complianceId);
+  writer.writeString(offsets[2], object.complianceName);
+  writer.writeLong(offsets[3], object.impactCausedId);
+  writer.writeString(offsets[4], object.impactCausedName);
+  writer.writeLong(offsets[5], object.impactOnId);
+  writer.writeString(offsets[6], object.impactOnName);
+  writer.writeBool(offsets[7], object.isActive);
+  writer.writeBool(offsets[8], object.isQuestionComplete);
+  writer.writeLong(offsets[9], object.jobCategoryId);
+  writer.writeString(offsets[10], object.jobCategoryName);
+  writer.writeLong(offsets[11], object.jobElementId);
+  writer.writeString(offsets[12], object.jobElementName);
+  writer.writeLong(offsets[13], object.mmmId);
+  writer.writeString(offsets[14], object.mmmName);
+  writer.writeLong(offsets[15], object.pdcaId);
+  writer.writeString(offsets[16], object.pdcaName);
+  writer.writeLong(offsets[17], object.questionId);
+  writer.writeString(offsets[18], object.questionValue);
   writer.writeLong(offsets[19], object.severityId);
   writer.writeLong(offsets[20], object.speqsId);
   writer.writeString(offsets[21], object.speqsName);
@@ -249,24 +249,24 @@ CompanyQuestion _companyQuestionDeserialize(
 ) {
   final object = CompanyQuestion(
     companyId: reader.readLong(offsets[0]),
-    companyQuestionId: reader.readLongOrNull(offsets[1]),
-    companyQuestionValue: reader.readStringOrNull(offsets[2]),
-    complianceId: reader.readLongOrNull(offsets[3]),
-    complianceName: reader.readStringOrNull(offsets[4]),
-    impactCausedId: reader.readLongOrNull(offsets[5]),
-    impactCausedName: reader.readStringOrNull(offsets[6]),
-    impactOnId: reader.readLongOrNull(offsets[7]),
-    impactOnName: reader.readStringOrNull(offsets[8]),
-    isActive: reader.readBoolOrNull(offsets[9]),
-    isCompanyQuestionComplete: reader.readBoolOrNull(offsets[10]),
-    jobCategoryId: reader.readLongOrNull(offsets[11]),
-    jobCategoryName: reader.readStringOrNull(offsets[12]),
-    jobElementId: reader.readLongOrNull(offsets[13]),
-    jobElementName: reader.readStringOrNull(offsets[14]),
-    mmmId: reader.readLongOrNull(offsets[15]),
-    mmmName: reader.readStringOrNull(offsets[16]),
-    pdcaId: reader.readLongOrNull(offsets[17]),
-    pdcaName: reader.readStringOrNull(offsets[18]),
+    complianceId: reader.readLongOrNull(offsets[1]),
+    complianceName: reader.readStringOrNull(offsets[2]),
+    impactCausedId: reader.readLongOrNull(offsets[3]),
+    impactCausedName: reader.readStringOrNull(offsets[4]),
+    impactOnId: reader.readLongOrNull(offsets[5]),
+    impactOnName: reader.readStringOrNull(offsets[6]),
+    isActive: reader.readBoolOrNull(offsets[7]),
+    isQuestionComplete: reader.readBoolOrNull(offsets[8]),
+    jobCategoryId: reader.readLongOrNull(offsets[9]),
+    jobCategoryName: reader.readStringOrNull(offsets[10]),
+    jobElementId: reader.readLongOrNull(offsets[11]),
+    jobElementName: reader.readStringOrNull(offsets[12]),
+    mmmId: reader.readLongOrNull(offsets[13]),
+    mmmName: reader.readStringOrNull(offsets[14]),
+    pdcaId: reader.readLongOrNull(offsets[15]),
+    pdcaName: reader.readStringOrNull(offsets[16]),
+    questionId: reader.readLongOrNull(offsets[17]),
+    questionValue: reader.readStringOrNull(offsets[18]),
     severityId: reader.readLongOrNull(offsets[19]),
     speqsId: reader.readLongOrNull(offsets[20]),
     speqsName: reader.readStringOrNull(offsets[21]),
@@ -297,13 +297,13 @@ P _companyQuestionDeserializeProp<P>(
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 8:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 9:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 10:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 11:
       return (reader.readLongOrNull(offset)) as P;
     case 12:
@@ -478,234 +478,6 @@ extension CompanyQuestionQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionIdIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'companyQuestionId',
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionIdIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'companyQuestionId',
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionIdEqualTo(int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'companyQuestionId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionIdGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'companyQuestionId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionIdLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'companyQuestionId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionIdBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'companyQuestionId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionValueIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'companyQuestionValue',
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionValueIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'companyQuestionValue',
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionValueEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'companyQuestionValue',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionValueGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'companyQuestionValue',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionValueLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'companyQuestionValue',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionValueBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'companyQuestionValue',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionValueStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'companyQuestionValue',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionValueEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'companyQuestionValue',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionValueContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'companyQuestionValue',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionValueMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'companyQuestionValue',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionValueIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'companyQuestionValue',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      companyQuestionValueIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'companyQuestionValue',
-        value: '',
       ));
     });
   }
@@ -1479,28 +1251,28 @@ extension CompanyQuestionQueryFilter
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      isCompanyQuestionCompleteIsNull() {
+      isQuestionCompleteIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'isCompanyQuestionComplete',
+        property: r'isQuestionComplete',
       ));
     });
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      isCompanyQuestionCompleteIsNotNull() {
+      isQuestionCompleteIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'isCompanyQuestionComplete',
+        property: r'isQuestionComplete',
       ));
     });
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      isCompanyQuestionCompleteEqualTo(bool? value) {
+      isQuestionCompleteEqualTo(bool? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isCompanyQuestionComplete',
+        property: r'isQuestionComplete',
         value: value,
       ));
     });
@@ -2419,6 +2191,234 @@ extension CompanyQuestionQueryFilter
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'questionId',
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'questionId',
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'questionId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'questionId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'questionId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'questionId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionValueIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'questionValue',
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionValueIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'questionValue',
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionValueEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'questionValue',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionValueGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'questionValue',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionValueLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'questionValue',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionValueBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'questionValue',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionValueStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'questionValue',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionValueEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'questionValue',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionValueContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'questionValue',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionValueMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'questionValue',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionValueIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'questionValue',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      questionValueIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'questionValue',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
       severityIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2772,34 +2772,6 @@ extension CompanyQuestionQuerySortBy
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
-      sortByCompanyQuestionId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'companyQuestionId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
-      sortByCompanyQuestionIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'companyQuestionId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
-      sortByCompanyQuestionValue() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'companyQuestionValue', Sort.asc);
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
-      sortByCompanyQuestionValueDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'companyQuestionValue', Sort.desc);
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
       sortByComplianceId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'complianceId', Sort.asc);
@@ -2898,16 +2870,16 @@ extension CompanyQuestionQuerySortBy
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
-      sortByIsCompanyQuestionComplete() {
+      sortByIsQuestionComplete() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isCompanyQuestionComplete', Sort.asc);
+      return query.addSortBy(r'isQuestionComplete', Sort.asc);
     });
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
-      sortByIsCompanyQuestionCompleteDesc() {
+      sortByIsQuestionCompleteDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isCompanyQuestionComplete', Sort.desc);
+      return query.addSortBy(r'isQuestionComplete', Sort.desc);
     });
   }
 
@@ -3021,6 +2993,34 @@ extension CompanyQuestionQuerySortBy
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
+      sortByQuestionId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'questionId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
+      sortByQuestionIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'questionId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
+      sortByQuestionValue() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'questionValue', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
+      sortByQuestionValueDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'questionValue', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
       sortBySeverityId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'severityId', Sort.asc);
@@ -3088,34 +3088,6 @@ extension CompanyQuestionQuerySortThenBy
       thenByCompanyIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'companyId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
-      thenByCompanyQuestionId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'companyQuestionId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
-      thenByCompanyQuestionIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'companyQuestionId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
-      thenByCompanyQuestionValue() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'companyQuestionValue', Sort.asc);
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
-      thenByCompanyQuestionValueDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'companyQuestionValue', Sort.desc);
     });
   }
 
@@ -3230,16 +3202,16 @@ extension CompanyQuestionQuerySortThenBy
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
-      thenByIsCompanyQuestionComplete() {
+      thenByIsQuestionComplete() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isCompanyQuestionComplete', Sort.asc);
+      return query.addSortBy(r'isQuestionComplete', Sort.asc);
     });
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
-      thenByIsCompanyQuestionCompleteDesc() {
+      thenByIsQuestionCompleteDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isCompanyQuestionComplete', Sort.desc);
+      return query.addSortBy(r'isQuestionComplete', Sort.desc);
     });
   }
 
@@ -3353,6 +3325,34 @@ extension CompanyQuestionQuerySortThenBy
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
+      thenByQuestionId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'questionId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
+      thenByQuestionIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'questionId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
+      thenByQuestionValue() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'questionValue', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
+      thenByQuestionValueDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'questionValue', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterSortBy>
       thenBySeverityId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'severityId', Sort.asc);
@@ -3417,21 +3417,6 @@ extension CompanyQuestionQueryWhereDistinct
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QDistinct>
-      distinctByCompanyQuestionId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'companyQuestionId');
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QDistinct>
-      distinctByCompanyQuestionValue({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'companyQuestionValue',
-          caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, CompanyQuestion, QDistinct>
       distinctByComplianceId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'complianceId');
@@ -3483,9 +3468,9 @@ extension CompanyQuestionQueryWhereDistinct
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QDistinct>
-      distinctByIsCompanyQuestionComplete() {
+      distinctByIsQuestionComplete() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'isCompanyQuestionComplete');
+      return query.addDistinctBy(r'isQuestionComplete');
     });
   }
 
@@ -3546,6 +3531,21 @@ extension CompanyQuestionQueryWhereDistinct
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QDistinct>
+      distinctByQuestionId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'questionId');
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QDistinct>
+      distinctByQuestionValue({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'questionValue',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QDistinct>
       distinctBySeverityId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'severityId');
@@ -3584,20 +3584,6 @@ extension CompanyQuestionQueryProperty
   QueryBuilder<CompanyQuestion, int, QQueryOperations> companyIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'companyId');
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, int?, QQueryOperations>
-      companyQuestionIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'companyQuestionId');
-    });
-  }
-
-  QueryBuilder<CompanyQuestion, String?, QQueryOperations>
-      companyQuestionValueProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'companyQuestionValue');
     });
   }
 
@@ -3648,9 +3634,9 @@ extension CompanyQuestionQueryProperty
   }
 
   QueryBuilder<CompanyQuestion, bool?, QQueryOperations>
-      isCompanyQuestionCompleteProperty() {
+      isQuestionCompleteProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isCompanyQuestionComplete');
+      return query.addPropertyName(r'isQuestionComplete');
     });
   }
 
@@ -3705,6 +3691,19 @@ extension CompanyQuestionQueryProperty
     });
   }
 
+  QueryBuilder<CompanyQuestion, int?, QQueryOperations> questionIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'questionId');
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, String?, QQueryOperations>
+      questionValueProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'questionValue');
+    });
+  }
+
   QueryBuilder<CompanyQuestion, int?, QQueryOperations> severityIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'severityId');
@@ -3739,8 +3738,8 @@ _$_CompanyQuestion _$$_CompanyQuestionFromJson(Map<String, dynamic> json) =>
       companyId: json['CompanyId'] as int,
       jobCategoryId: json['JobCategoryId'] as int?,
       jobCategoryName: json['JobCategoryName'] as String?,
-      companyQuestionId: json['CompanyQuestionId'] as int?,
-      companyQuestionValue: json['CompanyQuestionValue'] as String?,
+      questionId: json['QuestionId'] as int?,
+      questionValue: json['QuestionValue'] as String?,
       jobElementId: json['JobElementId'] as int?,
       jobElementName: json['JobElementName'] as String?,
       pdcaId: json['PDCAId'] as int?,
@@ -3757,7 +3756,7 @@ _$_CompanyQuestion _$$_CompanyQuestionFromJson(Map<String, dynamic> json) =>
       mmmName: json['MMMName'] as String?,
       complianceName: json['ComplianceName'] as String?,
       complianceId: json['ComplianceId'] as int?,
-      isCompanyQuestionComplete: json['IsCompanyQuestionComplete'] as bool?,
+      isQuestionComplete: json['IsQuestionComplete'] as bool?,
       isActive: json['IsActive'] as bool?,
     );
 
@@ -3766,8 +3765,8 @@ Map<String, dynamic> _$$_CompanyQuestionToJson(_$_CompanyQuestion instance) =>
       'CompanyId': instance.companyId,
       'JobCategoryId': instance.jobCategoryId,
       'JobCategoryName': instance.jobCategoryName,
-      'CompanyQuestionId': instance.companyQuestionId,
-      'CompanyQuestionValue': instance.companyQuestionValue,
+      'QuestionId': instance.questionId,
+      'QuestionValue': instance.questionValue,
       'JobElementId': instance.jobElementId,
       'JobElementName': instance.jobElementName,
       'PDCAId': instance.pdcaId,
@@ -3784,6 +3783,6 @@ Map<String, dynamic> _$$_CompanyQuestionToJson(_$_CompanyQuestion instance) =>
       'MMMName': instance.mmmName,
       'ComplianceName': instance.complianceName,
       'ComplianceId': instance.complianceId,
-      'IsCompanyQuestionComplete': instance.isCompanyQuestionComplete,
+      'IsQuestionComplete': instance.isQuestionComplete,
       'IsActive': instance.isActive,
     };

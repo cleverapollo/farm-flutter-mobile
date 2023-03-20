@@ -17,7 +17,7 @@ AppMode getAppTypeFromEnv() {
 }
 
 class AppInfoService {
-  String get version => '1.0.0';
+  String get version => '1.0.1';
   String get appName => 'Behave';
   String get databaseName => 'cmo.db';
   int get sqfliteImportPageSize => 100;

@@ -11,7 +11,7 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
   UserInfoCubit() : super(UserInfoState.loading());
 
   Future<void> getUser(BuildContext context) async {
-    final res = await cmoApiService.getUser(context: context);
+    final res = await cmoApiService.getUser();
     debugPrint('[UserInfoCubit] data: $res');
 
     if (res != null) {

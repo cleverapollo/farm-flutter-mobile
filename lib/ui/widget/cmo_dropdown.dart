@@ -2,17 +2,17 @@ import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class CmoDropdownItem {
+class CmoDropdownItem<T> {
   CmoDropdownItem({
     required this.id,
     required this.name,
   });
 
-  final int id;
+  final T id;
   final String name;
 }
 
-class CmoDropdown extends StatelessWidget {
+class CmoDropdown<T> extends StatelessWidget {
   const CmoDropdown({
     super.key,
     required this.name,
@@ -21,18 +21,22 @@ class CmoDropdown extends StatelessWidget {
     this.suffixIcon,
     this.itemsData,
     this.validator,
+    this.onChanged,
+    this.enabled = true,
   });
 
   final String name;
   final String? hintText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
-  final List<CmoDropdownItem>? itemsData;
-  final FormFieldValidator<int?>? validator;
+  final List<CmoDropdownItem<T>>? itemsData;
+  final FormFieldValidator<T?>? validator;
+  final ValueChanged<T?>? onChanged;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
-    return FormBuilderDropdown<int>(
+    return FormBuilderDropdown<T>(
       name: name,
       validator: validator,
       style: context.textStyles.bodyNormal,
@@ -46,7 +50,10 @@ class CmoDropdown extends StatelessWidget {
         hintText: hintText,
       ),
       focusColor: Theme.of(context).scaffoldBackgroundColor,
-      items: (itemsData ?? <CmoDropdownItem>[])
+      onChanged: onChanged,
+      enabled: enabled,
+      elevation: 0,
+      items: (itemsData ?? <CmoDropdownItem<T>>[])
           .map(
             (data) => DropdownMenuItem(
               value: data.id,

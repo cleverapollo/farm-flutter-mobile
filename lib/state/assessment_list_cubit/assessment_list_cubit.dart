@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/model/assessment.dart';
+import 'package:cmo/ui/snack/success.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'assessment_list_state.dart';
@@ -19,6 +20,7 @@ class AssessmentListCubit extends HydratedCubit<AssessmentListState> {
       emit(state.copyWith(dataStarted: data));
     } catch (e) {
       emit(state.copyWith(error: e));
+      showSnackError(msg: e.toString());
     } finally {
       emit(state.copyWith(loadingStarted: false));
     }
@@ -32,6 +34,7 @@ class AssessmentListCubit extends HydratedCubit<AssessmentListState> {
       emit(state.copyWith(dataCompleted: data));
     } catch (e) {
       emit(state.copyWith(error: e));
+      showSnackError(msg: e.toString());
     } finally {
       emit(state.copyWith(loadingCompleted: false));
     }
@@ -45,6 +48,7 @@ class AssessmentListCubit extends HydratedCubit<AssessmentListState> {
       emit(state.copyWith(dataSynced: data));
     } catch (e) {
       emit(state.copyWith(error: e));
+      showSnackError(msg: e.toString());
     } finally {
       emit(state.copyWith(loadingSynced: false));
     }

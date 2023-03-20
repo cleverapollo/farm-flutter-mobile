@@ -2,9 +2,9 @@
 
 import 'dart:io';
 
+import 'package:cmo/di.dart';
 import 'package:cmo/model/assessment.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/service/cmo_database_company_service.dart';
 import 'package:isar/isar.dart';
 
 /// [CmoDatabaseService] is for storing app data
@@ -57,29 +57,39 @@ class CmoDatabaseService {
 
   Future<List<Assessment>> getAllAssessmentsStarted() async {
     final db = await _db();
-    return db.assessments.filter().statusEqualTo(1).findAll();
+    return db.assessments
+        .filter()
+        .isActiveEqualTo(true)
+        .statusEqualTo(1)
+        .sortByCreateDTDesc()
+        .findAll();
   }
 
   Future<List<Assessment>> getAllAssessmentsCompleted() async {
     final db = await _db();
-    return db.assessments.filter().statusEqualTo(2).findAll();
+    return db.assessments
+        .filter()
+        .isActiveEqualTo(true)
+        .statusEqualTo(2)
+        .sortByCreateDTDesc()
+        .findAll();
   }
 
   Future<List<Assessment>> getAllAssessmentsSynced() async {
     final db = await _db();
-    return db.assessments.filter().statusEqualTo(3).findAll();
+    return db.assessments
+        .filter()
+        .isActiveEqualTo(true)
+        .statusEqualTo(3)
+        .sortByCreateDTDesc()
+        .findAll();
   }
 
   Future<FileSystemEntity?> deleteAll() async {
     final db = await _db();
-    final companies = await getAllCachedCompanys();
-    for (final item in companies) {
-      await CmoDatabaseCompanyService(companyId: item.companyId).deleteAll();
-    }
     await db.writeTxn(() async {
       await db.clear();
     });
-    _database = null;
     return null;
   }
 }

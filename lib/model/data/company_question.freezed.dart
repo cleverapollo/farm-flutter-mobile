@@ -26,10 +26,10 @@ mixin _$CompanyQuestion {
   int? get jobCategoryId => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobCategoryName')
   String? get jobCategoryName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'CompanyQuestionId')
-  int? get companyQuestionId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'CompanyQuestionValue')
-  String? get companyQuestionValue => throw _privateConstructorUsedError;
+  @JsonKey(name: 'QuestionId')
+  int? get questionId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'QuestionValue')
+  String? get questionValue => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobElementId')
   int? get jobElementId => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobElementName')
@@ -62,8 +62,8 @@ mixin _$CompanyQuestion {
   String? get complianceName => throw _privateConstructorUsedError;
   @JsonKey(name: 'ComplianceId')
   int? get complianceId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'IsCompanyQuestionComplete')
-  bool? get isCompanyQuestionComplete => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IsQuestionComplete')
+  bool? get isQuestionComplete => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
 
@@ -80,52 +80,29 @@ abstract class $CompanyQuestionCopyWith<$Res> {
       _$CompanyQuestionCopyWithImpl<$Res, CompanyQuestion>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'CompanyId')
-          int companyId,
-      @JsonKey(name: 'JobCategoryId')
-          int? jobCategoryId,
-      @JsonKey(name: 'JobCategoryName')
-          String? jobCategoryName,
-      @JsonKey(name: 'CompanyQuestionId')
-          int? companyQuestionId,
-      @JsonKey(name: 'CompanyQuestionValue')
-          String? companyQuestionValue,
-      @JsonKey(name: 'JobElementId')
-          int? jobElementId,
-      @JsonKey(name: 'JobElementName')
-          String? jobElementName,
-      @JsonKey(name: 'PDCAId')
-          int? pdcaId,
-      @JsonKey(name: 'PDCAName')
-          String? pdcaName,
-      @JsonKey(name: 'SPEQSId')
-          int? speqsId,
-      @JsonKey(name: 'SPEQSName')
-          String? speqsName,
-      @JsonKey(name: 'ImpactOnId')
-          int? impactOnId,
-      @JsonKey(name: 'ImpactOnName')
-          String? impactOnName,
-      @JsonKey(name: 'ImpactCausedId')
-          int? impactCausedId,
-      @JsonKey(name: 'ImpactCausedName')
-          String? impactCausedName,
-      @JsonKey(name: 'SeverityId')
-          int? severityId,
-      @JsonKey(name: 'XBone')
-          bool? xBone,
-      @JsonKey(name: 'MMMId')
-          int? mmmId,
-      @JsonKey(name: 'MMMName')
-          String? mmmName,
-      @JsonKey(name: 'ComplianceName')
-          String? complianceName,
-      @JsonKey(name: 'ComplianceId')
-          int? complianceId,
-      @JsonKey(name: 'IsCompanyQuestionComplete')
-          bool? isCompanyQuestionComplete,
-      @JsonKey(name: 'IsActive')
-          bool? isActive});
+      {@JsonKey(name: 'CompanyId') int companyId,
+      @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
+      @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
+      @JsonKey(name: 'QuestionId') int? questionId,
+      @JsonKey(name: 'QuestionValue') String? questionValue,
+      @JsonKey(name: 'JobElementId') int? jobElementId,
+      @JsonKey(name: 'JobElementName') String? jobElementName,
+      @JsonKey(name: 'PDCAId') int? pdcaId,
+      @JsonKey(name: 'PDCAName') String? pdcaName,
+      @JsonKey(name: 'SPEQSId') int? speqsId,
+      @JsonKey(name: 'SPEQSName') String? speqsName,
+      @JsonKey(name: 'ImpactOnId') int? impactOnId,
+      @JsonKey(name: 'ImpactOnName') String? impactOnName,
+      @JsonKey(name: 'ImpactCausedId') int? impactCausedId,
+      @JsonKey(name: 'ImpactCausedName') String? impactCausedName,
+      @JsonKey(name: 'SeverityId') int? severityId,
+      @JsonKey(name: 'XBone') bool? xBone,
+      @JsonKey(name: 'MMMId') int? mmmId,
+      @JsonKey(name: 'MMMName') String? mmmName,
+      @JsonKey(name: 'ComplianceName') String? complianceName,
+      @JsonKey(name: 'ComplianceId') int? complianceId,
+      @JsonKey(name: 'IsQuestionComplete') bool? isQuestionComplete,
+      @JsonKey(name: 'IsActive') bool? isActive});
 }
 
 /// @nodoc
@@ -144,8 +121,8 @@ class _$CompanyQuestionCopyWithImpl<$Res, $Val extends CompanyQuestion>
     Object? companyId = null,
     Object? jobCategoryId = freezed,
     Object? jobCategoryName = freezed,
-    Object? companyQuestionId = freezed,
-    Object? companyQuestionValue = freezed,
+    Object? questionId = freezed,
+    Object? questionValue = freezed,
     Object? jobElementId = freezed,
     Object? jobElementName = freezed,
     Object? pdcaId = freezed,
@@ -162,7 +139,7 @@ class _$CompanyQuestionCopyWithImpl<$Res, $Val extends CompanyQuestion>
     Object? mmmName = freezed,
     Object? complianceName = freezed,
     Object? complianceId = freezed,
-    Object? isCompanyQuestionComplete = freezed,
+    Object? isQuestionComplete = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
@@ -178,13 +155,13 @@ class _$CompanyQuestionCopyWithImpl<$Res, $Val extends CompanyQuestion>
           ? _value.jobCategoryName
           : jobCategoryName // ignore: cast_nullable_to_non_nullable
               as String?,
-      companyQuestionId: freezed == companyQuestionId
-          ? _value.companyQuestionId
-          : companyQuestionId // ignore: cast_nullable_to_non_nullable
+      questionId: freezed == questionId
+          ? _value.questionId
+          : questionId // ignore: cast_nullable_to_non_nullable
               as int?,
-      companyQuestionValue: freezed == companyQuestionValue
-          ? _value.companyQuestionValue
-          : companyQuestionValue // ignore: cast_nullable_to_non_nullable
+      questionValue: freezed == questionValue
+          ? _value.questionValue
+          : questionValue // ignore: cast_nullable_to_non_nullable
               as String?,
       jobElementId: freezed == jobElementId
           ? _value.jobElementId
@@ -250,9 +227,9 @@ class _$CompanyQuestionCopyWithImpl<$Res, $Val extends CompanyQuestion>
           ? _value.complianceId
           : complianceId // ignore: cast_nullable_to_non_nullable
               as int?,
-      isCompanyQuestionComplete: freezed == isCompanyQuestionComplete
-          ? _value.isCompanyQuestionComplete
-          : isCompanyQuestionComplete // ignore: cast_nullable_to_non_nullable
+      isQuestionComplete: freezed == isQuestionComplete
+          ? _value.isQuestionComplete
+          : isQuestionComplete // ignore: cast_nullable_to_non_nullable
               as bool?,
       isActive: freezed == isActive
           ? _value.isActive
@@ -271,52 +248,29 @@ abstract class _$$_CompanyQuestionCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'CompanyId')
-          int companyId,
-      @JsonKey(name: 'JobCategoryId')
-          int? jobCategoryId,
-      @JsonKey(name: 'JobCategoryName')
-          String? jobCategoryName,
-      @JsonKey(name: 'CompanyQuestionId')
-          int? companyQuestionId,
-      @JsonKey(name: 'CompanyQuestionValue')
-          String? companyQuestionValue,
-      @JsonKey(name: 'JobElementId')
-          int? jobElementId,
-      @JsonKey(name: 'JobElementName')
-          String? jobElementName,
-      @JsonKey(name: 'PDCAId')
-          int? pdcaId,
-      @JsonKey(name: 'PDCAName')
-          String? pdcaName,
-      @JsonKey(name: 'SPEQSId')
-          int? speqsId,
-      @JsonKey(name: 'SPEQSName')
-          String? speqsName,
-      @JsonKey(name: 'ImpactOnId')
-          int? impactOnId,
-      @JsonKey(name: 'ImpactOnName')
-          String? impactOnName,
-      @JsonKey(name: 'ImpactCausedId')
-          int? impactCausedId,
-      @JsonKey(name: 'ImpactCausedName')
-          String? impactCausedName,
-      @JsonKey(name: 'SeverityId')
-          int? severityId,
-      @JsonKey(name: 'XBone')
-          bool? xBone,
-      @JsonKey(name: 'MMMId')
-          int? mmmId,
-      @JsonKey(name: 'MMMName')
-          String? mmmName,
-      @JsonKey(name: 'ComplianceName')
-          String? complianceName,
-      @JsonKey(name: 'ComplianceId')
-          int? complianceId,
-      @JsonKey(name: 'IsCompanyQuestionComplete')
-          bool? isCompanyQuestionComplete,
-      @JsonKey(name: 'IsActive')
-          bool? isActive});
+      {@JsonKey(name: 'CompanyId') int companyId,
+      @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
+      @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
+      @JsonKey(name: 'QuestionId') int? questionId,
+      @JsonKey(name: 'QuestionValue') String? questionValue,
+      @JsonKey(name: 'JobElementId') int? jobElementId,
+      @JsonKey(name: 'JobElementName') String? jobElementName,
+      @JsonKey(name: 'PDCAId') int? pdcaId,
+      @JsonKey(name: 'PDCAName') String? pdcaName,
+      @JsonKey(name: 'SPEQSId') int? speqsId,
+      @JsonKey(name: 'SPEQSName') String? speqsName,
+      @JsonKey(name: 'ImpactOnId') int? impactOnId,
+      @JsonKey(name: 'ImpactOnName') String? impactOnName,
+      @JsonKey(name: 'ImpactCausedId') int? impactCausedId,
+      @JsonKey(name: 'ImpactCausedName') String? impactCausedName,
+      @JsonKey(name: 'SeverityId') int? severityId,
+      @JsonKey(name: 'XBone') bool? xBone,
+      @JsonKey(name: 'MMMId') int? mmmId,
+      @JsonKey(name: 'MMMName') String? mmmName,
+      @JsonKey(name: 'ComplianceName') String? complianceName,
+      @JsonKey(name: 'ComplianceId') int? complianceId,
+      @JsonKey(name: 'IsQuestionComplete') bool? isQuestionComplete,
+      @JsonKey(name: 'IsActive') bool? isActive});
 }
 
 /// @nodoc
@@ -333,8 +287,8 @@ class __$$_CompanyQuestionCopyWithImpl<$Res>
     Object? companyId = null,
     Object? jobCategoryId = freezed,
     Object? jobCategoryName = freezed,
-    Object? companyQuestionId = freezed,
-    Object? companyQuestionValue = freezed,
+    Object? questionId = freezed,
+    Object? questionValue = freezed,
     Object? jobElementId = freezed,
     Object? jobElementName = freezed,
     Object? pdcaId = freezed,
@@ -351,7 +305,7 @@ class __$$_CompanyQuestionCopyWithImpl<$Res>
     Object? mmmName = freezed,
     Object? complianceName = freezed,
     Object? complianceId = freezed,
-    Object? isCompanyQuestionComplete = freezed,
+    Object? isQuestionComplete = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_CompanyQuestion(
@@ -367,13 +321,13 @@ class __$$_CompanyQuestionCopyWithImpl<$Res>
           ? _value.jobCategoryName
           : jobCategoryName // ignore: cast_nullable_to_non_nullable
               as String?,
-      companyQuestionId: freezed == companyQuestionId
-          ? _value.companyQuestionId
-          : companyQuestionId // ignore: cast_nullable_to_non_nullable
+      questionId: freezed == questionId
+          ? _value.questionId
+          : questionId // ignore: cast_nullable_to_non_nullable
               as int?,
-      companyQuestionValue: freezed == companyQuestionValue
-          ? _value.companyQuestionValue
-          : companyQuestionValue // ignore: cast_nullable_to_non_nullable
+      questionValue: freezed == questionValue
+          ? _value.questionValue
+          : questionValue // ignore: cast_nullable_to_non_nullable
               as String?,
       jobElementId: freezed == jobElementId
           ? _value.jobElementId
@@ -439,9 +393,9 @@ class __$$_CompanyQuestionCopyWithImpl<$Res>
           ? _value.complianceId
           : complianceId // ignore: cast_nullable_to_non_nullable
               as int?,
-      isCompanyQuestionComplete: freezed == isCompanyQuestionComplete
-          ? _value.isCompanyQuestionComplete
-          : isCompanyQuestionComplete // ignore: cast_nullable_to_non_nullable
+      isQuestionComplete: freezed == isQuestionComplete
+          ? _value.isQuestionComplete
+          : isQuestionComplete // ignore: cast_nullable_to_non_nullable
               as bool?,
       isActive: freezed == isActive
           ? _value.isActive
@@ -455,52 +409,29 @@ class __$$_CompanyQuestionCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_CompanyQuestion extends _CompanyQuestion {
   const _$_CompanyQuestion(
-      {@JsonKey(name: 'CompanyId')
-          required this.companyId,
-      @JsonKey(name: 'JobCategoryId')
-          this.jobCategoryId,
-      @JsonKey(name: 'JobCategoryName')
-          this.jobCategoryName,
-      @JsonKey(name: 'CompanyQuestionId')
-          this.companyQuestionId,
-      @JsonKey(name: 'CompanyQuestionValue')
-          this.companyQuestionValue,
-      @JsonKey(name: 'JobElementId')
-          this.jobElementId,
-      @JsonKey(name: 'JobElementName')
-          this.jobElementName,
-      @JsonKey(name: 'PDCAId')
-          this.pdcaId,
-      @JsonKey(name: 'PDCAName')
-          this.pdcaName,
-      @JsonKey(name: 'SPEQSId')
-          this.speqsId,
-      @JsonKey(name: 'SPEQSName')
-          this.speqsName,
-      @JsonKey(name: 'ImpactOnId')
-          this.impactOnId,
-      @JsonKey(name: 'ImpactOnName')
-          this.impactOnName,
-      @JsonKey(name: 'ImpactCausedId')
-          this.impactCausedId,
-      @JsonKey(name: 'ImpactCausedName')
-          this.impactCausedName,
-      @JsonKey(name: 'SeverityId')
-          this.severityId,
-      @JsonKey(name: 'XBone')
-          this.xBone,
-      @JsonKey(name: 'MMMId')
-          this.mmmId,
-      @JsonKey(name: 'MMMName')
-          this.mmmName,
-      @JsonKey(name: 'ComplianceName')
-          this.complianceName,
-      @JsonKey(name: 'ComplianceId')
-          this.complianceId,
-      @JsonKey(name: 'IsCompanyQuestionComplete')
-          this.isCompanyQuestionComplete,
-      @JsonKey(name: 'IsActive')
-          this.isActive})
+      {@JsonKey(name: 'CompanyId') required this.companyId,
+      @JsonKey(name: 'JobCategoryId') this.jobCategoryId,
+      @JsonKey(name: 'JobCategoryName') this.jobCategoryName,
+      @JsonKey(name: 'QuestionId') this.questionId,
+      @JsonKey(name: 'QuestionValue') this.questionValue,
+      @JsonKey(name: 'JobElementId') this.jobElementId,
+      @JsonKey(name: 'JobElementName') this.jobElementName,
+      @JsonKey(name: 'PDCAId') this.pdcaId,
+      @JsonKey(name: 'PDCAName') this.pdcaName,
+      @JsonKey(name: 'SPEQSId') this.speqsId,
+      @JsonKey(name: 'SPEQSName') this.speqsName,
+      @JsonKey(name: 'ImpactOnId') this.impactOnId,
+      @JsonKey(name: 'ImpactOnName') this.impactOnName,
+      @JsonKey(name: 'ImpactCausedId') this.impactCausedId,
+      @JsonKey(name: 'ImpactCausedName') this.impactCausedName,
+      @JsonKey(name: 'SeverityId') this.severityId,
+      @JsonKey(name: 'XBone') this.xBone,
+      @JsonKey(name: 'MMMId') this.mmmId,
+      @JsonKey(name: 'MMMName') this.mmmName,
+      @JsonKey(name: 'ComplianceName') this.complianceName,
+      @JsonKey(name: 'ComplianceId') this.complianceId,
+      @JsonKey(name: 'IsQuestionComplete') this.isQuestionComplete,
+      @JsonKey(name: 'IsActive') this.isActive})
       : super._();
 
   factory _$_CompanyQuestion.fromJson(Map<String, dynamic> json) =>
@@ -516,11 +447,11 @@ class _$_CompanyQuestion extends _CompanyQuestion {
   @JsonKey(name: 'JobCategoryName')
   final String? jobCategoryName;
   @override
-  @JsonKey(name: 'CompanyQuestionId')
-  final int? companyQuestionId;
+  @JsonKey(name: 'QuestionId')
+  final int? questionId;
   @override
-  @JsonKey(name: 'CompanyQuestionValue')
-  final String? companyQuestionValue;
+  @JsonKey(name: 'QuestionValue')
+  final String? questionValue;
   @override
   @JsonKey(name: 'JobElementId')
   final int? jobElementId;
@@ -570,15 +501,15 @@ class _$_CompanyQuestion extends _CompanyQuestion {
   @JsonKey(name: 'ComplianceId')
   final int? complianceId;
   @override
-  @JsonKey(name: 'IsCompanyQuestionComplete')
-  final bool? isCompanyQuestionComplete;
+  @JsonKey(name: 'IsQuestionComplete')
+  final bool? isQuestionComplete;
   @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
 
   @override
   String toString() {
-    return 'CompanyQuestion(companyId: $companyId, jobCategoryId: $jobCategoryId, jobCategoryName: $jobCategoryName, companyQuestionId: $companyQuestionId, companyQuestionValue: $companyQuestionValue, jobElementId: $jobElementId, jobElementName: $jobElementName, pdcaId: $pdcaId, pdcaName: $pdcaName, speqsId: $speqsId, speqsName: $speqsName, impactOnId: $impactOnId, impactOnName: $impactOnName, impactCausedId: $impactCausedId, impactCausedName: $impactCausedName, severityId: $severityId, xBone: $xBone, mmmId: $mmmId, mmmName: $mmmName, complianceName: $complianceName, complianceId: $complianceId, isCompanyQuestionComplete: $isCompanyQuestionComplete, isActive: $isActive)';
+    return 'CompanyQuestion(companyId: $companyId, jobCategoryId: $jobCategoryId, jobCategoryName: $jobCategoryName, questionId: $questionId, questionValue: $questionValue, jobElementId: $jobElementId, jobElementName: $jobElementName, pdcaId: $pdcaId, pdcaName: $pdcaName, speqsId: $speqsId, speqsName: $speqsName, impactOnId: $impactOnId, impactOnName: $impactOnName, impactCausedId: $impactCausedId, impactCausedName: $impactCausedName, severityId: $severityId, xBone: $xBone, mmmId: $mmmId, mmmName: $mmmName, complianceName: $complianceName, complianceId: $complianceId, isQuestionComplete: $isQuestionComplete, isActive: $isActive)';
   }
 
   @override
@@ -592,10 +523,10 @@ class _$_CompanyQuestion extends _CompanyQuestion {
                 other.jobCategoryId == jobCategoryId) &&
             (identical(other.jobCategoryName, jobCategoryName) ||
                 other.jobCategoryName == jobCategoryName) &&
-            (identical(other.companyQuestionId, companyQuestionId) ||
-                other.companyQuestionId == companyQuestionId) &&
-            (identical(other.companyQuestionValue, companyQuestionValue) ||
-                other.companyQuestionValue == companyQuestionValue) &&
+            (identical(other.questionId, questionId) ||
+                other.questionId == questionId) &&
+            (identical(other.questionValue, questionValue) ||
+                other.questionValue == questionValue) &&
             (identical(other.jobElementId, jobElementId) ||
                 other.jobElementId == jobElementId) &&
             (identical(other.jobElementName, jobElementName) ||
@@ -623,9 +554,8 @@ class _$_CompanyQuestion extends _CompanyQuestion {
                 other.complianceName == complianceName) &&
             (identical(other.complianceId, complianceId) ||
                 other.complianceId == complianceId) &&
-            (identical(other.isCompanyQuestionComplete,
-                    isCompanyQuestionComplete) ||
-                other.isCompanyQuestionComplete == isCompanyQuestionComplete) &&
+            (identical(other.isQuestionComplete, isQuestionComplete) ||
+                other.isQuestionComplete == isQuestionComplete) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive));
   }
@@ -637,8 +567,8 @@ class _$_CompanyQuestion extends _CompanyQuestion {
         companyId,
         jobCategoryId,
         jobCategoryName,
-        companyQuestionId,
-        companyQuestionValue,
+        questionId,
+        questionValue,
         jobElementId,
         jobElementName,
         pdcaId,
@@ -655,7 +585,7 @@ class _$_CompanyQuestion extends _CompanyQuestion {
         mmmName,
         complianceName,
         complianceId,
-        isCompanyQuestionComplete,
+        isQuestionComplete,
         isActive
       ]);
 
@@ -675,52 +605,29 @@ class _$_CompanyQuestion extends _CompanyQuestion {
 
 abstract class _CompanyQuestion extends CompanyQuestion {
   const factory _CompanyQuestion(
-      {@JsonKey(name: 'CompanyId')
-          required final int companyId,
-      @JsonKey(name: 'JobCategoryId')
-          final int? jobCategoryId,
-      @JsonKey(name: 'JobCategoryName')
-          final String? jobCategoryName,
-      @JsonKey(name: 'CompanyQuestionId')
-          final int? companyQuestionId,
-      @JsonKey(name: 'CompanyQuestionValue')
-          final String? companyQuestionValue,
-      @JsonKey(name: 'JobElementId')
-          final int? jobElementId,
-      @JsonKey(name: 'JobElementName')
-          final String? jobElementName,
-      @JsonKey(name: 'PDCAId')
-          final int? pdcaId,
-      @JsonKey(name: 'PDCAName')
-          final String? pdcaName,
-      @JsonKey(name: 'SPEQSId')
-          final int? speqsId,
-      @JsonKey(name: 'SPEQSName')
-          final String? speqsName,
-      @JsonKey(name: 'ImpactOnId')
-          final int? impactOnId,
-      @JsonKey(name: 'ImpactOnName')
-          final String? impactOnName,
-      @JsonKey(name: 'ImpactCausedId')
-          final int? impactCausedId,
-      @JsonKey(name: 'ImpactCausedName')
-          final String? impactCausedName,
-      @JsonKey(name: 'SeverityId')
-          final int? severityId,
-      @JsonKey(name: 'XBone')
-          final bool? xBone,
-      @JsonKey(name: 'MMMId')
-          final int? mmmId,
-      @JsonKey(name: 'MMMName')
-          final String? mmmName,
-      @JsonKey(name: 'ComplianceName')
-          final String? complianceName,
-      @JsonKey(name: 'ComplianceId')
-          final int? complianceId,
-      @JsonKey(name: 'IsCompanyQuestionComplete')
-          final bool? isCompanyQuestionComplete,
-      @JsonKey(name: 'IsActive')
-          final bool? isActive}) = _$_CompanyQuestion;
+      {@JsonKey(name: 'CompanyId') required final int companyId,
+      @JsonKey(name: 'JobCategoryId') final int? jobCategoryId,
+      @JsonKey(name: 'JobCategoryName') final String? jobCategoryName,
+      @JsonKey(name: 'QuestionId') final int? questionId,
+      @JsonKey(name: 'QuestionValue') final String? questionValue,
+      @JsonKey(name: 'JobElementId') final int? jobElementId,
+      @JsonKey(name: 'JobElementName') final String? jobElementName,
+      @JsonKey(name: 'PDCAId') final int? pdcaId,
+      @JsonKey(name: 'PDCAName') final String? pdcaName,
+      @JsonKey(name: 'SPEQSId') final int? speqsId,
+      @JsonKey(name: 'SPEQSName') final String? speqsName,
+      @JsonKey(name: 'ImpactOnId') final int? impactOnId,
+      @JsonKey(name: 'ImpactOnName') final String? impactOnName,
+      @JsonKey(name: 'ImpactCausedId') final int? impactCausedId,
+      @JsonKey(name: 'ImpactCausedName') final String? impactCausedName,
+      @JsonKey(name: 'SeverityId') final int? severityId,
+      @JsonKey(name: 'XBone') final bool? xBone,
+      @JsonKey(name: 'MMMId') final int? mmmId,
+      @JsonKey(name: 'MMMName') final String? mmmName,
+      @JsonKey(name: 'ComplianceName') final String? complianceName,
+      @JsonKey(name: 'ComplianceId') final int? complianceId,
+      @JsonKey(name: 'IsQuestionComplete') final bool? isQuestionComplete,
+      @JsonKey(name: 'IsActive') final bool? isActive}) = _$_CompanyQuestion;
   const _CompanyQuestion._() : super._();
 
   factory _CompanyQuestion.fromJson(Map<String, dynamic> json) =
@@ -736,11 +643,11 @@ abstract class _CompanyQuestion extends CompanyQuestion {
   @JsonKey(name: 'JobCategoryName')
   String? get jobCategoryName;
   @override
-  @JsonKey(name: 'CompanyQuestionId')
-  int? get companyQuestionId;
+  @JsonKey(name: 'QuestionId')
+  int? get questionId;
   @override
-  @JsonKey(name: 'CompanyQuestionValue')
-  String? get companyQuestionValue;
+  @JsonKey(name: 'QuestionValue')
+  String? get questionValue;
   @override
   @JsonKey(name: 'JobElementId')
   int? get jobElementId;
@@ -790,8 +697,8 @@ abstract class _CompanyQuestion extends CompanyQuestion {
   @JsonKey(name: 'ComplianceId')
   int? get complianceId;
   @override
-  @JsonKey(name: 'IsCompanyQuestionComplete')
-  bool? get isCompanyQuestionComplete;
+  @JsonKey(name: 'IsQuestionComplete')
+  bool? get isQuestionComplete;
   @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;

@@ -1,6 +1,6 @@
 part of 'assessment_cubit.dart';
 
-class AssessmentState {
+class AssessmentState extends Equatable {
   const AssessmentState({
     this.loading = false,
     this.error,
@@ -12,6 +12,10 @@ class AssessmentState {
   final Object? error;
   final Assessment? data;
   final Map<String, dynamic>? cacheCreateData;
+
+  int? get cacheContractorId => int.tryParse(
+        cacheCreateData?['ContractorId']?.toString() ?? '',
+      );
 
   AssessmentState copyWith({
     bool? loading,
@@ -26,4 +30,8 @@ class AssessmentState {
       cacheCreateData: cacheCreateData ?? this.cacheCreateData,
     );
   }
+
+  @override
+  List<Object?> get props =>
+      [loading, error, data, cacheCreateData, Json.tryEncode(cacheCreateData)];
 }

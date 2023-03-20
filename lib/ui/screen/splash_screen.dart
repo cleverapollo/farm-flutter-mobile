@@ -1,8 +1,4 @@
-import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
-import 'package:cmo/model/assessment.dart';
-import 'package:cmo/model/model.dart';
-import 'package:cmo/service/cmo_database_company_service.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';

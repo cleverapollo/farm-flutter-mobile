@@ -1,3 +1,4 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -7,7 +8,6 @@ import 'package:cmo/ui/snack/success.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
-import 'package:cmo/ui/widget/cmo_company_service_builder.dart';
 import 'package:cmo/ui/widget/cmo_date_picker.dart';
 import 'package:cmo/ui/widget/cmo_dropdown.dart';
 import 'package:cmo/ui/widget/cmo_header_tile.dart';
@@ -33,8 +33,9 @@ class CreateWorkerScreen extends StatefulWidget {
 }
 
 class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
-  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
   final _formKey = GlobalKey<FormBuilderState>();
+
+  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
   bool loading = false;
 
   Future<void> onSubmit() async {
@@ -68,13 +69,11 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
         int? resultId;
 
         if (mounted) {
-          final databaseService =
-              context.read<EntityCubit>().state.companyService;
-          if (databaseService != null) {
-            await (await databaseService.db).writeTxn(() async {
-              resultId = await databaseService.cacheWorker(worker);
-            });
-          }
+          final databaseService = cmoDatabaseMasterService;
+
+          await (await databaseService.db).writeTxn(() async {
+            resultId = await databaseService.cacheWorker(worker);
+          });
         }
 
         if (resultId != null) {
@@ -83,8 +82,7 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
           );
           if (context.mounted) {
             showSnackSuccess(
-              msg:
-                  '${LocaleKeys.createWorker.tr()} $resultId',
+              msg: '${LocaleKeys.createWorker.tr()} $resultId',
             );
             Navigator.of(context).pop();
           }
@@ -216,112 +214,96 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
                 CmoDropdownItem(id: 1, name: 'None'),
               ],
             ),
-            CmoCompanyServiceBuilder(
-              builder: (context, service) {
-                return FutureBuilder(
-                  future: service.getMunicipalitys(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return CmoDropdown(
-                        name: 'MunicipalityId',
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
-                        hintText: LocaleKeys.municipality.tr(),
-                        itemsData: snapshot.data
-                            ?.map(
-                              (e) => CmoDropdownItem(
-                                id: e.id,
-                                name: e.municipalityName ?? '',
-                              ),
-                            )
-                            .toList(),
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                );
+            FutureBuilder(
+              future: cmoDatabaseMasterService.getMunicipalitys(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return CmoDropdown(
+                    name: 'MunicipalityId',
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                    ]),
+                    hintText: LocaleKeys.municipality.tr(),
+                    itemsData: snapshot.data
+                        ?.map(
+                          (e) => CmoDropdownItem(
+                            id: e.id,
+                            name: e.municipalityName ?? '',
+                          ),
+                        )
+                        .toList(),
+                  );
+                }
+                return const SizedBox();
               },
             ),
-            CmoCompanyServiceBuilder(
-              builder: (context, service) {
-                return FutureBuilder(
-                  future: service.getProvinces(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return CmoDropdown(
-                        name: 'ProvinceId',
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
-                        hintText: LocaleKeys.province.tr(),
-                        itemsData: snapshot.data
-                            ?.map(
-                              (e) => CmoDropdownItem(
-                                id: e.id,
-                                name: e.provinceName ?? '',
-                              ),
-                            )
-                            .toList(),
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                );
+            FutureBuilder(
+              future: cmoDatabaseMasterService.getProvinces(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return CmoDropdown(
+                    name: 'ProvinceId',
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                    ]),
+                    hintText: LocaleKeys.province.tr(),
+                    itemsData: snapshot.data
+                        ?.map(
+                          (e) => CmoDropdownItem(
+                            id: e.id,
+                            name: e.provinceName ?? '',
+                          ),
+                        )
+                        .toList(),
+                  );
+                }
+                return const SizedBox();
               },
             ),
-            CmoCompanyServiceBuilder(
-              builder: (context, service) {
-                return FutureBuilder(
-                  future: service.getContractors(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return CmoDropdown(
-                        name: 'ContractorId',
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
-                        hintText: LocaleKeys.contractor.tr(),
-                        itemsData: snapshot.data
-                            ?.map(
-                              (e) => CmoDropdownItem(
-                                id: e.id,
-                                name: e.contractorName ?? '',
-                              ),
-                            )
-                            .toList(),
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                );
+            FutureBuilder(
+              future: cmoDatabaseMasterService.getContractors(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return CmoDropdown(
+                    name: 'ContractorId',
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                    ]),
+                    hintText: LocaleKeys.contractor.tr(),
+                    itemsData: snapshot.data
+                        ?.map(
+                          (e) => CmoDropdownItem(
+                            id: e.id,
+                            name: e.contractorName ?? '',
+                          ),
+                        )
+                        .toList(),
+                  );
+                }
+                return const SizedBox();
               },
             ),
-            CmoCompanyServiceBuilder(
-              builder: (context, service) {
-                return FutureBuilder(
-                  future: service.getJobDescriptions(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return CmoDropdown(
-                        name: 'JobDescriptionId',
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
-                        hintText: LocaleKeys.jobDescription.tr(),
-                        itemsData: snapshot.data
-                            ?.map(
-                              (e) => CmoDropdownItem(
-                                id: e.id,
-                                name: e.jobDescriptionName ?? '',
-                              ),
-                            )
-                            .toList(),
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                );
+            FutureBuilder(
+              future: cmoDatabaseMasterService.getJobDescriptions(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return CmoDropdown(
+                    name: 'JobDescriptionId',
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                    ]),
+                    hintText: LocaleKeys.jobDescription.tr(),
+                    itemsData: snapshot.data
+                        ?.map(
+                          (e) => CmoDropdownItem(
+                            id: e.id,
+                            name: e.jobDescriptionName ?? '',
+                          ),
+                        )
+                        .toList(),
+                  );
+                }
+                return const SizedBox();
               },
             ),
             CmoTextField(

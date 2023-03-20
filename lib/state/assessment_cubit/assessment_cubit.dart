@@ -1,4 +1,9 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/model/assessment.dart';
+import 'package:cmo/ui/snack/success.dart';
+import 'package:cmo/utils/json_converter.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'assessment_state.dart';
@@ -14,15 +19,38 @@ class AssessmentCubit extends HydratedCubit<AssessmentState> {
     );
   }
 
+  void cleanCache() {
+    emit(state.copyWith(cacheCreateData: <String, dynamic>{}));
+  }
+
+  Future<bool> submit(
+    Assessment value,
+  ) async {
+    try {
+      emit(state.copyWith(loading: true));
+      final service = cmoDatabaseService;
+      int? newId;
+      await (await service.db).writeTxn(() async {
+        newId = await service.cacheAssessment(value);
+      });
+      showSnackSuccess(msg: 'Save assessment success with id: $newId');
+    } catch (e) {
+      debugPrint('$e');
+      showSnackError(msg: e.toString());
+      return false;
+    } finally {
+      emit(state.copyWith(loading: false));
+    }
+    return true;
+  }
+
   @override
   AssessmentState? fromJson(Map<String, dynamic> json) {
-    // TODO: implement fromJson
-    throw UnimplementedError();
+    return AssessmentState(cacheCreateData: json);
   }
 
   @override
   Map<String, dynamic>? toJson(AssessmentState state) {
-    // TODO: implement toJson
-    throw UnimplementedError();
+    return state.cacheCreateData;
   }
 }

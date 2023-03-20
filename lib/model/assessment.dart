@@ -31,7 +31,28 @@ enum AssessmentStatus {
 @Collection(ignore: {'copyWith'})
 class Assessment with _$Assessment {
   const factory Assessment({
-    @JsonKey(name: 'AssessmentId') required int assessmentId,
+    @JsonKey(name: 'AssessmentId') required int? assessmentId,
+    @JsonKey(name: 'CompanyId') int? companyId,
+    @JsonKey(name: 'UserId') int? userId,
+//
+    @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
+    @JsonKey(name: 'JobDescriptionId') int? jobDescriptionId,
+    @JsonKey(name: 'PlantationId') int? plantationId,
+    @JsonKey(name: 'ContractorId') int? contractorId,
+    @JsonKey(name: 'TeamId') int? teamId,
+    @JsonKey(name: 'WorkerId') String? workerId,
+    @JsonKey(name: 'Lat') String? lat,
+    @JsonKey(name: 'Long') String? long,
+    @JsonKey(name: 'LocationName') String? locationName,
+//
+// * only use for show UI
+    @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
+    @JsonKey(name: 'JobDescriptionName') String? jobDescriptionName,
+    @JsonKey(name: 'PlantationName') String? plantationName,
+    @JsonKey(name: 'ContractorName') String? contractorName,
+    @JsonKey(name: 'TeamName') String? teamName,
+    @JsonKey(name: 'WorkerName') String? workerName,
+// *
     @JsonKey(name: 'Status') int? status,
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'CreateDT') String? createDT,
@@ -44,7 +65,7 @@ class Assessment with _$Assessment {
       _$AssessmentFromJson(json);
 
   @override
-  Id get id => assessmentId;
+  Id get id => assessmentId ?? Isar.autoIncrement;
 }
 
 extension AssessmentX on Assessment {

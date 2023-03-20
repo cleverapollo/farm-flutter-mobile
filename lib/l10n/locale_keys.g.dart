@@ -171,6 +171,7 @@ abstract class  LocaleKeys {
   static const speciesGroup = 'speciesGroup';
   static const stakeholderManagement = 'stakeholderManagement';
   static const stakeholders = 'stakeholders';
+  static const startAssessment = 'startAssessment';
   static const startAudit = 'startAudit';
   static const started = 'started';
   static const stocking = 'stocking';
@@ -196,6 +197,7 @@ abstract class  LocaleKeys {
   static const units = 'units';
   static const username = 'username';
   static const whatPercentage = 'whatPercentage';
+  static const worker = 'worker';
   static const workers = 'workers';
   static const yes = 'yes';
   static const zulu = 'zulu';

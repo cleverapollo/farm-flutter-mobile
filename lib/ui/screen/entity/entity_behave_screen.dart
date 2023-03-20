@@ -75,6 +75,26 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen>
     prevQuery = query;
   }
 
+  Future<void> submit() async {
+    if (selected == null) return;
+
+    await context.read<UserDeviceCubit>().createUserDevice(context);
+    if (context.mounted) {
+      await context.read<EntityCubit>().syncBehave(
+            context: context,
+            company: selected!,
+            userDeviceId: context.read<UserDeviceCubit>().state.join(
+                  (p0) => null,
+                  (p0) => p0.userDevice?.userDeviceId,
+                  (p0) => null,
+                ),
+          );
+    }
+    if (context.mounted) {
+      DashboardScreen.push(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -109,33 +129,26 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen>
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 40, bottom: 40),
-                child: BlocSelector<EntityCubit, EntityState, bool>(
+                child: BlocSelector<UserDeviceCubit, UserDeviceState, bool>(
                   selector: (state) {
-                    return state.isLoadingSync;
+                    return state.join(
+                      (loading) => true,
+                      (data) => false,
+                      (error) => false,
+                    );
                   },
-                  builder: (context, state) {
-                    return CmoFilledButton(
-                      title: LocaleKeys.sync.tr(),
-                      loading: state,
-                      onTap: selected != null
-                          ? () async {
-                              await context.read<EntityCubit>().syncBehave(
-                                    context: context,
-                                    company: selected!,
-                                    userDeviceId: context
-                                        .read<UserDeviceCubit>()
-                                        .state
-                                        .join(
-                                          (p0) => null,
-                                          (p0) => p0.userDevice?.userDeviceId,
-                                          (p0) => null,
-                                        ),
-                                  );
-                              if (context.mounted) {
-                                DashboardScreen.push(context);
-                              }
-                            }
-                          : null,
+                  builder: (context, isLoadingCreateDevice) {
+                    return BlocSelector<EntityCubit, EntityState, bool>(
+                      selector: (state) {
+                        return state.isLoadingSync;
+                      },
+                      builder: (context, isLoadingSync) {
+                        return CmoFilledButton(
+                          title: LocaleKeys.sync.tr(),
+                          loading: isLoadingSync || isLoadingCreateDevice,
+                          onTap: submit,
+                        );
+                      },
                     );
                   },
                 ),

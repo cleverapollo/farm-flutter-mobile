@@ -95,7 +95,7 @@ class TextThemeExt extends ThemeExtension<TextThemeExt> {
         color: _AppColor.black,
         fontWeight: FontWeight.normal,
         fontSize: 16,
-        height: 19.5 / 16,
+        height: 24 / 16,
         leadingDistribution: TextLeadingDistribution.even,
       );
 

@@ -7,6 +7,8 @@ class CmoOptionTile extends StatelessWidget {
     super.key,
     required this.title,
     this.value,
+    this.height = 45,
+    this.shouldAddPadding = true,
     this.shouldShowArrow = true,
     this.shouldShowDivider = true,
   });
@@ -14,6 +16,10 @@ class CmoOptionTile extends StatelessWidget {
   final String title;
 
   final String? value;
+
+  final double? height;
+
+  final bool shouldAddPadding;
 
   final bool shouldShowArrow;
 
@@ -24,10 +30,10 @@ class CmoOptionTile extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: 45,
+          height: height,
           child: Row(
             children: [
-              const SizedBox(width: 24),
+              if (shouldAddPadding) const SizedBox(width: 24),
               Expanded(
                 flex: 2,
                 child: Text(
@@ -41,19 +47,16 @@ class CmoOptionTile extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      value!,
+                      value ?? '',
                       style: context.textStyles.bodyNormal,
                     ),
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.only(right: 24),
-                child: SizedBox(
-                  width: 20,
-                  child:
-                      shouldShowArrow ? Assets.icons.icArrowRight.svg() : null,
-                ),
+              SizedBox(
+                width: 20,
+                child: shouldShowArrow ? Assets.icons.icArrowRight.svg() : null,
               ),
+              if (shouldAddPadding) const SizedBox(width: 24),
             ],
           ),
         ),
@@ -61,8 +64,8 @@ class CmoOptionTile extends StatelessWidget {
           Divider(
             height: 1,
             thickness: 1,
-            indent: 24,
-            endIndent: 24,
+            indent: shouldAddPadding ? 24 : 0,
+            endIndent: shouldAddPadding ? 24 : 0,
             color: context.colors.grey,
           ),
       ],
