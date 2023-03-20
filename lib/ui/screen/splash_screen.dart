@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/model/assessment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/service/cmo_database_company_service.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
@@ -41,12 +42,36 @@ class _SplashScreenState extends State<SplashScreen> {
         // });
         // final q = await db.getPlantations();
 
-        
-        
-        // await (await cmoDatabaseService.db)?.writeTxn(() async {
-        //   await cmoDatabaseService.cacheCompany(Company(companyId: 1234));
+        // await (await cmoDatabaseService.db).writeTxn(() async {
+        //   await cmoDatabaseService.cacheAssessment(
+        //     const Assessment(
+        //       assessmentId: 4,
+        //       status: 1,
+        //       isActive: true,
+        //       createDT: '',
+        //       updateDT: '',
+        //     ),
+        //   );
+        //   await cmoDatabaseService.cacheAssessment(
+        //     const Assessment(
+        //       assessmentId: 2,
+        //       status: 2,
+        //       isActive: true,
+        //       createDT: '',
+        //       updateDT: '',
+        //     ),
+        //   );
+        //   await cmoDatabaseService.cacheAssessment(
+        //     const Assessment(
+        //       assessmentId: 3,
+        //       status: 3,
+        //       isActive: true,
+        //       createDT: '',
+        //       updateDT: '',
+        //     ),
+        //   );
         // });
-        // final q2 = await cmoDatabaseService.getAllCachedCompanys();
+        // final q2 = await cmoDatabaseService.getAllCachedAssessments();
 
         authState.continued(
           (authorized) async {

@@ -1,6 +1,8 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/assessment_cubit/assessment_cubit.dart';
+import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/settings_cubit.dart';
@@ -77,6 +79,8 @@ class CmoApp extends StatelessWidget {
         BlocProvider(create: (_) => AuthCubit()),
         BlocProvider(create: (_) => UserInfoCubit()),
         BlocProvider(create: (_) => UserDeviceCubit()),
+        BlocProvider(create: (_) => AssessmentListCubit()),
+        BlocProvider(create: (_) => AssessmentCubit()),
       ],
       child: MaterialApp(
         title: 'CMO',
