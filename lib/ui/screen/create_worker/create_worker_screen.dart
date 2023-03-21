@@ -260,27 +260,36 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
                 return const SizedBox();
               },
             ),
-            FutureBuilder(
-              future: cmoDatabaseMasterService.getContractors(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return CmoDropdown(
-                    name: 'ContractorId',
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                    ]),
-                    hintText: LocaleKeys.contractor.tr(),
-                    itemsData: snapshot.data
-                        ?.map(
-                          (e) => CmoDropdownItem(
-                            id: e.id,
-                            name: e.contractorName ?? '',
-                          ),
-                        )
-                        .toList(),
-                  );
-                }
-                return const SizedBox();
+            BlocSelector<EntityCubit, EntityState, int?>(
+              selector: (state) {
+                return state.company?.id;
+              },
+              builder: (context, companyId) {
+                if (companyId == null) return const SizedBox();
+                return FutureBuilder(
+                  future: cmoDatabaseMasterService
+                      .getContractorsByCompanyId(companyId),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return CmoDropdown(
+                        name: 'ContractorId',
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                        ]),
+                        hintText: LocaleKeys.contractor.tr(),
+                        itemsData: snapshot.data
+                            ?.map(
+                              (e) => CmoDropdownItem(
+                                id: e.id,
+                                name: e.contractorName ?? '',
+                              ),
+                            )
+                            .toList(),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                );
               },
             ),
             FutureBuilder(
