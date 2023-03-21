@@ -70,17 +70,17 @@ const AssessmentSchema = CollectionSchema(
     r'lat': PropertySchema(
       id: 10,
       name: r'lat',
-      type: IsarType.string,
+      type: IsarType.double,
     ),
-    r'locationName': PropertySchema(
+    r'location': PropertySchema(
       id: 11,
-      name: r'locationName',
+      name: r'location',
       type: IsarType.string,
     ),
     r'long': PropertySchema(
       id: 12,
       name: r'long',
-      type: IsarType.string,
+      type: IsarType.double,
     ),
     r'plantationId': PropertySchema(
       id: 13,
@@ -173,19 +173,7 @@ int _assessmentEstimateSize(
     }
   }
   {
-    final value = object.lat;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.locationName;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.long;
+    final value = object.location;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -239,9 +227,9 @@ void _assessmentSerialize(
   writer.writeString(offsets[7], object.jobCategoryName);
   writer.writeLong(offsets[8], object.jobDescriptionId);
   writer.writeString(offsets[9], object.jobDescriptionName);
-  writer.writeString(offsets[10], object.lat);
-  writer.writeString(offsets[11], object.locationName);
-  writer.writeString(offsets[12], object.long);
+  writer.writeDouble(offsets[10], object.lat);
+  writer.writeString(offsets[11], object.location);
+  writer.writeDouble(offsets[12], object.long);
   writer.writeLong(offsets[13], object.plantationId);
   writer.writeString(offsets[14], object.plantationName);
   writer.writeLong(offsets[15], object.status);
@@ -270,9 +258,9 @@ Assessment _assessmentDeserialize(
     jobCategoryName: reader.readStringOrNull(offsets[7]),
     jobDescriptionId: reader.readLongOrNull(offsets[8]),
     jobDescriptionName: reader.readStringOrNull(offsets[9]),
-    lat: reader.readStringOrNull(offsets[10]),
-    locationName: reader.readStringOrNull(offsets[11]),
-    long: reader.readStringOrNull(offsets[12]),
+    lat: reader.readDoubleOrNull(offsets[10]),
+    location: reader.readStringOrNull(offsets[11]),
+    long: reader.readDoubleOrNull(offsets[12]),
     plantationId: reader.readLongOrNull(offsets[13]),
     plantationName: reader.readStringOrNull(offsets[14]),
     status: reader.readLongOrNull(offsets[15]),
@@ -314,11 +302,11 @@ P _assessmentDeserializeProp<P>(
     case 9:
       return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 11:
       return (reader.readStringOrNull(offset)) as P;
     case 12:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 13:
       return (reader.readLongOrNull(offset)) as P;
     case 14:
@@ -1509,54 +1497,54 @@ extension AssessmentQueryFilter
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition> latEqualTo(
-    String? value, {
-    bool caseSensitive = true,
+    double? value, {
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'lat',
         value: value,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition> latGreaterThan(
-    String? value, {
+    double? value, {
     bool include = false,
-    bool caseSensitive = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'lat',
         value: value,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition> latLessThan(
-    String? value, {
+    double? value, {
     bool include = false,
-    bool caseSensitive = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'lat',
         value: value,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition> latBetween(
-    String? lower,
-    String? upper, {
+    double? lower,
+    double? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1565,105 +1553,35 @@ extension AssessmentQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> latStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'lat',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> latEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'lat',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> latContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'lat',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> latMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'lat',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> latIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'lat',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> latIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'lat',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
-      locationNameIsNull() {
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> locationIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'locationName',
+        property: r'location',
       ));
     });
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
-      locationNameIsNotNull() {
+      locationIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'locationName',
+        property: r'location',
       ));
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
-      locationNameEqualTo(
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> locationEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'locationName',
+        property: r'location',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1671,7 +1589,7 @@ extension AssessmentQueryFilter
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
-      locationNameGreaterThan(
+      locationGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1679,15 +1597,14 @@ extension AssessmentQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'locationName',
+        property: r'location',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
-      locationNameLessThan(
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> locationLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1695,15 +1612,14 @@ extension AssessmentQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'locationName',
+        property: r'location',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
-      locationNameBetween(
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> locationBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1712,7 +1628,7 @@ extension AssessmentQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'locationName',
+        property: r'location',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1723,49 +1639,50 @@ extension AssessmentQueryFilter
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
-      locationNameStartsWith(
+      locationStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'locationName',
+        property: r'location',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
-      locationNameEndsWith(
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> locationEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'locationName',
+        property: r'location',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
-      locationNameContains(String value, {bool caseSensitive = true}) {
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> locationContains(
+      String value,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'locationName',
+        property: r'location',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
-      locationNameMatches(String pattern, {bool caseSensitive = true}) {
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> locationMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'locationName',
+        property: r'location',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -1773,20 +1690,20 @@ extension AssessmentQueryFilter
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
-      locationNameIsEmpty() {
+      locationIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'locationName',
+        property: r'location',
         value: '',
       ));
     });
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
-      locationNameIsNotEmpty() {
+      locationIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'locationName',
+        property: r'location',
         value: '',
       ));
     });
@@ -1809,54 +1726,54 @@ extension AssessmentQueryFilter
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition> longEqualTo(
-    String? value, {
-    bool caseSensitive = true,
+    double? value, {
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'long',
         value: value,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition> longGreaterThan(
-    String? value, {
+    double? value, {
     bool include = false,
-    bool caseSensitive = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'long',
         value: value,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition> longLessThan(
-    String? value, {
+    double? value, {
     bool include = false,
-    bool caseSensitive = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'long',
         value: value,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition> longBetween(
-    String? lower,
-    String? upper, {
+    double? lower,
+    double? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1865,75 +1782,7 @@ extension AssessmentQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> longStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'long',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> longEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'long',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> longContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'long',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> longMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'long',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> longIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'long',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> longIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'long',
-        value: '',
+        epsilon: epsilon,
       ));
     });
   }
@@ -3128,15 +2977,15 @@ extension AssessmentQuerySortBy
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QAfterSortBy> sortByLocationName() {
+  QueryBuilder<Assessment, Assessment, QAfterSortBy> sortByLocation() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'locationName', Sort.asc);
+      return query.addSortBy(r'location', Sort.asc);
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QAfterSortBy> sortByLocationNameDesc() {
+  QueryBuilder<Assessment, Assessment, QAfterSortBy> sortByLocationDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'locationName', Sort.desc);
+      return query.addSortBy(r'location', Sort.desc);
     });
   }
 
@@ -3413,15 +3262,15 @@ extension AssessmentQuerySortThenBy
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QAfterSortBy> thenByLocationName() {
+  QueryBuilder<Assessment, Assessment, QAfterSortBy> thenByLocation() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'locationName', Sort.asc);
+      return query.addSortBy(r'location', Sort.asc);
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QAfterSortBy> thenByLocationNameDesc() {
+  QueryBuilder<Assessment, Assessment, QAfterSortBy> thenByLocationDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'locationName', Sort.desc);
+      return query.addSortBy(r'location', Sort.desc);
     });
   }
 
@@ -3616,24 +3465,22 @@ extension AssessmentQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QDistinct> distinctByLat(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Assessment, Assessment, QDistinct> distinctByLat() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'lat', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'lat');
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QDistinct> distinctByLocationName(
+  QueryBuilder<Assessment, Assessment, QDistinct> distinctByLocation(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'locationName', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'location', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Assessment, Assessment, QDistinct> distinctByLong(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Assessment, Assessment, QDistinct> distinctByLong() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'long', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'long');
     });
   }
 
@@ -3768,19 +3615,19 @@ extension AssessmentQueryProperty
     });
   }
 
-  QueryBuilder<Assessment, String?, QQueryOperations> latProperty() {
+  QueryBuilder<Assessment, double?, QQueryOperations> latProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lat');
     });
   }
 
-  QueryBuilder<Assessment, String?, QQueryOperations> locationNameProperty() {
+  QueryBuilder<Assessment, String?, QQueryOperations> locationProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'locationName');
+      return query.addPropertyName(r'location');
     });
   }
 
-  QueryBuilder<Assessment, String?, QQueryOperations> longProperty() {
+  QueryBuilder<Assessment, double?, QQueryOperations> longProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'long');
     });
@@ -3856,9 +3703,9 @@ _$_Assessment _$$_AssessmentFromJson(Map<String, dynamic> json) =>
       contractorId: json['ContractorId'] as int?,
       teamId: json['TeamId'] as int?,
       workerId: json['WorkerId'] as String?,
-      lat: json['Lat'] as String?,
-      long: json['Long'] as String?,
-      locationName: json['LocationName'] as String?,
+      lat: (json['Lat'] as num?)?.toDouble(),
+      long: (json['Long'] as num?)?.toDouble(),
+      location: json['Location'] as String?,
       jobCategoryName: json['JobCategoryName'] as String?,
       jobDescriptionName: json['JobDescriptionName'] as String?,
       plantationName: json['PlantationName'] as String?,
@@ -3884,7 +3731,7 @@ Map<String, dynamic> _$$_AssessmentToJson(_$_Assessment instance) =>
       'WorkerId': instance.workerId,
       'Lat': instance.lat,
       'Long': instance.long,
-      'LocationName': instance.locationName,
+      'Location': instance.location,
       'JobCategoryName': instance.jobCategoryName,
       'JobDescriptionName': instance.jobDescriptionName,
       'PlantationName': instance.plantationName,

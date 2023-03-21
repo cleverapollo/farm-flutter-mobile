@@ -74,10 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
           await context.read<UserInfoCubit>().getUser(context);
         }
 
-        if (context.mounted) {
-          setState(() {
-            isLoading = false;
-          });
+        if (success && context.mounted) {
           pushEntityScreen(context);
         }
       } finally {

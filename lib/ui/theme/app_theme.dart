@@ -133,6 +133,8 @@ extension TextStyleExt on TextStyle {
 }
 
 extension SvgGen on SvgGenImage {
+  SvgPicture get widget => svg();
+
   SvgPicture get svgWhite => svg(
         colorFilter: const ColorFilter.mode(_AppColor.white, BlendMode.srcIn),
       );

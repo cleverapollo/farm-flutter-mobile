@@ -39,11 +39,11 @@ mixin _$Assessment {
   @JsonKey(name: 'WorkerId')
   String? get workerId => throw _privateConstructorUsedError;
   @JsonKey(name: 'Lat')
-  String? get lat => throw _privateConstructorUsedError;
+  double? get lat => throw _privateConstructorUsedError;
   @JsonKey(name: 'Long')
-  String? get long => throw _privateConstructorUsedError;
-  @JsonKey(name: 'LocationName')
-  String? get locationName => throw _privateConstructorUsedError; //
+  double? get long => throw _privateConstructorUsedError;
+  @JsonKey(name: 'Location')
+  String? get location => throw _privateConstructorUsedError; //
 // * only use for show UI
   @JsonKey(name: 'JobCategoryName')
   String? get jobCategoryName => throw _privateConstructorUsedError;
@@ -56,7 +56,7 @@ mixin _$Assessment {
   @JsonKey(name: 'TeamName')
   String? get teamName => throw _privateConstructorUsedError;
   @JsonKey(name: 'WorkerName')
-  String? get workerName => throw _privateConstructorUsedError; //
+  String? get workerName => throw _privateConstructorUsedError; // *
   @JsonKey(name: 'Status')
   int? get status => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -88,9 +88,9 @@ abstract class $AssessmentCopyWith<$Res> {
       @JsonKey(name: 'ContractorId') int? contractorId,
       @JsonKey(name: 'TeamId') int? teamId,
       @JsonKey(name: 'WorkerId') String? workerId,
-      @JsonKey(name: 'Lat') String? lat,
-      @JsonKey(name: 'Long') String? long,
-      @JsonKey(name: 'LocationName') String? locationName,
+      @JsonKey(name: 'Lat') double? lat,
+      @JsonKey(name: 'Long') double? long,
+      @JsonKey(name: 'Location') String? location,
       @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
       @JsonKey(name: 'JobDescriptionName') String? jobDescriptionName,
       @JsonKey(name: 'PlantationName') String? plantationName,
@@ -127,7 +127,7 @@ class _$AssessmentCopyWithImpl<$Res, $Val extends Assessment>
     Object? workerId = freezed,
     Object? lat = freezed,
     Object? long = freezed,
-    Object? locationName = freezed,
+    Object? location = freezed,
     Object? jobCategoryName = freezed,
     Object? jobDescriptionName = freezed,
     Object? plantationName = freezed,
@@ -179,14 +179,14 @@ class _$AssessmentCopyWithImpl<$Res, $Val extends Assessment>
       lat: freezed == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as double?,
       long: freezed == long
           ? _value.long
           : long // ignore: cast_nullable_to_non_nullable
-              as String?,
-      locationName: freezed == locationName
-          ? _value.locationName
-          : locationName // ignore: cast_nullable_to_non_nullable
+              as double?,
+      location: freezed == location
+          ? _value.location
+          : location // ignore: cast_nullable_to_non_nullable
               as String?,
       jobCategoryName: freezed == jobCategoryName
           ? _value.jobCategoryName
@@ -250,9 +250,9 @@ abstract class _$$_AssessmentCopyWith<$Res>
       @JsonKey(name: 'ContractorId') int? contractorId,
       @JsonKey(name: 'TeamId') int? teamId,
       @JsonKey(name: 'WorkerId') String? workerId,
-      @JsonKey(name: 'Lat') String? lat,
-      @JsonKey(name: 'Long') String? long,
-      @JsonKey(name: 'LocationName') String? locationName,
+      @JsonKey(name: 'Lat') double? lat,
+      @JsonKey(name: 'Long') double? long,
+      @JsonKey(name: 'Location') String? location,
       @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
       @JsonKey(name: 'JobDescriptionName') String? jobDescriptionName,
       @JsonKey(name: 'PlantationName') String? plantationName,
@@ -287,7 +287,7 @@ class __$$_AssessmentCopyWithImpl<$Res>
     Object? workerId = freezed,
     Object? lat = freezed,
     Object? long = freezed,
-    Object? locationName = freezed,
+    Object? location = freezed,
     Object? jobCategoryName = freezed,
     Object? jobDescriptionName = freezed,
     Object? plantationName = freezed,
@@ -339,14 +339,14 @@ class __$$_AssessmentCopyWithImpl<$Res>
       lat: freezed == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as double?,
       long: freezed == long
           ? _value.long
           : long // ignore: cast_nullable_to_non_nullable
-              as String?,
-      locationName: freezed == locationName
-          ? _value.locationName
-          : locationName // ignore: cast_nullable_to_non_nullable
+              as double?,
+      location: freezed == location
+          ? _value.location
+          : location // ignore: cast_nullable_to_non_nullable
               as String?,
       jobCategoryName: freezed == jobCategoryName
           ? _value.jobCategoryName
@@ -407,7 +407,7 @@ class _$_Assessment extends _Assessment {
       @JsonKey(name: 'WorkerId') this.workerId,
       @JsonKey(name: 'Lat') this.lat,
       @JsonKey(name: 'Long') this.long,
-      @JsonKey(name: 'LocationName') this.locationName,
+      @JsonKey(name: 'Location') this.location,
       @JsonKey(name: 'JobCategoryName') this.jobCategoryName,
       @JsonKey(name: 'JobDescriptionName') this.jobDescriptionName,
       @JsonKey(name: 'PlantationName') this.plantationName,
@@ -453,13 +453,13 @@ class _$_Assessment extends _Assessment {
   final String? workerId;
   @override
   @JsonKey(name: 'Lat')
-  final String? lat;
+  final double? lat;
   @override
   @JsonKey(name: 'Long')
-  final String? long;
+  final double? long;
   @override
-  @JsonKey(name: 'LocationName')
-  final String? locationName;
+  @JsonKey(name: 'Location')
+  final String? location;
 //
 // * only use for show UI
   @override
@@ -480,7 +480,7 @@ class _$_Assessment extends _Assessment {
   @override
   @JsonKey(name: 'WorkerName')
   final String? workerName;
-//
+// *
   @override
   @JsonKey(name: 'Status')
   final int? status;
@@ -496,7 +496,7 @@ class _$_Assessment extends _Assessment {
 
   @override
   String toString() {
-    return 'Assessment(assessmentId: $assessmentId, companyId: $companyId, userId: $userId, jobCategoryId: $jobCategoryId, jobDescriptionId: $jobDescriptionId, plantationId: $plantationId, contractorId: $contractorId, teamId: $teamId, workerId: $workerId, lat: $lat, long: $long, locationName: $locationName, jobCategoryName: $jobCategoryName, jobDescriptionName: $jobDescriptionName, plantationName: $plantationName, contractorName: $contractorName, teamName: $teamName, workerName: $workerName, status: $status, isActive: $isActive, createDT: $createDT, updateDT: $updateDT)';
+    return 'Assessment(assessmentId: $assessmentId, companyId: $companyId, userId: $userId, jobCategoryId: $jobCategoryId, jobDescriptionId: $jobDescriptionId, plantationId: $plantationId, contractorId: $contractorId, teamId: $teamId, workerId: $workerId, lat: $lat, long: $long, location: $location, jobCategoryName: $jobCategoryName, jobDescriptionName: $jobDescriptionName, plantationName: $plantationName, contractorName: $contractorName, teamName: $teamName, workerName: $workerName, status: $status, isActive: $isActive, createDT: $createDT, updateDT: $updateDT)';
   }
 
   @override
@@ -522,8 +522,8 @@ class _$_Assessment extends _Assessment {
                 other.workerId == workerId) &&
             (identical(other.lat, lat) || other.lat == lat) &&
             (identical(other.long, long) || other.long == long) &&
-            (identical(other.locationName, locationName) ||
-                other.locationName == locationName) &&
+            (identical(other.location, location) ||
+                other.location == location) &&
             (identical(other.jobCategoryName, jobCategoryName) ||
                 other.jobCategoryName == jobCategoryName) &&
             (identical(other.jobDescriptionName, jobDescriptionName) ||
@@ -560,7 +560,7 @@ class _$_Assessment extends _Assessment {
         workerId,
         lat,
         long,
-        locationName,
+        location,
         jobCategoryName,
         jobDescriptionName,
         plantationName,
@@ -598,9 +598,9 @@ abstract class _Assessment extends Assessment {
       @JsonKey(name: 'ContractorId') final int? contractorId,
       @JsonKey(name: 'TeamId') final int? teamId,
       @JsonKey(name: 'WorkerId') final String? workerId,
-      @JsonKey(name: 'Lat') final String? lat,
-      @JsonKey(name: 'Long') final String? long,
-      @JsonKey(name: 'LocationName') final String? locationName,
+      @JsonKey(name: 'Lat') final double? lat,
+      @JsonKey(name: 'Long') final double? long,
+      @JsonKey(name: 'Location') final String? location,
       @JsonKey(name: 'JobCategoryName') final String? jobCategoryName,
       @JsonKey(name: 'JobDescriptionName') final String? jobDescriptionName,
       @JsonKey(name: 'PlantationName') final String? plantationName,
@@ -645,13 +645,13 @@ abstract class _Assessment extends Assessment {
   String? get workerId;
   @override
   @JsonKey(name: 'Lat')
-  String? get lat;
+  double? get lat;
   @override
   @JsonKey(name: 'Long')
-  String? get long;
+  double? get long;
   @override
-  @JsonKey(name: 'LocationName')
-  String? get locationName;
+  @JsonKey(name: 'Location')
+  String? get location;
   @override //
 // * only use for show UI
   @JsonKey(name: 'JobCategoryName')
@@ -671,7 +671,7 @@ abstract class _Assessment extends Assessment {
   @override
   @JsonKey(name: 'WorkerName')
   String? get workerName;
-  @override //
+  @override // *
   @JsonKey(name: 'Status')
   int? get status;
   @override

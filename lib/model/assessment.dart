@@ -41,9 +41,9 @@ class Assessment with _$Assessment {
     @JsonKey(name: 'ContractorId') int? contractorId,
     @JsonKey(name: 'TeamId') int? teamId,
     @JsonKey(name: 'WorkerId') String? workerId,
-    @JsonKey(name: 'Lat') String? lat,
-    @JsonKey(name: 'Long') String? long,
-    @JsonKey(name: 'LocationName') String? locationName,
+    @JsonKey(name: 'Lat') double? lat,
+    @JsonKey(name: 'Long') double? long,
+    @JsonKey(name: 'Location') String? location,
 //
 // * only use for show UI
     @JsonKey(name: 'JobCategoryName') String? jobCategoryName,

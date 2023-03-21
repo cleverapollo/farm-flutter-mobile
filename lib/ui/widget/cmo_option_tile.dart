@@ -11,6 +11,7 @@ class CmoOptionTile extends StatelessWidget {
     this.shouldAddPadding = true,
     this.shouldShowArrow = true,
     this.shouldShowDivider = true,
+    this.useFittedBox = true,
   });
 
   final String title;
@@ -24,6 +25,8 @@ class CmoOptionTile extends StatelessWidget {
   final bool shouldShowArrow;
 
   final bool shouldShowDivider;
+
+  final bool useFittedBox;
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +46,21 @@ class CmoOptionTile extends StatelessWidget {
               ),
               if (value != null)
                 Expanded(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      value ?? '',
-                      style: context.textStyles.bodyNormal,
-                    ),
-                  ),
+                  child: useFittedBox
+                      ? FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            value ?? '',
+                            style: context.textStyles.bodyNormal,
+                          ),
+                        )
+                      : Text(
+                          value ?? '',
+                          style: context.textStyles.bodyNormal,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                 ),
               SizedBox(
                 width: 20,

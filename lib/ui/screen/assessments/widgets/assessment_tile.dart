@@ -84,6 +84,7 @@ class AssessmentTile extends StatelessWidget {
                     data.jobDescriptionId?.toString(),
                 shouldShowArrow: false,
                 shouldAddPadding: false,
+                useFittedBox: false,
               ),
               CmoOptionTile(
                 height: 24,
@@ -91,6 +92,7 @@ class AssessmentTile extends StatelessWidget {
                 value: data.plantationName ?? data.plantationId?.toString(),
                 shouldShowArrow: false,
                 shouldAddPadding: false,
+                useFittedBox: false,
               ),
               CmoOptionTile(
                 height: 24,
@@ -98,6 +100,7 @@ class AssessmentTile extends StatelessWidget {
                 value: data.contractorName ?? data.contractorId?.toString(),
                 shouldShowArrow: false,
                 shouldAddPadding: false,
+                useFittedBox: false,
               ),
               CmoOptionTile(
                 height: 24,
@@ -105,6 +108,7 @@ class AssessmentTile extends StatelessWidget {
                 value: data.teamName ?? data.teamId?.toString(),
                 shouldShowArrow: false,
                 shouldAddPadding: false,
+                useFittedBox: false,
               ),
               CmoOptionTile(
                 height: 24,
@@ -112,14 +116,16 @@ class AssessmentTile extends StatelessWidget {
                 value: data.workerName ?? data.workerId?.toString(),
                 shouldShowArrow: false,
                 shouldAddPadding: false,
+                useFittedBox: false,
               ),
               CmoOptionTile(
                 height: 24,
                 title: LocaleKeys.locationName.tr(),
-                value: ' ',
+                value: data.location ?? '${data.lat}, ${data.long}',
                 shouldShowArrow: false,
                 shouldAddPadding: false,
                 shouldShowDivider: false,
+                useFittedBox: false,
               ),
             ],
           ),

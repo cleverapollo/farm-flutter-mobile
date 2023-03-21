@@ -8,15 +8,18 @@ import 'package:cmo/state/assessment_cubit/assessment_cubit.dart';
 import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
+import 'package:cmo/ui/screen/assessments/choose_location_screen.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_dropdown.dart';
 import 'package:cmo/ui/widget/cmo_option_tile.dart';
+import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class NewAssessmentScreen extends StatefulWidget {
   const NewAssessmentScreen({super.key});
@@ -36,6 +39,7 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
   bool loading = false;
+  LatLng? _latLong;
 
   @override
   void initState() {
@@ -195,7 +199,6 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
                               const SizedBox(width: 20),
                               Flexible(
                                 child: CmoFilledButton(
-                                  loading: loading,
                                   title: LocaleKeys.startAssessment.tr(),
                                   onTap: onSubmit,
                                 ),
@@ -218,6 +221,7 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
 
   Widget buildInputArea(int companyId) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(),
         CmoOptionTile(
@@ -427,13 +431,46 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
         ),
         const SizedBox(height: 12),
         CmoTappable(
-          onTap: () {},
+          onTap: () async {
+            final data =
+                await ChooseLocationScreen.push<ChooseLocationScreenResult>(
+              context,
+            );
+            if (data is ChooseLocationScreenResult) {
+              debugPrint(data.toString());
+
+              final newData = {..._formKey.currentState!.value};
+              newData['Location'] = data.address;
+              newData['Lat'] = data.latLong.latitude;
+              newData['Lng'] = data.latLong.longitude;
+              _formKey.currentState!.patchValue(newData);
+              if (context.mounted) {
+                setState(() {
+                  _latLong = data.latLong;
+                });
+              }
+            }
+          },
           child: CmoOptionTile(
             title: LocaleKeys.siteLocation.tr(),
             value: ' ',
             shouldShowDivider: false,
             shouldAddPadding: false,
           ),
+        ),
+        if (_latLong != null)
+          Text(
+            '${_latLong?.latitude.toStringAsFixed(6)}, ${_latLong?.longitude.toStringAsFixed(6)}',
+            style: context.textStyles.bodyNormal,
+          ),
+        const SizedBox(height: 4),
+        CmoTextField(
+          name: 'Location',
+          enabled: false,
+          validator: FormBuilderValidators.compose([
+            FormBuilderValidators.required(),
+          ]),
+          hintText: LocaleKeys.siteLocation.tr(),
         ),
       ],
     );

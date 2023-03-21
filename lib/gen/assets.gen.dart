@@ -34,9 +34,19 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_lang.svg
   SvgGenImage get icLang => const SvgGenImage('assets/icons/ic_lang.svg');
 
+  /// File path: assets/icons/ic_location.svg
+  SvgGenImage get icLocation =>
+      const SvgGenImage('assets/icons/ic_location.svg');
+
+  /// File path: assets/icons/ic_pan.svg
+  SvgGenImage get icPan => const SvgGenImage('assets/icons/ic_pan.svg');
+
   /// File path: assets/icons/ic_password.svg
   SvgGenImage get icPassword =>
       const SvgGenImage('assets/icons/ic_password.svg');
+
+  /// File path: assets/icons/ic_refresh.svg
+  SvgGenImage get icRefresh => const SvgGenImage('assets/icons/ic_refresh.svg');
 
   /// File path: assets/icons/ic_search.svg
   SvgGenImage get icSearch => const SvgGenImage('assets/icons/ic_search.svg');
@@ -62,7 +72,10 @@ class $AssetsIconsGen {
         icClose,
         icDrawer,
         icLang,
+        icLocation,
+        icPan,
         icPassword,
+        icRefresh,
         icSearch,
         icTick,
         icUser,

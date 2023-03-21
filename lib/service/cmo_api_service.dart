@@ -19,7 +19,8 @@ typedef JsonListData = List<dynamic>;
 class CmoApiService {
   Dio client = Dio(
     BaseOptions(
-      validateStatus: (status) => status != null && status < 500,
+      validateStatus: (status) =>
+          status != null && status < 500 && status != 401,
     ),
   )
     ..interceptors.add(CustomInterceptor())
@@ -235,6 +236,14 @@ class CustomInterceptor extends Interceptor {
     return token;
   }
 
+  Future<void> _saveAccessToken(
+    String? accessToken,
+    String? renewalToken,
+  ) async {
+    await secureStorage.write(key: 'accessToken', value: accessToken);
+    await secureStorage.write(key: 'renewalToken', value: renewalToken);
+  }
+
   @override
   Future<void> onRequest(
     RequestOptions options,
@@ -292,6 +301,8 @@ class CustomInterceptor extends Interceptor {
         if (accessToken == null || accessToken.isEmpty) {
           return handler.reject(err);
         }
+
+        await _saveAccessToken(accessToken, user?.renewalToken);
 
         final options = err.requestOptions;
         options.headers.addAll({

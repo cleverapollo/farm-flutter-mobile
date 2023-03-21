@@ -48,7 +48,7 @@ class AssessmentsScreen extends StatelessWidget {
                           context.read<AssessmentListCubit>().changeIndexTab(0);
                         },
                         disable: indexTab != 0,
-                        title: LocaleKeys.started.tr(),
+                        title: LocaleKeys.started.tr().toUpperCase(),
                         titleStyle: context.textStyles.bodyBold.white
                             .copyWith(fontSize: 12),
                       ),
@@ -59,7 +59,7 @@ class AssessmentsScreen extends StatelessWidget {
                           context.read<AssessmentListCubit>().changeIndexTab(1);
                         },
                         disable: indexTab != 1,
-                        title: LocaleKeys.completed.tr(),
+                        title: LocaleKeys.completed.tr().toUpperCase(),
                         titleStyle: context.textStyles.bodyBold.white
                             .copyWith(fontSize: 12),
                       ),
@@ -70,7 +70,7 @@ class AssessmentsScreen extends StatelessWidget {
                           context.read<AssessmentListCubit>().changeIndexTab(2);
                         },
                         disable: indexTab != 2,
-                        title: LocaleKeys.synced.tr(),
+                        title: LocaleKeys.synced.tr().toUpperCase(),
                         titleStyle: context.textStyles.bodyBold.white
                             .copyWith(fontSize: 12),
                       ),

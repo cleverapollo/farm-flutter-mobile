@@ -4,6 +4,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/company.dart';
+import 'package:cmo/state/assessment_cubit/assessment_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
@@ -35,6 +36,8 @@ class EntityBehaveScreen extends StatefulWidget {
 class _EntityBehaveScreenState extends State<EntityBehaveScreen>
     with AfterLayoutMixin {
   bool isReady = false;
+
+  bool loading = false;
 
   List<Company> companies = [];
 
@@ -77,21 +80,34 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen>
 
   Future<void> submit() async {
     if (selected == null) return;
+    if (loading == true) return;
 
-    await context.read<UserDeviceCubit>().createUserDevice(context);
-    if (context.mounted) {
-      await context.read<EntityCubit>().syncBehave(
-            context: context,
-            company: selected!,
-            userDeviceId: context.read<UserDeviceCubit>().state.join(
-                  (p0) => null,
-                  (p0) => p0.userDevice?.userDeviceId,
-                  (p0) => null,
-                ),
-          );
-    }
-    if (context.mounted) {
-      DashboardScreen.push(context);
+    try {
+      setState(() {
+        loading = true;
+      });
+      context.read<AssessmentCubit>().cleanCache();
+      await context.read<UserDeviceCubit>().createUserDevice(context);
+      if (context.mounted) {
+        await context.read<EntityCubit>().syncBehave(
+              context: context,
+              company: selected!,
+              userDeviceId: context.read<UserDeviceCubit>().state.join(
+                    (p0) => null,
+                    (p0) => p0.userDevice?.userDeviceId,
+                    (p0) => null,
+                  ),
+            );
+      }
+      if (context.mounted) {
+        DashboardScreen.push(context);
+      }
+    } catch (e, s) {
+      debugPrint('Submit entity error: $e $s');
+    } finally {
+      setState(() {
+        loading = false;
+      });
     }
   }
 
@@ -129,28 +145,10 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen>
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 40, bottom: 40),
-                child: BlocSelector<UserDeviceCubit, UserDeviceState, bool>(
-                  selector: (state) {
-                    return state.join(
-                      (loading) => true,
-                      (data) => false,
-                      (error) => false,
-                    );
-                  },
-                  builder: (context, isLoadingCreateDevice) {
-                    return BlocSelector<EntityCubit, EntityState, bool>(
-                      selector: (state) {
-                        return state.isLoadingSync;
-                      },
-                      builder: (context, isLoadingSync) {
-                        return CmoFilledButton(
-                          title: LocaleKeys.sync.tr(),
-                          loading: isLoadingSync || isLoadingCreateDevice,
-                          onTap: submit,
-                        );
-                      },
-                    );
-                  },
+                child: CmoFilledButton(
+                  title: LocaleKeys.sync.tr(),
+                  loading: loading,
+                  onTap: submit,
                 ),
               ),
             ],

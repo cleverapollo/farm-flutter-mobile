@@ -12,6 +12,7 @@ class CmoTextField extends StatelessWidget {
     this.hintText,
     this.onChanged,
     this.obscureText = false,
+    this.enabled = true,
     this.keyboardType,
     this.autofillHints,
     this.onEditingComplete,
@@ -32,6 +33,8 @@ class CmoTextField extends StatelessWidget {
   final void Function(String?)? onChanged;
 
   final bool obscureText;
+
+  final bool enabled;
 
   final TextInputType? keyboardType;
 
@@ -54,6 +57,7 @@ class CmoTextField extends StatelessWidget {
     return FormBuilderTextField(
       name: name,
       validator: validator,
+      enabled: enabled,
       style: context.textStyles.bodyNormal,
       onChanged: onChanged,
       cursorColor: context.colors.blue,
