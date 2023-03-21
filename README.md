@@ -1,6 +1,7 @@
 # CMO - Supply Chain Integrity
 
 ## L10n
+
 Use `flutter_gen` to generate assets and fonts:
 
 ```
@@ -16,17 +17,33 @@ flutter pub run easy_localization:generate -S assets/l10n -O lib/l10n -f keys -o
 or run `python l10n.py <key> <en> <fr>` to add strings and generate `LocaleKeys`.
 
 ## ENV
+
 Use `envied` to generate .env:
 
 Create `.env` file
+
 ```
 PUBSUB_APIKEY=xxx
 APP_MODE=behave; (behave, resource_manager, farmer)
+GOOGLE_MAPS_API_KEY=xxxxxx
 ```
 
 Run this to generate file lib/env/env.g.dart
+
 ```
 flutter packages pub run build_runner build --delete-conflicting-outputs
 ```
 
-Protip: add `obfuscate:true` not hardcoded & making it much harder to extract if an attacker decompiles our app .
+Protip: To enhance security, add `obfuscate:true` (instead of hardcoding) to make it more difficult for attackers to extract our app.
+
+## Google Map Key
+
+Double-check that the files containing your GOOGLE_MAPS_API_KEY contain the correct data. These files include:
+
+⚠️ Warning: Create/Edit `ios/Runner/keys.plist` using Xcode. Avoid editing it with other code editors.
+
+```
+.env
+android/local.properties
+ios/Runner/keys.plist
+```
