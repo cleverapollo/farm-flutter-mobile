@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
-import 'package:cmo/ui/screen/assessments/widgets/assessment_tile.dart';
+import 'package:cmo/ui/screen/assessment/widgets/assessment_tile.dart';
 import 'package:cmo/ui/theme/theme.dart';
 
-class ListSynced extends StatefulWidget {
-  const ListSynced({super.key});
+class AssessmentListSynced extends StatefulWidget {
+  const AssessmentListSynced({super.key});
 
   @override
-  State<ListSynced> createState() => _ListSyncedState();
+  State<AssessmentListSynced> createState() => _AssessmentListSyncedState();
 }
 
-class _ListSyncedState extends State<ListSynced> {
+class _AssessmentListSyncedState extends State<AssessmentListSynced> {
   @override
   void initState() {
     super.initState();

@@ -14,11 +14,11 @@ import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/debouncer.dart';
 
-class ChooseLocationScreenResult extends Equatable {
+class AssessmentLocationScreenResult extends Equatable {
   final LatLng latLong;
   final String address;
 
-  const ChooseLocationScreenResult({
+  const AssessmentLocationScreenResult({
     required this.latLong,
     required this.address,
   });
@@ -31,20 +31,21 @@ class ChooseLocationScreenResult extends Equatable {
       [latLong, latLong.latitude, latLong.longitude, address];
 }
 
-class ChooseLocationScreen extends StatefulWidget {
-  const ChooseLocationScreen({super.key});
+class AssessmentLocationScreen extends StatefulWidget {
+  const AssessmentLocationScreen({super.key});
 
   static Future<T?> push<T>(BuildContext context) async {
     return Navigator.of(context).push<T>(
-      MaterialPageRoute(builder: (_) => const ChooseLocationScreen()),
+      MaterialPageRoute(builder: (_) => const AssessmentLocationScreen()),
     );
   }
 
   @override
-  State<ChooseLocationScreen> createState() => _ChooseLocationScreenState();
+  State<AssessmentLocationScreen> createState() =>
+      _AssessmentLocationScreenState();
 }
 
-class _ChooseLocationScreenState extends State<ChooseLocationScreen> {
+class _AssessmentLocationScreenState extends State<AssessmentLocationScreen> {
   late GoogleMapController mapController;
   final LatLng _center = const LatLng(-26.024176, 28.042453);
   LatLng _latLong = const LatLng(-26.024176, 28.042453);
@@ -122,7 +123,7 @@ class _ChooseLocationScreenState extends State<ChooseLocationScreen> {
     }
 
     Navigator.of(context).pop(
-      ChooseLocationScreenResult(
+      AssessmentLocationScreenResult(
         address: _address,
         latLong: _latLong,
       ),

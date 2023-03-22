@@ -13,24 +13,22 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_header_tile.dart';
 import 'package:cmo/ui/widget/cmo_option_tile.dart';
 
-class ResourceManagerEntityScreen extends StatefulWidget {
-  const ResourceManagerEntityScreen({super.key});
+class EntityFarmerScreen extends StatefulWidget {
+  const EntityFarmerScreen({super.key});
 
   static void push(BuildContext context) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => const ResourceManagerEntityScreen(),
+        builder: (_) => const EntityFarmerScreen(),
       ),
     );
   }
 
   @override
-  State<ResourceManagerEntityScreen> createState() =>
-      _ResourceManagerEntityScreenState();
+  State<EntityFarmerScreen> createState() => FfarmerEntityScreenState();
 }
 
-class _ResourceManagerEntityScreenState
-    extends State<ResourceManagerEntityScreen> {
+class FfarmerEntityScreenState extends State<EntityFarmerScreen> {
   Entity? selected;
 
   Future<void> toEntitySearchScreen(EntityType type) async {

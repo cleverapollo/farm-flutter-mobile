@@ -324,7 +324,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final plantation = Plantation.fromJson(bodyJson);
       return cmoDatabaseMasterService.cachePlantation(plantation);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -334,7 +336,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final unit = Unit.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheUnit(unit);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -344,7 +348,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final contractor = Contractor.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheContractor(contractor);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -354,7 +360,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final province = Province.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheProvince(province);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -364,7 +372,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final municipality = Municipality.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheMunicipality(municipality);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -374,7 +384,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final impactCaused = ImpactCaused.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheImpactCaused(impactCaused);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -384,7 +396,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final impactOn = ImpactOn.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheImpactOn(impactOn);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -394,7 +408,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final jobCategory = JobCategory.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheJobCategory(jobCategory);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -404,7 +420,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final jobDescription = JobDescription.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheJobDescription(jobDescription);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -414,7 +432,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final jobElement = JobElement.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheJobElement(jobElement);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -424,7 +444,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final mmm = Mmm.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheMmm(mmm);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -434,7 +456,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final pdca = Pdca.fromJson(bodyJson);
       return cmoDatabaseMasterService.cachePdca(pdca);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -444,7 +468,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final severity = Severity.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheSeverity(severity);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -454,7 +480,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final speqs = Speqs.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheSpeqs(speqs);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -464,7 +492,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final compliance = Compliance.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheCompliance(compliance);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -474,7 +504,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final team = Team.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheTeam(team);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -484,7 +516,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final rejectReason = RejectReason.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheRejectReason(rejectReason);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -494,7 +528,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final trainingProvider = TrainingProvider.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheTrainingProvider(trainingProvider);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -504,7 +540,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final course = Course.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheCourse(course);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -514,7 +552,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final schedule = Schedule.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheSchedule(schedule);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -524,7 +564,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final scheduleActivity = ScheduleActivity.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheScheduleActivity(scheduleActivity);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -534,7 +576,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final worker = Worker.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheWorker(worker);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 
@@ -544,7 +588,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (bodyJson == null) return null;
       final question = CompanyQuestion.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheCompanyQuestion(question);
-    } catch (e) {}
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
     return null;
   }
 

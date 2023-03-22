@@ -1,3 +1,4 @@
+import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,18 +7,13 @@ import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
-import 'package:cmo/ui/screen/assessments/new_assessment_screen.dart';
-import 'package:cmo/ui/screen/assessments/widgets/widgets.dart';
-import 'package:cmo/ui/theme/app_theme.dart';
-import 'package:cmo/ui/widget/cmo_app_bar.dart';
-import 'package:cmo/ui/widget/cmo_buttons.dart';
 
-class AssessmentsScreen extends StatelessWidget {
-  const AssessmentsScreen({super.key});
+class AssessmentScreen extends StatelessWidget {
+  const AssessmentScreen({super.key});
 
   static void push(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const AssessmentsScreen()),
+      MaterialPageRoute(builder: (_) => const AssessmentScreen()),
     );
   }
 
@@ -29,7 +25,7 @@ class AssessmentsScreen extends StatelessWidget {
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => NewAssessmentScreen.push(context),
+        onTapTrailing: () => AssessmentAddScreen.push(context),
       ),
       body: Column(
         children: [
@@ -89,9 +85,9 @@ class AssessmentsScreen extends StatelessWidget {
                 return state.indexTab;
               },
               builder: (context, indexTab) {
-                if (indexTab == 0) return const ListStarted();
-                if (indexTab == 1) return const ListCompleted();
-                if (indexTab == 2) return const ListSynced();
+                if (indexTab == 0) return const AssessmentListStarted();
+                if (indexTab == 1) return const AssessmentListCompleted();
+                if (indexTab == 2) return const AssessmentListSynced();
 
                 return const SizedBox();
               },

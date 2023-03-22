@@ -11,13 +11,13 @@ import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
-import 'package:cmo/ui/screen/assessments/new_assessment_screen.dart';
-import 'package:cmo/ui/screen/auth/login_screen.dart';
-import 'package:cmo/ui/screen/create_worker/create_worker_screen.dart';
+import 'package:cmo/ui/screen/assessment/assessment_add_screen.dart';
 import 'package:cmo/ui/screen/entity/utils.dart';
 import 'package:cmo/ui/screen/legal/legal_screen.dart';
+import 'package:cmo/ui/screen/login/login_screen.dart';
 import 'package:cmo/ui/screen/settings/settings_screen.dart';
 import 'package:cmo/ui/screen/support/support_screen.dart';
+import 'package:cmo/ui/screen/worker_add/worker_add_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 
@@ -66,7 +66,7 @@ class DashboardDrawer extends StatelessWidget {
                   (p0) => [
                     buildHeader(context, title: LocaleKeys.assessments.tr()),
                     CmoTappable(
-                      onTap: () => NewAssessmentScreen.push(context),
+                      onTap: () => AssessmentAddScreen.push(context),
                       child: buildOption(
                         context,
                         title: LocaleKeys.createNew.tr(),
@@ -76,7 +76,7 @@ class DashboardDrawer extends StatelessWidget {
                     const _Divider(),
                     buildHeader(context, title: LocaleKeys.workers.tr()),
                     CmoTappable(
-                      onTap: () => CreateWorkerScreen.push(context),
+                      onTap: () => WorkerAddScreen.push(context),
                       child: buildOption(
                         context,
                         title: LocaleKeys.createNew.tr(),

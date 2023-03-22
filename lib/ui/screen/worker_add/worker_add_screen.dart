@@ -21,20 +21,20 @@ import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:cmo/utils/helpers.dart';
 import 'package:cmo/utils/validator.dart';
 
-class CreateWorkerScreen extends StatefulWidget {
-  const CreateWorkerScreen({super.key});
+class WorkerAddScreen extends StatefulWidget {
+  const WorkerAddScreen({super.key});
 
   static void push(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const CreateWorkerScreen()),
+      MaterialPageRoute(builder: (_) => const WorkerAddScreen()),
     );
   }
 
   @override
-  State<CreateWorkerScreen> createState() => _CreateWorkerScreenState();
+  State<WorkerAddScreen> createState() => _WorkerAddScreenState();
 }
 
-class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
+class _WorkerAddScreenState extends State<WorkerAddScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;

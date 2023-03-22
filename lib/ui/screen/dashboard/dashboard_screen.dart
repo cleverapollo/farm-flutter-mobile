@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
-import 'package:cmo/ui/screen/assessments/assessments_screen.dart';
-import 'package:cmo/ui/screen/create_worker/create_worker_screen.dart';
+import 'package:cmo/ui/screen/assessment/assessment_screen.dart';
 import 'package:cmo/ui/screen/dashboard/dashboard_drawer.dart';
 import 'package:cmo/ui/screen/sync_summary/sync_summary_screen.dart';
+import 'package:cmo/ui/screen/worker_add/worker_add_screen.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_card.dart';
@@ -69,7 +69,7 @@ class _Behave extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       children: [
         CmoTappable(
-          onTap: () => AssessmentsScreen.push(context),
+          onTap: () => AssessmentScreen.push(context),
           child: CmoCard(
             content: [
               CmoCardHeader(title: LocaleKeys.assessments.tr()),
@@ -80,7 +80,7 @@ class _Behave extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         CmoTappable(
-          onTap: () => CreateWorkerScreen.push(context),
+          onTap: () => WorkerAddScreen.push(context),
           child: CmoCard(
             content: [
               CmoCardHeader(title: LocaleKeys.createWorker.tr()),

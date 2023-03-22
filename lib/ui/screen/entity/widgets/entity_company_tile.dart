@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 
-class CompanyTile extends StatelessWidget {
-  const CompanyTile({
+class EntityCompanyTile extends StatelessWidget {
+  const EntityCompanyTile({
     super.key,
     required this.title,
     this.selected = false,

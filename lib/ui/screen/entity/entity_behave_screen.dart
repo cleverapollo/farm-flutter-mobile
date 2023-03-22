@@ -12,30 +12,30 @@ import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
-import 'package:cmo/ui/screen/entity/widgets/company_tile.dart';
+import 'package:cmo/ui/screen/entity/widgets/entity_company_tile.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_text_field.dart';
 
-class BehaveEntityScreen extends StatefulWidget {
-  const BehaveEntityScreen({
+class EntityBehaveScreen extends StatefulWidget {
+  const EntityBehaveScreen({
     super.key,
   });
 
   static dynamic push(BuildContext context) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const BehaveEntityScreen(),
+        builder: (_) => const EntityBehaveScreen(),
       ),
     );
   }
 
   @override
-  State<BehaveEntityScreen> createState() => _BehaveEntityScreenState();
+  State<EntityBehaveScreen> createState() => _EntityBehaveScreenState();
 }
 
-class _BehaveEntityScreenState extends State<BehaveEntityScreen> {
+class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
   bool isReady = false;
   bool loading = false;
 
@@ -173,7 +173,7 @@ class _BehaveEntityScreenState extends State<BehaveEntityScreen> {
         final e = companies[index];
         return CmoTappable(
           onTap: () => onTapTile(e),
-          child: CompanyTile(
+          child: EntityCompanyTile(
             title: e.companyName ?? e.companyId.toString(),
             selected: isSelected(e),
           ),

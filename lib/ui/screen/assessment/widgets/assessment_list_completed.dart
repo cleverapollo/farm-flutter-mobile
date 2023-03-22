@@ -4,23 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
-import 'package:cmo/ui/screen/assessments/widgets/assessment_tile.dart';
+import 'package:cmo/ui/screen/assessment/widgets/assessment_tile.dart';
 import 'package:cmo/ui/theme/theme.dart';
 
-class ListStarted extends StatefulWidget {
-  const ListStarted({super.key});
+class AssessmentListCompleted extends StatefulWidget {
+  const AssessmentListCompleted({super.key});
 
   @override
-  State<ListStarted> createState() => _ListStartedState();
+  State<AssessmentListCompleted> createState() => _AssessmentListCompletedState();
 }
 
-class _ListStartedState extends State<ListStarted> {
+class _AssessmentListCompletedState extends State<AssessmentListCompleted> {
   @override
   void initState() {
     super.initState();
 
     Future.microtask(() {
-      context.read<AssessmentListCubit>().loadStarted();
+      context.read<AssessmentListCubit>().loadCompleted();
     });
   }
 
@@ -32,7 +32,7 @@ class _ListStartedState extends State<ListStarted> {
         return state;
       },
       builder: (context, state) {
-        if (state.loadingStarted) {
+        if (state.loadingCompleted) {
           return Center(
             child: CircularProgressIndicator(
               strokeWidth: 2,
@@ -51,13 +51,13 @@ class _ListStartedState extends State<ListStarted> {
 
         return RefreshIndicator(
           onRefresh: () {
-            return context.read<AssessmentListCubit>().loadStarted();
+            return context.read<AssessmentListCubit>().loadCompleted();
           },
           child: ListView.builder(
-            itemCount: state.dataStarted.length,
+            itemCount: state.dataCompleted.length,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (BuildContext context, int index) {
-              final item = state.dataStarted[index];
+              final item = state.dataCompleted[index];
               return AssessmentTile(data: item);
             },
           ),

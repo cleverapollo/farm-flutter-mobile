@@ -14,7 +14,7 @@ import 'package:cmo/state/assessment_cubit/assessment_cubit.dart';
 import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
-import 'package:cmo/ui/screen/assessments/choose_location_screen.dart';
+import 'package:cmo/ui/screen/assessment/assessment_location_screen.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
@@ -23,20 +23,20 @@ import 'package:cmo/ui/widget/cmo_option_tile.dart';
 import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:cmo/utils/utils.dart';
 
-class NewAssessmentScreen extends StatefulWidget {
-  const NewAssessmentScreen({super.key});
+class AssessmentAddScreen extends StatefulWidget {
+  const AssessmentAddScreen({super.key});
 
   static void push(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const NewAssessmentScreen()),
+      MaterialPageRoute(builder: (_) => const AssessmentAddScreen()),
     );
   }
 
   @override
-  State<NewAssessmentScreen> createState() => _NewAssessmentScreenState();
+  State<AssessmentAddScreen> createState() => _AssessmentAddScreenState();
 }
 
-class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
+class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
@@ -417,11 +417,11 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
         const SizedBox(height: 12),
         CmoTappable(
           onTap: () async {
-            final data =
-                await ChooseLocationScreen.push<ChooseLocationScreenResult>(
+            final data = await AssessmentLocationScreen.push<
+                AssessmentLocationScreenResult>(
               context,
             );
-            if (data is ChooseLocationScreenResult) {
+            if (data is AssessmentLocationScreenResult) {
               final newData = {..._formKey.currentState!.value};
               newData['Location'] = data.address;
               newData['Lat'] = data.latLong.latitude;

@@ -8,8 +8,8 @@ import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
-import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
+import 'package:cmo/ui/screen/login/login_screen.dart';
 import 'package:cmo/ui/screen/screen_base.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
 
