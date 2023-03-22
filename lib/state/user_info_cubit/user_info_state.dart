@@ -15,6 +15,12 @@ class UserInfoState extends Union3Impl<UserInfoLoadingState, UserInfoDataState,
 
   static const unions =
       Triplet<UserInfoLoadingState, UserInfoDataState, UserInfoErrorState>();
+
+  UserInfo? get userInfo => join(
+        (p0) => null,
+        (p0) => p0.userInfo,
+        (p0) => null,
+      );
 }
 
 class UserInfoLoadingState extends Equatable {

@@ -66,11 +66,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       var value = _formKey.currentState?.value;
       final companyId = context.read<EntityCubit>().state.company?.id;
-      final userId = context.read<UserInfoCubit>().state.join(
-            (p0) => null,
-            (p0) => p0.userInfo?.userId,
-            (p0) => null,
-          );
+      final userId = context.read<UserInfoCubit>().data?.userId;
 
       if (companyId == null) return;
       if (userId == null) return;

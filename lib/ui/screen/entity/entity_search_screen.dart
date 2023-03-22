@@ -61,11 +61,7 @@ class _EntitySearchScreenState extends State<EntitySearchScreen> {
       entityCubit
           .getCompanies(
         context: context,
-        userId: context.read<UserInfoCubit>().state.join(
-              (p0) => null,
-              (p0) => p0.userInfo?.userId,
-              (p0) => null,
-            ),
+        userId: context.read<UserInfoCubit>().data?.userId,
       )
           .then((_) {
         companies = entityCubit.state.companies;

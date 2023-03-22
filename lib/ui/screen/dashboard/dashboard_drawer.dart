@@ -12,12 +12,12 @@ import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/assessment/assessment_add_screen.dart';
+import 'package:cmo/ui/screen/login/login_screen.dart';
+import 'package:cmo/ui/screen/worker_add/worker_add_screen.dart';
 import 'package:cmo/ui/screen/entity/utils.dart';
 import 'package:cmo/ui/screen/legal/legal_screen.dart';
-import 'package:cmo/ui/screen/login/login_screen.dart';
 import 'package:cmo/ui/screen/settings/settings_screen.dart';
 import 'package:cmo/ui/screen/support/support_screen.dart';
-import 'package:cmo/ui/screen/worker_add/worker_add_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 
@@ -246,11 +246,7 @@ class DashboardDrawer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   BlocSelector<UserInfoCubit, UserInfoState, String?>(
-                    selector: (state) => state.join(
-                      (p0) => null,
-                      (p0) => p0.userInfo?.fullName,
-                      (p0) => null,
-                    ),
+                    selector: (state) => state.userInfo?.fullName,
                     builder: (context, state) {
                       if (state == null) return const SizedBox();
                       return Text(
@@ -261,11 +257,7 @@ class DashboardDrawer extends StatelessWidget {
                     },
                   ),
                   BlocSelector<UserInfoCubit, UserInfoState, String?>(
-                    selector: (state) => state.join(
-                      (p0) => null,
-                      (p0) => p0.userInfo?.userEmail,
-                      (p0) => null,
-                    ),
+                    selector: (state) => state.userInfo?.userEmail,
                     builder: (context, state) {
                       if (state == null) return const SizedBox();
 
