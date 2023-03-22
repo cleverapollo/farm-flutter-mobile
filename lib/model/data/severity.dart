@@ -7,10 +7,6 @@ part 'severity.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Severity with _$Severity {
-    const Severity._();
-
-  @override
-  Id get id => severityId;
 
   const factory Severity({
     @JsonKey(name: 'SeverityId') required int  severityId,
@@ -18,4 +14,8 @@ class Severity with _$Severity {
   }) = _Severity;
 
   factory Severity.fromJson(Map<String, dynamic> json) => _$SeverityFromJson(json);
+    const Severity._();
+
+  @override
+  Id get id => severityId;
 }

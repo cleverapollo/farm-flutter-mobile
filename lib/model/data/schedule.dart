@@ -7,10 +7,6 @@ part 'schedule.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Schedule with _$Schedule {
-  const Schedule._();
-
-  @override
-  Id get id => Isar.autoIncrement;
 
   const factory Schedule({
     @JsonKey(name: 'ScheduleId') required String scheduleId,
@@ -43,4 +39,8 @@ class Schedule with _$Schedule {
 
   factory Schedule.fromJson(Map<String, dynamic> json) =>
       _$ScheduleFromJson(json);
+  const Schedule._();
+
+  @override
+  Id get id => Isar.autoIncrement;
 }

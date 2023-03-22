@@ -7,10 +7,6 @@ part 'impact_caused.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class ImpactCaused with _$ImpactCaused {
-  const ImpactCaused._();
-
-  @override
-  Id get id => impactCausedId;
 
   const factory ImpactCaused({
     @JsonKey(name: 'ImpactCausedId') required int impactCausedId,
@@ -20,4 +16,8 @@ class ImpactCaused with _$ImpactCaused {
 
   factory ImpactCaused.fromJson(Map<String, dynamic> json) =>
       _$ImpactCausedFromJson(json);
+  const ImpactCaused._();
+
+  @override
+  Id get id => impactCausedId;
 }

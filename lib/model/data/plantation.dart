@@ -7,10 +7,6 @@ part 'plantation.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Plantation with _$Plantation {
-    const Plantation._();
-
-  @override
-  Id get id => plantationId;
 
   const factory Plantation({
     @JsonKey(name: 'PlantationId') required int  plantationId,
@@ -20,4 +16,8 @@ class Plantation with _$Plantation {
   }) = _Plantation;
 
   factory Plantation.fromJson(Map<String, dynamic> json) => _$PlantationFromJson(json);
+    const Plantation._();
+
+  @override
+  Id get id => plantationId;
 }

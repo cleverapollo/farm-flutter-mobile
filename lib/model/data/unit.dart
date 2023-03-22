@@ -7,10 +7,6 @@ part 'unit.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Unit with _$Unit {
-    const Unit._();
-
-  @override
-  Id get id => unitId;
 
   const factory Unit({
     @JsonKey(name: 'UnitId') required int  unitId,
@@ -19,4 +15,8 @@ class Unit with _$Unit {
   }) = _Unit;
 
   factory Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
+    const Unit._();
+
+  @override
+  Id get id => unitId;
 }

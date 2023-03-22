@@ -7,10 +7,6 @@ part 'training_provider.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class TrainingProvider with _$TrainingProvider {
-    const TrainingProvider._();
-
-  @override
-  Id get id => trainingProviderId;
 
   const factory TrainingProvider({
     @JsonKey(name: 'TrainingProviderId') required int  trainingProviderId,
@@ -19,4 +15,8 @@ class TrainingProvider with _$TrainingProvider {
   }) = _TrainingProvider;
 
   factory TrainingProvider.fromJson(Map<String, dynamic> json) => _$TrainingProviderFromJson(json);
+    const TrainingProvider._();
+
+  @override
+  Id get id => trainingProviderId;
 }

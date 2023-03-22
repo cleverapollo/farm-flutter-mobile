@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:cmo/di.dart';
 import 'package:cmo/model/assessment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:isar/isar.dart';

@@ -7,10 +7,6 @@ part 'reject_reason.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class RejectReason with _$RejectReason {
-    const RejectReason._();
-
-  @override
-  Id get id => rejectReasonId;
 
   const factory RejectReason({
     @JsonKey(name: 'RejectReasonId') required int  rejectReasonId,
@@ -19,4 +15,8 @@ class RejectReason with _$RejectReason {
   }) = _RejectReason;
 
   factory RejectReason.fromJson(Map<String, dynamic> json) => _$RejectReasonFromJson(json);
+    const RejectReason._();
+
+  @override
+  Id get id => rejectReasonId;
 }

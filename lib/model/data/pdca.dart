@@ -7,10 +7,6 @@ part 'pdca.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Pdca with _$Pdca {
-    const Pdca._();
-
-  @override
-  Id get id => pdcaId;
 
   const factory Pdca({
     @JsonKey(name: 'PDCAId') required int  pdcaId,
@@ -19,4 +15,8 @@ class Pdca with _$Pdca {
   }) = _Pdca;
 
   factory Pdca.fromJson(Map<String, dynamic> json) => _$PdcaFromJson(json);
+    const Pdca._();
+
+  @override
+  Id get id => pdcaId;
 }

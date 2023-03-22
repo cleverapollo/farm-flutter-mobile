@@ -7,10 +7,6 @@ part 'job_element.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class JobElement with _$JobElement {
-    const JobElement._();
-
-  @override
-  Id get id => jobElementId;
 
   const factory JobElement({
     @JsonKey(name: 'JobElementId') required int jobElementId,
@@ -19,4 +15,8 @@ class JobElement with _$JobElement {
   }) = _JobElement;
 
   factory JobElement.fromJson(Map<String, dynamic> json) => _$JobElementFromJson(json);
+    const JobElement._();
+
+  @override
+  Id get id => jobElementId;
 }

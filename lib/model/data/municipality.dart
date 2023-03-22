@@ -7,10 +7,6 @@ part 'municipality.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Municipality with _$Municipality {
-  const Municipality._();
-
-  @override
-  Id get id => municipalityId;
 
   const factory Municipality({
     @JsonKey(name: 'MunicipalityId') required int municipalityId,
@@ -20,4 +16,8 @@ class Municipality with _$Municipality {
 
   factory Municipality.fromJson(Map<String, dynamic> json) =>
       _$MunicipalityFromJson(json);
+  const Municipality._();
+
+  @override
+  Id get id => municipalityId;
 }

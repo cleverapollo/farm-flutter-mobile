@@ -7,10 +7,6 @@ part 'job_category.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class JobCategory with _$JobCategory {
-    const JobCategory._();
-
-  @override
-  Id get id => jobCategoryId;
 
   const factory JobCategory({
     @JsonKey(name: 'JobCategoryId') required int jobCategoryId,
@@ -20,4 +16,8 @@ class JobCategory with _$JobCategory {
   }) = _JobCategory;
 
   factory JobCategory.fromJson(Map<String, dynamic> json) => _$JobCategoryFromJson(json);
+    const JobCategory._();
+
+  @override
+  Id get id => jobCategoryId;
 }

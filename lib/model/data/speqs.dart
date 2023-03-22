@@ -7,10 +7,6 @@ part 'speqs.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Speqs with _$Speqs {
-    const Speqs._();
-
-  @override
-  Id get id => speqsId;
 
   const factory Speqs({
     @JsonKey(name: 'SPEQSId') required int  speqsId,
@@ -19,4 +15,8 @@ class Speqs with _$Speqs {
   }) = _Speqs;
 
   factory Speqs.fromJson(Map<String, dynamic> json) => _$SpeqsFromJson(json);
+    const Speqs._();
+
+  @override
+  Id get id => speqsId;
 }

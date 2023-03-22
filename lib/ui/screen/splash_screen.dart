@@ -32,43 +32,6 @@ class _SplashScreenState extends State<SplashScreen> {
         final haveInternet = (await Connectivity().checkConnectivity()) !=
             ConnectivityResult.none;
 
-        // final db = CmoDatabaseCompanyService(companyId: 15);
-        // await (await db.db)?.writeTxn(() async {
-        //   await db.cachePlantation(Plantation(plantationId: 3));
-        // });
-        // final q = await db.getPlantations();
-
-        // await (await cmoDatabaseService.db).writeTxn(() async {
-        //   await cmoDatabaseService.cacheAssessment(
-        //     const Assessment(
-        //       assessmentId: 4,
-        //       status: 1,
-        //       isActive: true,
-        //       createDT: '',
-        //       updateDT: '',
-        //     ),
-        //   );
-        //   await cmoDatabaseService.cacheAssessment(
-        //     const Assessment(
-        //       assessmentId: 2,
-        //       status: 2,
-        //       isActive: true,
-        //       createDT: '',
-        //       updateDT: '',
-        //     ),
-        //   );
-        //   await cmoDatabaseService.cacheAssessment(
-        //     const Assessment(
-        //       assessmentId: 3,
-        //       status: 3,
-        //       isActive: true,
-        //       createDT: '',
-        //       updateDT: '',
-        //     ),
-        //   );
-        // });
-        // final q2 = await cmoDatabaseService.getAllCachedAssessments();
-
         authState.continued(
           (authorized) async {
             if (context.mounted && haveInternet && userInfoData == null) {

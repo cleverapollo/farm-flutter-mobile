@@ -7,10 +7,6 @@ part 'schedule_activity.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class ScheduleActivity with _$ScheduleActivity {
-    const ScheduleActivity._();
-
-  @override
-  Id get id => scheduleActivityId;
 
   const factory ScheduleActivity({
     @JsonKey(name: 'ScheduleActivityId') required int  scheduleActivityId,
@@ -19,4 +15,8 @@ class ScheduleActivity with _$ScheduleActivity {
   }) = _ScheduleActivity;
 
   factory ScheduleActivity.fromJson(Map<String, dynamic> json) => _$ScheduleActivityFromJson(json);
+    const ScheduleActivity._();
+
+  @override
+  Id get id => scheduleActivityId;
 }

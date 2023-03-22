@@ -7,11 +7,6 @@ part 'compliance.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Compliance with _$Compliance {
-  const Compliance._();
-
-  @override
-  
-  Id get id => complianceId;
 
   const factory Compliance({
     @JsonKey(name: 'ComplianceId') required int complianceId,
@@ -24,4 +19,9 @@ class Compliance with _$Compliance {
 
   factory Compliance.fromJson(Map<String, dynamic> json) =>
       _$ComplianceFromJson(json);
+  const Compliance._();
+
+  @override
+  
+  Id get id => complianceId;
 }

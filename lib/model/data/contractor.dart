@@ -7,10 +7,6 @@ part 'contractor.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Contractor with _$Contractor {
-  const Contractor._();
-
-  @override
-  Id get id => contractorId;
 
   const factory Contractor({
     @JsonKey(name: 'ContractorId') required int contractorId,
@@ -23,4 +19,8 @@ class Contractor with _$Contractor {
 
   factory Contractor.fromJson(Map<String, dynamic> json) =>
       _$ContractorFromJson(json);
+  const Contractor._();
+
+  @override
+  Id get id => contractorId;
 }
