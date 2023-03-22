@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final assessment = assessmentFromJson(jsonString);
-
 // ignore_for_file: invalid_annotation_target, override_on_non_overriding_member, sort_unnamed_constructors_first, sort_constructors_first
 
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -34,7 +30,6 @@ class Assessment with _$Assessment {
     @JsonKey(name: 'AssessmentId') required int? assessmentId,
     @JsonKey(name: 'CompanyId') int? companyId,
     @JsonKey(name: 'UserId') int? userId,
-//
     @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
     @JsonKey(name: 'JobDescriptionId') int? jobDescriptionId,
     @JsonKey(name: 'PlantationId') int? plantationId,
@@ -44,15 +39,12 @@ class Assessment with _$Assessment {
     @JsonKey(name: 'Lat') double? lat,
     @JsonKey(name: 'Long') double? long,
     @JsonKey(name: 'Location') String? location,
-//
-// * only use for show UI
     @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
     @JsonKey(name: 'JobDescriptionName') String? jobDescriptionName,
     @JsonKey(name: 'PlantationName') String? plantationName,
     @JsonKey(name: 'ContractorName') String? contractorName,
     @JsonKey(name: 'TeamName') String? teamName,
     @JsonKey(name: 'WorkerName') String? workerName,
-// *
     @JsonKey(name: 'Status') int? status,
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'CreateDT') String? createDT,

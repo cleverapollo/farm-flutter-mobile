@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/entity.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
@@ -8,25 +12,23 @@ import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_header_tile.dart';
 import 'package:cmo/ui/widget/cmo_option_tile.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EntityScreen extends StatefulWidget {
-  const EntityScreen({super.key});
+class FarmerEntityScreen extends StatefulWidget {
+  const FarmerEntityScreen({super.key});
 
   static void push(BuildContext context) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => const EntityScreen(),
+        builder: (_) => const FarmerEntityScreen(),
       ),
     );
   }
 
   @override
-  State<EntityScreen> createState() => _EntityScreenState();
+  State<FarmerEntityScreen> createState() => FfarmerEntityScreenState();
 }
 
-class _EntityScreenState extends State<EntityScreen> {
+class FfarmerEntityScreenState extends State<FarmerEntityScreen> {
   Entity? selected;
 
   Future<void> toEntitySearchScreen(EntityType type) async {

@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/assessment.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_option_tile.dart';
-import 'package:flutter/material.dart';
 
 class AssessmentTile extends StatelessWidget {
   const AssessmentTile({

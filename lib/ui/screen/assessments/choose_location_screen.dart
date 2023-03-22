@@ -1,5 +1,10 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-// ignore_for_file: use_setters_to_change_properties
+// ignore_for_file: public_member_api_docs, sort_constructors_first, use_setters_to_change_properties
+
+import 'package:flutter/material.dart';
+
+import 'package:equatable/equatable.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -8,10 +13,6 @@ import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/debouncer.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ChooseLocationScreenResult extends Equatable {
   final LatLng latLong;
@@ -105,8 +106,6 @@ class _ChooseLocationScreenState extends State<ChooseLocationScreen> {
             }
           }
         });
-      } catch (e, s) {
-        debugPrint('$e $s');
       } finally {
         setState(() {
           _loading = false;

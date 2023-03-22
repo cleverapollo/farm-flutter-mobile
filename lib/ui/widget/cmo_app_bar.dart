@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
-import 'package:flutter/material.dart';
 
 const _h1 = 45.0;
 const _h2 = 60.0;

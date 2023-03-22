@@ -1,3 +1,9 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:isar/isar.dart';
+
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
@@ -7,10 +13,6 @@ import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_header_tile.dart';
 import 'package:cmo/utils/json_converter.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:isar/isar.dart';
 
 class SyncSummaryScreen extends StatelessWidget {
   const SyncSummaryScreen({super.key});
@@ -46,7 +48,6 @@ class SyncSummaryScreen extends StatelessWidget {
                   );
                 }
                 if (!snapshot.hasData) return const Text('loading db...');
-                // print store content
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,5 +1,11 @@
 // ignore_for_file: inference_failure_on_function_invocation, inference_failure_on_instance_creation
 
+import 'package:flutter/material.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -15,11 +21,7 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_dropdown.dart';
 import 'package:cmo/ui/widget/cmo_option_tile.dart';
 import 'package:cmo/ui/widget/cmo_text_field.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cmo/utils/utils.dart';
 
 class NewAssessmentScreen extends StatefulWidget {
   const NewAssessmentScreen({super.key});
@@ -83,10 +85,6 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
       value['Status'] = 1;
       value['IsActive'] = true;
 
-      // value['Lat'] = lat.toString();
-      // value['Lng'] = lng.toString();
-      // value['Location'] = location.toString();
-
       final jobCategoryId =
           int.tryParse(value['JobCategoryId']?.toString() ?? '');
       final jobDescriptionId =
@@ -117,7 +115,6 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
       value['WorkerName'] =
           '${worker?.firstName} ${worker?.surname} (${worker?.idNumber})';
 
-      debugPrint('onSubmit data: $value');
       if (context.mounted) {
         final success = await context
             .read<AssessmentCubit>()
@@ -130,6 +127,27 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
     }
 
     await refesh();
+  }
+
+  void onChanged() {
+    _formKey.currentState!.save();
+
+    final newContractorId = int.tryParse(
+      _formKey.currentState!.value['ContractorId']?.toString() ?? '',
+    );
+    final oldContractorId =
+        context.read<AssessmentCubit>().state.cacheContractorId;
+
+    context
+        .read<AssessmentCubit>()
+        .updateCacheCreateData(_formKey.currentState!.value);
+
+    if (oldContractorId != newContractorId) {
+      final data = {..._formKey.currentState!.value};
+      data['TeamId'] = null;
+      data['WorkerId'] = null;
+      _formKey.currentState!.patchValue(data);
+    }
   }
 
   @override
@@ -151,28 +169,7 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
             initialValue:
                 context.read<AssessmentCubit>().state.cacheCreateData ??
                     <String, dynamic>{},
-            onChanged: () {
-              _formKey.currentState!.save();
-              debugPrint(_formKey.currentState!.value.toString());
-
-              final newContractorId = int.tryParse(
-                _formKey.currentState!.value['ContractorId']?.toString() ?? '',
-              );
-              final oldContractorId =
-                  context.read<AssessmentCubit>().state.cacheContractorId;
-
-              context
-                  .read<AssessmentCubit>()
-                  .updateCacheCreateData(_formKey.currentState!.value);
-
-              if (oldContractorId != newContractorId) {
-                // * remove team & worker & reload workers, teams
-                final data = {..._formKey.currentState!.value};
-                data['TeamId'] = null;
-                data['WorkerId'] = null;
-                _formKey.currentState!.patchValue(data);
-              }
-            },
+            onChanged: onChanged,
             autovalidateMode: autoValidateMode,
             child: AutofillGroup(
               child: Padding(
@@ -238,9 +235,7 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
             if (snapshot.hasData) {
               return CmoDropdown(
                 name: 'JobCategoryId',
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
+                validator: requiredValidator,
                 hintText: LocaleKeys.jobType.tr(),
                 itemsData: snapshot.data
                     ?.map(
@@ -269,9 +264,7 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
             if (snapshot.hasData) {
               return CmoDropdown(
                 name: 'JobDescriptionId',
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
+                validator: requiredValidator,
                 hintText: LocaleKeys.jobDescription.tr(),
                 itemsData: snapshot.data
                     ?.map(
@@ -300,9 +293,7 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
             if (snapshot.hasData) {
               return CmoDropdown(
                 name: 'PlantationId',
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
+                validator: requiredValidator,
                 hintText: LocaleKeys.plantation.tr(),
                 itemsData: snapshot.data
                     ?.map(
@@ -331,9 +322,7 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
             if (snapshot.hasData) {
               return CmoDropdown(
                 name: 'ContractorId',
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
+                validator: requiredValidator,
                 hintText: LocaleKeys.contractor.tr(),
                 itemsData: snapshot.data
                     ?.map(
@@ -368,9 +357,7 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
                 if (snapshot.hasData) {
                   return CmoDropdown(
                     name: 'TeamId',
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                    ]),
+                    validator: requiredValidator,
                     enabled: contractorId != null,
                     hintText: LocaleKeys.team.tr(),
                     itemsData: snapshot.data
@@ -410,9 +397,7 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
               if (snapshot.hasData) {
                 return CmoDropdown(
                   name: 'WorkerId',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                  ]),
+                  validator: requiredValidator,
                   hintText: LocaleKeys.worker.tr(),
                   enabled: contractorId != null,
                   itemsData: snapshot.data
@@ -437,8 +422,6 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
               context,
             );
             if (data is ChooseLocationScreenResult) {
-              debugPrint(data.toString());
-
               final newData = {..._formKey.currentState!.value};
               newData['Location'] = data.address;
               newData['Lat'] = data.latLong.latitude;
@@ -467,9 +450,7 @@ class _NewAssessmentScreenState extends State<NewAssessmentScreen> {
         CmoTextField(
           name: 'Location',
           enabled: false,
-          validator: FormBuilderValidators.compose([
-            FormBuilderValidators.required(),
-          ]),
+          validator: requiredValidator,
           hintText: LocaleKeys.siteLocation.tr(),
         ),
       ],

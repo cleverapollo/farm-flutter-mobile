@@ -1,60 +1,43 @@
-import 'package:cmo/di.dart';
-import 'package:cmo/gen/assets.gen.dart';
-import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/state/assessment_cubit/assessment_cubit.dart';
-import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
-import 'package:cmo/state/auth_cubit/auth_cubit.dart';
-import 'package:cmo/state/entity_cubit/entity_cubit.dart';
-import 'package:cmo/state/settings_cubit.dart';
-import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
-import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
-import 'package:cmo/ui/screen/splash_screen.dart';
-import 'package:cmo/ui/theme/theme.dart';
-import 'package:cmo/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:cmo/di.dart';
+import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/ui.dart';
+import 'package:cmo/utils/utils.dart';
+
 late FlutterSecureStorage secureStorage;
-final GlobalKey<ScaffoldMessengerState> snackbarKey =
-    GlobalKey<ScaffoldMessengerState>();
+final snackbarKey = GlobalKey<ScaffoldMessengerState>();
 
 Future<void> main() async {
-  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(AppTheme.uiOverlayStyle);
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await hideInputMethod();
+
+  EasyLocalization.logger.enableLevels = [];
+  await EasyLocalization.ensureInitialized();
 
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getTemporaryDirectory(),
   );
 
-  AndroidOptions getAndroidOptions() => const AndroidOptions(
-        encryptedSharedPreferences: true,
-      );
-
+  AndroidOptions getAndroidOptions() =>
+      const AndroidOptions(encryptedSharedPreferences: true);
   secureStorage = FlutterSecureStorage(aOptions: getAndroidOptions());
 
   await registerGetIt();
-
-  EasyLocalization.logger.enableLevels = [];
-  await EasyLocalization.ensureInitialized();
-
-  await hideInputMethod();
   await deviceInfoService.init();
   await cmoDatabaseService.db;
 
   Bloc.observer = CmoGlobalObserver();
-
-  try {
-    final context = widgetsBinding.renderViewElement;
-    if (context != null) {
-      await precacheImage(Assets.images.logo.provider(), context);
-    }
-  } finally {}
 
   runApp(
     EasyLocalization(

@@ -1,8 +1,10 @@
-import 'package:cmo/gen/assets.gen.dart';
-import 'package:cmo/gen/fonts.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_svg/svg.dart' hide svg;
+
+import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/gen/fonts.gen.dart';
 
 abstract class _AppColor {
   static const white = Color(0xFFFFFFFF);

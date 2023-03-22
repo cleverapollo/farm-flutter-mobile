@@ -1,12 +1,10 @@
-// 🎯 Dart imports:
 import 'dart:async';
 
-// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 
 class Debouncer {
   Debouncer({
-    this.milliseconds = 275, // "golden ratio" for typing
+    this.milliseconds = 275, // * "golden ratio" for typing
   });
   final int milliseconds;
   VoidCallback? action;

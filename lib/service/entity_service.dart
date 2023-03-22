@@ -1,6 +1,8 @@
+import 'package:cmo/utils/utils.dart';
+
 class EntityService {
   Future<List<String>> getNames() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await delay(1000);
     return const [
       'CMO',
       'GAW Gabon',

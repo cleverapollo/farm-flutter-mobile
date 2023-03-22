@@ -1,9 +1,8 @@
-// To parse this JSON data, do
-//
-//     final userInfo = userInfoFromJson(jsonString);
+// ignore_for_file: invalid_annotation_target, override_on_non_overriding_member
+
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:cmo/extensions/string.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'user_info.freezed.dart';
 part 'user_info.g.dart';
@@ -26,7 +25,8 @@ class UserInfo with _$UserInfo {
     @JsonKey(name: 'Roles') List<String>? roles,
   }) = _UserInfo;
 
-  factory UserInfo.fromJson(Map<String, dynamic> json) => _$UserInfoFromJson(json);
+  factory UserInfo.fromJson(Map<String, dynamic> json) =>
+      _$UserInfoFromJson(json);
 }
 
 extension UserInfoX on UserInfo {

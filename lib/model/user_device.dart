@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_annotation_target, override_on_non_overriding_member
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'user_device.freezed.dart';

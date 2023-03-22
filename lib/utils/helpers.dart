@@ -1,38 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CmoGlobalObserver extends BlocObserver {
-  @override
-  void onEvent(Bloc<dynamic, dynamic> bloc, Object? event) {
-    super.onEvent(bloc, event);
-    debugPrint('${bloc.runtimeType} Event: ${event.toString()}');
-  }
+import 'package:cmo/utils/logger.dart';
 
-  @override
-  void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
-    super.onChange(bloc, change);
-    debugPrint(
-      '${bloc.runtimeType} Change: currentState: ${change.currentState} nextState: ${change.nextState}',
-    );
-  }
-
-  @override
-  void onTransition(
-    Bloc<dynamic, dynamic> bloc,
-    Transition<dynamic, dynamic> transition,
-  ) {
-    super.onTransition(bloc, transition);
-    debugPrint(
-      '${bloc.runtimeType} Transition: currentState: ${transition.currentState} nextState: ${transition.nextState}',
-    );
-  }
-
-  @override
-  void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
-    debugPrint('${bloc.runtimeType} Error: $error $stackTrace');
-    super.onError(bloc, error, stackTrace);
-  }
+Future<void> delay(int milliseconds) async {
+  await Future<void>.delayed(Duration(milliseconds: milliseconds));
 }
 
 final bool isDebug = () {
@@ -60,7 +32,7 @@ Future<void> showInputMethod() async {
       ],
     );
   } catch (e, s) {
-    debugPrint('$e $s');
+    logger.d('$e $s');
   }
   return SystemChannels.textInput.invokeMethod('TextInput.show');
 }

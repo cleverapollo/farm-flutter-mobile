@@ -1,12 +1,9 @@
-// To parse this JSON data, do
-//
-//     final company = companyFromJson(jsonString);
-
 // ignore_for_file: invalid_annotation_target, override_on_non_overriding_member, sort_unnamed_constructors_first, sort_constructors_first
 
-import 'package:cmo/model/entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
+
+import 'package:cmo/model/entity.dart';
 
 part 'company.freezed.dart';
 part 'company.g.dart';

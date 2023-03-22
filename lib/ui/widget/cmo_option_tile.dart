@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/theme/theme.dart';
-import 'package:flutter/material.dart';
 
 class CmoOptionTile extends StatelessWidget {
   const CmoOptionTile({

@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
@@ -7,9 +12,6 @@ import 'package:cmo/ui/screen/auth/login_screen.dart';
 import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/screen/screen_base.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -25,8 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.microtask(
       () async {
         final authState = context.read<AuthCubit>().state;
-        final userInfoData = context.read<UserInfoCubit>().data;
-        final userDeviceData = context.read<UserDeviceCubit>().data;
+
         await context.read<EntityCubit>().init();
 
         final haveInternet = (await Connectivity().checkConnectivity()) !=
@@ -34,31 +35,18 @@ class _SplashScreenState extends State<SplashScreen> {
 
         authState.continued(
           (authorized) async {
-            if (context.mounted && haveInternet && userInfoData == null) {
-              await context.read<UserInfoCubit>().getUser(context);
-            }
-            if (context.mounted && haveInternet && userDeviceData == null) {
-              await context.read<UserDeviceCubit>().createUserDevice(context);
+            if (haveInternet) {
+              await getUser();
+              await createUserDevice();
             }
 
-            _pushDashboard();
-            return;
+            return pushDashboard();
           },
           (unauthorized) async {
-            if (!haveInternet) {
-              _pushLogin();
-              return;
-            }
-
-            if (haveInternet && context.mounted) {
-              await context.read<AuthCubit>().logInWithSavedCredentials(
-                onFailure: () {
-                  _pushLogin();
-                },
-                onSuccess: () {
-                  _pushDashboard();
-                },
-              );
+            if (haveInternet) {
+              return logInWithSavedCredentials();
+            } else {
+              return pushLogin();
             }
           },
         );
@@ -66,12 +54,42 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  void _pushDashboard() {
-    if (context.mounted) DashboardScreen.push(context);
-    // if (context.mounted) pushEntityScreen(context);
+  Future<void> logInWithSavedCredentials() async {
+    if (!context.mounted) return;
+
+    return context.read<AuthCubit>().logInWithSavedCredentials(
+      onFailure: () {
+        pushLogin();
+      },
+      onSuccess: () {
+        pushDashboard();
+      },
+    );
   }
 
-  void _pushLogin() {
+  Future<void> getUser() async {
+    if (!context.mounted) return;
+
+    final data = context.read<UserInfoCubit>().data;
+    if (data == null) {
+      await context.read<UserInfoCubit>().getUser(context);
+    }
+  }
+
+  Future<void> createUserDevice() async {
+    if (!context.mounted) return;
+
+    final data = context.read<UserDeviceCubit>().data;
+    if (data == null) {
+      await context.read<UserDeviceCubit>().createUserDevice(context);
+    }
+  }
+
+  void pushDashboard() {
+    if (context.mounted) DashboardScreen.push(context);
+  }
+
+  void pushLogin() {
     if (context.mounted) LoginScreen.push(context);
   }
 

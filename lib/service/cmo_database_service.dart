@@ -2,11 +2,11 @@
 
 import 'dart:io';
 
-import 'package:cmo/model/assessment.dart';
-import 'package:cmo/model/model.dart';
 import 'package:isar/isar.dart';
 
-/// [CmoDatabaseService] is for storing app data
+import 'package:cmo/model/assessment.dart';
+import 'package:cmo/model/model.dart';
+
 class CmoDatabaseService {
   CmoDatabaseService();
 

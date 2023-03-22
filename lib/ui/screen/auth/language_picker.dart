@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/state/settings_cubit.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LanguagePicker extends StatefulWidget {
   const LanguagePicker({super.key, this.hidden = true, this.onPick});

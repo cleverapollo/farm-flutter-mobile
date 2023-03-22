@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
+
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/theme/theme.dart';
-import 'package:flutter/material.dart';
 
 class CmoLogo extends StatelessWidget {
   const CmoLogo({super.key});

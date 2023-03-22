@@ -1,12 +1,12 @@
-// import 'dart:developer';
+import 'package:flutter/material.dart';
+
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/service/entity_service.dart';
-import 'package:cmo/utils/json_converter.dart';
-import 'package:flutter/material.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:cmo/utils/utils.dart';
 
 part 'entity_state.dart';
 
@@ -36,7 +36,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
   Future<void> sync(Entity entity) async {
     emit(state.copyWith(isLoadingSync: true));
 
-    await Future.delayed(const Duration(seconds: 1));
+    await delay(1000);
 
     emit(
       state.copyWith(
@@ -81,8 +81,6 @@ class EntityCubit extends HydratedCubit<EntityState> {
           );
         }
 
-        // log('Pull Message: ${resPull?.paging} ${resPull?.message?.firstOrNull}');
-
         final messages = resPull?.message;
         if (messages == null || messages.isEmpty) {
           sync = false;
@@ -93,7 +91,6 @@ class EntityCubit extends HydratedCubit<EntityState> {
         await dbCompany.writeTxn(() async {
           for (var i = 0; i < messages.length; i++) {
             final item = messages[i];
-            // log('Looping through messageId ${item.header?.messageId} original topic ${item.header?.originalTopic}');
 
             try {
               final topic = item.header?.originalTopic;
@@ -239,12 +236,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
                 );
                 await insertQuestion(item);
               }
-
-              // await Future.delayed(const Duration(milliseconds: 100));
-            } catch (e) {
-              // log('Failed to sync tricklefeed master data');
-              // log('$e $s');
-            }
+            } finally {}
           }
         });
 
@@ -258,7 +250,6 @@ class EntityCubit extends HydratedCubit<EntityState> {
       }
     }
 
-    // await cmoDatabaseMasterService.deleteAll();
     await syncMasterData();
 
     final db = await cmoDatabaseService.db;
@@ -328,301 +319,232 @@ class EntityCubit extends HydratedCubit<EntityState> {
   }
 
   Future<int?> insertPlantation(Message item) async {
-    // log('Insert Plantation $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final plantation = Plantation.fromJson(bodyJson);
       return cmoDatabaseMasterService.cachePlantation(plantation);
-    } catch (e) {
-      // log('Insert Plantation Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertUnit(Message item) async {
-    // log('Insert Unit $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final unit = Unit.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheUnit(unit);
-    } catch (e) {
-      // log('Insert Unit Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertContractor(Message item) async {
-    // log('Insert Contractor $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final contractor = Contractor.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheContractor(contractor);
-    } catch (e) {
-      // log('Insert Contractor Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertProvince(Message item) async {
-    // log('Insert Province $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final province = Province.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheProvince(province);
-    } catch (e) {
-      // log('Insert Province Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertMunicipality(Message item) async {
-    // log('Insert Municipality $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final municipality = Municipality.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheMunicipality(municipality);
-    } catch (e) {
-      // log('Insert Municipality Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertImpactCaused(Message item) async {
-    // log('Insert ImpactCaused $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final impactCaused = ImpactCaused.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheImpactCaused(impactCaused);
-    } catch (e) {
-      // log('Insert ImpactCaused Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertImpactOn(Message item) async {
-    // log('Insert ImpactOn $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final impactOn = ImpactOn.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheImpactOn(impactOn);
-    } catch (e) {
-      // log('Insert ImpactOn Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertJobCategory(Message item) async {
-    // log('Insert JobCategory $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final jobCategory = JobCategory.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheJobCategory(jobCategory);
-    } catch (e) {
-      // log('Insert JobCategory Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertJobDescription(Message item) async {
-    // log('Insert JobDescription $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final jobDescription = JobDescription.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheJobDescription(jobDescription);
-    } catch (e) {
-      // log('Insert JobDescription Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertJobElement(Message item) async {
-    // log('Insert JobElement $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final jobElement = JobElement.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheJobElement(jobElement);
-    } catch (e) {
-      // log('Insert JobElement Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertMmm(Message item) async {
-    // log('Insert Mmm $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final mmm = Mmm.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheMmm(mmm);
-    } catch (e) {
-      // log('Insert Mmm Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertPdca(Message item) async {
-    // log('Insert Pdca $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final pdca = Pdca.fromJson(bodyJson);
       return cmoDatabaseMasterService.cachePdca(pdca);
-    } catch (e) {
-      // log('Insert Pdca Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertSeverity(Message item) async {
-    // log('Insert Severity $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final severity = Severity.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheSeverity(severity);
-    } catch (e) {
-      // log('Insert Severity Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertSpeqs(Message item) async {
-    // log('Insert Speqs $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final speqs = Speqs.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheSpeqs(speqs);
-    } catch (e) {
-      // log('Insert Speqs Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertCompliance(Message item) async {
-    // log('Insert Compliance $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final compliance = Compliance.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheCompliance(compliance);
-    } catch (e) {
-      // log('Insert Compliance Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertTeam(Message item) async {
-    // log('Insert Team $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final team = Team.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheTeam(team);
-    } catch (e) {
-      // log('Insert Team Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertRejectReason(Message item) async {
-    // log('Insert RejectReason $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rejectReason = RejectReason.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheRejectReason(rejectReason);
-    } catch (e) {
-      // log('Insert RejectReason Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertTrainingProvider(Message item) async {
-    // log('Insert TrainingProvider $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final trainingProvider = TrainingProvider.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheTrainingProvider(trainingProvider);
-    } catch (e) {
-      // log('Insert TrainingProvider Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertCourse(Message item) async {
-    // log('Insert Course $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final course = Course.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheCourse(course);
-    } catch (e) {
-      // log('Insert Course Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertSchedule(Message item) async {
-    // log('Insert Schedule $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final schedule = Schedule.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheSchedule(schedule);
-    } catch (e) {
-      // log('Insert Schedule Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertScheduleActivity(Message item) async {
-    // log('Insert ScheduleActivity $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final scheduleActivity = ScheduleActivity.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheScheduleActivity(scheduleActivity);
-    } catch (e) {
-      // log('Insert ScheduleActivity Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertWorker(Message item) async {
-    // log('Insert Worker $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final worker = Worker.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheWorker(worker);
-    } catch (e) {
-      // log('Insert Worker Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 
   Future<int?> insertQuestion(Message item) async {
-    // log('Insert Question $item');
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final question = CompanyQuestion.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheCompanyQuestion(question);
-    } catch (e) {
-      // log('Insert Question Error: $e $s');
-    }
+    } catch (e) {}
     return null;
   }
 

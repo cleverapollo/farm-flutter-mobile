@@ -1,3 +1,9 @@
+import 'package:flutter/material.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
@@ -13,11 +19,7 @@ import 'package:cmo/ui/widget/cmo_dropdown.dart';
 import 'package:cmo/ui/widget/cmo_header_tile.dart';
 import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:cmo/utils/helpers.dart';
-import 'package:cmo/utils/json_converter.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:cmo/utils/validator.dart';
 
 class CreateWorkerScreen extends StatefulWidget {
   const CreateWorkerScreen({super.key});
@@ -52,7 +54,6 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
         loading = true;
       });
       try {
-        debugPrint('onSubmit data: ${_formKey.currentState?.value}');
         await hideInputMethod();
         final workerId = DateTime.now().millisecondsSinceEpoch;
         value['WorkerId'] = workerId.toString();
@@ -77,9 +78,6 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
         }
 
         if (resultId != null) {
-          debugPrint(
-            'Create Worker Success: $resultId ${Json.tryEncode(worker.toJson())}',
-          );
           if (context.mounted) {
             showSnackSuccess(
               msg: '${LocaleKeys.createWorker.tr()} $resultId',
@@ -87,8 +85,6 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
             Navigator.of(context).pop();
           }
         }
-      } catch (e, s) {
-        debugPrint('onSubmit error: $e $s');
       } finally {
         setState(() {
           loading = false;
@@ -134,10 +130,7 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
   Widget buildInputArea() {
     return FormBuilder(
       key: _formKey,
-      onChanged: () {
-        _formKey.currentState!.save();
-        debugPrint(_formKey.currentState!.value.toString());
-      },
+      onChanged: () => _formKey.currentState!.save(),
       autovalidateMode: autoValidateMode,
       child: AutofillGroup(
         child: Column(
@@ -145,30 +138,22 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
             CmoTextField(
               name: 'FirstName',
               hintText: LocaleKeys.firstName.tr(),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
+              validator: requiredValidator,
             ),
             CmoTextField(
               name: 'Surname',
               hintText: LocaleKeys.surname.tr(),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
+              validator: requiredValidator,
             ),
             CmoTextField(
               name: 'IdNumber',
               hintText: LocaleKeys.idNumber.tr(),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
+              validator: requiredValidator,
             ),
             CmoDatePicker(
               name: 'DOB',
               hintText: LocaleKeys.dateOfBirth.tr(),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
+              validator: requiredValidator,
             ),
             CmoTextField(
               name: 'ContactNumber',
@@ -183,9 +168,7 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
             ),
             CmoDropdown(
               name: 'RaceId',
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
+              validator: requiredValidator,
               hintText: LocaleKeys.race.tr(),
               itemsData: [
                 CmoDropdownItem(id: 1, name: 'black'),
@@ -194,9 +177,7 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
             ),
             CmoDropdown(
               name: 'GenderId',
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
+              validator: requiredValidator,
               hintText: LocaleKeys.gender.tr(),
               itemsData: [
                 CmoDropdownItem(id: 1, name: 'Male'),
@@ -206,9 +187,7 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
             ),
             CmoDropdown(
               name: 'DisabilityId',
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
+              validator: requiredValidator,
               hintText: LocaleKeys.disability.tr(),
               itemsData: [
                 CmoDropdownItem(id: 1, name: 'None'),
@@ -220,9 +199,7 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
                 if (snapshot.hasData) {
                   return CmoDropdown(
                     name: 'MunicipalityId',
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                    ]),
+                    validator: requiredValidator,
                     hintText: LocaleKeys.municipality.tr(),
                     itemsData: snapshot.data
                         ?.map(
@@ -243,9 +220,7 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
                 if (snapshot.hasData) {
                   return CmoDropdown(
                     name: 'ProvinceId',
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                    ]),
+                    validator: requiredValidator,
                     hintText: LocaleKeys.province.tr(),
                     itemsData: snapshot.data
                         ?.map(
@@ -273,9 +248,7 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
                     if (snapshot.hasData) {
                       return CmoDropdown(
                         name: 'ContractorId',
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
+                        validator: requiredValidator,
                         hintText: LocaleKeys.contractor.tr(),
                         itemsData: snapshot.data
                             ?.map(
@@ -298,9 +271,7 @@ class _CreateWorkerScreenState extends State<CreateWorkerScreen> {
                 if (snapshot.hasData) {
                   return CmoDropdown(
                     name: 'JobDescriptionId',
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                    ]),
+                    validator: requiredValidator,
                     hintText: LocaleKeys.jobDescription.tr(),
                     itemsData: snapshot.data
                         ?.map(

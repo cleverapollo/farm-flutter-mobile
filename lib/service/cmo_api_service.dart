@@ -1,7 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
+import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/company.dart';
 import 'package:cmo/model/master_data_message.dart';
@@ -9,9 +12,7 @@ import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
 import 'package:cmo/model/user_info.dart';
 import 'package:cmo/ui/snack/success.dart';
-import 'package:cmo/utils/constants.dart';
-import 'package:dio/dio.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:cmo/utils/logger.dart';
 
 typedef JsonData = Map<String, dynamic>;
 typedef JsonListData = List<dynamic>;
@@ -28,13 +29,10 @@ class CmoApiService {
       PrettyDioLogger(
         requestHeader: true,
         requestBody: true,
-        logPrint: (o) => log('$o'),
+        logPrint: (o) => logger.d('$o'),
       ),
     );
 
-  // curl 'https://logistics.myeu.africa/cmo/DesktopModules/JwtAuth/API/mobile/login' \
-  // --data-raw '{"u":"anthonyp@apstory.co.za","p":"test1234"}' \
-  // --compressed
   Future<UserAuth?> login(
     String username,
     String password,
@@ -46,7 +44,7 @@ class CmoApiService {
 
     final response = await client.postUri<JsonData>(
       Uri.https(
-        cmoUrl,
+        Env.cmoApiUrl,
         '/cmo/DesktopModules/JwtAuth/API/mobile/login',
       ),
       data: body,
@@ -61,13 +59,10 @@ class CmoApiService {
     return data == null ? null : UserAuth.fromJson(data);
   }
 
-  // curl 'https://logistics.myeu.africa/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetUser' \
-  // -H 'user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Mobile Safari/537.36' \
-  // --compressed
   Future<UserInfo?> getUser() async {
     final response = await client.getUri<JsonData>(
       Uri.https(
-        cmoUrl,
+        Env.cmoApiUrl,
         '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetUser',
       ),
       options: Options(headers: {'accessToken': 'true'}),
@@ -82,9 +77,6 @@ class CmoApiService {
     return data == null ? null : UserInfo.fromJson(data);
   }
 
-  // curl 'https://logistics.myeu.africa/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/CreateUserDevice' \
-  // --data-raw '{"DeviceId":"0ba4a0a6-950f-4169-b7fc-3c8a7715c5a2","DeviceOS":"web","DeviceVersion":"10.15.7","UserDeviceId":6539,"AppName":"Behave","AppVersionNumber":"2.0.3"}' \
-  // --compressed
   Future<UserDevice?> createUserDevice({
     required String? deviceId,
     required String? deviceOS,
@@ -102,7 +94,7 @@ class CmoApiService {
 
     final response = await client.postUri<JsonData>(
       Uri.https(
-        cmoUrl,
+        Env.cmoApiUrl,
         '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/CreateUserDevice',
       ),
       data: body,
@@ -122,7 +114,7 @@ class CmoApiService {
     required int userId,
   }) async {
     final uri = Uri.https(
-      cmoUrl,
+      Env.cmoApiUrl,
       '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetCompanyByUserId',
       {'userId': userId.toString()},
     );
@@ -147,7 +139,7 @@ class CmoApiService {
     required int userDeviceId,
   }) async {
     final uri = Uri.https(
-      cmoUrl,
+      Env.cmoApiUrl,
       '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/CreateSystemEvent',
     );
 
@@ -173,11 +165,11 @@ class CmoApiService {
   Future<MasterDataMessage?> pullMessage({
     required String pubsubApiKey,
     required String topicMasterDataSync,
-    required int currentClientId, // = UserDeviceId
+    required int currentClientId,
     int pageSize = 200,
   }) async {
     final uri = Uri.https(
-      cmoUrl,
+      Env.cmoApiUrl,
       '/pubsubapi/api/v1/message',
       {
         'key': pubsubApiKey,
@@ -203,11 +195,11 @@ class CmoApiService {
 
   Future<bool?> deleteMessage({
     required String pubsubApiKey,
-    required int currentClientId, // = UserDeviceId
+    required int currentClientId,
     required List<Message> messages,
   }) async {
     final uri = Uri.https(
-      cmoUrl,
+      Env.cmoApiUrl,
       '/pubsubapi/api/v1/message',
       {
         'key': pubsubApiKey,
@@ -289,7 +281,7 @@ class CustomInterceptor extends Interceptor {
         };
         final responseReLogin = await dio.postUri<JsonData>(
           Uri.https(
-            cmoUrl,
+            Env.cmoApiUrl,
             '/cmo/DesktopModules/JwtAuth/API/mobile/login',
           ),
           data: body,

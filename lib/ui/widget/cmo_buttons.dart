@@ -1,5 +1,6 @@
-import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
+
+import 'package:cmo/ui/theme/theme.dart';
 
 class CmoTappable extends StatelessWidget {
   const CmoTappable({

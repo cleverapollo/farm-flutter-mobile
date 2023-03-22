@@ -1,5 +1,6 @@
-import 'package:cmo/di.dart';
 import 'package:flutter/material.dart';
+
+import 'package:cmo/di.dart';
 
 class CmoModeBuilder extends StatelessWidget {
   const CmoModeBuilder({

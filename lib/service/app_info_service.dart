@@ -1,15 +1,16 @@
 import 'package:cmo/env/env.dart';
 import 'package:cmo/model/app_mode.dart';
+
 export '../model/app_mode.dart';
 
 AppMode getAppTypeFromEnv() {
-  if (Env.appMode == 'behave') {
+  if (Env.cmoAppMode == 'behave') {
     return AppMode.behave();
   }
-  if (Env.appMode == 'resource_manager') {
+  if (Env.cmoAppMode == 'resource_manager') {
     return AppMode.resourceManager();
   }
-  if (Env.appMode == 'farmer') {
+  if (Env.cmoAppMode == 'farmer') {
     return AppMode.farmer();
   }
 
@@ -21,6 +22,6 @@ class AppInfoService {
   String get appName => 'Behave';
   String get databaseName => 'cmo.db';
   int get sqfliteImportPageSize => 100;
-  String get pubsubApiKey => Env.pubsubApiKey;
+  String get pubsubApiKey => Env.cmoPubsubApiKey;
   AppMode get mode => getAppTypeFromEnv();
 }

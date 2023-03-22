@@ -1,9 +1,11 @@
-import 'package:cmo/di.dart';
-import 'package:cmo/model/user_info.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+
+import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
+
+import 'package:cmo/di.dart';
+import 'package:cmo/model/user_info.dart';
 
 part 'user_info_state.dart';
 
@@ -12,13 +14,10 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
 
   Future<void> getUser(BuildContext context) async {
     final res = await cmoApiService.getUser();
-    debugPrint('[UserInfoCubit] data: $res');
 
     if (res != null) {
-      // * success
       emit(UserInfoState.data(userInfo: res));
     } else {
-      // * error
       emit(UserInfoState.error());
     }
   }

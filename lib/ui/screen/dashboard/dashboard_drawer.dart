@@ -1,4 +1,8 @@
+import 'package:flutter/material.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -16,8 +20,6 @@ import 'package:cmo/ui/screen/settings/settings_screen.dart';
 import 'package:cmo/ui/screen/support/support_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DashboardDrawer extends StatelessWidget {
   const DashboardDrawer({
@@ -162,13 +164,11 @@ class DashboardDrawer extends StatelessWidget {
     return CmoTappable(
       onTap: () {
         final screen = entityScreenByType();
-        if (screen != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => screen,
-            ),
-          );
-        }
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => screen,
+          ),
+        );
       },
       child: SizedBox(
         height: 34,
@@ -398,7 +398,6 @@ class __LogoutButtonState extends State<_LogoutButton> {
           setState(() {
             loading = true;
           });
-          // await cmoDatabaseMasterService.deleteAll();
           await cmoDatabaseService.deleteAll();
           if (context.mounted) await context.read<AuthCubit>().logOut();
           if (context.mounted) {

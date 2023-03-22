@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
@@ -9,10 +14,8 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
 import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:cmo/utils/helpers.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:cmo/utils/logger.dart';
+import 'package:cmo/utils/validator.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -28,67 +31,66 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool passwordShown = false;
-  bool selectingLang = false;
+  final _formKey = GlobalKey<FormBuilderState>();
+  final scroller = ScrollController();
+  final emailFieldName = 'email';
+  final passwordFieldName = 'password';
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
-  final _formKey = GlobalKey<FormBuilderState>();
-
-  final scroller = ScrollController();
+  bool passwordShown = false;
+  bool selectingLang = false;
   bool isLoading = false;
 
   Future<void> onSubmit() async {
-    setState(() {
-      autoValidateMode = AutovalidateMode.always;
-    });
+    logger.i('[LoginScreen] submit: ${_formKey.currentState?.value}');
 
-    if (_formKey.currentState?.saveAndValidate() ?? false) {
-      setState(() {
-        isLoading = true;
-      });
+    setState(() => autoValidateMode = AutovalidateMode.always);
 
-      try {
-        debugPrint(_formKey.currentState?.value.toString());
-        await hideInputMethod();
-        final username = _formKey.currentState?.value['email'];
-        final password = _formKey.currentState?.value['password'];
-        var success = false;
+    if (!(_formKey.currentState?.saveAndValidate() ?? false)) return;
 
-        if (context.mounted) {
-          await context.read<AuthCubit>().logIn(
-                LogInAuthEvent(
-                  onFailure: () {
-                    success = false;
-                  },
-                  onSuccess: () {
-                    success = true;
-                  },
-                  password: password.toString(),
-                  username: username.toString(),
-                ),
-              );
-        }
+    try {
+      setState(() => isLoading = true);
+      await hideInputMethod();
+      final username = _formKey.currentState?.value[emailFieldName];
+      final password = _formKey.currentState?.value[passwordFieldName];
 
-        if (success && context.mounted) {
-          await context.read<UserInfoCubit>().getUser(context);
-        }
+      var success = false;
 
-        if (success && context.mounted) {
-          pushEntityScreen(context);
-        }
-      } finally {
-        setState(() {
-          isLoading = false;
-        });
+      if (context.mounted) {
+        await context.read<AuthCubit>().logIn(
+              LogInAuthEvent(
+                onFailure: () {
+                  success = false;
+                },
+                onSuccess: () {
+                  success = true;
+                },
+                password: password.toString(),
+                username: username.toString(),
+              ),
+            );
       }
-    } else {
-      debugPrint(_formKey.currentState?.value.toString());
-      debugPrint('validation failed');
+
+      if (success && context.mounted) {
+        await context.read<UserInfoCubit>().getUser(context);
+      }
+
+      if (success && context.mounted) {
+        pushEntityScreen(context);
+      }
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   void toggleSelectingLang() {
     setState(() => selectingLang = !selectingLang);
+  }
+
+  void toggleShowPassword() {
+    setState(() => passwordShown = !passwordShown);
   }
 
   @override
@@ -101,7 +103,6 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 const CmoLogo(),
-                // const SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.all(18),
                   child: DecoratedBox(
@@ -140,21 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: SizedBox.square(
-                      dimension: 50,
-                      child: selectingLang
-                          ? null
-                          : CmoTappable(
-                              onTap: toggleSelectingLang,
-                              child: Assets.images.icLang.image(),
-                            ),
-                    ),
-                  ),
-                ),
+                buildSelectLang(),
               ],
             ),
           ),
@@ -168,18 +155,14 @@ class _LoginScreenState extends State<LoginScreen> {
       key: _formKey,
       onChanged: () {
         _formKey.currentState!.save();
-        debugPrint(_formKey.currentState!.value.toString());
       },
       autovalidateMode: autoValidateMode,
       child: AutofillGroup(
         child: Column(
           children: [
             CmoTextField(
-              name: 'email',
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-                FormBuilderValidators.email(),
-              ]),
+              name: emailFieldName,
+              validator: emailValidator,
               prefixIcon: Center(child: Assets.icons.icUsername.svg()),
               hintText: LocaleKeys.username.tr(),
               textInputAction: TextInputAction.next,
@@ -187,15 +170,11 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 14),
             CmoTextField(
-              name: 'password',
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
+              name: passwordFieldName,
+              validator: requiredValidator,
               prefixIcon: Center(child: Assets.icons.icPassword.svg()),
               suffixIcon: CmoTappable(
-                onTap: () {
-                  setState(() => passwordShown = !passwordShown);
-                },
+                onTap: toggleShowPassword,
                 child: Center(child: Assets.icons.icVisible.svg()),
               ),
               hintText: LocaleKeys.password.tr(),
@@ -205,6 +184,24 @@ class _LoginScreenState extends State<LoginScreen> {
               onEditingComplete: onSubmit,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildSelectLang() {
+    if (selectingLang) return const SizedBox();
+
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: SizedBox.square(
+          dimension: 50,
+          child: CmoTappable(
+            onTap: toggleSelectingLang,
+            child: Assets.images.icLang.image(),
+          ),
         ),
       ),
     );

@@ -1,9 +1,11 @@
-import 'package:cmo/di.dart';
-import 'package:cmo/model/user_device.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+
+import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
+
+import 'package:cmo/di.dart';
+import 'package:cmo/model/user_device.dart';
 
 part 'user_device_state.dart';
 
@@ -20,10 +22,8 @@ class UserDeviceCubit extends HydratedCubit<UserDeviceState> {
       deviceVersion: deviceInfoService.version,
     );
     if (res != null) {
-      // * success
       emit(UserDeviceState.data(userDevice: res));
     } else {
-      // * error
       emit(UserDeviceState.error());
     }
   }

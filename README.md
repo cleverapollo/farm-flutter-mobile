@@ -14,7 +14,7 @@ To generate localization keys after adding new strings to `assets/l10n`:
 flutter pub run easy_localization:generate -S assets/l10n -O lib/l10n -f keys -o locale_keys.g.dart
 ```
 
-or run `python l10n.py <key> <en> <fr>` to add strings and generate `LocaleKeys`.
+or run `python l10n.py <key> <en> <fr> <ms> <th> <zu>` to add strings and generate `LocaleKeys`.
 
 ## ENV
 
@@ -23,8 +23,9 @@ Use `envied` to generate .env:
 Create `.env` file
 
 ```
-PUBSUB_APIKEY=xxx
-APP_MODE=behave; (behave, resource_manager, farmer)
+CMO_API_URL=xxx
+CMO_PUBSUB_APIKEY=xxx
+CMO_APP_MODE=behave; (behave, resource_manager, farmer)
 GOOGLE_MAPS_API_KEY=xxxxxx
 ```
 
@@ -46,4 +47,13 @@ Double-check that the files containing your GOOGLE_MAPS_API_KEY contain the corr
 .env
 android/local.properties
 ios/Runner/keys.plist
+```
+
+
+## Sort import
+
+Run:
+
+```
+flutter pub run import_sorter:main
 ```
