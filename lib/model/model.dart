@@ -1,4 +1,5 @@
 export 'app_mode.dart';
+export 'assessment.dart';
 export 'company.dart';
 export 'data/company_question.dart';
 export 'data/compliance.dart';
@@ -14,6 +15,7 @@ export 'data/municipality.dart';
 export 'data/pdca.dart';
 export 'data/plantation.dart';
 export 'data/province.dart';
+export 'data/question_answer.dart';
 export 'data/reject_reason.dart';
 export 'data/schedule.dart';
 export 'data/schedule_activity.dart';

@@ -63,7 +63,7 @@ mixin _$CompanyQuestion {
   @JsonKey(name: 'ComplianceId')
   int? get complianceId => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsQuestionComplete')
-  bool? get isQuestionComplete => throw _privateConstructorUsedError;
+  int? get isQuestionComplete => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
 
@@ -101,7 +101,7 @@ abstract class $CompanyQuestionCopyWith<$Res> {
       @JsonKey(name: 'MMMName') String? mmmName,
       @JsonKey(name: 'ComplianceName') String? complianceName,
       @JsonKey(name: 'ComplianceId') int? complianceId,
-      @JsonKey(name: 'IsQuestionComplete') bool? isQuestionComplete,
+      @JsonKey(name: 'IsQuestionComplete') int? isQuestionComplete,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -230,7 +230,7 @@ class _$CompanyQuestionCopyWithImpl<$Res, $Val extends CompanyQuestion>
       isQuestionComplete: freezed == isQuestionComplete
           ? _value.isQuestionComplete
           : isQuestionComplete // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -269,7 +269,7 @@ abstract class _$$_CompanyQuestionCopyWith<$Res>
       @JsonKey(name: 'MMMName') String? mmmName,
       @JsonKey(name: 'ComplianceName') String? complianceName,
       @JsonKey(name: 'ComplianceId') int? complianceId,
-      @JsonKey(name: 'IsQuestionComplete') bool? isQuestionComplete,
+      @JsonKey(name: 'IsQuestionComplete') int? isQuestionComplete,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -396,7 +396,7 @@ class __$$_CompanyQuestionCopyWithImpl<$Res>
       isQuestionComplete: freezed == isQuestionComplete
           ? _value.isQuestionComplete
           : isQuestionComplete // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -502,7 +502,7 @@ class _$_CompanyQuestion extends _CompanyQuestion {
   final int? complianceId;
   @override
   @JsonKey(name: 'IsQuestionComplete')
-  final bool? isQuestionComplete;
+  final int? isQuestionComplete;
   @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
@@ -626,7 +626,7 @@ abstract class _CompanyQuestion extends CompanyQuestion {
       @JsonKey(name: 'MMMName') final String? mmmName,
       @JsonKey(name: 'ComplianceName') final String? complianceName,
       @JsonKey(name: 'ComplianceId') final int? complianceId,
-      @JsonKey(name: 'IsQuestionComplete') final bool? isQuestionComplete,
+      @JsonKey(name: 'IsQuestionComplete') final int? isQuestionComplete,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_CompanyQuestion;
   const _CompanyQuestion._() : super._();
 
@@ -698,7 +698,7 @@ abstract class _CompanyQuestion extends CompanyQuestion {
   int? get complianceId;
   @override
   @JsonKey(name: 'IsQuestionComplete')
-  bool? get isQuestionComplete;
+  int? get isQuestionComplete;
   @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;

@@ -36,7 +36,7 @@ class CompanyQuestion with _$CompanyQuestion {
     @JsonKey(name: 'MMMName') String? mmmName,
     @JsonKey(name: 'ComplianceName') String? complianceName,
     @JsonKey(name: 'ComplianceId') int? complianceId,
-    @JsonKey(name: 'IsQuestionComplete') bool? isQuestionComplete,
+    @JsonKey(name: 'IsQuestionComplete') int? isQuestionComplete,
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _CompanyQuestion;
 

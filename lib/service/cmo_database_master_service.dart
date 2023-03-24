@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
 
 import 'package:cmo/extensions/extensions.dart';
@@ -230,6 +231,40 @@ class CmoDatabaseMasterService {
     return db.jobElements.filter().isActiveEqualTo(true).findAll();
   }
 
+  Future<List<JobElement>> getJobElementsByJobCategoryId(
+    int? jobCategoryId,
+  ) async {
+    final db = await _db();
+
+    try {
+      final questions = await db.companyQuestions
+          .filter()
+          .jobCategoryIdEqualTo(jobCategoryId)
+          .jobCategoryIdIsNotNull()
+          .isActiveEqualTo(true)
+          .findAll();
+
+      final jobElements = <JobElement>[];
+
+      for (final question in questions) {
+        if (question.speqsId != null) {
+          final result = await db.jobElements
+              .filter()
+              .jobElementIdEqualTo(question.jobElementId!)
+              .isActiveEqualTo(true)
+              .findAll();
+          jobElements.addAll(result);
+        }
+      }
+
+      return jobElements;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <JobElement>[];
+  }
+
   Future<int> cacheMmm(Mmm item) async {
     final db = await _db();
     return db.mmms.put(item);
@@ -252,6 +287,38 @@ class CmoDatabaseMasterService {
     return db.pdcas.filter().isActiveEqualTo(true).findAll();
   }
 
+  Future<List<Pdca>> getPdcasByJobCategoryId(int? jobCategoryId) async {
+    final db = await _db();
+
+    try {
+      final questions = await db.companyQuestions
+          .filter()
+          .jobCategoryIdEqualTo(jobCategoryId)
+          .jobCategoryIdIsNotNull()
+          .isActiveEqualTo(true)
+          .findAll();
+
+      final pdcas = <Pdca>[];
+
+      for (final question in questions) {
+        if (question.speqsId != null) {
+          final result = await db.pdcas
+              .filter()
+              .pdcaIdEqualTo(question.pdcaId!)
+              .isActiveEqualTo(true)
+              .findAll();
+          pdcas.addAll(result);
+        }
+      }
+
+      return pdcas;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Pdca>[];
+  }
+
   Future<int> cacheSeverity(Severity item) async {
     final db = await _db();
     return db.severitys.put(item);
@@ -271,6 +338,38 @@ class CmoDatabaseMasterService {
   Future<List<Speqs>> getSpeqss() async {
     final db = await _db();
     return db.speqs.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<Speqs>> getSpeqssByJobCategoryId(int? jobCategoryId) async {
+    final db = await _db();
+
+    try {
+      final questions = await db.companyQuestions
+          .filter()
+          .jobCategoryIdEqualTo(jobCategoryId)
+          .jobCategoryIdIsNotNull()
+          .isActiveEqualTo(true)
+          .findAll();
+
+      final speqs = <Speqs>[];
+
+      for (final question in questions) {
+        if (question.speqsId != null) {
+          final result = await db.speqs
+              .filter()
+              .speqsIdEqualTo(question.speqsId!)
+              .isActiveEqualTo(true)
+              .findAll();
+          speqs.addAll(result);
+        }
+      }
+
+      return speqs;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Speqs>[];
   }
 
   Future<int> cacheCompliance(Compliance item) async {
@@ -460,11 +559,193 @@ class CmoDatabaseMasterService {
     return listRemoveNull(ids);
   }
 
+  Future<List<CompanyQuestion>>
+      getQuestionsByCompanyIdAndJobCategoryIdAndAssessmentId(
+    int? companyId,
+    int? jobCategoryId,
+    int? assessmentId,
+  ) async {
+    if (companyId == null) return <CompanyQuestion>[];
+
+    final db = await _db();
+    try {
+      final result = await db.companyQuestions
+          .filter()
+          .companyIdEqualTo(companyId)
+          .jobCategoryIdEqualTo(companyId)
+          .isActiveEqualTo(true)
+          .findAll();
+      final questions = <CompanyQuestion>[];
+
+      for (var question in result) {
+        if (jobCategoryId != null) {
+          final jobCategoryName = await db.jobCategorys
+              .filter()
+              .jobCategoryIdEqualTo(jobCategoryId)
+              .jobCategoryNameProperty()
+              .findFirst();
+          question = question.copyWith(jobCategoryName: jobCategoryName);
+        }
+
+        if (question.jobElementId != null) {
+          final jobElementName = await db.jobElements
+              .filter()
+              .jobElementIdEqualTo(question.jobElementId!)
+              .jobElementNameProperty()
+              .findFirst();
+          question = question.copyWith(jobElementName: jobElementName);
+        }
+
+        if (question.speqsId != null) {
+          final speqsName = await db.speqs
+              .filter()
+              .speqsIdEqualTo(question.speqsId!)
+              .speqsNameProperty()
+              .findFirst();
+          question = question.copyWith(speqsName: speqsName);
+        }
+
+        if (question.pdcaId != null) {
+          final pdcaName = await db.pdcas
+              .filter()
+              .pdcaIdEqualTo(question.pdcaId!)
+              .pdcaNameProperty()
+              .findFirst();
+          question = question.copyWith(pdcaName: pdcaName);
+        }
+
+        if (assessmentId != null) {
+          final qA = await db.questionAnswers
+              .filter()
+              .questionIdEqualTo(question.id)
+              .assessmentIdEqualTo(assessmentId)
+              .findFirst();
+          question = question.copyWith(complianceId: qA?.complianceId);
+          question =
+              question.copyWith(isQuestionComplete: qA?.isQuestionComplete);
+          if (qA?.complianceId != null) {
+            final complianceName = await db.compliances
+                .filter()
+                .complianceIdEqualTo(qA!.complianceId!)
+                .complianceNameProperty()
+                .findFirst();
+            question = question.copyWith(complianceName: complianceName);
+          }
+        }
+
+        questions.add(question);
+      }
+
+      return questions;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <CompanyQuestion>[];
+  }
+
+  Future<List<Compliance>> getCompliancesByCompanyIdJobCategoryId(
+    int? companyId,
+    int? jobCategoryId,
+  ) async {
+    try {
+      final db = await _db();
+      final compliances = db.compliances
+          .filter()
+          .companyIdIsNotNull()
+          .companyIdEqualTo(companyId)
+          .jobCategoryIdIsNotNull()
+          .jobCategoryIdEqualTo(jobCategoryId)
+          .isActiveEqualTo(true)
+          .findAll();
+
+      return compliances;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Compliance>[];
+  }
+
+  Future<List<Compliance>> getCompliancesByCompanyId(
+    int? companyId,
+  ) async {
+    try {
+      final db = await _db();
+      final compliances = db.compliances
+          .filter()
+          .companyIdIsNotNull()
+          .companyIdEqualTo(companyId)
+          .isActiveEqualTo(true)
+          .findAll();
+
+      return compliances;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Compliance>[];
+  }
+
+  Future<List<QuestionAnswer>>
+      getQuestionAnswersByCompanyIdAndJobCategoryIdAndAssessmentId(
+    int? companyId,
+    int? jobCatgoryId,
+    int? assessmentId,
+  ) async {
+    if (companyId == null) return <QuestionAnswer>[];
+    final db = await _db();
+    try {
+      final questionAnswers = <QuestionAnswer>[];
+      final companyQuestions = await db.companyQuestions
+          .filter()
+          .companyIdEqualTo(companyId)
+          .jobCategoryIdEqualTo(jobCatgoryId)
+          .isActiveEqualTo(true)
+          .findAll();
+
+      for (final question in companyQuestions) {
+        final qA = await db.questionAnswers
+            .filter()
+            .questionIdEqualTo(question.questionId)
+            .findFirst();
+        // final jobCategory = await db.jobCategorys
+        //     .filter()
+        //     .jobCategoryIdEqualTo(question.jobCategoryId!)
+        //     .findFirst();
+
+        final questionAnswer = QuestionAnswer(
+          assessmentId: assessmentId,
+          questionId: question.questionId,
+          // I think this must be 0 need to test if I change it
+          // complianceId: question.complianceId ?? -1,
+          complianceId: question.complianceId ?? 0,
+          isQuestionComplete: question.isQuestionComplete,
+          questionAnswerId: qA?.questionAnswerId,
+          rejectReasonId: qA?.rejectReasonId,
+          rejectComment: qA?.rejectComment,
+        );
+
+        questionAnswers.add(questionAnswer);
+      }
+
+      return questionAnswers;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <QuestionAnswer>[];
+  }
+
   Future<FileSystemEntity?> deleteAll() async {
     final db = await _db();
     await db.writeTxn(() async {
       await db.clear();
     });
     return null;
+  }
+
+  void handleError(Object error) {
+    logger.d(error);
   }
 }

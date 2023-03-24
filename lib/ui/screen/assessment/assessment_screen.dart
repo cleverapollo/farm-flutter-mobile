@@ -84,6 +84,7 @@ class AssessmentScreen extends StatelessWidget {
               selector: (state) {
                 return state.indexTab;
               },
+              
               builder: (context, indexTab) {
                 if (indexTab == 0) return const AssessmentListStarted();
                 if (indexTab == 1) return const AssessmentListCompleted();

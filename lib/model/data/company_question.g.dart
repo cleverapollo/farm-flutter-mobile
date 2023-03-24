@@ -60,7 +60,7 @@ const CompanyQuestionSchema = CollectionSchema(
     r'isQuestionComplete': PropertySchema(
       id: 8,
       name: r'isQuestionComplete',
-      type: IsarType.bool,
+      type: IsarType.long,
     ),
     r'jobCategoryId': PropertySchema(
       id: 9,
@@ -224,7 +224,7 @@ void _companyQuestionSerialize(
   writer.writeLong(offsets[5], object.impactOnId);
   writer.writeString(offsets[6], object.impactOnName);
   writer.writeBool(offsets[7], object.isActive);
-  writer.writeBool(offsets[8], object.isQuestionComplete);
+  writer.writeLong(offsets[8], object.isQuestionComplete);
   writer.writeLong(offsets[9], object.jobCategoryId);
   writer.writeString(offsets[10], object.jobCategoryName);
   writer.writeLong(offsets[11], object.jobElementId);
@@ -256,7 +256,7 @@ CompanyQuestion _companyQuestionDeserialize(
     impactOnId: reader.readLongOrNull(offsets[5]),
     impactOnName: reader.readStringOrNull(offsets[6]),
     isActive: reader.readBoolOrNull(offsets[7]),
-    isQuestionComplete: reader.readBoolOrNull(offsets[8]),
+    isQuestionComplete: reader.readLongOrNull(offsets[8]),
     jobCategoryId: reader.readLongOrNull(offsets[9]),
     jobCategoryName: reader.readStringOrNull(offsets[10]),
     jobElementId: reader.readLongOrNull(offsets[11]),
@@ -299,7 +299,7 @@ P _companyQuestionDeserializeProp<P>(
     case 7:
       return (reader.readBoolOrNull(offset)) as P;
     case 8:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 9:
       return (reader.readLongOrNull(offset)) as P;
     case 10:
@@ -1269,11 +1269,57 @@ extension CompanyQuestionQueryFilter
   }
 
   QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
-      isQuestionCompleteEqualTo(bool? value) {
+      isQuestionCompleteEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isQuestionComplete',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      isQuestionCompleteGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'isQuestionComplete',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      isQuestionCompleteLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'isQuestionComplete',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CompanyQuestion, CompanyQuestion, QAfterFilterCondition>
+      isQuestionCompleteBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'isQuestionComplete',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -3633,7 +3679,7 @@ extension CompanyQuestionQueryProperty
     });
   }
 
-  QueryBuilder<CompanyQuestion, bool?, QQueryOperations>
+  QueryBuilder<CompanyQuestion, int?, QQueryOperations>
       isQuestionCompleteProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isQuestionComplete');
@@ -3756,7 +3802,7 @@ _$_CompanyQuestion _$$_CompanyQuestionFromJson(Map<String, dynamic> json) =>
       mmmName: json['MMMName'] as String?,
       complianceName: json['ComplianceName'] as String?,
       complianceId: json['ComplianceId'] as int?,
-      isQuestionComplete: json['IsQuestionComplete'] as bool?,
+      isQuestionComplete: json['IsQuestionComplete'] as int?,
       isActive: json['IsActive'] as bool?,
     );
 

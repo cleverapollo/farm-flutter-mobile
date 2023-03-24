@@ -1,5 +1,6 @@
 export 'assessment_cubit/assessment_cubit.dart';
 export 'assessment_list_cubit/assessment_list_cubit.dart';
+export 'assessment_question_cubit/assessment_question_cubit.dart';
 export 'auth_cubit/auth_cubit.dart';
 export 'entity_cubit/entity_cubit.dart';
 export 'settings_cubit/settings_cubit.dart';

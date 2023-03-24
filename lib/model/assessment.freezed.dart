@@ -25,7 +25,7 @@ mixin _$Assessment {
   @JsonKey(name: 'CompanyId')
   int? get companyId => throw _privateConstructorUsedError;
   @JsonKey(name: 'UserId')
-  int? get userId => throw _privateConstructorUsedError; //
+  int? get userId => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobCategoryId')
   int? get jobCategoryId => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobDescriptionId')
@@ -43,8 +43,7 @@ mixin _$Assessment {
   @JsonKey(name: 'Long')
   double? get long => throw _privateConstructorUsedError;
   @JsonKey(name: 'Location')
-  String? get location => throw _privateConstructorUsedError; //
-// * only use for show UI
+  String? get location => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobCategoryName')
   String? get jobCategoryName => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobDescriptionName')
@@ -56,7 +55,7 @@ mixin _$Assessment {
   @JsonKey(name: 'TeamName')
   String? get teamName => throw _privateConstructorUsedError;
   @JsonKey(name: 'WorkerName')
-  String? get workerName => throw _privateConstructorUsedError; // *
+  String? get workerName => throw _privateConstructorUsedError;
   @JsonKey(name: 'Status')
   int? get status => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -432,7 +431,6 @@ class _$_Assessment extends _Assessment {
   @override
   @JsonKey(name: 'UserId')
   final int? userId;
-//
   @override
   @JsonKey(name: 'JobCategoryId')
   final int? jobCategoryId;
@@ -460,8 +458,6 @@ class _$_Assessment extends _Assessment {
   @override
   @JsonKey(name: 'Location')
   final String? location;
-//
-// * only use for show UI
   @override
   @JsonKey(name: 'JobCategoryName')
   final String? jobCategoryName;
@@ -480,7 +476,6 @@ class _$_Assessment extends _Assessment {
   @override
   @JsonKey(name: 'WorkerName')
   final String? workerName;
-// *
   @override
   @JsonKey(name: 'Status')
   final int? status;
@@ -625,7 +620,7 @@ abstract class _Assessment extends Assessment {
   @override
   @JsonKey(name: 'UserId')
   int? get userId;
-  @override //
+  @override
   @JsonKey(name: 'JobCategoryId')
   int? get jobCategoryId;
   @override
@@ -652,8 +647,7 @@ abstract class _Assessment extends Assessment {
   @override
   @JsonKey(name: 'Location')
   String? get location;
-  @override //
-// * only use for show UI
+  @override
   @JsonKey(name: 'JobCategoryName')
   String? get jobCategoryName;
   @override
@@ -671,7 +665,7 @@ abstract class _Assessment extends Assessment {
   @override
   @JsonKey(name: 'WorkerName')
   String? get workerName;
-  @override // *
+  @override
   @JsonKey(name: 'Status')
   int? get status;
   @override
