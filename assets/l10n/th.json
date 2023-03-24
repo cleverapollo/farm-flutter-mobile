@@ -74,6 +74,7 @@
   "groupScheme": "โครงการกลุ่ม",
   "groupSchemeManagement": "การจัดการโครงการกลุ่ม",
   "ha": "เฮกแตร์",
+  "iNameDeclareThatIWasAssessedByEmailOnDate": "I {name}, declare that I was assessed by {email} on {date}",
   "idNumber": "เลขประจำตัวประชาชน",
   "income": "รายได้",
   "incomplete": "ไม่สมบูรณ์",

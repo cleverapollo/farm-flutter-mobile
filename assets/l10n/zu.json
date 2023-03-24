@@ -74,6 +74,7 @@
   "groupScheme": "UHLELO LWEQEMBU",
   "groupSchemeManagement": "UKUPHATHWA KWEQEMBU",
   "ha": "AMAHETHA",
+  "iNameDeclareThatIWasAssessedByEmailOnDate": "I {name}, declare that I was assessed by {email} on {date}",
   "idNumber": "INOMBOLO YE ID",
   "income": "IMALI ENGENAYO",
   "incomplete": "AKUPHELELE",

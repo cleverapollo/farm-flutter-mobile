@@ -76,6 +76,7 @@ abstract class  LocaleKeys {
   static const groupScheme = 'groupScheme';
   static const groupSchemeManagement = 'groupSchemeManagement';
   static const ha = 'ha';
+  static const iNameDeclareThatIWasAssessedByEmailOnDate = 'iNameDeclareThatIWasAssessedByEmailOnDate';
   static const idNumber = 'idNumber';
   static const income = 'income';
   static const incomplete = 'incomplete';

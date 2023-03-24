@@ -1,5 +1,8 @@
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/screen/assessment/assessment_list_question_screen.dart';
+import 'package:cmo/ui/screen/assessment/assessment_signature_screen.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cmo/l10n/l10n.dart';
@@ -41,6 +44,7 @@ class AssessmentTile extends StatelessWidget {
               vertical: 4,
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Row(
                   children: [
@@ -133,6 +137,23 @@ class AssessmentTile extends StatelessWidget {
                   shouldAddPadding: false,
                   shouldShowDivider: false,
                   useFittedBox: false,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: CmoFilledButton(
+                    onTap: () {
+                      AssessmentSignatureScreen.push(context, data);
+                    },
+                    title: LocaleKeys.signature.tr(),
+                    leading: Padding(
+                      padding: const EdgeInsets.only(right: 4.0),
+                      child: Icon(
+                        IconsaxBold.add_circle,
+                        size: 18.0,
+                        color: context.colors.white,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

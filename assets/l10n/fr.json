@@ -72,6 +72,7 @@
   "groupScheme": "Schéma de groupe",
   "groupSchemeManagement": "Gestion du schéma de groupe",
   "ha": "Hectare",
+  "iNameDeclareThatIWasAssessedByEmailOnDate": "I {name}, declare that I was assessed by {email} on {date}",
   "idNumber": "Numéro de passeport ou d'identité",
   "income": "Revenu",
   "incomplete": "Incomplet",
