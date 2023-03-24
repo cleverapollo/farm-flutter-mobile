@@ -84,6 +84,7 @@ abstract class  LocaleKeys {
   static const information = 'information';
   static const internalAuditChecklist = 'internalAuditChecklist';
   static const jobDescription = 'jobDescription';
+  static const jobElement = 'jobElement';
   static const jobType = 'jobType';
   static const labourManagement = 'labourManagement';
   static const landingPage = 'landingPage';
@@ -132,6 +133,7 @@ abstract class  LocaleKeys {
   static const overdue = 'overdue';
   static const panMap = 'panMap';
   static const password = 'password';
+  static const pdca = 'pdca';
   static const phoneNumber = 'phoneNumber';
   static const pictures = 'pictures';
   static const plannedPlantDate = 'plannedPlantDate';
@@ -169,6 +171,7 @@ abstract class  LocaleKeys {
   static const siteName = 'siteName';
   static const slimf = 'slimf';
   static const speciesGroup = 'speciesGroup';
+  static const speqs = 'speqs';
   static const stakeholderManagement = 'stakeholderManagement';
   static const stakeholders = 'stakeholders';
   static const startAssessment = 'startAssessment';

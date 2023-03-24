@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:cmo/ui/theme/theme.dart';
 
 class CmoHeaderTile extends StatelessWidget {
-  const CmoHeaderTile({super.key, required this.title});
+  const CmoHeaderTile({super.key, required this.title, this.child});
 
   final String title;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +18,17 @@ class CmoHeaderTile extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(24, 0, 16, 0),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                title,
-                style: context.textStyles.bodyBold.white,
-              ),
+            child: Row(
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    title,
+                    style: context.textStyles.bodyBold.white,
+                  ),
+                ),
+                if (child != null) Expanded(child: child!),
+              ],
             ),
           ),
         ),

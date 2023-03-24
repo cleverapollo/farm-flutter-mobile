@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import 'package:cmo/env/env.dart';
@@ -12,7 +13,6 @@ import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
 import 'package:cmo/model/user_info.dart';
 import 'package:cmo/ui/snack/success.dart';
-import 'package:cmo/utils/logger.dart';
 
 typedef JsonData = Map<String, dynamic>;
 typedef JsonListData = List<dynamic>;
@@ -29,7 +29,7 @@ class CmoApiService {
       PrettyDioLogger(
         requestHeader: true,
         requestBody: true,
-        logPrint: (o) => logger.d('$o'),
+        logPrint: (o) => debugPrint('$o'),
       ),
     );
 

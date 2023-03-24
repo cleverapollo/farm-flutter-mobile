@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:isar/isar.dart';
 
-import 'package:cmo/model/assessment.dart';
 import 'package:cmo/model/model.dart';
 
 class CmoDatabaseService {
@@ -16,7 +15,6 @@ class CmoDatabaseService {
     final isar = await Isar.open([
       CompanySchema,
       AssessmentSchema,
-      QuestionAnswerSchema,
     ]);
     _database = isar;
     return isar;
@@ -41,21 +39,6 @@ class CmoDatabaseService {
   Future<List<Company>> getAllCachedCompanys() async {
     final db = await _db();
     return db.companys.where().findAll();
-  }
-
-  Future<int> cacheQuestionAnswer(QuestionAnswer item) async {
-    final db = await _db();
-    return db.questionAnswers.put(item);
-  }
-
-  Future<QuestionAnswer?> getCachedQuestionAnswer({required int id}) async {
-    final db = await _db();
-    return db.questionAnswers.get(id);
-  }
-
-  Future<List<QuestionAnswer>> getAllCachedQuestionAnswers() async {
-    final db = await _db();
-    return db.questionAnswers.where().findAll();
   }
 
   Future<int> cacheAssessment(Assessment item) async {

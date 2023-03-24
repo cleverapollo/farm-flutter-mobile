@@ -25,8 +25,14 @@ class $AssetsIconsGen {
   SvgGenImage get icArrowRight =>
       const SvgGenImage('assets/icons/ic_arrow_right.svg');
 
+  /// File path: assets/icons/ic_camera.svg
+  SvgGenImage get icCamera => const SvgGenImage('assets/icons/ic_camera.svg');
+
   /// File path: assets/icons/ic_close.svg
   SvgGenImage get icClose => const SvgGenImage('assets/icons/ic_close.svg');
+
+  /// File path: assets/icons/ic_comment.svg
+  SvgGenImage get icComment => const SvgGenImage('assets/icons/ic_comment.svg');
 
   /// File path: assets/icons/ic_drawer.svg
   SvgGenImage get icDrawer => const SvgGenImage('assets/icons/ic_drawer.svg');
@@ -69,7 +75,9 @@ class $AssetsIconsGen {
         icAdd,
         icArrowLeft,
         icArrowRight,
+        icCamera,
         icClose,
+        icComment,
         icDrawer,
         icLang,
         icLocation,

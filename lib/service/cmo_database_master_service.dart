@@ -47,6 +47,7 @@ class CmoDatabaseMasterService {
         ScheduleActivitySchema,
         WorkerSchema,
         CompanyQuestionSchema,
+        QuestionAnswerSchema,
       ],
       name: _databaseName,
     );
@@ -559,6 +560,21 @@ class CmoDatabaseMasterService {
     return listRemoveNull(ids);
   }
 
+  Future<int> cacheQuestionAnswer(QuestionAnswer item) async {
+    final db = await _db();
+    return db.questionAnswers.put(item);
+  }
+
+  Future<QuestionAnswer?> getCachedQuestionAnswer({required int id}) async {
+    final db = await _db();
+    return db.questionAnswers.get(id);
+  }
+
+  Future<List<QuestionAnswer>> getAllCachedQuestionAnswers() async {
+    final db = await _db();
+    return db.questionAnswers.where().findAll();
+  }
+
   Future<List<CompanyQuestion>>
       getQuestionsByCompanyIdAndJobCategoryIdAndAssessmentId(
     int? companyId,
@@ -572,7 +588,7 @@ class CmoDatabaseMasterService {
       final result = await db.companyQuestions
           .filter()
           .companyIdEqualTo(companyId)
-          .jobCategoryIdEqualTo(companyId)
+          .jobCategoryIdEqualTo(jobCategoryId)
           .isActiveEqualTo(true)
           .findAll();
       final questions = <CompanyQuestion>[];
@@ -614,7 +630,7 @@ class CmoDatabaseMasterService {
           question = question.copyWith(pdcaName: pdcaName);
         }
 
-        if (assessmentId != null) {
+        if (assessmentId != null && question.id != null) {
           final qA = await db.questionAnswers
               .filter()
               .questionIdEqualTo(question.id)
@@ -637,8 +653,8 @@ class CmoDatabaseMasterService {
       }
 
       return questions;
-    } catch (error) {
-      handleError(error);
+    } catch (error, s) {
+      handleError('$error $s');
     }
 
     return <CompanyQuestion>[];

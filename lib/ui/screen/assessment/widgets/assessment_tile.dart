@@ -1,4 +1,4 @@
-import 'package:cmo/ui/screen/assessment/assessment_question_screen.dart';
+import 'package:cmo/ui/screen/assessment/assessment_list_question_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +21,7 @@ class AssessmentTile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 12.0),
       child: CmoTappable(
         onTap: () {
-          AssessmentQuestionScreen.push(context, data);
+          AssessmentListQuestionScreen.push(context, data);
         },
         child: DecoratedBox(
           decoration: BoxDecoration(

@@ -76,3 +76,69 @@ class CmoFilledButton extends StatelessWidget {
     );
   }
 }
+
+class CmoCircelButton extends StatelessWidget {
+  const CmoCircelButton({
+    super.key,
+    required this.title,
+    this.color,
+  });
+
+  final String title;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: context.colors.grey),
+        shape: BoxShape.circle,
+        color: color,
+      ),
+      width: 45,
+      height: 45,
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: Center(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(title, style: context.textStyles.bodyNormal),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CmoCircelIconButton extends StatelessWidget {
+  const CmoCircelIconButton({
+    super.key,
+    required this.icon,
+    this.color,
+  });
+
+  final Widget icon;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: context.colors.grey),
+        shape: BoxShape.circle,
+        color: color,
+      ),
+      width: 30,
+      height: 30,
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: Center(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: icon,
+          ),
+        ),
+      ),
+    );
+  }
+}
