@@ -3,6 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 
+enum ArrowDirection {
+  left,
+  right,
+  up,
+  down,
+}
+
 class CmoOptionTile extends StatelessWidget {
   const CmoOptionTile({
     super.key,
@@ -12,7 +19,9 @@ class CmoOptionTile extends StatelessWidget {
     this.shouldAddPadding = true,
     this.shouldShowArrow = true,
     this.shouldShowDivider = true,
+    this.shouldShowDividerTop = false,
     this.useFittedBox = true,
+    this.arrowDirection = ArrowDirection.right,
   });
 
   final String title;
@@ -27,12 +36,45 @@ class CmoOptionTile extends StatelessWidget {
 
   final bool shouldShowDivider;
 
+  final bool shouldShowDividerTop;
+
   final bool useFittedBox;
+
+  final ArrowDirection arrowDirection;
 
   @override
   Widget build(BuildContext context) {
+    Widget arrow = Assets.icons.icArrowRight.svg();
+
+    if (arrowDirection == ArrowDirection.left) {
+      arrow = RotatedBox(
+        quarterTurns: 2,
+        child: Assets.icons.icArrowRight.svg(),
+      );
+    }
+    if (arrowDirection == ArrowDirection.up) {
+      arrow = RotatedBox(
+        quarterTurns: 3,
+        child: Assets.icons.icArrowRight.svg(),
+      );
+    }
+    if (arrowDirection == ArrowDirection.down) {
+      arrow = RotatedBox(
+        quarterTurns: 1,
+        child: Assets.icons.icArrowRight.svg(),
+      );
+    }
+
     return Column(
       children: [
+        if (shouldShowDivider && shouldShowDividerTop)
+          Divider(
+            height: 1,
+            thickness: 1,
+            indent: 24,
+            endIndent: 24,
+            color: context.colors.grey,
+          ),
         SizedBox(
           height: height,
           child: Row(
@@ -65,7 +107,7 @@ class CmoOptionTile extends StatelessWidget {
                 ),
               SizedBox(
                 width: 20,
-                child: shouldShowArrow ? Assets.icons.icArrowRight.svg() : null,
+                child: shouldShowArrow ? arrow : null,
               ),
               if (shouldAddPadding) const SizedBox(width: 24),
             ],

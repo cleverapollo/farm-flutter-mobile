@@ -3,6 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screen/assessment/assessment_raised_comment.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
@@ -160,9 +161,19 @@ class _AssessmentListQuestionScreenState
                               runSpacing: 8,
                               children: [
                                 for (final compliance in state.compliances)
-                                  CmoCircelButton(
-                                    title: '${compliance.complianceName}',
-                                    // color: context.colors.yellow,
+                                  CmoTappable(
+                                    onTap: () {
+                                      AssessmentRaiseComment.push(
+                                        context,
+                                        widget.assessment,
+                                        question,
+                                        compliance,
+                                      );
+                                    },
+                                    child: CmoCircelButton(
+                                      title: '${compliance.complianceName}',
+                                      // color: context.colors.yellow,
+                                    ),
                                   ),
                               ],
                             ),
