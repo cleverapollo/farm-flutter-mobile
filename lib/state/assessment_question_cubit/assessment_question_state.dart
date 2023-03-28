@@ -12,6 +12,8 @@ class AssessmentQuestionState extends Equatable {
     this.impactOns = const <ImpactOn>[],
     this.pdcas = const <Pdca>[],
     this.jobElements = const <JobElement>[],
+    this.questionPhotos = const <QuestionPhoto>[],
+    this.questionComments = const <QuestionComment>[],
     this.speqsFilterId = -1,
     this.impactOnFilterId = -1,
     this.pdcaFilterId = -1,
@@ -25,6 +27,8 @@ class AssessmentQuestionState extends Equatable {
   final List<Compliance> compliances;
   final List<RejectReason> rejectReasons;
   final List<QuestionAnswer> answers;
+  final List<QuestionPhoto> questionPhotos;
+  final List<QuestionComment> questionComments;
 
   final List<Speqs> speqss;
   final List<ImpactOn> impactOns;
@@ -47,6 +51,8 @@ class AssessmentQuestionState extends Equatable {
     List<ImpactOn>? impactOns,
     List<Pdca>? pdcas,
     List<JobElement>? jobElements,
+    List<QuestionPhoto>? questionPhotos,
+    List<QuestionComment>? questionComments,
     int? speqsFilterId,
     int? impactOnFilterId,
     int? pdcaFilterId,
@@ -64,6 +70,8 @@ class AssessmentQuestionState extends Equatable {
       impactOns: impactOns ?? this.impactOns,
       pdcas: pdcas ?? this.pdcas,
       jobElements: jobElements ?? this.jobElements,
+      questionPhotos: questionPhotos ?? this.questionPhotos,
+      questionComments: questionComments ?? this.questionComments,
       speqsFilterId: speqsFilterId ?? this.speqsFilterId,
       impactOnFilterId: impactOnFilterId ?? this.impactOnFilterId,
       pdcaFilterId: pdcaFilterId ?? this.pdcaFilterId,
@@ -84,6 +92,8 @@ class AssessmentQuestionState extends Equatable {
         impactOns,
         pdcas,
         jobElements,
+        questionPhotos,
+        questionComments,
         speqsFilterId,
         impactOnFilterId,
         pdcaFilterId,

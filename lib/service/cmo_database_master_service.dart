@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:cmo/model/data/question_comment.dart';
+import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
 
@@ -51,6 +52,7 @@ class CmoDatabaseMasterService {
         QuestionAnswerSchema,
         QuestionCommentSchema,
         AssessmentSchema,
+        QuestionPhotoSchema,
       ],
       name: _databaseName,
     );
@@ -777,6 +779,13 @@ class CmoDatabaseMasterService {
     }
   }
 
+  Future<int> cacheQuestionComment(
+    QuestionComment item,
+  ) async {
+    final db = await _db();
+    return db.writeTxn(() => db.questionComments.put(item));
+  }
+
   Future<List<QuestionComment>> getQuestionComments(
     int assessmentId,
     int questionId,
@@ -801,6 +810,84 @@ class CmoDatabaseMasterService {
   ) async {
     final db = await _db();
     return db.writeTxn(() => db.assessments.put(item));
+  }
+
+  Future<int> cacheQuestionPhoto(
+    QuestionPhoto item,
+  ) async {
+    final db = await _db();
+    return db.writeTxn(() => db.questionPhotos.put(item));
+  }
+
+  Future<QuestionPhoto?> getQuestionPhotoByPhotoPath(String? photoPath) async {
+    if (photoPath == null) return null;
+    final db = await _db();
+    return db.questionPhotos.filter().photoPathEqualTo(photoPath).findFirst();
+  }
+
+  Future<void> removeQuestionPhoto(QuestionPhoto photo) async {
+    final db = await _db();
+    try {
+      final path = photo.photoPath;
+      final photoFind = await getQuestionPhotoByPhotoPath(path);
+      if (photoFind == null) return;
+      return db.writeTxn(() => db.questionPhotos.delete(photoFind.id));
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  Future<List<QuestionPhoto>> getQuestionPhotos() async {
+    final db = await _db();
+
+    return db.questionPhotos
+        .filter()
+        .photoPathIsNotNull()
+        .photoPathIsNotEmpty()
+        .findAll();
+  }
+
+  Future<List<QuestionPhoto>> getQuestionPhotosByAssessmentId(
+      int? assessmentId) async {
+    final db = await _db();
+
+    return db.questionPhotos
+        .filter()
+        .assessmentIdIsNotNull()
+        .assessmentIdEqualTo(assessmentId)
+        .photoPathIsNotNull()
+        .photoPathIsNotEmpty()
+        .findAll();
+  }
+
+  Future<List<QuestionComment>> getQuestionCommentsByAssessmentId(
+    int? assessmentId,
+  ) async {
+    final db = await _db();
+
+    return db.questionComments
+        .filter()
+        .assessmentIdIsNotNull()
+        .assessmentIdEqualTo(assessmentId)
+        .findAll();
+  }
+
+  Future<QuestionComment?> getQuestionCommentByComment(String? comment) async {
+    if (comment == null) return null;
+    final db = await _db();
+    return db.questionComments.filter().commentEqualTo(comment).findFirst();
+  }
+
+  Future<void> removeQuestionComment(QuestionComment comment) async {
+    final db = await _db();
+    try {
+      final commentData = comment.comment;
+      final find = await getQuestionCommentByComment(commentData);
+      if (find == null) return;
+      return db.writeTxn(() => db.questionPhotos.delete(find.id));
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   Future<FileSystemEntity?> deleteAll() async {

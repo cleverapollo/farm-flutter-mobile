@@ -1,19 +1,34 @@
+import 'dart:io';
+
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/service/image_picker_service.dart';
+import 'package:cmo/state/assessment_question_cubit/assessment_question_cubit.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class AssessmentListPhotoScreen extends StatefulWidget {
-  const AssessmentListPhotoScreen({super.key});
+  const AssessmentListPhotoScreen({
+    super.key,
+    required this.questionId,
+  });
 
-  static void push(BuildContext context) {
+  static void push(
+    BuildContext context, {
+    required int? questionId,
+  }) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const AssessmentListPhotoScreen(),
+        builder: (_) => AssessmentListPhotoScreen(questionId: questionId),
       ),
     );
   }
+
+  final int? questionId;
 
   @override
   State<AssessmentListPhotoScreen> createState() =>
@@ -23,28 +38,88 @@ class AssessmentListPhotoScreen extends StatefulWidget {
 class _AssessmentListPhotoScreenState extends State<AssessmentListPhotoScreen> {
   final ImagePickerService _imagePickerService = ImagePickerService();
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Future<void> _selectPhotoFromCamera() async {
     final croppedImage = await _imagePickerService.pickImageFromCamera();
-    if (croppedImage != null) {}
+    if (croppedImage != null) {
+      if (context.mounted) {
+        await context.read<AssessmentQuestionCubit>().addPhoto(
+              questionId: widget.questionId,
+              photoPath: croppedImage.path,
+            );
+      }
+    }
   }
 
   Future<void> _selectPhotoFromGallery() async {
     final croppedImage = await _imagePickerService.pickImageFromGallery();
-    if (croppedImage != null) {}
+    if (croppedImage != null) {
+      if (context.mounted) {
+        await context.read<AssessmentQuestionCubit>().addPhoto(
+              questionId: widget.questionId,
+              photoPath: croppedImage.path,
+            );
+      }
+    }
+  }
+
+  void removeImage(QuestionPhoto photo) {
+    context.read<AssessmentQuestionCubit>().removePhoto(photo: photo);
   }
 
   @override
   Widget build(BuildContext context) {
+    final images = context
+        .watch<AssessmentQuestionCubit>()
+        .state
+        .questionPhotos
+        .where(
+          (e) => e.questionId == widget.questionId,
+        )
+        .toList();
+
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.takePhoto.tr(),
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
-      body: Column(
-        children: const [
-          Placeholder(),
-        ],
+      body: ListView.separated(
+        itemCount: images.length,
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        itemBuilder: (BuildContext context, int index) {
+          if (images[index].photoPath == null) return const SizedBox();
+          return SizedBox(
+            height: 200,
+            child: CmoCard(
+              shouldShowArrowRight: false,
+              content: [
+                // CmoCardHeader(
+                //   title: images[index].path.split('/').lastOrNull ?? '',
+                // ),
+                const SizedBox(height: 6),
+                Expanded(
+                  child: Image.file(
+                    File(images[index].photoPath!),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                CmoFilledButton(
+                  onTap: () => removeImage(images[index]),
+                  title: LocaleKeys.remove.tr(),
+                ),
+              ],
+            ),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return const SizedBox(height: 12);
+        },
       ),
       persistentFooterButtons: [
         CmoFilledButton(

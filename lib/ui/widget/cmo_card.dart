@@ -7,9 +7,11 @@ class CmoCard extends StatelessWidget {
   const CmoCard({
     super.key,
     this.content = const [],
+    this.shouldShowArrowRight = true,
   });
 
   final List<Widget> content;
+  final bool shouldShowArrowRight;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class CmoCard extends StatelessWidget {
             child: ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 76),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 0, 0, 6),
+                padding: const EdgeInsets.fromLTRB(6, 0, 0, 6),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: content,
@@ -39,9 +41,12 @@ class CmoCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 12),
-          Assets.icons.icArrowRight.svgWhite,
-          const SizedBox(width: 12),
+          if (shouldShowArrowRight) ...[
+            const SizedBox(width: 12),
+            Assets.icons.icArrowRight.svgWhite,
+            const SizedBox(width: 6),
+          ],
+            const SizedBox(width: 6),
         ],
       ),
     );

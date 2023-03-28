@@ -3,6 +3,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/data/question_comment.dart';
+import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:equatable/equatable.dart';
@@ -210,6 +211,14 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
           .getJobElementsByJobCategoryId(assessment.jobCategoryId);
       emit(state.copyWith(jobElements: jobElements));
 
+      final questionPhotos = await cmoDatabaseMasterService
+          .getQuestionPhotosByAssessmentId(assessment.assessmentId);
+      emit(state.copyWith(questionPhotos: questionPhotos));
+
+      final questionComments = await cmoDatabaseMasterService
+          .getQuestionCommentsByAssessmentId(assessment.assessmentId);
+      emit(state.copyWith(questionComments: questionComments));
+
       logger.d('Get question answers');
       final answers = await cmoDatabaseMasterService
           .getQuestionAnswersByCompanyIdAndJobCategoryIdAndAssessmentId(
@@ -232,6 +241,8 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
   ) async {
     final answer = state.answers
         .firstWhereOrNull((e) => e.questionId == question.questionId);
+
+    await cmoDatabaseMasterService.cacheQuestionComment(comment);
 
     await checkComplianceHasRejectReason(
       compliance.hasRejectReason ?? false,
@@ -345,6 +356,78 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
         }
       }
     }
+  }
+
+  Future<QuestionPhoto?> addPhoto({
+    required int? questionId,
+    required String photoPath,
+  }) async {
+    final assessment = state.assessment;
+    final photo = QuestionPhoto(
+      assessmentId: assessment?.assessmentId,
+      photoPath: photoPath,
+      questionId: questionId,
+      photoId: null,
+    );
+    await cmoDatabaseMasterService.cacheQuestionPhoto(photo);
+    final photoData =
+        await cmoDatabaseMasterService.getQuestionPhotoByPhotoPath(photoPath);
+    if (photoData != null) {
+      emit(
+        state.copyWith(
+          questionPhotos: [
+            ...state.questionPhotos,
+            photoData,
+          ],
+        ),
+      );
+    }
+    return photoData;
+  }
+
+  Future<void> removePhoto({
+    required QuestionPhoto photo,
+  }) async {
+    await cmoDatabaseMasterService.removeQuestionPhoto(photo);
+    final questionPhotos = await cmoDatabaseMasterService
+        .getQuestionPhotosByAssessmentId(state.assessment?.assessmentId);
+    emit(state.copyWith(questionPhotos: questionPhotos));
+  }
+
+  Future<QuestionComment?> addComment({
+    required int? questionId,
+    required String commentValue,
+  }) async {
+    final assessment = state.assessment;
+    final comment = QuestionComment(
+      assessmentId: assessment?.assessmentId,
+      questionId: questionId,
+      comment: commentValue,
+      commentId: null,
+    );
+    await cmoDatabaseMasterService.cacheQuestionComment(comment);
+    final commentData = await cmoDatabaseMasterService
+        .getQuestionCommentByComment(commentValue);
+    if (commentData != null) {
+      emit(
+        state.copyWith(
+          questionComments: [
+            ...state.questionComments,
+            commentData,
+          ],
+        ),
+      );
+    }
+    return commentData;
+  }
+
+  Future<void> removeComment({
+    required QuestionComment comment,
+  }) async {
+    await cmoDatabaseMasterService.removeQuestionComment(comment);
+    final questionPhotos = await cmoDatabaseMasterService
+        .getQuestionPhotosByAssessmentId(state.assessment?.assessmentId);
+    emit(state.copyWith(questionPhotos: questionPhotos));
   }
 
   void handleError(Object error) {

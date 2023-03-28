@@ -49,12 +49,16 @@ class _AssessmentListQuestionScreenState
     });
   }
 
-  Future<void> _viewListComment() async {
-    AssessmentListCommentScreen.push(context);
+  Future<void> _viewListComment({
+    required int? questionId,
+  }) async {
+    AssessmentListCommentScreen.push(context, questionId: questionId);
   }
 
-  Future<void> _viewListPhoto() async {
-    AssessmentListPhotoScreen.push(context);
+  Future<void> _viewListPhoto({
+    required int? questionId,
+  }) async {
+    AssessmentListPhotoScreen.push(context, questionId: questionId);
   }
 
   Future<void> _addAnswer(
@@ -76,6 +80,13 @@ class _AssessmentListQuestionScreenState
         compliance,
         rejectReasons,
       );
+
+      if (context.mounted) {
+        await context.read<AssessmentQuestionCubit>().addComment(
+              questionId: question.questionId,
+              commentValue: comment?.comment ?? '',
+            );
+      }
 
       if (context.mounted && comment != null) {
         await context.read<AssessmentQuestionCubit>().addCommentFromReasonCode(
@@ -174,25 +185,31 @@ class _AssessmentListQuestionScreenState
                         Assets.icons.icCamera.svgWhite,
                         Padding(
                           padding: const EdgeInsets.only(left: 6.0),
-                          child: Text(
-                            '4/57',
-                            style: context.textStyles.bodyBold.white,
+                          child: BlocSelector<AssessmentQuestionCubit,
+                              AssessmentQuestionState, int>(
+                            selector: (state) => state.questionPhotos.length,
+                            builder: (context, lengthPhoto) => Text(
+                              '$lengthPhoto',
+                              style: context.textStyles.bodyBold.white,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  BlocSelector<AssessmentQuestionCubit, AssessmentQuestionState,
-                      int>(
-                    selector: (state) => state.questions.length,
-                    builder: (context, questionsLength) => BlocSelector<
-                        AssessmentQuestionCubit, AssessmentQuestionState, int>(
-                      selector: (state) => state.answers.length,
-                      builder: (context, answersLength) => Text(
-                        '$answersLength/$questionsLength',
-                        style: context.textStyles.bodyBold.white,
+                  Row(
+                    children: [
+                      Assets.icons.icComment.svgWhite,
+                      const SizedBox(width: 6),
+                      BlocSelector<AssessmentQuestionCubit,
+                          AssessmentQuestionState, int>(
+                        selector: (state) => state.questionComments.length,
+                        builder: (context, questionCommentsLength) => Text(
+                          '$questionCommentsLength',
+                          style: context.textStyles.bodyBold.white,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
@@ -262,23 +279,53 @@ class _AssessmentListQuestionScreenState
                           Row(
                             children: [
                               CmoTappable(
-                                onTap: () => _viewListPhoto(),
-                                child: CmoCircelIconButton(
-                                  icon: SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: Assets.icons.icCamera.svgBlack,
+                                onTap: () => _viewListPhoto(
+                                  questionId: question.questionId,
+                                ),
+                                child: BlocSelector<AssessmentQuestionCubit,
+                                    AssessmentQuestionState, bool>(
+                                  selector: (state) => state.questionPhotos
+                                      .where(
+                                        (e) =>
+                                            e.questionId == question.questionId,
+                                      )
+                                      .isNotBlank,
+                                  builder: (context, havePhoto) =>
+                                      CmoCircelIconButton(
+                                    color: havePhoto
+                                        ? context.colors.green
+                                        : Colors.transparent,
+                                    icon: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: Assets.icons.icCamera.svgBlack,
+                                    ),
                                   ),
                                 ),
                               ),
                               const SizedBox(width: 16),
                               CmoTappable(
-                                onTap: () => _viewListComment(),
-                                child: CmoCircelIconButton(
-                                  icon: SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: Assets.icons.icComment.svgBlack,
+                                onTap: () => _viewListComment(
+                                  questionId: question.questionId,
+                                ),
+                                child: BlocSelector<AssessmentQuestionCubit,
+                                    AssessmentQuestionState, bool>(
+                                  selector: (state) => state.questionComments
+                                      .where(
+                                        (e) =>
+                                            e.questionId == question.questionId,
+                                      )
+                                      .isNotBlank,
+                                  builder: (context, haveComment) =>
+                                      CmoCircelIconButton(
+                                    color: haveComment
+                                        ? context.colors.green
+                                        : Colors.transparent,
+                                    icon: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: Assets.icons.icComment.svgBlack,
+                                    ),
                                   ),
                                 ),
                               )
