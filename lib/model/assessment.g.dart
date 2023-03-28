@@ -27,103 +27,108 @@ const AssessmentSchema = CollectionSchema(
       name: r'companyId',
       type: IsarType.long,
     ),
-    r'contractorId': PropertySchema(
+    r'completed': PropertySchema(
       id: 2,
+      name: r'completed',
+      type: IsarType.bool,
+    ),
+    r'contractorId': PropertySchema(
+      id: 3,
       name: r'contractorId',
       type: IsarType.long,
     ),
     r'contractorName': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'contractorName',
       type: IsarType.string,
     ),
     r'createDT': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'createDT',
       type: IsarType.string,
     ),
     r'isActive': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'isActive',
       type: IsarType.bool,
     ),
     r'jobCategoryId': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'jobCategoryId',
       type: IsarType.long,
     ),
     r'jobCategoryName': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'jobCategoryName',
       type: IsarType.string,
     ),
     r'jobDescriptionId': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'jobDescriptionId',
       type: IsarType.long,
     ),
     r'jobDescriptionName': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'jobDescriptionName',
       type: IsarType.string,
     ),
     r'lat': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'lat',
       type: IsarType.double,
     ),
     r'location': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'location',
       type: IsarType.string,
     ),
     r'long': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'long',
       type: IsarType.double,
     ),
     r'plantationId': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'plantationId',
       type: IsarType.long,
     ),
     r'plantationName': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'plantationName',
       type: IsarType.string,
     ),
     r'status': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'status',
       type: IsarType.long,
     ),
     r'teamId': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'teamId',
       type: IsarType.long,
     ),
     r'teamName': PropertySchema(
-      id: 17,
+      id: 18,
       name: r'teamName',
       type: IsarType.string,
     ),
     r'updateDT': PropertySchema(
-      id: 18,
+      id: 19,
       name: r'updateDT',
       type: IsarType.string,
     ),
     r'userId': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'userId',
       type: IsarType.long,
     ),
     r'workerId': PropertySchema(
-      id: 20,
+      id: 21,
       name: r'workerId',
       type: IsarType.string,
     ),
     r'workerName': PropertySchema(
-      id: 21,
+      id: 22,
       name: r'workerName',
       type: IsarType.string,
     )
@@ -219,26 +224,27 @@ void _assessmentSerialize(
 ) {
   writer.writeLong(offsets[0], object.assessmentId);
   writer.writeLong(offsets[1], object.companyId);
-  writer.writeLong(offsets[2], object.contractorId);
-  writer.writeString(offsets[3], object.contractorName);
-  writer.writeString(offsets[4], object.createDT);
-  writer.writeBool(offsets[5], object.isActive);
-  writer.writeLong(offsets[6], object.jobCategoryId);
-  writer.writeString(offsets[7], object.jobCategoryName);
-  writer.writeLong(offsets[8], object.jobDescriptionId);
-  writer.writeString(offsets[9], object.jobDescriptionName);
-  writer.writeDouble(offsets[10], object.lat);
-  writer.writeString(offsets[11], object.location);
-  writer.writeDouble(offsets[12], object.long);
-  writer.writeLong(offsets[13], object.plantationId);
-  writer.writeString(offsets[14], object.plantationName);
-  writer.writeLong(offsets[15], object.status);
-  writer.writeLong(offsets[16], object.teamId);
-  writer.writeString(offsets[17], object.teamName);
-  writer.writeString(offsets[18], object.updateDT);
-  writer.writeLong(offsets[19], object.userId);
-  writer.writeString(offsets[20], object.workerId);
-  writer.writeString(offsets[21], object.workerName);
+  writer.writeBool(offsets[2], object.completed);
+  writer.writeLong(offsets[3], object.contractorId);
+  writer.writeString(offsets[4], object.contractorName);
+  writer.writeString(offsets[5], object.createDT);
+  writer.writeBool(offsets[6], object.isActive);
+  writer.writeLong(offsets[7], object.jobCategoryId);
+  writer.writeString(offsets[8], object.jobCategoryName);
+  writer.writeLong(offsets[9], object.jobDescriptionId);
+  writer.writeString(offsets[10], object.jobDescriptionName);
+  writer.writeDouble(offsets[11], object.lat);
+  writer.writeString(offsets[12], object.location);
+  writer.writeDouble(offsets[13], object.long);
+  writer.writeLong(offsets[14], object.plantationId);
+  writer.writeString(offsets[15], object.plantationName);
+  writer.writeLong(offsets[16], object.status);
+  writer.writeLong(offsets[17], object.teamId);
+  writer.writeString(offsets[18], object.teamName);
+  writer.writeString(offsets[19], object.updateDT);
+  writer.writeLong(offsets[20], object.userId);
+  writer.writeString(offsets[21], object.workerId);
+  writer.writeString(offsets[22], object.workerName);
 }
 
 Assessment _assessmentDeserialize(
@@ -250,26 +256,27 @@ Assessment _assessmentDeserialize(
   final object = Assessment(
     assessmentId: reader.readLongOrNull(offsets[0]),
     companyId: reader.readLongOrNull(offsets[1]),
-    contractorId: reader.readLongOrNull(offsets[2]),
-    contractorName: reader.readStringOrNull(offsets[3]),
-    createDT: reader.readStringOrNull(offsets[4]),
-    isActive: reader.readBoolOrNull(offsets[5]),
-    jobCategoryId: reader.readLongOrNull(offsets[6]),
-    jobCategoryName: reader.readStringOrNull(offsets[7]),
-    jobDescriptionId: reader.readLongOrNull(offsets[8]),
-    jobDescriptionName: reader.readStringOrNull(offsets[9]),
-    lat: reader.readDoubleOrNull(offsets[10]),
-    location: reader.readStringOrNull(offsets[11]),
-    long: reader.readDoubleOrNull(offsets[12]),
-    plantationId: reader.readLongOrNull(offsets[13]),
-    plantationName: reader.readStringOrNull(offsets[14]),
-    status: reader.readLongOrNull(offsets[15]),
-    teamId: reader.readLongOrNull(offsets[16]),
-    teamName: reader.readStringOrNull(offsets[17]),
-    updateDT: reader.readStringOrNull(offsets[18]),
-    userId: reader.readLongOrNull(offsets[19]),
-    workerId: reader.readStringOrNull(offsets[20]),
-    workerName: reader.readStringOrNull(offsets[21]),
+    completed: reader.readBoolOrNull(offsets[2]),
+    contractorId: reader.readLongOrNull(offsets[3]),
+    contractorName: reader.readStringOrNull(offsets[4]),
+    createDT: reader.readStringOrNull(offsets[5]),
+    isActive: reader.readBoolOrNull(offsets[6]),
+    jobCategoryId: reader.readLongOrNull(offsets[7]),
+    jobCategoryName: reader.readStringOrNull(offsets[8]),
+    jobDescriptionId: reader.readLongOrNull(offsets[9]),
+    jobDescriptionName: reader.readStringOrNull(offsets[10]),
+    lat: reader.readDoubleOrNull(offsets[11]),
+    location: reader.readStringOrNull(offsets[12]),
+    long: reader.readDoubleOrNull(offsets[13]),
+    plantationId: reader.readLongOrNull(offsets[14]),
+    plantationName: reader.readStringOrNull(offsets[15]),
+    status: reader.readLongOrNull(offsets[16]),
+    teamId: reader.readLongOrNull(offsets[17]),
+    teamName: reader.readStringOrNull(offsets[18]),
+    updateDT: reader.readStringOrNull(offsets[19]),
+    userId: reader.readLongOrNull(offsets[20]),
+    workerId: reader.readStringOrNull(offsets[21]),
+    workerName: reader.readStringOrNull(offsets[22]),
   );
   return object;
 }
@@ -286,44 +293,46 @@ P _assessmentDeserializeProp<P>(
     case 1:
       return (reader.readLongOrNull(offset)) as P;
     case 2:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 7:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 8:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 9:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 10:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 11:
-      return (reader.readStringOrNull(offset)) as P;
-    case 12:
       return (reader.readDoubleOrNull(offset)) as P;
-    case 13:
-      return (reader.readLongOrNull(offset)) as P;
-    case 14:
+    case 12:
       return (reader.readStringOrNull(offset)) as P;
-    case 15:
+    case 13:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 14:
       return (reader.readLongOrNull(offset)) as P;
+    case 15:
+      return (reader.readStringOrNull(offset)) as P;
     case 16:
       return (reader.readLongOrNull(offset)) as P;
     case 17:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 18:
       return (reader.readStringOrNull(offset)) as P;
     case 19:
-      return (reader.readLongOrNull(offset)) as P;
-    case 20:
       return (reader.readStringOrNull(offset)) as P;
+    case 20:
+      return (reader.readLongOrNull(offset)) as P;
     case 21:
+      return (reader.readStringOrNull(offset)) as P;
+    case 22:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -561,6 +570,34 @@ extension AssessmentQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      completedIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'completed',
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      completedIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'completed',
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition> completedEqualTo(
+      bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'completed',
+        value: value,
       ));
     });
   }
@@ -2864,6 +2901,18 @@ extension AssessmentQuerySortBy
     });
   }
 
+  QueryBuilder<Assessment, Assessment, QAfterSortBy> sortByCompleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'completed', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterSortBy> sortByCompletedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'completed', Sort.desc);
+    });
+  }
+
   QueryBuilder<Assessment, Assessment, QAfterSortBy> sortByContractorId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'contractorId', Sort.asc);
@@ -3134,6 +3183,18 @@ extension AssessmentQuerySortThenBy
   QueryBuilder<Assessment, Assessment, QAfterSortBy> thenByCompanyIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'companyId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterSortBy> thenByCompleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'completed', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterSortBy> thenByCompletedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'completed', Sort.desc);
     });
   }
 
@@ -3410,6 +3471,12 @@ extension AssessmentQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Assessment, Assessment, QDistinct> distinctByCompleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'completed');
+    });
+  }
+
   QueryBuilder<Assessment, Assessment, QDistinct> distinctByContractorId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'contractorId');
@@ -3565,6 +3632,12 @@ extension AssessmentQueryProperty
     });
   }
 
+  QueryBuilder<Assessment, bool?, QQueryOperations> completedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'completed');
+    });
+  }
+
   QueryBuilder<Assessment, int?, QQueryOperations> contractorIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'contractorId');
@@ -3713,6 +3786,7 @@ _$_Assessment _$$_AssessmentFromJson(Map<String, dynamic> json) =>
       teamName: json['TeamName'] as String?,
       workerName: json['WorkerName'] as String?,
       status: json['Status'] as int?,
+      completed: json['Completed'] as bool?,
       isActive: json['IsActive'] as bool?,
       createDT: json['CreateDT'] as String?,
       updateDT: json['UpdateDT'] as String?,
@@ -3739,6 +3813,7 @@ Map<String, dynamic> _$$_AssessmentToJson(_$_Assessment instance) =>
       'TeamName': instance.teamName,
       'WorkerName': instance.workerName,
       'Status': instance.status,
+      'Completed': instance.completed,
       'IsActive': instance.isActive,
       'CreateDT': instance.createDT,
       'UpdateDT': instance.updateDT,

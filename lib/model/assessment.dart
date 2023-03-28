@@ -46,6 +46,7 @@ class Assessment with _$Assessment {
     @JsonKey(name: 'TeamName') String? teamName,
     @JsonKey(name: 'WorkerName') String? workerName,
     @JsonKey(name: 'Status') int? status,
+    @JsonKey(name: 'Completed') bool? completed,
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,

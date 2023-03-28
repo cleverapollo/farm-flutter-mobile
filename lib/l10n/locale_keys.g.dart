@@ -47,6 +47,7 @@ abstract class  LocaleKeys {
   static const createWorker = 'createWorker';
   static const created = 'created';
   static const criteria = 'criteria';
+  static const cropImage = 'cropImage';
   static const dashboard = 'dashboard';
   static const date = 'date';
   static const dateOfBirth = 'dateOfBirth';
@@ -154,6 +155,7 @@ abstract class  LocaleKeys {
   static const reason = 'reason';
   static const registerCaseManagement = 'registerCaseManagement';
   static const registers = 'registers';
+  static const remove = 'remove';
   static const resourceManagementUnit = 'resourceManagementUnit';
   static const retake = 'retake';
   static const rotation = 'rotation';

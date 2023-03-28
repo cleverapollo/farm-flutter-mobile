@@ -58,6 +58,8 @@ mixin _$Assessment {
   String? get workerName => throw _privateConstructorUsedError;
   @JsonKey(name: 'Status')
   int? get status => throw _privateConstructorUsedError;
+  @JsonKey(name: 'Completed')
+  bool? get completed => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
   @JsonKey(name: 'CreateDT')
@@ -97,6 +99,7 @@ abstract class $AssessmentCopyWith<$Res> {
       @JsonKey(name: 'TeamName') String? teamName,
       @JsonKey(name: 'WorkerName') String? workerName,
       @JsonKey(name: 'Status') int? status,
+      @JsonKey(name: 'Completed') bool? completed,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'CreateDT') String? createDT,
       @JsonKey(name: 'UpdateDT') String? updateDT});
@@ -134,6 +137,7 @@ class _$AssessmentCopyWithImpl<$Res, $Val extends Assessment>
     Object? teamName = freezed,
     Object? workerName = freezed,
     Object? status = freezed,
+    Object? completed = freezed,
     Object? isActive = freezed,
     Object? createDT = freezed,
     Object? updateDT = freezed,
@@ -215,6 +219,10 @@ class _$AssessmentCopyWithImpl<$Res, $Val extends Assessment>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as int?,
+      completed: freezed == completed
+          ? _value.completed
+          : completed // ignore: cast_nullable_to_non_nullable
+              as bool?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -259,6 +267,7 @@ abstract class _$$_AssessmentCopyWith<$Res>
       @JsonKey(name: 'TeamName') String? teamName,
       @JsonKey(name: 'WorkerName') String? workerName,
       @JsonKey(name: 'Status') int? status,
+      @JsonKey(name: 'Completed') bool? completed,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'CreateDT') String? createDT,
       @JsonKey(name: 'UpdateDT') String? updateDT});
@@ -294,6 +303,7 @@ class __$$_AssessmentCopyWithImpl<$Res>
     Object? teamName = freezed,
     Object? workerName = freezed,
     Object? status = freezed,
+    Object? completed = freezed,
     Object? isActive = freezed,
     Object? createDT = freezed,
     Object? updateDT = freezed,
@@ -375,6 +385,10 @@ class __$$_AssessmentCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as int?,
+      completed: freezed == completed
+          ? _value.completed
+          : completed // ignore: cast_nullable_to_non_nullable
+              as bool?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -414,6 +428,7 @@ class _$_Assessment extends _Assessment {
       @JsonKey(name: 'TeamName') this.teamName,
       @JsonKey(name: 'WorkerName') this.workerName,
       @JsonKey(name: 'Status') this.status,
+      @JsonKey(name: 'Completed') this.completed,
       @JsonKey(name: 'IsActive') this.isActive,
       @JsonKey(name: 'CreateDT') this.createDT,
       @JsonKey(name: 'UpdateDT') this.updateDT})
@@ -480,6 +495,9 @@ class _$_Assessment extends _Assessment {
   @JsonKey(name: 'Status')
   final int? status;
   @override
+  @JsonKey(name: 'Completed')
+  final bool? completed;
+  @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
   @override
@@ -491,7 +509,7 @@ class _$_Assessment extends _Assessment {
 
   @override
   String toString() {
-    return 'Assessment(assessmentId: $assessmentId, companyId: $companyId, userId: $userId, jobCategoryId: $jobCategoryId, jobDescriptionId: $jobDescriptionId, plantationId: $plantationId, contractorId: $contractorId, teamId: $teamId, workerId: $workerId, lat: $lat, long: $long, location: $location, jobCategoryName: $jobCategoryName, jobDescriptionName: $jobDescriptionName, plantationName: $plantationName, contractorName: $contractorName, teamName: $teamName, workerName: $workerName, status: $status, isActive: $isActive, createDT: $createDT, updateDT: $updateDT)';
+    return 'Assessment(assessmentId: $assessmentId, companyId: $companyId, userId: $userId, jobCategoryId: $jobCategoryId, jobDescriptionId: $jobDescriptionId, plantationId: $plantationId, contractorId: $contractorId, teamId: $teamId, workerId: $workerId, lat: $lat, long: $long, location: $location, jobCategoryName: $jobCategoryName, jobDescriptionName: $jobDescriptionName, plantationName: $plantationName, contractorName: $contractorName, teamName: $teamName, workerName: $workerName, status: $status, completed: $completed, isActive: $isActive, createDT: $createDT, updateDT: $updateDT)';
   }
 
   @override
@@ -532,6 +550,8 @@ class _$_Assessment extends _Assessment {
             (identical(other.workerName, workerName) ||
                 other.workerName == workerName) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.completed, completed) ||
+                other.completed == completed) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive) &&
             (identical(other.createDT, createDT) ||
@@ -563,6 +583,7 @@ class _$_Assessment extends _Assessment {
         teamName,
         workerName,
         status,
+        completed,
         isActive,
         createDT,
         updateDT
@@ -603,6 +624,7 @@ abstract class _Assessment extends Assessment {
       @JsonKey(name: 'TeamName') final String? teamName,
       @JsonKey(name: 'WorkerName') final String? workerName,
       @JsonKey(name: 'Status') final int? status,
+      @JsonKey(name: 'Completed') final bool? completed,
       @JsonKey(name: 'IsActive') final bool? isActive,
       @JsonKey(name: 'CreateDT') final String? createDT,
       @JsonKey(name: 'UpdateDT') final String? updateDT}) = _$_Assessment;
@@ -668,6 +690,9 @@ abstract class _Assessment extends Assessment {
   @override
   @JsonKey(name: 'Status')
   int? get status;
+  @override
+  @JsonKey(name: 'Completed')
+  bool? get completed;
   @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;

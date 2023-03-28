@@ -1,13 +1,17 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screen/assessment/assessment_list_comment_screen.dart';
+import 'package:cmo/ui/screen/assessment/assessment_list_photo_screen.dart';
 import 'package:cmo/ui/screen/assessment/assessment_raised_comment.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AssessmentListQuestionScreen extends StatefulWidget {
   const AssessmentListQuestionScreen({
@@ -32,6 +36,7 @@ class AssessmentListQuestionScreen extends StatefulWidget {
 
 class _AssessmentListQuestionScreenState
     extends State<AssessmentListQuestionScreen> {
+  final _formKey = GlobalKey<FormBuilderState>();
   bool loading = false;
 
   @override
@@ -44,12 +49,57 @@ class _AssessmentListQuestionScreenState
     });
   }
 
+  Future<void> _viewListComment() async {
+    AssessmentListCommentScreen.push(context);
+  }
+
+  Future<void> _viewListPhoto() async {
+    AssessmentListPhotoScreen.push(context);
+  }
+
+  Future<void> _addAnswer(
+    CompanyQuestion question,
+    Compliance compliance,
+  ) async {
+    // final haveRejectReason = compliance;
+    final hasRejectReason = compliance.hasRejectReason ?? false;
+
+    // * raise comment when choose option have reject reason
+    if (hasRejectReason) {
+      final rejectReasons =
+          context.read<AssessmentQuestionCubit>().getRejectReasons();
+
+      final comment = await AssessmentRaiseComment.push<QuestionComment?>(
+        context,
+        widget.assessment,
+        question,
+        compliance,
+        rejectReasons,
+      );
+
+      if (context.mounted && comment != null) {
+        await context.read<AssessmentQuestionCubit>().addCommentFromReasonCode(
+              comment,
+              question,
+              compliance,
+            );
+      }
+    }
+
+    if (context.mounted) {
+      await context.read<AssessmentQuestionCubit>().setAnswer(
+            question,
+            compliance,
+          );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AssessmentQuestionCubit>().state;
     final assessment = context.watch<AssessmentQuestionCubit>().getAssessment();
     final allQuestions =
-        context.watch<AssessmentQuestionCubit>().getAllQuestions();
+        context.watch<AssessmentQuestionCubit>().getFilteredQuestions();
 
     return Scaffold(
       appBar: CmoAppBar(
@@ -63,65 +113,89 @@ class _AssessmentListQuestionScreenState
       body: Column(
         children: [
           Row(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 32),
-            child: Row(
-              children: [
-                Expanded(
-                  child: CmoDropdown(
-                    name: 'speqs',
-                    hintText: LocaleKeys.speqs.tr(),
+          FormBuilder(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 32),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SpeqssFilter(
+                      formKey: _formKey,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: CmoDropdown(
-                    name: 'pdca',
-                    hintText: LocaleKeys.pdca.tr(),
+                  Expanded(
+                    child: PdcaFilter(
+                      formKey: _formKey,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: CmoDropdown(
-                    name: 'JobElement',
-                    hintText: LocaleKeys.jobElement.tr(),
+                  Expanded(
+                    child: JobElementsFilter(
+                      formKey: _formKey,
+                    ),
                   ),
-                ),
-              ].withSpaceBetween(width: 4),
+                ].withSpaceBetween(width: 4),
+              ),
             ),
           ),
-          CmoHeaderTile(
-            title: LocaleKeys.incomplete.tr(),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 6.0),
-                  child: DecoratedBox(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Assets.icons.icTick.svg(),
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Assets.icons.icCamera.svgWhite,
-                      Padding(
-                        padding: const EdgeInsets.only(left: 6.0),
-                        child: Text(
-                          '4/57',
-                          style: context.textStyles.bodyBold.white,
+          BlocSelector<AssessmentQuestionCubit, AssessmentQuestionState, bool>(
+            selector: (state) {
+              return state.incompleteFilter == 1;
+            },
+            builder: (context, isComplete) => CmoHeaderTile(
+              title: isComplete
+                  ? LocaleKeys.completed.tr()
+                  : LocaleKeys.incomplete.tr(),
+              child: Row(
+                children: [
+                  CmoTappable(
+                    onTap: () {
+                      context
+                          .read<AssessmentQuestionCubit>()
+                          .setIncompleteFilter(isComplete ? 0 : 1);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 6.0),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: !isComplete ? Colors.white : Colors.green,
+                          shape: BoxShape.circle,
                         ),
+                        child: !isComplete
+                            ? Assets.icons.icTick.svg()
+                            : Assets.icons.icTick.svgWhite,
                       ),
-                    ],
+                    ),
                   ),
-                ),
-                Text(
-                  '4/57',
-                  style: context.textStyles.bodyBold.white,
-                ),
-              ],
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Assets.icons.icCamera.svgWhite,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 6.0),
+                          child: Text(
+                            '4/57',
+                            style: context.textStyles.bodyBold.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  BlocSelector<AssessmentQuestionCubit, AssessmentQuestionState,
+                      int>(
+                    selector: (state) => state.questions.length,
+                    builder: (context, questionsLength) => BlocSelector<
+                        AssessmentQuestionCubit, AssessmentQuestionState, int>(
+                      selector: (state) => state.answers.length,
+                      builder: (context, answersLength) => Text(
+                        '$answersLength/$questionsLength',
+                        style: context.textStyles.bodyBold.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Expanded(
@@ -129,6 +203,10 @@ class _AssessmentListQuestionScreenState
               itemCount: allQuestions.length,
               itemBuilder: (context, index) {
                 final question = allQuestions[index];
+                final answer = context
+                    .watch<AssessmentQuestionCubit>()
+                    .getAnswerByQuestionId(question.questionId);
+
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -163,16 +241,18 @@ class _AssessmentListQuestionScreenState
                                 for (final compliance in state.compliances)
                                   CmoTappable(
                                     onTap: () {
-                                      AssessmentRaiseComment.push(
-                                        context,
-                                        widget.assessment,
+                                      _addAnswer(
                                         question,
                                         compliance,
                                       );
                                     },
                                     child: CmoCircelButton(
                                       title: '${compliance.complianceName}',
-                                      // color: context.colors.yellow,
+                                      color: answer != null &&
+                                              answer.complianceId ==
+                                                  compliance.complianceId
+                                          ? context.colors.yellow
+                                          : context.colors.white,
                                     ),
                                   ),
                               ],
@@ -181,19 +261,25 @@ class _AssessmentListQuestionScreenState
                           const SizedBox(width: 16),
                           Row(
                             children: [
-                              CmoCircelIconButton(
-                                icon: SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: Assets.icons.icCamera.svgBlack,
+                              CmoTappable(
+                                onTap: () => _viewListPhoto(),
+                                child: CmoCircelIconButton(
+                                  icon: SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: Assets.icons.icCamera.svgBlack,
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 16),
-                              CmoCircelIconButton(
-                                icon: SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: Assets.icons.icComment.svgBlack,
+                              CmoTappable(
+                                onTap: () => _viewListComment(),
+                                child: CmoCircelIconButton(
+                                  icon: SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: Assets.icons.icComment.svgBlack,
+                                  ),
                                 ),
                               )
                             ],
@@ -213,6 +299,149 @@ class _AssessmentListQuestionScreenState
           ),
         ],
       ),
+    );
+  }
+}
+
+class SpeqssFilter extends StatelessWidget {
+  const SpeqssFilter({
+    super.key,
+    required this.formKey,
+  });
+
+  final GlobalKey<FormBuilderState> formKey;
+
+  @override
+  Widget build(BuildContext context) {
+    const name = 'speqs';
+
+    return BlocSelector<AssessmentQuestionCubit, AssessmentQuestionState,
+        List<Speqs>>(
+      selector: (state) {
+        return state.speqss;
+      },
+      builder: (context, speqss) {
+        return CmoDropdown(
+          name: name,
+          hintText: LocaleKeys.speqs.tr(),
+          onChanged: (int? id) {
+            if (id == -1) {
+              formKey.currentState!.fields[name]?.reset();
+            }
+            context.read<AssessmentQuestionCubit>().setSpeqsFilter(id);
+          },
+          itemsData: speqss
+              .map(
+                (e) => CmoDropdownItem(
+                  id: e.speqsId,
+                  name: e.speqsName ?? '',
+                ),
+              )
+              .toList()
+            ..insert(
+              0,
+              CmoDropdownItem(
+                id: -1,
+                name: LocaleKeys.speqs.tr(),
+              ),
+            ),
+        );
+      },
+    );
+  }
+}
+
+class PdcaFilter extends StatelessWidget {
+  const PdcaFilter({
+    super.key,
+    required this.formKey,
+  });
+
+  final GlobalKey<FormBuilderState> formKey;
+  @override
+  Widget build(BuildContext context) {
+    const name = 'pdca';
+
+    return BlocSelector<AssessmentQuestionCubit, AssessmentQuestionState,
+        List<Pdca>>(
+      selector: (state) {
+        return state.pdcas;
+      },
+      builder: (context, pdcas) {
+        return CmoDropdown(
+          name: name,
+          hintText: LocaleKeys.pdca.tr(),
+          onChanged: (int? id) {
+            if (id == -1) {
+              formKey.currentState!.fields[name]?.reset();
+            }
+            context.read<AssessmentQuestionCubit>().setPdcaFilter(id);
+          },
+          itemsData: pdcas
+              .map(
+                (e) => CmoDropdownItem(
+                  id: e.pdcaId,
+                  name: e.pdcaName ?? '',
+                ),
+              )
+              .toList()
+            ..insert(
+              0,
+              CmoDropdownItem(
+                id: -1,
+                name: LocaleKeys.pdca.tr(),
+              ),
+            ),
+        );
+      },
+    );
+  }
+}
+
+class JobElementsFilter extends StatelessWidget {
+  const JobElementsFilter({
+    super.key,
+    required this.formKey,
+  });
+
+  final GlobalKey<FormBuilderState> formKey;
+
+  @override
+  Widget build(BuildContext context) {
+    const name = 'JobElement';
+
+    return BlocSelector<AssessmentQuestionCubit, AssessmentQuestionState,
+        List<JobElement>>(
+      selector: (state) {
+        return state.jobElements;
+      },
+      builder: (context, jobElements) {
+        return CmoDropdown(
+          name: name,
+          hintText: LocaleKeys.jobElement.tr(),
+          onChanged: (int? id) {
+            if (id == -1) {
+              formKey.currentState!.fields[name]?.reset();
+            }
+            context.read<AssessmentQuestionCubit>().setJobElementFilter(id);
+          },
+          itemsData: jobElements
+              .map(
+                (e) => CmoDropdownItem(
+                  id: e.jobElementId,
+                  name: e.jobElementName ?? '',
+                ),
+              )
+              .toList()
+            ..insert(
+              0,
+              CmoDropdownItem(
+                id: -1,
+                name: LocaleKeys.jobElement.tr(),
+              ),
+            ),
+        );
+      },
     );
   }
 }

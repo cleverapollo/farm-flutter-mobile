@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
 
@@ -48,6 +49,8 @@ class CmoDatabaseMasterService {
         WorkerSchema,
         CompanyQuestionSchema,
         QuestionAnswerSchema,
+        QuestionCommentSchema,
+        AssessmentSchema,
       ],
       name: _databaseName,
     );
@@ -254,7 +257,11 @@ class CmoDatabaseMasterService {
               .jobElementIdEqualTo(question.jobElementId!)
               .isActiveEqualTo(true)
               .findAll();
-          jobElements.addAll(result);
+          for (final jobElement in result) {
+            if (!jobElements.contains(jobElement)) {
+              jobElements.add(jobElement);
+            }
+          }
         }
       }
 
@@ -308,7 +315,11 @@ class CmoDatabaseMasterService {
               .pdcaIdEqualTo(question.pdcaId!)
               .isActiveEqualTo(true)
               .findAll();
-          pdcas.addAll(result);
+          for (final pdca in result) {
+            if (!pdcas.contains(pdca)) {
+              pdcas.add(pdca);
+            }
+          }
         }
       }
 
@@ -361,7 +372,11 @@ class CmoDatabaseMasterService {
               .speqsIdEqualTo(question.speqsId!)
               .isActiveEqualTo(true)
               .findAll();
-          speqs.addAll(result);
+          for (final speq in result) {
+            if (!speqs.contains(speq)) {
+              speqs.add(speq);
+            }
+          }
         }
       }
 
@@ -562,7 +577,7 @@ class CmoDatabaseMasterService {
 
   Future<int> cacheQuestionAnswer(QuestionAnswer item) async {
     final db = await _db();
-    return db.questionAnswers.put(item);
+    return db.writeTxn(() => db.questionAnswers.put(item));
   }
 
   Future<QuestionAnswer?> getCachedQuestionAnswer({required int id}) async {
@@ -751,6 +766,41 @@ class CmoDatabaseMasterService {
     }
 
     return <QuestionAnswer>[];
+  }
+
+  Future<void> removeQuestionAnswer(QuestionAnswer answer) async {
+    final db = await _db();
+    try {
+      return db.writeTxn(() => db.questionAnswers.delete(answer.id));
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  Future<List<QuestionComment>> getQuestionComments(
+    int assessmentId,
+    int questionId,
+  ) async {
+    final db = await _db();
+    try {
+      final questionComments = await db.questionComments
+          .filter()
+          .assessmentIdEqualTo(assessmentId)
+          .questionIdEqualTo(questionId)
+          .findAll();
+
+      return questionComments;
+    } catch (error) {
+      handleError(error);
+    }
+    return <QuestionComment>[];
+  }
+
+  Future<int> cacheAssessment(
+    Assessment item,
+  ) async {
+    final db = await _db();
+    return db.writeTxn(() => db.assessments.put(item));
   }
 
   Future<FileSystemEntity?> deleteAll() async {

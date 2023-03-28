@@ -55,5 +55,9 @@
     	<string>th</string>
     	<string>zu</string>
     </array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to your library to fill input</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires access to your camera to fill avatar input</string>
 </dict>
 </plist>
