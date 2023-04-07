@@ -1,5 +1,9 @@
 // ignore_for_file: inference_failure_on_function_invocation, inference_failure_on_instance_creation
 
+import 'package:cmo/model/entity.dart';
+import 'package:cmo/ui/screen/assessment/assessment_item_selected_screen.dart';
+import 'package:cmo/ui/screen/assessment/widgets/assessment_selected_item.dart';
+import 'package:cmo/ui/screen/entity/entity_search_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -169,11 +173,11 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
             autovalidateMode: autoValidateMode,
             child: AutofillGroup(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.only(top: 70, left: 16, right: 16),
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      buildInputArea(companyId),
+                      buildNewInputArea(companyId),
                       const SizedBox(height: 16),
                       BlocSelector<AssessmentCubit, AssessmentState, bool>(
                         selector: (state) {
@@ -212,10 +216,66 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
     );
   }
 
+  Widget buildNewInputArea(int companyId) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AssessmentSelectedItem(
+          title: LocaleKeys.jobType.tr(),
+          onTap: () async {
+            final jobTypes = await cmoDatabaseMasterService.getJobCategoriesByCompanyId(companyId);
+            // ignore: use_build_context_synchronously
+            if (!context.mounted) return;
+            await AssessmentItemSelectedScreen.push(
+              context,
+              title: LocaleKeys.jobType.tr(),
+              items: jobTypes
+                  .map((e) => AssessmentItem(e.jobCategoryName ?? '', e))
+                  .toList(),
+            );
+          },
+        ),
+        const SizedBox(height: 8),
+        AssessmentSelectedItem(
+          title: LocaleKeys.jobDescription.tr(),
+          onTap: () {},
+        ),
+        const SizedBox(height: 8),
+        AssessmentSelectedItem(
+          title: LocaleKeys.plantation.tr(),
+          onTap: () {},
+        ),
+        const SizedBox(height: 8),
+        AssessmentSelectedItem(
+          title: LocaleKeys.contractor.tr(),
+          onTap: () {},
+        ),
+        const SizedBox(height: 8),
+        AssessmentSelectedItem(
+          title: LocaleKeys.team.tr(),
+          onTap: () {},
+        ),
+        const SizedBox(height: 8),
+        AssessmentSelectedItem(
+          title: LocaleKeys.worker.tr(),
+          onTap: () {},
+        ),
+        const SizedBox(height: 8),
+        AssessmentSelectedItem(
+          title: LocaleKeys.siteLocation.tr(),
+          onTap: () {},
+        ),
+      ],
+    );
+  }
+
   Widget buildInputArea(int companyId) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        AssessmentSelectedItem(title: LocaleKeys.jobType.tr(),
+        onTap: () {
+        },),
         Row(),
         CmoOptionTile(
           title: LocaleKeys.jobType.tr(),
