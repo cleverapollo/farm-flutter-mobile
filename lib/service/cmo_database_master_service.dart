@@ -2,13 +2,12 @@
 
 import 'dart:io';
 
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
-
-import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/model/model.dart';
 
 class CmoDatabaseMasterService {
   factory CmoDatabaseMasterService() {
@@ -91,6 +90,11 @@ class CmoDatabaseMasterService {
         .companyIdEqualTo(companyId)
         .sortByPlantationName()
         .findAll();
+  }
+
+  Future getAssessmentTotalsByCompanyIdAndUserId() async {
+    final db = await _db();
+    return db.assessments.filter().assessmentIdIsNotNull();
   }
 
   Future<int> cacheUnit(Unit item) async {

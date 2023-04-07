@@ -1,18 +1,73 @@
+import 'package:cmo/ui/screen/sync_summary/cubit/sync_summary_state.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../di.dart';
+import '../cubit/sync_summary_cubit.dart';
 import '../sync_summary_enum.dart';
 
-class SyncSummaryItemWidget extends StatelessWidget {
-  SyncSummaryItemWidget(this.syncSummaryEnum, {super.key});
+class SyncSummaryItemWidget extends StatefulWidget {
+  const SyncSummaryItemWidget(this.syncSummaryEnum, {super.key});
   final SyncSummaryEnum syncSummaryEnum;
 
-  final databaseService = cmoDatabaseMasterService;
+  @override
+  State<SyncSummaryItemWidget> createState() => _SyncSummaryItemWidgetState();
+}
+
+class _SyncSummaryItemWidgetState extends State<SyncSummaryItemWidget> {
+  late final SyncSummaryCubit cubit;
+  late final SyncSummaryState state;
+
+  List<_BuildPairModel> data = [];
+
+  @override
+  void initState() {
+    super.initState();
+    cubit = context.read<SyncSummaryCubit>();
+    state = cubit.state;
+    if (state.dataLoaded) {
+      data = [
+        _BuildPairModel('Company', count: state.data?.mdCompany),
+        _BuildPairModel('Question', count: state.data?.mdQuestion),
+        _BuildPairModel('Worker', count: state.data?.mdWoker),
+        _BuildPairModel('Unsync Worker', count: state.data?.mdUnsyncWoker),
+        _BuildPairModel('Team', count: state.data?.mdTeam),
+        _BuildPairModel('Reject Reason', count: state.data?.mdRejetReason),
+        _BuildPairModel('Plantation', count: state.data?.mdPlantation),
+        _BuildPairModel('Contractor', count: state.data?.mdContractor),
+        _BuildPairModel('Job Category', count: state.data?.mdJobCategory),
+        _BuildPairModel('Job Description', count: state.data?.mdJobDescription),
+        _BuildPairModel('Job Element', count: state.data?.mdElement),
+        _BuildPairModel('Pdca', count: state.data?.mdPdca),
+        _BuildPairModel('Severity', count: state.data?.mdSeverity),
+        _BuildPairModel('Speqs', count: state.data?.mdSpeqs),
+        _BuildPairModel('Compliance', count: state.data?.mdCompliance),
+        _BuildPairModel('Mmm', count: state.data?.mdMmm),
+        _BuildPairModel('Impact Caused', count: state.data?.mdImpactCaused),
+        _BuildPairModel('Impact On', count: state.data?.mdImpactOn),
+        _BuildPairModel('Unit', count: state.data?.mdUnit),
+        _BuildPairModel('Province', count: state.data?.mdProvince),
+        _BuildPairModel('Municipality', count: state.data?.mdMunicipality),
+        _BuildPairModel('Schedule Activity',
+            count: state.data?.mdScheduleActivity),
+        _BuildPairModel('Training Provider',
+            count: state.data?.mdTrainingProvider),
+        _BuildPairModel('Course', count: state.data?.mdCourse),
+      ];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    switch (syncSummaryEnum) {
+    return BlocBuilder<SyncSummaryCubit, SyncSummaryState>(
+      builder: (_, __) {
+        return _handleSyncSummaryItemWidget();
+      },
+    );
+  }
+
+  Widget _handleSyncSummaryItemWidget() {
+    switch (widget.syncSummaryEnum) {
       case SyncSummaryEnum.assessmentDetails:
         return _buildAssessmentDetails();
       case SyncSummaryEnum.scheduler:
@@ -28,18 +83,17 @@ class SyncSummaryItemWidget extends StatelessWidget {
     return Column(
       children: [
         _BuildPairItemWidget(
-          first: syncSummaryEnum.getLabel,
-          second: 'Record Count',
+          first: widget.syncSummaryEnum.getLabel,
           isTitle: true,
         ),
         _BuildPairItemWidget(
           first: 'In Progress',
-          second: '0',
+          count: state.data?.adInprogress,
         ),
         _BuildPairItemWidget(
           first: 'Un Synced',
-          second: '0',
           isHighlight: true,
+          count: state.data?.adUnsynced,
         ),
       ],
     );
@@ -49,13 +103,12 @@ class SyncSummaryItemWidget extends StatelessWidget {
     return Column(
       children: [
         _BuildPairItemWidget(
-          first: syncSummaryEnum.getLabel,
-          second: 'Record Count',
+          first: widget.syncSummaryEnum.getLabel,
           isTitle: true,
         ),
         _BuildPairItemWidget(
           first: 'Upcomming Event',
-          second: '0',
+          count: state.data?.schedulerUpcommingEvent,
         ),
       ],
     );
@@ -65,12 +118,13 @@ class SyncSummaryItemWidget extends StatelessWidget {
     return Column(
       children: [
         _BuildPairItemWidget(
-          first: syncSummaryEnum.getLabel,
-          second: 'Record Count',
+          first: widget.syncSummaryEnum.getLabel,
           isTitle: true,
         ),
-        ...masterDatas
-            .map((e) => _BuildPairItemWidget(first: e.title, second: '0'))
+        ...data.map((e) => _BuildPairItemWidget(
+              first: e.title,
+              count: e.count,
+            ))
       ],
     );
   }
@@ -80,15 +134,16 @@ class _BuildPairItemWidget extends StatelessWidget {
   const _BuildPairItemWidget({
     super.key,
     required this.first,
-    required this.second,
     this.isTitle = false,
     this.isHighlight = false,
+    this.count = 0,
   });
 
   final String first;
-  final String second;
   final bool isTitle;
   final bool isHighlight;
+
+  final num? count;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +170,7 @@ class _BuildPairItemWidget extends StatelessWidget {
                 Flexible(
                   fit: FlexFit.tight,
                   child: Text(
-                    second,
+                    'Record Count',
                     style: isTitle
                         ? context.textStyles.titleBold
                             .copyWith(color: Colors.white)
@@ -135,28 +190,25 @@ class _BuildPairItemWidget extends StatelessWidget {
               child: Row(
                 children: [
                   Flexible(
-                    fit: FlexFit.tight,
-                    child: Text(
-                      first,
-                      style: isTitle
-                          ? context.textStyles.titleBold
-                          : context.textStyles.bodyNormal.copyWith(
-                              color: isHighlight
-                                  ? Colors.amberAccent
-                                  : Colors.black),
-                    ),
-                  ),
+                      fit: FlexFit.tight,
+                      child: Text(
+                        first,
+                        style: isTitle
+                            ? context.textStyles.titleBold
+                            : context.textStyles.bodyNormal.copyWith(
+                                color: isHighlight
+                                    ? Colors.amberAccent
+                                    : Colors.black),
+                      )),
                   Flexible(
                     fit: FlexFit.tight,
-                    child: Text(
-                      second,
-                      style: isTitle
-                          ? context.textStyles.titleBold
-                          : context.textStyles.bodyNormal.copyWith(
-                              color: isHighlight
-                                  ? Colors.amberAccent
-                                  : Colors.black),
-                    ),
+                    child: Text((count).toString(),
+                        style: isTitle
+                            ? context.textStyles.titleBold
+                            : context.textStyles.bodyNormal.copyWith(
+                                color: isHighlight
+                                    ? Colors.amberAccent
+                                    : Colors.black)),
                   ),
                 ],
               ),
@@ -165,36 +217,9 @@ class _BuildPairItemWidget extends StatelessWidget {
   }
 }
 
-List<_BuildPairModel> masterDatas = [
-  _BuildPairModel('Company'),
-  _BuildPairModel('Question'),
-  _BuildPairModel('Worker'),
-  _BuildPairModel('Unsync Worker'),
-  _BuildPairModel('Team'),
-  _BuildPairModel('Reject Reason'),
-  _BuildPairModel('Plantation'),
-  _BuildPairModel('Contractor'),
-  _BuildPairModel('Job Category'),
-  _BuildPairModel('Job Description'),
-  _BuildPairModel('Job Element'),
-  _BuildPairModel('Pdca'),
-  _BuildPairModel('Severity'),
-  _BuildPairModel('Speqs'),
-  _BuildPairModel('Compliance'),
-  _BuildPairModel('Mmm'),
-  _BuildPairModel('Impact Caused'),
-  _BuildPairModel('Impact On'),
-  _BuildPairModel('Unit'),
-  _BuildPairModel('Province'),
-  _BuildPairModel('Municipality'),
-  _BuildPairModel('Schedule Activity'),
-  _BuildPairModel('Training Provider'),
-  _BuildPairModel('Course'),
-];
-
 class _BuildPairModel {
-  _BuildPairModel(this.title, {this.future});
+  _BuildPairModel(this.title, {this.count = 0});
 
   final String title;
-  final Future? future;
+  final num? count;
 }
