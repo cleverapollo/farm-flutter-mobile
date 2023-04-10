@@ -1,24 +1,22 @@
 // ignore_for_file: inference_failure_on_function_invocation, inference_failure_on_instance_creation
 
-import 'package:cmo/model/entity.dart';
-import 'package:cmo/ui/screen/assessment/assessment_item_selected_screen.dart';
-import 'package:cmo/ui/screen/assessment/widgets/assessment_selected_item.dart';
-import 'package:cmo/ui/screen/entity/entity_search_screen.dart';
-import 'package:flutter/material.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/assessment.dart';
+import 'package:cmo/model/data/contractor.dart';
+import 'package:cmo/model/data/job_category.dart';
+import 'package:cmo/model/data/job_description.dart';
+import 'package:cmo/model/data/plantation.dart';
+import 'package:cmo/model/data/team.dart';
+import 'package:cmo/model/data/worker.dart';
 import 'package:cmo/state/assessment_cubit/assessment_cubit.dart';
 import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
+import 'package:cmo/ui/screen/assessment/assessment_item_selected_screen.dart';
 import 'package:cmo/ui/screen/assessment/assessment_location_screen.dart';
+import 'package:cmo/ui/screen/assessment/widgets/assessment_selected_item.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
@@ -26,6 +24,10 @@ import 'package:cmo/ui/widget/cmo_dropdown.dart';
 import 'package:cmo/ui/widget/cmo_option_tile.dart';
 import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:cmo/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AssessmentAddScreen extends StatefulWidget {
   const AssessmentAddScreen({super.key});
@@ -46,6 +48,20 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
   bool loading = false;
   LatLng? _latLong;
+  JobCategory? _jobCategory;
+  JobDescription? _jobDescription;
+  Plantation? _plantation;
+  Contractor? _contractor;
+  Team? _team;
+  Worker? _worker;
+  AssessmentLocationScreenResult? _locationResult;
+  final _jobCategoryController = TextEditingController();
+  final _jobDescriptionController = TextEditingController();
+  final _plantationController = TextEditingController();
+  final _contractorController = TextEditingController();
+  final _teamController = TextEditingController();
+  final _workerController = TextEditingController();
+  final _locationResultController = TextEditingController();
 
   @override
   void initState() {
@@ -68,57 +84,38 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
     });
 
     if (_formKey.currentState?.saveAndValidate() ?? false) {
-      var value = _formKey.currentState?.value;
       final companyId = context.read<EntityCubit>().state.company?.id;
       final userId = context.read<UserInfoCubit>().data?.userId;
 
       if (companyId == null) return;
       if (userId == null) return;
-      if (value == null) return;
-      value = {...value};
-
-      final assessmentId = DateTime.now().millisecondsSinceEpoch;
-      value['AssessmentId'] = assessmentId;
-      value['CompanyId'] = companyId;
-      value['CreateDT'] = DateTime.now().toIso8601String();
-      value['UserId'] = userId;
-      value['Status'] = 1;
-      value['IsActive'] = true;
-
-      final jobCategoryId =
-          int.tryParse(value['JobCategoryId']?.toString() ?? '');
-      final jobDescriptionId =
-          int.tryParse(value['JobDescriptionId']?.toString() ?? '');
-      final plantationId =
-          int.tryParse(value['PlantationId']?.toString() ?? '');
-      final contractorId =
-          int.tryParse(value['ContractorId']?.toString() ?? '');
-      final teamId = int.tryParse(value['TeamId']?.toString() ?? '');
-      final workerId = value['WorkerId']?.toString();
-
-      value['JobCategoryName'] =
-          (await cmoDatabaseMasterService.getJobCategoryById(jobCategoryId))
-              ?.jobCategoryName;
-      value['JobDescriptionName'] = (await cmoDatabaseMasterService
-              .getJobDescriptionById(jobDescriptionId))
-          ?.jobDescriptionName;
-      value['PlantationName'] =
-          (await cmoDatabaseMasterService.getPlantationById(plantationId))
-              ?.plantationName;
-      value['ContractorName'] =
-          (await cmoDatabaseMasterService.getContractorById(contractorId))
-              ?.contractorName;
-      value['TeamName'] =
-          (await cmoDatabaseMasterService.getTeamById(teamId))?.teamName;
-
-      final worker = await cmoDatabaseMasterService.getWorkerById(workerId);
-      value['WorkerName'] =
-          '${worker?.firstName} ${worker?.surname} (${worker?.idNumber})';
-
+      final assessment = Assessment(
+        assessmentId: DateTime.now().millisecondsSinceEpoch,
+        companyId: companyId,
+        createDT: DateTime.now().toIso8601String(),
+        userId: userId,
+        status: 1,
+        isActive: true,
+        jobCategoryId: _jobCategory?.id,
+        jobCategoryName: _jobCategory?.jobCategoryName,
+        jobDescriptionId: _jobDescription?.id,
+        jobDescriptionName: _jobDescription?.jobDescriptionName,
+        plantationId: _plantation?.id,
+        plantationName: _plantation?.plantationName,
+        contractorId: _contractor?.id,
+        contractorName: _contractor?.contractorName,
+        teamId: _team?.id,
+        teamName: _team?.teamName,
+        workerId: _worker?.workerId,
+        workerName:
+            '${_worker?.firstName} ${_worker?.surname} (${_worker?.idNumber})',
+        location: _locationResult?.address,
+        lat: _locationResult?.latLong.latitude,
+        long: _locationResult?.latLong.longitude,
+      );
       if (context.mounted) {
-        final success = await context
-            .read<AssessmentCubit>()
-            .submit(Assessment.fromJson(value));
+        final success =
+            await context.read<AssessmentCubit>().submit(assessment);
         if (success && context.mounted) {
           context.read<AssessmentCubit>().cleanCache();
           Navigator.of(context).pop();
@@ -177,7 +174,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      buildNewInputArea(companyId),
+                      buildInputArea(companyId),
                       const SizedBox(height: 16),
                       BlocSelector<AssessmentCubit, AssessmentState, bool>(
                         selector: (state) {
@@ -216,298 +213,197 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
     );
   }
 
-  Widget buildNewInputArea(int companyId) {
+  Widget buildInputArea(int companyId) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AssessmentSelectedItem(
           title: LocaleKeys.jobType.tr(),
           onTap: () async {
-            final jobTypes = await cmoDatabaseMasterService.getJobCategoriesByCompanyId(companyId);
+            final items = await cmoDatabaseMasterService
+                .getJobCategoriesByCompanyId(companyId);
             // ignore: use_build_context_synchronously
             if (!context.mounted) return;
-            await AssessmentItemSelectedScreen.push(
+            final item = await AssessmentItemSelectedScreen.push(
               context,
               title: LocaleKeys.jobType.tr(),
-              items: jobTypes
+              items: items
                   .map((e) => AssessmentItem(e.jobCategoryName ?? '', e))
                   .toList(),
             );
+            if (item == null || item is! AssessmentItem) {
+              return;
+            }
+            _jobCategory = item.rawValue as JobCategory;
+            _jobCategoryController.text = _jobCategory?.jobCategoryName ?? '';
+            setState(() {});
           },
+          textEditingController: _jobCategoryController,
         ),
         const SizedBox(height: 8),
         AssessmentSelectedItem(
           title: LocaleKeys.jobDescription.tr(),
-          onTap: () {},
+          textEditingController: _jobDescriptionController,
+          onTap: () async {
+            final jobTypes =
+                await cmoDatabaseMasterService.getJobDescriptions();
+            // ignore: use_build_context_synchronously
+            if (!context.mounted) return;
+            final item = await AssessmentItemSelectedScreen.push(
+              context,
+              title: LocaleKeys.jobType.tr(),
+              items: jobTypes
+                  .map((e) => AssessmentItem(e.jobDescriptionName ?? '', e))
+                  .toList(),
+            );
+            if (item == null || item is! AssessmentItem) {
+              return;
+            }
+            _jobDescription = item.rawValue as JobDescription;
+            _jobDescriptionController.text =
+                _jobDescription?.jobDescriptionName ?? '';
+            setState(() {});
+          },
         ),
         const SizedBox(height: 8),
         AssessmentSelectedItem(
           title: LocaleKeys.plantation.tr(),
-          onTap: () {},
+          textEditingController: _plantationController,
+          onTap: () async {
+            final items = await cmoDatabaseMasterService
+                .getPlantationsByCompanyId(companyId);
+            // ignore: use_build_context_synchronously
+            if (!context.mounted) return;
+            final item = await AssessmentItemSelectedScreen.push(
+              context,
+              title: LocaleKeys.jobType.tr(),
+              items: items
+                  .map((e) => AssessmentItem(e.plantationName ?? '', e))
+                  .toList(),
+            );
+            if (item == null || item is! AssessmentItem) {
+              return;
+            }
+            _plantation = item.rawValue as Plantation;
+            _plantationController.text = _plantation?.plantationName ?? '';
+            setState(() {});
+          },
         ),
         const SizedBox(height: 8),
         AssessmentSelectedItem(
           title: LocaleKeys.contractor.tr(),
-          onTap: () {},
+          textEditingController: _contractorController,
+          onTap: () async {
+            final items = await cmoDatabaseMasterService
+                .getContractorsByCompanyId(companyId);
+            // ignore: use_build_context_synchronously
+            if (!context.mounted) return;
+            final item = await AssessmentItemSelectedScreen.push(
+              context,
+              title: LocaleKeys.jobType.tr(),
+              items: items
+                  .map((e) => AssessmentItem(e.contractorName ?? '', e))
+                  .toList(),
+            );
+            if (item == null || item is! AssessmentItem) {
+              return;
+            }
+            final contractor = item.rawValue as Contractor;
+            if (_contractor == contractor) {
+              return;
+            }
+            _contractor = contractor;
+            _contractorController.text = contractor?.contractorName ?? '';
+            _team = null;
+            _teamController.text = '';
+            _worker = null;
+            _workerController.text = '';
+            setState(() {});
+          },
         ),
         const SizedBox(height: 8),
         AssessmentSelectedItem(
           title: LocaleKeys.team.tr(),
-          onTap: () {},
+          textEditingController: _teamController,
+          onTap: () async {
+            if (_contractor == null) {
+              return;
+            }
+            final items = await cmoDatabaseMasterService
+                .getTeamsByCompanyIdAndContractorId(
+                    companyId, _contractor!.contractorId);
+            if (items.isEmpty) {
+              return;
+            }
+            // ignore: use_build_context_synchronously
+            if (!context.mounted) return;
+            final item = await AssessmentItemSelectedScreen.push(
+              context,
+              title: LocaleKeys.jobType.tr(),
+              items: items
+                  .map((e) => AssessmentItem(e.teamName ?? '', e))
+                  .toList(),
+            );
+            if (item == null || item is! AssessmentItem) {
+              return;
+            }
+            _team = item.rawValue as Team;
+            _teamController.text = _team?.teamName ?? '';
+            setState(() {});
+          },
         ),
         const SizedBox(height: 8),
         AssessmentSelectedItem(
           title: LocaleKeys.worker.tr(),
-          onTap: () {},
+          textEditingController: _workerController,
+          onTap: () async {
+            if (_contractor == null) {
+              return;
+            }
+            final items = await cmoDatabaseMasterService
+                .getWorkersByCompanyIdAndContractorId(
+                    companyId, _contractor!.contractorId);
+            if (items.isEmpty) {
+              return;
+            }
+            // ignore: use_build_context_synchronously
+            if (!context.mounted) return;
+            final item = await AssessmentItemSelectedScreen.push(
+              context,
+              title: LocaleKeys.jobType.tr(),
+              items: items
+                  .map((e) => AssessmentItem(
+                      '${e.firstName} ${e.surname} (${e.idNumber})' ?? '', e))
+                  .toList(),
+            );
+            if (item == null || item is! AssessmentItem) {
+              return;
+            }
+            _worker = item.rawValue as Worker;
+            _workerController.text =
+                '${_worker!.firstName} ${_worker!.surname} (${_worker!.idNumber})';
+            setState(() {});
+          },
         ),
         const SizedBox(height: 8),
         AssessmentSelectedItem(
           title: LocaleKeys.siteLocation.tr(),
-          onTap: () {},
-        ),
-      ],
-    );
-  }
-
-  Widget buildInputArea(int companyId) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AssessmentSelectedItem(title: LocaleKeys.jobType.tr(),
-        onTap: () {
-        },),
-        Row(),
-        CmoOptionTile(
-          title: LocaleKeys.jobType.tr(),
-          value: ' ',
-          shouldShowArrow: false,
-          shouldShowDivider: false,
-          shouldAddPadding: false,
-        ),
-        FutureBuilder(
-          future:
-              cmoDatabaseMasterService.getJobCategoriesByCompanyId(companyId),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return CmoDropdown(
-                name: 'JobCategoryId',
-                validator: requiredValidator,
-                hintText: LocaleKeys.jobType.tr(),
-                itemsData: snapshot.data
-                    ?.map(
-                      (e) => CmoDropdownItem(
-                        id: e.jobCategoryId,
-                        name: e.jobCategoryName ?? '',
-                      ),
-                    )
-                    .toList(),
-              );
-            }
-            return const SizedBox();
-          },
-        ),
-        const SizedBox(height: 12),
-        CmoOptionTile(
-          title: LocaleKeys.jobDescription.tr(),
-          value: ' ',
-          shouldShowArrow: false,
-          shouldShowDivider: false,
-          shouldAddPadding: false,
-        ),
-        FutureBuilder(
-          future: cmoDatabaseMasterService.getJobDescriptions(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return CmoDropdown(
-                name: 'JobDescriptionId',
-                validator: requiredValidator,
-                hintText: LocaleKeys.jobDescription.tr(),
-                itemsData: snapshot.data
-                    ?.map(
-                      (e) => CmoDropdownItem(
-                        id: e.jobDescriptionId,
-                        name: e.jobDescriptionName ?? '',
-                      ),
-                    )
-                    .toList(),
-              );
-            }
-            return const SizedBox();
-          },
-        ),
-        const SizedBox(height: 12),
-        CmoOptionTile(
-          title: LocaleKeys.plantation.tr(),
-          value: ' ',
-          shouldShowArrow: false,
-          shouldShowDivider: false,
-          shouldAddPadding: false,
-        ),
-        FutureBuilder(
-          future: cmoDatabaseMasterService.getPlantationsByCompanyId(companyId),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return CmoDropdown(
-                name: 'PlantationId',
-                validator: requiredValidator,
-                hintText: LocaleKeys.plantation.tr(),
-                itemsData: snapshot.data
-                    ?.map(
-                      (e) => CmoDropdownItem(
-                        id: e.plantationId,
-                        name: e.plantationName ?? '',
-                      ),
-                    )
-                    .toList(),
-              );
-            }
-            return const SizedBox();
-          },
-        ),
-        const SizedBox(height: 12),
-        CmoOptionTile(
-          title: LocaleKeys.contractor.tr(),
-          value: ' ',
-          shouldShowArrow: false,
-          shouldShowDivider: false,
-          shouldAddPadding: false,
-        ),
-        FutureBuilder(
-          future: cmoDatabaseMasterService.getContractorsByCompanyId(companyId),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return CmoDropdown(
-                name: 'ContractorId',
-                validator: requiredValidator,
-                hintText: LocaleKeys.contractor.tr(),
-                itemsData: snapshot.data
-                    ?.map(
-                      (e) => CmoDropdownItem(
-                        id: e.contractorId,
-                        name: e.contractorName ?? '',
-                      ),
-                    )
-                    .toList(),
-              );
-            }
-            return const SizedBox();
-          },
-        ),
-        const SizedBox(height: 12),
-        CmoOptionTile(
-          title: LocaleKeys.team.tr(),
-          value: ' ',
-          shouldShowArrow: false,
-          shouldShowDivider: false,
-          shouldAddPadding: false,
-        ),
-        BlocSelector<AssessmentCubit, AssessmentState, int?>(
-          selector: (state) {
-            return state.cacheContractorId;
-          },
-          builder: (context, contractorId) {
-            return FutureBuilder(
-              future: cmoDatabaseMasterService
-                  .getTeamsByCompanyIdAndContractorId(companyId, contractorId),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return CmoDropdown(
-                    name: 'TeamId',
-                    validator: requiredValidator,
-                    enabled: contractorId != null,
-                    hintText: LocaleKeys.team.tr(),
-                    itemsData: snapshot.data
-                        ?.map(
-                          (e) => CmoDropdownItem(
-                            id: e.teamId,
-                            name: e.teamName ?? '',
-                          ),
-                        )
-                        .toList(),
-                  );
-                }
-                return const SizedBox();
-              },
-            );
-          },
-        ),
-        const SizedBox(height: 12),
-        CmoOptionTile(
-          title: LocaleKeys.worker.tr(),
-          value: ' ',
-          shouldShowArrow: false,
-          shouldShowDivider: false,
-          shouldAddPadding: false,
-        ),
-        BlocSelector<AssessmentCubit, AssessmentState, int?>(
-          selector: (state) {
-            return state.cacheContractorId;
-          },
-          builder: (context, contractorId) => FutureBuilder(
-            future:
-                cmoDatabaseMasterService.getWorkersByCompanyIdAndContractorId(
-              companyId,
-              contractorId,
-            ),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return CmoDropdown(
-                  name: 'WorkerId',
-                  validator: requiredValidator,
-                  hintText: LocaleKeys.worker.tr(),
-                  enabled: contractorId != null,
-                  itemsData: snapshot.data
-                      ?.map(
-                        (e) => CmoDropdownItem(
-                          id: e.workerId,
-                          name: '${e.firstName} ${e.surname} (${e.idNumber})',
-                        ),
-                      )
-                      .toList(),
-                );
-              }
-              return const SizedBox();
-            },
-          ),
-        ),
-        const SizedBox(height: 12),
-        CmoTappable(
+          textEditingController: _locationResultController,
           onTap: () async {
             final data = await AssessmentLocationScreen.push<
                 AssessmentLocationScreenResult>(
               context,
             );
             if (data is AssessmentLocationScreenResult) {
-              final newData = {..._formKey.currentState!.value};
-              newData['Location'] = data.address;
-              newData['Lat'] = data.latLong.latitude;
-              newData['Lng'] = data.latLong.longitude;
-              _formKey.currentState!.patchValue(newData);
+              _locationResult = data;
+              _latLong = data.latLong;
+              _locationResultController.text =
+                  '${_locationResult?.address}\n${_latLong?.latitude.toStringAsFixed(6)}, ${_latLong?.longitude.toStringAsFixed(6)}';
               if (context.mounted) {
-                setState(() {
-                  _latLong = data.latLong;
-                });
+                setState(() {});
               }
             }
           },
-          child: CmoOptionTile(
-            title: LocaleKeys.siteLocation.tr(),
-            value: ' ',
-            shouldShowDivider: false,
-            shouldAddPadding: false,
-          ),
-        ),
-        if (_latLong != null)
-          Text(
-            '${_latLong?.latitude.toStringAsFixed(6)}, ${_latLong?.longitude.toStringAsFixed(6)}',
-            style: context.textStyles.bodyNormal,
-          ),
-        const SizedBox(height: 4),
-        CmoTextField(
-          name: 'Location',
-          enabled: false,
-          validator: requiredValidator,
-          hintText: LocaleKeys.siteLocation.tr(),
         ),
       ],
     );
