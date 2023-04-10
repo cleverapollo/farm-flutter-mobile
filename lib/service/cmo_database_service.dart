@@ -2,9 +2,8 @@
 
 import 'dart:io';
 
-import 'package:isar/isar.dart';
-
 import 'package:cmo/model/model.dart';
+import 'package:isar/isar.dart';
 
 class CmoDatabaseService {
   CmoDatabaseService();
@@ -63,6 +62,17 @@ class CmoDatabaseService {
   Future<List<Assessment>> getAllCachedAssessments() async {
     final db = await _db();
     return db.assessments.where().findAll();
+  }
+
+  Future<List<Assessment>> getAssessmentTotalsByCompanyIdAndUserId(
+      int companyId, int userId) async {
+    final db = await _db();
+    return db.assessments
+        .filter()
+        .companyIdEqualTo(companyId)
+        .userIdEqualTo(userId)
+        .isActiveEqualTo(true)
+        .findAll();
   }
 
   Future<List<Assessment>> getAllAssessmentsStarted() async {

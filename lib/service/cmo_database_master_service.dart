@@ -92,11 +92,6 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future getAssessmentTotalsByCompanyIdAndUserId() async {
-    final db = await _db();
-    return db.assessments.filter().assessmentIdIsNotNull();
-  }
-
   Future<int> cacheUnit(Unit item) async {
     final db = await _db();
     return db.units.put(item);
@@ -681,6 +676,15 @@ class CmoDatabaseMasterService {
     return <CompanyQuestion>[];
   }
 
+  Future<List<CompanyQuestion>> getQuestionByCompanyId(int companyId) async {
+    final db = await _db();
+
+    final questions =
+        db.companyQuestions.filter().companyIdEqualTo(companyId).findAll();
+
+    return questions;
+  }
+
   Future<List<Compliance>> getCompliancesByCompanyIdJobCategoryId(
     int? companyId,
     int? jobCategoryId,
@@ -722,6 +726,25 @@ class CmoDatabaseMasterService {
     }
 
     return <Compliance>[];
+  }
+
+  Future<List<Assessment>> getAssessmentTotalsByCompanyIdAndUserId(
+      {required int companyId, required int userId}) async {
+    final db = await _db();
+    try {
+      final result = await db.assessments
+          .filter()
+          .companyIdIsNotNull()
+          .companyIdEqualTo(companyId)
+          .userIdIsNotNull()
+          .userIdEqualTo(userId)
+          .isActiveEqualTo(true)
+          .findAll();
+      return result;
+    } catch (e) {
+      handleError(e);
+      return <Assessment>[];
+    }
   }
 
   Future<List<QuestionAnswer>>

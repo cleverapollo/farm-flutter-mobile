@@ -1,10 +1,9 @@
-import 'package:cmo/ui/screen/sync_summary/cubit/sync_summary_state.dart';
+import 'package:cmo/state/sync_summary_cubit/sync_summary_cubit.dart';
+import 'package:cmo/state/sync_summary_cubit/sync_summary_state.dart';
+import 'package:cmo/ui/screen/sync_summary/sync_summary_enum.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../cubit/sync_summary_cubit.dart';
-import '../sync_summary_enum.dart';
 
 class SyncSummaryItemWidget extends StatefulWidget {
   const SyncSummaryItemWidget(this.syncSummaryEnum, {super.key});
@@ -32,7 +31,7 @@ class _SyncSummaryItemWidgetState extends State<SyncSummaryItemWidget> {
         _BuildPairModel('Worker', count: state.data?.mdWoker),
         _BuildPairModel('Unsync Worker', count: state.data?.mdUnsyncWoker),
         _BuildPairModel('Team', count: state.data?.mdTeam),
-        _BuildPairModel('Reject Reason', count: state.data?.mdRejetReason),
+        _BuildPairModel('Reject Reason', count: state.data?.mdRejectReason),
         _BuildPairModel('Plantation', count: state.data?.mdPlantation),
         _BuildPairModel('Contractor', count: state.data?.mdContractor),
         _BuildPairModel('Job Category', count: state.data?.mdJobCategory),
@@ -59,11 +58,7 @@ class _SyncSummaryItemWidgetState extends State<SyncSummaryItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SyncSummaryCubit, SyncSummaryState>(
-      builder: (_, __) {
-        return _handleSyncSummaryItemWidget();
-      },
-    );
+    return _handleSyncSummaryItemWidget();
   }
 
   Widget _handleSyncSummaryItemWidget() {
@@ -80,22 +75,27 @@ class _SyncSummaryItemWidgetState extends State<SyncSummaryItemWidget> {
   }
 
   Widget _buildAssessmentDetails() {
-    return Column(
-      children: [
-        _BuildPairItemWidget(
-          first: widget.syncSummaryEnum.getLabel,
-          isTitle: true,
-        ),
-        _BuildPairItemWidget(
-          first: 'In Progress',
-          count: state.data?.adInprogress,
-        ),
-        _BuildPairItemWidget(
-          first: 'Un Synced',
-          isHighlight: true,
-          count: state.data?.adUnsynced,
-        ),
-      ],
+    return BlocBuilder<SyncSummaryCubit, SyncSummaryState>(
+      buildWhen: (previous, current) => previous.data != current.data,
+      builder: (_, state) {
+        return Column(
+          children: [
+            _BuildPairItemWidget(
+              first: widget.syncSummaryEnum.getLabel,
+              isTitle: true,
+            ),
+            _BuildPairItemWidget(
+              first: 'In Progress',
+              count: state.data?.adInprogress,
+            ),
+            _BuildPairItemWidget(
+              first: 'Un Synced',
+              count: state.data?.adUnsynced,
+              isHighlight: true,
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -115,18 +115,22 @@ class _SyncSummaryItemWidgetState extends State<SyncSummaryItemWidget> {
   }
 
   Widget _buildMasterData() {
-    return Column(
-      children: [
-        _BuildPairItemWidget(
-          first: widget.syncSummaryEnum.getLabel,
-          isTitle: true,
-        ),
-        ...data.map((e) => _BuildPairItemWidget(
-              first: e.title,
-              count: e.count,
-            ))
-      ],
-    );
+    return BlocBuilder<SyncSummaryCubit, SyncSummaryState>(
+        buildWhen: (previous, current) => previous.data != current.data,
+        builder: (_, state) {
+          return Column(
+            children: [
+              _BuildPairItemWidget(
+                first: widget.syncSummaryEnum.getLabel,
+                isTitle: true,
+              ),
+              ...data.map((e) => _BuildPairItemWidget(
+                    first: e.title,
+                    count: e.count,
+                  ))
+            ],
+          );
+        });
   }
 }
 
@@ -142,7 +146,6 @@ class _BuildPairItemWidget extends StatelessWidget {
   final String first;
   final bool isTitle;
   final bool isHighlight;
-
   final num? count;
 
   @override
@@ -202,7 +205,7 @@ class _BuildPairItemWidget extends StatelessWidget {
                       )),
                   Flexible(
                     fit: FlexFit.tight,
-                    child: Text((count).toString(),
+                    child: Text('${count ?? '*'}',
                         style: isTitle
                             ? context.textStyles.titleBold
                             : context.textStyles.bodyNormal.copyWith(
@@ -218,7 +221,7 @@ class _BuildPairItemWidget extends StatelessWidget {
 }
 
 class _BuildPairModel {
-  _BuildPairModel(this.title, {this.count = 0});
+  _BuildPairModel(this.title, {this.count});
 
   final String title;
   final num? count;
