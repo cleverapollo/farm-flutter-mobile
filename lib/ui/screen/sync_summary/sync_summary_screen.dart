@@ -21,62 +21,87 @@ class SyncSummaryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBar(
-        title: LocaleKeys.syncSummary.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
-      ),
-      body: BlocProvider<SyncSummaryCubit>(
+    return BlocProvider<SyncSummaryCubit>(
         create: (_) => SyncSummaryCubit(),
-        child: BlocBuilder<SyncSummaryCubit, SyncSummaryState>(
-          builder: (context, state) => state.isLoading
-              ? const _buildLoadingIndicator()
-              : RefreshIndicator(
-                  onRefresh: () async {
-                    await context.read<SyncSummaryCubit>().onInitialData();
-                  },
-                  child: Stack(
-                    children: [
-                      SingleChildScrollView(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: SyncSummaryEnum.all.getViews
-                                .withSpaceBetween(height: 16)
-                              ..add(
-                                const SizedBox(height: 60),
-                              )),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            CmoFilledButton(
-                              onTap: () async {
-                                await context
-                                    .read<SyncSummaryCubit>()
-                                    .onSync(context);
-                              },
-                              title: LocaleKeys.sync.tr(),
+        child: BlocConsumer<SyncSummaryCubit, SyncSummaryState>(
+          listener: (_, __) {},
+          builder: (context, state) {
+            return Scaffold(
+              appBar: CmoAppBar(
+                title: LocaleKeys.syncSummary.tr(),
+                leading: Assets.icons.icArrowLeft.svgBlack,
+                onTapLeading: () {
+                  if (!state.isLoadingSync) {
+                    return Navigator.pop(context);
+                  }
+                },
+              ),
+              body: state.isLoading
+                  ? const _buildLoadingIndicator()
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        if (!state.isLoadingSync) {
+                          await context
+                              .read<SyncSummaryCubit>()
+                              .onInitialData();
+                        }
+                      },
+                      child: Stack(
+                        children: [
+                          SingleChildScrollView(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: SyncSummaryEnum.all.getViews
+                                    .withSpaceBetween(height: 16)
+                                  ..add(
+                                    const SizedBox(height: 60),
+                                  )),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CmoFilledButton(
+                                  onTap: () async {
+                                    await context
+                                        .read<SyncSummaryCubit>()
+                                        .onSyncData(context);
+                                  },
+                                  title: state.isLoadingSync
+                                      ? (state.syncMessage.isEmpty
+                                          ? 'Syncing...'
+                                          : state.syncMessage)
+                                      : LocaleKeys.sync.tr(),
+                                  leading: state.isLoadingSync
+                                      ? const Padding(
+                                          padding: EdgeInsets.only(right: 16.0),
+                                          child: SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2,
+                                            ),
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                                const SizedBox(height: 12),
+                              ],
                             ),
-                            const SizedBox(height: 12),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-        ),
-      ),
-    );
+                    ),
+            );
+          },
+        ));
   }
 }
 
 class _buildLoadingIndicator extends StatelessWidget {
-  const _buildLoadingIndicator({
-    super.key,
-  });
+  const _buildLoadingIndicator();
 
   @override
   Widget build(BuildContext context) {

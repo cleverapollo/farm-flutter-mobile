@@ -1,11 +1,36 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/model/company.dart';
+import 'package:cmo/model/data/company_question.dart';
+import 'package:cmo/model/data/compliance.dart';
+import 'package:cmo/model/data/contractor.dart';
+import 'package:cmo/model/data/course.dart';
+import 'package:cmo/model/data/impact_caused.dart';
+import 'package:cmo/model/data/impact_on.dart';
+import 'package:cmo/model/data/job_category.dart';
+import 'package:cmo/model/data/job_description.dart';
+import 'package:cmo/model/data/job_element.dart';
+import 'package:cmo/model/data/mmm.dart';
+import 'package:cmo/model/data/municipality.dart';
+import 'package:cmo/model/data/pdca.dart';
+import 'package:cmo/model/data/plantation.dart';
+import 'package:cmo/model/data/province.dart';
+import 'package:cmo/model/data/reject_reason.dart';
+import 'package:cmo/model/data/schedule.dart';
+import 'package:cmo/model/data/schedule_activity.dart';
+import 'package:cmo/model/data/severity.dart';
+import 'package:cmo/model/data/speqs.dart';
+import 'package:cmo/model/data/team.dart';
+import 'package:cmo/model/data/training_provider.dart';
+import 'package:cmo/model/data/unit.dart';
+import 'package:cmo/model/data/worker.dart';
+import 'package:cmo/model/master_data_message.dart';
 import 'package:cmo/model/sync_summary_model.dart';
 import 'package:cmo/model/user_info.dart';
 import 'package:cmo/service/cmo_api_service.dart';
-import 'package:cmo/state/assessment_cubit/assessment_cubit.dart';
 import 'package:cmo/state/sync_summary_cubit/sync_summary_state.dart';
-import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
+import 'package:cmo/ui/snack/success.dart';
+import 'package:cmo/utils/json_converter.dart';
+import 'package:cmo/utils/logger.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,8 +41,11 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
   }
 
   final _databaseMasterService = cmoDatabaseMasterService;
+  final _databaseService = cmoDatabaseService;
+  final _topicMasterDataSync = 'Cmo.MasterDataDeviceSync.';
 
   SyncSummaryModel data = const SyncSummaryModel();
+
   UserInfo? user;
   List<Company>? companies = [];
 
@@ -36,12 +64,13 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
 
         if ((companies ?? []).isEmpty) return;
 
-        data = data.copyWith(mdCompany: companies?.length);
-
         final companyId = companies?.first.companyId ?? 0;
-        final userId = user!.userId ?? 0;
+        final userId = user?.userId ?? 0;
 
         futures
+          ..add(_databaseService
+              .getAllCachedCompanys()
+              .then((value) => data = data.copyWith(mdCompany: value.length)))
           ..add(_databaseMasterService
               .getQuestionByCompanyId(companyId)
               .then((value) => data = data.copyWith(mdQuestion: value.length)))
@@ -49,8 +78,6 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
               .getAssessmentTotalsByCompanyIdAndUserId(
                   companyId: companyId, userId: userId)
               .then((value) => data = data.copyWith(adUnsynced: value.length)))
-          ..add(_databaseMasterService.getWorkersLocal().then(
-              (value) => data = data.copyWith(mdUnsyncWoker: value.length)))
           ..add(_databaseMasterService.getWorkersLocal().then(
               (value) => data = data.copyWith(mdUnsyncWoker: value.length)))
           ..add(_databaseMasterService.getCompliances().then(
@@ -121,13 +148,500 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     }
   }
 
-  Future<void> onSync(BuildContext context) async {
-    if ((companies ?? []).isEmpty) return;
+  Future<void> onSyncData(BuildContext context) async {
+    final userDeviceId = user?.userId;
+    final company = companies?.firstWhere((element) => element.isInUse ?? true,
+        orElse: () => const Company(companyId: 0));
+    final companyId = company?.companyId;
 
-    context.read<AssessmentCubit>().cleanCache();
+    if (userDeviceId == null || companyId == null || companyId == 0) return;
 
-    await context.read<UserDeviceCubit>().createUserDevice(context);
+    emit(
+      state.copyWith(isLoadingSync: true, syncMessage: ''),
+    );
 
-    //TODO(John Nguyen): Logic Here
+    await cmoApiService.createSystemEvent(
+      primaryKey: companyId,
+      systemEventName: 'SyncAssessmentMasterData',
+      userDeviceId: userDeviceId,
+    );
+
+    Future<void> syncMasterData() async {
+      var sync = true;
+      while (sync) {
+        MasterDataMessage? resPull;
+        if (context.mounted) {
+          resPull = await cmoApiService.pullMessage(
+            topicMasterDataSync: _topicMasterDataSync,
+            pubsubApiKey: appInfoService.pubsubApiKey,
+            currentClientId: userDeviceId,
+          );
+        }
+
+        final messages = resPull?.message;
+        if (messages == null || messages.isEmpty) {
+          sync = false;
+          break;
+        }
+
+        final dbCompany = await cmoDatabaseMasterService.db;
+        await dbCompany.writeTxn(() async {
+          for (var i = 0; i < messages.length; i++) {
+            final item = messages[i];
+
+            try {
+              final topic = item.header?.originalTopic;
+              if (topic == '${_topicMasterDataSync}Plantation.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Plantations...'));
+                await insertPlantation(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Unit.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Units...'));
+                await insertUnit(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Contractor.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Contractors...'));
+                await insertContractor(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Province.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Province...'));
+                await insertProvince(item);
+              }
+
+              if (topic ==
+                  '${_topicMasterDataSync}Municipality.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Municipality...'));
+                await insertMunicipality(item);
+              }
+
+              if (topic ==
+                  '${_topicMasterDataSync}ImpactCaused.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Impact Caused...'));
+                await insertImpactCaused(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}ImpactOn.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Impact On...'));
+                await insertImpactOn(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}JobCategory.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Job Types...'));
+                await insertJobCategory(item);
+              }
+
+              if (topic ==
+                  '${_topicMasterDataSync}JobDescription.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
+                await insertJobDescription(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}JobElement.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Job Elements...'));
+                await insertJobElement(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Mmm.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Mmm...'));
+                await insertMmm(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Pdca.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Pdca...'));
+                await insertPdca(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Severity.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Severity...'));
+                await insertSeverity(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Speqs.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Speqs...'));
+                await insertSpeqs(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Compliance.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Compliance...'));
+                await insertCompliance(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Team.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Team...'));
+                await insertTeam(item);
+              }
+
+              if (topic ==
+                  '${_topicMasterDataSync}RejectReason.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Reject Reason...'));
+                await insertRejectReason(item);
+              }
+
+              if (topic ==
+                  '${_topicMasterDataSync}TrainingProvider.$userDeviceId') {
+                emit(
+                  state.copyWith(
+                    syncMessage: 'Syncing Training Provider...',
+                  ),
+                );
+                await insertTrainingProvider(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Course.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Course...'));
+                await insertCourse(item);
+              }
+
+              if (topic ==
+                  '${_topicMasterDataSync}ScheduleActivity.$userDeviceId') {
+                emit(
+                  state.copyWith(
+                    syncMessage: 'Syncing Schedule Activity...',
+                  ),
+                );
+                await insertScheduleActivity(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Schedule.$userDeviceId') {
+                emit(
+                  state.copyWith(
+                    syncMessage: 'Syncing Schedule...',
+                  ),
+                );
+                await insertSchedule(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Worker.$userDeviceId') {
+                emit(
+                  state.copyWith(
+                    syncMessage: 'Syncing Workers...',
+                  ),
+                );
+                await insertWorker(item);
+              }
+
+              if (topic == '${_topicMasterDataSync}Question.$userDeviceId') {
+                emit(
+                  state.copyWith(
+                    syncMessage: 'Syncing Questions...',
+                  ),
+                );
+                await insertQuestion(item);
+              }
+            } finally {}
+          }
+        });
+
+        if (context.mounted) {
+          await cmoApiService.deleteMessage(
+            pubsubApiKey: appInfoService.pubsubApiKey,
+            currentClientId: userDeviceId,
+            messages: messages,
+          );
+        }
+      }
+    }
+
+    await syncMasterData();
+
+    final db = await _databaseService.db;
+    final cachedCompanies = await _databaseService.getAllCachedCompanys();
+    await db.writeTxn(() async {
+      for (final cachedCompany in cachedCompanies) {
+        await _databaseService.cacheCompany(
+          cachedCompany.copyWith(isInUse: false, isMasterDataSynced: false),
+        );
+      }
+
+      await _databaseService.cacheCompany(
+        company?.copyWith(isInUse: true, isMasterDataSynced: true) ??
+            const Company(companyId: 0),
+      );
+    });
+
+    emit(
+      state.copyWith(syncMessage: '', isLoadingSync: false),
+    );
+
+    showSnackSuccess(msg: 'Sync Success');
+  }
+
+  Future<int?> insertPlantation(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final plantation = Plantation.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cachePlantation(plantation);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertUnit(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final unit = Unit.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheUnit(unit);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertContractor(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final contractor = Contractor.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheContractor(contractor);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertProvince(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final province = Province.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheProvince(province);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertMunicipality(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final municipality = Municipality.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheMunicipality(municipality);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertImpactCaused(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final impactCaused = ImpactCaused.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheImpactCaused(impactCaused);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertImpactOn(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final impactOn = ImpactOn.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheImpactOn(impactOn);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertJobCategory(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final jobCategory = JobCategory.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheJobCategory(jobCategory);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertJobDescription(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final jobDescription = JobDescription.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheJobDescription(jobDescription);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertJobElement(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final jobElement = JobElement.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheJobElement(jobElement);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertMmm(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final mmm = Mmm.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheMmm(mmm);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertPdca(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final pdca = Pdca.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cachePdca(pdca);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertSeverity(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final severity = Severity.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheSeverity(severity);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertSpeqs(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final speqs = Speqs.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheSpeqs(speqs);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertCompliance(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final compliance = Compliance.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheCompliance(compliance);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertTeam(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final team = Team.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheTeam(team);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertRejectReason(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final rejectReason = RejectReason.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheRejectReason(rejectReason);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertTrainingProvider(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final trainingProvider = TrainingProvider.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheTrainingProvider(trainingProvider);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertCourse(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final course = Course.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheCourse(course);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertSchedule(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final schedule = Schedule.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheSchedule(schedule);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertScheduleActivity(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final scheduleActivity = ScheduleActivity.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheScheduleActivity(scheduleActivity);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertWorker(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final worker = Worker.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheWorker(worker);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertQuestion(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final question = CompanyQuestion.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheCompanyQuestion(question);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
   }
 }

@@ -4,19 +4,36 @@ class SyncSummaryState {
   SyncSummaryState({
     this.isLoading = false,
     this.dataLoaded = false,
+    this.isLoadingSync = false,
+    this.syncMessage = '',
     this.data,
+    this.countInProgress = 0,
+    this.countUnSynced = 0,
   });
 
   final bool isLoading;
   final bool dataLoaded;
+  final bool isLoadingSync;
+  final num countInProgress;
+  final num countUnSynced;
+  final String syncMessage;
+
   SyncSummaryModel? data;
 
   SyncSummaryState copyWith({
     bool? isLoading,
     bool? dataLoaded,
+    bool? isLoadingSync,
+    String? syncMessage,
     SyncSummaryModel? data,
+    num? countInProgress,
+    num? countUnSynced,
   }) {
     return SyncSummaryState(
+      countInProgress: countInProgress ?? this.countInProgress,
+      countUnSynced: countUnSynced ?? this.countUnSynced,
+      isLoadingSync: isLoadingSync ?? this.isLoadingSync,
+      syncMessage: syncMessage ?? this.syncMessage,
       isLoading: isLoading ?? this.isLoading,
       dataLoaded: dataLoaded ?? this.dataLoaded,
       data: SyncSummaryModel(
