@@ -738,22 +738,20 @@ class CmoDatabaseMasterService {
           .findAll();
 
       for (final question in companyQuestions) {
-        final qA = await db.questionAnswers
+        final qAs = await db.questionAnswers
             .filter()
+            .assessmentIdEqualTo(assessmentId)
             .questionIdEqualTo(question.questionId)
-            .findFirst();
-        // final jobCategory = await db.jobCategorys
-        //     .filter()
-        //     .jobCategoryIdEqualTo(question.jobCategoryId!)
-        //     .findFirst();
+            .findAll();
+        QuestionAnswer? qA = qAs.isNotEmpty ? qAs.last : null;
 
         final questionAnswer = QuestionAnswer(
           assessmentId: assessmentId,
           questionId: question.questionId,
           // I think this must be 0 need to test if I change it
           // complianceId: question.complianceId ?? -1,
-          complianceId: question.complianceId ?? 0,
-          isQuestionComplete: question.isQuestionComplete,
+          complianceId: qA?.complianceId ?? 0,
+          isQuestionComplete: qA?.isQuestionComplete,
           questionAnswerId: qA?.questionAnswerId,
           rejectReasonId: qA?.rejectReasonId,
           rejectComment: qA?.rejectComment,

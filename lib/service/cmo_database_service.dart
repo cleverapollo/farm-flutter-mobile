@@ -62,6 +62,8 @@ class CmoDatabaseService {
         .filter()
         .isActiveEqualTo(true)
         .statusEqualTo(1)
+        .completedEqualTo(null).or()
+        .completedEqualTo(false)
         .sortByCreateDTDesc()
         .findAll();
   }
@@ -71,7 +73,7 @@ class CmoDatabaseService {
     return db.assessments
         .filter()
         .isActiveEqualTo(true)
-        .statusEqualTo(2)
+        .completedEqualTo(true)
         .sortByCreateDTDesc()
         .findAll();
   }

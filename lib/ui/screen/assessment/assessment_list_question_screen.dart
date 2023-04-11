@@ -80,7 +80,6 @@ class _AssessmentListQuestionScreenState
         compliance,
         rejectReasons,
       );
-
       if (context.mounted) {
         await context.read<AssessmentQuestionCubit>().addComment(
               questionId: question.questionId,

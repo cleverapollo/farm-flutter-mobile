@@ -311,6 +311,13 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
       'Add answer for AssessmentId: ${answer.assessmentId} QuestionId: ${answer.questionId}',
     );
     await cmoDatabaseMasterService.cacheQuestionAnswer(answer);
+    final answers = await cmoDatabaseMasterService
+        .getQuestionAnswersByCompanyIdAndJobCategoryIdAndAssessmentId(
+      state.assessment?.companyId,
+      state.assessment?.jobCategoryId,
+      state.assessment?.assessmentId,
+    );
+    emit(state.copyWith(answers: answers));
     await checkIfAssessmentIscomplete();
   }
 
@@ -332,7 +339,7 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
     logger.d('Question count: $questionCount');
 
     if (answered.length == questionCount) {
-      if (state.assessment?.completed == false) {
+      if (state.assessment?.completed != true) {
         emit(
           state.copyWith(
             assessment: state.assessment?.copyWith(completed: true),
