@@ -141,6 +141,7 @@ class _AssessmentLocationScreenState extends State<AssessmentLocationScreen> {
       body: Column(
         children: [
           Row(),
+          const SizedBox(height: 36),
           Expanded(
             flex: 3,
             child: Stack(
