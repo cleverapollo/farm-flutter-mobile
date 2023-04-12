@@ -64,7 +64,7 @@ class CmoDatabaseService {
     return db.assessments.where().findAll();
   }
 
-  Future<List<Assessment>> getAssessmentTotalsByCompanyIdAndUserId(
+  Future<List<Assessment>> getAllAssessmentByCompanyIdAndUserId(
       int companyId, int userId) async {
     final db = await _db();
     return db.assessments
@@ -72,7 +72,22 @@ class CmoDatabaseService {
         .companyIdEqualTo(companyId)
         .userIdEqualTo(userId)
         .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
         .findAll();
+  }
+
+  Future<AssessmentTotal> getAssessmentTotalsByCompanyIdAndUserId(
+      int companyId, int userId) async {
+    final total = await getAllAssessmentByCompanyIdAndUserId(companyId, userId);
+    final completed =
+        await getAllAssessmentsCompletedByCompanyIdAndUserId(companyId, userId);
+    final synced =
+        await getAllAssessmentsSyncedByCompanyIdAndUserId(companyId, userId);
+
+    return AssessmentTotal(
+      total.length - completed.length,
+      completed.length - synced.length,
+    );
   }
 
   Future<List<Assessment>> getAllAssessmentsStarted() async {
@@ -87,6 +102,16 @@ class CmoDatabaseService {
         .findAll();
   }
 
+  Future<List<Assessment>> getAllAssessmentUnSyncedByCompanyIdAndUserId(
+      int companyId, int userId) async {
+    final db = await _db();
+    return [
+      ...await getAllAssessmentsCompletedByCompanyIdAndUserId(
+          companyId, userId),
+      ...await getAllAssessmentsSyncedByCompanyIdAndUserId(companyId, userId)
+    ];
+  }
+
   Future<List<Assessment>> getAllAssessmentsCompleted() async {
     final db = await _db();
     return db.assessments
@@ -95,6 +120,21 @@ class CmoDatabaseService {
         .completedEqualTo(true)
         .sortByCreateDTDesc()
         .findAll();
+  }
+
+  Future<List<Assessment>> getAllAssessmentsCompletedByCompanyIdAndUserId(
+      int companyId, int userId) async {
+    final db = await _db();
+    final result = db.assessments
+        .filter()
+        .isActiveEqualTo(true)
+        .statusEqualTo(2)
+        .companyIdEqualTo(companyId)
+        .userIdEqualTo(userId)
+        .sortByCreateDTDesc()
+        .findAll();
+
+    return result;
   }
 
   Future<List<Assessment>> getAllAssessmentsSynced() async {
@@ -107,6 +147,19 @@ class CmoDatabaseService {
         .findAll();
   }
 
+  Future<List<Assessment>> getAllAssessmentsSyncedByCompanyIdAndUserId(
+      int companyId, int userId) async {
+    final db = await _db();
+    return db.assessments
+        .filter()
+        .isActiveEqualTo(true)
+        .companyIdEqualTo(companyId)
+        .userIdEqualTo(userId)
+        .statusEqualTo(3)
+        .sortByCreateDTDesc()
+        .findAll();
+  }
+
   Future<FileSystemEntity?> deleteAll() async {
     final db = await _db();
     await db.writeTxn(() async {
@@ -114,4 +167,11 @@ class CmoDatabaseService {
     });
     return null;
   }
+}
+
+class AssessmentTotal {
+  AssessmentTotal(this.totalInProgress, this.totalUnSynced);
+
+  final int totalInProgress;
+  final int totalUnSynced;
 }

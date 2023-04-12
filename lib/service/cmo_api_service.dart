@@ -1,10 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
 import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/company.dart';
@@ -13,6 +9,9 @@ import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
 import 'package:cmo/model/user_info.dart';
 import 'package:cmo/ui/snack/success.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 typedef JsonData = Map<String, dynamic>;
 typedef JsonListData = List<dynamic>;
@@ -160,6 +159,37 @@ class CmoApiService {
       return false;
     }
     return true;
+  }
+
+  Future<MasterDataMessage?> pullAssessmentMessage({
+    required String pubsubApiKey,
+    required String topicAssessment,
+    required int currentClientId,
+    int pageSize = 200,
+  }) async {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      '/pubsubapi/api/v1/message',
+      {
+        'key': pubsubApiKey,
+        'client': '$currentClientId',
+        'topic': '$topicAssessment.$currentClientId',
+        'pageSize': '$pageSize',
+      },
+    );
+
+    final response = await client.getUri<JsonData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data == null ? null : MasterDataMessage.fromJson(data);
   }
 
   Future<MasterDataMessage?> pullMessage({

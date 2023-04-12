@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
+import 'package:flutter/material.dart';
 
 const _h1 = 45.0;
 const _h2 = 60.0;
@@ -48,15 +47,12 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
       text = Column(
         children: [
           text,
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              subtitle!,
-              maxLines: 1,
-              textAlign: TextAlign.center,
-              style: context.textStyles.bodyBold
-                  .copyWith(color: context.colors.blue),
-            ),
+          Text(
+            subtitle!,
+            maxLines: 1,
+            textAlign: TextAlign.center,
+            style: context.textStyles.bodyBold
+                .copyWith(color: context.colors.blue),
           )
         ],
       );

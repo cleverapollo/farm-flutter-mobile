@@ -1,4 +1,6 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/model/assessment.dart';
 import 'package:cmo/model/company.dart';
 import 'package:cmo/model/data/company_question.dart';
 import 'package:cmo/model/data/compliance.dart';
@@ -48,24 +50,27 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
 
   UserInfo? user;
   List<Company>? companies = [];
+  Company? company;
 
   Future<void> onInitialData() async {
-    data = data.copyWith(adInprogress: 0);
     emit(state.copyWith(isLoading: true, dataLoaded: false));
     try {
       await _databaseMasterService.db.then((value) async {
         final futures = <Future<dynamic>>[];
         user = await CmoApiService().getUser();
 
-        if (user == null) return;
-
         companies =
             await CmoApiService().getCompaniesByUserId(userId: user!.userId!);
+        company = companies?.firstWhereOrNull((e) => e.isInUse ?? false,
+            orElse: () => const Company(companyId: 8));
 
-        if ((companies ?? []).isEmpty) return;
+        if (company?.companyId == null || user?.userId == null) return;
 
-        final companyId = companies?.first.companyId ?? 0;
-        final userId = user?.userId ?? 0;
+        final companyId = company!.companyId;
+        final userId = user!.userId!;
+
+        debugPrint('TuNT------' + companyId.toString());
+        debugPrint('TuNT------' + userId.toString());
 
         futures
           ..add(_databaseService
@@ -74,10 +79,12 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
           ..add(_databaseMasterService
               .getQuestionByCompanyId(companyId)
               .then((value) => data = data.copyWith(mdQuestion: value.length)))
-          ..add(_databaseMasterService
-              .getAssessmentTotalsByCompanyIdAndUserId(
-                  companyId: companyId, userId: userId)
-              .then((value) => data = data.copyWith(adUnsynced: value.length)))
+          ..add(_databaseService
+              .getAssessmentTotalsByCompanyIdAndUserId(companyId, userId)
+              .then((value) => data = data.copyWith(
+                    adInprogress: value.totalInProgress,
+                    adUnsynced: value.totalUnSynced,
+                  )))
           ..add(_databaseMasterService.getWorkersLocal().then(
               (value) => data = data.copyWith(mdUnsyncWoker: value.length)))
           ..add(_databaseMasterService.getCompliances().then(
@@ -149,16 +156,21 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
   }
 
   Future<void> onSyncData(BuildContext context) async {
+    if (state.isLoadingSync || state.isLoading) return;
+
     final userDeviceId = user?.userId;
-    final company = companies?.firstWhere((element) => element.isInUse ?? true,
-        orElse: () => const Company(companyId: 0));
     final companyId = company?.companyId;
 
-    if (userDeviceId == null || companyId == null || companyId == 0) return;
+    if (userDeviceId == null || companyId == null) return;
 
     emit(
       state.copyWith(isLoadingSync: true, syncMessage: ''),
     );
+    emit(
+      state.copyWith(syncMessage: 'Syncing Assessments...'),
+    );
+
+    await syncAssessment(companyId, userDeviceId);
 
     await cmoApiService.createSystemEvent(
       primaryKey: companyId,
@@ -166,186 +178,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
       userDeviceId: userDeviceId,
     );
 
-    Future<void> syncMasterData() async {
-      var sync = true;
-      while (sync) {
-        MasterDataMessage? resPull;
-        if (context.mounted) {
-          resPull = await cmoApiService.pullMessage(
-            topicMasterDataSync: _topicMasterDataSync,
-            pubsubApiKey: appInfoService.pubsubApiKey,
-            currentClientId: userDeviceId,
-          );
-        }
-
-        final messages = resPull?.message;
-        if (messages == null || messages.isEmpty) {
-          sync = false;
-          break;
-        }
-
-        final dbCompany = await cmoDatabaseMasterService.db;
-        await dbCompany.writeTxn(() async {
-          for (var i = 0; i < messages.length; i++) {
-            final item = messages[i];
-
-            try {
-              final topic = item.header?.originalTopic;
-              if (topic == '${_topicMasterDataSync}Plantation.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Plantations...'));
-                await insertPlantation(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Unit.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Units...'));
-                await insertUnit(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Contractor.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Contractors...'));
-                await insertContractor(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Province.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Province...'));
-                await insertProvince(item);
-              }
-
-              if (topic ==
-                  '${_topicMasterDataSync}Municipality.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Municipality...'));
-                await insertMunicipality(item);
-              }
-
-              if (topic ==
-                  '${_topicMasterDataSync}ImpactCaused.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Impact Caused...'));
-                await insertImpactCaused(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}ImpactOn.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Impact On...'));
-                await insertImpactOn(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}JobCategory.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Job Types...'));
-                await insertJobCategory(item);
-              }
-
-              if (topic ==
-                  '${_topicMasterDataSync}JobDescription.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
-                await insertJobDescription(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}JobElement.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Job Elements...'));
-                await insertJobElement(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Mmm.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Mmm...'));
-                await insertMmm(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Pdca.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Pdca...'));
-                await insertPdca(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Severity.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Severity...'));
-                await insertSeverity(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Speqs.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Speqs...'));
-                await insertSpeqs(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Compliance.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Compliance...'));
-                await insertCompliance(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Team.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Team...'));
-                await insertTeam(item);
-              }
-
-              if (topic ==
-                  '${_topicMasterDataSync}RejectReason.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Reject Reason...'));
-                await insertRejectReason(item);
-              }
-
-              if (topic ==
-                  '${_topicMasterDataSync}TrainingProvider.$userDeviceId') {
-                emit(
-                  state.copyWith(
-                    syncMessage: 'Syncing Training Provider...',
-                  ),
-                );
-                await insertTrainingProvider(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Course.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Course...'));
-                await insertCourse(item);
-              }
-
-              if (topic ==
-                  '${_topicMasterDataSync}ScheduleActivity.$userDeviceId') {
-                emit(
-                  state.copyWith(
-                    syncMessage: 'Syncing Schedule Activity...',
-                  ),
-                );
-                await insertScheduleActivity(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Schedule.$userDeviceId') {
-                emit(
-                  state.copyWith(
-                    syncMessage: 'Syncing Schedule...',
-                  ),
-                );
-                await insertSchedule(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Worker.$userDeviceId') {
-                emit(
-                  state.copyWith(
-                    syncMessage: 'Syncing Workers...',
-                  ),
-                );
-                await insertWorker(item);
-              }
-
-              if (topic == '${_topicMasterDataSync}Question.$userDeviceId') {
-                emit(
-                  state.copyWith(
-                    syncMessage: 'Syncing Questions...',
-                  ),
-                );
-                await insertQuestion(item);
-              }
-            } finally {}
-          }
-        });
-
-        if (context.mounted) {
-          await cmoApiService.deleteMessage(
-            pubsubApiKey: appInfoService.pubsubApiKey,
-            currentClientId: userDeviceId,
-            messages: messages,
-          );
-        }
-      }
-    }
-
-    await syncMasterData();
+    await syncMasterData(context, userDeviceId);
 
     final db = await _databaseService.db;
     final cachedCompanies = await _databaseService.getAllCachedCompanys();
@@ -366,7 +199,215 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
       state.copyWith(syncMessage: '', isLoadingSync: false),
     );
 
-    showSnackSuccess(msg: 'Sync Success');
+    await onInitialData()
+        .whenComplete(() => showSnackSuccess(msg: 'Sync Success'));
+  }
+
+  Future<void> syncAssessment(int companyId, int userId) async {
+    final result = await _databaseService
+        .getAllAssessmentUnSyncedByCompanyIdAndUserId(companyId, userId);
+
+    final futures = <Future<dynamic>>[];
+
+    final db = await _databaseService.db;
+
+    await db.writeTxn(() async {
+      if (result.isNotEmpty) {
+        for (final item in result) {
+          futures
+              .add(_databaseService.cacheAssessment(item.copyWith(status: 3)));
+        }
+      }
+    });
+  }
+
+  Future<void> syncMasterData(BuildContext context, int userDeviceId) async {
+    var sync = true;
+    while (sync) {
+      MasterDataMessage? masterDataPull;
+
+      if (context.mounted) {
+        masterDataPull = await cmoApiService.pullMessage(
+          topicMasterDataSync: _topicMasterDataSync,
+          pubsubApiKey: appInfoService.pubsubApiKey,
+          currentClientId: userDeviceId,
+        );
+
+        final result = await cmoApiService.pullAssessmentMessage(
+          topicAssessment: 'Cmo.Assessment.Complete.${company?.companyId}',
+          pubsubApiKey: appInfoService.pubsubApiKey,
+          currentClientId: userDeviceId,
+        );
+      }
+
+      final masterDataMessage = masterDataPull?.message;
+
+      if (masterDataMessage == null || masterDataMessage.isEmpty) {
+        sync = false;
+        break;
+      }
+
+      final dbCompany = await cmoDatabaseMasterService.db;
+
+      await dbCompany.writeTxn(() async {
+        for (var i = 0; i < masterDataMessage.length; i++) {
+          final item = masterDataMessage[i];
+
+          try {
+            final topic = item.header?.originalTopic;
+
+            // emit(state.copyWith(syncMessage: 'Syncing Assessments...'));
+            // await insertAssessment(item);
+
+            if (topic == '${_topicMasterDataSync}Plantation.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Plantations...'));
+              await insertPlantation(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Unit.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Units...'));
+              await insertUnit(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Contractor.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Contractors...'));
+              await insertContractor(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Province.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Province...'));
+              await insertProvince(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Municipality.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Municipality...'));
+              await insertMunicipality(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}ImpactCaused.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Impact Caused...'));
+              await insertImpactCaused(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}ImpactOn.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Impact On...'));
+              await insertImpactOn(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}JobCategory.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Job Types...'));
+              await insertJobCategory(item);
+            }
+
+            if (topic ==
+                '${_topicMasterDataSync}JobDescription.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
+              await insertJobDescription(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}JobElement.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Job Elements...'));
+              await insertJobElement(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Mmm.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Mmm...'));
+              await insertMmm(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Pdca.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Pdca...'));
+              await insertPdca(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Severity.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Severity...'));
+              await insertSeverity(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Speqs.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Speqs...'));
+              await insertSpeqs(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Compliance.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Compliance...'));
+              await insertCompliance(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Team.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Team...'));
+              await insertTeam(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}RejectReason.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Reject Reason...'));
+              await insertRejectReason(item);
+            }
+
+            if (topic ==
+                '${_topicMasterDataSync}TrainingProvider.$userDeviceId') {
+              emit(
+                state.copyWith(
+                  syncMessage: 'Syncing Training Provider...',
+                ),
+              );
+              await insertTrainingProvider(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Course.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Course...'));
+              await insertCourse(item);
+            }
+
+            if (topic ==
+                '${_topicMasterDataSync}ScheduleActivity.$userDeviceId') {
+              emit(
+                state.copyWith(
+                  syncMessage: 'Syncing Schedule Activity...',
+                ),
+              );
+              await insertScheduleActivity(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Schedule.$userDeviceId') {
+              emit(
+                state.copyWith(
+                  syncMessage: 'Syncing Schedule...',
+                ),
+              );
+              await insertSchedule(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Worker.$userDeviceId') {
+              emit(
+                state.copyWith(
+                  syncMessage: 'Syncing Workers...',
+                ),
+              );
+              await insertWorker(item);
+            }
+
+            if (topic == '${_topicMasterDataSync}Question.$userDeviceId') {
+              emit(
+                state.copyWith(
+                  syncMessage: 'Syncing Questions...',
+                ),
+              );
+              await insertQuestion(item);
+            }
+          } finally {}
+        }
+      });
+
+      if (context.mounted) {
+        await cmoApiService.deleteMessage(
+          pubsubApiKey: appInfoService.pubsubApiKey,
+          currentClientId: userDeviceId,
+          messages: masterDataMessage ?? [],
+        );
+      }
+    }
   }
 
   Future<int?> insertPlantation(Message item) async {
@@ -375,6 +416,19 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
       if (bodyJson == null) return null;
       final plantation = Plantation.fromJson(bodyJson);
       return cmoDatabaseMasterService.cachePlantation(plantation);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertAssessment(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final assessment = Assessment.fromJson(bodyJson);
+
+      return cmoDatabaseMasterService.cacheAssessment(assessment);
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -644,4 +698,6 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     }
     return null;
   }
+
+  publishAssessmentPayload() {}
 }

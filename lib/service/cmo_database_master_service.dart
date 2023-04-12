@@ -728,25 +728,6 @@ class CmoDatabaseMasterService {
     return <Compliance>[];
   }
 
-  Future<List<Assessment>> getAssessmentTotalsByCompanyIdAndUserId(
-      {required int companyId, required int userId}) async {
-    final db = await _db();
-    try {
-      final result = await db.assessments
-          .filter()
-          .companyIdIsNotNull()
-          .companyIdEqualTo(companyId)
-          .userIdIsNotNull()
-          .userIdEqualTo(userId)
-          .isActiveEqualTo(true)
-          .findAll();
-      return result;
-    } catch (e) {
-      handleError(e);
-      return <Assessment>[];
-    }
-  }
-
   Future<List<QuestionAnswer>>
       getQuestionAnswersByCompanyIdAndJobCategoryIdAndAssessmentId(
     int? companyId,
