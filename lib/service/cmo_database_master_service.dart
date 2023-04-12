@@ -803,13 +803,6 @@ class CmoDatabaseMasterService {
     return <QuestionComment>[];
   }
 
-  Future<int> cacheAssessment(
-    Assessment item,
-  ) async {
-    final db = await _db();
-    return db.writeTxn(() => db.assessments.put(item));
-  }
-
   Future<int> cacheQuestionPhoto(
     QuestionPhoto item,
   ) async {

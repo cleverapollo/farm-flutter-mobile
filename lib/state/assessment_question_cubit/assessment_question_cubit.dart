@@ -346,7 +346,7 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
           ),
         );
         if (state.assessment != null) {
-          await cmoDatabaseMasterService.cacheAssessment(state.assessment!);
+          await cmoDatabaseService.cacheAssessment(state.assessment!);
         }
       }
     } else {
@@ -357,9 +357,8 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
             assessment: state.assessment?.copyWith(completed: false),
           ),
         );
-
         if (state.assessment != null) {
-          await cmoDatabaseMasterService.cacheAssessment(state.assessment!);
+          await cmoDatabaseService.cacheAssessment(state.assessment!);
         }
       }
     }

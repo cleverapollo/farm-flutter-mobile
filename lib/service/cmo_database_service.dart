@@ -43,7 +43,9 @@ class CmoDatabaseService {
 
   Future<int> cacheAssessment(Assessment item) async {
     final db = await _db();
-    return db.assessments.put(item);
+    return db.writeTxn(() async {
+      return db.assessments.put(item);
+    });
   }
 
   Future<Assessment?> getCachedAssessment({required int id}) async {
