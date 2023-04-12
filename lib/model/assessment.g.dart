@@ -97,38 +97,43 @@ const AssessmentSchema = CollectionSchema(
       name: r'plantationName',
       type: IsarType.string,
     ),
-    r'status': PropertySchema(
+    r'signatureImage': PropertySchema(
       id: 16,
+      name: r'signatureImage',
+      type: IsarType.string,
+    ),
+    r'status': PropertySchema(
+      id: 17,
       name: r'status',
       type: IsarType.long,
     ),
     r'teamId': PropertySchema(
-      id: 17,
+      id: 18,
       name: r'teamId',
       type: IsarType.long,
     ),
     r'teamName': PropertySchema(
-      id: 18,
+      id: 19,
       name: r'teamName',
       type: IsarType.string,
     ),
     r'updateDT': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'updateDT',
       type: IsarType.string,
     ),
     r'userId': PropertySchema(
-      id: 20,
+      id: 21,
       name: r'userId',
       type: IsarType.long,
     ),
     r'workerId': PropertySchema(
-      id: 21,
+      id: 22,
       name: r'workerId',
       type: IsarType.string,
     ),
     r'workerName': PropertySchema(
-      id: 22,
+      id: 23,
       name: r'workerName',
       type: IsarType.string,
     )
@@ -190,6 +195,12 @@ int _assessmentEstimateSize(
     }
   }
   {
+    final value = object.signatureImage;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.teamName;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -238,13 +249,14 @@ void _assessmentSerialize(
   writer.writeDouble(offsets[13], object.long);
   writer.writeLong(offsets[14], object.plantationId);
   writer.writeString(offsets[15], object.plantationName);
-  writer.writeLong(offsets[16], object.status);
-  writer.writeLong(offsets[17], object.teamId);
-  writer.writeString(offsets[18], object.teamName);
-  writer.writeString(offsets[19], object.updateDT);
-  writer.writeLong(offsets[20], object.userId);
-  writer.writeString(offsets[21], object.workerId);
-  writer.writeString(offsets[22], object.workerName);
+  writer.writeString(offsets[16], object.signatureImage);
+  writer.writeLong(offsets[17], object.status);
+  writer.writeLong(offsets[18], object.teamId);
+  writer.writeString(offsets[19], object.teamName);
+  writer.writeString(offsets[20], object.updateDT);
+  writer.writeLong(offsets[21], object.userId);
+  writer.writeString(offsets[22], object.workerId);
+  writer.writeString(offsets[23], object.workerName);
 }
 
 Assessment _assessmentDeserialize(
@@ -270,13 +282,14 @@ Assessment _assessmentDeserialize(
     long: reader.readDoubleOrNull(offsets[13]),
     plantationId: reader.readLongOrNull(offsets[14]),
     plantationName: reader.readStringOrNull(offsets[15]),
-    status: reader.readLongOrNull(offsets[16]),
-    teamId: reader.readLongOrNull(offsets[17]),
-    teamName: reader.readStringOrNull(offsets[18]),
-    updateDT: reader.readStringOrNull(offsets[19]),
-    userId: reader.readLongOrNull(offsets[20]),
-    workerId: reader.readStringOrNull(offsets[21]),
-    workerName: reader.readStringOrNull(offsets[22]),
+    signatureImage: reader.readStringOrNull(offsets[16]),
+    status: reader.readLongOrNull(offsets[17]),
+    teamId: reader.readLongOrNull(offsets[18]),
+    teamName: reader.readStringOrNull(offsets[19]),
+    updateDT: reader.readStringOrNull(offsets[20]),
+    userId: reader.readLongOrNull(offsets[21]),
+    workerId: reader.readStringOrNull(offsets[22]),
+    workerName: reader.readStringOrNull(offsets[23]),
   );
   return object;
 }
@@ -321,18 +334,20 @@ P _assessmentDeserializeProp<P>(
     case 15:
       return (reader.readStringOrNull(offset)) as P;
     case 16:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 17:
       return (reader.readLongOrNull(offset)) as P;
     case 18:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 19:
       return (reader.readStringOrNull(offset)) as P;
     case 20:
-      return (reader.readLongOrNull(offset)) as P;
-    case 21:
       return (reader.readStringOrNull(offset)) as P;
+    case 21:
+      return (reader.readLongOrNull(offset)) as P;
     case 22:
+      return (reader.readStringOrNull(offset)) as P;
+    case 23:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2052,6 +2067,160 @@ extension AssessmentQueryFilter
     });
   }
 
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      signatureImageIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'signatureImage',
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      signatureImageIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'signatureImage',
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      signatureImageEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'signatureImage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      signatureImageGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'signatureImage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      signatureImageLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'signatureImage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      signatureImageBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'signatureImage',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      signatureImageStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'signatureImage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      signatureImageEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'signatureImage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      signatureImageContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'signatureImage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      signatureImageMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'signatureImage',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      signatureImageIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'signatureImage',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterFilterCondition>
+      signatureImageIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'signatureImage',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<Assessment, Assessment, QAfterFilterCondition> statusIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -3075,6 +3244,19 @@ extension AssessmentQuerySortBy
     });
   }
 
+  QueryBuilder<Assessment, Assessment, QAfterSortBy> sortBySignatureImage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'signatureImage', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterSortBy>
+      sortBySignatureImageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'signatureImage', Sort.desc);
+    });
+  }
+
   QueryBuilder<Assessment, Assessment, QAfterSortBy> sortByStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'status', Sort.asc);
@@ -3372,6 +3554,19 @@ extension AssessmentQuerySortThenBy
     });
   }
 
+  QueryBuilder<Assessment, Assessment, QAfterSortBy> thenBySignatureImage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'signatureImage', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Assessment, Assessment, QAfterSortBy>
+      thenBySignatureImageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'signatureImage', Sort.desc);
+    });
+  }
+
   QueryBuilder<Assessment, Assessment, QAfterSortBy> thenByStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'status', Sort.asc);
@@ -3565,6 +3760,14 @@ extension AssessmentQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Assessment, Assessment, QDistinct> distinctBySignatureImage(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'signatureImage',
+          caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Assessment, Assessment, QDistinct> distinctByStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'status');
@@ -3718,6 +3921,12 @@ extension AssessmentQueryProperty
     });
   }
 
+  QueryBuilder<Assessment, String?, QQueryOperations> signatureImageProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'signatureImage');
+    });
+  }
+
   QueryBuilder<Assessment, int?, QQueryOperations> statusProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'status');
@@ -3790,6 +3999,7 @@ _$_Assessment _$$_AssessmentFromJson(Map<String, dynamic> json) =>
       isActive: json['IsActive'] as bool?,
       createDT: json['CreateDT'] as String?,
       updateDT: json['UpdateDT'] as String?,
+      signatureImage: json['SignatureImage'] as String?,
     );
 
 Map<String, dynamic> _$$_AssessmentToJson(_$_Assessment instance) =>
@@ -3817,4 +4027,5 @@ Map<String, dynamic> _$$_AssessmentToJson(_$_Assessment instance) =>
       'IsActive': instance.isActive,
       'CreateDT': instance.createDT,
       'UpdateDT': instance.updateDT,
+      'SignatureImage': instance.signatureImage,
     };

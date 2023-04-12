@@ -50,6 +50,7 @@ class Assessment with _$Assessment {
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,
+    @JsonKey(name: 'SignatureImage') String? signatureImage,
   }) = _Assessment;
 
   const Assessment._();

@@ -66,6 +66,8 @@ mixin _$Assessment {
   String? get createDT => throw _privateConstructorUsedError;
   @JsonKey(name: 'UpdateDT')
   String? get updateDT => throw _privateConstructorUsedError;
+  @JsonKey(name: 'SignatureImage')
+  String? get signatureImage => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -102,7 +104,8 @@ abstract class $AssessmentCopyWith<$Res> {
       @JsonKey(name: 'Completed') bool? completed,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'CreateDT') String? createDT,
-      @JsonKey(name: 'UpdateDT') String? updateDT});
+      @JsonKey(name: 'UpdateDT') String? updateDT,
+      @JsonKey(name: 'SignatureImage') String? signatureImage});
 }
 
 /// @nodoc
@@ -141,6 +144,7 @@ class _$AssessmentCopyWithImpl<$Res, $Val extends Assessment>
     Object? isActive = freezed,
     Object? createDT = freezed,
     Object? updateDT = freezed,
+    Object? signatureImage = freezed,
   }) {
     return _then(_value.copyWith(
       assessmentId: freezed == assessmentId
@@ -235,6 +239,10 @@ class _$AssessmentCopyWithImpl<$Res, $Val extends Assessment>
           ? _value.updateDT
           : updateDT // ignore: cast_nullable_to_non_nullable
               as String?,
+      signatureImage: freezed == signatureImage
+          ? _value.signatureImage
+          : signatureImage // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -270,7 +278,8 @@ abstract class _$$_AssessmentCopyWith<$Res>
       @JsonKey(name: 'Completed') bool? completed,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'CreateDT') String? createDT,
-      @JsonKey(name: 'UpdateDT') String? updateDT});
+      @JsonKey(name: 'UpdateDT') String? updateDT,
+      @JsonKey(name: 'SignatureImage') String? signatureImage});
 }
 
 /// @nodoc
@@ -307,6 +316,7 @@ class __$$_AssessmentCopyWithImpl<$Res>
     Object? isActive = freezed,
     Object? createDT = freezed,
     Object? updateDT = freezed,
+    Object? signatureImage = freezed,
   }) {
     return _then(_$_Assessment(
       assessmentId: freezed == assessmentId
@@ -401,6 +411,10 @@ class __$$_AssessmentCopyWithImpl<$Res>
           ? _value.updateDT
           : updateDT // ignore: cast_nullable_to_non_nullable
               as String?,
+      signatureImage: freezed == signatureImage
+          ? _value.signatureImage
+          : signatureImage // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -431,7 +445,8 @@ class _$_Assessment extends _Assessment {
       @JsonKey(name: 'Completed') this.completed,
       @JsonKey(name: 'IsActive') this.isActive,
       @JsonKey(name: 'CreateDT') this.createDT,
-      @JsonKey(name: 'UpdateDT') this.updateDT})
+      @JsonKey(name: 'UpdateDT') this.updateDT,
+      @JsonKey(name: 'SignatureImage') this.signatureImage})
       : super._();
 
   factory _$_Assessment.fromJson(Map<String, dynamic> json) =>
@@ -506,10 +521,13 @@ class _$_Assessment extends _Assessment {
   @override
   @JsonKey(name: 'UpdateDT')
   final String? updateDT;
+  @override
+  @JsonKey(name: 'SignatureImage')
+  final String? signatureImage;
 
   @override
   String toString() {
-    return 'Assessment(assessmentId: $assessmentId, companyId: $companyId, userId: $userId, jobCategoryId: $jobCategoryId, jobDescriptionId: $jobDescriptionId, plantationId: $plantationId, contractorId: $contractorId, teamId: $teamId, workerId: $workerId, lat: $lat, long: $long, location: $location, jobCategoryName: $jobCategoryName, jobDescriptionName: $jobDescriptionName, plantationName: $plantationName, contractorName: $contractorName, teamName: $teamName, workerName: $workerName, status: $status, completed: $completed, isActive: $isActive, createDT: $createDT, updateDT: $updateDT)';
+    return 'Assessment(assessmentId: $assessmentId, companyId: $companyId, userId: $userId, jobCategoryId: $jobCategoryId, jobDescriptionId: $jobDescriptionId, plantationId: $plantationId, contractorId: $contractorId, teamId: $teamId, workerId: $workerId, lat: $lat, long: $long, location: $location, jobCategoryName: $jobCategoryName, jobDescriptionName: $jobDescriptionName, plantationName: $plantationName, contractorName: $contractorName, teamName: $teamName, workerName: $workerName, status: $status, completed: $completed, isActive: $isActive, createDT: $createDT, updateDT: $updateDT, signatureImage: $signatureImage)';
   }
 
   @override
@@ -557,7 +575,9 @@ class _$_Assessment extends _Assessment {
             (identical(other.createDT, createDT) ||
                 other.createDT == createDT) &&
             (identical(other.updateDT, updateDT) ||
-                other.updateDT == updateDT));
+                other.updateDT == updateDT) &&
+            (identical(other.signatureImage, signatureImage) ||
+                other.signatureImage == signatureImage));
   }
 
   @JsonKey(ignore: true)
@@ -586,7 +606,8 @@ class _$_Assessment extends _Assessment {
         completed,
         isActive,
         createDT,
-        updateDT
+        updateDT,
+        signatureImage
       ]);
 
   @JsonKey(ignore: true)
@@ -605,29 +626,31 @@ class _$_Assessment extends _Assessment {
 
 abstract class _Assessment extends Assessment {
   const factory _Assessment(
-      {@JsonKey(name: 'AssessmentId') required final int? assessmentId,
-      @JsonKey(name: 'CompanyId') final int? companyId,
-      @JsonKey(name: 'UserId') final int? userId,
-      @JsonKey(name: 'JobCategoryId') final int? jobCategoryId,
-      @JsonKey(name: 'JobDescriptionId') final int? jobDescriptionId,
-      @JsonKey(name: 'PlantationId') final int? plantationId,
-      @JsonKey(name: 'ContractorId') final int? contractorId,
-      @JsonKey(name: 'TeamId') final int? teamId,
-      @JsonKey(name: 'WorkerId') final String? workerId,
-      @JsonKey(name: 'Lat') final double? lat,
-      @JsonKey(name: 'Long') final double? long,
-      @JsonKey(name: 'Location') final String? location,
-      @JsonKey(name: 'JobCategoryName') final String? jobCategoryName,
-      @JsonKey(name: 'JobDescriptionName') final String? jobDescriptionName,
-      @JsonKey(name: 'PlantationName') final String? plantationName,
-      @JsonKey(name: 'ContractorName') final String? contractorName,
-      @JsonKey(name: 'TeamName') final String? teamName,
-      @JsonKey(name: 'WorkerName') final String? workerName,
-      @JsonKey(name: 'Status') final int? status,
-      @JsonKey(name: 'Completed') final bool? completed,
-      @JsonKey(name: 'IsActive') final bool? isActive,
-      @JsonKey(name: 'CreateDT') final String? createDT,
-      @JsonKey(name: 'UpdateDT') final String? updateDT}) = _$_Assessment;
+          {@JsonKey(name: 'AssessmentId') required final int? assessmentId,
+          @JsonKey(name: 'CompanyId') final int? companyId,
+          @JsonKey(name: 'UserId') final int? userId,
+          @JsonKey(name: 'JobCategoryId') final int? jobCategoryId,
+          @JsonKey(name: 'JobDescriptionId') final int? jobDescriptionId,
+          @JsonKey(name: 'PlantationId') final int? plantationId,
+          @JsonKey(name: 'ContractorId') final int? contractorId,
+          @JsonKey(name: 'TeamId') final int? teamId,
+          @JsonKey(name: 'WorkerId') final String? workerId,
+          @JsonKey(name: 'Lat') final double? lat,
+          @JsonKey(name: 'Long') final double? long,
+          @JsonKey(name: 'Location') final String? location,
+          @JsonKey(name: 'JobCategoryName') final String? jobCategoryName,
+          @JsonKey(name: 'JobDescriptionName') final String? jobDescriptionName,
+          @JsonKey(name: 'PlantationName') final String? plantationName,
+          @JsonKey(name: 'ContractorName') final String? contractorName,
+          @JsonKey(name: 'TeamName') final String? teamName,
+          @JsonKey(name: 'WorkerName') final String? workerName,
+          @JsonKey(name: 'Status') final int? status,
+          @JsonKey(name: 'Completed') final bool? completed,
+          @JsonKey(name: 'IsActive') final bool? isActive,
+          @JsonKey(name: 'CreateDT') final String? createDT,
+          @JsonKey(name: 'UpdateDT') final String? updateDT,
+          @JsonKey(name: 'SignatureImage') final String? signatureImage}) =
+      _$_Assessment;
   const _Assessment._() : super._();
 
   factory _Assessment.fromJson(Map<String, dynamic> json) =
@@ -702,6 +725,9 @@ abstract class _Assessment extends Assessment {
   @override
   @JsonKey(name: 'UpdateDT')
   String? get updateDT;
+  @override
+  @JsonKey(name: 'SignatureImage')
+  String? get signatureImage;
   @override
   @JsonKey(ignore: true)
   _$$_AssessmentCopyWith<_$_Assessment> get copyWith =>

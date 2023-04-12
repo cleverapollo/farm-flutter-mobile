@@ -1,20 +1,22 @@
+import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
-import 'package:cmo/extensions/extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hand_signature/signature.dart';
 
 class AssessmentSignatureScreen extends StatefulWidget {
   const AssessmentSignatureScreen({
     super.key,
-    required this.assessment,
+    required this.assessmentId,
   });
 
-  final Assessment assessment;
+  final int assessmentId;
 
   static void push(
     BuildContext context,
@@ -23,7 +25,7 @@ class AssessmentSignatureScreen extends StatefulWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => AssessmentSignatureScreen(
-          assessment: assessment,
+          assessmentId: assessment.id,
         ),
       ),
     );
@@ -35,10 +37,28 @@ class AssessmentSignatureScreen extends StatefulWidget {
 }
 
 class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
-  final GlobalKey<SfSignaturePadState> signatureGlobalKey = GlobalKey();
+  final _signatureController = HandSignatureControl(
+    velocityRange: 3.0,
+  );
+  String? _legacySignature;
 
   void _handleClearButtonPressed() {
-    signatureGlobalKey.currentState!.clear();
+    _signatureController.clear();
+    _legacySignature = null;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    cmoDatabaseService
+        .getCachedAssessment(id: widget.assessmentId)
+        .then((assessment) {
+      if (assessment?.signatureImage != null) {
+        _legacySignature = assessment?.signatureImage;
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -86,13 +106,14 @@ class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: context.colors.grey),
                   ),
-                  child: SfSignaturePad(
-                    key: signatureGlobalKey,
-                    // backgroundColor: Colors.white,
-                    strokeColor: Colors.black,
-                    minimumStrokeWidth: 2.0,
-                    maximumStrokeWidth: 4.0,
-                  ),
+                  child: _legacySignature == null
+                      ? HandSignature(
+                          control: _signatureController,
+                          color: Colors.blueGrey,
+                          width: 3.0,
+                          maxWidth: 4.0,
+                        )
+                      : SvgPicture.string(_legacySignature!),
                 ),
               );
             },
@@ -106,9 +127,12 @@ class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
           CmoFilledButton(
             title: LocaleKeys.acceptSignature.tr(),
             onTap: () async {
-              final data = await signatureGlobalKey.currentState!
-                  .toImage(pixelRatio: 3.0);
-
+              var assessment = await cmoDatabaseService.getCachedAssessment(id: widget.assessmentId);
+              assessment = assessment
+                  ?.copyWith(signatureImage: _signatureController.toSvg());
+              if (assessment != null) {
+                cmoDatabaseService.cacheAssessment(assessment);
+              }
               if (context.mounted) Navigator.of(context).pop();
             },
           ),
