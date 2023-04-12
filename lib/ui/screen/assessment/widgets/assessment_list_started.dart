@@ -1,11 +1,9 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
 import 'package:cmo/ui/screen/assessment/widgets/assessment_tile.dart';
 import 'package:cmo/ui/theme/theme.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AssessmentListStarted extends StatefulWidget {
   const AssessmentListStarted({super.key});
@@ -58,7 +56,10 @@ class _AssessmentListStartedState extends State<AssessmentListStarted> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (BuildContext context, int index) {
               final item = state.dataStarted[index];
-              return AssessmentTile(data: item);
+              return AssessmentTile(
+                data: item,
+                onRemovingCallback: (item) async => context.read<AssessmentListCubit>().removeAssessment(item),
+              );
             },
           ),
         );

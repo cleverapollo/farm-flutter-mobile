@@ -206,5 +206,9 @@
   "worker": "Worker",
   "workers": "umsebenzi",
   "yes": "Yebo",
-  "zulu": "Isizulu"
+  "zulu": "Isizulu",
+  "removeAssessment": "Remove assessment",
+  "removeAssessmentAlertContent": "Are you sure you want to remove this assessment?",
+  "ok": "ok",
+  "cancel": "cancel"
 }

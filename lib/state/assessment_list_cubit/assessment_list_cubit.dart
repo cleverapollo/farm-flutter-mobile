@@ -55,6 +55,11 @@ class AssessmentListCubit extends HydratedCubit<AssessmentListState> {
     }
   }
 
+  Future removeAssessment(Assessment item) async {
+    await cmoDatabaseService.removeAssessment(item.assessmentId!);
+    return loadStarted();
+  }
+
   @override
   AssessmentListState? fromJson(Map<String, dynamic> json) {
     return null;

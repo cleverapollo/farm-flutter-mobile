@@ -48,6 +48,13 @@ class CmoDatabaseService {
     });
   }
 
+  Future<bool> removeAssessment(int assessmentId) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.assessments.delete(assessmentId);
+    });
+  }
+
   Future<Assessment?> getCachedAssessment({required int id}) async {
     final db = await _db();
     return db.assessments.get(id);

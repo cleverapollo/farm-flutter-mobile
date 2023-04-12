@@ -207,5 +207,9 @@ abstract class  LocaleKeys {
   static const workers = 'workers';
   static const yes = 'yes';
   static const zulu = 'zulu';
+  static const removeAssessment = 'removeAssessment';
+  static const removeAssessmentAlertContent = 'removeAssessmentAlertContent';
+  static const ok = 'ok';
+  static const cancel = 'cancel';
 
 }

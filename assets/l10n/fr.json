@@ -204,5 +204,9 @@
   "worker": "Worker",
   "workers": "Travailleurs",
   "yes": "Oui",
-  "zulu": "Zoulou"
+  "zulu": "Zoulou",
+  "removeAssessment": "Remove assessment",
+  "removeAssessmentAlertContent": "Are you sure you want to remove this assessment?",
+  "ok": "ok",
+  "cancel": "cancel"
 }

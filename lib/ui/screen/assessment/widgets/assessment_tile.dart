@@ -1,22 +1,22 @@
 import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/assessment.dart';
 import 'package:cmo/ui/screen/assessment/assessment_list_question_screen.dart';
 import 'package:cmo/ui/screen/assessment/assessment_signature_screen.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
-
-import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/assessment.dart';
-import 'package:cmo/ui/theme/theme.dart';
-import 'package:cmo/ui/widget/cmo_option_tile.dart';
 
 class AssessmentTile extends StatelessWidget {
   const AssessmentTile({
     super.key,
     required this.data,
+    this.onRemovingCallback,
   });
 
   final Assessment data;
+  final void Function(Assessment)? onRemovingCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -172,23 +172,50 @@ class AssessmentTile extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: CmoFilledButton(
-                          onTap: () {
-                            AssessmentSignatureScreen.push(context, data);
-                          },
-                          title: LocaleKeys.remove.tr(),
-                          leading: Padding(
-                            padding: const EdgeInsets.only(right: 4.0),
-                            child: Icon(
-                              IconsaxBold.minus_cirlce,
-                              size: 18.0,
-                              color: context.colors.white,
+                      if (data.completed != true) ...[
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: CmoFilledButton(
+                            onTap: () async {
+                              final shouldRemoved = await showDefaultAlert(
+                                context,
+                                title: LocaleKeys.removeAssessment.tr(),
+                                content: LocaleKeys.removeAssessmentAlertContent
+                                    .tr(),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child:
+                                        Text(LocaleKeys.ok.tr().toUpperCase()),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(true);
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text(
+                                        LocaleKeys.cancel.tr().toUpperCase()),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                              if (shouldRemoved != true) {
+                                return;
+                              }
+                              onRemovingCallback?.call(data);
+                            },
+                            title: LocaleKeys.remove.tr(),
+                            leading: Padding(
+                              padding: const EdgeInsets.only(right: 4.0),
+                              child: Icon(
+                                IconsaxBold.minus_cirlce,
+                                size: 18.0,
+                                color: context.colors.white,
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ]
                     ],
                   ),
                 ),
