@@ -68,9 +68,7 @@ class SyncSummaryScreen extends StatelessWidget {
                                   .onSyncData(context);
                             },
                             title: state.isLoadingSync
-                                ? (state.syncMessage.isEmpty
-                                    ? 'Syncing...'
-                                    : state.syncMessage)
+                                ? state.syncMessage
                                 : LocaleKeys.sync.tr(),
                             leading: state.isLoadingSync
                                 ? const Padding(
