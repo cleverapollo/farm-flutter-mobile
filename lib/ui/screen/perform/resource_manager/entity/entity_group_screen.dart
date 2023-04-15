@@ -1,5 +1,6 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screen/perform/resource_manager/entity/group_scheme_entity_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
           ),
           _EntityCard(
             LocaleKeys.groupScheme.tr(),
-            onTap: () => EntityFarmerScreen.push(context),
+            onTap: () => GroupSchemeEntityScreen.push(context),
           ),
           Divider(
             height: 1,
@@ -53,7 +54,6 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
           _EntityCard(
             LocaleKeys.resourceManagementUnit.tr(),
             onTap: () {
-              print("Fkdajfafk");
             },
           ),
           Divider(
