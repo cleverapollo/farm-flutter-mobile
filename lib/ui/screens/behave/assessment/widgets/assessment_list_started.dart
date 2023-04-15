@@ -1,26 +1,24 @@
+import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
+import 'package:cmo/ui/screens/behave/assessment/widgets/widgets.dart';
+import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
-import 'package:cmo/ui/screen/assessment/widgets/assessment_tile.dart';
-import 'package:cmo/ui/theme/theme.dart';
-
-class AssessmentListCompleted extends StatefulWidget {
-  const AssessmentListCompleted({super.key});
+class AssessmentListStarted extends StatefulWidget {
+  const AssessmentListStarted({super.key});
 
   @override
-  State<AssessmentListCompleted> createState() => _AssessmentListCompletedState();
+  State<AssessmentListStarted> createState() => _AssessmentListStartedState();
 }
 
-class _AssessmentListCompletedState extends State<AssessmentListCompleted> {
+class _AssessmentListStartedState extends State<AssessmentListStarted> {
   @override
   void initState() {
     super.initState();
 
     Future.microtask(() {
-      context.read<AssessmentListCubit>().loadCompleted();
+      context.read<AssessmentListCubit>().loadStarted();
     });
   }
 
@@ -32,7 +30,7 @@ class _AssessmentListCompletedState extends State<AssessmentListCompleted> {
         return state;
       },
       builder: (context, state) {
-        if (state.loadingCompleted) {
+        if (state.loadingStarted) {
           return Center(
             child: CircularProgressIndicator(
               strokeWidth: 2,
@@ -51,14 +49,18 @@ class _AssessmentListCompletedState extends State<AssessmentListCompleted> {
 
         return RefreshIndicator(
           onRefresh: () {
-            return context.read<AssessmentListCubit>().loadCompleted();
+            return context.read<AssessmentListCubit>().loadStarted();
           },
           child: ListView.builder(
-            itemCount: state.dataCompleted.length,
+            itemCount: state.dataStarted.length,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (BuildContext context, int index) {
-              final item = state.dataCompleted[index];
-              return AssessmentTile(data: item);
+              final item = state.dataStarted[index];
+              return AssessmentTile(
+                data: item,
+                onRemovingCallback: (item) async =>
+                    context.read<AssessmentListCubit>().removeAssessment(item),
+              );
             },
           ),
         );

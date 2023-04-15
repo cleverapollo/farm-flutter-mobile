@@ -1,8 +1,8 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/assessment.dart';
-import 'package:cmo/ui/screen/assessment/assessment_list_question_screen.dart';
-import 'package:cmo/ui/screen/assessment/assessment_signature_screen.dart';
+import 'package:cmo/ui/screens/behave/assessment/assessment_list_question_screen.dart';
+import 'package:cmo/ui/screens/behave/assessment/assessment_signature_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:ficonsax/ficonsax.dart';

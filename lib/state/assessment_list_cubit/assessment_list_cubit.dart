@@ -1,8 +1,7 @@
-import 'package:hydrated_bloc/hydrated_bloc.dart';
-
 import 'package:cmo/di.dart';
 import 'package:cmo/model/assessment.dart';
-import 'package:cmo/ui/snack/success.dart';
+import 'package:cmo/ui/snack/snack_helper.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'assessment_list_state.dart';
 

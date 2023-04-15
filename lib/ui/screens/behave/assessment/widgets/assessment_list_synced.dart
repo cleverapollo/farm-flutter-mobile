@@ -1,24 +1,24 @@
 import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
-import 'package:cmo/ui/screen/assessment/widgets/assessment_tile.dart';
+import 'package:cmo/ui/screens/behave/assessment/widgets/widgets.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AssessmentListStarted extends StatefulWidget {
-  const AssessmentListStarted({super.key});
+class AssessmentListSynced extends StatefulWidget {
+  const AssessmentListSynced({super.key});
 
   @override
-  State<AssessmentListStarted> createState() => _AssessmentListStartedState();
+  State<AssessmentListSynced> createState() => _AssessmentListSyncedState();
 }
 
-class _AssessmentListStartedState extends State<AssessmentListStarted> {
+class _AssessmentListSyncedState extends State<AssessmentListSynced> {
   @override
   void initState() {
     super.initState();
 
     Future.microtask(() {
-      context.read<AssessmentListCubit>().loadStarted();
+      context.read<AssessmentListCubit>().loadSynced();
     });
   }
 
@@ -30,7 +30,7 @@ class _AssessmentListStartedState extends State<AssessmentListStarted> {
         return state;
       },
       builder: (context, state) {
-        if (state.loadingStarted) {
+        if (state.loadingSynced) {
           return Center(
             child: CircularProgressIndicator(
               strokeWidth: 2,
@@ -49,17 +49,14 @@ class _AssessmentListStartedState extends State<AssessmentListStarted> {
 
         return RefreshIndicator(
           onRefresh: () {
-            return context.read<AssessmentListCubit>().loadStarted();
+            return context.read<AssessmentListCubit>().loadSynced();
           },
           child: ListView.builder(
-            itemCount: state.dataStarted.length,
+            itemCount: state.dataSynced.length,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (BuildContext context, int index) {
-              final item = state.dataStarted[index];
-              return AssessmentTile(
-                data: item,
-                onRemovingCallback: (item) async => context.read<AssessmentListCubit>().removeAssessment(item),
-              );
+              final item = state.dataSynced[index];
+              return AssessmentTile(data: item);
             },
           ),
         );

@@ -8,7 +8,7 @@ import 'package:cmo/model/master_data_message.dart';
 import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
 import 'package:cmo/model/user_info.dart';
-import 'package:cmo/ui/snack/success.dart';
+import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
