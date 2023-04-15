@@ -208,5 +208,9 @@
   "removeAssessment": "Remove assessment",
   "removeAssessmentAlertContent": "Are you sure you want to remove this assessment?",
   "ok": "ok",
-  "cancel": "cancel"
+  "cancel": "cancel",
+  "group_scheme_management": "Group Scheme Management",
+  "group_scheme": "Group Scheme",
+  "resource_management_unit": "Resource Management Unit",
+  "operations_management": "Operations Management"
 }

@@ -20,6 +20,7 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
     } else {
       emit(UserInfoState.error());
     }
+    getUserRoles();
   }
 
   UserInfo? get data => state.join(
@@ -49,5 +50,17 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
       },
       (error) => null,
     );
+  }
+
+  Future getUserRoles() async {
+    if (state.userInfo?.userId == null) {
+      return;
+    }
+    try {
+      final roles =
+      await cmoApiService.getUserRoles(userId: state.userInfo!.userId!);
+    } catch (e) {
+      print("exception: ${e.toString()}");
+    }
   }
 }

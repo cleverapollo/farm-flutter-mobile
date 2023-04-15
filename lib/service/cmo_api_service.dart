@@ -76,6 +76,25 @@ class CmoApiService {
     return data == null ? null : UserInfo.fromJson(data);
   }
 
+  Future<JsonListData?> getUserRoles({required int userId}) async {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      'cmo/DesktopModules/Cmo.UI.Dnn.Api/API/User/GetUserPortals',
+      {'dnnUserId': userId.toString()},
+    );
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+    return response.data;
+    //
+  }
+
   Future<UserDevice?> createUserDevice({
     required String? deviceId,
     required String? deviceOS,
@@ -131,6 +150,7 @@ class CmoApiService {
     final data = response.data;
     return data?.map((e) => Company.fromJson(e as JsonData)).toList();
   }
+
 
   Future<bool> createSystemEvent({
     required String systemEventName,
