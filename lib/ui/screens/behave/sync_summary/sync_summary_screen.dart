@@ -3,7 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/sync_summary_cubit/sync_summary_cubit.dart';
 import 'package:cmo/state/sync_summary_cubit/sync_summary_state.dart';
-import 'package:cmo/ui/screen/sync_summary/sync_summary_enum.dart';
+import 'package:cmo/ui/screens/behave/sync_summary/sync_summary_enum.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';

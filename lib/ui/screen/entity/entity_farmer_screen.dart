@@ -1,17 +1,15 @@
-import 'package:flutter/material.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/entity.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
-import 'package:cmo/ui/screen/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/screen/entity/entity_search_screen.dart';
+import 'package:cmo/ui/screens/dashboard_based.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_header_tile.dart';
 import 'package:cmo/ui/widget/cmo_option_tile.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EntityFarmerScreen extends StatefulWidget {
   const EntityFarmerScreen({super.key});

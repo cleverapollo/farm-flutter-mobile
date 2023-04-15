@@ -1,4 +1,4 @@
-import 'package:cmo/ui/screen/sync_summary/widget/sync_summary_item_widget.dart';
+import 'package:cmo/ui/screens/behave/sync_summary/widget/sync_summary_item_widget.dart';
 import 'package:flutter/cupertino.dart';
 
 enum SyncSummaryEnum {

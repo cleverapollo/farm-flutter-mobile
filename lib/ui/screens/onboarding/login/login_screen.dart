@@ -1,14 +1,9 @@
-import 'package:flutter/material.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/entity/utils.dart';
-import 'package:cmo/ui/screen/login/language_picker.dart';
+import 'package:cmo/ui/screens/onboarding/login/language_picker.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
@@ -16,6 +11,9 @@ import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:cmo/utils/helpers.dart';
 import 'package:cmo/utils/logger.dart';
 import 'package:cmo/utils/validator.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

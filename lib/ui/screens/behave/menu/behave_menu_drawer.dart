@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -12,17 +8,19 @@ import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screen/assessment/assessment_add_screen.dart';
-import 'package:cmo/ui/screen/login/login_screen.dart';
-import 'package:cmo/ui/screen/worker_add/worker_add_screen.dart';
 import 'package:cmo/ui/screen/entity/utils.dart';
 import 'package:cmo/ui/screen/legal/legal_screen.dart';
-import 'package:cmo/ui/screen/settings/settings_screen.dart';
 import 'package:cmo/ui/screen/support/support_screen.dart';
+import 'package:cmo/ui/screens/behave/create_worker/worker_add_screen.dart';
+import 'package:cmo/ui/screens/onboarding/login/login_screen.dart';
+import 'package:cmo/ui/screens/setting/settings_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DashboardDrawer extends StatelessWidget {
-  const DashboardDrawer({
+class BehaveMenu extends StatelessWidget {
+  const BehaveMenu({
     super.key,
     required this.onTapClose,
   });

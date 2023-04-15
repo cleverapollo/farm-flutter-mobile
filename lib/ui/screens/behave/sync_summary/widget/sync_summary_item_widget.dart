@@ -1,9 +1,10 @@
 import 'package:cmo/state/sync_summary_cubit/sync_summary_cubit.dart';
 import 'package:cmo/state/sync_summary_cubit/sync_summary_state.dart';
-import 'package:cmo/ui/screen/sync_summary/sync_summary_enum.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../sync_summary_enum.dart';
 
 class SyncSummaryItemWidget extends StatefulWidget {
   const SyncSummaryItemWidget(this.syncSummaryEnum, {super.key});

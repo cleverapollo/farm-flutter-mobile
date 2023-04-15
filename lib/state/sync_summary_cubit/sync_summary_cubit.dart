@@ -430,7 +430,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
       if (bodyJson == null) return null;
       final assessment = Assessment.fromJson(bodyJson);
 
-      return cmoDatabaseMasterService.cacheAssessment(assessment);
+      return cmoDatabaseService.cacheAssessment(assessment);
     } catch (e) {
       logger.d('insert error: $e');
     }
