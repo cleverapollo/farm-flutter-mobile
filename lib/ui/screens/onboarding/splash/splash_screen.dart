@@ -3,9 +3,9 @@ import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
-import 'package:cmo/ui/screens/dashboard_base.dart';
+import 'package:cmo/ui/screens/cmo_dashboard_base.dart';
+import 'package:cmo/ui/screens/cmo_screen_base.dart';
 import 'package:cmo/ui/screens/onboarding/login/login_screen.dart';
-import 'package:cmo/ui/screens/screen_base.dart';
 import 'package:cmo/ui/widget/cmo_logo.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void pushDashboard() {
-    if (context.mounted) DashboardScreen.push(context);
+    if (context.mounted) CmoDashboardBase.push(context);
   }
 
   void pushLogin() {

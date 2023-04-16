@@ -8,7 +8,7 @@ import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/components/entity_component/widgets/entity_company_tile.dart';
-import 'package:cmo/ui/screens/dashboard_base.dart';
+import 'package:cmo/ui/screens/cmo_dashboard_base.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
@@ -92,7 +92,7 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
             );
       }
 
-      if (context.mounted) DashboardScreen.push(context);
+      if (context.mounted) CmoDashboardBase.push(context);
     } finally {
       setState(() => loading = false);
     }

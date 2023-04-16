@@ -3,7 +3,7 @@ import 'package:cmo/model/entity.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/ui/components/entity_component/entity_search_screen.dart';
-import 'package:cmo/ui/screens/dashboard_base.dart';
+import 'package:cmo/ui/screens/cmo_dashboard_base.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_header_tile.dart';
@@ -51,7 +51,7 @@ class FfarmerEntityScreenState extends State<EntityFarmerScreen> {
     if (context.mounted) {
       await context.read<EntityCubit>().sync(selected!);
     }
-    if (context.mounted) DashboardScreen.push(context);
+    if (context.mounted) CmoDashboardBase.push(context);
   }
 
   @override
