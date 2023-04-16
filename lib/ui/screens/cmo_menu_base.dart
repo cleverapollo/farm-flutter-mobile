@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/user_info.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
@@ -19,13 +18,123 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BehaveMenu extends StatelessWidget {
-  const BehaveMenu({
-    super.key,
-    required this.onTapClose,
-  });
+enum UserRole { behave, resourceManager, farmerMember }
 
+class CmoMenuBase extends StatefulWidget {
+  factory CmoMenuBase.behave({required VoidCallback onTapClose}) {
+    return CmoMenuBase._(onTapClose: onTapClose, userRole: UserRole.behave);
+  }
+  factory CmoMenuBase.resourceManager({required VoidCallback onTapClose}) {
+    return CmoMenuBase._(
+        onTapClose: onTapClose, userRole: UserRole.resourceManager);
+  }
+  factory CmoMenuBase.farmerMember({required VoidCallback onTapClose}) {
+    return CmoMenuBase._(
+        onTapClose: onTapClose, userRole: UserRole.farmerMember);
+  }
+  const CmoMenuBase._({required this.onTapClose, required this.userRole});
+
+  final UserRole userRole;
   final VoidCallback onTapClose;
+
+  @override
+  State<CmoMenuBase> createState() => _CmoMenuBaseState();
+}
+
+class _CmoMenuBaseState extends State<CmoMenuBase> {
+  late final Widget _menuContent;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    switch (widget.userRole) {
+      case UserRole.behave:
+        _menuContent = _buildBehaveContentMenu();
+        break;
+      case UserRole.resourceManager:
+        _menuContent = _buildResourceManagerMenu();
+        break;
+      case UserRole.farmerMember:
+        _menuContent = _buildFarmerMemberMenu();
+        break;
+    }
+  }
+
+  Widget _buildFarmerMemberMenu() {
+    return Column(
+      children: [
+        buildHeader(context, title: LocaleKeys.managementPlan.tr()),
+        buildOption(
+          context,
+          title: LocaleKeys.labourManagement.tr(),
+        ),
+        buildOption(context, title: LocaleKeys.campManagement.tr()),
+        buildOption(
+          context,
+          title: LocaleKeys.annualProduction.tr(),
+        ),
+        buildHeader(context, title: LocaleKeys.compartments.tr()),
+        const SizedBox(height: 7),
+        const _Divider(),
+        buildHeader(context, title: LocaleKeys.stakeholders.tr()),
+        buildOption(
+          context,
+          title: LocaleKeys.createNewStakeholder.tr(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildResourceManagerMenu() {
+    return Column(
+      children: [
+        buildHeader(
+          context,
+          title: LocaleKeys.memberManagement.tr(),
+        ),
+        buildOption(context, title: LocaleKeys.createNew.tr()),
+        buildOption(context, title: LocaleKeys.compartments.tr()),
+        const SizedBox(height: 7),
+        const _Divider(),
+        buildHeader(context, title: LocaleKeys.audit_s.tr()),
+        buildOption(context, title: LocaleKeys.createNew.tr()),
+        const SizedBox(height: 7),
+        const _Divider(),
+        buildHeader(context, title: LocaleKeys.stakeholders.tr()),
+        buildOption(
+          context,
+          title: LocaleKeys.createNewStakeholder.tr(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBehaveContentMenu() {
+    return Column(
+      children: [
+        buildHeader(context, title: LocaleKeys.dashboard.tr()),
+        const _Divider(),
+        buildHeader(context, title: LocaleKeys.assessments.tr()),
+        CmoTappable(
+          onTap: () => AssessmentAddScreen.push(context),
+          child: buildOption(
+            context,
+            title: LocaleKeys.createNew.tr(),
+          ),
+        ),
+        const SizedBox(height: 7),
+        const _Divider(),
+        buildHeader(context, title: LocaleKeys.workers.tr()),
+        CmoTappable(
+          onTap: () => WorkerAddScreen.push(context),
+          child: buildOption(
+            context,
+            title: LocaleKeys.createNew.tr(),
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,69 +167,7 @@ class BehaveMenu extends StatelessWidget {
                 buildEntity(context),
                 const SizedBox(height: 7),
                 const _Divider(),
-                buildHeader(context, title: LocaleKeys.dashboard.tr()),
-                const _Divider(),
-                ...appInfoService.mode.join(
-                  (p0) => [
-                    buildHeader(context, title: LocaleKeys.assessments.tr()),
-                    CmoTappable(
-                      onTap: () => AssessmentAddScreen.push(context),
-                      child: buildOption(
-                        context,
-                        title: LocaleKeys.createNew.tr(),
-                      ),
-                    ),
-                    const SizedBox(height: 7),
-                    const _Divider(),
-                    buildHeader(context, title: LocaleKeys.workers.tr()),
-                    CmoTappable(
-                      onTap: () => WorkerAddScreen.push(context),
-                      child: buildOption(
-                        context,
-                        title: LocaleKeys.createNew.tr(),
-                      ),
-                    ),
-                  ],
-                  (p0) => [
-                    buildHeader(
-                      context,
-                      title: LocaleKeys.memberManagement.tr(),
-                    ),
-                    buildOption(context, title: LocaleKeys.createNew.tr()),
-                    buildOption(context, title: LocaleKeys.compartments.tr()),
-                    const SizedBox(height: 7),
-                    const _Divider(),
-                    buildHeader(context, title: LocaleKeys.audit_s.tr()),
-                    buildOption(context, title: LocaleKeys.createNew.tr()),
-                    const SizedBox(height: 7),
-                    const _Divider(),
-                    buildHeader(context, title: LocaleKeys.stakeholders.tr()),
-                    buildOption(
-                      context,
-                      title: LocaleKeys.createNewStakeholder.tr(),
-                    ),
-                  ],
-                  (p0) => [
-                    buildHeader(context, title: LocaleKeys.managementPlan.tr()),
-                    buildOption(
-                      context,
-                      title: LocaleKeys.labourManagement.tr(),
-                    ),
-                    buildOption(context, title: LocaleKeys.campManagement.tr()),
-                    buildOption(
-                      context,
-                      title: LocaleKeys.annualProduction.tr(),
-                    ),
-                    buildHeader(context, title: LocaleKeys.compartments.tr()),
-                    const SizedBox(height: 7),
-                    const _Divider(),
-                    buildHeader(context, title: LocaleKeys.stakeholders.tr()),
-                    buildOption(
-                      context,
-                      title: LocaleKeys.createNewStakeholder.tr(),
-                    ),
-                  ],
-                ),
+                _menuContent,
                 const SizedBox(height: 7),
                 const _Divider(),
                 _CmoOptionTile(
@@ -243,34 +290,21 @@ class BehaveMenu extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BlocSelector<UserInfoCubit, UserInfoState, String?>(
-                    selector: (state) => state.userInfo?.fullName,
-                    builder: (context, state) {
-                      if (state == null) return const SizedBox();
-                      return Text(
-                        state,
-                        maxLines: 1,
-                        style: context.textStyles.bodyBold.white,
-                      );
-                    },
+                  Text(
+                    'Leon Chetty',
+                    maxLines: 1,
+                    style: context.textStyles.bodyBold.white,
                   ),
-                  BlocSelector<UserInfoCubit, UserInfoState, String?>(
-                    selector: (state) => state.userInfo?.userEmail,
-                    builder: (context, state) {
-                      if (state == null) return const SizedBox();
-
-                      return Text(
-                        state,
-                        style: context.textStyles.bodyBold.white,
-                      );
-                    },
-                  ),
+                  Text(
+                    'leon@cmogroup.io',
+                    style: context.textStyles.bodyBold.white,
+                  )
                 ],
               ),
             ),
           ),
           CmoTappable(
-            onTap: onTapClose,
+            onTap: widget.onTapClose,
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Assets.icons.icClose.svg(),

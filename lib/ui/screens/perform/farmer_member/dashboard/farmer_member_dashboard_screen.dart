@@ -3,7 +3,7 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
 class FarmerMemberDashboardScreen extends StatelessWidget {
-  const FarmerMemberDashboardScreen();
+  const FarmerMemberDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
