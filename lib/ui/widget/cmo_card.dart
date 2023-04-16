@@ -1,53 +1,57 @@
-import 'package:flutter/material.dart';
-
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/theme/theme.dart';
+import 'package:flutter/material.dart';
 
 class CmoCard extends StatelessWidget {
   const CmoCard({
     super.key,
     this.content = const [],
     this.shouldShowArrowRight = true,
+    this.margin = const EdgeInsets.all(0),
   });
 
   final List<Widget> content;
   final bool shouldShowArrowRight;
+  final EdgeInsetsGeometry margin;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: context.colors.blueDark1,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: context.colors.shadow,
-            offset: const Offset(0, 4),
-            blurRadius: 4,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 76),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(6, 0, 0, 6),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: content,
+    return Container(
+      margin: margin,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: context.colors.blueDark1,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: context.colors.shadow,
+              offset: const Offset(0, 4),
+              blurRadius: 4,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 76),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(6, 0, 0, 6),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: content,
+                  ),
                 ),
               ),
             ),
-          ),
-          if (shouldShowArrowRight) ...[
-            const SizedBox(width: 12),
-            Assets.icons.icArrowRight.svgWhite,
+            if (shouldShowArrowRight) ...[
+              const SizedBox(width: 12),
+              Assets.icons.icArrowRight.svgWhite,
+              const SizedBox(width: 6),
+            ],
             const SizedBox(width: 6),
           ],
-            const SizedBox(width: 6),
-        ],
+        ),
       ),
     );
   }
