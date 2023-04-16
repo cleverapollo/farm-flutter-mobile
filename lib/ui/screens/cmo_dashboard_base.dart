@@ -9,6 +9,8 @@ import 'package:cmo/ui/widget/cmo_mode_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'behave/dashboard/dashboard_screen.dart';
+
 class CmoDashboardBase extends StatelessWidget {
   CmoDashboardBase({super.key});
 
@@ -52,7 +54,7 @@ class CmoDashboardBase extends StatelessWidget {
         ),
         drawerScrimColor: Colors.transparent,
         body: CmoModeBuilder(
-          behaveBuilder: (_) => const FarmerMemberDashboardScreen(),
+          behaveBuilder: (_) => const BehaveDashboardScreen(),
           resourceManagerBuilder: (_) => const ResourceManagerDashboardScreen(),
           farmerBuilder: (_) => const FarmerMemberDashboardScreen(),
         ),
