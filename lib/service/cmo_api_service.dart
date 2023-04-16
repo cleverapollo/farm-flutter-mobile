@@ -8,6 +8,7 @@ import 'package:cmo/model/master_data_message.dart';
 import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
 import 'package:cmo/model/user_info.dart';
+import 'package:cmo/model/user_role.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +77,7 @@ class CmoApiService {
     return data == null ? null : UserInfo.fromJson(data);
   }
 
-  Future<JsonListData?> getUserRoles({required int userId}) async {
+  Future<List<UserRole>?> getUserRoles({required int userId}) async {
     final uri = Uri.https(
       Env.cmoApiUrl,
       'cmo/DesktopModules/Cmo.UI.Dnn.Api/API/User/GetUserPortals',
@@ -91,8 +92,8 @@ class CmoApiService {
       showSnackError(msg: 'Unknow error: ${response.statusCode}');
       return null;
     }
-    return response.data;
-    //
+    final data = response.data;
+    return data?.map((e) => UserRole.fromJson(e as JsonData)).toList();
   }
 
   Future<UserDevice?> createUserDevice({

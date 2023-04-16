@@ -1,6 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/group_scheme_entity_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/entity/resource_manager_unit_entity.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,9 @@ class EntityGroupScreen extends StatefulWidget {
 }
 
 class _EntityGroupScreenState extends State<EntityGroupScreen> {
+  dynamic selectedGroupScheme;
+  dynamic selectedResourceManagerUnit;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,17 +47,12 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
           ),
           _EntityCard(
             LocaleKeys.groupScheme.tr(),
-            onTap: () => GroupSchemeEntityScreen.push(context),
-          ),
-          Divider(
-            height: 1,
-            color: context.colors.grey,
-            indent: 23,
-            endIndent: 23,
-          ),
-          _EntityCard(
-            LocaleKeys.resourceManagementUnit.tr(),
-            onTap: () {
+            onTap: () async {
+              selectedGroupScheme = await GroupSchemeEntityScreen.push(
+                context,
+                selectedItem: selectedGroupScheme,
+              );
+              setState(() {});
             },
           ),
           Divider(
@@ -62,27 +61,25 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
             indent: 23,
             endIndent: 23,
           ),
-          const SizedBox(height: 51),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 38),
-            alignment: Alignment.centerLeft,
-            color: context.colors.blueDark1,
-            child: Text(
-              LocaleKeys.operationsManagement.tr(),
-              style: context.textStyles.bodyBold
-                  .copyWith(color: context.colors.white),
+          if (selectedGroupScheme != null) ...[
+            _EntityCard(
+              LocaleKeys.resourceManagementUnit.tr(),
+              onTap: () async {
+                selectedResourceManagerUnit =
+                    await ResourceManagerUnitEntity.push(
+                  context,
+                  selectedItem: selectedResourceManagerUnit,
+                );
+                setState(() {});
+              },
             ),
-          ),
-          _EntityCard(
-            LocaleKeys.company.tr(),
-            onTap: () => EntityBehaveScreen.push(context),
-          ),
-          Divider(
-            height: 1,
-            color: context.colors.grey,
-            indent: 23,
-            endIndent: 23,
-          ),
+            Divider(
+              height: 1,
+              color: context.colors.grey,
+              indent: 23,
+              endIndent: 23,
+            ),
+          ],
         ],
       ),
     );

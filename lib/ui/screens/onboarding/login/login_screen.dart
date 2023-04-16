@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       if (success && context.mounted) {
-        pushEntityScreen(context);
+        pushEntityScreen(context, isPushingReplacement: true);
       }
     } finally {
       setState(() {

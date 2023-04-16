@@ -9,8 +9,10 @@ import 'package:flutter/material.dart';
 class EntityList<T> extends StatefulWidget {
   final List<EntityItem<T>> entityItems;
   final void Function(EntityItem<T>)? onTap;
+  final EntityItem<T>? selectedItem;
   const EntityList({
     required this.entityItems,
+    this.selectedItem,
     this.onTap,
     super.key,
   });
@@ -28,6 +30,7 @@ class _EntityListState<T> extends State<EntityList<T>> {
   void initState() {
     super.initState();
     entityItems = widget.entityItems;
+    selected = widget.selectedItem;
   }
 
   void filter(String? input) {
