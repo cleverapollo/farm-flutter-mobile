@@ -208,12 +208,7 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
   Widget buildEntity(BuildContext context) {
     return CmoTappable(
       onTap: () {
-        final screen = entityScreenByType();
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => screen,
-          ),
-        );
+        pushEntityScreen(context);
       },
       child: SizedBox(
         height: 34,

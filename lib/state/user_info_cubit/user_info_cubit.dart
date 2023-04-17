@@ -1,3 +1,4 @@
+import 'package:cmo/model/user_role.dart';
 import 'package:flutter/material.dart';
 
 import 'package:equatable/equatable.dart';
@@ -16,7 +17,9 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
     final res = await cmoApiService.getUser();
 
     if (res != null) {
-      emit(UserInfoState.data(userInfo: res));
+      final roles =
+      await cmoApiService.getUserRoles(userId: res.userId ?? 0);
+      emit(UserInfoState.data(userInfo: res, userRoles: roles));
     } else {
       emit(UserInfoState.error());
     }
@@ -50,4 +53,16 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
       (error) => null,
     );
   }
+
+  // Future getUserRoles() async {
+  //   if (state.userInfo?.userId == null) {
+  //     return;
+  //   }
+  //   try {
+  //     final roles =
+  //     await cmoApiService.getUserRoles(userId: state.userInfo!.userId!);
+  //   } catch (e) {
+  //     print("exception: ${e.toString()}");
+  //   }
+  // }
 }

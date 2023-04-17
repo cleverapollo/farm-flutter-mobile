@@ -1,18 +1,16 @@
 import 'dart:async';
 
-import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/company.dart';
 import 'package:cmo/state/assessment_cubit/assessment_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
-import 'package:cmo/ui/components/entity_component/widgets/entity_company_tile.dart';
+import 'package:cmo/ui/components/entity_list.dart';
 import 'package:cmo/ui/screens/cmo_dashboard_base.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
-import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -61,19 +59,6 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
     });
   }
 
-  void filter(String? input) {
-    if (input == null) return;
-    final query = input.trim().toLowerCase();
-    if (query == prevQuery) return;
-
-    final entityCubit = context.read<EntityCubit>();
-    companies = entityCubit.state.companies
-        .where((e) => e.companyName?.toLowerCase().contains(query) ?? false)
-        .toList();
-    setState(() {});
-    prevQuery = query;
-  }
-
   Future<void> submit() async {
     if (selected == null) return;
     if (loading == true) return;
@@ -119,15 +104,6 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
           ),
           body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-                child: CmoTextField(
-                  name: 'SearchEntity',
-                  prefixIcon: Assets.icons.icSearch.svg(),
-                  hintText: LocaleKeys.search.tr(),
-                  onChanged: filter,
-                ),
-              ),
               Expanded(child: buildNameList()),
               BlocSelector<EntityCubit, EntityState, String?>(
                 selector: (state) {
@@ -164,19 +140,12 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
     if (companies.isEmpty) {
       return Text('None', style: context.textStyles.bodyNormal);
     }
-
-    return ListView.builder(
-      itemCount: companies.length,
-      itemBuilder: (BuildContext context, int index) {
-        final e = companies[index];
-        return CmoTappable(
-          onTap: () => onTapTile(e),
-          child: EntityCompanyTile(
-            title: e.companyName ?? e.companyId.toString(),
-            selected: isSelected(e),
-          ),
-        );
-      },
+    return EntityList(
+      entityItems: companies
+          .map((e) => EntityItem(e,
+              displayString: () => e.companyName ?? e.companyId.toString()))
+          .toList(),
+      onTap: (item) => onTapTile(item.rawData),
     );
   }
 }

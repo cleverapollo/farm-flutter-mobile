@@ -62,7 +62,7 @@ dev_dependencies:
   freezed: null
   import_sorter: ^4.6.0
   isar_generator: 3.0.5
-  json_serializable: null
+  json_serializable: 6.6.1
 
 import_sorter:
   emojis: false
