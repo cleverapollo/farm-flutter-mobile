@@ -1,4 +1,5 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_management_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/member_management_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/ui.dart';
@@ -27,16 +28,21 @@ class ResourceManagerDashboardScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        CmoCard(
-          content: [
-            CmoCardHeader(title: LocaleKeys.audit_s.tr()),
-            CmoCardItem(title: LocaleKeys.onboarded.tr(), value: '5/10'),
-            CmoCardItem(title: LocaleKeys.incomplete.tr(), value: '8/10'),
-            CmoCardItemHighlighted(
-              title: LocaleKeys.membersOutstanding.tr(),
-              value: '8/10',
-            ),
-          ],
+        CmoTappable(
+          onTap: () {
+            AuditManagementScreen.push(context);
+          },
+          child: CmoCard(
+            content: [
+              CmoCardHeader(title: LocaleKeys.audit_s.tr()),
+              CmoCardItem(title: LocaleKeys.onboarded.tr(), value: '5/10'),
+              CmoCardItem(title: LocaleKeys.incomplete.tr(), value: '8/10'),
+              CmoCardItemHighlighted(
+                title: LocaleKeys.membersOutstanding.tr(),
+                value: '8/10',
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 20),
         CmoTappable(
