@@ -10,6 +10,7 @@ import 'package:cmo/ui/components/entity_component/utils.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_add_screen.dart';
 import 'package:cmo/ui/screens/behave/create_worker/worker_add_screen.dart';
 import 'package:cmo/ui/screens/onboarding/login/login_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_screen.dart';
 import 'package:cmo/ui/screens/setting/legal/legal_screen.dart';
 import 'package:cmo/ui/screens/setting/settings_screen.dart';
 import 'package:cmo/ui/screens/setting/support/support_screen.dart';
@@ -92,7 +93,9 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
           context,
           title: LocaleKeys.memberManagement.tr(),
         ),
-        buildOption(context, title: LocaleKeys.createNew.tr()),
+        buildOption(context, title: LocaleKeys.createNew.tr(), onTap: () {
+          AddMemberScreen.push(context);
+        }),
         buildOption(context, title: LocaleKeys.compartments.tr()),
         const SizedBox(height: 7),
         const _Divider(),
@@ -260,16 +263,22 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
     );
   }
 
-  Widget buildOption(BuildContext context, {required String title}) {
-    return SizedBox(
-      height: 34,
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: Text(
-            title,
-            style: context.textStyles.bodyNormal.white,
+  Widget buildOption(BuildContext context,
+      {required String title, Function? onTap}) {
+    return InkWell(
+      onTap: () {
+        onTap?.call();
+      },
+      child: SizedBox(
+        height: 34,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Text(
+              title,
+              style: context.textStyles.bodyNormal.white,
+            ),
           ),
         ),
       ),

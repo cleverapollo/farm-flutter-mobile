@@ -1,13 +1,11 @@
-import 'package:flutter/material.dart';
-
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-
 import 'package:cmo/ui/theme/theme.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class CmoTextField extends StatelessWidget {
   const CmoTextField({
     super.key,
-    required this.name,
+    this.name = '',
     this.validator,
     this.prefixIcon,
     this.suffixIcon,

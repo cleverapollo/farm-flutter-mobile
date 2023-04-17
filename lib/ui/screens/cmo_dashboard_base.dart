@@ -40,7 +40,7 @@ class CmoDashboardBase extends StatelessWidget {
           onTapLeading: () => scaffoldKey.currentState?.openDrawer(),
         ),
         drawer: CmoModeBuilder(
-          behaveBuilder: (_) => CmoMenuBase.behave(
+          behaveBuilder: (_) => CmoMenuBase.resourceManager(
             onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
           ),
           resourceManagerBuilder: (_) => CmoMenuBase.resourceManager(
