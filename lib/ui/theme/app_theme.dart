@@ -132,6 +132,7 @@ class TextThemeExt extends ThemeExtension<TextThemeExt> {
 
 extension TextStyleExt on TextStyle {
   TextStyle get white => copyWith(color: _AppColor.white);
+  TextStyle get black => copyWith(color: _AppColor.black);
 }
 
 extension SvgGen on SvgGenImage {
@@ -144,4 +145,8 @@ extension SvgGen on SvgGenImage {
   SvgPicture get svgBlack => svg(
         colorFilter: const ColorFilter.mode(_AppColor.black, BlendMode.srcIn),
       );
+
+  SvgPicture get svgBlue => svg(
+    colorFilter: const ColorFilter.mode(_AppColor.blue, BlendMode.srcIn),
+  );
 }
