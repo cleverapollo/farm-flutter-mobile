@@ -1,6 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
+import 'package:cmo/ui/screens/behave/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/screens/cmo_menu_base.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/dashboard/farmer_member_dashboard_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/dashboard/resource_manager_dashboard_screen.dart';
@@ -40,7 +41,7 @@ class CmoDashboardBase extends StatelessWidget {
           onTapLeading: () => scaffoldKey.currentState?.openDrawer(),
         ),
         drawer: CmoModeBuilder(
-          behaveBuilder: (_) => CmoMenuBase.resourceManager(
+          behaveBuilder: (_) => CmoMenuBase.behave(
             onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
           ),
           resourceManagerBuilder: (_) => CmoMenuBase.resourceManager(
@@ -52,7 +53,7 @@ class CmoDashboardBase extends StatelessWidget {
         ),
         drawerScrimColor: Colors.transparent,
         body: CmoModeBuilder(
-          behaveBuilder: (_) => const ResourceManagerDashboardScreen(),
+          behaveBuilder: (_) => const BehaveDashboardScreen(),
           resourceManagerBuilder: (_) => const ResourceManagerDashboardScreen(),
           farmerBuilder: (_) => const FarmerMemberDashboardScreen(),
         ),
