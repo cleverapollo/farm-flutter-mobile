@@ -49,6 +49,13 @@ class CmoDatabaseService {
     });
   }
 
+  Future<int> cacheAudit(Audit item) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.audits.put(item);
+    });
+  }
+
   Future<bool> removeAssessment(int assessmentId) async {
     final db = await _db();
     return db.writeTxn(() async {

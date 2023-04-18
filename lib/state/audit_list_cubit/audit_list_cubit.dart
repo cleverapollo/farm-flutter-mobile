@@ -13,8 +13,8 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
     emit(state.copyWith(indexTab: index));
   }
 
-  Future<void> loadStarted() async {
-    emit(state.copyWith(loadingStarted: true));
+  Future<void> loadIncomplete() async {
+    emit(state.copyWith(loadingIncomplete: true));
     try {
       final service = cmoDatabaseService;
       // final data = await service.getAllAssessmentsStarted();
@@ -28,7 +28,7 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
       emit(state.copyWith(error: e));
       showSnackError(msg: e.toString());
     } finally {
-      emit(state.copyWith(loadingStarted: false));
+      emit(state.copyWith(loadingIncomplete: false));
     }
   }
 
@@ -72,7 +72,7 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
 
   Future<void> removeAudit(Audit item) async {
     await cmoDatabaseService.removeAssessment(item.auditId!);
-    return loadStarted();
+    return loadIncomplete();
   }
 
   @override

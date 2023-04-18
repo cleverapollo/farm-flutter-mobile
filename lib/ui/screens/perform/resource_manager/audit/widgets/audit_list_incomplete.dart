@@ -20,7 +20,7 @@ class _AuditListIncompleteState extends State<AuditListIncomplete> {
     super.initState();
 
     Future.microtask(() {
-      context.read<AuditListCubit>().loadStarted();
+      context.read<AuditListCubit>().loadIncomplete();
     });
   }
 
@@ -31,7 +31,7 @@ class _AuditListIncompleteState extends State<AuditListIncomplete> {
         return state;
       },
       builder: (context, state) {
-        if (state.loadingStarted) {
+        if (state.loadingIncomplete) {
           return Center(
             child: CircularProgressIndicator(
               strokeWidth: 2,
@@ -50,7 +50,7 @@ class _AuditListIncompleteState extends State<AuditListIncomplete> {
 
         return RefreshIndicator(
           onRefresh: () {
-            return context.read<AuditListCubit>().loadStarted();
+            return context.read<AuditListCubit>().loadIncomplete();
           },
           child: ListView.builder(
             itemCount: state.dataIncomplete.length,

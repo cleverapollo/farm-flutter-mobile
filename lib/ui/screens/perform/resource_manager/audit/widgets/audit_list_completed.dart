@@ -25,8 +25,7 @@ class _AuditListCompletedState extends State<AuditListCompleted> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AssessmentListCubit, AssessmentListState,
-        AssessmentListState>(
+    return BlocSelector<AuditListCubit, AuditListState, AuditListState>(
       selector: (state) {
         return state;
       },
@@ -50,7 +49,7 @@ class _AuditListCompletedState extends State<AuditListCompleted> {
 
         return RefreshIndicator(
           onRefresh: () {
-            return context.read<AssessmentListCubit>().loadCompleted();
+            return context.read<AuditListCubit>().loadCompleted();
           },
           child: ListView.builder(
             itemCount: state.dataCompleted.length,

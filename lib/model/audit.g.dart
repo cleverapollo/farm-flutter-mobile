@@ -32,8 +32,18 @@ const AuditSchema = CollectionSchema(
       name: r'createTime',
       type: IsarType.dateTime,
     ),
-    r'siteName': PropertySchema(
+    r'isActive': PropertySchema(
       id: 3,
+      name: r'isActive',
+      type: IsarType.bool,
+    ),
+    r'isLocal': PropertySchema(
+      id: 4,
+      name: r'isLocal',
+      type: IsarType.bool,
+    ),
+    r'siteName': PropertySchema(
+      id: 5,
       name: r'siteName',
       type: IsarType.string,
     )
@@ -82,7 +92,9 @@ void _auditSerialize(
   writer.writeLong(offsets[0], object.auditId);
   writer.writeString(offsets[1], object.compartmentName);
   writer.writeDateTime(offsets[2], object.createTime);
-  writer.writeString(offsets[3], object.siteName);
+  writer.writeBool(offsets[3], object.isActive);
+  writer.writeBool(offsets[4], object.isLocal);
+  writer.writeString(offsets[5], object.siteName);
 }
 
 Audit _auditDeserialize(
@@ -95,7 +107,9 @@ Audit _auditDeserialize(
     auditId: reader.readLongOrNull(offsets[0]),
     compartmentName: reader.readStringOrNull(offsets[1]),
     createTime: reader.readDateTimeOrNull(offsets[2]),
-    siteName: reader.readStringOrNull(offsets[3]),
+    isActive: reader.readBoolOrNull(offsets[3]),
+    isLocal: reader.readBoolOrNull(offsets[4]),
+    siteName: reader.readStringOrNull(offsets[5]),
   );
   return object;
 }
@@ -114,6 +128,10 @@ P _auditDeserializeProp<P>(
     case 2:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 3:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 4:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 5:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -542,6 +560,58 @@ extension AuditQueryFilter on QueryBuilder<Audit, Audit, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Audit, Audit, QAfterFilterCondition> isActiveIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isActive',
+      ));
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QAfterFilterCondition> isActiveIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isActive',
+      ));
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QAfterFilterCondition> isActiveEqualTo(
+      bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QAfterFilterCondition> isLocalIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isLocal',
+      ));
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QAfterFilterCondition> isLocalIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isLocal',
+      ));
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QAfterFilterCondition> isLocalEqualTo(
+      bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isLocal',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<Audit, Audit, QAfterFilterCondition> siteNameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -730,6 +800,30 @@ extension AuditQuerySortBy on QueryBuilder<Audit, Audit, QSortBy> {
     });
   }
 
+  QueryBuilder<Audit, Audit, QAfterSortBy> sortByIsActive() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isActive', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QAfterSortBy> sortByIsActiveDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isActive', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QAfterSortBy> sortByIsLocal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isLocal', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QAfterSortBy> sortByIsLocalDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isLocal', Sort.desc);
+    });
+  }
+
   QueryBuilder<Audit, Audit, QAfterSortBy> sortBySiteName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'siteName', Sort.asc);
@@ -792,6 +886,30 @@ extension AuditQuerySortThenBy on QueryBuilder<Audit, Audit, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Audit, Audit, QAfterSortBy> thenByIsActive() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isActive', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QAfterSortBy> thenByIsActiveDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isActive', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QAfterSortBy> thenByIsLocal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isLocal', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QAfterSortBy> thenByIsLocalDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isLocal', Sort.desc);
+    });
+  }
+
   QueryBuilder<Audit, Audit, QAfterSortBy> thenBySiteName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'siteName', Sort.asc);
@@ -823,6 +941,18 @@ extension AuditQueryWhereDistinct on QueryBuilder<Audit, Audit, QDistinct> {
   QueryBuilder<Audit, Audit, QDistinct> distinctByCreateTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createTime');
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QDistinct> distinctByIsActive() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isActive');
+    });
+  }
+
+  QueryBuilder<Audit, Audit, QDistinct> distinctByIsLocal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isLocal');
     });
   }
 
@@ -859,6 +989,18 @@ extension AuditQueryProperty on QueryBuilder<Audit, Audit, QQueryProperty> {
     });
   }
 
+  QueryBuilder<Audit, bool?, QQueryOperations> isActiveProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isActive');
+    });
+  }
+
+  QueryBuilder<Audit, bool?, QQueryOperations> isLocalProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isLocal');
+    });
+  }
+
   QueryBuilder<Audit, String?, QQueryOperations> siteNameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'siteName');
@@ -877,6 +1019,8 @@ _$_Audit _$$_AuditFromJson(Map<String, dynamic> json) => _$_Audit(
           : DateTime.parse(json['CreateTime'] as String),
       compartmentName: json['CompartmentName'] as String?,
       siteName: json['SiteName'] as String?,
+      isActive: json['IsActive'] as bool?,
+      isLocal: json['IsLocal'] as bool?,
     );
 
 Map<String, dynamic> _$$_AuditToJson(_$_Audit instance) => <String, dynamic>{
@@ -884,4 +1028,6 @@ Map<String, dynamic> _$$_AuditToJson(_$_Audit instance) => <String, dynamic>{
       'CreateTime': instance.createTime?.toIso8601String(),
       'CompartmentName': instance.compartmentName,
       'SiteName': instance.siteName,
+      'IsActive': instance.isActive,
+      'IsLocal': instance.isLocal,
     };

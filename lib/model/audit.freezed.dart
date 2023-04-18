@@ -28,6 +28,10 @@ mixin _$Audit {
   String? get compartmentName => throw _privateConstructorUsedError;
   @JsonKey(name: 'SiteName')
   String? get siteName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IsActive')
+  bool? get isActive => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IsLocal')
+  bool? get isLocal => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -43,7 +47,9 @@ abstract class $AuditCopyWith<$Res> {
       {@JsonKey(name: 'AuditId') int? auditId,
       @JsonKey(name: 'CreateTime') DateTime? createTime,
       @JsonKey(name: 'CompartmentName') String? compartmentName,
-      @JsonKey(name: 'SiteName') String? siteName});
+      @JsonKey(name: 'SiteName') String? siteName,
+      @JsonKey(name: 'IsActive') bool? isActive,
+      @JsonKey(name: 'IsLocal') bool? isLocal});
 }
 
 /// @nodoc
@@ -63,6 +69,8 @@ class _$AuditCopyWithImpl<$Res, $Val extends Audit>
     Object? createTime = freezed,
     Object? compartmentName = freezed,
     Object? siteName = freezed,
+    Object? isActive = freezed,
+    Object? isLocal = freezed,
   }) {
     return _then(_value.copyWith(
       auditId: freezed == auditId
@@ -81,6 +89,14 @@ class _$AuditCopyWithImpl<$Res, $Val extends Audit>
           ? _value.siteName
           : siteName // ignore: cast_nullable_to_non_nullable
               as String?,
+      isActive: freezed == isActive
+          ? _value.isActive
+          : isActive // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      isLocal: freezed == isLocal
+          ? _value.isLocal
+          : isLocal // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ) as $Val);
   }
 }
@@ -95,7 +111,9 @@ abstract class _$$_AuditCopyWith<$Res> implements $AuditCopyWith<$Res> {
       {@JsonKey(name: 'AuditId') int? auditId,
       @JsonKey(name: 'CreateTime') DateTime? createTime,
       @JsonKey(name: 'CompartmentName') String? compartmentName,
-      @JsonKey(name: 'SiteName') String? siteName});
+      @JsonKey(name: 'SiteName') String? siteName,
+      @JsonKey(name: 'IsActive') bool? isActive,
+      @JsonKey(name: 'IsLocal') bool? isLocal});
 }
 
 /// @nodoc
@@ -111,6 +129,8 @@ class __$$_AuditCopyWithImpl<$Res> extends _$AuditCopyWithImpl<$Res, _$_Audit>
     Object? createTime = freezed,
     Object? compartmentName = freezed,
     Object? siteName = freezed,
+    Object? isActive = freezed,
+    Object? isLocal = freezed,
   }) {
     return _then(_$_Audit(
       auditId: freezed == auditId
@@ -129,6 +149,14 @@ class __$$_AuditCopyWithImpl<$Res> extends _$AuditCopyWithImpl<$Res, _$_Audit>
           ? _value.siteName
           : siteName // ignore: cast_nullable_to_non_nullable
               as String?,
+      isActive: freezed == isActive
+          ? _value.isActive
+          : isActive // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      isLocal: freezed == isLocal
+          ? _value.isLocal
+          : isLocal // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ));
   }
 }
@@ -140,7 +168,9 @@ class _$_Audit extends _Audit {
       {@JsonKey(name: 'AuditId') required this.auditId,
       @JsonKey(name: 'CreateTime') this.createTime,
       @JsonKey(name: 'CompartmentName') this.compartmentName,
-      @JsonKey(name: 'SiteName') this.siteName})
+      @JsonKey(name: 'SiteName') this.siteName,
+      @JsonKey(name: 'IsActive') this.isActive,
+      @JsonKey(name: 'IsLocal') this.isLocal})
       : super._();
 
   factory _$_Audit.fromJson(Map<String, dynamic> json) =>
@@ -158,10 +188,16 @@ class _$_Audit extends _Audit {
   @override
   @JsonKey(name: 'SiteName')
   final String? siteName;
+  @override
+  @JsonKey(name: 'IsActive')
+  final bool? isActive;
+  @override
+  @JsonKey(name: 'IsLocal')
+  final bool? isLocal;
 
   @override
   String toString() {
-    return 'Audit(auditId: $auditId, createTime: $createTime, compartmentName: $compartmentName, siteName: $siteName)';
+    return 'Audit(auditId: $auditId, createTime: $createTime, compartmentName: $compartmentName, siteName: $siteName, isActive: $isActive, isLocal: $isLocal)';
   }
 
   @override
@@ -175,13 +211,16 @@ class _$_Audit extends _Audit {
             (identical(other.compartmentName, compartmentName) ||
                 other.compartmentName == compartmentName) &&
             (identical(other.siteName, siteName) ||
-                other.siteName == siteName));
+                other.siteName == siteName) &&
+            (identical(other.isActive, isActive) ||
+                other.isActive == isActive) &&
+            (identical(other.isLocal, isLocal) || other.isLocal == isLocal));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, auditId, createTime, compartmentName, siteName);
+  int get hashCode => Object.hash(runtimeType, auditId, createTime,
+      compartmentName, siteName, isActive, isLocal);
 
   @JsonKey(ignore: true)
   @override
@@ -202,7 +241,9 @@ abstract class _Audit extends Audit {
       {@JsonKey(name: 'AuditId') required final int? auditId,
       @JsonKey(name: 'CreateTime') final DateTime? createTime,
       @JsonKey(name: 'CompartmentName') final String? compartmentName,
-      @JsonKey(name: 'SiteName') final String? siteName}) = _$_Audit;
+      @JsonKey(name: 'SiteName') final String? siteName,
+      @JsonKey(name: 'IsActive') final bool? isActive,
+      @JsonKey(name: 'IsLocal') final bool? isLocal}) = _$_Audit;
   const _Audit._() : super._();
 
   factory _Audit.fromJson(Map<String, dynamic> json) = _$_Audit.fromJson;
@@ -219,6 +260,12 @@ abstract class _Audit extends Audit {
   @override
   @JsonKey(name: 'SiteName')
   String? get siteName;
+  @override
+  @JsonKey(name: 'IsActive')
+  bool? get isActive;
+  @override
+  @JsonKey(name: 'IsLocal')
+  bool? get isLocal;
   @override
   @JsonKey(ignore: true)
   _$$_AuditCopyWith<_$_Audit> get copyWith =>

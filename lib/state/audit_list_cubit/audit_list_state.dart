@@ -5,14 +5,14 @@ class AuditListState {
     this.dataIncomplete = const <Audit>[],
     this.dataCompleted = const <Audit>[],
     this.dataSynced = const <Audit>[],
-    this.loadingStarted = false,
+    this.loadingIncomplete = false,
     this.loadingCompleted = false,
     this.loadingSynced = false,
     this.indexTab = 0,
     this.error,
   });
 
-  final bool loadingStarted;
+  final bool loadingIncomplete;
   final bool loadingCompleted;
   final bool loadingSynced;
   final Object? error;
@@ -23,7 +23,7 @@ class AuditListState {
   final List<Audit> dataSynced;
 
   AuditListState copyWith({
-    bool? loadingStarted,
+    bool? loadingIncomplete,
     bool? loadingCompleted,
     bool? loadingSynced,
     Object? error,
@@ -34,7 +34,7 @@ class AuditListState {
     Map<String, dynamic>? cacheCreateData,
   }) {
     return AuditListState(
-      loadingStarted: loadingStarted ?? this.loadingStarted,
+      loadingIncomplete: loadingIncomplete ?? this.loadingIncomplete,
       loadingCompleted: loadingCompleted ?? this.loadingCompleted,
       loadingSynced: loadingSynced ?? this.loadingSynced,
       error: error ?? this.error,

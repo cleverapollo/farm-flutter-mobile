@@ -2,6 +2,7 @@ import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/audit_list_cubit/audit_list_cubit.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/add_audit/audit_add_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/audit_list_incomplete.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/audit_list_synced.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/status_button.dart';
@@ -27,11 +28,13 @@ class AuditManagementScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
-          title: LocaleKeys.assessments.tr(),
+          title: LocaleKeys.audits.tr(),
+          subtitle: 'RMU Name: Border Timbers',
+          subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icAdd.svgBlack,
-          onTapTrailing: () => null //AssessmentAddScreen.push(context),
+          onTapTrailing: () => AuditAddScreen.push(context),
           ),
       body: Column(
         children: [

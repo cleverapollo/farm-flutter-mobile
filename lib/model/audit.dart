@@ -12,6 +12,8 @@ class Audit with _$Audit {
     @JsonKey(name: 'CreateTime') DateTime? createTime,
     @JsonKey(name: 'CompartmentName') String? compartmentName,
     @JsonKey(name: 'SiteName') String? siteName,
+    @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsLocal') bool? isLocal,
   }) = _Audit;
 
   const Audit._();
