@@ -216,5 +216,7 @@
   "enter": "Enter",
   "type": "Type",
   "select": "Select",
-  "audit": "Audit"
+  "audit": "Audit",
+  "retakePhoto": "Retake photo",
+  "reselectPhoto": "Reselect photo"
 }

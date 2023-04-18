@@ -159,6 +159,8 @@ abstract class  LocaleKeys {
   static const remove = 'remove';
   static const resourceManagementUnit = 'resourceManagementUnit';
   static const retake = 'retake';
+  static const retakePhoto = 'retakePhoto';
+  static const reselectPhoto = 'reselectPhoto';
   static const rotation = 'rotation';
   static const save = 'save';
   static const search = 'search';

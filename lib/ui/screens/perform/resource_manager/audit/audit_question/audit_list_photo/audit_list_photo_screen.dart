@@ -6,6 +6,7 @@ import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/state/assessment_question_cubit/assessment_question_cubit.dart';
 import 'package:cmo/state/audit_list_questions_cubit/audit_list_questions_cubit.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_question_photo_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -96,29 +97,38 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         itemBuilder: (BuildContext context, int index) {
           if (images[index].photoPath == null) return const SizedBox();
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            decoration: BoxDecoration(
-              color: context.colors.greyD9D9,
-            ),
-            child: Row(
-              children: [
-                Image.file(
-                  File(images[index].photoPath!),
-                  fit: BoxFit.fitHeight,
-                  width: 74,
-                  height: 74,
-                ),
-                const SizedBox(width: 24,),
-                Expanded(
-                  child: Text(
-                    images[index].photoName!,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: context.textStyles.bodyBold.black,
+          return InkWell(
+            onTap: () {
+              AuditQuestionsPhotoDetailScreen.push(
+                context,
+                auditQuestionPhoto: images[index],
+                savePhoto: (auditPhoto) {},
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                color: context.colors.greyD9D9,
+              ),
+              child: Row(
+                children: [
+                  Image.file(
+                    File(images[index].photoPath!),
+                    fit: BoxFit.fitHeight,
+                    width: 74,
+                    height: 74,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 24,),
+                  Expanded(
+                    child: Text(
+                      images[index].photoName!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textStyles.bodyBold.black,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -126,14 +136,29 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
           return const SizedBox(height: 12);
         },
       ),
+      persistentFooterAlignment: AlignmentDirectional.center,
       persistentFooterButtons: [
-        CmoFilledButton(
-          onTap: _selectPhotoFromCamera,
-          title: LocaleKeys.takePhoto.tr(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            CmoFilledButton(
+              onTap: _selectPhotoFromCamera,
+              title: LocaleKeys.takePhoto.tr(),
+            ),
+            CmoFilledButton(
+              onTap: _selectPhotoFromGallery,
+              title: LocaleKeys.selectPhoto.tr(),
+            ),
+          ],
         ),
-        CmoFilledButton(
-          onTap: _selectPhotoFromGallery,
-          title: LocaleKeys.selectPhoto.tr(),
+
+        Container(
+          alignment: Alignment.topCenter,
+          padding: const EdgeInsets.only(top: 12),
+          child: CmoFilledButton(
+            onTap: () => Navigator.of(context).pop(),
+            title: LocaleKeys.done.tr(),
+          ),
         ),
       ],
     );

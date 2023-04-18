@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'audit_question_photo.freezed.dart';
+
 part 'audit_question_photo.g.dart';
 
 @freezed
@@ -16,8 +17,8 @@ class AuditQuestionPhoto with _$AuditQuestionPhoto {
     @JsonKey(name: 'PhotoName') required String? photoName,
   }) = _AuditQuestionPhoto;
 
-  factory AuditQuestionPhoto.fromJson(Map<String, dynamic> json) =>
-      _$AuditQuestionPhotoFromJson(json);
+  factory AuditQuestionPhoto.fromJson(Map<String, dynamic> json) => _$AuditQuestionPhotoFromJson(json);
+
   const AuditQuestionPhoto._();
 
   @override

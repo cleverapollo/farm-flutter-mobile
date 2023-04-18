@@ -214,5 +214,7 @@
   "cancel": "cancel",
   "enter": "Enter",
   "type": "Type",
-  "select": "Select"
+  "select": "Select",
+  "retakePhoto": "Retake photo",
+  "reselectPhoto": "Reselect photo"
 }
