@@ -1,9 +1,11 @@
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/add_member_circle_item_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_membership_contract_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_circle_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
-import 'package:cmo/ui/theme/app_theme.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:flutter/material.dart';
 
 class AddMemberScreen extends StatelessWidget {
@@ -34,12 +36,202 @@ class AddMemberScreen extends StatelessWidget {
             SizedBox(height: 12),
             _SideDetailsWidget(),
             SizedBox(height: 12),
-            CmoCollapseTitle(
-                title: 'Member Risk Assessment', child: SizedBox()),
+            _MemberRickAssessmentWidget(),
             SizedBox(height: 12),
-            CmoCollapseTitle(
-                title: 'Member Farm Objectives', child: SizedBox()),
+            _MemberFarmObjectivesWidget(),
             SizedBox(height: 12),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MemberFarmObjectivesWidget extends StatelessWidget {
+  const _MemberFarmObjectivesWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return CmoCollapseTitle(
+        title: 'Member Farm Objectives',
+        child: Container(
+            height: size.height * 0.8,
+            width: double.maxFinite,
+            padding: const EdgeInsets.all(12),
+            color: context.colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('*Are there any chemical being used on the FME?',
+                    style: context.textStyles.bodyNormal
+                        .copyWith(color: context.colors.black, fontSize: 16)),
+                const SizedBox(height: 8),
+                Row(
+                  children: const [
+                    Spacer(),
+                    CmoChipItemWidget(title: 'Primary', isActive: true),
+                    SizedBox(width: 4),
+                    CmoChipItemWidget(title: 'Secondary'),
+                    SizedBox(width: 4),
+                    CmoChipItemWidget(title: 'N/A'),
+                    Spacer(),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                const Divider(thickness: 1),
+                const SizedBox(height: 8),
+                Text('*HCVs present?',
+                    style: context.textStyles.bodyNormal
+                        .copyWith(color: context.colors.black, fontSize: 16)),
+                const SizedBox(height: 8),
+                Row(
+                  children: const [
+                    Spacer(),
+                    CmoChipItemWidget(title: 'Primary', isActive: true),
+                    SizedBox(width: 4),
+                    CmoChipItemWidget(title: 'Secondary'),
+                    SizedBox(width: 4),
+                    CmoChipItemWidget(title: 'N/A'),
+                    Spacer(),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                const Divider(thickness: 1),
+                const SizedBox(height: 8),
+                Text('*Rivers on FMU',
+                    style: context.textStyles.bodyNormal
+                        .copyWith(color: context.colors.black, fontSize: 16)),
+                const SizedBox(height: 8),
+                Row(
+                  children: const [
+                    Spacer(),
+                    CmoChipItemWidget(title: 'Primary'),
+                    SizedBox(width: 4),
+                    CmoChipItemWidget(title: 'Secondary', isActive: true),
+                    SizedBox(width: 4),
+                    CmoChipItemWidget(title: 'N/A'),
+                    Spacer(),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                const Divider(thickness: 1),
+                const SizedBox(height: 8),
+                Text('*Are there any communities in or neighbouring the FME?',
+                    style: context.textStyles.bodyNormal
+                        .copyWith(color: context.colors.black, fontSize: 16)),
+                const SizedBox(height: 8),
+                Row(
+                  children: const [
+                    Spacer(),
+                    CmoChipItemWidget(title: 'Primary'),
+                    SizedBox(width: 4),
+                    CmoChipItemWidget(title: 'Secondary'),
+                    SizedBox(width: 4),
+                    CmoChipItemWidget(title: 'N/A', isActive: true),
+                    Spacer(),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                const Divider(thickness: 1),
+                const SizedBox(height: 8),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    CmoFilledButton(title: 'Finalise Later', onTap: () {}),
+                    CmoFilledButton(
+                        title: 'Next',
+                        onTap: () {
+                          AddMemberMembershipContractScreen.push(context);
+                        }),
+                  ],
+                ),
+              ],
+            )));
+  }
+}
+
+class _MemberRickAssessmentWidget extends StatelessWidget {
+  const _MemberRickAssessmentWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return CmoCollapseTitle(
+      title: 'Member Risk Assessment',
+      showTick: true,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        color: context.colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('*Are there any chemical being used on the FME?',
+                style: context.textStyles.bodyNormal
+                    .copyWith(color: context.colors.black, fontSize: 16)),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Spacer(),
+                CmoCircleItem.yes(isActive: true),
+                const SizedBox(width: 12),
+                CmoCircleItem.no(),
+                const Spacer(),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Divider(thickness: 1),
+            const SizedBox(height: 8),
+            Text('*HCVs present?',
+                style: context.textStyles.bodyNormal
+                    .copyWith(color: context.colors.black, fontSize: 16)),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Spacer(),
+                CmoCircleItem.yes(),
+                const SizedBox(width: 12),
+                CmoCircleItem.no(isActive: true),
+                const Spacer(),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Divider(thickness: 1),
+            const SizedBox(height: 8),
+            Text('*Rivers on FMU',
+                style: context.textStyles.bodyNormal
+                    .copyWith(color: context.colors.black, fontSize: 16)),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Spacer(),
+                CmoCircleItem.yes(),
+                const SizedBox(width: 12),
+                CmoCircleItem.no(isActive: true),
+                const Spacer(),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Divider(thickness: 1),
+            const SizedBox(height: 8),
+            Text('*Are there any communities in or neighbouring the FME?',
+                style: context.textStyles.bodyNormal
+                    .copyWith(color: context.colors.black, fontSize: 16)),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Spacer(),
+                CmoCircleItem.yes(),
+                const SizedBox(width: 12),
+                CmoCircleItem.no(isActive: true),
+                const Spacer(),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Divider(thickness: 1),
+            const SizedBox(height: 8),
           ],
         ),
       ),
@@ -54,18 +246,27 @@ class _SideDetailsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CmoCollapseTitle(
       title: 'Site Details',
+      showTick: true,
       child: Container(
         padding: const EdgeInsets.all(12),
         color: context.colors.white,
         child: Column(
           children: const [
             CmoTextField(
-              hintText: 'Member Details',
+              hintText: 'Site Name',
             ),
             SizedBox(height: 12),
             CmoTextField(
-              hintText: 'Member Details',
+              hintText: 'Town',
             ),
+            SizedBox(height: 12),
+            CmoDropDownLayoutWidget(title: 'Province'),
+            SizedBox(height: 12),
+            CmoDropDownLayoutWidget(title: 'Site Location', showTick: true),
+            SizedBox(height: 12),
+            CmoDropDownLayoutWidget(title: 'Compartment/s', showTick: true),
+            SizedBox(height: 12),
+            CmoDropDownLayoutWidget(title: 'ASI'),
           ],
         ),
       ),
@@ -80,6 +281,7 @@ class _MemberDetailsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CmoCollapseTitle(
       title: 'Member Details',
+      showTick: true,
       child: Container(
         color: Colors.white,
         padding: const EdgeInsets.all(12),
@@ -99,6 +301,7 @@ class _MemberPropertyOwnershipWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CmoCollapseTitle(
       title: 'Member Property ownership',
+      showTick: true,
       child: Container(
         color: Colors.white,
         padding: const EdgeInsets.all(8),
@@ -130,6 +333,7 @@ class _SLIMFComplianceWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CmoCollapseTitle(
       title: 'SLIMF compliance',
+      showTick: true,
       child: Container(
         padding:
             const EdgeInsets.only(top: 12.0, left: 8, right: 8, bottom: 12),
@@ -167,12 +371,12 @@ class _SLIMFComplianceWidget extends StatelessWidget {
             Row(
               children: const [
                 Spacer(),
-                CircleItem(
+                CmoCircleItem(
                   letters: 'C',
                   color: Colors.green,
                 ),
                 SizedBox(width: 36),
-                CircleItem(letters: 'NC'),
+                CmoCircleItem(letters: 'NC'),
                 Spacer(),
               ],
             ),

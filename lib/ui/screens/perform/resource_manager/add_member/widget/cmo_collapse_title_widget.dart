@@ -1,11 +1,17 @@
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class CmoCollapseTitle extends StatefulWidget {
-  const CmoCollapseTitle({super.key, required this.title, required this.child});
+  const CmoCollapseTitle(
+      {super.key,
+      required this.title,
+      required this.child,
+      this.showTick = false});
 
   final String title;
   final Widget child;
+  final bool showTick;
 
   @override
   State<CmoCollapseTitle> createState() => _CmoCollapseTitleState();
@@ -23,10 +29,16 @@ class _CmoCollapseTitleState extends State<CmoCollapseTitle> {
       },
       backgroundColor: context.colors.blueDark1,
       collapsedBackgroundColor: context.colors.blueDark1,
-      trailing: Icon(
-        isCollapse ? Icons.arrow_drop_down : Icons.arrow_drop_up,
-        color: context.colors.white,
-        size: 40,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.showTick) Assets.icons.icTick.widget else const SizedBox(),
+          Icon(
+            isCollapse ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+            color: context.colors.white,
+            size: 40,
+          ),
+        ],
       ),
       title: Text(widget.title,
           style: context.textStyles.titleBold
