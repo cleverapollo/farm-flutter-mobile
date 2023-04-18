@@ -50,6 +50,8 @@ dependencies:
   url_launcher: ^6.1.9
   very_good_analysis: ^4.0.0+1
   hand_signature: ^3.0.1
+  polymaker: ^1.0.3
+  maps_toolkit: ^2.0.1
 
 dev_dependencies:
   build_runner: null

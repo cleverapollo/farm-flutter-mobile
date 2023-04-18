@@ -14,6 +14,9 @@ import 'package:flutter/services.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/ic_accept.svg
+  SvgGenImage get icAccept => const SvgGenImage('assets/icons/ic_accept.svg');
+
   /// File path: assets/icons/ic_add.svg
   SvgGenImage get icAdd => const SvgGenImage('assets/icons/ic_add.svg');
 
@@ -89,6 +92,7 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
+        icAccept,
         icAdd,
         icArrowLeft,
         icArrowRight,
