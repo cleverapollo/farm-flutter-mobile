@@ -1,11 +1,11 @@
+import 'dart:async';
+
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../env/env.dart';
 
 List<StakeHolder> _mockData = [
   StakeHolder(
@@ -34,9 +34,7 @@ List<StakeHolder> _mockData = [
   ),
 ];
 
-class StakeHolderManagementScreen extends StatelessWidget {
-  const StakeHolderManagementScreen({super.key});
-
+class StakeHolderManagementScreen extends StatefulWidget {
   static Future<void> push(BuildContext context) {
     return Navigator.push(
       context,
@@ -44,6 +42,32 @@ class StakeHolderManagementScreen extends StatelessWidget {
         builder: (_) => const StakeHolderManagementScreen(),
       ),
     );
+  }
+
+  const StakeHolderManagementScreen({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _StakeHolderManagementScreenState();
+}
+
+class _StakeHolderManagementScreenState extends State<StakeHolderManagementScreen> {
+  Timer? _debounceInputTimer;
+  late List<StakeHolder> filteredItems;
+
+  @override
+  void initState() {
+    super.initState();
+    filteredItems = _mockData;
+  }
+
+  void searching(String? input) {
+    if (input == null || input.isEmpty) {
+      filteredItems = _mockData;
+    } else {
+      filteredItems = _mockData.where((element) => element.entityName?.toLowerCase().contains(input.toLowerCase()) ?? false).toList();
+    }
+
+    setState(() {});
   }
 
   @override
@@ -64,6 +88,10 @@ class StakeHolderManagementScreen extends StatelessWidget {
                 name: LocaleKeys.search.tr(),
                 hintText: LocaleKeys.search.tr(),
                 suffixIcon: Assets.icons.icSearch.svg(),
+                onChanged: (input) {
+                  _debounceInputTimer?.cancel();
+                  _debounceInputTimer = Timer(const Duration(milliseconds: 200), () => searching(input));
+                },
               ),
             ),
             Expanded(
@@ -71,10 +99,10 @@ class StakeHolderManagementScreen extends StatelessWidget {
                 separatorBuilder: (context, index) => const SizedBox(
                   height: 22,
                 ),
-                itemCount: _mockData.length,
+                itemCount: filteredItems.length,
                 padding: const EdgeInsets.symmetric(horizontal: 21),
                 itemBuilder: (context, index) {
-                  return _buildItemCard(_mockData[index]);
+                  return _buildItemCard(filteredItems[index]);
                 },
               ),
             ),
