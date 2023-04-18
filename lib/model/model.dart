@@ -31,3 +31,4 @@ export 'user_auth.dart';
 export 'user_device.dart';
 export 'user_info.dart';
 export 'stake_holder.dart';
+export 'audit.dart';

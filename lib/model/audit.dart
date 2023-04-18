@@ -9,7 +9,9 @@ part 'audit.g.dart';
 class Audit with _$Audit {
   const factory Audit({
     @JsonKey(name: 'AuditId') required int? auditId,
-    @JsonKey(name: 'createTime') int? createTime,
+    @JsonKey(name: 'CreateTime') DateTime? createTime,
+    @JsonKey(name: 'CompartmentName') String? compartmentName,
+    @JsonKey(name: 'SiteName') String? siteName,
   }) = _Audit;
 
   const Audit._();

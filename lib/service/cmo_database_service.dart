@@ -14,6 +14,8 @@ class CmoDatabaseService {
     final isar = await Isar.open([
       CompanySchema,
       AssessmentSchema,
+      AuditSchema,
+      StakeHolderSchema,
     ]);
     _database = isar;
     return isar;
@@ -51,6 +53,13 @@ class CmoDatabaseService {
     final db = await _db();
     return db.writeTxn(() async {
       return db.assessments.delete(assessmentId);
+    });
+  }
+
+  Future<bool> removeAudit(int auditId) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.audits.delete(auditId);
     });
   }
 

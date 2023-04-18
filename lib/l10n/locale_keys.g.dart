@@ -209,6 +209,8 @@ abstract class  LocaleKeys {
   static const zulu = 'zulu';
   static const removeAssessment = 'removeAssessment';
   static const removeAssessmentAlertContent = 'removeAssessmentAlertContent';
+  static const removeAudit = 'removeAudit';
+  static const removeAuditAlertContent = 'removeAuditAlertContent';
   static const ok = 'ok';
   static const cancel = 'cancel';
   static const enter = 'enter';
