@@ -52,6 +52,7 @@ class CmoDatabaseMasterService {
         QuestionCommentSchema,
         AssessmentSchema,
         QuestionPhotoSchema,
+        AuditQuestionPhotoSchema,
         StakeHolderSchema,
       ],
       name: _databaseName,
@@ -822,6 +823,13 @@ class CmoDatabaseMasterService {
     return <QuestionComment>[];
   }
 
+  Future<int> cacheAuditQuestionPhoto(
+      AuditQuestionPhoto item,
+      ) async {
+    final db = await _db();
+    return db.writeTxn(() => db.auditQuestionPhotos.put(item));
+  }
+
   Future<int> cacheQuestionPhoto(
     QuestionPhoto item,
   ) async {
@@ -833,6 +841,12 @@ class CmoDatabaseMasterService {
     if (photoPath == null) return null;
     final db = await _db();
     return db.questionPhotos.filter().photoPathEqualTo(photoPath).findFirst();
+  }
+
+  Future<AuditQuestionPhoto?> getAuditQuestionPhotoByPhotoPath(String? photoPath) async {
+    if (photoPath == null) return null;
+    final db = await _db();
+    return db.auditQuestionPhotos.filter().photoPathEqualTo(photoPath).findFirst();
   }
 
   Future<void> removeQuestionPhoto(QuestionPhoto photo) async {

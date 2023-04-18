@@ -37,3 +37,4 @@ export 'data/indicator.dart';
 export 'data/car.dart';
 export 'data/criteria.dart';
 export 'data/audit_question.dart';
+export 'data/audit_question_photo.dart';

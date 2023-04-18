@@ -79,7 +79,7 @@ class AuditQuestionItem extends StatelessWidget {
                     onTap: viewListPhoto,
                     child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
                       selector: (state) =>
-                          state.questionPhotos.where((e) => e.questionId == question.questionId).isNotBlank,
+                          state.auditQuestionPhotos.where((e) => e.questionId == question.questionId).isNotBlank,
                       builder: (context, havePhoto) => CmoCircelIconButton(
                         color: havePhoto ? context.colors.green : Colors.transparent,
                         icon: SizedBox(

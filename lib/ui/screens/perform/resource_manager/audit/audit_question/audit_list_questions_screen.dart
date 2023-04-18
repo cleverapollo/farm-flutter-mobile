@@ -3,15 +3,14 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/behave/assessment/assessment_list_comment_screen.dart';
-import 'package:cmo/ui/screens/behave/assessment/assessment_list_photo_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_comments/audit_list_comments_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_list_photo_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/audit_question_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/car_filter.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/criteria_filter.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/indicator_filter.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/principle_filter.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -54,13 +53,13 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   Future<void> _viewListComment({
     required int? questionId,
   }) async {
-    AssessmentListCommentScreen.push(context, questionId: questionId);
+    AuditListCommentScreen.push(context, questionId: questionId);
   }
 
   Future<void> _viewListPhoto({
     required int? questionId,
   }) async {
-    AssessmentListPhotoScreen.push(context, questionId: questionId);
+    AuditListPhotoScreen.push(context, questionId: questionId);
   }
 
   Future<void> _addAnswer(

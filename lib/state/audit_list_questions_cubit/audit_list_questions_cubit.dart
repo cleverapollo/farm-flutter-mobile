@@ -384,25 +384,26 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     }
   }
 
-  Future<QuestionPhoto?> addPhoto({
+  Future<AuditQuestionPhoto?> addPhoto({
     required int? questionId,
     required String photoPath,
+    required String photoName,
   }) async {
-    final assessment = state.assessment;
-    final photo = QuestionPhoto(
-      assessmentId: assessment?.assessmentId,
+    final audit = state.audit;
+    final photo = AuditQuestionPhoto(
+      auditId: audit?.auditId,
       photoPath: photoPath,
       questionId: questionId,
-      photoId: null,
+      photoId: DateTime.now().millisecondsSinceEpoch,
+      photoName: photoName,
     );
-    await cmoDatabaseMasterService.cacheQuestionPhoto(photo);
-    final photoData =
-    await cmoDatabaseMasterService.getQuestionPhotoByPhotoPath(photoPath);
+    await cmoDatabaseMasterService.cacheAuditQuestionPhoto(photo);
+    final photoData = await cmoDatabaseMasterService.getAuditQuestionPhotoByPhotoPath(photoPath);
     if (photoData != null) {
       emit(
         state.copyWith(
-          questionPhotos: [
-            ...state.questionPhotos,
+          auditQuestionPhotos: [
+            ...state.auditQuestionPhotos,
             photoData,
           ],
         ),
@@ -414,10 +415,10 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   Future<void> removePhoto({
     required QuestionPhoto photo,
   }) async {
-    await cmoDatabaseMasterService.removeQuestionPhoto(photo);
-    final questionPhotos = await cmoDatabaseMasterService
-        .getQuestionPhotosByAssessmentId(state.assessment?.assessmentId);
-    emit(state.copyWith(questionPhotos: questionPhotos));
+    // await cmoDatabaseMasterService.removeQuestionPhoto(photo);
+    // final questionPhotos = await cmoDatabaseMasterService
+    //     .getQuestionPhotosByAssessmentId(state.assessment?.assessmentId);
+    // emit(state.copyWith(auditQuestionPhotos: auditQuestionPhotos));
   }
 
   Future<QuestionComment?> addComment({
@@ -451,9 +452,9 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     required QuestionComment comment,
   }) async {
     await cmoDatabaseMasterService.removeQuestionComment(comment);
-    final questionPhotos = await cmoDatabaseMasterService
-        .getQuestionPhotosByAssessmentId(state.assessment?.assessmentId);
-    emit(state.copyWith(questionPhotos: questionPhotos));
+    // final questionPhotos = await cmoDatabaseMasterService
+    //     .getQuestionPhotosByAssessmentId(state.assessment?.assessmentId);
+    // emit(state.copyWith(auditQuestionPhotos: questionPhotos));
   }
 
   void handleError(Object error) {
