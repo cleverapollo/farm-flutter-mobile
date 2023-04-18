@@ -52,8 +52,13 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
 
   Future<void> _viewListComment({
     required int? questionId,
+    required AuditQuestion auditQuestion,
   }) async {
-    AuditListCommentScreen.push(context, questionId: questionId);
+    AuditListCommentScreen.push(
+      context,
+      questionId: questionId,
+      auditQuestion: auditQuestion,
+    );
   }
 
   Future<void> _viewListPhoto({
@@ -217,6 +222,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                   viewListComment: () {
                     _viewListComment(
                       questionId: question.questionId,
+                      auditQuestion: question,
                     );
                   },
                 );
