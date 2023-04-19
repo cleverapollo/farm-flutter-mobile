@@ -1,3 +1,4 @@
+import 'package:cmo/enum/audit_compliance_type_enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -69,8 +70,18 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
 
   Future<void> _addAnswer(
       AuditQuestion question,
-      Compliance compliance,
+      AuditCompliance compliance,
       ) async {
+    switch (compliance.complianceEnum) {
+      case AuditComplianceEnum.n:
+      case AuditComplianceEnum.na:
+        await context.read<AuditListQuestionsCubit>().setAnswer(question, compliance);
+        return;
+      case AuditComplianceEnum.nc:
+        return;
+      case AuditComplianceEnum.unknown:
+        return;
+    }
     // final haveRejectReason = compliance;
     // final hasRejectReason = compliance.hasRejectReason ?? false;
     //
@@ -113,13 +124,12 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AuditListQuestionsCubit>().state;
-    final assessment = context.watch<AuditListQuestionsCubit>().getAssessment();
     final allQuestions = context.watch<AuditListQuestionsCubit>().getFilteredQuestions();
 
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.audit.tr(),
-        subtitle: assessment?.jobCategoryName,
+        subtitle: widget.audit.compartmentName,
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icClose.svgBlack,
@@ -128,7 +138,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
       body: Column(
         children: [
           _buildFilterSection(),
-          BlocSelector<AssessmentQuestionCubit, AssessmentQuestionState, bool>(
+          BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
             selector: (state) {
               return state.incompleteFilter == 1;
             },
@@ -141,7 +151,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                   CmoTappable(
                     onTap: () {
                       context
-                          .read<AssessmentQuestionCubit>()
+                          .read<AuditListQuestionsCubit>()
                           .setIncompleteFilter(isComplete ? 0 : 1);
                     },
                     child: Padding(
@@ -164,9 +174,8 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                         Assets.icons.icCamera.svgWhite,
                         Padding(
                           padding: const EdgeInsets.only(left: 6.0),
-                          child: BlocSelector<AssessmentQuestionCubit,
-                              AssessmentQuestionState, int>(
-                            selector: (state) => state.questionPhotos.length,
+                          child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, int>(
+                            selector: (state) => state.auditQuestionPhotos.length,
                             builder: (context, lengthPhoto) => Text(
                               '$lengthPhoto',
                               style: context.textStyles.bodyBold.white,
@@ -180,8 +189,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                     children: [
                       Assets.icons.icComment.svgWhite,
                       const SizedBox(width: 6),
-                      BlocSelector<AssessmentQuestionCubit,
-                          AssessmentQuestionState, int>(
+                      BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, int>(
                         selector: (state) => state.questionComments.length,
                         builder: (context, questionCommentsLength) => Text(
                           '$questionCommentsLength',
@@ -200,25 +208,24 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
               itemBuilder: (context, index) {
                 final question = allQuestions[index];
                 final answer = context
-                    .watch<AssessmentQuestionCubit>()
+                    .watch<AuditListQuestionsCubit>()
                     .getAnswerByQuestionId(question.questionId);
 
                 return AuditQuestionItem(
                   question: question,
                   answer: answer,
                   compliances: state.compliances,
-                  viewListPhoto: () {
-                    _viewListPhoto(
-                      questionId: question.questionId,
-                    );
-                  },
                   addAnswer: (compliance) {
                     _addAnswer(
                       question,
                       compliance,
                     );
                   },
-
+                  viewListPhoto: () {
+                    _viewListPhoto(
+                      questionId: question.questionId,
+                    );
+                  },
                   viewListComment: () {
                     _viewListComment(
                       questionId: question.questionId,

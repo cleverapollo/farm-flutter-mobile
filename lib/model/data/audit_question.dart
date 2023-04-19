@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -15,6 +17,8 @@ class AuditQuestion with _$AuditQuestion {
 
   const factory AuditQuestion({
     @JsonKey(name: 'AuditId') required int auditId,
+    @JsonKey(name: 'RegionalManagerUnitId') required int regionalManagerUnitId,
+    @JsonKey(name: 'AuditTemplateId') required int auditTemplateId,
     @JsonKey(name: 'QuestionId') int? questionId,
     @JsonKey(name: 'QuestionValue') String? questionValue,
     @JsonKey(name: 'PrincipleId') int? principleId,
@@ -25,16 +29,12 @@ class AuditQuestion with _$AuditQuestion {
     @JsonKey(name: 'CarName') String? carName,
     @JsonKey(name: 'CriteriaId') int? criteriaId,
     @JsonKey(name: 'CriteriaName') String? criteriaName,
-    @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
-    @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
     @JsonKey(name: 'ImpactOnId') int? impactOnId,
     @JsonKey(name: 'ImpactOnName') String? impactOnName,
     @JsonKey(name: 'ImpactCausedId') int? impactCausedId,
-    @JsonKey(name: 'ImpactCausedName') String? impactCausedName,
     @JsonKey(name: 'SeverityId') int? severityId,
+    @JsonKey(name: 'ImpactCausedName') String? impactCausedName,
     @JsonKey(name: 'XBone') bool? xBone,
-    @JsonKey(name: 'MMMId') int? mmmId,
-    @JsonKey(name: 'MMMName') String? mmmName,
     @JsonKey(name: 'ComplianceName') String? complianceName,
     @JsonKey(name: 'ComplianceId') int? complianceId,
     @JsonKey(name: 'IsQuestionComplete') int? isQuestionComplete,
@@ -44,8 +44,15 @@ class AuditQuestion with _$AuditQuestion {
   factory AuditQuestion.fromJson(Map<String, dynamic> json) => _$AuditQuestionFromJson(json);
 
   factory AuditQuestion.generateMockData() {
+    final ids = <int>[1,2,3,4];
+    final randomQuestionId = ids[Random().nextInt(ids.length)];
+
     return AuditQuestion(
       auditId: DateTime.now().millisecondsSinceEpoch,
+      auditTemplateId: DateTime.now().millisecondsSinceEpoch,
+      questionId: randomQuestionId,
+      regionalManagerUnitId: 1,
+      severityId: 1,
       isActive: true,
       carId: 1,
       carName: 'car name',
@@ -62,7 +69,6 @@ class AuditQuestion with _$AuditQuestion {
       isQuestionComplete: 1,
       principleId: -1,
       principleName: 'principleName',
-      questionId: DateTime.now().millisecondsSinceEpoch,
       xBone: DateTime.now().millisecondsSinceEpoch % 2 == 0 ? true : false,
       questionValue: 'questionValue',
     );

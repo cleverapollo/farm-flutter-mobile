@@ -47,7 +47,7 @@ class AuditCubit extends HydratedCubit<AuditState> {
   ) async {
     try {
       emit(state.copyWith(loading: true));
-      final service = cmoDatabaseService;
+      final service = cmoDatabaseMasterService;
       int? newId;
       newId = await service.cacheAudit(value);
       showSnackSuccess(msg: 'Save audit success with id: $newId');

@@ -16,6 +16,10 @@ class CmoDatabaseService {
       AssessmentSchema,
       AuditSchema,
       StakeHolderSchema,
+      AuditQuestionSchema,
+      AuditQuestionPhotoSchema,
+      AuditQuestionCommentSchema,
+      AuditQuestionAnswerSchema,
     ]);
     _database = isar;
     return isar;
@@ -168,52 +172,6 @@ class CmoDatabaseService {
       await db.clear();
     });
     return null;
-  }
-
-  Future<List<Audit>> getAllAuditsIncomplete() async {
-    final db = await _db();
-    return db.audits
-        .filter()
-        .isActiveEqualTo(true)
-        .statusEqualTo(1)
-        .completedEqualTo(null).or()
-        .completedEqualTo(false)
-        .sortByCreateDTDesc()
-        .findAll();
-  }
-
-  Future<List<Audit>> getAllAuditsCompleted() async {
-    final db = await _db();
-    return db.audits
-        .filter()
-        .isActiveEqualTo(true)
-        .completedEqualTo(true)
-        .sortByCreateDTDesc()
-        .findAll();
-  }
-
-  Future<List<Audit>> getAllAuditsSynced() async {
-    final db = await _db();
-    return db.audits
-        .filter()
-        .isActiveEqualTo(true)
-        .statusEqualTo(3)
-        .sortByCreateDTDesc()
-        .findAll();
-  }
-
-  Future<int> cacheAudit(Audit item) async {
-    final db = await _db();
-    return db.writeTxn(() async {
-      return db.audits.put(item);
-    });
-  }
-
-  Future<bool> removeAudit(int auditId) async {
-    final db = await _db();
-    return db.writeTxn(() async {
-      return db.audits.delete(auditId);
-    });
   }
 }
 

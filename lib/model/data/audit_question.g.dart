@@ -22,123 +22,113 @@ const AuditQuestionSchema = CollectionSchema(
       name: r'auditId',
       type: IsarType.long,
     ),
-    r'carId': PropertySchema(
+    r'auditTemplateId': PropertySchema(
       id: 1,
+      name: r'auditTemplateId',
+      type: IsarType.long,
+    ),
+    r'carId': PropertySchema(
+      id: 2,
       name: r'carId',
       type: IsarType.long,
     ),
     r'carName': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'carName',
       type: IsarType.string,
     ),
     r'complianceId': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'complianceId',
       type: IsarType.long,
     ),
     r'complianceName': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'complianceName',
       type: IsarType.string,
     ),
     r'criteriaId': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'criteriaId',
       type: IsarType.long,
     ),
     r'criteriaName': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'criteriaName',
       type: IsarType.string,
     ),
     r'impactCausedId': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'impactCausedId',
       type: IsarType.long,
     ),
     r'impactCausedName': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'impactCausedName',
       type: IsarType.string,
     ),
     r'impactOnId': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'impactOnId',
       type: IsarType.long,
     ),
     r'impactOnName': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'impactOnName',
       type: IsarType.string,
     ),
     r'indicatorId': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'indicatorId',
       type: IsarType.long,
     ),
     r'indicatorName': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'indicatorName',
       type: IsarType.string,
     ),
     r'isActive': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'isActive',
       type: IsarType.bool,
     ),
     r'isQuestionComplete': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'isQuestionComplete',
       type: IsarType.long,
     ),
-    r'jobCategoryId': PropertySchema(
-      id: 15,
-      name: r'jobCategoryId',
-      type: IsarType.long,
-    ),
-    r'jobCategoryName': PropertySchema(
-      id: 16,
-      name: r'jobCategoryName',
-      type: IsarType.string,
-    ),
-    r'mmmId': PropertySchema(
-      id: 17,
-      name: r'mmmId',
-      type: IsarType.long,
-    ),
-    r'mmmName': PropertySchema(
-      id: 18,
-      name: r'mmmName',
-      type: IsarType.string,
-    ),
     r'principleId': PropertySchema(
-      id: 19,
+      id: 16,
       name: r'principleId',
       type: IsarType.long,
     ),
     r'principleName': PropertySchema(
-      id: 20,
+      id: 17,
       name: r'principleName',
       type: IsarType.string,
     ),
     r'questionId': PropertySchema(
-      id: 21,
+      id: 18,
       name: r'questionId',
       type: IsarType.long,
     ),
     r'questionValue': PropertySchema(
-      id: 22,
+      id: 19,
       name: r'questionValue',
       type: IsarType.string,
     ),
+    r'regionalManagerUnitId': PropertySchema(
+      id: 20,
+      name: r'regionalManagerUnitId',
+      type: IsarType.long,
+    ),
     r'severityId': PropertySchema(
-      id: 23,
+      id: 21,
       name: r'severityId',
       type: IsarType.long,
     ),
     r'xBone': PropertySchema(
-      id: 24,
+      id: 22,
       name: r'xBone',
       type: IsarType.bool,
     )
@@ -200,18 +190,6 @@ int _auditQuestionEstimateSize(
     }
   }
   {
-    final value = object.jobCategoryName;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.mmmName;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.principleName;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -233,30 +211,28 @@ void _auditQuestionSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.auditId);
-  writer.writeLong(offsets[1], object.carId);
-  writer.writeString(offsets[2], object.carName);
-  writer.writeLong(offsets[3], object.complianceId);
-  writer.writeString(offsets[4], object.complianceName);
-  writer.writeLong(offsets[5], object.criteriaId);
-  writer.writeString(offsets[6], object.criteriaName);
-  writer.writeLong(offsets[7], object.impactCausedId);
-  writer.writeString(offsets[8], object.impactCausedName);
-  writer.writeLong(offsets[9], object.impactOnId);
-  writer.writeString(offsets[10], object.impactOnName);
-  writer.writeLong(offsets[11], object.indicatorId);
-  writer.writeString(offsets[12], object.indicatorName);
-  writer.writeBool(offsets[13], object.isActive);
-  writer.writeLong(offsets[14], object.isQuestionComplete);
-  writer.writeLong(offsets[15], object.jobCategoryId);
-  writer.writeString(offsets[16], object.jobCategoryName);
-  writer.writeLong(offsets[17], object.mmmId);
-  writer.writeString(offsets[18], object.mmmName);
-  writer.writeLong(offsets[19], object.principleId);
-  writer.writeString(offsets[20], object.principleName);
-  writer.writeLong(offsets[21], object.questionId);
-  writer.writeString(offsets[22], object.questionValue);
-  writer.writeLong(offsets[23], object.severityId);
-  writer.writeBool(offsets[24], object.xBone);
+  writer.writeLong(offsets[1], object.auditTemplateId);
+  writer.writeLong(offsets[2], object.carId);
+  writer.writeString(offsets[3], object.carName);
+  writer.writeLong(offsets[4], object.complianceId);
+  writer.writeString(offsets[5], object.complianceName);
+  writer.writeLong(offsets[6], object.criteriaId);
+  writer.writeString(offsets[7], object.criteriaName);
+  writer.writeLong(offsets[8], object.impactCausedId);
+  writer.writeString(offsets[9], object.impactCausedName);
+  writer.writeLong(offsets[10], object.impactOnId);
+  writer.writeString(offsets[11], object.impactOnName);
+  writer.writeLong(offsets[12], object.indicatorId);
+  writer.writeString(offsets[13], object.indicatorName);
+  writer.writeBool(offsets[14], object.isActive);
+  writer.writeLong(offsets[15], object.isQuestionComplete);
+  writer.writeLong(offsets[16], object.principleId);
+  writer.writeString(offsets[17], object.principleName);
+  writer.writeLong(offsets[18], object.questionId);
+  writer.writeString(offsets[19], object.questionValue);
+  writer.writeLong(offsets[20], object.regionalManagerUnitId);
+  writer.writeLong(offsets[21], object.severityId);
+  writer.writeBool(offsets[22], object.xBone);
 }
 
 AuditQuestion _auditQuestionDeserialize(
@@ -267,30 +243,28 @@ AuditQuestion _auditQuestionDeserialize(
 ) {
   final object = AuditQuestion(
     auditId: reader.readLong(offsets[0]),
-    carId: reader.readLongOrNull(offsets[1]),
-    carName: reader.readStringOrNull(offsets[2]),
-    complianceId: reader.readLongOrNull(offsets[3]),
-    complianceName: reader.readStringOrNull(offsets[4]),
-    criteriaId: reader.readLongOrNull(offsets[5]),
-    criteriaName: reader.readStringOrNull(offsets[6]),
-    impactCausedId: reader.readLongOrNull(offsets[7]),
-    impactCausedName: reader.readStringOrNull(offsets[8]),
-    impactOnId: reader.readLongOrNull(offsets[9]),
-    impactOnName: reader.readStringOrNull(offsets[10]),
-    indicatorId: reader.readLongOrNull(offsets[11]),
-    indicatorName: reader.readStringOrNull(offsets[12]),
-    isActive: reader.readBoolOrNull(offsets[13]),
-    isQuestionComplete: reader.readLongOrNull(offsets[14]),
-    jobCategoryId: reader.readLongOrNull(offsets[15]),
-    jobCategoryName: reader.readStringOrNull(offsets[16]),
-    mmmId: reader.readLongOrNull(offsets[17]),
-    mmmName: reader.readStringOrNull(offsets[18]),
-    principleId: reader.readLongOrNull(offsets[19]),
-    principleName: reader.readStringOrNull(offsets[20]),
-    questionId: reader.readLongOrNull(offsets[21]),
-    questionValue: reader.readStringOrNull(offsets[22]),
-    severityId: reader.readLongOrNull(offsets[23]),
-    xBone: reader.readBoolOrNull(offsets[24]),
+    auditTemplateId: reader.readLong(offsets[1]),
+    carId: reader.readLongOrNull(offsets[2]),
+    carName: reader.readStringOrNull(offsets[3]),
+    complianceId: reader.readLongOrNull(offsets[4]),
+    complianceName: reader.readStringOrNull(offsets[5]),
+    criteriaId: reader.readLongOrNull(offsets[6]),
+    criteriaName: reader.readStringOrNull(offsets[7]),
+    impactCausedId: reader.readLongOrNull(offsets[8]),
+    impactCausedName: reader.readStringOrNull(offsets[9]),
+    impactOnId: reader.readLongOrNull(offsets[10]),
+    impactOnName: reader.readStringOrNull(offsets[11]),
+    indicatorId: reader.readLongOrNull(offsets[12]),
+    indicatorName: reader.readStringOrNull(offsets[13]),
+    isActive: reader.readBoolOrNull(offsets[14]),
+    isQuestionComplete: reader.readLongOrNull(offsets[15]),
+    principleId: reader.readLongOrNull(offsets[16]),
+    principleName: reader.readStringOrNull(offsets[17]),
+    questionId: reader.readLongOrNull(offsets[18]),
+    questionValue: reader.readStringOrNull(offsets[19]),
+    regionalManagerUnitId: reader.readLong(offsets[20]),
+    severityId: reader.readLongOrNull(offsets[21]),
+    xBone: reader.readBoolOrNull(offsets[22]),
   );
   return object;
 }
@@ -305,52 +279,48 @@ P _auditQuestionDeserializeProp<P>(
     case 0:
       return (reader.readLong(offset)) as P;
     case 1:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 3:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 5:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 7:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 9:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 11:
-      return (reader.readLongOrNull(offset)) as P;
-    case 12:
       return (reader.readStringOrNull(offset)) as P;
-    case 13:
-      return (reader.readBoolOrNull(offset)) as P;
-    case 14:
+    case 12:
       return (reader.readLongOrNull(offset)) as P;
+    case 13:
+      return (reader.readStringOrNull(offset)) as P;
+    case 14:
+      return (reader.readBoolOrNull(offset)) as P;
     case 15:
       return (reader.readLongOrNull(offset)) as P;
     case 16:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 17:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 18:
-      return (reader.readStringOrNull(offset)) as P;
-    case 19:
       return (reader.readLongOrNull(offset)) as P;
-    case 20:
+    case 19:
       return (reader.readStringOrNull(offset)) as P;
+    case 20:
+      return (reader.readLong(offset)) as P;
     case 21:
       return (reader.readLongOrNull(offset)) as P;
     case 22:
-      return (reader.readStringOrNull(offset)) as P;
-    case 23:
-      return (reader.readLongOrNull(offset)) as P;
-    case 24:
       return (reader.readBoolOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -499,6 +469,62 @@ extension AuditQuestionQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'auditId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
+      auditTemplateIdEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'auditTemplateId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
+      auditTemplateIdGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'auditTemplateId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
+      auditTemplateIdLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'auditTemplateId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
+      auditTemplateIdBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'auditTemplateId',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -2032,462 +2058,6 @@ extension AuditQuestionQueryFilter
   }
 
   QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryIdIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'jobCategoryId',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryIdIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'jobCategoryId',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryIdEqualTo(int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'jobCategoryId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryIdGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'jobCategoryId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryIdLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'jobCategoryId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryIdBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'jobCategoryId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryNameIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'jobCategoryName',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryNameIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'jobCategoryName',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryNameEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'jobCategoryName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryNameGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'jobCategoryName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryNameLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'jobCategoryName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryNameBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'jobCategoryName',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryNameStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'jobCategoryName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryNameEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'jobCategoryName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryNameContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'jobCategoryName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryNameMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'jobCategoryName',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryNameIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'jobCategoryName',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      jobCategoryNameIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'jobCategoryName',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmIdIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'mmmId',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmIdIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'mmmId',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmIdEqualTo(int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'mmmId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmIdGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'mmmId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmIdLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'mmmId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmIdBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'mmmId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmNameIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'mmmName',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmNameIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'mmmName',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmNameEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'mmmName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmNameGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'mmmName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmNameLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'mmmName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmNameBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'mmmName',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmNameStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'mmmName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmNameEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'mmmName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmNameContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'mmmName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmNameMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'mmmName',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmNameIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'mmmName',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
-      mmmNameIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'mmmName',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
       principleIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2944,6 +2514,62 @@ extension AuditQuestionQueryFilter
   }
 
   QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
+      regionalManagerUnitIdEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'regionalManagerUnitId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
+      regionalManagerUnitIdGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'regionalManagerUnitId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
+      regionalManagerUnitIdLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'regionalManagerUnitId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
+      regionalManagerUnitIdBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'regionalManagerUnitId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterFilterCondition>
       severityIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -3063,6 +2689,20 @@ extension AuditQuestionQuerySortBy
   QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> sortByAuditIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'auditId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
+      sortByAuditTemplateId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'auditTemplateId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
+      sortByAuditTemplateIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'auditTemplateId', Sort.desc);
     });
   }
 
@@ -3254,58 +2894,6 @@ extension AuditQuestionQuerySortBy
     });
   }
 
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
-      sortByJobCategoryId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'jobCategoryId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
-      sortByJobCategoryIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'jobCategoryId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
-      sortByJobCategoryName() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'jobCategoryName', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
-      sortByJobCategoryNameDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'jobCategoryName', Sort.desc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> sortByMmmId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'mmmId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> sortByMmmIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'mmmId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> sortByMmmName() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'mmmName', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> sortByMmmNameDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'mmmName', Sort.desc);
-    });
-  }
-
   QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> sortByPrincipleId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'principleId', Sort.asc);
@@ -3360,6 +2948,20 @@ extension AuditQuestionQuerySortBy
     });
   }
 
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
+      sortByRegionalManagerUnitId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'regionalManagerUnitId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
+      sortByRegionalManagerUnitIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'regionalManagerUnitId', Sort.desc);
+    });
+  }
+
   QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> sortBySeverityId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'severityId', Sort.asc);
@@ -3397,6 +2999,20 @@ extension AuditQuestionQuerySortThenBy
   QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> thenByAuditIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'auditId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
+      thenByAuditTemplateId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'auditTemplateId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
+      thenByAuditTemplateIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'auditTemplateId', Sort.desc);
     });
   }
 
@@ -3600,58 +3216,6 @@ extension AuditQuestionQuerySortThenBy
     });
   }
 
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
-      thenByJobCategoryId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'jobCategoryId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
-      thenByJobCategoryIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'jobCategoryId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
-      thenByJobCategoryName() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'jobCategoryName', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
-      thenByJobCategoryNameDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'jobCategoryName', Sort.desc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> thenByMmmId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'mmmId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> thenByMmmIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'mmmId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> thenByMmmName() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'mmmName', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> thenByMmmNameDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'mmmName', Sort.desc);
-    });
-  }
-
   QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> thenByPrincipleId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'principleId', Sort.asc);
@@ -3706,6 +3270,20 @@ extension AuditQuestionQuerySortThenBy
     });
   }
 
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
+      thenByRegionalManagerUnitId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'regionalManagerUnitId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy>
+      thenByRegionalManagerUnitIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'regionalManagerUnitId', Sort.desc);
+    });
+  }
+
   QueryBuilder<AuditQuestion, AuditQuestion, QAfterSortBy> thenBySeverityId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'severityId', Sort.asc);
@@ -3737,6 +3315,13 @@ extension AuditQuestionQueryWhereDistinct
   QueryBuilder<AuditQuestion, AuditQuestion, QDistinct> distinctByAuditId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'auditId');
+    });
+  }
+
+  QueryBuilder<AuditQuestion, AuditQuestion, QDistinct>
+      distinctByAuditTemplateId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'auditTemplateId');
     });
   }
 
@@ -3838,34 +3423,6 @@ extension AuditQuestionQueryWhereDistinct
   }
 
   QueryBuilder<AuditQuestion, AuditQuestion, QDistinct>
-      distinctByJobCategoryId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'jobCategoryId');
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QDistinct>
-      distinctByJobCategoryName({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'jobCategoryName',
-          caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QDistinct> distinctByMmmId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'mmmId');
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QDistinct> distinctByMmmName(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'mmmName', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<AuditQuestion, AuditQuestion, QDistinct>
       distinctByPrincipleId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'principleId');
@@ -3894,6 +3451,13 @@ extension AuditQuestionQueryWhereDistinct
     });
   }
 
+  QueryBuilder<AuditQuestion, AuditQuestion, QDistinct>
+      distinctByRegionalManagerUnitId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'regionalManagerUnitId');
+    });
+  }
+
   QueryBuilder<AuditQuestion, AuditQuestion, QDistinct> distinctBySeverityId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'severityId');
@@ -3918,6 +3482,12 @@ extension AuditQuestionQueryProperty
   QueryBuilder<AuditQuestion, int, QQueryOperations> auditIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'auditId');
+    });
+  }
+
+  QueryBuilder<AuditQuestion, int, QQueryOperations> auditTemplateIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'auditTemplateId');
     });
   }
 
@@ -4011,31 +3581,6 @@ extension AuditQuestionQueryProperty
     });
   }
 
-  QueryBuilder<AuditQuestion, int?, QQueryOperations> jobCategoryIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'jobCategoryId');
-    });
-  }
-
-  QueryBuilder<AuditQuestion, String?, QQueryOperations>
-      jobCategoryNameProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'jobCategoryName');
-    });
-  }
-
-  QueryBuilder<AuditQuestion, int?, QQueryOperations> mmmIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'mmmId');
-    });
-  }
-
-  QueryBuilder<AuditQuestion, String?, QQueryOperations> mmmNameProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'mmmName');
-    });
-  }
-
   QueryBuilder<AuditQuestion, int?, QQueryOperations> principleIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'principleId');
@@ -4062,6 +3607,13 @@ extension AuditQuestionQueryProperty
     });
   }
 
+  QueryBuilder<AuditQuestion, int, QQueryOperations>
+      regionalManagerUnitIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'regionalManagerUnitId');
+    });
+  }
+
   QueryBuilder<AuditQuestion, int?, QQueryOperations> severityIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'severityId');
@@ -4082,6 +3634,8 @@ extension AuditQuestionQueryProperty
 _$_AuditQuestion _$$_AuditQuestionFromJson(Map<String, dynamic> json) =>
     _$_AuditQuestion(
       auditId: json['AuditId'] as int,
+      regionalManagerUnitId: json['RegionalManagerUnitId'] as int,
+      auditTemplateId: json['AuditTemplateId'] as int,
       questionId: json['QuestionId'] as int?,
       questionValue: json['QuestionValue'] as String?,
       principleId: json['PrincipleId'] as int?,
@@ -4092,16 +3646,12 @@ _$_AuditQuestion _$$_AuditQuestionFromJson(Map<String, dynamic> json) =>
       carName: json['CarName'] as String?,
       criteriaId: json['CriteriaId'] as int?,
       criteriaName: json['CriteriaName'] as String?,
-      jobCategoryId: json['JobCategoryId'] as int?,
-      jobCategoryName: json['JobCategoryName'] as String?,
       impactOnId: json['ImpactOnId'] as int?,
       impactOnName: json['ImpactOnName'] as String?,
       impactCausedId: json['ImpactCausedId'] as int?,
-      impactCausedName: json['ImpactCausedName'] as String?,
       severityId: json['SeverityId'] as int?,
+      impactCausedName: json['ImpactCausedName'] as String?,
       xBone: json['XBone'] as bool?,
-      mmmId: json['MMMId'] as int?,
-      mmmName: json['MMMName'] as String?,
       complianceName: json['ComplianceName'] as String?,
       complianceId: json['ComplianceId'] as int?,
       isQuestionComplete: json['IsQuestionComplete'] as int?,
@@ -4111,6 +3661,8 @@ _$_AuditQuestion _$$_AuditQuestionFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$_AuditQuestionToJson(_$_AuditQuestion instance) =>
     <String, dynamic>{
       'AuditId': instance.auditId,
+      'RegionalManagerUnitId': instance.regionalManagerUnitId,
+      'AuditTemplateId': instance.auditTemplateId,
       'QuestionId': instance.questionId,
       'QuestionValue': instance.questionValue,
       'PrincipleId': instance.principleId,
@@ -4121,16 +3673,12 @@ Map<String, dynamic> _$$_AuditQuestionToJson(_$_AuditQuestion instance) =>
       'CarName': instance.carName,
       'CriteriaId': instance.criteriaId,
       'CriteriaName': instance.criteriaName,
-      'JobCategoryId': instance.jobCategoryId,
-      'JobCategoryName': instance.jobCategoryName,
       'ImpactOnId': instance.impactOnId,
       'ImpactOnName': instance.impactOnName,
       'ImpactCausedId': instance.impactCausedId,
-      'ImpactCausedName': instance.impactCausedName,
       'SeverityId': instance.severityId,
+      'ImpactCausedName': instance.impactCausedName,
       'XBone': instance.xBone,
-      'MMMId': instance.mmmId,
-      'MMMName': instance.mmmName,
       'ComplianceName': instance.complianceName,
       'ComplianceId': instance.complianceId,
       'IsQuestionComplete': instance.isQuestionComplete,

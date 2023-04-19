@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/model/data/audit_question_comment.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/model.dart';
@@ -52,7 +53,11 @@ class CmoDatabaseMasterService {
         QuestionCommentSchema,
         AssessmentSchema,
         QuestionPhotoSchema,
+        AuditSchema,
         AuditQuestionPhotoSchema,
+        AuditQuestionCommentSchema,
+        AuditQuestionSchema,
+        AuditQuestionAnswerSchema,
         StakeHolderSchema,
       ],
       name: _databaseName,
@@ -847,6 +852,90 @@ class CmoDatabaseMasterService {
     if (photoPath == null) return null;
     final db = await _db();
     return db.auditQuestionPhotos.filter().photoPathEqualTo(photoPath).findFirst();
+  }
+
+  Future<int> cacheAuditQuestionComment(
+      AuditQuestionComment item,
+      ) async {
+    final db = await _db();
+    return db.writeTxn(() => db.auditQuestionComments.put(item));
+  }
+
+  Future<AuditQuestionComment?> getAuditQuestionCommentByComment(String? comment) async {
+    if (comment == null) return null;
+    final db = await _db();
+    return db.auditQuestionComments.filter().commentEqualTo(comment).findFirst();
+  }
+
+  Future<int> cacheAuditQuestionAnswer(AuditQuestionAnswer item) async {
+    final db = await _db();
+    return db.writeTxn(() => db.auditQuestionAnswers.put(item));
+  }
+
+  Future<List<Audit>> getAllAuditsIncomplete() async {
+    final db = await _db();
+    return db.audits
+        .filter()
+        .isActiveEqualTo(true)
+        .statusEqualTo(1)
+        .completedEqualTo(null).or()
+        .completedEqualTo(false)
+        .sortByCreateDTDesc()
+        .findAll();
+  }
+
+  Future<List<Audit>> getAllAuditsCompleted() async {
+    final db = await _db();
+    return db.audits
+        .filter()
+        .isActiveEqualTo(true)
+        .completedEqualTo(true)
+        .sortByCreateDTDesc()
+        .findAll();
+  }
+
+  Future<List<Audit>> getAllAuditsSynced() async {
+    final db = await _db();
+    return db.audits
+        .filter()
+        .isActiveEqualTo(true)
+        .statusEqualTo(3)
+        .sortByCreateDTDesc()
+        .findAll();
+  }
+
+  Future<int> cacheAudit(Audit item) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.audits.put(item);
+    });
+  }
+
+  Future<bool> removeAudit(int auditId) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.audits.delete(auditId);
+    });
+  }
+
+  Future<List<AuditQuestionAnswer>> getAuditQuestionAnswersWithAuditId(
+      int? auditId,
+      ) async {
+    if (auditId == null) return <AuditQuestionAnswer>[];
+    final db = await _db();
+    try {
+      final questionAnswers = await db.auditQuestionAnswers
+          .filter()
+          .auditIdEqualTo(auditId)
+          .isActiveEqualTo(true)
+          .findAll();
+
+      return questionAnswers;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <AuditQuestionAnswer>[];
   }
 
   Future<void> removeQuestionPhoto(QuestionPhoto photo) async {

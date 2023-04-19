@@ -16,7 +16,7 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
   Future<void> loadIncomplete() async {
     emit(state.copyWith(loadingIncomplete: true));
     try {
-      final service = cmoDatabaseService;
+      final service = cmoDatabaseMasterService;
       final data = await service.getAllAuditsIncomplete();
       emit(state.copyWith(dataIncomplete: data));
     } catch (e) {
@@ -30,7 +30,7 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
   Future<void> loadCompleted() async {
     emit(state.copyWith(loadingCompleted: true));
     try {
-      final service = cmoDatabaseService;
+      final service = cmoDatabaseMasterService;
       final data = await service.getAllAuditsCompleted();
       emit(state.copyWith(dataCompleted: data));
     } catch (e) {
@@ -44,7 +44,7 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
   Future<void> loadSynced() async {
     emit(state.copyWith(loadingSynced: true));
     try {
-      final service = cmoDatabaseService;
+      final service = cmoDatabaseMasterService;
       final data = await service.getAllAuditsSynced();
       emit(state.copyWith(dataSynced: data));
     } catch (e) {
@@ -56,7 +56,7 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
   }
 
   Future<void> removeAudit(Audit item) async {
-    await cmoDatabaseService.removeAudit(item.auditId!);
+    await cmoDatabaseMasterService.removeAudit(item.auditId!);
     showSnackSuccess(
       msg: '${LocaleKeys.removeAudit.tr()} ${item.auditId}!',
     );

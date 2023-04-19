@@ -69,10 +69,6 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
     }
   }
 
-  void removeImage(QuestionPhoto photo) {
-    context.read<AuditListQuestionsCubit>().removePhoto(photo: photo);
-  }
-
   @override
   Widget build(BuildContext context) {
     final images = context

@@ -1,6 +1,5 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
@@ -45,10 +44,6 @@ class _AuditListCommentScreenState extends State<AuditListCommentScreen> {
   void initState() {
     super.initState();
     auditQuestion = widget.auditQuestion;
-  }
-
-  void removeComment(QuestionComment comment) {
-    context.read<AuditListQuestionsCubit>().removeComment(comment: comment);
   }
 
   @override

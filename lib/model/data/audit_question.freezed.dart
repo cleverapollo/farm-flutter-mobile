@@ -22,6 +22,10 @@ AuditQuestion _$AuditQuestionFromJson(Map<String, dynamic> json) {
 mixin _$AuditQuestion {
   @JsonKey(name: 'AuditId')
   int get auditId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'RegionalManagerUnitId')
+  int get regionalManagerUnitId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'AuditTemplateId')
+  int get auditTemplateId => throw _privateConstructorUsedError;
   @JsonKey(name: 'QuestionId')
   int? get questionId => throw _privateConstructorUsedError;
   @JsonKey(name: 'QuestionValue')
@@ -42,26 +46,18 @@ mixin _$AuditQuestion {
   int? get criteriaId => throw _privateConstructorUsedError;
   @JsonKey(name: 'CriteriaName')
   String? get criteriaName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'JobCategoryId')
-  int? get jobCategoryId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'JobCategoryName')
-  String? get jobCategoryName => throw _privateConstructorUsedError;
   @JsonKey(name: 'ImpactOnId')
   int? get impactOnId => throw _privateConstructorUsedError;
   @JsonKey(name: 'ImpactOnName')
   String? get impactOnName => throw _privateConstructorUsedError;
   @JsonKey(name: 'ImpactCausedId')
   int? get impactCausedId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'ImpactCausedName')
-  String? get impactCausedName => throw _privateConstructorUsedError;
   @JsonKey(name: 'SeverityId')
   int? get severityId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'ImpactCausedName')
+  String? get impactCausedName => throw _privateConstructorUsedError;
   @JsonKey(name: 'XBone')
   bool? get xBone => throw _privateConstructorUsedError;
-  @JsonKey(name: 'MMMId')
-  int? get mmmId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'MMMName')
-  String? get mmmName => throw _privateConstructorUsedError;
   @JsonKey(name: 'ComplianceName')
   String? get complianceName => throw _privateConstructorUsedError;
   @JsonKey(name: 'ComplianceId')
@@ -85,6 +81,8 @@ abstract class $AuditQuestionCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'AuditId') int auditId,
+      @JsonKey(name: 'RegionalManagerUnitId') int regionalManagerUnitId,
+      @JsonKey(name: 'AuditTemplateId') int auditTemplateId,
       @JsonKey(name: 'QuestionId') int? questionId,
       @JsonKey(name: 'QuestionValue') String? questionValue,
       @JsonKey(name: 'PrincipleId') int? principleId,
@@ -95,16 +93,12 @@ abstract class $AuditQuestionCopyWith<$Res> {
       @JsonKey(name: 'CarName') String? carName,
       @JsonKey(name: 'CriteriaId') int? criteriaId,
       @JsonKey(name: 'CriteriaName') String? criteriaName,
-      @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
-      @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
       @JsonKey(name: 'ImpactOnId') int? impactOnId,
       @JsonKey(name: 'ImpactOnName') String? impactOnName,
       @JsonKey(name: 'ImpactCausedId') int? impactCausedId,
-      @JsonKey(name: 'ImpactCausedName') String? impactCausedName,
       @JsonKey(name: 'SeverityId') int? severityId,
+      @JsonKey(name: 'ImpactCausedName') String? impactCausedName,
       @JsonKey(name: 'XBone') bool? xBone,
-      @JsonKey(name: 'MMMId') int? mmmId,
-      @JsonKey(name: 'MMMName') String? mmmName,
       @JsonKey(name: 'ComplianceName') String? complianceName,
       @JsonKey(name: 'ComplianceId') int? complianceId,
       @JsonKey(name: 'IsQuestionComplete') int? isQuestionComplete,
@@ -125,6 +119,8 @@ class _$AuditQuestionCopyWithImpl<$Res, $Val extends AuditQuestion>
   @override
   $Res call({
     Object? auditId = null,
+    Object? regionalManagerUnitId = null,
+    Object? auditTemplateId = null,
     Object? questionId = freezed,
     Object? questionValue = freezed,
     Object? principleId = freezed,
@@ -135,16 +131,12 @@ class _$AuditQuestionCopyWithImpl<$Res, $Val extends AuditQuestion>
     Object? carName = freezed,
     Object? criteriaId = freezed,
     Object? criteriaName = freezed,
-    Object? jobCategoryId = freezed,
-    Object? jobCategoryName = freezed,
     Object? impactOnId = freezed,
     Object? impactOnName = freezed,
     Object? impactCausedId = freezed,
-    Object? impactCausedName = freezed,
     Object? severityId = freezed,
+    Object? impactCausedName = freezed,
     Object? xBone = freezed,
-    Object? mmmId = freezed,
-    Object? mmmName = freezed,
     Object? complianceName = freezed,
     Object? complianceId = freezed,
     Object? isQuestionComplete = freezed,
@@ -154,6 +146,14 @@ class _$AuditQuestionCopyWithImpl<$Res, $Val extends AuditQuestion>
       auditId: null == auditId
           ? _value.auditId
           : auditId // ignore: cast_nullable_to_non_nullable
+              as int,
+      regionalManagerUnitId: null == regionalManagerUnitId
+          ? _value.regionalManagerUnitId
+          : regionalManagerUnitId // ignore: cast_nullable_to_non_nullable
+              as int,
+      auditTemplateId: null == auditTemplateId
+          ? _value.auditTemplateId
+          : auditTemplateId // ignore: cast_nullable_to_non_nullable
               as int,
       questionId: freezed == questionId
           ? _value.questionId
@@ -195,14 +195,6 @@ class _$AuditQuestionCopyWithImpl<$Res, $Val extends AuditQuestion>
           ? _value.criteriaName
           : criteriaName // ignore: cast_nullable_to_non_nullable
               as String?,
-      jobCategoryId: freezed == jobCategoryId
-          ? _value.jobCategoryId
-          : jobCategoryId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      jobCategoryName: freezed == jobCategoryName
-          ? _value.jobCategoryName
-          : jobCategoryName // ignore: cast_nullable_to_non_nullable
-              as String?,
       impactOnId: freezed == impactOnId
           ? _value.impactOnId
           : impactOnId // ignore: cast_nullable_to_non_nullable
@@ -215,26 +207,18 @@ class _$AuditQuestionCopyWithImpl<$Res, $Val extends AuditQuestion>
           ? _value.impactCausedId
           : impactCausedId // ignore: cast_nullable_to_non_nullable
               as int?,
-      impactCausedName: freezed == impactCausedName
-          ? _value.impactCausedName
-          : impactCausedName // ignore: cast_nullable_to_non_nullable
-              as String?,
       severityId: freezed == severityId
           ? _value.severityId
           : severityId // ignore: cast_nullable_to_non_nullable
               as int?,
+      impactCausedName: freezed == impactCausedName
+          ? _value.impactCausedName
+          : impactCausedName // ignore: cast_nullable_to_non_nullable
+              as String?,
       xBone: freezed == xBone
           ? _value.xBone
           : xBone // ignore: cast_nullable_to_non_nullable
               as bool?,
-      mmmId: freezed == mmmId
-          ? _value.mmmId
-          : mmmId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      mmmName: freezed == mmmName
-          ? _value.mmmName
-          : mmmName // ignore: cast_nullable_to_non_nullable
-              as String?,
       complianceName: freezed == complianceName
           ? _value.complianceName
           : complianceName // ignore: cast_nullable_to_non_nullable
@@ -265,6 +249,8 @@ abstract class _$$_AuditQuestionCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'AuditId') int auditId,
+      @JsonKey(name: 'RegionalManagerUnitId') int regionalManagerUnitId,
+      @JsonKey(name: 'AuditTemplateId') int auditTemplateId,
       @JsonKey(name: 'QuestionId') int? questionId,
       @JsonKey(name: 'QuestionValue') String? questionValue,
       @JsonKey(name: 'PrincipleId') int? principleId,
@@ -275,16 +261,12 @@ abstract class _$$_AuditQuestionCopyWith<$Res>
       @JsonKey(name: 'CarName') String? carName,
       @JsonKey(name: 'CriteriaId') int? criteriaId,
       @JsonKey(name: 'CriteriaName') String? criteriaName,
-      @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
-      @JsonKey(name: 'JobCategoryName') String? jobCategoryName,
       @JsonKey(name: 'ImpactOnId') int? impactOnId,
       @JsonKey(name: 'ImpactOnName') String? impactOnName,
       @JsonKey(name: 'ImpactCausedId') int? impactCausedId,
-      @JsonKey(name: 'ImpactCausedName') String? impactCausedName,
       @JsonKey(name: 'SeverityId') int? severityId,
+      @JsonKey(name: 'ImpactCausedName') String? impactCausedName,
       @JsonKey(name: 'XBone') bool? xBone,
-      @JsonKey(name: 'MMMId') int? mmmId,
-      @JsonKey(name: 'MMMName') String? mmmName,
       @JsonKey(name: 'ComplianceName') String? complianceName,
       @JsonKey(name: 'ComplianceId') int? complianceId,
       @JsonKey(name: 'IsQuestionComplete') int? isQuestionComplete,
@@ -303,6 +285,8 @@ class __$$_AuditQuestionCopyWithImpl<$Res>
   @override
   $Res call({
     Object? auditId = null,
+    Object? regionalManagerUnitId = null,
+    Object? auditTemplateId = null,
     Object? questionId = freezed,
     Object? questionValue = freezed,
     Object? principleId = freezed,
@@ -313,16 +297,12 @@ class __$$_AuditQuestionCopyWithImpl<$Res>
     Object? carName = freezed,
     Object? criteriaId = freezed,
     Object? criteriaName = freezed,
-    Object? jobCategoryId = freezed,
-    Object? jobCategoryName = freezed,
     Object? impactOnId = freezed,
     Object? impactOnName = freezed,
     Object? impactCausedId = freezed,
-    Object? impactCausedName = freezed,
     Object? severityId = freezed,
+    Object? impactCausedName = freezed,
     Object? xBone = freezed,
-    Object? mmmId = freezed,
-    Object? mmmName = freezed,
     Object? complianceName = freezed,
     Object? complianceId = freezed,
     Object? isQuestionComplete = freezed,
@@ -332,6 +312,14 @@ class __$$_AuditQuestionCopyWithImpl<$Res>
       auditId: null == auditId
           ? _value.auditId
           : auditId // ignore: cast_nullable_to_non_nullable
+              as int,
+      regionalManagerUnitId: null == regionalManagerUnitId
+          ? _value.regionalManagerUnitId
+          : regionalManagerUnitId // ignore: cast_nullable_to_non_nullable
+              as int,
+      auditTemplateId: null == auditTemplateId
+          ? _value.auditTemplateId
+          : auditTemplateId // ignore: cast_nullable_to_non_nullable
               as int,
       questionId: freezed == questionId
           ? _value.questionId
@@ -373,14 +361,6 @@ class __$$_AuditQuestionCopyWithImpl<$Res>
           ? _value.criteriaName
           : criteriaName // ignore: cast_nullable_to_non_nullable
               as String?,
-      jobCategoryId: freezed == jobCategoryId
-          ? _value.jobCategoryId
-          : jobCategoryId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      jobCategoryName: freezed == jobCategoryName
-          ? _value.jobCategoryName
-          : jobCategoryName // ignore: cast_nullable_to_non_nullable
-              as String?,
       impactOnId: freezed == impactOnId
           ? _value.impactOnId
           : impactOnId // ignore: cast_nullable_to_non_nullable
@@ -393,26 +373,18 @@ class __$$_AuditQuestionCopyWithImpl<$Res>
           ? _value.impactCausedId
           : impactCausedId // ignore: cast_nullable_to_non_nullable
               as int?,
-      impactCausedName: freezed == impactCausedName
-          ? _value.impactCausedName
-          : impactCausedName // ignore: cast_nullable_to_non_nullable
-              as String?,
       severityId: freezed == severityId
           ? _value.severityId
           : severityId // ignore: cast_nullable_to_non_nullable
               as int?,
+      impactCausedName: freezed == impactCausedName
+          ? _value.impactCausedName
+          : impactCausedName // ignore: cast_nullable_to_non_nullable
+              as String?,
       xBone: freezed == xBone
           ? _value.xBone
           : xBone // ignore: cast_nullable_to_non_nullable
               as bool?,
-      mmmId: freezed == mmmId
-          ? _value.mmmId
-          : mmmId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      mmmName: freezed == mmmName
-          ? _value.mmmName
-          : mmmName // ignore: cast_nullable_to_non_nullable
-              as String?,
       complianceName: freezed == complianceName
           ? _value.complianceName
           : complianceName // ignore: cast_nullable_to_non_nullable
@@ -437,31 +409,52 @@ class __$$_AuditQuestionCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_AuditQuestion extends _AuditQuestion {
   const _$_AuditQuestion(
-      {@JsonKey(name: 'AuditId') required this.auditId,
-      @JsonKey(name: 'QuestionId') this.questionId,
-      @JsonKey(name: 'QuestionValue') this.questionValue,
-      @JsonKey(name: 'PrincipleId') this.principleId,
-      @JsonKey(name: 'PrincipleName') this.principleName,
-      @JsonKey(name: 'IndicatorId') this.indicatorId,
-      @JsonKey(name: 'IndicatorName') this.indicatorName,
-      @JsonKey(name: 'CarId') this.carId,
-      @JsonKey(name: 'CarName') this.carName,
-      @JsonKey(name: 'CriteriaId') this.criteriaId,
-      @JsonKey(name: 'CriteriaName') this.criteriaName,
-      @JsonKey(name: 'JobCategoryId') this.jobCategoryId,
-      @JsonKey(name: 'JobCategoryName') this.jobCategoryName,
-      @JsonKey(name: 'ImpactOnId') this.impactOnId,
-      @JsonKey(name: 'ImpactOnName') this.impactOnName,
-      @JsonKey(name: 'ImpactCausedId') this.impactCausedId,
-      @JsonKey(name: 'ImpactCausedName') this.impactCausedName,
-      @JsonKey(name: 'SeverityId') this.severityId,
-      @JsonKey(name: 'XBone') this.xBone,
-      @JsonKey(name: 'MMMId') this.mmmId,
-      @JsonKey(name: 'MMMName') this.mmmName,
-      @JsonKey(name: 'ComplianceName') this.complianceName,
-      @JsonKey(name: 'ComplianceId') this.complianceId,
-      @JsonKey(name: 'IsQuestionComplete') this.isQuestionComplete,
-      @JsonKey(name: 'IsActive') this.isActive})
+      {@JsonKey(name: 'AuditId')
+          required this.auditId,
+      @JsonKey(name: 'RegionalManagerUnitId')
+          required this.regionalManagerUnitId,
+      @JsonKey(name: 'AuditTemplateId')
+          required this.auditTemplateId,
+      @JsonKey(name: 'QuestionId')
+          this.questionId,
+      @JsonKey(name: 'QuestionValue')
+          this.questionValue,
+      @JsonKey(name: 'PrincipleId')
+          this.principleId,
+      @JsonKey(name: 'PrincipleName')
+          this.principleName,
+      @JsonKey(name: 'IndicatorId')
+          this.indicatorId,
+      @JsonKey(name: 'IndicatorName')
+          this.indicatorName,
+      @JsonKey(name: 'CarId')
+          this.carId,
+      @JsonKey(name: 'CarName')
+          this.carName,
+      @JsonKey(name: 'CriteriaId')
+          this.criteriaId,
+      @JsonKey(name: 'CriteriaName')
+          this.criteriaName,
+      @JsonKey(name: 'ImpactOnId')
+          this.impactOnId,
+      @JsonKey(name: 'ImpactOnName')
+          this.impactOnName,
+      @JsonKey(name: 'ImpactCausedId')
+          this.impactCausedId,
+      @JsonKey(name: 'SeverityId')
+          this.severityId,
+      @JsonKey(name: 'ImpactCausedName')
+          this.impactCausedName,
+      @JsonKey(name: 'XBone')
+          this.xBone,
+      @JsonKey(name: 'ComplianceName')
+          this.complianceName,
+      @JsonKey(name: 'ComplianceId')
+          this.complianceId,
+      @JsonKey(name: 'IsQuestionComplete')
+          this.isQuestionComplete,
+      @JsonKey(name: 'IsActive')
+          this.isActive})
       : super._();
 
   factory _$_AuditQuestion.fromJson(Map<String, dynamic> json) =>
@@ -470,6 +463,12 @@ class _$_AuditQuestion extends _AuditQuestion {
   @override
   @JsonKey(name: 'AuditId')
   final int auditId;
+  @override
+  @JsonKey(name: 'RegionalManagerUnitId')
+  final int regionalManagerUnitId;
+  @override
+  @JsonKey(name: 'AuditTemplateId')
+  final int auditTemplateId;
   @override
   @JsonKey(name: 'QuestionId')
   final int? questionId;
@@ -501,12 +500,6 @@ class _$_AuditQuestion extends _AuditQuestion {
   @JsonKey(name: 'CriteriaName')
   final String? criteriaName;
   @override
-  @JsonKey(name: 'JobCategoryId')
-  final int? jobCategoryId;
-  @override
-  @JsonKey(name: 'JobCategoryName')
-  final String? jobCategoryName;
-  @override
   @JsonKey(name: 'ImpactOnId')
   final int? impactOnId;
   @override
@@ -516,20 +509,14 @@ class _$_AuditQuestion extends _AuditQuestion {
   @JsonKey(name: 'ImpactCausedId')
   final int? impactCausedId;
   @override
-  @JsonKey(name: 'ImpactCausedName')
-  final String? impactCausedName;
-  @override
   @JsonKey(name: 'SeverityId')
   final int? severityId;
   @override
+  @JsonKey(name: 'ImpactCausedName')
+  final String? impactCausedName;
+  @override
   @JsonKey(name: 'XBone')
   final bool? xBone;
-  @override
-  @JsonKey(name: 'MMMId')
-  final int? mmmId;
-  @override
-  @JsonKey(name: 'MMMName')
-  final String? mmmName;
   @override
   @JsonKey(name: 'ComplianceName')
   final String? complianceName;
@@ -545,7 +532,7 @@ class _$_AuditQuestion extends _AuditQuestion {
 
   @override
   String toString() {
-    return 'AuditQuestion(auditId: $auditId, questionId: $questionId, questionValue: $questionValue, principleId: $principleId, principleName: $principleName, indicatorId: $indicatorId, indicatorName: $indicatorName, carId: $carId, carName: $carName, criteriaId: $criteriaId, criteriaName: $criteriaName, jobCategoryId: $jobCategoryId, jobCategoryName: $jobCategoryName, impactOnId: $impactOnId, impactOnName: $impactOnName, impactCausedId: $impactCausedId, impactCausedName: $impactCausedName, severityId: $severityId, xBone: $xBone, mmmId: $mmmId, mmmName: $mmmName, complianceName: $complianceName, complianceId: $complianceId, isQuestionComplete: $isQuestionComplete, isActive: $isActive)';
+    return 'AuditQuestion(auditId: $auditId, regionalManagerUnitId: $regionalManagerUnitId, auditTemplateId: $auditTemplateId, questionId: $questionId, questionValue: $questionValue, principleId: $principleId, principleName: $principleName, indicatorId: $indicatorId, indicatorName: $indicatorName, carId: $carId, carName: $carName, criteriaId: $criteriaId, criteriaName: $criteriaName, impactOnId: $impactOnId, impactOnName: $impactOnName, impactCausedId: $impactCausedId, severityId: $severityId, impactCausedName: $impactCausedName, xBone: $xBone, complianceName: $complianceName, complianceId: $complianceId, isQuestionComplete: $isQuestionComplete, isActive: $isActive)';
   }
 
   @override
@@ -554,6 +541,10 @@ class _$_AuditQuestion extends _AuditQuestion {
         (other.runtimeType == runtimeType &&
             other is _$_AuditQuestion &&
             (identical(other.auditId, auditId) || other.auditId == auditId) &&
+            (identical(other.regionalManagerUnitId, regionalManagerUnitId) ||
+                other.regionalManagerUnitId == regionalManagerUnitId) &&
+            (identical(other.auditTemplateId, auditTemplateId) ||
+                other.auditTemplateId == auditTemplateId) &&
             (identical(other.questionId, questionId) ||
                 other.questionId == questionId) &&
             (identical(other.questionValue, questionValue) ||
@@ -572,23 +563,17 @@ class _$_AuditQuestion extends _AuditQuestion {
                 other.criteriaId == criteriaId) &&
             (identical(other.criteriaName, criteriaName) ||
                 other.criteriaName == criteriaName) &&
-            (identical(other.jobCategoryId, jobCategoryId) ||
-                other.jobCategoryId == jobCategoryId) &&
-            (identical(other.jobCategoryName, jobCategoryName) ||
-                other.jobCategoryName == jobCategoryName) &&
             (identical(other.impactOnId, impactOnId) ||
                 other.impactOnId == impactOnId) &&
             (identical(other.impactOnName, impactOnName) ||
                 other.impactOnName == impactOnName) &&
             (identical(other.impactCausedId, impactCausedId) ||
                 other.impactCausedId == impactCausedId) &&
-            (identical(other.impactCausedName, impactCausedName) ||
-                other.impactCausedName == impactCausedName) &&
             (identical(other.severityId, severityId) ||
                 other.severityId == severityId) &&
+            (identical(other.impactCausedName, impactCausedName) ||
+                other.impactCausedName == impactCausedName) &&
             (identical(other.xBone, xBone) || other.xBone == xBone) &&
-            (identical(other.mmmId, mmmId) || other.mmmId == mmmId) &&
-            (identical(other.mmmName, mmmName) || other.mmmName == mmmName) &&
             (identical(other.complianceName, complianceName) ||
                 other.complianceName == complianceName) &&
             (identical(other.complianceId, complianceId) ||
@@ -604,6 +589,8 @@ class _$_AuditQuestion extends _AuditQuestion {
   int get hashCode => Object.hashAll([
         runtimeType,
         auditId,
+        regionalManagerUnitId,
+        auditTemplateId,
         questionId,
         questionValue,
         principleId,
@@ -614,16 +601,12 @@ class _$_AuditQuestion extends _AuditQuestion {
         carName,
         criteriaId,
         criteriaName,
-        jobCategoryId,
-        jobCategoryName,
         impactOnId,
         impactOnName,
         impactCausedId,
-        impactCausedName,
         severityId,
+        impactCausedName,
         xBone,
-        mmmId,
-        mmmName,
         complianceName,
         complianceId,
         isQuestionComplete,
@@ -646,31 +629,52 @@ class _$_AuditQuestion extends _AuditQuestion {
 
 abstract class _AuditQuestion extends AuditQuestion {
   const factory _AuditQuestion(
-      {@JsonKey(name: 'AuditId') required final int auditId,
-      @JsonKey(name: 'QuestionId') final int? questionId,
-      @JsonKey(name: 'QuestionValue') final String? questionValue,
-      @JsonKey(name: 'PrincipleId') final int? principleId,
-      @JsonKey(name: 'PrincipleName') final String? principleName,
-      @JsonKey(name: 'IndicatorId') final int? indicatorId,
-      @JsonKey(name: 'IndicatorName') final String? indicatorName,
-      @JsonKey(name: 'CarId') final int? carId,
-      @JsonKey(name: 'CarName') final String? carName,
-      @JsonKey(name: 'CriteriaId') final int? criteriaId,
-      @JsonKey(name: 'CriteriaName') final String? criteriaName,
-      @JsonKey(name: 'JobCategoryId') final int? jobCategoryId,
-      @JsonKey(name: 'JobCategoryName') final String? jobCategoryName,
-      @JsonKey(name: 'ImpactOnId') final int? impactOnId,
-      @JsonKey(name: 'ImpactOnName') final String? impactOnName,
-      @JsonKey(name: 'ImpactCausedId') final int? impactCausedId,
-      @JsonKey(name: 'ImpactCausedName') final String? impactCausedName,
-      @JsonKey(name: 'SeverityId') final int? severityId,
-      @JsonKey(name: 'XBone') final bool? xBone,
-      @JsonKey(name: 'MMMId') final int? mmmId,
-      @JsonKey(name: 'MMMName') final String? mmmName,
-      @JsonKey(name: 'ComplianceName') final String? complianceName,
-      @JsonKey(name: 'ComplianceId') final int? complianceId,
-      @JsonKey(name: 'IsQuestionComplete') final int? isQuestionComplete,
-      @JsonKey(name: 'IsActive') final bool? isActive}) = _$_AuditQuestion;
+      {@JsonKey(name: 'AuditId')
+          required final int auditId,
+      @JsonKey(name: 'RegionalManagerUnitId')
+          required final int regionalManagerUnitId,
+      @JsonKey(name: 'AuditTemplateId')
+          required final int auditTemplateId,
+      @JsonKey(name: 'QuestionId')
+          final int? questionId,
+      @JsonKey(name: 'QuestionValue')
+          final String? questionValue,
+      @JsonKey(name: 'PrincipleId')
+          final int? principleId,
+      @JsonKey(name: 'PrincipleName')
+          final String? principleName,
+      @JsonKey(name: 'IndicatorId')
+          final int? indicatorId,
+      @JsonKey(name: 'IndicatorName')
+          final String? indicatorName,
+      @JsonKey(name: 'CarId')
+          final int? carId,
+      @JsonKey(name: 'CarName')
+          final String? carName,
+      @JsonKey(name: 'CriteriaId')
+          final int? criteriaId,
+      @JsonKey(name: 'CriteriaName')
+          final String? criteriaName,
+      @JsonKey(name: 'ImpactOnId')
+          final int? impactOnId,
+      @JsonKey(name: 'ImpactOnName')
+          final String? impactOnName,
+      @JsonKey(name: 'ImpactCausedId')
+          final int? impactCausedId,
+      @JsonKey(name: 'SeverityId')
+          final int? severityId,
+      @JsonKey(name: 'ImpactCausedName')
+          final String? impactCausedName,
+      @JsonKey(name: 'XBone')
+          final bool? xBone,
+      @JsonKey(name: 'ComplianceName')
+          final String? complianceName,
+      @JsonKey(name: 'ComplianceId')
+          final int? complianceId,
+      @JsonKey(name: 'IsQuestionComplete')
+          final int? isQuestionComplete,
+      @JsonKey(name: 'IsActive')
+          final bool? isActive}) = _$_AuditQuestion;
   const _AuditQuestion._() : super._();
 
   factory _AuditQuestion.fromJson(Map<String, dynamic> json) =
@@ -679,6 +683,12 @@ abstract class _AuditQuestion extends AuditQuestion {
   @override
   @JsonKey(name: 'AuditId')
   int get auditId;
+  @override
+  @JsonKey(name: 'RegionalManagerUnitId')
+  int get regionalManagerUnitId;
+  @override
+  @JsonKey(name: 'AuditTemplateId')
+  int get auditTemplateId;
   @override
   @JsonKey(name: 'QuestionId')
   int? get questionId;
@@ -710,12 +720,6 @@ abstract class _AuditQuestion extends AuditQuestion {
   @JsonKey(name: 'CriteriaName')
   String? get criteriaName;
   @override
-  @JsonKey(name: 'JobCategoryId')
-  int? get jobCategoryId;
-  @override
-  @JsonKey(name: 'JobCategoryName')
-  String? get jobCategoryName;
-  @override
   @JsonKey(name: 'ImpactOnId')
   int? get impactOnId;
   @override
@@ -725,20 +729,14 @@ abstract class _AuditQuestion extends AuditQuestion {
   @JsonKey(name: 'ImpactCausedId')
   int? get impactCausedId;
   @override
-  @JsonKey(name: 'ImpactCausedName')
-  String? get impactCausedName;
-  @override
   @JsonKey(name: 'SeverityId')
   int? get severityId;
   @override
+  @JsonKey(name: 'ImpactCausedName')
+  String? get impactCausedName;
+  @override
   @JsonKey(name: 'XBone')
   bool? get xBone;
-  @override
-  @JsonKey(name: 'MMMId')
-  int? get mmmId;
-  @override
-  @JsonKey(name: 'MMMName')
-  String? get mmmName;
   @override
   @JsonKey(name: 'ComplianceName')
   String? get complianceName;

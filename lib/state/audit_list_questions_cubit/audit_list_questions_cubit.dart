@@ -1,5 +1,11 @@
+import 'dart:ffi';
+
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/model/data/audit_compliance.dart';
+import 'package:cmo/model/data/audit_question_answer.dart';
+import 'package:cmo/model/data/audit_question_comment.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/model.dart';
@@ -32,40 +38,23 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     return state.questions;
   }
 
-  List<Compliance> getCompliances() {
-    return state.compliances;
-  }
-
   List<RejectReason> getRejectReasons() {
     return state.rejectReasons;
   }
 
-  List<QuestionAnswer> getAnswers() {
+  List<AuditQuestionAnswer> getAnswers() {
     return state.answers;
   }
 
-  QuestionAnswer? getAnswerByQuestionId(int? questionId) {
+  AuditQuestionAnswer? getAnswerByQuestionId(int? questionId) {
     if (questionId == null) return null;
     return state.answers.firstWhereOrNull(
-          (e) => e.questionId != null && e.questionId == questionId,
+      (e) => e.questionId != null && e.questionId == questionId,
     );
-  }
-
-  List<JobElement> getJobElements() {
-    return [];
-    // return state.jobElements;
   }
 
   AuditQuestion getQuestion(int index) {
     return state.filteredQuestions[index];
-  }
-
-  String getJobCategoryName() {
-    return state.assessment?.jobCategoryName ?? '';
-  }
-
-  Assessment? getAssessment() {
-    return state.assessment;
   }
 
   void setImpactOnFilter(int? id) {
@@ -201,43 +190,13 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
 
       emit(state.copyWith(questions: questions));
 
-      logger.d('Get compliance by companyId and jobCategoryId');
-
-      // final compliances = await cmoDatabaseMasterService.getCompliancesByCompanyIdJobCategoryId(
-      //   assessment.companyId,
-      //   assessment.jobCategoryId,
-      // );
-      // emit(state.copyWith(compliances: compliances));
-
-      // if (compliances.isEmpty) {
-      //   logger.d('Get compliance by companyId only');
-      //   final compliances = await cmoDatabaseMasterService
-      //       .getCompliancesByCompanyId(assessment.companyId);
-      //   emit(state.copyWith(compliances: compliances));
-      // }
-
       final rejectReasons = await cmoDatabaseMasterService.getRejectReasons();
+      rejectReasons.addAll([
+        const RejectReason(rejectReasonId: 1, rejectReasonName: 'RejectReason 1'),
+        const RejectReason(rejectReasonId: 2, rejectReasonName: 'RejectReason 2'),
+      ]);
+
       emit(state.copyWith(rejectReasons: rejectReasons));
-
-      // final speqss = await cmoDatabaseMasterService
-      //     .getSpeqssByJobCategoryId(assessment.jobCategoryId);
-      // emit(state.copyWith(speqss: speqss));
-
-      // final pdcas = await cmoDatabaseMasterService
-      //     .getPdcasByJobCategoryId(assessment.jobCategoryId);
-      // emit(state.copyWith(pdcas: pdcas));
-
-      // final jobElements = await cmoDatabaseMasterService
-      //     .getJobElementsByJobCategoryId(assessment.jobCategoryId);
-      // emit(state.copyWith(jobElements: jobElements));
-
-      // final questionPhotos = await cmoDatabaseMasterService
-      //     .getQuestionPhotosByAssessmentId(assessment.assessmentId);
-      // emit(state.copyWith(questionPhotos: questionPhotos));
-
-      // final questionComments = await cmoDatabaseMasterService
-      //     .getQuestionCommentsByAssessmentId(assessment.assessmentId);
-      // emit(state.copyWith(questionComments: questionComments));
 
       logger.d('Get question answers');
       // final answers = await cmoDatabaseMasterService
@@ -246,7 +205,84 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       //   assessment.jobCategoryId,
       //   assessment.assessmentId,
       // );
-      // emit(state.copyWith(answers: answers));
+      // final answer = <AuditQuestionAnswer>[
+      //   AuditQuestionAnswer(answerId: 1, auditId: DateTime.now().microsecondsSinceEpoch, questionId: 1, ),
+      //   AuditQuestionAnswer(answerId: 2, auditId: DateTime.now().microsecondsSinceEpoch, questionId: 1, ),
+      //   AuditQuestionAnswer(answerId: 3, auditId: DateTime.now().microsecondsSinceEpoch, questionId: 2, ),
+      //   AuditQuestionAnswer(answerId: 4, auditId: DateTime.now().microsecondsSinceEpoch, questionId: 2, ),
+      // ];
+      //
+      // emit(state.copyWith(answers: answer));
+
+      await getListAuditQuestionAnswer();
+      // final questionPhotos = await cmoDatabaseMasterService
+      //     .getQuestionPhotosByAssessmentId(assessment.assessmentId);
+      final auditQuestionPhoto = <AuditQuestionPhoto>[
+        AuditQuestionPhoto(
+          photoId: DateTime.now().millisecondsSinceEpoch,
+          auditId: DateTime.now().microsecondsSinceEpoch,
+          questionId: 1,
+          photoPath: null,
+          photoName: DateTime.now().toString(),
+        ),
+        AuditQuestionPhoto(
+          photoId: DateTime.now().millisecondsSinceEpoch,
+          auditId: DateTime.now().microsecondsSinceEpoch,
+          questionId: 1,
+          photoPath: null,
+          photoName: DateTime.now().toString(),
+        ),
+        AuditQuestionPhoto(
+          photoId: DateTime.now().millisecondsSinceEpoch,
+          auditId: DateTime.now().microsecondsSinceEpoch,
+          questionId: 2,
+          photoPath: null,
+          photoName: DateTime.now().toString(),
+        ),
+        AuditQuestionPhoto(
+          photoId: DateTime.now().millisecondsSinceEpoch,
+          auditId: DateTime.now().microsecondsSinceEpoch,
+          questionId: 2,
+          photoPath: null,
+          photoName: DateTime.now().toString(),
+        ),
+      ];
+      emit(state.copyWith(auditQuestionPhotos: auditQuestionPhoto));
+
+
+      // final questionComments = await cmoDatabaseMasterService
+      //     .getQuestionCommentsByAssessmentId(assessment.assessmentId);
+
+      final auditQuestionComments = <AuditQuestionComment> [
+        AuditQuestionComment.generateMockData(),
+        AuditQuestionComment.generateMockData(),
+        AuditQuestionComment.generateMockData(),
+        AuditQuestionComment.generateMockData(),
+      ];
+
+      emit(state.copyWith(questionComments: auditQuestionComments));
+
+
+      final compliances = <AuditCompliance>[
+        AuditCompliance(complianceId: AuditComplianceEnum.n.data, complianceName: AuditComplianceEnum.n.valueName),
+        AuditCompliance(complianceId: AuditComplianceEnum.nc.data, complianceName: AuditComplianceEnum.nc.valueName),
+        AuditCompliance(complianceId: AuditComplianceEnum.na.data, complianceName: AuditComplianceEnum.na.valueName),
+      ];
+
+      emit(state.copyWith(compliances: compliances));
+
+      // final compliances = await cmoDatabaseMasterService.getCompliancesByCompanyIdJobCategoryId(
+      //   assessment.companyId,
+      //   assessment.jobCategoryId,
+      // );
+
+
+      // if (compliances.isEmpty) {
+      //   logger.d('Get compliance by companyId only');
+      //   final compliances = await cmoDatabaseMasterService
+      //       .getCompliancesByCompanyId(assessment.companyId);
+      //   emit(state.copyWith(compliances: compliances));
+      // }
 
       await applyFilter();
     } catch (error) {
@@ -254,51 +290,78 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     }
   }
 
+  Future<void> getListAuditQuestionAnswer() async {
+    final answers = await cmoDatabaseMasterService.getAuditQuestionAnswersWithAuditId(state.audit?.auditId);
+    emit(state.copyWith(answers: answers));
+  }
+
   Future<void> addCommentFromReasonCode(
       QuestionComment comment,
       CompanyQuestion question,
       Compliance compliance,
       ) async {
-    final answer = state.answers
-        .firstWhereOrNull((e) => e.questionId == question.questionId);
-
-    await cmoDatabaseMasterService.cacheQuestionComment(comment);
-
-    await checkComplianceHasRejectReason(
-      compliance.hasRejectReason ?? false,
-      answer,
-    );
+    // final answer = state.answers
+    //     .firstWhereOrNull((e) => e.questionId == question.questionId);
+    //
+    // await cmoDatabaseMasterService.cacheQuestionComment(comment);
+    //
+    // await checkComplianceHasRejectReason(
+    //   compliance.hasRejectReason ?? false,
+    //   answer,
+    // );
   }
 
   Future<void> setAnswer(
-      CompanyQuestion question,
-      Compliance compliance,
+      AuditQuestion question,
+      AuditCompliance compliance,
       ) async {
-    var answer = state.answers
-        .firstWhereOrNull((e) => e.questionId == question.questionId);
-    if (answer == null) return;
 
-    if (answer.complianceId == compliance.complianceId) {
-      logger.d(
-        'Answer complianceId: ${answer.complianceId} = ${compliance.complianceId}',
+    var answer = state.answers.firstWhereOrNull((e) => e.questionId == question.questionId);
+    answer ??= AuditQuestionAnswer(
+        auditId: state.audit?.auditId,
+        questionId: question.questionId,
       );
-      answer = answer.copyWith(assessmentId: 0);
-      logger.d(
-        'Remove answer for AssessmentId: ${answer.assessmentId} QuestionId: ${answer.questionId}',
-      );
-      answer = answer.copyWith(isQuestionComplete: 0);
 
-      await cmoDatabaseMasterService.removeQuestionAnswer(answer);
-      await checkIfAssessmentIscomplete();
-    } else {
-      logger.d('Set answer complianceId to: ${compliance.complianceId}');
-      answer = answer.copyWith(complianceId: compliance.complianceId);
-      logger.d('Check compliance reject reason: ${compliance.hasRejectReason}');
-      await checkComplianceHasRejectReason(
-        compliance.hasRejectReason ?? false,
-        answer,
-      );
+    switch (compliance.complianceEnum) {
+      case AuditComplianceEnum.n:
+      case AuditComplianceEnum.na:
+        answer = answer.copyWith(
+          complianceId: compliance.complianceId,
+          complianceName: compliance.complianceName,
+          isQuestionComplete: true,
+        );
+
+        await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer);
+        await getListAuditQuestionAnswer();
+        return;
+      case AuditComplianceEnum.nc:
+        return;
+      case AuditComplianceEnum.unknown:
+        return;
     }
+
+    //
+    // if (answer.complianceId == compliance.complianceId) {
+    //   logger.d(
+    //     'Answer complianceId: ${answer.complianceId} = ${compliance.complianceId}',
+    //   );
+    //   answer = answer.copyWith(assessmentId: 0);
+    //   logger.d(
+    //     'Remove answer for AssessmentId: ${answer.assessmentId} QuestionId: ${answer.questionId}',
+    //   );
+    //   answer = answer.copyWith(isQuestionComplete: 0);
+    //
+    //   await cmoDatabaseMasterService.removeQuestionAnswer(answer);
+    //   await checkIfAssessmentIscomplete();
+    // } else {
+    //   logger.d('Set answer complianceId to: ${compliance.complianceId}');
+    //   answer = answer.copyWith(complianceId: compliance.complianceId);
+    //   logger.d('Check compliance reject reason: ${compliance.hasRejectReason}');
+    //   await checkComplianceHasRejectReason(
+    //     compliance.hasRejectReason ?? false,
+    //     answer,
+    //   );
+    // }
   }
 
   Future<void> checkComplianceHasRejectReason(
@@ -331,13 +394,13 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       'Add answer for AssessmentId: ${answer.assessmentId} QuestionId: ${answer.questionId}',
     );
     await cmoDatabaseMasterService.cacheQuestionAnswer(answer);
-    final answers = await cmoDatabaseMasterService
-        .getQuestionAnswersByCompanyIdAndJobCategoryIdAndAssessmentId(
-      state.assessment?.companyId,
-      state.assessment?.jobCategoryId,
-      state.assessment?.assessmentId,
-    );
-    emit(state.copyWith(answers: answers));
+    // final answers = await cmoDatabaseMasterService
+    //     .getQuestionAnswersByCompanyIdAndJobCategoryIdAndAssessmentId(
+    //   state.assessment?.companyId,
+    //   state.assessment?.jobCategoryId,
+    //   state.assessment?.assessmentId,
+    // );
+    // emit(state.copyWith(answers: answers));
     await checkIfAssessmentIscomplete();
   }
 
@@ -351,37 +414,37 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
 
   Future<void> checkIfAssessmentIscomplete() async {
     logger.d('Check if all questions are answered');
-    final answered =
-    getAnswers().where((x) => x.isQuestionComplete == 1).toList();
-
-    logger.d('Answered count: ${answered.length}');
-    final questionCount = getAllQuestions().length;
-    logger.d('Question count: $questionCount');
-
-    if (answered.length == questionCount) {
-      if (state.assessment?.completed != true) {
-        emit(
-          state.copyWith(
-            assessment: state.assessment?.copyWith(completed: true),
-          ),
-        );
-        if (state.assessment != null) {
-          await cmoDatabaseService.cacheAssessment(state.assessment!);
-        }
-      }
-    } else {
-      final completed = state.assessment?.completed;
-      if (completed != null && completed == true) {
-        emit(
-          state.copyWith(
-            assessment: state.assessment?.copyWith(completed: false),
-          ),
-        );
-        if (state.assessment != null) {
-          await cmoDatabaseService.cacheAssessment(state.assessment!);
-        }
-      }
-    }
+    // final answered =
+    // getAnswers().where((x) => x.isQuestionComplete == 1).toList();
+    //
+    // logger.d('Answered count: ${answered.length}');
+    // final questionCount = getAllQuestions().length;
+    // logger.d('Question count: $questionCount');
+    //
+    // if (answered.length == questionCount) {
+    //   if (state.assessment?.completed != true) {
+    //     emit(
+    //       state.copyWith(
+    //         assessment: state.assessment?.copyWith(completed: true),
+    //       ),
+    //     );
+    //     if (state.assessment != null) {
+    //       await cmoDatabaseService.cacheAssessment(state.assessment!);
+    //     }
+    //   }
+    // } else {
+    //   final completed = state.assessment?.completed;
+    //   if (completed != null && completed == true) {
+    //     emit(
+    //       state.copyWith(
+    //         assessment: state.assessment?.copyWith(completed: false),
+    //       ),
+    //     );
+    //     if (state.assessment != null) {
+    //       await cmoDatabaseService.cacheAssessment(state.assessment!);
+    //     }
+    //   }
+    // }
   }
 
   Future<AuditQuestionPhoto?> addPhoto({
@@ -412,29 +475,21 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     return photoData;
   }
 
-  Future<void> removePhoto({
-    required QuestionPhoto photo,
-  }) async {
-    // await cmoDatabaseMasterService.removeQuestionPhoto(photo);
-    // final questionPhotos = await cmoDatabaseMasterService
-    //     .getQuestionPhotosByAssessmentId(state.assessment?.assessmentId);
-    // emit(state.copyWith(auditQuestionPhotos: auditQuestionPhotos));
-  }
-
-  Future<QuestionComment?> addComment({
+  Future<AuditQuestionComment?> addComment({
     required int? questionId,
     required String commentValue,
   }) async {
-    final assessment = state.assessment;
-    final comment = QuestionComment(
-      assessmentId: assessment?.assessmentId,
+    final audit = state.audit;
+    final comment = AuditQuestionComment(
+      answerId: DateTime.now().millisecondsSinceEpoch,
+      commentId: DateTime.now().millisecondsSinceEpoch,
+      auditId: audit?.auditId ?? DateTime.now().millisecondsSinceEpoch,
       questionId: questionId,
       comment: commentValue,
-      commentId: null,
     );
-    await cmoDatabaseMasterService.cacheQuestionComment(comment);
-    final commentData = await cmoDatabaseMasterService
-        .getQuestionCommentByComment(commentValue);
+
+    await cmoDatabaseMasterService.cacheAuditQuestionComment(comment);
+    final commentData = await cmoDatabaseMasterService.getAuditQuestionCommentByComment(commentValue);
     if (commentData != null) {
       emit(
         state.copyWith(
@@ -445,16 +500,8 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
         ),
       );
     }
-    return commentData;
-  }
 
-  Future<void> removeComment({
-    required QuestionComment comment,
-  }) async {
-    await cmoDatabaseMasterService.removeQuestionComment(comment);
-    // final questionPhotos = await cmoDatabaseMasterService
-    //     .getQuestionPhotosByAssessmentId(state.assessment?.assessmentId);
-    // emit(state.copyWith(auditQuestionPhotos: questionPhotos));
+    return commentData;
   }
 
   void handleError(Object error) {
