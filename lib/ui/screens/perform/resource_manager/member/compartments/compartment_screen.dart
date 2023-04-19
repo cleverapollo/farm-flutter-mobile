@@ -4,6 +4,7 @@ import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:cmo/gen/assets.gen.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CompartmentScreen extends StatelessWidget {
   const CompartmentScreen({Key? key}) : super(key: key);
@@ -47,7 +48,15 @@ class CompartmentScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             CmoTappable(
-              onTap: () => print("onItem tapped"),
+              onTap: () {
+                final points = <LatLng>[
+                  LatLng(-26.015368927981065, 28.042593151330948),
+                  LatLng(-26.025381761698664, 28.049022741615772),
+                  LatLng(-26.02768170340819, 28.038567155599594),
+                  LatLng(-26.01968835342607, 28.036944083869457),
+                ];
+                CompartmentMapScreen.push(context, points: points);
+              },
               child: CmoCard(
                 containerGradient: const LinearGradient(
                   begin: Alignment.topLeft,

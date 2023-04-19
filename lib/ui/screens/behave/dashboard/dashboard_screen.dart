@@ -18,9 +18,7 @@ class BehaveDashboardScreen extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       children: [
         CmoTappable(
-          //onTap: () => AssessmentScreen.push(context),
-          //TODO: Should remove it
-          onTap: () => CompartmentScreen.push(context),
+          onTap: () => AssessmentScreen.push(context),
           child: CmoCard(
             content: [
               CmoCardHeader(title: LocaleKeys.assessments.tr()),

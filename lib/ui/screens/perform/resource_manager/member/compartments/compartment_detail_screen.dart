@@ -202,6 +202,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
               title: LocaleKeys.save.tr(),
               onTap: () {
                 Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
             ),
           ],

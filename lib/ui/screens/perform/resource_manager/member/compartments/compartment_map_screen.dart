@@ -11,15 +11,18 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:maps_toolkit/src/latlng.dart' as mapToolkitLatlong;
+import 'package:google_maps_flutter_platform_interface/src/types/location.dart' as map;
 
 class CompartmentMapScreen extends StatefulWidget {
-  static Future<T?> push<T>(BuildContext context) async {
+  static Future<T?> push<T>(BuildContext context, {List<map.LatLng>? points}) async {
     return Navigator.of(context).push<T>(
-      MaterialPageRoute(builder: (_) => CompartmentMapScreen()),
+      MaterialPageRoute(builder: (_) => CompartmentMapScreen(points: points,)),
     );
   }
 
-  CompartmentMapScreen({Key? key}) : super(key: key);
+  CompartmentMapScreen({this.points, Key? key}) : super(key: key);
+
+  final List<map.LatLng>? points;
 
   @override
   _CompartmentMapScreenState createState() => _CompartmentMapScreenState();
@@ -31,6 +34,23 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   List<Marker> _markers = [];
   bool _isFinished = false;
   double? areaSquareMeters;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.points != null) {
+      _markers = widget.points!.map((e) => _markerFrom(e)).toList();
+      _isFinished = true;
+    }
+  }
+
+  Marker _markerFrom(map.LatLng position) {
+    return Marker(
+      markerId: MarkerId(
+          'place_name_${position.latitude}_${position.longitude}'),
+      position: position,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +78,8 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                   markers: _markers.toSet(),
                   onTap: (latLong) {
                     if (_isFinished) return;
-                    final marker = Marker(
-                      markerId: MarkerId('place_name_${latLong.latitude}'),
-                      position: latLong,
-                      draggable: true,
-                    );
                     setState(() {
-                      _markers.add(marker);
+                      _markers.add(_markerFrom(latLong));
                     });
                   },
                 ),
@@ -145,12 +160,14 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
     if (_markers.length < 2) {
       return polylines;
     }
+    final color =
+        widget.points == null ? context.colors.yellow : context.colors.red;
     for (var i = 1; i < _markers.length; i++) {
       polylines.add(
         Polyline(
           polylineId: PolylineId("${i - 1}_$i"),
           points: [_markers[i - 1].position, _markers[i].position],
-          color: context.colors.yellow,
+          color: color,
           width: 5,
         ),
       );
@@ -163,7 +180,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
             _markers[_markers.length - 1].position,
             _markers[0].position,
           ],
-          color: context.colors.yellow,
+          color: color,
           width: 5,
         ),
       );
