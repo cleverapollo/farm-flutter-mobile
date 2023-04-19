@@ -152,11 +152,11 @@ class CmoCardItemHighlighted extends StatelessWidget {
 class CmoCardItemWithIcon extends StatelessWidget {
   const CmoCardItemWithIcon({
     super.key,
-    required this.title,
+    this.title,
     required this.icon,
   });
 
-  final String title;
+  final String? title;
 
   final SvgGenImage icon;
 
@@ -181,7 +181,7 @@ class CmoCardItemWithIcon extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                title,
+                title ?? '',
                 textAlign: TextAlign.start,
                 style: context.textStyles.bodyNormal.white,
                 maxLines: 1,

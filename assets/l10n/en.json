@@ -212,5 +212,8 @@
   "group_scheme_management": "Group Scheme Management",
   "group_scheme": "Group Scheme",
   "resource_management_unit": "Resource Management Unit",
-  "operations_management": "Operations Management"
+  "operations_management": "Operations Management",
+  "enter": "Enter",
+  "type": "Type",
+  "select": "Select"
 }

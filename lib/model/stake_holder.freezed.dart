@@ -22,14 +22,24 @@ StakeHolder _$StakeHolderFromJson(Map<String, dynamic> json) {
 mixin _$StakeHolder {
   @JsonKey(name: 'StakeHolderId')
   String get stakeHolderId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'serviceName')
-  String get serviceName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'address')
-  String get address => throw _privateConstructorUsedError;
-  @JsonKey(name: 'fullName')
-  String get fullName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'entityName')
+  String? get entityName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'contactName')
+  String? get contactName => throw _privateConstructorUsedError;
   @JsonKey(name: 'email')
-  String get email => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError;
+  @JsonKey(name: 'address')
+  String? get address => throw _privateConstructorUsedError;
+  @JsonKey(name: 'phoneNumber')
+  String? get phoneNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: 'type')
+  int? get type => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IsActive')
+  bool? get isActive => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IsLocal')
+  bool? get isLocal => throw _privateConstructorUsedError;
+  @JsonKey(name: 'DOB')
+  String? get dob => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -45,10 +55,15 @@ abstract class $StakeHolderCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'StakeHolderId') String stakeHolderId,
-      @JsonKey(name: 'serviceName') String serviceName,
-      @JsonKey(name: 'address') String address,
-      @JsonKey(name: 'fullName') String fullName,
-      @JsonKey(name: 'email') String email});
+      @JsonKey(name: 'entityName') String? entityName,
+      @JsonKey(name: 'contactName') String? contactName,
+      @JsonKey(name: 'email') String? email,
+      @JsonKey(name: 'address') String? address,
+      @JsonKey(name: 'phoneNumber') String? phoneNumber,
+      @JsonKey(name: 'type') int? type,
+      @JsonKey(name: 'IsActive') bool? isActive,
+      @JsonKey(name: 'IsLocal') bool? isLocal,
+      @JsonKey(name: 'DOB') String? dob});
 }
 
 /// @nodoc
@@ -65,32 +80,57 @@ class _$StakeHolderCopyWithImpl<$Res, $Val extends StakeHolder>
   @override
   $Res call({
     Object? stakeHolderId = null,
-    Object? serviceName = null,
-    Object? address = null,
-    Object? fullName = null,
-    Object? email = null,
+    Object? entityName = freezed,
+    Object? contactName = freezed,
+    Object? email = freezed,
+    Object? address = freezed,
+    Object? phoneNumber = freezed,
+    Object? type = freezed,
+    Object? isActive = freezed,
+    Object? isLocal = freezed,
+    Object? dob = freezed,
   }) {
     return _then(_value.copyWith(
       stakeHolderId: null == stakeHolderId
           ? _value.stakeHolderId
           : stakeHolderId // ignore: cast_nullable_to_non_nullable
               as String,
-      serviceName: null == serviceName
-          ? _value.serviceName
-          : serviceName // ignore: cast_nullable_to_non_nullable
-              as String,
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String,
-      fullName: null == fullName
-          ? _value.fullName
-          : fullName // ignore: cast_nullable_to_non_nullable
-              as String,
-      email: null == email
+      entityName: freezed == entityName
+          ? _value.entityName
+          : entityName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      contactName: freezed == contactName
+          ? _value.contactName
+          : contactName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
+      phoneNumber: freezed == phoneNumber
+          ? _value.phoneNumber
+          : phoneNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as int?,
+      isActive: freezed == isActive
+          ? _value.isActive
+          : isActive // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      isLocal: freezed == isLocal
+          ? _value.isLocal
+          : isLocal // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      dob: freezed == dob
+          ? _value.dob
+          : dob // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -105,10 +145,15 @@ abstract class _$$_StakeHolderCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'StakeHolderId') String stakeHolderId,
-      @JsonKey(name: 'serviceName') String serviceName,
-      @JsonKey(name: 'address') String address,
-      @JsonKey(name: 'fullName') String fullName,
-      @JsonKey(name: 'email') String email});
+      @JsonKey(name: 'entityName') String? entityName,
+      @JsonKey(name: 'contactName') String? contactName,
+      @JsonKey(name: 'email') String? email,
+      @JsonKey(name: 'address') String? address,
+      @JsonKey(name: 'phoneNumber') String? phoneNumber,
+      @JsonKey(name: 'type') int? type,
+      @JsonKey(name: 'IsActive') bool? isActive,
+      @JsonKey(name: 'IsLocal') bool? isLocal,
+      @JsonKey(name: 'DOB') String? dob});
 }
 
 /// @nodoc
@@ -123,32 +168,57 @@ class __$$_StakeHolderCopyWithImpl<$Res>
   @override
   $Res call({
     Object? stakeHolderId = null,
-    Object? serviceName = null,
-    Object? address = null,
-    Object? fullName = null,
-    Object? email = null,
+    Object? entityName = freezed,
+    Object? contactName = freezed,
+    Object? email = freezed,
+    Object? address = freezed,
+    Object? phoneNumber = freezed,
+    Object? type = freezed,
+    Object? isActive = freezed,
+    Object? isLocal = freezed,
+    Object? dob = freezed,
   }) {
     return _then(_$_StakeHolder(
       stakeHolderId: null == stakeHolderId
           ? _value.stakeHolderId
           : stakeHolderId // ignore: cast_nullable_to_non_nullable
               as String,
-      serviceName: null == serviceName
-          ? _value.serviceName
-          : serviceName // ignore: cast_nullable_to_non_nullable
-              as String,
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String,
-      fullName: null == fullName
-          ? _value.fullName
-          : fullName // ignore: cast_nullable_to_non_nullable
-              as String,
-      email: null == email
+      entityName: freezed == entityName
+          ? _value.entityName
+          : entityName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      contactName: freezed == contactName
+          ? _value.contactName
+          : contactName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
+      phoneNumber: freezed == phoneNumber
+          ? _value.phoneNumber
+          : phoneNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as int?,
+      isActive: freezed == isActive
+          ? _value.isActive
+          : isActive // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      isLocal: freezed == isLocal
+          ? _value.isLocal
+          : isLocal // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      dob: freezed == dob
+          ? _value.dob
+          : dob // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -158,10 +228,15 @@ class __$$_StakeHolderCopyWithImpl<$Res>
 class _$_StakeHolder extends _StakeHolder {
   const _$_StakeHolder(
       {@JsonKey(name: 'StakeHolderId') required this.stakeHolderId,
-      @JsonKey(name: 'serviceName') required this.serviceName,
-      @JsonKey(name: 'address') required this.address,
-      @JsonKey(name: 'fullName') required this.fullName,
-      @JsonKey(name: 'email') required this.email})
+      @JsonKey(name: 'entityName') this.entityName,
+      @JsonKey(name: 'contactName') this.contactName,
+      @JsonKey(name: 'email') this.email,
+      @JsonKey(name: 'address') this.address,
+      @JsonKey(name: 'phoneNumber') this.phoneNumber,
+      @JsonKey(name: 'type') this.type,
+      @JsonKey(name: 'IsActive') this.isActive,
+      @JsonKey(name: 'IsLocal') this.isLocal,
+      @JsonKey(name: 'DOB') this.dob})
       : super._();
 
   factory _$_StakeHolder.fromJson(Map<String, dynamic> json) =>
@@ -171,21 +246,36 @@ class _$_StakeHolder extends _StakeHolder {
   @JsonKey(name: 'StakeHolderId')
   final String stakeHolderId;
   @override
-  @JsonKey(name: 'serviceName')
-  final String serviceName;
+  @JsonKey(name: 'entityName')
+  final String? entityName;
   @override
-  @JsonKey(name: 'address')
-  final String address;
-  @override
-  @JsonKey(name: 'fullName')
-  final String fullName;
+  @JsonKey(name: 'contactName')
+  final String? contactName;
   @override
   @JsonKey(name: 'email')
-  final String email;
+  final String? email;
+  @override
+  @JsonKey(name: 'address')
+  final String? address;
+  @override
+  @JsonKey(name: 'phoneNumber')
+  final String? phoneNumber;
+  @override
+  @JsonKey(name: 'type')
+  final int? type;
+  @override
+  @JsonKey(name: 'IsActive')
+  final bool? isActive;
+  @override
+  @JsonKey(name: 'IsLocal')
+  final bool? isLocal;
+  @override
+  @JsonKey(name: 'DOB')
+  final String? dob;
 
   @override
   String toString() {
-    return 'StakeHolder(stakeHolderId: $stakeHolderId, serviceName: $serviceName, address: $address, fullName: $fullName, email: $email)';
+    return 'StakeHolder(stakeHolderId: $stakeHolderId, entityName: $entityName, contactName: $contactName, email: $email, address: $address, phoneNumber: $phoneNumber, type: $type, isActive: $isActive, isLocal: $isLocal, dob: $dob)';
   }
 
   @override
@@ -195,18 +285,25 @@ class _$_StakeHolder extends _StakeHolder {
             other is _$_StakeHolder &&
             (identical(other.stakeHolderId, stakeHolderId) ||
                 other.stakeHolderId == stakeHolderId) &&
-            (identical(other.serviceName, serviceName) ||
-                other.serviceName == serviceName) &&
+            (identical(other.entityName, entityName) ||
+                other.entityName == entityName) &&
+            (identical(other.contactName, contactName) ||
+                other.contactName == contactName) &&
+            (identical(other.email, email) || other.email == email) &&
             (identical(other.address, address) || other.address == address) &&
-            (identical(other.fullName, fullName) ||
-                other.fullName == fullName) &&
-            (identical(other.email, email) || other.email == email));
+            (identical(other.phoneNumber, phoneNumber) ||
+                other.phoneNumber == phoneNumber) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.isActive, isActive) ||
+                other.isActive == isActive) &&
+            (identical(other.isLocal, isLocal) || other.isLocal == isLocal) &&
+            (identical(other.dob, dob) || other.dob == dob));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, stakeHolderId, serviceName, address, fullName, email);
+  int get hashCode => Object.hash(runtimeType, stakeHolderId, entityName,
+      contactName, email, address, phoneNumber, type, isActive, isLocal, dob);
 
   @JsonKey(ignore: true)
   @override
@@ -225,10 +322,15 @@ class _$_StakeHolder extends _StakeHolder {
 abstract class _StakeHolder extends StakeHolder {
   const factory _StakeHolder(
       {@JsonKey(name: 'StakeHolderId') required final String stakeHolderId,
-      @JsonKey(name: 'serviceName') required final String serviceName,
-      @JsonKey(name: 'address') required final String address,
-      @JsonKey(name: 'fullName') required final String fullName,
-      @JsonKey(name: 'email') required final String email}) = _$_StakeHolder;
+      @JsonKey(name: 'entityName') final String? entityName,
+      @JsonKey(name: 'contactName') final String? contactName,
+      @JsonKey(name: 'email') final String? email,
+      @JsonKey(name: 'address') final String? address,
+      @JsonKey(name: 'phoneNumber') final String? phoneNumber,
+      @JsonKey(name: 'type') final int? type,
+      @JsonKey(name: 'IsActive') final bool? isActive,
+      @JsonKey(name: 'IsLocal') final bool? isLocal,
+      @JsonKey(name: 'DOB') final String? dob}) = _$_StakeHolder;
   const _StakeHolder._() : super._();
 
   factory _StakeHolder.fromJson(Map<String, dynamic> json) =
@@ -238,17 +340,32 @@ abstract class _StakeHolder extends StakeHolder {
   @JsonKey(name: 'StakeHolderId')
   String get stakeHolderId;
   @override
-  @JsonKey(name: 'serviceName')
-  String get serviceName;
+  @JsonKey(name: 'entityName')
+  String? get entityName;
   @override
-  @JsonKey(name: 'address')
-  String get address;
-  @override
-  @JsonKey(name: 'fullName')
-  String get fullName;
+  @JsonKey(name: 'contactName')
+  String? get contactName;
   @override
   @JsonKey(name: 'email')
-  String get email;
+  String? get email;
+  @override
+  @JsonKey(name: 'address')
+  String? get address;
+  @override
+  @JsonKey(name: 'phoneNumber')
+  String? get phoneNumber;
+  @override
+  @JsonKey(name: 'type')
+  int? get type;
+  @override
+  @JsonKey(name: 'IsActive')
+  bool? get isActive;
+  @override
+  @JsonKey(name: 'IsLocal')
+  bool? get isLocal;
+  @override
+  @JsonKey(name: 'DOB')
+  String? get dob;
   @override
   @JsonKey(ignore: true)
   _$$_StakeHolderCopyWith<_$_StakeHolder> get copyWith =>

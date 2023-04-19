@@ -1,0 +1,343 @@
+import 'package:cmo/di.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/model.dart';
+import 'package:cmo/state/entity_cubit/entity_cubit.dart';
+import 'package:cmo/utils/helpers.dart';
+import 'package:cmo/utils/validator.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+
+import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/widgets/input_text_field_with_title.dart';
+
+class CreateNewStakeHolderScreen extends StatefulWidget {
+  const CreateNewStakeHolderScreen({super.key});
+
+  static void push(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const CreateNewStakeHolderScreen(),
+      ),
+    );
+  }
+
+  @override
+  State<CreateNewStakeHolderScreen> createState() => _CreateNewStakeHolderScreenState();
+}
+
+class _CreateNewStakeHolderScreenState extends State<CreateNewStakeHolderScreen> {
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
+  bool loading = false;
+
+  Future<void> onSubmit() async {
+    setState(() {
+      autoValidateMode = AutovalidateMode.always;
+    });
+    if (_formKey.currentState?.saveAndValidate() ?? false) {
+      var value = _formKey.currentState?.value;
+      if (value == null) return;
+      value = {...value};
+
+      setState(() {
+        loading = true;
+      });
+      try {
+        await hideInputMethod();
+        final stakeHolderId = DateTime.now().millisecondsSinceEpoch;
+        value['StakeHolderId'] = stakeHolderId.toString();
+        value['IsActive'] = true;
+        value['IsLocal'] = true;
+
+        if (value['DOB'] is DateTime) {
+          final dob = value['DOB'] as DateTime;
+          value['DOB'] = dob.toIso8601String();
+        }
+        final stakeHolder = StakeHolder.fromJson(value);
+
+        int? resultId;
+
+        if (mounted) {
+          final databaseService = cmoDatabaseMasterService;
+
+          await (await databaseService.db).writeTxn(() async {
+            resultId = await databaseService.cacheStakeHolder(stakeHolder);
+          });
+        }
+
+        if (resultId != null) {
+          if (context.mounted) {
+            showSnackSuccess(
+              msg: '${LocaleKeys.createNewStakeholder.tr()} $resultId',
+            );
+
+            Navigator.of(context).pop();
+          }
+        }
+      } finally {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: CmoAppBar(
+          title: LocaleKeys.addStakeholders.tr(),
+          leading: Assets.icons.icArrowLeft.svgBlack,
+          onTapLeading: Navigator.of(context).pop,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 90,
+              ),
+              Text(
+                LocaleKeys.details.tr(),
+                textAlign: TextAlign.start,
+                style: context.textStyles.bodyBold.black,
+              ),
+              _buildDividerWidget(),
+              const SizedBox(
+                height: 12,
+              ),
+              buildInputArea(),
+            ],
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: CmoFilledButton(
+          title: LocaleKeys.save.tr(),
+          onTap: onSubmit,
+          loading: loading,
+        ),
+      ),
+    );
+  }
+
+  Widget buildInputArea() {
+    return FormBuilder(
+      key: _formKey,
+      onChanged: () {},
+      autovalidateMode: autoValidateMode,
+      child: AutofillGroup(
+        child: Column(
+          children: [
+            _selectTypeDropdown(),
+            InputTextFieldWithTitle(
+              name: 'entityName',
+              title: LocaleKeys.entityName.tr(),
+              validator: requiredValidator,
+            ),
+            InputTextFieldWithTitle(
+              name: 'contactName',
+              title: LocaleKeys.contactName.tr(),
+              validator: requiredValidator,
+            ),
+            InputTextFieldWithTitle(
+              name: 'email',
+              title: LocaleKeys.email.tr(),
+              firstSuffixIcon: Assets.icons.icMail.svgBlue,
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.email(),
+              ]),
+            ),
+            InputTextFieldWithTitle(
+              name: 'address',
+              title: LocaleKeys.address.tr(),
+              validator: requiredValidator,
+            ),
+            InputTextFieldWithTitle(
+              name: 'phoneNumber',
+              title: LocaleKeys.phoneNumber.tr(),
+              firstSuffixIcon: Assets.icons.icCallBlue.svg(),
+              secondSuffixIcon: Assets.icons.icSmsBlue.svg(),
+              keyboardType: TextInputType.number,
+            ),
+
+            //   CmoTextField(
+            //     name: 'ContactNumber',
+            //     hintText: LocaleKeys.contactNumber.tr(),
+            //   ),
+            //   CmoTextField(
+            //     name: 'Email',
+            //     hintText: LocaleKeys.email.tr(),
+            //     validator: FormBuilderValidators.compose([
+            //       FormBuilderValidators.email(),
+            //     ]),
+            //   ),
+            //   CmoDropdown(
+            //     name: 'RaceId',
+            //     validator: requiredValidator,
+            //     hintText: LocaleKeys.race.tr(),
+            //     itemsData: [
+            //       CmoDropdownItem(id: 1, name: 'black'),
+            //       CmoDropdownItem(id: 2, name: 'white'),
+            //     ],
+            //   ),
+            //   CmoDropdown(
+            //     name: 'GenderId',
+            //     validator: requiredValidator,
+            //     hintText: LocaleKeys.gender.tr(),
+            //     itemsData: [
+            //       CmoDropdownItem(id: 1, name: 'Male'),
+            //       CmoDropdownItem(id: 2, name: 'Female'),
+            //       CmoDropdownItem(id: 3, name: 'Unknown'),
+            //     ],
+            //   ),
+            //   CmoDropdown(
+            //     name: 'DisabilityId',
+            //     validator: requiredValidator,
+            //     hintText: LocaleKeys.disability.tr(),
+            //     itemsData: [
+            //       CmoDropdownItem(id: 1, name: 'None'),
+            //     ],
+            //   ),
+            //   FutureBuilder(
+            //     future: cmoDatabaseMasterService.getMunicipalitys(),
+            //     builder: (context, snapshot) {
+            //       if (snapshot.hasData) {
+            //         return CmoDropdown(
+            //           name: 'MunicipalityId',
+            //           validator: requiredValidator,
+            //           hintText: LocaleKeys.municipality.tr(),
+            //           itemsData: snapshot.data
+            //               ?.map(
+            //                 (e) => CmoDropdownItem(
+            //               id: e.id,
+            //               name: e.municipalityName ?? '',
+            //             ),
+            //           )
+            //               .toList(),
+            //         );
+            //       }
+            //       return const SizedBox();
+            //     },
+            //   ),
+            //   FutureBuilder(
+            //     future: cmoDatabaseMasterService.getProvinces(),
+            //     builder: (context, snapshot) {
+            //       if (snapshot.hasData) {
+            //         return CmoDropdown(
+            //           name: 'ProvinceId',
+            //           validator: requiredValidator,
+            //           hintText: LocaleKeys.province.tr(),
+            //           itemsData: snapshot.data
+            //               ?.map(
+            //                 (e) => CmoDropdownItem(
+            //               id: e.id,
+            //               name: e.provinceName ?? '',
+            //             ),
+            //           )
+            //               .toList(),
+            //         );
+            //       }
+            //       return const SizedBox();
+            //     },
+            //   ),
+            //   BlocSelector<EntityCubit, EntityState, int?>(
+            //     selector: (state) {
+            //       return state.company?.id;
+            //     },
+            //     builder: (context, companyId) {
+            //       if (companyId == null) return const SizedBox();
+            //       return FutureBuilder(
+            //         future: cmoDatabaseMasterService
+            //             .getContractorsByCompanyId(companyId),
+            //         builder: (context, snapshot) {
+            //           if (snapshot.hasData) {
+            //             return CmoDropdown(
+            //               name: 'ContractorId',
+            //               validator: requiredValidator,
+            //               hintText: LocaleKeys.contractor.tr(),
+            //               itemsData: snapshot.data
+            //                   ?.map(
+            //                     (e) => CmoDropdownItem(
+            //                   id: e.id,
+            //                   name: e.contractorName ?? '',
+            //                 ),
+            //               )
+            //                   .toList(),
+            //             );
+            //           }
+            //           return const SizedBox();
+            //         },
+            //       );
+            //     },
+            //   ),
+            //   FutureBuilder(
+            //     future: cmoDatabaseMasterService.getJobDescriptions(),
+            //     builder: (context, snapshot) {
+            //       if (snapshot.hasData) {
+            //         return CmoDropdown(
+            //           name: 'JobDescriptionId',
+            //           validator: requiredValidator,
+            //           hintText: LocaleKeys.jobDescription.tr(),
+            //           itemsData: snapshot.data
+            //               ?.map(
+            //                 (e) => CmoDropdownItem(
+            //               id: e.id,
+            //               name: e.jobDescriptionName ?? '',
+            //             ),
+            //           )
+            //               .toList(),
+            //         );
+            //       }
+            //       return const SizedBox();
+            //     },
+            //   ),
+          ].withSpaceBetween(height: 10),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDividerWidget() {
+    return Divider(
+      height: 2,
+      thickness: 1,
+      color: context.colors.grey,
+    );
+  }
+
+  Widget _selectTypeDropdown() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          LocaleKeys.type.tr(),
+          style: context.textStyles.bodyBold.black,
+        ),
+        CmoDropdown(
+          name: 'type',
+          validator: requiredValidator,
+          inputDecoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(8),
+            isDense: true,
+            hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.type.tr().toLowerCase()}',
+            hintStyle: context.textStyles.bodyNormal.grey,
+            border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
+            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
+          ),
+          itemsData: [
+            CmoDropdownItem(id: 1, name: 'None'),
+          ],
+        ),
+      ],
+    );
+  }
+}

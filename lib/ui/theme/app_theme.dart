@@ -133,6 +133,8 @@ class TextThemeExt extends ThemeExtension<TextThemeExt> {
 extension TextStyleExt on TextStyle {
   TextStyle get white => copyWith(color: _AppColor.white);
   TextStyle get black => copyWith(color: _AppColor.black);
+  TextStyle get greyLight1 => copyWith(color: _AppColor.greyLight1);
+  TextStyle get grey => copyWith(color: _AppColor.grey);
 }
 
 extension SvgGen on SvgGenImage {

@@ -25,6 +25,10 @@ class $AssetsIconsGen {
   SvgGenImage get icArrowRight =>
       const SvgGenImage('assets/icons/ic_arrow_right.svg');
 
+  /// File path: assets/icons/ic_call_blue.svg
+  SvgGenImage get icCallBlue =>
+      const SvgGenImage('assets/icons/ic_call_blue.svg');
+
   /// File path: assets/icons/ic_camera.svg
   SvgGenImage get icCamera => const SvgGenImage('assets/icons/ic_camera.svg');
 
@@ -66,6 +70,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_search.svg
   SvgGenImage get icSearch => const SvgGenImage('assets/icons/ic_search.svg');
 
+  /// File path: assets/icons/ic_sms_blue.svg
+  SvgGenImage get icSmsBlue =>
+      const SvgGenImage('assets/icons/ic_sms_blue.svg');
+
   /// File path: assets/icons/ic_tick.svg
   SvgGenImage get icTick => const SvgGenImage('assets/icons/ic_tick.svg');
 
@@ -84,6 +92,7 @@ class $AssetsIconsGen {
         icAdd,
         icArrowLeft,
         icArrowRight,
+        icCallBlue,
         icCamera,
         icClose,
         icComment,
@@ -97,6 +106,7 @@ class $AssetsIconsGen {
         icProfile,
         icRefresh,
         icSearch,
+        icSmsBlue,
         icTick,
         icUser,
         icUsername,

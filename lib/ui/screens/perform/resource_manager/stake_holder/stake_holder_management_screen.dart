@@ -7,27 +7,30 @@ import 'package:flutter/material.dart';
 
 import '../../../../../env/env.dart';
 
-List<StakeHolder> _mockData = const [
+List<StakeHolder> _mockData = [
   StakeHolder(
     stakeHolderId: '',
-    serviceName: 'African Parks, Matusadhona Operations Manager',
+    entityName: 'African Parks, Matusadhona Operations Manager',
     address: 'Conservation',
-    fullName: 'Mike Pelham',
+    contactName: 'Mike Pelham',
     email: 'joe@123.com',
+    isActive: true,
   ),
   StakeHolder(
     stakeHolderId: '',
-    serviceName: 'Agriculture Services',
+    entityName: 'Agriculture Services',
     address: 'Government',
-    fullName: 'Joe Soap',
+    contactName: 'Joe Soap',
     email: 'joe@123.com',
+    isActive: true,
   ),
   StakeHolder(
     stakeHolderId: '',
-    serviceName: 'Agritex Chipinge',
+    entityName: 'Agritex Chipinge',
     address: 'Government',
-    fullName: 'Mr Chagwesha',
+    contactName: 'Mr Chagwesha',
     email: 'Chagwesha @123.com',
+    isActive: true,
   ),
 ];
 
@@ -83,13 +86,11 @@ class StakeHolderManagementScreen extends StatelessWidget {
 
   Widget _buildItemCard(StakeHolder model) {
     return CmoTappable(
-      onTap: () {
-        print(Env.cmoAppMode);
-      },
+      onTap: () {},
       child: CmoCard(
         content: [
           CmoCardHeader(
-            title: model.serviceName,
+            title: model.entityName ?? '',
             maxLines: 2,
           ),
           const SizedBox(height: 10),
@@ -99,7 +100,7 @@ class StakeHolderManagementScreen extends StatelessWidget {
           ),
           CmoCardItemWithIcon(
             icon: Assets.icons.icProfile,
-            title: model.fullName,
+            title: model.contactName,
           ),
           CmoCardItemWithIcon(
             icon: Assets.icons.icMail,

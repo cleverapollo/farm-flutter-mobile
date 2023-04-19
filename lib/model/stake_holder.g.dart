@@ -22,25 +22,50 @@ const StakeHolderSchema = CollectionSchema(
       name: r'address',
       type: IsarType.string,
     ),
-    r'email': PropertySchema(
+    r'contactName': PropertySchema(
       id: 1,
+      name: r'contactName',
+      type: IsarType.string,
+    ),
+    r'dob': PropertySchema(
+      id: 2,
+      name: r'dob',
+      type: IsarType.string,
+    ),
+    r'email': PropertySchema(
+      id: 3,
       name: r'email',
       type: IsarType.string,
     ),
-    r'fullName': PropertySchema(
-      id: 2,
-      name: r'fullName',
+    r'entityName': PropertySchema(
+      id: 4,
+      name: r'entityName',
       type: IsarType.string,
     ),
-    r'serviceName': PropertySchema(
-      id: 3,
-      name: r'serviceName',
+    r'isActive': PropertySchema(
+      id: 5,
+      name: r'isActive',
+      type: IsarType.bool,
+    ),
+    r'isLocal': PropertySchema(
+      id: 6,
+      name: r'isLocal',
+      type: IsarType.bool,
+    ),
+    r'phoneNumber': PropertySchema(
+      id: 7,
+      name: r'phoneNumber',
       type: IsarType.string,
     ),
     r'stakeHolderId': PropertySchema(
-      id: 4,
+      id: 8,
       name: r'stakeHolderId',
       type: IsarType.string,
+    ),
+    r'type': PropertySchema(
+      id: 9,
+      name: r'type',
+      type: IsarType.long,
     )
   },
   estimateSize: _stakeHolderEstimateSize,
@@ -63,10 +88,42 @@ int _stakeHolderEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.address.length * 3;
-  bytesCount += 3 + object.email.length * 3;
-  bytesCount += 3 + object.fullName.length * 3;
-  bytesCount += 3 + object.serviceName.length * 3;
+  {
+    final value = object.address;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.contactName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.dob;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.email;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.entityName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.phoneNumber;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.stakeHolderId.length * 3;
   return bytesCount;
 }
@@ -78,10 +135,15 @@ void _stakeHolderSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.address);
-  writer.writeString(offsets[1], object.email);
-  writer.writeString(offsets[2], object.fullName);
-  writer.writeString(offsets[3], object.serviceName);
-  writer.writeString(offsets[4], object.stakeHolderId);
+  writer.writeString(offsets[1], object.contactName);
+  writer.writeString(offsets[2], object.dob);
+  writer.writeString(offsets[3], object.email);
+  writer.writeString(offsets[4], object.entityName);
+  writer.writeBool(offsets[5], object.isActive);
+  writer.writeBool(offsets[6], object.isLocal);
+  writer.writeString(offsets[7], object.phoneNumber);
+  writer.writeString(offsets[8], object.stakeHolderId);
+  writer.writeLong(offsets[9], object.type);
 }
 
 StakeHolder _stakeHolderDeserialize(
@@ -91,11 +153,16 @@ StakeHolder _stakeHolderDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = StakeHolder(
-    address: reader.readString(offsets[0]),
-    email: reader.readString(offsets[1]),
-    fullName: reader.readString(offsets[2]),
-    serviceName: reader.readString(offsets[3]),
-    stakeHolderId: reader.readString(offsets[4]),
+    address: reader.readStringOrNull(offsets[0]),
+    contactName: reader.readStringOrNull(offsets[1]),
+    dob: reader.readStringOrNull(offsets[2]),
+    email: reader.readStringOrNull(offsets[3]),
+    entityName: reader.readStringOrNull(offsets[4]),
+    isActive: reader.readBoolOrNull(offsets[5]),
+    isLocal: reader.readBoolOrNull(offsets[6]),
+    phoneNumber: reader.readStringOrNull(offsets[7]),
+    stakeHolderId: reader.readString(offsets[8]),
+    type: reader.readLongOrNull(offsets[9]),
   );
   return object;
 }
@@ -108,15 +175,25 @@ P _stakeHolderDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
+      return (reader.readStringOrNull(offset)) as P;
+    case 5:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 6:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 7:
+      return (reader.readStringOrNull(offset)) as P;
+    case 8:
       return (reader.readString(offset)) as P;
+    case 9:
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -213,8 +290,26 @@ extension StakeHolderQueryWhere
 
 extension StakeHolderQueryFilter
     on QueryBuilder<StakeHolder, StakeHolder, QFilterCondition> {
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      addressIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'address',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      addressIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'address',
+      ));
+    });
+  }
+
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> addressEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -228,7 +323,7 @@ extension StakeHolderQueryFilter
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
       addressGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -243,7 +338,7 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> addressLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -258,8 +353,8 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> addressBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -347,8 +442,326 @@ extension StakeHolderQueryFilter
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> emailEqualTo(
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      contactNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'contactName',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      contactNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'contactName',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      contactNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'contactName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      contactNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'contactName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      contactNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'contactName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      contactNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'contactName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      contactNameStartsWith(
     String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'contactName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      contactNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'contactName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      contactNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'contactName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      contactNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'contactName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      contactNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'contactName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      contactNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'contactName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> dobIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'dob',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> dobIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'dob',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> dobEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dob',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> dobGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'dob',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> dobLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'dob',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> dobBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'dob',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> dobStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'dob',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> dobEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'dob',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> dobContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'dob',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> dobMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'dob',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> dobIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dob',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      dobIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'dob',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> emailIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'email',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      emailIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'email',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> emailEqualTo(
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -362,7 +775,7 @@ extension StakeHolderQueryFilter
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
       emailGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -377,7 +790,7 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> emailLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -392,8 +805,8 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> emailBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -479,13 +892,32 @@ extension StakeHolderQueryFilter
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> fullNameEqualTo(
-    String value, {
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      entityNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'entityName',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      entityNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'entityName',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      entityNameEqualTo(
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'fullName',
+        property: r'entityName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -493,15 +925,15 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      fullNameGreaterThan(
-    String value, {
+      entityNameGreaterThan(
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'fullName',
+        property: r'entityName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -509,31 +941,32 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      fullNameLessThan(
-    String value, {
+      entityNameLessThan(
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'fullName',
+        property: r'entityName',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> fullNameBetween(
-    String lower,
-    String upper, {
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      entityNameBetween(
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'fullName',
+        property: r'entityName',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -544,13 +977,13 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      fullNameStartsWith(
+      entityNameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'fullName',
+        property: r'entityName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -558,13 +991,13 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      fullNameEndsWith(
+      entityNameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'fullName',
+        property: r'entityName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -572,22 +1005,21 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      fullNameContains(String value, {bool caseSensitive = true}) {
+      entityNameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'fullName',
+        property: r'entityName',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> fullNameMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      entityNameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'fullName',
+        property: r'entityName',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -595,20 +1027,20 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      fullNameIsEmpty() {
+      entityNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'fullName',
+        property: r'entityName',
         value: '',
       ));
     });
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      fullNameIsNotEmpty() {
+      entityNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'fullName',
+        property: r'entityName',
         value: '',
       ));
     });
@@ -668,13 +1100,87 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      serviceNameEqualTo(
-    String value, {
+      isActiveIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isActive',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      isActiveIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isActive',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> isActiveEqualTo(
+      bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      isLocalIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isLocal',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      isLocalIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isLocal',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> isLocalEqualTo(
+      bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isLocal',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      phoneNumberIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'phoneNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      phoneNumberIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'phoneNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      phoneNumberEqualTo(
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'serviceName',
+        property: r'phoneNumber',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -682,15 +1188,15 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      serviceNameGreaterThan(
-    String value, {
+      phoneNumberGreaterThan(
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'serviceName',
+        property: r'phoneNumber',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -698,15 +1204,15 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      serviceNameLessThan(
-    String value, {
+      phoneNumberLessThan(
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'serviceName',
+        property: r'phoneNumber',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -714,16 +1220,16 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      serviceNameBetween(
-    String lower,
-    String upper, {
+      phoneNumberBetween(
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'serviceName',
+        property: r'phoneNumber',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -734,13 +1240,13 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      serviceNameStartsWith(
+      phoneNumberStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'serviceName',
+        property: r'phoneNumber',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -748,13 +1254,13 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      serviceNameEndsWith(
+      phoneNumberEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'serviceName',
+        property: r'phoneNumber',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -762,10 +1268,10 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      serviceNameContains(String value, {bool caseSensitive = true}) {
+      phoneNumberContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'serviceName',
+        property: r'phoneNumber',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -773,10 +1279,10 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      serviceNameMatches(String pattern, {bool caseSensitive = true}) {
+      phoneNumberMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'serviceName',
+        property: r'phoneNumber',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -784,20 +1290,20 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      serviceNameIsEmpty() {
+      phoneNumberIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'serviceName',
+        property: r'phoneNumber',
         value: '',
       ));
     });
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      serviceNameIsNotEmpty() {
+      phoneNumberIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'serviceName',
+        property: r'phoneNumber',
         value: '',
       ));
     });
@@ -938,6 +1444,76 @@ extension StakeHolderQueryFilter
       ));
     });
   }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> typeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'type',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      typeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'type',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> typeEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'type',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> typeGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'type',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> typeLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'type',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition> typeBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'type',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension StakeHolderQueryObject
@@ -960,6 +1536,30 @@ extension StakeHolderQuerySortBy
     });
   }
 
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByContactName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'contactName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByContactNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'contactName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByDob() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dob', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByDobDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dob', Sort.desc);
+    });
+  }
+
   QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByEmail() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'email', Sort.asc);
@@ -972,27 +1572,51 @@ extension StakeHolderQuerySortBy
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByFullName() {
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByEntityName() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fullName', Sort.asc);
+      return query.addSortBy(r'entityName', Sort.asc);
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByFullNameDesc() {
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByEntityNameDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fullName', Sort.desc);
+      return query.addSortBy(r'entityName', Sort.desc);
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByServiceName() {
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByIsActive() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'serviceName', Sort.asc);
+      return query.addSortBy(r'isActive', Sort.asc);
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByServiceNameDesc() {
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByIsActiveDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'serviceName', Sort.desc);
+      return query.addSortBy(r'isActive', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByIsLocal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isLocal', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByIsLocalDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isLocal', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByPhoneNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phoneNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByPhoneNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phoneNumber', Sort.desc);
     });
   }
 
@@ -1006,6 +1630,18 @@ extension StakeHolderQuerySortBy
       sortByStakeHolderIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'stakeHolderId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> sortByTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.desc);
     });
   }
 }
@@ -1024,6 +1660,30 @@ extension StakeHolderQuerySortThenBy
     });
   }
 
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByContactName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'contactName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByContactNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'contactName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByDob() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dob', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByDobDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dob', Sort.desc);
+    });
+  }
+
   QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByEmail() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'email', Sort.asc);
@@ -1036,15 +1696,15 @@ extension StakeHolderQuerySortThenBy
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByFullName() {
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByEntityName() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fullName', Sort.asc);
+      return query.addSortBy(r'entityName', Sort.asc);
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByFullNameDesc() {
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByEntityNameDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fullName', Sort.desc);
+      return query.addSortBy(r'entityName', Sort.desc);
     });
   }
 
@@ -1060,15 +1720,39 @@ extension StakeHolderQuerySortThenBy
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByServiceName() {
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByIsActive() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'serviceName', Sort.asc);
+      return query.addSortBy(r'isActive', Sort.asc);
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByServiceNameDesc() {
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByIsActiveDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'serviceName', Sort.desc);
+      return query.addSortBy(r'isActive', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByIsLocal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isLocal', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByIsLocalDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isLocal', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByPhoneNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phoneNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByPhoneNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phoneNumber', Sort.desc);
     });
   }
 
@@ -1084,6 +1768,18 @@ extension StakeHolderQuerySortThenBy
       return query.addSortBy(r'stakeHolderId', Sort.desc);
     });
   }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterSortBy> thenByTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.desc);
+    });
+  }
 }
 
 extension StakeHolderQueryWhereDistinct
@@ -1095,6 +1791,20 @@ extension StakeHolderQueryWhereDistinct
     });
   }
 
+  QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByContactName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'contactName', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByDob(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'dob', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByEmail(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1102,17 +1812,29 @@ extension StakeHolderQueryWhereDistinct
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByFullName(
+  QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByEntityName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'fullName', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'entityName', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByServiceName(
+  QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByIsActive() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isActive');
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByIsLocal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isLocal');
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByPhoneNumber(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'serviceName', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'phoneNumber', caseSensitive: caseSensitive);
     });
   }
 
@@ -1121,6 +1843,12 @@ extension StakeHolderQueryWhereDistinct
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'stakeHolderId',
           caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'type');
     });
   }
 }
@@ -1133,33 +1861,63 @@ extension StakeHolderQueryProperty
     });
   }
 
-  QueryBuilder<StakeHolder, String, QQueryOperations> addressProperty() {
+  QueryBuilder<StakeHolder, String?, QQueryOperations> addressProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'address');
     });
   }
 
-  QueryBuilder<StakeHolder, String, QQueryOperations> emailProperty() {
+  QueryBuilder<StakeHolder, String?, QQueryOperations> contactNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'contactName');
+    });
+  }
+
+  QueryBuilder<StakeHolder, String?, QQueryOperations> dobProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'dob');
+    });
+  }
+
+  QueryBuilder<StakeHolder, String?, QQueryOperations> emailProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'email');
     });
   }
 
-  QueryBuilder<StakeHolder, String, QQueryOperations> fullNameProperty() {
+  QueryBuilder<StakeHolder, String?, QQueryOperations> entityNameProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'fullName');
+      return query.addPropertyName(r'entityName');
     });
   }
 
-  QueryBuilder<StakeHolder, String, QQueryOperations> serviceNameProperty() {
+  QueryBuilder<StakeHolder, bool?, QQueryOperations> isActiveProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'serviceName');
+      return query.addPropertyName(r'isActive');
+    });
+  }
+
+  QueryBuilder<StakeHolder, bool?, QQueryOperations> isLocalProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isLocal');
+    });
+  }
+
+  QueryBuilder<StakeHolder, String?, QQueryOperations> phoneNumberProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'phoneNumber');
     });
   }
 
   QueryBuilder<StakeHolder, String, QQueryOperations> stakeHolderIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'stakeHolderId');
+    });
+  }
+
+  QueryBuilder<StakeHolder, int?, QQueryOperations> typeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'type');
     });
   }
 }
@@ -1171,17 +1929,27 @@ extension StakeHolderQueryProperty
 _$_StakeHolder _$$_StakeHolderFromJson(Map<String, dynamic> json) =>
     _$_StakeHolder(
       stakeHolderId: json['StakeHolderId'] as String,
-      serviceName: json['serviceName'] as String,
-      address: json['address'] as String,
-      fullName: json['fullName'] as String,
-      email: json['email'] as String,
+      entityName: json['entityName'] as String?,
+      contactName: json['contactName'] as String?,
+      email: json['email'] as String?,
+      address: json['address'] as String?,
+      phoneNumber: json['phoneNumber'] as String?,
+      type: json['type'] as int?,
+      isActive: json['IsActive'] as bool?,
+      isLocal: json['IsLocal'] as bool?,
+      dob: json['DOB'] as String?,
     );
 
 Map<String, dynamic> _$$_StakeHolderToJson(_$_StakeHolder instance) =>
     <String, dynamic>{
       'StakeHolderId': instance.stakeHolderId,
-      'serviceName': instance.serviceName,
-      'address': instance.address,
-      'fullName': instance.fullName,
+      'entityName': instance.entityName,
+      'contactName': instance.contactName,
       'email': instance.email,
+      'address': instance.address,
+      'phoneNumber': instance.phoneNumber,
+      'type': instance.type,
+      'IsActive': instance.isActive,
+      'IsLocal': instance.isLocal,
+      'DOB': instance.dob,
     };

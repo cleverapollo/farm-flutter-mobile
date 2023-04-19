@@ -25,6 +25,7 @@ class CmoDropdown<T> extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.enabled = true,
+    this.inputDecoration,
   });
 
   final String name;
@@ -35,6 +36,7 @@ class CmoDropdown<T> extends StatelessWidget {
   final FormFieldValidator<T?>? validator;
   final ValueChanged<T?>? onChanged;
   final bool enabled;
+  final InputDecoration? inputDecoration;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class CmoDropdown<T> extends StatelessWidget {
       name: name,
       validator: validator,
       style: context.textStyles.bodyNormal,
-      decoration: InputDecoration(
+      decoration: inputDecoration ?? InputDecoration(
         contentPadding: const EdgeInsets.all(8),
         prefixIconConstraints: BoxConstraints.tight(const Size(56, 38)),
         prefixIcon: prefixIcon != null ? Center(child: prefixIcon) : null,

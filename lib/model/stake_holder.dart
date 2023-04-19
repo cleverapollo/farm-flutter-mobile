@@ -12,10 +12,15 @@ part 'stake_holder.g.dart';
 class StakeHolder with _$StakeHolder {
   const factory StakeHolder({
     @JsonKey(name: 'StakeHolderId') required String stakeHolderId,
-    @JsonKey(name: 'serviceName') required String serviceName,
-    @JsonKey(name: 'address') required String address,
-    @JsonKey(name: 'fullName') required String fullName,
-    @JsonKey(name: 'email') required String email,
+    @JsonKey(name: 'entityName') String? entityName,
+    @JsonKey(name: 'contactName') String? contactName,
+    @JsonKey(name: 'email') String? email,
+    @JsonKey(name: 'address') String? address,
+    @JsonKey(name: 'phoneNumber') String? phoneNumber,
+    @JsonKey(name: 'type') int? type,
+    @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsLocal') bool? isLocal,
+    @JsonKey(name: 'DOB') String? dob,
   }) = _StakeHolder;
 
   const StakeHolder._();
