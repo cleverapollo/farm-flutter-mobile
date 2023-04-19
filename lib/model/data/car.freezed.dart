@@ -124,7 +124,7 @@ class _$_Car extends _Car {
   const _$_Car(
       {@JsonKey(name: 'CarId') required this.carId,
       @JsonKey(name: 'CarName') this.carName,
-      @JsonKey(name: 'IsActive') this.isActive})
+      @JsonKey(name: 'IsActive') this.isActive = true})
       : super._();
 
   factory _$_Car.fromJson(Map<String, dynamic> json) => _$$_CarFromJson(json);

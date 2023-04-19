@@ -129,7 +129,7 @@ class _$_Criteria extends _Criteria {
   const _$_Criteria(
       {@JsonKey(name: 'CriteriaId') required this.criteriaId,
       @JsonKey(name: 'CriteriaName') this.criteriaName,
-      @JsonKey(name: 'IsActive') this.isActive})
+      @JsonKey(name: 'IsActive') this.isActive = true})
       : super._();
 
   factory _$_Criteria.fromJson(Map<String, dynamic> json) =>

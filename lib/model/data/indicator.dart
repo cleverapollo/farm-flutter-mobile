@@ -11,6 +11,7 @@ class Indicator with _$Indicator {
   const factory Indicator({
     @JsonKey(name: 'IndicatorId') required int  indicatorId,
     @JsonKey(name: 'IndicatorName') String? indicatorName,
+    @Default(true)
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _Indicator;
 

@@ -11,6 +11,7 @@ class Car with _$Car {
   const factory Car({
     @JsonKey(name: 'CarId') required int carId,
     @JsonKey(name: 'CarName') String? carName,
+    @Default(true)
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _Car;
 

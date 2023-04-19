@@ -635,7 +635,7 @@ extension PrincipleQueryProperty
 _$_Principle _$$_PrincipleFromJson(Map<String, dynamic> json) => _$_Principle(
       principleId: json['PrincipleId'] as int,
       principleName: json['PrincipleName'] as String?,
-      isActive: json['IsActive'] as bool?,
+      isActive: json['IsActive'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$$_PrincipleToJson(_$_Principle instance) =>

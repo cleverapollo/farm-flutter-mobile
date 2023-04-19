@@ -47,7 +47,7 @@ class AuditQuestion with _$AuditQuestion {
     return AuditQuestion(
       auditId: DateTime.now().millisecondsSinceEpoch,
       isActive: true,
-      carId: -1,
+      carId: 1,
       carName: 'car name',
       complianceId: -1,
       complianceName: 'compliance name',

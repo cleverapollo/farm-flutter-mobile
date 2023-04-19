@@ -635,7 +635,7 @@ extension IndicatorQueryProperty
 _$_Indicator _$$_IndicatorFromJson(Map<String, dynamic> json) => _$_Indicator(
       indicatorId: json['IndicatorId'] as int,
       indicatorName: json['IndicatorName'] as String?,
-      isActive: json['IsActive'] as bool?,
+      isActive: json['IsActive'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$$_IndicatorToJson(_$_Indicator instance) =>

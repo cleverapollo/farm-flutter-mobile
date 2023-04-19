@@ -30,6 +30,7 @@ class CarFilter extends StatelessWidget {
             if (id == -1) {
               formKey.currentState!.fields[name]?.reset();
             }
+
             context.read<AuditListQuestionsCubit>().setCarFilter(id);
           },
           itemsData: cars

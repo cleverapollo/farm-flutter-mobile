@@ -30,6 +30,7 @@ class PrincipleFilter extends StatelessWidget {
             if (id == -1) {
               formKey.currentState!.fields[name]?.reset();
             }
+
             context.read<AuditListQuestionsCubit>().setPrincipleFilter(id);
           },
           itemsData: principles

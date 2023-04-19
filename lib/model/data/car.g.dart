@@ -611,7 +611,7 @@ extension CarQueryProperty on QueryBuilder<Car, Car, QQueryProperty> {
 _$_Car _$$_CarFromJson(Map<String, dynamic> json) => _$_Car(
       carId: json['CarId'] as int,
       carName: json['CarName'] as String?,
-      isActive: json['IsActive'] as bool?,
+      isActive: json['IsActive'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$$_CarToJson(_$_Car instance) => <String, dynamic>{

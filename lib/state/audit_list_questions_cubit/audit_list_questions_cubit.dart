@@ -12,16 +12,6 @@ part 'audit_list_questions_state.dart';
 class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   AuditListQuestionsCubit() : super(const AuditListQuestionsState());
 
-  List<Speqs> getSpeqs() {
-    return [];
-    // return state.speqss;
-  }
-
-  List<Pdca> getPdcas() {
-    return [];
-    // return state.pdcas;
-  }
-
   List<ImpactOn> getImpactOns() {
     return state.impactOns;
   }
@@ -64,21 +54,6 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   List<JobElement> getJobElements() {
     return [];
     // return state.jobElements;
-  }
-
-  int getSpeqsFilter() {
-    return -1;
-    // return state.speqsFilterId;
-  }
-
-  int getPdcaFilter() {
-    return -1;
-    // return state.pdcaFilterId;
-  }
-
-  int getJobElementFilter() {
-    return -1;
-    // return state.jobElementFilterId;
   }
 
   AuditQuestion getQuestion(int index) {
@@ -182,8 +157,33 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   Future<void> initialize(Audit audit) async {
     try {
       logger.d('Initialise auditId: ${audit.auditId}');
-      // logger.d('Initialise assessmentId: ${assessment.assessmentId}');
-      // emit(state.copyWith(assessment: assessment));
+      emit(state.copyWith(audit: audit));
+
+      const principles = <Principle>[
+        Principle(principleId: 1, principleName: 'Principle 1'),
+        Principle(principleId: 2, principleName: 'Principle 2'),
+      ];
+      emit(state.copyWith(principles: principles));
+
+      const criterias = <Criteria>[
+        Criteria(criteriaId: 1, criteriaName: 'Criteria 1'),
+        Criteria(criteriaId: 2, criteriaName: 'Criteria 2'),
+      ];
+      emit(state.copyWith(criterias: criterias));
+
+      const cars = <Car>[
+        Car(carId: 1, carName: 'Car 1'),
+        Car(carId: 2, carName: 'Car 2'),
+      ];
+      emit(state.copyWith(cars: cars));
+
+      const indicators = <Indicator>[
+        Indicator(indicatorId: 1, indicatorName: 'Indicator 1'),
+        Indicator(indicatorId: 2, indicatorName: 'Indicator 2'),
+      ];
+      emit(state.copyWith(indicators: indicators));
+
+
 
       // final questions = await cmoDatabaseMasterService
       //     .getQuestionsByCompanyIdAndJobCategoryIdAndAssessmentId(

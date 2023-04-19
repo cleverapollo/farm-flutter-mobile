@@ -626,7 +626,7 @@ extension CriteriaQueryProperty
 _$_Criteria _$$_CriteriaFromJson(Map<String, dynamic> json) => _$_Criteria(
       criteriaId: json['CriteriaId'] as int,
       criteriaName: json['CriteriaName'] as String?,
-      isActive: json['IsActive'] as bool?,
+      isActive: json['IsActive'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$$_CriteriaToJson(_$_Criteria instance) =>
