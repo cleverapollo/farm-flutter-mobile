@@ -597,54 +597,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
-  geolocator:
-    dependency: transitive
-    description:
-      name: geolocator
-      sha256: "6a88e7b93fc6004c21996bb8ca5656d6536027204ce7da471d99d43bd208a456"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.0.0"
-  geolocator_android:
-    dependency: transitive
-    description:
-      name: geolocator_android
-      sha256: "2ba24690aee0a3e1b6b7bd47c2711a50c874e95e4c758346589d35194adf6d6a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.7"
-  geolocator_apple:
-    dependency: transitive
-    description:
-      name: geolocator_apple
-      sha256: "22b60ca3b8c0f58e6a9688ff855ee39ab813ca3f0c0609a48d282f6631266f2e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.5"
-  geolocator_platform_interface:
-    dependency: transitive
-    description:
-      name: geolocator_platform_interface
-      sha256: af4d69231452f9620718588f41acc4cb58312368716bfff2e92e770b46ce6386
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.7"
-  geolocator_web:
-    dependency: transitive
-    description:
-      name: geolocator_web
-      sha256: f68a122da48fcfff68bbc9846bb0b74ef651afe84a1b1f6ec20939de4d6860e1
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.6"
-  geolocator_windows:
-    dependency: transitive
-    description:
-      name: geolocator_windows
-      sha256: f5911c88e23f48b598dd506c7c19eff0e001645bdc03bb6fecb9f4549208354d
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.1"
   get_it:
     dependency: "direct main"
     description:
@@ -1077,14 +1029,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.3"
-  polymaker:
-    dependency: "direct main"
-    description:
-      name: polymaker
-      sha256: bcb7a4936d8d615538938524ce45c26414e5c96816414158ffe4f1f1d7acaa7c
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3"
   pool:
     dependency: transitive
     description:
@@ -1326,18 +1270,18 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: "6c704aa944ae5dfc4ae7c473d52eba551acfa39fff277bae3cb355cdb2457f76"
+      sha256: "05b079cb1be26a8d5c1afe714172d2eed9178049f4a7dc773b2cbb8b053eff8d"
       url: "https://pub.dev"
     source: hosted
-    version: "21.1.35"
+    version: "21.1.41"
   syncfusion_flutter_signaturepad:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_signaturepad
-      sha256: "4660c8f80d1261c10ff1e43d95c155613703e827c758ec044242e126fa5d740d"
+      sha256: "9987db91561cdb12e1669a9ed8692a905c7875485976140e0323a193073e5266"
       url: "https://pub.dev"
     source: hosted
-    version: "21.1.35"
+    version: "21.1.41"
   synchronized:
     dependency: transitive
     description:
