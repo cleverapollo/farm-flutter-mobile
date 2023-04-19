@@ -38,3 +38,6 @@ export 'data/car.dart';
 export 'data/criteria.dart';
 export 'data/audit_question.dart';
 export 'data/audit_question_photo.dart';
+export 'data/audit_template.dart';
+export 'data/compartment.dart';
+export 'data/site.dart';

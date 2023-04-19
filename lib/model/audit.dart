@@ -27,17 +27,20 @@ class Audit with _$Audit {
   const factory Audit({
     @JsonKey(name: 'AuditId') required int? auditId,
     @JsonKey(name: 'AuditTemplateName') String? auditTemplateName,
-    @JsonKey(name: 'AuditTemplateId') String? auditTemplateId,
+    @JsonKey(name: 'AuditTemplateId') int? auditTemplateId,
     @JsonKey(name: 'CompartmentName') String? compartmentName,
     @JsonKey(name: 'CompartmentId') int? compartmentId,
     @JsonKey(name: 'SiteName') String? siteName,
     @JsonKey(name: 'SiteId') int? siteId,
-    @JsonKey(name: 'IsActive') bool? isActive,
-    @JsonKey(name: 'IsLocal') bool? isLocal,
     @JsonKey(name: 'Completed') bool? completed,
-    @JsonKey(name: 'Status') int? status,
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,
+    @Default(1)
+    @JsonKey(name: 'Status') int? status,
+    @Default(true)
+    @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(true)
+    @JsonKey(name: 'IsLocal') bool? isLocal,
   }) = _Audit;
 
   const Audit._();

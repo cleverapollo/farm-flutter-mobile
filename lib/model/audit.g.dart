@@ -25,7 +25,7 @@ const AuditSchema = CollectionSchema(
     r'auditTemplateId': PropertySchema(
       id: 1,
       name: r'auditTemplateId',
-      type: IsarType.string,
+      type: IsarType.long,
     ),
     r'auditTemplateName': PropertySchema(
       id: 2,
@@ -104,12 +104,6 @@ int _auditEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
-    final value = object.auditTemplateId;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.auditTemplateName;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -149,7 +143,7 @@ void _auditSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.auditId);
-  writer.writeString(offsets[1], object.auditTemplateId);
+  writer.writeLong(offsets[1], object.auditTemplateId);
   writer.writeString(offsets[2], object.auditTemplateName);
   writer.writeLong(offsets[3], object.compartmentId);
   writer.writeString(offsets[4], object.compartmentName);
@@ -171,7 +165,7 @@ Audit _auditDeserialize(
 ) {
   final object = Audit(
     auditId: reader.readLongOrNull(offsets[0]),
-    auditTemplateId: reader.readStringOrNull(offsets[1]),
+    auditTemplateId: reader.readLongOrNull(offsets[1]),
     auditTemplateName: reader.readStringOrNull(offsets[2]),
     compartmentId: reader.readLongOrNull(offsets[3]),
     compartmentName: reader.readStringOrNull(offsets[4]),
@@ -197,7 +191,7 @@ P _auditDeserializeProp<P>(
     case 0:
       return (reader.readLongOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
@@ -396,54 +390,46 @@ extension AuditQueryFilter on QueryBuilder<Audit, Audit, QFilterCondition> {
   }
 
   QueryBuilder<Audit, Audit, QAfterFilterCondition> auditTemplateIdEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+      int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'auditTemplateId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Audit, Audit, QAfterFilterCondition> auditTemplateIdGreaterThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'auditTemplateId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Audit, Audit, QAfterFilterCondition> auditTemplateIdLessThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'auditTemplateId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Audit, Audit, QAfterFilterCondition> auditTemplateIdBetween(
-    String? lower,
-    String? upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -452,76 +438,6 @@ extension AuditQueryFilter on QueryBuilder<Audit, Audit, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Audit, Audit, QAfterFilterCondition> auditTemplateIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'auditTemplateId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Audit, Audit, QAfterFilterCondition> auditTemplateIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'auditTemplateId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Audit, Audit, QAfterFilterCondition> auditTemplateIdContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'auditTemplateId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Audit, Audit, QAfterFilterCondition> auditTemplateIdMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'auditTemplateId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Audit, Audit, QAfterFilterCondition> auditTemplateIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'auditTemplateId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Audit, Audit, QAfterFilterCondition>
-      auditTemplateIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'auditTemplateId',
-        value: '',
       ));
     });
   }
@@ -1935,11 +1851,9 @@ extension AuditQueryWhereDistinct on QueryBuilder<Audit, Audit, QDistinct> {
     });
   }
 
-  QueryBuilder<Audit, Audit, QDistinct> distinctByAuditTemplateId(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Audit, Audit, QDistinct> distinctByAuditTemplateId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'auditTemplateId',
-          caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'auditTemplateId');
     });
   }
 
@@ -2030,7 +1944,7 @@ extension AuditQueryProperty on QueryBuilder<Audit, Audit, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Audit, String?, QQueryOperations> auditTemplateIdProperty() {
+  QueryBuilder<Audit, int?, QQueryOperations> auditTemplateIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'auditTemplateId');
     });
@@ -2110,17 +2024,17 @@ extension AuditQueryProperty on QueryBuilder<Audit, Audit, QQueryProperty> {
 _$_Audit _$$_AuditFromJson(Map<String, dynamic> json) => _$_Audit(
       auditId: json['AuditId'] as int?,
       auditTemplateName: json['AuditTemplateName'] as String?,
-      auditTemplateId: json['AuditTemplateId'] as String?,
+      auditTemplateId: json['AuditTemplateId'] as int?,
       compartmentName: json['CompartmentName'] as String?,
       compartmentId: json['CompartmentId'] as int?,
       siteName: json['SiteName'] as String?,
       siteId: json['SiteId'] as int?,
-      isActive: json['IsActive'] as bool?,
-      isLocal: json['IsLocal'] as bool?,
       completed: json['Completed'] as bool?,
-      status: json['Status'] as int?,
       createDT: json['CreateDT'] as String?,
       updateDT: json['UpdateDT'] as String?,
+      status: json['Status'] as int? ?? 1,
+      isActive: json['IsActive'] as bool? ?? true,
+      isLocal: json['IsLocal'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$$_AuditToJson(_$_Audit instance) => <String, dynamic>{
@@ -2131,10 +2045,10 @@ Map<String, dynamic> _$$_AuditToJson(_$_Audit instance) => <String, dynamic>{
       'CompartmentId': instance.compartmentId,
       'SiteName': instance.siteName,
       'SiteId': instance.siteId,
-      'IsActive': instance.isActive,
-      'IsLocal': instance.isLocal,
       'Completed': instance.completed,
-      'Status': instance.status,
       'CreateDT': instance.createDT,
       'UpdateDT': instance.updateDT,
+      'Status': instance.status,
+      'IsActive': instance.isActive,
+      'IsLocal': instance.isLocal,
     };
