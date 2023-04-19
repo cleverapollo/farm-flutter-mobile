@@ -4,6 +4,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_ch
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_circle_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
@@ -251,22 +252,29 @@ class _SideDetailsWidget extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         color: context.colors.white,
         child: Column(
-          children: const [
-            CmoTextField(
+          children: [
+            const CmoTextField(
               hintText: 'Site Name',
             ),
-            SizedBox(height: 12),
-            CmoTextField(
+            const SizedBox(height: 12),
+            const CmoTextField(
               hintText: 'Town',
             ),
-            SizedBox(height: 12),
-            CmoDropDownLayoutWidget(title: 'Province'),
-            SizedBox(height: 12),
-            CmoDropDownLayoutWidget(title: 'Site Location', showTick: true),
-            SizedBox(height: 12),
-            CmoDropDownLayoutWidget(title: 'Compartment/s', showTick: true),
-            SizedBox(height: 12),
-            CmoDropDownLayoutWidget(title: 'ASI'),
+            const SizedBox(height: 12),
+            const CmoDropDownLayoutWidget(title: 'Province'),
+            const SizedBox(height: 12),
+            const CmoDropDownLayoutWidget(
+                title: 'Site Location', showTick: true),
+            const SizedBox(height: 12),
+            const CmoDropDownLayoutWidget(
+                title: 'Compartment/s', showTick: true),
+            const SizedBox(height: 12),
+            CmoDropDownLayoutWidget(
+              title: 'ASI',
+              onTap: () {
+                ASIScreen.push(context);
+              },
+            ),
           ],
         ),
       ),
