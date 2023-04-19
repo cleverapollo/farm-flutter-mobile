@@ -8,16 +8,19 @@ class CmoCard extends StatelessWidget {
     this.content = const [],
     this.shouldShowArrowRight = true,
     this.margin = const EdgeInsets.all(0),
+    this.padding = EdgeInsets.zero,
   });
 
   final List<Widget> content;
   final bool shouldShowArrowRight;
   final EdgeInsetsGeometry margin;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: margin,
+      padding: padding,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: context.colors.blueDark1,
@@ -61,14 +64,18 @@ class CmoCardHeader extends StatelessWidget {
   const CmoCardHeader({
     super.key,
     required this.title,
+    this.maxLines = 1,
   });
 
   final String title;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
     return Text(
       title,
+      maxLines: maxLines,
+      overflow: TextOverflow.ellipsis,
       style: context.textStyles.bodyBold.white,
     );
   }
@@ -134,6 +141,52 @@ class CmoCardItemHighlighted extends StatelessWidget {
               value,
               style: context.textStyles.bodyNormal
                   .copyWith(color: context.colors.yellow),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class CmoCardItemWithIcon extends StatelessWidget {
+  const CmoCardItemWithIcon({
+    super.key,
+    this.title,
+    required this.icon,
+  });
+
+  final String? title;
+
+  final SvgGenImage icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: Center(
+                child: icon.svg(
+                  width: 15,
+                  height: 15,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 18,
+            ),
+            Expanded(
+              child: Text(
+                title ?? '',
+                textAlign: TextAlign.start,
+                style: context.textStyles.bodyNormal.white,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         );

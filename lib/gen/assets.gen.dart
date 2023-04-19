@@ -25,6 +25,10 @@ class $AssetsIconsGen {
   SvgGenImage get icArrowRight =>
       const SvgGenImage('assets/icons/ic_arrow_right.svg');
 
+  /// File path: assets/icons/ic_call_blue.svg
+  SvgGenImage get icCallBlue =>
+      const SvgGenImage('assets/icons/ic_call_blue.svg');
+
   /// File path: assets/icons/ic_camera.svg
   SvgGenImage get icCamera => const SvgGenImage('assets/icons/ic_camera.svg');
 
@@ -37,12 +41,18 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_drawer.svg
   SvgGenImage get icDrawer => const SvgGenImage('assets/icons/ic_drawer.svg');
 
+  /// File path: assets/icons/ic_home.svg
+  SvgGenImage get icHome => const SvgGenImage('assets/icons/ic_home.svg');
+
   /// File path: assets/icons/ic_lang.svg
   SvgGenImage get icLang => const SvgGenImage('assets/icons/ic_lang.svg');
 
   /// File path: assets/icons/ic_location.svg
   SvgGenImage get icLocation =>
       const SvgGenImage('assets/icons/ic_location.svg');
+
+  /// File path: assets/icons/ic_mail.svg
+  SvgGenImage get icMail => const SvgGenImage('assets/icons/ic_mail.svg');
 
   /// File path: assets/icons/ic_pan.svg
   SvgGenImage get icPan => const SvgGenImage('assets/icons/ic_pan.svg');
@@ -51,11 +61,18 @@ class $AssetsIconsGen {
   SvgGenImage get icPassword =>
       const SvgGenImage('assets/icons/ic_password.svg');
 
+  /// File path: assets/icons/ic_profile.svg
+  SvgGenImage get icProfile => const SvgGenImage('assets/icons/ic_profile.svg');
+
   /// File path: assets/icons/ic_refresh.svg
   SvgGenImage get icRefresh => const SvgGenImage('assets/icons/ic_refresh.svg');
 
   /// File path: assets/icons/ic_search.svg
   SvgGenImage get icSearch => const SvgGenImage('assets/icons/ic_search.svg');
+
+  /// File path: assets/icons/ic_sms_blue.svg
+  SvgGenImage get icSmsBlue =>
+      const SvgGenImage('assets/icons/ic_sms_blue.svg');
 
   /// File path: assets/icons/ic_tick.svg
   SvgGenImage get icTick => const SvgGenImage('assets/icons/ic_tick.svg');
@@ -75,16 +92,21 @@ class $AssetsIconsGen {
         icAdd,
         icArrowLeft,
         icArrowRight,
+        icCallBlue,
         icCamera,
         icClose,
         icComment,
         icDrawer,
+        icHome,
         icLang,
         icLocation,
+        icMail,
         icPan,
         icPassword,
+        icProfile,
         icRefresh,
         icSearch,
+        icSmsBlue,
         icTick,
         icUser,
         icUsername,

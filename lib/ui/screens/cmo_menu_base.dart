@@ -11,6 +11,7 @@ import 'package:cmo/ui/screens/behave/assessment/assessment_add_screen.dart';
 import 'package:cmo/ui/screens/behave/create_worker/worker_add_screen.dart';
 import 'package:cmo/ui/screens/onboarding/login/login_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/create_new_stake_holder_screen.dart';
 import 'package:cmo/ui/screens/setting/legal/legal_screen.dart';
 import 'package:cmo/ui/screens/setting/settings_screen.dart';
 import 'package:cmo/ui/screens/setting/support/support_screen.dart';
@@ -104,9 +105,15 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
         const SizedBox(height: 7),
         const _Divider(),
         buildHeader(context, title: LocaleKeys.stakeholders.tr()),
-        buildOption(
-          context,
-          title: LocaleKeys.createNewStakeholder.tr(),
+        CmoTappable(
+          onTap: () {
+            if (context.mounted) Navigator.of(context).pop();
+            CreateNewStakeHolderScreen.push(context);
+          },
+          child: buildOption(
+            context,
+            title: LocaleKeys.createNewStakeholder.tr(),
+          ),
         ),
       ],
     );

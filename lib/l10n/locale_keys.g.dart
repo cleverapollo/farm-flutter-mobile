@@ -211,5 +211,7 @@ abstract class  LocaleKeys {
   static const removeAssessmentAlertContent = 'removeAssessmentAlertContent';
   static const ok = 'ok';
   static const cancel = 'cancel';
-
+  static const enter = 'enter';
+  static const type = 'type';
+  static const select = 'select';
 }

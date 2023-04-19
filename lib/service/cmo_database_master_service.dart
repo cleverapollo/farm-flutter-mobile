@@ -52,6 +52,7 @@ class CmoDatabaseMasterService {
         QuestionCommentSchema,
         AssessmentSchema,
         QuestionPhotoSchema,
+        StakeHolderSchema,
       ],
       name: _databaseName,
     );
@@ -506,6 +507,11 @@ class CmoDatabaseMasterService {
     return db.workers.put(item);
   }
 
+  Future<int> cacheStakeHolder(StakeHolder item) async {
+    final db = await _db();
+    return db.stakeHolders.put(item);
+  }
+
   Future<Worker?> getWorkerById(String? id) async {
     if (id == null) return null;
     final db = await _db();
@@ -515,6 +521,11 @@ class CmoDatabaseMasterService {
   Future<List<Worker>> getWorkers() async {
     final db = await _db();
     return db.workers.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<StakeHolder>> getStakeHolders() async {
+    final db = await _db();
+    return db.stakeHolders.filter().isActiveEqualTo(true).findAll();
   }
 
   Future<List<Worker>> getWorkersByCompanyId(int companyId) async {

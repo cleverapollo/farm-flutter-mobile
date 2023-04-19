@@ -20,6 +20,7 @@ class CmoTextField extends StatelessWidget {
     this.maxLines = 1,
     this.autofocus = false,
     this.focusNode,
+    this.inputDecoration,
   });
 
   final Widget? prefixIcon;
@@ -52,6 +53,8 @@ class CmoTextField extends StatelessWidget {
 
   final FocusNode? focusNode;
 
+  final InputDecoration? inputDecoration;
+
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
@@ -67,7 +70,7 @@ class CmoTextField extends StatelessWidget {
       onEditingComplete: onEditingComplete,
       textInputAction: textInputAction,
       scrollPadding: const EdgeInsets.only(bottom: 100),
-      decoration: InputDecoration(
+      decoration: inputDecoration ?? InputDecoration(
         contentPadding: const EdgeInsets.all(8),
         prefixIconConstraints: BoxConstraints.tight(const Size(56, 38)),
         prefixIcon: prefixIcon != null ? Center(child: prefixIcon) : null,
