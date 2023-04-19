@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/compartments/compartment_detail_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
@@ -130,9 +131,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
           CmoFilledButton(
             title: LocaleKeys.next.tr(),
             onTap: _isFinished
-                ? () {
-                    print("Submit location");
-                  }
+                ? () => CompartmentDetailScreen.push(context)
                 : null,
           ),
           const SizedBox(height: 20),
