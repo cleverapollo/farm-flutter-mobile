@@ -1,3 +1,4 @@
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_questions_screen.dart';
@@ -6,9 +7,14 @@ import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:flutter/material.dart';
 
 class DismissibleAuditItem extends StatelessWidget {
-  final Audit audit;
+  const DismissibleAuditItem({
+    super.key,
+    required this.audit,
+    required this.onRemove,
+  });
 
-  const DismissibleAuditItem(this.audit);
+  final Audit audit;
+  final VoidCallback onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +25,7 @@ class DismissibleAuditItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 12.0),
         child: Dismissible(
-          key: Key('item'),
-          onDismissed: (direction) {
-            showSnackSuccess(
-              msg: '${LocaleKeys.createNewStakeholder.tr()} dismissible!',
-            );
-
-            Navigator.of(context).pop();
-          },
+          key: Key(audit.id.toString()),
           direction: DismissDirection.endToStart,
           confirmDismiss: (test) async {
             final shouldRemoved = await showDefaultAlert(
@@ -35,15 +34,13 @@ class DismissibleAuditItem extends StatelessWidget {
               content: LocaleKeys.removeAuditAlertContent.tr(),
               actions: <Widget>[
                 TextButton(
-                  child:
-                  Text(LocaleKeys.ok.tr().toUpperCase()),
+                  child: Text(LocaleKeys.ok.tr().toUpperCase()),
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
                 ),
                 TextButton(
-                  child: Text(
-                      LocaleKeys.cancel.tr().toUpperCase()),
+                  child: Text(LocaleKeys.cancel.tr().toUpperCase()),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -53,7 +50,8 @@ class DismissibleAuditItem extends StatelessWidget {
             if (shouldRemoved != true) {
               return;
             }
-            // onRemovingCallback?.call(data);
+
+            onRemove();
           },
           background: Container(
             color: context.colors.red,
@@ -68,19 +66,18 @@ class DismissibleAuditItem extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CmoCardHeader(title: 'Imbeza'),
+                  CmoCardHeader(title: audit.compartmentName ?? ''),
                   CmoCardHeader(
-                    title: '${LocaleKeys.created.tr()}: 8-12-2022',
+                    title: '${LocaleKeys.created.tr()}: ${DateTime.tryParse(audit.createDT ?? '').ddMMYyyy()}',
                   ),
                 ],
               ),
               Text(
-                'Internal audit checklist',
+                audit.auditTemplateName ?? '',
                 style: context.textStyles.bodyNormal.white,
               ),
-
               Text(
-                'Plantations Zimbabwe',
+                audit.siteName ?? '',
                 style: context.textStyles.bodyNormal.white,
               ),
             ],

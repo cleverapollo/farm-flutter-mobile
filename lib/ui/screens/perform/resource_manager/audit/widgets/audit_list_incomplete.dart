@@ -1,3 +1,4 @@
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/audit_list_cubit/audit_list_cubit.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,12 +58,12 @@ class _AuditListIncompleteState extends State<AuditListIncomplete> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (BuildContext context, int index) {
               final item = state.dataIncomplete[index];
-              return DismissibleAuditItem(item);
-              // return AssessmentTile(
-              //   data: item,
-              //   onRemovingCallback: (item) async =>
-              //       context.read<AssessmentListCubit>().removeAssessment(item),
-              // );
+              return DismissibleAuditItem(
+                audit: item,
+                onRemove: () async {
+                  await context.read<AuditListCubit>().removeAudit(item);
+                },
+              );
             },
           ),
         );

@@ -1,5 +1,5 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/model/assessment.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -17,12 +17,7 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
     emit(state.copyWith(loadingIncomplete: true));
     try {
       final service = cmoDatabaseService;
-      // final data = await service.getAllAssessmentsStarted();
-      final data = <Audit>[
-        Audit(auditId: DateTime.now().millisecondsSinceEpoch, compartmentName: 'compartmentName', createTime: DateTime.now(), siteName: 'siteName'),
-        Audit(auditId: DateTime.now().millisecondsSinceEpoch, compartmentName: 'compartmentName', createTime: DateTime.now(), siteName: 'siteName'),
-        Audit(auditId: DateTime.now().millisecondsSinceEpoch, compartmentName: 'compartmentName', createTime: DateTime.now(), siteName: 'siteName'),
-      ];
+      final data = await service.getAllAuditsIncomplete();
       emit(state.copyWith(dataIncomplete: data));
     } catch (e) {
       emit(state.copyWith(error: e));
@@ -36,12 +31,7 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
     emit(state.copyWith(loadingCompleted: true));
     try {
       final service = cmoDatabaseService;
-      // final data = await service.getAllAssessmentsCompleted();
-      final data = <Audit>[
-        Audit(auditId: DateTime.now().millisecondsSinceEpoch, compartmentName: 'compartmentName', createTime: DateTime.now(), siteName: 'siteName'),
-        Audit(auditId: DateTime.now().millisecondsSinceEpoch, compartmentName: 'compartmentName', createTime: DateTime.now(), siteName: 'siteName'),
-        Audit(auditId: DateTime.now().millisecondsSinceEpoch, compartmentName: 'compartmentName', createTime: DateTime.now(), siteName: 'siteName'),
-      ];
+      final data = await service.getAllAuditsCompleted();
       emit(state.copyWith(dataCompleted: data));
     } catch (e) {
       emit(state.copyWith(error: e));
@@ -55,12 +45,7 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
     emit(state.copyWith(loadingSynced: true));
     try {
       final service = cmoDatabaseService;
-      // final data = await service.getAllAssessmentsSynced();
-      final data = <Audit>[
-        Audit(auditId: DateTime.now().millisecondsSinceEpoch, compartmentName: 'compartmentName', createTime: DateTime.now(), siteName: 'siteName'),
-        Audit(auditId: DateTime.now().millisecondsSinceEpoch, compartmentName: 'compartmentName', createTime: DateTime.now(), siteName: 'siteName'),
-        Audit(auditId: DateTime.now().millisecondsSinceEpoch, compartmentName: 'compartmentName', createTime: DateTime.now(), siteName: 'siteName'),
-      ];
+      final data = await service.getAllAuditsSynced();
       emit(state.copyWith(dataSynced: data));
     } catch (e) {
       emit(state.copyWith(error: e));
@@ -72,7 +57,17 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
 
   Future<void> removeAudit(Audit item) async {
     await cmoDatabaseService.removeAssessment(item.auditId!);
-    return loadIncomplete();
+    showSnackSuccess(
+      msg: '${LocaleKeys.removeAudit.tr()} ${item.auditId}!',
+    );
+
+    return refresh();
+  }
+
+  Future<void> refresh() async {
+    await loadIncomplete();
+    await loadCompleted();
+    await loadSynced();
   }
 
   @override

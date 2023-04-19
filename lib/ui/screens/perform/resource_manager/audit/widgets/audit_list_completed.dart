@@ -1,3 +1,4 @@
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/foundation.dart';
@@ -56,8 +57,12 @@ class _AuditListCompletedState extends State<AuditListCompleted> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (BuildContext context, int index) {
               final item = state.dataCompleted[index];
-              return DismissibleAuditItem(item);
-              // return AssessmentTile(data: item);
+              return DismissibleAuditItem(
+                audit: item,
+                onRemove: () async {
+                  await context.read<AuditListCubit>().removeAudit(item);
+                },
+              );
             },
           ),
         );
