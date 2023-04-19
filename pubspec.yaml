@@ -46,7 +46,7 @@ dependencies:
   sembast: ^3.4.1+1
   sembast_sqflite: ^2.1.0+1
   sqflite: ^2.2.6
-  syncfusion_flutter_signaturepad: ^21.1.35
+  syncfusion_flutter_signaturepad: ^21.1.41
   url_launcher: ^6.1.9
   very_good_analysis: ^4.0.0+1
   hand_signature: ^3.0.1
