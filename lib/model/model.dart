@@ -32,3 +32,8 @@ export 'user_device.dart';
 export 'user_info.dart';
 export 'stake_holder.dart';
 export 'audit.dart';
+export 'data/principle.dart';
+export 'data/indicator.dart';
+export 'data/car.dart';
+export 'data/criteria.dart';
+export 'data/audit_question.dart';

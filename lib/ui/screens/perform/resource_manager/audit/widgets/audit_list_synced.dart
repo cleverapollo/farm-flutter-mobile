@@ -55,7 +55,7 @@ class _AuditListSyncedState extends State<AuditListSynced> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (BuildContext context, int index) {
               final item = state.dataSynced[index];
-              return DismissibleAuditItem();
+              return DismissibleAuditItem(item);
               // return AssessmentTile(data: item);
             },
           ),

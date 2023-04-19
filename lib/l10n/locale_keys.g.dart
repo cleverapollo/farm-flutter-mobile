@@ -21,6 +21,7 @@ abstract class  LocaleKeys {
   static const assessments = 'assessments';
   static const auditTemplate = 'auditTemplate';
   static const audit_s = 'audit_s';
+  static const audit = 'audit';
   static const audits = 'audits';
   static const budget = 'budget';
   static const budgetName = 'budgetName';

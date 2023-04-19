@@ -57,7 +57,7 @@ class _AuditListIncompleteState extends State<AuditListIncomplete> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (BuildContext context, int index) {
               final item = state.dataIncomplete[index];
-              return DismissibleAuditItem();
+              return DismissibleAuditItem(item);
               // return AssessmentTile(
               //   data: item,
               //   onRemovingCallback: (item) async =>

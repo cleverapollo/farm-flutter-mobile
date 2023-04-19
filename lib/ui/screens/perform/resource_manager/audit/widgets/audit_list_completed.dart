@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'dismissible_audit_item.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/dismissible_audit_item.dart';
 
 class AuditListCompleted extends StatefulWidget {
   const AuditListCompleted({super.key});
@@ -56,7 +56,7 @@ class _AuditListCompletedState extends State<AuditListCompleted> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (BuildContext context, int index) {
               final item = state.dataCompleted[index];
-              return DismissibleAuditItem();
+              return DismissibleAuditItem(item);
               // return AssessmentTile(data: item);
             },
           ),

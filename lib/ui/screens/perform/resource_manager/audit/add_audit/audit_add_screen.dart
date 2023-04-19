@@ -132,6 +132,17 @@ class _AuditAddScreen extends State<AuditAddScreen> {
     );
   }
 
+  InputDecoration _buildInputDecoration(String hintText) {
+    return InputDecoration(
+      contentPadding: const EdgeInsets.all(8),
+      isDense: true,
+      hintText: '${LocaleKeys.select.tr()} ${hintText.toLowerCase()}',
+      hintStyle: context.textStyles.bodyNormal.grey,
+      border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
+      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
+    );
+  }
+
   Widget _selectCompartmentDropdown() {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -144,14 +155,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
         CmoDropdown(
           name: 'compartment',
           validator: requiredValidator,
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            isDense: true,
-            hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.compartment.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
-          ),
+          inputDecoration: _buildInputDecoration(LocaleKeys.compartment.tr()),
           itemsData: [
             CmoDropdownItem(id: 1, name: 'None'),
           ],
@@ -172,14 +176,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
         CmoDropdown(
           name: 'site',
           validator: requiredValidator,
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            isDense: true,
-            hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.site.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
-          ),
+          inputDecoration: _buildInputDecoration(LocaleKeys.site.tr()),
           itemsData: [
             CmoDropdownItem(id: 1, name: 'None'),
           ],
@@ -200,14 +197,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
         CmoDropdown(
           name: 'auditTemplate',
           validator: requiredValidator,
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            isDense: true,
-            hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.auditTemplate.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
-          ),
+          inputDecoration: _buildInputDecoration(LocaleKeys.auditTemplate.tr()),
           itemsData: [
             CmoDropdownItem(id: 1, name: 'None'),
           ],

@@ -215,5 +215,6 @@
   "cancel": "cancel",
   "enter": "Enter",
   "type": "Type",
-  "select": "Select"
+  "select": "Select",
+  "audit": "Audit"
 }
