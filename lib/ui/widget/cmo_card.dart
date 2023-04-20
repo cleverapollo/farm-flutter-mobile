@@ -9,12 +9,16 @@ class CmoCard extends StatelessWidget {
     this.shouldShowArrowRight = true,
     this.margin = const EdgeInsets.all(0),
     this.padding = EdgeInsets.zero,
+    this.trailing,
+    this.containerGradient,
   });
 
   final List<Widget> content;
   final bool shouldShowArrowRight;
   final EdgeInsetsGeometry margin;
   final EdgeInsets padding;
+  final Widget? trailing;
+  final Gradient? containerGradient;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,8 @@ class CmoCard extends StatelessWidget {
       padding: padding,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: context.colors.blueDark1,
+          gradient: containerGradient,
+          color: containerGradient == null ? context.colors.blueDark1 : null,
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
@@ -49,7 +54,7 @@ class CmoCard extends StatelessWidget {
             ),
             if (shouldShowArrowRight) ...[
               const SizedBox(width: 12),
-              Assets.icons.icArrowRight.svgWhite,
+              trailing ?? Assets.icons.icArrowRight.svgWhite,
               const SizedBox(width: 6),
             ],
             const SizedBox(width: 6),

@@ -861,6 +861,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  maps_toolkit:
+    dependency: "direct main"
+    description:
+      name: maps_toolkit
+      sha256: "7771cd4d1afb1849be0c7d546b4e38330efc8573c7ee6c41d5e1ab62458c5b3d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   matcher:
     dependency: transitive
     description:
@@ -1262,18 +1270,18 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: "6c704aa944ae5dfc4ae7c473d52eba551acfa39fff277bae3cb355cdb2457f76"
+      sha256: "05b079cb1be26a8d5c1afe714172d2eed9178049f4a7dc773b2cbb8b053eff8d"
       url: "https://pub.dev"
     source: hosted
-    version: "21.1.35"
+    version: "21.1.41"
   syncfusion_flutter_signaturepad:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_signaturepad
-      sha256: "4660c8f80d1261c10ff1e43d95c155613703e827c758ec044242e126fa5d740d"
+      sha256: "9987db91561cdb12e1669a9ed8692a905c7875485976140e0323a193073e5266"
       url: "https://pub.dev"
     source: hosted
-    version: "21.1.35"
+    version: "21.1.41"
   synchronized:
     dependency: transitive
     description:

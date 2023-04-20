@@ -14,6 +14,9 @@ import 'package:flutter/services.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/ic_accept.svg
+  SvgGenImage get icAccept => const SvgGenImage('assets/icons/ic_accept.svg');
+
   /// File path: assets/icons/ic_add.svg
   SvgGenImage get icAdd => const SvgGenImage('assets/icons/ic_add.svg');
 
@@ -37,6 +40,9 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/ic_comment.svg
   SvgGenImage get icComment => const SvgGenImage('assets/icons/ic_comment.svg');
+
+  /// File path: assets/icons/ic_down.svg
+  SvgGenImage get icDown => const SvgGenImage('assets/icons/ic_down.svg');
 
   /// File path: assets/icons/ic_drawer.svg
   SvgGenImage get icDrawer => const SvgGenImage('assets/icons/ic_drawer.svg');
@@ -89,6 +95,7 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
+        icAccept,
         icAdd,
         icArrowLeft,
         icArrowRight,
@@ -96,6 +103,7 @@ class $AssetsIconsGen {
         icCamera,
         icClose,
         icComment,
+        icDown,
         icDrawer,
         icHome,
         icLang,
