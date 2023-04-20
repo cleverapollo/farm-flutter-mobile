@@ -28,7 +28,7 @@ class ASIScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CmoTappable(
-                  onTap: () => WorkerAddScreen.push(context),
+                  onTap: () {},
                   child: const CmoCard(
                     content: [
                       CmoCardHeader(title: 'Summary'),
@@ -40,7 +40,7 @@ class ASIScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CmoTappable(
-                  onTap: () => WorkerAddScreen.push(context),
+                  onTap: () {},
                   child: const CmoCard(
                     content: [
                       CmoCardHeader(title: 'ASI Type'),

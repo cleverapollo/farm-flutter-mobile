@@ -1,16 +1,31 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
 
-class ASIDetailScreen extends StatelessWidget {
-  const ASIDetailScreen({super.key});
+class ASIDetailScreen extends StatefulWidget {
+  const ASIDetailScreen({super.key, required this.lat, required this.lng});
 
-  static Future<void> push(BuildContext context) {
-    return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const ASIDetailScreen()));
+  final double lat;
+  final double lng;
+
+  static Future<void> push(BuildContext context,
+      {required double lat, required double lng}) {
+    return Navigator.push(context,
+        MaterialPageRoute(builder: (_) => ASIDetailScreen(lat: lat, lng: lng)));
   }
+
+  @override
+  State<ASIDetailScreen> createState() => _ASIDetailScreenState();
+}
+
+class _ASIDetailScreenState extends State<ASIDetailScreen> {
+  String currentDate = '';
 
   @override
   Widget build(BuildContext context) {
@@ -23,37 +38,66 @@ class ASIDetailScreen extends StatelessWidget {
       body: SizedBox.expand(
         child: ColoredBox(
           color: context.colors.white,
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                child: CmoDropDownLayoutWidget(title: 'Compartment'),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                child: CmoDropDownLayoutWidget(title: 'Type'),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                child: CmoDropDownLayoutWidget(title: 'Lat | Long'),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                child: CmoDropDownLayoutWidget(
-                  title: 'Date',
-                  trailingWidget: Icon(Icons.date_range_sharp),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
+                  child: CmoDropDownLayoutWidget(title: 'Compartment'),
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                child: CmoTextField(hintText: 'Comments', maxLines: 5),
-              ),
-              const Spacer(),
-              Align(
-                child: CmoFilledButton(title: 'Save', onTap: () {}),
-              ),
-              const SizedBox(height: 20),
-            ],
+                const Padding(
+                  padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
+                  child: CmoDropDownLayoutWidget(
+                    title: 'Type',
+                    subTitle: 'Grate Site 1',
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
+                  child: CmoDropDownLayoutWidget(
+                    title: 'Lat | Long',
+                    subTitle:
+                        '${widget.lat.toStringAsFixed(5)} | ${widget.lng.toStringAsFixed(5)}',
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
+                  child: CmoDropDownLayoutWidget(
+                    onTap: () async {
+                      final result = await DatePicker.showDatePicker(context,
+                          showTitleActions: true,
+                          minTime: DateTime(2018, 3, 5),
+                          maxTime: DateTime(2019, 6, 7),
+                          onChanged: (date) {},
+                          onConfirm: (date) {},
+                          currentTime: DateTime.now());
+
+                      final format = DateFormat('dd mm yyyy');
+
+                      currentDate = format.format(result ?? DateTime.now());
+                      if (mounted) setState(() {});
+                    },
+                    title: 'Date',
+                    subTitle: 'Date $currentDate',
+                    trailingWidget: const Icon(Icons.date_range_sharp),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
+                  child: CmoTextField(hintText: 'Comments', maxLines: 5),
+                ),
+                const SizedBox(height: 300),
+                Align(
+                  child: CmoFilledButton(
+                      title: 'Save',
+                      onTap: () {
+                        AddMemberScreen.push(context);
+                      }),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
