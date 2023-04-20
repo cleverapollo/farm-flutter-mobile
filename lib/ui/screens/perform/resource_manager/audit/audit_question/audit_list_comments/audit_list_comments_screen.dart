@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -7,6 +10,7 @@ import 'package:cmo/utils/validator.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AuditListCommentScreen extends StatefulWidget {
   const AuditListCommentScreen({
@@ -38,7 +42,14 @@ class AuditListCommentScreen extends StatefulWidget {
 }
 
 class _AuditListCommentScreenState extends State<AuditListCommentScreen> {
+  Timer? _debounceInputTimer;
+
   late AuditQuestion auditQuestion;
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  String commentValue = '';
+  String rejectReason = '';
+  int rejectId = -1;
 
   @override
   void initState() {
@@ -58,7 +69,6 @@ class _AuditListCommentScreenState extends State<AuditListCommentScreen> {
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
-
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
@@ -91,7 +101,15 @@ class _AuditListCommentScreenState extends State<AuditListCommentScreen> {
         persistentFooterAlignment: AlignmentDirectional.center,
         persistentFooterButtons: [
           CmoFilledButton(
-            onTap: Navigator.of(context).pop,
+            onTap: () {
+              context.read<AuditListQuestionsCubit>().addComment(
+                    rejectId: rejectId,
+                    rejectReason: rejectReason,
+                    questionId: widget.questionId,
+                    commentValue: commentValue,
+                  );
+              Navigator.of(context).pop();
+            },
             title: LocaleKeys.save.tr(),
           ),
         ],
@@ -116,21 +134,52 @@ class _AuditListCommentScreenState extends State<AuditListCommentScreen> {
           LocaleKeys.reason.tr(),
           style: context.textStyles.bodyBold.black,
         ),
-        CmoDropdown(
-          name: 'reason',
-          validator: requiredValidator,
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            isDense: true,
-            hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.reason.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
-          ),
-          itemsData: [
-            CmoDropdownItem(id: 1, name: 'None'),
-          ],
-        ),
+        BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, List<RejectReason>>(
+          selector: (state) {
+            return state.rejectReasons;
+          },
+          builder: (context, rejectReasons) {
+            return CmoDropdown(
+              name: 'rejectId',
+              hintText: LocaleKeys.reason.tr(),
+              validator: requiredValidator,
+              inputDecoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(8),
+                isDense: true,
+                hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.reason.tr().toLowerCase()}',
+                hintStyle: context.textStyles.bodyNormal.grey,
+                border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
+                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
+              ),
+              onChanged: (int? id) {
+                if (id == -1) {
+                  _formKey.currentState!.fields['reasonId']?.reset();
+                }
+
+                setState(() {
+                  final reason = rejectReasons.firstWhereOrNull((element) => element.rejectReasonId == id)?.rejectReasonName;
+                  rejectReason = reason ?? LocaleKeys.reason.tr();
+                  rejectId = id ?? -1;
+                });
+              },
+              itemsData: rejectReasons
+                  .map(
+                    (e) => CmoDropdownItem(
+                      id: e.rejectReasonId,
+                      name: e.rejectReasonName ?? '',
+                    ),
+                  )
+                  .toList()
+                ..insert(
+                  0,
+                  CmoDropdownItem(
+                    id: -1,
+                    name: LocaleKeys.reason.tr(),
+                  ),
+                ),
+            );
+          },
+        )
       ],
     );
   }
@@ -152,7 +201,15 @@ class _AuditListCommentScreenState extends State<AuditListCommentScreen> {
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
         ),
-        onChanged: (text) {},
+        onChanged: (text) {
+          _debounceInputTimer?.cancel();
+          _debounceInputTimer = Timer(
+            const Duration(milliseconds: 200),
+            () => setState(() {
+              commentValue = text;
+            }),
+          );
+        },
       ),
     );
   }

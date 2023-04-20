@@ -51,7 +51,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     });
   }
 
-  Future<void> _viewListComment({
+  Future<void> _viewComment({
     required int? questionId,
     required AuditQuestion auditQuestion,
   }) async {
@@ -124,7 +124,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AuditListQuestionsCubit>().state;
-    final allQuestions = context.watch<AuditListQuestionsCubit>().getFilteredQuestions();
+    final filterQuestions = context.watch<AuditListQuestionsCubit>().getFilteredQuestions();
 
     return Scaffold(
       appBar: CmoAppBar(
@@ -204,9 +204,9 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
           ),
           Expanded(
             child: ListView.separated(
-              itemCount: allQuestions.length,
+              itemCount: filterQuestions.length,
               itemBuilder: (context, index) {
-                final question = allQuestions[index];
+                final question = filterQuestions[index];
                 final answer = context
                     .watch<AuditListQuestionsCubit>()
                     .getAnswerByQuestionId(question.questionId);
@@ -226,8 +226,8 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                       questionId: question.questionId,
                     );
                   },
-                  viewListComment: () {
-                    _viewListComment(
+                  viewComment: () {
+                    _viewComment(
                       questionId: question.questionId,
                       auditQuestion: question,
                     );

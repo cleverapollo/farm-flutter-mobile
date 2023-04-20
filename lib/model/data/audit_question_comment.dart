@@ -11,7 +11,7 @@ class AuditQuestionComment with _$AuditQuestionComment {
   const AuditQuestionComment._();
 
   @override
-  Id get id => answerId ?? Isar.autoIncrement;
+  Id get id => answerId;
 
   const factory AuditQuestionComment({
     @JsonKey(name: 'AnswerId') required int answerId,
@@ -19,17 +19,8 @@ class AuditQuestionComment with _$AuditQuestionComment {
     @JsonKey(name: 'AuditId') required int auditId,
     @JsonKey(name: 'QuestionId') int? questionId,
     @JsonKey(name: 'Comment') String? comment,
+    @JsonKey(name: 'RejectReason') String? rejectReason,
+    @JsonKey(name: 'RejectId') int? rejectId,
   }) = _AuditQuestionComment;
-
   factory AuditQuestionComment.fromJson(Map<String, dynamic> json) => _$AuditQuestionCommentFromJson(json);
-
-  factory AuditQuestionComment.generateMockData() {
-    return AuditQuestionComment(
-      answerId: DateTime.now().millisecondsSinceEpoch,
-      auditId: DateTime.now().millisecondsSinceEpoch,
-      questionId: DateTime.now().millisecondsSinceEpoch,
-      commentId: DateTime.now().millisecondsSinceEpoch,
-      comment: 'comment',
-    );
-  }
 }

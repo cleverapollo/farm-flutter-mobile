@@ -20,21 +20,10 @@ class AuditQuestionAnswer with _$AuditQuestionAnswer {
     @JsonKey(name: 'ComplianceName') String? complianceName,
     @JsonKey(name: 'ComplianceId') int? complianceId,
     @JsonKey(name: 'RejectReasonId') int? rejectReasonId,
+    @JsonKey(name: 'RejectReasonName') String? rejectReasonName,
     @Default(true)
     @JsonKey(name: 'IsActive') bool? isActive,
-    @Default(false)
-    @JsonKey(name: 'IsQuestionComplete') bool? isQuestionComplete,
   }) = _AuditQuestionAnswer;
 
   factory AuditQuestionAnswer.fromJson(Map<String, dynamic> json) => _$AuditQuestionAnswerFromJson(json);
-
-  factory AuditQuestionAnswer.generateMockData() {
-    return AuditQuestionAnswer(
-      auditId: DateTime.now().millisecondsSinceEpoch,
-      complianceId: -1,
-      complianceName: 'compliance name',
-      questionId: DateTime.now().millisecondsSinceEpoch,
-      answerId: DateTime.now().millisecondsSinceEpoch,
-    );
-  }
 }

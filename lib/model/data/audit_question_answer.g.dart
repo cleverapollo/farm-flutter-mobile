@@ -43,20 +43,20 @@ const AuditQuestionAnswerSchema = CollectionSchema(
       name: r'isActive',
       type: IsarType.bool,
     ),
-    r'isQuestionComplete': PropertySchema(
-      id: 5,
-      name: r'isQuestionComplete',
-      type: IsarType.bool,
-    ),
     r'questionId': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'questionId',
       type: IsarType.long,
     ),
     r'rejectReasonId': PropertySchema(
-      id: 7,
+      id: 6,
       name: r'rejectReasonId',
       type: IsarType.long,
+    ),
+    r'rejectReasonName': PropertySchema(
+      id: 7,
+      name: r'rejectReasonName',
+      type: IsarType.string,
     )
   },
   estimateSize: _auditQuestionAnswerEstimateSize,
@@ -85,6 +85,12 @@ int _auditQuestionAnswerEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  {
+    final value = object.rejectReasonName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -99,9 +105,9 @@ void _auditQuestionAnswerSerialize(
   writer.writeLong(offsets[2], object.complianceId);
   writer.writeString(offsets[3], object.complianceName);
   writer.writeBool(offsets[4], object.isActive);
-  writer.writeBool(offsets[5], object.isQuestionComplete);
-  writer.writeLong(offsets[6], object.questionId);
-  writer.writeLong(offsets[7], object.rejectReasonId);
+  writer.writeLong(offsets[5], object.questionId);
+  writer.writeLong(offsets[6], object.rejectReasonId);
+  writer.writeString(offsets[7], object.rejectReasonName);
 }
 
 AuditQuestionAnswer _auditQuestionAnswerDeserialize(
@@ -116,9 +122,9 @@ AuditQuestionAnswer _auditQuestionAnswerDeserialize(
     complianceId: reader.readLongOrNull(offsets[2]),
     complianceName: reader.readStringOrNull(offsets[3]),
     isActive: reader.readBoolOrNull(offsets[4]),
-    isQuestionComplete: reader.readBoolOrNull(offsets[5]),
-    questionId: reader.readLongOrNull(offsets[6]),
-    rejectReasonId: reader.readLongOrNull(offsets[7]),
+    questionId: reader.readLongOrNull(offsets[5]),
+    rejectReasonId: reader.readLongOrNull(offsets[6]),
+    rejectReasonName: reader.readStringOrNull(offsets[7]),
   );
   return object;
 }
@@ -141,11 +147,11 @@ P _auditQuestionAnswerDeserializeProp<P>(
     case 4:
       return (reader.readBoolOrNull(offset)) as P;
     case 5:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 6:
       return (reader.readLongOrNull(offset)) as P;
     case 7:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -706,34 +712,6 @@ extension AuditQuestionAnswerQueryFilter on QueryBuilder<AuditQuestionAnswer,
   }
 
   QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
-      isQuestionCompleteIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'isQuestionComplete',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
-      isQuestionCompleteIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'isQuestionComplete',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
-      isQuestionCompleteEqualTo(bool? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isQuestionComplete',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
       questionIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -880,6 +858,160 @@ extension AuditQuestionAnswerQueryFilter on QueryBuilder<AuditQuestionAnswer,
       ));
     });
   }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
+      rejectReasonNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'rejectReasonName',
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
+      rejectReasonNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'rejectReasonName',
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
+      rejectReasonNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'rejectReasonName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
+      rejectReasonNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'rejectReasonName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
+      rejectReasonNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'rejectReasonName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
+      rejectReasonNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'rejectReasonName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
+      rejectReasonNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'rejectReasonName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
+      rejectReasonNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'rejectReasonName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
+      rejectReasonNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'rejectReasonName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
+      rejectReasonNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'rejectReasonName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
+      rejectReasonNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'rejectReasonName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterFilterCondition>
+      rejectReasonNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'rejectReasonName',
+        value: '',
+      ));
+    });
+  }
 }
 
 extension AuditQuestionAnswerQueryObject on QueryBuilder<AuditQuestionAnswer,
@@ -961,20 +1093,6 @@ extension AuditQuestionAnswerQuerySortBy
   }
 
   QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterSortBy>
-      sortByIsQuestionComplete() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isQuestionComplete', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterSortBy>
-      sortByIsQuestionCompleteDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isQuestionComplete', Sort.desc);
-    });
-  }
-
-  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterSortBy>
       sortByQuestionId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'questionId', Sort.asc);
@@ -999,6 +1117,20 @@ extension AuditQuestionAnswerQuerySortBy
       sortByRejectReasonIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'rejectReasonId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterSortBy>
+      sortByRejectReasonName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'rejectReasonName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterSortBy>
+      sortByRejectReasonNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'rejectReasonName', Sort.desc);
     });
   }
 }
@@ -1090,20 +1222,6 @@ extension AuditQuestionAnswerQuerySortThenBy
   }
 
   QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterSortBy>
-      thenByIsQuestionComplete() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isQuestionComplete', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterSortBy>
-      thenByIsQuestionCompleteDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isQuestionComplete', Sort.desc);
-    });
-  }
-
-  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterSortBy>
       thenByQuestionId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'questionId', Sort.asc);
@@ -1128,6 +1246,20 @@ extension AuditQuestionAnswerQuerySortThenBy
       thenByRejectReasonIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'rejectReasonId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterSortBy>
+      thenByRejectReasonName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'rejectReasonName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QAfterSortBy>
+      thenByRejectReasonNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'rejectReasonName', Sort.desc);
     });
   }
 }
@@ -1171,13 +1303,6 @@ extension AuditQuestionAnswerQueryWhereDistinct
   }
 
   QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QDistinct>
-      distinctByIsQuestionComplete() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'isQuestionComplete');
-    });
-  }
-
-  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QDistinct>
       distinctByQuestionId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'questionId');
@@ -1188,6 +1313,14 @@ extension AuditQuestionAnswerQueryWhereDistinct
       distinctByRejectReasonId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'rejectReasonId');
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, AuditQuestionAnswer, QDistinct>
+      distinctByRejectReasonName({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'rejectReasonName',
+          caseSensitive: caseSensitive);
     });
   }
 }
@@ -1233,13 +1366,6 @@ extension AuditQuestionAnswerQueryProperty
     });
   }
 
-  QueryBuilder<AuditQuestionAnswer, bool?, QQueryOperations>
-      isQuestionCompleteProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isQuestionComplete');
-    });
-  }
-
   QueryBuilder<AuditQuestionAnswer, int?, QQueryOperations>
       questionIdProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -1251,6 +1377,13 @@ extension AuditQuestionAnswerQueryProperty
       rejectReasonIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'rejectReasonId');
+    });
+  }
+
+  QueryBuilder<AuditQuestionAnswer, String?, QQueryOperations>
+      rejectReasonNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'rejectReasonName');
     });
   }
 }
@@ -1268,8 +1401,8 @@ _$_AuditQuestionAnswer _$$_AuditQuestionAnswerFromJson(
       complianceName: json['ComplianceName'] as String?,
       complianceId: json['ComplianceId'] as int?,
       rejectReasonId: json['RejectReasonId'] as int?,
+      rejectReasonName: json['RejectReasonName'] as String?,
       isActive: json['IsActive'] as bool? ?? true,
-      isQuestionComplete: json['IsQuestionComplete'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$_AuditQuestionAnswerToJson(
@@ -1281,6 +1414,6 @@ Map<String, dynamic> _$$_AuditQuestionAnswerToJson(
       'ComplianceName': instance.complianceName,
       'ComplianceId': instance.complianceId,
       'RejectReasonId': instance.rejectReasonId,
+      'RejectReasonName': instance.rejectReasonName,
       'IsActive': instance.isActive,
-      'IsQuestionComplete': instance.isQuestionComplete,
     };

@@ -32,10 +32,10 @@ mixin _$AuditQuestionAnswer {
   int? get complianceId => throw _privateConstructorUsedError;
   @JsonKey(name: 'RejectReasonId')
   int? get rejectReasonId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'RejectReasonName')
+  String? get rejectReasonName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
-  @JsonKey(name: 'IsQuestionComplete')
-  bool? get isQuestionComplete => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -56,8 +56,8 @@ abstract class $AuditQuestionAnswerCopyWith<$Res> {
       @JsonKey(name: 'ComplianceName') String? complianceName,
       @JsonKey(name: 'ComplianceId') int? complianceId,
       @JsonKey(name: 'RejectReasonId') int? rejectReasonId,
-      @JsonKey(name: 'IsActive') bool? isActive,
-      @JsonKey(name: 'IsQuestionComplete') bool? isQuestionComplete});
+      @JsonKey(name: 'RejectReasonName') String? rejectReasonName,
+      @JsonKey(name: 'IsActive') bool? isActive});
 }
 
 /// @nodoc
@@ -79,8 +79,8 @@ class _$AuditQuestionAnswerCopyWithImpl<$Res, $Val extends AuditQuestionAnswer>
     Object? complianceName = freezed,
     Object? complianceId = freezed,
     Object? rejectReasonId = freezed,
+    Object? rejectReasonName = freezed,
     Object? isActive = freezed,
-    Object? isQuestionComplete = freezed,
   }) {
     return _then(_value.copyWith(
       answerId: freezed == answerId
@@ -107,13 +107,13 @@ class _$AuditQuestionAnswerCopyWithImpl<$Res, $Val extends AuditQuestionAnswer>
           ? _value.rejectReasonId
           : rejectReasonId // ignore: cast_nullable_to_non_nullable
               as int?,
+      rejectReasonName: freezed == rejectReasonName
+          ? _value.rejectReasonName
+          : rejectReasonName // ignore: cast_nullable_to_non_nullable
+              as String?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      isQuestionComplete: freezed == isQuestionComplete
-          ? _value.isQuestionComplete
-          : isQuestionComplete // ignore: cast_nullable_to_non_nullable
               as bool?,
     ) as $Val);
   }
@@ -134,8 +134,8 @@ abstract class _$$_AuditQuestionAnswerCopyWith<$Res>
       @JsonKey(name: 'ComplianceName') String? complianceName,
       @JsonKey(name: 'ComplianceId') int? complianceId,
       @JsonKey(name: 'RejectReasonId') int? rejectReasonId,
-      @JsonKey(name: 'IsActive') bool? isActive,
-      @JsonKey(name: 'IsQuestionComplete') bool? isQuestionComplete});
+      @JsonKey(name: 'RejectReasonName') String? rejectReasonName,
+      @JsonKey(name: 'IsActive') bool? isActive});
 }
 
 /// @nodoc
@@ -155,8 +155,8 @@ class __$$_AuditQuestionAnswerCopyWithImpl<$Res>
     Object? complianceName = freezed,
     Object? complianceId = freezed,
     Object? rejectReasonId = freezed,
+    Object? rejectReasonName = freezed,
     Object? isActive = freezed,
-    Object? isQuestionComplete = freezed,
   }) {
     return _then(_$_AuditQuestionAnswer(
       answerId: freezed == answerId
@@ -183,13 +183,13 @@ class __$$_AuditQuestionAnswerCopyWithImpl<$Res>
           ? _value.rejectReasonId
           : rejectReasonId // ignore: cast_nullable_to_non_nullable
               as int?,
+      rejectReasonName: freezed == rejectReasonName
+          ? _value.rejectReasonName
+          : rejectReasonName // ignore: cast_nullable_to_non_nullable
+              as String?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      isQuestionComplete: freezed == isQuestionComplete
-          ? _value.isQuestionComplete
-          : isQuestionComplete // ignore: cast_nullable_to_non_nullable
               as bool?,
     ));
   }
@@ -205,8 +205,8 @@ class _$_AuditQuestionAnswer extends _AuditQuestionAnswer {
       @JsonKey(name: 'ComplianceName') this.complianceName,
       @JsonKey(name: 'ComplianceId') this.complianceId,
       @JsonKey(name: 'RejectReasonId') this.rejectReasonId,
-      @JsonKey(name: 'IsActive') this.isActive = true,
-      @JsonKey(name: 'IsQuestionComplete') this.isQuestionComplete = false})
+      @JsonKey(name: 'RejectReasonName') this.rejectReasonName,
+      @JsonKey(name: 'IsActive') this.isActive = true})
       : super._();
 
   factory _$_AuditQuestionAnswer.fromJson(Map<String, dynamic> json) =>
@@ -231,15 +231,15 @@ class _$_AuditQuestionAnswer extends _AuditQuestionAnswer {
   @JsonKey(name: 'RejectReasonId')
   final int? rejectReasonId;
   @override
+  @JsonKey(name: 'RejectReasonName')
+  final String? rejectReasonName;
+  @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
-  @override
-  @JsonKey(name: 'IsQuestionComplete')
-  final bool? isQuestionComplete;
 
   @override
   String toString() {
-    return 'AuditQuestionAnswer(answerId: $answerId, auditId: $auditId, questionId: $questionId, complianceName: $complianceName, complianceId: $complianceId, rejectReasonId: $rejectReasonId, isActive: $isActive, isQuestionComplete: $isQuestionComplete)';
+    return 'AuditQuestionAnswer(answerId: $answerId, auditId: $auditId, questionId: $questionId, complianceName: $complianceName, complianceId: $complianceId, rejectReasonId: $rejectReasonId, rejectReasonName: $rejectReasonName, isActive: $isActive)';
   }
 
   @override
@@ -258,24 +258,16 @@ class _$_AuditQuestionAnswer extends _AuditQuestionAnswer {
                 other.complianceId == complianceId) &&
             (identical(other.rejectReasonId, rejectReasonId) ||
                 other.rejectReasonId == rejectReasonId) &&
+            (identical(other.rejectReasonName, rejectReasonName) ||
+                other.rejectReasonName == rejectReasonName) &&
             (identical(other.isActive, isActive) ||
-                other.isActive == isActive) &&
-            (identical(other.isQuestionComplete, isQuestionComplete) ||
-                other.isQuestionComplete == isQuestionComplete));
+                other.isActive == isActive));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      answerId,
-      auditId,
-      questionId,
-      complianceName,
-      complianceId,
-      rejectReasonId,
-      isActive,
-      isQuestionComplete);
+  int get hashCode => Object.hash(runtimeType, answerId, auditId, questionId,
+      complianceName, complianceId, rejectReasonId, rejectReasonName, isActive);
 
   @JsonKey(ignore: true)
   @override
@@ -294,22 +286,15 @@ class _$_AuditQuestionAnswer extends _AuditQuestionAnswer {
 
 abstract class _AuditQuestionAnswer extends AuditQuestionAnswer {
   const factory _AuditQuestionAnswer(
-      {@JsonKey(name: 'AnswerId')
-          final int? answerId,
-      @JsonKey(name: 'AuditId')
-          final int? auditId,
-      @JsonKey(name: 'QuestionId')
-          final int? questionId,
-      @JsonKey(name: 'ComplianceName')
-          final String? complianceName,
-      @JsonKey(name: 'ComplianceId')
-          final int? complianceId,
-      @JsonKey(name: 'RejectReasonId')
-          final int? rejectReasonId,
-      @JsonKey(name: 'IsActive')
-          final bool? isActive,
-      @JsonKey(name: 'IsQuestionComplete')
-          final bool? isQuestionComplete}) = _$_AuditQuestionAnswer;
+          {@JsonKey(name: 'AnswerId') final int? answerId,
+          @JsonKey(name: 'AuditId') final int? auditId,
+          @JsonKey(name: 'QuestionId') final int? questionId,
+          @JsonKey(name: 'ComplianceName') final String? complianceName,
+          @JsonKey(name: 'ComplianceId') final int? complianceId,
+          @JsonKey(name: 'RejectReasonId') final int? rejectReasonId,
+          @JsonKey(name: 'RejectReasonName') final String? rejectReasonName,
+          @JsonKey(name: 'IsActive') final bool? isActive}) =
+      _$_AuditQuestionAnswer;
   const _AuditQuestionAnswer._() : super._();
 
   factory _AuditQuestionAnswer.fromJson(Map<String, dynamic> json) =
@@ -334,11 +319,11 @@ abstract class _AuditQuestionAnswer extends AuditQuestionAnswer {
   @JsonKey(name: 'RejectReasonId')
   int? get rejectReasonId;
   @override
+  @JsonKey(name: 'RejectReasonName')
+  String? get rejectReasonName;
+  @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;
-  @override
-  @JsonKey(name: 'IsQuestionComplete')
-  bool? get isQuestionComplete;
   @override
   @JsonKey(ignore: true)
   _$$_AuditQuestionAnswerCopyWith<_$_AuditQuestionAnswer> get copyWith =>

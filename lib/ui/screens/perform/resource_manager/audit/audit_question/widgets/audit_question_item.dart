@@ -13,7 +13,7 @@ class AuditQuestionItem extends StatelessWidget {
     super.key,
     required this.question,
     required this.viewListPhoto,
-    required this.viewListComment,
+    required this.viewComment,
     required this.addAnswer,
     required this.compliances,
     this.answer,
@@ -22,7 +22,7 @@ class AuditQuestionItem extends StatelessWidget {
   final AuditQuestion question;
   final AuditQuestionAnswer? answer;
   final VoidCallback viewListPhoto;
-  final VoidCallback viewListComment;
+  final VoidCallback viewComment;
   final void Function(AuditCompliance) addAnswer;
   final List<AuditCompliance> compliances;
 
@@ -73,7 +73,7 @@ class AuditQuestionItem extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              if (answer?.complianceId == AuditComplianceEnum.na.data)
+              // if (answer?.complianceId == AuditComplianceEnum.nc.data)
                 Row(
                   children: [
                     CmoTappable(
@@ -93,7 +93,7 @@ class AuditQuestionItem extends StatelessWidget {
                     ),
                     const SizedBox(width: 16),
                     CmoTappable(
-                      onTap: viewListComment,
+                      onTap: viewComment,
                       child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
                         selector: (state) =>
                             state.questionComments.where((e) => e.questionId == question.questionId).isNotBlank,
@@ -116,7 +116,10 @@ class AuditQuestionItem extends StatelessWidget {
     );
   }
 
-  Color getComplianceActiveColor(BuildContext context, AuditCompliance auditCompliance) {
+  Color getComplianceActiveColor(
+    BuildContext context,
+    AuditCompliance auditCompliance,
+  ) {
     switch (auditCompliance.complianceEnum) {
       case AuditComplianceEnum.n:
         return context.colors.green;

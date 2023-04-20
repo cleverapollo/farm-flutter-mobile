@@ -30,6 +30,10 @@ mixin _$AuditQuestionComment {
   int? get questionId => throw _privateConstructorUsedError;
   @JsonKey(name: 'Comment')
   String? get comment => throw _privateConstructorUsedError;
+  @JsonKey(name: 'RejectReason')
+  String? get rejectReason => throw _privateConstructorUsedError;
+  @JsonKey(name: 'RejectId')
+  int? get rejectId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -48,7 +52,9 @@ abstract class $AuditQuestionCommentCopyWith<$Res> {
       @JsonKey(name: 'CommentId') int commentId,
       @JsonKey(name: 'AuditId') int auditId,
       @JsonKey(name: 'QuestionId') int? questionId,
-      @JsonKey(name: 'Comment') String? comment});
+      @JsonKey(name: 'Comment') String? comment,
+      @JsonKey(name: 'RejectReason') String? rejectReason,
+      @JsonKey(name: 'RejectId') int? rejectId});
 }
 
 /// @nodoc
@@ -70,6 +76,8 @@ class _$AuditQuestionCommentCopyWithImpl<$Res,
     Object? auditId = null,
     Object? questionId = freezed,
     Object? comment = freezed,
+    Object? rejectReason = freezed,
+    Object? rejectId = freezed,
   }) {
     return _then(_value.copyWith(
       answerId: null == answerId
@@ -92,6 +100,14 @@ class _$AuditQuestionCommentCopyWithImpl<$Res,
           ? _value.comment
           : comment // ignore: cast_nullable_to_non_nullable
               as String?,
+      rejectReason: freezed == rejectReason
+          ? _value.rejectReason
+          : rejectReason // ignore: cast_nullable_to_non_nullable
+              as String?,
+      rejectId: freezed == rejectId
+          ? _value.rejectId
+          : rejectId // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -109,7 +125,9 @@ abstract class _$$_AuditQuestionCommentCopyWith<$Res>
       @JsonKey(name: 'CommentId') int commentId,
       @JsonKey(name: 'AuditId') int auditId,
       @JsonKey(name: 'QuestionId') int? questionId,
-      @JsonKey(name: 'Comment') String? comment});
+      @JsonKey(name: 'Comment') String? comment,
+      @JsonKey(name: 'RejectReason') String? rejectReason,
+      @JsonKey(name: 'RejectId') int? rejectId});
 }
 
 /// @nodoc
@@ -128,6 +146,8 @@ class __$$_AuditQuestionCommentCopyWithImpl<$Res>
     Object? auditId = null,
     Object? questionId = freezed,
     Object? comment = freezed,
+    Object? rejectReason = freezed,
+    Object? rejectId = freezed,
   }) {
     return _then(_$_AuditQuestionComment(
       answerId: null == answerId
@@ -150,6 +170,14 @@ class __$$_AuditQuestionCommentCopyWithImpl<$Res>
           ? _value.comment
           : comment // ignore: cast_nullable_to_non_nullable
               as String?,
+      rejectReason: freezed == rejectReason
+          ? _value.rejectReason
+          : rejectReason // ignore: cast_nullable_to_non_nullable
+              as String?,
+      rejectId: freezed == rejectId
+          ? _value.rejectId
+          : rejectId // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -162,7 +190,9 @@ class _$_AuditQuestionComment extends _AuditQuestionComment {
       @JsonKey(name: 'CommentId') required this.commentId,
       @JsonKey(name: 'AuditId') required this.auditId,
       @JsonKey(name: 'QuestionId') this.questionId,
-      @JsonKey(name: 'Comment') this.comment})
+      @JsonKey(name: 'Comment') this.comment,
+      @JsonKey(name: 'RejectReason') this.rejectReason,
+      @JsonKey(name: 'RejectId') this.rejectId})
       : super._();
 
   factory _$_AuditQuestionComment.fromJson(Map<String, dynamic> json) =>
@@ -183,10 +213,16 @@ class _$_AuditQuestionComment extends _AuditQuestionComment {
   @override
   @JsonKey(name: 'Comment')
   final String? comment;
+  @override
+  @JsonKey(name: 'RejectReason')
+  final String? rejectReason;
+  @override
+  @JsonKey(name: 'RejectId')
+  final int? rejectId;
 
   @override
   String toString() {
-    return 'AuditQuestionComment(answerId: $answerId, commentId: $commentId, auditId: $auditId, questionId: $questionId, comment: $comment)';
+    return 'AuditQuestionComment(answerId: $answerId, commentId: $commentId, auditId: $auditId, questionId: $questionId, comment: $comment, rejectReason: $rejectReason, rejectId: $rejectId)';
   }
 
   @override
@@ -201,13 +237,17 @@ class _$_AuditQuestionComment extends _AuditQuestionComment {
             (identical(other.auditId, auditId) || other.auditId == auditId) &&
             (identical(other.questionId, questionId) ||
                 other.questionId == questionId) &&
-            (identical(other.comment, comment) || other.comment == comment));
+            (identical(other.comment, comment) || other.comment == comment) &&
+            (identical(other.rejectReason, rejectReason) ||
+                other.rejectReason == rejectReason) &&
+            (identical(other.rejectId, rejectId) ||
+                other.rejectId == rejectId));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, answerId, commentId, auditId, questionId, comment);
+  int get hashCode => Object.hash(runtimeType, answerId, commentId, auditId,
+      questionId, comment, rejectReason, rejectId);
 
   @JsonKey(ignore: true)
   @override
@@ -230,7 +270,9 @@ abstract class _AuditQuestionComment extends AuditQuestionComment {
           @JsonKey(name: 'CommentId') required final int commentId,
           @JsonKey(name: 'AuditId') required final int auditId,
           @JsonKey(name: 'QuestionId') final int? questionId,
-          @JsonKey(name: 'Comment') final String? comment}) =
+          @JsonKey(name: 'Comment') final String? comment,
+          @JsonKey(name: 'RejectReason') final String? rejectReason,
+          @JsonKey(name: 'RejectId') final int? rejectId}) =
       _$_AuditQuestionComment;
   const _AuditQuestionComment._() : super._();
 
@@ -252,6 +294,12 @@ abstract class _AuditQuestionComment extends AuditQuestionComment {
   @override
   @JsonKey(name: 'Comment')
   String? get comment;
+  @override
+  @JsonKey(name: 'RejectReason')
+  String? get rejectReason;
+  @override
+  @JsonKey(name: 'RejectId')
+  int? get rejectId;
   @override
   @JsonKey(ignore: true)
   _$$_AuditQuestionCommentCopyWith<_$_AuditQuestionComment> get copyWith =>

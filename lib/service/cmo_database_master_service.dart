@@ -918,6 +918,56 @@ class CmoDatabaseMasterService {
     });
   }
 
+  Future<List<AuditQuestion>> getAuditQuestionWithAuditTemplateId(
+    int? auditTemplateId,
+  ) async {
+    if (auditTemplateId == null) return <AuditQuestion>[];
+    final db = await _db();
+    try {
+      final auditQuestions =
+          await db.auditQuestions.filter().auditTemplateIdEqualTo(auditTemplateId).isActiveEqualTo(true).findAll();
+
+      return auditQuestions;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <AuditQuestion>[];
+  }
+
+  Future<List<AuditQuestionPhoto>> getAuditQuestionPhotosByAuditId(
+    int? auditId,
+  ) async {
+    if (auditId == null) return <AuditQuestionPhoto>[];
+    final db = await _db();
+
+    return db.auditQuestionPhotos
+        .filter()
+        .auditIdIsNotNull()
+        .auditIdEqualTo(auditId)
+        .photoPathIsNotNull()
+        .photoPathIsNotEmpty()
+        .findAll();
+  }
+
+  Future<List<AuditQuestionComment>> getAuditQuestionCommentsByAuditId(
+    int? auditId,
+  ) async {
+    if (auditId == null) return <AuditQuestionComment>[];
+    final db = await _db();
+
+    return db.auditQuestionComments.filter().auditIdEqualTo(auditId).commentIsNotNull().commentIsNotEmpty().findAll();
+  }
+
+  Future<void> removeAuditQuestionAnswer(AuditQuestionAnswer answer) async {
+    final db = await _db();
+    try {
+      return db.writeTxn(() => db.auditQuestionAnswers.delete(answer.id));
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
   Future<List<AuditQuestionAnswer>> getAuditQuestionAnswersWithAuditId(
       int? auditId,
       ) async {
