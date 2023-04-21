@@ -25,13 +25,13 @@ mixin _$AuditQuestionComment {
   @JsonKey(name: 'CommentId')
   int get commentId => throw _privateConstructorUsedError;
   @JsonKey(name: 'AuditId')
-  int get auditId => throw _privateConstructorUsedError;
+  int? get auditId => throw _privateConstructorUsedError;
   @JsonKey(name: 'QuestionId')
   int? get questionId => throw _privateConstructorUsedError;
   @JsonKey(name: 'Comment')
   String? get comment => throw _privateConstructorUsedError;
-  @JsonKey(name: 'RejectReason')
-  String? get rejectReason => throw _privateConstructorUsedError;
+  @JsonKey(name: 'CreateDT')
+  String? get createDT => throw _privateConstructorUsedError;
   @JsonKey(name: 'RejectId')
   int? get rejectId => throw _privateConstructorUsedError;
 
@@ -50,10 +50,10 @@ abstract class $AuditQuestionCommentCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'AnswerId') int answerId,
       @JsonKey(name: 'CommentId') int commentId,
-      @JsonKey(name: 'AuditId') int auditId,
+      @JsonKey(name: 'AuditId') int? auditId,
       @JsonKey(name: 'QuestionId') int? questionId,
       @JsonKey(name: 'Comment') String? comment,
-      @JsonKey(name: 'RejectReason') String? rejectReason,
+      @JsonKey(name: 'CreateDT') String? createDT,
       @JsonKey(name: 'RejectId') int? rejectId});
 }
 
@@ -73,10 +73,10 @@ class _$AuditQuestionCommentCopyWithImpl<$Res,
   $Res call({
     Object? answerId = null,
     Object? commentId = null,
-    Object? auditId = null,
+    Object? auditId = freezed,
     Object? questionId = freezed,
     Object? comment = freezed,
-    Object? rejectReason = freezed,
+    Object? createDT = freezed,
     Object? rejectId = freezed,
   }) {
     return _then(_value.copyWith(
@@ -88,10 +88,10 @@ class _$AuditQuestionCommentCopyWithImpl<$Res,
           ? _value.commentId
           : commentId // ignore: cast_nullable_to_non_nullable
               as int,
-      auditId: null == auditId
+      auditId: freezed == auditId
           ? _value.auditId
           : auditId // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       questionId: freezed == questionId
           ? _value.questionId
           : questionId // ignore: cast_nullable_to_non_nullable
@@ -100,9 +100,9 @@ class _$AuditQuestionCommentCopyWithImpl<$Res,
           ? _value.comment
           : comment // ignore: cast_nullable_to_non_nullable
               as String?,
-      rejectReason: freezed == rejectReason
-          ? _value.rejectReason
-          : rejectReason // ignore: cast_nullable_to_non_nullable
+      createDT: freezed == createDT
+          ? _value.createDT
+          : createDT // ignore: cast_nullable_to_non_nullable
               as String?,
       rejectId: freezed == rejectId
           ? _value.rejectId
@@ -123,10 +123,10 @@ abstract class _$$_AuditQuestionCommentCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'AnswerId') int answerId,
       @JsonKey(name: 'CommentId') int commentId,
-      @JsonKey(name: 'AuditId') int auditId,
+      @JsonKey(name: 'AuditId') int? auditId,
       @JsonKey(name: 'QuestionId') int? questionId,
       @JsonKey(name: 'Comment') String? comment,
-      @JsonKey(name: 'RejectReason') String? rejectReason,
+      @JsonKey(name: 'CreateDT') String? createDT,
       @JsonKey(name: 'RejectId') int? rejectId});
 }
 
@@ -143,10 +143,10 @@ class __$$_AuditQuestionCommentCopyWithImpl<$Res>
   $Res call({
     Object? answerId = null,
     Object? commentId = null,
-    Object? auditId = null,
+    Object? auditId = freezed,
     Object? questionId = freezed,
     Object? comment = freezed,
-    Object? rejectReason = freezed,
+    Object? createDT = freezed,
     Object? rejectId = freezed,
   }) {
     return _then(_$_AuditQuestionComment(
@@ -158,10 +158,10 @@ class __$$_AuditQuestionCommentCopyWithImpl<$Res>
           ? _value.commentId
           : commentId // ignore: cast_nullable_to_non_nullable
               as int,
-      auditId: null == auditId
+      auditId: freezed == auditId
           ? _value.auditId
           : auditId // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       questionId: freezed == questionId
           ? _value.questionId
           : questionId // ignore: cast_nullable_to_non_nullable
@@ -170,9 +170,9 @@ class __$$_AuditQuestionCommentCopyWithImpl<$Res>
           ? _value.comment
           : comment // ignore: cast_nullable_to_non_nullable
               as String?,
-      rejectReason: freezed == rejectReason
-          ? _value.rejectReason
-          : rejectReason // ignore: cast_nullable_to_non_nullable
+      createDT: freezed == createDT
+          ? _value.createDT
+          : createDT // ignore: cast_nullable_to_non_nullable
               as String?,
       rejectId: freezed == rejectId
           ? _value.rejectId
@@ -188,11 +188,11 @@ class _$_AuditQuestionComment extends _AuditQuestionComment {
   const _$_AuditQuestionComment(
       {@JsonKey(name: 'AnswerId') required this.answerId,
       @JsonKey(name: 'CommentId') required this.commentId,
-      @JsonKey(name: 'AuditId') required this.auditId,
+      @JsonKey(name: 'AuditId') this.auditId,
       @JsonKey(name: 'QuestionId') this.questionId,
       @JsonKey(name: 'Comment') this.comment,
-      @JsonKey(name: 'RejectReason') this.rejectReason,
-      @JsonKey(name: 'RejectId') this.rejectId})
+      @JsonKey(name: 'CreateDT') this.createDT,
+      @JsonKey(name: 'RejectId') this.rejectId = -1})
       : super._();
 
   factory _$_AuditQuestionComment.fromJson(Map<String, dynamic> json) =>
@@ -206,7 +206,7 @@ class _$_AuditQuestionComment extends _AuditQuestionComment {
   final int commentId;
   @override
   @JsonKey(name: 'AuditId')
-  final int auditId;
+  final int? auditId;
   @override
   @JsonKey(name: 'QuestionId')
   final int? questionId;
@@ -214,15 +214,15 @@ class _$_AuditQuestionComment extends _AuditQuestionComment {
   @JsonKey(name: 'Comment')
   final String? comment;
   @override
-  @JsonKey(name: 'RejectReason')
-  final String? rejectReason;
+  @JsonKey(name: 'CreateDT')
+  final String? createDT;
   @override
   @JsonKey(name: 'RejectId')
   final int? rejectId;
 
   @override
   String toString() {
-    return 'AuditQuestionComment(answerId: $answerId, commentId: $commentId, auditId: $auditId, questionId: $questionId, comment: $comment, rejectReason: $rejectReason, rejectId: $rejectId)';
+    return 'AuditQuestionComment(answerId: $answerId, commentId: $commentId, auditId: $auditId, questionId: $questionId, comment: $comment, createDT: $createDT, rejectId: $rejectId)';
   }
 
   @override
@@ -238,8 +238,8 @@ class _$_AuditQuestionComment extends _AuditQuestionComment {
             (identical(other.questionId, questionId) ||
                 other.questionId == questionId) &&
             (identical(other.comment, comment) || other.comment == comment) &&
-            (identical(other.rejectReason, rejectReason) ||
-                other.rejectReason == rejectReason) &&
+            (identical(other.createDT, createDT) ||
+                other.createDT == createDT) &&
             (identical(other.rejectId, rejectId) ||
                 other.rejectId == rejectId));
   }
@@ -247,7 +247,7 @@ class _$_AuditQuestionComment extends _AuditQuestionComment {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, answerId, commentId, auditId,
-      questionId, comment, rejectReason, rejectId);
+      questionId, comment, createDT, rejectId);
 
   @JsonKey(ignore: true)
   @override
@@ -268,10 +268,10 @@ abstract class _AuditQuestionComment extends AuditQuestionComment {
   const factory _AuditQuestionComment(
           {@JsonKey(name: 'AnswerId') required final int answerId,
           @JsonKey(name: 'CommentId') required final int commentId,
-          @JsonKey(name: 'AuditId') required final int auditId,
+          @JsonKey(name: 'AuditId') final int? auditId,
           @JsonKey(name: 'QuestionId') final int? questionId,
           @JsonKey(name: 'Comment') final String? comment,
-          @JsonKey(name: 'RejectReason') final String? rejectReason,
+          @JsonKey(name: 'CreateDT') final String? createDT,
           @JsonKey(name: 'RejectId') final int? rejectId}) =
       _$_AuditQuestionComment;
   const _AuditQuestionComment._() : super._();
@@ -287,7 +287,7 @@ abstract class _AuditQuestionComment extends AuditQuestionComment {
   int get commentId;
   @override
   @JsonKey(name: 'AuditId')
-  int get auditId;
+  int? get auditId;
   @override
   @JsonKey(name: 'QuestionId')
   int? get questionId;
@@ -295,8 +295,8 @@ abstract class _AuditQuestionComment extends AuditQuestionComment {
   @JsonKey(name: 'Comment')
   String? get comment;
   @override
-  @JsonKey(name: 'RejectReason')
-  String? get rejectReason;
+  @JsonKey(name: 'CreateDT')
+  String? get createDT;
   @override
   @JsonKey(name: 'RejectId')
   int? get rejectId;

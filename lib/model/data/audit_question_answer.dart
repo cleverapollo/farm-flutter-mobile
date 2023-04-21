@@ -17,10 +17,12 @@ class AuditQuestionAnswer with _$AuditQuestionAnswer {
     @JsonKey(name: 'AnswerId') int? answerId,
     @JsonKey(name: 'AuditId') int? auditId,
     @JsonKey(name: 'QuestionId') int? questionId,
-    @JsonKey(name: 'ComplianceName') String? complianceName,
     @JsonKey(name: 'ComplianceId') int? complianceId,
     @JsonKey(name: 'RejectReasonId') int? rejectReasonId,
-    @JsonKey(name: 'RejectReasonName') String? rejectReasonName,
+    @Default(false)
+    @JsonKey(name: 'HaveComment') bool? haveComment,
+    @Default(false)
+    @JsonKey(name: 'HavePhoto') bool? havePhoto,
     @Default(true)
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _AuditQuestionAnswer;

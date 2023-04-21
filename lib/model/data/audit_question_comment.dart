@@ -16,11 +16,12 @@ class AuditQuestionComment with _$AuditQuestionComment {
   const factory AuditQuestionComment({
     @JsonKey(name: 'AnswerId') required int answerId,
     @JsonKey(name: 'CommentId') required int commentId,
-    @JsonKey(name: 'AuditId') required int auditId,
+    @JsonKey(name: 'AuditId') int? auditId,
     @JsonKey(name: 'QuestionId') int? questionId,
     @JsonKey(name: 'Comment') String? comment,
-    @JsonKey(name: 'RejectReason') String? rejectReason,
-    @JsonKey(name: 'RejectId') int? rejectId,
+    @JsonKey(name: 'CreateDT') String? createDT,
+    @Default(-1) @JsonKey(name: 'RejectId') int? rejectId,
   }) = _AuditQuestionComment;
+
   factory AuditQuestionComment.fromJson(Map<String, dynamic> json) => _$AuditQuestionCommentFromJson(json);
 }

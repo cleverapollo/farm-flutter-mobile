@@ -38,20 +38,20 @@ const AuditQuestionCommentSchema = CollectionSchema(
       name: r'commentId',
       type: IsarType.long,
     ),
-    r'questionId': PropertySchema(
+    r'createDT': PropertySchema(
       id: 4,
+      name: r'createDT',
+      type: IsarType.string,
+    ),
+    r'questionId': PropertySchema(
+      id: 5,
       name: r'questionId',
       type: IsarType.long,
     ),
     r'rejectId': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'rejectId',
       type: IsarType.long,
-    ),
-    r'rejectReason': PropertySchema(
-      id: 6,
-      name: r'rejectReason',
-      type: IsarType.string,
     )
   },
   estimateSize: _auditQuestionCommentEstimateSize,
@@ -81,7 +81,7 @@ int _auditQuestionCommentEstimateSize(
     }
   }
   {
-    final value = object.rejectReason;
+    final value = object.createDT;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -99,9 +99,9 @@ void _auditQuestionCommentSerialize(
   writer.writeLong(offsets[1], object.auditId);
   writer.writeString(offsets[2], object.comment);
   writer.writeLong(offsets[3], object.commentId);
-  writer.writeLong(offsets[4], object.questionId);
-  writer.writeLong(offsets[5], object.rejectId);
-  writer.writeString(offsets[6], object.rejectReason);
+  writer.writeString(offsets[4], object.createDT);
+  writer.writeLong(offsets[5], object.questionId);
+  writer.writeLong(offsets[6], object.rejectId);
 }
 
 AuditQuestionComment _auditQuestionCommentDeserialize(
@@ -112,12 +112,12 @@ AuditQuestionComment _auditQuestionCommentDeserialize(
 ) {
   final object = AuditQuestionComment(
     answerId: reader.readLong(offsets[0]),
-    auditId: reader.readLong(offsets[1]),
+    auditId: reader.readLongOrNull(offsets[1]),
     comment: reader.readStringOrNull(offsets[2]),
     commentId: reader.readLong(offsets[3]),
-    questionId: reader.readLongOrNull(offsets[4]),
-    rejectId: reader.readLongOrNull(offsets[5]),
-    rejectReason: reader.readStringOrNull(offsets[6]),
+    createDT: reader.readStringOrNull(offsets[4]),
+    questionId: reader.readLongOrNull(offsets[5]),
+    rejectId: reader.readLongOrNull(offsets[6]),
   );
   return object;
 }
@@ -132,17 +132,17 @@ P _auditQuestionCommentDeserializeProp<P>(
     case 0:
       return (reader.readLong(offset)) as P;
     case 1:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readLong(offset)) as P;
     case 4:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
       return (reader.readLongOrNull(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -300,7 +300,25 @@ extension AuditQuestionCommentQueryFilter on QueryBuilder<AuditQuestionComment,
   }
 
   QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-      QAfterFilterCondition> auditIdEqualTo(int value) {
+      QAfterFilterCondition> auditIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'auditId',
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+      QAfterFilterCondition> auditIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'auditId',
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+      QAfterFilterCondition> auditIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'auditId',
@@ -311,7 +329,7 @@ extension AuditQuestionCommentQueryFilter on QueryBuilder<AuditQuestionComment,
 
   QueryBuilder<AuditQuestionComment, AuditQuestionComment,
       QAfterFilterCondition> auditIdGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -325,7 +343,7 @@ extension AuditQuestionCommentQueryFilter on QueryBuilder<AuditQuestionComment,
 
   QueryBuilder<AuditQuestionComment, AuditQuestionComment,
       QAfterFilterCondition> auditIdLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -339,8 +357,8 @@ extension AuditQuestionCommentQueryFilter on QueryBuilder<AuditQuestionComment,
 
   QueryBuilder<AuditQuestionComment, AuditQuestionComment,
       QAfterFilterCondition> auditIdBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -568,6 +586,162 @@ extension AuditQuestionCommentQueryFilter on QueryBuilder<AuditQuestionComment,
   }
 
   QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+      QAfterFilterCondition> createDTIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'createDT',
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+      QAfterFilterCondition> createDTIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'createDT',
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+      QAfterFilterCondition> createDTEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createDT',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+      QAfterFilterCondition> createDTGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'createDT',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+      QAfterFilterCondition> createDTLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'createDT',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+      QAfterFilterCondition> createDTBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'createDT',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+      QAfterFilterCondition> createDTStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'createDT',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+      QAfterFilterCondition> createDTEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'createDT',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+          QAfterFilterCondition>
+      createDTContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'createDT',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+          QAfterFilterCondition>
+      createDTMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'createDT',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+      QAfterFilterCondition> createDTIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createDT',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
+      QAfterFilterCondition> createDTIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'createDT',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
       QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -770,162 +944,6 @@ extension AuditQuestionCommentQueryFilter on QueryBuilder<AuditQuestionComment,
       ));
     });
   }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-      QAfterFilterCondition> rejectReasonIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'rejectReason',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-      QAfterFilterCondition> rejectReasonIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'rejectReason',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-      QAfterFilterCondition> rejectReasonEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'rejectReason',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-      QAfterFilterCondition> rejectReasonGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'rejectReason',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-      QAfterFilterCondition> rejectReasonLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'rejectReason',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-      QAfterFilterCondition> rejectReasonBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'rejectReason',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-      QAfterFilterCondition> rejectReasonStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'rejectReason',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-      QAfterFilterCondition> rejectReasonEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'rejectReason',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-          QAfterFilterCondition>
-      rejectReasonContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'rejectReason',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-          QAfterFilterCondition>
-      rejectReasonMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'rejectReason',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-      QAfterFilterCondition> rejectReasonIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'rejectReason',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment,
-      QAfterFilterCondition> rejectReasonIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'rejectReason',
-        value: '',
-      ));
-    });
-  }
 }
 
 extension AuditQuestionCommentQueryObject on QueryBuilder<AuditQuestionComment,
@@ -993,6 +1011,20 @@ extension AuditQuestionCommentQuerySortBy
   }
 
   QueryBuilder<AuditQuestionComment, AuditQuestionComment, QAfterSortBy>
+      sortByCreateDT() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createDT', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment, QAfterSortBy>
+      sortByCreateDTDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createDT', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment, QAfterSortBy>
       sortByQuestionId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'questionId', Sort.asc);
@@ -1017,20 +1049,6 @@ extension AuditQuestionCommentQuerySortBy
       sortByRejectIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'rejectId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment, QAfterSortBy>
-      sortByRejectReason() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'rejectReason', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment, QAfterSortBy>
-      sortByRejectReasonDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'rejectReason', Sort.desc);
     });
   }
 }
@@ -1094,6 +1112,20 @@ extension AuditQuestionCommentQuerySortThenBy
   }
 
   QueryBuilder<AuditQuestionComment, AuditQuestionComment, QAfterSortBy>
+      thenByCreateDT() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createDT', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment, QAfterSortBy>
+      thenByCreateDTDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createDT', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment, QAfterSortBy>
       thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1134,20 +1166,6 @@ extension AuditQuestionCommentQuerySortThenBy
       return query.addSortBy(r'rejectId', Sort.desc);
     });
   }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment, QAfterSortBy>
-      thenByRejectReason() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'rejectReason', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment, QAfterSortBy>
-      thenByRejectReasonDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'rejectReason', Sort.desc);
-    });
-  }
 }
 
 extension AuditQuestionCommentQueryWhereDistinct
@@ -1181,6 +1199,13 @@ extension AuditQuestionCommentQueryWhereDistinct
   }
 
   QueryBuilder<AuditQuestionComment, AuditQuestionComment, QDistinct>
+      distinctByCreateDT({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'createDT', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<AuditQuestionComment, AuditQuestionComment, QDistinct>
       distinctByQuestionId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'questionId');
@@ -1191,13 +1216,6 @@ extension AuditQuestionCommentQueryWhereDistinct
       distinctByRejectId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'rejectId');
-    });
-  }
-
-  QueryBuilder<AuditQuestionComment, AuditQuestionComment, QDistinct>
-      distinctByRejectReason({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'rejectReason', caseSensitive: caseSensitive);
     });
   }
 }
@@ -1216,7 +1234,7 @@ extension AuditQuestionCommentQueryProperty on QueryBuilder<
     });
   }
 
-  QueryBuilder<AuditQuestionComment, int, QQueryOperations> auditIdProperty() {
+  QueryBuilder<AuditQuestionComment, int?, QQueryOperations> auditIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'auditId');
     });
@@ -1236,6 +1254,13 @@ extension AuditQuestionCommentQueryProperty on QueryBuilder<
     });
   }
 
+  QueryBuilder<AuditQuestionComment, String?, QQueryOperations>
+      createDTProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'createDT');
+    });
+  }
+
   QueryBuilder<AuditQuestionComment, int?, QQueryOperations>
       questionIdProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -1249,13 +1274,6 @@ extension AuditQuestionCommentQueryProperty on QueryBuilder<
       return query.addPropertyName(r'rejectId');
     });
   }
-
-  QueryBuilder<AuditQuestionComment, String?, QQueryOperations>
-      rejectReasonProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'rejectReason');
-    });
-  }
 }
 
 // **************************************************************************
@@ -1267,11 +1285,11 @@ _$_AuditQuestionComment _$$_AuditQuestionCommentFromJson(
     _$_AuditQuestionComment(
       answerId: json['AnswerId'] as int,
       commentId: json['CommentId'] as int,
-      auditId: json['AuditId'] as int,
+      auditId: json['AuditId'] as int?,
       questionId: json['QuestionId'] as int?,
       comment: json['Comment'] as String?,
-      rejectReason: json['RejectReason'] as String?,
-      rejectId: json['RejectId'] as int?,
+      createDT: json['CreateDT'] as String?,
+      rejectId: json['RejectId'] as int? ?? -1,
     );
 
 Map<String, dynamic> _$$_AuditQuestionCommentToJson(
@@ -1282,6 +1300,6 @@ Map<String, dynamic> _$$_AuditQuestionCommentToJson(
       'AuditId': instance.auditId,
       'QuestionId': instance.questionId,
       'Comment': instance.comment,
-      'RejectReason': instance.rejectReason,
+      'CreateDT': instance.createDT,
       'RejectId': instance.rejectId,
     };

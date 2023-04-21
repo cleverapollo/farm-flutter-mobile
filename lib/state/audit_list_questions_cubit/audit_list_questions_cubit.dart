@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:ui';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
@@ -198,8 +199,8 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   }
 
   Future<void> getListAuditQuestionCommentsWithAuditId() async {
-    final questionComments = await cmoDatabaseMasterService.getAuditQuestionCommentsByAuditId(
-      state.audit?.auditId,
+    final questionComments = await cmoDatabaseMasterService.getAuditQuestionComments(
+      auditId: state.audit?.auditId,
     );
 
     emit(state.copyWith(questionComments: questionComments));
@@ -236,6 +237,15 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     // );
   }
 
+  Future<void> markQuestionAnswerHasComment(
+      AuditQuestion question,
+  ) async {
+    final answer = state.answers.firstWhereOrNull((e) => e.questionId == question.questionId);
+    if (answer == null) return;
+    await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer.copyWith(haveComment: true));
+    await getListAuditQuestionAnswerWithAuditId();
+  }
+
   Future<void> setAnswer(
     AuditQuestion question,
     AuditCompliance compliance,
@@ -248,25 +258,26 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     );
 
     switch (compliance.complianceEnum) {
+      case AuditComplianceEnum.unknown:
+        return;
       case AuditComplianceEnum.n:
       case AuditComplianceEnum.na:
         answer = answer.copyWith(
           complianceId: compliance.complianceId,
-          complianceName: compliance.complianceName,
         );
 
-        await Future.wait([
-          cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer),
-          getListAuditQuestionAnswerWithAuditId(),
-        ]);
-
-        return;
+        await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer);
+        break;
       case AuditComplianceEnum.nc:
-        return;
-      case AuditComplianceEnum.unknown:
-        return;
+        answer = answer.copyWith(
+          complianceId: compliance.complianceId,
+        );
+
+        await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer);
+        break;
     }
 
+    await getListAuditQuestionAnswerWithAuditId();
     //
     // if (answer.complianceId == compliance.complianceId) {
     //   logger.d(
@@ -400,30 +411,6 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       );
     }
     return photoData;
-  }
-
-  Future<void> addComment({
-    required int rejectId,
-    required String rejectReason,
-    required int? questionId,
-    required String commentValue,
-  }) async {
-    final audit = state.audit;
-    var comment = state.questionComments.firstWhereOrNull((e) => e.questionId == questionId);
-    comment ??= AuditQuestionComment(
-      answerId: DateTime.now().millisecondsSinceEpoch,
-      commentId: DateTime.now().millisecondsSinceEpoch,
-      auditId: audit?.auditId ?? DateTime.now().millisecondsSinceEpoch,
-      questionId: questionId,
-      comment: commentValue,
-      rejectId: rejectId,
-      rejectReason: rejectReason,
-    );
-
-    await Future.wait([
-      cmoDatabaseMasterService.cacheAuditQuestionComment(comment),
-      getListAuditQuestionCommentsWithAuditId(),
-    ]);
   }
 
   void handleError(Object error) {

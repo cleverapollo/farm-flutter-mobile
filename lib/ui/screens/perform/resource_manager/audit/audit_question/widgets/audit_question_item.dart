@@ -12,19 +12,19 @@ class AuditQuestionItem extends StatelessWidget {
   const AuditQuestionItem({
     super.key,
     required this.question,
+    required this.compliances,
     required this.viewListPhoto,
     required this.viewComment,
     required this.addAnswer,
-    required this.compliances,
     this.answer,
   });
 
   final AuditQuestion question;
   final AuditQuestionAnswer? answer;
+  final List<AuditCompliance> compliances;
   final VoidCallback viewListPhoto;
   final VoidCallback viewComment;
   final void Function(AuditCompliance) addAnswer;
-  final List<AuditCompliance> compliances;
 
   @override
   Widget build(BuildContext context) {
@@ -73,37 +73,29 @@ class AuditQuestionItem extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              // if (answer?.complianceId == AuditComplianceEnum.nc.data)
+              if (answer?.complianceId == AuditComplianceEnum.nc.data)
                 Row(
                   children: [
                     CmoTappable(
                       onTap: viewListPhoto,
-                      child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
-                        selector: (state) =>
-                            state.auditQuestionPhotos.where((e) => e.questionId == question.questionId).isNotBlank,
-                        builder: (context, havePhoto) => CmoCircelIconButton(
-                          color: havePhoto ? context.colors.green : Colors.transparent,
-                          icon: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: Assets.icons.icCamera.svgBlack,
-                          ),
+                      child: CmoCircelIconButton(
+                        color: (answer?.havePhoto ?? false) ? context.colors.green : Colors.transparent,
+                        icon: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: Assets.icons.icCamera.svgBlack,
                         ),
                       ),
                     ),
                     const SizedBox(width: 16),
                     CmoTappable(
                       onTap: viewComment,
-                      child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
-                        selector: (state) =>
-                            state.questionComments.where((e) => e.questionId == question.questionId).isNotBlank,
-                        builder: (context, haveComment) => CmoCircelIconButton(
-                          color: haveComment ? context.colors.green : Colors.transparent,
-                          icon: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: Assets.icons.icComment.svgBlack,
-                          ),
+                      child: CmoCircelIconButton(
+                        color: (answer?.haveComment ?? false) ? context.colors.green : Colors.transparent,
+                        icon: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: Assets.icons.icComment.svgBlack,
                         ),
                       ),
                     )

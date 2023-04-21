@@ -4,8 +4,8 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_comments/audit_list_comments_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_list_photo_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_question_add_comment/audit_question_add_comment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/audit_question_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/car_filter.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/criteria_filter.dart';
@@ -33,8 +33,7 @@ class AuditListQuestionsScreen extends StatefulWidget {
   }
 
   @override
-  State<AuditListQuestionsScreen> createState() =>
-      _AuditListQuestionsScreenState();
+  State<AuditListQuestionsScreen> createState() => _AuditListQuestionsScreenState();
 }
 
 class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
@@ -45,9 +44,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   void initState() {
     super.initState();
     Future.microtask(() async {
-      await context
-          .read<AuditListQuestionsCubit>()
-          .initialize(widget.audit);
+      await context.read<AuditListQuestionsCubit>().initialize(widget.audit);
     });
   }
 
@@ -55,11 +52,14 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     required int? questionId,
     required AuditQuestion auditQuestion,
   }) async {
-    AuditListCommentScreen.push(
+    final result = await AuditQuestionAddCommentScreen.push(
       context,
-      questionId: questionId,
       auditQuestion: auditQuestion,
     );
+
+    if (result != null && result) {
+      await context.read<AuditListQuestionsCubit>().markQuestionAnswerHasComment(auditQuestion);
+    }
   }
 
   Future<void> _viewListPhoto({
@@ -69,15 +69,16 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   }
 
   Future<void> _addAnswer(
-      AuditQuestion question,
-      AuditCompliance compliance,
-      ) async {
+    AuditQuestion question,
+    AuditCompliance compliance,
+  ) async {
     switch (compliance.complianceEnum) {
       case AuditComplianceEnum.n:
       case AuditComplianceEnum.na:
         await context.read<AuditListQuestionsCubit>().setAnswer(question, compliance);
         return;
       case AuditComplianceEnum.nc:
+        await context.read<AuditListQuestionsCubit>().setAnswer(question, compliance);
         return;
       case AuditComplianceEnum.unknown:
         return;
@@ -123,126 +124,121 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<AuditListQuestionsCubit>().state;
-    final filterQuestions = context.watch<AuditListQuestionsCubit>().getFilteredQuestions();
-
-    return Scaffold(
-      appBar: CmoAppBar(
-        title: LocaleKeys.audit.tr(),
-        subtitle: widget.audit.compartmentName,
-        leading: Assets.icons.icArrowLeft.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icClose.svgBlack,
-        onTapTrailing: Navigator.of(context).pop,
-      ),
-      body: Column(
-        children: [
-          _buildFilterSection(),
-          BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
-            selector: (state) {
-              return state.incompleteFilter == 1;
-            },
-            builder: (context, isComplete) => CmoHeaderTile(
-              title: isComplete
-                  ? LocaleKeys.completed.tr()
-                  : LocaleKeys.incomplete.tr(),
-              child: Row(
-                children: [
-                  CmoTappable(
-                    onTap: () {
-                      context
-                          .read<AuditListQuestionsCubit>()
-                          .setIncompleteFilter(isComplete ? 0 : 1);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 6.0),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: !isComplete ? Colors.white : Colors.green,
-                          shape: BoxShape.circle,
-                        ),
-                        child: !isComplete
-                            ? Assets.icons.icTick.svg()
-                            : Assets.icons.icTick.svgWhite,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Assets.icons.icCamera.svgWhite,
-                        Padding(
+    return BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
+      bloc: context.read<AuditListQuestionsCubit>(),
+      builder: (context, snapshot) {
+        final filterQuestions = snapshot.filteredQuestions;
+        return Scaffold(
+          appBar: CmoAppBar(
+            title: LocaleKeys.audit.tr(),
+            subtitle: widget.audit.compartmentName,
+            leading: Assets.icons.icArrowLeft.svgBlack,
+            onTapLeading: Navigator.of(context).pop,
+            trailing: Assets.icons.icClose.svgBlack,
+            onTapTrailing: Navigator.of(context).pop,
+          ),
+          body: Column(
+            children: [
+              _buildFilterSection(),
+              BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
+                selector: (state) {
+                  return state.incompleteFilter == 1;
+                },
+                builder: (context, isComplete) => CmoHeaderTile(
+                  title: isComplete ? LocaleKeys.completed.tr() : LocaleKeys.incomplete.tr(),
+                  child: Row(
+                    children: [
+                      CmoTappable(
+                        onTap: () {
+                          context.read<AuditListQuestionsCubit>().setIncompleteFilter(isComplete ? 0 : 1);
+                        },
+                        child: Padding(
                           padding: const EdgeInsets.only(left: 6.0),
-                          child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, int>(
-                            selector: (state) => state.auditQuestionPhotos.length,
-                            builder: (context, lengthPhoto) => Text(
-                              '$lengthPhoto',
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: !isComplete ? Colors.white : Colors.green,
+                              shape: BoxShape.circle,
+                            ),
+                            child: !isComplete ? Assets.icons.icTick.svg() : Assets.icons.icTick.svgWhite,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Assets.icons.icCamera.svgWhite,
+                            Padding(
+                              padding: const EdgeInsets.only(left: 6.0),
+                              child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, int>(
+                                selector: (state) => state.auditQuestionPhotos.length,
+                                builder: (context, lengthPhoto) => Text(
+                                  '$lengthPhoto',
+                                  style: context.textStyles.bodyBold.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Assets.icons.icComment.svgWhite,
+                          const SizedBox(width: 6),
+                          BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, int>(
+                            selector: (state) => state.questionComments.length,
+                            builder: (context, questionCommentsLength) => Text(
+                              '$questionCommentsLength',
                               style: context.textStyles.bodyBold.white,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Assets.icons.icComment.svgWhite,
-                      const SizedBox(width: 6),
-                      BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, int>(
-                        selector: (state) => state.questionComments.length,
-                        builder: (context, questionCommentsLength) => Text(
-                          '$questionCommentsLength',
-                          style: context.textStyles.bodyBold.white,
-                        ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: filterQuestions.length,
-              itemBuilder: (context, index) {
-                final question = filterQuestions[index];
-                final answer = context
-                    .watch<AuditListQuestionsCubit>()
-                    .getAnswerByQuestionId(question.questionId);
+              Expanded(
+                child: ListView.separated(
+                  itemCount: filterQuestions.length,
+                  itemBuilder: (context, index) {
+                    final question = filterQuestions[index];
+                    final answer = context.watch<AuditListQuestionsCubit>().getAnswerByQuestionId(question.questionId);
 
-                return AuditQuestionItem(
-                  question: question,
-                  answer: answer,
-                  compliances: state.compliances,
-                  addAnswer: (compliance) {
-                    _addAnswer(
-                      question,
-                      compliance,
+                    return AuditQuestionItem(
+                      question: question,
+                      answer: answer,
+                      compliances: snapshot.compliances,
+                      addAnswer: (compliance) {
+                        _addAnswer(
+                          question,
+                          compliance,
+                        );
+                      },
+                      viewListPhoto: () {
+                        _viewListPhoto(
+                          questionId: question.questionId,
+                        );
+                      },
+                      viewComment: () {
+                        _viewComment(
+                          questionId: question.questionId,
+                          auditQuestion: question,
+                        );
+                      },
                     );
                   },
-                  viewListPhoto: () {
-                    _viewListPhoto(
-                      questionId: question.questionId,
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider(
+                      color: context.colors.grey,
                     );
                   },
-                  viewComment: () {
-                    _viewComment(
-                      questionId: question.questionId,
-                      auditQuestion: question,
-                    );
-                  },
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return Divider(
-                  color: context.colors.grey,
-                );
-              },
-            ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

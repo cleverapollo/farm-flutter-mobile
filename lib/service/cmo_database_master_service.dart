@@ -950,13 +950,24 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<AuditQuestionComment>> getAuditQuestionCommentsByAuditId(
+  Future<List<AuditQuestionComment>> getAuditQuestionComments({
     int? auditId,
-  ) async {
-    if (auditId == null) return <AuditQuestionComment>[];
-    final db = await _db();
+    int? questionId,
+  }) async {
+    try {
+      final db = await _db();
+      if (auditId == null) return <AuditQuestionComment>[];
+      var query = db.auditQuestionComments.filter().auditIdEqualTo(auditId).commentIsNotNull().commentIsNotEmpty();
+      if (questionId != null) {
+        query = query.questionIdEqualTo(questionId).questionIdIsNotNull();
+      }
 
-    return db.auditQuestionComments.filter().auditIdEqualTo(auditId).commentIsNotNull().commentIsNotEmpty().findAll();
+      return query.findAll();
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <AuditQuestionComment>[];
   }
 
   Future<void> removeAuditQuestionAnswer(AuditQuestionAnswer answer) async {
