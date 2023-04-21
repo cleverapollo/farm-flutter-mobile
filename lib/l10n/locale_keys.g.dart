@@ -243,5 +243,11 @@ abstract class  LocaleKeys {
   static const planned_year_of_harvest = 'planned_year_of_harvest';
   static const actual_year_of_harvest = 'actual_year_of_harvest';
   static const tons_of_charcoal_produced = 'tons_of_charcoal_produced';
+  static const hectares_camp_protected = 'hectares_camp_protected';
+  static const hectares_camp_cattle_posts_housing = 'hectares_camp_cattle_posts_housing';
+  static const hectares_are_corridors = 'hectares_are_corridors';
+  static const hectares_road_fire_breaks = 'hectares_road_fire_breaks';
+  static const hectares_poaching_alleviation_zones = 'hectares_poaching_alleviation_zones';
+  static const asi = 'asi';
 
 }

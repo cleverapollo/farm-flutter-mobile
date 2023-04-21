@@ -1,8 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/theme/theme.dart';
-import 'package:cmo/ui/widget/cmo_app_bar.dart';
-import 'package:cmo/ui/widget/cmo_buttons.dart';
+import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -23,14 +22,19 @@ class CmoMap extends StatefulWidget {
 
 class _CmoMapState extends State<CmoMap> {
   late GoogleMapController _mapController;
-  final LatLng _center = const LatLng(-26.024176, 28.042453);
-  LatLng _latLong = const LatLng(-26.024176, 28.042453);
+  late LatLng _latLong;
 
   void _onCameraMove(CameraPosition position) {
     widget.onMapMoved(position.target.latitude, position.target.longitude);
     setState(() {
       _latLong = position.target;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _latLong = widget.initialMapCenter;
   }
 
   @override
@@ -56,7 +60,7 @@ class _CmoMapState extends State<CmoMap> {
                   },
                   onCameraMove: _onCameraMove,
                   initialCameraPosition: CameraPosition(
-                    target: _center,
+                    target: widget.initialMapCenter,
                     zoom: 16.0,
                   ),
                 ),
@@ -103,31 +107,7 @@ class _CmoMapState extends State<CmoMap> {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              const TextSpan(
-                                text: 'Lat | Long',
-                              ),
-                              const TextSpan(
-                                text: ' ',
-                              ),
-                              TextSpan(
-                                text: _latLong.latitude.toStringAsFixed(6),
-                                style: context.textStyles.bodyNormal,
-                              ),
-                              TextSpan(
-                                text: ', ',
-                                style: context.textStyles.bodyNormal,
-                              ),
-                              TextSpan(
-                                text: _latLong.longitude.toStringAsFixed(6),
-                                style: context.textStyles.bodyNormal,
-                              ),
-                            ],
-                          ),
-                          style: context.textStyles.bodyBold,
-                        ),
+                        child: GeoLocationText(latLong: _latLong,)
                       ),
                     ),
                     Assets.icons.icLocation.widget,

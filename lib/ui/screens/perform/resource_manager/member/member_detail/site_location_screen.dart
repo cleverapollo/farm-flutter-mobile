@@ -5,13 +5,16 @@ import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cmo/utils/utils.dart';
 
 class SiteLocationScreen extends StatefulWidget {
-  const SiteLocationScreen({Key? key}) : super(key: key);
+  final LatLng? mapCenter;
+  const SiteLocationScreen({Key? key, this.mapCenter}) : super(key: key);
 
-  static Future<T?> push<T>(BuildContext context) async {
+  static Future<T?> push<T>(BuildContext context, LatLng? mapCenter) async {
     return Navigator.of(context).push<T>(
-      MaterialPageRoute(builder: (_) => const SiteLocationScreen()),
+      MaterialPageRoute(builder: (_) => SiteLocationScreen(mapCenter: mapCenter,)),
     );
   }
 
@@ -20,6 +23,9 @@ class SiteLocationScreen extends StatefulWidget {
 }
 
 class _SiteLocationScreenState extends State<SiteLocationScreen> {
+  double? latitude;
+  double? longitude;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +41,10 @@ class _SiteLocationScreenState extends State<SiteLocationScreen> {
           Expanded(
             flex: 4,
             child: CmoMap(
+              initialMapCenter: widget.mapCenter ?? Constants.mapCenter,
               onMapMoved: (lat, long) {
+                latitude = lat;
+                longitude = long;
                 print("lat: $lat, long: $long");
               },
             ),
@@ -47,7 +56,8 @@ class _SiteLocationScreenState extends State<SiteLocationScreen> {
               child: CmoFilledButton(
                 title: LocaleKeys.save.tr(),
                 onTap: () {
-                  print("Submit location");
+                  Navigator.of(context)
+                      .pop(latitude != null ? [latitude, longitude] : null);
                 },
               ),
             ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cmo/ui/theme/theme.dart';
 
 class CmoHeaderTile extends StatelessWidget {
-  const CmoHeaderTile({super.key, required this.title, this.child});
+  CmoHeaderTile({super.key, required this.title, this.child});
 
   final String title;
   final Widget? child;

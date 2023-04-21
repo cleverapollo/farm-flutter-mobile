@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
@@ -71,9 +72,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
         showLeading: true,
         showTrailing: true,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () {
-          print("onTapTrailing");
-        },
+        onTapTrailing: () => AddCampScreen.push(context),
       ),
       body: Column(
         children: [
@@ -95,7 +94,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
               },
             ),
           ),
-          const CmoHeaderTile(
+          CmoHeaderTile(
             title: 'Summary: 100 tonnes of Biomass',
           ),
           Expanded(

@@ -244,5 +244,11 @@
   "cumulative_biomass":"Cumulative Biomass",
   "planned_year_of_harvest": "Planned year of Harvest",
   "actual_year_of_harvest":"Actual year of Harvest",
-  "tons_of_charcoal_produced": "Tons of charcoal produced"
+  "tons_of_charcoal_produced": "Tons of charcoal produced",
+  "hectares_camp_protected":"How many hectares of this camp are protected?",
+  "hectares_camp_cattle_posts_housing":"How many hectares of this camp  are for cattle posts and housing?",
+  "hectares_are_corridors":"How many hectares are corridors?",
+  "hectares_road_fire_breaks":"How many hectares are road & fire breaks?",
+  "hectares_poaching_alleviation_zones":"How many hectares are poaching alleviation zones?",
+  "asi": "ASI"
 }
