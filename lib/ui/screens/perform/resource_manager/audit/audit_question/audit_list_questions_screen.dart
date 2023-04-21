@@ -79,7 +79,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   }
 
   Future<void> _saveQuestionAnswer() async {
-    await context.read<AuditListQuestionsCubit>().checkAuditQuestionComplete();
+    await context.read<AuditListQuestionsCubit>().checkAllAuditQuestionCompleted();
 
     if (context.mounted) {
       Navigator.of(context).pop(true);

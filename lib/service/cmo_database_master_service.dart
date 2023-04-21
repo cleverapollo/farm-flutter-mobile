@@ -835,6 +835,13 @@ class CmoDatabaseMasterService {
     return db.writeTxn(() => db.auditQuestionPhotos.put(item));
   }
 
+  Future<int> cacheAuditQuestion(
+      AuditQuestion item,
+      ) async {
+    final db = await _db();
+    return db.writeTxn(() => db.auditQuestions.put(item));
+  }
+
   Future<int> cacheQuestionPhoto(
     QuestionPhoto item,
   ) async {
@@ -918,14 +925,19 @@ class CmoDatabaseMasterService {
     });
   }
 
-  Future<List<AuditQuestion>> getAuditQuestionWithAuditTemplateId(
+  Future<List<AuditQuestion>> getListAuditQuestion({
     int? auditTemplateId,
-  ) async {
-    if (auditTemplateId == null) return <AuditQuestion>[];
+    int? auditId,
+  }) async {
+    if (auditId == null || auditTemplateId == null) return <AuditQuestion>[];
     final db = await _db();
     try {
-      final auditQuestions =
-          await db.auditQuestions.filter().auditTemplateIdEqualTo(auditTemplateId).isActiveEqualTo(true).findAll();
+      final auditQuestions = await db.auditQuestions
+          .filter()
+          .auditIdEqualTo(auditId)
+          .auditTemplateIdEqualTo(auditTemplateId)
+          .isActiveEqualTo(true)
+          .findAll();
 
       return auditQuestions;
     } catch (error) {

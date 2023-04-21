@@ -147,7 +147,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       emit(state.copyWith(rejectReasons: rejectReasons));
 
       await Future.wait([
-        getListAuditQuestionWithAuditTemplate(),
+        getListAuditQuestion(),
         getListAuditQuestionAnswerWithAuditId(),
         getListAuditCompliances(),
         applyFilter(),
@@ -159,9 +159,10 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   }
 
 
-  Future<void> getListAuditQuestionWithAuditTemplate() async {
-    final questions = await cmoDatabaseMasterService.getAuditQuestionWithAuditTemplateId(
-      state.audit?.auditTemplateId,
+  Future<void> getListAuditQuestion() async {
+    final questions = await cmoDatabaseMasterService.getListAuditQuestion(
+      auditId: state.audit?.auditId,
+      auditTemplateId: state.audit?.auditTemplateId,
     );
 
     emit(state.copyWith(questions: questions));
@@ -200,6 +201,28 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     await getListAuditQuestionAnswerWithAuditId();
   }
 
+  Future<void> markQuestionAnswerIsCompleted(
+      AuditQuestion question,
+      ) async {
+    bool isComplete = false;
+    final answer = state.answers.firstWhereOrNull((e) => e.questionId == question.questionId);
+    if (answer == null) return;
+    switch (answer.complianceEnum) {
+      case AuditComplianceEnum.n:
+      case AuditComplianceEnum.na:
+        isComplete = true;
+        break;
+      case AuditComplianceEnum.nc:
+        isComplete = answer.haveComment ?? false;
+        break;
+      case AuditComplianceEnum.unknown:
+        return;
+    }
+
+    await cmoDatabaseMasterService.cacheAuditQuestion(question.copyWith(isQuestionComplete: isComplete ? 0 : 1));
+    await getListAuditQuestionAnswerWithAuditId();
+  }
+
   Future<void> setAnswer(
     AuditQuestion question,
     AuditCompliance compliance,
@@ -211,30 +234,16 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       questionId: question.questionId,
     );
 
-    switch (compliance.complianceEnum) {
-      case AuditComplianceEnum.unknown:
-        return;
-      case AuditComplianceEnum.n:
-      case AuditComplianceEnum.na:
-        answer = answer.copyWith(
-          complianceId: compliance.complianceId,
-        );
+    answer = answer.copyWith(
+      complianceId: compliance.complianceId,
+    );
 
-        await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer);
-        break;
-      case AuditComplianceEnum.nc:
-        answer = answer.copyWith(
-          complianceId: compliance.complianceId,
-        );
-
-        await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer);
-        break;
-    }
-
+    await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer);
+    await markQuestionAnswerIsCompleted(question);
     await getListAuditQuestionAnswerWithAuditId();
   }
 
-  Future<void> checkAuditQuestionComplete() async {
+  Future<void> checkAllAuditQuestionCompleted() async {
     final questions = state.questions;
     var isAllQuestionCompleted = true;
     for (final question in questions) {
