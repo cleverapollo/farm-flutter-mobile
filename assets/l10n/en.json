@@ -237,5 +237,12 @@
   "operations_management": "Operations Management",
   "enter": "Enter",
   "type": "Type",
-  "select": "Select"
+  "select": "Select",
+  "infestation_weighted_average": "Infestation weighted average",
+  "estimated_biomass":"Estimated Biomass",
+  "total_biomass": "Total Biomass",
+  "cumulative_biomass":"Cumulative Biomass",
+  "planned_year_of_harvest": "Planned year of Harvest",
+  "actual_year_of_harvest":"Actual year of Harvest",
+  "tons_of_charcoal_produced": "Tons of charcoal produced"
 }

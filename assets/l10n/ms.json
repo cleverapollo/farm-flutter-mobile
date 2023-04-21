@@ -235,5 +235,12 @@
   "type": "Type",
   "select": "Select",
   "retakePhoto": "Retake photo",
-  "reselectPhoto": "Reselect photo"
+  "reselectPhoto": "Reselect photo",
+  "infestation_weighted_average": "Infestation weighted average",
+  "estimated_biomass":"Estimated Biomass",
+  "total_biomass": "Total Biomass",
+  "cumulative_biomass":"Cumulative Biomass",
+  "planned_year_of_harvest": "Planned year of Harvest",
+  "actual_year_of_harvest":"Actual year of Harvest",
+  "tons_of_charcoal_produced": "Tons of charcoal produced"
 }

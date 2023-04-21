@@ -236,4 +236,12 @@ abstract class  LocaleKeys {
   static const enter = 'enter';
   static const type = 'type';
   static const select = 'select';
+  static const infestation_weighted_average = 'infestation_weighted_average';
+  static const estimated_biomass = 'estimated_biomass';
+  static const total_biomass = 'total_biomass';
+  static const cumulative_biomass = 'cumulative_biomass';
+  static const planned_year_of_harvest = 'planned_year_of_harvest';
+  static const actual_year_of_harvest = 'actual_year_of_harvest';
+  static const tons_of_charcoal_produced = 'tons_of_charcoal_produced';
+
 }
