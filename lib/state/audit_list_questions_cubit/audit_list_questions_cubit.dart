@@ -11,38 +11,6 @@ part 'audit_list_questions_state.dart';
 class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   AuditListQuestionsCubit() : super(const AuditListQuestionsState());
 
-  List<ImpactOn> getImpactOns() {
-    return state.impactOns;
-  }
-
-  List<AuditQuestion> getFilteredQuestions() {
-    return state.filteredQuestions;
-  }
-
-  List<AuditQuestion> getListIncompleteQuestion() {
-    return state.filteredQuestions
-        .where(
-          (x) => x.isQuestionComplete != null && x.isQuestionComplete! == 1,
-        )
-        .toList();
-  }
-
-  List<AuditQuestion> getListCompletedQuestion() {
-    return state.filteredQuestions
-        .where(
-          (x) => x.isQuestionComplete != null && x.isQuestionComplete! == 0,
-    )
-        .toList();
-  }
-
-  List<AuditQuestion> getUnAnsweredFilteredQuestions() {
-    return state.filteredQuestions
-        .where(
-          (x) => x.isQuestionComplete != null && x.isQuestionComplete! == 1,
-    )
-        .toList();
-  }
-
   AuditQuestionAnswer? getAnswerByQuestionId(int? questionId) {
     if (questionId == null) return null;
     return state.answers.firstWhereOrNull(
@@ -150,6 +118,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
         getListAuditQuestion(),
         getListAuditQuestionAnswerWithAuditId(),
         getListAuditCompliances(),
+        getTotalCommentsAndPhotos(),
         applyFilter(),
       ]);
 
@@ -173,6 +142,21 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     emit(state.copyWith(answers: answers));
   }
 
+  Future<void> getTotalCommentsAndPhotos() async {
+    final questionComments = await cmoDatabaseMasterService.getAuditQuestionComments(
+      auditId: state.audit?.auditId,
+    );
+
+    final auditQuestionPhotos = await cmoDatabaseMasterService.getAuditQuestionPhotos(
+      auditId: state.audit?.auditId,
+    );
+
+    emit(state.copyWith(
+      totalPhotos: auditQuestionPhotos.length,
+      totalComments: questionComments.length,
+    ));
+  }
+
   Future<void> getListAuditCompliances() async {
     final compliances = <AuditCompliance>[
       AuditCompliance(complianceId: AuditComplianceEnum.n.data, complianceName: AuditComplianceEnum.n.valueName),
@@ -190,6 +174,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     if (answer == null) return;
     await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer.copyWith(haveComment: true));
     await getListAuditQuestionAnswerWithAuditId();
+    await getTotalCommentsAndPhotos();
   }
 
   Future<void> markQuestionAnswerHasPhoto(
@@ -199,6 +184,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     if (answer == null) return;
     await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer.copyWith(havePhoto: true));
     await getListAuditQuestionAnswerWithAuditId();
+    await getTotalCommentsAndPhotos();
   }
 
   Future<void> markQuestionAnswerIsCompleted(

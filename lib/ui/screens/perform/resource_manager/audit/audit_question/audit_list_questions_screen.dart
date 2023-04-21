@@ -135,7 +135,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                             Padding(
                               padding: const EdgeInsets.only(left: 6.0),
                               child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, int>(
-                                selector: (state) => state.auditQuestionPhotos.length,
+                                selector: (state) => state.totalPhotos,
                                 builder: (context, lengthPhoto) => Text(
                                   '$lengthPhoto',
                                   style: context.textStyles.bodyBold.white,
@@ -150,7 +150,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                           Assets.icons.icComment.svgWhite,
                           const SizedBox(width: 6),
                           BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, int>(
-                            selector: (state) => state.questionComments.length,
+                            selector: (state) => state.totalComments,
                             builder: (context, questionCommentsLength) => Text(
                               '$questionCommentsLength',
                               style: context.textStyles.bodyBold.white,

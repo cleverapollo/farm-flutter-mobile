@@ -6,8 +6,6 @@ class AuditListQuestionsState extends Equatable {
     this.questions = const <AuditQuestion>[],
     this.answers = const <AuditQuestionAnswer>[],
     this.rejectReasons = const <RejectReason>[],
-    this.questionComments = const <AuditQuestionComment>[],
-    this.auditQuestionPhotos = const <AuditQuestionPhoto>[],
     this.filteredQuestions = const <AuditQuestion>[],
     this.compliances = const <AuditCompliance>[],
     this.principles = const <Principle>[],
@@ -21,14 +19,14 @@ class AuditListQuestionsState extends Equatable {
     this.indicatorFilterId = -1,
     this.carFilterId = -1,
     this.criteriaFilterId = -1,
+    this.totalComments = 0,
+    this.totalPhotos = 0,
   });
 
   final Audit? audit;
   final List<AuditQuestion> questions;
   final List<AuditQuestionAnswer> answers;
   final List<AuditQuestion> filteredQuestions;
-  final List<AuditQuestionPhoto> auditQuestionPhotos;
-  final List<AuditQuestionComment> questionComments;
   final List<AuditCompliance> compliances;
   final List<RejectReason> rejectReasons;
   final List<Principle> principles;
@@ -42,14 +40,14 @@ class AuditListQuestionsState extends Equatable {
   final int carFilterId;
   final int criteriaFilterId;
   final int indicatorFilterId;
+  final int totalComments;
+  final int totalPhotos;
 
   AuditListQuestionsState copyWith({
     Audit? audit,
     List<RejectReason>? rejectReasons,
     List<AuditQuestion>? questions,
     List<AuditQuestion>? filteredQuestions,
-    List<AuditQuestionPhoto>? auditQuestionPhotos,
-    List<AuditQuestionComment>? questionComments,
     List<AuditQuestionAnswer>? answers,
     List<AuditCompliance>? compliances,
     List<Principle>? principles,
@@ -63,17 +61,17 @@ class AuditListQuestionsState extends Equatable {
     int? carFilterId,
     int? criteriaFilterId,
     int? indicatorFilterId,
+    int? totalComments,
+    int? totalPhotos,
   }) {
     return AuditListQuestionsState(
       rejectReasons: rejectReasons ?? this.rejectReasons,
       answers: answers ?? this.answers,
       impactOns: impactOns ?? this.impactOns,
-      questionComments: questionComments ?? this.questionComments,
       impactOnFilterId: impactOnFilterId ?? this.impactOnFilterId,
       incompleteFilter: incompleteFilter ?? this.incompleteFilter,
       questions: questions ?? this.questions,
       filteredQuestions: filteredQuestions ?? this.filteredQuestions,
-      auditQuestionPhotos: auditQuestionPhotos ?? this.auditQuestionPhotos,
       compliances: compliances ?? this.compliances,
       audit: audit ?? this.audit,
       cars: cars ?? this.cars,
@@ -84,6 +82,8 @@ class AuditListQuestionsState extends Equatable {
       carFilterId: carFilterId ?? this.carFilterId,
       criteriaFilterId: criteriaFilterId ?? this.criteriaFilterId,
       indicatorFilterId: indicatorFilterId ?? this.indicatorFilterId,
+      totalComments: totalComments ?? this.totalComments,
+      totalPhotos: totalPhotos ?? this.totalPhotos,
     );
   }
 
@@ -93,12 +93,10 @@ class AuditListQuestionsState extends Equatable {
     rejectReasons,
     answers,
     impactOns,
-    questionComments,
     impactOnFilterId,
     incompleteFilter,
     audit,
     questions,
-    auditQuestionPhotos,
     filteredQuestions,
     cars,
     principles,
@@ -108,5 +106,7 @@ class AuditListQuestionsState extends Equatable {
     principleFilterId,
     criteriaFilterId,
     indicatorFilterId,
+    totalPhotos,
+    totalComments,
   ];
 }
