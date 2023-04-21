@@ -42,35 +42,4 @@ class AuditQuestion with _$AuditQuestion {
   }) = _AuditQuestion;
 
   factory AuditQuestion.fromJson(Map<String, dynamic> json) => _$AuditQuestionFromJson(json);
-
-  factory AuditQuestion.generateMockData() {
-    final ids = <int>[1,2,3,4];
-    final randomQuestionId = ids[Random().nextInt(ids.length)];
-
-    return AuditQuestion(
-      auditId: DateTime.now().millisecondsSinceEpoch,
-      auditTemplateId: DateTime.now().millisecondsSinceEpoch,
-      questionId: randomQuestionId,
-      regionalManagerUnitId: 1,
-      severityId: 1,
-      isActive: true,
-      carId: 1,
-      carName: 'car name',
-      complianceId: -1,
-      complianceName: 'compliance name',
-      criteriaId: -1,
-      criteriaName: 'criteria name',
-      impactCausedId: 0,
-      impactCausedName: 'impactCausedName',
-      impactOnId: 0,
-      impactOnName: 'impactOnName',
-      indicatorId: -1,
-      indicatorName: 'indicator Name',
-      isQuestionComplete: 1,
-      principleId: -1,
-      principleName: 'principleName',
-      xBone: DateTime.now().millisecondsSinceEpoch % 2 == 0 ? true : false,
-      questionValue: 'questionValue',
-    );
-  }
 }

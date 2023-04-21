@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -28,4 +29,21 @@ class AuditQuestionAnswer with _$AuditQuestionAnswer {
   }) = _AuditQuestionAnswer;
 
   factory AuditQuestionAnswer.fromJson(Map<String, dynamic> json) => _$AuditQuestionAnswerFromJson(json);
+}
+
+extension AuditQuestionAnswerExtension on AuditQuestionAnswer {
+  AuditComplianceEnum get complianceEnum {
+    switch (complianceId) {
+      case 0:
+        return AuditComplianceEnum.unknown;
+      case 1:
+        return AuditComplianceEnum.n;
+      case 2:
+        return AuditComplianceEnum.nc;
+      case 3:
+        return AuditComplianceEnum.na;
+      default:
+        return AuditComplianceEnum.unknown;
+    }
+  }
 }

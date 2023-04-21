@@ -39,6 +39,8 @@ class AuditListPhotoScreen extends StatefulWidget {
 class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
   final ImagePickerService _imagePickerService = ImagePickerService();
 
+  bool loading = false;
+
   @override
   void initState() {
     super.initState();
@@ -53,11 +55,20 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
     final croppedImage = await _imagePickerService.pickImageFromCamera(title: DateTime.now().toString());
     if (croppedImage != null) {
       if (context.mounted) {
+
+        setState(() {
+          loading = true;
+        });
+
         await context.read<AuditQuestionPhotoCubit>().addPhoto(
               questionId: widget.auditQuestion.questionId,
               photoPath: croppedImage.path,
               photoName: DateTime.now().toString(),
             );
+
+        setState(() {
+          loading = false;
+        });
       }
     }
   }
@@ -67,6 +78,10 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
       title: DateTime.now().toString(),
     );
     if (croppedImage != null) {
+      setState(() {
+        loading = true;
+      });
+
       if (context.mounted) {
         await context.read<AuditQuestionPhotoCubit>().addPhoto(
               questionId: widget.auditQuestion.questionId,
@@ -74,12 +89,24 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
               photoName: DateTime.now().toString(),
             );
       }
+
+      setState(() {
+        loading = false;
+      });
     }
   }
 
   Future<void> _replacePhoto(AuditQuestionPhoto photo) async {
     if (context.mounted) {
+      setState(() {
+        loading = true;
+      });
+
       await context.read<AuditQuestionPhotoCubit>().replacePhoto(photo: photo);
+
+      setState(() {
+        loading = false;
+      });
     }
   }
 
@@ -163,6 +190,7 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
               child: CmoFilledButton(
                 onTap: () => Navigator.of(context).pop(snapshot.photos.isNotEmpty),
                 title: LocaleKeys.done.tr(),
+                loading: loading,
               ),
             ),
           ],

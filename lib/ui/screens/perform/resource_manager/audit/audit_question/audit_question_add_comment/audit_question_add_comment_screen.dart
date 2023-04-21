@@ -1,13 +1,11 @@
 import 'dart:async';
 
-import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
-import 'package:cmo/utils/validator.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,10 +43,6 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
   final _formKey = GlobalKey<FormBuilderState>();
 
   String commentValue = '';
-  String rejectReason = '';
-  int rejectId = -1;
-
-
   bool loading = false;
 
   @override
@@ -199,12 +193,6 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
                   if (id == -1) {
                     _formKey.currentState!.fields['rejectId']?.reset();
                   }
-
-                  setState(() {
-                    final reason = rejectReasons.firstWhereOrNull((element) => element.rejectReasonId == id)?.rejectReasonName;
-                    rejectReason = reason ?? LocaleKeys.reason.tr();
-                    rejectId = id ?? -1;
-                  });
                 },
                 itemsData: rejectReasons
                     .map(

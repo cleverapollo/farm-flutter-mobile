@@ -1,12 +1,10 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/data/audit_template.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
-import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -50,7 +48,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
   Future<void> onSubmit() async {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       var value = _formKey.currentState?.value;
-      var state = context.read<AuditCubit>().state;
+      final state = context.read<AuditCubit>().state;
 
       if (value == null) return;
       value = {...value};

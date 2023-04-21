@@ -1,4 +1,3 @@
-import 'package:cmo/enum/audit_compliance_type_enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -24,8 +23,8 @@ class AuditListQuestionsScreen extends StatefulWidget {
 
   final Audit audit;
 
-  static void push(BuildContext context, Audit audit) {
-    Navigator.of(context).push(
+  static Future<bool?> push(BuildContext context, Audit audit) {
+    return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => AuditListQuestionsScreen(audit: audit),
       ),
@@ -38,6 +37,7 @@ class AuditListQuestionsScreen extends StatefulWidget {
 
 class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
+
   bool loading = false;
 
   @override
@@ -56,7 +56,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
       auditQuestion: auditQuestion,
     );
 
-    if (result != null && result) {
+    if (result != null && result && context.mounted) {
       await context.read<AuditListQuestionsCubit>().markQuestionAnswerHasComment(auditQuestion);
     }
   }
@@ -66,7 +66,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   }) async {
     final result = await AuditListPhotoScreen.push(context, auditQuestion: auditQuestion);
 
-    if (result != null && result) {
+    if (result != null && result && context.mounted) {
       await context.read<AuditListQuestionsCubit>().markQuestionAnswerHasPhoto(auditQuestion);
     }
   }
@@ -75,54 +75,15 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     AuditQuestion question,
     AuditCompliance compliance,
   ) async {
-    switch (compliance.complianceEnum) {
-      case AuditComplianceEnum.n:
-      case AuditComplianceEnum.na:
-        await context.read<AuditListQuestionsCubit>().setAnswer(question, compliance);
-        return;
-      case AuditComplianceEnum.nc:
-        await context.read<AuditListQuestionsCubit>().setAnswer(question, compliance);
-        return;
-      case AuditComplianceEnum.unknown:
-        return;
+    await context.read<AuditListQuestionsCubit>().setAnswer(question, compliance);
+  }
+
+  Future<void> _saveQuestionAnswer() async {
+    await context.read<AuditListQuestionsCubit>().checkAuditQuestionComplete();
+
+    if (context.mounted) {
+      Navigator.of(context).pop(true);
     }
-    // final haveRejectReason = compliance;
-    // final hasRejectReason = compliance.hasRejectReason ?? false;
-    //
-    // // * raise comment when choose option have reject reason
-    // if (hasRejectReason) {
-    //   final rejectReasons =
-    //   context.read<AssessmentQuestionCubit>().getRejectReasons();
-    //
-    //   final comment = await AssessmentRaiseComment.push<QuestionComment?>(
-    //     context,
-    //     widget.assessment,
-    //     question,
-    //     compliance,
-    //     rejectReasons,
-    //   );
-    //   if (context.mounted) {
-    //     await context.read<AssessmentQuestionCubit>().addComment(
-    //       questionId: question.questionId,
-    //       commentValue: comment?.comment ?? '',
-    //     );
-    //   }
-    //
-    //   if (context.mounted && comment != null) {
-    //     await context.read<AssessmentQuestionCubit>().addCommentFromReasonCode(
-    //       comment,
-    //       question,
-    //       compliance,
-    //     );
-    //   }
-    // }
-    //
-    // if (context.mounted) {
-    //   await context.read<AssessmentQuestionCubit>().setAnswer(
-    //     question,
-    //     compliance,
-    //   );
-    // }
   }
 
   @override
@@ -239,6 +200,14 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
               ),
             ],
           ),
+          persistentFooterAlignment: AlignmentDirectional.center,
+          persistentFooterButtons: [
+            CmoFilledButton(
+              onTap: _saveQuestionAnswer,
+              title: LocaleKeys.save.tr(),
+              loading: loading,
+            ),
+          ],
         );
       },
     );

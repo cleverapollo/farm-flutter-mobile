@@ -1,15 +1,18 @@
-import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/state/audit_list_cubit/audit_list_cubit.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/dismissible_audit_item.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'dismissible_audit_item.dart';
-
 class AuditListIncomplete extends StatefulWidget {
-  const AuditListIncomplete({super.key});
+  const AuditListIncomplete({
+    super.key,
+    required this.onTap,
+  });
+
+  final void Function(Audit) onTap;
 
   @override
   State<AuditListIncomplete> createState() => _AuditListIncompleteState();
@@ -60,6 +63,7 @@ class _AuditListIncompleteState extends State<AuditListIncomplete> {
               final item = state.dataIncomplete[index];
               return DismissibleAuditItem(
                 audit: item,
+                onTapAudit: () => widget.onTap(item),
                 onRemove: () async {
                   await context.read<AuditListCubit>().removeAudit(item);
                 },

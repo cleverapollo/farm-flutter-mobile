@@ -11,17 +11,17 @@ class DismissibleAuditItem extends StatelessWidget {
     super.key,
     required this.audit,
     required this.onRemove,
+    required this.onTapAudit,
   });
 
   final Audit audit;
   final VoidCallback onRemove;
+  final VoidCallback onTapAudit;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        AuditListQuestionsScreen.push(context, audit);
-      },
+      onTap: onTapAudit,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 12.0),
         child: Dismissible(

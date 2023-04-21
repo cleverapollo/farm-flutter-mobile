@@ -1,4 +1,4 @@
-import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/foundation.dart';
@@ -8,7 +8,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/dismissible_audit_item.dart';
 
 class AuditListCompleted extends StatefulWidget {
-  const AuditListCompleted({super.key});
+  const AuditListCompleted({
+    super.key,
+    required this.onTap,
+  });
+
+  final void Function(Audit) onTap;
 
   @override
   State<AuditListCompleted> createState() => _AuditListCompletedState();
@@ -59,6 +64,7 @@ class _AuditListCompletedState extends State<AuditListCompleted> {
               final item = state.dataCompleted[index];
               return DismissibleAuditItem(
                 audit: item,
+                onTapAudit: () => widget.onTap(item),
                 onRemove: () async {
                   await context.read<AuditListCubit>().removeAudit(item);
                 },

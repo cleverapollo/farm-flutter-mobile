@@ -43,27 +43,11 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
         .toList();
   }
 
-  List<AuditQuestion> getAllQuestions() {
-    return state.questions;
-  }
-
-  List<RejectReason> getRejectReasons() {
-    return state.rejectReasons;
-  }
-
-  List<AuditQuestionAnswer> getAnswers() {
-    return state.answers;
-  }
-
   AuditQuestionAnswer? getAnswerByQuestionId(int? questionId) {
     if (questionId == null) return null;
     return state.answers.firstWhereOrNull(
       (e) => e.questionId != null && e.questionId == questionId,
     );
-  }
-
-  AuditQuestion getQuestion(int index) {
-    return state.filteredQuestions[index];
   }
 
   void setImpactOnFilter(int? id) {
@@ -248,111 +232,39 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     }
 
     await getListAuditQuestionAnswerWithAuditId();
-    //
-    // if (answer.complianceId == compliance.complianceId) {
-    //   logger.d(
-    //     'Answer complianceId: ${answer.complianceId} = ${compliance.complianceId}',
-    //   );
-    //   answer = answer.copyWith(assessmentId: 0);
-    //   logger.d(
-    //     'Remove answer for AssessmentId: ${answer.assessmentId} QuestionId: ${answer.questionId}',
-    //   );
-    //   answer = answer.copyWith(isQuestionComplete: 0);
-    //
-    //   await cmoDatabaseMasterService.removeQuestionAnswer(answer);
-    //   await checkIfAssessmentIscomplete();
-    // } else {
-    //   logger.d('Set answer complianceId to: ${compliance.complianceId}');
-    //   answer = answer.copyWith(complianceId: compliance.complianceId);
-    //   logger.d('Check compliance reject reason: ${compliance.hasRejectReason}');
-    //   await checkComplianceHasRejectReason(
-    //     compliance.hasRejectReason ?? false,
-    //     answer,
-    //   );
-    // }
   }
 
-  Future<void> checkComplianceHasRejectReason(
-      bool hasRejectReason,
-      QuestionAnswer? answerData,
-      ) async {
-    var answer = answerData;
-    final assessmentId = answer?.assessmentId;
-    final questionId = answer?.questionId;
-    if (answer == null || assessmentId == null || questionId == null) return;
-    if (hasRejectReason) {
-      logger.d(
-        'Check if has comments: ${await checkIfComments(assessmentId, questionId)}',
-      );
-      logger.d('Check reject reasonId: ${answer.rejectReasonId}');
-
-      if ((await checkIfComments(assessmentId, questionId)) &&
-          (answer.rejectReasonId ?? -1) > -1) {
-        logger.d('Question is complete');
-        answer = answer.copyWith(isQuestionComplete: 1);
-      } else {
-        logger.d('Question is not complete');
-        answer = answer.copyWith(isQuestionComplete: 0);
+  Future<void> checkAuditQuestionComplete() async {
+    final questions = state.questions;
+    var isAllQuestionCompleted = true;
+    for (final question in questions) {
+      var isQuestionComplete = false;
+      final answer = state.answers.firstWhereOrNull((e) => e.questionId == question.questionId);
+      if (answer != null) {
+        switch (answer.complianceEnum) {
+          case AuditComplianceEnum.n:
+          case AuditComplianceEnum.na:
+          isQuestionComplete = true;
+            break;
+          case AuditComplianceEnum.nc:
+            if ((answer.haveComment ?? false) && answer.rejectReasonId != null && answer.rejectReasonId != -1) {
+              isQuestionComplete = true;
+            }
+            break;
+          case AuditComplianceEnum.unknown:
+            break;
+        }
       }
-    } else {
-      logger.d('Question is complete');
-      answer = answer.copyWith(isQuestionComplete: 1);
+
+      if (isQuestionComplete) {
+        continue;
+      } else {
+        isAllQuestionCompleted = false;
+        break;
+      }
     }
-    logger.d(
-      'Add answer for AssessmentId: ${answer.assessmentId} QuestionId: ${answer.questionId}',
-    );
-    await cmoDatabaseMasterService.cacheQuestionAnswer(answer);
-    // final answers = await cmoDatabaseMasterService
-    //     .getQuestionAnswersByCompanyIdAndJobCategoryIdAndAssessmentId(
-    //   state.assessment?.companyId,
-    //   state.assessment?.jobCategoryId,
-    //   state.assessment?.assessmentId,
-    // );
-    // emit(state.copyWith(answers: answers));
-    await checkIfAssessmentIscomplete();
-  }
 
-  Future<bool> checkIfComments(int assessmentId, int questionId) async {
-    final comments = await cmoDatabaseMasterService.getQuestionComments(
-      assessmentId,
-      questionId,
-    );
-    return comments.isNotBlank;
-  }
-
-  Future<void> checkIfAssessmentIscomplete() async {
-    logger.d('Check if all questions are answered');
-    // final answered =
-    // getAnswers().where((x) => x.isQuestionComplete == 1).toList();
-    //
-    // logger.d('Answered count: ${answered.length}');
-    // final questionCount = getAllQuestions().length;
-    // logger.d('Question count: $questionCount');
-    //
-    // if (answered.length == questionCount) {
-    //   if (state.assessment?.completed != true) {
-    //     emit(
-    //       state.copyWith(
-    //         assessment: state.assessment?.copyWith(completed: true),
-    //       ),
-    //     );
-    //     if (state.assessment != null) {
-    //       await cmoDatabaseService.cacheAssessment(state.assessment!);
-    //     }
-    //   }
-    // } else {
-    //   final completed = state.assessment?.completed;
-    //   if (completed != null && completed == true) {
-    //     emit(
-    //       state.copyWith(
-    //         assessment: state.assessment?.copyWith(completed: false),
-    //       ),
-    //     );
-    //     if (state.assessment != null) {
-    //       await cmoDatabaseService.cacheAssessment(state.assessment!);
-    //     }
-    //   }
-    // }
+    await cmoDatabaseMasterService.cacheAudit(state.audit!.copyWith(completed: isAllQuestionCompleted));
   }
 
   void handleError(Object error) {

@@ -25,18 +25,6 @@ class AuditCompliance with _$AuditCompliance {
     @JsonKey(name: 'RejectReasonId') int? rejectReasonId,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
   }) = _AuditCompliance;
-
-  factory AuditCompliance.generateMockData() {
-    return AuditCompliance(
-      isActive: true,
-      complianceId: 1,
-      complianceName: 'compliance name',
-      auditTemplateId: 0,
-      hasRejectReason: true,
-      regionalManagerUnitId: 1,
-      rejectReasonId: 1,
-    );
-  }
 }
 
 extension AuditComplianceExtensions on AuditCompliance {
