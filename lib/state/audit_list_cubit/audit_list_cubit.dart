@@ -65,11 +65,9 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
   }
 
   Future<void> refresh() async {
-    await Future.wait([
-      loadIncomplete(),
-      loadCompleted(),
-      loadSynced(),
-    ]);
+    await loadIncomplete();
+    await loadCompleted();
+    await loadSynced();
   }
 
   @override

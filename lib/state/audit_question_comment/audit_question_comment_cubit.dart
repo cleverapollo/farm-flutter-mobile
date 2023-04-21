@@ -1,17 +1,9 @@
-import 'dart:ffi';
-
 import 'package:cmo/di.dart';
-import 'package:cmo/enum/enum.dart';
-import 'package:cmo/extensions/iterable_extensions.dart';
-import 'package:cmo/model/data/audit_compliance.dart';
-import 'package:cmo/model/data/audit_question_answer.dart';
 import 'package:cmo/model/data/audit_question_comment.dart';
-import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'audit_question_comment_state.dart';
@@ -23,9 +15,7 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
     required AuditQuestion auditQuestion,
   }) async {
     try {
-      logger.d('Initialise auditId: ${auditQuestion.auditId}');
       emit(state.copyWith(question: auditQuestion));
-
       final rejectReasons = await cmoDatabaseMasterService.getRejectReasons();
       emit(state.copyWith(rejectReasons: rejectReasons));
 

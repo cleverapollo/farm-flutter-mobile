@@ -14,7 +14,7 @@ class AuditListQuestionsState extends Equatable {
     this.criterias = const <Criteria>[],
     this.impactOns = const <ImpactOn>[],
     this.impactOnFilterId = -1,
-    this.incompleteFilter = 0,
+    this.incompleteFilter = 1,
     this.principleFilterId = -1,
     this.indicatorFilterId = -1,
     this.carFilterId = -1,

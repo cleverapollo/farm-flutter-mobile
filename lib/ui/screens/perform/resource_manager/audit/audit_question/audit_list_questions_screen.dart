@@ -80,7 +80,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
 
   Future<void> _saveQuestionAnswer() async {
     await context.read<AuditListQuestionsCubit>().checkAllAuditQuestionCompleted();
-
+    await context.read<AuditListCubit>().refresh();
     if (context.mounted) {
       Navigator.of(context).pop(true);
     }
@@ -105,16 +105,14 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
             children: [
               _buildFilterSection(),
               BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
-                selector: (state) {
-                  return state.incompleteFilter == 1;
-                },
+                selector: (state) => state.incompleteFilter == 0,
                 builder: (context, isComplete) => CmoHeaderTile(
                   title: isComplete ? LocaleKeys.completed.tr() : LocaleKeys.incomplete.tr(),
                   child: Row(
                     children: [
                       CmoTappable(
                         onTap: () {
-                          context.read<AuditListQuestionsCubit>().setIncompleteFilter(isComplete ? 0 : 1);
+                          context.read<AuditListQuestionsCubit>().setIncompleteFilter(isComplete ? 1 : 0);
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(left: 6.0),

@@ -77,7 +77,6 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
           );
 
           if (success && context.mounted) {
-            // context.read<AuditCubit>().cleanCache();
             Navigator.of(context).pop(true);
           }
         }

@@ -64,14 +64,12 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     if (state.indicatorFilterId > -1) {
       filterList = filterList.where((s) => s.indicatorId == state.indicatorFilterId).toList();
     }
-    if (state.incompleteFilter == 1) {
-      filterList = filterList
-          .where(
-            (s) => s.isQuestionComplete == 1,
-      )
-          .toList();
-    }
 
+    filterList = filterList
+        .where(
+          (s) => s.isQuestionComplete == state.incompleteFilter,
+        )
+        .toList();
 
     if (state.impactOnFilterId > -1) {
       filterList = filterList
@@ -114,14 +112,8 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       final rejectReasons = await cmoDatabaseMasterService.getRejectReasons();
       emit(state.copyWith(rejectReasons: rejectReasons));
 
-      await Future.wait([
-        getListAuditQuestion(),
-        getListAuditQuestionAnswerWithAuditId(),
-        getListAuditCompliances(),
-        getTotalCommentsAndPhotos(),
-        applyFilter(),
-      ]);
-
+      await getListAuditCompliances();
+      await refresh();
     } catch (error) {
       handleError(error);
     }
@@ -173,8 +165,8 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     final answer = state.answers.firstWhereOrNull((e) => e.questionId == question.questionId);
     if (answer == null) return;
     await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer.copyWith(haveComment: true));
-    await getListAuditQuestionAnswerWithAuditId();
-    await getTotalCommentsAndPhotos();
+    await refresh();
+    await markQuestionAnswerIsCompleted(question);
   }
 
   Future<void> markQuestionAnswerHasPhoto(
@@ -183,14 +175,13 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     final answer = state.answers.firstWhereOrNull((e) => e.questionId == question.questionId);
     if (answer == null) return;
     await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer.copyWith(havePhoto: true));
-    await getListAuditQuestionAnswerWithAuditId();
-    await getTotalCommentsAndPhotos();
+    await refresh();
   }
 
   Future<void> markQuestionAnswerIsCompleted(
       AuditQuestion question,
       ) async {
-    bool isComplete = false;
+    var isComplete = false;
     final answer = state.answers.firstWhereOrNull((e) => e.questionId == question.questionId);
     if (answer == null) return;
     switch (answer.complianceEnum) {
@@ -206,7 +197,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     }
 
     await cmoDatabaseMasterService.cacheAuditQuestion(question.copyWith(isQuestionComplete: isComplete ? 0 : 1));
-    await getListAuditQuestionAnswerWithAuditId();
+    await refresh();
   }
 
   Future<void> setAnswer(
@@ -225,41 +216,21 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     );
 
     await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer);
-    await markQuestionAnswerIsCompleted(question);
     await getListAuditQuestionAnswerWithAuditId();
+    await markQuestionAnswerIsCompleted(question);
+  }
+
+  Future<void> refresh() async {
+    await getListAuditQuestion();
+    await getListAuditQuestionAnswerWithAuditId();
+    await getTotalCommentsAndPhotos();
+    await applyFilter();
   }
 
   Future<void> checkAllAuditQuestionCompleted() async {
     final questions = state.questions;
-    var isAllQuestionCompleted = true;
-    for (final question in questions) {
-      var isQuestionComplete = false;
-      final answer = state.answers.firstWhereOrNull((e) => e.questionId == question.questionId);
-      if (answer != null) {
-        switch (answer.complianceEnum) {
-          case AuditComplianceEnum.n:
-          case AuditComplianceEnum.na:
-          isQuestionComplete = true;
-            break;
-          case AuditComplianceEnum.nc:
-            if ((answer.haveComment ?? false) && answer.rejectReasonId != null && answer.rejectReasonId != -1) {
-              isQuestionComplete = true;
-            }
-            break;
-          case AuditComplianceEnum.unknown:
-            break;
-        }
-      }
-
-      if (isQuestionComplete) {
-        continue;
-      } else {
-        isAllQuestionCompleted = false;
-        break;
-      }
-    }
-
-    await cmoDatabaseMasterService.cacheAudit(state.audit!.copyWith(completed: isAllQuestionCompleted));
+    final uncompletedQuestions = questions.firstWhereOrNull((element) => element.isQuestionComplete == 1, orElse: null);
+    await cmoDatabaseMasterService.cacheAudit(state.audit!.copyWith(completed: uncompletedQuestions == null));
   }
 
   void handleError(Object error) {
