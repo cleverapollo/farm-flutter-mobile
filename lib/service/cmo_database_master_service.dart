@@ -935,19 +935,30 @@ class CmoDatabaseMasterService {
     return <AuditQuestion>[];
   }
 
-  Future<List<AuditQuestionPhoto>> getAuditQuestionPhotosByAuditId(
+  Future<List<AuditQuestionPhoto>> getAuditQuestionPhotos({
     int? auditId,
-  ) async {
-    if (auditId == null) return <AuditQuestionPhoto>[];
-    final db = await _db();
+    int? questionId,
+  }) async {
+    try {
+      final db = await _db();
+      if (auditId == null) return <AuditQuestionPhoto>[];
 
-    return db.auditQuestionPhotos
-        .filter()
-        .auditIdIsNotNull()
-        .auditIdEqualTo(auditId)
-        .photoPathIsNotNull()
-        .photoPathIsNotEmpty()
-        .findAll();
+      var query = db.auditQuestionPhotos
+          .filter()
+          .auditIdIsNotNull()
+          .auditIdEqualTo(auditId)
+          .photoPathIsNotNull()
+          .photoPathIsNotEmpty();
+      if (questionId != null) {
+        query = query.questionIdEqualTo(questionId).questionIdIsNotNull();
+      }
+
+      return query.findAll();
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <AuditQuestionPhoto>[];
   }
 
   Future<List<AuditQuestionComment>> getAuditQuestionComments({
@@ -957,7 +968,12 @@ class CmoDatabaseMasterService {
     try {
       final db = await _db();
       if (auditId == null) return <AuditQuestionComment>[];
-      var query = db.auditQuestionComments.filter().auditIdEqualTo(auditId).commentIsNotNull().commentIsNotEmpty();
+      var query = db.auditQuestionComments
+          .filter()
+          .auditIdIsNotNull()
+          .auditIdEqualTo(auditId)
+          .commentIsNotNull()
+          .commentIsNotEmpty();
       if (questionId != null) {
         query = query.questionIdEqualTo(questionId).questionIdIsNotNull();
       }

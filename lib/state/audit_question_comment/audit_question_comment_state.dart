@@ -2,14 +2,12 @@ part of 'audit_question_comment_cubit.dart';
 
 class AuditQuestionCommentState extends Equatable {
   const AuditQuestionCommentState({
-    this.audit,
     this.question,
     this.questionComment,
     this.loading = false,
     this.rejectReasons = const <RejectReason>[],
   });
 
-  final Audit? audit;
   final AuditQuestion? question;
   final AuditQuestionComment? questionComment;
   final bool loading;
@@ -28,13 +26,11 @@ class AuditQuestionCommentState extends Equatable {
       questionComment: questionComment ?? this.questionComment,
       loading: loading ?? this.loading,
       rejectReasons: rejectReasons ?? this.rejectReasons,
-      audit: audit ?? this.audit,
     );
   }
 
   @override
   List<Object?> get props => [
-    audit,
     question,
     questionComment,
     loading,

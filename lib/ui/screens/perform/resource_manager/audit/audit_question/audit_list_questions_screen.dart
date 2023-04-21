@@ -49,7 +49,6 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   }
 
   Future<void> _viewComment({
-    required int? questionId,
     required AuditQuestion auditQuestion,
   }) async {
     final result = await AuditQuestionAddCommentScreen.push(
@@ -63,9 +62,13 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   }
 
   Future<void> _viewListPhoto({
-    required int? questionId,
+    required AuditQuestion auditQuestion,
   }) async {
-    AuditListPhotoScreen.push(context, questionId: questionId);
+    final result = await AuditListPhotoScreen.push(context, auditQuestion: auditQuestion);
+
+    if (result != null && result) {
+      await context.read<AuditListQuestionsCubit>().markQuestionAnswerHasPhoto(auditQuestion);
+    }
   }
 
   Future<void> _addAnswer(
@@ -217,12 +220,11 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                       },
                       viewListPhoto: () {
                         _viewListPhoto(
-                          questionId: question.questionId,
+                          auditQuestion: question,
                         );
                       },
                       viewComment: () {
                         _viewComment(
-                          questionId: question.questionId,
                           auditQuestion: question,
                         );
                       },

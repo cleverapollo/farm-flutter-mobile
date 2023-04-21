@@ -120,7 +120,10 @@ class _AuditQuestionsPhotoDetailScreenState extends State<AuditQuestionsPhotoDet
           alignment: Alignment.topCenter,
           padding: const EdgeInsets.only(top: 12),
           child: CmoFilledButton(
-            onTap: () => widget.savePhoto(auditPhoto),
+            onTap: () {
+              widget.savePhoto(auditPhoto);
+              Navigator.of(context).pop();
+            },
             title: LocaleKeys.save.tr(),
           ),
         ),

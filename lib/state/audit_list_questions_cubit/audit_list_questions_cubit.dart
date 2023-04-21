@@ -1,14 +1,6 @@
-import 'dart:ffi';
-import 'dart:ui';
-
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
-import 'package:cmo/model/data/audit_compliance.dart';
-import 'package:cmo/model/data/audit_question_answer.dart';
-import 'package:cmo/model/data/audit_question_comment.dart';
-import 'package:cmo/model/data/question_comment.dart';
-import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:equatable/equatable.dart';
@@ -173,8 +165,6 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       await Future.wait([
         getListAuditQuestionWithAuditTemplate(),
         getListAuditQuestionAnswerWithAuditId(),
-        getListAuditQuestionPhotosWithAuditId(),
-        getListAuditQuestionCommentsWithAuditId(),
         getListAuditCompliances(),
         applyFilter(),
       ]);
@@ -198,19 +188,6 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     emit(state.copyWith(answers: answers));
   }
 
-  Future<void> getListAuditQuestionCommentsWithAuditId() async {
-    final questionComments = await cmoDatabaseMasterService.getAuditQuestionComments(
-      auditId: state.audit?.auditId,
-    );
-
-    emit(state.copyWith(questionComments: questionComments));
-  }
-
-  Future<void> getListAuditQuestionPhotosWithAuditId() async {
-    final auditQuestionPhoto = await cmoDatabaseMasterService.getAuditQuestionPhotosByAuditId(state.audit?.auditId);
-    emit(state.copyWith(auditQuestionPhotos: auditQuestionPhoto));
-  }
-
   Future<void> getListAuditCompliances() async {
     final compliances = <AuditCompliance>[
       AuditCompliance(complianceId: AuditComplianceEnum.n.data, complianceName: AuditComplianceEnum.n.valueName),
@@ -221,28 +198,21 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     emit(state.copyWith(compliances: compliances));
   }
 
-  Future<void> addCommentFromReasonCode(
-      QuestionComment comment,
-      CompanyQuestion question,
-      Compliance compliance,
-      ) async {
-    // final answer = state.answers
-    //     .firstWhereOrNull((e) => e.questionId == question.questionId);
-    //
-    // await cmoDatabaseMasterService.cacheQuestionComment(comment);
-    //
-    // await checkComplianceHasRejectReason(
-    //   compliance.hasRejectReason ?? false,
-    //   answer,
-    // );
-  }
-
   Future<void> markQuestionAnswerHasComment(
       AuditQuestion question,
   ) async {
     final answer = state.answers.firstWhereOrNull((e) => e.questionId == question.questionId);
     if (answer == null) return;
     await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer.copyWith(haveComment: true));
+    await getListAuditQuestionAnswerWithAuditId();
+  }
+
+  Future<void> markQuestionAnswerHasPhoto(
+      AuditQuestion question,
+      ) async {
+    final answer = state.answers.firstWhereOrNull((e) => e.questionId == question.questionId);
+    if (answer == null) return;
+    await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer.copyWith(havePhoto: true));
     await getListAuditQuestionAnswerWithAuditId();
   }
 
@@ -383,34 +353,6 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     //     }
     //   }
     // }
-  }
-
-  Future<AuditQuestionPhoto?> addPhoto({
-    required int? questionId,
-    required String photoPath,
-    required String photoName,
-  }) async {
-    final audit = state.audit;
-    final photo = AuditQuestionPhoto(
-      auditId: audit?.auditId,
-      photoPath: photoPath,
-      questionId: questionId,
-      photoId: DateTime.now().millisecondsSinceEpoch,
-      photoName: photoName,
-    );
-    await cmoDatabaseMasterService.cacheAuditQuestionPhoto(photo);
-    final photoData = await cmoDatabaseMasterService.getAuditQuestionPhotoByPhotoPath(photoPath);
-    if (photoData != null) {
-      emit(
-        state.copyWith(
-          auditQuestionPhotos: [
-            ...state.auditQuestionPhotos,
-            photoData,
-          ],
-        ),
-      );
-    }
-    return photoData;
   }
 
   void handleError(Object error) {
