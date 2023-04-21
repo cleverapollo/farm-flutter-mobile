@@ -20,6 +20,7 @@
   "auditTemplate": "Modèle d'audit",
   "audit_s": "Audit/s",
   "audits": "Audits",
+  "audit": "Audit",
   "budget": "Budget",
   "budgetName": "Nom du budget",
   "camp": "Camp",
@@ -184,7 +185,7 @@
   "survival": "Survie",
   "sync": "Synchroniser",
   "syncSummary": "Résumé de la synchronisation",
-  "synced": "synchronisé",
+  "synced": "Synchronisé",
   "takePhoto": "Prendre une photo",
   "team": "Équipe",
   "termsConditions": "Termes et conditions",
@@ -207,9 +208,13 @@
   "zulu": "Zoulou",
   "removeAssessment": "Remove assessment",
   "removeAssessmentAlertContent": "Are you sure you want to remove this assessment?",
+  "removeAudit": "Remove audit",
+  "removeAuditAlertContent": "Are you sure you want to remove this audit?",
   "ok": "ok",
   "cancel": "cancel",
   "enter": "Enter",
   "type": "Type",
-  "select": "Select"
+  "select": "Select",
+  "retakePhoto": "Retake photo",
+  "reselectPhoto": "Reselect photo"
 }

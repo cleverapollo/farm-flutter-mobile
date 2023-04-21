@@ -14,6 +14,7 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onTapLeading,
     this.trailing,
     this.onTapTrailing,
+    this.subtitleTextStyle,
   });
 
   final String title;
@@ -27,6 +28,8 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? trailing;
 
   final VoidCallback? onTapTrailing;
+
+  final TextStyle? subtitleTextStyle;
 
   @override
   Size get preferredSize => Size.fromHeight(subtitle != null ? _h2 : _h1);
@@ -51,7 +54,7 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
             subtitle!,
             maxLines: 1,
             textAlign: TextAlign.center,
-            style: context.textStyles.bodyBold
+            style: subtitleTextStyle ?? context.textStyles.bodyBold
                 .copyWith(color: context.colors.blue),
           )
         ],

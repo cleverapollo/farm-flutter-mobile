@@ -19,6 +19,7 @@ abstract class _AppColor {
   static const yellow = Color(0xFFFFC122);
 
   static const shadow = Color(0x40000000);
+  static const greyD9D9 = Color(0xFFD9D9D9);
 }
 
 extension BuildContextExt on BuildContext {
@@ -78,6 +79,7 @@ class ColorThemeExt extends ThemeExtension<ColorThemeExt> {
   final green = _AppColor.green;
   final yellow = _AppColor.yellow;
   final shadow = _AppColor.shadow;
+  final greyD9D9 = _AppColor.greyD9D9;
 
   @override
   ThemeExtension<ColorThemeExt> copyWith() => this;
@@ -135,6 +137,7 @@ extension TextStyleExt on TextStyle {
   TextStyle get black => copyWith(color: _AppColor.black);
   TextStyle get greyLight1 => copyWith(color: _AppColor.greyLight1);
   TextStyle get grey => copyWith(color: _AppColor.grey);
+  TextStyle get blueDark2 => copyWith(color: _AppColor.blueDark2);
 }
 
 extension SvgGen on SvgGenImage {

@@ -14,6 +14,12 @@ class CmoDatabaseService {
     final isar = await Isar.open([
       CompanySchema,
       AssessmentSchema,
+      AuditSchema,
+      StakeHolderSchema,
+      AuditQuestionSchema,
+      AuditQuestionPhotoSchema,
+      AuditQuestionCommentSchema,
+      AuditQuestionAnswerSchema,
     ]);
     _database = isar;
     return isar;

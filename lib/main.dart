@@ -36,7 +36,7 @@ Future<void> main() async {
   await registerGetIt();
   await deviceInfoService.init();
   await cmoDatabaseService.db;
-
+  await cmoDatabaseMasterService.db;
   Bloc.observer = CmoGlobalObserver();
 
   runApp(
@@ -65,6 +65,11 @@ class CmoApp extends StatelessWidget {
         BlocProvider(create: (_) => AssessmentListCubit()),
         BlocProvider(create: (_) => AssessmentCubit()),
         BlocProvider(create: (_) => AssessmentQuestionCubit()),
+        BlocProvider(create: (_) => AuditCubit()),
+        BlocProvider(create: (_) => AuditListCubit()),
+        BlocProvider(create: (_) => AuditListQuestionsCubit()),
+        BlocProvider(create: (_) => AuditQuestionCommentCubit()),
+        BlocProvider(create: (_) => AuditQuestionPhotoCubit()),
       ],
       child: MaterialApp(
         title: 'CMO',

@@ -20,6 +20,7 @@
   "auditTemplate": "Templat Audit",
   "audit_s": "Audit",
   "audits": "Audit",
+  "audit": "Audit",
   "budget": "Bajet/Belanjawan",
   "budgetName": "Nama Bajet/Belanjawan",
   "camp": "Kem",
@@ -209,9 +210,13 @@
   "zulu": "Zulu",
   "removeAssessment": "Remove assessment",
   "removeAssessmentAlertContent": "Are you sure you want to remove this assessment?",
+  "removeAudit": "Remove audit",
+  "removeAuditAlertContent": "Are you sure you want to remove this audit?",
   "ok": "ok",
   "cancel": "cancel",
   "enter": "Enter",
   "type": "Type",
-  "select": "Select"
+  "select": "Select",
+  "retakePhoto": "Retake photo",
+  "reselectPhoto": "Reselect photo"
 }

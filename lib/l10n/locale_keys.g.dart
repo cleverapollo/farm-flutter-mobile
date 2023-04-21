@@ -21,6 +21,7 @@ abstract class  LocaleKeys {
   static const assessments = 'assessments';
   static const auditTemplate = 'auditTemplate';
   static const audit_s = 'audit_s';
+  static const audit = 'audit';
   static const audits = 'audits';
   static const budget = 'budget';
   static const budgetName = 'budgetName';
@@ -158,6 +159,8 @@ abstract class  LocaleKeys {
   static const remove = 'remove';
   static const resourceManagementUnit = 'resourceManagementUnit';
   static const retake = 'retake';
+  static const retakePhoto = 'retakePhoto';
+  static const reselectPhoto = 'reselectPhoto';
   static const rotation = 'rotation';
   static const save = 'save';
   static const search = 'search';
@@ -209,6 +212,8 @@ abstract class  LocaleKeys {
   static const zulu = 'zulu';
   static const removeAssessment = 'removeAssessment';
   static const removeAssessmentAlertContent = 'removeAssessmentAlertContent';
+  static const removeAudit = 'removeAudit';
+  static const removeAuditAlertContent = 'removeAuditAlertContent';
   static const ok = 'ok';
   static const cancel = 'cancel';
   static const enter = 'enter';

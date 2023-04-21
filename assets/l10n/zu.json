@@ -186,7 +186,7 @@
   "survival": "Survival",
   "sync": "Sync",
   "syncSummary": "Sync Summary",
-  "synced": "synced",
+  "synced": "Synced",
   "takePhoto": "thatha isithombe",
   "team": "iqembu",
   "termsConditions": "Terms & Conditions",
@@ -209,9 +209,14 @@
   "zulu": "Isizulu",
   "removeAssessment": "Remove assessment",
   "removeAssessmentAlertContent": "Are you sure you want to remove this assessment?",
+  "removeAudit": "Remove audit",
+  "removeAuditAlertContent": "Are you sure you want to remove this audit?",
   "ok": "ok",
   "cancel": "cancel",
   "enter": "Enter",
   "type": "Type",
-  "select": "Select"
+  "select": "Select",
+  "audit": "Audit",
+  "retakePhoto": "Retake photo",
+  "reselectPhoto": "Reselect photo"
 }
