@@ -44,3 +44,4 @@ export 'data/audit_compliance.dart';
 export 'data/audit_question_answer.dart';
 export 'data/audit_question_comment.dart';
 export 'data/audit_question_photo.dart';
+export 'annual_production/annual_production.dart';

@@ -138,6 +138,7 @@ extension TextStyleExt on TextStyle {
   TextStyle get greyLight1 => copyWith(color: _AppColor.greyLight1);
   TextStyle get grey => copyWith(color: _AppColor.grey);
   TextStyle get blueDark2 => copyWith(color: _AppColor.blueDark2);
+  TextStyle get blue => copyWith(color: _AppColor.blue);
 }
 
 extension SvgGen on SvgGenImage {
