@@ -11,9 +11,11 @@ import 'package:cmo/ui/screens/behave/assessment/assessment_add_screen.dart';
 import 'package:cmo/ui/screens/behave/create_worker/worker_add_screen.dart';
 import 'package:cmo/ui/screens/onboarding/login/login_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_production_management_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/camp_management/camp_management_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/add_audit/audit_add_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/create_new_stake_holder_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/compartments/compartment_screen.dart';
 import 'package:cmo/ui/screens/setting/legal/legal_screen.dart';
 import 'package:cmo/ui/screens/setting/settings_screen.dart';
 import 'package:cmo/ui/screens/setting/support/support_screen.dart';
@@ -72,7 +74,11 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
           context,
           title: LocaleKeys.labourManagement.tr(),
         ),
-        buildOption(context, title: LocaleKeys.campManagement.tr()),
+        buildOption(
+          context,
+          title: LocaleKeys.campManagement.tr(),
+          onTap: () => CampManagementScreen.push(context),
+        ),
         buildOption(
           context,
           title: LocaleKeys.annualProduction.tr(),
@@ -81,7 +87,10 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
             AnnualProductionManagementScreen.push(context);
           },
         ),
-        buildHeader(context, title: LocaleKeys.compartments.tr()),
+        GestureDetector(
+          onTap: () => CompartmentScreen.push(context),
+          child: buildHeader(context, title: LocaleKeys.compartments.tr()),
+        ),
         const SizedBox(height: 7),
         const _Divider(),
         buildHeader(context, title: LocaleKeys.stakeholders.tr()),
