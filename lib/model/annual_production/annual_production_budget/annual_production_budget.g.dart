@@ -28,9 +28,9 @@ const AnnualProductionBudgetSchema = CollectionSchema(
       name: r'annualBudgetName',
       type: IsarType.string,
     ),
-    r'annualFarmProductionId': PropertySchema(
+    r'annualProductionId': PropertySchema(
       id: 2,
-      name: r'annualFarmProductionId',
+      name: r'annualProductionId',
       type: IsarType.long,
     ),
     r'balanceAmount': PropertySchema(
@@ -38,33 +38,48 @@ const AnnualProductionBudgetSchema = CollectionSchema(
       name: r'balanceAmount',
       type: IsarType.double,
     ),
-    r'expenseAmount': PropertySchema(
+    r'createDT': PropertySchema(
       id: 4,
+      name: r'createDT',
+      type: IsarType.string,
+    ),
+    r'expenseAmount': PropertySchema(
+      id: 5,
       name: r'expenseAmount',
       type: IsarType.double,
     ),
     r'farmId': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'farmId',
       type: IsarType.long,
     ),
     r'incomeAmount': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'incomeAmount',
       type: IsarType.double,
     ),
     r'isActive': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'isActive',
       type: IsarType.bool,
     ),
     r'isLocal': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'isLocal',
       type: IsarType.bool,
     ),
+    r'transactionBudgetName': PropertySchema(
+      id: 10,
+      name: r'transactionBudgetName',
+      type: IsarType.string,
+    ),
+    r'transactionBudgetYear': PropertySchema(
+      id: 11,
+      name: r'transactionBudgetYear',
+      type: IsarType.long,
+    ),
     r'year': PropertySchema(
-      id: 9,
+      id: 12,
       name: r'year',
       type: IsarType.long,
     )
@@ -95,6 +110,18 @@ int _annualProductionBudgetEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  {
+    final value = object.createDT;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.transactionBudgetName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -106,14 +133,17 @@ void _annualProductionBudgetSerialize(
 ) {
   writer.writeLong(offsets[0], object.annualBudgetId);
   writer.writeString(offsets[1], object.annualBudgetName);
-  writer.writeLong(offsets[2], object.annualFarmProductionId);
+  writer.writeLong(offsets[2], object.annualProductionId);
   writer.writeDouble(offsets[3], object.balanceAmount);
-  writer.writeDouble(offsets[4], object.expenseAmount);
-  writer.writeLong(offsets[5], object.farmId);
-  writer.writeDouble(offsets[6], object.incomeAmount);
-  writer.writeBool(offsets[7], object.isActive);
-  writer.writeBool(offsets[8], object.isLocal);
-  writer.writeLong(offsets[9], object.year);
+  writer.writeString(offsets[4], object.createDT);
+  writer.writeDouble(offsets[5], object.expenseAmount);
+  writer.writeLong(offsets[6], object.farmId);
+  writer.writeDouble(offsets[7], object.incomeAmount);
+  writer.writeBool(offsets[8], object.isActive);
+  writer.writeBool(offsets[9], object.isLocal);
+  writer.writeString(offsets[10], object.transactionBudgetName);
+  writer.writeLong(offsets[11], object.transactionBudgetYear);
+  writer.writeLong(offsets[12], object.year);
 }
 
 AnnualProductionBudget _annualProductionBudgetDeserialize(
@@ -125,14 +155,17 @@ AnnualProductionBudget _annualProductionBudgetDeserialize(
   final object = AnnualProductionBudget(
     annualBudgetId: reader.readLongOrNull(offsets[0]),
     annualBudgetName: reader.readStringOrNull(offsets[1]),
-    annualFarmProductionId: reader.readLongOrNull(offsets[2]),
+    annualProductionId: reader.readLongOrNull(offsets[2]),
     balanceAmount: reader.readDoubleOrNull(offsets[3]),
-    expenseAmount: reader.readDoubleOrNull(offsets[4]),
-    farmId: reader.readLongOrNull(offsets[5]),
-    incomeAmount: reader.readDoubleOrNull(offsets[6]),
-    isActive: reader.readBoolOrNull(offsets[7]),
-    isLocal: reader.readBoolOrNull(offsets[8]),
-    year: reader.readLongOrNull(offsets[9]),
+    createDT: reader.readStringOrNull(offsets[4]),
+    expenseAmount: reader.readDoubleOrNull(offsets[5]),
+    farmId: reader.readLongOrNull(offsets[6]),
+    incomeAmount: reader.readDoubleOrNull(offsets[7]),
+    isActive: reader.readBoolOrNull(offsets[8]),
+    isLocal: reader.readBoolOrNull(offsets[9]),
+    transactionBudgetName: reader.readStringOrNull(offsets[10]),
+    transactionBudgetYear: reader.readLongOrNull(offsets[11]),
+    year: reader.readLongOrNull(offsets[12]),
   );
   return object;
 }
@@ -153,16 +186,22 @@ P _annualProductionBudgetDeserializeProp<P>(
     case 3:
       return (reader.readDoubleOrNull(offset)) as P;
     case 4:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readLongOrNull(offset)) as P;
-    case 6:
       return (reader.readDoubleOrNull(offset)) as P;
+    case 6:
+      return (reader.readLongOrNull(offset)) as P;
     case 7:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 8:
       return (reader.readBoolOrNull(offset)) as P;
     case 9:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 10:
+      return (reader.readStringOrNull(offset)) as P;
+    case 11:
+      return (reader.readLongOrNull(offset)) as P;
+    case 12:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -495,63 +534,63 @@ extension AnnualProductionBudgetQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
-      QAfterFilterCondition> annualFarmProductionIdIsNull() {
+      QAfterFilterCondition> annualProductionIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'annualFarmProductionId',
+        property: r'annualProductionId',
       ));
     });
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
-      QAfterFilterCondition> annualFarmProductionIdIsNotNull() {
+      QAfterFilterCondition> annualProductionIdIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'annualFarmProductionId',
+        property: r'annualProductionId',
       ));
     });
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
-      QAfterFilterCondition> annualFarmProductionIdEqualTo(int? value) {
+      QAfterFilterCondition> annualProductionIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'annualFarmProductionId',
+        property: r'annualProductionId',
         value: value,
       ));
     });
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
-      QAfterFilterCondition> annualFarmProductionIdGreaterThan(
+      QAfterFilterCondition> annualProductionIdGreaterThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'annualFarmProductionId',
+        property: r'annualProductionId',
         value: value,
       ));
     });
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
-      QAfterFilterCondition> annualFarmProductionIdLessThan(
+      QAfterFilterCondition> annualProductionIdLessThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'annualFarmProductionId',
+        property: r'annualProductionId',
         value: value,
       ));
     });
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
-      QAfterFilterCondition> annualFarmProductionIdBetween(
+      QAfterFilterCondition> annualProductionIdBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
@@ -559,7 +598,7 @@ extension AnnualProductionBudgetQueryFilter on QueryBuilder<
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'annualFarmProductionId',
+        property: r'annualProductionId',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -648,6 +687,162 @@ extension AnnualProductionBudgetQueryFilter on QueryBuilder<
         upper: upper,
         includeUpper: includeUpper,
         epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> createDTIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'createDT',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> createDTIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'createDT',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> createDTEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createDT',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> createDTGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'createDT',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> createDTLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'createDT',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> createDTBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'createDT',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> createDTStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'createDT',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> createDTEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'createDT',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+          QAfterFilterCondition>
+      createDTContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'createDT',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+          QAfterFilterCondition>
+      createDTMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'createDT',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> createDTIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createDT',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> createDTIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'createDT',
+        value: '',
       ));
     });
   }
@@ -1007,6 +1202,237 @@ extension AnnualProductionBudgetQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'transactionBudgetName',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'transactionBudgetName',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'transactionBudgetName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'transactionBudgetName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'transactionBudgetName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'transactionBudgetName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'transactionBudgetName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'transactionBudgetName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+          QAfterFilterCondition>
+      transactionBudgetNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'transactionBudgetName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+          QAfterFilterCondition>
+      transactionBudgetNameMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'transactionBudgetName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'transactionBudgetName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'transactionBudgetName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetYearIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'transactionBudgetYear',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetYearIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'transactionBudgetYear',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetYearEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'transactionBudgetYear',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetYearGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'transactionBudgetYear',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetYearLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'transactionBudgetYear',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
+      QAfterFilterCondition> transactionBudgetYearBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'transactionBudgetYear',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget,
       QAfterFilterCondition> yearIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1118,16 +1544,16 @@ extension AnnualProductionBudgetQuerySortBy
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
-      sortByAnnualFarmProductionId() {
+      sortByAnnualProductionId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'annualFarmProductionId', Sort.asc);
+      return query.addSortBy(r'annualProductionId', Sort.asc);
     });
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
-      sortByAnnualFarmProductionIdDesc() {
+      sortByAnnualProductionIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'annualFarmProductionId', Sort.desc);
+      return query.addSortBy(r'annualProductionId', Sort.desc);
     });
   }
 
@@ -1142,6 +1568,20 @@ extension AnnualProductionBudgetQuerySortBy
       sortByBalanceAmountDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'balanceAmount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
+      sortByCreateDT() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createDT', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
+      sortByCreateDTDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createDT', Sort.desc);
     });
   }
 
@@ -1216,6 +1656,34 @@ extension AnnualProductionBudgetQuerySortBy
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
+      sortByTransactionBudgetName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transactionBudgetName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
+      sortByTransactionBudgetNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transactionBudgetName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
+      sortByTransactionBudgetYear() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transactionBudgetYear', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
+      sortByTransactionBudgetYearDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transactionBudgetYear', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
       sortByYear() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'year', Sort.asc);
@@ -1261,16 +1729,16 @@ extension AnnualProductionBudgetQuerySortThenBy on QueryBuilder<
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
-      thenByAnnualFarmProductionId() {
+      thenByAnnualProductionId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'annualFarmProductionId', Sort.asc);
+      return query.addSortBy(r'annualProductionId', Sort.asc);
     });
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
-      thenByAnnualFarmProductionIdDesc() {
+      thenByAnnualProductionIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'annualFarmProductionId', Sort.desc);
+      return query.addSortBy(r'annualProductionId', Sort.desc);
     });
   }
 
@@ -1285,6 +1753,20 @@ extension AnnualProductionBudgetQuerySortThenBy on QueryBuilder<
       thenByBalanceAmountDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'balanceAmount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
+      thenByCreateDT() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createDT', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
+      thenByCreateDTDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createDT', Sort.desc);
     });
   }
 
@@ -1373,6 +1855,34 @@ extension AnnualProductionBudgetQuerySortThenBy on QueryBuilder<
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
+      thenByTransactionBudgetName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transactionBudgetName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
+      thenByTransactionBudgetNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transactionBudgetName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
+      thenByTransactionBudgetYear() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transactionBudgetYear', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
+      thenByTransactionBudgetYearDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transactionBudgetYear', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QAfterSortBy>
       thenByYear() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'year', Sort.asc);
@@ -1405,9 +1915,9 @@ extension AnnualProductionBudgetQueryWhereDistinct
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QDistinct>
-      distinctByAnnualFarmProductionId() {
+      distinctByAnnualProductionId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'annualFarmProductionId');
+      return query.addDistinctBy(r'annualProductionId');
     });
   }
 
@@ -1415,6 +1925,13 @@ extension AnnualProductionBudgetQueryWhereDistinct
       distinctByBalanceAmount() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'balanceAmount');
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QDistinct>
+      distinctByCreateDT({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'createDT', caseSensitive: caseSensitive);
     });
   }
 
@@ -1454,6 +1971,21 @@ extension AnnualProductionBudgetQueryWhereDistinct
   }
 
   QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QDistinct>
+      distinctByTransactionBudgetName({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'transactionBudgetName',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QDistinct>
+      distinctByTransactionBudgetYear() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'transactionBudgetYear');
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, AnnualProductionBudget, QDistinct>
       distinctByYear() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'year');
@@ -1484,9 +2016,9 @@ extension AnnualProductionBudgetQueryProperty on QueryBuilder<
   }
 
   QueryBuilder<AnnualProductionBudget, int?, QQueryOperations>
-      annualFarmProductionIdProperty() {
+      annualProductionIdProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'annualFarmProductionId');
+      return query.addPropertyName(r'annualProductionId');
     });
   }
 
@@ -1494,6 +2026,13 @@ extension AnnualProductionBudgetQueryProperty on QueryBuilder<
       balanceAmountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'balanceAmount');
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, String?, QQueryOperations>
+      createDTProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'createDT');
     });
   }
 
@@ -1532,6 +2071,20 @@ extension AnnualProductionBudgetQueryProperty on QueryBuilder<
     });
   }
 
+  QueryBuilder<AnnualProductionBudget, String?, QQueryOperations>
+      transactionBudgetNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'transactionBudgetName');
+    });
+  }
+
+  QueryBuilder<AnnualProductionBudget, int?, QQueryOperations>
+      transactionBudgetYearProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'transactionBudgetYear');
+    });
+  }
+
   QueryBuilder<AnnualProductionBudget, int?, QQueryOperations> yearProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'year');
@@ -1549,11 +2102,14 @@ _$_AnnualProductionBudget _$$_AnnualProductionBudgetFromJson(
       farmId: json['FarmId'] as int?,
       annualBudgetId: json['AnnualBudgetId'] as int?,
       annualBudgetName: json['AnnualBudgetName'] as String?,
-      annualFarmProductionId: json['AnnualFarmProductionId'] as int?,
+      annualProductionId: json['AnnualProductionId'] as int?,
       year: json['Year'] as int?,
       incomeAmount: (json['IncomeAmount'] as num?)?.toDouble(),
       expenseAmount: (json['ExpenseAmount'] as num?)?.toDouble(),
       balanceAmount: (json['BalanceAmount'] as num?)?.toDouble(),
+      transactionBudgetName: json['TransactionBudgetName'] as String?,
+      transactionBudgetYear: json['TransactionBudgetYear'] as int?,
+      createDT: json['CreateDT'] as String?,
       isActive: json['IsActive'] as bool? ?? true,
       isLocal: json['IsLocal'] as bool? ?? true,
     );
@@ -1564,11 +2120,14 @@ Map<String, dynamic> _$$_AnnualProductionBudgetToJson(
       'FarmId': instance.farmId,
       'AnnualBudgetId': instance.annualBudgetId,
       'AnnualBudgetName': instance.annualBudgetName,
-      'AnnualFarmProductionId': instance.annualFarmProductionId,
+      'AnnualProductionId': instance.annualProductionId,
       'Year': instance.year,
       'IncomeAmount': instance.incomeAmount,
       'ExpenseAmount': instance.expenseAmount,
       'BalanceAmount': instance.balanceAmount,
+      'TransactionBudgetName': instance.transactionBudgetName,
+      'TransactionBudgetYear': instance.transactionBudgetYear,
+      'CreateDT': instance.createDT,
       'IsActive': instance.isActive,
       'IsLocal': instance.isLocal,
     };

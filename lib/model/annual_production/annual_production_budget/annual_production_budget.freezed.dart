@@ -27,8 +27,8 @@ mixin _$AnnualProductionBudget {
   int? get annualBudgetId => throw _privateConstructorUsedError;
   @JsonKey(name: 'AnnualBudgetName')
   String? get annualBudgetName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'AnnualFarmProductionId')
-  int? get annualFarmProductionId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'AnnualProductionId')
+  int? get annualProductionId => throw _privateConstructorUsedError;
   @JsonKey(name: 'Year')
   int? get year => throw _privateConstructorUsedError;
   @JsonKey(name: 'IncomeAmount')
@@ -37,6 +37,12 @@ mixin _$AnnualProductionBudget {
   double? get expenseAmount => throw _privateConstructorUsedError;
   @JsonKey(name: 'BalanceAmount')
   double? get balanceAmount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'TransactionBudgetName')
+  String? get transactionBudgetName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'TransactionBudgetYear')
+  int? get transactionBudgetYear => throw _privateConstructorUsedError;
+  @JsonKey(name: 'CreateDT')
+  String? get createDT => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsLocal')
@@ -58,11 +64,14 @@ abstract class $AnnualProductionBudgetCopyWith<$Res> {
       {@JsonKey(name: 'FarmId') int? farmId,
       @JsonKey(name: 'AnnualBudgetId') int? annualBudgetId,
       @JsonKey(name: 'AnnualBudgetName') String? annualBudgetName,
-      @JsonKey(name: 'AnnualFarmProductionId') int? annualFarmProductionId,
+      @JsonKey(name: 'AnnualProductionId') int? annualProductionId,
       @JsonKey(name: 'Year') int? year,
       @JsonKey(name: 'IncomeAmount') double? incomeAmount,
       @JsonKey(name: 'ExpenseAmount') double? expenseAmount,
       @JsonKey(name: 'BalanceAmount') double? balanceAmount,
+      @JsonKey(name: 'TransactionBudgetName') String? transactionBudgetName,
+      @JsonKey(name: 'TransactionBudgetYear') int? transactionBudgetYear,
+      @JsonKey(name: 'CreateDT') String? createDT,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'IsLocal') bool? isLocal});
 }
@@ -84,11 +93,14 @@ class _$AnnualProductionBudgetCopyWithImpl<$Res,
     Object? farmId = freezed,
     Object? annualBudgetId = freezed,
     Object? annualBudgetName = freezed,
-    Object? annualFarmProductionId = freezed,
+    Object? annualProductionId = freezed,
     Object? year = freezed,
     Object? incomeAmount = freezed,
     Object? expenseAmount = freezed,
     Object? balanceAmount = freezed,
+    Object? transactionBudgetName = freezed,
+    Object? transactionBudgetYear = freezed,
+    Object? createDT = freezed,
     Object? isActive = freezed,
     Object? isLocal = freezed,
   }) {
@@ -105,9 +117,9 @@ class _$AnnualProductionBudgetCopyWithImpl<$Res,
           ? _value.annualBudgetName
           : annualBudgetName // ignore: cast_nullable_to_non_nullable
               as String?,
-      annualFarmProductionId: freezed == annualFarmProductionId
-          ? _value.annualFarmProductionId
-          : annualFarmProductionId // ignore: cast_nullable_to_non_nullable
+      annualProductionId: freezed == annualProductionId
+          ? _value.annualProductionId
+          : annualProductionId // ignore: cast_nullable_to_non_nullable
               as int?,
       year: freezed == year
           ? _value.year
@@ -125,6 +137,18 @@ class _$AnnualProductionBudgetCopyWithImpl<$Res,
           ? _value.balanceAmount
           : balanceAmount // ignore: cast_nullable_to_non_nullable
               as double?,
+      transactionBudgetName: freezed == transactionBudgetName
+          ? _value.transactionBudgetName
+          : transactionBudgetName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      transactionBudgetYear: freezed == transactionBudgetYear
+          ? _value.transactionBudgetYear
+          : transactionBudgetYear // ignore: cast_nullable_to_non_nullable
+              as int?,
+      createDT: freezed == createDT
+          ? _value.createDT
+          : createDT // ignore: cast_nullable_to_non_nullable
+              as String?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -149,11 +173,14 @@ abstract class _$$_AnnualProductionBudgetCopyWith<$Res>
       {@JsonKey(name: 'FarmId') int? farmId,
       @JsonKey(name: 'AnnualBudgetId') int? annualBudgetId,
       @JsonKey(name: 'AnnualBudgetName') String? annualBudgetName,
-      @JsonKey(name: 'AnnualFarmProductionId') int? annualFarmProductionId,
+      @JsonKey(name: 'AnnualProductionId') int? annualProductionId,
       @JsonKey(name: 'Year') int? year,
       @JsonKey(name: 'IncomeAmount') double? incomeAmount,
       @JsonKey(name: 'ExpenseAmount') double? expenseAmount,
       @JsonKey(name: 'BalanceAmount') double? balanceAmount,
+      @JsonKey(name: 'TransactionBudgetName') String? transactionBudgetName,
+      @JsonKey(name: 'TransactionBudgetYear') int? transactionBudgetYear,
+      @JsonKey(name: 'CreateDT') String? createDT,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'IsLocal') bool? isLocal});
 }
@@ -173,11 +200,14 @@ class __$$_AnnualProductionBudgetCopyWithImpl<$Res>
     Object? farmId = freezed,
     Object? annualBudgetId = freezed,
     Object? annualBudgetName = freezed,
-    Object? annualFarmProductionId = freezed,
+    Object? annualProductionId = freezed,
     Object? year = freezed,
     Object? incomeAmount = freezed,
     Object? expenseAmount = freezed,
     Object? balanceAmount = freezed,
+    Object? transactionBudgetName = freezed,
+    Object? transactionBudgetYear = freezed,
+    Object? createDT = freezed,
     Object? isActive = freezed,
     Object? isLocal = freezed,
   }) {
@@ -194,9 +224,9 @@ class __$$_AnnualProductionBudgetCopyWithImpl<$Res>
           ? _value.annualBudgetName
           : annualBudgetName // ignore: cast_nullable_to_non_nullable
               as String?,
-      annualFarmProductionId: freezed == annualFarmProductionId
-          ? _value.annualFarmProductionId
-          : annualFarmProductionId // ignore: cast_nullable_to_non_nullable
+      annualProductionId: freezed == annualProductionId
+          ? _value.annualProductionId
+          : annualProductionId // ignore: cast_nullable_to_non_nullable
               as int?,
       year: freezed == year
           ? _value.year
@@ -214,6 +244,18 @@ class __$$_AnnualProductionBudgetCopyWithImpl<$Res>
           ? _value.balanceAmount
           : balanceAmount // ignore: cast_nullable_to_non_nullable
               as double?,
+      transactionBudgetName: freezed == transactionBudgetName
+          ? _value.transactionBudgetName
+          : transactionBudgetName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      transactionBudgetYear: freezed == transactionBudgetYear
+          ? _value.transactionBudgetYear
+          : transactionBudgetYear // ignore: cast_nullable_to_non_nullable
+              as int?,
+      createDT: freezed == createDT
+          ? _value.createDT
+          : createDT // ignore: cast_nullable_to_non_nullable
+              as String?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -233,11 +275,14 @@ class _$_AnnualProductionBudget extends _AnnualProductionBudget {
       {@JsonKey(name: 'FarmId') this.farmId,
       @JsonKey(name: 'AnnualBudgetId') this.annualBudgetId,
       @JsonKey(name: 'AnnualBudgetName') this.annualBudgetName,
-      @JsonKey(name: 'AnnualFarmProductionId') this.annualFarmProductionId,
+      @JsonKey(name: 'AnnualProductionId') this.annualProductionId,
       @JsonKey(name: 'Year') this.year,
       @JsonKey(name: 'IncomeAmount') this.incomeAmount,
       @JsonKey(name: 'ExpenseAmount') this.expenseAmount,
       @JsonKey(name: 'BalanceAmount') this.balanceAmount,
+      @JsonKey(name: 'TransactionBudgetName') this.transactionBudgetName,
+      @JsonKey(name: 'TransactionBudgetYear') this.transactionBudgetYear,
+      @JsonKey(name: 'CreateDT') this.createDT,
       @JsonKey(name: 'IsActive') this.isActive = true,
       @JsonKey(name: 'IsLocal') this.isLocal = true})
       : super._();
@@ -255,8 +300,8 @@ class _$_AnnualProductionBudget extends _AnnualProductionBudget {
   @JsonKey(name: 'AnnualBudgetName')
   final String? annualBudgetName;
   @override
-  @JsonKey(name: 'AnnualFarmProductionId')
-  final int? annualFarmProductionId;
+  @JsonKey(name: 'AnnualProductionId')
+  final int? annualProductionId;
   @override
   @JsonKey(name: 'Year')
   final int? year;
@@ -270,6 +315,15 @@ class _$_AnnualProductionBudget extends _AnnualProductionBudget {
   @JsonKey(name: 'BalanceAmount')
   final double? balanceAmount;
   @override
+  @JsonKey(name: 'TransactionBudgetName')
+  final String? transactionBudgetName;
+  @override
+  @JsonKey(name: 'TransactionBudgetYear')
+  final int? transactionBudgetYear;
+  @override
+  @JsonKey(name: 'CreateDT')
+  final String? createDT;
+  @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
   @override
@@ -278,7 +332,7 @@ class _$_AnnualProductionBudget extends _AnnualProductionBudget {
 
   @override
   String toString() {
-    return 'AnnualProductionBudget(farmId: $farmId, annualBudgetId: $annualBudgetId, annualBudgetName: $annualBudgetName, annualFarmProductionId: $annualFarmProductionId, year: $year, incomeAmount: $incomeAmount, expenseAmount: $expenseAmount, balanceAmount: $balanceAmount, isActive: $isActive, isLocal: $isLocal)';
+    return 'AnnualProductionBudget(farmId: $farmId, annualBudgetId: $annualBudgetId, annualBudgetName: $annualBudgetName, annualProductionId: $annualProductionId, year: $year, incomeAmount: $incomeAmount, expenseAmount: $expenseAmount, balanceAmount: $balanceAmount, transactionBudgetName: $transactionBudgetName, transactionBudgetYear: $transactionBudgetYear, createDT: $createDT, isActive: $isActive, isLocal: $isLocal)';
   }
 
   @override
@@ -291,8 +345,8 @@ class _$_AnnualProductionBudget extends _AnnualProductionBudget {
                 other.annualBudgetId == annualBudgetId) &&
             (identical(other.annualBudgetName, annualBudgetName) ||
                 other.annualBudgetName == annualBudgetName) &&
-            (identical(other.annualFarmProductionId, annualFarmProductionId) ||
-                other.annualFarmProductionId == annualFarmProductionId) &&
+            (identical(other.annualProductionId, annualProductionId) ||
+                other.annualProductionId == annualProductionId) &&
             (identical(other.year, year) || other.year == year) &&
             (identical(other.incomeAmount, incomeAmount) ||
                 other.incomeAmount == incomeAmount) &&
@@ -300,6 +354,12 @@ class _$_AnnualProductionBudget extends _AnnualProductionBudget {
                 other.expenseAmount == expenseAmount) &&
             (identical(other.balanceAmount, balanceAmount) ||
                 other.balanceAmount == balanceAmount) &&
+            (identical(other.transactionBudgetName, transactionBudgetName) ||
+                other.transactionBudgetName == transactionBudgetName) &&
+            (identical(other.transactionBudgetYear, transactionBudgetYear) ||
+                other.transactionBudgetYear == transactionBudgetYear) &&
+            (identical(other.createDT, createDT) ||
+                other.createDT == createDT) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive) &&
             (identical(other.isLocal, isLocal) || other.isLocal == isLocal));
@@ -312,11 +372,14 @@ class _$_AnnualProductionBudget extends _AnnualProductionBudget {
       farmId,
       annualBudgetId,
       annualBudgetName,
-      annualFarmProductionId,
+      annualProductionId,
       year,
       incomeAmount,
       expenseAmount,
       balanceAmount,
+      transactionBudgetName,
+      transactionBudgetYear,
+      createDT,
       isActive,
       isLocal);
 
@@ -343,8 +406,8 @@ abstract class _AnnualProductionBudget extends AnnualProductionBudget {
           final int? annualBudgetId,
       @JsonKey(name: 'AnnualBudgetName')
           final String? annualBudgetName,
-      @JsonKey(name: 'AnnualFarmProductionId')
-          final int? annualFarmProductionId,
+      @JsonKey(name: 'AnnualProductionId')
+          final int? annualProductionId,
       @JsonKey(name: 'Year')
           final int? year,
       @JsonKey(name: 'IncomeAmount')
@@ -353,6 +416,12 @@ abstract class _AnnualProductionBudget extends AnnualProductionBudget {
           final double? expenseAmount,
       @JsonKey(name: 'BalanceAmount')
           final double? balanceAmount,
+      @JsonKey(name: 'TransactionBudgetName')
+          final String? transactionBudgetName,
+      @JsonKey(name: 'TransactionBudgetYear')
+          final int? transactionBudgetYear,
+      @JsonKey(name: 'CreateDT')
+          final String? createDT,
       @JsonKey(name: 'IsActive')
           final bool? isActive,
       @JsonKey(name: 'IsLocal')
@@ -372,8 +441,8 @@ abstract class _AnnualProductionBudget extends AnnualProductionBudget {
   @JsonKey(name: 'AnnualBudgetName')
   String? get annualBudgetName;
   @override
-  @JsonKey(name: 'AnnualFarmProductionId')
-  int? get annualFarmProductionId;
+  @JsonKey(name: 'AnnualProductionId')
+  int? get annualProductionId;
   @override
   @JsonKey(name: 'Year')
   int? get year;
@@ -386,6 +455,15 @@ abstract class _AnnualProductionBudget extends AnnualProductionBudget {
   @override
   @JsonKey(name: 'BalanceAmount')
   double? get balanceAmount;
+  @override
+  @JsonKey(name: 'TransactionBudgetName')
+  String? get transactionBudgetName;
+  @override
+  @JsonKey(name: 'TransactionBudgetYear')
+  int? get transactionBudgetYear;
+  @override
+  @JsonKey(name: 'CreateDT')
+  String? get createDT;
   @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;

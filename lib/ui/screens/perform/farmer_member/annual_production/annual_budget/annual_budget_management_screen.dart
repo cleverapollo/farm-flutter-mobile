@@ -13,7 +13,7 @@ List<AnnualProductionBudget> _mockData = [
     year: 2022,
     annualBudgetId: DateTime.now().millisecondsSinceEpoch,
     annualBudgetName: 'Annual Budget Name 1',
-    annualFarmProductionId: DateTime.now().millisecondsSinceEpoch,
+    annualProductionId: DateTime.now().millisecondsSinceEpoch,
     farmId: DateTime.now().millisecondsSinceEpoch,
     balanceAmount: 1000,
     expenseAmount: 101.11,
@@ -23,7 +23,7 @@ List<AnnualProductionBudget> _mockData = [
     year: 2023,
     annualBudgetId: DateTime.now().millisecondsSinceEpoch,
     annualBudgetName: 'Annual Budget Name 2',
-    annualFarmProductionId: DateTime.now().millisecondsSinceEpoch,
+    annualProductionId: DateTime.now().millisecondsSinceEpoch,
     farmId: DateTime.now().millisecondsSinceEpoch,
     balanceAmount: 1000,
     expenseAmount: 101.11,
@@ -33,7 +33,7 @@ List<AnnualProductionBudget> _mockData = [
     year: 2024,
     annualBudgetId: DateTime.now().millisecondsSinceEpoch,
     annualBudgetName: 'Annual Budget Name 3',
-    annualFarmProductionId: DateTime.now().millisecondsSinceEpoch,
+    annualProductionId: DateTime.now().millisecondsSinceEpoch,
     farmId: DateTime.now().millisecondsSinceEpoch,
     balanceAmount: 1000,
     expenseAmount: 101.11,
@@ -43,7 +43,7 @@ List<AnnualProductionBudget> _mockData = [
     year: 2025,
     annualBudgetId: DateTime.now().millisecondsSinceEpoch,
     annualBudgetName: 'Annual Budget Name 4',
-    annualFarmProductionId: DateTime.now().millisecondsSinceEpoch,
+    annualProductionId: DateTime.now().millisecondsSinceEpoch,
     farmId: DateTime.now().millisecondsSinceEpoch,
     balanceAmount: 1000,
     expenseAmount: 101.11,
@@ -133,16 +133,24 @@ class _AnnualBudgetManagementScreenState extends State<AnnualBudgetManagementScr
       onTap: () {},
       child: CmoCard(
         padding: const EdgeInsets.only(bottom: 20),
-
         content: [
           CmoCardHeader(
             title: model.annualBudgetName ?? '',
             maxLines: 2,
           ),
           const SizedBox(height: 10),
-          CmoCardItem(title: LocaleKeys.profitLoss.tr(), value: model.balanceAmount?.toStringAsFixed(2) ?? '000'),
-          CmoCardItem(title: LocaleKeys.income.tr(), value: model.incomeAmount?.toStringAsFixed(2) ?? '000'),
-          CmoCardItem(title: LocaleKeys.expenses.tr(), value: model.expenseAmount?.toStringAsFixed(2) ?? '000'),
+          CmoCardItem(
+            title: LocaleKeys.profitLoss.tr(),
+            value: model.balanceAmount?.toStringAsFixed(2) ?? '000',
+          ),
+          CmoCardItem(
+            title: LocaleKeys.income.tr(),
+            value: model.incomeAmount?.toStringAsFixed(2) ?? '000',
+          ),
+          CmoCardItem(
+            title: LocaleKeys.expenses.tr(),
+            value: model.expenseAmount?.toStringAsFixed(2) ?? '000',
+          ),
         ],
       ),
     );
