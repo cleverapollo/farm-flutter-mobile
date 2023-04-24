@@ -22,7 +22,6 @@ class AnnualProductionItemWidget extends StatelessWidget {
       ),
       child: Container(
         padding: const EdgeInsets.all(8),
-        // margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
           border: Border.all(
             color: context.colors.blue,
