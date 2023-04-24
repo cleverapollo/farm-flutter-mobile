@@ -38,7 +38,7 @@ class AnnualProductionItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${annualProduction.annualProductionName}',
+                    '${annualProduction.year} ${LocaleKeys.annualProduction.tr()}',
                     style: context.textStyles.bodyBold.blue,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

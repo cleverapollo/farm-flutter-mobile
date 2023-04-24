@@ -17,59 +17,94 @@ const AnnualProductionSchema = CollectionSchema(
   name: r'AnnualProduction',
   id: 8747745452346405596,
   properties: {
-    r'annualProductionId': PropertySchema(
+    r'annualCharcoalProductionPerPerson': PropertySchema(
       id: 0,
+      name: r'annualCharcoalProductionPerPerson',
+      type: IsarType.double,
+    ),
+    r'annualCharcoalProductionPerTeam': PropertySchema(
+      id: 1,
+      name: r'annualCharcoalProductionPerTeam',
+      type: IsarType.double,
+    ),
+    r'annualProductionId': PropertySchema(
+      id: 2,
       name: r'annualProductionId',
       type: IsarType.long,
     ),
-    r'annualProductionName': PropertySchema(
-      id: 1,
-      name: r'annualProductionName',
-      type: IsarType.string,
+    r'annualWoodBiomassRemoved': PropertySchema(
+      id: 3,
+      name: r'annualWoodBiomassRemoved',
+      type: IsarType.double,
     ),
     r'biomassRemoved': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'biomassRemoved',
       type: IsarType.long,
     ),
+    r'conversionWoodToCharcoal': PropertySchema(
+      id: 5,
+      name: r'conversionWoodToCharcoal',
+      type: IsarType.double,
+    ),
     r'createDT': PropertySchema(
-      id: 3,
+      id: 6,
       name: r'createDT',
       type: IsarType.string,
     ),
+    r'farmId': PropertySchema(
+      id: 7,
+      name: r'farmId',
+      type: IsarType.long,
+    ),
     r'isActive': PropertySchema(
-      id: 4,
+      id: 8,
       name: r'isActive',
       type: IsarType.bool,
     ),
     r'isLocal': PropertySchema(
-      id: 5,
+      id: 9,
       name: r'isLocal',
       type: IsarType.bool,
     ),
     r'productionPerTeam': PropertySchema(
-      id: 6,
+      id: 10,
       name: r'productionPerTeam',
       type: IsarType.long,
     ),
     r'productionPerWorker': PropertySchema(
-      id: 7,
+      id: 11,
       name: r'productionPerWorker',
       type: IsarType.long,
     ),
     r'updateDT': PropertySchema(
-      id: 8,
+      id: 12,
       name: r'updateDT',
       type: IsarType.string,
     ),
     r'workCycles': PropertySchema(
-      id: 9,
+      id: 13,
       name: r'workCycles',
       type: IsarType.double,
     ),
+    r'workPeriodMonths': PropertySchema(
+      id: 14,
+      name: r'workPeriodMonths',
+      type: IsarType.double,
+    ),
+    r'workPeriodWeeks': PropertySchema(
+      id: 15,
+      name: r'workPeriodWeeks',
+      type: IsarType.long,
+    ),
     r'workers': PropertySchema(
-      id: 10,
+      id: 16,
       name: r'workers',
+      type: IsarType.long,
+    ),
+    r'year': PropertySchema(
+      id: 17,
+      name: r'year',
       type: IsarType.long,
     )
   },
@@ -94,12 +129,6 @@ int _annualProductionEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
-    final value = object.annualProductionName;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.createDT;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -120,17 +149,24 @@ void _annualProductionSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.annualProductionId);
-  writer.writeString(offsets[1], object.annualProductionName);
-  writer.writeLong(offsets[2], object.biomassRemoved);
-  writer.writeString(offsets[3], object.createDT);
-  writer.writeBool(offsets[4], object.isActive);
-  writer.writeBool(offsets[5], object.isLocal);
-  writer.writeLong(offsets[6], object.productionPerTeam);
-  writer.writeLong(offsets[7], object.productionPerWorker);
-  writer.writeString(offsets[8], object.updateDT);
-  writer.writeDouble(offsets[9], object.workCycles);
-  writer.writeLong(offsets[10], object.workers);
+  writer.writeDouble(offsets[0], object.annualCharcoalProductionPerPerson);
+  writer.writeDouble(offsets[1], object.annualCharcoalProductionPerTeam);
+  writer.writeLong(offsets[2], object.annualProductionId);
+  writer.writeDouble(offsets[3], object.annualWoodBiomassRemoved);
+  writer.writeLong(offsets[4], object.biomassRemoved);
+  writer.writeDouble(offsets[5], object.conversionWoodToCharcoal);
+  writer.writeString(offsets[6], object.createDT);
+  writer.writeLong(offsets[7], object.farmId);
+  writer.writeBool(offsets[8], object.isActive);
+  writer.writeBool(offsets[9], object.isLocal);
+  writer.writeLong(offsets[10], object.productionPerTeam);
+  writer.writeLong(offsets[11], object.productionPerWorker);
+  writer.writeString(offsets[12], object.updateDT);
+  writer.writeDouble(offsets[13], object.workCycles);
+  writer.writeDouble(offsets[14], object.workPeriodMonths);
+  writer.writeLong(offsets[15], object.workPeriodWeeks);
+  writer.writeLong(offsets[16], object.workers);
+  writer.writeLong(offsets[17], object.year);
 }
 
 AnnualProduction _annualProductionDeserialize(
@@ -140,17 +176,24 @@ AnnualProduction _annualProductionDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = AnnualProduction(
-    annualProductionId: reader.readLongOrNull(offsets[0]),
-    annualProductionName: reader.readStringOrNull(offsets[1]),
-    biomassRemoved: reader.readLongOrNull(offsets[2]),
-    createDT: reader.readStringOrNull(offsets[3]),
-    isActive: reader.readBoolOrNull(offsets[4]),
-    isLocal: reader.readBoolOrNull(offsets[5]),
-    productionPerTeam: reader.readLongOrNull(offsets[6]),
-    productionPerWorker: reader.readLongOrNull(offsets[7]),
-    updateDT: reader.readStringOrNull(offsets[8]),
-    workCycles: reader.readDoubleOrNull(offsets[9]),
-    workers: reader.readLongOrNull(offsets[10]),
+    annualCharcoalProductionPerPerson: reader.readDoubleOrNull(offsets[0]),
+    annualCharcoalProductionPerTeam: reader.readDoubleOrNull(offsets[1]),
+    annualProductionId: reader.readLongOrNull(offsets[2]),
+    annualWoodBiomassRemoved: reader.readDoubleOrNull(offsets[3]),
+    biomassRemoved: reader.readLongOrNull(offsets[4]),
+    conversionWoodToCharcoal: reader.readDoubleOrNull(offsets[5]),
+    createDT: reader.readStringOrNull(offsets[6]),
+    farmId: reader.readLongOrNull(offsets[7]),
+    isActive: reader.readBoolOrNull(offsets[8]),
+    isLocal: reader.readBoolOrNull(offsets[9]),
+    productionPerTeam: reader.readLongOrNull(offsets[10]),
+    productionPerWorker: reader.readLongOrNull(offsets[11]),
+    updateDT: reader.readStringOrNull(offsets[12]),
+    workCycles: reader.readDoubleOrNull(offsets[13]),
+    workPeriodMonths: reader.readDoubleOrNull(offsets[14]),
+    workPeriodWeeks: reader.readLongOrNull(offsets[15]),
+    workers: reader.readLongOrNull(offsets[16]),
+    year: reader.readLongOrNull(offsets[17]),
   );
   return object;
 }
@@ -163,26 +206,40 @@ P _annualProductionDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 2:
       return (reader.readLongOrNull(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 4:
-      return (reader.readBoolOrNull(offset)) as P;
-    case 5:
-      return (reader.readBoolOrNull(offset)) as P;
-    case 6:
       return (reader.readLongOrNull(offset)) as P;
+    case 5:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 6:
+      return (reader.readStringOrNull(offset)) as P;
     case 7:
       return (reader.readLongOrNull(offset)) as P;
     case 8:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 9:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 10:
+      return (reader.readLongOrNull(offset)) as P;
+    case 11:
+      return (reader.readLongOrNull(offset)) as P;
+    case 12:
+      return (reader.readStringOrNull(offset)) as P;
+    case 13:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 14:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 15:
+      return (reader.readLongOrNull(offset)) as P;
+    case 16:
+      return (reader.readLongOrNull(offset)) as P;
+    case 17:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -282,6 +339,174 @@ extension AnnualProductionQueryWhere
 extension AnnualProductionQueryFilter
     on QueryBuilder<AnnualProduction, AnnualProduction, QFilterCondition> {
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      annualCharcoalProductionPerPersonIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'annualCharcoalProductionPerPerson',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      annualCharcoalProductionPerPersonIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'annualCharcoalProductionPerPerson',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      annualCharcoalProductionPerPersonEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'annualCharcoalProductionPerPerson',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      annualCharcoalProductionPerPersonGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'annualCharcoalProductionPerPerson',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      annualCharcoalProductionPerPersonLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'annualCharcoalProductionPerPerson',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      annualCharcoalProductionPerPersonBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'annualCharcoalProductionPerPerson',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      annualCharcoalProductionPerTeamIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'annualCharcoalProductionPerTeam',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      annualCharcoalProductionPerTeamIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'annualCharcoalProductionPerTeam',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      annualCharcoalProductionPerTeamEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'annualCharcoalProductionPerTeam',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      annualCharcoalProductionPerTeamGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'annualCharcoalProductionPerTeam',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      annualCharcoalProductionPerTeamLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'annualCharcoalProductionPerTeam',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      annualCharcoalProductionPerTeamBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'annualCharcoalProductionPerTeam',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
       annualProductionIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -356,155 +581,85 @@ extension AnnualProductionQueryFilter
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
-      annualProductionNameIsNull() {
+      annualWoodBiomassRemovedIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'annualProductionName',
+        property: r'annualWoodBiomassRemoved',
       ));
     });
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
-      annualProductionNameIsNotNull() {
+      annualWoodBiomassRemovedIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'annualProductionName',
+        property: r'annualWoodBiomassRemoved',
       ));
     });
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
-      annualProductionNameEqualTo(
-    String? value, {
-    bool caseSensitive = true,
+      annualWoodBiomassRemovedEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'annualProductionName',
+        property: r'annualWoodBiomassRemoved',
         value: value,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
-      annualProductionNameGreaterThan(
-    String? value, {
+      annualWoodBiomassRemovedGreaterThan(
+    double? value, {
     bool include = false,
-    bool caseSensitive = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'annualProductionName',
+        property: r'annualWoodBiomassRemoved',
         value: value,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
-      annualProductionNameLessThan(
-    String? value, {
+      annualWoodBiomassRemovedLessThan(
+    double? value, {
     bool include = false,
-    bool caseSensitive = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'annualProductionName',
+        property: r'annualWoodBiomassRemoved',
         value: value,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
-      annualProductionNameBetween(
-    String? lower,
-    String? upper, {
+      annualWoodBiomassRemovedBetween(
+    double? lower,
+    double? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'annualProductionName',
+        property: r'annualWoodBiomassRemoved',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
-      annualProductionNameStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'annualProductionName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
-      annualProductionNameEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'annualProductionName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
-      annualProductionNameContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'annualProductionName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
-      annualProductionNameMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'annualProductionName',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
-      annualProductionNameIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'annualProductionName',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
-      annualProductionNameIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'annualProductionName',
-        value: '',
+        epsilon: epsilon,
       ));
     });
   }
@@ -579,6 +734,90 @@ extension AnnualProductionQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      conversionWoodToCharcoalIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'conversionWoodToCharcoal',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      conversionWoodToCharcoalIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'conversionWoodToCharcoal',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      conversionWoodToCharcoalEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'conversionWoodToCharcoal',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      conversionWoodToCharcoalGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'conversionWoodToCharcoal',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      conversionWoodToCharcoalLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'conversionWoodToCharcoal',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      conversionWoodToCharcoalBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'conversionWoodToCharcoal',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
       ));
     });
   }
@@ -733,6 +972,80 @@ extension AnnualProductionQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'createDT',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      farmIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'farmId',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      farmIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'farmId',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      farmIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'farmId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      farmIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'farmId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      farmIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'farmId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      farmIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'farmId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -1236,6 +1549,164 @@ extension AnnualProductionQueryFilter
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      workPeriodMonthsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'workPeriodMonths',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      workPeriodMonthsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'workPeriodMonths',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      workPeriodMonthsEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'workPeriodMonths',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      workPeriodMonthsGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'workPeriodMonths',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      workPeriodMonthsLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'workPeriodMonths',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      workPeriodMonthsBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'workPeriodMonths',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      workPeriodWeeksIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'workPeriodWeeks',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      workPeriodWeeksIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'workPeriodWeeks',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      workPeriodWeeksEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'workPeriodWeeks',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      workPeriodWeeksGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'workPeriodWeeks',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      workPeriodWeeksLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'workPeriodWeeks',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      workPeriodWeeksBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'workPeriodWeeks',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
       workersIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1308,6 +1779,80 @@ extension AnnualProductionQueryFilter
       ));
     });
   }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      yearIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'year',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      yearIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'year',
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      yearEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'year',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      yearGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'year',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      yearLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'year',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterFilterCondition>
+      yearBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'year',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension AnnualProductionQueryObject
@@ -1318,6 +1863,34 @@ extension AnnualProductionQueryLinks
 
 extension AnnualProductionQuerySortBy
     on QueryBuilder<AnnualProduction, AnnualProduction, QSortBy> {
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByAnnualCharcoalProductionPerPerson() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'annualCharcoalProductionPerPerson', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByAnnualCharcoalProductionPerPersonDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'annualCharcoalProductionPerPerson', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByAnnualCharcoalProductionPerTeam() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'annualCharcoalProductionPerTeam', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByAnnualCharcoalProductionPerTeamDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'annualCharcoalProductionPerTeam', Sort.desc);
+    });
+  }
+
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
       sortByAnnualProductionId() {
     return QueryBuilder.apply(this, (query) {
@@ -1333,16 +1906,16 @@ extension AnnualProductionQuerySortBy
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
-      sortByAnnualProductionName() {
+      sortByAnnualWoodBiomassRemoved() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'annualProductionName', Sort.asc);
+      return query.addSortBy(r'annualWoodBiomassRemoved', Sort.asc);
     });
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
-      sortByAnnualProductionNameDesc() {
+      sortByAnnualWoodBiomassRemovedDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'annualProductionName', Sort.desc);
+      return query.addSortBy(r'annualWoodBiomassRemoved', Sort.desc);
     });
   }
 
@@ -1361,6 +1934,20 @@ extension AnnualProductionQuerySortBy
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByConversionWoodToCharcoal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'conversionWoodToCharcoal', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByConversionWoodToCharcoalDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'conversionWoodToCharcoal', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
       sortByCreateDT() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createDT', Sort.asc);
@@ -1371,6 +1958,20 @@ extension AnnualProductionQuerySortBy
       sortByCreateDTDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createDT', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByFarmId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'farmId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByFarmIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'farmId', Sort.desc);
     });
   }
 
@@ -1459,6 +2060,34 @@ extension AnnualProductionQuerySortBy
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByWorkPeriodMonths() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'workPeriodMonths', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByWorkPeriodMonthsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'workPeriodMonths', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByWorkPeriodWeeks() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'workPeriodWeeks', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByWorkPeriodWeeksDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'workPeriodWeeks', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
       sortByWorkers() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'workers', Sort.asc);
@@ -1471,10 +2100,51 @@ extension AnnualProductionQuerySortBy
       return query.addSortBy(r'workers', Sort.desc);
     });
   }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy> sortByYear() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'year', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      sortByYearDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'year', Sort.desc);
+    });
+  }
 }
 
 extension AnnualProductionQuerySortThenBy
     on QueryBuilder<AnnualProduction, AnnualProduction, QSortThenBy> {
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByAnnualCharcoalProductionPerPerson() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'annualCharcoalProductionPerPerson', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByAnnualCharcoalProductionPerPersonDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'annualCharcoalProductionPerPerson', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByAnnualCharcoalProductionPerTeam() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'annualCharcoalProductionPerTeam', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByAnnualCharcoalProductionPerTeamDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'annualCharcoalProductionPerTeam', Sort.desc);
+    });
+  }
+
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
       thenByAnnualProductionId() {
     return QueryBuilder.apply(this, (query) {
@@ -1490,16 +2160,16 @@ extension AnnualProductionQuerySortThenBy
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
-      thenByAnnualProductionName() {
+      thenByAnnualWoodBiomassRemoved() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'annualProductionName', Sort.asc);
+      return query.addSortBy(r'annualWoodBiomassRemoved', Sort.asc);
     });
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
-      thenByAnnualProductionNameDesc() {
+      thenByAnnualWoodBiomassRemovedDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'annualProductionName', Sort.desc);
+      return query.addSortBy(r'annualWoodBiomassRemoved', Sort.desc);
     });
   }
 
@@ -1518,6 +2188,20 @@ extension AnnualProductionQuerySortThenBy
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByConversionWoodToCharcoal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'conversionWoodToCharcoal', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByConversionWoodToCharcoalDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'conversionWoodToCharcoal', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
       thenByCreateDT() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createDT', Sort.asc);
@@ -1528,6 +2212,20 @@ extension AnnualProductionQuerySortThenBy
       thenByCreateDTDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createDT', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByFarmId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'farmId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByFarmIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'farmId', Sort.desc);
     });
   }
 
@@ -1629,6 +2327,34 @@ extension AnnualProductionQuerySortThenBy
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByWorkPeriodMonths() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'workPeriodMonths', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByWorkPeriodMonthsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'workPeriodMonths', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByWorkPeriodWeeks() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'workPeriodWeeks', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByWorkPeriodWeeksDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'workPeriodWeeks', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
       thenByWorkers() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'workers', Sort.asc);
@@ -1641,10 +2367,37 @@ extension AnnualProductionQuerySortThenBy
       return query.addSortBy(r'workers', Sort.desc);
     });
   }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy> thenByYear() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'year', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QAfterSortBy>
+      thenByYearDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'year', Sort.desc);
+    });
+  }
 }
 
 extension AnnualProductionQueryWhereDistinct
     on QueryBuilder<AnnualProduction, AnnualProduction, QDistinct> {
+  QueryBuilder<AnnualProduction, AnnualProduction, QDistinct>
+      distinctByAnnualCharcoalProductionPerPerson() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'annualCharcoalProductionPerPerson');
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QDistinct>
+      distinctByAnnualCharcoalProductionPerTeam() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'annualCharcoalProductionPerTeam');
+    });
+  }
+
   QueryBuilder<AnnualProduction, AnnualProduction, QDistinct>
       distinctByAnnualProductionId() {
     return QueryBuilder.apply(this, (query) {
@@ -1653,10 +2406,9 @@ extension AnnualProductionQueryWhereDistinct
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QDistinct>
-      distinctByAnnualProductionName({bool caseSensitive = true}) {
+      distinctByAnnualWoodBiomassRemoved() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'annualProductionName',
-          caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'annualWoodBiomassRemoved');
     });
   }
 
@@ -1668,9 +2420,23 @@ extension AnnualProductionQueryWhereDistinct
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QDistinct>
+      distinctByConversionWoodToCharcoal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'conversionWoodToCharcoal');
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QDistinct>
       distinctByCreateDT({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createDT', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QDistinct>
+      distinctByFarmId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'farmId');
     });
   }
 
@@ -1717,9 +2483,29 @@ extension AnnualProductionQueryWhereDistinct
   }
 
   QueryBuilder<AnnualProduction, AnnualProduction, QDistinct>
+      distinctByWorkPeriodMonths() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'workPeriodMonths');
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QDistinct>
+      distinctByWorkPeriodWeeks() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'workPeriodWeeks');
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QDistinct>
       distinctByWorkers() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'workers');
+    });
+  }
+
+  QueryBuilder<AnnualProduction, AnnualProduction, QDistinct> distinctByYear() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'year');
     });
   }
 }
@@ -1732,6 +2518,20 @@ extension AnnualProductionQueryProperty
     });
   }
 
+  QueryBuilder<AnnualProduction, double?, QQueryOperations>
+      annualCharcoalProductionPerPersonProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'annualCharcoalProductionPerPerson');
+    });
+  }
+
+  QueryBuilder<AnnualProduction, double?, QQueryOperations>
+      annualCharcoalProductionPerTeamProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'annualCharcoalProductionPerTeam');
+    });
+  }
+
   QueryBuilder<AnnualProduction, int?, QQueryOperations>
       annualProductionIdProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -1739,10 +2539,10 @@ extension AnnualProductionQueryProperty
     });
   }
 
-  QueryBuilder<AnnualProduction, String?, QQueryOperations>
-      annualProductionNameProperty() {
+  QueryBuilder<AnnualProduction, double?, QQueryOperations>
+      annualWoodBiomassRemovedProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'annualProductionName');
+      return query.addPropertyName(r'annualWoodBiomassRemoved');
     });
   }
 
@@ -1753,9 +2553,22 @@ extension AnnualProductionQueryProperty
     });
   }
 
+  QueryBuilder<AnnualProduction, double?, QQueryOperations>
+      conversionWoodToCharcoalProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'conversionWoodToCharcoal');
+    });
+  }
+
   QueryBuilder<AnnualProduction, String?, QQueryOperations> createDTProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createDT');
+    });
+  }
+
+  QueryBuilder<AnnualProduction, int?, QQueryOperations> farmIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'farmId');
     });
   }
 
@@ -1798,9 +2611,29 @@ extension AnnualProductionQueryProperty
     });
   }
 
+  QueryBuilder<AnnualProduction, double?, QQueryOperations>
+      workPeriodMonthsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'workPeriodMonths');
+    });
+  }
+
+  QueryBuilder<AnnualProduction, int?, QQueryOperations>
+      workPeriodWeeksProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'workPeriodWeeks');
+    });
+  }
+
   QueryBuilder<AnnualProduction, int?, QQueryOperations> workersProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'workers');
+    });
+  }
+
+  QueryBuilder<AnnualProduction, int?, QQueryOperations> yearProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'year');
     });
   }
 }
@@ -1812,14 +2645,25 @@ extension AnnualProductionQueryProperty
 _$_AnnualProduction _$$_AnnualProductionFromJson(Map<String, dynamic> json) =>
     _$_AnnualProduction(
       annualProductionId: json['AnnualProductionId'] as int?,
-      annualProductionName: json['AnnualProductionName'] as String?,
+      farmId: json['FarmId'] as int?,
+      year: json['Year'] as int?,
       workers: json['Workers'] as int?,
+      workPeriodMonths: (json['WorkPeriodMonths'] as num?)?.toDouble(),
+      workPeriodWeeks: json['WorkPeriodWeeks'] as int?,
       productionPerWorker: json['ProductionPerWorker'] as int?,
       productionPerTeam: json['ProductionPerTeam'] as int?,
       biomassRemoved: json['BiomassRemoved'] as int?,
-      workCycles: (json['WorkCycles'] as num?)?.toDouble(),
       createDT: json['CreateDT'] as String?,
       updateDT: json['UpdateDT'] as String?,
+      workCycles: (json['WorkCycles'] as num?)?.toDouble(),
+      annualCharcoalProductionPerPerson:
+          (json['AnnualCharcoalProductionPerPerson'] as num?)?.toDouble(),
+      annualCharcoalProductionPerTeam:
+          (json['AnnualCharcoalProductionPerTeam'] as num?)?.toDouble(),
+      conversionWoodToCharcoal:
+          (json['ConversionWoodToCharcoal'] as num?)?.toDouble(),
+      annualWoodBiomassRemoved:
+          (json['AnnualWoodBiomassRemoved'] as num?)?.toDouble(),
       isActive: json['IsActive'] as bool? ?? true,
       isLocal: json['IsLocal'] as bool? ?? true,
     );
@@ -1827,14 +2671,23 @@ _$_AnnualProduction _$$_AnnualProductionFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$_AnnualProductionToJson(_$_AnnualProduction instance) =>
     <String, dynamic>{
       'AnnualProductionId': instance.annualProductionId,
-      'AnnualProductionName': instance.annualProductionName,
+      'FarmId': instance.farmId,
+      'Year': instance.year,
       'Workers': instance.workers,
+      'WorkPeriodMonths': instance.workPeriodMonths,
+      'WorkPeriodWeeks': instance.workPeriodWeeks,
       'ProductionPerWorker': instance.productionPerWorker,
       'ProductionPerTeam': instance.productionPerTeam,
       'BiomassRemoved': instance.biomassRemoved,
-      'WorkCycles': instance.workCycles,
       'CreateDT': instance.createDT,
       'UpdateDT': instance.updateDT,
+      'WorkCycles': instance.workCycles,
+      'AnnualCharcoalProductionPerPerson':
+          instance.annualCharcoalProductionPerPerson,
+      'AnnualCharcoalProductionPerTeam':
+          instance.annualCharcoalProductionPerTeam,
+      'ConversionWoodToCharcoal': instance.conversionWoodToCharcoal,
+      'AnnualWoodBiomassRemoved': instance.annualWoodBiomassRemoved,
       'IsActive': instance.isActive,
       'IsLocal': instance.isLocal,
     };

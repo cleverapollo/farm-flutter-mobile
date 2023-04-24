@@ -88,6 +88,10 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
         buildOption(
           context,
           title: LocaleKeys.createNewStakeholder.tr(),
+          onTap: () {
+            if (context.mounted) Navigator.of(context).pop();
+            CreateNewStakeHolderScreen.push(context);
+          },
         ),
       ],
     );

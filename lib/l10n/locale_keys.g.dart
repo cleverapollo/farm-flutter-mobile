@@ -11,7 +11,9 @@ abstract class  LocaleKeys {
   static const address = 'address';
   static const annualBudgets = 'annualBudgets';
   static const annualProduction = 'annualProduction';
+  static const addAnnualProduction = 'addAnnualProduction';
   static const annualProductionYear = 'annualProductionYear';
+  static const year = 'year';
   static const appVersion = 'appVersion';
   static const appearance = 'appearance';
   static const area = 'area';
@@ -102,7 +104,7 @@ abstract class  LocaleKeys {
   static const workersHintText = 'workersHintText';
   static const workCycleHintText = 'workCycleHintText';
   static const weeksCycleHintText = 'weeksCycleHintText';
-  static const weeksPerCycleCycleHintText = 'weeksPerCycleCycleHintText';
+  static const weeksPerCycleHintText = 'weeksPerCycleHintText';
   static const productionPerPersonHintText = 'productionPerPersonHintText';
   static const conversionWood = 'conversionWood';
   static const charcoal = 'charcoal';

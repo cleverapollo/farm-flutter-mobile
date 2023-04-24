@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/annual_production/annual_production.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/annual_production/add_new_annual/add_new_annual_production_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/widgets/annual_production_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ List<AnnualProduction> _mockData = [
     productionPerWorker: 3,
     workCycles: 2,
     workers: 12,
-    annualProductionName: '2022 Annual Production',
+    year: 2022,
   ),
   AnnualProduction(
     biomassRemoved: 3,
@@ -22,7 +23,7 @@ List<AnnualProduction> _mockData = [
     productionPerWorker: 3,
     workCycles: 2,
     workers: 12,
-    annualProductionName: '2023 Annual Production',
+    year: 2023,
   ),
   AnnualProduction(
     biomassRemoved: 3,
@@ -30,7 +31,7 @@ List<AnnualProduction> _mockData = [
     productionPerWorker: 3,
     workCycles: 2,
     workers: 12,
-    annualProductionName: '2024 Annual Production',
+    year: 2024,
   ),
 ];
 
@@ -64,7 +65,7 @@ class _AnnualProductionManagementScreen extends State<AnnualProductionManagement
       filteredItems = _mockData;
     } else {
       filteredItems = _mockData
-          .where((element) => element.annualProductionName?.toLowerCase().contains(input.toLowerCase()) ?? false)
+          .where((element) => element.year?.toString().toLowerCase().contains(input.toLowerCase()) ?? false)
           .toList();
     }
 
@@ -81,7 +82,7 @@ class _AnnualProductionManagementScreen extends State<AnnualProductionManagement
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () {}, //=> AuditAddScreen.push(context),
+        onTapTrailing: () => AddNewAnnualProductionScreen.push(context),
       ),
       body: Column(
         children: [

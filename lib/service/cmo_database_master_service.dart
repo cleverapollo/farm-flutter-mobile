@@ -59,6 +59,7 @@ class CmoDatabaseMasterService {
         AuditQuestionSchema,
         AuditQuestionAnswerSchema,
         StakeHolderSchema,
+        AnnualProductionSchema,
       ],
       name: _databaseName,
     );
@@ -516,6 +517,11 @@ class CmoDatabaseMasterService {
   Future<int> cacheStakeHolder(StakeHolder item) async {
     final db = await _db();
     return db.stakeHolders.put(item);
+  }
+
+  Future<int> cacheAnnualProduction(AnnualProduction item) async {
+    final db = await _db();
+    return db.annualProductions.put(item);
   }
 
   Future<Worker?> getWorkerById(String? id) async {
