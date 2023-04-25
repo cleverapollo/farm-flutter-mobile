@@ -133,15 +133,13 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
         const SizedBox(height: 7),
         const _Divider(),
         buildHeader(context, title: LocaleKeys.stakeholders.tr()),
-        CmoTappable(
+        buildOption(
+          context,
+          title: LocaleKeys.createNewStakeholder.tr(),
           onTap: () {
             if (context.mounted) Navigator.of(context).pop();
             CreateNewStakeHolderScreen.push(context);
           },
-          child: buildOption(
-            context,
-            title: LocaleKeys.createNewStakeholder.tr(),
-          ),
         ),
       ],
     );
