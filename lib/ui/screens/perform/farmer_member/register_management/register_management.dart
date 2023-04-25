@@ -3,6 +3,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/biological_control_agents_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/stake_holder_complaint_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
@@ -53,7 +54,7 @@ class RegisterManagement extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               _ItemWidget(
-                onTapped: () => ASIScreen.push(context),
+                onTapped: () => AsiScreen.push(context),
                 title: LocaleKeys.asi.tr(),
                 subTitle: LocaleKeys.pending.tr(),
                 value: _registerManagementModel.asi.toString(),

@@ -1,4 +1,3 @@
-import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_map_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';

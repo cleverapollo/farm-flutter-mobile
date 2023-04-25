@@ -285,5 +285,8 @@ abstract class  LocaleKeys {
   static const stakeholder_complaints = 'stakeholder_complaints';
   static const stakeholder_management = 'stakeholder_management';
   static const training = 'training';
+  static const open = 'open';
+  static const asi_no = 'asi_no';
+  static const general_comments = 'general_comments';
 
 }
