@@ -115,6 +115,9 @@ class _CreateNewStakeHolderScreenState extends State<CreateNewStakeHolderScreen>
                 height: 12,
               ),
               buildInputArea(),
+              const SizedBox(
+                height: 80,
+              ),
             ],
           ),
         ),
