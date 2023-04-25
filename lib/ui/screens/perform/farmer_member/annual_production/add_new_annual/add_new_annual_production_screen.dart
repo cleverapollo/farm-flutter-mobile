@@ -100,6 +100,9 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
             children: [
               CmoHeaderTile(title: LocaleKeys.details.tr()),
               buildInputArea(),
+              const SizedBox(
+                height: 80,
+              ),
             ],
           ),
         ),
@@ -153,9 +156,6 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
                 name: 'ConversionWoodToCharcoal',
                 title: LocaleKeys.conversionWood.tr(),
                 title2: LocaleKeys.woodToCharcoal.tr(),
-              ),
-              const SizedBox(
-                height: 12,
               ),
             ],
           ),
