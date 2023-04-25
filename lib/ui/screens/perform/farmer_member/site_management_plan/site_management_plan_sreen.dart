@@ -15,6 +15,7 @@ class SiteManagementPlanScreen extends StatelessWidget {
     return Scaffold(
       appBar: const CmoAppBarV2(
         title: 'Site Management Plan',
+        subtitle: 'Imbeza',
         showLeading: true,
       ),
       body: SizedBox.expand(
