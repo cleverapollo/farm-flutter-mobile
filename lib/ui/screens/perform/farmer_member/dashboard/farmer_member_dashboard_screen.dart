@@ -1,4 +1,5 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/site_management_plan/site_management_plan_sreen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,9 @@ class FarmerMemberDashboardScreen extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       children: [
         CmoCard(
+          onTap: () {
+            SiteManagementPlanScreen.push(context);
+          },
           content: [
             CmoCardHeader(title: LocaleKeys.siteManagementPlan.tr()),
           ],
