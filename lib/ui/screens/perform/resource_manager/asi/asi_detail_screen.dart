@@ -1,23 +1,21 @@
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 class ASIDetailScreen extends StatefulWidget {
-  const ASIDetailScreen({super.key, required this.lat, required this.lng});
+  const ASIDetailScreen({super.key, this.point});
 
-  final double lat;
-  final double lng;
+  final LatLng? point;
 
-  static Future<void> push(BuildContext context,
-      {required double lat, required double lng}) {
+  static Future<void> push(BuildContext context, {required LatLng? point}) {
     return Navigator.push(context,
-        MaterialPageRoute(builder: (_) => ASIDetailScreen(lat: lat, lng: lng)));
+        MaterialPageRoute(builder: (_) => ASIDetailScreen(point: point)));
   }
 
   @override
@@ -57,7 +55,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
                   child: CmoDropDownLayoutWidget(
                     title: 'Lat | Long',
                     subTitle:
-                        '${widget.lat.toStringAsFixed(5)} | ${widget.lng.toStringAsFixed(5)}',
+                        '${widget.point?.latitude.toStringAsFixed(5)} | ${widget.point?.longitude.toStringAsFixed(5)}',
                   ),
                 ),
                 Padding(
