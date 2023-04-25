@@ -13,6 +13,7 @@ abstract class  LocaleKeys {
   static const annualProduction = 'annualProduction';
   static const addAnnualProduction = 'addAnnualProduction';
   static const annualProductionYear = 'annualProductionYear';
+  static const annual = 'annual';
   static const year = 'year';
   static const appVersion = 'appVersion';
   static const appearance = 'appearance';
@@ -25,6 +26,7 @@ abstract class  LocaleKeys {
   static const audit_s = 'audit_s';
   static const audit = 'audit';
   static const audits = 'audits';
+  static const addBudget = 'addBudget';
   static const budget = 'budget';
   static const budgetName = 'budgetName';
   static const camp = 'camp';
@@ -70,6 +72,7 @@ abstract class  LocaleKeys {
   static const entityName = 'entityName';
   static const espacement = 'espacement';
   static const expense = 'expense';
+  static const expenses = 'expenses';
   static const finaliseLater = 'finaliseLater';
   static const firstName = 'firstName';
   static const forecast = 'forecast';
