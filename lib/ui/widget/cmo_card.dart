@@ -11,6 +11,7 @@ class CmoCard extends StatelessWidget {
     this.padding = EdgeInsets.zero,
     this.trailing,
     this.containerGradient,
+    this.onTap,
   });
 
   final List<Widget> content;
@@ -19,46 +20,50 @@ class CmoCard extends StatelessWidget {
   final EdgeInsets padding;
   final Widget? trailing;
   final Gradient? containerGradient;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: margin,
-      padding: padding,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: containerGradient,
-          color: containerGradient == null ? context.colors.blueDark1 : null,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: context.colors.shadow,
-              offset: const Offset(0, 4),
-              blurRadius: 4,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 76),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(6, 0, 0, 6),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: content,
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: margin,
+        padding: padding,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: containerGradient,
+            color: containerGradient == null ? context.colors.blueDark1 : null,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: context.colors.shadow,
+                offset: const Offset(0, 4),
+                blurRadius: 4,
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 76),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(6, 0, 0, 6),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: content,
+                    ),
                   ),
                 ),
               ),
-            ),
-            if (shouldShowArrowRight) ...[
-              const SizedBox(width: 12),
-              trailing ?? Assets.icons.icArrowRight.svgWhite,
+              if (shouldShowArrowRight) ...[
+                const SizedBox(width: 12),
+                trailing ?? Assets.icons.icArrowRight.svgWhite,
+                const SizedBox(width: 6),
+              ],
               const SizedBox(width: 6),
             ],
-            const SizedBox(width: 6),
-          ],
+          ),
         ),
       ),
     );
@@ -69,25 +74,44 @@ class CmoCardHeader extends StatelessWidget {
   const CmoCardHeader({
     super.key,
     required this.title,
+    this.value = '',
     this.maxLines = 1,
   });
 
   final String title;
+  final String value;
   final int maxLines;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      maxLines: maxLines,
-      overflow: TextOverflow.ellipsis,
-      style: context.textStyles.bodyBold.white,
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            maxLines: maxLines,
+            overflow: TextOverflow.ellipsis,
+            style: context.textStyles.bodyBold.white,
+          ),
+        ),
+        if (value.isNotEmpty)
+          Expanded(
+            child: Text(
+              value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.textStyles.bodyBold.white,
+            ),
+          )
+        else
+          const SizedBox(),
+      ],
     );
   }
 }
 
 class CmoCardItem extends StatelessWidget {
-  const CmoCardItem({super.key, required this.title, required this.value});
+  const CmoCardItem({super.key, required this.title, this.value = ''});
 
   final String title;
 
@@ -103,12 +127,15 @@ class CmoCardItem extends StatelessWidget {
             style: context.textStyles.bodyNormal.white,
           ),
         ),
-        Expanded(
-          child: Text(
-            value,
-            style: context.textStyles.bodyNormal.white,
-          ),
-        ),
+        if (value.isNotEmpty)
+          Expanded(
+            child: Text(
+              value,
+              style: context.textStyles.bodyNormal.white,
+            ),
+          )
+        else
+          const SizedBox(),
       ],
     );
   }
