@@ -4,8 +4,69 @@ import 'package:cmo/ui/screens/perform/farmer_member/site_management_plan/manage
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-class ManagementPlanScreen extends StatefulWidget {
+class ManagementPlanGroupItem {
+  final String value;
+  final int id;
+  final VoidCallback? onTap;
 
+  const ManagementPlanGroupItem({
+    required this.value,
+    required this.id,
+    this.onTap,
+  });
+}
+
+class ManagementPlanGroup extends Object {
+  final String groupTitle;
+  final List<ManagementPlanGroupItem> groupItems;
+
+  ManagementPlanGroup({
+    required this.groupTitle,
+    required this.groupItems,
+  });
+}
+
+List<ManagementPlanGroup> _mockData = [
+  ManagementPlanGroup(
+    groupTitle: 'APO',
+    groupItems: [
+      const ManagementPlanGroupItem(
+        id: 1,
+        value: 'Working Circle',
+      ),
+      const ManagementPlanGroupItem(
+        id: 2,
+        value: 'Geology Class',
+      ),
+      const ManagementPlanGroupItem(
+        id: 3,
+        value: 'Ownership',
+      ),
+      const ManagementPlanGroupItem(
+        id: 4,
+        value: 'Work Plan',
+      ),
+      const ManagementPlanGroupItem(
+        id: 5,
+        value: 'Work Plan',
+      ),
+      const ManagementPlanGroupItem(
+        id: 6,
+        value: 'Work Plan',
+      ),
+    ],
+  ),
+  ManagementPlanGroup(
+    groupTitle: 'Work Orders',
+    groupItems: [],
+  ),
+  ManagementPlanGroup(
+    groupTitle: 'Harvesting',
+    groupItems: [],
+  ),
+];
+
+class ManagementPlanScreen extends StatefulWidget {
   const ManagementPlanScreen({super.key});
 
   @override
@@ -22,6 +83,14 @@ class ManagementPlanScreen extends StatefulWidget {
 }
 
 class _ManagementPlanScreenState extends State<ManagementPlanScreen> {
+  late List<ManagementPlanGroup> listData;
+
+  @override
+  void initState() {
+    super.initState();
+    listData = _mockData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,14 +101,18 @@ class _ManagementPlanScreenState extends State<ManagementPlanScreen> {
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
-
       body: ListView.separated(
-          itemCount: 3,
-          itemBuilder: (context, index) {
-        return ExpandableManagementPlanItem();
-      },
-      separatorBuilder: (context, index) => const SizedBox(height: 24,),
-      )
+        itemCount: listData.length,
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        itemBuilder: (context, index) {
+          return ExpandableManagementPlanItem(
+            managementPlanGroup: listData[index],
+          );
+        },
+        separatorBuilder: (context, index) => const SizedBox(
+          height: 24,
+        ),
+      ),
     );
   }
 }
