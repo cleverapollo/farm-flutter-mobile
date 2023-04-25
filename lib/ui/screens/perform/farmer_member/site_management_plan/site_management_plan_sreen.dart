@@ -1,3 +1,4 @@
+import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_production_management_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class SiteManagementPlanScreen extends StatelessWidget {
               ),
             ),
             CmoTappable(
-              onTap: () {},
+              onTap: () => AnnualProductionManagementScreen.push(context),
               child: const CmoCard(
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 content: [
