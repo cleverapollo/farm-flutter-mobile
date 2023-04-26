@@ -47,6 +47,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_drawer.svg
   SvgGenImage get icDrawer => const SvgGenImage('assets/icons/ic_drawer.svg');
 
+  /// File path: assets/icons/ic_edit.svg
+  SvgGenImage get icEdit => const SvgGenImage('assets/icons/ic_edit.svg');
+
   /// File path: assets/icons/ic_home.svg
   SvgGenImage get icHome => const SvgGenImage('assets/icons/ic_home.svg');
 
@@ -105,6 +108,7 @@ class $AssetsIconsGen {
         icComment,
         icDown,
         icDrawer,
+        icEdit,
         icHome,
         icLang,
         icLocation,

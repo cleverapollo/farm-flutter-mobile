@@ -1,4 +1,5 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/site_management_plan/site_management_plan_sreen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -36,11 +37,16 @@ class FarmerMemberDashboardScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 20),
-        CmoCard(
-          content: [
-            CmoCardHeader(title: LocaleKeys.labourManagement.tr()),
-            CmoCardItem(title: LocaleKeys.workers.tr(), value: '10'),
-          ],
+        CmoTappable(
+          onTap: () {
+            LabourManagementScreen.push(context);
+          },
+          child: CmoCard(
+            content: [
+              CmoCardHeader(title: LocaleKeys.labourManagement.tr()),
+              CmoCardItem(title: LocaleKeys.workers.tr(), value: '10'),
+            ],
+          ),
         ),
         const SizedBox(height: 20),
         CmoTappable(

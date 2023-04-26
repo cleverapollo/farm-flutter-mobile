@@ -46,3 +46,4 @@ export 'data/audit_question_comment.dart';
 export 'data/audit_question_photo.dart';
 export 'annual_production/annual_production.dart';
 export 'annual_production/annual_production_budget/annual_production_budget.dart';
+export 'farmer_stake_holder/farmer_stake_holder.dart';
