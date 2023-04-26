@@ -45,6 +45,13 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_camera.svg
   SvgGenImage get icCamera => const SvgGenImage('assets/icons/ic_camera.svg');
 
+  /// File path: assets/icons/ic_check.svg
+  SvgGenImage get icCheck => const SvgGenImage('assets/icons/ic_check.svg');
+
+  /// File path: assets/icons/ic_check_circle.svg
+  SvgGenImage get icCheckCircle =>
+      const SvgGenImage('assets/icons/ic_check_circle.svg');
+
   /// File path: assets/icons/ic_close.svg
   SvgGenImage get icClose => const SvgGenImage('assets/icons/ic_close.svg');
 
@@ -117,6 +124,8 @@ class $AssetsIconsGen {
         icCalendar,
         icCallBlue,
         icCamera,
+        icCheck,
+        icCheckCircle,
         icClose,
         icComment,
         icDown,

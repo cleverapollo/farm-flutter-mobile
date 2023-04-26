@@ -3,6 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_stake_holder/job_description/farmer_stake_holder_select_job_description.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_stake_holder/widgets/farmer_select_gender_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_stake_holder/widgets/farmer_stake_holder_upload_avatar.dart';
 import 'package:cmo/ui/theme/theme.dart';
@@ -249,7 +250,11 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
 
   Widget _buildJobDescription() {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        FarmerStakeHolderSelectJobDescription.push(context, stakeHolder.jobDescription, (listJobsDesc) {
+          stakeHolder = stakeHolder.copyWith(jobDescription: listJobsDesc);
+        });
+      },
       child: AttributeItem(
         child: Padding(
           padding: const EdgeInsets.symmetric(
