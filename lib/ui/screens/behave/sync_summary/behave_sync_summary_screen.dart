@@ -3,7 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/sync_summary_cubit/sync_summary_cubit.dart';
 import 'package:cmo/state/sync_summary_cubit/sync_summary_state.dart';
-import 'package:cmo/ui/screens/behave/sync_summary/sync_summary_enum.dart';
+import 'package:cmo/ui/screens/behave/sync_summary/behave_sync_summary_enum.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
@@ -45,12 +45,12 @@ class SyncSummaryScreen extends StatelessWidget {
                 child: Stack(
                   children: [
                     if (state.isLoading)
-                      const _buildLoadingIndicator()
+                      const _BuildLoadingIndicator()
                     else
                       SingleChildScrollView(
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: SyncSummaryEnum.all.getViews
+                            children: BehaveSyncSummaryEnum.all.getViews
                                 .withSpaceBetween(height: 16)
                               ..add(
                                 const SizedBox(height: 60),
@@ -97,8 +97,8 @@ class SyncSummaryScreen extends StatelessWidget {
   }
 }
 
-class _buildLoadingIndicator extends StatelessWidget {
-  const _buildLoadingIndicator();
+class _BuildLoadingIndicator extends StatelessWidget {
+  const _BuildLoadingIndicator();
 
   @override
   Widget build(BuildContext context) {

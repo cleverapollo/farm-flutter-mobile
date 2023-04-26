@@ -1,7 +1,7 @@
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_screen.dart';
 import 'package:cmo/ui/screens/behave/create_worker/worker_add_screen.dart';
-import 'package:cmo/ui/screens/behave/sync_summary/sync_summary_screen.dart';
+import 'package:cmo/ui/screens/behave/sync_summary/behave_sync_summary_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/compartments/compartment_screen.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/widget/cmo_card.dart';

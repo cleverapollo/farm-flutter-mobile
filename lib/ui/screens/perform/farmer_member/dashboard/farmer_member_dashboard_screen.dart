@@ -2,6 +2,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/register_management.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/site_management_plan/site_management_plan_sreen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/sync_summary/resource_manager_sync_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
@@ -53,7 +54,7 @@ class FarmerMemberDashboardScreen extends StatelessWidget {
         const SizedBox(height: 20),
         CmoTappable(
           onTap: () {
-            SyncSummaryScreen.push(context);
+            ResourceManagerSyncSummaryScreen.push(context);
           },
           child: CmoCard(
             content: [

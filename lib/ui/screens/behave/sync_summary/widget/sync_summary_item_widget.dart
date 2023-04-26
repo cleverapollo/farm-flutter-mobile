@@ -4,17 +4,19 @@ import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../sync_summary_enum.dart';
+import '../behave_sync_summary_enum.dart';
 
-class SyncSummaryItemWidget extends StatefulWidget {
-  const SyncSummaryItemWidget(this.syncSummaryEnum, {super.key});
-  final SyncSummaryEnum syncSummaryEnum;
+class BehaveSyncSummaryItemWidget extends StatefulWidget {
+  const BehaveSyncSummaryItemWidget(this.syncSummaryEnum, {super.key});
+  final BehaveSyncSummaryEnum syncSummaryEnum;
 
   @override
-  State<SyncSummaryItemWidget> createState() => _SyncSummaryItemWidgetState();
+  State<BehaveSyncSummaryItemWidget> createState() =>
+      _BehaveSyncSummaryItemWidgetState();
 }
 
-class _SyncSummaryItemWidgetState extends State<SyncSummaryItemWidget> {
+class _BehaveSyncSummaryItemWidgetState
+    extends State<BehaveSyncSummaryItemWidget> {
   late final SyncSummaryCubit cubit;
   late final SyncSummaryState state;
 
@@ -64,13 +66,13 @@ class _SyncSummaryItemWidgetState extends State<SyncSummaryItemWidget> {
 
   Widget _handleSyncSummaryItemWidget() {
     switch (widget.syncSummaryEnum) {
-      case SyncSummaryEnum.assessmentDetails:
+      case BehaveSyncSummaryEnum.assessmentDetails:
         return _buildAssessmentDetails();
-      case SyncSummaryEnum.scheduler:
+      case BehaveSyncSummaryEnum.scheduler:
         return _buildScheduler();
-      case SyncSummaryEnum.masterData:
+      case BehaveSyncSummaryEnum.masterData:
         return _buildMasterData();
-      case SyncSummaryEnum.all:
+      case BehaveSyncSummaryEnum.all:
         return const SizedBox();
     }
   }
@@ -81,15 +83,15 @@ class _SyncSummaryItemWidgetState extends State<SyncSummaryItemWidget> {
       builder: (_, state) {
         return Column(
           children: [
-            _BuildPairItemWidget(
+            SyncItemWidget(
               first: widget.syncSummaryEnum.getLabel,
               isTitle: true,
             ),
-            _BuildPairItemWidget(
+            SyncItemWidget(
               first: 'In Progress',
               count: state.data?.adInprogress,
             ),
-            _BuildPairItemWidget(
+            SyncItemWidget(
               first: 'Un Synced',
               count: state.data?.adUnsynced,
               isHighlight: true,
@@ -103,11 +105,11 @@ class _SyncSummaryItemWidgetState extends State<SyncSummaryItemWidget> {
   Widget _buildScheduler() {
     return Column(
       children: [
-        _BuildPairItemWidget(
+        SyncItemWidget(
           first: widget.syncSummaryEnum.getLabel,
           isTitle: true,
         ),
-        _BuildPairItemWidget(
+        SyncItemWidget(
           first: 'Upcomming Event',
           count: state.data?.schedulerUpcommingEvent,
         ),
@@ -121,11 +123,11 @@ class _SyncSummaryItemWidgetState extends State<SyncSummaryItemWidget> {
         builder: (_, state) {
           return Column(
             children: [
-              _BuildPairItemWidget(
+              SyncItemWidget(
                 first: widget.syncSummaryEnum.getLabel,
                 isTitle: true,
               ),
-              ...data.map((e) => _BuildPairItemWidget(
+              ...data.map((e) => SyncItemWidget(
                     first: e.title,
                     count: e.count,
                   ))
@@ -135,8 +137,8 @@ class _SyncSummaryItemWidgetState extends State<SyncSummaryItemWidget> {
   }
 }
 
-class _BuildPairItemWidget extends StatelessWidget {
-  const _BuildPairItemWidget({
+class SyncItemWidget extends StatelessWidget {
+  const SyncItemWidget({
     super.key,
     required this.first,
     this.isTitle = false,
