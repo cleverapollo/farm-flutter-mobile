@@ -26,6 +26,7 @@ class CmoDropdown<T> extends StatelessWidget {
     this.onChanged,
     this.enabled = true,
     this.inputDecoration,
+    this.style,
   });
 
   final String name;
@@ -37,13 +38,14 @@ class CmoDropdown<T> extends StatelessWidget {
   final ValueChanged<T?>? onChanged;
   final bool enabled;
   final InputDecoration? inputDecoration;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
     return FormBuilderDropdown<T>(
       name: name,
       validator: validator,
-      style: context.textStyles.bodyNormal,
+      style: style ?? context.textStyles.bodyNormal,
       decoration: inputDecoration ?? InputDecoration(
         contentPadding: const EdgeInsets.all(8),
         prefixIconConstraints: BoxConstraints.tight(const Size(56, 38)),
@@ -57,6 +59,19 @@ class CmoDropdown<T> extends StatelessWidget {
       onChanged: onChanged,
       enabled: enabled,
       elevation: 0,
+      selectedItemBuilder: (BuildContext context) {
+        return (itemsData ?? <CmoDropdownItem<T>>[])
+            .map(
+              (data) => DropdownMenuItem(
+                value: data.id,
+                child: Text(
+                  data.name,
+                  style: style ?? context.textStyles.bodyNormal,
+                ),
+              ),
+            )
+            .toList();
+      },
       items: (itemsData ?? <CmoDropdownItem<T>>[])
           .map(
             (data) => DropdownMenuItem(

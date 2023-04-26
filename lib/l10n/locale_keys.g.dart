@@ -288,5 +288,10 @@ abstract class  LocaleKeys {
   static const open = 'open';
   static const asi_no = 'asi_no';
   static const general_comments = 'general_comments';
+  static const lat_long = 'lat_long';
+  static const date_captured = 'date_captured';
+  static const car_raised = 'car_raised';
+  static const car_closed = 'car_closed';
+  static const why_farmer_raises_car = 'why_farmer_raises_car';
 
 }

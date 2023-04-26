@@ -119,8 +119,11 @@ class $AssetsIconsGen {
         icAdd,
         icArrowLeft,
         icArrowRight,
+<<<<<<< HEAD
         icAvatar,
         icBarcode,
+=======
+>>>>>>> eca67af (Implement new Asi)
         icCalendar,
         icCallBlue,
         icCamera,

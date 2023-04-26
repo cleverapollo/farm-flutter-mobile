@@ -149,10 +149,16 @@ class _AddCampScreenState extends State<AddCampScreen> {
 class SelectorAttributeItem extends StatelessWidget {
   final String hintText;
   final String? text;
+  final Widget? textWidget;
+  final EdgeInsetsGeometry contentPadding;
+  final Widget? trailing;
 
   const SelectorAttributeItem({
     required this.hintText,
     this.text,
+    this.textWidget,
+    this.contentPadding = const EdgeInsets.fromLTRB(14, 4, 14, 4),
+    this.trailing,
     super.key,
   });
 
@@ -170,14 +176,14 @@ class SelectorAttributeItem extends StatelessWidget {
             decoration: InputDecoration(
               hintText: hintText,
               isCollapsed: true,
-              contentPadding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
+              contentPadding: contentPadding,
               enabledBorder: InputBorder.none,
               disabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,
             ),
           ),
         ),
-        Assets.icons.icArrowRight.svgBlack,
+        trailing ?? Assets.icons.icArrowRight.svgBlack,
         const SizedBox(width: 16),
       ],
     );

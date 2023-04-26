@@ -4,6 +4,7 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/asi.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/adding_asi_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_text_field.dart';
@@ -74,8 +75,7 @@ class _AsiScreenState extends State<AsiScreen> {
         showLeading: true,
         showTrailing: true,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () {
-        },
+        onTapTrailing: () => AddingAsiScreen.push(context),
       ),
       body: Column(
         children: [
