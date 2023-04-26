@@ -23,6 +23,8 @@ class FarmerStakeHolder with _$FarmerStakeHolder {
     @JsonKey(name: 'PhoneNumber') String? phoneNumber,
     @JsonKey(name: 'Nationality') String? nationality,
     @JsonKey(name: 'Gender') String? gender,
+    @JsonKey(name: 'AvatarFilePath') String? avatarFilePath,
+    @JsonKey(name: 'AvatarFileName') String? avatarFileName,
     @Default(<int>[])
     @JsonKey(name: 'JobDescription') List<int>? jobDescription,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,

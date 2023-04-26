@@ -17,88 +17,98 @@ const FarmerStakeHolderSchema = CollectionSchema(
   name: r'FarmerStakeHolder',
   id: -2239912109689933227,
   properties: {
-    r'createDT': PropertySchema(
+    r'avatarFileName': PropertySchema(
       id: 0,
+      name: r'avatarFileName',
+      type: IsarType.string,
+    ),
+    r'avatarFilePath': PropertySchema(
+      id: 1,
+      name: r'avatarFilePath',
+      type: IsarType.string,
+    ),
+    r'createDT': PropertySchema(
+      id: 2,
       name: r'createDT',
       type: IsarType.string,
     ),
     r'dateOfBirth': PropertySchema(
-      id: 1,
+      id: 3,
       name: r'dateOfBirth',
       type: IsarType.string,
     ),
     r'farmId': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'farmId',
       type: IsarType.long,
     ),
     r'farmerStakeHolderId': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'farmerStakeHolderId',
       type: IsarType.long,
     ),
     r'farmerStakeHolderName': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'farmerStakeHolderName',
       type: IsarType.string,
     ),
     r'firstName': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'firstName',
       type: IsarType.string,
     ),
     r'gender': PropertySchema(
-      id: 6,
+      id: 8,
       name: r'gender',
       type: IsarType.string,
     ),
     r'idNumber': PropertySchema(
-      id: 7,
+      id: 9,
       name: r'idNumber',
       type: IsarType.long,
     ),
     r'isActive': PropertySchema(
-      id: 8,
+      id: 10,
       name: r'isActive',
       type: IsarType.bool,
     ),
     r'isLocal': PropertySchema(
-      id: 9,
+      id: 11,
       name: r'isLocal',
       type: IsarType.bool,
     ),
     r'jobDescription': PropertySchema(
-      id: 10,
+      id: 12,
       name: r'jobDescription',
       type: IsarType.longList,
     ),
     r'jobTitle': PropertySchema(
-      id: 11,
+      id: 13,
       name: r'jobTitle',
       type: IsarType.string,
     ),
     r'lastName': PropertySchema(
-      id: 12,
+      id: 14,
       name: r'lastName',
       type: IsarType.string,
     ),
     r'nationality': PropertySchema(
-      id: 13,
+      id: 15,
       name: r'nationality',
       type: IsarType.string,
     ),
     r'phoneNumber': PropertySchema(
-      id: 14,
+      id: 16,
       name: r'phoneNumber',
       type: IsarType.string,
     ),
     r'stakeholderId': PropertySchema(
-      id: 15,
+      id: 17,
       name: r'stakeholderId',
       type: IsarType.long,
     ),
     r'updateDT': PropertySchema(
-      id: 16,
+      id: 18,
       name: r'updateDT',
       type: IsarType.string,
     )
@@ -123,6 +133,18 @@ int _farmerStakeHolderEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  {
+    final value = object.avatarFileName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.avatarFilePath;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.createDT;
     if (value != null) {
@@ -198,23 +220,25 @@ void _farmerStakeHolderSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.createDT);
-  writer.writeString(offsets[1], object.dateOfBirth);
-  writer.writeLong(offsets[2], object.farmId);
-  writer.writeLong(offsets[3], object.farmerStakeHolderId);
-  writer.writeString(offsets[4], object.farmerStakeHolderName);
-  writer.writeString(offsets[5], object.firstName);
-  writer.writeString(offsets[6], object.gender);
-  writer.writeLong(offsets[7], object.idNumber);
-  writer.writeBool(offsets[8], object.isActive);
-  writer.writeBool(offsets[9], object.isLocal);
-  writer.writeLongList(offsets[10], object.jobDescription);
-  writer.writeString(offsets[11], object.jobTitle);
-  writer.writeString(offsets[12], object.lastName);
-  writer.writeString(offsets[13], object.nationality);
-  writer.writeString(offsets[14], object.phoneNumber);
-  writer.writeLong(offsets[15], object.stakeholderId);
-  writer.writeString(offsets[16], object.updateDT);
+  writer.writeString(offsets[0], object.avatarFileName);
+  writer.writeString(offsets[1], object.avatarFilePath);
+  writer.writeString(offsets[2], object.createDT);
+  writer.writeString(offsets[3], object.dateOfBirth);
+  writer.writeLong(offsets[4], object.farmId);
+  writer.writeLong(offsets[5], object.farmerStakeHolderId);
+  writer.writeString(offsets[6], object.farmerStakeHolderName);
+  writer.writeString(offsets[7], object.firstName);
+  writer.writeString(offsets[8], object.gender);
+  writer.writeLong(offsets[9], object.idNumber);
+  writer.writeBool(offsets[10], object.isActive);
+  writer.writeBool(offsets[11], object.isLocal);
+  writer.writeLongList(offsets[12], object.jobDescription);
+  writer.writeString(offsets[13], object.jobTitle);
+  writer.writeString(offsets[14], object.lastName);
+  writer.writeString(offsets[15], object.nationality);
+  writer.writeString(offsets[16], object.phoneNumber);
+  writer.writeLong(offsets[17], object.stakeholderId);
+  writer.writeString(offsets[18], object.updateDT);
 }
 
 FarmerStakeHolder _farmerStakeHolderDeserialize(
@@ -224,23 +248,25 @@ FarmerStakeHolder _farmerStakeHolderDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = FarmerStakeHolder(
-    createDT: reader.readStringOrNull(offsets[0]),
-    dateOfBirth: reader.readStringOrNull(offsets[1]),
-    farmId: reader.readLongOrNull(offsets[2]),
-    farmerStakeHolderId: reader.readLongOrNull(offsets[3]),
-    farmerStakeHolderName: reader.readStringOrNull(offsets[4]),
-    firstName: reader.readStringOrNull(offsets[5]),
-    gender: reader.readStringOrNull(offsets[6]),
-    idNumber: reader.readLongOrNull(offsets[7]),
-    isActive: reader.readBoolOrNull(offsets[8]),
-    isLocal: reader.readBoolOrNull(offsets[9]),
-    jobDescription: reader.readLongList(offsets[10]),
-    jobTitle: reader.readStringOrNull(offsets[11]),
-    lastName: reader.readStringOrNull(offsets[12]),
-    nationality: reader.readStringOrNull(offsets[13]),
-    phoneNumber: reader.readStringOrNull(offsets[14]),
-    stakeholderId: reader.readLongOrNull(offsets[15]),
-    updateDT: reader.readStringOrNull(offsets[16]),
+    avatarFileName: reader.readStringOrNull(offsets[0]),
+    avatarFilePath: reader.readStringOrNull(offsets[1]),
+    createDT: reader.readStringOrNull(offsets[2]),
+    dateOfBirth: reader.readStringOrNull(offsets[3]),
+    farmId: reader.readLongOrNull(offsets[4]),
+    farmerStakeHolderId: reader.readLongOrNull(offsets[5]),
+    farmerStakeHolderName: reader.readStringOrNull(offsets[6]),
+    firstName: reader.readStringOrNull(offsets[7]),
+    gender: reader.readStringOrNull(offsets[8]),
+    idNumber: reader.readLongOrNull(offsets[9]),
+    isActive: reader.readBoolOrNull(offsets[10]),
+    isLocal: reader.readBoolOrNull(offsets[11]),
+    jobDescription: reader.readLongList(offsets[12]),
+    jobTitle: reader.readStringOrNull(offsets[13]),
+    lastName: reader.readStringOrNull(offsets[14]),
+    nationality: reader.readStringOrNull(offsets[15]),
+    phoneNumber: reader.readStringOrNull(offsets[16]),
+    stakeholderId: reader.readLongOrNull(offsets[17]),
+    updateDT: reader.readStringOrNull(offsets[18]),
   );
   return object;
 }
@@ -257,34 +283,38 @@ P _farmerStakeHolderDeserializeProp<P>(
     case 1:
       return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 9:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 10:
-      return (reader.readLongList(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 11:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 12:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongList(offset)) as P;
     case 13:
       return (reader.readStringOrNull(offset)) as P;
     case 14:
       return (reader.readStringOrNull(offset)) as P;
     case 15:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 16:
+      return (reader.readStringOrNull(offset)) as P;
+    case 17:
+      return (reader.readLongOrNull(offset)) as P;
+    case 18:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -385,6 +415,314 @@ extension FarmerStakeHolderQueryWhere
 
 extension FarmerStakeHolderQueryFilter
     on QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QFilterCondition> {
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFileNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'avatarFileName',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFileNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'avatarFileName',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFileNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'avatarFileName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFileNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'avatarFileName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFileNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'avatarFileName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFileNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'avatarFileName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFileNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'avatarFileName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFileNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'avatarFileName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFileNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'avatarFileName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFileNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'avatarFileName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFileNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'avatarFileName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFileNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'avatarFileName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFilePathIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'avatarFilePath',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFilePathIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'avatarFilePath',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFilePathEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'avatarFilePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFilePathGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'avatarFilePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFilePathLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'avatarFilePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFilePathBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'avatarFilePath',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFilePathStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'avatarFilePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFilePathEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'avatarFilePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFilePathContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'avatarFilePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFilePathMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'avatarFilePath',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFilePathIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'avatarFilePath',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      avatarFilePathIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'avatarFilePath',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
       createDTIsNull() {
     return QueryBuilder.apply(this, (query) {
@@ -2507,6 +2845,34 @@ extension FarmerStakeHolderQueryLinks
 extension FarmerStakeHolderQuerySortBy
     on QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QSortBy> {
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByAvatarFileName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'avatarFileName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByAvatarFileNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'avatarFileName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByAvatarFilePath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'avatarFilePath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByAvatarFilePathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'avatarFilePath', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
       sortByCreateDT() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createDT', Sort.asc);
@@ -2733,6 +3099,34 @@ extension FarmerStakeHolderQuerySortBy
 
 extension FarmerStakeHolderQuerySortThenBy
     on QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QSortThenBy> {
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByAvatarFileName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'avatarFileName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByAvatarFileNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'avatarFileName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByAvatarFilePath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'avatarFilePath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByAvatarFilePathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'avatarFilePath', Sort.desc);
+    });
+  }
+
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
       thenByCreateDT() {
     return QueryBuilder.apply(this, (query) {
@@ -2974,6 +3368,22 @@ extension FarmerStakeHolderQuerySortThenBy
 extension FarmerStakeHolderQueryWhereDistinct
     on QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct> {
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
+      distinctByAvatarFileName({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'avatarFileName',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
+      distinctByAvatarFilePath({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'avatarFilePath',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
       distinctByCreateDT({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createDT', caseSensitive: caseSensitive);
@@ -3099,6 +3509,20 @@ extension FarmerStakeHolderQueryProperty
   QueryBuilder<FarmerStakeHolder, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, String?, QQueryOperations>
+      avatarFileNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'avatarFileName');
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, String?, QQueryOperations>
+      avatarFilePathProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'avatarFilePath');
     });
   }
 
@@ -3237,6 +3661,8 @@ _$_FarmerStakeHolder _$$_FarmerStakeHolderFromJson(Map<String, dynamic> json) =>
       phoneNumber: json['PhoneNumber'] as String?,
       nationality: json['Nationality'] as String?,
       gender: json['Gender'] as String?,
+      avatarFilePath: json['AvatarFilePath'] as String?,
+      avatarFileName: json['AvatarFileName'] as String?,
       jobDescription: (json['JobDescription'] as List<dynamic>?)
               ?.map((e) => e as int)
               .toList() ??
@@ -3262,6 +3688,8 @@ Map<String, dynamic> _$$_FarmerStakeHolderToJson(
       'PhoneNumber': instance.phoneNumber,
       'Nationality': instance.nationality,
       'Gender': instance.gender,
+      'AvatarFilePath': instance.avatarFilePath,
+      'AvatarFileName': instance.avatarFileName,
       'JobDescription': instance.jobDescription,
       'IsActive': instance.isActive,
       'IsLocal': instance.isLocal,

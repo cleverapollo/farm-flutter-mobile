@@ -238,6 +238,7 @@
   "select": "Select",
   "audit": "Audit",
   "retakePhoto": "Retake photo",
+  "uploadAvatarDescription": "Choose method to upload your profile picture.",
   "reselectPhoto": "Reselect photo",
   "infestation_weighted_average": "Infestation weighted average",
   "estimated_biomass":"Estimated Biomass",

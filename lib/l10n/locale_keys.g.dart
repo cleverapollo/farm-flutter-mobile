@@ -238,6 +238,7 @@ abstract class  LocaleKeys {
   static const type = 'type';
   static const select = 'select';
   static const retakePhoto = 'retakePhoto';
+  static const uploadAvatarDescription = 'uploadAvatarDescription';
   static const reselectPhoto = 'reselectPhoto';
   static const infestation_weighted_average = 'infestation_weighted_average';
   static const estimated_biomass = 'estimated_biomass';

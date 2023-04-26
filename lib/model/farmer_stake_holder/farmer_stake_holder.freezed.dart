@@ -48,6 +48,10 @@ mixin _$FarmerStakeHolder {
   String? get nationality => throw _privateConstructorUsedError;
   @JsonKey(name: 'Gender')
   String? get gender => throw _privateConstructorUsedError;
+  @JsonKey(name: 'AvatarFilePath')
+  String? get avatarFilePath => throw _privateConstructorUsedError;
+  @JsonKey(name: 'AvatarFileName')
+  String? get avatarFileName => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobDescription')
   List<int>? get jobDescription => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -82,6 +86,8 @@ abstract class $FarmerStakeHolderCopyWith<$Res> {
       @JsonKey(name: 'PhoneNumber') String? phoneNumber,
       @JsonKey(name: 'Nationality') String? nationality,
       @JsonKey(name: 'Gender') String? gender,
+      @JsonKey(name: 'AvatarFilePath') String? avatarFilePath,
+      @JsonKey(name: 'AvatarFileName') String? avatarFileName,
       @JsonKey(name: 'JobDescription') List<int>? jobDescription,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'IsLocal') bool? isLocal});
@@ -114,6 +120,8 @@ class _$FarmerStakeHolderCopyWithImpl<$Res, $Val extends FarmerStakeHolder>
     Object? phoneNumber = freezed,
     Object? nationality = freezed,
     Object? gender = freezed,
+    Object? avatarFilePath = freezed,
+    Object? avatarFileName = freezed,
     Object? jobDescription = freezed,
     Object? isActive = freezed,
     Object? isLocal = freezed,
@@ -175,6 +183,14 @@ class _$FarmerStakeHolderCopyWithImpl<$Res, $Val extends FarmerStakeHolder>
           ? _value.gender
           : gender // ignore: cast_nullable_to_non_nullable
               as String?,
+      avatarFilePath: freezed == avatarFilePath
+          ? _value.avatarFilePath
+          : avatarFilePath // ignore: cast_nullable_to_non_nullable
+              as String?,
+      avatarFileName: freezed == avatarFileName
+          ? _value.avatarFileName
+          : avatarFileName // ignore: cast_nullable_to_non_nullable
+              as String?,
       jobDescription: freezed == jobDescription
           ? _value.jobDescription
           : jobDescription // ignore: cast_nullable_to_non_nullable
@@ -214,6 +230,8 @@ abstract class _$$_FarmerStakeHolderCopyWith<$Res>
       @JsonKey(name: 'PhoneNumber') String? phoneNumber,
       @JsonKey(name: 'Nationality') String? nationality,
       @JsonKey(name: 'Gender') String? gender,
+      @JsonKey(name: 'AvatarFilePath') String? avatarFilePath,
+      @JsonKey(name: 'AvatarFileName') String? avatarFileName,
       @JsonKey(name: 'JobDescription') List<int>? jobDescription,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'IsLocal') bool? isLocal});
@@ -244,6 +262,8 @@ class __$$_FarmerStakeHolderCopyWithImpl<$Res>
     Object? phoneNumber = freezed,
     Object? nationality = freezed,
     Object? gender = freezed,
+    Object? avatarFilePath = freezed,
+    Object? avatarFileName = freezed,
     Object? jobDescription = freezed,
     Object? isActive = freezed,
     Object? isLocal = freezed,
@@ -305,6 +325,14 @@ class __$$_FarmerStakeHolderCopyWithImpl<$Res>
           ? _value.gender
           : gender // ignore: cast_nullable_to_non_nullable
               as String?,
+      avatarFilePath: freezed == avatarFilePath
+          ? _value.avatarFilePath
+          : avatarFilePath // ignore: cast_nullable_to_non_nullable
+              as String?,
+      avatarFileName: freezed == avatarFileName
+          ? _value.avatarFileName
+          : avatarFileName // ignore: cast_nullable_to_non_nullable
+              as String?,
       jobDescription: freezed == jobDescription
           ? _value._jobDescription
           : jobDescription // ignore: cast_nullable_to_non_nullable
@@ -353,6 +381,10 @@ class _$_FarmerStakeHolder extends _FarmerStakeHolder {
           this.nationality,
       @JsonKey(name: 'Gender')
           this.gender,
+      @JsonKey(name: 'AvatarFilePath')
+          this.avatarFilePath,
+      @JsonKey(name: 'AvatarFileName')
+          this.avatarFileName,
       @JsonKey(name: 'JobDescription')
           final List<int>? jobDescription = const <int>[],
       @JsonKey(name: 'IsActive')
@@ -407,6 +439,12 @@ class _$_FarmerStakeHolder extends _FarmerStakeHolder {
   @override
   @JsonKey(name: 'Gender')
   final String? gender;
+  @override
+  @JsonKey(name: 'AvatarFilePath')
+  final String? avatarFilePath;
+  @override
+  @JsonKey(name: 'AvatarFileName')
+  final String? avatarFileName;
   final List<int>? _jobDescription;
   @override
   @JsonKey(name: 'JobDescription')
@@ -427,7 +465,7 @@ class _$_FarmerStakeHolder extends _FarmerStakeHolder {
 
   @override
   String toString() {
-    return 'FarmerStakeHolder(farmerStakeHolderId: $farmerStakeHolderId, farmId: $farmId, stakeholderId: $stakeholderId, createDT: $createDT, updateDT: $updateDT, jobTitle: $jobTitle, farmerStakeHolderName: $farmerStakeHolderName, firstName: $firstName, lastName: $lastName, dateOfBirth: $dateOfBirth, idNumber: $idNumber, phoneNumber: $phoneNumber, nationality: $nationality, gender: $gender, jobDescription: $jobDescription, isActive: $isActive, isLocal: $isLocal)';
+    return 'FarmerStakeHolder(farmerStakeHolderId: $farmerStakeHolderId, farmId: $farmId, stakeholderId: $stakeholderId, createDT: $createDT, updateDT: $updateDT, jobTitle: $jobTitle, farmerStakeHolderName: $farmerStakeHolderName, firstName: $firstName, lastName: $lastName, dateOfBirth: $dateOfBirth, idNumber: $idNumber, phoneNumber: $phoneNumber, nationality: $nationality, gender: $gender, avatarFilePath: $avatarFilePath, avatarFileName: $avatarFileName, jobDescription: $jobDescription, isActive: $isActive, isLocal: $isLocal)';
   }
 
   @override
@@ -461,6 +499,10 @@ class _$_FarmerStakeHolder extends _FarmerStakeHolder {
             (identical(other.nationality, nationality) ||
                 other.nationality == nationality) &&
             (identical(other.gender, gender) || other.gender == gender) &&
+            (identical(other.avatarFilePath, avatarFilePath) ||
+                other.avatarFilePath == avatarFilePath) &&
+            (identical(other.avatarFileName, avatarFileName) ||
+                other.avatarFileName == avatarFileName) &&
             const DeepCollectionEquality()
                 .equals(other._jobDescription, _jobDescription) &&
             (identical(other.isActive, isActive) ||
@@ -470,25 +512,28 @@ class _$_FarmerStakeHolder extends _FarmerStakeHolder {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      farmerStakeHolderId,
-      farmId,
-      stakeholderId,
-      createDT,
-      updateDT,
-      jobTitle,
-      farmerStakeHolderName,
-      firstName,
-      lastName,
-      dateOfBirth,
-      idNumber,
-      phoneNumber,
-      nationality,
-      gender,
-      const DeepCollectionEquality().hash(_jobDescription),
-      isActive,
-      isLocal);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        farmerStakeHolderId,
+        farmId,
+        stakeholderId,
+        createDT,
+        updateDT,
+        jobTitle,
+        farmerStakeHolderName,
+        firstName,
+        lastName,
+        dateOfBirth,
+        idNumber,
+        phoneNumber,
+        nationality,
+        gender,
+        avatarFilePath,
+        avatarFileName,
+        const DeepCollectionEquality().hash(_jobDescription),
+        isActive,
+        isLocal
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -535,6 +580,10 @@ abstract class _FarmerStakeHolder extends FarmerStakeHolder {
           final String? nationality,
       @JsonKey(name: 'Gender')
           final String? gender,
+      @JsonKey(name: 'AvatarFilePath')
+          final String? avatarFilePath,
+      @JsonKey(name: 'AvatarFileName')
+          final String? avatarFileName,
       @JsonKey(name: 'JobDescription')
           final List<int>? jobDescription,
       @JsonKey(name: 'IsActive')
@@ -588,6 +637,12 @@ abstract class _FarmerStakeHolder extends FarmerStakeHolder {
   @override
   @JsonKey(name: 'Gender')
   String? get gender;
+  @override
+  @JsonKey(name: 'AvatarFilePath')
+  String? get avatarFilePath;
+  @override
+  @JsonKey(name: 'AvatarFileName')
+  String? get avatarFileName;
   @override
   @JsonKey(name: 'JobDescription')
   List<int>? get jobDescription;
