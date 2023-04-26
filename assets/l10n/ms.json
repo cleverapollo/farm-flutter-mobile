@@ -248,5 +248,18 @@
   "hectares_are_corridors":"How many hectares are corridors?",
   "hectares_road_fire_breaks":"How many hectares are road & fire breaks?",
   "hectares_poaching_alleviation_zones":"How many hectares are poaching alleviation zones?",
-  "asi": "ASI"
+  "asi": "ASI",
+  "accident_incidents": "Accident & Incidents",
+  "pending": "pending",
+  "register_management": "Register Management",
+  "biological_control_agents": "Biological Control Agents",
+  "chemicals": "Chemicals",
+  "disciplinaries": "Disciplinaries",
+  "employee_grievance": "Employee Grievance",
+  "fire": "Fire",
+  "pests_diseases": "Pests & Diseases",
+  "rte_species": "RTE Species",
+  "stakeholder_complaints": "Stakeholder Complaints",
+  "stakeholder_management": "Stakeholder Management",
+  "training": "Training"
 }

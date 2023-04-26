@@ -9,12 +9,13 @@ abstract class  LocaleKeys {
   static const addMember = 'addMember';
   static const addStakeholders = 'addStakeholders';
   static const address = 'address';
+  static const addBudget = 'addBudget';
   static const annualBudgets = 'annualBudgets';
   static const annualProduction = 'annualProduction';
   static const addAnnualProduction = 'addAnnualProduction';
   static const annualProductionYear = 'annualProductionYear';
-  static const annual = 'annual';
   static const year = 'year';
+  static const annual = 'annual';
   static const appVersion = 'appVersion';
   static const appearance = 'appearance';
   static const area = 'area';
@@ -24,9 +25,8 @@ abstract class  LocaleKeys {
   static const assessments = 'assessments';
   static const auditTemplate = 'auditTemplate';
   static const audit_s = 'audit_s';
-  static const audit = 'audit';
   static const audits = 'audits';
-  static const addBudget = 'addBudget';
+  static const audit = 'audit';
   static const budget = 'budget';
   static const budgetName = 'budgetName';
   static const camp = 'camp';
@@ -176,8 +176,6 @@ abstract class  LocaleKeys {
   static const remove = 'remove';
   static const resourceManagementUnit = 'resourceManagementUnit';
   static const retake = 'retake';
-  static const retakePhoto = 'retakePhoto';
-  static const reselectPhoto = 'reselectPhoto';
   static const rotation = 'rotation';
   static const save = 'save';
   static const search = 'search';
@@ -236,6 +234,8 @@ abstract class  LocaleKeys {
   static const enter = 'enter';
   static const type = 'type';
   static const select = 'select';
+  static const retakePhoto = 'retakePhoto';
+  static const reselectPhoto = 'reselectPhoto';
   static const infestation_weighted_average = 'infestation_weighted_average';
   static const estimated_biomass = 'estimated_biomass';
   static const total_biomass = 'total_biomass';
@@ -249,5 +249,18 @@ abstract class  LocaleKeys {
   static const hectares_road_fire_breaks = 'hectares_road_fire_breaks';
   static const hectares_poaching_alleviation_zones = 'hectares_poaching_alleviation_zones';
   static const asi = 'asi';
+  static const accident_incidents = 'accident_incidents';
+  static const pending = 'pending';
+  static const register_management = 'register_management';
+  static const biological_control_agents = 'biological_control_agents';
+  static const chemicals = 'chemicals';
+  static const disciplinaries = 'disciplinaries';
+  static const employee_grievance = 'employee_grievance';
+  static const fire = 'fire';
+  static const pests_diseases = 'pests_diseases';
+  static const rte_species = 'rte_species';
+  static const stakeholder_complaints = 'stakeholder_complaints';
+  static const stakeholder_management = 'stakeholder_management';
+  static const training = 'training';
 
 }
