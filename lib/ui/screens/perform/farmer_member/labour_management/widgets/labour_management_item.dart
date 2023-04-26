@@ -32,7 +32,7 @@ class LabourManagementItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                farmerStakeHolder.stakeHolderName ?? '',
+                farmerStakeHolder.farmerStakeHolderName ?? '',
                 style: context.textStyles.bodyBold.blue,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

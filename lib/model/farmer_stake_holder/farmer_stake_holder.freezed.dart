@@ -33,7 +33,23 @@ mixin _$FarmerStakeHolder {
   @JsonKey(name: 'JobTitle')
   String? get jobTitle => throw _privateConstructorUsedError;
   @JsonKey(name: 'FarmerStakeHolderName')
-  String? get stakeHolderName => throw _privateConstructorUsedError;
+  String? get farmerStakeHolderName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'FirstName')
+  String? get firstName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'LastName')
+  String? get lastName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'DateOfBirth')
+  String? get dateOfBirth => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IdNumber')
+  int? get idNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: 'PhoneNumber')
+  String? get phoneNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: 'Nationality')
+  String? get nationality => throw _privateConstructorUsedError;
+  @JsonKey(name: 'Gender')
+  String? get gender => throw _privateConstructorUsedError;
+  @JsonKey(name: 'JobDescription')
+  List<int>? get jobDescription => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsLocal')
@@ -58,7 +74,15 @@ abstract class $FarmerStakeHolderCopyWith<$Res> {
       @JsonKey(name: 'CreateDT') String? createDT,
       @JsonKey(name: 'UpdateDT') String? updateDT,
       @JsonKey(name: 'JobTitle') String? jobTitle,
-      @JsonKey(name: 'FarmerStakeHolderName') String? stakeHolderName,
+      @JsonKey(name: 'FarmerStakeHolderName') String? farmerStakeHolderName,
+      @JsonKey(name: 'FirstName') String? firstName,
+      @JsonKey(name: 'LastName') String? lastName,
+      @JsonKey(name: 'DateOfBirth') String? dateOfBirth,
+      @JsonKey(name: 'IdNumber') int? idNumber,
+      @JsonKey(name: 'PhoneNumber') String? phoneNumber,
+      @JsonKey(name: 'Nationality') String? nationality,
+      @JsonKey(name: 'Gender') String? gender,
+      @JsonKey(name: 'JobDescription') List<int>? jobDescription,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'IsLocal') bool? isLocal});
 }
@@ -82,7 +106,15 @@ class _$FarmerStakeHolderCopyWithImpl<$Res, $Val extends FarmerStakeHolder>
     Object? createDT = freezed,
     Object? updateDT = freezed,
     Object? jobTitle = freezed,
-    Object? stakeHolderName = freezed,
+    Object? farmerStakeHolderName = freezed,
+    Object? firstName = freezed,
+    Object? lastName = freezed,
+    Object? dateOfBirth = freezed,
+    Object? idNumber = freezed,
+    Object? phoneNumber = freezed,
+    Object? nationality = freezed,
+    Object? gender = freezed,
+    Object? jobDescription = freezed,
     Object? isActive = freezed,
     Object? isLocal = freezed,
   }) {
@@ -111,10 +143,42 @@ class _$FarmerStakeHolderCopyWithImpl<$Res, $Val extends FarmerStakeHolder>
           ? _value.jobTitle
           : jobTitle // ignore: cast_nullable_to_non_nullable
               as String?,
-      stakeHolderName: freezed == stakeHolderName
-          ? _value.stakeHolderName
-          : stakeHolderName // ignore: cast_nullable_to_non_nullable
+      farmerStakeHolderName: freezed == farmerStakeHolderName
+          ? _value.farmerStakeHolderName
+          : farmerStakeHolderName // ignore: cast_nullable_to_non_nullable
               as String?,
+      firstName: freezed == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastName: freezed == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dateOfBirth: freezed == dateOfBirth
+          ? _value.dateOfBirth
+          : dateOfBirth // ignore: cast_nullable_to_non_nullable
+              as String?,
+      idNumber: freezed == idNumber
+          ? _value.idNumber
+          : idNumber // ignore: cast_nullable_to_non_nullable
+              as int?,
+      phoneNumber: freezed == phoneNumber
+          ? _value.phoneNumber
+          : phoneNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      nationality: freezed == nationality
+          ? _value.nationality
+          : nationality // ignore: cast_nullable_to_non_nullable
+              as String?,
+      gender: freezed == gender
+          ? _value.gender
+          : gender // ignore: cast_nullable_to_non_nullable
+              as String?,
+      jobDescription: freezed == jobDescription
+          ? _value.jobDescription
+          : jobDescription // ignore: cast_nullable_to_non_nullable
+              as List<int>?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -142,7 +206,15 @@ abstract class _$$_FarmerStakeHolderCopyWith<$Res>
       @JsonKey(name: 'CreateDT') String? createDT,
       @JsonKey(name: 'UpdateDT') String? updateDT,
       @JsonKey(name: 'JobTitle') String? jobTitle,
-      @JsonKey(name: 'FarmerStakeHolderName') String? stakeHolderName,
+      @JsonKey(name: 'FarmerStakeHolderName') String? farmerStakeHolderName,
+      @JsonKey(name: 'FirstName') String? firstName,
+      @JsonKey(name: 'LastName') String? lastName,
+      @JsonKey(name: 'DateOfBirth') String? dateOfBirth,
+      @JsonKey(name: 'IdNumber') int? idNumber,
+      @JsonKey(name: 'PhoneNumber') String? phoneNumber,
+      @JsonKey(name: 'Nationality') String? nationality,
+      @JsonKey(name: 'Gender') String? gender,
+      @JsonKey(name: 'JobDescription') List<int>? jobDescription,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'IsLocal') bool? isLocal});
 }
@@ -164,7 +236,15 @@ class __$$_FarmerStakeHolderCopyWithImpl<$Res>
     Object? createDT = freezed,
     Object? updateDT = freezed,
     Object? jobTitle = freezed,
-    Object? stakeHolderName = freezed,
+    Object? farmerStakeHolderName = freezed,
+    Object? firstName = freezed,
+    Object? lastName = freezed,
+    Object? dateOfBirth = freezed,
+    Object? idNumber = freezed,
+    Object? phoneNumber = freezed,
+    Object? nationality = freezed,
+    Object? gender = freezed,
+    Object? jobDescription = freezed,
     Object? isActive = freezed,
     Object? isLocal = freezed,
   }) {
@@ -193,10 +273,42 @@ class __$$_FarmerStakeHolderCopyWithImpl<$Res>
           ? _value.jobTitle
           : jobTitle // ignore: cast_nullable_to_non_nullable
               as String?,
-      stakeHolderName: freezed == stakeHolderName
-          ? _value.stakeHolderName
-          : stakeHolderName // ignore: cast_nullable_to_non_nullable
+      farmerStakeHolderName: freezed == farmerStakeHolderName
+          ? _value.farmerStakeHolderName
+          : farmerStakeHolderName // ignore: cast_nullable_to_non_nullable
               as String?,
+      firstName: freezed == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastName: freezed == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dateOfBirth: freezed == dateOfBirth
+          ? _value.dateOfBirth
+          : dateOfBirth // ignore: cast_nullable_to_non_nullable
+              as String?,
+      idNumber: freezed == idNumber
+          ? _value.idNumber
+          : idNumber // ignore: cast_nullable_to_non_nullable
+              as int?,
+      phoneNumber: freezed == phoneNumber
+          ? _value.phoneNumber
+          : phoneNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      nationality: freezed == nationality
+          ? _value.nationality
+          : nationality // ignore: cast_nullable_to_non_nullable
+              as String?,
+      gender: freezed == gender
+          ? _value.gender
+          : gender // ignore: cast_nullable_to_non_nullable
+              as String?,
+      jobDescription: freezed == jobDescription
+          ? _value._jobDescription
+          : jobDescription // ignore: cast_nullable_to_non_nullable
+              as List<int>?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -213,16 +325,42 @@ class __$$_FarmerStakeHolderCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_FarmerStakeHolder extends _FarmerStakeHolder {
   const _$_FarmerStakeHolder(
-      {@JsonKey(name: 'FarmerStakeHolderId') this.farmerStakeHolderId,
-      @JsonKey(name: 'FarmId') this.farmId,
-      @JsonKey(name: 'StakeholderId') this.stakeholderId,
-      @JsonKey(name: 'CreateDT') this.createDT,
-      @JsonKey(name: 'UpdateDT') this.updateDT,
-      @JsonKey(name: 'JobTitle') this.jobTitle,
-      @JsonKey(name: 'FarmerStakeHolderName') this.stakeHolderName,
-      @JsonKey(name: 'IsActive') this.isActive = true,
-      @JsonKey(name: 'IsLocal') this.isLocal = true})
-      : super._();
+      {@JsonKey(name: 'FarmerStakeHolderId')
+          this.farmerStakeHolderId,
+      @JsonKey(name: 'FarmId')
+          this.farmId,
+      @JsonKey(name: 'StakeholderId')
+          this.stakeholderId,
+      @JsonKey(name: 'CreateDT')
+          this.createDT,
+      @JsonKey(name: 'UpdateDT')
+          this.updateDT,
+      @JsonKey(name: 'JobTitle')
+          this.jobTitle,
+      @JsonKey(name: 'FarmerStakeHolderName')
+          this.farmerStakeHolderName,
+      @JsonKey(name: 'FirstName')
+          this.firstName,
+      @JsonKey(name: 'LastName')
+          this.lastName,
+      @JsonKey(name: 'DateOfBirth')
+          this.dateOfBirth,
+      @JsonKey(name: 'IdNumber')
+          this.idNumber,
+      @JsonKey(name: 'PhoneNumber')
+          this.phoneNumber,
+      @JsonKey(name: 'Nationality')
+          this.nationality,
+      @JsonKey(name: 'Gender')
+          this.gender,
+      @JsonKey(name: 'JobDescription')
+          final List<int>? jobDescription = const <int>[],
+      @JsonKey(name: 'IsActive')
+          this.isActive = true,
+      @JsonKey(name: 'IsLocal')
+          this.isLocal = true})
+      : _jobDescription = jobDescription,
+        super._();
 
   factory _$_FarmerStakeHolder.fromJson(Map<String, dynamic> json) =>
       _$$_FarmerStakeHolderFromJson(json);
@@ -247,7 +385,39 @@ class _$_FarmerStakeHolder extends _FarmerStakeHolder {
   final String? jobTitle;
   @override
   @JsonKey(name: 'FarmerStakeHolderName')
-  final String? stakeHolderName;
+  final String? farmerStakeHolderName;
+  @override
+  @JsonKey(name: 'FirstName')
+  final String? firstName;
+  @override
+  @JsonKey(name: 'LastName')
+  final String? lastName;
+  @override
+  @JsonKey(name: 'DateOfBirth')
+  final String? dateOfBirth;
+  @override
+  @JsonKey(name: 'IdNumber')
+  final int? idNumber;
+  @override
+  @JsonKey(name: 'PhoneNumber')
+  final String? phoneNumber;
+  @override
+  @JsonKey(name: 'Nationality')
+  final String? nationality;
+  @override
+  @JsonKey(name: 'Gender')
+  final String? gender;
+  final List<int>? _jobDescription;
+  @override
+  @JsonKey(name: 'JobDescription')
+  List<int>? get jobDescription {
+    final value = _jobDescription;
+    if (value == null) return null;
+    if (_jobDescription is EqualUnmodifiableListView) return _jobDescription;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
@@ -257,7 +427,7 @@ class _$_FarmerStakeHolder extends _FarmerStakeHolder {
 
   @override
   String toString() {
-    return 'FarmerStakeHolder(farmerStakeHolderId: $farmerStakeHolderId, farmId: $farmId, stakeholderId: $stakeholderId, createDT: $createDT, updateDT: $updateDT, jobTitle: $jobTitle, stakeHolderName: $stakeHolderName, isActive: $isActive, isLocal: $isLocal)';
+    return 'FarmerStakeHolder(farmerStakeHolderId: $farmerStakeHolderId, farmId: $farmId, stakeholderId: $stakeholderId, createDT: $createDT, updateDT: $updateDT, jobTitle: $jobTitle, farmerStakeHolderName: $farmerStakeHolderName, firstName: $firstName, lastName: $lastName, dateOfBirth: $dateOfBirth, idNumber: $idNumber, phoneNumber: $phoneNumber, nationality: $nationality, gender: $gender, jobDescription: $jobDescription, isActive: $isActive, isLocal: $isLocal)';
   }
 
   @override
@@ -276,8 +446,23 @@ class _$_FarmerStakeHolder extends _FarmerStakeHolder {
                 other.updateDT == updateDT) &&
             (identical(other.jobTitle, jobTitle) ||
                 other.jobTitle == jobTitle) &&
-            (identical(other.stakeHolderName, stakeHolderName) ||
-                other.stakeHolderName == stakeHolderName) &&
+            (identical(other.farmerStakeHolderName, farmerStakeHolderName) ||
+                other.farmerStakeHolderName == farmerStakeHolderName) &&
+            (identical(other.firstName, firstName) ||
+                other.firstName == firstName) &&
+            (identical(other.lastName, lastName) ||
+                other.lastName == lastName) &&
+            (identical(other.dateOfBirth, dateOfBirth) ||
+                other.dateOfBirth == dateOfBirth) &&
+            (identical(other.idNumber, idNumber) ||
+                other.idNumber == idNumber) &&
+            (identical(other.phoneNumber, phoneNumber) ||
+                other.phoneNumber == phoneNumber) &&
+            (identical(other.nationality, nationality) ||
+                other.nationality == nationality) &&
+            (identical(other.gender, gender) || other.gender == gender) &&
+            const DeepCollectionEquality()
+                .equals(other._jobDescription, _jobDescription) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive) &&
             (identical(other.isLocal, isLocal) || other.isLocal == isLocal));
@@ -293,7 +478,15 @@ class _$_FarmerStakeHolder extends _FarmerStakeHolder {
       createDT,
       updateDT,
       jobTitle,
-      stakeHolderName,
+      farmerStakeHolderName,
+      firstName,
+      lastName,
+      dateOfBirth,
+      idNumber,
+      phoneNumber,
+      nationality,
+      gender,
+      const DeepCollectionEquality().hash(_jobDescription),
       isActive,
       isLocal);
 
@@ -314,15 +507,40 @@ class _$_FarmerStakeHolder extends _FarmerStakeHolder {
 
 abstract class _FarmerStakeHolder extends FarmerStakeHolder {
   const factory _FarmerStakeHolder(
-      {@JsonKey(name: 'FarmerStakeHolderId') final int? farmerStakeHolderId,
-      @JsonKey(name: 'FarmId') final int? farmId,
-      @JsonKey(name: 'StakeholderId') final int? stakeholderId,
-      @JsonKey(name: 'CreateDT') final String? createDT,
-      @JsonKey(name: 'UpdateDT') final String? updateDT,
-      @JsonKey(name: 'JobTitle') final String? jobTitle,
-      @JsonKey(name: 'FarmerStakeHolderName') final String? stakeHolderName,
-      @JsonKey(name: 'IsActive') final bool? isActive,
-      @JsonKey(name: 'IsLocal') final bool? isLocal}) = _$_FarmerStakeHolder;
+      {@JsonKey(name: 'FarmerStakeHolderId')
+          final int? farmerStakeHolderId,
+      @JsonKey(name: 'FarmId')
+          final int? farmId,
+      @JsonKey(name: 'StakeholderId')
+          final int? stakeholderId,
+      @JsonKey(name: 'CreateDT')
+          final String? createDT,
+      @JsonKey(name: 'UpdateDT')
+          final String? updateDT,
+      @JsonKey(name: 'JobTitle')
+          final String? jobTitle,
+      @JsonKey(name: 'FarmerStakeHolderName')
+          final String? farmerStakeHolderName,
+      @JsonKey(name: 'FirstName')
+          final String? firstName,
+      @JsonKey(name: 'LastName')
+          final String? lastName,
+      @JsonKey(name: 'DateOfBirth')
+          final String? dateOfBirth,
+      @JsonKey(name: 'IdNumber')
+          final int? idNumber,
+      @JsonKey(name: 'PhoneNumber')
+          final String? phoneNumber,
+      @JsonKey(name: 'Nationality')
+          final String? nationality,
+      @JsonKey(name: 'Gender')
+          final String? gender,
+      @JsonKey(name: 'JobDescription')
+          final List<int>? jobDescription,
+      @JsonKey(name: 'IsActive')
+          final bool? isActive,
+      @JsonKey(name: 'IsLocal')
+          final bool? isLocal}) = _$_FarmerStakeHolder;
   const _FarmerStakeHolder._() : super._();
 
   factory _FarmerStakeHolder.fromJson(Map<String, dynamic> json) =
@@ -348,7 +566,31 @@ abstract class _FarmerStakeHolder extends FarmerStakeHolder {
   String? get jobTitle;
   @override
   @JsonKey(name: 'FarmerStakeHolderName')
-  String? get stakeHolderName;
+  String? get farmerStakeHolderName;
+  @override
+  @JsonKey(name: 'FirstName')
+  String? get firstName;
+  @override
+  @JsonKey(name: 'LastName')
+  String? get lastName;
+  @override
+  @JsonKey(name: 'DateOfBirth')
+  String? get dateOfBirth;
+  @override
+  @JsonKey(name: 'IdNumber')
+  int? get idNumber;
+  @override
+  @JsonKey(name: 'PhoneNumber')
+  String? get phoneNumber;
+  @override
+  @JsonKey(name: 'Nationality')
+  String? get nationality;
+  @override
+  @JsonKey(name: 'Gender')
+  String? get gender;
+  @override
+  @JsonKey(name: 'JobDescription')
+  List<int>? get jobDescription;
   @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;

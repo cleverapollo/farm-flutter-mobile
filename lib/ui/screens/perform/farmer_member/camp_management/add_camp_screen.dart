@@ -146,55 +146,6 @@ class _AddCampScreenState extends State<AddCampScreen> {
   }
 }
 
-class InputAttributeItem extends StatefulWidget {
-  final String hintText;
-  final int maxLines;
-  final TextInputType? keyboardType;
-  final ValueChanged<String>? onChanged;
-
-  const InputAttributeItem({
-    required this.hintText,
-    this.maxLines = 1,
-    this.keyboardType,
-    this.onChanged,
-    super.key,
-  });
-
-  @override
-  State<InputAttributeItem> createState() => _InputAttributeItemState();
-}
-
-class _InputAttributeItemState extends State<InputAttributeItem> {
-  final _controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() => setState(() {}));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      minLines: 1,
-      onChanged: widget.onChanged,
-      maxLines: _controller.text.isEmpty ? widget.maxLines : 1,
-      controller: _controller,
-      style: context.textStyles.bodyBold,
-      keyboardType: widget.keyboardType,
-      decoration: InputDecoration(
-        hintText: widget.hintText,
-        labelText: _controller.text.isEmpty ? null : widget.hintText,
-        labelStyle: context.textStyles.bodyNormal.copyWith(fontSize: 16, overflow: TextOverflow.ellipsis),
-        hintStyle: context.textStyles.bodyNormal.copyWith(color: context.colors.grey),
-        contentPadding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
-        enabledBorder: InputBorder.none,
-        focusedBorder: InputBorder.none,
-      ),
-    );
-  }
-}
-
 class SelectorAttributeItem extends StatelessWidget {
   final String hintText;
   final String? text;

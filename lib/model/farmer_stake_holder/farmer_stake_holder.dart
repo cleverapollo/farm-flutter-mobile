@@ -15,7 +15,16 @@ class FarmerStakeHolder with _$FarmerStakeHolder {
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,
     @JsonKey(name: 'JobTitle') String? jobTitle,
-    @JsonKey(name: 'FarmerStakeHolderName') String? stakeHolderName,
+    @JsonKey(name: 'FarmerStakeHolderName') String? farmerStakeHolderName,
+    @JsonKey(name: 'FirstName') String? firstName,
+    @JsonKey(name: 'LastName') String? lastName,
+    @JsonKey(name: 'DateOfBirth') String? dateOfBirth,
+    @JsonKey(name: 'IdNumber') int? idNumber,
+    @JsonKey(name: 'PhoneNumber') String? phoneNumber,
+    @JsonKey(name: 'Nationality') String? nationality,
+    @JsonKey(name: 'Gender') String? gender,
+    @Default(<int>[])
+    @JsonKey(name: 'JobDescription') List<int>? jobDescription,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
     @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
   }) = _FarmerStakeHolder;

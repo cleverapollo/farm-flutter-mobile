@@ -11,15 +11,15 @@ import 'package:flutter/material.dart';
 List<FarmerStakeHolder> _mockData = [
   FarmerStakeHolder(
     jobTitle: 'Manager',
-    stakeHolderName: 'Leon Chetty',
+    farmerStakeHolderName: 'Leon Chetty',
   ),
   FarmerStakeHolder(
     jobTitle: 'Supervisor',
-    stakeHolderName: 'Joe Soap ',
+    farmerStakeHolderName: 'Joe Soap ',
   ),
   FarmerStakeHolder(
     jobTitle: 'Supervisor',
-    stakeHolderName: 'Leon Chetty',
+    farmerStakeHolderName: 'Leon Chetty',
   ),
 ];
 
@@ -57,7 +57,7 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
     if (input == null || input.isEmpty) {
       filteredItems = _mockData;
     } else {
-      filteredItems = _mockData.where((element) => element.stakeHolderName?.toLowerCase().contains(input.toLowerCase()) ?? false).toList();
+      filteredItems = _mockData.where((element) => element.farmerStakeHolderName?.toLowerCase().contains(input.toLowerCase()) ?? false).toList();
     }
 
     setState(() {});

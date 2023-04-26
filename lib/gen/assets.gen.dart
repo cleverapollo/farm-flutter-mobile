@@ -28,6 +28,16 @@ class $AssetsIconsGen {
   SvgGenImage get icArrowRight =>
       const SvgGenImage('assets/icons/ic_arrow_right.svg');
 
+  /// File path: assets/icons/ic_avatar.svg
+  SvgGenImage get icAvatar => const SvgGenImage('assets/icons/ic_avatar.svg');
+
+  /// File path: assets/icons/ic_barcode.svg
+  SvgGenImage get icBarcode => const SvgGenImage('assets/icons/ic_barcode.svg');
+
+  /// File path: assets/icons/ic_calendar.svg
+  SvgGenImage get icCalendar =>
+      const SvgGenImage('assets/icons/ic_calendar.svg');
+
   /// File path: assets/icons/ic_call_blue.svg
   SvgGenImage get icCallBlue =>
       const SvgGenImage('assets/icons/ic_call_blue.svg');
@@ -102,6 +112,9 @@ class $AssetsIconsGen {
         icAdd,
         icArrowLeft,
         icArrowRight,
+        icAvatar,
+        icBarcode,
+        icCalendar,
         icCallBlue,
         icCamera,
         icClose,

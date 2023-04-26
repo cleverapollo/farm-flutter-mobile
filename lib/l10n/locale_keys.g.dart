@@ -80,6 +80,8 @@ abstract class  LocaleKeys {
   static const forgotPassword = 'forgotPassword';
   static const french = 'french';
   static const gender = 'gender';
+  static const male = 'male';
+  static const female = 'female';
   static const groupScheme = 'groupScheme';
   static const groupSchemeManagement = 'groupSchemeManagement';
   static const ha = 'ha';
@@ -139,6 +141,7 @@ abstract class  LocaleKeys {
   static const municipality = 'municipality';
   static const na = 'na';
   static const national = 'national';
+  static const nationality = 'nationality';
   static const newAssessment = 'newAssessment';
   static const newAudit = 'newAudit';
   static const newItems = 'newItems';

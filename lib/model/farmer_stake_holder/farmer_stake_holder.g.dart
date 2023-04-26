@@ -22,43 +22,83 @@ const FarmerStakeHolderSchema = CollectionSchema(
       name: r'createDT',
       type: IsarType.string,
     ),
-    r'farmId': PropertySchema(
+    r'dateOfBirth': PropertySchema(
       id: 1,
+      name: r'dateOfBirth',
+      type: IsarType.string,
+    ),
+    r'farmId': PropertySchema(
+      id: 2,
       name: r'farmId',
       type: IsarType.long,
     ),
     r'farmerStakeHolderId': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'farmerStakeHolderId',
       type: IsarType.long,
     ),
+    r'farmerStakeHolderName': PropertySchema(
+      id: 4,
+      name: r'farmerStakeHolderName',
+      type: IsarType.string,
+    ),
+    r'firstName': PropertySchema(
+      id: 5,
+      name: r'firstName',
+      type: IsarType.string,
+    ),
+    r'gender': PropertySchema(
+      id: 6,
+      name: r'gender',
+      type: IsarType.string,
+    ),
+    r'idNumber': PropertySchema(
+      id: 7,
+      name: r'idNumber',
+      type: IsarType.long,
+    ),
     r'isActive': PropertySchema(
-      id: 3,
+      id: 8,
       name: r'isActive',
       type: IsarType.bool,
     ),
     r'isLocal': PropertySchema(
-      id: 4,
+      id: 9,
       name: r'isLocal',
       type: IsarType.bool,
     ),
+    r'jobDescription': PropertySchema(
+      id: 10,
+      name: r'jobDescription',
+      type: IsarType.longList,
+    ),
     r'jobTitle': PropertySchema(
-      id: 5,
+      id: 11,
       name: r'jobTitle',
       type: IsarType.string,
     ),
-    r'stakeHolderName': PropertySchema(
-      id: 6,
-      name: r'stakeHolderName',
+    r'lastName': PropertySchema(
+      id: 12,
+      name: r'lastName',
+      type: IsarType.string,
+    ),
+    r'nationality': PropertySchema(
+      id: 13,
+      name: r'nationality',
+      type: IsarType.string,
+    ),
+    r'phoneNumber': PropertySchema(
+      id: 14,
+      name: r'phoneNumber',
       type: IsarType.string,
     ),
     r'stakeholderId': PropertySchema(
-      id: 7,
+      id: 15,
       name: r'stakeholderId',
       type: IsarType.long,
     ),
     r'updateDT': PropertySchema(
-      id: 8,
+      id: 16,
       name: r'updateDT',
       type: IsarType.string,
     )
@@ -90,13 +130,55 @@ int _farmerStakeHolderEstimateSize(
     }
   }
   {
+    final value = object.dateOfBirth;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.farmerStakeHolderName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.firstName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.gender;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.jobDescription;
+    if (value != null) {
+      bytesCount += 3 + value.length * 8;
+    }
+  }
+  {
     final value = object.jobTitle;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
   }
   {
-    final value = object.stakeHolderName;
+    final value = object.lastName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.nationality;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.phoneNumber;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -117,14 +199,22 @@ void _farmerStakeHolderSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.createDT);
-  writer.writeLong(offsets[1], object.farmId);
-  writer.writeLong(offsets[2], object.farmerStakeHolderId);
-  writer.writeBool(offsets[3], object.isActive);
-  writer.writeBool(offsets[4], object.isLocal);
-  writer.writeString(offsets[5], object.jobTitle);
-  writer.writeString(offsets[6], object.stakeHolderName);
-  writer.writeLong(offsets[7], object.stakeholderId);
-  writer.writeString(offsets[8], object.updateDT);
+  writer.writeString(offsets[1], object.dateOfBirth);
+  writer.writeLong(offsets[2], object.farmId);
+  writer.writeLong(offsets[3], object.farmerStakeHolderId);
+  writer.writeString(offsets[4], object.farmerStakeHolderName);
+  writer.writeString(offsets[5], object.firstName);
+  writer.writeString(offsets[6], object.gender);
+  writer.writeLong(offsets[7], object.idNumber);
+  writer.writeBool(offsets[8], object.isActive);
+  writer.writeBool(offsets[9], object.isLocal);
+  writer.writeLongList(offsets[10], object.jobDescription);
+  writer.writeString(offsets[11], object.jobTitle);
+  writer.writeString(offsets[12], object.lastName);
+  writer.writeString(offsets[13], object.nationality);
+  writer.writeString(offsets[14], object.phoneNumber);
+  writer.writeLong(offsets[15], object.stakeholderId);
+  writer.writeString(offsets[16], object.updateDT);
 }
 
 FarmerStakeHolder _farmerStakeHolderDeserialize(
@@ -135,14 +225,22 @@ FarmerStakeHolder _farmerStakeHolderDeserialize(
 ) {
   final object = FarmerStakeHolder(
     createDT: reader.readStringOrNull(offsets[0]),
-    farmId: reader.readLongOrNull(offsets[1]),
-    farmerStakeHolderId: reader.readLongOrNull(offsets[2]),
-    isActive: reader.readBoolOrNull(offsets[3]),
-    isLocal: reader.readBoolOrNull(offsets[4]),
-    jobTitle: reader.readStringOrNull(offsets[5]),
-    stakeHolderName: reader.readStringOrNull(offsets[6]),
-    stakeholderId: reader.readLongOrNull(offsets[7]),
-    updateDT: reader.readStringOrNull(offsets[8]),
+    dateOfBirth: reader.readStringOrNull(offsets[1]),
+    farmId: reader.readLongOrNull(offsets[2]),
+    farmerStakeHolderId: reader.readLongOrNull(offsets[3]),
+    farmerStakeHolderName: reader.readStringOrNull(offsets[4]),
+    firstName: reader.readStringOrNull(offsets[5]),
+    gender: reader.readStringOrNull(offsets[6]),
+    idNumber: reader.readLongOrNull(offsets[7]),
+    isActive: reader.readBoolOrNull(offsets[8]),
+    isLocal: reader.readBoolOrNull(offsets[9]),
+    jobDescription: reader.readLongList(offsets[10]),
+    jobTitle: reader.readStringOrNull(offsets[11]),
+    lastName: reader.readStringOrNull(offsets[12]),
+    nationality: reader.readStringOrNull(offsets[13]),
+    phoneNumber: reader.readStringOrNull(offsets[14]),
+    stakeholderId: reader.readLongOrNull(offsets[15]),
+    updateDT: reader.readStringOrNull(offsets[16]),
   );
   return object;
 }
@@ -157,13 +255,13 @@ P _farmerStakeHolderDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
       return (reader.readLongOrNull(offset)) as P;
     case 3:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 4:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
@@ -171,6 +269,22 @@ P _farmerStakeHolderDeserializeProp<P>(
     case 7:
       return (reader.readLongOrNull(offset)) as P;
     case 8:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 9:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 10:
+      return (reader.readLongList(offset)) as P;
+    case 11:
+      return (reader.readStringOrNull(offset)) as P;
+    case 12:
+      return (reader.readStringOrNull(offset)) as P;
+    case 13:
+      return (reader.readStringOrNull(offset)) as P;
+    case 14:
+      return (reader.readStringOrNull(offset)) as P;
+    case 15:
+      return (reader.readLongOrNull(offset)) as P;
+    case 16:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -426,6 +540,160 @@ extension FarmerStakeHolderQueryFilter
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      dateOfBirthIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'dateOfBirth',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      dateOfBirthIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'dateOfBirth',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      dateOfBirthEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dateOfBirth',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      dateOfBirthGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'dateOfBirth',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      dateOfBirthLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'dateOfBirth',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      dateOfBirthBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'dateOfBirth',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      dateOfBirthStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'dateOfBirth',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      dateOfBirthEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'dateOfBirth',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      dateOfBirthContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'dateOfBirth',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      dateOfBirthMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'dateOfBirth',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      dateOfBirthIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dateOfBirth',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      dateOfBirthIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'dateOfBirth',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
       farmIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -574,6 +842,469 @@ extension FarmerStakeHolderQueryFilter
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      farmerStakeHolderNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'farmerStakeHolderName',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      farmerStakeHolderNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'farmerStakeHolderName',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      farmerStakeHolderNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'farmerStakeHolderName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      farmerStakeHolderNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'farmerStakeHolderName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      farmerStakeHolderNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'farmerStakeHolderName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      farmerStakeHolderNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'farmerStakeHolderName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      farmerStakeHolderNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'farmerStakeHolderName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      farmerStakeHolderNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'farmerStakeHolderName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      farmerStakeHolderNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'farmerStakeHolderName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      farmerStakeHolderNameMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'farmerStakeHolderName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      farmerStakeHolderNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'farmerStakeHolderName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      farmerStakeHolderNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'farmerStakeHolderName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      firstNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'firstName',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      firstNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'firstName',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      firstNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'firstName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      firstNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'firstName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      firstNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'firstName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      firstNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'firstName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      firstNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'firstName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      firstNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'firstName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      firstNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'firstName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      firstNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'firstName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      firstNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'firstName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      firstNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'firstName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      genderIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'gender',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      genderIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'gender',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      genderEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'gender',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      genderGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'gender',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      genderLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'gender',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      genderBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'gender',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      genderStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'gender',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      genderEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'gender',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      genderContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'gender',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      genderMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'gender',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      genderIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'gender',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      genderIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'gender',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
       idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -621,6 +1352,80 @@ extension FarmerStakeHolderQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      idNumberIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'idNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      idNumberIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'idNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      idNumberEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'idNumber',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      idNumberGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'idNumber',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      idNumberLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'idNumber',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      idNumberBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'idNumber',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -682,6 +1487,169 @@ extension FarmerStakeHolderQueryFilter
         property: r'isLocal',
         value: value,
       ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      jobDescriptionIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'jobDescription',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      jobDescriptionIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'jobDescription',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      jobDescriptionElementEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'jobDescription',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      jobDescriptionElementGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'jobDescription',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      jobDescriptionElementLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'jobDescription',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      jobDescriptionElementBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'jobDescription',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      jobDescriptionLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'jobDescription',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      jobDescriptionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'jobDescription',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      jobDescriptionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'jobDescription',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      jobDescriptionLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'jobDescription',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      jobDescriptionLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'jobDescription',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      jobDescriptionLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'jobDescription',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -840,31 +1808,31 @@ extension FarmerStakeHolderQueryFilter
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      stakeHolderNameIsNull() {
+      lastNameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'stakeHolderName',
+        property: r'lastName',
       ));
     });
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      stakeHolderNameIsNotNull() {
+      lastNameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'stakeHolderName',
+        property: r'lastName',
       ));
     });
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      stakeHolderNameEqualTo(
+      lastNameEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'stakeHolderName',
+        property: r'lastName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -872,7 +1840,7 @@ extension FarmerStakeHolderQueryFilter
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      stakeHolderNameGreaterThan(
+      lastNameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -880,7 +1848,7 @@ extension FarmerStakeHolderQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'stakeHolderName',
+        property: r'lastName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -888,7 +1856,7 @@ extension FarmerStakeHolderQueryFilter
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      stakeHolderNameLessThan(
+      lastNameLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -896,7 +1864,7 @@ extension FarmerStakeHolderQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'stakeHolderName',
+        property: r'lastName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -904,7 +1872,7 @@ extension FarmerStakeHolderQueryFilter
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      stakeHolderNameBetween(
+      lastNameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -913,7 +1881,7 @@ extension FarmerStakeHolderQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'stakeHolderName',
+        property: r'lastName',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -924,13 +1892,13 @@ extension FarmerStakeHolderQueryFilter
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      stakeHolderNameStartsWith(
+      lastNameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'stakeHolderName',
+        property: r'lastName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -938,13 +1906,13 @@ extension FarmerStakeHolderQueryFilter
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      stakeHolderNameEndsWith(
+      lastNameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'stakeHolderName',
+        property: r'lastName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -952,10 +1920,10 @@ extension FarmerStakeHolderQueryFilter
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      stakeHolderNameContains(String value, {bool caseSensitive = true}) {
+      lastNameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'stakeHolderName',
+        property: r'lastName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -963,10 +1931,10 @@ extension FarmerStakeHolderQueryFilter
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      stakeHolderNameMatches(String pattern, {bool caseSensitive = true}) {
+      lastNameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'stakeHolderName',
+        property: r'lastName',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -974,20 +1942,328 @@ extension FarmerStakeHolderQueryFilter
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      stakeHolderNameIsEmpty() {
+      lastNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'stakeHolderName',
+        property: r'lastName',
         value: '',
       ));
     });
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      stakeHolderNameIsNotEmpty() {
+      lastNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'stakeHolderName',
+        property: r'lastName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      nationalityIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'nationality',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      nationalityIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'nationality',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      nationalityEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'nationality',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      nationalityGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'nationality',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      nationalityLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'nationality',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      nationalityBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'nationality',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      nationalityStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'nationality',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      nationalityEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'nationality',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      nationalityContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'nationality',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      nationalityMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'nationality',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      nationalityIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'nationality',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      nationalityIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'nationality',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      phoneNumberIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'phoneNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      phoneNumberIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'phoneNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      phoneNumberEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      phoneNumberGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      phoneNumberLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      phoneNumberBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'phoneNumber',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      phoneNumberStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      phoneNumberEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      phoneNumberContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      phoneNumberMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'phoneNumber',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      phoneNumberIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'phoneNumber',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
+      phoneNumberIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'phoneNumber',
         value: '',
       ));
     });
@@ -1245,6 +2521,20 @@ extension FarmerStakeHolderQuerySortBy
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByDateOfBirth() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dateOfBirth', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByDateOfBirthDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dateOfBirth', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
       sortByFarmId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'farmId', Sort.asc);
@@ -1269,6 +2559,62 @@ extension FarmerStakeHolderQuerySortBy
       sortByFarmerStakeHolderIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'farmerStakeHolderId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByFarmerStakeHolderName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'farmerStakeHolderName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByFarmerStakeHolderNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'farmerStakeHolderName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByFirstName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'firstName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByFirstNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'firstName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByGender() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'gender', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByGenderDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'gender', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByIdNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'idNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByIdNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'idNumber', Sort.desc);
     });
   }
 
@@ -1315,16 +2661,44 @@ extension FarmerStakeHolderQuerySortBy
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
-      sortByStakeHolderName() {
+      sortByLastName() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stakeHolderName', Sort.asc);
+      return query.addSortBy(r'lastName', Sort.asc);
     });
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
-      sortByStakeHolderNameDesc() {
+      sortByLastNameDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stakeHolderName', Sort.desc);
+      return query.addSortBy(r'lastName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByNationality() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nationality', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByNationalityDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nationality', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByPhoneNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phoneNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      sortByPhoneNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phoneNumber', Sort.desc);
     });
   }
 
@@ -1374,6 +2748,20 @@ extension FarmerStakeHolderQuerySortThenBy
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByDateOfBirth() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dateOfBirth', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByDateOfBirthDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dateOfBirth', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
       thenByFarmId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'farmId', Sort.asc);
@@ -1401,6 +2789,48 @@ extension FarmerStakeHolderQuerySortThenBy
     });
   }
 
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByFarmerStakeHolderName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'farmerStakeHolderName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByFarmerStakeHolderNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'farmerStakeHolderName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByFirstName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'firstName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByFirstNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'firstName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByGender() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'gender', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByGenderDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'gender', Sort.desc);
+    });
+  }
+
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1411,6 +2841,20 @@ extension FarmerStakeHolderQuerySortThenBy
       thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByIdNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'idNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByIdNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'idNumber', Sort.desc);
     });
   }
 
@@ -1457,16 +2901,44 @@ extension FarmerStakeHolderQuerySortThenBy
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
-      thenByStakeHolderName() {
+      thenByLastName() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stakeHolderName', Sort.asc);
+      return query.addSortBy(r'lastName', Sort.asc);
     });
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
-      thenByStakeHolderNameDesc() {
+      thenByLastNameDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stakeHolderName', Sort.desc);
+      return query.addSortBy(r'lastName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByNationality() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nationality', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByNationalityDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nationality', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByPhoneNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phoneNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterSortBy>
+      thenByPhoneNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phoneNumber', Sort.desc);
     });
   }
 
@@ -1509,6 +2981,13 @@ extension FarmerStakeHolderQueryWhereDistinct
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
+      distinctByDateOfBirth({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'dateOfBirth', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
       distinctByFarmId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'farmId');
@@ -1519,6 +2998,35 @@ extension FarmerStakeHolderQueryWhereDistinct
       distinctByFarmerStakeHolderId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'farmerStakeHolderId');
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
+      distinctByFarmerStakeHolderName({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'farmerStakeHolderName',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
+      distinctByFirstName({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'firstName', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
+      distinctByGender({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'gender', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
+      distinctByIdNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'idNumber');
     });
   }
 
@@ -1537,6 +3045,13 @@ extension FarmerStakeHolderQueryWhereDistinct
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
+      distinctByJobDescription() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'jobDescription');
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
       distinctByJobTitle({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'jobTitle', caseSensitive: caseSensitive);
@@ -1544,10 +3059,23 @@ extension FarmerStakeHolderQueryWhereDistinct
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
-      distinctByStakeHolderName({bool caseSensitive = true}) {
+      distinctByLastName({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'stakeHolderName',
-          caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'lastName', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
+      distinctByNationality({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'nationality', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
+      distinctByPhoneNumber({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'phoneNumber', caseSensitive: caseSensitive);
     });
   }
 
@@ -1581,6 +3109,13 @@ extension FarmerStakeHolderQueryProperty
     });
   }
 
+  QueryBuilder<FarmerStakeHolder, String?, QQueryOperations>
+      dateOfBirthProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'dateOfBirth');
+    });
+  }
+
   QueryBuilder<FarmerStakeHolder, int?, QQueryOperations> farmIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'farmId');
@@ -1591,6 +3126,32 @@ extension FarmerStakeHolderQueryProperty
       farmerStakeHolderIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'farmerStakeHolderId');
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, String?, QQueryOperations>
+      farmerStakeHolderNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'farmerStakeHolderName');
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, String?, QQueryOperations>
+      firstNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'firstName');
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, String?, QQueryOperations> genderProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'gender');
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, int?, QQueryOperations> idNumberProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'idNumber');
     });
   }
 
@@ -1606,6 +3167,13 @@ extension FarmerStakeHolderQueryProperty
     });
   }
 
+  QueryBuilder<FarmerStakeHolder, List<int>?, QQueryOperations>
+      jobDescriptionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'jobDescription');
+    });
+  }
+
   QueryBuilder<FarmerStakeHolder, String?, QQueryOperations>
       jobTitleProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -1614,9 +3182,23 @@ extension FarmerStakeHolderQueryProperty
   }
 
   QueryBuilder<FarmerStakeHolder, String?, QQueryOperations>
-      stakeHolderNameProperty() {
+      lastNameProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'stakeHolderName');
+      return query.addPropertyName(r'lastName');
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, String?, QQueryOperations>
+      nationalityProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'nationality');
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolder, String?, QQueryOperations>
+      phoneNumberProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'phoneNumber');
     });
   }
 
@@ -1647,7 +3229,18 @@ _$_FarmerStakeHolder _$$_FarmerStakeHolderFromJson(Map<String, dynamic> json) =>
       createDT: json['CreateDT'] as String?,
       updateDT: json['UpdateDT'] as String?,
       jobTitle: json['JobTitle'] as String?,
-      stakeHolderName: json['FarmerStakeHolderName'] as String?,
+      farmerStakeHolderName: json['FarmerStakeHolderName'] as String?,
+      firstName: json['FirstName'] as String?,
+      lastName: json['LastName'] as String?,
+      dateOfBirth: json['DateOfBirth'] as String?,
+      idNumber: json['IdNumber'] as int?,
+      phoneNumber: json['PhoneNumber'] as String?,
+      nationality: json['Nationality'] as String?,
+      gender: json['Gender'] as String?,
+      jobDescription: (json['JobDescription'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList() ??
+          const <int>[],
       isActive: json['IsActive'] as bool? ?? true,
       isLocal: json['IsLocal'] as bool? ?? true,
     );
@@ -1661,7 +3254,15 @@ Map<String, dynamic> _$$_FarmerStakeHolderToJson(
       'CreateDT': instance.createDT,
       'UpdateDT': instance.updateDT,
       'JobTitle': instance.jobTitle,
-      'FarmerStakeHolderName': instance.stakeHolderName,
+      'FarmerStakeHolderName': instance.farmerStakeHolderName,
+      'FirstName': instance.firstName,
+      'LastName': instance.lastName,
+      'DateOfBirth': instance.dateOfBirth,
+      'IdNumber': instance.idNumber,
+      'PhoneNumber': instance.phoneNumber,
+      'Nationality': instance.nationality,
+      'Gender': instance.gender,
+      'JobDescription': instance.jobDescription,
       'IsActive': instance.isActive,
       'IsLocal': instance.isLocal,
     };

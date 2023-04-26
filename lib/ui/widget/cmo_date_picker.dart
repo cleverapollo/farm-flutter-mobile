@@ -13,6 +13,7 @@ class CmoDatePicker extends StatelessWidget {
     this.validator,
     this.prefixIcon,
     this.suffixIcon,
+    this.inputDecoration,
   });
 
   final String name;
@@ -20,13 +21,14 @@ class CmoDatePicker extends StatelessWidget {
   final FormFieldValidator<DateTime?>? validator;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final InputDecoration? inputDecoration;
 
   @override
   Widget build(BuildContext context) {
     return FormBuilderDateTimePicker(
       name: name,
       inputType: InputType.date,
-      decoration: InputDecoration(
+      decoration: inputDecoration ?? InputDecoration(
         contentPadding: const EdgeInsets.all(8),
         prefixIconConstraints: BoxConstraints.tight(const Size(56, 38)),
         prefixIcon: prefixIcon != null ? Center(child: prefixIcon) : null,
