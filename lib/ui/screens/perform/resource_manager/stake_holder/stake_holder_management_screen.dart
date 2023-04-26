@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/farmer_mode_stake_holder_item.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/rm_mode_stake_holder_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +67,9 @@ class _StakeHolderManagementScreenState extends State<StakeHolderManagementScree
     if (input == null || input.isEmpty) {
       filteredItems = _mockData;
     } else {
-      filteredItems = _mockData.where((element) => element.entityName?.toLowerCase().contains(input.toLowerCase()) ?? false).toList();
+      filteredItems = _mockData
+          .where((element) => element.entityName?.toLowerCase().contains(input.toLowerCase()) ?? false)
+          .toList();
     }
 
     setState(() {});
@@ -75,11 +80,7 @@ class _StakeHolderManagementScreenState extends State<StakeHolderManagementScree
     return CmoTappable(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoAppBarV2(
-          title: LocaleKeys.stakeholderManagement.tr(),
-          subtitle: '${LocaleKeys.siteName.tr()}: Imbeza',
-          showLeading: true,
-        ),
+        appBar: _buildCustomAppBar(),
         body: Column(
           children: [
             Padding(
@@ -102,7 +103,10 @@ class _StakeHolderManagementScreenState extends State<StakeHolderManagementScree
                 itemCount: filteredItems.length,
                 padding: const EdgeInsets.symmetric(horizontal: 21),
                 itemBuilder: (context, index) {
-                  return _buildItemCard(filteredItems[index]);
+                  return _buildItemCard(
+                    model: filteredItems[index],
+                    haveGreyBackground: index.isEven,
+                  );
                 },
               ),
             ),
@@ -112,30 +116,67 @@ class _StakeHolderManagementScreenState extends State<StakeHolderManagementScree
     );
   }
 
-  Widget _buildItemCard(StakeHolder model) {
-    return CmoTappable(
-      onTap: () {},
-      child: CmoCard(
-        content: [
-          CmoCardHeader(
-            title: model.entityName ?? '',
-            maxLines: 2,
-          ),
-          const SizedBox(height: 10),
-          CmoCardItemWithIcon(
-            icon: Assets.icons.icHome,
-            title: model.address,
-          ),
-          CmoCardItemWithIcon(
-            icon: Assets.icons.icProfile,
-            title: model.contactName,
-          ),
-          CmoCardItemWithIcon(
-            icon: Assets.icons.icMail,
-            title: model.email,
-          ),
-        ],
-      ),
-    );
+  PreferredSizeWidget? _buildCustomAppBar() {
+    if (appInfoService.mode == AppMode.resourceManager()) {
+      return CmoAppBarV2(
+        title: LocaleKeys.stakeholderManagement.tr(),
+        subtitle: '${LocaleKeys.siteName.tr()}: Imbeza',
+        showLeading: true,
+      );
+    } else if (appInfoService.mode == AppMode.farmer()) {
+      return AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leadingWidth: 0,
+        title: Row(
+          children: [
+            Container(
+              width: 45,
+              height: 45,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(22.5),
+                border: Border.all(color: context.colors.blueDark2),
+              ),
+              child: Text(
+                'LC',
+                style: context.textStyles.bodyNormal.blueDark2,
+              ),
+            ),
+            Expanded(
+              child: Text(
+                LocaleKeys.stakeholderManagement.tr(),
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                style: context.textStyles.bodyBold.blue,
+              ),
+            ),
+            const SizedBox(width: 45,),
+          ],
+        ),
+      );
+    }
+
+    return null;
+  }
+
+  Widget _buildItemCard({
+    required StakeHolder model,
+    required bool haveGreyBackground,
+  }) {
+    if (appInfoService.mode == AppMode.resourceManager()) {
+      return RmModeStakeHolderItem(
+        model: model,
+        onTap: () {},
+      );
+    } else if (appInfoService.mode == AppMode.farmer()) {
+      return FarmerModeStakeHolderItem(
+        model: model,
+        haveGreyBackground: haveGreyBackground,
+        onTap: () {},
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }

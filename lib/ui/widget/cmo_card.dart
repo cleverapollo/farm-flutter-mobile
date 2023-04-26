@@ -76,11 +76,13 @@ class CmoCardHeader extends StatelessWidget {
     required this.title,
     this.value = '',
     this.maxLines = 1,
+    this.textStyle,
   });
 
   final String title;
   final String value;
   final int maxLines;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +93,7 @@ class CmoCardHeader extends StatelessWidget {
             title,
             maxLines: maxLines,
             overflow: TextOverflow.ellipsis,
-            style: context.textStyles.bodyBold.white,
+            style: textStyle ?? context.textStyles.bodyBold.white,
           ),
         ),
         if (value.isNotEmpty)
@@ -164,15 +166,13 @@ class CmoCardItemHighlighted extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 19),
                 child: Text(
                   title,
-                  style: context.textStyles.bodyNormal
-                      .copyWith(color: context.colors.yellow),
+                  style: context.textStyles.bodyNormal.copyWith(color: context.colors.yellow),
                 ),
               ),
             ),
             Text(
               value,
-              style: context.textStyles.bodyNormal
-                  .copyWith(color: context.colors.yellow),
+              style: context.textStyles.bodyNormal.copyWith(color: context.colors.yellow),
             ),
           ],
         );
@@ -186,10 +186,13 @@ class CmoCardItemWithIcon extends StatelessWidget {
     super.key,
     this.title,
     required this.icon,
+    this.textStyle,
+    this.iconColor,
   });
 
   final String? title;
-
+  final TextStyle? textStyle;
+  final Color? iconColor;
   final SvgGenImage icon;
 
   @override
@@ -205,6 +208,10 @@ class CmoCardItemWithIcon extends StatelessWidget {
                 child: icon.svg(
                   width: 15,
                   height: 15,
+                  colorFilter: ColorFilter.mode(
+                    iconColor ?? context.colors.white,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
@@ -215,7 +222,7 @@ class CmoCardItemWithIcon extends StatelessWidget {
               child: Text(
                 title ?? '',
                 textAlign: TextAlign.start,
-                style: context.textStyles.bodyNormal.white,
+                style: textStyle ?? context.textStyles.bodyNormal.white,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
