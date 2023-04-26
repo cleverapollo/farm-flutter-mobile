@@ -60,7 +60,7 @@ const FarmerStakeHolderSchema = CollectionSchema(
     r'gender': PropertySchema(
       id: 8,
       name: r'gender',
-      type: IsarType.string,
+      type: IsarType.long,
     ),
     r'idNumber': PropertySchema(
       id: 9,
@@ -170,12 +170,6 @@ int _farmerStakeHolderEstimateSize(
     }
   }
   {
-    final value = object.gender;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.jobDescription;
     if (value != null) {
       bytesCount += 3 + value.length * 8;
@@ -228,7 +222,7 @@ void _farmerStakeHolderSerialize(
   writer.writeLong(offsets[5], object.farmerStakeHolderId);
   writer.writeString(offsets[6], object.farmerStakeHolderName);
   writer.writeString(offsets[7], object.firstName);
-  writer.writeString(offsets[8], object.gender);
+  writer.writeLong(offsets[8], object.gender);
   writer.writeLong(offsets[9], object.idNumber);
   writer.writeBool(offsets[10], object.isActive);
   writer.writeBool(offsets[11], object.isLocal);
@@ -256,7 +250,7 @@ FarmerStakeHolder _farmerStakeHolderDeserialize(
     farmerStakeHolderId: reader.readLongOrNull(offsets[5]),
     farmerStakeHolderName: reader.readStringOrNull(offsets[6]),
     firstName: reader.readStringOrNull(offsets[7]),
-    gender: reader.readStringOrNull(offsets[8]),
+    gender: reader.readLongOrNull(offsets[8]),
     idNumber: reader.readLongOrNull(offsets[9]),
     isActive: reader.readBoolOrNull(offsets[10]),
     isLocal: reader.readBoolOrNull(offsets[11]),
@@ -295,7 +289,7 @@ P _farmerStakeHolderDeserializeProp<P>(
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 9:
       return (reader.readLongOrNull(offset)) as P;
     case 10:
@@ -1507,58 +1501,49 @@ extension FarmerStakeHolderQueryFilter
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      genderEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+      genderEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'gender',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
       genderGreaterThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'gender',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
       genderLessThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'gender',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
       genderBetween(
-    String? lower,
-    String? upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1567,77 +1552,6 @@ extension FarmerStakeHolderQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      genderStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'gender',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      genderEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'gender',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      genderContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'gender',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      genderMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'gender',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      genderIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'gender',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QAfterFilterCondition>
-      genderIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'gender',
-        value: '',
       ));
     });
   }
@@ -3427,9 +3341,9 @@ extension FarmerStakeHolderQueryWhereDistinct
   }
 
   QueryBuilder<FarmerStakeHolder, FarmerStakeHolder, QDistinct>
-      distinctByGender({bool caseSensitive = true}) {
+      distinctByGender() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'gender', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'gender');
     });
   }
 
@@ -3567,7 +3481,7 @@ extension FarmerStakeHolderQueryProperty
     });
   }
 
-  QueryBuilder<FarmerStakeHolder, String?, QQueryOperations> genderProperty() {
+  QueryBuilder<FarmerStakeHolder, int?, QQueryOperations> genderProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'gender');
     });
@@ -3660,7 +3574,7 @@ _$_FarmerStakeHolder _$$_FarmerStakeHolderFromJson(Map<String, dynamic> json) =>
       idNumber: json['IdNumber'] as int?,
       phoneNumber: json['PhoneNumber'] as String?,
       nationality: json['Nationality'] as String?,
-      gender: json['Gender'] as String?,
+      gender: json['Gender'] as int?,
       avatarFilePath: json['AvatarFilePath'] as String?,
       avatarFileName: json['AvatarFileName'] as String?,
       jobDescription: (json['JobDescription'] as List<dynamic>?)

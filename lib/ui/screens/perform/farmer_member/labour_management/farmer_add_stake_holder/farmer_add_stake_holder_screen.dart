@@ -2,13 +2,10 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_stake_holder/job_description/farmer_stake_holder_select_job_description.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_stake_holder/widgets/farmer_select_gender_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_stake_holder/widgets/farmer_stake_holder_upload_avatar.dart';
-import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -59,32 +56,24 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
       });
       try {
         await hideInputMethod();
-        // final annualProduction = AnnualProduction(
-        //   year: int.tryParse(value['Year'].toString()),
-        //   annualProductionId: DateTime.now().millisecondsSinceEpoch,
-        //   createDT: DateTime.now().millisecondsSinceEpoch.toString(),
-        //   workers: int.tryParse(value['Workers'].toString()),
-        //   workPeriodMonths: double.tryParse(value['WorkPeriodMonths'].toString()),
-        //   workPeriodWeeks: int.tryParse(value['WorkPeriodWeeks'].toString()),
-        //   productionPerTeam: int.tryParse(value['ProductionPerTeam'].toString()),
-        //   productionPerWorker: int.tryParse(value['ProductionPerWorker'].toString()),
-        //   conversionWoodToCharcoal: double.tryParse(value['ConversionWoodToCharcoal'].toString()),
-        // );
+        stakeHolder = stakeHolder.copyWith(
+          dateOfBirth: value['DateOfBirth'].toString(),
+        );
 
         int? resultId;
 
         if (mounted) {
           final databaseService = cmoDatabaseMasterService;
 
-          // await (await databaseService.db).writeTxn(() async {
-          //   resultId = await databaseService.cacheAnnualProduction(annualProduction);
-          // });
+          await (await databaseService.db).writeTxn(() async {
+            resultId = await databaseService.cacheFarmerStakeHolder(stakeHolder);
+          });
         }
 
         if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
-              msg: '${LocaleKeys.createNewStakeholder.tr()} $resultId',
+              msg: '${LocaleKeys.addStakeholders.tr()} $resultId',
             );
 
             Navigator.of(context).pop();
@@ -181,7 +170,7 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
                         keyboardType: TextInputType.number,
                         hintTextStyle: context.textStyles.bodyBold.black,
                         onChanged: (value) {
-                          stakeHolder = stakeHolder.copyWith(phoneNumber: value);
+                          stakeHolder = stakeHolder.copyWith(idNumber: int.tryParse(value));
                         },
                       ),
                     ),
@@ -214,7 +203,9 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: FarmerSelectGenderWidget(
-                  onTap: (id) {},
+                  onTap: (id) {
+                    stakeHolder = stakeHolder.copyWith(gender: id);
+                  },
                 ),
               ),
             ],
@@ -252,7 +243,9 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
     return InkWell(
       onTap: () {
         FarmerStakeHolderSelectJobDescription.push(context, stakeHolder.jobDescription, (listJobsDesc) {
-          stakeHolder = stakeHolder.copyWith(jobDescription: listJobsDesc);
+          setState(() {
+            stakeHolder = stakeHolder.copyWith(jobDescription: listJobsDesc);
+          });
         });
       },
       child: AttributeItem(

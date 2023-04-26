@@ -18,8 +18,8 @@ class FarmerSelectGenderWidget extends StatefulWidget {
 
 class _FarmerSelectGenderWidgetState extends State<FarmerSelectGenderWidget> {
   final List<CmoDropdownItem> listGender = [
-    CmoDropdownItem(id: 1, name: LocaleKeys.male.tr()),
-    CmoDropdownItem(id: 2, name: LocaleKeys.female.tr()),
+    CmoDropdownItem(id: 0, name: LocaleKeys.male.tr()),
+    CmoDropdownItem(id: 1, name: LocaleKeys.female.tr()),
   ];
 
   late CmoDropdownItem selectedGender;

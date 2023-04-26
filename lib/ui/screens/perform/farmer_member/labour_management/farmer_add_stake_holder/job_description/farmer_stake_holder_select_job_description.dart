@@ -123,7 +123,6 @@ class _FarmerStakeHolderSelectJobDescriptionState extends State<FarmerStakeHolde
     return InkWell(
       onTap: () {
         setState(() {
-          print(item.id);
           if (selectedItems.contains(item.id)) {
             selectedItems.remove(item.id);
           } else {

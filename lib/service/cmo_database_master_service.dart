@@ -61,6 +61,7 @@ class CmoDatabaseMasterService {
         StakeHolderSchema,
         AnnualProductionSchema,
         AnnualProductionBudgetSchema,
+        FarmerStakeHolderSchema,
       ],
       name: _databaseName,
     );
@@ -523,6 +524,11 @@ class CmoDatabaseMasterService {
   Future<int> cacheAnnualProduction(AnnualProduction item) async {
     final db = await _db();
     return db.annualProductions.put(item);
+  }
+
+  Future<int> cacheFarmerStakeHolder(FarmerStakeHolder item) async {
+    final db = await _db();
+    return db.farmerStakeHolders.put(item);
   }
 
   Future<int> cacheAnnualProductionBudget(AnnualProductionBudget item) async {

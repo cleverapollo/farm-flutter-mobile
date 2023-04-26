@@ -47,7 +47,7 @@ mixin _$FarmerStakeHolder {
   @JsonKey(name: 'Nationality')
   String? get nationality => throw _privateConstructorUsedError;
   @JsonKey(name: 'Gender')
-  String? get gender => throw _privateConstructorUsedError;
+  int? get gender => throw _privateConstructorUsedError;
   @JsonKey(name: 'AvatarFilePath')
   String? get avatarFilePath => throw _privateConstructorUsedError;
   @JsonKey(name: 'AvatarFileName')
@@ -85,7 +85,7 @@ abstract class $FarmerStakeHolderCopyWith<$Res> {
       @JsonKey(name: 'IdNumber') int? idNumber,
       @JsonKey(name: 'PhoneNumber') String? phoneNumber,
       @JsonKey(name: 'Nationality') String? nationality,
-      @JsonKey(name: 'Gender') String? gender,
+      @JsonKey(name: 'Gender') int? gender,
       @JsonKey(name: 'AvatarFilePath') String? avatarFilePath,
       @JsonKey(name: 'AvatarFileName') String? avatarFileName,
       @JsonKey(name: 'JobDescription') List<int>? jobDescription,
@@ -182,7 +182,7 @@ class _$FarmerStakeHolderCopyWithImpl<$Res, $Val extends FarmerStakeHolder>
       gender: freezed == gender
           ? _value.gender
           : gender // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       avatarFilePath: freezed == avatarFilePath
           ? _value.avatarFilePath
           : avatarFilePath // ignore: cast_nullable_to_non_nullable
@@ -229,7 +229,7 @@ abstract class _$$_FarmerStakeHolderCopyWith<$Res>
       @JsonKey(name: 'IdNumber') int? idNumber,
       @JsonKey(name: 'PhoneNumber') String? phoneNumber,
       @JsonKey(name: 'Nationality') String? nationality,
-      @JsonKey(name: 'Gender') String? gender,
+      @JsonKey(name: 'Gender') int? gender,
       @JsonKey(name: 'AvatarFilePath') String? avatarFilePath,
       @JsonKey(name: 'AvatarFileName') String? avatarFileName,
       @JsonKey(name: 'JobDescription') List<int>? jobDescription,
@@ -324,7 +324,7 @@ class __$$_FarmerStakeHolderCopyWithImpl<$Res>
       gender: freezed == gender
           ? _value.gender
           : gender // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       avatarFilePath: freezed == avatarFilePath
           ? _value.avatarFilePath
           : avatarFilePath // ignore: cast_nullable_to_non_nullable
@@ -438,7 +438,7 @@ class _$_FarmerStakeHolder extends _FarmerStakeHolder {
   final String? nationality;
   @override
   @JsonKey(name: 'Gender')
-  final String? gender;
+  final int? gender;
   @override
   @JsonKey(name: 'AvatarFilePath')
   final String? avatarFilePath;
@@ -579,7 +579,7 @@ abstract class _FarmerStakeHolder extends FarmerStakeHolder {
       @JsonKey(name: 'Nationality')
           final String? nationality,
       @JsonKey(name: 'Gender')
-          final String? gender,
+          final int? gender,
       @JsonKey(name: 'AvatarFilePath')
           final String? avatarFilePath,
       @JsonKey(name: 'AvatarFileName')
@@ -636,7 +636,7 @@ abstract class _FarmerStakeHolder extends FarmerStakeHolder {
   String? get nationality;
   @override
   @JsonKey(name: 'Gender')
-  String? get gender;
+  int? get gender;
   @override
   @JsonKey(name: 'AvatarFilePath')
   String? get avatarFilePath;

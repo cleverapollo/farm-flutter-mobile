@@ -5,6 +5,10 @@ part 'farmer_stake_holder.freezed.dart';
 
 part 'farmer_stake_holder.g.dart';
 
+// Gender
+// Gender == 0: Male
+// Gender == 1: Female
+
 @freezed
 @Collection(ignore: {'copyWith'})
 class FarmerStakeHolder with _$FarmerStakeHolder {
@@ -22,7 +26,7 @@ class FarmerStakeHolder with _$FarmerStakeHolder {
     @JsonKey(name: 'IdNumber') int? idNumber,
     @JsonKey(name: 'PhoneNumber') String? phoneNumber,
     @JsonKey(name: 'Nationality') String? nationality,
-    @JsonKey(name: 'Gender') String? gender,
+    @JsonKey(name: 'Gender') int? gender,
     @JsonKey(name: 'AvatarFilePath') String? avatarFilePath,
     @JsonKey(name: 'AvatarFileName') String? avatarFileName,
     @Default(<int>[])
