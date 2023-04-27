@@ -1,3 +1,4 @@
+
 import '../../model/sync_summary_model.dart';
 
 class SyncSummaryState {

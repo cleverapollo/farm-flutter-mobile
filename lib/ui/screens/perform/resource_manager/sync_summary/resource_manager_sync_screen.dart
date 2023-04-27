@@ -1,4 +1,5 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/ui/components/sync_summary_component/sync_item_widget.dart';
 import 'package:cmo/ui/screens/behave/sync_summary/behave_sync_summary_enum.dart';
 import 'package:cmo/ui/screens/behave/sync_summary/widget/sync_summary_item_widget.dart';
 import 'package:cmo/ui/ui.dart';

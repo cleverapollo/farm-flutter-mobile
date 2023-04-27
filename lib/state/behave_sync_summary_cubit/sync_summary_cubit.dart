@@ -29,7 +29,7 @@ import 'package:cmo/model/master_data_message.dart';
 import 'package:cmo/model/sync_summary_model.dart';
 import 'package:cmo/model/user_info.dart';
 import 'package:cmo/service/cmo_api_service.dart';
-import 'package:cmo/state/sync_summary_cubit/sync_summary_state.dart';
+import 'package:cmo/state/behave_sync_summary_cubit/sync_summary_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/json_converter.dart';
 import 'package:cmo/utils/logger.dart';
