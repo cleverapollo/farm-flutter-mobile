@@ -1,5 +1,6 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/biological_control_agents_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/stake_holder_complaint_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
@@ -59,8 +60,7 @@ class RegisterManagement extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               _ItemWidget(
-                // TODO: Need to handle
-                onTapped: () => print("Tapped"),
+                onTapped: () => BiologicalControlAgentsScreen.push(context),
                 title: LocaleKeys.biological_control_agents.tr(),
                 subTitle: LocaleKeys.pending.tr(),
                 value: _registerManagementModel.biological_control_agents.toString(),

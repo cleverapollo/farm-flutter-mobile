@@ -48,4 +48,6 @@ export 'annual_production/annual_production.dart';
 export 'annual_production/annual_production_budget/annual_production_budget.dart';
 export 'farmer_stake_holder/farmer_stake_holder.dart';
 export 'farmer_stake_holder_complaint/farmer_stake_holder_complaint.dart';
+export 'biological_control_agent/biological_control_agent.dart';
+
 

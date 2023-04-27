@@ -124,6 +124,15 @@ abstract class  LocaleKeys {
   static const carRaised = 'carRaised';
   static const carClosed = 'carClosed';
   static const addStakeHolderComplaint = 'addStakeHolderComplaint';
+  static const nameOfControlAgent = 'nameOfControlAgent';
+  static const scientificName = 'scientificName';
+  static const countryOfOrigin = 'countryOfOrigin';
+  static const reasonForBioAgent = 'reasonForBioAgent';
+  static const dateReleased = 'dateReleased';
+  static const stakeholderName = 'stakeholderName';
+  static const descriptionOfMonitoringRequirements = 'descriptionOfMonitoringRequirements';
+  static const description = 'description';
+  static const addBCA = 'addBCA';
   static const locale_en = 'locale.en';
   static const locale_fr = 'locale.fr';
   static const locale_ms = 'locale.ms';
