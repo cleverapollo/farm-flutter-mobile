@@ -36,7 +36,7 @@ const BiologicalControlAgentSchema = CollectionSchema(
     r'controlAgentId': PropertySchema(
       id: 3,
       name: r'controlAgentId',
-      type: IsarType.string,
+      type: IsarType.long,
     ),
     r'countryOrigin': PropertySchema(
       id: 4,
@@ -120,12 +120,6 @@ int _biologicalControlAgentEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
-    final value = object.controlAgentId;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.countryOrigin;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -185,7 +179,7 @@ void _biologicalControlAgentSerialize(
   writer.writeLong(offsets[0], object.biologicalControlAgentId);
   writer.writeBool(offsets[1], object.carClosed);
   writer.writeBool(offsets[2], object.carRaised);
-  writer.writeString(offsets[3], object.controlAgentId);
+  writer.writeLong(offsets[3], object.controlAgentId);
   writer.writeString(offsets[4], object.countryOrigin);
   writer.writeString(offsets[5], object.dateReleased);
   writer.writeString(offsets[6], object.descriptionMonitoringRequirements);
@@ -210,7 +204,7 @@ BiologicalControlAgent _biologicalControlAgentDeserialize(
     biologicalControlAgentId: reader.readLongOrNull(offsets[0]),
     carClosed: reader.readBoolOrNull(offsets[1]),
     carRaised: reader.readBoolOrNull(offsets[2]),
-    controlAgentId: reader.readStringOrNull(offsets[3]),
+    controlAgentId: reader.readLongOrNull(offsets[3]),
     countryOrigin: reader.readStringOrNull(offsets[4]),
     dateReleased: reader.readStringOrNull(offsets[5]),
     descriptionMonitoringRequirements: reader.readStringOrNull(offsets[6]),
@@ -241,7 +235,7 @@ P _biologicalControlAgentDeserializeProp<P>(
     case 2:
       return (reader.readBoolOrNull(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
@@ -515,58 +509,49 @@ extension BiologicalControlAgentQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<BiologicalControlAgent, BiologicalControlAgent,
-      QAfterFilterCondition> controlAgentIdEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+      QAfterFilterCondition> controlAgentIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'controlAgentId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<BiologicalControlAgent, BiologicalControlAgent,
       QAfterFilterCondition> controlAgentIdGreaterThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'controlAgentId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<BiologicalControlAgent, BiologicalControlAgent,
       QAfterFilterCondition> controlAgentIdLessThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'controlAgentId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<BiologicalControlAgent, BiologicalControlAgent,
       QAfterFilterCondition> controlAgentIdBetween(
-    String? lower,
-    String? upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -575,79 +560,6 @@ extension BiologicalControlAgentQueryFilter on QueryBuilder<
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<BiologicalControlAgent, BiologicalControlAgent,
-      QAfterFilterCondition> controlAgentIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'controlAgentId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<BiologicalControlAgent, BiologicalControlAgent,
-      QAfterFilterCondition> controlAgentIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'controlAgentId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<BiologicalControlAgent, BiologicalControlAgent,
-          QAfterFilterCondition>
-      controlAgentIdContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'controlAgentId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<BiologicalControlAgent, BiologicalControlAgent,
-          QAfterFilterCondition>
-      controlAgentIdMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'controlAgentId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<BiologicalControlAgent, BiologicalControlAgent,
-      QAfterFilterCondition> controlAgentIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'controlAgentId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<BiologicalControlAgent, BiologicalControlAgent,
-      QAfterFilterCondition> controlAgentIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'controlAgentId',
-        value: '',
       ));
     });
   }
@@ -2662,10 +2574,9 @@ extension BiologicalControlAgentQueryWhereDistinct
   }
 
   QueryBuilder<BiologicalControlAgent, BiologicalControlAgent, QDistinct>
-      distinctByControlAgentId({bool caseSensitive = true}) {
+      distinctByControlAgentId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'controlAgentId',
-          caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'controlAgentId');
     });
   }
 
@@ -2790,7 +2701,7 @@ extension BiologicalControlAgentQueryProperty on QueryBuilder<
     });
   }
 
-  QueryBuilder<BiologicalControlAgent, String?, QQueryOperations>
+  QueryBuilder<BiologicalControlAgent, int?, QQueryOperations>
       controlAgentIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'controlAgentId');
@@ -2891,7 +2802,7 @@ _$_BiologicalControlAgent _$$_BiologicalControlAgentFromJson(
     _$_BiologicalControlAgent(
       biologicalControlAgentId: json['BiologicalControlAgentsId'] as int?,
       nameControlAgent: json['NameControlAgent'] as String?,
-      controlAgentId: json['ControlAgentId'] as String?,
+      controlAgentId: json['ControlAgentId'] as int?,
       scientificName: json['ScientificName'] as String?,
       countryOrigin: json['CountryOrigin'] as String?,
       reasonBioAgent: json['ReasonBioAgent'] as String?,

@@ -26,7 +26,7 @@ mixin _$BiologicalControlAgent {
   @JsonKey(name: 'NameControlAgent')
   String? get nameControlAgent => throw _privateConstructorUsedError;
   @JsonKey(name: 'ControlAgentId')
-  String? get controlAgentId => throw _privateConstructorUsedError;
+  int? get controlAgentId => throw _privateConstructorUsedError;
   @JsonKey(name: 'ScientificName')
   String? get scientificName => throw _privateConstructorUsedError;
   @JsonKey(name: 'CountryOrigin')
@@ -74,7 +74,7 @@ abstract class $BiologicalControlAgentCopyWith<$Res> {
       @JsonKey(name: 'NameControlAgent')
           String? nameControlAgent,
       @JsonKey(name: 'ControlAgentId')
-          String? controlAgentId,
+          int? controlAgentId,
       @JsonKey(name: 'ScientificName')
           String? scientificName,
       @JsonKey(name: 'CountryOrigin')
@@ -146,7 +146,7 @@ class _$BiologicalControlAgentCopyWithImpl<$Res,
       controlAgentId: freezed == controlAgentId
           ? _value.controlAgentId
           : controlAgentId // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       scientificName: freezed == scientificName
           ? _value.scientificName
           : scientificName // ignore: cast_nullable_to_non_nullable
@@ -219,7 +219,7 @@ abstract class _$$_BiologicalControlAgentCopyWith<$Res>
       @JsonKey(name: 'NameControlAgent')
           String? nameControlAgent,
       @JsonKey(name: 'ControlAgentId')
-          String? controlAgentId,
+          int? controlAgentId,
       @JsonKey(name: 'ScientificName')
           String? scientificName,
       @JsonKey(name: 'CountryOrigin')
@@ -289,7 +289,7 @@ class __$$_BiologicalControlAgentCopyWithImpl<$Res>
       controlAgentId: freezed == controlAgentId
           ? _value.controlAgentId
           : controlAgentId // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       scientificName: freezed == scientificName
           ? _value.scientificName
           : scientificName // ignore: cast_nullable_to_non_nullable
@@ -397,7 +397,7 @@ class _$_BiologicalControlAgent extends _BiologicalControlAgent {
   final String? nameControlAgent;
   @override
   @JsonKey(name: 'ControlAgentId')
-  final String? controlAgentId;
+  final int? controlAgentId;
   @override
   @JsonKey(name: 'ScientificName')
   final String? scientificName;
@@ -529,7 +529,7 @@ abstract class _BiologicalControlAgent extends BiologicalControlAgent {
       @JsonKey(name: 'NameControlAgent')
           final String? nameControlAgent,
       @JsonKey(name: 'ControlAgentId')
-          final String? controlAgentId,
+          final int? controlAgentId,
       @JsonKey(name: 'ScientificName')
           final String? scientificName,
       @JsonKey(name: 'CountryOrigin')
@@ -569,7 +569,7 @@ abstract class _BiologicalControlAgent extends BiologicalControlAgent {
   String? get nameControlAgent;
   @override
   @JsonKey(name: 'ControlAgentId')
-  String? get controlAgentId;
+  int? get controlAgentId;
   @override
   @JsonKey(name: 'ScientificName')
   String? get scientificName;

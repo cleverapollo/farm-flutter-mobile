@@ -11,7 +11,7 @@ class BiologicalControlAgent with _$BiologicalControlAgent {
   const factory BiologicalControlAgent({
     @JsonKey(name: 'BiologicalControlAgentsId') int? biologicalControlAgentId,
     @JsonKey(name: 'NameControlAgent') String? nameControlAgent,
-    @JsonKey(name: 'ControlAgentId') String? controlAgentId,
+    @JsonKey(name: 'ControlAgentId') int? controlAgentId,
     @JsonKey(name: 'ScientificName') String? scientificName,
     @JsonKey(name: 'CountryOrigin') String? countryOrigin,
     @JsonKey(name: 'ReasonBioAgent') String? reasonBioAgent,

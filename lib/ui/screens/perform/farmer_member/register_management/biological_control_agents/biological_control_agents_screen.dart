@@ -16,12 +16,12 @@ List<BiologicalControlAgent> _mockData = [
   BiologicalControlAgent(
     biologicalControlAgentId: DateTime.now().millisecondsSinceEpoch,
     generalComments: 'generalComments',
-    countryOrigin: 'South Africa',
     descriptionMonitoringRequirements: '',
     stakeholderName: 'Captain planet',
     scientificName: 'Hocus Pocus',
+    countryOrigin: 'South Africa',
     reasonBioAgent: 'Eats the pest',
-    nameControlAgent: 'West Indian Rooster',
+    nameControlAgent: 'West Indian Rooster 1',
     dateReleased: DateTime(2023, 4, 20).toString(),
   ),
   BiologicalControlAgent(
@@ -32,7 +32,7 @@ List<BiologicalControlAgent> _mockData = [
     stakeholderName: 'Captain planet',
     scientificName: 'Hocus Pocus',
     reasonBioAgent: 'Eats the pest',
-    nameControlAgent: 'West Indian Rooster',
+    nameControlAgent: 'West Indian Rooster 2',
   ),
   BiologicalControlAgent(
     biologicalControlAgentId: DateTime.now().millisecondsSinceEpoch,
@@ -42,7 +42,7 @@ List<BiologicalControlAgent> _mockData = [
     stakeholderName: 'Captain planet',
     scientificName: 'Hocus Pocus',
     reasonBioAgent: 'Eats the pest',
-    nameControlAgent: 'West Indian Rooster',
+    nameControlAgent: 'West Indian Rooster 3',
   ),
   BiologicalControlAgent(
     biologicalControlAgentId: DateTime.now().millisecondsSinceEpoch,
@@ -52,7 +52,7 @@ List<BiologicalControlAgent> _mockData = [
     stakeholderName: 'Captain planet',
     scientificName: 'Hocus Pocus',
     reasonBioAgent: 'Eats the pest',
-    nameControlAgent: 'West Indian Rooster',
+    nameControlAgent: 'West Indian Rooster 4',
   ),
 ];
 
