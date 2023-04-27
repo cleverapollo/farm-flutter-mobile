@@ -45,4 +45,3 @@ app.*.map.json
 
 .env
 ios/Runner/keys.plist
-reconfig.sh
