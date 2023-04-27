@@ -301,5 +301,14 @@ abstract class  LocaleKeys {
   static const worker_disabled = 'worker_disabled';
   static const property_damaged = 'property_damaged';
   static const add_aai = 'add_aai';
+  static const add_camp = 'add_camp';
+  static const What percentage of the land is: = 'What percentage of the land is:';
+  static const add_camp_category_1 = 'add_camp_category_1';
+  static const add_camp_category_2 = 'add_camp_category_2';
+  static const add_camp_category_3 = 'add_camp_category_3';
+  static const add_camp_category_4 = 'add_camp_category_4';
+  static const add_camp_category_5 = 'add_camp_category_5';
+  static const estimated_year_harvest = 'estimated_year_harvest';
+  static const tons_charcoal_produced_camp = 'tons_charcoal_produced_camp';
 
 }

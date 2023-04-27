@@ -300,5 +300,14 @@
   "lost_time_in_days": "Lost Time in Days",
   "worker_disabled": "Worker Disabled",
   "property_damaged": "Property Damaged",
-  "add_aai": "Add AAI"
+  "add_aai": "Add AAI",
+  "add_camp": "Add Camp",
+  "What percentage of the land is:": "What percentage of the land is:",
+  "add_camp_category_1": "Category 1: Lightly infested with no havestable material (0ton/ha)",
+  "add_camp_category_2": "Category 2: Mildly infested with harvestable material insufficient to economically harvest (2-4tons/ha)",
+  "add_camp_category_3": "Category 3: Fairly infested with harvestable material available and can be harvested by accumulating loads (5-10tons/ha)",
+  "add_camp_category_4": "Category 4: Highly infested with harvestable material that can be accumulated (10-15tons/ha)",
+  "add_camp_category_5": "Category 5: Very highly infested with harvestable material virtually impenetrable (>16tons/ha)",
+  "estimated_year_harvest": "Estimated year of harvest",
+  "tons_charcoal_produced_camp": "Tons of Charcoal that will be produced at this camp"
 }
