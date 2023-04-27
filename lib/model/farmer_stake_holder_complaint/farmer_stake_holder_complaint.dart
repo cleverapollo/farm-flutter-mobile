@@ -9,6 +9,7 @@ part 'farmer_stake_holder_complaint.g.dart';
 @Collection(ignore: {'copyWith'})
 class FarmerStakeHolderComplaint with _$FarmerStakeHolderComplaint {
   const factory FarmerStakeHolderComplaint({
+    @JsonKey(name: 'FarmerStakeHolderComplaintId') int? farmerStakeHolderComplaintId,
     @JsonKey(name: 'ComplaintId') int? complaintId,
     @JsonKey(name: 'ComplaintName') String? complaintName,
     @JsonKey(name: 'IssueRaised') String? issueRaised,

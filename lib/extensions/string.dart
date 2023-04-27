@@ -8,4 +8,8 @@ extension StringNullExtension on String? {
   bool get isBlank => isNull || this!.isEmpty;
 
   bool get isNotBlank => !isBlank;
+
+  bool parseBool() {
+    return this?.toLowerCase() == 'true';
+  }
 }

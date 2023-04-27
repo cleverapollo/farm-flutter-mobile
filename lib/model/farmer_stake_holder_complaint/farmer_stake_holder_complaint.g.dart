@@ -53,23 +53,28 @@ const FarmerStakeHolderComplaintSchema = CollectionSchema(
       name: r'dateReceived',
       type: IsarType.string,
     ),
-    r'generalComments': PropertySchema(
+    r'farmerStakeHolderComplaintId': PropertySchema(
       id: 7,
+      name: r'farmerStakeHolderComplaintId',
+      type: IsarType.long,
+    ),
+    r'generalComments': PropertySchema(
+      id: 8,
       name: r'generalComments',
       type: IsarType.string,
     ),
     r'isActive': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'isActive',
       type: IsarType.bool,
     ),
     r'isLocal': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'isLocal',
       type: IsarType.bool,
     ),
     r'issueRaised': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'issueRaised',
       type: IsarType.string,
     )
@@ -146,10 +151,11 @@ void _farmerStakeHolderComplaintSerialize(
   writer.writeString(offsets[4], object.complaintName);
   writer.writeString(offsets[5], object.dateClosed);
   writer.writeString(offsets[6], object.dateReceived);
-  writer.writeString(offsets[7], object.generalComments);
-  writer.writeBool(offsets[8], object.isActive);
-  writer.writeBool(offsets[9], object.isLocal);
-  writer.writeString(offsets[10], object.issueRaised);
+  writer.writeLong(offsets[7], object.farmerStakeHolderComplaintId);
+  writer.writeString(offsets[8], object.generalComments);
+  writer.writeBool(offsets[9], object.isActive);
+  writer.writeBool(offsets[10], object.isLocal);
+  writer.writeString(offsets[11], object.issueRaised);
 }
 
 FarmerStakeHolderComplaint _farmerStakeHolderComplaintDeserialize(
@@ -166,10 +172,11 @@ FarmerStakeHolderComplaint _farmerStakeHolderComplaintDeserialize(
     complaintName: reader.readStringOrNull(offsets[4]),
     dateClosed: reader.readStringOrNull(offsets[5]),
     dateReceived: reader.readStringOrNull(offsets[6]),
-    generalComments: reader.readStringOrNull(offsets[7]),
-    isActive: reader.readBoolOrNull(offsets[8]),
-    isLocal: reader.readBoolOrNull(offsets[9]),
-    issueRaised: reader.readStringOrNull(offsets[10]),
+    farmerStakeHolderComplaintId: reader.readLongOrNull(offsets[7]),
+    generalComments: reader.readStringOrNull(offsets[8]),
+    isActive: reader.readBoolOrNull(offsets[9]),
+    isLocal: reader.readBoolOrNull(offsets[10]),
+    issueRaised: reader.readStringOrNull(offsets[11]),
   );
   return object;
 }
@@ -196,12 +203,14 @@ P _farmerStakeHolderComplaintDeserializeProp<P>(
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 8:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 9:
       return (reader.readBoolOrNull(offset)) as P;
     case 10:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 11:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1058,6 +1067,80 @@ extension FarmerStakeHolderComplaintQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
+      QAfterFilterCondition> farmerStakeHolderComplaintIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'farmerStakeHolderComplaintId',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
+      QAfterFilterCondition> farmerStakeHolderComplaintIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'farmerStakeHolderComplaintId',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
+      QAfterFilterCondition> farmerStakeHolderComplaintIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'farmerStakeHolderComplaintId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
+      QAfterFilterCondition> farmerStakeHolderComplaintIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'farmerStakeHolderComplaintId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
+      QAfterFilterCondition> farmerStakeHolderComplaintIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'farmerStakeHolderComplaintId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
+      QAfterFilterCondition> farmerStakeHolderComplaintIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'farmerStakeHolderComplaintId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
       QAfterFilterCondition> generalCommentsIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1589,6 +1672,20 @@ extension FarmerStakeHolderComplaintQuerySortBy on QueryBuilder<
   }
 
   QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
+      QAfterSortBy> sortByFarmerStakeHolderComplaintId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'farmerStakeHolderComplaintId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
+      QAfterSortBy> sortByFarmerStakeHolderComplaintIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'farmerStakeHolderComplaintId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
       QAfterSortBy> sortByGeneralComments() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'generalComments', Sort.asc);
@@ -1746,6 +1843,20 @@ extension FarmerStakeHolderComplaintQuerySortThenBy on QueryBuilder<
   }
 
   QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
+      QAfterSortBy> thenByFarmerStakeHolderComplaintId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'farmerStakeHolderComplaintId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
+      QAfterSortBy> thenByFarmerStakeHolderComplaintIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'farmerStakeHolderComplaintId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
       QAfterSortBy> thenByGeneralComments() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'generalComments', Sort.asc);
@@ -1870,6 +1981,13 @@ extension FarmerStakeHolderComplaintQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
+      QDistinct> distinctByFarmerStakeHolderComplaintId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'farmerStakeHolderComplaintId');
+    });
+  }
+
+  QueryBuilder<FarmerStakeHolderComplaint, FarmerStakeHolderComplaint,
       QDistinct> distinctByGeneralComments({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'generalComments',
@@ -1956,6 +2074,13 @@ extension FarmerStakeHolderComplaintQueryProperty on QueryBuilder<
     });
   }
 
+  QueryBuilder<FarmerStakeHolderComplaint, int?, QQueryOperations>
+      farmerStakeHolderComplaintIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'farmerStakeHolderComplaintId');
+    });
+  }
+
   QueryBuilder<FarmerStakeHolderComplaint, String?, QQueryOperations>
       generalCommentsProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -1992,6 +2117,8 @@ extension FarmerStakeHolderComplaintQueryProperty on QueryBuilder<
 _$_FarmerStakeHolderComplaint _$$_FarmerStakeHolderComplaintFromJson(
         Map<String, dynamic> json) =>
     _$_FarmerStakeHolderComplaint(
+      farmerStakeHolderComplaintId:
+          json['FarmerStakeHolderComplaintId'] as int?,
       complaintId: json['ComplaintId'] as int?,
       complaintName: json['ComplaintName'] as String?,
       issueRaised: json['IssueRaised'] as String?,
@@ -2008,6 +2135,7 @@ _$_FarmerStakeHolderComplaint _$$_FarmerStakeHolderComplaintFromJson(
 Map<String, dynamic> _$$_FarmerStakeHolderComplaintToJson(
         _$_FarmerStakeHolderComplaint instance) =>
     <String, dynamic>{
+      'FarmerStakeHolderComplaintId': instance.farmerStakeHolderComplaintId,
       'ComplaintId': instance.complaintId,
       'ComplaintName': instance.complaintName,
       'IssueRaised': instance.issueRaised,

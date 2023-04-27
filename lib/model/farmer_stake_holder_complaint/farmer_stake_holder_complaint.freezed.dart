@@ -21,6 +21,8 @@ FarmerStakeHolderComplaint _$FarmerStakeHolderComplaintFromJson(
 
 /// @nodoc
 mixin _$FarmerStakeHolderComplaint {
+  @JsonKey(name: 'FarmerStakeHolderComplaintId')
+  int? get farmerStakeHolderComplaintId => throw _privateConstructorUsedError;
   @JsonKey(name: 'ComplaintId')
   int? get complaintId => throw _privateConstructorUsedError;
   @JsonKey(name: 'ComplaintName')
@@ -58,17 +60,30 @@ abstract class $FarmerStakeHolderComplaintCopyWith<$Res> {
           FarmerStakeHolderComplaint>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'ComplaintId') int? complaintId,
-      @JsonKey(name: 'ComplaintName') String? complaintName,
-      @JsonKey(name: 'IssueRaised') String? issueRaised,
-      @JsonKey(name: 'ClosureDetails') String? closureDetails,
-      @JsonKey(name: 'GeneralComments') String? generalComments,
-      @JsonKey(name: 'DateReceived') String? dateReceived,
-      @JsonKey(name: 'DateClosed') String? dateClosed,
-      @JsonKey(name: 'CarRaised') bool? carRaised,
-      @JsonKey(name: 'CarClosed') bool? carClosed,
-      @JsonKey(name: 'IsActive') bool? isActive,
-      @JsonKey(name: 'IsLocal') bool? isLocal});
+      {@JsonKey(name: 'FarmerStakeHolderComplaintId')
+          int? farmerStakeHolderComplaintId,
+      @JsonKey(name: 'ComplaintId')
+          int? complaintId,
+      @JsonKey(name: 'ComplaintName')
+          String? complaintName,
+      @JsonKey(name: 'IssueRaised')
+          String? issueRaised,
+      @JsonKey(name: 'ClosureDetails')
+          String? closureDetails,
+      @JsonKey(name: 'GeneralComments')
+          String? generalComments,
+      @JsonKey(name: 'DateReceived')
+          String? dateReceived,
+      @JsonKey(name: 'DateClosed')
+          String? dateClosed,
+      @JsonKey(name: 'CarRaised')
+          bool? carRaised,
+      @JsonKey(name: 'CarClosed')
+          bool? carClosed,
+      @JsonKey(name: 'IsActive')
+          bool? isActive,
+      @JsonKey(name: 'IsLocal')
+          bool? isLocal});
 }
 
 /// @nodoc
@@ -85,6 +100,7 @@ class _$FarmerStakeHolderComplaintCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? farmerStakeHolderComplaintId = freezed,
     Object? complaintId = freezed,
     Object? complaintName = freezed,
     Object? issueRaised = freezed,
@@ -98,6 +114,10 @@ class _$FarmerStakeHolderComplaintCopyWithImpl<$Res,
     Object? isLocal = freezed,
   }) {
     return _then(_value.copyWith(
+      farmerStakeHolderComplaintId: freezed == farmerStakeHolderComplaintId
+          ? _value.farmerStakeHolderComplaintId
+          : farmerStakeHolderComplaintId // ignore: cast_nullable_to_non_nullable
+              as int?,
       complaintId: freezed == complaintId
           ? _value.complaintId
           : complaintId // ignore: cast_nullable_to_non_nullable
@@ -156,17 +176,30 @@ abstract class _$$_FarmerStakeHolderComplaintCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'ComplaintId') int? complaintId,
-      @JsonKey(name: 'ComplaintName') String? complaintName,
-      @JsonKey(name: 'IssueRaised') String? issueRaised,
-      @JsonKey(name: 'ClosureDetails') String? closureDetails,
-      @JsonKey(name: 'GeneralComments') String? generalComments,
-      @JsonKey(name: 'DateReceived') String? dateReceived,
-      @JsonKey(name: 'DateClosed') String? dateClosed,
-      @JsonKey(name: 'CarRaised') bool? carRaised,
-      @JsonKey(name: 'CarClosed') bool? carClosed,
-      @JsonKey(name: 'IsActive') bool? isActive,
-      @JsonKey(name: 'IsLocal') bool? isLocal});
+      {@JsonKey(name: 'FarmerStakeHolderComplaintId')
+          int? farmerStakeHolderComplaintId,
+      @JsonKey(name: 'ComplaintId')
+          int? complaintId,
+      @JsonKey(name: 'ComplaintName')
+          String? complaintName,
+      @JsonKey(name: 'IssueRaised')
+          String? issueRaised,
+      @JsonKey(name: 'ClosureDetails')
+          String? closureDetails,
+      @JsonKey(name: 'GeneralComments')
+          String? generalComments,
+      @JsonKey(name: 'DateReceived')
+          String? dateReceived,
+      @JsonKey(name: 'DateClosed')
+          String? dateClosed,
+      @JsonKey(name: 'CarRaised')
+          bool? carRaised,
+      @JsonKey(name: 'CarClosed')
+          bool? carClosed,
+      @JsonKey(name: 'IsActive')
+          bool? isActive,
+      @JsonKey(name: 'IsLocal')
+          bool? isLocal});
 }
 
 /// @nodoc
@@ -182,6 +215,7 @@ class __$$_FarmerStakeHolderComplaintCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? farmerStakeHolderComplaintId = freezed,
     Object? complaintId = freezed,
     Object? complaintName = freezed,
     Object? issueRaised = freezed,
@@ -195,6 +229,10 @@ class __$$_FarmerStakeHolderComplaintCopyWithImpl<$Res>
     Object? isLocal = freezed,
   }) {
     return _then(_$_FarmerStakeHolderComplaint(
+      farmerStakeHolderComplaintId: freezed == farmerStakeHolderComplaintId
+          ? _value.farmerStakeHolderComplaintId
+          : farmerStakeHolderComplaintId // ignore: cast_nullable_to_non_nullable
+              as int?,
       complaintId: freezed == complaintId
           ? _value.complaintId
           : complaintId // ignore: cast_nullable_to_non_nullable
@@ -247,22 +285,38 @@ class __$$_FarmerStakeHolderComplaintCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_FarmerStakeHolderComplaint extends _FarmerStakeHolderComplaint {
   const _$_FarmerStakeHolderComplaint(
-      {@JsonKey(name: 'ComplaintId') this.complaintId,
-      @JsonKey(name: 'ComplaintName') this.complaintName,
-      @JsonKey(name: 'IssueRaised') this.issueRaised,
-      @JsonKey(name: 'ClosureDetails') this.closureDetails,
-      @JsonKey(name: 'GeneralComments') this.generalComments,
-      @JsonKey(name: 'DateReceived') this.dateReceived,
-      @JsonKey(name: 'DateClosed') this.dateClosed,
-      @JsonKey(name: 'CarRaised') this.carRaised = false,
-      @JsonKey(name: 'CarClosed') this.carClosed = false,
-      @JsonKey(name: 'IsActive') this.isActive = true,
-      @JsonKey(name: 'IsLocal') this.isLocal = true})
+      {@JsonKey(name: 'FarmerStakeHolderComplaintId')
+          this.farmerStakeHolderComplaintId,
+      @JsonKey(name: 'ComplaintId')
+          this.complaintId,
+      @JsonKey(name: 'ComplaintName')
+          this.complaintName,
+      @JsonKey(name: 'IssueRaised')
+          this.issueRaised,
+      @JsonKey(name: 'ClosureDetails')
+          this.closureDetails,
+      @JsonKey(name: 'GeneralComments')
+          this.generalComments,
+      @JsonKey(name: 'DateReceived')
+          this.dateReceived,
+      @JsonKey(name: 'DateClosed')
+          this.dateClosed,
+      @JsonKey(name: 'CarRaised')
+          this.carRaised = false,
+      @JsonKey(name: 'CarClosed')
+          this.carClosed = false,
+      @JsonKey(name: 'IsActive')
+          this.isActive = true,
+      @JsonKey(name: 'IsLocal')
+          this.isLocal = true})
       : super._();
 
   factory _$_FarmerStakeHolderComplaint.fromJson(Map<String, dynamic> json) =>
       _$$_FarmerStakeHolderComplaintFromJson(json);
 
+  @override
+  @JsonKey(name: 'FarmerStakeHolderComplaintId')
+  final int? farmerStakeHolderComplaintId;
   @override
   @JsonKey(name: 'ComplaintId')
   final int? complaintId;
@@ -299,7 +353,7 @@ class _$_FarmerStakeHolderComplaint extends _FarmerStakeHolderComplaint {
 
   @override
   String toString() {
-    return 'FarmerStakeHolderComplaint(complaintId: $complaintId, complaintName: $complaintName, issueRaised: $issueRaised, closureDetails: $closureDetails, generalComments: $generalComments, dateReceived: $dateReceived, dateClosed: $dateClosed, carRaised: $carRaised, carClosed: $carClosed, isActive: $isActive, isLocal: $isLocal)';
+    return 'FarmerStakeHolderComplaint(farmerStakeHolderComplaintId: $farmerStakeHolderComplaintId, complaintId: $complaintId, complaintName: $complaintName, issueRaised: $issueRaised, closureDetails: $closureDetails, generalComments: $generalComments, dateReceived: $dateReceived, dateClosed: $dateClosed, carRaised: $carRaised, carClosed: $carClosed, isActive: $isActive, isLocal: $isLocal)';
   }
 
   @override
@@ -307,6 +361,10 @@ class _$_FarmerStakeHolderComplaint extends _FarmerStakeHolderComplaint {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_FarmerStakeHolderComplaint &&
+            (identical(other.farmerStakeHolderComplaintId,
+                    farmerStakeHolderComplaintId) ||
+                other.farmerStakeHolderComplaintId ==
+                    farmerStakeHolderComplaintId) &&
             (identical(other.complaintId, complaintId) ||
                 other.complaintId == complaintId) &&
             (identical(other.complaintName, complaintName) ||
@@ -334,6 +392,7 @@ class _$_FarmerStakeHolderComplaint extends _FarmerStakeHolderComplaint {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      farmerStakeHolderComplaintId,
       complaintId,
       complaintName,
       issueRaised,
@@ -363,23 +422,38 @@ class _$_FarmerStakeHolderComplaint extends _FarmerStakeHolderComplaint {
 
 abstract class _FarmerStakeHolderComplaint extends FarmerStakeHolderComplaint {
   const factory _FarmerStakeHolderComplaint(
-          {@JsonKey(name: 'ComplaintId') final int? complaintId,
-          @JsonKey(name: 'ComplaintName') final String? complaintName,
-          @JsonKey(name: 'IssueRaised') final String? issueRaised,
-          @JsonKey(name: 'ClosureDetails') final String? closureDetails,
-          @JsonKey(name: 'GeneralComments') final String? generalComments,
-          @JsonKey(name: 'DateReceived') final String? dateReceived,
-          @JsonKey(name: 'DateClosed') final String? dateClosed,
-          @JsonKey(name: 'CarRaised') final bool? carRaised,
-          @JsonKey(name: 'CarClosed') final bool? carClosed,
-          @JsonKey(name: 'IsActive') final bool? isActive,
-          @JsonKey(name: 'IsLocal') final bool? isLocal}) =
-      _$_FarmerStakeHolderComplaint;
+      {@JsonKey(name: 'FarmerStakeHolderComplaintId')
+          final int? farmerStakeHolderComplaintId,
+      @JsonKey(name: 'ComplaintId')
+          final int? complaintId,
+      @JsonKey(name: 'ComplaintName')
+          final String? complaintName,
+      @JsonKey(name: 'IssueRaised')
+          final String? issueRaised,
+      @JsonKey(name: 'ClosureDetails')
+          final String? closureDetails,
+      @JsonKey(name: 'GeneralComments')
+          final String? generalComments,
+      @JsonKey(name: 'DateReceived')
+          final String? dateReceived,
+      @JsonKey(name: 'DateClosed')
+          final String? dateClosed,
+      @JsonKey(name: 'CarRaised')
+          final bool? carRaised,
+      @JsonKey(name: 'CarClosed')
+          final bool? carClosed,
+      @JsonKey(name: 'IsActive')
+          final bool? isActive,
+      @JsonKey(name: 'IsLocal')
+          final bool? isLocal}) = _$_FarmerStakeHolderComplaint;
   const _FarmerStakeHolderComplaint._() : super._();
 
   factory _FarmerStakeHolderComplaint.fromJson(Map<String, dynamic> json) =
       _$_FarmerStakeHolderComplaint.fromJson;
 
+  @override
+  @JsonKey(name: 'FarmerStakeHolderComplaintId')
+  int? get farmerStakeHolderComplaintId;
   @override
   @JsonKey(name: 'ComplaintId')
   int? get complaintId;
