@@ -1,6 +1,7 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/accident_and_incident.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
@@ -24,13 +25,13 @@ class AddingAAIScreen extends StatefulWidget {
 }
 
 class _AddingAAIScreenState extends State<AddingAAIScreen> {
-  Asi asi = Asi();
+  AccidentAndIncident aai = AccidentAndIncident();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBarV2(
-        title: LocaleKeys.asi.tr(),
+        title: LocaleKeys.add_aai.tr(),
         showLeading: true,
       ),
       body: CustomScrollView(
@@ -42,13 +43,13 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
               child: Column(
                 children: [
                   CmoDropdown(
-                    name: 'asiType',
+                    name: 'worker',
                     style: context.textStyles.bodyBold
                         .copyWith(color: context.colors.black),
                     inputDecoration: InputDecoration(
                       contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
                       isDense: true,
-                      hintText: LocaleKeys.asiType.tr().toLowerCase(),
+                      hintText: LocaleKeys.worker.tr(),
                       hintStyle: context.textStyles.bodyNormal.grey,
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: context.colors.grey)),
@@ -61,27 +62,72 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
                       CmoDropdownItem(id: 3, name: 'Test 3'),
                     ],
                     onChanged: (value) {
-                      asi = asi.copyWith(asiTypeId: value);
+                      aai = aai.copyWith(workerId: value);
+                    },
+                  ),
+                  CmoDropdown(
+                    name: 'jobDescription',
+                    style: context.textStyles.bodyBold
+                        .copyWith(color: context.colors.black),
+                    inputDecoration: InputDecoration(
+                      contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+                      isDense: true,
+                      hintText: LocaleKeys.jobDescription.tr(),
+                      hintStyle: context.textStyles.bodyNormal.grey,
+                      border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: context.colors.grey)),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: context.colors.blue)),
+                    ),
+                    itemsData: [
+                      CmoDropdownItem(id: 1, name: 'Test 1'),
+                      CmoDropdownItem(id: 2, name: 'Test 2'),
+                      CmoDropdownItem(id: 3, name: 'Test 3'),
+                    ],
+                    onChanged: (value) {
+                      aai = aai.copyWith(workerId: value);
+                    },
+                  ),
+                  CmoDropdown(
+                    name: 'natureOfInjury',
+                    style: context.textStyles.bodyBold
+                        .copyWith(color: context.colors.black),
+                    inputDecoration: InputDecoration(
+                      contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+                      isDense: true,
+                      hintText: LocaleKeys.nature_of_injury.tr(),
+                      hintStyle: context.textStyles.bodyNormal.grey,
+                      border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: context.colors.grey)),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: context.colors.blue)),
+                    ),
+                    itemsData: [
+                      CmoDropdownItem(id: 1, name: 'Test 1'),
+                      CmoDropdownItem(id: 2, name: 'Test 2'),
+                      CmoDropdownItem(id: 3, name: 'Test 3'),
+                    ],
+                    onChanged: (value) {
+                      aai = aai.copyWith(natureOfInjuryId: value);
                     },
                   ),
                   GestureDetector(
                     onTap: () async {
-                      final result = await _AsiMapScreen.push(context);
-                      if (result == null) return;
-                      final mapResult = result as _AsiMapResult;
-                      asi = asi.copyWith(
-                          latitude: mapResult.latitude,
-                          longitude: mapResult.longitude);
+                      var date = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now().add(Duration(days: -1000000)),
+                        lastDate: DateTime.now().add(Duration(days: 1000000)),
+                      );
+                      aai = aai.copyWith(dateOfIncident: date);
                       setState(() {});
                     },
                     child: AttributeItem(
                       child: SelectorAttributeItem(
-                        hintText: LocaleKeys.lat_long.tr(),
-                        text: asi.latitude == null
-                            ? null
-                            : '${asi.latitude?.toStringAsFixed(5)} | ${asi.longitude?.toStringAsFixed(5)}',
-                        contentPadding: const EdgeInsets.all(4),
-                      ),
+                          hintText: LocaleKeys.date_of_incident.tr(),
+                          text: aai.dateOfIncident?.ddMMYyyy(),
+                          contentPadding: const EdgeInsets.all(4),
+                          trailing: Assets.icons.icCalendar.svgBlack),
                     ),
                   ),
                   GestureDetector(
@@ -92,61 +138,49 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
                         firstDate: DateTime.now().add(Duration(days: -1000000)),
                         lastDate: DateTime.now().add(Duration(days: 1000000)),
                       );
-                      asi = asi.copyWith(date: date);
+                      aai = aai.copyWith(dateRecieved: date);
                       setState(() {});
                     },
                     child: AttributeItem(
                       child: SelectorAttributeItem(
-                          hintText: LocaleKeys.date_captured.tr(),
-                          text: asi.date?.ddMMYyyy(),
+                          hintText: LocaleKeys.date_reported.tr(),
+                          text: aai.dateRecieved?.ddMMYyyy(),
+                          contentPadding: const EdgeInsets.all(4),
+                          trailing: Assets.icons.icCalendar.svgBlack),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      var date = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now().add(Duration(days: -1000000)),
+                        lastDate: DateTime.now().add(Duration(days: 1000000)),
+                      );
+                      aai = aai.copyWith(dateResumeWork: date);
+                      setState(() {});
+                    },
+                    child: AttributeItem(
+                      child: SelectorAttributeItem(
+                          hintText: LocaleKeys.resumed_work_on.tr(),
+                          text: aai.dateResumeWork?.ddMMYyyy(),
                           contentPadding: const EdgeInsets.all(4),
                           trailing: Assets.icons.icCalendar.svgBlack),
                     ),
                   ),
                   AttributeItem(
                     child: SelectorAttributeItem(
-                      hintText: LocaleKeys.car_raised.tr(),
-                      text: LocaleKeys.car_raised.tr(),
+                      hintText: LocaleKeys.worker_disabled.tr(),
+                      text: LocaleKeys.worker_disabled.tr(),
                       contentPadding: const EdgeInsets.all(4),
                       trailing: SizedBox(
                         width: 24,
                         child: Switch(
-                          value: asi.carRaisedDate != null,
+                          value: aai.workerDisabled == true,
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
                           onChanged: (bool value) {
-                            if (asi.carRaisedDate == null) {
-                              asi = asi.copyWith(
-                                  carRaisedDate:
-                                      DateTime.now().toIso8601String());
-                            } else {
-                              asi = asi.copyWith(carRaisedDate: null);
-                            }
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  AttributeItem(
-                    child: SelectorAttributeItem(
-                      hintText: LocaleKeys.car_closed.tr(),
-                      text: LocaleKeys.car_closed.tr(),
-                      contentPadding: const EdgeInsets.all(4),
-                      trailing: SizedBox(
-                        width: 24,
-                        child: Switch(
-                          value: asi.carClosedDate != null,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          onChanged: (bool value) {
-                            if (asi.carClosedDate == null) {
-                              asi = asi.copyWith(
-                                  carClosedDate:
-                                      DateTime.now().toIso8601String());
-                            } else {
-                              asi = asi.copyWith(carClosedDate: null);
-                            }
+                            aai = aai.copyWith(workerDisabled: value);
                             setState(() {});
                           },
                         ),
@@ -159,7 +193,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
                       minLines: 10,
                       maxLines: 100,
                       onChanged: (value) {
-                        asi = asi.copyWith(comment: value);
+                        aai = aai.copyWith(comment: value);
                       },
                       decoration: InputDecoration(
                         hintText: LocaleKeys.comments.tr(),

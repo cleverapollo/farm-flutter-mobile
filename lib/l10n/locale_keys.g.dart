@@ -300,5 +300,6 @@ abstract class  LocaleKeys {
   static const lost_time_in_days = 'lost_time_in_days';
   static const worker_disabled = 'worker_disabled';
   static const property_damaged = 'property_damaged';
+  static const add_aai = 'add_aai';
 
 }
