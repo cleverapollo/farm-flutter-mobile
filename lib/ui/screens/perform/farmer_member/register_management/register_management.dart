@@ -1,5 +1,6 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/aai/aai_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/biological_control_agents_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/stake_holder_complaint_screen.dart';
@@ -43,8 +44,7 @@ class RegisterManagement extends StatelessWidget {
           child: Column(
             children: [
               _ItemWidget(
-                // TODO: Need to handle
-                onTapped: () => print("Open accident and incident"),
+                onTapped: () => AAIScreen.push(context),
                 title: LocaleKeys.accident_incidents.tr(),
                 subTitle: LocaleKeys.pending.tr(),
                 value: _registerManagementModel.accident_incidents.toString(),

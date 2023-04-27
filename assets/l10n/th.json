@@ -292,5 +292,12 @@
   "date_captured": "Date Captured",
   "car_raised": "CAR Raised",
   "car_closed": "CAR Closed",
-  "why_farmer_raises_car": "Why farmer raises CAR?"
+  "why_farmer_raises_car": "Why farmer raises CAR?",
+  "nature_of_injury": "Nature of Injury",
+  "date_of_incident": "Date of Incident",
+  "date_reported": "Date Reported",
+  "resumed_work_on": "Resumed Work on",
+  "lost_time_in_days": "Lost Time in Days",
+  "worker_disabled": "Worker Disabled",
+  "property_damaged": "Property Damaged"
 }

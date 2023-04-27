@@ -293,5 +293,12 @@ abstract class  LocaleKeys {
   static const car_raised = 'car_raised';
   static const car_closed = 'car_closed';
   static const why_farmer_raises_car = 'why_farmer_raises_car';
+  static const nature_of_injury = 'nature_of_injury';
+  static const date_of_incident = 'date_of_incident';
+  static const date_reported = 'date_reported';
+  static const resumed_work_on = 'resumed_work_on';
+  static const lost_time_in_days = 'lost_time_in_days';
+  static const worker_disabled = 'worker_disabled';
+  static const property_damaged = 'property_damaged';
 
 }
