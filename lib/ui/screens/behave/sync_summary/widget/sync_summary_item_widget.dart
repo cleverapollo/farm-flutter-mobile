@@ -86,15 +86,15 @@ class _BehaveSyncSummaryItemWidgetState
         return Column(
           children: [
             SyncItemWidget(
-              first: widget.syncSummaryEnum.getLabel,
+              label: widget.syncSummaryEnum.getLabel,
               isTitle: true,
             ),
             SyncItemWidget(
-              first: 'In Progress',
+              label: 'In Progress',
               count: state.data?.adInprogress,
             ),
             SyncItemWidget(
-              first: 'Un Synced',
+              label: 'Un Synced',
               count: state.data?.adUnsynced,
               isHighlight: true,
             ),
@@ -108,11 +108,11 @@ class _BehaveSyncSummaryItemWidgetState
     return Column(
       children: [
         SyncItemWidget(
-          first: widget.syncSummaryEnum.getLabel,
+          label: widget.syncSummaryEnum.getLabel,
           isTitle: true,
         ),
         SyncItemWidget(
-          first: 'Upcomming Event',
+          label: 'Upcomming Event',
           count: state.data?.schedulerUpcommingEvent,
         ),
       ],
@@ -126,11 +126,11 @@ class _BehaveSyncSummaryItemWidgetState
           return Column(
             children: [
               SyncItemWidget(
-                first: widget.syncSummaryEnum.getLabel,
+                label: widget.syncSummaryEnum.getLabel,
                 isTitle: true,
               ),
               ...data.map((e) => SyncItemWidget(
-                    first: e.title,
+                    label: e.title,
                     count: e.count,
                   ))
             ],

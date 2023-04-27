@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 class SyncItemWidget extends StatelessWidget {
   const SyncItemWidget({
     super.key,
-    required this.first,
+    required this.label,
     this.isTitle = false,
     this.isHighlight = false,
     this.count = 0,
   });
 
-  final String first;
+  final String label;
   final bool isTitle;
   final bool isHighlight;
   final num? count;
@@ -27,7 +27,7 @@ class SyncItemWidget extends StatelessWidget {
                 Flexible(
                   fit: FlexFit.tight,
                   child: Text(
-                    first,
+                    label,
                     style: isTitle
                         ? context.textStyles.titleBold
                             .copyWith(color: context.colors.white)
@@ -62,7 +62,7 @@ class SyncItemWidget extends StatelessWidget {
                   Flexible(
                       fit: FlexFit.tight,
                       child: Text(
-                        first,
+                        label,
                         style: isTitle
                             ? context.textStyles.titleBold
                             : context.textStyles.bodyNormal.copyWith(
@@ -88,9 +88,11 @@ class SyncItemWidget extends StatelessWidget {
 }
 
 class SyncPairItemModel {
-  SyncPairItemModel(this.title, {this.count, this.isTitle = false});
+  SyncPairItemModel(this.title,
+      {this.count, this.isTitle = false, this.isActive = false});
 
   final String title;
   final num? count;
   final bool isTitle;
+  final bool isActive;
 }

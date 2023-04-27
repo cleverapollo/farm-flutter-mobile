@@ -31,9 +31,9 @@ class ResourceManagerSyncSummaryScreen extends StatelessWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    SyncItemWidget(first: 'Audit Detail', isTitle: true),
-                    SyncItemWidget(first: 'Unsynced', count: 0),
-                    SyncItemWidget(first: 'In Progress', count: 0),
+                    SyncItemWidget(label: 'Audit Detail', isTitle: true),
+                    SyncItemWidget(label: 'Unsynced', count: 0),
+                    SyncItemWidget(label: 'In Progress', count: 0),
                   ]),
             ),
             Align(
