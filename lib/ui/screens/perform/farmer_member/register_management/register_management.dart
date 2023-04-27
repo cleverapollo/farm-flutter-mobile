@@ -1,5 +1,6 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/stake_holder_complaint_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
@@ -109,7 +110,7 @@ class RegisterManagement extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               _ItemWidget(
-                onTapped: () => print("Tapped"),
+                onTapped: () => StakeHolderComplaintScreen.push(context),
                 title: LocaleKeys.stakeholder_complaints.tr(),
                 subTitle: LocaleKeys.pending.tr(),
                 value: _registerManagementModel.stakeholder_complaints.toString(),

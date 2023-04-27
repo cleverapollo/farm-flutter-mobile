@@ -114,6 +114,16 @@ abstract class  LocaleKeys {
   static const conversionWood = 'conversionWood';
   static const charcoal = 'charcoal';
   static const woodToCharcoal = 'woodToCharcoal';
+  static const complaintNo = 'complaintNo';
+  static const complaintName = 'complaintName';
+  static const issueRaised = 'issueRaised';
+  static const dateReceived = 'dateReceived';
+  static const dateClosed = 'dateClosed';
+  static const closureDetails = 'closureDetails';
+  static const generalComments = 'generalComments';
+  static const carRaised = 'carRaised';
+  static const carClosed = 'carClosed';
+  static const addStakeHolderComplaint = 'addStakeHolderComplaint';
   static const locale_en = 'locale.en';
   static const locale_fr = 'locale.fr';
   static const locale_ms = 'locale.ms';
