@@ -1,7 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_step2_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/member/compartments/compartment_detail_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/compartments/compartment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/member_detail/site_location_screen.dart';
 import 'package:cmo/ui/ui.dart';
@@ -139,10 +139,21 @@ class _AddCampScreenState extends State<AddCampScreen> {
                 ),
               ),
             ),
-          )
+          ),
+          Center(
+            child: CmoFilledButton(
+              title: LocaleKeys.next.tr(),
+              onTap: () => _next(),
+            ),
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     );
+  }
+
+  void _next() {
+    AddCampStep2Screen.push(context, camp);
   }
 }
 
