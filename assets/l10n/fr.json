@@ -327,5 +327,15 @@
   "add_camp_category_5": "with harvestable material virtually impenetrable (>16tons/ha)",
   "estimated_year_harvest": "Estimated year of harvest",
   "tons_charcoal_produced_camp": "Tons of Charcoal that will be produced at this camp",
-  "category": "Category"
+  "category": "Category",
+  "chemicalNo": "Chemical No",
+  "chemicalType": "Chemical Type",
+  "chemicalApplicationMethod": "Chemical Application Method",
+  "dateIssued": "Date Issued",
+  "openingStockAndPurchases": "Opening Stock And Purchases",
+  "issued": "Issued",
+  "balance": "Balance",
+  "mixture": "Mixture",
+  "locationUsed": "Location Used",
+  "usagePerHa": "UsagePerHa"
 }

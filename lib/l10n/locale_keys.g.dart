@@ -316,5 +316,15 @@ abstract class  LocaleKeys {
   static const estimated_year_harvest = 'estimated_year_harvest';
   static const tons_charcoal_produced_camp = 'tons_charcoal_produced_camp';
   static const category = 'category';
+  static const chemicalNo = 'chemicalNo';
+  static const chemicalType = 'chemicalType';
+  static const chemicalApplicationMethod = 'chemicalApplicationMethod';
+  static const dateIssued = 'dateIssued';
+  static const openingStockAndPurchases = 'openingStockAndPurchases';
+  static const issued = 'issued';
+  static const balance = 'balance';
+  static const mixture = 'mixture';
+  static const locationUsed = 'locationUsed';
+  static const usagePerHa = 'usagePerHa';
 
 }

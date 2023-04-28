@@ -107,58 +107,68 @@ const CampSchema = CollectionSchema(
       name: r'isActive',
       type: IsarType.bool,
     ),
-    r'plannedYearOfHarvest': PropertySchema(
+    r'latitude': PropertySchema(
       id: 18,
+      name: r'latitude',
+      type: IsarType.double,
+    ),
+    r'longitude': PropertySchema(
+      id: 19,
+      name: r'longitude',
+      type: IsarType.double,
+    ),
+    r'plannedYearOfHarvest': PropertySchema(
+      id: 20,
       name: r'plannedYearOfHarvest',
       type: IsarType.long,
     ),
     r'poachingAlleviationZone': PropertySchema(
-      id: 19,
+      id: 21,
       name: r'poachingAlleviationZone',
       type: IsarType.double,
     ),
     r'protectedArea': PropertySchema(
-      id: 20,
+      id: 22,
       name: r'protectedArea',
       type: IsarType.double,
     ),
     r'rangeLand': PropertySchema(
-      id: 21,
+      id: 23,
       name: r'rangeLand',
       type: IsarType.double,
     ),
     r'roadAndFireBreaks': PropertySchema(
-      id: 22,
+      id: 24,
       name: r'roadAndFireBreaks',
       type: IsarType.double,
     ),
     r'tonsOfCharcoalProduced': PropertySchema(
-      id: 23,
+      id: 25,
       name: r'tonsOfCharcoalProduced',
       type: IsarType.double,
     ),
     r'totalArea': PropertySchema(
-      id: 24,
+      id: 26,
       name: r'totalArea',
       type: IsarType.double,
     ),
     r'totalBiomass': PropertySchema(
-      id: 25,
+      id: 27,
       name: r'totalBiomass',
       type: IsarType.double,
     ),
     r'totalRangeInfestation': PropertySchema(
-      id: 26,
+      id: 28,
       name: r'totalRangeInfestation',
       type: IsarType.double,
     ),
     r'updateDT': PropertySchema(
-      id: 27,
+      id: 29,
       name: r'updateDT',
       type: IsarType.dateTime,
     ),
     r'variance': PropertySchema(
-      id: 28,
+      id: 30,
       name: r'variance',
       type: IsarType.double,
     )
@@ -222,17 +232,19 @@ void _campSerialize(
   writer.writeDouble(offsets[15], object.infestationCategory5);
   writer.writeDouble(offsets[16], object.infestedWieghtedAverage);
   writer.writeBool(offsets[17], object.isActive);
-  writer.writeLong(offsets[18], object.plannedYearOfHarvest);
-  writer.writeDouble(offsets[19], object.poachingAlleviationZone);
-  writer.writeDouble(offsets[20], object.protectedArea);
-  writer.writeDouble(offsets[21], object.rangeLand);
-  writer.writeDouble(offsets[22], object.roadAndFireBreaks);
-  writer.writeDouble(offsets[23], object.tonsOfCharcoalProduced);
-  writer.writeDouble(offsets[24], object.totalArea);
-  writer.writeDouble(offsets[25], object.totalBiomass);
-  writer.writeDouble(offsets[26], object.totalRangeInfestation);
-  writer.writeDateTime(offsets[27], object.updateDT);
-  writer.writeDouble(offsets[28], object.variance);
+  writer.writeDouble(offsets[18], object.latitude);
+  writer.writeDouble(offsets[19], object.longitude);
+  writer.writeLong(offsets[20], object.plannedYearOfHarvest);
+  writer.writeDouble(offsets[21], object.poachingAlleviationZone);
+  writer.writeDouble(offsets[22], object.protectedArea);
+  writer.writeDouble(offsets[23], object.rangeLand);
+  writer.writeDouble(offsets[24], object.roadAndFireBreaks);
+  writer.writeDouble(offsets[25], object.tonsOfCharcoalProduced);
+  writer.writeDouble(offsets[26], object.totalArea);
+  writer.writeDouble(offsets[27], object.totalBiomass);
+  writer.writeDouble(offsets[28], object.totalRangeInfestation);
+  writer.writeDateTime(offsets[29], object.updateDT);
+  writer.writeDouble(offsets[30], object.variance);
 }
 
 Camp _campDeserialize(
@@ -260,17 +272,19 @@ Camp _campDeserialize(
   object.infestationCategory5 = reader.readDoubleOrNull(offsets[15]);
   object.infestedWieghtedAverage = reader.readDoubleOrNull(offsets[16]);
   object.isActive = reader.readBoolOrNull(offsets[17]);
-  object.plannedYearOfHarvest = reader.readLongOrNull(offsets[18]);
-  object.poachingAlleviationZone = reader.readDoubleOrNull(offsets[19]);
-  object.protectedArea = reader.readDoubleOrNull(offsets[20]);
-  object.rangeLand = reader.readDoubleOrNull(offsets[21]);
-  object.roadAndFireBreaks = reader.readDoubleOrNull(offsets[22]);
-  object.tonsOfCharcoalProduced = reader.readDoubleOrNull(offsets[23]);
-  object.totalArea = reader.readDoubleOrNull(offsets[24]);
-  object.totalBiomass = reader.readDoubleOrNull(offsets[25]);
-  object.totalRangeInfestation = reader.readDoubleOrNull(offsets[26]);
-  object.updateDT = reader.readDateTimeOrNull(offsets[27]);
-  object.variance = reader.readDoubleOrNull(offsets[28]);
+  object.latitude = reader.readDoubleOrNull(offsets[18]);
+  object.longitude = reader.readDoubleOrNull(offsets[19]);
+  object.plannedYearOfHarvest = reader.readLongOrNull(offsets[20]);
+  object.poachingAlleviationZone = reader.readDoubleOrNull(offsets[21]);
+  object.protectedArea = reader.readDoubleOrNull(offsets[22]);
+  object.rangeLand = reader.readDoubleOrNull(offsets[23]);
+  object.roadAndFireBreaks = reader.readDoubleOrNull(offsets[24]);
+  object.tonsOfCharcoalProduced = reader.readDoubleOrNull(offsets[25]);
+  object.totalArea = reader.readDoubleOrNull(offsets[26]);
+  object.totalBiomass = reader.readDoubleOrNull(offsets[27]);
+  object.totalRangeInfestation = reader.readDoubleOrNull(offsets[28]);
+  object.updateDT = reader.readDateTimeOrNull(offsets[29]);
+  object.variance = reader.readDoubleOrNull(offsets[30]);
   return object;
 }
 
@@ -318,11 +332,11 @@ P _campDeserializeProp<P>(
     case 17:
       return (reader.readBoolOrNull(offset)) as P;
     case 18:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 19:
       return (reader.readDoubleOrNull(offset)) as P;
     case 20:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 21:
       return (reader.readDoubleOrNull(offset)) as P;
     case 22:
@@ -336,8 +350,12 @@ P _campDeserializeProp<P>(
     case 26:
       return (reader.readDoubleOrNull(offset)) as P;
     case 27:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 28:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 29:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 30:
       return (reader.readDoubleOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1964,6 +1982,162 @@ extension CampQueryFilter on QueryBuilder<Camp, Camp, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Camp, Camp, QAfterFilterCondition> latitudeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'latitude',
+      ));
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterFilterCondition> latitudeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'latitude',
+      ));
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterFilterCondition> latitudeEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'latitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterFilterCondition> latitudeGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'latitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterFilterCondition> latitudeLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'latitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterFilterCondition> latitudeBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'latitude',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterFilterCondition> longitudeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'longitude',
+      ));
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterFilterCondition> longitudeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'longitude',
+      ));
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterFilterCondition> longitudeEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'longitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterFilterCondition> longitudeGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'longitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterFilterCondition> longitudeLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'longitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterFilterCondition> longitudeBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'longitude',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
   QueryBuilder<Camp, Camp, QAfterFilterCondition> plannedYearOfHarvestIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -3041,6 +3215,30 @@ extension CampQuerySortBy on QueryBuilder<Camp, Camp, QSortBy> {
     });
   }
 
+  QueryBuilder<Camp, Camp, QAfterSortBy> sortByLatitude() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'latitude', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterSortBy> sortByLatitudeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'latitude', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterSortBy> sortByLongitude() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'longitude', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterSortBy> sortByLongitudeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'longitude', Sort.desc);
+    });
+  }
+
   QueryBuilder<Camp, Camp, QAfterSortBy> sortByPlannedYearOfHarvest() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'plannedYearOfHarvest', Sort.asc);
@@ -3403,6 +3601,30 @@ extension CampQuerySortThenBy on QueryBuilder<Camp, Camp, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Camp, Camp, QAfterSortBy> thenByLatitude() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'latitude', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterSortBy> thenByLatitudeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'latitude', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterSortBy> thenByLongitude() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'longitude', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QAfterSortBy> thenByLongitudeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'longitude', Sort.desc);
+    });
+  }
+
   QueryBuilder<Camp, Camp, QAfterSortBy> thenByPlannedYearOfHarvest() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'plannedYearOfHarvest', Sort.asc);
@@ -3647,6 +3869,18 @@ extension CampQueryWhereDistinct on QueryBuilder<Camp, Camp, QDistinct> {
     });
   }
 
+  QueryBuilder<Camp, Camp, QDistinct> distinctByLatitude() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'latitude');
+    });
+  }
+
+  QueryBuilder<Camp, Camp, QDistinct> distinctByLongitude() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'longitude');
+    });
+  }
+
   QueryBuilder<Camp, Camp, QDistinct> distinctByPlannedYearOfHarvest() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'plannedYearOfHarvest');
@@ -3831,6 +4065,18 @@ extension CampQueryProperty on QueryBuilder<Camp, Camp, QQueryProperty> {
     });
   }
 
+  QueryBuilder<Camp, double?, QQueryOperations> latitudeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'latitude');
+    });
+  }
+
+  QueryBuilder<Camp, double?, QQueryOperations> longitudeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'longitude');
+    });
+  }
+
   QueryBuilder<Camp, int?, QQueryOperations> plannedYearOfHarvestProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'plannedYearOfHarvest');
@@ -3942,7 +4188,9 @@ Camp _$CampFromJson(Map<String, dynamic> json) => Camp()
       : DateTime.parse(json['CreateDT'] as String)
   ..updateDT = json['UpdateDT'] == null
       ? null
-      : DateTime.parse(json['UpdateDT'] as String);
+      : DateTime.parse(json['UpdateDT'] as String)
+  ..latitude = (json['latitude'] as num?)?.toDouble()
+  ..longitude = (json['longitude'] as num?)?.toDouble();
 
 Map<String, dynamic> _$CampToJson(Camp instance) => <String, dynamic>{
       'CampName': instance.campName,
@@ -3974,4 +4222,6 @@ Map<String, dynamic> _$CampToJson(Camp instance) => <String, dynamic>{
       'IsActive': instance.isActive,
       'CreateDT': instance.createDT?.toIso8601String(),
       'UpdateDT': instance.updateDT?.toIso8601String(),
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
     };
