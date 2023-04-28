@@ -1,5 +1,6 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/camp.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_step2_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/compartments/compartment_screen.dart';
@@ -62,7 +63,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                         maxLines: 2,
                         keyboardType: TextInputType.number,
                         hintText: LocaleKeys.hectares_camp_protected.tr(),
-                        onChanged: (value) => camp.hectaresCampProtected = double.tryParse(value),
+                        onChanged: (value) => camp.protectedArea = double.tryParse(value),
                       ),
                     ),
                     AttributeItem(
@@ -70,7 +71,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                         maxLines: 2,
                         keyboardType: TextInputType.number,
                         hintText: LocaleKeys.hectares_camp_cattle_posts_housing.tr(),
-                        onChanged: (value) => camp.hectaresCampCattlePostsHousing = double.tryParse(value),
+                        onChanged: (value) => camp.cattlePostHousing = double.tryParse(value),
                       ),
                     ),
                     AttributeItem(
@@ -78,7 +79,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                         maxLines: 2,
                         keyboardType: TextInputType.number,
                         hintText: LocaleKeys.hectares_are_corridors.tr(),
-                        onChanged: (value) => camp.hectaresAreCorridors = double.tryParse(value),
+                        onChanged: (value) => camp.corridors = double.tryParse(value),
                       ),
                     ),
                     AttributeItem(
@@ -86,7 +87,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                         maxLines: 2,
                         keyboardType: TextInputType.number,
                         hintText: LocaleKeys.hectares_road_fire_breaks.tr(),
-                        onChanged: (value) => camp.hectaresRoadFireBreaks = double.tryParse(value),
+                        onChanged: (value) => camp.roadAndFireBreaks = double.tryParse(value),
                       ),
                     ),
                     AttributeItem(
@@ -94,7 +95,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                         maxLines: 2,
                         keyboardType: TextInputType.number,
                         hintText: LocaleKeys.hectares_poaching_alleviation_zones.tr(),
-                        onChanged: (value) => camp.hectaresPoachingAlleviationZones = double.tryParse(value),
+                        onChanged: (value) => camp.poachingAlleviationZone = double.tryParse(value),
                       ),
                     ),
                     GestureDetector(
@@ -200,15 +201,3 @@ class SelectorAttributeItem extends StatelessWidget {
     );
   }
 }
-
-class Camp {
-  double? latitude;
-  double? longitude;
-  String? campName;
-  double? hectaresCampProtected;
-  double? hectaresCampCattlePostsHousing;
-  double? hectaresAreCorridors;
-  double? hectaresRoadFireBreaks;
-  double? hectaresPoachingAlleviationZones;
-}
-

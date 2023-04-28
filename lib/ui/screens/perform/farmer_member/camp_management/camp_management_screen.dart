@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/camp.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -16,37 +17,34 @@ class CampManagementScreen extends StatefulWidget {
     );
   }
 
-  static const List<Camp> _mockData = [
-    Camp(
-      name: 'Magic Forest',
-      infestationWeightedAverage: 2,
-      estimatedBiomass: 10,
-      totalBiomass: 57,
-      cumulativeBiomass: 80,
-      plannedYearOfHarvest: 2023,
-      actualYearOfHarvest: 2024,
-      tonsOfCharcoalProduced: 100,
-    ),
-    Camp(
-      name: 'Magic Forest 2',
-      infestationWeightedAverage: 2,
-      estimatedBiomass: 10,
-      totalBiomass: 57,
-      cumulativeBiomass: 80,
-      plannedYearOfHarvest: 2023,
-      actualYearOfHarvest: 2024,
-      tonsOfCharcoalProduced: 100,
-    ),
-    Camp(
-      name: 'Magic Forest 3',
-      infestationWeightedAverage: 2,
-      estimatedBiomass: 10,
-      totalBiomass: 57,
-      cumulativeBiomass: 80,
-      plannedYearOfHarvest: 2023,
-      actualYearOfHarvest: 2024,
-      tonsOfCharcoalProduced: 100,
-    ),
+  static final List<Camp> _mockData = [
+    Camp()
+      ..campName = 'Magic Forest'
+      ..infestedWieghtedAverage = 2
+      ..estimatedBiomass = 10
+      ..totalBiomass = 57
+      ..cumulativeBiomass = 80
+      ..plannedYearOfHarvest = 2023
+      ..actualYearOfHarvest = 2024
+      ..tonsOfCharcoalProduced = 100,
+    Camp()
+      ..campName = 'Magic Forest'
+      ..infestedWieghtedAverage = 2
+      ..estimatedBiomass = 10
+      ..totalBiomass = 57
+      ..cumulativeBiomass = 80
+      ..plannedYearOfHarvest = 2023
+      ..actualYearOfHarvest = 2024
+      ..tonsOfCharcoalProduced = 100,
+    Camp()
+      ..campName = 'Magic Forest'
+      ..infestedWieghtedAverage = 2
+      ..estimatedBiomass = 10
+      ..totalBiomass = 57
+      ..cumulativeBiomass = 80
+      ..plannedYearOfHarvest = 2023
+      ..actualYearOfHarvest = 2024
+      ..tonsOfCharcoalProduced = 100,
   ];
 
   @override
@@ -119,7 +117,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(4, 4, 4, 10),
                           child: Text(
-                            '${LocaleKeys.campName.tr()}: ${camp.name}',
+                            '${LocaleKeys.campName.tr()}: ${camp.campName}',
                             style: context.textStyles.bodyBold
                                 .copyWith(color: context.colors.blue),
                           ),
@@ -128,7 +126,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                           color: context.colors.greyLight1,
                           name: LocaleKeys.infestation_weighted_average.tr(),
                           value:
-                              '${camp.infestationWeightedAverage?.toStringAsFixed(0)}%',
+                              '${camp.infestedWieghtedAverage?.toStringAsFixed(0)}%',
                         ),
                         _CampAttributeWidget(
                           name: LocaleKeys.estimated_biomass.tr(),
@@ -141,7 +139,8 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                         ),
                         _CampAttributeWidget(
                           name: LocaleKeys.cumulative_biomass.tr(),
-                          value: '${camp.cumulativeBiomass?.toStringAsFixed(2)}',
+                          value:
+                              '${camp.cumulativeBiomass?.toStringAsFixed(2)}',
                         ),
                         _CampAttributeWidget(
                           color: context.colors.greyLight1,
@@ -155,7 +154,8 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                         _CampAttributeWidget(
                           color: context.colors.greyLight1,
                           name: LocaleKeys.tons_of_charcoal_produced.tr(),
-                          value: '${camp.tonsOfCharcoalProduced?.toStringAsFixed(0)}',
+                          value:
+                              '${camp.tonsOfCharcoalProduced?.toStringAsFixed(0)}',
                         ),
                       ],
                     ),
@@ -175,7 +175,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
     } else {
       _filteredCamps = CampManagementScreen._mockData
           .where((element) =>
-              element.name?.toLowerCase().contains(input.toLowerCase()) ??
+              element.campName?.toLowerCase().contains(input.toLowerCase()) ??
               false)
           .toList();
     }
@@ -222,26 +222,4 @@ class _CampAttributeWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-class Camp {
-  final String? name;
-  final double? infestationWeightedAverage;
-  final double? estimatedBiomass;
-  final double? totalBiomass;
-  final double? cumulativeBiomass;
-  final int? plannedYearOfHarvest;
-  final int? actualYearOfHarvest;
-  final double? tonsOfCharcoalProduced;
-
-  const Camp({
-    this.name,
-    this.infestationWeightedAverage,
-    this.estimatedBiomass,
-    this.totalBiomass,
-    this.cumulativeBiomass,
-    this.plannedYearOfHarvest,
-    this.actualYearOfHarvest,
-    this.tonsOfCharcoalProduced,
-  });
 }

@@ -1,6 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
+import 'package:cmo/model/camp.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_step3_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,6 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
     return Scaffold(
       appBar: CmoAppBarV2(
         title: LocaleKeys.add_camp.tr(),
-        subtitle: 'Imbeza',
         showLeading: true,
         showTrailing: true,
         trailing: Assets.icons.icClose.svgBlack,
@@ -52,14 +52,15 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
                 children: [
                   Center(
                     child: Text(
-                      '${LocaleKeys.summary.tr()}: 0% ${LocaleKeys.ofLandAllocated.tr()}',
+                      '${LocaleKeys.summary.tr()}: 0% ${LocaleKeys
+                          .ofLandAllocated.tr()}',
                       style: context.textStyles.bodyBold,
                     ),
                   ),
                   const SizedBox(height: 12),
                   Padding(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -80,32 +81,37 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
                           _CategoryItem(
                             part1: '${LocaleKeys.category.tr()} 1:',
                             part2:
-                                ' ${LocaleKeys.add_camp_category_1_infested.tr()} ',
+                            ' ${LocaleKeys.add_camp_category_1_infested.tr()} ',
                             part3: LocaleKeys.add_camp_category_1.tr(),
+                            onChanged: (value) => camp.infestationCategory1 = double.tryParse(value),
                           ),
                           _CategoryItem(
                             part1: '${LocaleKeys.category.tr()} 2:',
                             part2:
-                                ' ${LocaleKeys.add_camp_category_2_infested.tr()} ',
+                            ' ${LocaleKeys.add_camp_category_2_infested.tr()} ',
                             part3: LocaleKeys.add_camp_category_2.tr(),
+                            onChanged: (value) => camp.infestationCategory2 = double.tryParse(value),
                           ),
                           _CategoryItem(
                             part1: '${LocaleKeys.category.tr()} 3:',
                             part2:
-                                ' ${LocaleKeys.add_camp_category_3_infested.tr()} ',
+                            ' ${LocaleKeys.add_camp_category_3_infested.tr()} ',
                             part3: LocaleKeys.add_camp_category_3.tr(),
+                            onChanged: (value) => camp.infestationCategory3 = double.tryParse(value),
                           ),
                           _CategoryItem(
                             part1: '${LocaleKeys.category.tr()} 4:',
                             part2:
-                                ' ${LocaleKeys.add_camp_category_4_infested.tr()} ',
+                            ' ${LocaleKeys.add_camp_category_4_infested.tr()} ',
                             part3: LocaleKeys.add_camp_category_4.tr(),
+                            onChanged: (value) => camp.infestationCategory4 = double.tryParse(value),
                           ),
                           _CategoryItem(
                             part1: '${LocaleKeys.category.tr()} 5:',
                             part2:
-                                ' ${LocaleKeys.add_camp_category_5_infested.tr()} ',
+                            ' ${LocaleKeys.add_camp_category_5_infested.tr()} ',
                             part3: LocaleKeys.add_camp_category_5.tr(),
+                            onChanged: (value) => camp.infestationCategory5 = double.tryParse(value),
                           ),
                         ],
                       ),
@@ -128,17 +134,24 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
     );
   }
 
-  void _next() {}
+  void _next() {
+    AddCampStep3Screen.push(context, camp);
+  }
 }
 
 class _CategoryItem extends StatelessWidget {
   final String part1;
   final String part2;
   final String part3;
+  final ValueChanged<String>? onChanged;
 
-  const _CategoryItem(
-      {required this.part1, required this.part2, required this.part3, Key? key})
-      : super(key: key);
+  const _CategoryItem({
+    required this.part1,
+    required this.part2,
+    required this.part3,
+    this.onChanged,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -160,20 +173,23 @@ class _CategoryItem extends StatelessWidget {
             ],
           ),
         ),
-        _InputItem(),
+        _InputItem(onChanged: onChanged),
       ],
     );
   }
 }
 
 class _InputItem extends StatelessWidget {
-  const _InputItem({Key? key}) : super(key: key);
+  final ValueChanged<String>? onChanged;
+
+  const _InputItem({this.onChanged, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.number,
+      onChanged: onChanged,
       decoration: InputDecoration(
         isDense: true,
         border: UnderlineInputBorder(
