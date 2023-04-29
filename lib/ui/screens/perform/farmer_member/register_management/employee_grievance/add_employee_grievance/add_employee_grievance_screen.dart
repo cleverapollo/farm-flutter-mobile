@@ -1,5 +1,4 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -224,9 +223,11 @@ class _AddEmployeeGrievanceScreenState
                 '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
             hintStyle: context.textStyles.bodyNormal.grey,
             border: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.grey)),
+              borderSide: BorderSide(color: context.colors.grey),
+            ),
             focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.blue)),
+              borderSide: BorderSide(color: context.colors.blue),
+            ),
           ),
           onChanged: (int? id) {
             if (id == -1) {
@@ -273,9 +274,11 @@ class _AddEmployeeGrievanceScreenState
                 '${LocaleKeys.select.tr()} ${LocaleKeys.grievanceIssue.tr().toLowerCase()}',
             hintStyle: context.textStyles.bodyNormal.grey,
             border: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.grey)),
+              borderSide: BorderSide(color: context.colors.grey),
+            ),
             focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.blue)),
+              borderSide: BorderSide(color: context.colors.blue),
+            ),
           ),
           onChanged: (int? id) {
             if (id == -1) {
@@ -320,9 +323,11 @@ class _AddEmployeeGrievanceScreenState
                 '${LocaleKeys.select.tr()} ${LocaleKeys.allocatedTo.tr().toLowerCase()}',
             hintStyle: context.textStyles.bodyNormal.grey,
             border: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.grey)),
+              borderSide: BorderSide(color: context.colors.grey),
+            ),
             focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.blue)),
+              borderSide: BorderSide(color: context.colors.blue),
+            ),
           ),
           onChanged: (int? id) {
             if (id == -1) {
