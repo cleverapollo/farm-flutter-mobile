@@ -40,6 +40,8 @@ mixin _$FireManagement {
   double? get longitude => throw _privateConstructorUsedError;
   @JsonKey(name: 'GeneralComments')
   String? get generalComments => throw _privateConstructorUsedError;
+  @JsonKey(name: 'ImagePath')
+  String? get imagePath => throw _privateConstructorUsedError;
   @JsonKey(name: 'CarRaised')
   bool? get carRaised => throw _privateConstructorUsedError;
   @JsonKey(name: 'CarClosed')
@@ -72,6 +74,7 @@ abstract class $FireManagementCopyWith<$Res> {
       @JsonKey(name: 'Latitude') double? latitude,
       @JsonKey(name: 'Longitude') double? longitude,
       @JsonKey(name: 'GeneralComments') String? generalComments,
+      @JsonKey(name: 'ImagePath') String? imagePath,
       @JsonKey(name: 'CarRaised') bool? carRaised,
       @JsonKey(name: 'CarClosed') bool? carClosed,
       @JsonKey(name: 'IsActive') bool? isActive,
@@ -101,6 +104,7 @@ class _$FireManagementCopyWithImpl<$Res, $Val extends FireManagement>
     Object? latitude = freezed,
     Object? longitude = freezed,
     Object? generalComments = freezed,
+    Object? imagePath = freezed,
     Object? carRaised = freezed,
     Object? carClosed = freezed,
     Object? isActive = freezed,
@@ -147,6 +151,10 @@ class _$FireManagementCopyWithImpl<$Res, $Val extends FireManagement>
           ? _value.generalComments
           : generalComments // ignore: cast_nullable_to_non_nullable
               as String?,
+      imagePath: freezed == imagePath
+          ? _value.imagePath
+          : imagePath // ignore: cast_nullable_to_non_nullable
+              as String?,
       carRaised: freezed == carRaised
           ? _value.carRaised
           : carRaised // ignore: cast_nullable_to_non_nullable
@@ -186,6 +194,7 @@ abstract class _$$_FireManagementCopyWith<$Res>
       @JsonKey(name: 'Latitude') double? latitude,
       @JsonKey(name: 'Longitude') double? longitude,
       @JsonKey(name: 'GeneralComments') String? generalComments,
+      @JsonKey(name: 'ImagePath') String? imagePath,
       @JsonKey(name: 'CarRaised') bool? carRaised,
       @JsonKey(name: 'CarClosed') bool? carClosed,
       @JsonKey(name: 'IsActive') bool? isActive,
@@ -213,6 +222,7 @@ class __$$_FireManagementCopyWithImpl<$Res>
     Object? latitude = freezed,
     Object? longitude = freezed,
     Object? generalComments = freezed,
+    Object? imagePath = freezed,
     Object? carRaised = freezed,
     Object? carClosed = freezed,
     Object? isActive = freezed,
@@ -259,6 +269,10 @@ class __$$_FireManagementCopyWithImpl<$Res>
           ? _value.generalComments
           : generalComments // ignore: cast_nullable_to_non_nullable
               as String?,
+      imagePath: freezed == imagePath
+          ? _value.imagePath
+          : imagePath // ignore: cast_nullable_to_non_nullable
+              as String?,
       carRaised: freezed == carRaised
           ? _value.carRaised
           : carRaised // ignore: cast_nullable_to_non_nullable
@@ -293,6 +307,7 @@ class _$_FireManagement extends _FireManagement {
       @JsonKey(name: 'Latitude') this.latitude,
       @JsonKey(name: 'Longitude') this.longitude,
       @JsonKey(name: 'GeneralComments') this.generalComments,
+      @JsonKey(name: 'ImagePath') this.imagePath,
       @JsonKey(name: 'CarRaised') this.carRaised = false,
       @JsonKey(name: 'CarClosed') this.carClosed = false,
       @JsonKey(name: 'IsActive') this.isActive = true,
@@ -333,6 +348,9 @@ class _$_FireManagement extends _FireManagement {
   @JsonKey(name: 'GeneralComments')
   final String? generalComments;
   @override
+  @JsonKey(name: 'ImagePath')
+  final String? imagePath;
+  @override
   @JsonKey(name: 'CarRaised')
   final bool? carRaised;
   @override
@@ -347,7 +365,7 @@ class _$_FireManagement extends _FireManagement {
 
   @override
   String toString() {
-    return 'FireManagement(fireManagementId: $fireManagementId, fireCause: $fireCause, fireCauseId: $fireCauseId, dateDetected: $dateDetected, dateExtinguished: $dateExtinguished, areaBurnt: $areaBurnt, commercialAreaLoss: $commercialAreaLoss, latitude: $latitude, longitude: $longitude, generalComments: $generalComments, carRaised: $carRaised, carClosed: $carClosed, isActive: $isActive, isLocal: $isLocal)';
+    return 'FireManagement(fireManagementId: $fireManagementId, fireCause: $fireCause, fireCauseId: $fireCauseId, dateDetected: $dateDetected, dateExtinguished: $dateExtinguished, areaBurnt: $areaBurnt, commercialAreaLoss: $commercialAreaLoss, latitude: $latitude, longitude: $longitude, generalComments: $generalComments, imagePath: $imagePath, carRaised: $carRaised, carClosed: $carClosed, isActive: $isActive, isLocal: $isLocal)';
   }
 
   @override
@@ -375,6 +393,8 @@ class _$_FireManagement extends _FireManagement {
                 other.longitude == longitude) &&
             (identical(other.generalComments, generalComments) ||
                 other.generalComments == generalComments) &&
+            (identical(other.imagePath, imagePath) ||
+                other.imagePath == imagePath) &&
             (identical(other.carRaised, carRaised) ||
                 other.carRaised == carRaised) &&
             (identical(other.carClosed, carClosed) ||
@@ -398,6 +418,7 @@ class _$_FireManagement extends _FireManagement {
       latitude,
       longitude,
       generalComments,
+      imagePath,
       carRaised,
       carClosed,
       isActive,
@@ -429,6 +450,7 @@ abstract class _FireManagement extends FireManagement {
       @JsonKey(name: 'Latitude') final double? latitude,
       @JsonKey(name: 'Longitude') final double? longitude,
       @JsonKey(name: 'GeneralComments') final String? generalComments,
+      @JsonKey(name: 'ImagePath') final String? imagePath,
       @JsonKey(name: 'CarRaised') final bool? carRaised,
       @JsonKey(name: 'CarClosed') final bool? carClosed,
       @JsonKey(name: 'IsActive') final bool? isActive,
@@ -468,6 +490,9 @@ abstract class _FireManagement extends FireManagement {
   @override
   @JsonKey(name: 'GeneralComments')
   String? get generalComments;
+  @override
+  @JsonKey(name: 'ImagePath')
+  String? get imagePath;
   @override
   @JsonKey(name: 'CarRaised')
   bool? get carRaised;

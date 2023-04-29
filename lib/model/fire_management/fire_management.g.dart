@@ -67,23 +67,28 @@ const FireManagementSchema = CollectionSchema(
       name: r'generalComments',
       type: IsarType.string,
     ),
-    r'isActive': PropertySchema(
+    r'imagePath': PropertySchema(
       id: 10,
+      name: r'imagePath',
+      type: IsarType.string,
+    ),
+    r'isActive': PropertySchema(
+      id: 11,
       name: r'isActive',
       type: IsarType.bool,
     ),
     r'isLocal': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'isLocal',
       type: IsarType.bool,
     ),
     r'latitude': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'latitude',
       type: IsarType.double,
     ),
     r'longitude': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'longitude',
       type: IsarType.double,
     )
@@ -132,6 +137,12 @@ int _fireManagementEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  {
+    final value = object.imagePath;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -151,10 +162,11 @@ void _fireManagementSerialize(
   writer.writeLong(offsets[7], object.fireCauseId);
   writer.writeLong(offsets[8], object.fireManagementId);
   writer.writeString(offsets[9], object.generalComments);
-  writer.writeBool(offsets[10], object.isActive);
-  writer.writeBool(offsets[11], object.isLocal);
-  writer.writeDouble(offsets[12], object.latitude);
-  writer.writeDouble(offsets[13], object.longitude);
+  writer.writeString(offsets[10], object.imagePath);
+  writer.writeBool(offsets[11], object.isActive);
+  writer.writeBool(offsets[12], object.isLocal);
+  writer.writeDouble(offsets[13], object.latitude);
+  writer.writeDouble(offsets[14], object.longitude);
 }
 
 FireManagement _fireManagementDeserialize(
@@ -174,10 +186,11 @@ FireManagement _fireManagementDeserialize(
     fireCauseId: reader.readLongOrNull(offsets[7]),
     fireManagementId: reader.readLongOrNull(offsets[8]),
     generalComments: reader.readStringOrNull(offsets[9]),
-    isActive: reader.readBoolOrNull(offsets[10]),
-    isLocal: reader.readBoolOrNull(offsets[11]),
-    latitude: reader.readDoubleOrNull(offsets[12]),
-    longitude: reader.readDoubleOrNull(offsets[13]),
+    imagePath: reader.readStringOrNull(offsets[10]),
+    isActive: reader.readBoolOrNull(offsets[11]),
+    isLocal: reader.readBoolOrNull(offsets[12]),
+    latitude: reader.readDoubleOrNull(offsets[13]),
+    longitude: reader.readDoubleOrNull(offsets[14]),
   );
   return object;
 }
@@ -210,12 +223,14 @@ P _fireManagementDeserializeProp<P>(
     case 9:
       return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 11:
       return (reader.readBoolOrNull(offset)) as P;
     case 12:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 13:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 14:
       return (reader.readDoubleOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1360,6 +1375,160 @@ extension FireManagementQueryFilter
   }
 
   QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
+      imagePathIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'imagePath',
+      ));
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
+      imagePathIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'imagePath',
+      ));
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
+      imagePathEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imagePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
+      imagePathGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'imagePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
+      imagePathLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'imagePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
+      imagePathBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'imagePath',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
+      imagePathStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'imagePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
+      imagePathEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'imagePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
+      imagePathContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'imagePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
+      imagePathMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'imagePath',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
+      imagePathIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imagePath',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
+      imagePathIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'imagePath',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterFilterCondition>
       isActiveIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1728,6 +1897,19 @@ extension FireManagementQuerySortBy
     });
   }
 
+  QueryBuilder<FireManagement, FireManagement, QAfterSortBy> sortByImagePath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imagePath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterSortBy>
+      sortByImagePathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imagePath', Sort.desc);
+    });
+  }
+
   QueryBuilder<FireManagement, FireManagement, QAfterSortBy> sortByIsActive() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isActive', Sort.asc);
@@ -1931,6 +2113,19 @@ extension FireManagementQuerySortThenBy
     });
   }
 
+  QueryBuilder<FireManagement, FireManagement, QAfterSortBy> thenByImagePath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imagePath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FireManagement, FireManagement, QAfterSortBy>
+      thenByImagePathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imagePath', Sort.desc);
+    });
+  }
+
   QueryBuilder<FireManagement, FireManagement, QAfterSortBy> thenByIsActive() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isActive', Sort.asc);
@@ -2058,6 +2253,13 @@ extension FireManagementQueryWhereDistinct
     });
   }
 
+  QueryBuilder<FireManagement, FireManagement, QDistinct> distinctByImagePath(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'imagePath', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<FireManagement, FireManagement, QDistinct> distinctByIsActive() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isActive');
@@ -2157,6 +2359,12 @@ extension FireManagementQueryProperty
     });
   }
 
+  QueryBuilder<FireManagement, String?, QQueryOperations> imagePathProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'imagePath');
+    });
+  }
+
   QueryBuilder<FireManagement, bool?, QQueryOperations> isActiveProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isActive');
@@ -2198,6 +2406,7 @@ _$_FireManagement _$$_FireManagementFromJson(Map<String, dynamic> json) =>
       latitude: (json['Latitude'] as num?)?.toDouble(),
       longitude: (json['Longitude'] as num?)?.toDouble(),
       generalComments: json['GeneralComments'] as String?,
+      imagePath: json['ImagePath'] as String?,
       carRaised: json['CarRaised'] as bool? ?? false,
       carClosed: json['CarClosed'] as bool? ?? false,
       isActive: json['IsActive'] as bool? ?? true,
@@ -2216,6 +2425,7 @@ Map<String, dynamic> _$$_FireManagementToJson(_$_FireManagement instance) =>
       'Latitude': instance.latitude,
       'Longitude': instance.longitude,
       'GeneralComments': instance.generalComments,
+      'ImagePath': instance.imagePath,
       'CarRaised': instance.carRaised,
       'CarClosed': instance.carClosed,
       'IsActive': instance.isActive,

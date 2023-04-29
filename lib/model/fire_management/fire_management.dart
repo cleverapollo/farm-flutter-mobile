@@ -19,6 +19,7 @@ class FireManagement with _$FireManagement {
     @JsonKey(name: 'Latitude') double? latitude,
     @JsonKey(name: 'Longitude') double? longitude,
     @JsonKey(name: 'GeneralComments') String? generalComments,
+    @JsonKey(name: 'ImagePath') String? imagePath,
     @Default(false) @JsonKey(name: 'CarRaised') bool? carRaised,
     @Default(false) @JsonKey(name: 'CarClosed') bool? carClosed,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
