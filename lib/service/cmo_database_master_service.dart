@@ -64,6 +64,7 @@ class CmoDatabaseMasterService {
         FarmerStakeHolderSchema,
         FarmerStakeHolderComplaintSchema,
         BiologicalControlAgentSchema,
+        EmployeeGrievanceSchema,
       ],
       name: _databaseName,
     );
@@ -546,6 +547,11 @@ class CmoDatabaseMasterService {
   Future<int> cacheAnnualProductionBudget(AnnualProductionBudget item) async {
     final db = await _db();
     return db.annualProductionBudgets.put(item);
+  }
+
+  Future<int> cacheEmployeeGrievance(EmployeeGrievance item) async {
+    final db = await _db();
+    return db.employeeGrievances.put(item);
   }
 
   Future<Worker?> getWorkerById(String? id) async {
