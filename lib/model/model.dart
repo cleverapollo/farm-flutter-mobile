@@ -51,5 +51,6 @@ export 'farmer_stake_holder_complaint/farmer_stake_holder_complaint.dart';
 export 'biological_control_agent/biological_control_agent.dart';
 export 'biological_control_agent/control_agent.dart';
 export 'employee_grievance/employee_grievance.dart';
+export 'fire_management/fire_management.dart';
 
 
