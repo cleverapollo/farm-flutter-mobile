@@ -17,8 +17,12 @@ class CmoAppBarV2 extends StatelessWidget implements PreferredSizeWidget {
     this.onTapTrailing,
     this.showLeading = false,
     this.showTrailing = false,
+    this.showAdding = false,
+    this.adding,
+    this.onTapAdding,
   });
 
+  final bool showAdding;
   final bool showLeading;
   final bool showTrailing;
 
@@ -33,6 +37,10 @@ class CmoAppBarV2 extends StatelessWidget implements PreferredSizeWidget {
   final Widget? trailing;
 
   final VoidCallback? onTapTrailing;
+
+  final Widget? adding;
+
+  final VoidCallback? onTapAdding;
 
   @override
   Size get preferredSize => Size.fromHeight(subtitle != null ? _h2 : _h1);
@@ -94,6 +102,21 @@ class CmoAppBarV2 extends StatelessWidget implements PreferredSizeWidget {
       child: trailing,
     );
 
+    var adding = showAdding
+        ? CmoTappable(
+            onTap: onTapAdding ?? () => Navigator.pop(context),
+            child: SizedBox.square(
+              dimension: _h1,
+              child:
+                  Center(child: this.trailing ?? Assets.icons.icAdd.svgBlack),
+            ),
+          )
+        : const SizedBox(width: _h1);
+    adding = Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: adding,
+    );
+
     return Padding(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: SizedBox.fromSize(
@@ -109,6 +132,7 @@ class CmoAppBarV2 extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
             trailing,
+            adding,
           ],
         ),
       ),

@@ -3,6 +3,8 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/aai/aai_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/biological_control_agents_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_add_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/stake_holder_complaint_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
@@ -10,19 +12,20 @@ import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 
 class RegisterManagement extends StatelessWidget {
-  static final RegisterManagementModel _registerManagementModel = RegisterManagementModel()
-    ..accident_incidents = 10
-    ..asi = 14
-    ..biological_control_agents = 15
-    ..chemicals = 43
-    ..disciplinaries = 153
-    ..employee_grievance = 10
-    ..fire = 10
-    ..pests_diseases = 10
-    ..rte_species = 10
-    ..stakeholder_complaints = 10
-    ..stakeholder_management = 10
-    ..training = 10;
+  static final RegisterManagementModel _registerManagementModel =
+      RegisterManagementModel()
+        ..accident_incidents = 10
+        ..asi = 14
+        ..biological_control_agents = 15
+        ..chemicals = 43
+        ..disciplinaries = 153
+        ..employee_grievance = 10
+        ..fire = 10
+        ..pests_diseases = 10
+        ..rte_species = 10
+        ..stakeholder_complaints = 10
+        ..stakeholder_management = 10
+        ..training = 10;
 
   const RegisterManagement({super.key});
 
@@ -61,7 +64,8 @@ class RegisterManagement extends StatelessWidget {
                 onTapped: () => BiologicalControlAgentsScreen.push(context),
                 title: LocaleKeys.biological_control_agents.tr(),
                 subTitle: LocaleKeys.pending.tr(),
-                value: _registerManagementModel.biological_control_agents.toString(),
+                value: _registerManagementModel.biological_control_agents
+                    .toString(),
               ),
               const SizedBox(height: 8),
               _ItemWidget(
@@ -73,7 +77,7 @@ class RegisterManagement extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               _ItemWidget(
-                onTapped: () => print("Tapped"),
+                onTapped: () => DisciplinariesScreen.push(context),
                 title: LocaleKeys.disciplinaries.tr(),
                 subTitle: LocaleKeys.pending.tr(),
                 value: _registerManagementModel.disciplinaries.toString(),
@@ -111,14 +115,16 @@ class RegisterManagement extends StatelessWidget {
                 onTapped: () => StakeHolderComplaintScreen.push(context),
                 title: LocaleKeys.stakeholder_complaints.tr(),
                 subTitle: LocaleKeys.pending.tr(),
-                value: _registerManagementModel.stakeholder_complaints.toString(),
+                value:
+                    _registerManagementModel.stakeholder_complaints.toString(),
               ),
               const SizedBox(height: 8),
               _ItemWidget(
                 onTapped: () => StakeHolderManagementScreen.push(context),
                 title: LocaleKeys.stakeholder_management.tr(),
                 subTitle: LocaleKeys.pending.tr(),
-                value: _registerManagementModel.stakeholder_management.toString(),
+                value:
+                    _registerManagementModel.stakeholder_management.toString(),
               ),
               const SizedBox(height: 8),
               _ItemWidget(
