@@ -188,7 +188,7 @@ class _DisciplinariesItemWidget extends StatelessWidget {
     );
   }
 
-  Padding _buildILineItem(BuildContext context, String label, String value) {
+  Padding _buildILineItem(BuildContext context, String label, String? value) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
       child: Row(
@@ -198,9 +198,11 @@ class _DisciplinariesItemWidget extends StatelessWidget {
             label,
             style: context.textStyles.bodyNormal,
           ),
-          Text(
-            value,
-            style: context.textStyles.bodyNormal,
+          Expanded(
+            child: Text(
+              value ?? '',
+              style: context.textStyles.bodyNormal,
+            ),
           )
         ],
       ),
@@ -210,22 +212,22 @@ class _DisciplinariesItemWidget extends StatelessWidget {
 
 class DisciplinariesModel {
   DisciplinariesModel({
-    required this.disciplinayNo,
-    required this.workerName,
-    required this.dateRecieved,
-    required this.campOrCompartment,
-    required this.issueTypeName,
-    required this.descriptionOfSanction,
-    required this.signatureDate,
-    required this.comment,
+    this.disciplinayNo,
+    this.workerName,
+    this.dateRecieved,
+    this.campOrCompartment,
+    this.issueTypeName,
+    this.descriptionOfSanction,
+    this.signatureDate,
+    this.comment,
   });
 
-  final String disciplinayNo;
-  final String workerName;
-  final DateTime dateRecieved;
-  final String campOrCompartment;
-  final String issueTypeName;
-  final String descriptionOfSanction;
-  final String signatureDate;
-  final String comment;
+  final String? disciplinayNo;
+  final String? workerName;
+  final DateTime? dateRecieved;
+  final String? campOrCompartment;
+  final String? issueTypeName;
+  final String? descriptionOfSanction;
+  final String? signatureDate;
+  final String? comment;
 }
