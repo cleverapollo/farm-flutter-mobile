@@ -326,5 +326,6 @@ abstract class  LocaleKeys {
   static const mixture = 'mixture';
   static const locationUsed = 'locationUsed';
   static const usagePerHa = 'usagePerHa';
+  static const add_chemical = 'add_chemical';
 
 }

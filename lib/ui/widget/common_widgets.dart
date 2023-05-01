@@ -5,13 +5,17 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AttributeItem extends StatelessWidget {
   final Widget child;
+  final EdgeInsetsGeometry padding;
 
-  const AttributeItem({required this.child, super.key});
+  const AttributeItem(
+      {required this.child,
+      this.padding = const EdgeInsets.symmetric(vertical: 6),
+      super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: padding,
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(width: 1, color: context.colors.grey),
@@ -24,6 +28,7 @@ class AttributeItem extends StatelessWidget {
 
 class GeoLocationText extends StatelessWidget {
   final LatLng? latLong;
+
   const GeoLocationText({this.latLong, Key? key}) : super(key: key);
 
   @override
@@ -38,7 +43,7 @@ class GeoLocationText extends StatelessWidget {
             text: ' ',
           ),
           TextSpan(
-            text: latLong?.latitude.toStringAsFixed(6)  ?? '',
+            text: latLong?.latitude.toStringAsFixed(6) ?? '',
             style: context.textStyles.bodyNormal,
           ),
           TextSpan(
@@ -46,7 +51,7 @@ class GeoLocationText extends StatelessWidget {
             style: context.textStyles.bodyNormal,
           ),
           TextSpan(
-            text: latLong?.longitude.toStringAsFixed(6)  ?? '',
+            text: latLong?.longitude.toStringAsFixed(6) ?? '',
             style: context.textStyles.bodyNormal,
           ),
         ],
@@ -62,6 +67,7 @@ class InputAttributeItem extends StatefulWidget {
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
   final TextStyle? hintTextStyle;
+  final EdgeInsetsGeometry contentPadding;
 
   const InputAttributeItem({
     required this.hintText,
@@ -69,6 +75,7 @@ class InputAttributeItem extends StatefulWidget {
     this.keyboardType,
     this.onChanged,
     this.hintTextStyle,
+    this.contentPadding = const EdgeInsets.fromLTRB(14, 4, 14, 4),
     super.key,
   });
 
@@ -97,9 +104,11 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
       decoration: InputDecoration(
         hintText: widget.hintText,
         labelText: _controller.text.isEmpty ? null : widget.hintText,
-        labelStyle: context.textStyles.bodyNormal.copyWith(fontSize: 16, overflow: TextOverflow.ellipsis),
-        hintStyle: widget.hintTextStyle ?? context.textStyles.bodyNormal.copyWith(color: context.colors.grey),
-        contentPadding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
+        labelStyle: context.textStyles.bodyNormal
+            .copyWith(fontSize: 16, overflow: TextOverflow.ellipsis),
+        hintStyle: widget.hintTextStyle ??
+            context.textStyles.bodyNormal.copyWith(color: context.colors.grey),
+        contentPadding: widget.contentPadding,
         enabledBorder: InputBorder.none,
         focusedBorder: InputBorder.none,
       ),

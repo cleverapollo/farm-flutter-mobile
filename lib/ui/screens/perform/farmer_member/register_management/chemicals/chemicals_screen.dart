@@ -3,21 +3,65 @@ import 'dart:async';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/accident_and_incident.dart';
 import 'package:cmo/model/chemical.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/chemicals/adding_chemical_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ChemicalsScreen extends StatefulWidget {
   final mockChemicals = <Chemical>[
     Chemical(
+      chemicalNo: '123',
+      chemicalTypeId: 1,
+      chemicalApplicationMethodId: 1,
+      date: DateTime.now(),
+      openingStock: 100,
+      issued: 10,
+      balance: 20,
+      mixture: 'Test',
+      campId: 1,
+      usagePerHa: 20,
       createDT: DateTime.now().subtract(const Duration(days: 100)),
       comment: 'Test comment',
-    ),
+    )
+      ..chemicalType = 'Type 1'
+      ..chemicalApplicationMethod = 'Method 1'
+      ..campName = 'Test',
+    Chemical(
+      chemicalNo: '456',
+      chemicalTypeId: 1,
+      chemicalApplicationMethodId: 1,
+      date: DateTime.now(),
+      openingStock: 100,
+      issued: 10,
+      balance: 20,
+      mixture: 'Test',
+      campId: 1,
+      usagePerHa: 20,
+      createDT: DateTime.now().subtract(const Duration(days: 100)),
+      comment: 'Test comment',
+    )
+      ..chemicalType = 'Type 1'
+      ..chemicalApplicationMethod = 'Method 1'
+      ..campName = 'Test',
+    Chemical(
+      chemicalNo: '789',
+      chemicalTypeId: 1,
+      chemicalApplicationMethodId: 1,
+      date: DateTime.now(),
+      openingStock: 100,
+      issued: 10,
+      balance: 20,
+      mixture: 'Test',
+      campId: 1,
+      usagePerHa: 20,
+      createDT: DateTime.now().subtract(const Duration(days: 100)),
+      comment: 'Test comment',
+    )
+      ..chemicalType = 'Type 1'
+      ..chemicalApplicationMethod = 'Method 1'
+      ..campName = 'Test'
   ];
 
   ChemicalsScreen({Key? key}) : super(key: key);
@@ -46,7 +90,7 @@ class _ChemicalsScreenState extends State<ChemicalsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBarV2(
-        title: LocaleKeys.accident_incidents.tr(),
+        title: LocaleKeys.chemicals.tr(),
         showLeading: true,
         showTrailing: true,
         trailing: Assets.icons.icAdd.svgBlack,

@@ -337,5 +337,6 @@
   "balance": "Balance",
   "mixture": "Mixture",
   "locationUsed": "Location Used",
-  "usagePerHa": "UsagePerHa"
+  "usagePerHa": "UsagePerHa",
+  "add_chemical": "Add chemical"
 }

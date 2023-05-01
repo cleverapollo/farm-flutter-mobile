@@ -1,14 +1,11 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/accident_and_incident.dart';
-import 'package:cmo/service/image_picker_service.dart';
-import 'package:cmo/ui/components/cmo_map.dart';
+import 'package:cmo/model/chemical.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
-import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class AddingChemicalScreen extends StatefulWidget {
@@ -24,13 +21,13 @@ class AddingChemicalScreen extends StatefulWidget {
 }
 
 class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
-  AccidentAndIncident aai = AccidentAndIncident();
+  Chemical chemical = Chemical();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBarV2(
-        title: LocaleKeys.add_aai.tr(),
+        title: LocaleKeys.add_chemical.tr(),
         showLeading: true,
       ),
       body: CustomScrollView(
@@ -42,13 +39,13 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
               child: Column(
                 children: [
                   CmoDropdown(
-                    name: 'worker',
+                    name: 'chemicalType',
                     style: context.textStyles.bodyBold
                         .copyWith(color: context.colors.black),
                     inputDecoration: InputDecoration(
                       contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
                       isDense: true,
-                      hintText: LocaleKeys.worker.tr(),
+                      hintText: LocaleKeys.chemicalType.tr(),
                       hintStyle: context.textStyles.bodyNormal.grey,
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: context.colors.grey)),
@@ -61,17 +58,17 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                       CmoDropdownItem(id: 3, name: 'Test 3'),
                     ],
                     onChanged: (value) {
-                      aai = aai.copyWith(workerId: value);
+                      chemical.chemicalTypeId = value;
                     },
                   ),
                   CmoDropdown(
-                    name: 'jobDescription',
+                    name: 'applicationMethod',
                     style: context.textStyles.bodyBold
                         .copyWith(color: context.colors.black),
                     inputDecoration: InputDecoration(
                       contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
                       isDense: true,
-                      hintText: LocaleKeys.jobDescription.tr(),
+                      hintText: LocaleKeys.chemicalApplicationMethod.tr(),
                       hintStyle: context.textStyles.bodyNormal.grey,
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: context.colors.grey)),
@@ -84,17 +81,17 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                       CmoDropdownItem(id: 3, name: 'Test 3'),
                     ],
                     onChanged: (value) {
-                      aai = aai.copyWith(workerId: value);
+                      chemical.chemicalApplicationMethodId = value;
                     },
                   ),
                   CmoDropdown(
-                    name: 'natureOfInjury',
+                    name: 'campId',
                     style: context.textStyles.bodyBold
                         .copyWith(color: context.colors.black),
                     inputDecoration: InputDecoration(
                       contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
                       isDense: true,
-                      hintText: LocaleKeys.nature_of_injury.tr(),
+                      hintText: LocaleKeys.locationUsed.tr(),
                       hintStyle: context.textStyles.bodyNormal.grey,
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: context.colors.grey)),
@@ -107,7 +104,7 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                       CmoDropdownItem(id: 3, name: 'Test 3'),
                     ],
                     onChanged: (value) {
-                      aai = aai.copyWith(natureOfInjuryId: value);
+                      chemical.campId = value;
                     },
                   ),
                   GestureDetector(
@@ -118,72 +115,54 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                         firstDate: DateTime.now().add(Duration(days: -1000000)),
                         lastDate: DateTime.now().add(Duration(days: 1000000)),
                       );
-                      aai = aai.copyWith(dateOfIncident: date);
+                      chemical.date = date;
                       setState(() {});
                     },
                     child: AttributeItem(
                       child: SelectorAttributeItem(
-                          hintText: LocaleKeys.date_of_incident.tr(),
-                          text: aai.dateOfIncident?.ddMMYyyy(),
-                          contentPadding: const EdgeInsets.all(4),
-                          trailing: Assets.icons.icCalendar.svgBlack),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      var date = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime.now().add(Duration(days: -1000000)),
-                        lastDate: DateTime.now().add(Duration(days: 1000000)),
-                      );
-                      aai = aai.copyWith(dateRecieved: date);
-                      setState(() {});
-                    },
-                    child: AttributeItem(
-                      child: SelectorAttributeItem(
-                          hintText: LocaleKeys.date_reported.tr(),
-                          text: aai.dateRecieved?.ddMMYyyy(),
-                          contentPadding: const EdgeInsets.all(4),
-                          trailing: Assets.icons.icCalendar.svgBlack),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      var date = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime.now().add(Duration(days: -1000000)),
-                        lastDate: DateTime.now().add(Duration(days: 1000000)),
-                      );
-                      aai = aai.copyWith(dateResumeWork: date);
-                      setState(() {});
-                    },
-                    child: AttributeItem(
-                      child: SelectorAttributeItem(
-                          hintText: LocaleKeys.resumed_work_on.tr(),
-                          text: aai.dateResumeWork?.ddMMYyyy(),
+                          hintText: LocaleKeys.dateIssued.tr(),
+                          text: chemical.date?.ddMMYyyy(),
                           contentPadding: const EdgeInsets.all(4),
                           trailing: Assets.icons.icCalendar.svgBlack),
                     ),
                   ),
                   AttributeItem(
-                    child: SelectorAttributeItem(
-                      hintText: LocaleKeys.worker_disabled.tr(),
-                      text: LocaleKeys.worker_disabled.tr(),
-                      contentPadding: const EdgeInsets.all(4),
-                      trailing: SizedBox(
-                        width: 24,
-                        child: Switch(
-                          value: aai.workerDisabled == true,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          onChanged: (bool value) {
-                            aai = aai.copyWith(workerDisabled: value);
-                            setState(() {});
-                          },
-                        ),
-                      ),
+                    child: InputAttributeItem(
+                      contentPadding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                      keyboardType: TextInputType.number,
+                      hintText: LocaleKeys.openingStockAndPurchases.tr(),
+                      onChanged: (value) => chemical.openingStock = double.tryParse(value),
+                    ),
+                  ),
+                  AttributeItem(
+                    child: InputAttributeItem(
+                      contentPadding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                      keyboardType: TextInputType.number,
+                      hintText: LocaleKeys.issued.tr(),
+                      onChanged: (value) => chemical.issued = double.tryParse(value),
+                    ),
+                  ),
+                  AttributeItem(
+                    child: InputAttributeItem(
+                      contentPadding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                      keyboardType: TextInputType.number,
+                      hintText: LocaleKeys.balance.tr(),
+                      onChanged: (value) => chemical.balance = double.tryParse(value),
+                    ),
+                  ),
+                  AttributeItem(
+                    child: InputAttributeItem(
+                      contentPadding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                      hintText: LocaleKeys.mixture.tr(),
+                      onChanged: (value) => chemical.mixture = value,
+                    ),
+                  ),
+                  AttributeItem(
+                    child: InputAttributeItem(
+                      contentPadding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                      keyboardType: TextInputType.number,
+                      hintText: LocaleKeys.usagePerHa.tr(),
+                      onChanged: (value) => chemical.usagePerHa = double.tryParse(value),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -192,7 +171,7 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                       minLines: 10,
                       maxLines: 100,
                       onChanged: (value) {
-                        aai = aai.copyWith(comment: value);
+                        chemical.comment = value;
                       },
                       decoration: InputDecoration(
                         hintText: LocaleKeys.comments.tr(),
@@ -217,86 +196,4 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
   void submit() {
     Navigator.of(context).pop();
   }
-}
-
-class _AsiMapScreen extends StatefulWidget {
-  static Future push(BuildContext context) {
-    return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => _AsiMapScreen()));
-  }
-
-  @override
-  State<_AsiMapScreen> createState() => _AsiMapScreenState();
-}
-
-class _AsiMapScreenState extends State<_AsiMapScreen> {
-  final ImagePickerService _imagePickerService = ImagePickerService();
-  final _asiMapResult = _AsiMapResult()
-    ..latitude = Constants.mapCenter.latitude
-    ..longitude = Constants.mapCenter.longitude;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.asi.tr(),
-        showLeading: true,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: CmoMap(
-              onMapMoved: (latitude, longitude) {
-                _asiMapResult.latitude = latitude;
-                _asiMapResult.longitude = longitude;
-              },
-            ),
-          ),
-          const SizedBox(height: 32),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Align(
-                child: CmoFilledButton(
-                  title: LocaleKeys.selectPhoto.tr(),
-                  onTap: () async {
-                    _asiMapResult.imageUri =
-                        (await _imagePickerService.pickImageFromGallery())
-                            ?.path;
-                  },
-                ),
-              ),
-              Align(
-                child: CmoFilledButton(
-                  title: LocaleKeys.takePhoto.tr(),
-                  onTap: () async {
-                    _asiMapResult.imageUri =
-                        (await _imagePickerService.pickImageFromCamera())?.path;
-                  },
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Center(
-            child: CmoFilledButton(
-              title: LocaleKeys.save.tr(),
-              onTap: () => save(),
-            ),
-          ),
-          const SizedBox(height: 24),
-        ],
-      ),
-    );
-  }
-
-  void save() {
-    Navigator.of(context).pop(_asiMapResult);
-  }
-}
-
-class _AsiMapResult {
-  double? latitude;
-  double? longitude;
-  String? imageUri;
 }

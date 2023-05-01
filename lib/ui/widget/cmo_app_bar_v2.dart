@@ -132,7 +132,7 @@ class CmoAppBarV2 extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
             trailing,
-            adding,
+            if (showAdding) adding else Container(),
           ],
         ),
       ),
