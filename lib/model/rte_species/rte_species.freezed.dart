@@ -50,8 +50,6 @@ mixin _$RteSpecies {
   String? get imagePath => throw _privateConstructorUsedError;
   @JsonKey(name: 'GeneralComments')
   String? get generalComments => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Photos')
-  List<PhotoModel>? get photos => throw _privateConstructorUsedError;
   @JsonKey(name: 'CarRaised')
   bool? get carRaised => throw _privateConstructorUsedError;
   @JsonKey(name: 'CarClosed')
@@ -89,7 +87,6 @@ abstract class $RteSpeciesCopyWith<$Res> {
       @JsonKey(name: 'Longitude') double? longitude,
       @JsonKey(name: 'ImagePath') String? imagePath,
       @JsonKey(name: 'GeneralComments') String? generalComments,
-      @JsonKey(name: 'Photos') List<PhotoModel>? photos,
       @JsonKey(name: 'CarRaised') bool? carRaised,
       @JsonKey(name: 'CarClosed') bool? carClosed,
       @JsonKey(name: 'IsActive') bool? isActive,
@@ -124,7 +121,6 @@ class _$RteSpeciesCopyWithImpl<$Res, $Val extends RteSpecies>
     Object? longitude = freezed,
     Object? imagePath = freezed,
     Object? generalComments = freezed,
-    Object? photos = freezed,
     Object? carRaised = freezed,
     Object? carClosed = freezed,
     Object? isActive = freezed,
@@ -191,10 +187,6 @@ class _$RteSpeciesCopyWithImpl<$Res, $Val extends RteSpecies>
           ? _value.generalComments
           : generalComments // ignore: cast_nullable_to_non_nullable
               as String?,
-      photos: freezed == photos
-          ? _value.photos
-          : photos // ignore: cast_nullable_to_non_nullable
-              as List<PhotoModel>?,
       carRaised: freezed == carRaised
           ? _value.carRaised
           : carRaised // ignore: cast_nullable_to_non_nullable
@@ -239,7 +231,6 @@ abstract class _$$_RteSpeciesCopyWith<$Res>
       @JsonKey(name: 'Longitude') double? longitude,
       @JsonKey(name: 'ImagePath') String? imagePath,
       @JsonKey(name: 'GeneralComments') String? generalComments,
-      @JsonKey(name: 'Photos') List<PhotoModel>? photos,
       @JsonKey(name: 'CarRaised') bool? carRaised,
       @JsonKey(name: 'CarClosed') bool? carClosed,
       @JsonKey(name: 'IsActive') bool? isActive,
@@ -272,7 +263,6 @@ class __$$_RteSpeciesCopyWithImpl<$Res>
     Object? longitude = freezed,
     Object? imagePath = freezed,
     Object? generalComments = freezed,
-    Object? photos = freezed,
     Object? carRaised = freezed,
     Object? carClosed = freezed,
     Object? isActive = freezed,
@@ -339,10 +329,6 @@ class __$$_RteSpeciesCopyWithImpl<$Res>
           ? _value.generalComments
           : generalComments // ignore: cast_nullable_to_non_nullable
               as String?,
-      photos: freezed == photos
-          ? _value._photos
-          : photos // ignore: cast_nullable_to_non_nullable
-              as List<PhotoModel>?,
       carRaised: freezed == carRaised
           ? _value.carRaised
           : carRaised // ignore: cast_nullable_to_non_nullable
@@ -367,48 +353,26 @@ class __$$_RteSpeciesCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_RteSpecies extends _RteSpecies {
   const _$_RteSpecies(
-      {@JsonKey(name: 'RteSpeciesId')
-          this.rteSpeciesId,
-      @JsonKey(name: 'SpeciesType')
-          this.speciesType,
-      @JsonKey(name: 'SpeciesTypeId')
-          this.speciesTypeId,
-      @JsonKey(name: 'CommonName')
-          this.commonName,
-      @JsonKey(name: 'ScientificName')
-          this.scientificName,
-      @JsonKey(name: 'SpeciesRange')
-          this.speciesRange,
-      @JsonKey(name: 'SpeciesRangeId')
-          this.speciesRangeId,
-      @JsonKey(name: 'CampName')
-          this.campName,
-      @JsonKey(name: 'CampId')
-          this.campId,
-      @JsonKey(name: 'DateSpotted')
-          this.dateSpotted,
-      @JsonKey(name: 'Location')
-          this.location,
-      @JsonKey(name: 'Latitude')
-          this.latitude,
-      @JsonKey(name: 'Longitude')
-          this.longitude,
-      @JsonKey(name: 'ImagePath')
-          this.imagePath,
-      @JsonKey(name: 'GeneralComments')
-          this.generalComments,
-      @JsonKey(name: 'Photos')
-          final List<PhotoModel>? photos = const <PhotoModel>[],
-      @JsonKey(name: 'CarRaised')
-          this.carRaised = false,
-      @JsonKey(name: 'CarClosed')
-          this.carClosed = false,
-      @JsonKey(name: 'IsActive')
-          this.isActive = true,
-      @JsonKey(name: 'IsLocal')
-          this.isLocal = true})
-      : _photos = photos,
-        super._();
+      {@JsonKey(name: 'RteSpeciesId') this.rteSpeciesId,
+      @JsonKey(name: 'SpeciesType') this.speciesType,
+      @JsonKey(name: 'SpeciesTypeId') this.speciesTypeId,
+      @JsonKey(name: 'CommonName') this.commonName,
+      @JsonKey(name: 'ScientificName') this.scientificName,
+      @JsonKey(name: 'SpeciesRange') this.speciesRange,
+      @JsonKey(name: 'SpeciesRangeId') this.speciesRangeId,
+      @JsonKey(name: 'CampName') this.campName,
+      @JsonKey(name: 'CampId') this.campId,
+      @JsonKey(name: 'DateSpotted') this.dateSpotted,
+      @JsonKey(name: 'Location') this.location,
+      @JsonKey(name: 'Latitude') this.latitude,
+      @JsonKey(name: 'Longitude') this.longitude,
+      @JsonKey(name: 'ImagePath') this.imagePath,
+      @JsonKey(name: 'GeneralComments') this.generalComments,
+      @JsonKey(name: 'CarRaised') this.carRaised = false,
+      @JsonKey(name: 'CarClosed') this.carClosed = false,
+      @JsonKey(name: 'IsActive') this.isActive = true,
+      @JsonKey(name: 'IsLocal') this.isLocal = true})
+      : super._();
 
   factory _$_RteSpecies.fromJson(Map<String, dynamic> json) =>
       _$$_RteSpeciesFromJson(json);
@@ -458,17 +422,6 @@ class _$_RteSpecies extends _RteSpecies {
   @override
   @JsonKey(name: 'GeneralComments')
   final String? generalComments;
-  final List<PhotoModel>? _photos;
-  @override
-  @JsonKey(name: 'Photos')
-  List<PhotoModel>? get photos {
-    final value = _photos;
-    if (value == null) return null;
-    if (_photos is EqualUnmodifiableListView) return _photos;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
   @override
   @JsonKey(name: 'CarRaised')
   final bool? carRaised;
@@ -484,7 +437,7 @@ class _$_RteSpecies extends _RteSpecies {
 
   @override
   String toString() {
-    return 'RteSpecies(rteSpeciesId: $rteSpeciesId, speciesType: $speciesType, speciesTypeId: $speciesTypeId, commonName: $commonName, scientificName: $scientificName, speciesRange: $speciesRange, speciesRangeId: $speciesRangeId, campName: $campName, campId: $campId, dateSpotted: $dateSpotted, location: $location, latitude: $latitude, longitude: $longitude, imagePath: $imagePath, generalComments: $generalComments, photos: $photos, carRaised: $carRaised, carClosed: $carClosed, isActive: $isActive, isLocal: $isLocal)';
+    return 'RteSpecies(rteSpeciesId: $rteSpeciesId, speciesType: $speciesType, speciesTypeId: $speciesTypeId, commonName: $commonName, scientificName: $scientificName, speciesRange: $speciesRange, speciesRangeId: $speciesRangeId, campName: $campName, campId: $campId, dateSpotted: $dateSpotted, location: $location, latitude: $latitude, longitude: $longitude, imagePath: $imagePath, generalComments: $generalComments, carRaised: $carRaised, carClosed: $carClosed, isActive: $isActive, isLocal: $isLocal)';
   }
 
   @override
@@ -521,7 +474,6 @@ class _$_RteSpecies extends _RteSpecies {
                 other.imagePath == imagePath) &&
             (identical(other.generalComments, generalComments) ||
                 other.generalComments == generalComments) &&
-            const DeepCollectionEquality().equals(other._photos, _photos) &&
             (identical(other.carRaised, carRaised) ||
                 other.carRaised == carRaised) &&
             (identical(other.carClosed, carClosed) ||
@@ -550,7 +502,6 @@ class _$_RteSpecies extends _RteSpecies {
         longitude,
         imagePath,
         generalComments,
-        const DeepCollectionEquality().hash(_photos),
         carRaised,
         carClosed,
         isActive,
@@ -588,7 +539,6 @@ abstract class _RteSpecies extends RteSpecies {
       @JsonKey(name: 'Longitude') final double? longitude,
       @JsonKey(name: 'ImagePath') final String? imagePath,
       @JsonKey(name: 'GeneralComments') final String? generalComments,
-      @JsonKey(name: 'Photos') final List<PhotoModel>? photos,
       @JsonKey(name: 'CarRaised') final bool? carRaised,
       @JsonKey(name: 'CarClosed') final bool? carClosed,
       @JsonKey(name: 'IsActive') final bool? isActive,
@@ -643,9 +593,6 @@ abstract class _RteSpecies extends RteSpecies {
   @override
   @JsonKey(name: 'GeneralComments')
   String? get generalComments;
-  @override
-  @JsonKey(name: 'Photos')
-  List<PhotoModel>? get photos;
   @override
   @JsonKey(name: 'CarRaised')
   bool? get carRaised;

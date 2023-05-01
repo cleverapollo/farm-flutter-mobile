@@ -25,8 +25,6 @@ class RteSpecies with _$RteSpecies {
     @JsonKey(name: 'Longitude') double? longitude,
     @JsonKey(name: 'ImagePath') String? imagePath,
     @JsonKey(name: 'GeneralComments') String? generalComments,
-    @Default(<PhotoModel>[])
-    @JsonKey(name: 'Photos') List<PhotoModel>? photos,
     @Default(false) @JsonKey(name: 'CarRaised') bool? carRaised,
     @Default(false) @JsonKey(name: 'CarClosed') bool? carClosed,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,

@@ -66,6 +66,8 @@ class CmoDatabaseMasterService {
         BiologicalControlAgentSchema,
         EmployeeGrievanceSchema,
         FireManagementSchema,
+        RteSpeciesPhotoModelSchema,
+        RteSpeciesSchema,
       ],
       name: _databaseName,
     );
@@ -558,6 +560,16 @@ class CmoDatabaseMasterService {
   Future<int> cacheFireManagement(FireManagement item) async {
     final db = await _db();
     return db.fireManagements.put(item);
+  }
+
+  Future<int> cacheRteSpecies(RteSpecies item) async {
+    final db = await _db();
+    return db.rteSpecies.put(item);
+  }
+
+  Future<int> cacheRteSpeciesPhotoModel(RteSpeciesPhotoModel item) async {
+    final db = await _db();
+    return db.rteSpeciesPhotoModels.put(item);
   }
 
   Future<Worker?> getWorkerById(String? id) async {

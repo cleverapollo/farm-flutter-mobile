@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'photo_model.dart';
+part of 'rte_species_photo_model.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,13 +9,14 @@ part of 'photo_model.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
-extension GetPhotoModelCollection on Isar {
-  IsarCollection<PhotoModel> get photoModels => this.collection();
+extension GetRteSpeciesPhotoModelCollection on Isar {
+  IsarCollection<RteSpeciesPhotoModel> get rteSpeciesPhotoModels =>
+      this.collection();
 }
 
-const PhotoModelSchema = CollectionSchema(
-  name: r'PhotoModel',
-  id: -2122015663171639146,
+const RteSpeciesPhotoModelSchema = CollectionSchema(
+  name: r'RteSpeciesPhotoModel',
+  id: 1579121269187386054,
   properties: {
     r'isActive': PropertySchema(
       id: 0,
@@ -41,24 +42,29 @@ const PhotoModelSchema = CollectionSchema(
       id: 4,
       name: r'photoPath',
       type: IsarType.string,
+    ),
+    r'rteSpeciesId': PropertySchema(
+      id: 5,
+      name: r'rteSpeciesId',
+      type: IsarType.long,
     )
   },
-  estimateSize: _photoModelEstimateSize,
-  serialize: _photoModelSerialize,
-  deserialize: _photoModelDeserialize,
-  deserializeProp: _photoModelDeserializeProp,
+  estimateSize: _rteSpeciesPhotoModelEstimateSize,
+  serialize: _rteSpeciesPhotoModelSerialize,
+  deserialize: _rteSpeciesPhotoModelDeserialize,
+  deserializeProp: _rteSpeciesPhotoModelDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _photoModelGetId,
-  getLinks: _photoModelGetLinks,
-  attach: _photoModelAttach,
+  getId: _rteSpeciesPhotoModelGetId,
+  getLinks: _rteSpeciesPhotoModelGetLinks,
+  attach: _rteSpeciesPhotoModelAttach,
   version: '3.0.5',
 );
 
-int _photoModelEstimateSize(
-  PhotoModel object,
+int _rteSpeciesPhotoModelEstimateSize(
+  RteSpeciesPhotoModel object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -78,8 +84,8 @@ int _photoModelEstimateSize(
   return bytesCount;
 }
 
-void _photoModelSerialize(
-  PhotoModel object,
+void _rteSpeciesPhotoModelSerialize(
+  RteSpeciesPhotoModel object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -89,25 +95,27 @@ void _photoModelSerialize(
   writer.writeLong(offsets[2], object.photoId);
   writer.writeString(offsets[3], object.photoName);
   writer.writeString(offsets[4], object.photoPath);
+  writer.writeLong(offsets[5], object.rteSpeciesId);
 }
 
-PhotoModel _photoModelDeserialize(
+RteSpeciesPhotoModel _rteSpeciesPhotoModelDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = PhotoModel(
+  final object = RteSpeciesPhotoModel(
     isActive: reader.readBoolOrNull(offsets[0]),
     isLocal: reader.readBoolOrNull(offsets[1]),
     photoId: reader.readLongOrNull(offsets[2]),
     photoName: reader.readStringOrNull(offsets[3]),
     photoPath: reader.readStringOrNull(offsets[4]),
+    rteSpeciesId: reader.readLongOrNull(offsets[5]),
   );
   return object;
 }
 
-P _photoModelDeserializeProp<P>(
+P _rteSpeciesPhotoModelDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -124,33 +132,39 @@ P _photoModelDeserializeProp<P>(
       return (reader.readStringOrNull(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
+    case 5:
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-Id _photoModelGetId(PhotoModel object) {
+Id _rteSpeciesPhotoModelGetId(RteSpeciesPhotoModel object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _photoModelGetLinks(PhotoModel object) {
+List<IsarLinkBase<dynamic>> _rteSpeciesPhotoModelGetLinks(
+    RteSpeciesPhotoModel object) {
   return [];
 }
 
-void _photoModelAttach(IsarCollection<dynamic> col, Id id, PhotoModel object) {}
+void _rteSpeciesPhotoModelAttach(
+    IsarCollection<dynamic> col, Id id, RteSpeciesPhotoModel object) {}
 
-extension PhotoModelQueryWhereSort
-    on QueryBuilder<PhotoModel, PhotoModel, QWhere> {
-  QueryBuilder<PhotoModel, PhotoModel, QAfterWhere> anyId() {
+extension RteSpeciesPhotoModelQueryWhereSort
+    on QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QWhere> {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterWhere>
+      anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension PhotoModelQueryWhere
-    on QueryBuilder<PhotoModel, PhotoModel, QWhereClause> {
-  QueryBuilder<PhotoModel, PhotoModel, QAfterWhereClause> idEqualTo(Id id) {
+extension RteSpeciesPhotoModelQueryWhere
+    on QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QWhereClause> {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterWhereClause>
+      idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -159,7 +173,8 @@ extension PhotoModelQueryWhere
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterWhereClause> idNotEqualTo(Id id) {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterWhereClause>
+      idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -181,8 +196,8 @@ extension PhotoModelQueryWhere
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterWhereClause> idGreaterThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterWhereClause>
+      idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -190,8 +205,8 @@ extension PhotoModelQueryWhere
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterWhereClause> idLessThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterWhereClause>
+      idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -199,7 +214,8 @@ extension PhotoModelQueryWhere
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterWhereClause> idBetween(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterWhereClause>
+      idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -216,10 +232,10 @@ extension PhotoModelQueryWhere
   }
 }
 
-extension PhotoModelQueryFilter
-    on QueryBuilder<PhotoModel, PhotoModel, QFilterCondition> {
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> idEqualTo(
-      Id value) {
+extension RteSpeciesPhotoModelQueryFilter on QueryBuilder<RteSpeciesPhotoModel,
+    RteSpeciesPhotoModel, QFilterCondition> {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -228,7 +244,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -241,7 +258,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> idLessThan(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -254,7 +272,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> idBetween(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -271,7 +290,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> isActiveIsNull() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> isActiveIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'isActive',
@@ -279,8 +299,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      isActiveIsNotNull() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> isActiveIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'isActive',
@@ -288,8 +308,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> isActiveEqualTo(
-      bool? value) {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> isActiveEqualTo(bool? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isActive',
@@ -298,7 +318,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> isLocalIsNull() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> isLocalIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'isLocal',
@@ -306,8 +327,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      isLocalIsNotNull() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> isLocalIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'isLocal',
@@ -315,8 +336,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> isLocalEqualTo(
-      bool? value) {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> isLocalEqualTo(bool? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isLocal',
@@ -325,7 +346,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoIdIsNull() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'photoId',
@@ -333,8 +355,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoIdIsNotNull() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoIdIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'photoId',
@@ -342,8 +364,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoIdEqualTo(
-      int? value) {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'photoId',
@@ -352,8 +374,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoIdGreaterThan(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoIdGreaterThan(
     int? value, {
     bool include = false,
   }) {
@@ -366,7 +388,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoIdLessThan(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoIdLessThan(
     int? value, {
     bool include = false,
   }) {
@@ -379,7 +402,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoIdBetween(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoIdBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
@@ -396,8 +420,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoNameIsNull() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoNameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'photoName',
@@ -405,8 +429,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoNameIsNotNull() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoNameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'photoName',
@@ -414,7 +438,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoNameEqualTo(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoNameEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -427,8 +452,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoNameGreaterThan(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoNameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -443,7 +468,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoNameLessThan(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoNameLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -458,7 +484,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoNameBetween(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoNameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -477,8 +504,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoNameStartsWith(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoNameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -491,7 +518,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoNameEndsWith(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoNameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -504,9 +532,9 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoNameContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+          QAfterFilterCondition>
+      photoNameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'photoName',
@@ -516,9 +544,9 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoNameMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+          QAfterFilterCondition>
+      photoNameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'photoName',
@@ -528,8 +556,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoNameIsEmpty() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'photoName',
@@ -538,8 +566,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoNameIsNotEmpty() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'photoName',
@@ -548,8 +576,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoPathIsNull() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoPathIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'photoPath',
@@ -557,8 +585,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoPathIsNotNull() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoPathIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'photoPath',
@@ -566,7 +594,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoPathEqualTo(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoPathEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -579,8 +608,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoPathGreaterThan(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoPathGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -595,7 +624,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoPathLessThan(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoPathLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -610,7 +640,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoPathBetween(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoPathBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -629,8 +660,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoPathStartsWith(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoPathStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -643,7 +674,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoPathEndsWith(
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoPathEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -656,9 +688,9 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoPathContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+          QAfterFilterCondition>
+      photoPathContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'photoPath',
@@ -668,9 +700,9 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition> photoPathMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+          QAfterFilterCondition>
+      photoPathMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'photoPath',
@@ -680,8 +712,8 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoPathIsEmpty() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoPathIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'photoPath',
@@ -690,231 +722,376 @@ extension PhotoModelQueryFilter
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterFilterCondition>
-      photoPathIsNotEmpty() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> photoPathIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'photoPath',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> rteSpeciesIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'rteSpeciesId',
+      ));
+    });
+  }
+
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> rteSpeciesIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'rteSpeciesId',
+      ));
+    });
+  }
+
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> rteSpeciesIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'rteSpeciesId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> rteSpeciesIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'rteSpeciesId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> rteSpeciesIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'rteSpeciesId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel,
+      QAfterFilterCondition> rteSpeciesIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'rteSpeciesId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
 }
 
-extension PhotoModelQueryObject
-    on QueryBuilder<PhotoModel, PhotoModel, QFilterCondition> {}
+extension RteSpeciesPhotoModelQueryObject on QueryBuilder<RteSpeciesPhotoModel,
+    RteSpeciesPhotoModel, QFilterCondition> {}
 
-extension PhotoModelQueryLinks
-    on QueryBuilder<PhotoModel, PhotoModel, QFilterCondition> {}
+extension RteSpeciesPhotoModelQueryLinks on QueryBuilder<RteSpeciesPhotoModel,
+    RteSpeciesPhotoModel, QFilterCondition> {}
 
-extension PhotoModelQuerySortBy
-    on QueryBuilder<PhotoModel, PhotoModel, QSortBy> {
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> sortByIsActive() {
+extension RteSpeciesPhotoModelQuerySortBy
+    on QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QSortBy> {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      sortByIsActive() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isActive', Sort.asc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> sortByIsActiveDesc() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      sortByIsActiveDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isActive', Sort.desc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> sortByIsLocal() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      sortByIsLocal() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isLocal', Sort.asc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> sortByIsLocalDesc() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      sortByIsLocalDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isLocal', Sort.desc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> sortByPhotoId() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      sortByPhotoId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'photoId', Sort.asc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> sortByPhotoIdDesc() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      sortByPhotoIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'photoId', Sort.desc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> sortByPhotoName() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      sortByPhotoName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'photoName', Sort.asc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> sortByPhotoNameDesc() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      sortByPhotoNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'photoName', Sort.desc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> sortByPhotoPath() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      sortByPhotoPath() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'photoPath', Sort.asc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> sortByPhotoPathDesc() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      sortByPhotoPathDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'photoPath', Sort.desc);
     });
   }
+
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      sortByRteSpeciesId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'rteSpeciesId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      sortByRteSpeciesIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'rteSpeciesId', Sort.desc);
+    });
+  }
 }
 
-extension PhotoModelQuerySortThenBy
-    on QueryBuilder<PhotoModel, PhotoModel, QSortThenBy> {
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> thenById() {
+extension RteSpeciesPhotoModelQuerySortThenBy
+    on QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QSortThenBy> {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> thenByIsActive() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByIsActive() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isActive', Sort.asc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> thenByIsActiveDesc() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByIsActiveDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isActive', Sort.desc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> thenByIsLocal() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByIsLocal() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isLocal', Sort.asc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> thenByIsLocalDesc() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByIsLocalDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isLocal', Sort.desc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> thenByPhotoId() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByPhotoId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'photoId', Sort.asc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> thenByPhotoIdDesc() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByPhotoIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'photoId', Sort.desc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> thenByPhotoName() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByPhotoName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'photoName', Sort.asc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> thenByPhotoNameDesc() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByPhotoNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'photoName', Sort.desc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> thenByPhotoPath() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByPhotoPath() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'photoPath', Sort.asc);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QAfterSortBy> thenByPhotoPathDesc() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByPhotoPathDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'photoPath', Sort.desc);
     });
   }
+
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByRteSpeciesId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'rteSpeciesId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QAfterSortBy>
+      thenByRteSpeciesIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'rteSpeciesId', Sort.desc);
+    });
+  }
 }
 
-extension PhotoModelQueryWhereDistinct
-    on QueryBuilder<PhotoModel, PhotoModel, QDistinct> {
-  QueryBuilder<PhotoModel, PhotoModel, QDistinct> distinctByIsActive() {
+extension RteSpeciesPhotoModelQueryWhereDistinct
+    on QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QDistinct> {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QDistinct>
+      distinctByIsActive() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isActive');
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QDistinct> distinctByIsLocal() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QDistinct>
+      distinctByIsLocal() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isLocal');
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QDistinct> distinctByPhotoId() {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QDistinct>
+      distinctByPhotoId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'photoId');
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QDistinct> distinctByPhotoName(
-      {bool caseSensitive = true}) {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QDistinct>
+      distinctByPhotoName({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'photoName', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<PhotoModel, PhotoModel, QDistinct> distinctByPhotoPath(
-      {bool caseSensitive = true}) {
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QDistinct>
+      distinctByPhotoPath({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'photoPath', caseSensitive: caseSensitive);
     });
   }
+
+  QueryBuilder<RteSpeciesPhotoModel, RteSpeciesPhotoModel, QDistinct>
+      distinctByRteSpeciesId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'rteSpeciesId');
+    });
+  }
 }
 
-extension PhotoModelQueryProperty
-    on QueryBuilder<PhotoModel, PhotoModel, QQueryProperty> {
-  QueryBuilder<PhotoModel, int, QQueryOperations> idProperty() {
+extension RteSpeciesPhotoModelQueryProperty on QueryBuilder<
+    RteSpeciesPhotoModel, RteSpeciesPhotoModel, QQueryProperty> {
+  QueryBuilder<RteSpeciesPhotoModel, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<PhotoModel, bool?, QQueryOperations> isActiveProperty() {
+  QueryBuilder<RteSpeciesPhotoModel, bool?, QQueryOperations>
+      isActiveProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isActive');
     });
   }
 
-  QueryBuilder<PhotoModel, bool?, QQueryOperations> isLocalProperty() {
+  QueryBuilder<RteSpeciesPhotoModel, bool?, QQueryOperations>
+      isLocalProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isLocal');
     });
   }
 
-  QueryBuilder<PhotoModel, int?, QQueryOperations> photoIdProperty() {
+  QueryBuilder<RteSpeciesPhotoModel, int?, QQueryOperations> photoIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'photoId');
     });
   }
 
-  QueryBuilder<PhotoModel, String?, QQueryOperations> photoNameProperty() {
+  QueryBuilder<RteSpeciesPhotoModel, String?, QQueryOperations>
+      photoNameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'photoName');
     });
   }
 
-  QueryBuilder<PhotoModel, String?, QQueryOperations> photoPathProperty() {
+  QueryBuilder<RteSpeciesPhotoModel, String?, QQueryOperations>
+      photoPathProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'photoPath');
+    });
+  }
+
+  QueryBuilder<RteSpeciesPhotoModel, int?, QQueryOperations>
+      rteSpeciesIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'rteSpeciesId');
     });
   }
 }
@@ -923,8 +1100,10 @@ extension PhotoModelQueryProperty
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_PhotoModel _$$_PhotoModelFromJson(Map<String, dynamic> json) =>
-    _$_PhotoModel(
+_$_RteSpeciesPhotoModel _$$_RteSpeciesPhotoModelFromJson(
+        Map<String, dynamic> json) =>
+    _$_RteSpeciesPhotoModel(
+      rteSpeciesId: json['RteSpeciesId'] as int?,
       photoId: json['PhotoId'] as int?,
       photoName: json['PhotoName'] as String?,
       photoPath: json['PhotoPath'] as String?,
@@ -932,8 +1111,10 @@ _$_PhotoModel _$$_PhotoModelFromJson(Map<String, dynamic> json) =>
       isLocal: json['IsLocal'] as bool? ?? true,
     );
 
-Map<String, dynamic> _$$_PhotoModelToJson(_$_PhotoModel instance) =>
+Map<String, dynamic> _$$_RteSpeciesPhotoModelToJson(
+        _$_RteSpeciesPhotoModel instance) =>
     <String, dynamic>{
+      'RteSpeciesId': instance.rteSpeciesId,
       'PhotoId': instance.photoId,
       'PhotoName': instance.photoName,
       'PhotoPath': instance.photoPath,

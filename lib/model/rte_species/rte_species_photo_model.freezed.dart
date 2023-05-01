@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'photo_model.dart';
+part of 'rte_species_photo_model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,12 +14,14 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-PhotoModel _$PhotoModelFromJson(Map<String, dynamic> json) {
-  return _PhotoModel.fromJson(json);
+RteSpeciesPhotoModel _$RteSpeciesPhotoModelFromJson(Map<String, dynamic> json) {
+  return _RteSpeciesPhotoModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$PhotoModel {
+mixin _$RteSpeciesPhotoModel {
+  @JsonKey(name: 'RteSpeciesId')
+  int? get rteSpeciesId => throw _privateConstructorUsedError;
   @JsonKey(name: 'PhotoId')
   int? get photoId => throw _privateConstructorUsedError;
   @JsonKey(name: 'PhotoName')
@@ -33,18 +35,19 @@ mixin _$PhotoModel {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $PhotoModelCopyWith<PhotoModel> get copyWith =>
+  $RteSpeciesPhotoModelCopyWith<RteSpeciesPhotoModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $PhotoModelCopyWith<$Res> {
-  factory $PhotoModelCopyWith(
-          PhotoModel value, $Res Function(PhotoModel) then) =
-      _$PhotoModelCopyWithImpl<$Res, PhotoModel>;
+abstract class $RteSpeciesPhotoModelCopyWith<$Res> {
+  factory $RteSpeciesPhotoModelCopyWith(RteSpeciesPhotoModel value,
+          $Res Function(RteSpeciesPhotoModel) then) =
+      _$RteSpeciesPhotoModelCopyWithImpl<$Res, RteSpeciesPhotoModel>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'PhotoId') int? photoId,
+      {@JsonKey(name: 'RteSpeciesId') int? rteSpeciesId,
+      @JsonKey(name: 'PhotoId') int? photoId,
       @JsonKey(name: 'PhotoName') String? photoName,
       @JsonKey(name: 'PhotoPath') String? photoPath,
       @JsonKey(name: 'IsActive') bool? isActive,
@@ -52,9 +55,10 @@ abstract class $PhotoModelCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$PhotoModelCopyWithImpl<$Res, $Val extends PhotoModel>
-    implements $PhotoModelCopyWith<$Res> {
-  _$PhotoModelCopyWithImpl(this._value, this._then);
+class _$RteSpeciesPhotoModelCopyWithImpl<$Res,
+        $Val extends RteSpeciesPhotoModel>
+    implements $RteSpeciesPhotoModelCopyWith<$Res> {
+  _$RteSpeciesPhotoModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -64,6 +68,7 @@ class _$PhotoModelCopyWithImpl<$Res, $Val extends PhotoModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? rteSpeciesId = freezed,
     Object? photoId = freezed,
     Object? photoName = freezed,
     Object? photoPath = freezed,
@@ -71,6 +76,10 @@ class _$PhotoModelCopyWithImpl<$Res, $Val extends PhotoModel>
     Object? isLocal = freezed,
   }) {
     return _then(_value.copyWith(
+      rteSpeciesId: freezed == rteSpeciesId
+          ? _value.rteSpeciesId
+          : rteSpeciesId // ignore: cast_nullable_to_non_nullable
+              as int?,
       photoId: freezed == photoId
           ? _value.photoId
           : photoId // ignore: cast_nullable_to_non_nullable
@@ -96,15 +105,16 @@ class _$PhotoModelCopyWithImpl<$Res, $Val extends PhotoModel>
 }
 
 /// @nodoc
-abstract class _$$_PhotoModelCopyWith<$Res>
-    implements $PhotoModelCopyWith<$Res> {
-  factory _$$_PhotoModelCopyWith(
-          _$_PhotoModel value, $Res Function(_$_PhotoModel) then) =
-      __$$_PhotoModelCopyWithImpl<$Res>;
+abstract class _$$_RteSpeciesPhotoModelCopyWith<$Res>
+    implements $RteSpeciesPhotoModelCopyWith<$Res> {
+  factory _$$_RteSpeciesPhotoModelCopyWith(_$_RteSpeciesPhotoModel value,
+          $Res Function(_$_RteSpeciesPhotoModel) then) =
+      __$$_RteSpeciesPhotoModelCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'PhotoId') int? photoId,
+      {@JsonKey(name: 'RteSpeciesId') int? rteSpeciesId,
+      @JsonKey(name: 'PhotoId') int? photoId,
       @JsonKey(name: 'PhotoName') String? photoName,
       @JsonKey(name: 'PhotoPath') String? photoPath,
       @JsonKey(name: 'IsActive') bool? isActive,
@@ -112,23 +122,28 @@ abstract class _$$_PhotoModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_PhotoModelCopyWithImpl<$Res>
-    extends _$PhotoModelCopyWithImpl<$Res, _$_PhotoModel>
-    implements _$$_PhotoModelCopyWith<$Res> {
-  __$$_PhotoModelCopyWithImpl(
-      _$_PhotoModel _value, $Res Function(_$_PhotoModel) _then)
+class __$$_RteSpeciesPhotoModelCopyWithImpl<$Res>
+    extends _$RteSpeciesPhotoModelCopyWithImpl<$Res, _$_RteSpeciesPhotoModel>
+    implements _$$_RteSpeciesPhotoModelCopyWith<$Res> {
+  __$$_RteSpeciesPhotoModelCopyWithImpl(_$_RteSpeciesPhotoModel _value,
+      $Res Function(_$_RteSpeciesPhotoModel) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? rteSpeciesId = freezed,
     Object? photoId = freezed,
     Object? photoName = freezed,
     Object? photoPath = freezed,
     Object? isActive = freezed,
     Object? isLocal = freezed,
   }) {
-    return _then(_$_PhotoModel(
+    return _then(_$_RteSpeciesPhotoModel(
+      rteSpeciesId: freezed == rteSpeciesId
+          ? _value.rteSpeciesId
+          : rteSpeciesId // ignore: cast_nullable_to_non_nullable
+              as int?,
       photoId: freezed == photoId
           ? _value.photoId
           : photoId // ignore: cast_nullable_to_non_nullable
@@ -155,18 +170,22 @@ class __$$_PhotoModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PhotoModel extends _PhotoModel {
-  const _$_PhotoModel(
-      {@JsonKey(name: 'PhotoId') this.photoId,
+class _$_RteSpeciesPhotoModel extends _RteSpeciesPhotoModel {
+  const _$_RteSpeciesPhotoModel(
+      {@JsonKey(name: 'RteSpeciesId') this.rteSpeciesId,
+      @JsonKey(name: 'PhotoId') this.photoId,
       @JsonKey(name: 'PhotoName') this.photoName,
       @JsonKey(name: 'PhotoPath') this.photoPath,
       @JsonKey(name: 'IsActive') this.isActive = true,
       @JsonKey(name: 'IsLocal') this.isLocal = true})
       : super._();
 
-  factory _$_PhotoModel.fromJson(Map<String, dynamic> json) =>
-      _$$_PhotoModelFromJson(json);
+  factory _$_RteSpeciesPhotoModel.fromJson(Map<String, dynamic> json) =>
+      _$$_RteSpeciesPhotoModelFromJson(json);
 
+  @override
+  @JsonKey(name: 'RteSpeciesId')
+  final int? rteSpeciesId;
   @override
   @JsonKey(name: 'PhotoId')
   final int? photoId;
@@ -185,14 +204,16 @@ class _$_PhotoModel extends _PhotoModel {
 
   @override
   String toString() {
-    return 'PhotoModel(photoId: $photoId, photoName: $photoName, photoPath: $photoPath, isActive: $isActive, isLocal: $isLocal)';
+    return 'RteSpeciesPhotoModel(rteSpeciesId: $rteSpeciesId, photoId: $photoId, photoName: $photoName, photoPath: $photoPath, isActive: $isActive, isLocal: $isLocal)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PhotoModel &&
+            other is _$_RteSpeciesPhotoModel &&
+            (identical(other.rteSpeciesId, rteSpeciesId) ||
+                other.rteSpeciesId == rteSpeciesId) &&
             (identical(other.photoId, photoId) || other.photoId == photoId) &&
             (identical(other.photoName, photoName) ||
                 other.photoName == photoName) &&
@@ -205,35 +226,40 @@ class _$_PhotoModel extends _PhotoModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, photoId, photoName, photoPath, isActive, isLocal);
+  int get hashCode => Object.hash(runtimeType, rteSpeciesId, photoId, photoName,
+      photoPath, isActive, isLocal);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PhotoModelCopyWith<_$_PhotoModel> get copyWith =>
-      __$$_PhotoModelCopyWithImpl<_$_PhotoModel>(this, _$identity);
+  _$$_RteSpeciesPhotoModelCopyWith<_$_RteSpeciesPhotoModel> get copyWith =>
+      __$$_RteSpeciesPhotoModelCopyWithImpl<_$_RteSpeciesPhotoModel>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PhotoModelToJson(
+    return _$$_RteSpeciesPhotoModelToJson(
       this,
     );
   }
 }
 
-abstract class _PhotoModel extends PhotoModel {
-  const factory _PhotoModel(
-      {@JsonKey(name: 'PhotoId') final int? photoId,
+abstract class _RteSpeciesPhotoModel extends RteSpeciesPhotoModel {
+  const factory _RteSpeciesPhotoModel(
+      {@JsonKey(name: 'RteSpeciesId') final int? rteSpeciesId,
+      @JsonKey(name: 'PhotoId') final int? photoId,
       @JsonKey(name: 'PhotoName') final String? photoName,
       @JsonKey(name: 'PhotoPath') final String? photoPath,
       @JsonKey(name: 'IsActive') final bool? isActive,
-      @JsonKey(name: 'IsLocal') final bool? isLocal}) = _$_PhotoModel;
-  const _PhotoModel._() : super._();
+      @JsonKey(name: 'IsLocal') final bool? isLocal}) = _$_RteSpeciesPhotoModel;
+  const _RteSpeciesPhotoModel._() : super._();
 
-  factory _PhotoModel.fromJson(Map<String, dynamic> json) =
-      _$_PhotoModel.fromJson;
+  factory _RteSpeciesPhotoModel.fromJson(Map<String, dynamic> json) =
+      _$_RteSpeciesPhotoModel.fromJson;
 
+  @override
+  @JsonKey(name: 'RteSpeciesId')
+  int? get rteSpeciesId;
   @override
   @JsonKey(name: 'PhotoId')
   int? get photoId;
@@ -251,6 +277,6 @@ abstract class _PhotoModel extends PhotoModel {
   bool? get isLocal;
   @override
   @JsonKey(ignore: true)
-  _$$_PhotoModelCopyWith<_$_PhotoModel> get copyWith =>
+  _$$_RteSpeciesPhotoModelCopyWith<_$_RteSpeciesPhotoModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
