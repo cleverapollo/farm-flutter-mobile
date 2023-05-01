@@ -9,6 +9,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_an
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/employee_grievance/employee_grievance_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/fire/fire_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/stake_holder_complaint_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -131,7 +132,7 @@ class RegisterManagement extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               _ItemWidget(
-                onTapped: () => print("Tapped"),
+                onTapped: () => TrainingScreen.push(context),
                 title: LocaleKeys.training.tr(),
                 subTitle: LocaleKeys.pending.tr(),
                 value: _registerManagementModel.training.toString(),

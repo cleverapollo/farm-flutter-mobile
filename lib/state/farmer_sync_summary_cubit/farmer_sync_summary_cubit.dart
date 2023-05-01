@@ -31,23 +31,26 @@ class FarmerSyncSummaryCubit {
       ..add(SyncPairItemModel('Unsynced Stakeholder Complaints',
           count: 0, isActive: true))
       ..add(SyncPairItemModel('Total Stakeholder Complaint', count: 0))
-      ..add(SyncPairItemModel('Employee Grievances', count: 0, isActive: true))
-      ..add(SyncPairItemModel('1', count: 0))
-      ..add(SyncPairItemModel('Fire', count: 0, isActive: true))
-      ..add(SyncPairItemModel('1', count: 0))
-      ..add(SyncPairItemModel('Pets and Disease', count: 0, isActive: true))
-      ..add(SyncPairItemModel('1', count: 0))
-      ..add(SyncPairItemModel('Pets and Disease Treatment Methods',
+      ..add(SyncPairItemModel('Unsynced Employee Grievances',
           count: 0, isActive: true))
-      ..add(SyncPairItemModel('1', count: 0))
-      ..add(
-          SyncPairItemModel('RTE Species Registers', count: 0, isActive: true))
-      ..add(SyncPairItemModel('1', count: 0))
-      ..add(SyncPairItemModel('RTE Species Registers Photos',
+      ..add(SyncPairItemModel('Total Employee Grievances', count: 0))
+      ..add(SyncPairItemModel('Unsynced Fire', count: 0, isActive: true))
+      ..add(SyncPairItemModel('Total Fire', count: 0))
+      ..add(SyncPairItemModel('Unsynced Pets and Disease',
           count: 0, isActive: true))
-      ..add(SyncPairItemModel('1', count: 0))
-      ..add(SyncPairItemModel('Training', count: 0, isActive: true))
-      ..add(SyncPairItemModel('1', count: 0))
+      ..add(SyncPairItemModel('Total Pets and Disease', count: 0))
+      ..add(SyncPairItemModel('Unsynced Pets and Disease Treatment Methods',
+          count: 0, isActive: true))
+      ..add(SyncPairItemModel('Total Pets and Disease Treatment Methods',
+          count: 0))
+      ..add(SyncPairItemModel('Unsynced RTE Species Registers',
+          count: 0, isActive: true))
+      ..add(SyncPairItemModel('Total RTE Species Registers', count: 0))
+      ..add(SyncPairItemModel('Unsynced RTE Species Registers Photos',
+          count: 0, isActive: true))
+      ..add(SyncPairItemModel('Total RTE Species Registers Photos', count: 0))
+      ..add(SyncPairItemModel('Unsynced Training', count: 0, isActive: true))
+      ..add(SyncPairItemModel('Total ', count: 0))
       ..add(SyncPairItemModel('Annual Production', isTitle: true))
       ..add(SyncPairItemModel('Unsynced', count: 0, isActive: true))
       ..add(SyncPairItemModel('Total Annual Productions', count: 0))

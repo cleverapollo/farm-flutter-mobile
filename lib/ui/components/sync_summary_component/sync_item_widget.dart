@@ -58,6 +58,7 @@ class SyncItemWidget extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 12.0),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Flexible(
                       fit: FlexFit.tight,

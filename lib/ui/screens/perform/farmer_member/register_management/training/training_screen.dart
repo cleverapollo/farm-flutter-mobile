@@ -1,74 +1,74 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_add_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_add_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 
-class DisciplinariesScreen extends StatefulWidget {
-  const DisciplinariesScreen({super.key});
+class TrainingScreen extends StatefulWidget {
+  const TrainingScreen({super.key});
 
   static Future<void> push(BuildContext context) {
-    return Navigator.push(context,
-        MaterialPageRoute(builder: (_) => const DisciplinariesScreen()));
+    return Navigator.push(
+        context, MaterialPageRoute(builder: (_) => const TrainingScreen()));
   }
 
   @override
-  State<DisciplinariesScreen> createState() => _DisciplinariesScreenState();
+  State<TrainingScreen> createState() => _TrainingScreenState();
 }
 
-class _DisciplinariesScreenState extends State<DisciplinariesScreen> {
-  List<DisciplinariesModel> sampleData = [
-    DisciplinariesModel(
-      disciplinayNo: '1',
-      campOrCompartment: '1',
-      comment: '1',
-      dateRecieved: DateTime.now(),
-      descriptionOfSanction: '1',
-      issueTypeName: '1',
-      signatureDate: '1',
-      workerName: '1',
-    ),
-    DisciplinariesModel(
-      disciplinayNo: '1',
-      campOrCompartment: '1',
-      comment: '1',
-      dateRecieved: DateTime.now(),
-      descriptionOfSanction: '1',
-      issueTypeName: '1',
-      signatureDate: '1',
-      workerName: '1',
-    ),
-    DisciplinariesModel(
-      disciplinayNo: '1',
-      campOrCompartment: '1',
-      comment: '1',
-      dateRecieved: DateTime.now(),
-      descriptionOfSanction: '1',
-      issueTypeName: '1',
-      signatureDate: '1',
-      workerName: '1',
-    ),
-    DisciplinariesModel(
-      disciplinayNo: '1',
-      campOrCompartment: '1',
-      comment: '1',
-      dateRecieved: DateTime.now(),
-      descriptionOfSanction: '1',
-      issueTypeName: '1',
-      signatureDate: '1',
-      workerName: '1',
-    ),
+class _TrainingScreenState extends State<TrainingScreen> {
+  var sampleData = <TrainingModel>[
+    TrainingModel(
+        trainingRegisterNo: '1',
+        trainerName: '1',
+        trainingTypeName: '1',
+        workerName: '1',
+        date: DateTime.now(),
+        expiryDate: DateTime.now(),
+        signatureDate: DateTime.now(),
+        comment: 'Comment'),
+    TrainingModel(
+        trainingRegisterNo: '1',
+        trainerName: '1',
+        trainingTypeName: '1',
+        workerName: '1',
+        date: DateTime.now(),
+        expiryDate: DateTime.now(),
+        signatureDate: DateTime.now(),
+        comment: 'Comment'),
+    TrainingModel(
+        trainingRegisterNo: '1',
+        trainerName: '1',
+        trainingTypeName: '1',
+        workerName: '1',
+        date: DateTime.now(),
+        expiryDate: DateTime.now(),
+        signatureDate: DateTime.now(),
+        comment: 'Comment'),
+    TrainingModel(
+        trainingRegisterNo: '1',
+        trainerName: '1',
+        trainingTypeName: '1',
+        workerName: '1',
+        date: DateTime.now(),
+        expiryDate: DateTime.now(),
+        signatureDate: DateTime.now(),
+        comment: 'Comment'),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBarV2(
-        title: 'Disciplinary',
+        title: 'Training',
         showLeading: true,
         showAdding: true,
-        onTapAdding: () => DisciplinariesAddScreen.push(context),
+        onTapAdding: () {
+          TrainingAddScreen.push(context);
+        },
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -89,14 +89,14 @@ class _DisciplinariesScreenState extends State<DisciplinariesScreen> {
               ],
             ),
             ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-                separatorBuilder: (_, index) => const SizedBox(height: 14),
-                itemCount: sampleData.length,
-                itemBuilder: (context, index) =>
-                    _DisciplinariesItemWidget(sampleData[index])),
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+              separatorBuilder: (_, index) => const SizedBox(height: 14),
+              itemCount: sampleData.length,
+              itemBuilder: (context, index) =>
+                  _TrainingItemWidget(data: sampleData[index]),
+            )
           ],
         ),
       ),
@@ -108,7 +108,6 @@ class _StatusFilterWidget extends StatelessWidget {
   const _StatusFilterWidget({
     required this.text,
     this.isSelected = false,
-    super.key,
   });
 
   final bool isSelected;
@@ -135,12 +134,12 @@ class _StatusFilterWidget extends StatelessWidget {
   }
 }
 
-class _DisciplinariesItemWidget extends StatelessWidget {
+class _TrainingItemWidget extends StatelessWidget {
+  const _TrainingItemWidget({super.key, required this.data});
+
   static const double _itemHorizontalPadding = 4;
 
-  final DisciplinariesModel data;
-
-  const _DisciplinariesItemWidget(this.data, {Key? key}) : super(key: key);
+  final TrainingModel data;
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +157,7 @@ class _DisciplinariesItemWidget extends StatelessWidget {
               horizontal: _itemHorizontalPadding,
             ),
             child: Text(
-              'Disciplinary No : ${data.disciplinayNo}',
+              'Training No: ${data.trainingRegisterNo}',
               style: context.textStyles.bodyBold
                   .copyWith(color: context.colors.blue),
             ),
@@ -173,16 +172,13 @@ class _DisciplinariesItemWidget extends StatelessWidget {
               color: context.colors.black,
             ),
           ),
-          _buildILineItem(context, 'Worker: ', data.workerName),
-          _buildILineItem(context, 'Date Issued :', data.dateRecieved.yMd()),
-          _buildILineItem(
-              context, 'Camp/Compartment :', data.campOrCompartment),
-          _buildILineItem(
-              context, 'Disciplinaries Issue :', data.issueTypeName),
-          _buildILineItem(context, 'Disciplinaries Steps Taken : ',
-              data.descriptionOfSanction),
-          _buildILineItem(context, 'Signed : ', data.signatureDate),
-          _buildILineItem(context, 'General Comments :', data.comment),
+          _buildILineItem(context, 'Training Type : ', data.trainingTypeName),
+          _buildILineItem(context, 'Date : ', data.date.yMd()),
+          _buildILineItem(context, 'Expiry Date : ', data.expiryDate.yMd()),
+          _buildILineItem(context, 'Trainer Name : ', data.trainerName),
+          _buildILineItem(context, 'Trainee Name : ', data.workerName),
+          _buildILineItem(context, 'Signed : ', data.signatureDate.yMd()),
+          _buildILineItem(context, 'General Comments : ', data.comment),
         ],
       ),
     );
@@ -198,11 +194,9 @@ class _DisciplinariesItemWidget extends StatelessWidget {
             label,
             style: context.textStyles.bodyNormal,
           ),
-          Expanded(
-            child: Text(
-              value ?? '',
-              style: context.textStyles.bodyNormal,
-            ),
+          Text(
+            value ?? '',
+            style: context.textStyles.bodyNormal,
           )
         ],
       ),
@@ -210,24 +204,23 @@ class _DisciplinariesItemWidget extends StatelessWidget {
   }
 }
 
-class DisciplinariesModel {
-  DisciplinariesModel({
-    this.disciplinayNo,
+class TrainingModel {
+  TrainingModel({
+    this.trainingRegisterNo,
+    this.trainingTypeName,
+    this.date,
+    this.expiryDate,
+    this.trainerName,
     this.workerName,
-    this.dateRecieved,
-    this.campOrCompartment,
-    this.issueTypeName,
-    this.descriptionOfSanction,
     this.signatureDate,
     this.comment,
   });
-
-  final String? disciplinayNo;
+  final String? trainingRegisterNo;
+  final String? trainingTypeName;
+  final DateTime? date;
+  final DateTime? expiryDate;
+  final String? trainerName;
   final String? workerName;
-  final DateTime? dateRecieved;
-  final String? campOrCompartment;
-  final String? issueTypeName;
-  final String? descriptionOfSanction;
-  final String? signatureDate;
+  final DateTime? signatureDate;
   final String? comment;
 }
