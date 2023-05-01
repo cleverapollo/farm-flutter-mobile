@@ -6,6 +6,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/biologi
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_add_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/pets_and_disease_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/employee_grievance/employee_grievance_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/stake_holder_complaint_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
@@ -85,7 +86,7 @@ class RegisterManagement extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               _ItemWidget(
-                onTapped: () => print("Tapped"),
+                onTapped: () => EmployeeGrievanceScreen.push(context),
                 title: LocaleKeys.employee_grievance.tr(),
                 subTitle: LocaleKeys.pending.tr(),
                 value: _registerManagementModel.employee_grievance.toString(),

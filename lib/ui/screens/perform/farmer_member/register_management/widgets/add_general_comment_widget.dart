@@ -67,6 +67,10 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
               commentValue = text;
             }),
           );
+
+          if (widget.onChanged != null) {
+            widget.onChanged!.call(commentValue);
+          }
         },
       ),
     );
