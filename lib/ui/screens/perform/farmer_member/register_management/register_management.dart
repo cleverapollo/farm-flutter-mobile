@@ -8,6 +8,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/discipl
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/pets_and_disease_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/employee_grievance/employee_grievance_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/fire/fire_management_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/rte_species/rte_species_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/stake_holder_complaint_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
@@ -108,7 +109,7 @@ class RegisterManagement extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               _ItemWidget(
-                onTapped: () => print("Tapped"),
+                onTapped: () => RteSpeciesScreen.push(context),
                 title: LocaleKeys.rte_species.tr(),
                 subTitle: LocaleKeys.pending.tr(),
                 value: _registerManagementModel.rte_species.toString(),
