@@ -1,13 +1,12 @@
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/cmo_dashboard_base.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
+import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../widget/cmo_app_bar_v2.dart';
-import '../../../../widget/cmo_buttons.dart';
-
 class AddMemberDone extends StatelessWidget {
-  const AddMemberDone({Key? key}) : super(key: key);
+  const AddMemberDone({super.key});
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(

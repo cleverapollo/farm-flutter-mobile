@@ -1,4 +1,6 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
+import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_membership_contract_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_circle_item_widget.dart';
@@ -8,6 +10,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddMemberScreen extends StatelessWidget {
   const AddMemberScreen({super.key});
@@ -19,32 +22,34 @@ class AddMemberScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.addMember.tr(),
-        subtitle: LocaleKeys.siteName.tr(),
-        showTrailing: true,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: const [
-            SizedBox(height: 8),
-            _SLIMFComplianceWidget(),
-            SizedBox(height: 12),
-            _MemberPropertyOwnershipWidget(),
-            SizedBox(height: 12),
-            _MemberDetailsWidget(),
-            SizedBox(height: 12),
-            _SideDetailsWidget(),
-            SizedBox(height: 12),
-            _MemberRickAssessmentWidget(),
-            SizedBox(height: 12),
-            _MemberFarmObjectivesWidget(),
-            SizedBox(height: 12),
-          ],
-        ),
-      ),
-    );
+    return BlocProvider<AddMemberCubit>(
+        create: (_) => AddMemberCubit(),
+        child: Scaffold(
+          appBar: CmoAppBarV2(
+            title: LocaleKeys.addMember.tr(),
+            subtitle: LocaleKeys.siteName.tr(),
+            showTrailing: true,
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: const [
+                SizedBox(height: 8),
+                _SLIMFComplianceWidget(),
+                SizedBox(height: 12),
+                _MemberPropertyOwnershipWidget(),
+                SizedBox(height: 12),
+                _MemberDetailsWidget(),
+                SizedBox(height: 12),
+                _SideDetailsWidget(),
+                SizedBox(height: 12),
+                _MemberRickAssessmentWidget(),
+                SizedBox(height: 12),
+                _MemberFarmObjectivesWidget(),
+                SizedBox(height: 12),
+              ],
+            ),
+          ),
+        ));
   }
 }
 
@@ -176,9 +181,9 @@ class _MemberRickAssessmentWidget extends StatelessWidget {
             Row(
               children: [
                 const Spacer(),
-                CmoCircleItem.yes(isActive: true),
+                CmoCircleItem.yesNo(isYes: true),
                 const SizedBox(width: 12),
-                CmoCircleItem.no(),
+                CmoCircleItem.yesNo(),
                 const Spacer(),
               ],
             ),
@@ -192,9 +197,9 @@ class _MemberRickAssessmentWidget extends StatelessWidget {
             Row(
               children: [
                 const Spacer(),
-                CmoCircleItem.yes(),
+                CmoCircleItem.yesNo(isYes: true),
                 const SizedBox(width: 12),
-                CmoCircleItem.no(isActive: true),
+                CmoCircleItem.yesNo(),
                 const Spacer(),
               ],
             ),
@@ -208,9 +213,9 @@ class _MemberRickAssessmentWidget extends StatelessWidget {
             Row(
               children: [
                 const Spacer(),
-                CmoCircleItem.yes(),
+                CmoCircleItem.yesNo(isYes: true),
                 const SizedBox(width: 12),
-                CmoCircleItem.no(isActive: true),
+                CmoCircleItem.yesNo(isYes: true),
                 const Spacer(),
               ],
             ),
@@ -224,9 +229,9 @@ class _MemberRickAssessmentWidget extends StatelessWidget {
             Row(
               children: [
                 const Spacer(),
-                CmoCircleItem.yes(),
+                CmoCircleItem.yesNo(isYes: true),
                 const SizedBox(width: 12),
-                CmoCircleItem.no(isActive: true),
+                CmoCircleItem.yesNo(isYes: true),
                 const Spacer(),
               ],
             ),
@@ -376,18 +381,39 @@ class _SLIMFComplianceWidget extends StatelessWidget {
                 style: context.textStyles.titleBold
                     .copyWith(color: context.colors.black, fontSize: 16)),
             const SizedBox(height: 12),
-            Row(
-              children: const [
-                Spacer(),
-                CmoCircleItem(
-                  letters: 'C',
-                  color: Colors.green,
-                ),
-                SizedBox(width: 36),
-                CmoCircleItem(letters: 'NC'),
-                Spacer(),
-              ],
-            ),
+            BlocSelector<AddMemberCubit, AddMemberState, AddMemberSLIMF?>(
+                selector: (state) => state.addMemberSLIMF,
+                builder: (context, AddMemberSLIMF? data) {
+                  return Row(
+                    children: [
+                      const Spacer(),
+                      CmoCircleItem(
+                        onTap: () {
+                          context
+                              .read<AddMemberCubit>()
+                              .onTapSlimf(isSlimf: true);
+                        },
+                        letters: 'C',
+                        color: data?.isSlimfCompliant ?? false
+                            ? Colors.green
+                            : Colors.white,
+                      ),
+                      const SizedBox(width: 36),
+                      CmoCircleItem(
+                        onTap: () {
+                          context
+                              .read<AddMemberCubit>()
+                              .onTapSlimf(isSlimf: false);
+                        },
+                        letters: 'NC',
+                        color: data?.isSlimfCompliant ?? false
+                            ? Colors.white
+                            : Colors.green,
+                      ),
+                      const Spacer(),
+                    ],
+                  );
+                }),
           ],
         ),
       ),

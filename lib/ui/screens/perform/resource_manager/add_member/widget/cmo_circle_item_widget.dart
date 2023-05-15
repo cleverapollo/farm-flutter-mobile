@@ -9,20 +9,14 @@ class CmoCircleItem extends StatelessWidget {
     this.hasBorder = false,
     required this.letters,
     this.size = const Size(70, 70),
+    this.onTap,
   });
 
-  factory CmoCircleItem.yes({bool isActive = false}) {
+  factory CmoCircleItem.yesNo({bool isYes = false}) {
     return CmoCircleItem(
-      letters: 'Yes',
-      color: isActive ? Colors.blue : Colors.white,
-      textColor: isActive ? Colors.white : Colors.black,
-    );
-  }
-  factory CmoCircleItem.no({bool isActive = false}) {
-    return CmoCircleItem(
-      letters: 'No',
-      color: isActive ? Colors.blue : Colors.white,
-      textColor: isActive ? Colors.white : Colors.black,
+      letters: isYes ? 'Yes' : 'No',
+      color: isYes ? Colors.blue : Colors.white,
+      textColor: isYes ? Colors.white : Colors.black,
     );
   }
 
@@ -31,21 +25,25 @@ class CmoCircleItem extends StatelessWidget {
   final bool hasBorder;
   final String letters;
   final Size size;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      height: size.height,
-      width: size.width,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
-        border: Border.all(width: 2),
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        height: size.height,
+        width: size.width,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: color,
+          border: Border.all(width: 2),
+        ),
+        child: Text(letters,
+            style: context.textStyles.bodyNormal.copyWith(color: textColor)),
       ),
-      child: Text(letters,
-          style: context.textStyles.bodyNormal.copyWith(color: textColor)),
     );
   }
 }

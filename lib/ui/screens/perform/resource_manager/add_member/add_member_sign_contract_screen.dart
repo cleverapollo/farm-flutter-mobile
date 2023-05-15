@@ -7,13 +7,22 @@ import '../../../../widget/cmo_app_bar_v2.dart';
 import '../../../../widget/cmo_buttons.dart';
 import 'add_member_done_screen.dart';
 
-class AddMemberSignContractScreen extends StatelessWidget {
+class AddMemberSignContractScreen extends StatefulWidget {
   const AddMemberSignContractScreen({super.key});
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(context,
         MaterialPageRoute(builder: (_) => const AddMemberSignContractScreen()));
   }
+
+  @override
+  State<AddMemberSignContractScreen> createState() =>
+      _AddMemberSignContractScreenState();
+}
+
+class _AddMemberSignContractScreenState
+    extends State<AddMemberSignContractScreen> {
+  final signatureKey = GlobalKey<SfSignaturePadState>();
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +59,7 @@ class AddMemberSignContractScreen extends StatelessWidget {
                       border: Border.all(),
                       borderRadius: BorderRadius.circular(12)),
                   child: SfSignaturePad(
+                    key: signatureKey,
                     maximumStrokeWidth: 1,
                     minimumStrokeWidth: 1,
                     onDrawStart: () {
@@ -59,7 +69,12 @@ class AddMemberSignContractScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              Center(child: CmoFilledButton(title: 'Clear', onTap: () {})),
+              Center(
+                  child: CmoFilledButton(
+                      title: 'Clear',
+                      onTap: () {
+                        signatureKey.currentState?.clear();
+                      })),
               const Spacer(),
               Center(
                   child: CmoFilledButton(

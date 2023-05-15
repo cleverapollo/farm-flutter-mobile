@@ -7,7 +7,6 @@ targets:
           explicit_to_json: true
         generate_for:
           include:
-            - lib/model/**.dart
       freezed:
         options:
           union_key: custom-key
@@ -16,4 +15,3 @@ targets:
           maybe_when: true
         generate_for:
           include:
-            - lib/model/**.dart
