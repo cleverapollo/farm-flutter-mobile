@@ -4,7 +4,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/farmer_mode_stake_holder_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/rm_mode_stake_holder_item.dart';
 import 'package:cmo/ui/ui.dart';

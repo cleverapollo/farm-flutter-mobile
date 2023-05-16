@@ -113,11 +113,11 @@ class CmoCardHeader extends StatelessWidget {
 }
 
 class CmoCardItem extends StatelessWidget {
-  const CmoCardItem({super.key, required this.title, this.value = ''});
+  const CmoCardItem({super.key, required this.title, this.value});
 
   final String title;
 
-  final String value;
+  final String? value;
 
   @override
   Widget build(BuildContext context) {
@@ -129,10 +129,10 @@ class CmoCardItem extends StatelessWidget {
             style: context.textStyles.bodyNormal.white,
           ),
         ),
-        if (value.isNotEmpty)
+        if (value != null && value!.isNotEmpty)
           Expanded(
             child: Text(
-              value,
+              value ?? '',
               style: context.textStyles.bodyNormal.white,
             ),
           )
