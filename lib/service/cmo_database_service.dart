@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:cmo/model/farm_property_ownner_ship_type/farm_property_owner_ship_type.dart';
 import 'package:cmo/model/model.dart';
 import 'package:isar/isar.dart';
 
@@ -20,6 +21,7 @@ class CmoDatabaseService {
       AuditQuestionPhotoSchema,
       AuditQuestionCommentSchema,
       AuditQuestionAnswerSchema,
+      FarmPropertyOwnerShipTypeSchema
     ]);
     _database = isar;
     return isar;
@@ -29,6 +31,12 @@ class CmoDatabaseService {
   Future<Isar> _db() async {
     final db = _database ?? await initializeDatabase();
     return db;
+  }
+
+  Future<List<FarmPropertyOwnerShipType>>
+      getAllFarmPropertyOwnerShipType() async {
+    final db = await _db();
+    return db.farmPropertyOwnerShipTypes.where().findAll();
   }
 
   Future<int> cacheCompany(Company item) async {
@@ -102,7 +110,8 @@ class CmoDatabaseService {
         .filter()
         .isActiveEqualTo(true)
         .statusEqualTo(1)
-        .completedEqualTo(null).or()
+        .completedEqualTo(null)
+        .or()
         .completedEqualTo(false)
         .sortByCreateDTDesc()
         .findAll();

@@ -2,8 +2,6 @@ import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_cubit.da
 import 'package:cmo/ui/components/sync_summary_component/sync_item_widget.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class FarmerSyncSummaryScreen extends StatelessWidget {
   FarmerSyncSummaryScreen({super.key});
@@ -29,7 +27,6 @@ class FarmerSyncSummaryScreen extends StatelessWidget {
           if (e.isTitle) {
             return SyncItemWidget(label: e.title, isTitle: e.isTitle);
           }
-
           return SyncItemWidget(
               label: e.title, count: e.count, isHighlight: e.isActive);
         }).toList()),

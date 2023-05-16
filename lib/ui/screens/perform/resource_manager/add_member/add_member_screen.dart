@@ -33,17 +33,17 @@ class AddMemberScreen extends StatelessWidget {
             child: Column(
               children: const [
                 SizedBox(height: 8),
-                _SLIMFComplianceWidget(),
+                _AddMemberSLIMF(),
                 SizedBox(height: 12),
-                _MemberPropertyOwnershipWidget(),
+                _AddMemberMPO(),
                 SizedBox(height: 12),
-                _MemberDetailsWidget(),
+                _AddMemberMDetails(),
                 SizedBox(height: 12),
-                _SideDetailsWidget(),
+                _AddMemberSDetails(),
                 SizedBox(height: 12),
-                _MemberRickAssessmentWidget(),
+                _AddMemberMRA(),
                 SizedBox(height: 12),
-                _MemberFarmObjectivesWidget(),
+                _AddMemberMFO(),
                 SizedBox(height: 12),
               ],
             ),
@@ -52,8 +52,8 @@ class AddMemberScreen extends StatelessWidget {
   }
 }
 
-class _MemberFarmObjectivesWidget extends StatelessWidget {
-  const _MemberFarmObjectivesWidget({
+class _AddMemberMFO extends StatelessWidget {
+  const _AddMemberMFO({
     super.key,
   });
 
@@ -92,6 +92,7 @@ class _MemberFarmObjectivesWidget extends StatelessWidget {
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black, fontSize: 16)),
                 const SizedBox(height: 8),
+                _buildAnswerWidget(),
                 _buildDivider(),
                 const Spacer(),
                 Row(
@@ -119,23 +120,23 @@ class _MemberFarmObjectivesWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildAnswerWidget() {
+  Widget _buildAnswerWidget({void Function()? onTap, bool? isSelect = false}) {
     return Row(
       children: [
         const Spacer(),
-        CmoChipAnswerWidget.primary(),
+        CmoChipAnswerWidget.primary(onTap: onTap, isSelect: isSelect),
         const SizedBox(width: 4),
-        CmoChipAnswerWidget.secondary(),
+        CmoChipAnswerWidget.secondary(onTap: onTap, isSelect: isSelect),
         const SizedBox(width: 4),
-        CmoChipAnswerWidget.na(),
+        CmoChipAnswerWidget.na(onTap: onTap, isSelect: isSelect),
         const Spacer(),
       ],
     );
   }
 }
 
-class _MemberRickAssessmentWidget extends StatelessWidget {
-  const _MemberRickAssessmentWidget();
+class _AddMemberMRA extends StatelessWidget {
+  const _AddMemberMRA();
 
   @override
   Widget build(BuildContext context) {
@@ -143,38 +144,55 @@ class _MemberRickAssessmentWidget extends StatelessWidget {
       title: 'Member Risk Assessment',
       showTick: true,
       child: Container(
-        padding: const EdgeInsets.all(12),
-        color: context.colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('*Are there any chemical being used on the FME?',
-                style: context.textStyles.bodyNormal
-                    .copyWith(color: context.colors.black, fontSize: 16)),
-            const SizedBox(height: 8),
-            _buildYesNoAnswerWidget(context),
-            _buildDivider(),
-            Text('*HCVs present?',
-                style: context.textStyles.bodyNormal
-                    .copyWith(color: context.colors.black, fontSize: 16)),
-            const SizedBox(height: 8),
-            _buildYesNoAnswerWidget(context),
-            _buildDivider(),
-            Text('*Rivers on FMU',
-                style: context.textStyles.bodyNormal
-                    .copyWith(color: context.colors.black, fontSize: 16)),
-            const SizedBox(height: 8),
-            _buildYesNoAnswerWidget(context),
-            _buildDivider(),
-            Text('*Are there any communities in or neighbouring the FME?',
-                style: context.textStyles.bodyNormal
-                    .copyWith(color: context.colors.black, fontSize: 16)),
-            const SizedBox(height: 8),
-            _buildYesNoAnswerWidget(context),
-            _buildDivider(),
-          ],
-        ),
-      ),
+          padding: const EdgeInsets.all(12),
+          color: context.colors.white,
+          child: BlocSelector<AddMemberCubit, AddMemberState, AddMemberMRA?>(
+              selector: (state) => state.addMemberMRA,
+              builder: (context, AddMemberMRA? value) {
+                final cubit = context.read<AddMemberCubit>();
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('*Are there any chemical being used on the FME?',
+                        style: context.textStyles.bodyNormal.copyWith(
+                            color: context.colors.black, fontSize: 16)),
+                    const SizedBox(height: 8),
+                    _buildAnswerWidget(context,
+                        isSelect: value?.firstAnswer,
+                        onTap: () =>
+                            cubit.onTapMRA(firstAnswer: value?.firstAnswer)),
+                    _buildDivider(),
+                    Text('*HCVs present?',
+                        style: context.textStyles.bodyNormal.copyWith(
+                            color: context.colors.black, fontSize: 16)),
+                    const SizedBox(height: 8),
+                    _buildAnswerWidget(context,
+                        isSelect: value?.secondAnswer,
+                        onTap: () =>
+                            cubit.onTapMRA(secondAnswer: value?.secondAnswer)),
+                    _buildDivider(),
+                    Text('*Rivers on FMU',
+                        style: context.textStyles.bodyNormal.copyWith(
+                            color: context.colors.black, fontSize: 16)),
+                    const SizedBox(height: 8),
+                    _buildAnswerWidget(context,
+                        isSelect: value?.thirdAnswer,
+                        onTap: () =>
+                            cubit.onTapMRA(thirdAnswer: value?.thirdAnswer)),
+                    _buildDivider(),
+                    Text(
+                        '*Are there any communities in or neighbouring the FME?',
+                        style: context.textStyles.bodyNormal.copyWith(
+                            color: context.colors.black, fontSize: 16)),
+                    const SizedBox(height: 8),
+                    _buildAnswerWidget(context,
+                        isSelect: value?.fourthAnswer,
+                        onTap: () =>
+                            cubit.onTapMRA(fourthAnswer: value?.fourthAnswer)),
+                    _buildDivider(),
+                  ],
+                );
+              })),
     );
   }
 
@@ -188,21 +206,22 @@ class _MemberRickAssessmentWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildYesNoAnswerWidget(BuildContext context) {
+  Widget _buildAnswerWidget(BuildContext context,
+      {bool? isSelect = false, void Function()? onTap}) {
     return Row(
       children: [
         const Spacer(),
-        CmoChipAnswerWidget.yes(isSelect: true),
+        CmoChipAnswerWidget.yes(onTap: onTap, isSelect: isSelect),
         const SizedBox(width: 12),
-        CmoChipAnswerWidget.no(isSelect: false),
+        CmoChipAnswerWidget.no(onTap: onTap, isSelect: !(isSelect ?? false)),
         const Spacer(),
       ],
     );
   }
 }
 
-class _SideDetailsWidget extends StatelessWidget {
-  const _SideDetailsWidget();
+class _AddMemberSDetails extends StatelessWidget {
+  const _AddMemberSDetails();
 
   @override
   Widget build(BuildContext context) {
@@ -243,8 +262,8 @@ class _SideDetailsWidget extends StatelessWidget {
   }
 }
 
-class _MemberDetailsWidget extends StatelessWidget {
-  const _MemberDetailsWidget();
+class _AddMemberMDetails extends StatelessWidget {
+  const _AddMemberMDetails();
 
   @override
   Widget build(BuildContext context) {
@@ -263,8 +282,8 @@ class _MemberDetailsWidget extends StatelessWidget {
   }
 }
 
-class _MemberPropertyOwnershipWidget extends StatelessWidget {
-  const _MemberPropertyOwnershipWidget();
+class _AddMemberMPO extends StatelessWidget {
+  const _AddMemberMPO();
 
   @override
   Widget build(BuildContext context) {
@@ -295,8 +314,8 @@ class _MemberPropertyOwnershipWidget extends StatelessWidget {
   }
 }
 
-class _SLIMFComplianceWidget extends StatelessWidget {
-  const _SLIMFComplianceWidget();
+class _AddMemberSLIMF extends StatelessWidget {
+  const _AddMemberSLIMF();
 
   @override
   Widget build(BuildContext context) {
@@ -337,36 +356,38 @@ class _SLIMFComplianceWidget extends StatelessWidget {
                 style: context.textStyles.titleBold
                     .copyWith(color: context.colors.black, fontSize: 16)),
             const SizedBox(height: 12),
-            BlocSelector<AddMemberCubit, AddMemberState, AddMemberSLIMF?>(
-                selector: (state) => state.addMemberSLIMF,
-                builder: (context, AddMemberSLIMF? data) {
-                  return Row(
-                    children: [
-                      const Spacer(),
-                      CmoChipAnswerWidget.c(
-                        onTap: () {
-                          context
-                              .read<AddMemberCubit>()
-                              .onTapSlimf(isSlimf: true);
-                        },
-                        isSelect: data?.isSlimfCompliant,
-                      ),
-                      const SizedBox(width: 36),
-                      CmoChipAnswerWidget.nc(
-                        onTap: () {
-                          context
-                              .read<AddMemberCubit>()
-                              .onTapSlimf(isSlimf: false);
-                        },
-                        isSelect: !data!.isSlimfCompliant,
-                      ),
-                      const Spacer(),
-                    ],
-                  );
-                }),
+            _buildAnswerWidget(),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildAnswerWidget() {
+    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberSLIMF?>(
+        selector: (state) => state.addMemberSLIMF,
+        builder: (context, AddMemberSLIMF? data) {
+          final isSelect = data?.isSlimfCompliant ?? true;
+
+          return Row(
+            children: [
+              const Spacer(),
+              CmoChipAnswerWidget.c(
+                onTap: () {
+                  context.read<AddMemberCubit>().onTapSlimf(isSlimf: true);
+                },
+                isSelect: isSelect,
+              ),
+              const SizedBox(width: 36),
+              CmoChipAnswerWidget.nc(
+                onTap: () {
+                  context.read<AddMemberCubit>().onTapSlimf(isSlimf: false);
+                },
+                isSelect: !isSelect,
+              ),
+              const Spacer(),
+            ],
+          );
+        });
   }
 }
