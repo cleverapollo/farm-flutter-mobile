@@ -2,7 +2,6 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_membership_contract_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_circle_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
@@ -75,74 +74,25 @@ class _MemberFarmObjectivesWidget extends StatelessWidget {
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black, fontSize: 16)),
                 const SizedBox(height: 8),
-                Row(
-                  children: const [
-                    Spacer(),
-                    CmoChipItemWidget(title: 'Primary', isActive: true),
-                    SizedBox(width: 4),
-                    CmoChipItemWidget(title: 'Secondary'),
-                    SizedBox(width: 4),
-                    CmoChipItemWidget(title: 'N/A'),
-                    Spacer(),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                const Divider(thickness: 1),
-                const SizedBox(height: 8),
+                _buildAnswerWidget(),
+                _buildDivider(),
                 Text('*HCVs present?',
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black, fontSize: 16)),
                 const SizedBox(height: 8),
-                Row(
-                  children: const [
-                    Spacer(),
-                    CmoChipItemWidget(title: 'Primary', isActive: true),
-                    SizedBox(width: 4),
-                    CmoChipItemWidget(title: 'Secondary'),
-                    SizedBox(width: 4),
-                    CmoChipItemWidget(title: 'N/A'),
-                    Spacer(),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                const Divider(thickness: 1),
-                const SizedBox(height: 8),
+                _buildAnswerWidget(),
+                _buildDivider(),
                 Text('*Rivers on FMU',
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black, fontSize: 16)),
                 const SizedBox(height: 8),
-                Row(
-                  children: const [
-                    Spacer(),
-                    CmoChipItemWidget(title: 'Primary'),
-                    SizedBox(width: 4),
-                    CmoChipItemWidget(title: 'Secondary', isActive: true),
-                    SizedBox(width: 4),
-                    CmoChipItemWidget(title: 'N/A'),
-                    Spacer(),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                const Divider(thickness: 1),
-                const SizedBox(height: 8),
+                _buildAnswerWidget(),
+                _buildDivider(),
                 Text('*Are there any communities in or neighbouring the FME?',
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black, fontSize: 16)),
                 const SizedBox(height: 8),
-                Row(
-                  children: const [
-                    Spacer(),
-                    CmoChipItemWidget(title: 'Primary'),
-                    SizedBox(width: 4),
-                    CmoChipItemWidget(title: 'Secondary'),
-                    SizedBox(width: 4),
-                    CmoChipItemWidget(title: 'N/A', isActive: true),
-                    Spacer(),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                const Divider(thickness: 1),
-                const SizedBox(height: 8),
+                _buildDivider(),
                 const Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -157,6 +107,30 @@ class _MemberFarmObjectivesWidget extends StatelessWidget {
                 ),
               ],
             )));
+  }
+
+  Widget _buildDivider() {
+    return Column(
+      children: const [
+        SizedBox(height: 8),
+        Divider(thickness: 1),
+        SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _buildAnswerWidget() {
+    return Row(
+      children: [
+        const Spacer(),
+        CmoChipAnswerWidget.primary(),
+        const SizedBox(width: 4),
+        CmoChipAnswerWidget.secondary(),
+        const SizedBox(width: 4),
+        CmoChipAnswerWidget.na(),
+        const Spacer(),
+      ],
+    );
   }
 }
 
@@ -178,69 +152,51 @@ class _MemberRickAssessmentWidget extends StatelessWidget {
                 style: context.textStyles.bodyNormal
                     .copyWith(color: context.colors.black, fontSize: 16)),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                const Spacer(),
-                CmoCircleItem.yesNo(isYes: true),
-                const SizedBox(width: 12),
-                CmoCircleItem.yesNo(),
-                const Spacer(),
-              ],
-            ),
-            const SizedBox(height: 8),
-            const Divider(thickness: 1),
-            const SizedBox(height: 8),
+            _buildYesNoAnswerWidget(context),
+            _buildDivider(),
             Text('*HCVs present?',
                 style: context.textStyles.bodyNormal
                     .copyWith(color: context.colors.black, fontSize: 16)),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                const Spacer(),
-                CmoCircleItem.yesNo(isYes: true),
-                const SizedBox(width: 12),
-                CmoCircleItem.yesNo(),
-                const Spacer(),
-              ],
-            ),
-            const SizedBox(height: 8),
-            const Divider(thickness: 1),
-            const SizedBox(height: 8),
+            _buildYesNoAnswerWidget(context),
+            _buildDivider(),
             Text('*Rivers on FMU',
                 style: context.textStyles.bodyNormal
                     .copyWith(color: context.colors.black, fontSize: 16)),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                const Spacer(),
-                CmoCircleItem.yesNo(isYes: true),
-                const SizedBox(width: 12),
-                CmoCircleItem.yesNo(isYes: true),
-                const Spacer(),
-              ],
-            ),
-            const SizedBox(height: 8),
-            const Divider(thickness: 1),
-            const SizedBox(height: 8),
+            _buildYesNoAnswerWidget(context),
+            _buildDivider(),
             Text('*Are there any communities in or neighbouring the FME?',
                 style: context.textStyles.bodyNormal
                     .copyWith(color: context.colors.black, fontSize: 16)),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                const Spacer(),
-                CmoCircleItem.yesNo(isYes: true),
-                const SizedBox(width: 12),
-                CmoCircleItem.yesNo(isYes: true),
-                const Spacer(),
-              ],
-            ),
-            const SizedBox(height: 8),
-            const Divider(thickness: 1),
-            const SizedBox(height: 8),
+            _buildYesNoAnswerWidget(context),
+            _buildDivider(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Column(
+      children: const [
+        SizedBox(height: 8),
+        Divider(thickness: 1),
+        SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _buildYesNoAnswerWidget(BuildContext context) {
+    return Row(
+      children: [
+        const Spacer(),
+        CmoChipAnswerWidget.yes(isSelect: true),
+        const SizedBox(width: 12),
+        CmoChipAnswerWidget.no(isSelect: false),
+        const Spacer(),
+      ],
     );
   }
 }
@@ -387,28 +343,22 @@ class _SLIMFComplianceWidget extends StatelessWidget {
                   return Row(
                     children: [
                       const Spacer(),
-                      CmoCircleItem(
+                      CmoChipAnswerWidget.c(
                         onTap: () {
                           context
                               .read<AddMemberCubit>()
                               .onTapSlimf(isSlimf: true);
                         },
-                        letters: 'C',
-                        color: data?.isSlimfCompliant ?? false
-                            ? Colors.green
-                            : Colors.white,
+                        isSelect: data?.isSlimfCompliant,
                       ),
                       const SizedBox(width: 36),
-                      CmoCircleItem(
+                      CmoChipAnswerWidget.nc(
                         onTap: () {
                           context
                               .read<AddMemberCubit>()
                               .onTapSlimf(isSlimf: false);
                         },
-                        letters: 'NC',
-                        color: data?.isSlimfCompliant ?? false
-                            ? Colors.white
-                            : Colors.green,
+                        isSelect: !data!.isSlimfCompliant,
                       ),
                       const Spacer(),
                     ],
