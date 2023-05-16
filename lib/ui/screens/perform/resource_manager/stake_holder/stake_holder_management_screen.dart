@@ -4,38 +4,14 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/farmer_mode_stake_holder_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/rm_mode_stake_holder_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-List<StakeHolder> _mockData = [
-  StakeHolder(
-    stakeHolderId: '',
-    entityName: 'African Parks, Matusadhona Operations Manager',
-    address: 'Conservation',
-    contactName: 'Mike Pelham',
-    email: 'joe@123.com',
-    isActive: true,
-  ),
-  StakeHolder(
-    stakeHolderId: '',
-    entityName: 'Agriculture Services',
-    address: 'Government',
-    contactName: 'Joe Soap',
-    email: 'joe@123.com',
-    isActive: true,
-  ),
-  StakeHolder(
-    stakeHolderId: '',
-    entityName: 'Agritex Chipinge',
-    address: 'Government',
-    contactName: 'Mr Chagwesha',
-    email: 'Chagwesha @123.com',
-    isActive: true,
-  ),
-];
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StakeHolderManagementScreen extends StatefulWidget {
   static Future<void> push(BuildContext context) {
@@ -53,26 +29,16 @@ class StakeHolderManagementScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _StakeHolderManagementScreenState();
 }
 
-class _StakeHolderManagementScreenState extends State<StakeHolderManagementScreen> {
+class _StakeHolderManagementScreenState
+    extends State<StakeHolderManagementScreen> {
   Timer? _debounceInputTimer;
-  late List<StakeHolder> filteredItems;
 
   @override
   void initState() {
     super.initState();
-    filteredItems = _mockData;
-  }
-
-  void searching(String? input) {
-    if (input == null || input.isEmpty) {
-      filteredItems = _mockData;
-    } else {
-      filteredItems = _mockData
-          .where((element) => element.entityName?.toLowerCase().contains(input.toLowerCase()) ?? false)
-          .toList();
-    }
-
-    setState(() {});
+    Future.microtask(() {
+      context.read<StakeHolderListCubit>().loadListStakeHolderForRMRole();
+    });
   }
 
   @override
@@ -91,21 +57,56 @@ class _StakeHolderManagementScreenState extends State<StakeHolderManagementScree
                 suffixIcon: Assets.icons.icSearch.svg(),
                 onChanged: (input) {
                   _debounceInputTimer?.cancel();
-                  _debounceInputTimer = Timer(const Duration(milliseconds: 200), () => searching(input));
+                  _debounceInputTimer = Timer(
+                    const Duration(milliseconds: 200),
+                    () => context.read<StakeHolderListCubit>().searching(input),
+                  );
                 },
               ),
             ),
             Expanded(
-              child: ListView.separated(
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 22,
-                ),
-                itemCount: filteredItems.length,
-                padding: const EdgeInsets.symmetric(horizontal: 21),
-                itemBuilder: (context, index) {
-                  return _buildItemCard(
-                    model: filteredItems[index],
-                    haveGreyBackground: index.isEven,
+              child: BlocSelector<StakeHolderListCubit, StakeHolderListState,
+                  StakeHolderListState>(
+                selector: (state) {
+                  return state;
+                },
+                builder: (context, state) {
+                  if (state.loadingList) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: context.colors.white,
+                      ),
+                    );
+                  }
+
+                  if (state.error != null && kDebugMode) {
+                    return Center(
+                      child: Text(
+                        '${state.error}',
+                      ),
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    onRefresh: () {
+                      return context
+                          .read<StakeHolderListCubit>()
+                          .loadListStakeHolderForRMRole();
+                    },
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 22,
+                      ),
+                      itemCount: state.filterListStakeHolders.length,
+                      padding: const EdgeInsets.symmetric(horizontal: 21),
+                      itemBuilder: (context, index) {
+                        return _buildItemCard(
+                          model: state.filterListStakeHolders[index],
+                          haveGreyBackground: index.isEven,
+                        );
+                      },
+                    ),
                   );
                 },
               ),
@@ -151,7 +152,9 @@ class _StakeHolderManagementScreenState extends State<StakeHolderManagementScree
                 style: context.textStyles.bodyBold.blue,
               ),
             ),
-            const SizedBox(width: 45,),
+            const SizedBox(
+              width: 45,
+            ),
           ],
         ),
       );

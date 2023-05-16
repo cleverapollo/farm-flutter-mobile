@@ -1,3 +1,4 @@
+import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -70,6 +71,7 @@ class CmoApp extends StatelessWidget {
         BlocProvider(create: (_) => AuditListQuestionsCubit()),
         BlocProvider(create: (_) => AuditQuestionCommentCubit()),
         BlocProvider(create: (_) => AuditQuestionPhotoCubit()),
+        BlocProvider(create: (_) => StakeHolderListCubit()),
       ],
       child: MaterialApp(
         title: 'CMO',
