@@ -55,12 +55,12 @@ const StakeHolderSchema = CollectionSchema(
     r'stakeHolderId': PropertySchema(
       id: 7,
       name: r'stakeHolderId',
-      type: IsarType.string,
+      type: IsarType.long,
     ),
     r'stakeHolderTypeId': PropertySchema(
       id: 8,
       name: r'stakeHolderTypeId',
-      type: IsarType.string,
+      type: IsarType.long,
     )
   },
   estimateSize: _stakeHolderEstimateSize,
@@ -113,13 +113,6 @@ int _stakeHolderEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.stakeHolderId.length * 3;
-  {
-    final value = object.stakeHolderTypeId;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   return bytesCount;
 }
 
@@ -136,8 +129,8 @@ void _stakeHolderSerialize(
   writer.writeBool(offsets[4], object.isActive);
   writer.writeBool(offsets[5], object.isLocal);
   writer.writeString(offsets[6], object.phoneNumber);
-  writer.writeString(offsets[7], object.stakeHolderId);
-  writer.writeString(offsets[8], object.stakeHolderTypeId);
+  writer.writeLong(offsets[7], object.stakeHolderId);
+  writer.writeLong(offsets[8], object.stakeHolderTypeId);
 }
 
 StakeHolder _stakeHolderDeserialize(
@@ -154,8 +147,8 @@ StakeHolder _stakeHolderDeserialize(
     isActive: reader.readBoolOrNull(offsets[4]),
     isLocal: reader.readBoolOrNull(offsets[5]),
     phoneNumber: reader.readStringOrNull(offsets[6]),
-    stakeHolderId: reader.readString(offsets[7]),
-    stakeHolderTypeId: reader.readStringOrNull(offsets[8]),
+    stakeHolderId: reader.readLongOrNull(offsets[7]),
+    stakeHolderTypeId: reader.readLongOrNull(offsets[8]),
   );
   return object;
 }
@@ -182,9 +175,9 @@ P _stakeHolderDeserializeProp<P>(
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readString(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 8:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -1154,58 +1147,67 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderIdEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+      stakeHolderIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'stakeHolderId',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      stakeHolderIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'stakeHolderId',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
+      stakeHolderIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'stakeHolderId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
       stakeHolderIdGreaterThan(
-    String value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'stakeHolderId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
       stakeHolderIdLessThan(
-    String value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'stakeHolderId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
       stakeHolderIdBetween(
-    String lower,
-    String upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1214,77 +1216,6 @@ extension StakeHolderQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'stakeHolderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'stakeHolderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderIdContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'stakeHolderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderIdMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'stakeHolderId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'stakeHolderId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'stakeHolderId',
-        value: '',
       ));
     });
   }
@@ -1308,58 +1239,49 @@ extension StakeHolderQueryFilter
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderTypeIdEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+      stakeHolderTypeIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'stakeHolderTypeId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
       stakeHolderTypeIdGreaterThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'stakeHolderTypeId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
       stakeHolderTypeIdLessThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'stakeHolderTypeId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
       stakeHolderTypeIdBetween(
-    String? lower,
-    String? upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1368,77 +1290,6 @@ extension StakeHolderQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderTypeIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'stakeHolderTypeId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderTypeIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'stakeHolderTypeId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderTypeIdContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'stakeHolderTypeId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderTypeIdMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'stakeHolderTypeId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderTypeIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'stakeHolderTypeId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolder, StakeHolder, QAfterFilterCondition>
-      stakeHolderTypeIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'stakeHolderTypeId',
-        value: '',
       ));
     });
   }
@@ -1739,19 +1590,16 @@ extension StakeHolderQueryWhereDistinct
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByStakeHolderId(
-      {bool caseSensitive = true}) {
+  QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByStakeHolderId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'stakeHolderId',
-          caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'stakeHolderId');
     });
   }
 
-  QueryBuilder<StakeHolder, StakeHolder, QDistinct> distinctByStakeHolderTypeId(
-      {bool caseSensitive = true}) {
+  QueryBuilder<StakeHolder, StakeHolder, QDistinct>
+      distinctByStakeHolderTypeId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'stakeHolderTypeId',
-          caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'stakeHolderTypeId');
     });
   }
 }
@@ -1806,13 +1654,13 @@ extension StakeHolderQueryProperty
     });
   }
 
-  QueryBuilder<StakeHolder, String, QQueryOperations> stakeHolderIdProperty() {
+  QueryBuilder<StakeHolder, int?, QQueryOperations> stakeHolderIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'stakeHolderId');
     });
   }
 
-  QueryBuilder<StakeHolder, String?, QQueryOperations>
+  QueryBuilder<StakeHolder, int?, QQueryOperations>
       stakeHolderTypeIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'stakeHolderTypeId');
@@ -1826,8 +1674,8 @@ extension StakeHolderQueryProperty
 
 _$_StakeHolder _$$_StakeHolderFromJson(Map<String, dynamic> json) =>
     _$_StakeHolder(
-      stakeHolderId: json['StakeHolderId'] as String,
-      stakeHolderTypeId: json['StakeholderTypeId'] as String?,
+      stakeHolderId: json['StakeHolderId'] as int?,
+      stakeHolderTypeId: json['StakeholderTypeId'] as int?,
       entityName: json['entityName'] as String?,
       contactName: json['contactName'] as String?,
       email: json['email'] as String?,

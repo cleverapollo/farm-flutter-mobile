@@ -21,9 +21,9 @@ StakeHolder _$StakeHolderFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$StakeHolder {
   @JsonKey(name: 'StakeHolderId')
-  String get stakeHolderId => throw _privateConstructorUsedError;
+  int? get stakeHolderId => throw _privateConstructorUsedError;
   @JsonKey(name: 'StakeholderTypeId')
-  String? get stakeHolderTypeId => throw _privateConstructorUsedError;
+  int? get stakeHolderTypeId => throw _privateConstructorUsedError;
   @JsonKey(name: 'entityName')
   String? get entityName => throw _privateConstructorUsedError;
   @JsonKey(name: 'contactName')
@@ -52,8 +52,8 @@ abstract class $StakeHolderCopyWith<$Res> {
       _$StakeHolderCopyWithImpl<$Res, StakeHolder>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'StakeHolderId') String stakeHolderId,
-      @JsonKey(name: 'StakeholderTypeId') String? stakeHolderTypeId,
+      {@JsonKey(name: 'StakeHolderId') int? stakeHolderId,
+      @JsonKey(name: 'StakeholderTypeId') int? stakeHolderTypeId,
       @JsonKey(name: 'entityName') String? entityName,
       @JsonKey(name: 'contactName') String? contactName,
       @JsonKey(name: 'email') String? email,
@@ -76,7 +76,7 @@ class _$StakeHolderCopyWithImpl<$Res, $Val extends StakeHolder>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? stakeHolderId = null,
+    Object? stakeHolderId = freezed,
     Object? stakeHolderTypeId = freezed,
     Object? entityName = freezed,
     Object? contactName = freezed,
@@ -87,14 +87,14 @@ class _$StakeHolderCopyWithImpl<$Res, $Val extends StakeHolder>
     Object? isLocal = freezed,
   }) {
     return _then(_value.copyWith(
-      stakeHolderId: null == stakeHolderId
+      stakeHolderId: freezed == stakeHolderId
           ? _value.stakeHolderId
           : stakeHolderId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int?,
       stakeHolderTypeId: freezed == stakeHolderTypeId
           ? _value.stakeHolderTypeId
           : stakeHolderTypeId // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       entityName: freezed == entityName
           ? _value.entityName
           : entityName // ignore: cast_nullable_to_non_nullable
@@ -136,8 +136,8 @@ abstract class _$$_StakeHolderCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'StakeHolderId') String stakeHolderId,
-      @JsonKey(name: 'StakeholderTypeId') String? stakeHolderTypeId,
+      {@JsonKey(name: 'StakeHolderId') int? stakeHolderId,
+      @JsonKey(name: 'StakeholderTypeId') int? stakeHolderTypeId,
       @JsonKey(name: 'entityName') String? entityName,
       @JsonKey(name: 'contactName') String? contactName,
       @JsonKey(name: 'email') String? email,
@@ -158,7 +158,7 @@ class __$$_StakeHolderCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? stakeHolderId = null,
+    Object? stakeHolderId = freezed,
     Object? stakeHolderTypeId = freezed,
     Object? entityName = freezed,
     Object? contactName = freezed,
@@ -169,14 +169,14 @@ class __$$_StakeHolderCopyWithImpl<$Res>
     Object? isLocal = freezed,
   }) {
     return _then(_$_StakeHolder(
-      stakeHolderId: null == stakeHolderId
+      stakeHolderId: freezed == stakeHolderId
           ? _value.stakeHolderId
           : stakeHolderId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int?,
       stakeHolderTypeId: freezed == stakeHolderTypeId
           ? _value.stakeHolderTypeId
           : stakeHolderTypeId // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       entityName: freezed == entityName
           ? _value.entityName
           : entityName // ignore: cast_nullable_to_non_nullable
@@ -213,7 +213,7 @@ class __$$_StakeHolderCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_StakeHolder extends _StakeHolder {
   const _$_StakeHolder(
-      {@JsonKey(name: 'StakeHolderId') required this.stakeHolderId,
+      {@JsonKey(name: 'StakeHolderId') this.stakeHolderId,
       @JsonKey(name: 'StakeholderTypeId') this.stakeHolderTypeId,
       @JsonKey(name: 'entityName') this.entityName,
       @JsonKey(name: 'contactName') this.contactName,
@@ -229,10 +229,10 @@ class _$_StakeHolder extends _StakeHolder {
 
   @override
   @JsonKey(name: 'StakeHolderId')
-  final String stakeHolderId;
+  final int? stakeHolderId;
   @override
   @JsonKey(name: 'StakeholderTypeId')
-  final String? stakeHolderTypeId;
+  final int? stakeHolderTypeId;
   @override
   @JsonKey(name: 'entityName')
   final String? entityName;
@@ -303,8 +303,8 @@ class _$_StakeHolder extends _StakeHolder {
 
 abstract class _StakeHolder extends StakeHolder {
   const factory _StakeHolder(
-      {@JsonKey(name: 'StakeHolderId') required final String stakeHolderId,
-      @JsonKey(name: 'StakeholderTypeId') final String? stakeHolderTypeId,
+      {@JsonKey(name: 'StakeHolderId') final int? stakeHolderId,
+      @JsonKey(name: 'StakeholderTypeId') final int? stakeHolderTypeId,
       @JsonKey(name: 'entityName') final String? entityName,
       @JsonKey(name: 'contactName') final String? contactName,
       @JsonKey(name: 'email') final String? email,
@@ -319,10 +319,10 @@ abstract class _StakeHolder extends StakeHolder {
 
   @override
   @JsonKey(name: 'StakeHolderId')
-  String get stakeHolderId;
+  int? get stakeHolderId;
   @override
   @JsonKey(name: 'StakeholderTypeId')
-  String? get stakeHolderTypeId;
+  int? get stakeHolderTypeId;
   @override
   @JsonKey(name: 'entityName')
   String? get entityName;

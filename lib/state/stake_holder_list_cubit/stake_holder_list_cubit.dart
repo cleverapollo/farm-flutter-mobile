@@ -71,6 +71,24 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
     }
   }
 
+  Future<void> loadListStakeHolderType() async {
+    emit(state.copyWith(loadingList: true));
+    try {
+      final service = cmoDatabaseMasterService;
+      final data = await service.getStakeHolderTypes();
+      emit(
+        state.copyWith(
+          listStakeholderTypes: data,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(error: e));
+      showSnackError(msg: e.toString());
+    } finally {
+      emit(state.copyWith(loadingList: false));
+    }
+  }
+
   Future<void> refresh() async {
     await loadListStakeHolderForRMRole();
   }

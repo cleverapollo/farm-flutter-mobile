@@ -1,0 +1,27 @@
+// ignore_for_file: invalid_annotation_target
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar/isar.dart';
+
+part 'stakeholder_type.freezed.dart';
+
+part 'stakeholder_type.g.dart';
+
+@freezed
+@Collection(ignore: {'copyWith'})
+class StakeHolderType with _$StakeHolderType {
+  const factory StakeHolderType({
+    @JsonKey(name: 'StakeholderTypeId') int? stakeholderTypeId,
+    @JsonKey(name: 'StakeholderTypeName') String? stakeholderTypeName,
+    @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
+    @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsLocal') bool? isLocal,
+  }) = _StakeHolderType;
+
+  const StakeHolderType._();
+
+  factory StakeHolderType.fromJson(Map<String, dynamic> json) =>
+      _$StakeHolderTypeFromJson(json);
+
+  @override
+  Id get id => stakeholderTypeId ?? Isar.autoIncrement;
+}
