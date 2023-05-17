@@ -24,23 +24,23 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-enum UserRole { behave, resourceManager, farmerMember }
+enum UserRoleEnum { behave, resourceManager, farmerMember }
 
 class CmoMenuBase extends StatefulWidget {
   factory CmoMenuBase.behave({required VoidCallback onTapClose}) {
-    return CmoMenuBase._(onTapClose: onTapClose, userRole: UserRole.behave);
+    return CmoMenuBase._(onTapClose: onTapClose, userRole: UserRoleEnum.behave);
   }
   factory CmoMenuBase.resourceManager({required VoidCallback onTapClose}) {
     return CmoMenuBase._(
-        onTapClose: onTapClose, userRole: UserRole.resourceManager);
+        onTapClose: onTapClose, userRole: UserRoleEnum.resourceManager);
   }
   factory CmoMenuBase.farmerMember({required VoidCallback onTapClose}) {
     return CmoMenuBase._(
-        onTapClose: onTapClose, userRole: UserRole.farmerMember);
+        onTapClose: onTapClose, userRole: UserRoleEnum.farmerMember);
   }
   const CmoMenuBase._({required this.onTapClose, required this.userRole});
 
-  final UserRole userRole;
+  final UserRoleEnum userRole;
   final VoidCallback onTapClose;
 
   @override
@@ -54,13 +54,13 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     switch (widget.userRole) {
-      case UserRole.behave:
+      case UserRoleEnum.behave:
         _menuContent = _buildBehaveContentMenu();
         break;
-      case UserRole.resourceManager:
+      case UserRoleEnum.resourceManager:
         _menuContent = _buildResourceManagerMenu();
         break;
-      case UserRole.farmerMember:
+      case UserRoleEnum.farmerMember:
         _menuContent = _buildFarmerMemberMenu();
         break;
     }

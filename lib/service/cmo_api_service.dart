@@ -33,6 +33,10 @@ class CmoApiService {
       ),
     );
 
+  Future<String?> _readAccessToken() async {
+    return secureStorage.read(key: 'accessToken');
+  }
+
   Future<UserAuth?> login(
     String username,
     String password,
@@ -48,6 +52,32 @@ class CmoApiService {
         '/cmo/DesktopModules/JwtAuth/API/mobile/login',
       ),
       data: body,
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: '${response.statusCode} - ${response.data}');
+      return null;
+    }
+
+    final data = response.data;
+    return data == null ? null : UserAuth.fromJson(data);
+  }
+
+  Future<UserAuth?> refreshToken(
+    String renewalToken,
+  ) async {
+    final body = {
+      'rToken': renewalToken,
+    };
+
+    final accessToken = await _readAccessToken();
+    final response = await client.postUri<JsonData>(
+      Uri.https(
+        Env.cmoApiUrl,
+        '/cmo/DesktopModules/JwtAuth/API/mobile/extendtoken',
+      ),
+      data: body,
+      options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
     );
 
     if (response.statusCode != 200) {

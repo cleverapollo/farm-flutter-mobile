@@ -69,12 +69,18 @@ class _LoginScreenState extends State<LoginScreen> {
             );
       }
 
+      if (!success && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Login failed, please try again'),
+        ));
+      }
+
       if (success && context.mounted) {
         await context.read<UserInfoCubit>().getUser(context);
       }
 
       if (success && context.mounted) {
-        pushEntityScreen(context, isPushingReplacement: true);
+        await pushEntityScreen(context, isPushingReplacement: true);
       }
     } finally {
       setState(() {
@@ -93,54 +99,57 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: SafeArea(
-            child: Column(
-              children: [
-                const CmoLogo(),
-                Padding(
-                  padding: const EdgeInsets.all(18),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: context.colors.grey),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(height: 24),
-                        Assets.icons.icUser.svg(),
-                        const SizedBox(height: 32),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: buildInputArea(),
-                        ),
-                        const SizedBox(height: 14),
-                        Text(
-                          LocaleKeys.forgotPassword.tr(),
-                          style: context.textStyles.bodyNormal
-                              .copyWith(color: context.colors.blueDark2),
-                        ),
-                        const SizedBox(height: 16),
-                        CmoFilledButton(
-                          title: LocaleKeys.login.tr(),
-                          onTap: onSubmit,
-                          loading: isLoading,
-                        ),
-                        const SizedBox(height: 16),
-                        LanguagePicker(
-                          hidden: !selectingLang,
-                          onPick: toggleSelectingLang,
-                        ),
-                      ],
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {},
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          body: SingleChildScrollView(
+            child: SafeArea(
+              child: Column(
+                children: [
+                  const CmoLogo(),
+                  Padding(
+                    padding: const EdgeInsets.all(18),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: context.colors.grey),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(height: 24),
+                          Assets.icons.icUser.svg(),
+                          const SizedBox(height: 32),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: buildInputArea(),
+                          ),
+                          const SizedBox(height: 14),
+                          Text(
+                            LocaleKeys.forgotPassword.tr(),
+                            style: context.textStyles.bodyNormal
+                                .copyWith(color: context.colors.blueDark2),
+                          ),
+                          const SizedBox(height: 16),
+                          CmoFilledButton(
+                            title: LocaleKeys.login.tr(),
+                            onTap: onSubmit,
+                            loading: isLoading,
+                          ),
+                          const SizedBox(height: 16),
+                          LanguagePicker(
+                            hidden: !selectingLang,
+                            onPick: toggleSelectingLang,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                buildSelectLang(),
-              ],
+                  buildSelectLang(),
+                ],
+              ),
             ),
           ),
         ),

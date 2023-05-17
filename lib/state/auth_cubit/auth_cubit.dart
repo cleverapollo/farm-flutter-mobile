@@ -1,29 +1,33 @@
+import 'package:cmo/di.dart';
+import 'package:cmo/main.dart';
+import 'package:cmo/model/user_auth.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 
-import 'package:cmo/di.dart';
-import 'package:cmo/main.dart';
-import 'package:cmo/model/user_auth.dart';
-
-part 'auth_state.dart';
 part 'auth_event.dart';
+part 'auth_state.dart';
 
 class AuthCubit extends HydratedCubit<AuthState> {
   AuthCubit() : super(AuthState.unauthorized());
 
   Future<void> logIn(LogInAuthEvent event) async {
-    final login = await _login(event.username, event.password);
+    try {
+      final login = await _login(event.username, event.password);
 
-    if (login != null &&
-        login.accessToken != null &&
-        login.renewalToken != null) {
-      await _saveUsernameAndPassword(event.username, event.password);
-      await _saveAccessRevewalToken(login.accessToken!, login.renewalToken!);
+      if (login != null &&
+          login.accessToken != null &&
+          login.renewalToken != null) {
+        await _saveUsernameAndPassword(event.username, event.password);
+        await _saveAccessRevewalToken(login.accessToken!, login.renewalToken!);
 
-      emit(AuthState.authorized());
-      event.onSuccess();
-    } else {
+        emit(AuthState.authorized());
+        event.onSuccess();
+      } else {
+        emit(AuthState.unauthorized());
+        event.onFailure();
+      }
+    } catch (e) {
       emit(AuthState.unauthorized());
       event.onFailure();
     }
