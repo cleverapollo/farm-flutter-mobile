@@ -33,6 +33,10 @@ class CmoApiService {
       ),
     );
 
+  Future<String?> _readAccessToken() async {
+    return secureStorage.read(key: 'accessToken');
+  }
+
   Future<UserAuth?> login(
     String username,
     String password,
@@ -59,18 +63,21 @@ class CmoApiService {
     return data == null ? null : UserAuth.fromJson(data);
   }
 
-  Future<UserAuth?> refreshToken(String renewalToken) async {
+  Future<UserAuth?> refreshToken(
+    String renewalToken,
+  ) async {
     final body = {
-      'rToken': 'Wvfuh/b1OPDVHUeu1di6HcsOrW+nvLQZyWiaRej37cwcz66wtQX8+9SDdyZRk1J1',
+      'rToken': renewalToken,
     };
 
+    final accessToken = await _readAccessToken();
     final response = await client.postUri<JsonData>(
       Uri.https(
         Env.cmoApiUrl,
         '/cmo/DesktopModules/JwtAuth/API/mobile/extendtoken',
       ),
       data: body,
-      options: Options(headers: {'accessToken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzaWQiOiIwOGRiNTZiYTdhMzZiNDE3ODViYjY2NTg1YTkyYjQ3MiIsInJvbGUiOlsiQWRtaW5pc3RyYXRvcnMiLCJSZWdpc3RlcmVkIFVzZXJzIiwiU3Vic2NyaWJlcnMiLCJTaW5nbGVTaWduT25Vc2VyTWFuYWdlbWVudCJdLCJpc3MiOiJsb2dpc3RpY3MubXlldS5hZnJpY2EvY21vIiwiZXhwIjoxNjg0MzE5OTExLCJuYmYiOjE2ODQzMTYwMTF9.Vewe6x2tZu2BcRxnWegiOAqBWpE097lek9t6slvb1Nw'})
+      options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
     );
 
     if (response.statusCode != 200) {
