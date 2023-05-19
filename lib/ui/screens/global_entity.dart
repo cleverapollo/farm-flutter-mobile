@@ -1,11 +1,13 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/group_scheme_entity_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/resource_manager_unit_entity.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GlobalEntityScreen extends StatefulWidget {
   static dynamic push(BuildContext context) {
@@ -25,6 +27,12 @@ class GlobalEntityScreen extends StatefulWidget {
 class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
   dynamic selectedGroupScheme;
   dynamic selectedResourceManagerUnit;
+
+  @override
+  void initState() {
+    super.initState();
+    var roles = context.read<UserInfoCubit>().data?.listRoles;
+  }
 
   @override
   Widget build(BuildContext context) {
