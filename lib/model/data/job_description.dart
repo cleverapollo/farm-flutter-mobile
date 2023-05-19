@@ -13,6 +13,7 @@ class JobDescription with _$JobDescription {
   const factory JobDescription({
     @JsonKey(name: 'JobDescriptionId') required int jobDescriptionId,
     @JsonKey(name: 'JobDescriptionName') String? jobDescriptionName,
+    @JsonKey(name: 'IsAssignedToWorker') bool? isAssignedToWorker,
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _JobDescription;
 

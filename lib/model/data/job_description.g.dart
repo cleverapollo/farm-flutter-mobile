@@ -22,13 +22,18 @@ const JobDescriptionSchema = CollectionSchema(
       name: r'isActive',
       type: IsarType.bool,
     ),
-    r'jobDescriptionId': PropertySchema(
+    r'isAssignedToWorker': PropertySchema(
       id: 1,
+      name: r'isAssignedToWorker',
+      type: IsarType.bool,
+    ),
+    r'jobDescriptionId': PropertySchema(
+      id: 2,
       name: r'jobDescriptionId',
       type: IsarType.long,
     ),
     r'jobDescriptionName': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'jobDescriptionName',
       type: IsarType.string,
     )
@@ -69,8 +74,9 @@ void _jobDescriptionSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeBool(offsets[0], object.isActive);
-  writer.writeLong(offsets[1], object.jobDescriptionId);
-  writer.writeString(offsets[2], object.jobDescriptionName);
+  writer.writeBool(offsets[1], object.isAssignedToWorker);
+  writer.writeLong(offsets[2], object.jobDescriptionId);
+  writer.writeString(offsets[3], object.jobDescriptionName);
 }
 
 JobDescription _jobDescriptionDeserialize(
@@ -81,8 +87,9 @@ JobDescription _jobDescriptionDeserialize(
 ) {
   final object = JobDescription(
     isActive: reader.readBoolOrNull(offsets[0]),
-    jobDescriptionId: reader.readLong(offsets[1]),
-    jobDescriptionName: reader.readStringOrNull(offsets[2]),
+    isAssignedToWorker: reader.readBoolOrNull(offsets[1]),
+    jobDescriptionId: reader.readLong(offsets[2]),
+    jobDescriptionName: reader.readStringOrNull(offsets[3]),
   );
   return object;
 }
@@ -97,8 +104,10 @@ P _jobDescriptionDeserializeProp<P>(
     case 0:
       return (reader.readBoolOrNull(offset)) as P;
     case 1:
-      return (reader.readLong(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 2:
+      return (reader.readLong(offset)) as P;
+    case 3:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -277,6 +286,34 @@ extension JobDescriptionQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<JobDescription, JobDescription, QAfterFilterCondition>
+      isAssignedToWorkerIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isAssignedToWorker',
+      ));
+    });
+  }
+
+  QueryBuilder<JobDescription, JobDescription, QAfterFilterCondition>
+      isAssignedToWorkerIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isAssignedToWorker',
+      ));
+    });
+  }
+
+  QueryBuilder<JobDescription, JobDescription, QAfterFilterCondition>
+      isAssignedToWorkerEqualTo(bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isAssignedToWorker',
         value: value,
       ));
     });
@@ -515,6 +552,20 @@ extension JobDescriptionQuerySortBy
   }
 
   QueryBuilder<JobDescription, JobDescription, QAfterSortBy>
+      sortByIsAssignedToWorker() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isAssignedToWorker', Sort.asc);
+    });
+  }
+
+  QueryBuilder<JobDescription, JobDescription, QAfterSortBy>
+      sortByIsAssignedToWorkerDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isAssignedToWorker', Sort.desc);
+    });
+  }
+
+  QueryBuilder<JobDescription, JobDescription, QAfterSortBy>
       sortByJobDescriptionId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'jobDescriptionId', Sort.asc);
@@ -571,6 +622,20 @@ extension JobDescriptionQuerySortThenBy
   }
 
   QueryBuilder<JobDescription, JobDescription, QAfterSortBy>
+      thenByIsAssignedToWorker() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isAssignedToWorker', Sort.asc);
+    });
+  }
+
+  QueryBuilder<JobDescription, JobDescription, QAfterSortBy>
+      thenByIsAssignedToWorkerDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isAssignedToWorker', Sort.desc);
+    });
+  }
+
+  QueryBuilder<JobDescription, JobDescription, QAfterSortBy>
       thenByJobDescriptionId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'jobDescriptionId', Sort.asc);
@@ -608,6 +673,13 @@ extension JobDescriptionQueryWhereDistinct
   }
 
   QueryBuilder<JobDescription, JobDescription, QDistinct>
+      distinctByIsAssignedToWorker() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isAssignedToWorker');
+    });
+  }
+
+  QueryBuilder<JobDescription, JobDescription, QDistinct>
       distinctByJobDescriptionId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'jobDescriptionId');
@@ -637,6 +709,13 @@ extension JobDescriptionQueryProperty
     });
   }
 
+  QueryBuilder<JobDescription, bool?, QQueryOperations>
+      isAssignedToWorkerProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isAssignedToWorker');
+    });
+  }
+
   QueryBuilder<JobDescription, int, QQueryOperations>
       jobDescriptionIdProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -660,6 +739,7 @@ _$_JobDescription _$$_JobDescriptionFromJson(Map<String, dynamic> json) =>
     _$_JobDescription(
       jobDescriptionId: json['JobDescriptionId'] as int,
       jobDescriptionName: json['JobDescriptionName'] as String?,
+      isAssignedToWorker: json['IsAssignedToWorker'] as bool?,
       isActive: json['IsActive'] as bool?,
     );
 
@@ -667,5 +747,6 @@ Map<String, dynamic> _$$_JobDescriptionToJson(_$_JobDescription instance) =>
     <String, dynamic>{
       'JobDescriptionId': instance.jobDescriptionId,
       'JobDescriptionName': instance.jobDescriptionName,
+      'IsAssignedToWorker': instance.isAssignedToWorker,
       'IsActive': instance.isActive,
     };

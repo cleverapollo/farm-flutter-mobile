@@ -24,6 +24,8 @@ mixin _$JobDescription {
   int get jobDescriptionId => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobDescriptionName')
   String? get jobDescriptionName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IsAssignedToWorker')
+  bool? get isAssignedToWorker => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
 
@@ -42,6 +44,7 @@ abstract class $JobDescriptionCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'JobDescriptionId') int jobDescriptionId,
       @JsonKey(name: 'JobDescriptionName') String? jobDescriptionName,
+      @JsonKey(name: 'IsAssignedToWorker') bool? isAssignedToWorker,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -60,6 +63,7 @@ class _$JobDescriptionCopyWithImpl<$Res, $Val extends JobDescription>
   $Res call({
     Object? jobDescriptionId = null,
     Object? jobDescriptionName = freezed,
+    Object? isAssignedToWorker = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
@@ -71,6 +75,10 @@ class _$JobDescriptionCopyWithImpl<$Res, $Val extends JobDescription>
           ? _value.jobDescriptionName
           : jobDescriptionName // ignore: cast_nullable_to_non_nullable
               as String?,
+      isAssignedToWorker: freezed == isAssignedToWorker
+          ? _value.isAssignedToWorker
+          : isAssignedToWorker // ignore: cast_nullable_to_non_nullable
+              as bool?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -90,6 +98,7 @@ abstract class _$$_JobDescriptionCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'JobDescriptionId') int jobDescriptionId,
       @JsonKey(name: 'JobDescriptionName') String? jobDescriptionName,
+      @JsonKey(name: 'IsAssignedToWorker') bool? isAssignedToWorker,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -106,6 +115,7 @@ class __$$_JobDescriptionCopyWithImpl<$Res>
   $Res call({
     Object? jobDescriptionId = null,
     Object? jobDescriptionName = freezed,
+    Object? isAssignedToWorker = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_JobDescription(
@@ -117,6 +127,10 @@ class __$$_JobDescriptionCopyWithImpl<$Res>
           ? _value.jobDescriptionName
           : jobDescriptionName // ignore: cast_nullable_to_non_nullable
               as String?,
+      isAssignedToWorker: freezed == isAssignedToWorker
+          ? _value.isAssignedToWorker
+          : isAssignedToWorker // ignore: cast_nullable_to_non_nullable
+              as bool?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -131,6 +145,7 @@ class _$_JobDescription extends _JobDescription {
   const _$_JobDescription(
       {@JsonKey(name: 'JobDescriptionId') required this.jobDescriptionId,
       @JsonKey(name: 'JobDescriptionName') this.jobDescriptionName,
+      @JsonKey(name: 'IsAssignedToWorker') this.isAssignedToWorker,
       @JsonKey(name: 'IsActive') this.isActive})
       : super._();
 
@@ -144,12 +159,15 @@ class _$_JobDescription extends _JobDescription {
   @JsonKey(name: 'JobDescriptionName')
   final String? jobDescriptionName;
   @override
+  @JsonKey(name: 'IsAssignedToWorker')
+  final bool? isAssignedToWorker;
+  @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
 
   @override
   String toString() {
-    return 'JobDescription(jobDescriptionId: $jobDescriptionId, jobDescriptionName: $jobDescriptionName, isActive: $isActive)';
+    return 'JobDescription(jobDescriptionId: $jobDescriptionId, jobDescriptionName: $jobDescriptionName, isAssignedToWorker: $isAssignedToWorker, isActive: $isActive)';
   }
 
   @override
@@ -161,14 +179,16 @@ class _$_JobDescription extends _JobDescription {
                 other.jobDescriptionId == jobDescriptionId) &&
             (identical(other.jobDescriptionName, jobDescriptionName) ||
                 other.jobDescriptionName == jobDescriptionName) &&
+            (identical(other.isAssignedToWorker, isAssignedToWorker) ||
+                other.isAssignedToWorker == isAssignedToWorker) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, jobDescriptionId, jobDescriptionName, isActive);
+  int get hashCode => Object.hash(runtimeType, jobDescriptionId,
+      jobDescriptionName, isAssignedToWorker, isActive);
 
   @JsonKey(ignore: true)
   @override
@@ -188,6 +208,7 @@ abstract class _JobDescription extends JobDescription {
   const factory _JobDescription(
       {@JsonKey(name: 'JobDescriptionId') required final int jobDescriptionId,
       @JsonKey(name: 'JobDescriptionName') final String? jobDescriptionName,
+      @JsonKey(name: 'IsAssignedToWorker') final bool? isAssignedToWorker,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_JobDescription;
   const _JobDescription._() : super._();
 
@@ -200,6 +221,9 @@ abstract class _JobDescription extends JobDescription {
   @override
   @JsonKey(name: 'JobDescriptionName')
   String? get jobDescriptionName;
+  @override
+  @JsonKey(name: 'IsAssignedToWorker')
+  bool? get isAssignedToWorker;
   @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;

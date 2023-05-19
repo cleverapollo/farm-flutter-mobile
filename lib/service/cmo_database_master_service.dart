@@ -523,6 +523,11 @@ class CmoDatabaseMasterService {
     return db.workers.put(item);
   }
 
+  Future<int> cacheFarmerWorker(FarmerWorker item) async {
+    final db = await _db();
+    return db.farmerWorkers.put(item);
+  }
+
   Future<int> cacheStakeHolder(StakeHolder item) async {
     final db = await _db();
     return db.stakeHolders.put(item);
