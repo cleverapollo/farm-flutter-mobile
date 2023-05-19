@@ -27,83 +27,98 @@ const ChemicalSchema = CollectionSchema(
       name: r'campId',
       type: IsarType.long,
     ),
-    r'carClosedDate': PropertySchema(
+    r'campName': PropertySchema(
       id: 2,
+      name: r'campName',
+      type: IsarType.string,
+    ),
+    r'carClosedDate': PropertySchema(
+      id: 3,
       name: r'carClosedDate',
       type: IsarType.dateTime,
     ),
     r'carRaisedDate': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'carRaisedDate',
       type: IsarType.dateTime,
     ),
+    r'chemicalApplicationMethod': PropertySchema(
+      id: 5,
+      name: r'chemicalApplicationMethod',
+      type: IsarType.string,
+    ),
     r'chemicalApplicationMethodId': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'chemicalApplicationMethodId',
       type: IsarType.long,
     ),
     r'chemicalNo': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'chemicalNo',
       type: IsarType.string,
     ),
+    r'chemicalType': PropertySchema(
+      id: 8,
+      name: r'chemicalType',
+      type: IsarType.string,
+    ),
     r'chemicalTypeId': PropertySchema(
-      id: 6,
+      id: 9,
       name: r'chemicalTypeId',
       type: IsarType.long,
     ),
     r'comment': PropertySchema(
-      id: 7,
+      id: 10,
       name: r'comment',
       type: IsarType.string,
     ),
     r'createDT': PropertySchema(
-      id: 8,
+      id: 11,
       name: r'createDT',
       type: IsarType.dateTime,
     ),
     r'date': PropertySchema(
-      id: 9,
+      id: 12,
       name: r'date',
       type: IsarType.dateTime,
     ),
     r'farmId': PropertySchema(
-      id: 10,
+      id: 13,
       name: r'farmId',
       type: IsarType.long,
     ),
     r'isActive': PropertySchema(
-      id: 11,
+      id: 14,
       name: r'isActive',
       type: IsarType.bool,
     ),
     r'issued': PropertySchema(
-      id: 12,
+      id: 15,
       name: r'issued',
       type: IsarType.double,
     ),
     r'mixture': PropertySchema(
-      id: 13,
+      id: 16,
       name: r'mixture',
       type: IsarType.string,
     ),
     r'openingStock': PropertySchema(
-      id: 14,
+      id: 17,
       name: r'openingStock',
       type: IsarType.double,
     ),
     r'totalRows': PropertySchema(
-      id: 15,
+      id: 18,
       name: r'totalRows',
       type: IsarType.long,
     ),
     r'updateDT': PropertySchema(
-      id: 16,
+      id: 19,
       name: r'updateDT',
       type: IsarType.dateTime,
     ),
     r'usagePerHa': PropertySchema(
-      id: 17,
+      id: 20,
       name: r'usagePerHa',
       type: IsarType.double,
     )
@@ -129,7 +144,25 @@ int _chemicalEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
+    final value = object.campName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.chemicalApplicationMethod;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.chemicalNo;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.chemicalType;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -157,22 +190,25 @@ void _chemicalSerialize(
 ) {
   writer.writeDouble(offsets[0], object.balance);
   writer.writeLong(offsets[1], object.campId);
-  writer.writeDateTime(offsets[2], object.carClosedDate);
-  writer.writeDateTime(offsets[3], object.carRaisedDate);
-  writer.writeLong(offsets[4], object.chemicalApplicationMethodId);
-  writer.writeString(offsets[5], object.chemicalNo);
-  writer.writeLong(offsets[6], object.chemicalTypeId);
-  writer.writeString(offsets[7], object.comment);
-  writer.writeDateTime(offsets[8], object.createDT);
-  writer.writeDateTime(offsets[9], object.date);
-  writer.writeLong(offsets[10], object.farmId);
-  writer.writeBool(offsets[11], object.isActive);
-  writer.writeDouble(offsets[12], object.issued);
-  writer.writeString(offsets[13], object.mixture);
-  writer.writeDouble(offsets[14], object.openingStock);
-  writer.writeLong(offsets[15], object.totalRows);
-  writer.writeDateTime(offsets[16], object.updateDT);
-  writer.writeDouble(offsets[17], object.usagePerHa);
+  writer.writeString(offsets[2], object.campName);
+  writer.writeDateTime(offsets[3], object.carClosedDate);
+  writer.writeDateTime(offsets[4], object.carRaisedDate);
+  writer.writeString(offsets[5], object.chemicalApplicationMethod);
+  writer.writeLong(offsets[6], object.chemicalApplicationMethodId);
+  writer.writeString(offsets[7], object.chemicalNo);
+  writer.writeString(offsets[8], object.chemicalType);
+  writer.writeLong(offsets[9], object.chemicalTypeId);
+  writer.writeString(offsets[10], object.comment);
+  writer.writeDateTime(offsets[11], object.createDT);
+  writer.writeDateTime(offsets[12], object.date);
+  writer.writeLong(offsets[13], object.farmId);
+  writer.writeBool(offsets[14], object.isActive);
+  writer.writeDouble(offsets[15], object.issued);
+  writer.writeString(offsets[16], object.mixture);
+  writer.writeDouble(offsets[17], object.openingStock);
+  writer.writeLong(offsets[18], object.totalRows);
+  writer.writeDateTime(offsets[19], object.updateDT);
+  writer.writeDouble(offsets[20], object.usagePerHa);
 }
 
 Chemical _chemicalDeserialize(
@@ -184,23 +220,26 @@ Chemical _chemicalDeserialize(
   final object = Chemical(
     balance: reader.readDoubleOrNull(offsets[0]),
     campId: reader.readLongOrNull(offsets[1]),
-    carClosedDate: reader.readDateTimeOrNull(offsets[2]),
-    carRaisedDate: reader.readDateTimeOrNull(offsets[3]),
-    chemicalApplicationMethodId: reader.readLongOrNull(offsets[4]),
-    chemicalNo: reader.readStringOrNull(offsets[5]),
-    chemicalTypeId: reader.readLongOrNull(offsets[6]),
-    comment: reader.readStringOrNull(offsets[7]),
-    createDT: reader.readDateTimeOrNull(offsets[8]),
-    date: reader.readDateTimeOrNull(offsets[9]),
-    farmId: reader.readLongOrNull(offsets[10]),
-    isActive: reader.readBoolOrNull(offsets[11]),
-    issued: reader.readDoubleOrNull(offsets[12]),
-    mixture: reader.readStringOrNull(offsets[13]),
-    openingStock: reader.readDoubleOrNull(offsets[14]),
-    totalRows: reader.readLongOrNull(offsets[15]),
-    updateDT: reader.readDateTimeOrNull(offsets[16]),
-    usagePerHa: reader.readDoubleOrNull(offsets[17]),
+    carClosedDate: reader.readDateTimeOrNull(offsets[3]),
+    carRaisedDate: reader.readDateTimeOrNull(offsets[4]),
+    chemicalApplicationMethodId: reader.readLongOrNull(offsets[6]),
+    chemicalNo: reader.readStringOrNull(offsets[7]),
+    chemicalTypeId: reader.readLongOrNull(offsets[9]),
+    comment: reader.readStringOrNull(offsets[10]),
+    createDT: reader.readDateTimeOrNull(offsets[11]),
+    date: reader.readDateTimeOrNull(offsets[12]),
+    farmId: reader.readLongOrNull(offsets[13]),
+    isActive: reader.readBoolOrNull(offsets[14]),
+    issued: reader.readDoubleOrNull(offsets[15]),
+    mixture: reader.readStringOrNull(offsets[16]),
+    openingStock: reader.readDoubleOrNull(offsets[17]),
+    totalRows: reader.readLongOrNull(offsets[18]),
+    updateDT: reader.readDateTimeOrNull(offsets[19]),
+    usagePerHa: reader.readDoubleOrNull(offsets[20]),
   );
+  object.campName = reader.readStringOrNull(offsets[2]);
+  object.chemicalApplicationMethod = reader.readStringOrNull(offsets[5]);
+  object.chemicalType = reader.readStringOrNull(offsets[8]);
   return object;
 }
 
@@ -216,11 +255,11 @@ P _chemicalDeserializeProp<P>(
     case 1:
       return (reader.readLongOrNull(offset)) as P;
     case 2:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 4:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
@@ -228,24 +267,30 @@ P _chemicalDeserializeProp<P>(
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 9:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 10:
-      return (reader.readLongOrNull(offset)) as P;
-    case 11:
-      return (reader.readBoolOrNull(offset)) as P;
-    case 12:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 13:
       return (reader.readStringOrNull(offset)) as P;
-    case 14:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 15:
+    case 9:
       return (reader.readLongOrNull(offset)) as P;
-    case 16:
+    case 10:
+      return (reader.readStringOrNull(offset)) as P;
+    case 11:
       return (reader.readDateTimeOrNull(offset)) as P;
+    case 12:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 13:
+      return (reader.readLongOrNull(offset)) as P;
+    case 14:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 15:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 16:
+      return (reader.readStringOrNull(offset)) as P;
     case 17:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 18:
+      return (reader.readLongOrNull(offset)) as P;
+    case 19:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 20:
       return (reader.readDoubleOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -486,6 +531,152 @@ extension ChemicalQueryFilter
     });
   }
 
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> campNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'campName',
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> campNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'campName',
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> campNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'campName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> campNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'campName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> campNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'campName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> campNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'campName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> campNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'campName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> campNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'campName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> campNameContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'campName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> campNameMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'campName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> campNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'campName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> campNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'campName',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
       carClosedDateIsNull() {
     return QueryBuilder.apply(this, (query) {
@@ -626,6 +817,162 @@ extension ChemicalQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalApplicationMethodIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'chemicalApplicationMethod',
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalApplicationMethodIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'chemicalApplicationMethod',
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalApplicationMethodEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'chemicalApplicationMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalApplicationMethodGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'chemicalApplicationMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalApplicationMethodLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'chemicalApplicationMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalApplicationMethodBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'chemicalApplicationMethod',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalApplicationMethodStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'chemicalApplicationMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalApplicationMethodEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'chemicalApplicationMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalApplicationMethodContains(String value,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'chemicalApplicationMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalApplicationMethodMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'chemicalApplicationMethod',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalApplicationMethodIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'chemicalApplicationMethod',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalApplicationMethodIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'chemicalApplicationMethod',
+        value: '',
       ));
     });
   }
@@ -847,6 +1194,157 @@ extension ChemicalQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'chemicalNo',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> chemicalTypeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'chemicalType',
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalTypeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'chemicalType',
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> chemicalTypeEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'chemicalType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalTypeGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'chemicalType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> chemicalTypeLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'chemicalType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> chemicalTypeBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'chemicalType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalTypeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'chemicalType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> chemicalTypeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'chemicalType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> chemicalTypeContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'chemicalType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition> chemicalTypeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'chemicalType',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalTypeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'chemicalType',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterFilterCondition>
+      chemicalTypeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'chemicalType',
         value: '',
       ));
     });
@@ -1909,6 +2407,18 @@ extension ChemicalQuerySortBy on QueryBuilder<Chemical, Chemical, QSortBy> {
     });
   }
 
+  QueryBuilder<Chemical, Chemical, QAfterSortBy> sortByCampName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'campName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterSortBy> sortByCampNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'campName', Sort.desc);
+    });
+  }
+
   QueryBuilder<Chemical, Chemical, QAfterSortBy> sortByCarClosedDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'carClosedDate', Sort.asc);
@@ -1930,6 +2440,20 @@ extension ChemicalQuerySortBy on QueryBuilder<Chemical, Chemical, QSortBy> {
   QueryBuilder<Chemical, Chemical, QAfterSortBy> sortByCarRaisedDateDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'carRaisedDate', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterSortBy>
+      sortByChemicalApplicationMethod() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chemicalApplicationMethod', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterSortBy>
+      sortByChemicalApplicationMethodDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chemicalApplicationMethod', Sort.desc);
     });
   }
 
@@ -1956,6 +2480,18 @@ extension ChemicalQuerySortBy on QueryBuilder<Chemical, Chemical, QSortBy> {
   QueryBuilder<Chemical, Chemical, QAfterSortBy> sortByChemicalNoDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'chemicalNo', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterSortBy> sortByChemicalType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chemicalType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterSortBy> sortByChemicalTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chemicalType', Sort.desc);
     });
   }
 
@@ -2130,6 +2666,18 @@ extension ChemicalQuerySortThenBy
     });
   }
 
+  QueryBuilder<Chemical, Chemical, QAfterSortBy> thenByCampName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'campName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterSortBy> thenByCampNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'campName', Sort.desc);
+    });
+  }
+
   QueryBuilder<Chemical, Chemical, QAfterSortBy> thenByCarClosedDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'carClosedDate', Sort.asc);
@@ -2151,6 +2699,20 @@ extension ChemicalQuerySortThenBy
   QueryBuilder<Chemical, Chemical, QAfterSortBy> thenByCarRaisedDateDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'carRaisedDate', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterSortBy>
+      thenByChemicalApplicationMethod() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chemicalApplicationMethod', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterSortBy>
+      thenByChemicalApplicationMethodDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chemicalApplicationMethod', Sort.desc);
     });
   }
 
@@ -2177,6 +2739,18 @@ extension ChemicalQuerySortThenBy
   QueryBuilder<Chemical, Chemical, QAfterSortBy> thenByChemicalNoDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'chemicalNo', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterSortBy> thenByChemicalType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chemicalType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QAfterSortBy> thenByChemicalTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chemicalType', Sort.desc);
     });
   }
 
@@ -2351,6 +2925,13 @@ extension ChemicalQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Chemical, Chemical, QDistinct> distinctByCampName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'campName', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Chemical, Chemical, QDistinct> distinctByCarClosedDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'carClosedDate');
@@ -2360,6 +2941,14 @@ extension ChemicalQueryWhereDistinct
   QueryBuilder<Chemical, Chemical, QDistinct> distinctByCarRaisedDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'carRaisedDate');
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QDistinct>
+      distinctByChemicalApplicationMethod({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'chemicalApplicationMethod',
+          caseSensitive: caseSensitive);
     });
   }
 
@@ -2374,6 +2963,13 @@ extension ChemicalQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'chemicalNo', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Chemical, Chemical, QDistinct> distinctByChemicalType(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'chemicalType', caseSensitive: caseSensitive);
     });
   }
 
@@ -2472,6 +3068,12 @@ extension ChemicalQueryProperty
     });
   }
 
+  QueryBuilder<Chemical, String?, QQueryOperations> campNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'campName');
+    });
+  }
+
   QueryBuilder<Chemical, DateTime?, QQueryOperations> carClosedDateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'carClosedDate');
@@ -2481,6 +3083,13 @@ extension ChemicalQueryProperty
   QueryBuilder<Chemical, DateTime?, QQueryOperations> carRaisedDateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'carRaisedDate');
+    });
+  }
+
+  QueryBuilder<Chemical, String?, QQueryOperations>
+      chemicalApplicationMethodProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'chemicalApplicationMethod');
     });
   }
 
@@ -2494,6 +3103,12 @@ extension ChemicalQueryProperty
   QueryBuilder<Chemical, String?, QQueryOperations> chemicalNoProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'chemicalNo');
+    });
+  }
+
+  QueryBuilder<Chemical, String?, QQueryOperations> chemicalTypeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'chemicalType');
     });
   }
 
