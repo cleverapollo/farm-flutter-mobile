@@ -34,8 +34,11 @@ class AuthCubit extends HydratedCubit<AuthState> {
   }
 
   Future<void> logOut() async {
-    await _clearSecureStorage();
-    emit(AuthState.unauthorized());
+    final result = await _clearSecureStorage();
+
+    if (result) {
+      emit(AuthState.unauthorized());
+    }
   }
 
   Future<void> logInWithSavedCredentials({
@@ -98,11 +101,29 @@ class AuthCubit extends HydratedCubit<AuthState> {
     await secureStorage.write(key: 'renewalToken', value: renewalToken);
   }
 
-  Future<void> _clearSecureStorage() async {
-    await secureStorage.write(key: 'accessToken', value: null);
-    await secureStorage.write(key: 'renewalToken', value: null);
-    await secureStorage.write(key: 'user_name', value: null);
-    await secureStorage.write(key: 'user_password', value: null);
+  Future<void> saveUserCurrentRole(String userRole) async {
+    await secureStorage.write(key: 'user_role', value: userRole);
+  }
+
+  Future<String?> getUserCurrentRole() async {
+    return secureStorage.read(key: 'user_role');
+  }
+
+  Future<bool> _clearSecureStorage() async {
+    var isDone = false;
+
+    final futures = <Future<dynamic>>[];
+
+    futures
+      ..add(secureStorage.write(key: 'accessToken', value: null))
+      ..add(secureStorage.write(key: 'renewalToken', value: null))
+      ..add(secureStorage.write(key: 'user_name', value: null))
+      ..add(secureStorage.write(key: 'user_password', value: null))
+      ..add(secureStorage.write(key: 'user_role', value: null));
+
+    await Future.wait(futures).then((value) => isDone = true);
+
+    return isDone;
   }
 
   @override

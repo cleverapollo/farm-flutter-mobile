@@ -24,7 +24,34 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-enum UserRoleEnum { behave, resourceManager, farmerMember }
+enum UserRoleEnum {
+  behave,
+  resourceManager,
+  farmerMember;
+
+  const UserRoleEnum();
+
+  bool get isBehave {
+    if (this == UserRoleEnum.behave) {
+      return true;
+    }
+    return false;
+  }
+
+  bool get isFarmerMember {
+    if (this == UserRoleEnum.farmerMember) {
+      return true;
+    }
+    return false;
+  }
+
+  bool get isResourceManager {
+    if (this == UserRoleEnum.resourceManager) {
+      return true;
+    }
+    return false;
+  }
+}
 
 class CmoMenuBase extends StatefulWidget {
   factory CmoMenuBase.behave({required VoidCallback onTapClose}) {

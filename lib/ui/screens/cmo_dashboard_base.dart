@@ -10,17 +10,20 @@ import 'package:cmo/ui/widget/cmo_mode_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CmoDashboardBase extends StatelessWidget {
-  CmoDashboardBase({super.key});
+class CmoDashboardBase extends StatefulWidget {
+  const CmoDashboardBase({super.key});
 
   static void push(BuildContext context) {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => CmoDashboardBase(),
-      ),
+      MaterialPageRoute(builder: (_) => const CmoDashboardBase()),
     );
   }
 
+  @override
+  State<CmoDashboardBase> createState() => _CmoDashboardBaseState();
+}
+
+class _CmoDashboardBaseState extends State<CmoDashboardBase> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -33,31 +36,31 @@ class CmoDashboardBase extends StatelessWidget {
         return false;
       },
       child: Scaffold(
-        key: scaffoldKey,
-        appBar: CmoAppBar(
-          title: LocaleKeys.dashboard.tr(),
-          subtitle: entityName,
-          leading: Assets.icons.icDrawer.svg(),
-          onTapLeading: () => scaffoldKey.currentState?.openDrawer(),
-        ),
-        drawer: CmoModeBuilder(
-          behaveBuilder: (_) => CmoMenuBase.behave(
-            onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
+          key: scaffoldKey,
+          appBar: CmoAppBar(
+            title: LocaleKeys.dashboard.tr(),
+            subtitle: entityName,
+            leading: Assets.icons.icDrawer.svg(),
+            onTapLeading: () => scaffoldKey.currentState?.openDrawer(),
           ),
-          resourceManagerBuilder: (_) => CmoMenuBase.resourceManager(
-            onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
+          drawer: CmoModeBuilder(
+            behaveBuilder: (_) => CmoMenuBase.behave(
+              onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
+            ),
+            resourceManagerBuilder: (_) => CmoMenuBase.resourceManager(
+              onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
+            ),
+            farmerBuilder: (_) => CmoMenuBase.farmerMember(
+              onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
+            ),
           ),
-          farmerBuilder: (_) => CmoMenuBase.farmerMember(
-            onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
-          ),
-        ),
-        drawerScrimColor: Colors.transparent,
-        body: CmoModeBuilder(
-          behaveBuilder: (_) => const BehaveDashboardScreen(),
-          resourceManagerBuilder: (_) => const ResourceManagerDashboardScreen(),
-          farmerBuilder: (_) => const FarmerMemberDashboardScreen(),
-        ),
-      ),
+          drawerScrimColor: Colors.transparent,
+          body: CmoModeBuilder(
+            behaveBuilder: (_) => const BehaveDashboardScreen(),
+            resourceManagerBuilder: (_) =>
+                const ResourceManagerDashboardScreen(),
+            farmerBuilder: (_) => const FarmerMemberDashboardScreen(),
+          )),
     );
   }
 }
