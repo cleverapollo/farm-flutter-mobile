@@ -1,6 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
+import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/components/entity_component/utils.dart';
 import 'package:cmo/ui/screens/onboarding/login/language_picker.dart';
@@ -75,12 +76,22 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
       }
 
-      if (success && context.mounted) {
-        await context.read<UserInfoCubit>().getUser(context);
-      }
+      final futures = <Future<dynamic>>[];
 
       if (success && context.mounted) {
-        await pushEntityScreen(context, isPushingReplacement: true);
+        final userInfoCubit = context.read<UserInfoCubit>();
+        final deviceInfoCubit = context.read<UserDeviceCubit>();
+
+        futures
+          // Init user info and user roles and cache to db
+          ..add(userInfoCubit.getUserInfoAndUserRoles(context))
+          // Get companies by userId and cache to db
+          ..add(userInfoCubit.getCompaniesByUserId(context))
+          // Create user device and cache to db
+          ..add(deviceInfoCubit.createUserDevice(context));
+
+        await Future.wait(futures)
+            .then((_) => pushEntityScreen(context, isPushingReplacement: true));
       }
     } finally {
       setState(() {

@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:cmo/model/farm_property_ownner_ship_type/farm_property_owner_ship_type.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/model/user/user_role.dart';
+import 'package:cmo/model/user_role_portal.dart';
 import 'package:isar/isar.dart';
 
 class CmoDatabaseService {
@@ -13,6 +15,9 @@ class CmoDatabaseService {
 
   Future<Isar> initializeDatabase() async {
     final isar = await Isar.open([
+      UserRolePortalSchema,
+      UserRoleSchema,
+      UserDeviceSchema,
       CompanySchema,
       AssessmentSchema,
       AuditSchema,
@@ -33,15 +38,44 @@ class CmoDatabaseService {
     return db;
   }
 
-  Future<List<FarmPropertyOwnerShipType>>
-      getAllFarmPropertyOwnerShipType() async {
+  Future<int> cacheUserRolePortal(
+      {required int userId,
+      required int portalId,
+      required String portalName}) async {
     final db = await _db();
-    return db.farmPropertyOwnerShipTypes.where().findAll();
+    return db.writeTxn(() async {
+      return db.userRolePortals.put(UserRolePortal(
+          userId: userId, portalId: portalId, portalName: portalName));
+    });
+  }
+
+  Future<int> cacheUserRole(
+      {required int userId, required String roleName}) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.userRoles.put(UserRole(userId: userId, roleName: roleName));
+    });
+  }
+
+  Future<int> cacheUserDevice(UserDevice userDevice) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.userDevices.put(userDevice);
+    });
   }
 
   Future<int> cacheCompany(Company item) async {
     final db = await _db();
-    return db.companys.put(item);
+
+    return db.writeTxn(() async {
+      return db.companys.put(item);
+    });
+  }
+
+  Future<List<FarmPropertyOwnerShipType>>
+      getAllFarmPropertyOwnerShipType() async {
+    final db = await _db();
+    return db.farmPropertyOwnerShipTypes.where().findAll();
   }
 
   Future<Company?> getCachedCompany({required int id}) async {

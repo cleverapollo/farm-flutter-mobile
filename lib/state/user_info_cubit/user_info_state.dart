@@ -4,8 +4,10 @@ class UserInfoState extends Union3Impl<UserInfoLoadingState, UserInfoDataState,
     UserInfoErrorState> {
   UserInfoState._(super.union);
 
-  factory UserInfoState.data({required UserInfo? userInfo, List<UserRole>? userRoles}) =>
-      UserInfoState._(unions.second(UserInfoDataState(userInfo: userInfo, userRoles: userRoles)));
+  factory UserInfoState.data(
+          {required UserInfo? userInfo, List<UserRolePortal>? userRoles}) =>
+      UserInfoState._(unions
+          .second(UserInfoDataState(userInfo: userInfo, userRoles: userRoles)));
 
   factory UserInfoState.error() =>
       UserInfoState._(unions.third(const UserInfoErrorState()));
@@ -22,7 +24,7 @@ class UserInfoState extends Union3Impl<UserInfoLoadingState, UserInfoDataState,
         (p0) => null,
       );
 
-  List<UserRole>? get userRoles => join(
+  List<UserRolePortal>? get userRoles => join(
         (p0) => null,
         (p0) => p0.userRoles,
         (p0) => null,
@@ -43,7 +45,7 @@ class UserInfoDataState extends Equatable {
   });
 
   final UserInfo? userInfo;
-  final List<UserRole>? userRoles;
+  final List<UserRolePortal>? userRoles;
 
   @override
   List<Object?> get props => [

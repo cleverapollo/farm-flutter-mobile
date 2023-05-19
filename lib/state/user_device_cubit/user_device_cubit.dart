@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-
-import 'package:equatable/equatable.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
-
 import 'package:cmo/di.dart';
 import 'package:cmo/model/user_device.dart';
+import 'package:cmo/model/user_role_portal.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 
 part 'user_device_state.dart';
 
@@ -13,6 +12,13 @@ class UserDeviceCubit extends HydratedCubit<UserDeviceState> {
   UserDeviceCubit() : super(UserDeviceState.loading());
 
   Future<void> createUserDevice(BuildContext context) async {
+    final user = await cmoApiService.getUser();
+
+    List<UserRolePortal>? result = [];
+
+    if (user?.userId != null) {
+      result = await cmoApiService.getUserRoles(userId: user!.userId!);
+    }
     emit(UserDeviceState.loading());
     final res = await cmoApiService.createUserDevice(
       appName: appInfoService.appName,
@@ -22,6 +28,12 @@ class UserDeviceCubit extends HydratedCubit<UserDeviceState> {
       deviceVersion: deviceInfoService.version,
     );
     if (res != null) {
+      for (final UserRolePortal item in result ?? []) {
+        if (item.isBehaveRole) {
+          await cmoDatabaseService.cacheUserDevice(res);
+        }
+      }
+
       emit(UserDeviceState.data(userDevice: res));
     } else {
       emit(UserDeviceState.error());

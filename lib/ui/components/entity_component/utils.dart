@@ -1,4 +1,5 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/model/user_role_portal.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/behave/entity/entity_behave_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/entity_group_screen.dart';
