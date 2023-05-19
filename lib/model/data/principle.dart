@@ -11,6 +11,7 @@ class Principle with _$Principle {
   const factory Principle({
     @JsonKey(name: 'PrincipleId') required int  principleId,
     @JsonKey(name: 'PrincipleName') String? principleName,
+    @JsonKey(name: 'PrincipleDescription') String? principleDescription,
     @Default(true)
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _Principle;

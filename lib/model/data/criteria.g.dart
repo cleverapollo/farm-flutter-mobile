@@ -17,18 +17,23 @@ const CriteriaSchema = CollectionSchema(
   name: r'Criteria',
   id: 6568827833719761542,
   properties: {
-    r'criteriaId': PropertySchema(
+    r'criteriaDescription': PropertySchema(
       id: 0,
+      name: r'criteriaDescription',
+      type: IsarType.string,
+    ),
+    r'criteriaId': PropertySchema(
+      id: 1,
       name: r'criteriaId',
       type: IsarType.long,
     ),
     r'criteriaName': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'criteriaName',
       type: IsarType.string,
     ),
     r'isActive': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'isActive',
       type: IsarType.bool,
     )
@@ -54,6 +59,12 @@ int _criteriaEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
+    final value = object.criteriaDescription;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.criteriaName;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -68,9 +79,10 @@ void _criteriaSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.criteriaId);
-  writer.writeString(offsets[1], object.criteriaName);
-  writer.writeBool(offsets[2], object.isActive);
+  writer.writeString(offsets[0], object.criteriaDescription);
+  writer.writeLong(offsets[1], object.criteriaId);
+  writer.writeString(offsets[2], object.criteriaName);
+  writer.writeBool(offsets[3], object.isActive);
 }
 
 Criteria _criteriaDeserialize(
@@ -80,9 +92,10 @@ Criteria _criteriaDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Criteria(
-    criteriaId: reader.readLong(offsets[0]),
-    criteriaName: reader.readStringOrNull(offsets[1]),
-    isActive: reader.readBoolOrNull(offsets[2]),
+    criteriaDescription: reader.readStringOrNull(offsets[0]),
+    criteriaId: reader.readLong(offsets[1]),
+    criteriaName: reader.readStringOrNull(offsets[2]),
+    isActive: reader.readBoolOrNull(offsets[3]),
   );
   return object;
 }
@@ -95,10 +108,12 @@ P _criteriaDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
-    case 1:
       return (reader.readStringOrNull(offset)) as P;
+    case 1:
+      return (reader.readLong(offset)) as P;
     case 2:
+      return (reader.readStringOrNull(offset)) as P;
+    case 3:
       return (reader.readBoolOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -192,6 +207,160 @@ extension CriteriaQueryWhere on QueryBuilder<Criteria, Criteria, QWhereClause> {
 
 extension CriteriaQueryFilter
     on QueryBuilder<Criteria, Criteria, QFilterCondition> {
+  QueryBuilder<Criteria, Criteria, QAfterFilterCondition>
+      criteriaDescriptionIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'criteriaDescription',
+      ));
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterFilterCondition>
+      criteriaDescriptionIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'criteriaDescription',
+      ));
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterFilterCondition>
+      criteriaDescriptionEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'criteriaDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterFilterCondition>
+      criteriaDescriptionGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'criteriaDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterFilterCondition>
+      criteriaDescriptionLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'criteriaDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterFilterCondition>
+      criteriaDescriptionBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'criteriaDescription',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterFilterCondition>
+      criteriaDescriptionStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'criteriaDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterFilterCondition>
+      criteriaDescriptionEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'criteriaDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterFilterCondition>
+      criteriaDescriptionContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'criteriaDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterFilterCondition>
+      criteriaDescriptionMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'criteriaDescription',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterFilterCondition>
+      criteriaDescriptionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'criteriaDescription',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterFilterCondition>
+      criteriaDescriptionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'criteriaDescription',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<Criteria, Criteria, QAfterFilterCondition> criteriaIdEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
@@ -482,6 +651,19 @@ extension CriteriaQueryLinks
     on QueryBuilder<Criteria, Criteria, QFilterCondition> {}
 
 extension CriteriaQuerySortBy on QueryBuilder<Criteria, Criteria, QSortBy> {
+  QueryBuilder<Criteria, Criteria, QAfterSortBy> sortByCriteriaDescription() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'criteriaDescription', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterSortBy>
+      sortByCriteriaDescriptionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'criteriaDescription', Sort.desc);
+    });
+  }
+
   QueryBuilder<Criteria, Criteria, QAfterSortBy> sortByCriteriaId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'criteriaId', Sort.asc);
@@ -521,6 +703,19 @@ extension CriteriaQuerySortBy on QueryBuilder<Criteria, Criteria, QSortBy> {
 
 extension CriteriaQuerySortThenBy
     on QueryBuilder<Criteria, Criteria, QSortThenBy> {
+  QueryBuilder<Criteria, Criteria, QAfterSortBy> thenByCriteriaDescription() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'criteriaDescription', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Criteria, Criteria, QAfterSortBy>
+      thenByCriteriaDescriptionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'criteriaDescription', Sort.desc);
+    });
+  }
+
   QueryBuilder<Criteria, Criteria, QAfterSortBy> thenByCriteriaId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'criteriaId', Sort.asc);
@@ -572,6 +767,14 @@ extension CriteriaQuerySortThenBy
 
 extension CriteriaQueryWhereDistinct
     on QueryBuilder<Criteria, Criteria, QDistinct> {
+  QueryBuilder<Criteria, Criteria, QDistinct> distinctByCriteriaDescription(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'criteriaDescription',
+          caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Criteria, Criteria, QDistinct> distinctByCriteriaId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'criteriaId');
@@ -597,6 +800,13 @@ extension CriteriaQueryProperty
   QueryBuilder<Criteria, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Criteria, String?, QQueryOperations>
+      criteriaDescriptionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'criteriaDescription');
     });
   }
 
@@ -626,6 +836,7 @@ extension CriteriaQueryProperty
 _$_Criteria _$$_CriteriaFromJson(Map<String, dynamic> json) => _$_Criteria(
       criteriaId: json['CriteriaId'] as int,
       criteriaName: json['CriteriaName'] as String?,
+      criteriaDescription: json['CriteriaDescription'] as String?,
       isActive: json['IsActive'] as bool? ?? true,
     );
 
@@ -633,5 +844,6 @@ Map<String, dynamic> _$$_CriteriaToJson(_$_Criteria instance) =>
     <String, dynamic>{
       'CriteriaId': instance.criteriaId,
       'CriteriaName': instance.criteriaName,
+      'CriteriaDescription': instance.criteriaDescription,
       'IsActive': instance.isActive,
     };

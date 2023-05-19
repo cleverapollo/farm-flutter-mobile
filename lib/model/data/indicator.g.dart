@@ -17,18 +17,23 @@ const IndicatorSchema = CollectionSchema(
   name: r'Indicator',
   id: 8885452576699898474,
   properties: {
-    r'indicatorId': PropertySchema(
+    r'indicatorDescription': PropertySchema(
       id: 0,
+      name: r'indicatorDescription',
+      type: IsarType.string,
+    ),
+    r'indicatorId': PropertySchema(
+      id: 1,
       name: r'indicatorId',
       type: IsarType.long,
     ),
     r'indicatorName': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'indicatorName',
       type: IsarType.string,
     ),
     r'isActive': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'isActive',
       type: IsarType.bool,
     )
@@ -54,6 +59,12 @@ int _indicatorEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
+    final value = object.indicatorDescription;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.indicatorName;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -68,9 +79,10 @@ void _indicatorSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.indicatorId);
-  writer.writeString(offsets[1], object.indicatorName);
-  writer.writeBool(offsets[2], object.isActive);
+  writer.writeString(offsets[0], object.indicatorDescription);
+  writer.writeLong(offsets[1], object.indicatorId);
+  writer.writeString(offsets[2], object.indicatorName);
+  writer.writeBool(offsets[3], object.isActive);
 }
 
 Indicator _indicatorDeserialize(
@@ -80,9 +92,10 @@ Indicator _indicatorDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Indicator(
-    indicatorId: reader.readLong(offsets[0]),
-    indicatorName: reader.readStringOrNull(offsets[1]),
-    isActive: reader.readBoolOrNull(offsets[2]),
+    indicatorDescription: reader.readStringOrNull(offsets[0]),
+    indicatorId: reader.readLong(offsets[1]),
+    indicatorName: reader.readStringOrNull(offsets[2]),
+    isActive: reader.readBoolOrNull(offsets[3]),
   );
   return object;
 }
@@ -95,10 +108,12 @@ P _indicatorDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
-    case 1:
       return (reader.readStringOrNull(offset)) as P;
+    case 1:
+      return (reader.readLong(offset)) as P;
     case 2:
+      return (reader.readStringOrNull(offset)) as P;
+    case 3:
       return (reader.readBoolOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -243,6 +258,160 @@ extension IndicatorQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterFilterCondition>
+      indicatorDescriptionIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'indicatorDescription',
+      ));
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterFilterCondition>
+      indicatorDescriptionIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'indicatorDescription',
+      ));
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterFilterCondition>
+      indicatorDescriptionEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'indicatorDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterFilterCondition>
+      indicatorDescriptionGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'indicatorDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterFilterCondition>
+      indicatorDescriptionLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'indicatorDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterFilterCondition>
+      indicatorDescriptionBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'indicatorDescription',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterFilterCondition>
+      indicatorDescriptionStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'indicatorDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterFilterCondition>
+      indicatorDescriptionEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'indicatorDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterFilterCondition>
+      indicatorDescriptionContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'indicatorDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterFilterCondition>
+      indicatorDescriptionMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'indicatorDescription',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterFilterCondition>
+      indicatorDescriptionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'indicatorDescription',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterFilterCondition>
+      indicatorDescriptionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'indicatorDescription',
+        value: '',
       ));
     });
   }
@@ -490,6 +659,20 @@ extension IndicatorQueryLinks
     on QueryBuilder<Indicator, Indicator, QFilterCondition> {}
 
 extension IndicatorQuerySortBy on QueryBuilder<Indicator, Indicator, QSortBy> {
+  QueryBuilder<Indicator, Indicator, QAfterSortBy>
+      sortByIndicatorDescription() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'indicatorDescription', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterSortBy>
+      sortByIndicatorDescriptionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'indicatorDescription', Sort.desc);
+    });
+  }
+
   QueryBuilder<Indicator, Indicator, QAfterSortBy> sortByIndicatorId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'indicatorId', Sort.asc);
@@ -541,6 +724,20 @@ extension IndicatorQuerySortThenBy
     });
   }
 
+  QueryBuilder<Indicator, Indicator, QAfterSortBy>
+      thenByIndicatorDescription() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'indicatorDescription', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Indicator, Indicator, QAfterSortBy>
+      thenByIndicatorDescriptionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'indicatorDescription', Sort.desc);
+    });
+  }
+
   QueryBuilder<Indicator, Indicator, QAfterSortBy> thenByIndicatorId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'indicatorId', Sort.asc);
@@ -580,6 +777,14 @@ extension IndicatorQuerySortThenBy
 
 extension IndicatorQueryWhereDistinct
     on QueryBuilder<Indicator, Indicator, QDistinct> {
+  QueryBuilder<Indicator, Indicator, QDistinct> distinctByIndicatorDescription(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'indicatorDescription',
+          caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Indicator, Indicator, QDistinct> distinctByIndicatorId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'indicatorId');
@@ -609,6 +814,13 @@ extension IndicatorQueryProperty
     });
   }
 
+  QueryBuilder<Indicator, String?, QQueryOperations>
+      indicatorDescriptionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'indicatorDescription');
+    });
+  }
+
   QueryBuilder<Indicator, int, QQueryOperations> indicatorIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'indicatorId');
@@ -635,6 +847,7 @@ extension IndicatorQueryProperty
 _$_Indicator _$$_IndicatorFromJson(Map<String, dynamic> json) => _$_Indicator(
       indicatorId: json['IndicatorId'] as int,
       indicatorName: json['IndicatorName'] as String?,
+      indicatorDescription: json['IndicatorDescription'] as String?,
       isActive: json['IsActive'] as bool? ?? true,
     );
 
@@ -642,5 +855,6 @@ Map<String, dynamic> _$$_IndicatorToJson(_$_Indicator instance) =>
     <String, dynamic>{
       'IndicatorId': instance.indicatorId,
       'IndicatorName': instance.indicatorName,
+      'IndicatorDescription': instance.indicatorDescription,
       'IsActive': instance.isActive,
     };

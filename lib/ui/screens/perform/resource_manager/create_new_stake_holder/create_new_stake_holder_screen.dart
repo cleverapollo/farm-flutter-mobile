@@ -222,8 +222,8 @@ class _CreateNewStakeHolderScreenState
               itemsData: listStakeholderTypes
                   .map(
                     (e) => CmoDropdownItem(
-                      id: e.stakeholderTypeId,
-                      name: e.stakeholderTypeName ?? '',
+                      id: e.stakeHolderTypeId,
+                      name: e.stakeHolderTypeName ?? '',
                     ),
                   )
                   .toList(),

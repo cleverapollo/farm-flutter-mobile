@@ -10,8 +10,8 @@ part 'stakeholder_type.g.dart';
 @Collection(ignore: {'copyWith'})
 class StakeHolderType with _$StakeHolderType {
   const factory StakeHolderType({
-    @JsonKey(name: 'StakeholderTypeId') int? stakeholderTypeId,
-    @JsonKey(name: 'StakeholderTypeName') String? stakeholderTypeName,
+    @JsonKey(name: 'StakeholderTypeId') required String stakeHolderTypeId,
+    @JsonKey(name: 'StakeholderTypeName') String? stakeHolderTypeName,
     @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsLocal') bool? isLocal,
@@ -23,5 +23,5 @@ class StakeHolderType with _$StakeHolderType {
       _$StakeHolderTypeFromJson(json);
 
   @override
-  Id get id => stakeholderTypeId ?? Isar.autoIncrement;
+  Id get id => int.tryParse(stakeHolderTypeId) ?? Isar.autoIncrement;
 }

@@ -21,9 +21,9 @@ StakeHolderType _$StakeHolderTypeFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$StakeHolderType {
   @JsonKey(name: 'StakeholderTypeId')
-  int? get stakeholderTypeId => throw _privateConstructorUsedError;
+  String get stakeHolderTypeId => throw _privateConstructorUsedError;
   @JsonKey(name: 'StakeholderTypeName')
-  String? get stakeholderTypeName => throw _privateConstructorUsedError;
+  String? get stakeHolderTypeName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsMasterDataSynced')
   bool? get isMasterDataSynced => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
@@ -44,8 +44,8 @@ abstract class $StakeHolderTypeCopyWith<$Res> {
       _$StakeHolderTypeCopyWithImpl<$Res, StakeHolderType>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'StakeholderTypeId') int? stakeholderTypeId,
-      @JsonKey(name: 'StakeholderTypeName') String? stakeholderTypeName,
+      {@JsonKey(name: 'StakeholderTypeId') String stakeHolderTypeId,
+      @JsonKey(name: 'StakeholderTypeName') String? stakeHolderTypeName,
       @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'IsLocal') bool? isLocal});
@@ -64,20 +64,20 @@ class _$StakeHolderTypeCopyWithImpl<$Res, $Val extends StakeHolderType>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? stakeholderTypeId = freezed,
-    Object? stakeholderTypeName = freezed,
+    Object? stakeHolderTypeId = null,
+    Object? stakeHolderTypeName = freezed,
     Object? isMasterDataSynced = freezed,
     Object? isActive = freezed,
     Object? isLocal = freezed,
   }) {
     return _then(_value.copyWith(
-      stakeholderTypeId: freezed == stakeholderTypeId
-          ? _value.stakeholderTypeId
-          : stakeholderTypeId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      stakeholderTypeName: freezed == stakeholderTypeName
-          ? _value.stakeholderTypeName
-          : stakeholderTypeName // ignore: cast_nullable_to_non_nullable
+      stakeHolderTypeId: null == stakeHolderTypeId
+          ? _value.stakeHolderTypeId
+          : stakeHolderTypeId // ignore: cast_nullable_to_non_nullable
+              as String,
+      stakeHolderTypeName: freezed == stakeHolderTypeName
+          ? _value.stakeHolderTypeName
+          : stakeHolderTypeName // ignore: cast_nullable_to_non_nullable
               as String?,
       isMasterDataSynced: freezed == isMasterDataSynced
           ? _value.isMasterDataSynced
@@ -104,8 +104,8 @@ abstract class _$$_StakeHolderTypeCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'StakeholderTypeId') int? stakeholderTypeId,
-      @JsonKey(name: 'StakeholderTypeName') String? stakeholderTypeName,
+      {@JsonKey(name: 'StakeholderTypeId') String stakeHolderTypeId,
+      @JsonKey(name: 'StakeholderTypeName') String? stakeHolderTypeName,
       @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'IsLocal') bool? isLocal});
@@ -122,20 +122,20 @@ class __$$_StakeHolderTypeCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? stakeholderTypeId = freezed,
-    Object? stakeholderTypeName = freezed,
+    Object? stakeHolderTypeId = null,
+    Object? stakeHolderTypeName = freezed,
     Object? isMasterDataSynced = freezed,
     Object? isActive = freezed,
     Object? isLocal = freezed,
   }) {
     return _then(_$_StakeHolderType(
-      stakeholderTypeId: freezed == stakeholderTypeId
-          ? _value.stakeholderTypeId
-          : stakeholderTypeId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      stakeholderTypeName: freezed == stakeholderTypeName
-          ? _value.stakeholderTypeName
-          : stakeholderTypeName // ignore: cast_nullable_to_non_nullable
+      stakeHolderTypeId: null == stakeHolderTypeId
+          ? _value.stakeHolderTypeId
+          : stakeHolderTypeId // ignore: cast_nullable_to_non_nullable
+              as String,
+      stakeHolderTypeName: freezed == stakeHolderTypeName
+          ? _value.stakeHolderTypeName
+          : stakeHolderTypeName // ignore: cast_nullable_to_non_nullable
               as String?,
       isMasterDataSynced: freezed == isMasterDataSynced
           ? _value.isMasterDataSynced
@@ -157,8 +157,8 @@ class __$$_StakeHolderTypeCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_StakeHolderType extends _StakeHolderType {
   const _$_StakeHolderType(
-      {@JsonKey(name: 'StakeholderTypeId') this.stakeholderTypeId,
-      @JsonKey(name: 'StakeholderTypeName') this.stakeholderTypeName,
+      {@JsonKey(name: 'StakeholderTypeId') required this.stakeHolderTypeId,
+      @JsonKey(name: 'StakeholderTypeName') this.stakeHolderTypeName,
       @JsonKey(name: 'IsMasterDataSynced') this.isMasterDataSynced,
       @JsonKey(name: 'IsActive') this.isActive,
       @JsonKey(name: 'IsLocal') this.isLocal})
@@ -169,10 +169,10 @@ class _$_StakeHolderType extends _StakeHolderType {
 
   @override
   @JsonKey(name: 'StakeholderTypeId')
-  final int? stakeholderTypeId;
+  final String stakeHolderTypeId;
   @override
   @JsonKey(name: 'StakeholderTypeName')
-  final String? stakeholderTypeName;
+  final String? stakeHolderTypeName;
   @override
   @JsonKey(name: 'IsMasterDataSynced')
   final bool? isMasterDataSynced;
@@ -185,7 +185,7 @@ class _$_StakeHolderType extends _StakeHolderType {
 
   @override
   String toString() {
-    return 'StakeHolderType(stakeholderTypeId: $stakeholderTypeId, stakeholderTypeName: $stakeholderTypeName, isMasterDataSynced: $isMasterDataSynced, isActive: $isActive, isLocal: $isLocal)';
+    return 'StakeHolderType(stakeHolderTypeId: $stakeHolderTypeId, stakeHolderTypeName: $stakeHolderTypeName, isMasterDataSynced: $isMasterDataSynced, isActive: $isActive, isLocal: $isLocal)';
   }
 
   @override
@@ -193,10 +193,10 @@ class _$_StakeHolderType extends _StakeHolderType {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_StakeHolderType &&
-            (identical(other.stakeholderTypeId, stakeholderTypeId) ||
-                other.stakeholderTypeId == stakeholderTypeId) &&
-            (identical(other.stakeholderTypeName, stakeholderTypeName) ||
-                other.stakeholderTypeName == stakeholderTypeName) &&
+            (identical(other.stakeHolderTypeId, stakeHolderTypeId) ||
+                other.stakeHolderTypeId == stakeHolderTypeId) &&
+            (identical(other.stakeHolderTypeName, stakeHolderTypeName) ||
+                other.stakeHolderTypeName == stakeHolderTypeName) &&
             (identical(other.isMasterDataSynced, isMasterDataSynced) ||
                 other.isMasterDataSynced == isMasterDataSynced) &&
             (identical(other.isActive, isActive) ||
@@ -206,8 +206,8 @@ class _$_StakeHolderType extends _StakeHolderType {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, stakeholderTypeId,
-      stakeholderTypeName, isMasterDataSynced, isActive, isLocal);
+  int get hashCode => Object.hash(runtimeType, stakeHolderTypeId,
+      stakeHolderTypeName, isMasterDataSynced, isActive, isLocal);
 
   @JsonKey(ignore: true)
   @override
@@ -225,11 +225,16 @@ class _$_StakeHolderType extends _StakeHolderType {
 
 abstract class _StakeHolderType extends StakeHolderType {
   const factory _StakeHolderType(
-      {@JsonKey(name: 'StakeholderTypeId') final int? stakeholderTypeId,
-      @JsonKey(name: 'StakeholderTypeName') final String? stakeholderTypeName,
-      @JsonKey(name: 'IsMasterDataSynced') final bool? isMasterDataSynced,
-      @JsonKey(name: 'IsActive') final bool? isActive,
-      @JsonKey(name: 'IsLocal') final bool? isLocal}) = _$_StakeHolderType;
+      {@JsonKey(name: 'StakeholderTypeId')
+          required final String stakeHolderTypeId,
+      @JsonKey(name: 'StakeholderTypeName')
+          final String? stakeHolderTypeName,
+      @JsonKey(name: 'IsMasterDataSynced')
+          final bool? isMasterDataSynced,
+      @JsonKey(name: 'IsActive')
+          final bool? isActive,
+      @JsonKey(name: 'IsLocal')
+          final bool? isLocal}) = _$_StakeHolderType;
   const _StakeHolderType._() : super._();
 
   factory _StakeHolderType.fromJson(Map<String, dynamic> json) =
@@ -237,10 +242,10 @@ abstract class _StakeHolderType extends StakeHolderType {
 
   @override
   @JsonKey(name: 'StakeholderTypeId')
-  int? get stakeholderTypeId;
+  String get stakeHolderTypeId;
   @override
   @JsonKey(name: 'StakeholderTypeName')
-  String? get stakeholderTypeName;
+  String? get stakeHolderTypeName;
   @override
   @JsonKey(name: 'IsMasterDataSynced')
   bool? get isMasterDataSynced;

@@ -22,13 +22,18 @@ const PrincipleSchema = CollectionSchema(
       name: r'isActive',
       type: IsarType.bool,
     ),
-    r'principleId': PropertySchema(
+    r'principleDescription': PropertySchema(
       id: 1,
+      name: r'principleDescription',
+      type: IsarType.string,
+    ),
+    r'principleId': PropertySchema(
+      id: 2,
       name: r'principleId',
       type: IsarType.long,
     ),
     r'principleName': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'principleName',
       type: IsarType.string,
     )
@@ -54,6 +59,12 @@ int _principleEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
+    final value = object.principleDescription;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.principleName;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -69,8 +80,9 @@ void _principleSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeBool(offsets[0], object.isActive);
-  writer.writeLong(offsets[1], object.principleId);
-  writer.writeString(offsets[2], object.principleName);
+  writer.writeString(offsets[1], object.principleDescription);
+  writer.writeLong(offsets[2], object.principleId);
+  writer.writeString(offsets[3], object.principleName);
 }
 
 Principle _principleDeserialize(
@@ -81,8 +93,9 @@ Principle _principleDeserialize(
 ) {
   final object = Principle(
     isActive: reader.readBoolOrNull(offsets[0]),
-    principleId: reader.readLong(offsets[1]),
-    principleName: reader.readStringOrNull(offsets[2]),
+    principleDescription: reader.readStringOrNull(offsets[1]),
+    principleId: reader.readLong(offsets[2]),
+    principleName: reader.readStringOrNull(offsets[3]),
   );
   return object;
 }
@@ -97,8 +110,10 @@ P _principleDeserializeProp<P>(
     case 0:
       return (reader.readBoolOrNull(offset)) as P;
     case 1:
-      return (reader.readLong(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
+      return (reader.readLong(offset)) as P;
+    case 3:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -270,6 +285,160 @@ extension PrincipleQueryFilter
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isActive',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterFilterCondition>
+      principleDescriptionIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'principleDescription',
+      ));
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterFilterCondition>
+      principleDescriptionIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'principleDescription',
+      ));
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterFilterCondition>
+      principleDescriptionEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'principleDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterFilterCondition>
+      principleDescriptionGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'principleDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterFilterCondition>
+      principleDescriptionLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'principleDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterFilterCondition>
+      principleDescriptionBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'principleDescription',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterFilterCondition>
+      principleDescriptionStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'principleDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterFilterCondition>
+      principleDescriptionEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'principleDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterFilterCondition>
+      principleDescriptionContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'principleDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterFilterCondition>
+      principleDescriptionMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'principleDescription',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterFilterCondition>
+      principleDescriptionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'principleDescription',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterFilterCondition>
+      principleDescriptionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'principleDescription',
+        value: '',
       ));
     });
   }
@@ -502,6 +671,20 @@ extension PrincipleQuerySortBy on QueryBuilder<Principle, Principle, QSortBy> {
     });
   }
 
+  QueryBuilder<Principle, Principle, QAfterSortBy>
+      sortByPrincipleDescription() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'principleDescription', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterSortBy>
+      sortByPrincipleDescriptionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'principleDescription', Sort.desc);
+    });
+  }
+
   QueryBuilder<Principle, Principle, QAfterSortBy> sortByPrincipleId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'principleId', Sort.asc);
@@ -553,6 +736,20 @@ extension PrincipleQuerySortThenBy
     });
   }
 
+  QueryBuilder<Principle, Principle, QAfterSortBy>
+      thenByPrincipleDescription() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'principleDescription', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Principle, Principle, QAfterSortBy>
+      thenByPrincipleDescriptionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'principleDescription', Sort.desc);
+    });
+  }
+
   QueryBuilder<Principle, Principle, QAfterSortBy> thenByPrincipleId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'principleId', Sort.asc);
@@ -586,6 +783,14 @@ extension PrincipleQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Principle, Principle, QDistinct> distinctByPrincipleDescription(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'principleDescription',
+          caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Principle, Principle, QDistinct> distinctByPrincipleId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'principleId');
@@ -615,6 +820,13 @@ extension PrincipleQueryProperty
     });
   }
 
+  QueryBuilder<Principle, String?, QQueryOperations>
+      principleDescriptionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'principleDescription');
+    });
+  }
+
   QueryBuilder<Principle, int, QQueryOperations> principleIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'principleId');
@@ -635,6 +847,7 @@ extension PrincipleQueryProperty
 _$_Principle _$$_PrincipleFromJson(Map<String, dynamic> json) => _$_Principle(
       principleId: json['PrincipleId'] as int,
       principleName: json['PrincipleName'] as String?,
+      principleDescription: json['PrincipleDescription'] as String?,
       isActive: json['IsActive'] as bool? ?? true,
     );
 
@@ -642,5 +855,6 @@ Map<String, dynamic> _$$_PrincipleToJson(_$_Principle instance) =>
     <String, dynamic>{
       'PrincipleId': instance.principleId,
       'PrincipleName': instance.principleName,
+      'PrincipleDescription': instance.principleDescription,
       'IsActive': instance.isActive,
     };

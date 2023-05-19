@@ -24,6 +24,8 @@ mixin _$Criteria {
   int get criteriaId => throw _privateConstructorUsedError;
   @JsonKey(name: 'CriteriaName')
   String? get criteriaName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'CriteriaDescription')
+  String? get criteriaDescription => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
 
@@ -41,6 +43,7 @@ abstract class $CriteriaCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'CriteriaId') int criteriaId,
       @JsonKey(name: 'CriteriaName') String? criteriaName,
+      @JsonKey(name: 'CriteriaDescription') String? criteriaDescription,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -59,6 +62,7 @@ class _$CriteriaCopyWithImpl<$Res, $Val extends Criteria>
   $Res call({
     Object? criteriaId = null,
     Object? criteriaName = freezed,
+    Object? criteriaDescription = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
@@ -69,6 +73,10 @@ class _$CriteriaCopyWithImpl<$Res, $Val extends Criteria>
       criteriaName: freezed == criteriaName
           ? _value.criteriaName
           : criteriaName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      criteriaDescription: freezed == criteriaDescription
+          ? _value.criteriaDescription
+          : criteriaDescription // ignore: cast_nullable_to_non_nullable
               as String?,
       isActive: freezed == isActive
           ? _value.isActive
@@ -88,6 +96,7 @@ abstract class _$$_CriteriaCopyWith<$Res> implements $CriteriaCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'CriteriaId') int criteriaId,
       @JsonKey(name: 'CriteriaName') String? criteriaName,
+      @JsonKey(name: 'CriteriaDescription') String? criteriaDescription,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -104,6 +113,7 @@ class __$$_CriteriaCopyWithImpl<$Res>
   $Res call({
     Object? criteriaId = null,
     Object? criteriaName = freezed,
+    Object? criteriaDescription = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_Criteria(
@@ -114,6 +124,10 @@ class __$$_CriteriaCopyWithImpl<$Res>
       criteriaName: freezed == criteriaName
           ? _value.criteriaName
           : criteriaName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      criteriaDescription: freezed == criteriaDescription
+          ? _value.criteriaDescription
+          : criteriaDescription // ignore: cast_nullable_to_non_nullable
               as String?,
       isActive: freezed == isActive
           ? _value.isActive
@@ -129,6 +143,7 @@ class _$_Criteria extends _Criteria {
   const _$_Criteria(
       {@JsonKey(name: 'CriteriaId') required this.criteriaId,
       @JsonKey(name: 'CriteriaName') this.criteriaName,
+      @JsonKey(name: 'CriteriaDescription') this.criteriaDescription,
       @JsonKey(name: 'IsActive') this.isActive = true})
       : super._();
 
@@ -142,12 +157,15 @@ class _$_Criteria extends _Criteria {
   @JsonKey(name: 'CriteriaName')
   final String? criteriaName;
   @override
+  @JsonKey(name: 'CriteriaDescription')
+  final String? criteriaDescription;
+  @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
 
   @override
   String toString() {
-    return 'Criteria(criteriaId: $criteriaId, criteriaName: $criteriaName, isActive: $isActive)';
+    return 'Criteria(criteriaId: $criteriaId, criteriaName: $criteriaName, criteriaDescription: $criteriaDescription, isActive: $isActive)';
   }
 
   @override
@@ -159,14 +177,16 @@ class _$_Criteria extends _Criteria {
                 other.criteriaId == criteriaId) &&
             (identical(other.criteriaName, criteriaName) ||
                 other.criteriaName == criteriaName) &&
+            (identical(other.criteriaDescription, criteriaDescription) ||
+                other.criteriaDescription == criteriaDescription) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, criteriaId, criteriaName, isActive);
+  int get hashCode => Object.hash(
+      runtimeType, criteriaId, criteriaName, criteriaDescription, isActive);
 
   @JsonKey(ignore: true)
   @override
@@ -186,6 +206,7 @@ abstract class _Criteria extends Criteria {
   const factory _Criteria(
       {@JsonKey(name: 'CriteriaId') required final int criteriaId,
       @JsonKey(name: 'CriteriaName') final String? criteriaName,
+      @JsonKey(name: 'CriteriaDescription') final String? criteriaDescription,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Criteria;
   const _Criteria._() : super._();
 
@@ -197,6 +218,9 @@ abstract class _Criteria extends Criteria {
   @override
   @JsonKey(name: 'CriteriaName')
   String? get criteriaName;
+  @override
+  @JsonKey(name: 'CriteriaDescription')
+  String? get criteriaDescription;
   @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;

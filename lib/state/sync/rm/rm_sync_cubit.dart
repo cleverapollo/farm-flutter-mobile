@@ -1,8 +1,371 @@
+import 'package:cmo/di.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/state/sync/base_sync_cubit.dart';
 import 'package:cmo/state/sync/base_sync_state.dart';
+import 'package:cmo/utils/utils.dart';
+import 'package:flutter/material.dart';
 
 part 'rm_sync_state.dart';
 
 class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   RMSyncCubit(super.state);
+
+  final String topicRegionalManagerMasterDataSync =
+      'Cmo.MasterDataDeviceSync.RM.';
+
+  Future<void> sync(
+      {required BuildContext context, required String userDeviceId}) async {
+    emit(
+      state.copyWith(
+        syncMessage: 'Syncing All Master Data...',
+      ),
+    );
+
+    Future<void> syncMasterData() async {
+      var sync = true;
+      while (sync) {
+        MasterDataMessage? resPull;
+
+        if (context.mounted) {
+          resPull = await cmoApiService.pullMessage(
+            topicMasterDataSync: topicRegionalManagerMasterDataSync,
+            pubsubApiKey: appInfoService.pubsubApiKey,
+            currentClientId: int.parse(userDeviceId),
+          );
+        }
+
+        final messages = resPull?.message;
+        if (messages == null || messages.isEmpty) {
+          sync = false;
+          break;
+        }
+
+        final dbCompany = await cmoDatabaseMasterService.db;
+        await dbCompany.writeTxn(() async {
+          for (var i = 0; i < messages.length; i++) {
+            final item = messages[i];
+
+            try {
+              final topic = item.header?.originalTopic;
+
+              if (topic ==
+                  '${topicRegionalManagerMasterDataSync}SH.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Stakeholders...'));
+                await insertStakeholder(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}GSS.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Group Scheme Stakeholders...'));
+                await insertGroupSchemeStakeholder(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}SHT.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Stakeholder Types...'));
+                await insertStakeholderType(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}PropOwnerType.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Property Ownership Type...'));
+                await insertFarmPropertyOwnershipType(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}ScheduleActivity.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Schedule Activity...'));
+                await insertScheduleActivity(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}Schedule.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
+                await insertSchedule(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}AuditTemplate.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Audit Template...'));
+                await insertAuditTemplate(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}RejectReason.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Reject Reason...'));
+                await insertRejectReason(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}Criteria.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Criteria...'));
+                await insertCriteria(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}Principle.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Principle...'));
+                await insertPrinciple(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}Indicator.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Indicator...'));
+                await insertIndicator(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}ImpactOn.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Impact On...'));
+                await insertImpactOn(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}ImpactCaused.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Impact Caused...'));
+                await insertImpactCaused(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}Severity.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Severity...'));
+                await insertSeverity(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}RMU.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Regional Manager Unit...'));
+                await insertRegionalManagerUnit(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}RiskProQuestion.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Risk Profile Question...'));
+                await insertRiskProfileQuestion(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}FrmMemObj.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Farm Member Objective...'));
+                await insertFarmMemberObjective(item);
+              } else if (topic ==
+                  '${topicRegionalManagerMasterDataSync}FrmObjOpt.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Farm Objective Option...'));
+                await insertFarmObjectiveOption(item);
+              }
+            } finally {}
+          }
+        });
+
+        if (context.mounted) {
+          await cmoApiService.commitMessageList(
+            pubsubApiKey: appInfoService.pubsubApiKey,
+            currentClientId: int.parse(userDeviceId),
+            messages: messages,
+            topicMasterDataSync: topicRegionalManagerMasterDataSync,
+          );
+        }
+      }
+    }
+
+    await syncMasterData();
+
+    emit(
+      state.copyWith(
+        syncMessage: '',
+      ),
+    );
+  }
+
+  Future<int?> insertStakeholder(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final stakeHolder = RMStakeHolder.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheRMStakeHolder(stakeHolder);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertGroupSchemeStakeholder(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final stakeHolder = GroupSchemeStakeHolder.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheGroupSchemeStakeHolder(stakeHolder);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertStakeholderType(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final type = StakeHolderType.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheStakeHolderType(type);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertFarmPropertyOwnershipType(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final type = FarmPropertyOwnershipType.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheFarmPropertyOwnershipType(type);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertScheduleActivity(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final activity = ScheduleActivity.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheScheduleActivity(activity);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertSchedule(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final schedule = RMSchedule.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheRMSchedule(schedule);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertAuditTemplate(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final template = AuditTemplate.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheAuditTemplate(template);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertRejectReason(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final reason = RejectReason.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheRejectReason(reason);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertCriteria(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final criteria = Criteria.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheCriteria(criteria);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertPrinciple(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final principle = Principle.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cachePrinciple(principle);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertIndicator(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final indicator = Indicator.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheIndicator(indicator);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertImpactOn(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final impact = ImpactOn.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheImpactOn(impact);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertImpactCaused(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final impact = ImpactCaused.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheImpactCaused(impact);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertSeverity(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final severity = Severity.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheSeverity(severity);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertRegionalManagerUnit(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final unit = RegionalManagerUnit.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheRegionalManagerUnit(unit);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertRiskProfileQuestion(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final question = RiskProfileQuestion.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheRiskProfileQuestion(question);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertFarmMemberObjective(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final objective = FarmMemberObjective.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheFarmMemberObjective(objective);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertFarmObjectiveOption(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final option = FarmObjectiveOption.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheFarmObjectiveOption(option);
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
 }

@@ -24,6 +24,8 @@ mixin _$Principle {
   int get principleId => throw _privateConstructorUsedError;
   @JsonKey(name: 'PrincipleName')
   String? get principleName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'PrincipleDescription')
+  String? get principleDescription => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
 
@@ -41,6 +43,7 @@ abstract class $PrincipleCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'PrincipleId') int principleId,
       @JsonKey(name: 'PrincipleName') String? principleName,
+      @JsonKey(name: 'PrincipleDescription') String? principleDescription,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -59,6 +62,7 @@ class _$PrincipleCopyWithImpl<$Res, $Val extends Principle>
   $Res call({
     Object? principleId = null,
     Object? principleName = freezed,
+    Object? principleDescription = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
@@ -69,6 +73,10 @@ class _$PrincipleCopyWithImpl<$Res, $Val extends Principle>
       principleName: freezed == principleName
           ? _value.principleName
           : principleName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      principleDescription: freezed == principleDescription
+          ? _value.principleDescription
+          : principleDescription // ignore: cast_nullable_to_non_nullable
               as String?,
       isActive: freezed == isActive
           ? _value.isActive
@@ -88,6 +96,7 @@ abstract class _$$_PrincipleCopyWith<$Res> implements $PrincipleCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'PrincipleId') int principleId,
       @JsonKey(name: 'PrincipleName') String? principleName,
+      @JsonKey(name: 'PrincipleDescription') String? principleDescription,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -104,6 +113,7 @@ class __$$_PrincipleCopyWithImpl<$Res>
   $Res call({
     Object? principleId = null,
     Object? principleName = freezed,
+    Object? principleDescription = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_Principle(
@@ -114,6 +124,10 @@ class __$$_PrincipleCopyWithImpl<$Res>
       principleName: freezed == principleName
           ? _value.principleName
           : principleName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      principleDescription: freezed == principleDescription
+          ? _value.principleDescription
+          : principleDescription // ignore: cast_nullable_to_non_nullable
               as String?,
       isActive: freezed == isActive
           ? _value.isActive
@@ -129,6 +143,7 @@ class _$_Principle extends _Principle {
   const _$_Principle(
       {@JsonKey(name: 'PrincipleId') required this.principleId,
       @JsonKey(name: 'PrincipleName') this.principleName,
+      @JsonKey(name: 'PrincipleDescription') this.principleDescription,
       @JsonKey(name: 'IsActive') this.isActive = true})
       : super._();
 
@@ -142,12 +157,15 @@ class _$_Principle extends _Principle {
   @JsonKey(name: 'PrincipleName')
   final String? principleName;
   @override
+  @JsonKey(name: 'PrincipleDescription')
+  final String? principleDescription;
+  @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
 
   @override
   String toString() {
-    return 'Principle(principleId: $principleId, principleName: $principleName, isActive: $isActive)';
+    return 'Principle(principleId: $principleId, principleName: $principleName, principleDescription: $principleDescription, isActive: $isActive)';
   }
 
   @override
@@ -159,14 +177,16 @@ class _$_Principle extends _Principle {
                 other.principleId == principleId) &&
             (identical(other.principleName, principleName) ||
                 other.principleName == principleName) &&
+            (identical(other.principleDescription, principleDescription) ||
+                other.principleDescription == principleDescription) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, principleId, principleName, isActive);
+  int get hashCode => Object.hash(
+      runtimeType, principleId, principleName, principleDescription, isActive);
 
   @JsonKey(ignore: true)
   @override
@@ -186,6 +206,7 @@ abstract class _Principle extends Principle {
   const factory _Principle(
       {@JsonKey(name: 'PrincipleId') required final int principleId,
       @JsonKey(name: 'PrincipleName') final String? principleName,
+      @JsonKey(name: 'PrincipleDescription') final String? principleDescription,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Principle;
   const _Principle._() : super._();
 
@@ -198,6 +219,9 @@ abstract class _Principle extends Principle {
   @override
   @JsonKey(name: 'PrincipleName')
   String? get principleName;
+  @override
+  @JsonKey(name: 'PrincipleDescription')
+  String? get principleDescription;
   @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;

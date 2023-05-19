@@ -32,14 +32,14 @@ const StakeHolderTypeSchema = CollectionSchema(
       name: r'isMasterDataSynced',
       type: IsarType.bool,
     ),
-    r'stakeholderTypeId': PropertySchema(
+    r'stakeHolderTypeId': PropertySchema(
       id: 3,
-      name: r'stakeholderTypeId',
-      type: IsarType.long,
+      name: r'stakeHolderTypeId',
+      type: IsarType.string,
     ),
-    r'stakeholderTypeName': PropertySchema(
+    r'stakeHolderTypeName': PropertySchema(
       id: 4,
-      name: r'stakeholderTypeName',
+      name: r'stakeHolderTypeName',
       type: IsarType.string,
     )
   },
@@ -63,8 +63,9 @@ int _stakeHolderTypeEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.stakeHolderTypeId.length * 3;
   {
-    final value = object.stakeholderTypeName;
+    final value = object.stakeHolderTypeName;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -81,8 +82,8 @@ void _stakeHolderTypeSerialize(
   writer.writeBool(offsets[0], object.isActive);
   writer.writeBool(offsets[1], object.isLocal);
   writer.writeBool(offsets[2], object.isMasterDataSynced);
-  writer.writeLong(offsets[3], object.stakeholderTypeId);
-  writer.writeString(offsets[4], object.stakeholderTypeName);
+  writer.writeString(offsets[3], object.stakeHolderTypeId);
+  writer.writeString(offsets[4], object.stakeHolderTypeName);
 }
 
 StakeHolderType _stakeHolderTypeDeserialize(
@@ -95,8 +96,8 @@ StakeHolderType _stakeHolderTypeDeserialize(
     isActive: reader.readBoolOrNull(offsets[0]),
     isLocal: reader.readBoolOrNull(offsets[1]),
     isMasterDataSynced: reader.readBoolOrNull(offsets[2]),
-    stakeholderTypeId: reader.readLongOrNull(offsets[3]),
-    stakeholderTypeName: reader.readStringOrNull(offsets[4]),
+    stakeHolderTypeId: reader.readString(offsets[3]),
+    stakeHolderTypeName: reader.readStringOrNull(offsets[4]),
   );
   return object;
 }
@@ -115,7 +116,7 @@ P _stakeHolderTypeDeserializeProp<P>(
     case 2:
       return (reader.readBoolOrNull(offset)) as P;
     case 3:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     default:
@@ -357,105 +358,79 @@ extension StakeHolderTypeQueryFilter
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeIdIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'stakeholderTypeId',
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeIdIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'stakeholderTypeId',
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeIdEqualTo(int? value) {
+      stakeHolderTypeIdEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'stakeholderTypeId',
+        property: r'stakeHolderTypeId',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeIdGreaterThan(
-    int? value, {
+      stakeHolderTypeIdGreaterThan(
+    String value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'stakeholderTypeId',
+        property: r'stakeHolderTypeId',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeIdLessThan(
-    int? value, {
+      stakeHolderTypeIdLessThan(
+    String value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'stakeholderTypeId',
+        property: r'stakeHolderTypeId',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeIdBetween(
-    int? lower,
-    int? upper, {
+      stakeHolderTypeIdBetween(
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'stakeholderTypeId',
+        property: r'stakeHolderTypeId',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeNameIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'stakeholderTypeName',
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeNameIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'stakeholderTypeName',
-      ));
-    });
-  }
-
-  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeNameEqualTo(
-    String? value, {
+      stakeHolderTypeIdStartsWith(
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'stakeholderTypeName',
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'stakeHolderTypeId',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -463,7 +438,95 @@ extension StakeHolderTypeQueryFilter
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeNameGreaterThan(
+      stakeHolderTypeIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'stakeHolderTypeId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
+      stakeHolderTypeIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'stakeHolderTypeId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
+      stakeHolderTypeIdMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'stakeHolderTypeId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
+      stakeHolderTypeIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'stakeHolderTypeId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
+      stakeHolderTypeIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'stakeHolderTypeId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
+      stakeHolderTypeNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'stakeHolderTypeName',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
+      stakeHolderTypeNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'stakeHolderTypeName',
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
+      stakeHolderTypeNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'stakeHolderTypeName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
+      stakeHolderTypeNameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -471,7 +534,7 @@ extension StakeHolderTypeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'stakeholderTypeName',
+        property: r'stakeHolderTypeName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -479,7 +542,7 @@ extension StakeHolderTypeQueryFilter
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeNameLessThan(
+      stakeHolderTypeNameLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -487,7 +550,7 @@ extension StakeHolderTypeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'stakeholderTypeName',
+        property: r'stakeHolderTypeName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -495,7 +558,7 @@ extension StakeHolderTypeQueryFilter
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeNameBetween(
+      stakeHolderTypeNameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -504,7 +567,7 @@ extension StakeHolderTypeQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'stakeholderTypeName',
+        property: r'stakeHolderTypeName',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -515,13 +578,13 @@ extension StakeHolderTypeQueryFilter
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeNameStartsWith(
+      stakeHolderTypeNameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'stakeholderTypeName',
+        property: r'stakeHolderTypeName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -529,13 +592,13 @@ extension StakeHolderTypeQueryFilter
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeNameEndsWith(
+      stakeHolderTypeNameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'stakeholderTypeName',
+        property: r'stakeHolderTypeName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -543,10 +606,10 @@ extension StakeHolderTypeQueryFilter
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeNameContains(String value, {bool caseSensitive = true}) {
+      stakeHolderTypeNameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'stakeholderTypeName',
+        property: r'stakeHolderTypeName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -554,10 +617,10 @@ extension StakeHolderTypeQueryFilter
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeNameMatches(String pattern, {bool caseSensitive = true}) {
+      stakeHolderTypeNameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'stakeholderTypeName',
+        property: r'stakeHolderTypeName',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -565,20 +628,20 @@ extension StakeHolderTypeQueryFilter
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeNameIsEmpty() {
+      stakeHolderTypeNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'stakeholderTypeName',
+        property: r'stakeHolderTypeName',
         value: '',
       ));
     });
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      stakeholderTypeNameIsNotEmpty() {
+      stakeHolderTypeNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'stakeholderTypeName',
+        property: r'stakeHolderTypeName',
         value: '',
       ));
     });
@@ -635,30 +698,30 @@ extension StakeHolderTypeQuerySortBy
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterSortBy>
-      sortByStakeholderTypeId() {
+      sortByStakeHolderTypeId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stakeholderTypeId', Sort.asc);
+      return query.addSortBy(r'stakeHolderTypeId', Sort.asc);
     });
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterSortBy>
-      sortByStakeholderTypeIdDesc() {
+      sortByStakeHolderTypeIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stakeholderTypeId', Sort.desc);
+      return query.addSortBy(r'stakeHolderTypeId', Sort.desc);
     });
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterSortBy>
-      sortByStakeholderTypeName() {
+      sortByStakeHolderTypeName() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stakeholderTypeName', Sort.asc);
+      return query.addSortBy(r'stakeHolderTypeName', Sort.asc);
     });
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterSortBy>
-      sortByStakeholderTypeNameDesc() {
+      sortByStakeHolderTypeNameDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stakeholderTypeName', Sort.desc);
+      return query.addSortBy(r'stakeHolderTypeName', Sort.desc);
     });
   }
 }
@@ -719,30 +782,30 @@ extension StakeHolderTypeQuerySortThenBy
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterSortBy>
-      thenByStakeholderTypeId() {
+      thenByStakeHolderTypeId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stakeholderTypeId', Sort.asc);
+      return query.addSortBy(r'stakeHolderTypeId', Sort.asc);
     });
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterSortBy>
-      thenByStakeholderTypeIdDesc() {
+      thenByStakeHolderTypeIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stakeholderTypeId', Sort.desc);
+      return query.addSortBy(r'stakeHolderTypeId', Sort.desc);
     });
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterSortBy>
-      thenByStakeholderTypeName() {
+      thenByStakeHolderTypeName() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stakeholderTypeName', Sort.asc);
+      return query.addSortBy(r'stakeHolderTypeName', Sort.asc);
     });
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterSortBy>
-      thenByStakeholderTypeNameDesc() {
+      thenByStakeHolderTypeNameDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stakeholderTypeName', Sort.desc);
+      return query.addSortBy(r'stakeHolderTypeName', Sort.desc);
     });
   }
 }
@@ -771,16 +834,17 @@ extension StakeHolderTypeQueryWhereDistinct
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QDistinct>
-      distinctByStakeholderTypeId() {
+      distinctByStakeHolderTypeId({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'stakeholderTypeId');
+      return query.addDistinctBy(r'stakeHolderTypeId',
+          caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QDistinct>
-      distinctByStakeholderTypeName({bool caseSensitive = true}) {
+      distinctByStakeHolderTypeName({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'stakeholderTypeName',
+      return query.addDistinctBy(r'stakeHolderTypeName',
           caseSensitive: caseSensitive);
     });
   }
@@ -813,17 +877,17 @@ extension StakeHolderTypeQueryProperty
     });
   }
 
-  QueryBuilder<StakeHolderType, int?, QQueryOperations>
-      stakeholderTypeIdProperty() {
+  QueryBuilder<StakeHolderType, String, QQueryOperations>
+      stakeHolderTypeIdProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'stakeholderTypeId');
+      return query.addPropertyName(r'stakeHolderTypeId');
     });
   }
 
   QueryBuilder<StakeHolderType, String?, QQueryOperations>
-      stakeholderTypeNameProperty() {
+      stakeHolderTypeNameProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'stakeholderTypeName');
+      return query.addPropertyName(r'stakeHolderTypeName');
     });
   }
 }
@@ -834,8 +898,8 @@ extension StakeHolderTypeQueryProperty
 
 _$_StakeHolderType _$$_StakeHolderTypeFromJson(Map<String, dynamic> json) =>
     _$_StakeHolderType(
-      stakeholderTypeId: json['StakeholderTypeId'] as int?,
-      stakeholderTypeName: json['StakeholderTypeName'] as String?,
+      stakeHolderTypeId: json['StakeholderTypeId'] as String,
+      stakeHolderTypeName: json['StakeholderTypeName'] as String?,
       isMasterDataSynced: json['IsMasterDataSynced'] as bool?,
       isActive: json['IsActive'] as bool?,
       isLocal: json['IsLocal'] as bool?,
@@ -843,8 +907,8 @@ _$_StakeHolderType _$$_StakeHolderTypeFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$_StakeHolderTypeToJson(_$_StakeHolderType instance) =>
     <String, dynamic>{
-      'StakeholderTypeId': instance.stakeholderTypeId,
-      'StakeholderTypeName': instance.stakeholderTypeName,
+      'StakeholderTypeId': instance.stakeHolderTypeId,
+      'StakeholderTypeName': instance.stakeHolderTypeName,
       'IsMasterDataSynced': instance.isMasterDataSynced,
       'IsActive': instance.isActive,
       'IsLocal': instance.isLocal,

@@ -354,6 +354,26 @@ class CmoDatabaseMasterService {
     return db.severitys.put(item);
   }
 
+  Future<int> cacheRegionalManagerUnit(RegionalManagerUnit item) async {
+    final db = await _db();
+    return db.regionalManagerUnits.put(item);
+  }
+
+  Future<int> cacheRiskProfileQuestion(RiskProfileQuestion item) async {
+    final db = await _db();
+    return db.riskProfileQuestions.put(item);
+  }
+
+  Future<int> cacheFarmMemberObjective(FarmMemberObjective item) async {
+    final db = await _db();
+    return db.farmMemberObjectives.put(item);
+  }
+
+  Future<int> cacheFarmObjectiveOption(FarmObjectiveOption item) async {
+    final db = await _db();
+    return db.farmObjectiveOptions.put(item);
+  }
+
   Future<List<Severity>> getSeveritys() async {
     final db = await _db();
 
@@ -531,6 +551,51 @@ class CmoDatabaseMasterService {
   Future<int> cacheStakeHolder(StakeHolder item) async {
     final db = await _db();
     return db.stakeHolders.put(item);
+  }
+
+  Future<int> cacheRMStakeHolder(RMStakeHolder item) async {
+    final db = await _db();
+    return db.rMStakeHolders.put(item);
+  }
+
+  Future<int> cacheGroupSchemeStakeHolder(GroupSchemeStakeHolder item) async {
+    final db = await _db();
+    return db.groupSchemeStakeHolders.put(item);
+  }
+
+  Future<int> cacheStakeHolderType(StakeHolderType item) async {
+    final db = await _db();
+    return db.stakeHolderTypes.put(item);
+  }
+
+  Future<int> cacheFarmPropertyOwnershipType(FarmPropertyOwnershipType item) async {
+    final db = await _db();
+    return db.farmPropertyOwnershipTypes.put(item);
+  }
+
+  Future<int> cacheRMSchedule(RMSchedule item) async {
+    final db = await _db();
+    return db.rMSchedules.put(item);
+  }
+
+  Future<int> cacheAuditTemplate(AuditTemplate item) async {
+    final db = await _db();
+    return db.auditTemplates.put(item);
+  }
+
+  Future<int> cacheCriteria(Criteria item) async {
+    final db = await _db();
+    return db.criterias.put(item);
+  }
+
+  Future<int> cachePrinciple(Principle item) async {
+    final db = await _db();
+    return db.principles.put(item);
+  }
+
+  Future<int> cacheIndicator(Indicator item) async {
+    final db = await _db();
+    return db.indicators.put(item);
   }
 
   Future<int> cacheAnnualProduction(AnnualProduction item) async {

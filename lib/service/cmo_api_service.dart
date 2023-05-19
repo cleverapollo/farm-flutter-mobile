@@ -337,6 +337,35 @@ class CmoApiService {
     return data == null ? null : MasterDataMessage.fromJson(data);
   }
 
+  Future<bool?> commitMessageList({
+    required String pubsubApiKey,
+    required String topicMasterDataSync,
+    required int currentClientId,
+    required List<Message> messages,
+  }) async {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      '/pubsubapi/api/v1/message',
+      {
+        'key': pubsubApiKey,
+        'client': '$currentClientId',
+        'topic': '$topicMasterDataSync*.$currentClientId',
+      },
+    );
+    final body = messages.map((e) => e.toJson()).toList();
+
+    final response = await client.deleteUri<dynamic>(
+      uri,
+      data: body,
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return false;
+    }
+    return true;
+  }
+
   Future<bool?> deleteMessage({
     required String pubsubApiKey,
     required int currentClientId,

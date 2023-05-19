@@ -11,6 +11,7 @@ class Criteria with _$Criteria {
   const factory Criteria({
     @JsonKey(name: 'CriteriaId') required int  criteriaId,
     @JsonKey(name: 'CriteriaName') String? criteriaName,
+    @JsonKey(name: 'CriteriaDescription') String? criteriaDescription,
     @Default(true)
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _Criteria;

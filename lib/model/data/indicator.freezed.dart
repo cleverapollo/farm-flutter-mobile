@@ -24,6 +24,8 @@ mixin _$Indicator {
   int get indicatorId => throw _privateConstructorUsedError;
   @JsonKey(name: 'IndicatorName')
   String? get indicatorName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IndicatorDescription')
+  String? get indicatorDescription => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
 
@@ -41,6 +43,7 @@ abstract class $IndicatorCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'IndicatorId') int indicatorId,
       @JsonKey(name: 'IndicatorName') String? indicatorName,
+      @JsonKey(name: 'IndicatorDescription') String? indicatorDescription,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -59,6 +62,7 @@ class _$IndicatorCopyWithImpl<$Res, $Val extends Indicator>
   $Res call({
     Object? indicatorId = null,
     Object? indicatorName = freezed,
+    Object? indicatorDescription = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
@@ -69,6 +73,10 @@ class _$IndicatorCopyWithImpl<$Res, $Val extends Indicator>
       indicatorName: freezed == indicatorName
           ? _value.indicatorName
           : indicatorName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      indicatorDescription: freezed == indicatorDescription
+          ? _value.indicatorDescription
+          : indicatorDescription // ignore: cast_nullable_to_non_nullable
               as String?,
       isActive: freezed == isActive
           ? _value.isActive
@@ -88,6 +96,7 @@ abstract class _$$_IndicatorCopyWith<$Res> implements $IndicatorCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'IndicatorId') int indicatorId,
       @JsonKey(name: 'IndicatorName') String? indicatorName,
+      @JsonKey(name: 'IndicatorDescription') String? indicatorDescription,
       @JsonKey(name: 'IsActive') bool? isActive});
 }
 
@@ -104,6 +113,7 @@ class __$$_IndicatorCopyWithImpl<$Res>
   $Res call({
     Object? indicatorId = null,
     Object? indicatorName = freezed,
+    Object? indicatorDescription = freezed,
     Object? isActive = freezed,
   }) {
     return _then(_$_Indicator(
@@ -114,6 +124,10 @@ class __$$_IndicatorCopyWithImpl<$Res>
       indicatorName: freezed == indicatorName
           ? _value.indicatorName
           : indicatorName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      indicatorDescription: freezed == indicatorDescription
+          ? _value.indicatorDescription
+          : indicatorDescription // ignore: cast_nullable_to_non_nullable
               as String?,
       isActive: freezed == isActive
           ? _value.isActive
@@ -129,6 +143,7 @@ class _$_Indicator extends _Indicator {
   const _$_Indicator(
       {@JsonKey(name: 'IndicatorId') required this.indicatorId,
       @JsonKey(name: 'IndicatorName') this.indicatorName,
+      @JsonKey(name: 'IndicatorDescription') this.indicatorDescription,
       @JsonKey(name: 'IsActive') this.isActive = true})
       : super._();
 
@@ -142,12 +157,15 @@ class _$_Indicator extends _Indicator {
   @JsonKey(name: 'IndicatorName')
   final String? indicatorName;
   @override
+  @JsonKey(name: 'IndicatorDescription')
+  final String? indicatorDescription;
+  @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
 
   @override
   String toString() {
-    return 'Indicator(indicatorId: $indicatorId, indicatorName: $indicatorName, isActive: $isActive)';
+    return 'Indicator(indicatorId: $indicatorId, indicatorName: $indicatorName, indicatorDescription: $indicatorDescription, isActive: $isActive)';
   }
 
   @override
@@ -159,14 +177,16 @@ class _$_Indicator extends _Indicator {
                 other.indicatorId == indicatorId) &&
             (identical(other.indicatorName, indicatorName) ||
                 other.indicatorName == indicatorName) &&
+            (identical(other.indicatorDescription, indicatorDescription) ||
+                other.indicatorDescription == indicatorDescription) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, indicatorId, indicatorName, isActive);
+  int get hashCode => Object.hash(
+      runtimeType, indicatorId, indicatorName, indicatorDescription, isActive);
 
   @JsonKey(ignore: true)
   @override
@@ -186,6 +206,7 @@ abstract class _Indicator extends Indicator {
   const factory _Indicator(
       {@JsonKey(name: 'IndicatorId') required final int indicatorId,
       @JsonKey(name: 'IndicatorName') final String? indicatorName,
+      @JsonKey(name: 'IndicatorDescription') final String? indicatorDescription,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Indicator;
   const _Indicator._() : super._();
 
@@ -198,6 +219,9 @@ abstract class _Indicator extends Indicator {
   @override
   @JsonKey(name: 'IndicatorName')
   String? get indicatorName;
+  @override
+  @JsonKey(name: 'IndicatorDescription')
+  String? get indicatorDescription;
   @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;
