@@ -68,6 +68,7 @@ class CmoDatabaseMasterService {
         FireManagementSchema,
         RteSpeciesPhotoModelSchema,
         RteSpeciesSchema,
+        StakeHolderTypeSchema,
       ],
       name: _databaseName,
     );
@@ -586,6 +587,11 @@ class CmoDatabaseMasterService {
   Future<List<StakeHolder>> getStakeHolders() async {
     final db = await _db();
     return db.stakeHolders.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<StakeHolderType>> getStakeHolderTypes() async {
+    final db = await _db();
+    return db.stakeHolderTypes.filter().isActiveEqualTo(true).findAll();
   }
 
   Future<List<Worker>> getWorkersByCompanyId(int companyId) async {

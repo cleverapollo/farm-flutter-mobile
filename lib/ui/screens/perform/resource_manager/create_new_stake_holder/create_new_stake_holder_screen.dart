@@ -2,7 +2,8 @@ import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/state/entity_cubit/entity_cubit.dart';
+import 'package:cmo/state/dashboard/dashboard_cubit.dart';
+import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
 import 'package:cmo/utils/helpers.dart';
 import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
@@ -29,11 +30,20 @@ class CreateNewStakeHolderScreen extends StatefulWidget {
   State<CreateNewStakeHolderScreen> createState() => _CreateNewStakeHolderScreenState();
 }
 
-class _CreateNewStakeHolderScreenState extends State<CreateNewStakeHolderScreen> {
+class _CreateNewStakeHolderScreenState
+    extends State<CreateNewStakeHolderScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
   bool loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      await context.read<StakeHolderListCubit>().loadListStakeHolderType();
+    });
+  }
 
   Future<void> onSubmit() async {
     setState(() {
@@ -50,14 +60,9 @@ class _CreateNewStakeHolderScreenState extends State<CreateNewStakeHolderScreen>
       try {
         await hideInputMethod();
         final stakeHolderId = DateTime.now().millisecondsSinceEpoch;
-        value['StakeHolderId'] = stakeHolderId.toString();
+        value['StakeHolderId'] = stakeHolderId;
         value['IsActive'] = true;
         value['IsLocal'] = true;
-
-        if (value['DOB'] is DateTime) {
-          final dob = value['DOB'] as DateTime;
-          value['DOB'] = dob.toIso8601String();
-        }
         final stakeHolder = StakeHolder.fromJson(value);
 
         int? resultId;
@@ -76,6 +81,7 @@ class _CreateNewStakeHolderScreenState extends State<CreateNewStakeHolderScreen>
               msg: '${LocaleKeys.createNewStakeholder.tr()} $resultId',
             );
 
+            await context.read<DashboardCubit>().refresh();
             Navigator.of(context).pop();
           }
         }
@@ -185,30 +191,46 @@ class _CreateNewStakeHolderScreenState extends State<CreateNewStakeHolderScreen>
   }
 
   Widget _selectTypeDropdown() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          LocaleKeys.type.tr(),
-          style: context.textStyles.bodyBold.black,
-        ),
-        CmoDropdown(
-          name: 'type',
-          validator: requiredValidator,
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            isDense: true,
-            hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.type.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
-          ),
-          itemsData: [
-            CmoDropdownItem(id: 1, name: 'None'),
+    return BlocSelector<StakeHolderListCubit, StakeHolderListState, List<StakeHolderType>>(
+      selector: (state) {
+        return state.listStakeholderTypes;
+      },
+      builder: (context, listStakeholderTypes) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              LocaleKeys.type.tr(),
+              style: context.textStyles.bodyBold.black,
+            ),
+            CmoDropdown(
+              name: 'type',
+              validator: requiredValidator,
+              inputDecoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(8),
+                isDense: true,
+                hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.type.tr().toLowerCase()}',
+                hintStyle: context.textStyles.bodyNormal.grey,
+                border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: context.colors.grey),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: context.colors.blue),
+                ),
+              ),
+              itemsData: listStakeholderTypes
+                  .map(
+                    (e) => CmoDropdownItem(
+                      id: e.stakeholderTypeId,
+                      name: e.stakeholderTypeName ?? '',
+                    ),
+                  )
+                  .toList(),
+            ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }

@@ -60,7 +60,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
         login.accessToken != null &&
         login.renewalToken != null) {
       await _saveAccessRevewalToken(login.accessToken!, login.renewalToken!);
-
+      await _refreshToken();
       emit(AuthState.authorized());
       onSuccess?.call();
     } else {
@@ -75,6 +75,24 @@ class AuthCubit extends HydratedCubit<AuthState> {
     String password,
   ) async {
     return cmoApiService.login(username, password);
+  }
+
+  Future<void> _refreshToken() async {
+    final renewalToken = await _readRenewalToken();
+    if (renewalToken == null) {
+      return;
+    }
+
+    final login = await cmoApiService.refreshToken(renewalToken);
+    if (login != null &&
+        login.accessToken != null &&
+        login.renewalToken != null) {
+      await _saveAccessRevewalToken(login.accessToken!, login.renewalToken!);
+    }
+  }
+
+  Future<String?> _readRenewalToken() async {
+    return secureStorage.read(key: 'renewalToken');
   }
 
   Future<String?> _readUsername() async {

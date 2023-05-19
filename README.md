@@ -29,10 +29,12 @@ CMO_APP_MODE=behave; (behave, resource_manager, farmer)
 GOOGLE_MAPS_API_KEY=xxxxxx
 ```
 
-Run this to generate file lib/env/env.g.dart
+Environment file stored at folder `lib/env`
+
+Run this to copy .env file with `$env` is `staging` or `production`
 
 ```
-flutter packages pub run build_runner build --delete-conflicting-outputs
+sh build.sh -e $env
 ```
 
 Protip: To enhance security, add `obfuscate:true` (instead of hardcoding) to make it more difficult for attackers to extract our app.

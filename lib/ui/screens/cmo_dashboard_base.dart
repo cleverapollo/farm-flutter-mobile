@@ -1,5 +1,6 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/ui/screens/behave/dashboard/dashboard_screen.dart';
 import 'package:cmo/ui/screens/cmo_menu_base.dart';
@@ -25,6 +26,14 @@ class CmoDashboardBase extends StatefulWidget {
 
 class _CmoDashboardBaseState extends State<CmoDashboardBase> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<DashboardCubit>().initialize();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
