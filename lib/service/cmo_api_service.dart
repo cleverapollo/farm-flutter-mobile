@@ -5,7 +5,9 @@ import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/company.dart';
 import 'package:cmo/model/farm.dart';
+import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/master_data_message.dart';
+import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
 import 'package:cmo/model/user_info.dart';
@@ -94,7 +96,7 @@ class CmoApiService {
     final response = await client.getUri<JsonData>(
       Uri.https(
         Env.cmoApiUrl,
-        '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetUser',
+        '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.gs/API/Mobile/GetUser',
       ),
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -201,6 +203,47 @@ class CmoApiService {
 
     final data = response.data;
     return data?.map((e) => Farm.fromJson(e as JsonData)).toList();
+  }
+
+  Future<List<GroupScheme>?> fetchGroupSchemes() async {
+    final uri = Uri.https(
+        Env.cmoApiUrl,
+        'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Mobile/GetGroupschemes'
+    );
+
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data?.map((e) => GroupScheme.fromJson(e as JsonData)).toList();
+  }
+
+  Future<List<ResourceManagerUnit>?> fetchResourceManagerUnits(int groupSchemeId) async {
+    final uri = Uri.https(
+        Env.cmoApiUrl,
+        'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Mobile/GetRegionalManagerUnits',
+        {'groupSchemeId': groupSchemeId.toString()},
+    );
+
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data?.map((e) => ResourceManagerUnit.fromJson(e as JsonData)).toList();
   }
 
   Future<bool> createSystemEvent({

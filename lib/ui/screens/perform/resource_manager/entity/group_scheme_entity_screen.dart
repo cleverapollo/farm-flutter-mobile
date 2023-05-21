@@ -1,19 +1,29 @@
-import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/group_scheme.dart';
+import 'package:cmo/state/entity_cubit/resource_manager/resource_manager_group_scheme_cubit.dart';
+import 'package:cmo/state/entity_cubit/resource_manager/resource_manager_group_scheme_state.dart';
 import 'package:cmo/ui/components/entity_list.dart';
+import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class GroupSchemeEntityScreen<T> extends StatefulWidget {
-  final T? selectedEntity;
+class GroupSchemeEntityScreen extends StatefulWidget {
+  final GroupScheme? selectedEntity;
 
   const GroupSchemeEntityScreen({this.selectedEntity, super.key});
 
-  static Future push<T>(BuildContext context, {T? selectedItem}) {
+  static Future<GroupScheme?> push(BuildContext context, {GroupScheme? selectedItem}) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => GroupSchemeEntityScreen(selectedEntity: selectedItem),
+        builder: (_) {
+          return BlocProvider(
+            create: (_) => ResourceManagerGroupSchemeCubit(),
+            child: GroupSchemeEntityScreen(selectedEntity: selectedItem),
+          );
+        },
       ),
     );
   }
@@ -24,11 +34,12 @@ class GroupSchemeEntityScreen<T> extends StatefulWidget {
 }
 
 class _GroupSchemeEntityScreenState extends State<GroupSchemeEntityScreen> {
-  var entities = [
-    EntityItem("Group scheme 1", displayString: () => "Group scheme 1"),
-    EntityItem("Group scheme 2", displayString: () => "Group scheme 2"),
-    EntityItem("Group scheme 3", displayString: () => "Group scheme 3"),
-  ];
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ResourceManagerGroupSchemeCubit>().fetchGroupSchemes(context: context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +49,48 @@ class _GroupSchemeEntityScreenState extends State<GroupSchemeEntityScreen> {
         appBar: CmoAppBar(
           title: LocaleKeys.entity.tr(),
         ),
-        body: EntityList(
-          // TODO: Should fetch them from db instead of hard-coded
-          entityItems: entities,
-          selectedItem:
-              entities.firstWhereOrNull((e) => e.rawData == widget.selectedEntity),
-          onTap: (item) => Navigator.of(context).pop(item.rawData),
+        body: Stack(
+          children: [
+            BlocSelector<ResourceManagerGroupSchemeCubit, ResourceManagerGroupSchemeState,
+                List<GroupScheme>>(
+              selector: (state) => state.groupSchemes,
+              builder: (context, groupSchemes) {
+                if (groupSchemes.isEmpty) {
+                  return Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'There are no Group Schemes',
+                      style: context.textStyles.bodyBold,
+                    ),
+                  );
+                }
+                final entities = groupSchemes
+                    .map((e) => EntityItem<GroupScheme>(e,
+                        displayString: () => e.groupSchemeName ?? ''))
+                    .toList();
+                return EntityList(
+                  entityItems: entities,
+                  selectedItem: entities.firstWhereOrNull(
+                      (e) => e.rawData.id == widget.selectedEntity?.id),
+                  onTap: (item) {
+                    context.read<ResourceManagerGroupSchemeCubit>().setSelectedGroupScheme(item.rawData);
+                    Navigator.of(context).pop(item.rawData);
+                  },
+                );
+              },
+            ),
+            BlocSelector<ResourceManagerGroupSchemeCubit, ResourceManagerGroupSchemeState,
+                bool>(
+              selector: (state) => state.isGroupSchemeLoading,
+              builder: (context, state) => state
+                  ? Container(
+                      alignment: Alignment.center,
+                      color: Colors.white,
+                      child: CircularProgressIndicator(),
+                    )
+                  : Container(),
+            ),
+          ],
         ),
       ),
     );

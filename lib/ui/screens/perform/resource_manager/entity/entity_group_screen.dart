@@ -1,30 +1,30 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/group_scheme.dart';
+import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/group_scheme_entity_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/resource_manager_unit_entity.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class EntityGroupScreen extends StatefulWidget {
-  static dynamic push(BuildContext context) {
-    return Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const EntityGroupScreen(),
-      ),
-    );
+  static PageRoute pageRoute({required bool isBehave}) {
+      return MaterialPageRoute(
+        builder: (_) => EntityGroupScreen(isBehave: isBehave),
+      );
   }
 
-  const EntityGroupScreen({super.key});
+  final bool isBehave;
+
+  const EntityGroupScreen({this.isBehave = false, super.key});
 
   @override
   State<EntityGroupScreen> createState() => _EntityGroupScreenState();
 }
 
 class _EntityGroupScreenState extends State<EntityGroupScreen> {
-  dynamic selectedGroupScheme;
-  dynamic selectedResourceManagerUnit;
+  GroupScheme? selectedGroupScheme;
+  ResourceManagerUnit? selectedResourceManagerUnit;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
             ),
           ),
           _EntityCard(
-            LocaleKeys.groupScheme.tr(),
+            selectedGroupScheme?.groupSchemeName ?? LocaleKeys.groupScheme.tr(),
             onTap: () async {
               selectedGroupScheme = await GroupSchemeEntityScreen.push(
                 context,
@@ -68,6 +68,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
                 selectedResourceManagerUnit =
                     await ResourceManagerUnitEntity.push(
                   context,
+                  groupSchemeId: selectedGroupScheme?.groupSchemeId ?? 0,
                   selectedItem: selectedResourceManagerUnit,
                 );
                 setState(() {});
@@ -80,6 +81,26 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
               endIndent: 23,
             ),
           ],
+          if (widget.isBehave) ...[
+            const SizedBox(height: 36),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 38),
+              alignment: Alignment.centerLeft,
+              color: context.colors.blueDark1,
+              child: Text(
+                'Compliance Management',
+                style: context.textStyles.bodyBold
+                    .copyWith(color: context.colors.white),
+              ),
+            ),
+            _EntityCard(
+                  LocaleKeys.company.tr(),
+              onTap: () {
+                Navigator.of(context).pop();
+                EntityBehaveScreen.push(context);
+              },
+            ),
+          ]
         ],
       ),
     );
