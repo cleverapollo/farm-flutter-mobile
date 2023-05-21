@@ -18,10 +18,13 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
       final roles = await cmoApiService.getUserRoles(userId: res.userId!);
       final futures = <Future<dynamic>>[];
 
-      for (final String item in res.listRoles ?? []) {
-        futures.add(
-          cmoDatabaseService.cacheUserRole(userId: res.userId!, roleName: item),
-        );
+      if (res.listRoles != null) {
+        for (var item in res.listRoles!) {
+          futures.add(
+            cmoDatabaseService.cacheUserRole(
+                userId: res.userId!, roleName: item.roleName ?? ''),
+          );
+        }
       }
 
       for (final UserRolePortal item in roles ?? []) {

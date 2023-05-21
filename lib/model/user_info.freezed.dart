@@ -43,7 +43,7 @@ mixin _$UserInfo {
   @JsonKey(name: 'SecurityProviderId')
   String? get securityProviderId => throw _privateConstructorUsedError;
   @JsonKey(name: 'ListRoles')
-  List<String>? get listRoles => throw _privateConstructorUsedError;
+  List<Role>? get listRoles => throw _privateConstructorUsedError;
   @JsonKey(name: 'Roles')
   List<String>? get roles => throw _privateConstructorUsedError;
 
@@ -70,7 +70,7 @@ abstract class $UserInfoCopyWith<$Res> {
       @JsonKey(name: 'IsReceiveUpdate') bool? isReceiveUpdate,
       @JsonKey(name: 'IsReceiveWelcome') bool? isReceiveWelcome,
       @JsonKey(name: 'SecurityProviderId') String? securityProviderId,
-      @JsonKey(name: 'ListRoles') List<String>? listRoles,
+      @JsonKey(name: 'ListRoles') List<Role>? listRoles,
       @JsonKey(name: 'Roles') List<String>? roles});
 }
 
@@ -149,7 +149,7 @@ class _$UserInfoCopyWithImpl<$Res, $Val extends UserInfo>
       listRoles: freezed == listRoles
           ? _value.listRoles
           : listRoles // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
+              as List<Role>?,
       roles: freezed == roles
           ? _value.roles
           : roles // ignore: cast_nullable_to_non_nullable
@@ -177,7 +177,7 @@ abstract class _$$_UserInfoCopyWith<$Res> implements $UserInfoCopyWith<$Res> {
       @JsonKey(name: 'IsReceiveUpdate') bool? isReceiveUpdate,
       @JsonKey(name: 'IsReceiveWelcome') bool? isReceiveWelcome,
       @JsonKey(name: 'SecurityProviderId') String? securityProviderId,
-      @JsonKey(name: 'ListRoles') List<String>? listRoles,
+      @JsonKey(name: 'ListRoles') List<Role>? listRoles,
       @JsonKey(name: 'Roles') List<String>? roles});
 }
 
@@ -254,7 +254,7 @@ class __$$_UserInfoCopyWithImpl<$Res>
       listRoles: freezed == listRoles
           ? _value._listRoles
           : listRoles // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
+              as List<Role>?,
       roles: freezed == roles
           ? _value._roles
           : roles // ignore: cast_nullable_to_non_nullable
@@ -278,7 +278,7 @@ class _$_UserInfo implements _UserInfo {
       @JsonKey(name: 'IsReceiveUpdate') this.isReceiveUpdate,
       @JsonKey(name: 'IsReceiveWelcome') this.isReceiveWelcome,
       @JsonKey(name: 'SecurityProviderId') this.securityProviderId,
-      @JsonKey(name: 'ListRoles') final List<String>? listRoles,
+      @JsonKey(name: 'ListRoles') final List<Role>? listRoles,
       @JsonKey(name: 'Roles') final List<String>? roles})
       : _listRoles = listRoles,
         _roles = roles;
@@ -319,10 +319,10 @@ class _$_UserInfo implements _UserInfo {
   @override
   @JsonKey(name: 'SecurityProviderId')
   final String? securityProviderId;
-  final List<String>? _listRoles;
+  final List<Role>? _listRoles;
   @override
   @JsonKey(name: 'ListRoles')
-  List<String>? get listRoles {
+  List<Role>? get listRoles {
     final value = _listRoles;
     if (value == null) return null;
     if (_listRoles is EqualUnmodifiableListView) return _listRoles;
@@ -422,7 +422,7 @@ abstract class _UserInfo implements UserInfo {
       @JsonKey(name: 'IsReceiveUpdate') final bool? isReceiveUpdate,
       @JsonKey(name: 'IsReceiveWelcome') final bool? isReceiveWelcome,
       @JsonKey(name: 'SecurityProviderId') final String? securityProviderId,
-      @JsonKey(name: 'ListRoles') final List<String>? listRoles,
+      @JsonKey(name: 'ListRoles') final List<Role>? listRoles,
       @JsonKey(name: 'Roles') final List<String>? roles}) = _$_UserInfo;
 
   factory _UserInfo.fromJson(Map<String, dynamic> json) = _$_UserInfo.fromJson;
@@ -462,7 +462,7 @@ abstract class _UserInfo implements UserInfo {
   String? get securityProviderId;
   @override
   @JsonKey(name: 'ListRoles')
-  List<String>? get listRoles;
+  List<Role>? get listRoles;
   @override
   @JsonKey(name: 'Roles')
   List<String>? get roles;
@@ -470,4 +470,188 @@ abstract class _UserInfo implements UserInfo {
   @JsonKey(ignore: true)
   _$$_UserInfoCopyWith<_$_UserInfo> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+Role _$RoleFromJson(Map<String, dynamic> json) {
+  return _Role.fromJson(json);
+}
+
+/// @nodoc
+mixin _$Role {
+  @JsonKey(name: 'RoleId')
+  int? get roleId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'RoleName')
+  String? get roleName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'RoleDescription')
+  String? get roleDescription => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $RoleCopyWith<Role> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $RoleCopyWith<$Res> {
+  factory $RoleCopyWith(Role value, $Res Function(Role) then) =
+      _$RoleCopyWithImpl<$Res, Role>;
+  @useResult
+  $Res call(
+      {@JsonKey(name: 'RoleId') int? roleId,
+      @JsonKey(name: 'RoleName') String? roleName,
+      @JsonKey(name: 'RoleDescription') String? roleDescription});
+}
+
+/// @nodoc
+class _$RoleCopyWithImpl<$Res, $Val extends Role>
+    implements $RoleCopyWith<$Res> {
+  _$RoleCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? roleId = freezed,
+    Object? roleName = freezed,
+    Object? roleDescription = freezed,
+  }) {
+    return _then(_value.copyWith(
+      roleId: freezed == roleId
+          ? _value.roleId
+          : roleId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      roleName: freezed == roleName
+          ? _value.roleName
+          : roleName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      roleDescription: freezed == roleDescription
+          ? _value.roleDescription
+          : roleDescription // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_RoleCopyWith<$Res> implements $RoleCopyWith<$Res> {
+  factory _$$_RoleCopyWith(_$_Role value, $Res Function(_$_Role) then) =
+      __$$_RoleCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {@JsonKey(name: 'RoleId') int? roleId,
+      @JsonKey(name: 'RoleName') String? roleName,
+      @JsonKey(name: 'RoleDescription') String? roleDescription});
+}
+
+/// @nodoc
+class __$$_RoleCopyWithImpl<$Res> extends _$RoleCopyWithImpl<$Res, _$_Role>
+    implements _$$_RoleCopyWith<$Res> {
+  __$$_RoleCopyWithImpl(_$_Role _value, $Res Function(_$_Role) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? roleId = freezed,
+    Object? roleName = freezed,
+    Object? roleDescription = freezed,
+  }) {
+    return _then(_$_Role(
+      roleId: freezed == roleId
+          ? _value.roleId
+          : roleId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      roleName: freezed == roleName
+          ? _value.roleName
+          : roleName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      roleDescription: freezed == roleDescription
+          ? _value.roleDescription
+          : roleDescription // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$_Role implements _Role {
+  const _$_Role(
+      {@JsonKey(name: 'RoleId') this.roleId,
+      @JsonKey(name: 'RoleName') this.roleName,
+      @JsonKey(name: 'RoleDescription') this.roleDescription});
+
+  factory _$_Role.fromJson(Map<String, dynamic> json) => _$$_RoleFromJson(json);
+
+  @override
+  @JsonKey(name: 'RoleId')
+  final int? roleId;
+  @override
+  @JsonKey(name: 'RoleName')
+  final String? roleName;
+  @override
+  @JsonKey(name: 'RoleDescription')
+  final String? roleDescription;
+
+  @override
+  String toString() {
+    return 'Role(roleId: $roleId, roleName: $roleName, roleDescription: $roleDescription)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_Role &&
+            (identical(other.roleId, roleId) || other.roleId == roleId) &&
+            (identical(other.roleName, roleName) ||
+                other.roleName == roleName) &&
+            (identical(other.roleDescription, roleDescription) ||
+                other.roleDescription == roleDescription));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, roleId, roleName, roleDescription);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_RoleCopyWith<_$_Role> get copyWith =>
+      __$$_RoleCopyWithImpl<_$_Role>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_RoleToJson(
+      this,
+    );
+  }
+}
+
+abstract class _Role implements Role {
+  const factory _Role(
+          {@JsonKey(name: 'RoleId') final int? roleId,
+          @JsonKey(name: 'RoleName') final String? roleName,
+          @JsonKey(name: 'RoleDescription') final String? roleDescription}) =
+      _$_Role;
+
+  factory _Role.fromJson(Map<String, dynamic> json) = _$_Role.fromJson;
+
+  @override
+  @JsonKey(name: 'RoleId')
+  int? get roleId;
+  @override
+  @JsonKey(name: 'RoleName')
+  String? get roleName;
+  @override
+  @JsonKey(name: 'RoleDescription')
+  String? get roleDescription;
+  @override
+  @JsonKey(ignore: true)
+  _$$_RoleCopyWith<_$_Role> get copyWith => throw _privateConstructorUsedError;
 }

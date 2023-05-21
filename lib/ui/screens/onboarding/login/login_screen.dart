@@ -4,6 +4,7 @@ import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/components/entity_component/utils.dart';
+import 'package:cmo/ui/screens/global_entity.dart';
 import 'package:cmo/ui/screens/onboarding/login/language_picker.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
@@ -76,22 +77,21 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
       }
 
-      final futures = <Future<dynamic>>[];
-
       if (success && context.mounted) {
         final userInfoCubit = context.read<UserInfoCubit>();
         final deviceInfoCubit = context.read<UserDeviceCubit>();
 
-        futures
+        await Future.wait([
           // Init user info and user roles and cache to db
-          ..add(userInfoCubit.getUserInfoAndUserRoles(context))
+          userInfoCubit.getUserInfoAndUserRoles(context),
           // Get companies by userId and cache to db
-          ..add(userInfoCubit.getCompaniesByUserId(context))
+          userInfoCubit.getCompaniesByUserId(context),
           // Create user device and cache to db
-          ..add(deviceInfoCubit.createUserDevice(context));
+          deviceInfoCubit.createUserDevice(context)]);
 
-        await Future.wait(futures)
-            .then((_) => pushEntityScreen(context, isPushingReplacement: true));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => const GlobalEntityScreen(),
+        ));
       }
     } finally {
       setState(() {

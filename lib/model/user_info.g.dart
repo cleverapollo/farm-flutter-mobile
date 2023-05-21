@@ -19,7 +19,7 @@ _$_UserInfo _$$_UserInfoFromJson(Map<String, dynamic> json) => _$_UserInfo(
       isReceiveWelcome: json['IsReceiveWelcome'] as bool?,
       securityProviderId: json['SecurityProviderId'] as String?,
       listRoles: (json['ListRoles'] as List<dynamic>?)
-          ?.map((e) => e as String)
+          ?.map((e) => Role.fromJson(e as Map<String, dynamic>))
           .toList(),
       roles:
           (json['Roles'] as List<dynamic>?)?.map((e) => e as String).toList(),
@@ -38,6 +38,18 @@ Map<String, dynamic> _$$_UserInfoToJson(_$_UserInfo instance) =>
       'IsReceiveUpdate': instance.isReceiveUpdate,
       'IsReceiveWelcome': instance.isReceiveWelcome,
       'SecurityProviderId': instance.securityProviderId,
-      'ListRoles': instance.listRoles,
+      'ListRoles': instance.listRoles?.map((e) => e.toJson()).toList(),
       'Roles': instance.roles,
+    };
+
+_$_Role _$$_RoleFromJson(Map<String, dynamic> json) => _$_Role(
+      roleId: json['RoleId'] as int?,
+      roleName: json['RoleName'] as String?,
+      roleDescription: json['RoleDescription'] as String?,
+    );
+
+Map<String, dynamic> _$$_RoleToJson(_$_Role instance) => <String, dynamic>{
+      'RoleId': instance.roleId,
+      'RoleName': instance.roleName,
+      'RoleDescription': instance.roleDescription,
     };

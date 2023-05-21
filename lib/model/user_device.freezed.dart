@@ -20,8 +20,6 @@ UserDevice _$UserDeviceFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserDevice {
-  @JsonKey(name: 'UserId')
-  int? get userId => throw _privateConstructorUsedError;
   @JsonKey(name: 'UserDeviceId')
   int? get userDeviceId => throw _privateConstructorUsedError;
   @JsonKey(name: 'DeviceId')
@@ -48,8 +46,7 @@ abstract class $UserDeviceCopyWith<$Res> {
       _$UserDeviceCopyWithImpl<$Res, UserDevice>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'UserId') int? userId,
-      @JsonKey(name: 'UserDeviceId') int? userDeviceId,
+      {@JsonKey(name: 'UserDeviceId') int? userDeviceId,
       @JsonKey(name: 'DeviceId') String? deviceId,
       @JsonKey(name: 'DeviceOS') String? deviceOS,
       @JsonKey(name: 'DeviceVersion') String? deviceVersion,
@@ -70,7 +67,6 @@ class _$UserDeviceCopyWithImpl<$Res, $Val extends UserDevice>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? userId = freezed,
     Object? userDeviceId = freezed,
     Object? deviceId = freezed,
     Object? deviceOS = freezed,
@@ -79,10 +75,6 @@ class _$UserDeviceCopyWithImpl<$Res, $Val extends UserDevice>
     Object? appVersionNumber = freezed,
   }) {
     return _then(_value.copyWith(
-      userId: freezed == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as int?,
       userDeviceId: freezed == userDeviceId
           ? _value.userDeviceId
           : userDeviceId // ignore: cast_nullable_to_non_nullable
@@ -120,8 +112,7 @@ abstract class _$$_UserDeviceCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'UserId') int? userId,
-      @JsonKey(name: 'UserDeviceId') int? userDeviceId,
+      {@JsonKey(name: 'UserDeviceId') int? userDeviceId,
       @JsonKey(name: 'DeviceId') String? deviceId,
       @JsonKey(name: 'DeviceOS') String? deviceOS,
       @JsonKey(name: 'DeviceVersion') String? deviceVersion,
@@ -140,7 +131,6 @@ class __$$_UserDeviceCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? userId = freezed,
     Object? userDeviceId = freezed,
     Object? deviceId = freezed,
     Object? deviceOS = freezed,
@@ -149,10 +139,6 @@ class __$$_UserDeviceCopyWithImpl<$Res>
     Object? appVersionNumber = freezed,
   }) {
     return _then(_$_UserDevice(
-      userId: freezed == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as int?,
       userDeviceId: freezed == userDeviceId
           ? _value.userDeviceId
           : userDeviceId // ignore: cast_nullable_to_non_nullable
@@ -183,22 +169,19 @@ class __$$_UserDeviceCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_UserDevice implements _UserDevice {
+class _$_UserDevice extends _UserDevice {
   const _$_UserDevice(
-      {@JsonKey(name: 'UserId') this.userId,
-      @JsonKey(name: 'UserDeviceId') this.userDeviceId,
+      {@JsonKey(name: 'UserDeviceId') this.userDeviceId,
       @JsonKey(name: 'DeviceId') this.deviceId,
       @JsonKey(name: 'DeviceOS') this.deviceOS,
       @JsonKey(name: 'DeviceVersion') this.deviceVersion,
       @JsonKey(name: 'AppName') this.appName,
-      @JsonKey(name: 'AppVersionNumber') this.appVersionNumber});
+      @JsonKey(name: 'AppVersionNumber') this.appVersionNumber})
+      : super._();
 
   factory _$_UserDevice.fromJson(Map<String, dynamic> json) =>
       _$$_UserDeviceFromJson(json);
 
-  @override
-  @JsonKey(name: 'UserId')
-  final int? userId;
   @override
   @JsonKey(name: 'UserDeviceId')
   final int? userDeviceId;
@@ -220,7 +203,7 @@ class _$_UserDevice implements _UserDevice {
 
   @override
   String toString() {
-    return 'UserDevice(userId: $userId, userDeviceId: $userDeviceId, deviceId: $deviceId, deviceOS: $deviceOS, deviceVersion: $deviceVersion, appName: $appName, appVersionNumber: $appVersionNumber)';
+    return 'UserDevice(userDeviceId: $userDeviceId, deviceId: $deviceId, deviceOS: $deviceOS, deviceVersion: $deviceVersion, appName: $appName, appVersionNumber: $appVersionNumber)';
   }
 
   @override
@@ -228,7 +211,6 @@ class _$_UserDevice implements _UserDevice {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_UserDevice &&
-            (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.userDeviceId, userDeviceId) ||
                 other.userDeviceId == userDeviceId) &&
             (identical(other.deviceId, deviceId) ||
@@ -244,8 +226,8 @@ class _$_UserDevice implements _UserDevice {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, userId, userDeviceId, deviceId,
-      deviceOS, deviceVersion, appName, appVersionNumber);
+  int get hashCode => Object.hash(runtimeType, userDeviceId, deviceId, deviceOS,
+      deviceVersion, appName, appVersionNumber);
 
   @JsonKey(ignore: true)
   @override
@@ -261,23 +243,20 @@ class _$_UserDevice implements _UserDevice {
   }
 }
 
-abstract class _UserDevice implements UserDevice {
+abstract class _UserDevice extends UserDevice {
   const factory _UserDevice(
-          {@JsonKey(name: 'UserId') final int? userId,
-          @JsonKey(name: 'UserDeviceId') final int? userDeviceId,
+          {@JsonKey(name: 'UserDeviceId') final int? userDeviceId,
           @JsonKey(name: 'DeviceId') final String? deviceId,
           @JsonKey(name: 'DeviceOS') final String? deviceOS,
           @JsonKey(name: 'DeviceVersion') final String? deviceVersion,
           @JsonKey(name: 'AppName') final String? appName,
           @JsonKey(name: 'AppVersionNumber') final String? appVersionNumber}) =
       _$_UserDevice;
+  const _UserDevice._() : super._();
 
   factory _UserDevice.fromJson(Map<String, dynamic> json) =
       _$_UserDevice.fromJson;
 
-  @override
-  @JsonKey(name: 'UserId')
-  int? get userId;
   @override
   @JsonKey(name: 'UserDeviceId')
   int? get userDeviceId;

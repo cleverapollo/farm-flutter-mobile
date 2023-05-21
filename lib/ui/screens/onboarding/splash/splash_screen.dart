@@ -70,7 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     final data = context.read<UserInfoCubit>().data;
     if (data == null) {
-      await context.read<UserInfoCubit>().getUser(context);
+      //await context.read<UserInfoCubit>().getUser(context);
     }
   }
 

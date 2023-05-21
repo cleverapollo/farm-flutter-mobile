@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/company.dart';
+import 'package:cmo/model/farm.dart';
 import 'package:cmo/model/master_data_message.dart';
 import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
@@ -93,7 +94,7 @@ class CmoApiService {
     final response = await client.getUri<JsonData>(
       Uri.https(
         Env.cmoApiUrl,
-        '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetUser',
+        '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetUser',
       ),
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -180,6 +181,26 @@ class CmoApiService {
 
     final data = response.data;
     return data?.map((e) => Company.fromJson(e as JsonData)).toList();
+  }
+
+  Future<List<Farm>?> fetchFarms() async {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Mobile/GetFarms'
+    );
+
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data?.map((e) => Farm.fromJson(e as JsonData)).toList();
   }
 
   Future<bool> createSystemEvent({

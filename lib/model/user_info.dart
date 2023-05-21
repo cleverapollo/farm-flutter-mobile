@@ -21,7 +21,7 @@ class UserInfo with _$UserInfo {
     @JsonKey(name: 'IsReceiveUpdate') bool? isReceiveUpdate,
     @JsonKey(name: 'IsReceiveWelcome') bool? isReceiveWelcome,
     @JsonKey(name: 'SecurityProviderId') String? securityProviderId,
-    @JsonKey(name: 'ListRoles') List<String>? listRoles,
+    @JsonKey(name: 'ListRoles') List<Role>? listRoles,
     @JsonKey(name: 'Roles') List<String>? roles,
   }) = _UserInfo;
 
@@ -37,4 +37,15 @@ extension UserInfoX on UserInfo {
 
     return '${firstName ?? ''} ${lastName ?? ''}'.trim();
   }
+}
+
+@freezed
+class Role with _$Role {
+  const factory Role({
+    @JsonKey(name: 'RoleId') int? roleId,
+    @JsonKey(name: 'RoleName') String? roleName,
+    @JsonKey(name: 'RoleDescription') String? roleDescription,
+  }) = _Role;
+
+  factory Role.fromJson(Map<String, dynamic> json) => _$RoleFromJson(json);
 }
