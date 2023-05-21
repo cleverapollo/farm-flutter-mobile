@@ -68,7 +68,19 @@ class CmoDatabaseMasterService {
         FireManagementSchema,
         RteSpeciesPhotoModelSchema,
         RteSpeciesSchema,
-        StakeHolderTypeSchema,
+        FarmQuestionSchema,
+        CriteriaSchema,
+        FarmMemberObjectiveSchema,
+        FarmObjectiveOptionSchema,
+        FarmPropertyOwnershipTypeSchema,
+        IndicatorSchema,
+        PrincipleSchema,
+        RegionalManagerUnitSchema,
+        RiskProfileQuestionSchema,
+        RMScheduleSchema,
+        GroupSchemeStakeHolderSchema,
+        RMStakeHolderSchema,
+        StakeHolderTypeSchema
       ],
       name: _databaseName,
     );
@@ -431,6 +443,11 @@ class CmoDatabaseMasterService {
     return db.compliances.put(item);
   }
 
+  Future<int> cacheFarmQuestion(FarmQuestion item) async {
+    final db = await _db();
+    return db.farmQuestions.put(item);
+  }
+
   Future<List<Compliance>> getCompliances() async {
     final db = await _db();
 
@@ -556,6 +573,11 @@ class CmoDatabaseMasterService {
   Future<int> cacheRMStakeHolder(RMStakeHolder item) async {
     final db = await _db();
     return db.rMStakeHolders.put(item);
+  }
+
+  Future<List<RMStakeHolder>> getAllRMStakeHolders() async {
+    final db = await _db();
+    return db.rMStakeHolders.filter().isActiveEqualTo(true).findAll();
   }
 
   Future<int> cacheGroupSchemeStakeHolder(GroupSchemeStakeHolder item) async {

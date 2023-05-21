@@ -26,6 +26,8 @@ mixin _$Compliance {
   String? get complianceName => throw _privateConstructorUsedError;
   @JsonKey(name: 'CompanyId')
   int? get companyId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'RegionalManagerUnitId')
+  int? get regionalManagerUnitId => throw _privateConstructorUsedError;
   @JsonKey(name: 'HasRejectReason')
   bool? get hasRejectReason => throw _privateConstructorUsedError;
   @JsonKey(name: 'JobCategoryId')
@@ -49,6 +51,7 @@ abstract class $ComplianceCopyWith<$Res> {
       {@JsonKey(name: 'ComplianceId') int complianceId,
       @JsonKey(name: 'ComplianceName') String? complianceName,
       @JsonKey(name: 'CompanyId') int? companyId,
+      @JsonKey(name: 'RegionalManagerUnitId') int? regionalManagerUnitId,
       @JsonKey(name: 'HasRejectReason') bool? hasRejectReason,
       @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
       @JsonKey(name: 'IsActive') bool? isActive});
@@ -70,6 +73,7 @@ class _$ComplianceCopyWithImpl<$Res, $Val extends Compliance>
     Object? complianceId = null,
     Object? complianceName = freezed,
     Object? companyId = freezed,
+    Object? regionalManagerUnitId = freezed,
     Object? hasRejectReason = freezed,
     Object? jobCategoryId = freezed,
     Object? isActive = freezed,
@@ -86,6 +90,10 @@ class _$ComplianceCopyWithImpl<$Res, $Val extends Compliance>
       companyId: freezed == companyId
           ? _value.companyId
           : companyId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      regionalManagerUnitId: freezed == regionalManagerUnitId
+          ? _value.regionalManagerUnitId
+          : regionalManagerUnitId // ignore: cast_nullable_to_non_nullable
               as int?,
       hasRejectReason: freezed == hasRejectReason
           ? _value.hasRejectReason
@@ -115,6 +123,7 @@ abstract class _$$_ComplianceCopyWith<$Res>
       {@JsonKey(name: 'ComplianceId') int complianceId,
       @JsonKey(name: 'ComplianceName') String? complianceName,
       @JsonKey(name: 'CompanyId') int? companyId,
+      @JsonKey(name: 'RegionalManagerUnitId') int? regionalManagerUnitId,
       @JsonKey(name: 'HasRejectReason') bool? hasRejectReason,
       @JsonKey(name: 'JobCategoryId') int? jobCategoryId,
       @JsonKey(name: 'IsActive') bool? isActive});
@@ -134,6 +143,7 @@ class __$$_ComplianceCopyWithImpl<$Res>
     Object? complianceId = null,
     Object? complianceName = freezed,
     Object? companyId = freezed,
+    Object? regionalManagerUnitId = freezed,
     Object? hasRejectReason = freezed,
     Object? jobCategoryId = freezed,
     Object? isActive = freezed,
@@ -150,6 +160,10 @@ class __$$_ComplianceCopyWithImpl<$Res>
       companyId: freezed == companyId
           ? _value.companyId
           : companyId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      regionalManagerUnitId: freezed == regionalManagerUnitId
+          ? _value.regionalManagerUnitId
+          : regionalManagerUnitId // ignore: cast_nullable_to_non_nullable
               as int?,
       hasRejectReason: freezed == hasRejectReason
           ? _value.hasRejectReason
@@ -174,6 +188,7 @@ class _$_Compliance extends _Compliance {
       {@JsonKey(name: 'ComplianceId') required this.complianceId,
       @JsonKey(name: 'ComplianceName') this.complianceName,
       @JsonKey(name: 'CompanyId') this.companyId,
+      @JsonKey(name: 'RegionalManagerUnitId') this.regionalManagerUnitId,
       @JsonKey(name: 'HasRejectReason') this.hasRejectReason,
       @JsonKey(name: 'JobCategoryId') this.jobCategoryId,
       @JsonKey(name: 'IsActive') this.isActive})
@@ -192,6 +207,9 @@ class _$_Compliance extends _Compliance {
   @JsonKey(name: 'CompanyId')
   final int? companyId;
   @override
+  @JsonKey(name: 'RegionalManagerUnitId')
+  final int? regionalManagerUnitId;
+  @override
   @JsonKey(name: 'HasRejectReason')
   final bool? hasRejectReason;
   @override
@@ -203,7 +221,7 @@ class _$_Compliance extends _Compliance {
 
   @override
   String toString() {
-    return 'Compliance(complianceId: $complianceId, complianceName: $complianceName, companyId: $companyId, hasRejectReason: $hasRejectReason, jobCategoryId: $jobCategoryId, isActive: $isActive)';
+    return 'Compliance(complianceId: $complianceId, complianceName: $complianceName, companyId: $companyId, regionalManagerUnitId: $regionalManagerUnitId, hasRejectReason: $hasRejectReason, jobCategoryId: $jobCategoryId, isActive: $isActive)';
   }
 
   @override
@@ -217,6 +235,8 @@ class _$_Compliance extends _Compliance {
                 other.complianceName == complianceName) &&
             (identical(other.companyId, companyId) ||
                 other.companyId == companyId) &&
+            (identical(other.regionalManagerUnitId, regionalManagerUnitId) ||
+                other.regionalManagerUnitId == regionalManagerUnitId) &&
             (identical(other.hasRejectReason, hasRejectReason) ||
                 other.hasRejectReason == hasRejectReason) &&
             (identical(other.jobCategoryId, jobCategoryId) ||
@@ -227,8 +247,15 @@ class _$_Compliance extends _Compliance {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, complianceId, complianceName,
-      companyId, hasRejectReason, jobCategoryId, isActive);
+  int get hashCode => Object.hash(
+      runtimeType,
+      complianceId,
+      complianceName,
+      companyId,
+      regionalManagerUnitId,
+      hasRejectReason,
+      jobCategoryId,
+      isActive);
 
   @JsonKey(ignore: true)
   @override
@@ -249,6 +276,7 @@ abstract class _Compliance extends Compliance {
       {@JsonKey(name: 'ComplianceId') required final int complianceId,
       @JsonKey(name: 'ComplianceName') final String? complianceName,
       @JsonKey(name: 'CompanyId') final int? companyId,
+      @JsonKey(name: 'RegionalManagerUnitId') final int? regionalManagerUnitId,
       @JsonKey(name: 'HasRejectReason') final bool? hasRejectReason,
       @JsonKey(name: 'JobCategoryId') final int? jobCategoryId,
       @JsonKey(name: 'IsActive') final bool? isActive}) = _$_Compliance;
@@ -266,6 +294,9 @@ abstract class _Compliance extends Compliance {
   @override
   @JsonKey(name: 'CompanyId')
   int? get companyId;
+  @override
+  @JsonKey(name: 'RegionalManagerUnitId')
+  int? get regionalManagerUnitId;
   @override
   @JsonKey(name: 'HasRejectReason')
   bool? get hasRejectReason;

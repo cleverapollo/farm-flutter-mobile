@@ -49,11 +49,8 @@ class CmoApiService {
       'p': password,
     };
 
-    final response = await client.postUri<JsonData>(
-      Uri.https(
-        Env.cmoApiUrl,
-        '/cmo/DesktopModules/JwtAuth/API/mobile/login',
-      ),
+    final response = await client.post<JsonData>(
+      _authApiUri('login'),
       data: body,
     );
 
@@ -74,11 +71,8 @@ class CmoApiService {
     };
 
     final accessToken = await _readAccessToken();
-    final response = await client.postUri<JsonData>(
-      Uri.https(
-        Env.cmoApiUrl,
-        '/cmo/DesktopModules/JwtAuth/API/mobile/extendtoken',
-      ),
+    final response = await client.post<JsonData>(
+      _authApiUri('extendtoken'),
       data: body,
       options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
     );
@@ -144,11 +138,8 @@ class CmoApiService {
       'AppVersionNumber': appVersionNumber,
     };
 
-    final response = await client.postUri<JsonData>(
-      Uri.https(
-        Env.cmoApiUrl,
-        '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/CreateUserDevice',
-      ),
+    final response = await client.post<JsonData>(
+      _apiUri('CreateUserDevice'),
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -165,14 +156,9 @@ class CmoApiService {
   Future<List<Company>?> getCompaniesByUserId({
     required int userId,
   }) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/GetCompanyByUserId',
-      {'userId': userId.toString()},
-    );
-
-    final response = await client.getUri<JsonListData>(
-      uri,
+    final response = await client.get<JsonListData>(
+      _apiUri('GetCompanyByUserId'),
+      queryParameters: {'userId': userId.toString()},
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -251,19 +237,14 @@ class CmoApiService {
     required int primaryKey,
     required int userDeviceId,
   }) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/cmo/DesktopModules/Cmo.UI.Dnn.Api/API/Mobile/CreateSystemEvent',
-    );
-
     final body = {
       'SystemEventName': 'SyncAssessmentMasterData',
       'PrimaryKey': primaryKey,
       'UserDeviceId': userDeviceId
     };
 
-    final response = await client.postUri<dynamic>(
-      uri,
+    final response = await client.post<dynamic>(
+      _apiUri('CreateSystemEvent'),
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -275,25 +256,78 @@ class CmoApiService {
     return true;
   }
 
+  Future<bool> createSubscription(
+      {required String topic,
+      required String pubsubApiKey,
+      required int currentClientId}) async {
+    try {
+      await client.get<dynamic>(_mqApiUri('message'),
+          queryParameters: {
+            'key': pubsubApiKey,
+            'client': '$currentClientId',
+            'topic': topic,
+            'pageSize': '1',
+          },
+          options: Options(headers: {'accessToken': 'true'}));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // TODO(DONG): refactor it
+  /// clone from createSystemEvent()
+  /// consider to refactor later for common function for creating system event
+  Future<bool> createRMSystemEvent({
+    required int rmuId,
+    required int userDeviceId,
+  }) async {
+    final body = {
+      'SystemEventName': 'SyncGSRegionalManagerMasterData',
+      'PrimaryKey': '$rmuId',
+      'UserDeviceId': userDeviceId
+    };
+
+    final response = await client.post<dynamic>(
+      _apiUri('CreateSystemEvent'),
+      data: body,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    await checkRMSystemEventExist(
+        systemEventId: response.data['SystemEventId'] as int);
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> checkRMSystemEventExist({required int systemEventId}) async {
+    try {
+      await client.get<dynamic>(
+        _apiUri('SystemEventExists'),
+        queryParameters: {'systemEventId': systemEventId},
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+    } catch (_) {}
+  }
+
   Future<MasterDataMessage?> pullAssessmentMessage({
     required String pubsubApiKey,
     required String topicAssessment,
     required int currentClientId,
     int pageSize = 200,
   }) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/pubsubapi/api/v1/message',
-      {
+    final response = await client.get<JsonData>(
+      _mqApiUri('message'),
+      queryParameters: {
         'key': pubsubApiKey,
         'client': '$currentClientId',
         'topic': '$topicAssessment.$currentClientId',
         'pageSize': '$pageSize',
       },
-    );
-
-    final response = await client.getUri<JsonData>(
-      uri,
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -312,19 +346,14 @@ class CmoApiService {
     required int currentClientId,
     int pageSize = 200,
   }) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/pubsubapi/api/v1/message',
-      {
+    final response = await client.get<JsonData>(
+      _mqApiUri('message'),
+      queryParameters: {
         'key': pubsubApiKey,
         'client': '$currentClientId',
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
       },
-    );
-
-    final response = await client.getUri<JsonData>(
-      uri,
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -343,19 +372,15 @@ class CmoApiService {
     required int currentClientId,
     required List<Message> messages,
   }) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/pubsubapi/api/v1/message',
-      {
+    final body = messages.map((e) => e.toJson()).toList();
+
+    final response = await client.delete<dynamic>(
+      _mqApiUri('message'),
+      queryParameters: {
         'key': pubsubApiKey,
         'client': '$currentClientId',
         'topic': '$topicMasterDataSync*.$currentClientId',
       },
-    );
-    final body = messages.map((e) => e.toJson()).toList();
-
-    final response = await client.deleteUri<dynamic>(
-      uri,
       data: body,
     );
 
@@ -371,19 +396,15 @@ class CmoApiService {
     required int currentClientId,
     required List<Message> messages,
   }) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/pubsubapi/api/v1/message',
-      {
+    final body = messages.map((e) => e.toJson()).toList();
+
+    final response = await client.delete<dynamic>(
+      _mqApiUri('message'),
+      queryParameters: {
         'key': pubsubApiKey,
         'client': '$currentClientId',
         'topic': 'Cmo.MasterDataDeviceSync.*.$currentClientId',
       },
-    );
-    final body = messages.map((e) => e.toJson()).toList();
-
-    final response = await client.deleteUri<dynamic>(
-      uri,
       data: body,
     );
 
@@ -393,6 +414,13 @@ class CmoApiService {
     }
     return true;
   }
+
+  String _authApiUri(String path) => '${Env.dnnAuthUrl}$path';
+
+  String _apiUri(String path) => '${Env.dnnApiUrl}$path';
+
+  String _mqApiUri(String path) => '${Env.apstoryMqApiUrl}$path';
+
 }
 
 class CustomInterceptor extends Interceptor {
@@ -452,11 +480,8 @@ class CustomInterceptor extends Interceptor {
           'u': username,
           'p': password,
         };
-        final responseReLogin = await dio.postUri<JsonData>(
-          Uri.https(
-            Env.cmoApiUrl,
-            '/cmo/DesktopModules/JwtAuth/API/mobile/login',
-          ),
+        final responseReLogin = await dio.post<JsonData>(
+          _authApiUri('login'),
           data: body,
         );
         final data = responseReLogin.data;
@@ -486,4 +511,6 @@ class CustomInterceptor extends Interceptor {
 
     return handler.reject(err);
   }
+
+  String _authApiUri(String path) => '${Env.dnnAuthUrl}$path';
 }

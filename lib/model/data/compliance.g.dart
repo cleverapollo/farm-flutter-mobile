@@ -46,6 +46,11 @@ const ComplianceSchema = CollectionSchema(
       id: 5,
       name: r'jobCategoryId',
       type: IsarType.long,
+    ),
+    r'regionalManagerUnitId': PropertySchema(
+      id: 6,
+      name: r'regionalManagerUnitId',
+      type: IsarType.long,
     )
   },
   estimateSize: _complianceEstimateSize,
@@ -89,6 +94,7 @@ void _complianceSerialize(
   writer.writeBool(offsets[3], object.hasRejectReason);
   writer.writeBool(offsets[4], object.isActive);
   writer.writeLong(offsets[5], object.jobCategoryId);
+  writer.writeLong(offsets[6], object.regionalManagerUnitId);
 }
 
 Compliance _complianceDeserialize(
@@ -104,6 +110,7 @@ Compliance _complianceDeserialize(
     hasRejectReason: reader.readBoolOrNull(offsets[3]),
     isActive: reader.readBoolOrNull(offsets[4]),
     jobCategoryId: reader.readLongOrNull(offsets[5]),
+    regionalManagerUnitId: reader.readLongOrNull(offsets[6]),
   );
   return object;
 }
@@ -126,6 +133,8 @@ P _complianceDeserializeProp<P>(
     case 4:
       return (reader.readBoolOrNull(offset)) as P;
     case 5:
+      return (reader.readLongOrNull(offset)) as P;
+    case 6:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -684,6 +693,80 @@ extension ComplianceQueryFilter
       ));
     });
   }
+
+  QueryBuilder<Compliance, Compliance, QAfterFilterCondition>
+      regionalManagerUnitIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'regionalManagerUnitId',
+      ));
+    });
+  }
+
+  QueryBuilder<Compliance, Compliance, QAfterFilterCondition>
+      regionalManagerUnitIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'regionalManagerUnitId',
+      ));
+    });
+  }
+
+  QueryBuilder<Compliance, Compliance, QAfterFilterCondition>
+      regionalManagerUnitIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'regionalManagerUnitId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Compliance, Compliance, QAfterFilterCondition>
+      regionalManagerUnitIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'regionalManagerUnitId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Compliance, Compliance, QAfterFilterCondition>
+      regionalManagerUnitIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'regionalManagerUnitId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Compliance, Compliance, QAfterFilterCondition>
+      regionalManagerUnitIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'regionalManagerUnitId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension ComplianceQueryObject
@@ -765,6 +848,20 @@ extension ComplianceQuerySortBy
   QueryBuilder<Compliance, Compliance, QAfterSortBy> sortByJobCategoryIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'jobCategoryId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Compliance, Compliance, QAfterSortBy>
+      sortByRegionalManagerUnitId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'regionalManagerUnitId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Compliance, Compliance, QAfterSortBy>
+      sortByRegionalManagerUnitIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'regionalManagerUnitId', Sort.desc);
     });
   }
 }
@@ -856,6 +953,20 @@ extension ComplianceQuerySortThenBy
       return query.addSortBy(r'jobCategoryId', Sort.desc);
     });
   }
+
+  QueryBuilder<Compliance, Compliance, QAfterSortBy>
+      thenByRegionalManagerUnitId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'regionalManagerUnitId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Compliance, Compliance, QAfterSortBy>
+      thenByRegionalManagerUnitIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'regionalManagerUnitId', Sort.desc);
+    });
+  }
 }
 
 extension ComplianceQueryWhereDistinct
@@ -895,6 +1006,13 @@ extension ComplianceQueryWhereDistinct
   QueryBuilder<Compliance, Compliance, QDistinct> distinctByJobCategoryId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'jobCategoryId');
+    });
+  }
+
+  QueryBuilder<Compliance, Compliance, QDistinct>
+      distinctByRegionalManagerUnitId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'regionalManagerUnitId');
     });
   }
 }
@@ -942,6 +1060,13 @@ extension ComplianceQueryProperty
       return query.addPropertyName(r'jobCategoryId');
     });
   }
+
+  QueryBuilder<Compliance, int?, QQueryOperations>
+      regionalManagerUnitIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'regionalManagerUnitId');
+    });
+  }
 }
 
 // **************************************************************************
@@ -953,6 +1078,7 @@ _$_Compliance _$$_ComplianceFromJson(Map<String, dynamic> json) =>
       complianceId: json['ComplianceId'] as int,
       complianceName: json['ComplianceName'] as String?,
       companyId: json['CompanyId'] as int?,
+      regionalManagerUnitId: json['RegionalManagerUnitId'] as int?,
       hasRejectReason: json['HasRejectReason'] as bool?,
       jobCategoryId: json['JobCategoryId'] as int?,
       isActive: json['IsActive'] as bool?,
@@ -963,6 +1089,7 @@ Map<String, dynamic> _$$_ComplianceToJson(_$_Compliance instance) =>
       'ComplianceId': instance.complianceId,
       'ComplianceName': instance.complianceName,
       'CompanyId': instance.companyId,
+      'RegionalManagerUnitId': instance.regionalManagerUnitId,
       'HasRejectReason': instance.hasRejectReason,
       'JobCategoryId': instance.jobCategoryId,
       'IsActive': instance.isActive,
