@@ -146,7 +146,8 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
           CmoFilledButton(
             title: LocaleKeys.next.tr(),
             onTap: _isFinished
-                ? () => CompartmentDetailScreen.push(context)
+                ? () => CompartmentDetailScreen.push(context,
+                    measuredArea: (areaSquareMeters ?? 0) / 10000)
                 : null,
           ),
           const SizedBox(height: 20),

@@ -9,10 +9,19 @@ part 'compartment.g.dart';
 @Collection(ignore: {'copyWith'})
 class Compartment with _$Compartment {
   const factory Compartment({
-    @JsonKey(name: 'CompartmentId') required int compartmentId,
+    @JsonKey(name: 'CompartmentId') int? compartmentId,
     @JsonKey(name: 'CompartmentName') String? compartmentName,
     @JsonKey(name: 'ProductGroup') double? productGroup,
     @JsonKey(name: 'SpeciesGroup') double? speciesGroup,
+    @JsonKey(name: 'PolygonArea') double? polygonArea,
+    @JsonKey(name: 'Unit') String? unit,
+    @JsonKey(name: 'EffectiveArea') double? effectiveArea,
+    @JsonKey(name: 'Espacement') String? espacement,
+    @JsonKey(name: 'PlannedPlantDate') String? plannedPlantDate,
+    @JsonKey(name: 'SurvivalPercentage') double? survivalPercentage,
+    @JsonKey(name: 'StockingPercentage') double? stockingPercentage,
+    @JsonKey(name: 'Rotation') String? rotation,
+    @JsonKey(name: 'MAI') String? mai,
     @Default(true) @JsonKey(name: 'IsActive') bool isActive,
   }) = _Compartment;
 
@@ -22,5 +31,5 @@ class Compartment with _$Compartment {
   const Compartment._();
 
   @override
-  Id get id => compartmentId;
+  Id get id => compartmentId ?? Isar.autoIncrement;
 }

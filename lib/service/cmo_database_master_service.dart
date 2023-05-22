@@ -1303,4 +1303,15 @@ class CmoDatabaseMasterService {
   void handleError(Object error) {
     logger.d(error);
   }
+
+  Future<int> cacheCompartment(Compartment item) async {
+    final db = await _db();
+    return db.compartments.put(item);
+  }
+
+  Future<List<Compartment>?> getCompartments() async {
+    final db = await _db();
+    db.contractors.where().findAll();
+    return db.compartments.filter().findAll();
+  }
 }

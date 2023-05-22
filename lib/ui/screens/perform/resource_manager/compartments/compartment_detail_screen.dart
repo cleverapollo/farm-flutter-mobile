@@ -1,27 +1,48 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/compartment_cubit/compartment_detail_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompartmentDetailScreen extends StatefulWidget {
-  const CompartmentDetailScreen({Key? key}) : super(key: key);
+  final double? measuredArea;
 
-  static dynamic push(BuildContext context) {
+  const CompartmentDetailScreen({Key? key, this.measuredArea})
+      : super(key: key);
+
+  static dynamic push(BuildContext context, {double? measuredArea}) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const CompartmentDetailScreen(),
+        builder: (_) {
+          return BlocProvider(
+            create: (_) => CompartmentDetailCubit(),
+            child: CompartmentDetailScreen(measuredArea: measuredArea),
+          );
+        },
       ),
     );
   }
 
   @override
-  State<CompartmentDetailScreen> createState() => _CompartmentDetailScreenState();
+  State<CompartmentDetailScreen> createState() =>
+      _CompartmentDetailScreenState();
 }
 
 class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
   Espacement? _espacement;
   DateTime? _plannedPlantDate;
+  late CompartmentDetailCubit _compartmentDetailCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _compartmentDetailCubit = context.read<CompartmentDetailCubit>();
+    _compartmentDetailCubit.onPolygonAreaChanged(widget.measuredArea);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,22 +73,34 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      _CompartmentDetailItem(
-                        child: _CompartmentTextField(
+                      AttributeItem(
+                        child: InputAttributeItem(
                           hintText: LocaleKeys.compartmentName.tr(),
+                          onChanged:
+                              _compartmentDetailCubit.onCompartmentNameChanged,
                         ),
                       ),
-                      _CompartmentDetailItem(
-                        child: _CompartmentSelectorField(
-                          hintText: LocaleKeys.productGroup.tr(),
+                      GestureDetector(
+                        onTap: () {
+                        },
+                        child: AttributeItem(
+                          child: SelectorAttributeItem(
+                            hintText: LocaleKeys.productGroup.tr(),
+                            text: '',
+                          ),
                         ),
                       ),
-                      _CompartmentDetailItem(
-                        child: _CompartmentSelectorField(
-                          hintText: LocaleKeys.speciesGroup.tr(),
+                      GestureDetector(
+                        onTap: () {
+                        },
+                        child: AttributeItem(
+                          child: SelectorAttributeItem(
+                            hintText: LocaleKeys.speciesGroup.tr(),
+                            text: '',
+                          ),
                         ),
                       ),
-                      _CompartmentDetailItem(
+                      AttributeItem(
                         child: Row(
                           children: [
                             const SizedBox(width: 16),
@@ -77,69 +110,89 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             ),
                             const SizedBox(width: 36),
                             Text(
-                              '10ha ${LocaleKeys.measured.tr()}',
+                              '${widget.measuredArea?.toStringAsFixed(2)}ha ${LocaleKeys.measured.tr()}',
                               style: context.textStyles.bodyNormal,
                             ),
                           ],
                         ),
                       ),
-                      _CompartmentDetailItem(
-                        child: _CompartmentTextField(
+                      AttributeItem(
+                        child: InputAttributeItem(
                           hintText: LocaleKeys.unit.tr(),
+                          onChanged:
+                              _compartmentDetailCubit.onCompartmentUnitChanged,
                         ),
                       ),
-                      _CompartmentDetailItem(
-                        child: _CompartmentTextField(
+                      AttributeItem(
+                        child: InputAttributeItem(
                           hintText: '${LocaleKeys.effectiveArea.tr()} ha',
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) => _compartmentDetailCubit
+                              .onEffectiveAreaChanged(double.tryParse(value)),
                         ),
                       ),
-                      _CompartmentDetailItem(
-                        child: Row(
-                          children: [
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                LocaleKeys.espacement.tr(),
-                                style: context.textStyles.bodyBold,
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () => setState(() {
-                                  _espacement = Espacement.w;
-                                }),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 2, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: context.colors.grey),
-                                  borderRadius: BorderRadius.circular(4),
-                                  color: _espacement == Espacement.w ? context.colors.yellow : null,
+                      AttributeItem(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            children: [
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Text(
+                                  LocaleKeys.espacement.tr(),
+                                  style: context.textStyles.bodyBold,
                                 ),
-                                child: Text('W'),
                               ),
-                            ),
-                            const SizedBox(width: 16),
-                            GestureDetector(
-                              onTap: () => setState(() {
-                                _espacement = Espacement.l;
-                              }),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 2, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: context.colors.grey),
-                                  borderRadius: BorderRadius.circular(4),
-                                  color: _espacement == Espacement.l ? context.colors.yellow : null,
+                              GestureDetector(
+                                onTap: () {
+                                  _compartmentDetailCubit
+                                      .onEspacementChanged(_espacement?.name);
+                                  setState(() {
+                                    _espacement = Espacement.w;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 2, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    border:
+                                        Border.all(color: context.colors.grey),
+                                    borderRadius: BorderRadius.circular(4),
+                                    color: _espacement == Espacement.w
+                                        ? context.colors.yellow
+                                        : null,
+                                  ),
+                                  child: Text('W'),
                                 ),
-                                child: Text('L'),
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 16),
+                              GestureDetector(
+                                onTap: () {
+                                  _compartmentDetailCubit
+                                      .onEspacementChanged(_espacement?.name);
+                                  setState(() {
+                                    _espacement = Espacement.l;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 2, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    border:
+                                        Border.all(color: context.colors.grey),
+                                    borderRadius: BorderRadius.circular(4),
+                                    color: _espacement == Espacement.l
+                                        ? context.colors.yellow
+                                        : null,
+                                  ),
+                                  child: Text('L'),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      _CompartmentDetailItem(
+                      AttributeItem(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -165,32 +218,44 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                   lastDate: DateTime.now()
                                       .add(Duration(days: 1000000)),
                                 );
-                                setState(() {
-                                });
+                                _compartmentDetailCubit
+                                    .onPlannedPlantDateChanged(
+                                        _plannedPlantDate);
+                                setState(() {});
                               },
                               icon: const Icon(Icons.calendar_month),
                             ),
                           ],
                         ),
                       ),
-                      _CompartmentDetailItem(
-                        child: _CompartmentTextField(
+                      AttributeItem(
+                        child: InputAttributeItem(
                           hintText: '${LocaleKeys.survival.tr()} %',
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) => _compartmentDetailCubit
+                              .onSurvivalPercentageDateChanged(
+                                  double.tryParse(value)),
                         ),
                       ),
-                      _CompartmentDetailItem(
-                        child: _CompartmentTextField(
+                      AttributeItem(
+                        child: InputAttributeItem(
                           hintText: '${LocaleKeys.stocking.tr()} %',
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) => _compartmentDetailCubit
+                              .onStockingPercentageDateChanged(
+                                  double.tryParse(value)),
                         ),
                       ),
-                      _CompartmentDetailItem(
-                        child: _CompartmentTextField(
+                      AttributeItem(
+                        child: InputAttributeItem(
                           hintText: LocaleKeys.rotation.tr(),
+                          onChanged: _compartmentDetailCubit.onRotationChanged,
                         ),
                       ),
-                      _CompartmentDetailItem(
-                        child: _CompartmentTextField(
-                          hintText: '${LocaleKeys.mai.tr()} ha',
+                      AttributeItem(
+                        child: InputAttributeItem(
+                          hintText: LocaleKeys.mai.tr(),
+                          onChanged: _compartmentDetailCubit.onMAIChanged,
                         ),
                       ),
                     ],
@@ -201,6 +266,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
             CmoFilledButton(
               title: LocaleKeys.save.tr(),
               onTap: () {
+                _compartmentDetailCubit.saveCompartment();
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
@@ -208,85 +274,6 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _CompartmentDetailItem extends StatelessWidget {
-  final Widget child;
-
-  const _CompartmentDetailItem({required this.child, Key? key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(width: 1, color: context.colors.grey),
-        ),
-      ),
-      child: child,
-    );
-  }
-}
-
-class _CompartmentTextField extends StatelessWidget {
-  final String hintText;
-
-  const _CompartmentTextField({
-    required this.hintText,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      minLines: 1,
-      style: context.textStyles.bodyBold,
-      decoration: InputDecoration(
-        hintText: hintText,
-        isCollapsed: true,
-        contentPadding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
-        enabledBorder: InputBorder.none,
-        focusedBorder: InputBorder.none,
-      ),
-    );
-  }
-}
-
-class _CompartmentSelectorField extends StatelessWidget {
-  final String hintText;
-
-  const _CompartmentSelectorField({
-    required this.hintText,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: TextField(
-            minLines: 1,
-            style: context.textStyles.bodyBold,
-            enabled: false,
-            decoration: InputDecoration(
-              hintText: hintText,
-              isCollapsed: true,
-              contentPadding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
-              enabledBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-            ),
-          ),
-        ),
-        Assets.icons.icArrowRight.svgBlack,
-        const SizedBox(width: 16),
-      ],
     );
   }
 }

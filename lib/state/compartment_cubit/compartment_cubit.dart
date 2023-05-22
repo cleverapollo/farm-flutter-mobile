@@ -12,7 +12,8 @@ class CompartmentCubit extends HydratedCubit<CompartmentState> {
   Future<void> loadListCompartment() async {
     emit(state.copyWith(loading: true));
     try {
-      final service = cmoDatabaseMasterService;
+      await cmoDatabaseMasterService.getCompartments();
+
       // final data = await service.getAllAuditsSynced();
       final data = [
         Compartment(compartmentId: DateTime.now().millisecondsSinceEpoch, compartmentName: 'Compartment name 1', productGroup: 10, speciesGroup: 20,),
