@@ -24,6 +24,10 @@ mixin _$Compartment {
   int get compartmentId => throw _privateConstructorUsedError;
   @JsonKey(name: 'CompartmentName')
   String? get compartmentName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'ProductGroup')
+  double? get productGroup => throw _privateConstructorUsedError;
+  @JsonKey(name: 'SpeciesGroup')
+  double? get speciesGroup => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool get isActive => throw _privateConstructorUsedError;
 
@@ -42,6 +46,8 @@ abstract class $CompartmentCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'CompartmentId') int compartmentId,
       @JsonKey(name: 'CompartmentName') String? compartmentName,
+      @JsonKey(name: 'ProductGroup') double? productGroup,
+      @JsonKey(name: 'SpeciesGroup') double? speciesGroup,
       @JsonKey(name: 'IsActive') bool isActive});
 }
 
@@ -60,6 +66,8 @@ class _$CompartmentCopyWithImpl<$Res, $Val extends Compartment>
   $Res call({
     Object? compartmentId = null,
     Object? compartmentName = freezed,
+    Object? productGroup = freezed,
+    Object? speciesGroup = freezed,
     Object? isActive = null,
   }) {
     return _then(_value.copyWith(
@@ -71,6 +79,14 @@ class _$CompartmentCopyWithImpl<$Res, $Val extends Compartment>
           ? _value.compartmentName
           : compartmentName // ignore: cast_nullable_to_non_nullable
               as String?,
+      productGroup: freezed == productGroup
+          ? _value.productGroup
+          : productGroup // ignore: cast_nullable_to_non_nullable
+              as double?,
+      speciesGroup: freezed == speciesGroup
+          ? _value.speciesGroup
+          : speciesGroup // ignore: cast_nullable_to_non_nullable
+              as double?,
       isActive: null == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -90,6 +106,8 @@ abstract class _$$_CompartmentCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'CompartmentId') int compartmentId,
       @JsonKey(name: 'CompartmentName') String? compartmentName,
+      @JsonKey(name: 'ProductGroup') double? productGroup,
+      @JsonKey(name: 'SpeciesGroup') double? speciesGroup,
       @JsonKey(name: 'IsActive') bool isActive});
 }
 
@@ -106,6 +124,8 @@ class __$$_CompartmentCopyWithImpl<$Res>
   $Res call({
     Object? compartmentId = null,
     Object? compartmentName = freezed,
+    Object? productGroup = freezed,
+    Object? speciesGroup = freezed,
     Object? isActive = null,
   }) {
     return _then(_$_Compartment(
@@ -117,6 +137,14 @@ class __$$_CompartmentCopyWithImpl<$Res>
           ? _value.compartmentName
           : compartmentName // ignore: cast_nullable_to_non_nullable
               as String?,
+      productGroup: freezed == productGroup
+          ? _value.productGroup
+          : productGroup // ignore: cast_nullable_to_non_nullable
+              as double?,
+      speciesGroup: freezed == speciesGroup
+          ? _value.speciesGroup
+          : speciesGroup // ignore: cast_nullable_to_non_nullable
+              as double?,
       isActive: null == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -131,6 +159,8 @@ class _$_Compartment extends _Compartment {
   const _$_Compartment(
       {@JsonKey(name: 'CompartmentId') required this.compartmentId,
       @JsonKey(name: 'CompartmentName') this.compartmentName,
+      @JsonKey(name: 'ProductGroup') this.productGroup,
+      @JsonKey(name: 'SpeciesGroup') this.speciesGroup,
       @JsonKey(name: 'IsActive') this.isActive = true})
       : super._();
 
@@ -144,12 +174,18 @@ class _$_Compartment extends _Compartment {
   @JsonKey(name: 'CompartmentName')
   final String? compartmentName;
   @override
+  @JsonKey(name: 'ProductGroup')
+  final double? productGroup;
+  @override
+  @JsonKey(name: 'SpeciesGroup')
+  final double? speciesGroup;
+  @override
   @JsonKey(name: 'IsActive')
   final bool isActive;
 
   @override
   String toString() {
-    return 'Compartment(compartmentId: $compartmentId, compartmentName: $compartmentName, isActive: $isActive)';
+    return 'Compartment(compartmentId: $compartmentId, compartmentName: $compartmentName, productGroup: $productGroup, speciesGroup: $speciesGroup, isActive: $isActive)';
   }
 
   @override
@@ -161,14 +197,18 @@ class _$_Compartment extends _Compartment {
                 other.compartmentId == compartmentId) &&
             (identical(other.compartmentName, compartmentName) ||
                 other.compartmentName == compartmentName) &&
+            (identical(other.productGroup, productGroup) ||
+                other.productGroup == productGroup) &&
+            (identical(other.speciesGroup, speciesGroup) ||
+                other.speciesGroup == speciesGroup) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, compartmentId, compartmentName, isActive);
+  int get hashCode => Object.hash(runtimeType, compartmentId, compartmentName,
+      productGroup, speciesGroup, isActive);
 
   @JsonKey(ignore: true)
   @override
@@ -188,6 +228,8 @@ abstract class _Compartment extends Compartment {
   const factory _Compartment(
       {@JsonKey(name: 'CompartmentId') required final int compartmentId,
       @JsonKey(name: 'CompartmentName') final String? compartmentName,
+      @JsonKey(name: 'ProductGroup') final double? productGroup,
+      @JsonKey(name: 'SpeciesGroup') final double? speciesGroup,
       @JsonKey(name: 'IsActive') final bool isActive}) = _$_Compartment;
   const _Compartment._() : super._();
 
@@ -200,6 +242,12 @@ abstract class _Compartment extends Compartment {
   @override
   @JsonKey(name: 'CompartmentName')
   String? get compartmentName;
+  @override
+  @JsonKey(name: 'ProductGroup')
+  double? get productGroup;
+  @override
+  @JsonKey(name: 'SpeciesGroup')
+  double? get speciesGroup;
   @override
   @JsonKey(name: 'IsActive')
   bool get isActive;

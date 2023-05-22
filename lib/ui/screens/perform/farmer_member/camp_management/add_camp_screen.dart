@@ -3,7 +3,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/camp.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_step2_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/member/compartments/compartment_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/member_detail/site_location_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';

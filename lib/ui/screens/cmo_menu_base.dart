@@ -14,8 +14,8 @@ import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_pr
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/camp_management_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/add_audit/audit_add_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/create_new_stake_holder_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/member/compartments/compartment_screen.dart';
 import 'package:cmo/ui/screens/setting/legal/legal_screen.dart';
 import 'package:cmo/ui/screens/setting/settings_screen.dart';
 import 'package:cmo/ui/screens/setting/support/support_screen.dart';
@@ -143,7 +143,11 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
         buildOption(context, title: LocaleKeys.createNew.tr(), onTap: () {
           AddMemberScreen.push(context);
         }),
-        buildOption(context, title: LocaleKeys.compartments.tr()),
+        buildOption(
+          context,
+          title: LocaleKeys.compartments.tr(),
+          onTap: () => CompartmentScreen.push(context),
+        ),
         const SizedBox(height: 7),
         const _Divider(),
         buildHeader(context, title: LocaleKeys.audit_s.tr()),

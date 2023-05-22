@@ -50,7 +50,7 @@ export 'data/farm_member_objective_answer.dart';
 export 'data/criteria.dart';
 export 'data/audit_question.dart';
 export 'data/audit_template.dart';
-export 'data/compartment.dart';
+export 'compartment/compartment.dart';
 export 'data/site.dart';
 export 'data/audit_compliance.dart';
 export 'data/audit_question_answer.dart';
@@ -67,5 +67,4 @@ export 'employee_grievance/employee_grievance.dart';
 export 'fire_management/fire_management.dart';
 export 'rte_species/rte_species.dart';
 export 'rte_species/rte_species_photo_model.dart';
-
 

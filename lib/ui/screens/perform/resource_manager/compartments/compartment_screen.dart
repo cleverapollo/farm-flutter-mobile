@@ -1,13 +1,17 @@
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/member/compartments/compartment_map_screen.dart';
+import 'package:cmo/model/model.dart';
+import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_map_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/compartment_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:cmo/gen/assets.gen.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CompartmentScreen extends StatelessWidget {
-  const CompartmentScreen({Key? key}) : super(key: key);
+class CompartmentScreen extends StatefulWidget {
+
+  const CompartmentScreen({super.key});
 
   static dynamic push(BuildContext context) {
     return Navigator.of(context).push(
@@ -15,6 +19,18 @@ class CompartmentScreen extends StatelessWidget {
         builder: (_) => const CompartmentScreen(),
       ),
     );
+  }
+
+  @override
+  State<StatefulWidget> createState() => _CompartmentScreenState();
+}
+
+class _CompartmentScreenState extends State<CompartmentScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CompartmentCubit>().loadListCompartment();
   }
 
   @override
@@ -47,34 +63,23 @@ class CompartmentScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            CmoTappable(
-              onTap: () {
-                final points = <LatLng>[
-                  LatLng(-26.015368927981065, 28.042593151330948),
-                  LatLng(-26.025381761698664, 28.049022741615772),
-                  LatLng(-26.02768170340819, 28.038567155599594),
-                  LatLng(-26.01968835342607, 28.036944083869457),
-                ];
-                CompartmentMapScreen.push(context, points: points);
-              },
-              child: CmoCard(
-                containerGradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    Color(0xFF2072B9),
-                    Color(0xFF1B294A),
-                  ],
+            Expanded(
+              child: BlocSelector<CompartmentCubit, CompartmentState, List<Compartment>>(
+                selector: (state) => state.listCompartment,
+                builder: (context, listCompartment) => ListView.builder(
+                  itemCount: listCompartment.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: CompartmentItemWidget(
+                        model: listCompartment[index],
+                        onTap: () {},
+                      ),
+                    );
+                  },
                 ),
-                content: [
-                  CmoCardHeader(title: '${LocaleKeys.compartment.tr()} A123'),
-                  CmoCardItem(
-                      title: LocaleKeys.productGroup.tr(), value: '10 ha'),
-                  CmoCardItem(title: LocaleKeys.speciesGroup.tr(), value: '0'),
-                ],
               ),
             ),
-            const Spacer(),
             CmoFilledButton(
               title: LocaleKeys.done.tr(),
               onTap: () {

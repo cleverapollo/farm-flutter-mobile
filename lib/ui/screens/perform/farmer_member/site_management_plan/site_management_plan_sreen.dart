@@ -24,7 +24,7 @@ class SiteManagementPlanScreen extends StatelessWidget {
       ),
       body: SizedBox.expand(
         child: Column(
-          children: _buildPlantationFMP(context),
+          children: _buildCharcoalManagementPlan(context),
         ),
       ),
     );
