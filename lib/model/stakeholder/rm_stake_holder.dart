@@ -13,15 +13,15 @@ class RMStakeHolder with _$RMStakeHolder {
   const factory RMStakeHolder({
     @JsonKey(name: 'StakeholderId') required String stakeHolderId,
     @JsonKey(name: 'StakeholderName') String? stakeHolderName,
-    @JsonKey(name: 'StakeholderTypeId') int? stakeHolderTypeId,
+    @JsonKey(name: 'StakeholderTypeId') String? stakeHolderTypeId,
     @JsonKey(name: 'Address1') String? address1,
     @JsonKey(name: 'Address2') String? address2,
     @JsonKey(name: 'ContactName') String? contactName,
     @JsonKey(name: 'Email') String? email,
     @JsonKey(name: 'Tel') String? tel,
     @JsonKey(name: 'Cell') String? cell,
-    @JsonKey(name: 'IsActive') bool? isActive,
-    @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
+    @JsonKey(name: 'IsActive') int? isActive,
+    @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _RMStakeHolder;
 
   const RMStakeHolder._();

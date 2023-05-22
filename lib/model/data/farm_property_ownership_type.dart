@@ -15,6 +15,7 @@ class FarmPropertyOwnershipType with _$FarmPropertyOwnershipType {
         required int farmPropertyOwnershipTypeId,
     @JsonKey(name: 'FarmPropertyOwnershipTypeName')
         String? farmPropertyOwnershipTypeName,
+    @JsonKey(name: 'IsActive') int? isActive,
   }) = _FarmPropertyOwnershipType;
 
   const FarmPropertyOwnershipType._();

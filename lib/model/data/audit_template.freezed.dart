@@ -25,7 +25,7 @@ mixin _$AuditTemplate {
   @JsonKey(name: 'AuditTemplateName')
   String? get auditTemplateName => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
-  bool get isActive => throw _privateConstructorUsedError;
+  bool? get isActive => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,7 +42,7 @@ abstract class $AuditTemplateCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'AuditTemplateId') int auditTemplateId,
       @JsonKey(name: 'AuditTemplateName') String? auditTemplateName,
-      @JsonKey(name: 'IsActive') bool isActive});
+      @JsonKey(name: 'IsActive') bool? isActive});
 }
 
 /// @nodoc
@@ -60,7 +60,7 @@ class _$AuditTemplateCopyWithImpl<$Res, $Val extends AuditTemplate>
   $Res call({
     Object? auditTemplateId = null,
     Object? auditTemplateName = freezed,
-    Object? isActive = null,
+    Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
       auditTemplateId: null == auditTemplateId
@@ -71,10 +71,10 @@ class _$AuditTemplateCopyWithImpl<$Res, $Val extends AuditTemplate>
           ? _value.auditTemplateName
           : auditTemplateName // ignore: cast_nullable_to_non_nullable
               as String?,
-      isActive: null == isActive
+      isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as bool?,
     ) as $Val);
   }
 }
@@ -90,7 +90,7 @@ abstract class _$$_AuditTemplateCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'AuditTemplateId') int auditTemplateId,
       @JsonKey(name: 'AuditTemplateName') String? auditTemplateName,
-      @JsonKey(name: 'IsActive') bool isActive});
+      @JsonKey(name: 'IsActive') bool? isActive});
 }
 
 /// @nodoc
@@ -106,7 +106,7 @@ class __$$_AuditTemplateCopyWithImpl<$Res>
   $Res call({
     Object? auditTemplateId = null,
     Object? auditTemplateName = freezed,
-    Object? isActive = null,
+    Object? isActive = freezed,
   }) {
     return _then(_$_AuditTemplate(
       auditTemplateId: null == auditTemplateId
@@ -117,10 +117,10 @@ class __$$_AuditTemplateCopyWithImpl<$Res>
           ? _value.auditTemplateName
           : auditTemplateName // ignore: cast_nullable_to_non_nullable
               as String?,
-      isActive: null == isActive
+      isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as bool?,
     ));
   }
 }
@@ -131,7 +131,7 @@ class _$_AuditTemplate extends _AuditTemplate {
   const _$_AuditTemplate(
       {@JsonKey(name: 'AuditTemplateId') required this.auditTemplateId,
       @JsonKey(name: 'AuditTemplateName') this.auditTemplateName,
-      @JsonKey(name: 'IsActive') this.isActive = true})
+      @JsonKey(name: 'IsActive') this.isActive})
       : super._();
 
   factory _$_AuditTemplate.fromJson(Map<String, dynamic> json) =>
@@ -145,7 +145,7 @@ class _$_AuditTemplate extends _AuditTemplate {
   final String? auditTemplateName;
   @override
   @JsonKey(name: 'IsActive')
-  final bool isActive;
+  final bool? isActive;
 
   @override
   String toString() {
@@ -188,7 +188,7 @@ abstract class _AuditTemplate extends AuditTemplate {
   const factory _AuditTemplate(
       {@JsonKey(name: 'AuditTemplateId') required final int auditTemplateId,
       @JsonKey(name: 'AuditTemplateName') final String? auditTemplateName,
-      @JsonKey(name: 'IsActive') final bool isActive}) = _$_AuditTemplate;
+      @JsonKey(name: 'IsActive') final bool? isActive}) = _$_AuditTemplate;
   const _AuditTemplate._() : super._();
 
   factory _AuditTemplate.fromJson(Map<String, dynamic> json) =
@@ -202,7 +202,7 @@ abstract class _AuditTemplate extends AuditTemplate {
   String? get auditTemplateName;
   @override
   @JsonKey(name: 'IsActive')
-  bool get isActive;
+  bool? get isActive;
   @override
   @JsonKey(ignore: true)
   _$$_AuditTemplateCopyWith<_$_AuditTemplate> get copyWith =>

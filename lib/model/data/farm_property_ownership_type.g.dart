@@ -27,6 +27,11 @@ const FarmPropertyOwnershipTypeSchema = CollectionSchema(
       id: 1,
       name: r'farmPropertyOwnershipTypeName',
       type: IsarType.string,
+    ),
+    r'isActive': PropertySchema(
+      id: 2,
+      name: r'isActive',
+      type: IsarType.long,
     )
   },
   estimateSize: _farmPropertyOwnershipTypeEstimateSize,
@@ -66,6 +71,7 @@ void _farmPropertyOwnershipTypeSerialize(
 ) {
   writer.writeLong(offsets[0], object.farmPropertyOwnershipTypeId);
   writer.writeString(offsets[1], object.farmPropertyOwnershipTypeName);
+  writer.writeLong(offsets[2], object.isActive);
 }
 
 FarmPropertyOwnershipType _farmPropertyOwnershipTypeDeserialize(
@@ -77,6 +83,7 @@ FarmPropertyOwnershipType _farmPropertyOwnershipTypeDeserialize(
   final object = FarmPropertyOwnershipType(
     farmPropertyOwnershipTypeId: reader.readLong(offsets[0]),
     farmPropertyOwnershipTypeName: reader.readStringOrNull(offsets[1]),
+    isActive: reader.readLongOrNull(offsets[2]),
   );
   return object;
 }
@@ -92,6 +99,8 @@ P _farmPropertyOwnershipTypeDeserializeProp<P>(
       return (reader.readLong(offset)) as P;
     case 1:
       return (reader.readStringOrNull(offset)) as P;
+    case 2:
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -461,6 +470,80 @@ extension FarmPropertyOwnershipTypeQueryFilter on QueryBuilder<
       ));
     });
   }
+
+  QueryBuilder<FarmPropertyOwnershipType, FarmPropertyOwnershipType,
+      QAfterFilterCondition> isActiveIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isActive',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmPropertyOwnershipType, FarmPropertyOwnershipType,
+      QAfterFilterCondition> isActiveIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isActive',
+      ));
+    });
+  }
+
+  QueryBuilder<FarmPropertyOwnershipType, FarmPropertyOwnershipType,
+      QAfterFilterCondition> isActiveEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmPropertyOwnershipType, FarmPropertyOwnershipType,
+      QAfterFilterCondition> isActiveGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmPropertyOwnershipType, FarmPropertyOwnershipType,
+      QAfterFilterCondition> isActiveLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FarmPropertyOwnershipType, FarmPropertyOwnershipType,
+      QAfterFilterCondition> isActiveBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'isActive',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension FarmPropertyOwnershipTypeQueryObject on QueryBuilder<
@@ -496,6 +579,20 @@ extension FarmPropertyOwnershipTypeQuerySortBy on QueryBuilder<
       QAfterSortBy> sortByFarmPropertyOwnershipTypeNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'farmPropertyOwnershipTypeName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FarmPropertyOwnershipType, FarmPropertyOwnershipType,
+      QAfterSortBy> sortByIsActive() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isActive', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmPropertyOwnershipType, FarmPropertyOwnershipType,
+      QAfterSortBy> sortByIsActiveDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isActive', Sort.desc);
     });
   }
 }
@@ -543,6 +640,20 @@ extension FarmPropertyOwnershipTypeQuerySortThenBy on QueryBuilder<
       return query.addSortBy(r'id', Sort.desc);
     });
   }
+
+  QueryBuilder<FarmPropertyOwnershipType, FarmPropertyOwnershipType,
+      QAfterSortBy> thenByIsActive() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isActive', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FarmPropertyOwnershipType, FarmPropertyOwnershipType,
+      QAfterSortBy> thenByIsActiveDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isActive', Sort.desc);
+    });
+  }
 }
 
 extension FarmPropertyOwnershipTypeQueryWhereDistinct on QueryBuilder<
@@ -559,6 +670,13 @@ extension FarmPropertyOwnershipTypeQueryWhereDistinct on QueryBuilder<
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'farmPropertyOwnershipTypeName',
           caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FarmPropertyOwnershipType, FarmPropertyOwnershipType, QDistinct>
+      distinctByIsActive() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isActive');
     });
   }
 }
@@ -584,6 +702,13 @@ extension FarmPropertyOwnershipTypeQueryProperty on QueryBuilder<
       return query.addPropertyName(r'farmPropertyOwnershipTypeName');
     });
   }
+
+  QueryBuilder<FarmPropertyOwnershipType, int?, QQueryOperations>
+      isActiveProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isActive');
+    });
+  }
 }
 
 // **************************************************************************
@@ -596,6 +721,7 @@ _$_FarmPropertyOwnershipType _$$_FarmPropertyOwnershipTypeFromJson(
       farmPropertyOwnershipTypeId: json['FarmPropertyOwnershipTypeId'] as int,
       farmPropertyOwnershipTypeName:
           json['FarmPropertyOwnershipTypeName'] as String?,
+      isActive: json['IsActive'] as int?,
     );
 
 Map<String, dynamic> _$$_FarmPropertyOwnershipTypeToJson(
@@ -603,4 +729,5 @@ Map<String, dynamic> _$$_FarmPropertyOwnershipTypeToJson(
     <String, dynamic>{
       'FarmPropertyOwnershipTypeId': instance.farmPropertyOwnershipTypeId,
       'FarmPropertyOwnershipTypeName': instance.farmPropertyOwnershipTypeName,
+      'IsActive': instance.isActive,
     };

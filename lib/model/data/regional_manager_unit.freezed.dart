@@ -27,7 +27,7 @@ mixin _$RegionalManagerUnit {
   @JsonKey(name: 'GroupschemeId')
   int? get groupSchemeId => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
-  bool? get isActive => throw _privateConstructorUsedError;
+  int? get isActive => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -45,7 +45,7 @@ abstract class $RegionalManagerUnitCopyWith<$Res> {
       {@JsonKey(name: 'RegionalManagerUnitId') int regionalManagerUnitId,
       @JsonKey(name: 'RegionalManagerUnitName') String? regionalManagerUnitName,
       @JsonKey(name: 'GroupschemeId') int? groupSchemeId,
-      @JsonKey(name: 'IsActive') bool? isActive});
+      @JsonKey(name: 'IsActive') int? isActive});
 }
 
 /// @nodoc
@@ -82,7 +82,7 @@ class _$RegionalManagerUnitCopyWithImpl<$Res, $Val extends RegionalManagerUnit>
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
     ) as $Val);
   }
 }
@@ -99,7 +99,7 @@ abstract class _$$_RegionalManagerUnitCopyWith<$Res>
       {@JsonKey(name: 'RegionalManagerUnitId') int regionalManagerUnitId,
       @JsonKey(name: 'RegionalManagerUnitName') String? regionalManagerUnitName,
       @JsonKey(name: 'GroupschemeId') int? groupSchemeId,
-      @JsonKey(name: 'IsActive') bool? isActive});
+      @JsonKey(name: 'IsActive') int? isActive});
 }
 
 /// @nodoc
@@ -134,7 +134,7 @@ class __$$_RegionalManagerUnitCopyWithImpl<$Res>
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
     ));
   }
 }
@@ -167,7 +167,7 @@ class _$_RegionalManagerUnit extends _RegionalManagerUnit {
   final int? groupSchemeId;
   @override
   @JsonKey(name: 'IsActive')
-  final bool? isActive;
+  final int? isActive;
 
   @override
   String toString() {
@@ -219,7 +219,7 @@ abstract class _RegionalManagerUnit extends RegionalManagerUnit {
       @JsonKey(name: 'GroupschemeId')
           final int? groupSchemeId,
       @JsonKey(name: 'IsActive')
-          final bool? isActive}) = _$_RegionalManagerUnit;
+          final int? isActive}) = _$_RegionalManagerUnit;
   const _RegionalManagerUnit._() : super._();
 
   factory _RegionalManagerUnit.fromJson(Map<String, dynamic> json) =
@@ -236,7 +236,7 @@ abstract class _RegionalManagerUnit extends RegionalManagerUnit {
   int? get groupSchemeId;
   @override
   @JsonKey(name: 'IsActive')
-  bool? get isActive;
+  int? get isActive;
   @override
   @JsonKey(ignore: true)
   _$$_RegionalManagerUnitCopyWith<_$_RegionalManagerUnit> get copyWith =>

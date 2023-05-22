@@ -45,12 +45,12 @@ const RMStakeHolderSchema = CollectionSchema(
     r'isActive': PropertySchema(
       id: 5,
       name: r'isActive',
-      type: IsarType.bool,
+      type: IsarType.long,
     ),
     r'isMasterDataSynced': PropertySchema(
       id: 6,
       name: r'isMasterDataSynced',
-      type: IsarType.bool,
+      type: IsarType.long,
     ),
     r'stakeHolderId': PropertySchema(
       id: 7,
@@ -65,7 +65,7 @@ const RMStakeHolderSchema = CollectionSchema(
     r'stakeHolderTypeId': PropertySchema(
       id: 9,
       name: r'stakeHolderTypeId',
-      type: IsarType.long,
+      type: IsarType.string,
     ),
     r'tel': PropertySchema(
       id: 10,
@@ -131,6 +131,12 @@ int _rMStakeHolderEstimateSize(
     }
   }
   {
+    final value = object.stakeHolderTypeId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.tel;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -150,11 +156,11 @@ void _rMStakeHolderSerialize(
   writer.writeString(offsets[2], object.cell);
   writer.writeString(offsets[3], object.contactName);
   writer.writeString(offsets[4], object.email);
-  writer.writeBool(offsets[5], object.isActive);
-  writer.writeBool(offsets[6], object.isMasterDataSynced);
+  writer.writeLong(offsets[5], object.isActive);
+  writer.writeLong(offsets[6], object.isMasterDataSynced);
   writer.writeString(offsets[7], object.stakeHolderId);
   writer.writeString(offsets[8], object.stakeHolderName);
-  writer.writeLong(offsets[9], object.stakeHolderTypeId);
+  writer.writeString(offsets[9], object.stakeHolderTypeId);
   writer.writeString(offsets[10], object.tel);
 }
 
@@ -170,11 +176,11 @@ RMStakeHolder _rMStakeHolderDeserialize(
     cell: reader.readStringOrNull(offsets[2]),
     contactName: reader.readStringOrNull(offsets[3]),
     email: reader.readStringOrNull(offsets[4]),
-    isActive: reader.readBoolOrNull(offsets[5]),
-    isMasterDataSynced: reader.readBoolOrNull(offsets[6]),
+    isActive: reader.readLongOrNull(offsets[5]),
+    isMasterDataSynced: reader.readLongOrNull(offsets[6]),
     stakeHolderId: reader.readString(offsets[7]),
     stakeHolderName: reader.readStringOrNull(offsets[8]),
-    stakeHolderTypeId: reader.readLongOrNull(offsets[9]),
+    stakeHolderTypeId: reader.readStringOrNull(offsets[9]),
     tel: reader.readStringOrNull(offsets[10]),
   );
   return object;
@@ -198,15 +204,15 @@ P _rMStakeHolderDeserializeProp<P>(
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 6:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 7:
       return (reader.readString(offset)) as P;
     case 8:
       return (reader.readStringOrNull(offset)) as P;
     case 9:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     default:
@@ -1150,11 +1156,57 @@ extension RMStakeHolderQueryFilter
   }
 
   QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
-      isActiveEqualTo(bool? value) {
+      isActiveEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isActive',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
+      isActiveGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
+      isActiveLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
+      isActiveBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'isActive',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -1178,11 +1230,57 @@ extension RMStakeHolderQueryFilter
   }
 
   QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
-      isMasterDataSyncedEqualTo(bool? value) {
+      isMasterDataSyncedEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isMasterDataSynced',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
+      isMasterDataSyncedGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'isMasterDataSynced',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
+      isMasterDataSyncedLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'isMasterDataSynced',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
+      isMasterDataSyncedBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'isMasterDataSynced',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -1496,49 +1594,58 @@ extension RMStakeHolderQueryFilter
   }
 
   QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
-      stakeHolderTypeIdEqualTo(int? value) {
+      stakeHolderTypeIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'stakeHolderTypeId',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
       stakeHolderTypeIdGreaterThan(
-    int? value, {
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'stakeHolderTypeId',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
       stakeHolderTypeIdLessThan(
-    int? value, {
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'stakeHolderTypeId',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
       stakeHolderTypeIdBetween(
-    int? lower,
-    int? upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1547,6 +1654,77 @@ extension RMStakeHolderQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
+      stakeHolderTypeIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'stakeHolderTypeId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
+      stakeHolderTypeIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'stakeHolderTypeId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
+      stakeHolderTypeIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'stakeHolderTypeId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
+      stakeHolderTypeIdMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'stakeHolderTypeId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
+      stakeHolderTypeIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'stakeHolderTypeId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<RMStakeHolder, RMStakeHolder, QAfterFilterCondition>
+      stakeHolderTypeIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'stakeHolderTypeId',
+        value: '',
       ));
     });
   }
@@ -2083,9 +2261,10 @@ extension RMStakeHolderQueryWhereDistinct
   }
 
   QueryBuilder<RMStakeHolder, RMStakeHolder, QDistinct>
-      distinctByStakeHolderTypeId() {
+      distinctByStakeHolderTypeId({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'stakeHolderTypeId');
+      return query.addDistinctBy(r'stakeHolderTypeId',
+          caseSensitive: caseSensitive);
     });
   }
 
@@ -2135,13 +2314,13 @@ extension RMStakeHolderQueryProperty
     });
   }
 
-  QueryBuilder<RMStakeHolder, bool?, QQueryOperations> isActiveProperty() {
+  QueryBuilder<RMStakeHolder, int?, QQueryOperations> isActiveProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isActive');
     });
   }
 
-  QueryBuilder<RMStakeHolder, bool?, QQueryOperations>
+  QueryBuilder<RMStakeHolder, int?, QQueryOperations>
       isMasterDataSyncedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isMasterDataSynced');
@@ -2162,7 +2341,7 @@ extension RMStakeHolderQueryProperty
     });
   }
 
-  QueryBuilder<RMStakeHolder, int?, QQueryOperations>
+  QueryBuilder<RMStakeHolder, String?, QQueryOperations>
       stakeHolderTypeIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'stakeHolderTypeId');
@@ -2184,15 +2363,15 @@ _$_RMStakeHolder _$$_RMStakeHolderFromJson(Map<String, dynamic> json) =>
     _$_RMStakeHolder(
       stakeHolderId: json['StakeholderId'] as String,
       stakeHolderName: json['StakeholderName'] as String?,
-      stakeHolderTypeId: json['StakeholderTypeId'] as int?,
+      stakeHolderTypeId: json['StakeholderTypeId'] as String?,
       address1: json['Address1'] as String?,
       address2: json['Address2'] as String?,
       contactName: json['ContactName'] as String?,
       email: json['Email'] as String?,
       tel: json['Tel'] as String?,
       cell: json['Cell'] as String?,
-      isActive: json['IsActive'] as bool?,
-      isMasterDataSynced: json['IsMasterDataSynced'] as bool?,
+      isActive: json['IsActive'] as int?,
+      isMasterDataSynced: json['IsMasterDataSynced'] as int?,
     );
 
 Map<String, dynamic> _$$_RMStakeHolderToJson(_$_RMStakeHolder instance) =>

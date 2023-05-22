@@ -26,6 +26,8 @@ mixin _$FarmPropertyOwnershipType {
   @JsonKey(name: 'FarmPropertyOwnershipTypeName')
   String? get farmPropertyOwnershipTypeName =>
       throw _privateConstructorUsedError;
+  @JsonKey(name: 'IsActive')
+  int? get isActive => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -43,7 +45,9 @@ abstract class $FarmPropertyOwnershipTypeCopyWith<$Res> {
       {@JsonKey(name: 'FarmPropertyOwnershipTypeId')
           int farmPropertyOwnershipTypeId,
       @JsonKey(name: 'FarmPropertyOwnershipTypeName')
-          String? farmPropertyOwnershipTypeName});
+          String? farmPropertyOwnershipTypeName,
+      @JsonKey(name: 'IsActive')
+          int? isActive});
 }
 
 /// @nodoc
@@ -62,6 +66,7 @@ class _$FarmPropertyOwnershipTypeCopyWithImpl<$Res,
   $Res call({
     Object? farmPropertyOwnershipTypeId = null,
     Object? farmPropertyOwnershipTypeName = freezed,
+    Object? isActive = freezed,
   }) {
     return _then(_value.copyWith(
       farmPropertyOwnershipTypeId: null == farmPropertyOwnershipTypeId
@@ -72,6 +77,10 @@ class _$FarmPropertyOwnershipTypeCopyWithImpl<$Res,
           ? _value.farmPropertyOwnershipTypeName
           : farmPropertyOwnershipTypeName // ignore: cast_nullable_to_non_nullable
               as String?,
+      isActive: freezed == isActive
+          ? _value.isActive
+          : isActive // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -89,7 +98,9 @@ abstract class _$$_FarmPropertyOwnershipTypeCopyWith<$Res>
       {@JsonKey(name: 'FarmPropertyOwnershipTypeId')
           int farmPropertyOwnershipTypeId,
       @JsonKey(name: 'FarmPropertyOwnershipTypeName')
-          String? farmPropertyOwnershipTypeName});
+          String? farmPropertyOwnershipTypeName,
+      @JsonKey(name: 'IsActive')
+          int? isActive});
 }
 
 /// @nodoc
@@ -107,6 +118,7 @@ class __$$_FarmPropertyOwnershipTypeCopyWithImpl<$Res>
   $Res call({
     Object? farmPropertyOwnershipTypeId = null,
     Object? farmPropertyOwnershipTypeName = freezed,
+    Object? isActive = freezed,
   }) {
     return _then(_$_FarmPropertyOwnershipType(
       farmPropertyOwnershipTypeId: null == farmPropertyOwnershipTypeId
@@ -117,6 +129,10 @@ class __$$_FarmPropertyOwnershipTypeCopyWithImpl<$Res>
           ? _value.farmPropertyOwnershipTypeName
           : farmPropertyOwnershipTypeName // ignore: cast_nullable_to_non_nullable
               as String?,
+      isActive: freezed == isActive
+          ? _value.isActive
+          : isActive // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -128,7 +144,9 @@ class _$_FarmPropertyOwnershipType extends _FarmPropertyOwnershipType {
       {@JsonKey(name: 'FarmPropertyOwnershipTypeId')
           required this.farmPropertyOwnershipTypeId,
       @JsonKey(name: 'FarmPropertyOwnershipTypeName')
-          this.farmPropertyOwnershipTypeName})
+          this.farmPropertyOwnershipTypeName,
+      @JsonKey(name: 'IsActive')
+          this.isActive})
       : super._();
 
   factory _$_FarmPropertyOwnershipType.fromJson(Map<String, dynamic> json) =>
@@ -140,10 +158,13 @@ class _$_FarmPropertyOwnershipType extends _FarmPropertyOwnershipType {
   @override
   @JsonKey(name: 'FarmPropertyOwnershipTypeName')
   final String? farmPropertyOwnershipTypeName;
+  @override
+  @JsonKey(name: 'IsActive')
+  final int? isActive;
 
   @override
   String toString() {
-    return 'FarmPropertyOwnershipType(farmPropertyOwnershipTypeId: $farmPropertyOwnershipTypeId, farmPropertyOwnershipTypeName: $farmPropertyOwnershipTypeName)';
+    return 'FarmPropertyOwnershipType(farmPropertyOwnershipTypeId: $farmPropertyOwnershipTypeId, farmPropertyOwnershipTypeName: $farmPropertyOwnershipTypeName, isActive: $isActive)';
   }
 
   @override
@@ -158,13 +179,15 @@ class _$_FarmPropertyOwnershipType extends _FarmPropertyOwnershipType {
             (identical(other.farmPropertyOwnershipTypeName,
                     farmPropertyOwnershipTypeName) ||
                 other.farmPropertyOwnershipTypeName ==
-                    farmPropertyOwnershipTypeName));
+                    farmPropertyOwnershipTypeName) &&
+            (identical(other.isActive, isActive) ||
+                other.isActive == isActive));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, farmPropertyOwnershipTypeId, farmPropertyOwnershipTypeName);
+  int get hashCode => Object.hash(runtimeType, farmPropertyOwnershipTypeId,
+      farmPropertyOwnershipTypeName, isActive);
 
   @JsonKey(ignore: true)
   @override
@@ -183,11 +206,12 @@ class _$_FarmPropertyOwnershipType extends _FarmPropertyOwnershipType {
 
 abstract class _FarmPropertyOwnershipType extends FarmPropertyOwnershipType {
   const factory _FarmPropertyOwnershipType(
-          {@JsonKey(name: 'FarmPropertyOwnershipTypeId')
-              required final int farmPropertyOwnershipTypeId,
-          @JsonKey(name: 'FarmPropertyOwnershipTypeName')
-              final String? farmPropertyOwnershipTypeName}) =
-      _$_FarmPropertyOwnershipType;
+      {@JsonKey(name: 'FarmPropertyOwnershipTypeId')
+          required final int farmPropertyOwnershipTypeId,
+      @JsonKey(name: 'FarmPropertyOwnershipTypeName')
+          final String? farmPropertyOwnershipTypeName,
+      @JsonKey(name: 'IsActive')
+          final int? isActive}) = _$_FarmPropertyOwnershipType;
   const _FarmPropertyOwnershipType._() : super._();
 
   factory _FarmPropertyOwnershipType.fromJson(Map<String, dynamic> json) =
@@ -199,6 +223,9 @@ abstract class _FarmPropertyOwnershipType extends FarmPropertyOwnershipType {
   @override
   @JsonKey(name: 'FarmPropertyOwnershipTypeName')
   String? get farmPropertyOwnershipTypeName;
+  @override
+  @JsonKey(name: 'IsActive')
+  int? get isActive;
   @override
   @JsonKey(ignore: true)
   _$$_FarmPropertyOwnershipTypeCopyWith<_$_FarmPropertyOwnershipType>

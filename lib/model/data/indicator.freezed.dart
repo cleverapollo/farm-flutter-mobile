@@ -144,7 +144,7 @@ class _$_Indicator extends _Indicator {
       {@JsonKey(name: 'IndicatorId') required this.indicatorId,
       @JsonKey(name: 'IndicatorName') this.indicatorName,
       @JsonKey(name: 'IndicatorDescription') this.indicatorDescription,
-      @JsonKey(name: 'IsActive') this.isActive = true})
+      @JsonKey(name: 'IsActive') this.isActive})
       : super._();
 
   factory _$_Indicator.fromJson(Map<String, dynamic> json) =>

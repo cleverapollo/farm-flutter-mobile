@@ -837,7 +837,7 @@ _$_Criteria _$$_CriteriaFromJson(Map<String, dynamic> json) => _$_Criteria(
       criteriaId: json['CriteriaId'] as int,
       criteriaName: json['CriteriaName'] as String?,
       criteriaDescription: json['CriteriaDescription'] as String?,
-      isActive: json['IsActive'] as bool? ?? true,
+      isActive: json['IsActive'] as bool?,
     );
 
 Map<String, dynamic> _$$_CriteriaToJson(_$_Criteria instance) =>

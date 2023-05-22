@@ -848,7 +848,7 @@ _$_Principle _$$_PrincipleFromJson(Map<String, dynamic> json) => _$_Principle(
       principleId: json['PrincipleId'] as int,
       principleName: json['PrincipleName'] as String?,
       principleDescription: json['PrincipleDescription'] as String?,
-      isActive: json['IsActive'] as bool? ?? true,
+      isActive: json['IsActive'] as bool?,
     );
 
 Map<String, dynamic> _$$_PrincipleToJson(_$_Principle instance) =>

@@ -144,7 +144,7 @@ class _$_Principle extends _Principle {
       {@JsonKey(name: 'PrincipleId') required this.principleId,
       @JsonKey(name: 'PrincipleName') this.principleName,
       @JsonKey(name: 'PrincipleDescription') this.principleDescription,
-      @JsonKey(name: 'IsActive') this.isActive = true})
+      @JsonKey(name: 'IsActive') this.isActive})
       : super._();
 
   factory _$_Principle.fromJson(Map<String, dynamic> json) =>

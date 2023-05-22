@@ -26,7 +26,7 @@ const RegionalManagerUnitSchema = CollectionSchema(
     r'isActive': PropertySchema(
       id: 1,
       name: r'isActive',
-      type: IsarType.bool,
+      type: IsarType.long,
     ),
     r'regionalManagerUnitId': PropertySchema(
       id: 2,
@@ -75,7 +75,7 @@ void _regionalManagerUnitSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.groupSchemeId);
-  writer.writeBool(offsets[1], object.isActive);
+  writer.writeLong(offsets[1], object.isActive);
   writer.writeLong(offsets[2], object.regionalManagerUnitId);
   writer.writeString(offsets[3], object.regionalManagerUnitName);
 }
@@ -88,7 +88,7 @@ RegionalManagerUnit _regionalManagerUnitDeserialize(
 ) {
   final object = RegionalManagerUnit(
     groupSchemeId: reader.readLongOrNull(offsets[0]),
-    isActive: reader.readBoolOrNull(offsets[1]),
+    isActive: reader.readLongOrNull(offsets[1]),
     regionalManagerUnitId: reader.readLong(offsets[2]),
     regionalManagerUnitName: reader.readStringOrNull(offsets[3]),
   );
@@ -105,7 +105,7 @@ P _regionalManagerUnitDeserializeProp<P>(
     case 0:
       return (reader.readLongOrNull(offset)) as P;
     case 1:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 2:
       return (reader.readLong(offset)) as P;
     case 3:
@@ -358,11 +358,57 @@ extension RegionalManagerUnitQueryFilter on QueryBuilder<RegionalManagerUnit,
   }
 
   QueryBuilder<RegionalManagerUnit, RegionalManagerUnit, QAfterFilterCondition>
-      isActiveEqualTo(bool? value) {
+      isActiveEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isActive',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RegionalManagerUnit, RegionalManagerUnit, QAfterFilterCondition>
+      isActiveGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RegionalManagerUnit, RegionalManagerUnit, QAfterFilterCondition>
+      isActiveLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RegionalManagerUnit, RegionalManagerUnit, QAfterFilterCondition>
+      isActiveBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'isActive',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -765,8 +811,7 @@ extension RegionalManagerUnitQueryProperty
     });
   }
 
-  QueryBuilder<RegionalManagerUnit, bool?, QQueryOperations>
-      isActiveProperty() {
+  QueryBuilder<RegionalManagerUnit, int?, QQueryOperations> isActiveProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isActive');
     });
@@ -797,7 +842,7 @@ _$_RegionalManagerUnit _$$_RegionalManagerUnitFromJson(
       regionalManagerUnitId: json['RegionalManagerUnitId'] as int,
       regionalManagerUnitName: json['RegionalManagerUnitName'] as String?,
       groupSchemeId: json['GroupschemeId'] as int?,
-      isActive: json['IsActive'] as bool?,
+      isActive: json['IsActive'] as int?,
     );
 
 Map<String, dynamic> _$$_RegionalManagerUnitToJson(

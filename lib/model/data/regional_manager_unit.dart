@@ -14,7 +14,7 @@ class RegionalManagerUnit with _$RegionalManagerUnit {
     @JsonKey(name: 'RegionalManagerUnitId') required int regionalManagerUnitId,
     @JsonKey(name: 'RegionalManagerUnitName') String? regionalManagerUnitName,
     @JsonKey(name: 'GroupschemeId') int? groupSchemeId,
-    @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsActive') int? isActive,
   }) = _RegionalManagerUnit;
 
   const RegionalManagerUnit._();

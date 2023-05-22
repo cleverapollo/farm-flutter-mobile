@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:cmo/di.dart';
 import 'package:cmo/model/farm_property_ownner_ship_type/farm_property_owner_ship_type.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/user/user_role.dart';
@@ -11,31 +12,28 @@ import 'package:isar/isar.dart';
 class CmoDatabaseService {
   CmoDatabaseService();
 
-  Isar? _database;
+  // Isar? _database;
 
-  Future<Isar> initializeDatabase() async {
-    final isar = await Isar.open([
-      UserRolePortalSchema,
-      UserRoleSchema,
-      UserDeviceSchema,
-      CompanySchema,
-      AssessmentSchema,
-      AuditSchema,
-      StakeHolderSchema,
-      AuditQuestionSchema,
-      AuditQuestionPhotoSchema,
-      AuditQuestionCommentSchema,
-      AuditQuestionAnswerSchema,
-      FarmPropertyOwnerShipTypeSchema
-    ]);
-    _database = isar;
-    return isar;
-  }
+  // Future<Isar> initializeDatabase() async {
+  //   final isar = await Isar.open([
+  //     CompanySchema,
+  //     AssessmentSchema,
+  //     AuditSchema,
+  //     StakeHolderSchema,
+  //     AuditQuestionSchema,
+  //     AuditQuestionPhotoSchema,
+  //     AuditQuestionCommentSchema,
+  //     AuditQuestionAnswerSchema,
+  //   ]);
+  //   _database = isar;
+  //   return isar;
+  // }
 
   Future<Isar> get db => _db();
   Future<Isar> _db() async {
-    final db = _database ?? await initializeDatabase();
-    return db;
+    return cmoDatabaseMasterService.db;
+    // final db = _database ?? await initializeDatabase();
+    // return db;
   }
 
   Future<int> cacheUserRolePortal(

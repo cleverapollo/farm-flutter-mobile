@@ -26,6 +26,7 @@ class CmoDatabaseMasterService {
   Future<Isar> initializeDatabase() async {
     final isar = await Isar.open(
       [
+        CompanySchema,
         PlantationSchema,
         UnitSchema,
         ContractorSchema,
@@ -80,7 +81,9 @@ class CmoDatabaseMasterService {
         RMScheduleSchema,
         GroupSchemeStakeHolderSchema,
         RMStakeHolderSchema,
-        StakeHolderTypeSchema
+        StakeHolderTypeSchema,
+        AuditTemplateSchema,
+        FarmSchema,
       ],
       name: _databaseName,
     );
@@ -448,6 +451,11 @@ class CmoDatabaseMasterService {
     return db.farmQuestions.put(item);
   }
 
+  Future<int> cacheFarm(Farm item) async {
+    final db = await _db();
+    return db.farms.put(item);
+  }
+
   Future<List<Compliance>> getCompliances() async {
     final db = await _db();
 
@@ -575,11 +583,6 @@ class CmoDatabaseMasterService {
     return db.rMStakeHolders.put(item);
   }
 
-  Future<List<RMStakeHolder>> getAllRMStakeHolders() async {
-    final db = await _db();
-    return db.rMStakeHolders.filter().isActiveEqualTo(true).findAll();
-  }
-
   Future<int> cacheGroupSchemeStakeHolder(GroupSchemeStakeHolder item) async {
     final db = await _db();
     return db.groupSchemeStakeHolders.put(item);
@@ -683,7 +686,7 @@ class CmoDatabaseMasterService {
 
   Future<List<StakeHolderType>> getStakeHolderTypes() async {
     final db = await _db();
-    return db.stakeHolderTypes.filter().isActiveEqualTo(true).findAll();
+    return db.stakeHolderTypes.filter().isActiveEqualTo(1).findAll();
   }
 
   Future<List<Worker>> getWorkersByCompanyId(int companyId) async {

@@ -31,7 +31,7 @@ const GroupSchemeStakeHolderSchema = CollectionSchema(
     r'isMasterDataSynced': PropertySchema(
       id: 2,
       name: r'isMasterDataSynced',
-      type: IsarType.bool,
+      type: IsarType.long,
     ),
     r'stakeHolderId': PropertySchema(
       id: 3,
@@ -59,7 +59,12 @@ int _groupSchemeStakeHolderEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.groupSchemeStakeHolderId.length * 3;
+  {
+    final value = object.groupSchemeStakeHolderId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.stakeHolderId;
     if (value != null) {
@@ -77,7 +82,7 @@ void _groupSchemeStakeHolderSerialize(
 ) {
   writer.writeLong(offsets[0], object.groupSchemeId);
   writer.writeString(offsets[1], object.groupSchemeStakeHolderId);
-  writer.writeBool(offsets[2], object.isMasterDataSynced);
+  writer.writeLong(offsets[2], object.isMasterDataSynced);
   writer.writeString(offsets[3], object.stakeHolderId);
 }
 
@@ -89,8 +94,8 @@ GroupSchemeStakeHolder _groupSchemeStakeHolderDeserialize(
 ) {
   final object = GroupSchemeStakeHolder(
     groupSchemeId: reader.readLongOrNull(offsets[0]),
-    groupSchemeStakeHolderId: reader.readString(offsets[1]),
-    isMasterDataSynced: reader.readBoolOrNull(offsets[2]),
+    groupSchemeStakeHolderId: reader.readStringOrNull(offsets[1]),
+    isMasterDataSynced: reader.readLongOrNull(offsets[2]),
     stakeHolderId: reader.readStringOrNull(offsets[3]),
   );
   return object;
@@ -106,9 +111,9 @@ P _groupSchemeStakeHolderDeserializeProp<P>(
     case 0:
       return (reader.readLongOrNull(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     default:
@@ -286,8 +291,26 @@ extension GroupSchemeStakeHolderQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<GroupSchemeStakeHolder, GroupSchemeStakeHolder,
+      QAfterFilterCondition> groupSchemeStakeHolderIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'groupSchemeStakeHolderId',
+      ));
+    });
+  }
+
+  QueryBuilder<GroupSchemeStakeHolder, GroupSchemeStakeHolder,
+      QAfterFilterCondition> groupSchemeStakeHolderIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'groupSchemeStakeHolderId',
+      ));
+    });
+  }
+
+  QueryBuilder<GroupSchemeStakeHolder, GroupSchemeStakeHolder,
       QAfterFilterCondition> groupSchemeStakeHolderIdEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -301,7 +324,7 @@ extension GroupSchemeStakeHolderQueryFilter on QueryBuilder<
 
   QueryBuilder<GroupSchemeStakeHolder, GroupSchemeStakeHolder,
       QAfterFilterCondition> groupSchemeStakeHolderIdGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -317,7 +340,7 @@ extension GroupSchemeStakeHolderQueryFilter on QueryBuilder<
 
   QueryBuilder<GroupSchemeStakeHolder, GroupSchemeStakeHolder,
       QAfterFilterCondition> groupSchemeStakeHolderIdLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -333,8 +356,8 @@ extension GroupSchemeStakeHolderQueryFilter on QueryBuilder<
 
   QueryBuilder<GroupSchemeStakeHolder, GroupSchemeStakeHolder,
       QAfterFilterCondition> groupSchemeStakeHolderIdBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -500,11 +523,57 @@ extension GroupSchemeStakeHolderQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<GroupSchemeStakeHolder, GroupSchemeStakeHolder,
-      QAfterFilterCondition> isMasterDataSyncedEqualTo(bool? value) {
+      QAfterFilterCondition> isMasterDataSyncedEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isMasterDataSynced',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GroupSchemeStakeHolder, GroupSchemeStakeHolder,
+      QAfterFilterCondition> isMasterDataSyncedGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'isMasterDataSynced',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GroupSchemeStakeHolder, GroupSchemeStakeHolder,
+      QAfterFilterCondition> isMasterDataSyncedLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'isMasterDataSynced',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GroupSchemeStakeHolder, GroupSchemeStakeHolder,
+      QAfterFilterCondition> isMasterDataSyncedBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'isMasterDataSynced',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -852,14 +921,14 @@ extension GroupSchemeStakeHolderQueryProperty on QueryBuilder<
     });
   }
 
-  QueryBuilder<GroupSchemeStakeHolder, String, QQueryOperations>
+  QueryBuilder<GroupSchemeStakeHolder, String?, QQueryOperations>
       groupSchemeStakeHolderIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'groupSchemeStakeHolderId');
     });
   }
 
-  QueryBuilder<GroupSchemeStakeHolder, bool?, QQueryOperations>
+  QueryBuilder<GroupSchemeStakeHolder, int?, QQueryOperations>
       isMasterDataSyncedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isMasterDataSynced');
@@ -881,10 +950,10 @@ extension GroupSchemeStakeHolderQueryProperty on QueryBuilder<
 _$_GroupSchemeStakeHolder _$$_GroupSchemeStakeHolderFromJson(
         Map<String, dynamic> json) =>
     _$_GroupSchemeStakeHolder(
-      groupSchemeStakeHolderId: json['GroupSchemeStakeHolderId'] as String,
+      groupSchemeStakeHolderId: json['GroupSchemeStakeHolderId'] as String?,
       stakeHolderId: json['StakeholderId'] as String?,
       groupSchemeId: json['GroupSchemeId'] as int?,
-      isMasterDataSynced: json['IsMasterDataSynced'] as bool?,
+      isMasterDataSynced: json['IsMasterDataSynced'] as int?,
     );
 
 Map<String, dynamic> _$$_GroupSchemeStakeHolderToJson(

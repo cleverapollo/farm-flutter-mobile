@@ -346,14 +346,19 @@ class CmoApiService {
     required int currentClientId,
     int pageSize = 200,
   }) async {
-    final response = await client.get<JsonData>(
-      _mqApiUri('message'),
-      queryParameters: {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      '/pubsubapi/api/v1/message',
+      {
         'key': pubsubApiKey,
         'client': '$currentClientId',
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
       },
+    );
+
+    final response = await client.getUri<JsonData>(
+      uri,
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -372,15 +377,20 @@ class CmoApiService {
     required int currentClientId,
     required List<Message> messages,
   }) async {
-    final body = messages.map((e) => e.toJson()).toList();
-
-    final response = await client.delete<dynamic>(
-      _mqApiUri('message'),
-      queryParameters: {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      '/pubsubapi/api/v1/message',
+      {
         'key': pubsubApiKey,
         'client': '$currentClientId',
-        'topic': '$topicMasterDataSync*.$currentClientId',
+        'topic': '$topicMasterDataSync*.$currentClientId'
       },
+    );
+
+    final body = messages.map((e) => e.toJson()).toList();
+
+    final response = await client.deleteUri<dynamic>(
+      uri,
       data: body,
     );
 
@@ -398,13 +408,18 @@ class CmoApiService {
   }) async {
     final body = messages.map((e) => e.toJson()).toList();
 
-    final response = await client.delete<dynamic>(
-      _mqApiUri('message'),
-      queryParameters: {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      '/pubsubapi/api/v1/message',
+      {
         'key': pubsubApiKey,
         'client': '$currentClientId',
         'topic': 'Cmo.MasterDataDeviceSync.*.$currentClientId',
       },
+    );
+
+    final response = await client.deleteUri<dynamic>(
+      uri,
       data: body,
     );
 

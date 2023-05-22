@@ -11,11 +11,10 @@ part 'group_scheme_stake_holder.g.dart';
 @Collection(ignore: {'copyWith'})
 class GroupSchemeStakeHolder with _$GroupSchemeStakeHolder {
   const factory GroupSchemeStakeHolder({
-    @JsonKey(name: 'GroupSchemeStakeHolderId')
-        required String groupSchemeStakeHolderId,
+    @JsonKey(name: 'GroupSchemeStakeHolderId') String? groupSchemeStakeHolderId,
     @JsonKey(name: 'StakeholderId') String? stakeHolderId,
     @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
-    @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
+    @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _GroupSchemeStakeHolder;
 
   const GroupSchemeStakeHolder._();
@@ -24,5 +23,6 @@ class GroupSchemeStakeHolder with _$GroupSchemeStakeHolder {
       _$GroupSchemeStakeHolderFromJson(json);
 
   @override
-  Id get id => int.tryParse(groupSchemeStakeHolderId) ?? Isar.autoIncrement;
+  Id get id =>
+      int.tryParse(groupSchemeStakeHolderId ?? '') ?? Isar.autoIncrement;
 }

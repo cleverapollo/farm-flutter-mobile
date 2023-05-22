@@ -37,9 +37,9 @@ mixin _$RMSchedule {
   @JsonKey(name: 'Venue')
   String? get venue => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
-  bool? get isActive => throw _privateConstructorUsedError;
+  int? get isActive => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsMasterDataSynced')
-  bool? get isMasterDataSynced => throw _privateConstructorUsedError;
+  int? get isMasterDataSynced => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -62,8 +62,8 @@ abstract class $RMScheduleCopyWith<$Res> {
       @JsonKey(name: 'FarmId') String? farmId,
       @JsonKey(name: 'UserId') String? userId,
       @JsonKey(name: 'Venue') String? venue,
-      @JsonKey(name: 'IsActive') bool? isActive,
-      @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced});
+      @JsonKey(name: 'IsActive') int? isActive,
+      @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced});
 }
 
 /// @nodoc
@@ -126,11 +126,11 @@ class _$RMScheduleCopyWithImpl<$Res, $Val extends RMSchedule>
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
       isMasterDataSynced: freezed == isMasterDataSynced
           ? _value.isMasterDataSynced
           : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
     ) as $Val);
   }
 }
@@ -152,8 +152,8 @@ abstract class _$$_RMScheduleCopyWith<$Res>
       @JsonKey(name: 'FarmId') String? farmId,
       @JsonKey(name: 'UserId') String? userId,
       @JsonKey(name: 'Venue') String? venue,
-      @JsonKey(name: 'IsActive') bool? isActive,
-      @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced});
+      @JsonKey(name: 'IsActive') int? isActive,
+      @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced});
 }
 
 /// @nodoc
@@ -214,11 +214,11 @@ class __$$_RMScheduleCopyWithImpl<$Res>
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
       isMasterDataSynced: freezed == isMasterDataSynced
           ? _value.isMasterDataSynced
           : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
     ));
   }
 }
@@ -268,10 +268,10 @@ class _$_RMSchedule extends _RMSchedule {
   final String? venue;
   @override
   @JsonKey(name: 'IsActive')
-  final bool? isActive;
+  final int? isActive;
   @override
   @JsonKey(name: 'IsMasterDataSynced')
-  final bool? isMasterDataSynced;
+  final int? isMasterDataSynced;
 
   @override
   String toString() {
@@ -331,26 +331,17 @@ class _$_RMSchedule extends _RMSchedule {
 
 abstract class _RMSchedule extends RMSchedule {
   const factory _RMSchedule(
-      {@JsonKey(name: 'ScheduleId')
-          required final String scheduleId,
-      @JsonKey(name: 'ScheduleActivityId')
-          final int? scheduleActivityId,
-      @JsonKey(name: 'GroupSchemeId')
-          final int? groupSchemeId,
-      @JsonKey(name: 'Start')
-          final String? start,
-      @JsonKey(name: 'End')
-          final String? end,
-      @JsonKey(name: 'FarmId')
-          final String? farmId,
-      @JsonKey(name: 'UserId')
-          final String? userId,
-      @JsonKey(name: 'Venue')
-          final String? venue,
-      @JsonKey(name: 'IsActive')
-          final bool? isActive,
-      @JsonKey(name: 'IsMasterDataSynced')
-          final bool? isMasterDataSynced}) = _$_RMSchedule;
+          {@JsonKey(name: 'ScheduleId') required final String scheduleId,
+          @JsonKey(name: 'ScheduleActivityId') final int? scheduleActivityId,
+          @JsonKey(name: 'GroupSchemeId') final int? groupSchemeId,
+          @JsonKey(name: 'Start') final String? start,
+          @JsonKey(name: 'End') final String? end,
+          @JsonKey(name: 'FarmId') final String? farmId,
+          @JsonKey(name: 'UserId') final String? userId,
+          @JsonKey(name: 'Venue') final String? venue,
+          @JsonKey(name: 'IsActive') final int? isActive,
+          @JsonKey(name: 'IsMasterDataSynced') final int? isMasterDataSynced}) =
+      _$_RMSchedule;
   const _RMSchedule._() : super._();
 
   factory _RMSchedule.fromJson(Map<String, dynamic> json) =
@@ -382,10 +373,10 @@ abstract class _RMSchedule extends RMSchedule {
   String? get venue;
   @override
   @JsonKey(name: 'IsActive')
-  bool? get isActive;
+  int? get isActive;
   @override
   @JsonKey(name: 'IsMasterDataSynced')
-  bool? get isMasterDataSynced;
+  int? get isMasterDataSynced;
   @override
   @JsonKey(ignore: true)
   _$$_RMScheduleCopyWith<_$_RMSchedule> get copyWith =>

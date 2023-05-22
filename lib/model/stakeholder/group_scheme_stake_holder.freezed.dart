@@ -22,13 +22,13 @@ GroupSchemeStakeHolder _$GroupSchemeStakeHolderFromJson(
 /// @nodoc
 mixin _$GroupSchemeStakeHolder {
   @JsonKey(name: 'GroupSchemeStakeHolderId')
-  String get groupSchemeStakeHolderId => throw _privateConstructorUsedError;
+  String? get groupSchemeStakeHolderId => throw _privateConstructorUsedError;
   @JsonKey(name: 'StakeholderId')
   String? get stakeHolderId => throw _privateConstructorUsedError;
   @JsonKey(name: 'GroupSchemeId')
   int? get groupSchemeId => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsMasterDataSynced')
-  bool? get isMasterDataSynced => throw _privateConstructorUsedError;
+  int? get isMasterDataSynced => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,13 +44,13 @@ abstract class $GroupSchemeStakeHolderCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'GroupSchemeStakeHolderId')
-          String groupSchemeStakeHolderId,
+          String? groupSchemeStakeHolderId,
       @JsonKey(name: 'StakeholderId')
           String? stakeHolderId,
       @JsonKey(name: 'GroupSchemeId')
           int? groupSchemeId,
       @JsonKey(name: 'IsMasterDataSynced')
-          bool? isMasterDataSynced});
+          int? isMasterDataSynced});
 }
 
 /// @nodoc
@@ -67,16 +67,16 @@ class _$GroupSchemeStakeHolderCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? groupSchemeStakeHolderId = null,
+    Object? groupSchemeStakeHolderId = freezed,
     Object? stakeHolderId = freezed,
     Object? groupSchemeId = freezed,
     Object? isMasterDataSynced = freezed,
   }) {
     return _then(_value.copyWith(
-      groupSchemeStakeHolderId: null == groupSchemeStakeHolderId
+      groupSchemeStakeHolderId: freezed == groupSchemeStakeHolderId
           ? _value.groupSchemeStakeHolderId
           : groupSchemeStakeHolderId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       stakeHolderId: freezed == stakeHolderId
           ? _value.stakeHolderId
           : stakeHolderId // ignore: cast_nullable_to_non_nullable
@@ -88,7 +88,7 @@ class _$GroupSchemeStakeHolderCopyWithImpl<$Res,
       isMasterDataSynced: freezed == isMasterDataSynced
           ? _value.isMasterDataSynced
           : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
     ) as $Val);
   }
 }
@@ -103,13 +103,13 @@ abstract class _$$_GroupSchemeStakeHolderCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'GroupSchemeStakeHolderId')
-          String groupSchemeStakeHolderId,
+          String? groupSchemeStakeHolderId,
       @JsonKey(name: 'StakeholderId')
           String? stakeHolderId,
       @JsonKey(name: 'GroupSchemeId')
           int? groupSchemeId,
       @JsonKey(name: 'IsMasterDataSynced')
-          bool? isMasterDataSynced});
+          int? isMasterDataSynced});
 }
 
 /// @nodoc
@@ -124,16 +124,16 @@ class __$$_GroupSchemeStakeHolderCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? groupSchemeStakeHolderId = null,
+    Object? groupSchemeStakeHolderId = freezed,
     Object? stakeHolderId = freezed,
     Object? groupSchemeId = freezed,
     Object? isMasterDataSynced = freezed,
   }) {
     return _then(_$_GroupSchemeStakeHolder(
-      groupSchemeStakeHolderId: null == groupSchemeStakeHolderId
+      groupSchemeStakeHolderId: freezed == groupSchemeStakeHolderId
           ? _value.groupSchemeStakeHolderId
           : groupSchemeStakeHolderId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       stakeHolderId: freezed == stakeHolderId
           ? _value.stakeHolderId
           : stakeHolderId // ignore: cast_nullable_to_non_nullable
@@ -145,7 +145,7 @@ class __$$_GroupSchemeStakeHolderCopyWithImpl<$Res>
       isMasterDataSynced: freezed == isMasterDataSynced
           ? _value.isMasterDataSynced
           : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
     ));
   }
 }
@@ -154,14 +154,10 @@ class __$$_GroupSchemeStakeHolderCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_GroupSchemeStakeHolder extends _GroupSchemeStakeHolder {
   const _$_GroupSchemeStakeHolder(
-      {@JsonKey(name: 'GroupSchemeStakeHolderId')
-          required this.groupSchemeStakeHolderId,
-      @JsonKey(name: 'StakeholderId')
-          this.stakeHolderId,
-      @JsonKey(name: 'GroupSchemeId')
-          this.groupSchemeId,
-      @JsonKey(name: 'IsMasterDataSynced')
-          this.isMasterDataSynced})
+      {@JsonKey(name: 'GroupSchemeStakeHolderId') this.groupSchemeStakeHolderId,
+      @JsonKey(name: 'StakeholderId') this.stakeHolderId,
+      @JsonKey(name: 'GroupSchemeId') this.groupSchemeId,
+      @JsonKey(name: 'IsMasterDataSynced') this.isMasterDataSynced})
       : super._();
 
   factory _$_GroupSchemeStakeHolder.fromJson(Map<String, dynamic> json) =>
@@ -169,7 +165,7 @@ class _$_GroupSchemeStakeHolder extends _GroupSchemeStakeHolder {
 
   @override
   @JsonKey(name: 'GroupSchemeStakeHolderId')
-  final String groupSchemeStakeHolderId;
+  final String? groupSchemeStakeHolderId;
   @override
   @JsonKey(name: 'StakeholderId')
   final String? stakeHolderId;
@@ -178,7 +174,7 @@ class _$_GroupSchemeStakeHolder extends _GroupSchemeStakeHolder {
   final int? groupSchemeId;
   @override
   @JsonKey(name: 'IsMasterDataSynced')
-  final bool? isMasterDataSynced;
+  final int? isMasterDataSynced;
 
   @override
   String toString() {
@@ -224,13 +220,13 @@ class _$_GroupSchemeStakeHolder extends _GroupSchemeStakeHolder {
 abstract class _GroupSchemeStakeHolder extends GroupSchemeStakeHolder {
   const factory _GroupSchemeStakeHolder(
       {@JsonKey(name: 'GroupSchemeStakeHolderId')
-          required final String groupSchemeStakeHolderId,
+          final String? groupSchemeStakeHolderId,
       @JsonKey(name: 'StakeholderId')
           final String? stakeHolderId,
       @JsonKey(name: 'GroupSchemeId')
           final int? groupSchemeId,
       @JsonKey(name: 'IsMasterDataSynced')
-          final bool? isMasterDataSynced}) = _$_GroupSchemeStakeHolder;
+          final int? isMasterDataSynced}) = _$_GroupSchemeStakeHolder;
   const _GroupSchemeStakeHolder._() : super._();
 
   factory _GroupSchemeStakeHolder.fromJson(Map<String, dynamic> json) =
@@ -238,7 +234,7 @@ abstract class _GroupSchemeStakeHolder extends GroupSchemeStakeHolder {
 
   @override
   @JsonKey(name: 'GroupSchemeStakeHolderId')
-  String get groupSchemeStakeHolderId;
+  String? get groupSchemeStakeHolderId;
   @override
   @JsonKey(name: 'StakeholderId')
   String? get stakeHolderId;
@@ -247,7 +243,7 @@ abstract class _GroupSchemeStakeHolder extends GroupSchemeStakeHolder {
   int? get groupSchemeId;
   @override
   @JsonKey(name: 'IsMasterDataSynced')
-  bool? get isMasterDataSynced;
+  int? get isMasterDataSynced;
   @override
   @JsonKey(ignore: true)
   _$$_GroupSchemeStakeHolderCopyWith<_$_GroupSchemeStakeHolder> get copyWith =>

@@ -35,12 +35,12 @@ const RMScheduleSchema = CollectionSchema(
     r'isActive': PropertySchema(
       id: 3,
       name: r'isActive',
-      type: IsarType.bool,
+      type: IsarType.long,
     ),
     r'isMasterDataSynced': PropertySchema(
       id: 4,
       name: r'isMasterDataSynced',
-      type: IsarType.bool,
+      type: IsarType.long,
     ),
     r'scheduleActivityId': PropertySchema(
       id: 5,
@@ -131,8 +131,8 @@ void _rMScheduleSerialize(
   writer.writeString(offsets[0], object.end);
   writer.writeString(offsets[1], object.farmId);
   writer.writeLong(offsets[2], object.groupSchemeId);
-  writer.writeBool(offsets[3], object.isActive);
-  writer.writeBool(offsets[4], object.isMasterDataSynced);
+  writer.writeLong(offsets[3], object.isActive);
+  writer.writeLong(offsets[4], object.isMasterDataSynced);
   writer.writeLong(offsets[5], object.scheduleActivityId);
   writer.writeString(offsets[6], object.scheduleId);
   writer.writeString(offsets[7], object.start);
@@ -150,8 +150,8 @@ RMSchedule _rMScheduleDeserialize(
     end: reader.readStringOrNull(offsets[0]),
     farmId: reader.readStringOrNull(offsets[1]),
     groupSchemeId: reader.readLongOrNull(offsets[2]),
-    isActive: reader.readBoolOrNull(offsets[3]),
-    isMasterDataSynced: reader.readBoolOrNull(offsets[4]),
+    isActive: reader.readLongOrNull(offsets[3]),
+    isMasterDataSynced: reader.readLongOrNull(offsets[4]),
     scheduleActivityId: reader.readLongOrNull(offsets[5]),
     scheduleId: reader.readString(offsets[6]),
     start: reader.readStringOrNull(offsets[7]),
@@ -175,9 +175,9 @@ P _rMScheduleDeserializeProp<P>(
     case 2:
       return (reader.readLongOrNull(offset)) as P;
     case 3:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 4:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 5:
       return (reader.readLongOrNull(offset)) as P;
     case 6:
@@ -721,11 +721,55 @@ extension RMScheduleQueryFilter
   }
 
   QueryBuilder<RMSchedule, RMSchedule, QAfterFilterCondition> isActiveEqualTo(
-      bool? value) {
+      int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isActive',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RMSchedule, RMSchedule, QAfterFilterCondition>
+      isActiveGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RMSchedule, RMSchedule, QAfterFilterCondition> isActiveLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RMSchedule, RMSchedule, QAfterFilterCondition> isActiveBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'isActive',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -749,11 +793,57 @@ extension RMScheduleQueryFilter
   }
 
   QueryBuilder<RMSchedule, RMSchedule, QAfterFilterCondition>
-      isMasterDataSyncedEqualTo(bool? value) {
+      isMasterDataSyncedEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isMasterDataSynced',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RMSchedule, RMSchedule, QAfterFilterCondition>
+      isMasterDataSyncedGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'isMasterDataSynced',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RMSchedule, RMSchedule, QAfterFilterCondition>
+      isMasterDataSyncedLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'isMasterDataSynced',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RMSchedule, RMSchedule, QAfterFilterCondition>
+      isMasterDataSyncedBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'isMasterDataSynced',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -1779,13 +1869,13 @@ extension RMScheduleQueryProperty
     });
   }
 
-  QueryBuilder<RMSchedule, bool?, QQueryOperations> isActiveProperty() {
+  QueryBuilder<RMSchedule, int?, QQueryOperations> isActiveProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isActive');
     });
   }
 
-  QueryBuilder<RMSchedule, bool?, QQueryOperations>
+  QueryBuilder<RMSchedule, int?, QQueryOperations>
       isMasterDataSyncedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isMasterDataSynced');
@@ -1838,8 +1928,8 @@ _$_RMSchedule _$$_RMScheduleFromJson(Map<String, dynamic> json) =>
       farmId: json['FarmId'] as String?,
       userId: json['UserId'] as String?,
       venue: json['Venue'] as String?,
-      isActive: json['IsActive'] as bool?,
-      isMasterDataSynced: json['IsMasterDataSynced'] as bool?,
+      isActive: json['IsActive'] as int?,
+      isMasterDataSynced: json['IsMasterDataSynced'] as int?,
     );
 
 Map<String, dynamic> _$$_RMScheduleToJson(_$_RMSchedule instance) =>

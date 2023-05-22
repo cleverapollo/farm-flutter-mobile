@@ -42,6 +42,7 @@ export 'data/farm_member_objective.dart';
 export 'data/farm_objective_option.dart';
 export 'audit.dart';
 export 'data/principle.dart';
+export 'data/farm.dart';
 export 'data/indicator.dart';
 export 'data/car.dart';
 export 'data/criteria.dart';

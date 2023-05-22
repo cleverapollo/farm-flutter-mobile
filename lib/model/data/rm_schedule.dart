@@ -19,8 +19,8 @@ class RMSchedule with _$RMSchedule {
     @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'UserId') String? userId,
     @JsonKey(name: 'Venue') String? venue,
-    @JsonKey(name: 'IsActive') bool? isActive,
-    @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
+    @JsonKey(name: 'IsActive') int? isActive,
+    @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _RMSchedule;
 
   const RMSchedule._();

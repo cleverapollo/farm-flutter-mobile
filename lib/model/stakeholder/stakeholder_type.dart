@@ -13,7 +13,7 @@ class StakeHolderType with _$StakeHolderType {
     @JsonKey(name: 'StakeholderTypeId') required String stakeHolderTypeId,
     @JsonKey(name: 'StakeholderTypeName') String? stakeHolderTypeName,
     @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
-    @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsActive') int? isActive,
     @JsonKey(name: 'IsLocal') bool? isLocal,
   }) = _StakeHolderType;
 

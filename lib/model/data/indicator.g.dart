@@ -848,7 +848,7 @@ _$_Indicator _$$_IndicatorFromJson(Map<String, dynamic> json) => _$_Indicator(
       indicatorId: json['IndicatorId'] as int,
       indicatorName: json['IndicatorName'] as String?,
       indicatorDescription: json['IndicatorDescription'] as String?,
-      isActive: json['IsActive'] as bool? ?? true,
+      isActive: json['IsActive'] as bool?,
     );
 
 Map<String, dynamic> _$$_IndicatorToJson(_$_Indicator instance) =>

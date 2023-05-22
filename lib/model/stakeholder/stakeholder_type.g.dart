@@ -20,7 +20,7 @@ const StakeHolderTypeSchema = CollectionSchema(
     r'isActive': PropertySchema(
       id: 0,
       name: r'isActive',
-      type: IsarType.bool,
+      type: IsarType.long,
     ),
     r'isLocal': PropertySchema(
       id: 1,
@@ -79,7 +79,7 @@ void _stakeHolderTypeSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeBool(offsets[0], object.isActive);
+  writer.writeLong(offsets[0], object.isActive);
   writer.writeBool(offsets[1], object.isLocal);
   writer.writeBool(offsets[2], object.isMasterDataSynced);
   writer.writeString(offsets[3], object.stakeHolderTypeId);
@@ -93,7 +93,7 @@ StakeHolderType _stakeHolderTypeDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = StakeHolderType(
-    isActive: reader.readBoolOrNull(offsets[0]),
+    isActive: reader.readLongOrNull(offsets[0]),
     isLocal: reader.readBoolOrNull(offsets[1]),
     isMasterDataSynced: reader.readBoolOrNull(offsets[2]),
     stakeHolderTypeId: reader.readString(offsets[3]),
@@ -110,7 +110,7 @@ P _stakeHolderTypeDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 1:
       return (reader.readBoolOrNull(offset)) as P;
     case 2:
@@ -292,11 +292,57 @@ extension StakeHolderTypeQueryFilter
   }
 
   QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
-      isActiveEqualTo(bool? value) {
+      isActiveEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isActive',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
+      isActiveGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
+      isActiveLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'isActive',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<StakeHolderType, StakeHolderType, QAfterFilterCondition>
+      isActiveBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'isActive',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -858,7 +904,7 @@ extension StakeHolderTypeQueryProperty
     });
   }
 
-  QueryBuilder<StakeHolderType, bool?, QQueryOperations> isActiveProperty() {
+  QueryBuilder<StakeHolderType, int?, QQueryOperations> isActiveProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isActive');
     });
@@ -901,7 +947,7 @@ _$_StakeHolderType _$$_StakeHolderTypeFromJson(Map<String, dynamic> json) =>
       stakeHolderTypeId: json['StakeholderTypeId'] as String,
       stakeHolderTypeName: json['StakeholderTypeName'] as String?,
       isMasterDataSynced: json['IsMasterDataSynced'] as bool?,
-      isActive: json['IsActive'] as bool?,
+      isActive: json['IsActive'] as int?,
       isLocal: json['IsLocal'] as bool?,
     );
 

@@ -82,7 +82,7 @@ AuditTemplate _auditTemplateDeserialize(
   final object = AuditTemplate(
     auditTemplateId: reader.readLong(offsets[0]),
     auditTemplateName: reader.readStringOrNull(offsets[1]),
-    isActive: reader.readBool(offsets[2]),
+    isActive: reader.readBoolOrNull(offsets[2]),
   );
   return object;
 }
@@ -99,7 +99,7 @@ P _auditTemplateDeserializeProp<P>(
     case 1:
       return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readBool(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -464,7 +464,25 @@ extension AuditTemplateQueryFilter
   }
 
   QueryBuilder<AuditTemplate, AuditTemplate, QAfterFilterCondition>
-      isActiveEqualTo(bool value) {
+      isActiveIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isActive',
+      ));
+    });
+  }
+
+  QueryBuilder<AuditTemplate, AuditTemplate, QAfterFilterCondition>
+      isActiveIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isActive',
+      ));
+    });
+  }
+
+  QueryBuilder<AuditTemplate, AuditTemplate, QAfterFilterCondition>
+      isActiveEqualTo(bool? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isActive',
@@ -625,7 +643,7 @@ extension AuditTemplateQueryProperty
     });
   }
 
-  QueryBuilder<AuditTemplate, bool, QQueryOperations> isActiveProperty() {
+  QueryBuilder<AuditTemplate, bool?, QQueryOperations> isActiveProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isActive');
     });
@@ -640,7 +658,7 @@ _$_AuditTemplate _$$_AuditTemplateFromJson(Map<String, dynamic> json) =>
     _$_AuditTemplate(
       auditTemplateId: json['AuditTemplateId'] as int,
       auditTemplateName: json['AuditTemplateName'] as String?,
-      isActive: json['IsActive'] as bool? ?? true,
+      isActive: json['IsActive'] as bool?,
     );
 
 Map<String, dynamic> _$$_AuditTemplateToJson(_$_AuditTemplate instance) =>

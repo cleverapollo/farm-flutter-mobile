@@ -27,7 +27,7 @@ mixin _$StakeHolderType {
   @JsonKey(name: 'IsMasterDataSynced')
   bool? get isMasterDataSynced => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
-  bool? get isActive => throw _privateConstructorUsedError;
+  int? get isActive => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsLocal')
   bool? get isLocal => throw _privateConstructorUsedError;
 
@@ -47,7 +47,7 @@ abstract class $StakeHolderTypeCopyWith<$Res> {
       {@JsonKey(name: 'StakeholderTypeId') String stakeHolderTypeId,
       @JsonKey(name: 'StakeholderTypeName') String? stakeHolderTypeName,
       @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
-      @JsonKey(name: 'IsActive') bool? isActive,
+      @JsonKey(name: 'IsActive') int? isActive,
       @JsonKey(name: 'IsLocal') bool? isLocal});
 }
 
@@ -86,7 +86,7 @@ class _$StakeHolderTypeCopyWithImpl<$Res, $Val extends StakeHolderType>
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
       isLocal: freezed == isLocal
           ? _value.isLocal
           : isLocal // ignore: cast_nullable_to_non_nullable
@@ -107,7 +107,7 @@ abstract class _$$_StakeHolderTypeCopyWith<$Res>
       {@JsonKey(name: 'StakeholderTypeId') String stakeHolderTypeId,
       @JsonKey(name: 'StakeholderTypeName') String? stakeHolderTypeName,
       @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
-      @JsonKey(name: 'IsActive') bool? isActive,
+      @JsonKey(name: 'IsActive') int? isActive,
       @JsonKey(name: 'IsLocal') bool? isLocal});
 }
 
@@ -144,7 +144,7 @@ class __$$_StakeHolderTypeCopyWithImpl<$Res>
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
       isLocal: freezed == isLocal
           ? _value.isLocal
           : isLocal // ignore: cast_nullable_to_non_nullable
@@ -178,7 +178,7 @@ class _$_StakeHolderType extends _StakeHolderType {
   final bool? isMasterDataSynced;
   @override
   @JsonKey(name: 'IsActive')
-  final bool? isActive;
+  final int? isActive;
   @override
   @JsonKey(name: 'IsLocal')
   final bool? isLocal;
@@ -232,7 +232,7 @@ abstract class _StakeHolderType extends StakeHolderType {
       @JsonKey(name: 'IsMasterDataSynced')
           final bool? isMasterDataSynced,
       @JsonKey(name: 'IsActive')
-          final bool? isActive,
+          final int? isActive,
       @JsonKey(name: 'IsLocal')
           final bool? isLocal}) = _$_StakeHolderType;
   const _StakeHolderType._() : super._();
@@ -251,7 +251,7 @@ abstract class _StakeHolderType extends StakeHolderType {
   bool? get isMasterDataSynced;
   @override
   @JsonKey(name: 'IsActive')
-  bool? get isActive;
+  int? get isActive;
   @override
   @JsonKey(name: 'IsLocal')
   bool? get isLocal;

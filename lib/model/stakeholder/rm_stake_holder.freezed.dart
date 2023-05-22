@@ -25,7 +25,7 @@ mixin _$RMStakeHolder {
   @JsonKey(name: 'StakeholderName')
   String? get stakeHolderName => throw _privateConstructorUsedError;
   @JsonKey(name: 'StakeholderTypeId')
-  int? get stakeHolderTypeId => throw _privateConstructorUsedError;
+  String? get stakeHolderTypeId => throw _privateConstructorUsedError;
   @JsonKey(name: 'Address1')
   String? get address1 => throw _privateConstructorUsedError;
   @JsonKey(name: 'Address2')
@@ -39,9 +39,9 @@ mixin _$RMStakeHolder {
   @JsonKey(name: 'Cell')
   String? get cell => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
-  bool? get isActive => throw _privateConstructorUsedError;
+  int? get isActive => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsMasterDataSynced')
-  bool? get isMasterDataSynced => throw _privateConstructorUsedError;
+  int? get isMasterDataSynced => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -58,15 +58,15 @@ abstract class $RMStakeHolderCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'StakeholderId') String stakeHolderId,
       @JsonKey(name: 'StakeholderName') String? stakeHolderName,
-      @JsonKey(name: 'StakeholderTypeId') int? stakeHolderTypeId,
+      @JsonKey(name: 'StakeholderTypeId') String? stakeHolderTypeId,
       @JsonKey(name: 'Address1') String? address1,
       @JsonKey(name: 'Address2') String? address2,
       @JsonKey(name: 'ContactName') String? contactName,
       @JsonKey(name: 'Email') String? email,
       @JsonKey(name: 'Tel') String? tel,
       @JsonKey(name: 'Cell') String? cell,
-      @JsonKey(name: 'IsActive') bool? isActive,
-      @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced});
+      @JsonKey(name: 'IsActive') int? isActive,
+      @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced});
 }
 
 /// @nodoc
@@ -106,7 +106,7 @@ class _$RMStakeHolderCopyWithImpl<$Res, $Val extends RMStakeHolder>
       stakeHolderTypeId: freezed == stakeHolderTypeId
           ? _value.stakeHolderTypeId
           : stakeHolderTypeId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       address1: freezed == address1
           ? _value.address1
           : address1 // ignore: cast_nullable_to_non_nullable
@@ -134,11 +134,11 @@ class _$RMStakeHolderCopyWithImpl<$Res, $Val extends RMStakeHolder>
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
       isMasterDataSynced: freezed == isMasterDataSynced
           ? _value.isMasterDataSynced
           : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
     ) as $Val);
   }
 }
@@ -154,15 +154,15 @@ abstract class _$$_RMStakeHolderCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'StakeholderId') String stakeHolderId,
       @JsonKey(name: 'StakeholderName') String? stakeHolderName,
-      @JsonKey(name: 'StakeholderTypeId') int? stakeHolderTypeId,
+      @JsonKey(name: 'StakeholderTypeId') String? stakeHolderTypeId,
       @JsonKey(name: 'Address1') String? address1,
       @JsonKey(name: 'Address2') String? address2,
       @JsonKey(name: 'ContactName') String? contactName,
       @JsonKey(name: 'Email') String? email,
       @JsonKey(name: 'Tel') String? tel,
       @JsonKey(name: 'Cell') String? cell,
-      @JsonKey(name: 'IsActive') bool? isActive,
-      @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced});
+      @JsonKey(name: 'IsActive') int? isActive,
+      @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced});
 }
 
 /// @nodoc
@@ -200,7 +200,7 @@ class __$$_RMStakeHolderCopyWithImpl<$Res>
       stakeHolderTypeId: freezed == stakeHolderTypeId
           ? _value.stakeHolderTypeId
           : stakeHolderTypeId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       address1: freezed == address1
           ? _value.address1
           : address1 // ignore: cast_nullable_to_non_nullable
@@ -228,11 +228,11 @@ class __$$_RMStakeHolderCopyWithImpl<$Res>
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
       isMasterDataSynced: freezed == isMasterDataSynced
           ? _value.isMasterDataSynced
           : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as int?,
     ));
   }
 }
@@ -265,7 +265,7 @@ class _$_RMStakeHolder extends _RMStakeHolder {
   final String? stakeHolderName;
   @override
   @JsonKey(name: 'StakeholderTypeId')
-  final int? stakeHolderTypeId;
+  final String? stakeHolderTypeId;
   @override
   @JsonKey(name: 'Address1')
   final String? address1;
@@ -286,10 +286,10 @@ class _$_RMStakeHolder extends _RMStakeHolder {
   final String? cell;
   @override
   @JsonKey(name: 'IsActive')
-  final bool? isActive;
+  final int? isActive;
   @override
   @JsonKey(name: 'IsMasterDataSynced')
-  final bool? isMasterDataSynced;
+  final int? isMasterDataSynced;
 
   @override
   String toString() {
@@ -354,28 +354,18 @@ class _$_RMStakeHolder extends _RMStakeHolder {
 
 abstract class _RMStakeHolder extends RMStakeHolder {
   const factory _RMStakeHolder(
-      {@JsonKey(name: 'StakeholderId')
-          required final String stakeHolderId,
-      @JsonKey(name: 'StakeholderName')
-          final String? stakeHolderName,
-      @JsonKey(name: 'StakeholderTypeId')
-          final int? stakeHolderTypeId,
-      @JsonKey(name: 'Address1')
-          final String? address1,
-      @JsonKey(name: 'Address2')
-          final String? address2,
-      @JsonKey(name: 'ContactName')
-          final String? contactName,
-      @JsonKey(name: 'Email')
-          final String? email,
-      @JsonKey(name: 'Tel')
-          final String? tel,
-      @JsonKey(name: 'Cell')
-          final String? cell,
-      @JsonKey(name: 'IsActive')
-          final bool? isActive,
-      @JsonKey(name: 'IsMasterDataSynced')
-          final bool? isMasterDataSynced}) = _$_RMStakeHolder;
+          {@JsonKey(name: 'StakeholderId') required final String stakeHolderId,
+          @JsonKey(name: 'StakeholderName') final String? stakeHolderName,
+          @JsonKey(name: 'StakeholderTypeId') final String? stakeHolderTypeId,
+          @JsonKey(name: 'Address1') final String? address1,
+          @JsonKey(name: 'Address2') final String? address2,
+          @JsonKey(name: 'ContactName') final String? contactName,
+          @JsonKey(name: 'Email') final String? email,
+          @JsonKey(name: 'Tel') final String? tel,
+          @JsonKey(name: 'Cell') final String? cell,
+          @JsonKey(name: 'IsActive') final int? isActive,
+          @JsonKey(name: 'IsMasterDataSynced') final int? isMasterDataSynced}) =
+      _$_RMStakeHolder;
   const _RMStakeHolder._() : super._();
 
   factory _RMStakeHolder.fromJson(Map<String, dynamic> json) =
@@ -389,7 +379,7 @@ abstract class _RMStakeHolder extends RMStakeHolder {
   String? get stakeHolderName;
   @override
   @JsonKey(name: 'StakeholderTypeId')
-  int? get stakeHolderTypeId;
+  String? get stakeHolderTypeId;
   @override
   @JsonKey(name: 'Address1')
   String? get address1;
@@ -410,10 +400,10 @@ abstract class _RMStakeHolder extends RMStakeHolder {
   String? get cell;
   @override
   @JsonKey(name: 'IsActive')
-  bool? get isActive;
+  int? get isActive;
   @override
   @JsonKey(name: 'IsMasterDataSynced')
-  bool? get isMasterDataSynced;
+  int? get isMasterDataSynced;
   @override
   @JsonKey(ignore: true)
   _$$_RMStakeHolderCopyWith<_$_RMStakeHolder> get copyWith =>
