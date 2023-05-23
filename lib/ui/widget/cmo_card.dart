@@ -113,17 +113,21 @@ class CmoCardHeader extends StatelessWidget {
 }
 
 class CmoCardItem extends StatelessWidget {
-  const CmoCardItem({super.key, required this.title, this.value});
+  const CmoCardItem(
+      {super.key, required this.title, this.value, this.ratioTitleSpace = 1});
 
   final String title;
 
   final String? value;
+
+  final int ratioTitleSpace;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
+          flex: ratioTitleSpace,
           child: Text(
             title,
             style: context.textStyles.bodyNormal.white,

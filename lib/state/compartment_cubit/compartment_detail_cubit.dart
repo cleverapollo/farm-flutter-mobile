@@ -8,46 +8,51 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   Compartment _compartment = Compartment();
 
   Future saveCompartment() {
+    _compartment.compartmentId = DateTime.now().millisecondsSinceEpoch;
     return cmoDatabaseMasterService.cacheCompartment(_compartment);
   }
 
   void onCompartmentNameChanged(String value) {
-    _compartment = _compartment.copyWith(compartmentName: value);
+    _compartment.compartmentName = value;
   }
 
   void onPolygonAreaChanged(double? value) {
-    _compartment = _compartment.copyWith(polygonArea: value);
+    _compartment.polygonArea = value;
+  }
+
+  void onLocationsChanged(List<GeoLocation>? locations) {
+    _compartment.locations = locations;
   }
 
   void onCompartmentUnitChanged(String value) {
-    _compartment = _compartment.copyWith(unit: value);
+    _compartment.unit = value;
   }
 
   void onEffectiveAreaChanged(double? value) {
-    _compartment = _compartment.copyWith(effectiveArea: value);
+    _compartment.effectiveArea = value;
   }
 
   void onEspacementChanged(String? value) {
-    _compartment = _compartment.copyWith(espacement: value);
+    _compartment.espacement = value;
   }
 
   void onPlannedPlantDateChanged(DateTime? value) {
-    _compartment = _compartment.copyWith(plannedPlantDate: value?.toIso8601String());
+    _compartment.plannedPlantDate = value?.toIso8601String();
   }
 
   void onSurvivalPercentageDateChanged(double? value) {
-    _compartment = _compartment.copyWith(survivalPercentage: value);
+    _compartment.survivalPercentage = value;
   }
 
   void onStockingPercentageDateChanged(double? value) {
-    _compartment = _compartment.copyWith(stockingPercentage: value);
+    _compartment.stockingPercentage = value;
   }
 
   void onRotationChanged(String value) {
-    _compartment = _compartment.copyWith(rotation: value);
+    _compartment.rotation = value;
   }
 
   void onMAIChanged(String value) {
-    _compartment = _compartment.copyWith(mai: value);
+    _compartment.mai = value;
   }
 }

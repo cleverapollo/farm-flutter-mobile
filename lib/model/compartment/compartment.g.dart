@@ -7,7 +7,7 @@ part of 'compartment.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
 extension GetCompartmentCollection on Isar {
   IsarCollection<Compartment> get compartments => this.collection();
@@ -42,48 +42,64 @@ const CompartmentSchema = CollectionSchema(
       name: r'isActive',
       type: IsarType.bool,
     ),
-    r'mai': PropertySchema(
+    r'locations': PropertySchema(
       id: 5,
+      name: r'locations',
+      type: IsarType.objectList,
+      target: r'GeoLocation',
+    ),
+    r'mai': PropertySchema(
+      id: 6,
       name: r'mai',
       type: IsarType.string,
     ),
     r'plannedPlantDate': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'plannedPlantDate',
       type: IsarType.string,
     ),
     r'polygonArea': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'polygonArea',
       type: IsarType.double,
     ),
-    r'productGroup': PropertySchema(
-      id: 8,
-      name: r'productGroup',
-      type: IsarType.double,
+    r'productGroupId': PropertySchema(
+      id: 9,
+      name: r'productGroupId',
+      type: IsarType.long,
+    ),
+    r'productGroupName': PropertySchema(
+      id: 10,
+      name: r'productGroupName',
+      type: IsarType.string,
     ),
     r'rotation': PropertySchema(
-      id: 9,
+      id: 11,
       name: r'rotation',
       type: IsarType.string,
     ),
-    r'speciesGroup': PropertySchema(
-      id: 10,
-      name: r'speciesGroup',
-      type: IsarType.double,
+    r'speciesGroupId': PropertySchema(
+      id: 12,
+      name: r'speciesGroupId',
+      type: IsarType.long,
+    ),
+    r'speciesGroupName': PropertySchema(
+      id: 13,
+      name: r'speciesGroupName',
+      type: IsarType.string,
     ),
     r'stockingPercentage': PropertySchema(
-      id: 11,
+      id: 14,
       name: r'stockingPercentage',
       type: IsarType.double,
     ),
     r'survivalPercentage': PropertySchema(
-      id: 12,
+      id: 15,
       name: r'survivalPercentage',
       type: IsarType.double,
     ),
     r'unit': PropertySchema(
-      id: 13,
+      id: 16,
       name: r'unit',
       type: IsarType.string,
     )
@@ -95,11 +111,11 @@ const CompartmentSchema = CollectionSchema(
   idName: r'id',
   indexes: {},
   links: {},
-  embeddedSchemas: {},
+  embeddedSchemas: {r'GeoLocation': GeoLocationSchema},
   getId: _compartmentGetId,
   getLinks: _compartmentGetLinks,
   attach: _compartmentAttach,
-  version: '3.0.5',
+  version: '3.1.0',
 );
 
 int _compartmentEstimateSize(
@@ -121,6 +137,20 @@ int _compartmentEstimateSize(
     }
   }
   {
+    final list = object.locations;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        final offsets = allOffsets[GeoLocation]!;
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount +=
+              GeoLocationSchema.estimateSize(value, offsets, allOffsets);
+        }
+      }
+    }
+  }
+  {
     final value = object.mai;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -133,7 +163,19 @@ int _compartmentEstimateSize(
     }
   }
   {
+    final value = object.productGroupName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.rotation;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.speciesGroupName;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -158,15 +200,23 @@ void _compartmentSerialize(
   writer.writeDouble(offsets[2], object.effectiveArea);
   writer.writeString(offsets[3], object.espacement);
   writer.writeBool(offsets[4], object.isActive);
-  writer.writeString(offsets[5], object.mai);
-  writer.writeString(offsets[6], object.plannedPlantDate);
-  writer.writeDouble(offsets[7], object.polygonArea);
-  writer.writeDouble(offsets[8], object.productGroup);
-  writer.writeString(offsets[9], object.rotation);
-  writer.writeDouble(offsets[10], object.speciesGroup);
-  writer.writeDouble(offsets[11], object.stockingPercentage);
-  writer.writeDouble(offsets[12], object.survivalPercentage);
-  writer.writeString(offsets[13], object.unit);
+  writer.writeObjectList<GeoLocation>(
+    offsets[5],
+    allOffsets,
+    GeoLocationSchema.serialize,
+    object.locations,
+  );
+  writer.writeString(offsets[6], object.mai);
+  writer.writeString(offsets[7], object.plannedPlantDate);
+  writer.writeDouble(offsets[8], object.polygonArea);
+  writer.writeLong(offsets[9], object.productGroupId);
+  writer.writeString(offsets[10], object.productGroupName);
+  writer.writeString(offsets[11], object.rotation);
+  writer.writeLong(offsets[12], object.speciesGroupId);
+  writer.writeString(offsets[13], object.speciesGroupName);
+  writer.writeDouble(offsets[14], object.stockingPercentage);
+  writer.writeDouble(offsets[15], object.survivalPercentage);
+  writer.writeString(offsets[16], object.unit);
 }
 
 Compartment _compartmentDeserialize(
@@ -180,16 +230,24 @@ Compartment _compartmentDeserialize(
     compartmentName: reader.readStringOrNull(offsets[1]),
     effectiveArea: reader.readDoubleOrNull(offsets[2]),
     espacement: reader.readStringOrNull(offsets[3]),
-    isActive: reader.readBool(offsets[4]),
-    mai: reader.readStringOrNull(offsets[5]),
-    plannedPlantDate: reader.readStringOrNull(offsets[6]),
-    polygonArea: reader.readDoubleOrNull(offsets[7]),
-    productGroup: reader.readDoubleOrNull(offsets[8]),
-    rotation: reader.readStringOrNull(offsets[9]),
-    speciesGroup: reader.readDoubleOrNull(offsets[10]),
-    stockingPercentage: reader.readDoubleOrNull(offsets[11]),
-    survivalPercentage: reader.readDoubleOrNull(offsets[12]),
-    unit: reader.readStringOrNull(offsets[13]),
+    isActive: reader.readBoolOrNull(offsets[4]),
+    locations: reader.readObjectList<GeoLocation>(
+      offsets[5],
+      GeoLocationSchema.deserialize,
+      allOffsets,
+      GeoLocation(),
+    ),
+    mai: reader.readStringOrNull(offsets[6]),
+    plannedPlantDate: reader.readStringOrNull(offsets[7]),
+    polygonArea: reader.readDoubleOrNull(offsets[8]),
+    productGroupId: reader.readLongOrNull(offsets[9]),
+    productGroupName: reader.readStringOrNull(offsets[10]),
+    rotation: reader.readStringOrNull(offsets[11]),
+    speciesGroupId: reader.readLongOrNull(offsets[12]),
+    speciesGroupName: reader.readStringOrNull(offsets[13]),
+    stockingPercentage: reader.readDoubleOrNull(offsets[14]),
+    survivalPercentage: reader.readDoubleOrNull(offsets[15]),
+    unit: reader.readStringOrNull(offsets[16]),
   );
   return object;
 }
@@ -210,24 +268,35 @@ P _compartmentDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readBool(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readObjectList<GeoLocation>(
+        offset,
+        GeoLocationSchema.deserialize,
+        allOffsets,
+        GeoLocation(),
+      )) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
       return (reader.readDoubleOrNull(offset)) as P;
     case 9:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 10:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 11:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 12:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 13:
+      return (reader.readStringOrNull(offset)) as P;
+    case 14:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 15:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 16:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -844,13 +913,138 @@ extension CompartmentQueryFilter
     });
   }
 
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      isActiveIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isActive',
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      isActiveIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isActive',
+      ));
+    });
+  }
+
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition> isActiveEqualTo(
-      bool value) {
+      bool? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isActive',
         value: value,
       ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      locationsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'locations',
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      locationsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'locations',
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      locationsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'locations',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      locationsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'locations',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      locationsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'locations',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      locationsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'locations',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      locationsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'locations',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      locationsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'locations',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -1240,85 +1434,229 @@ extension CompartmentQueryFilter
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      productGroupIsNull() {
+      productGroupIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'productGroup',
+        property: r'productGroupId',
       ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      productGroupIsNotNull() {
+      productGroupIdIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'productGroup',
+        property: r'productGroupId',
       ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      productGroupEqualTo(
-    double? value, {
-    double epsilon = Query.epsilon,
-  }) {
+      productGroupIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'productGroup',
+        property: r'productGroupId',
         value: value,
-        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      productGroupGreaterThan(
-    double? value, {
+      productGroupIdGreaterThan(
+    int? value, {
     bool include = false,
-    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'productGroup',
+        property: r'productGroupId',
         value: value,
-        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      productGroupLessThan(
-    double? value, {
+      productGroupIdLessThan(
+    int? value, {
     bool include = false,
-    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'productGroup',
+        property: r'productGroupId',
         value: value,
-        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      productGroupBetween(
-    double? lower,
-    double? upper, {
+      productGroupIdBetween(
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'productGroup',
+        property: r'productGroupId',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      productGroupNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'productGroupName',
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      productGroupNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'productGroupName',
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      productGroupNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'productGroupName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      productGroupNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'productGroupName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      productGroupNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'productGroupName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      productGroupNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'productGroupName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      productGroupNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'productGroupName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      productGroupNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'productGroupName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      productGroupNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'productGroupName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      productGroupNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'productGroupName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      productGroupNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'productGroupName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      productGroupNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'productGroupName',
+        value: '',
       ));
     });
   }
@@ -1477,85 +1815,229 @@ extension CompartmentQueryFilter
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      speciesGroupIsNull() {
+      speciesGroupIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'speciesGroup',
+        property: r'speciesGroupId',
       ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      speciesGroupIsNotNull() {
+      speciesGroupIdIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'speciesGroup',
+        property: r'speciesGroupId',
       ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      speciesGroupEqualTo(
-    double? value, {
-    double epsilon = Query.epsilon,
-  }) {
+      speciesGroupIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'speciesGroup',
+        property: r'speciesGroupId',
         value: value,
-        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      speciesGroupGreaterThan(
-    double? value, {
+      speciesGroupIdGreaterThan(
+    int? value, {
     bool include = false,
-    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'speciesGroup',
+        property: r'speciesGroupId',
         value: value,
-        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      speciesGroupLessThan(
-    double? value, {
+      speciesGroupIdLessThan(
+    int? value, {
     bool include = false,
-    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'speciesGroup',
+        property: r'speciesGroupId',
         value: value,
-        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      speciesGroupBetween(
-    double? lower,
-    double? upper, {
+      speciesGroupIdBetween(
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'speciesGroup',
+        property: r'speciesGroupId',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      speciesGroupNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'speciesGroupName',
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      speciesGroupNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'speciesGroupName',
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      speciesGroupNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'speciesGroupName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      speciesGroupNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'speciesGroupName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      speciesGroupNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'speciesGroupName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      speciesGroupNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'speciesGroupName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      speciesGroupNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'speciesGroupName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      speciesGroupNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'speciesGroupName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      speciesGroupNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'speciesGroupName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      speciesGroupNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'speciesGroupName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      speciesGroupNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'speciesGroupName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      speciesGroupNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'speciesGroupName',
+        value: '',
       ));
     });
   }
@@ -1878,7 +2360,14 @@ extension CompartmentQueryFilter
 }
 
 extension CompartmentQueryObject
-    on QueryBuilder<Compartment, Compartment, QFilterCondition> {}
+    on QueryBuilder<Compartment, Compartment, QFilterCondition> {
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      locationsElement(FilterQuery<GeoLocation> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'locations');
+    });
+  }
+}
 
 extension CompartmentQueryLinks
     on QueryBuilder<Compartment, Compartment, QFilterCondition> {}
@@ -1986,16 +2475,30 @@ extension CompartmentQuerySortBy
     });
   }
 
-  QueryBuilder<Compartment, Compartment, QAfterSortBy> sortByProductGroup() {
+  QueryBuilder<Compartment, Compartment, QAfterSortBy> sortByProductGroupId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'productGroup', Sort.asc);
+      return query.addSortBy(r'productGroupId', Sort.asc);
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterSortBy>
-      sortByProductGroupDesc() {
+      sortByProductGroupIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'productGroup', Sort.desc);
+      return query.addSortBy(r'productGroupId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterSortBy>
+      sortByProductGroupName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'productGroupName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterSortBy>
+      sortByProductGroupNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'productGroupName', Sort.desc);
     });
   }
 
@@ -2011,16 +2514,30 @@ extension CompartmentQuerySortBy
     });
   }
 
-  QueryBuilder<Compartment, Compartment, QAfterSortBy> sortBySpeciesGroup() {
+  QueryBuilder<Compartment, Compartment, QAfterSortBy> sortBySpeciesGroupId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'speciesGroup', Sort.asc);
+      return query.addSortBy(r'speciesGroupId', Sort.asc);
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterSortBy>
-      sortBySpeciesGroupDesc() {
+      sortBySpeciesGroupIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'speciesGroup', Sort.desc);
+      return query.addSortBy(r'speciesGroupId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterSortBy>
+      sortBySpeciesGroupName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'speciesGroupName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterSortBy>
+      sortBySpeciesGroupNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'speciesGroupName', Sort.desc);
     });
   }
 
@@ -2180,16 +2697,30 @@ extension CompartmentQuerySortThenBy
     });
   }
 
-  QueryBuilder<Compartment, Compartment, QAfterSortBy> thenByProductGroup() {
+  QueryBuilder<Compartment, Compartment, QAfterSortBy> thenByProductGroupId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'productGroup', Sort.asc);
+      return query.addSortBy(r'productGroupId', Sort.asc);
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterSortBy>
-      thenByProductGroupDesc() {
+      thenByProductGroupIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'productGroup', Sort.desc);
+      return query.addSortBy(r'productGroupId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterSortBy>
+      thenByProductGroupName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'productGroupName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterSortBy>
+      thenByProductGroupNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'productGroupName', Sort.desc);
     });
   }
 
@@ -2205,16 +2736,30 @@ extension CompartmentQuerySortThenBy
     });
   }
 
-  QueryBuilder<Compartment, Compartment, QAfterSortBy> thenBySpeciesGroup() {
+  QueryBuilder<Compartment, Compartment, QAfterSortBy> thenBySpeciesGroupId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'speciesGroup', Sort.asc);
+      return query.addSortBy(r'speciesGroupId', Sort.asc);
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterSortBy>
-      thenBySpeciesGroupDesc() {
+      thenBySpeciesGroupIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'speciesGroup', Sort.desc);
+      return query.addSortBy(r'speciesGroupId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterSortBy>
+      thenBySpeciesGroupName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'speciesGroupName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterSortBy>
+      thenBySpeciesGroupNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'speciesGroupName', Sort.desc);
     });
   }
 
@@ -2315,9 +2860,17 @@ extension CompartmentQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Compartment, Compartment, QDistinct> distinctByProductGroup() {
+  QueryBuilder<Compartment, Compartment, QDistinct> distinctByProductGroupId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'productGroup');
+      return query.addDistinctBy(r'productGroupId');
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QDistinct> distinctByProductGroupName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'productGroupName',
+          caseSensitive: caseSensitive);
     });
   }
 
@@ -2328,9 +2881,17 @@ extension CompartmentQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Compartment, Compartment, QDistinct> distinctBySpeciesGroup() {
+  QueryBuilder<Compartment, Compartment, QDistinct> distinctBySpeciesGroupId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'speciesGroup');
+      return query.addDistinctBy(r'speciesGroupId');
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QDistinct> distinctBySpeciesGroupName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'speciesGroupName',
+          caseSensitive: caseSensitive);
     });
   }
 
@@ -2389,9 +2950,16 @@ extension CompartmentQueryProperty
     });
   }
 
-  QueryBuilder<Compartment, bool, QQueryOperations> isActiveProperty() {
+  QueryBuilder<Compartment, bool?, QQueryOperations> isActiveProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isActive');
+    });
+  }
+
+  QueryBuilder<Compartment, List<GeoLocation>?, QQueryOperations>
+      locationsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'locations');
     });
   }
 
@@ -2414,9 +2982,16 @@ extension CompartmentQueryProperty
     });
   }
 
-  QueryBuilder<Compartment, double?, QQueryOperations> productGroupProperty() {
+  QueryBuilder<Compartment, int?, QQueryOperations> productGroupIdProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'productGroup');
+      return query.addPropertyName(r'productGroupId');
+    });
+  }
+
+  QueryBuilder<Compartment, String?, QQueryOperations>
+      productGroupNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'productGroupName');
     });
   }
 
@@ -2426,9 +3001,16 @@ extension CompartmentQueryProperty
     });
   }
 
-  QueryBuilder<Compartment, double?, QQueryOperations> speciesGroupProperty() {
+  QueryBuilder<Compartment, int?, QQueryOperations> speciesGroupIdProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'speciesGroup');
+      return query.addPropertyName(r'speciesGroupId');
+    });
+  }
+
+  QueryBuilder<Compartment, String?, QQueryOperations>
+      speciesGroupNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'speciesGroupName');
     });
   }
 
@@ -2454,41 +3036,249 @@ extension CompartmentQueryProperty
 }
 
 // **************************************************************************
-// JsonSerializableGenerator
+// IsarEmbeddedGenerator
 // **************************************************************************
 
-_$_Compartment _$$_CompartmentFromJson(Map<String, dynamic> json) =>
-    _$_Compartment(
-      compartmentId: json['CompartmentId'] as int?,
-      compartmentName: json['CompartmentName'] as String?,
-      productGroup: (json['ProductGroup'] as num?)?.toDouble(),
-      speciesGroup: (json['SpeciesGroup'] as num?)?.toDouble(),
-      polygonArea: (json['PolygonArea'] as num?)?.toDouble(),
-      unit: json['Unit'] as String?,
-      effectiveArea: (json['EffectiveArea'] as num?)?.toDouble(),
-      espacement: json['Espacement'] as String?,
-      plannedPlantDate: json['PlannedPlantDate'] as String?,
-      survivalPercentage: (json['SurvivalPercentage'] as num?)?.toDouble(),
-      stockingPercentage: (json['StockingPercentage'] as num?)?.toDouble(),
-      rotation: json['Rotation'] as String?,
-      mai: json['MAI'] as String?,
-      isActive: json['IsActive'] as bool? ?? true,
-    );
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-Map<String, dynamic> _$$_CompartmentToJson(_$_Compartment instance) =>
-    <String, dynamic>{
-      'CompartmentId': instance.compartmentId,
-      'CompartmentName': instance.compartmentName,
-      'ProductGroup': instance.productGroup,
-      'SpeciesGroup': instance.speciesGroup,
-      'PolygonArea': instance.polygonArea,
-      'Unit': instance.unit,
-      'EffectiveArea': instance.effectiveArea,
-      'Espacement': instance.espacement,
-      'PlannedPlantDate': instance.plannedPlantDate,
-      'SurvivalPercentage': instance.survivalPercentage,
-      'StockingPercentage': instance.stockingPercentage,
-      'Rotation': instance.rotation,
-      'MAI': instance.mai,
-      'IsActive': instance.isActive,
-    };
+const GeoLocationSchema = Schema(
+  name: r'GeoLocation',
+  id: 4422903911306842414,
+  properties: {
+    r'latitude': PropertySchema(
+      id: 0,
+      name: r'latitude',
+      type: IsarType.double,
+    ),
+    r'longitude': PropertySchema(
+      id: 1,
+      name: r'longitude',
+      type: IsarType.double,
+    )
+  },
+  estimateSize: _geoLocationEstimateSize,
+  serialize: _geoLocationSerialize,
+  deserialize: _geoLocationDeserialize,
+  deserializeProp: _geoLocationDeserializeProp,
+);
+
+int _geoLocationEstimateSize(
+  GeoLocation object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  return bytesCount;
+}
+
+void _geoLocationSerialize(
+  GeoLocation object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeDouble(offsets[0], object.latitude);
+  writer.writeDouble(offsets[1], object.longitude);
+}
+
+GeoLocation _geoLocationDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = GeoLocation(
+    latitude: reader.readDoubleOrNull(offsets[0]),
+    longitude: reader.readDoubleOrNull(offsets[1]),
+  );
+  return object;
+}
+
+P _geoLocationDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 1:
+      return (reader.readDoubleOrNull(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+extension GeoLocationQueryFilter
+    on QueryBuilder<GeoLocation, GeoLocation, QFilterCondition> {
+  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
+      latitudeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'latitude',
+      ));
+    });
+  }
+
+  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
+      latitudeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'latitude',
+      ));
+    });
+  }
+
+  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition> latitudeEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'latitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
+      latitudeGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'latitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
+      latitudeLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'latitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition> latitudeBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'latitude',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
+      longitudeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'longitude',
+      ));
+    });
+  }
+
+  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
+      longitudeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'longitude',
+      ));
+    });
+  }
+
+  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
+      longitudeEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'longitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
+      longitudeGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'longitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
+      longitudeLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'longitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
+      longitudeBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'longitude',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+}
+
+extension GeoLocationQueryObject
+    on QueryBuilder<GeoLocation, GeoLocation, QFilterCondition> {}

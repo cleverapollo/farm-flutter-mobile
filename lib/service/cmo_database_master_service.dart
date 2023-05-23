@@ -15,6 +15,7 @@ import 'package:cmo/model/worker/gender.dart';
 import 'package:cmo/model/worker/race.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CmoDatabaseMasterService {
   factory CmoDatabaseMasterService() {
@@ -30,6 +31,7 @@ class CmoDatabaseMasterService {
   Isar? _database;
 
   Future<Isar> initializeDatabase() async {
+    final dir = await getApplicationDocumentsDirectory();
     final isar = await Isar.open(
       [
         CompanySchema,
@@ -95,9 +97,11 @@ class CmoDatabaseMasterService {
         UserDeviceSchema,
         FarmPropertyOwnerShipTypeSchema,
         GroupSchemeSchema,
-        ResourceManagerUnitSchema
+        ResourceManagerUnitSchema,
+        CompartmentSchema,
       ],
       name: _databaseName,
+      directory: dir.path,
     );
     _database = isar;
     return isar;
@@ -1306,12 +1310,11 @@ class CmoDatabaseMasterService {
 
   Future<int> cacheCompartment(Compartment item) async {
     final db = await _db();
-    return db.compartments.put(item);
+    return db.writeTxn(() => db.compartments.put(item));
   }
 
   Future<List<Compartment>?> getCompartments() async {
     final db = await _db();
-    db.contractors.where().findAll();
-    return db.compartments.filter().findAll();
+    return db.txn(() => db.compartments.where().findAll());
   }
 }

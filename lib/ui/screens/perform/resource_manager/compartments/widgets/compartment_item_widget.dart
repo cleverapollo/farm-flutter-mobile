@@ -18,12 +18,11 @@ class CompartmentItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CmoTappable(
       onTap: () {
-        final points = <LatLng>[
-          LatLng(-26.015368927981065, 28.042593151330948),
-          LatLng(-26.025381761698664, 28.049022741615772),
-          LatLng(-26.02768170340819, 28.038567155599594),
-          LatLng(-26.01968835342607, 28.036944083869457),
-        ];
+        final points = model.locations
+                ?.map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0)).toList();
+        if (points == null) {
+          return;
+        }
         CompartmentMapScreen.push(context, points: points);
       },
       child: CmoCard(
@@ -37,15 +36,17 @@ class CompartmentItemWidget extends StatelessWidget {
         ),
         content: [
           CmoCardHeader(
-            title: '${LocaleKeys.compartment.tr()} ${model.compartmentName}',
+            title: '${LocaleKeys.compartment.tr()}: ${model.compartmentName}',
           ),
           CmoCardItem(
-            title: LocaleKeys.productGroup.tr(),
-            value: '${model.productGroup} ha',
+            title: model.productGroupName ?? LocaleKeys.productGroup.tr(),
+            value: '${model.polygonArea?.toStringAsFixed(2)} ha',
+            ratioTitleSpace: 3,
           ),
           CmoCardItem(
-            title: LocaleKeys.speciesGroup.tr(),
-            value: (model.speciesGroup ?? 0).toString(),
+            title: model.speciesGroupName ?? LocaleKeys.speciesGroup.tr(),
+            value: '',
+            ratioTitleSpace: 3,
           ),
         ],
       ),

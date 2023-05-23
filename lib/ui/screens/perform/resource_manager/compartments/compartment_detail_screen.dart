@@ -1,5 +1,6 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/ui.dart';
@@ -10,17 +11,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompartmentDetailScreen extends StatefulWidget {
   final double? measuredArea;
+  final List<GeoLocation>? locations;
 
-  const CompartmentDetailScreen({Key? key, this.measuredArea})
+  const CompartmentDetailScreen({Key? key, this.measuredArea, this.locations})
       : super(key: key);
 
-  static dynamic push(BuildContext context, {double? measuredArea}) {
+  static dynamic push(
+    BuildContext context, {
+    double? measuredArea,
+    List<GeoLocation>? locations,
+  }) {
     return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
             create: (_) => CompartmentDetailCubit(),
-            child: CompartmentDetailScreen(measuredArea: measuredArea),
+            child: CompartmentDetailScreen(
+              measuredArea: measuredArea,
+              locations: locations,
+            ),
           );
         },
       ),
@@ -42,6 +51,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
     super.initState();
     _compartmentDetailCubit = context.read<CompartmentDetailCubit>();
     _compartmentDetailCubit.onPolygonAreaChanged(widget.measuredArea);
+    _compartmentDetailCubit.onLocationsChanged(widget.locations);
   }
 
   @override
@@ -81,8 +91,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {
-                        },
+                        onTap: () {},
                         child: AttributeItem(
                           child: SelectorAttributeItem(
                             hintText: LocaleKeys.productGroup.tr(),
@@ -91,8 +100,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {
-                        },
+                        onTap: () {},
                         child: AttributeItem(
                           child: SelectorAttributeItem(
                             hintText: LocaleKeys.speciesGroup.tr(),
@@ -265,8 +273,8 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
             ),
             CmoFilledButton(
               title: LocaleKeys.save.tr(),
-              onTap: () {
-                _compartmentDetailCubit.saveCompartment();
+              onTap: () async {
+                await _compartmentDetailCubit.saveCompartment();
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },

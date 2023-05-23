@@ -78,7 +78,7 @@ class AuditCubit extends HydratedCubit<AuditState> {
 
       emit(state.copyWith(sites: sites));
 
-      const compartments = <Compartment>[
+      final compartments = <Compartment>[
         Compartment(compartmentId: 1, compartmentName: 'Compartment 1'),
         Compartment(compartmentId: 2, compartmentName: 'Compartment 2'),
       ];

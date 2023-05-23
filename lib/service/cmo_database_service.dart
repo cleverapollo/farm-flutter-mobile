@@ -8,6 +8,7 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/model/user/user_role.dart';
 import 'package:cmo/model/user_role_portal.dart';
 import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CmoDatabaseService {
   CmoDatabaseService();
