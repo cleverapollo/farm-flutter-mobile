@@ -85,7 +85,7 @@ class CmoApp extends StatelessWidget {
         ],
         supportedLocales: context.supportedLocales,
         locale: context.locale,
-        home: const RMSyncScreen(),
+        home: const SplashScreen(),
         scaffoldMessengerKey: snackbarKey,
       ),
     );

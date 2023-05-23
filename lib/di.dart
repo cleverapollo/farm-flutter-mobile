@@ -1,3 +1,4 @@
+import 'package:cmo/service/config_service.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:cmo/service/app_info_service.dart';
@@ -22,6 +23,8 @@ CmoDatabaseService get cmoDatabaseService => _get<CmoDatabaseService>();
 CmoDatabaseMasterService get cmoDatabaseMasterService =>
     _get<CmoDatabaseMasterService>();
 
+ConfigService get configService => _get<ConfigService>();
+
 Future<void> registerGetIt() async {
   _get.registerLazySingleton(() => DeviceInfoService());
   _get.registerLazySingleton(() => AppInfoService());
@@ -29,6 +32,7 @@ Future<void> registerGetIt() async {
   _get.registerLazySingleton(() => CmoApiService());
   _get.registerLazySingleton(() => CmoDatabaseService());
   _get.registerLazySingleton(() => CmoDatabaseMasterService());
+  _get.registerLazySingleton(() => ConfigService());
 
   await _get.allReady();
 }

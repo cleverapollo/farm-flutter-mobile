@@ -1,9 +1,11 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/group_scheme_entity_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/resource_manager_unit_entity.dart';
+import 'package:cmo/ui/screens/sync/rm_sync_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
@@ -53,6 +55,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
                 selectedItem: selectedGroupScheme,
               );
               setState(() {});
+              _onNext();
             },
           ),
           Divider(
@@ -72,6 +75,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
                   selectedItem: selectedResourceManagerUnit,
                 );
                 setState(() {});
+                _onNext();
               },
             ),
             Divider(
@@ -104,6 +108,22 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
         ],
       ),
     );
+  }
+
+  Future _onNext() async {
+    if (selectedGroupScheme == null || selectedResourceManagerUnit == null) {
+      return;
+    }
+    await configService.setActiveRegionalManager(
+        groupSchemeId: selectedGroupScheme!.groupSchemeId!,
+        rmUnitId: selectedResourceManagerUnit!.regionalManagerUnitId!,
+        rmName: selectedResourceManagerUnit!.managerName!);
+    if (mounted) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => RMSyncScreen(
+              selectedGroupScheme: selectedGroupScheme!,
+              selectedResourceManagerUnit: selectedResourceManagerUnit!)));
+    }
   }
 }
 

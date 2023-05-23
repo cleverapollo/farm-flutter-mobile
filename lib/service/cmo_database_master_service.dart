@@ -7,7 +7,9 @@ import 'package:cmo/model/data/audit_question_comment.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/farm_property_ownner_ship_type/farm_property_owner_ship_type.dart';
+import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/user/user_role.dart';
 import 'package:cmo/model/user_role_portal.dart';
 import 'package:cmo/utils/utils.dart';
@@ -90,7 +92,9 @@ class CmoDatabaseMasterService {
         UserRolePortalSchema,
         UserRoleSchema,
         UserDeviceSchema,
-        FarmPropertyOwnerShipTypeSchema
+        FarmPropertyOwnerShipTypeSchema,
+        GroupSchemeSchema,
+        ResourceManagerUnitSchema
       ],
       name: _databaseName,
     );
@@ -104,6 +108,16 @@ class CmoDatabaseMasterService {
   }
 
   Future<Isar> get db => _db();
+
+  Future<int> cacheGroupScheme(GroupScheme item) async {
+    final db = await _db();
+    return db.groupSchemes.put(item);
+  }
+
+  Future<int> cacheResourceManagerUnit(ResourceManagerUnit item) async {
+    final db = await _db();
+    return db.resourceManagerUnits.put(item);
+  }
 
   Future<int> cachePlantation(Plantation item) async {
     final db = await _db();

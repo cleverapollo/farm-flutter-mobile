@@ -1,5 +1,8 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/model/resource_manager_unit.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/state/sync/base_sync_cubit.dart';
 import 'package:cmo/state/sync/base_sync_state.dart';
 import 'package:cmo/utils/utils.dart';
@@ -7,22 +10,23 @@ import 'package:cmo/utils/utils.dart';
 part 'rm_sync_state.dart';
 
 class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
-  RMSyncCubit() : super(RMSyncState());
+  RMSyncCubit(
+      {required this.userInfoCubit,
+      required this.userDeviceCubit,
+      required this.selectedGroupScheme,
+      required this.selectedResourceManagerUnit})
+      : super(RMSyncState());
+
+  final UserInfoCubit userInfoCubit;
+  final UserDeviceCubit userDeviceCubit;
+  final GroupScheme selectedGroupScheme;
+  final ResourceManagerUnit selectedResourceManagerUnit;
 
   final String topicRegionalManagerMasterDataSync =
       'Cmo.MasterDataDeviceSync.RM.';
   final String topicRegionalManagerUnitMasterDataSync =
       'Cmo.MasterDataDeviceSync.RMU.';
 
-  // late UserDevice userDevice;
-
-  // which group scheme of the RM is, also use for validating that the master data is synced or not
-  // late GroupScheme groupScheme;
-
-  // which rm unit is, used to display at sync screen
-  // late RegionalManagerUnit rmUnit;
-
-  // use the below for test data:
   int userId = 0;
   int userDeviceId = 0;
   final groupSchemeId = 1; // Luffy' pirate crew

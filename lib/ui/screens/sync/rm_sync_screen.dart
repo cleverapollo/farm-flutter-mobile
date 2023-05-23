@@ -1,25 +1,30 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/group_scheme.dart';
+import 'package:cmo/model/resource_manager_unit.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/state/sync/rm/rm_sync_cubit.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RMSyncScreen extends StatelessWidget {
-  const RMSyncScreen({super.key});
+  final GroupScheme selectedGroupScheme;
+  final ResourceManagerUnit selectedResourceManagerUnit;
 
-  static dynamic pushReplacement(BuildContext context) {
-    return Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => const RMSyncScreen(),
-      ),
-    );
-  }
+  const RMSyncScreen(
+      {super.key,
+      required this.selectedGroupScheme,
+      required this.selectedResourceManagerUnit});
 
   @override
   Widget build(BuildContext context) {
     // TODO(DONG): update multiple language and replace data by model
     return BlocProvider(
-      create: (_) => RMSyncCubit(),
+      create: (_) => RMSyncCubit(
+          userInfoCubit: context.read<UserInfoCubit>(),
+          userDeviceCubit: context.read<UserDeviceCubit>(),
+          selectedGroupScheme: selectedGroupScheme,
+          selectedResourceManagerUnit: selectedResourceManagerUnit),
       child: WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
