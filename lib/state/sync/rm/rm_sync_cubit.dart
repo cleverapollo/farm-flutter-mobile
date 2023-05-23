@@ -7,10 +7,7 @@ import 'package:cmo/utils/utils.dart';
 part 'rm_sync_state.dart';
 
 class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
-  RMSyncCubit() : super(RMSyncState()) {
-    // TODO(DONG): test force init here
-    sync();
-  }
+  RMSyncCubit() : super(RMSyncState());
 
   final String topicRegionalManagerMasterDataSync =
       'Cmo.MasterDataDeviceSync.RM.';
@@ -39,8 +36,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     try {
       emit(
         state.copyWith(
-          syncMessage: 'Syncing All Master Data...',
-        ),
+            syncMessage: 'Syncing All Master Data...', isLoading: true),
       );
 
       // TODO(DONG): force to create user device for test only
@@ -77,8 +73,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
       emit(
         state.copyWith(
-          syncMessage: 'Sync complete',
-        ),
+            syncMessage: 'Sync complete', isLoaded: true, isLoading: false),
       );
 
       // TODO(DONG): update status for RM data synced to maybe GroupScheme (implemented at Entity module by Nguyen Nguyen)
@@ -87,8 +82,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       logger.e(e);
       emit(
         state.copyWith(
-          syncMessage: 'Sync error',
-        ),
+            syncMessage: 'Sync error', isLoaded: false, isLoading: false),
       );
     }
   }

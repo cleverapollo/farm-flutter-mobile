@@ -13,6 +13,8 @@ import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 
+import 'ui/screens/sync/rm_sync_screen.dart';
+
 late FlutterSecureStorage secureStorage;
 final snackbarKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -83,7 +85,7 @@ class CmoApp extends StatelessWidget {
         ],
         supportedLocales: context.supportedLocales,
         locale: context.locale,
-        home: const SplashScreen(),
+        home: const RMSyncScreen(),
         scaffoldMessengerKey: snackbarKey,
       ),
     );
