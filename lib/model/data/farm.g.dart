@@ -40,7 +40,7 @@ const FarmSchema = CollectionSchema(
     r'farmSize': PropertySchema(
       id: 4,
       name: r'farmSize',
-      type: IsarType.long,
+      type: IsarType.double,
     ),
     r'firstName': PropertySchema(
       id: 5,
@@ -140,12 +140,12 @@ const FarmSchema = CollectionSchema(
     r'latitude': PropertySchema(
       id: 24,
       name: r'latitude',
-      type: IsarType.long,
+      type: IsarType.string,
     ),
     r'longitude': PropertySchema(
       id: 25,
       name: r'longitude',
-      type: IsarType.long,
+      type: IsarType.string,
     ),
     r'manageResourcesSustainablyId': PropertySchema(
       id: 26,
@@ -291,6 +291,18 @@ int _farmEstimateSize(
     }
   }
   {
+    final value = object.latitude;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.longitude;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.mobileNumber;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -373,7 +385,7 @@ void _farmSerialize(
   writer.writeString(offsets[1], object.email);
   writer.writeString(offsets[2], object.farmId);
   writer.writeString(offsets[3], object.farmName);
-  writer.writeLong(offsets[4], object.farmSize);
+  writer.writeDouble(offsets[4], object.farmSize);
   writer.writeString(offsets[5], object.firstName);
   writer.writeLong(offsets[6], object.groupSchemeId);
   writer.writeString(offsets[7], object.idNumber);
@@ -393,8 +405,8 @@ void _farmSerialize(
   writer.writeBool(offsets[21], object.isRiversOrStreamsNeighbouring);
   writer.writeBool(offsets[22], object.isSlimfCompliant);
   writer.writeString(offsets[23], object.lastName);
-  writer.writeLong(offsets[24], object.latitude);
-  writer.writeLong(offsets[25], object.longitude);
+  writer.writeString(offsets[24], object.latitude);
+  writer.writeString(offsets[25], object.longitude);
   writer.writeLong(offsets[26], object.manageResourcesSustainablyId);
   writer.writeString(offsets[27], object.mobileNumber);
   writer.writeObjectList<FarmMemberObjectiveAnswer>(
@@ -435,7 +447,7 @@ Farm _farmDeserialize(
     email: reader.readStringOrNull(offsets[1]),
     farmId: reader.readString(offsets[2]),
     farmName: reader.readStringOrNull(offsets[3]),
-    farmSize: reader.readLongOrNull(offsets[4]),
+    farmSize: reader.readDoubleOrNull(offsets[4]),
     firstName: reader.readStringOrNull(offsets[5]),
     groupSchemeId: reader.readLongOrNull(offsets[6]),
     idNumber: reader.readStringOrNull(offsets[7]),
@@ -455,8 +467,8 @@ Farm _farmDeserialize(
     isRiversOrStreamsNeighbouring: reader.readBoolOrNull(offsets[21]),
     isSlimfCompliant: reader.readBoolOrNull(offsets[22]),
     lastName: reader.readStringOrNull(offsets[23]),
-    latitude: reader.readLongOrNull(offsets[24]),
-    longitude: reader.readLongOrNull(offsets[25]),
+    latitude: reader.readStringOrNull(offsets[24]),
+    longitude: reader.readStringOrNull(offsets[25]),
     manageResourcesSustainablyId: reader.readLongOrNull(offsets[26]),
     mobileNumber: reader.readStringOrNull(offsets[27]),
     objectiveAnswers: reader.readObjectList<FarmMemberObjectiveAnswer>(
@@ -504,7 +516,7 @@ P _farmDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
@@ -544,9 +556,9 @@ P _farmDeserializeProp<P>(
     case 23:
       return (reader.readStringOrNull(offset)) as P;
     case 24:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 25:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 26:
       return (reader.readLongOrNull(offset)) as P;
     case 27:
@@ -1181,46 +1193,55 @@ extension FarmQueryFilter on QueryBuilder<Farm, Farm, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Farm, Farm, QAfterFilterCondition> farmSizeEqualTo(int? value) {
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> farmSizeEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'farmSize',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Farm, Farm, QAfterFilterCondition> farmSizeGreaterThan(
-    int? value, {
+    double? value, {
     bool include = false,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'farmSize',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Farm, Farm, QAfterFilterCondition> farmSizeLessThan(
-    int? value, {
+    double? value, {
     bool include = false,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'farmSize',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Farm, Farm, QAfterFilterCondition> farmSizeBetween(
-    int? lower,
-    int? upper, {
+    double? lower,
+    double? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1229,6 +1250,7 @@ extension FarmQueryFilter on QueryBuilder<Farm, Farm, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        epsilon: epsilon,
       ));
     });
   }
@@ -2500,46 +2522,55 @@ extension FarmQueryFilter on QueryBuilder<Farm, Farm, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Farm, Farm, QAfterFilterCondition> latitudeEqualTo(int? value) {
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> latitudeEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'latitude',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Farm, Farm, QAfterFilterCondition> latitudeGreaterThan(
-    int? value, {
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'latitude',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Farm, Farm, QAfterFilterCondition> latitudeLessThan(
-    int? value, {
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'latitude',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Farm, Farm, QAfterFilterCondition> latitudeBetween(
-    int? lower,
-    int? upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -2548,6 +2579,74 @@ extension FarmQueryFilter on QueryBuilder<Farm, Farm, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> latitudeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'latitude',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> latitudeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'latitude',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> latitudeContains(String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'latitude',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> latitudeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'latitude',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> latitudeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'latitude',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> latitudeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'latitude',
+        value: '',
       ));
     });
   }
@@ -2568,46 +2667,55 @@ extension FarmQueryFilter on QueryBuilder<Farm, Farm, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Farm, Farm, QAfterFilterCondition> longitudeEqualTo(int? value) {
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> longitudeEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'longitude',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Farm, Farm, QAfterFilterCondition> longitudeGreaterThan(
-    int? value, {
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'longitude',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Farm, Farm, QAfterFilterCondition> longitudeLessThan(
-    int? value, {
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'longitude',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Farm, Farm, QAfterFilterCondition> longitudeBetween(
-    int? lower,
-    int? upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -2616,6 +2724,75 @@ extension FarmQueryFilter on QueryBuilder<Farm, Farm, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> longitudeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'longitude',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> longitudeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'longitude',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> longitudeContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'longitude',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> longitudeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'longitude',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> longitudeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'longitude',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Farm, Farm, QAfterFilterCondition> longitudeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'longitude',
+        value: '',
       ));
     });
   }
@@ -5517,15 +5694,17 @@ extension FarmQueryWhereDistinct on QueryBuilder<Farm, Farm, QDistinct> {
     });
   }
 
-  QueryBuilder<Farm, Farm, QDistinct> distinctByLatitude() {
+  QueryBuilder<Farm, Farm, QDistinct> distinctByLatitude(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'latitude');
+      return query.addDistinctBy(r'latitude', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Farm, Farm, QDistinct> distinctByLongitude() {
+  QueryBuilder<Farm, Farm, QDistinct> distinctByLongitude(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'longitude');
+      return query.addDistinctBy(r'longitude', caseSensitive: caseSensitive);
     });
   }
 
@@ -5658,7 +5837,7 @@ extension FarmQueryProperty on QueryBuilder<Farm, Farm, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Farm, int?, QQueryOperations> farmSizeProperty() {
+  QueryBuilder<Farm, double?, QQueryOperations> farmSizeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'farmSize');
     });
@@ -5782,13 +5961,13 @@ extension FarmQueryProperty on QueryBuilder<Farm, Farm, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Farm, int?, QQueryOperations> latitudeProperty() {
+  QueryBuilder<Farm, String?, QQueryOperations> latitudeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'latitude');
     });
   }
 
-  QueryBuilder<Farm, int?, QQueryOperations> longitudeProperty() {
+  QueryBuilder<Farm, String?, QQueryOperations> longitudeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'longitude');
     });
@@ -5917,13 +6096,13 @@ _$_Farm _$$_FarmFromJson(Map<String, dynamic> json) => _$_Farm(
       email: json['Email'] as String?,
       isProspectMember: json['IsProspectMember'] as bool?,
       isGroupSchemeMember: json['IsGroupSchemeMember'] as bool?,
-      latitude: json['Latitude'] as int?,
-      longitude: json['Longitude'] as int?,
+      latitude: json['Latitude'] as String?,
+      longitude: json['Longitude'] as String?,
       streetName: json['StreetName'] as String?,
       streetNumber: json['StreetNumber'] as int?,
       province: json['Province'] as String?,
       town: json['Town'] as String?,
-      farmSize: json['FarmSize'] as int?,
+      farmSize: (json['FarmSize'] as num?)?.toDouble(),
       inclusionDate: json['InclusionDate'] as String?,
       isCommunitiesNeighbouring: json['IsCommunitiesNeighbouring'] as bool?,
       isIndigenousNeighbouring: json['IsIndigenousNeighbouring'] as bool?,

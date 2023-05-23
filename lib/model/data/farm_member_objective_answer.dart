@@ -17,7 +17,7 @@ class FarmMemberObjectiveAnswer with _$FarmMemberObjectiveAnswer {
     @JsonKey(name: 'FarmObjectiveOptionId') int? farmObjectiveOptionId,
     @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'IsActive') bool? isActive,
-    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
+    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
   }) = _FarmMemberObjectiveAnswer;
 
   factory FarmMemberObjectiveAnswer.fromJson(Map<String, dynamic> json) =>

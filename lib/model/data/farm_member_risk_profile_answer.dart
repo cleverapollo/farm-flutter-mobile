@@ -14,10 +14,10 @@ class FarmMemberRiskProfileAnswer with _$FarmMemberRiskProfileAnswer {
     @JsonKey(name: 'FarmMemberRiskProfileAnswerNo')
         String? farmMemberRiskProfileAnswerNo,
     @JsonKey(name: 'RiskProfileQuestionId') int? riskProfileQuestionId,
-    @JsonKey(name: 'Answer') bool? Answer,
+    @JsonKey(name: 'Answer') bool? answer,
     @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'IsActive') bool? isActive,
-    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
+    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
   }) = _FarmMemberRiskProfileAnswer;
 
   factory FarmMemberRiskProfileAnswer.fromJson(Map<String, dynamic> json) =>

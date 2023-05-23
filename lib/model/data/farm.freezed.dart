@@ -51,9 +51,9 @@ mixin _$Farm {
   @JsonKey(name: 'IsGroupSchemeMember')
   bool? get isGroupSchemeMember => throw _privateConstructorUsedError;
   @JsonKey(name: 'Latitude')
-  int? get latitude => throw _privateConstructorUsedError;
+  String? get latitude => throw _privateConstructorUsedError;
   @JsonKey(name: 'Longitude')
-  int? get longitude => throw _privateConstructorUsedError;
+  String? get longitude => throw _privateConstructorUsedError;
   @JsonKey(name: 'StreetName')
   String? get streetName => throw _privateConstructorUsedError;
   @JsonKey(name: 'StreetNumber')
@@ -63,7 +63,7 @@ mixin _$Farm {
   @JsonKey(name: 'Town')
   String? get town => throw _privateConstructorUsedError;
   @JsonKey(name: 'FarmSize')
-  int? get farmSize => throw _privateConstructorUsedError;
+  double? get farmSize => throw _privateConstructorUsedError;
   @JsonKey(name: 'InclusionDate')
   String? get inclusionDate => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsCommunitiesNeighbouring')
@@ -148,9 +148,9 @@ abstract class $FarmCopyWith<$Res> {
       @JsonKey(name: 'IsGroupSchemeMember')
           bool? isGroupSchemeMember,
       @JsonKey(name: 'Latitude')
-          int? latitude,
+          String? latitude,
       @JsonKey(name: 'Longitude')
-          int? longitude,
+          String? longitude,
       @JsonKey(name: 'StreetName')
           String? streetName,
       @JsonKey(name: 'StreetNumber')
@@ -160,7 +160,7 @@ abstract class $FarmCopyWith<$Res> {
       @JsonKey(name: 'Town')
           String? town,
       @JsonKey(name: 'FarmSize')
-          int? farmSize,
+          double? farmSize,
       @JsonKey(name: 'InclusionDate')
           String? inclusionDate,
       @JsonKey(name: 'IsCommunitiesNeighbouring')
@@ -321,11 +321,11 @@ class _$FarmCopyWithImpl<$Res, $Val extends Farm>
       latitude: freezed == latitude
           ? _value.latitude
           : latitude // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       longitude: freezed == longitude
           ? _value.longitude
           : longitude // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       streetName: freezed == streetName
           ? _value.streetName
           : streetName // ignore: cast_nullable_to_non_nullable
@@ -345,7 +345,7 @@ class _$FarmCopyWithImpl<$Res, $Val extends Farm>
       farmSize: freezed == farmSize
           ? _value.farmSize
           : farmSize // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as double?,
       inclusionDate: freezed == inclusionDate
           ? _value.inclusionDate
           : inclusionDate // ignore: cast_nullable_to_non_nullable
@@ -469,9 +469,9 @@ abstract class _$$_FarmCopyWith<$Res> implements $FarmCopyWith<$Res> {
       @JsonKey(name: 'IsGroupSchemeMember')
           bool? isGroupSchemeMember,
       @JsonKey(name: 'Latitude')
-          int? latitude,
+          String? latitude,
       @JsonKey(name: 'Longitude')
-          int? longitude,
+          String? longitude,
       @JsonKey(name: 'StreetName')
           String? streetName,
       @JsonKey(name: 'StreetNumber')
@@ -481,7 +481,7 @@ abstract class _$$_FarmCopyWith<$Res> implements $FarmCopyWith<$Res> {
       @JsonKey(name: 'Town')
           String? town,
       @JsonKey(name: 'FarmSize')
-          int? farmSize,
+          double? farmSize,
       @JsonKey(name: 'InclusionDate')
           String? inclusionDate,
       @JsonKey(name: 'IsCommunitiesNeighbouring')
@@ -638,11 +638,11 @@ class __$$_FarmCopyWithImpl<$Res> extends _$FarmCopyWithImpl<$Res, _$_Farm>
       latitude: freezed == latitude
           ? _value.latitude
           : latitude // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       longitude: freezed == longitude
           ? _value.longitude
           : longitude // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       streetName: freezed == streetName
           ? _value.streetName
           : streetName // ignore: cast_nullable_to_non_nullable
@@ -662,7 +662,7 @@ class __$$_FarmCopyWithImpl<$Res> extends _$FarmCopyWithImpl<$Res, _$_Farm>
       farmSize: freezed == farmSize
           ? _value.farmSize
           : farmSize // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as double?,
       inclusionDate: freezed == inclusionDate
           ? _value.inclusionDate
           : inclusionDate // ignore: cast_nullable_to_non_nullable
@@ -887,10 +887,10 @@ class _$_Farm extends _Farm {
   final bool? isGroupSchemeMember;
   @override
   @JsonKey(name: 'Latitude')
-  final int? latitude;
+  final String? latitude;
   @override
   @JsonKey(name: 'Longitude')
-  final int? longitude;
+  final String? longitude;
   @override
   @JsonKey(name: 'StreetName')
   final String? streetName;
@@ -905,7 +905,7 @@ class _$_Farm extends _Farm {
   final String? town;
   @override
   @JsonKey(name: 'FarmSize')
-  final int? farmSize;
+  final double? farmSize;
   @override
   @JsonKey(name: 'InclusionDate')
   final String? inclusionDate;
@@ -1163,9 +1163,9 @@ abstract class _Farm extends Farm {
       @JsonKey(name: 'IsGroupSchemeMember')
           final bool? isGroupSchemeMember,
       @JsonKey(name: 'Latitude')
-          final int? latitude,
+          final String? latitude,
       @JsonKey(name: 'Longitude')
-          final int? longitude,
+          final String? longitude,
       @JsonKey(name: 'StreetName')
           final String? streetName,
       @JsonKey(name: 'StreetNumber')
@@ -1175,7 +1175,7 @@ abstract class _Farm extends Farm {
       @JsonKey(name: 'Town')
           final String? town,
       @JsonKey(name: 'FarmSize')
-          final int? farmSize,
+          final double? farmSize,
       @JsonKey(name: 'InclusionDate')
           final String? inclusionDate,
       @JsonKey(name: 'IsCommunitiesNeighbouring')
@@ -1265,10 +1265,10 @@ abstract class _Farm extends Farm {
   bool? get isGroupSchemeMember;
   @override
   @JsonKey(name: 'Latitude')
-  int? get latitude;
+  String? get latitude;
   @override
   @JsonKey(name: 'Longitude')
-  int? get longitude;
+  String? get longitude;
   @override
   @JsonKey(name: 'StreetName')
   String? get streetName;
@@ -1283,7 +1283,7 @@ abstract class _Farm extends Farm {
   String? get town;
   @override
   @JsonKey(name: 'FarmSize')
-  int? get farmSize;
+  double? get farmSize;
   @override
   @JsonKey(name: 'InclusionDate')
   String? get inclusionDate;

@@ -34,7 +34,7 @@ mixin _$FarmMemberObjectiveAnswer {
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsMasterdataSynced')
-  bool? get isMasterdataSynced => throw _privateConstructorUsedError;
+  bool? get isMasterDataSynced => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -62,7 +62,7 @@ abstract class $FarmMemberObjectiveAnswerCopyWith<$Res> {
       @JsonKey(name: 'IsActive')
           bool? isActive,
       @JsonKey(name: 'IsMasterdataSynced')
-          bool? isMasterdataSynced});
+          bool? isMasterDataSynced});
 }
 
 /// @nodoc
@@ -85,7 +85,7 @@ class _$FarmMemberObjectiveAnswerCopyWithImpl<$Res,
     Object? farmObjectiveOptionId = freezed,
     Object? farmId = freezed,
     Object? isActive = freezed,
-    Object? isMasterdataSynced = freezed,
+    Object? isMasterDataSynced = freezed,
   }) {
     return _then(_value.copyWith(
       farmMemberObjectiveAnswerId: freezed == farmMemberObjectiveAnswerId
@@ -112,9 +112,9 @@ class _$FarmMemberObjectiveAnswerCopyWithImpl<$Res,
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
               as bool?,
-      isMasterdataSynced: freezed == isMasterdataSynced
-          ? _value.isMasterdataSynced
-          : isMasterdataSynced // ignore: cast_nullable_to_non_nullable
+      isMasterDataSynced: freezed == isMasterDataSynced
+          ? _value.isMasterDataSynced
+          : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
               as bool?,
     ) as $Val);
   }
@@ -143,7 +143,7 @@ abstract class _$$_FarmMemberObjectiveAnswerCopyWith<$Res>
       @JsonKey(name: 'IsActive')
           bool? isActive,
       @JsonKey(name: 'IsMasterdataSynced')
-          bool? isMasterdataSynced});
+          bool? isMasterDataSynced});
 }
 
 /// @nodoc
@@ -165,7 +165,7 @@ class __$$_FarmMemberObjectiveAnswerCopyWithImpl<$Res>
     Object? farmObjectiveOptionId = freezed,
     Object? farmId = freezed,
     Object? isActive = freezed,
-    Object? isMasterdataSynced = freezed,
+    Object? isMasterDataSynced = freezed,
   }) {
     return _then(_$_FarmMemberObjectiveAnswer(
       farmMemberObjectiveAnswerId: freezed == farmMemberObjectiveAnswerId
@@ -192,9 +192,9 @@ class __$$_FarmMemberObjectiveAnswerCopyWithImpl<$Res>
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
               as bool?,
-      isMasterdataSynced: freezed == isMasterdataSynced
-          ? _value.isMasterdataSynced
-          : isMasterdataSynced // ignore: cast_nullable_to_non_nullable
+      isMasterDataSynced: freezed == isMasterDataSynced
+          ? _value.isMasterDataSynced
+          : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
               as bool?,
     ));
   }
@@ -217,7 +217,7 @@ class _$_FarmMemberObjectiveAnswer extends _FarmMemberObjectiveAnswer {
       @JsonKey(name: 'IsActive')
           this.isActive,
       @JsonKey(name: 'IsMasterdataSynced')
-          this.isMasterdataSynced})
+          this.isMasterDataSynced})
       : super._();
 
   factory _$_FarmMemberObjectiveAnswer.fromJson(Map<String, dynamic> json) =>
@@ -243,11 +243,11 @@ class _$_FarmMemberObjectiveAnswer extends _FarmMemberObjectiveAnswer {
   final bool? isActive;
   @override
   @JsonKey(name: 'IsMasterdataSynced')
-  final bool? isMasterdataSynced;
+  final bool? isMasterDataSynced;
 
   @override
   String toString() {
-    return 'FarmMemberObjectiveAnswer(farmMemberObjectiveAnswerId: $farmMemberObjectiveAnswerId, farmMemberObjectiveAnswerNo: $farmMemberObjectiveAnswerNo, farmMemberObjectiveId: $farmMemberObjectiveId, farmObjectiveOptionId: $farmObjectiveOptionId, farmId: $farmId, isActive: $isActive, isMasterdataSynced: $isMasterdataSynced)';
+    return 'FarmMemberObjectiveAnswer(farmMemberObjectiveAnswerId: $farmMemberObjectiveAnswerId, farmMemberObjectiveAnswerNo: $farmMemberObjectiveAnswerNo, farmMemberObjectiveId: $farmMemberObjectiveId, farmObjectiveOptionId: $farmObjectiveOptionId, farmId: $farmId, isActive: $isActive, isMasterDataSynced: $isMasterDataSynced)';
   }
 
   @override
@@ -270,8 +270,8 @@ class _$_FarmMemberObjectiveAnswer extends _FarmMemberObjectiveAnswer {
             (identical(other.farmId, farmId) || other.farmId == farmId) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive) &&
-            (identical(other.isMasterdataSynced, isMasterdataSynced) ||
-                other.isMasterdataSynced == isMasterdataSynced));
+            (identical(other.isMasterDataSynced, isMasterDataSynced) ||
+                other.isMasterDataSynced == isMasterDataSynced));
   }
 
   @JsonKey(ignore: true)
@@ -284,7 +284,7 @@ class _$_FarmMemberObjectiveAnswer extends _FarmMemberObjectiveAnswer {
       farmObjectiveOptionId,
       farmId,
       isActive,
-      isMasterdataSynced);
+      isMasterDataSynced);
 
   @JsonKey(ignore: true)
   @override
@@ -316,7 +316,7 @@ abstract class _FarmMemberObjectiveAnswer extends FarmMemberObjectiveAnswer {
       @JsonKey(name: 'IsActive')
           final bool? isActive,
       @JsonKey(name: 'IsMasterdataSynced')
-          final bool? isMasterdataSynced}) = _$_FarmMemberObjectiveAnswer;
+          final bool? isMasterDataSynced}) = _$_FarmMemberObjectiveAnswer;
   const _FarmMemberObjectiveAnswer._() : super._();
 
   factory _FarmMemberObjectiveAnswer.fromJson(Map<String, dynamic> json) =
@@ -342,7 +342,7 @@ abstract class _FarmMemberObjectiveAnswer extends FarmMemberObjectiveAnswer {
   bool? get isActive;
   @override
   @JsonKey(name: 'IsMasterdataSynced')
-  bool? get isMasterdataSynced;
+  bool? get isMasterDataSynced;
   @override
   @JsonKey(ignore: true)
   _$$_FarmMemberObjectiveAnswerCopyWith<_$_FarmMemberObjectiveAnswer>

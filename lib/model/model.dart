@@ -45,6 +45,8 @@ export 'data/principle.dart';
 export 'data/farm.dart';
 export 'data/indicator.dart';
 export 'data/car.dart';
+export 'data/farm_member_risk_profile_answer.dart';
+export 'data/farm_member_objective_answer.dart';
 export 'data/criteria.dart';
 export 'data/audit_question.dart';
 export 'data/audit_template.dart';

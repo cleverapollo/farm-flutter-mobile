@@ -13,9 +13,9 @@ const FarmMemberRiskProfileAnswerSchema = Schema(
   name: r'FarmMemberRiskProfileAnswer',
   id: -4493405569530205366,
   properties: {
-    r'Answer': PropertySchema(
+    r'answer': PropertySchema(
       id: 0,
-      name: r'Answer',
+      name: r'answer',
       type: IsarType.bool,
     ),
     r'farmId': PropertySchema(
@@ -38,9 +38,9 @@ const FarmMemberRiskProfileAnswerSchema = Schema(
       name: r'isActive',
       type: IsarType.bool,
     ),
-    r'isMasterdataSynced': PropertySchema(
+    r'isMasterDataSynced': PropertySchema(
       id: 5,
-      name: r'isMasterdataSynced',
+      name: r'isMasterDataSynced',
       type: IsarType.bool,
     ),
     r'riskProfileQuestionId': PropertySchema(
@@ -88,12 +88,12 @@ void _farmMemberRiskProfileAnswerSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeBool(offsets[0], object.Answer);
+  writer.writeBool(offsets[0], object.answer);
   writer.writeString(offsets[1], object.farmId);
   writer.writeString(offsets[2], object.farmMemberRiskProfileAnswerId);
   writer.writeString(offsets[3], object.farmMemberRiskProfileAnswerNo);
   writer.writeBool(offsets[4], object.isActive);
-  writer.writeBool(offsets[5], object.isMasterdataSynced);
+  writer.writeBool(offsets[5], object.isMasterDataSynced);
   writer.writeLong(offsets[6], object.riskProfileQuestionId);
 }
 
@@ -104,12 +104,12 @@ FarmMemberRiskProfileAnswer _farmMemberRiskProfileAnswerDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = FarmMemberRiskProfileAnswer(
-    Answer: reader.readBoolOrNull(offsets[0]),
+    answer: reader.readBoolOrNull(offsets[0]),
     farmId: reader.readStringOrNull(offsets[1]),
     farmMemberRiskProfileAnswerId: reader.readStringOrNull(offsets[2]),
     farmMemberRiskProfileAnswerNo: reader.readStringOrNull(offsets[3]),
     isActive: reader.readBoolOrNull(offsets[4]),
-    isMasterdataSynced: reader.readBoolOrNull(offsets[5]),
+    isMasterDataSynced: reader.readBoolOrNull(offsets[5]),
     riskProfileQuestionId: reader.readLongOrNull(offsets[6]),
   );
   return object;
@@ -149,7 +149,7 @@ extension FarmMemberRiskProfileAnswerQueryFilter on QueryBuilder<
       QAfterFilterCondition> answerIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'Answer',
+        property: r'answer',
       ));
     });
   }
@@ -158,7 +158,7 @@ extension FarmMemberRiskProfileAnswerQueryFilter on QueryBuilder<
       QAfterFilterCondition> answerIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'Answer',
+        property: r'answer',
       ));
     });
   }
@@ -167,7 +167,7 @@ extension FarmMemberRiskProfileAnswerQueryFilter on QueryBuilder<
       QAfterFilterCondition> answerEqualTo(bool? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'Answer',
+        property: r'answer',
         value: value,
       ));
     });
@@ -674,28 +674,28 @@ extension FarmMemberRiskProfileAnswerQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<FarmMemberRiskProfileAnswer, FarmMemberRiskProfileAnswer,
-      QAfterFilterCondition> isMasterdataSyncedIsNull() {
+      QAfterFilterCondition> isMasterDataSyncedIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'isMasterdataSynced',
+        property: r'isMasterDataSynced',
       ));
     });
   }
 
   QueryBuilder<FarmMemberRiskProfileAnswer, FarmMemberRiskProfileAnswer,
-      QAfterFilterCondition> isMasterdataSyncedIsNotNull() {
+      QAfterFilterCondition> isMasterDataSyncedIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'isMasterdataSynced',
+        property: r'isMasterDataSynced',
       ));
     });
   }
 
   QueryBuilder<FarmMemberRiskProfileAnswer, FarmMemberRiskProfileAnswer,
-      QAfterFilterCondition> isMasterdataSyncedEqualTo(bool? value) {
+      QAfterFilterCondition> isMasterDataSyncedEqualTo(bool? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isMasterdataSynced',
+        property: r'isMasterDataSynced',
         value: value,
       ));
     });
@@ -793,10 +793,10 @@ _$_FarmMemberRiskProfileAnswer _$$_FarmMemberRiskProfileAnswerFromJson(
       farmMemberRiskProfileAnswerNo:
           json['FarmMemberRiskProfileAnswerNo'] as String?,
       riskProfileQuestionId: json['RiskProfileQuestionId'] as int?,
-      Answer: json['Answer'] as bool?,
+      answer: json['Answer'] as bool?,
       farmId: json['FarmId'] as String?,
       isActive: json['IsActive'] as bool?,
-      isMasterdataSynced: json['IsMasterdataSynced'] as bool?,
+      isMasterDataSynced: json['IsMasterdataSynced'] as bool?,
     );
 
 Map<String, dynamic> _$$_FarmMemberRiskProfileAnswerToJson(
@@ -805,8 +805,8 @@ Map<String, dynamic> _$$_FarmMemberRiskProfileAnswerToJson(
       'FarmMemberRiskProfileAnswerId': instance.farmMemberRiskProfileAnswerId,
       'FarmMemberRiskProfileAnswerNo': instance.farmMemberRiskProfileAnswerNo,
       'RiskProfileQuestionId': instance.riskProfileQuestionId,
-      'Answer': instance.Answer,
+      'Answer': instance.answer,
       'FarmId': instance.farmId,
       'IsActive': instance.isActive,
-      'IsMasterdataSynced': instance.isMasterdataSynced,
+      'IsMasterdataSynced': instance.isMasterDataSynced,
     };

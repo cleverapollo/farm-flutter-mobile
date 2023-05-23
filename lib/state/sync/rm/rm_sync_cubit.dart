@@ -338,7 +338,22 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final farm = Farm.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheFarm(farm);
+
+      final objectiveAnswersJson = bodyJson['ObjectiveAnswers'] as List;
+      final riskProfileAnswersJson = bodyJson['RiskProfileAnswers'] as List;
+
+      final objectiveAnswers = objectiveAnswersJson
+          .map((e) => FarmMemberObjectiveAnswer.fromJson(
+              (e as Map).map((key, value) => MapEntry(key as String, value))))
+          .toList();
+      final riskProfileAnswers = riskProfileAnswersJson
+          .map((e) => FarmMemberRiskProfileAnswer.fromJson(
+              (e as Map).map((key, value) => MapEntry(key as String, value))))
+          .toList();
+
+      return cmoDatabaseMasterService.cacheFarm(farm.copyWith(
+          objectiveAnswers: objectiveAnswers,
+          riskProfileAnswers: riskProfileAnswers));
     } catch (e) {
       logger.d('insert error: $e');
     }

@@ -43,9 +43,9 @@ const FarmMemberObjectiveAnswerSchema = Schema(
       name: r'isActive',
       type: IsarType.bool,
     ),
-    r'isMasterdataSynced': PropertySchema(
+    r'isMasterDataSynced': PropertySchema(
       id: 6,
-      name: r'isMasterdataSynced',
+      name: r'isMasterDataSynced',
       type: IsarType.bool,
     )
   },
@@ -94,7 +94,7 @@ void _farmMemberObjectiveAnswerSerialize(
   writer.writeLong(offsets[3], object.farmMemberObjectiveId);
   writer.writeLong(offsets[4], object.farmObjectiveOptionId);
   writer.writeBool(offsets[5], object.isActive);
-  writer.writeBool(offsets[6], object.isMasterdataSynced);
+  writer.writeBool(offsets[6], object.isMasterDataSynced);
 }
 
 FarmMemberObjectiveAnswer _farmMemberObjectiveAnswerDeserialize(
@@ -110,7 +110,7 @@ FarmMemberObjectiveAnswer _farmMemberObjectiveAnswerDeserialize(
     farmMemberObjectiveId: reader.readLongOrNull(offsets[3]),
     farmObjectiveOptionId: reader.readLongOrNull(offsets[4]),
     isActive: reader.readBoolOrNull(offsets[5]),
-    isMasterdataSynced: reader.readBoolOrNull(offsets[6]),
+    isMasterDataSynced: reader.readBoolOrNull(offsets[6]),
   );
   return object;
 }
@@ -792,28 +792,28 @@ extension FarmMemberObjectiveAnswerQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<FarmMemberObjectiveAnswer, FarmMemberObjectiveAnswer,
-      QAfterFilterCondition> isMasterdataSyncedIsNull() {
+      QAfterFilterCondition> isMasterDataSyncedIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'isMasterdataSynced',
+        property: r'isMasterDataSynced',
       ));
     });
   }
 
   QueryBuilder<FarmMemberObjectiveAnswer, FarmMemberObjectiveAnswer,
-      QAfterFilterCondition> isMasterdataSyncedIsNotNull() {
+      QAfterFilterCondition> isMasterDataSyncedIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'isMasterdataSynced',
+        property: r'isMasterDataSynced',
       ));
     });
   }
 
   QueryBuilder<FarmMemberObjectiveAnswer, FarmMemberObjectiveAnswer,
-      QAfterFilterCondition> isMasterdataSyncedEqualTo(bool? value) {
+      QAfterFilterCondition> isMasterDataSyncedEqualTo(bool? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isMasterdataSynced',
+        property: r'isMasterDataSynced',
         value: value,
       ));
     });
@@ -838,7 +838,7 @@ _$_FarmMemberObjectiveAnswer _$$_FarmMemberObjectiveAnswerFromJson(
       farmObjectiveOptionId: json['FarmObjectiveOptionId'] as int?,
       farmId: json['FarmId'] as String?,
       isActive: json['IsActive'] as bool?,
-      isMasterdataSynced: json['IsMasterdataSynced'] as bool?,
+      isMasterDataSynced: json['IsMasterdataSynced'] as bool?,
     );
 
 Map<String, dynamic> _$$_FarmMemberObjectiveAnswerToJson(
@@ -850,5 +850,5 @@ Map<String, dynamic> _$$_FarmMemberObjectiveAnswerToJson(
       'FarmObjectiveOptionId': instance.farmObjectiveOptionId,
       'FarmId': instance.farmId,
       'IsActive': instance.isActive,
-      'IsMasterdataSynced': instance.isMasterdataSynced,
+      'IsMasterdataSynced': instance.isMasterDataSynced,
     };

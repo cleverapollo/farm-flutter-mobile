@@ -30,13 +30,13 @@ mixin _$FarmMemberRiskProfileAnswer {
   @JsonKey(name: 'RiskProfileQuestionId')
   int? get riskProfileQuestionId => throw _privateConstructorUsedError;
   @JsonKey(name: 'Answer')
-  bool? get Answer => throw _privateConstructorUsedError;
+  bool? get answer => throw _privateConstructorUsedError;
   @JsonKey(name: 'FarmId')
   String? get farmId => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsMasterdataSynced')
-  bool? get isMasterdataSynced => throw _privateConstructorUsedError;
+  bool? get isMasterDataSynced => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -60,13 +60,13 @@ abstract class $FarmMemberRiskProfileAnswerCopyWith<$Res> {
       @JsonKey(name: 'RiskProfileQuestionId')
           int? riskProfileQuestionId,
       @JsonKey(name: 'Answer')
-          bool? Answer,
+          bool? answer,
       @JsonKey(name: 'FarmId')
           String? farmId,
       @JsonKey(name: 'IsActive')
           bool? isActive,
       @JsonKey(name: 'IsMasterdataSynced')
-          bool? isMasterdataSynced});
+          bool? isMasterDataSynced});
 }
 
 /// @nodoc
@@ -86,10 +86,10 @@ class _$FarmMemberRiskProfileAnswerCopyWithImpl<$Res,
     Object? farmMemberRiskProfileAnswerId = freezed,
     Object? farmMemberRiskProfileAnswerNo = freezed,
     Object? riskProfileQuestionId = freezed,
-    Object? Answer = freezed,
+    Object? answer = freezed,
     Object? farmId = freezed,
     Object? isActive = freezed,
-    Object? isMasterdataSynced = freezed,
+    Object? isMasterDataSynced = freezed,
   }) {
     return _then(_value.copyWith(
       farmMemberRiskProfileAnswerId: freezed == farmMemberRiskProfileAnswerId
@@ -104,9 +104,9 @@ class _$FarmMemberRiskProfileAnswerCopyWithImpl<$Res,
           ? _value.riskProfileQuestionId
           : riskProfileQuestionId // ignore: cast_nullable_to_non_nullable
               as int?,
-      Answer: freezed == Answer
-          ? _value.Answer
-          : Answer // ignore: cast_nullable_to_non_nullable
+      answer: freezed == answer
+          ? _value.answer
+          : answer // ignore: cast_nullable_to_non_nullable
               as bool?,
       farmId: freezed == farmId
           ? _value.farmId
@@ -116,9 +116,9 @@ class _$FarmMemberRiskProfileAnswerCopyWithImpl<$Res,
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
               as bool?,
-      isMasterdataSynced: freezed == isMasterdataSynced
-          ? _value.isMasterdataSynced
-          : isMasterdataSynced // ignore: cast_nullable_to_non_nullable
+      isMasterDataSynced: freezed == isMasterDataSynced
+          ? _value.isMasterDataSynced
+          : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
               as bool?,
     ) as $Val);
   }
@@ -141,13 +141,13 @@ abstract class _$$_FarmMemberRiskProfileAnswerCopyWith<$Res>
       @JsonKey(name: 'RiskProfileQuestionId')
           int? riskProfileQuestionId,
       @JsonKey(name: 'Answer')
-          bool? Answer,
+          bool? answer,
       @JsonKey(name: 'FarmId')
           String? farmId,
       @JsonKey(name: 'IsActive')
           bool? isActive,
       @JsonKey(name: 'IsMasterdataSynced')
-          bool? isMasterdataSynced});
+          bool? isMasterDataSynced});
 }
 
 /// @nodoc
@@ -166,10 +166,10 @@ class __$$_FarmMemberRiskProfileAnswerCopyWithImpl<$Res>
     Object? farmMemberRiskProfileAnswerId = freezed,
     Object? farmMemberRiskProfileAnswerNo = freezed,
     Object? riskProfileQuestionId = freezed,
-    Object? Answer = freezed,
+    Object? answer = freezed,
     Object? farmId = freezed,
     Object? isActive = freezed,
-    Object? isMasterdataSynced = freezed,
+    Object? isMasterDataSynced = freezed,
   }) {
     return _then(_$_FarmMemberRiskProfileAnswer(
       farmMemberRiskProfileAnswerId: freezed == farmMemberRiskProfileAnswerId
@@ -184,9 +184,9 @@ class __$$_FarmMemberRiskProfileAnswerCopyWithImpl<$Res>
           ? _value.riskProfileQuestionId
           : riskProfileQuestionId // ignore: cast_nullable_to_non_nullable
               as int?,
-      Answer: freezed == Answer
-          ? _value.Answer
-          : Answer // ignore: cast_nullable_to_non_nullable
+      answer: freezed == answer
+          ? _value.answer
+          : answer // ignore: cast_nullable_to_non_nullable
               as bool?,
       farmId: freezed == farmId
           ? _value.farmId
@@ -196,9 +196,9 @@ class __$$_FarmMemberRiskProfileAnswerCopyWithImpl<$Res>
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
               as bool?,
-      isMasterdataSynced: freezed == isMasterdataSynced
-          ? _value.isMasterdataSynced
-          : isMasterdataSynced // ignore: cast_nullable_to_non_nullable
+      isMasterDataSynced: freezed == isMasterDataSynced
+          ? _value.isMasterDataSynced
+          : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
               as bool?,
     ));
   }
@@ -215,13 +215,13 @@ class _$_FarmMemberRiskProfileAnswer extends _FarmMemberRiskProfileAnswer {
       @JsonKey(name: 'RiskProfileQuestionId')
           this.riskProfileQuestionId,
       @JsonKey(name: 'Answer')
-          this.Answer,
+          this.answer,
       @JsonKey(name: 'FarmId')
           this.farmId,
       @JsonKey(name: 'IsActive')
           this.isActive,
       @JsonKey(name: 'IsMasterdataSynced')
-          this.isMasterdataSynced})
+          this.isMasterDataSynced})
       : super._();
 
   factory _$_FarmMemberRiskProfileAnswer.fromJson(Map<String, dynamic> json) =>
@@ -238,7 +238,7 @@ class _$_FarmMemberRiskProfileAnswer extends _FarmMemberRiskProfileAnswer {
   final int? riskProfileQuestionId;
   @override
   @JsonKey(name: 'Answer')
-  final bool? Answer;
+  final bool? answer;
   @override
   @JsonKey(name: 'FarmId')
   final String? farmId;
@@ -247,11 +247,11 @@ class _$_FarmMemberRiskProfileAnswer extends _FarmMemberRiskProfileAnswer {
   final bool? isActive;
   @override
   @JsonKey(name: 'IsMasterdataSynced')
-  final bool? isMasterdataSynced;
+  final bool? isMasterDataSynced;
 
   @override
   String toString() {
-    return 'FarmMemberRiskProfileAnswer(farmMemberRiskProfileAnswerId: $farmMemberRiskProfileAnswerId, farmMemberRiskProfileAnswerNo: $farmMemberRiskProfileAnswerNo, riskProfileQuestionId: $riskProfileQuestionId, Answer: $Answer, farmId: $farmId, isActive: $isActive, isMasterdataSynced: $isMasterdataSynced)';
+    return 'FarmMemberRiskProfileAnswer(farmMemberRiskProfileAnswerId: $farmMemberRiskProfileAnswerId, farmMemberRiskProfileAnswerNo: $farmMemberRiskProfileAnswerNo, riskProfileQuestionId: $riskProfileQuestionId, answer: $answer, farmId: $farmId, isActive: $isActive, isMasterDataSynced: $isMasterDataSynced)';
   }
 
   @override
@@ -269,12 +269,12 @@ class _$_FarmMemberRiskProfileAnswer extends _FarmMemberRiskProfileAnswer {
                     farmMemberRiskProfileAnswerNo) &&
             (identical(other.riskProfileQuestionId, riskProfileQuestionId) ||
                 other.riskProfileQuestionId == riskProfileQuestionId) &&
-            (identical(other.Answer, Answer) || other.Answer == Answer) &&
+            (identical(other.answer, answer) || other.answer == answer) &&
             (identical(other.farmId, farmId) || other.farmId == farmId) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive) &&
-            (identical(other.isMasterdataSynced, isMasterdataSynced) ||
-                other.isMasterdataSynced == isMasterdataSynced));
+            (identical(other.isMasterDataSynced, isMasterDataSynced) ||
+                other.isMasterDataSynced == isMasterDataSynced));
   }
 
   @JsonKey(ignore: true)
@@ -284,10 +284,10 @@ class _$_FarmMemberRiskProfileAnswer extends _FarmMemberRiskProfileAnswer {
       farmMemberRiskProfileAnswerId,
       farmMemberRiskProfileAnswerNo,
       riskProfileQuestionId,
-      Answer,
+      answer,
       farmId,
       isActive,
-      isMasterdataSynced);
+      isMasterDataSynced);
 
   @JsonKey(ignore: true)
   @override
@@ -314,13 +314,13 @@ abstract class _FarmMemberRiskProfileAnswer
       @JsonKey(name: 'RiskProfileQuestionId')
           final int? riskProfileQuestionId,
       @JsonKey(name: 'Answer')
-          final bool? Answer,
+          final bool? answer,
       @JsonKey(name: 'FarmId')
           final String? farmId,
       @JsonKey(name: 'IsActive')
           final bool? isActive,
       @JsonKey(name: 'IsMasterdataSynced')
-          final bool? isMasterdataSynced}) = _$_FarmMemberRiskProfileAnswer;
+          final bool? isMasterDataSynced}) = _$_FarmMemberRiskProfileAnswer;
   const _FarmMemberRiskProfileAnswer._() : super._();
 
   factory _FarmMemberRiskProfileAnswer.fromJson(Map<String, dynamic> json) =
@@ -337,7 +337,7 @@ abstract class _FarmMemberRiskProfileAnswer
   int? get riskProfileQuestionId;
   @override
   @JsonKey(name: 'Answer')
-  bool? get Answer;
+  bool? get answer;
   @override
   @JsonKey(name: 'FarmId')
   String? get farmId;
@@ -346,7 +346,7 @@ abstract class _FarmMemberRiskProfileAnswer
   bool? get isActive;
   @override
   @JsonKey(name: 'IsMasterdataSynced')
-  bool? get isMasterdataSynced;
+  bool? get isMasterDataSynced;
   @override
   @JsonKey(ignore: true)
   _$$_FarmMemberRiskProfileAnswerCopyWith<_$_FarmMemberRiskProfileAnswer>
