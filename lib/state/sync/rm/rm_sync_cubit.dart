@@ -50,7 +50,8 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       );
       logger.d('--createUserDevice done: ${res!.userDeviceId}');
       userDeviceId = res.userDeviceId!;
-      userId = res.userId!;
+      // TODO(DONG): set user id
+      // userId = res.userId!;
       // end
 
       logger.d('--RM Sync Data start');

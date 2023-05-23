@@ -6,7 +6,10 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/data/audit_question_comment.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
+import 'package:cmo/model/farm_property_ownner_ship_type/farm_property_owner_ship_type.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/model/user/user_role.dart';
+import 'package:cmo/model/user_role_portal.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
 
@@ -84,6 +87,10 @@ class CmoDatabaseMasterService {
         StakeHolderTypeSchema,
         AuditTemplateSchema,
         FarmSchema,
+        UserRolePortalSchema,
+        UserRoleSchema,
+        UserDeviceSchema,
+        FarmPropertyOwnerShipTypeSchema
       ],
       name: _databaseName,
     );
