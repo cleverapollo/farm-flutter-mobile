@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_map_screen.dart';
@@ -18,12 +20,24 @@ class CompartmentItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CmoTappable(
       onTap: () {
-        final points = model.locations
-                ?.map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0)).toList();
+        // final points = model.locations
+        //         ?.map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0)).toList();
+        // if (points == null) {
+        //   return;
+        // }
+        if (model.jsonLocations == null) {
+          return;
+        }
+        var jsonArray = json.decode(model.jsonLocations!) as List?;
+        var points = List<GeoLocation>.from(jsonArray!.map(
+            (model) => GeoLocation.fromJson(model as Map<String, dynamic>)));
         if (points == null) {
           return;
         }
-        CompartmentMapScreen.push(context, points: points);
+        CompartmentMapScreen.push(context,
+            points: points
+                .map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0))
+                .toList());
       },
       child: CmoCard(
         containerGradient: const LinearGradient(

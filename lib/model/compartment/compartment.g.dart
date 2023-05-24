@@ -7,7 +7,7 @@ part of 'compartment.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetCompartmentCollection on Isar {
   IsarCollection<Compartment> get compartments => this.collection();
@@ -42,11 +42,10 @@ const CompartmentSchema = CollectionSchema(
       name: r'isActive',
       type: IsarType.bool,
     ),
-    r'locations': PropertySchema(
+    r'jsonLocations': PropertySchema(
       id: 5,
-      name: r'locations',
-      type: IsarType.objectList,
-      target: r'GeoLocation',
+      name: r'jsonLocations',
+      type: IsarType.string,
     ),
     r'mai': PropertySchema(
       id: 6,
@@ -111,11 +110,11 @@ const CompartmentSchema = CollectionSchema(
   idName: r'id',
   indexes: {},
   links: {},
-  embeddedSchemas: {r'GeoLocation': GeoLocationSchema},
+  embeddedSchemas: {},
   getId: _compartmentGetId,
   getLinks: _compartmentGetLinks,
   attach: _compartmentAttach,
-  version: '3.1.0',
+  version: '3.0.5',
 );
 
 int _compartmentEstimateSize(
@@ -137,17 +136,9 @@ int _compartmentEstimateSize(
     }
   }
   {
-    final list = object.locations;
-    if (list != null) {
-      bytesCount += 3 + list.length * 3;
-      {
-        final offsets = allOffsets[GeoLocation]!;
-        for (var i = 0; i < list.length; i++) {
-          final value = list[i];
-          bytesCount +=
-              GeoLocationSchema.estimateSize(value, offsets, allOffsets);
-        }
-      }
+    final value = object.jsonLocations;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
     }
   }
   {
@@ -200,12 +191,7 @@ void _compartmentSerialize(
   writer.writeDouble(offsets[2], object.effectiveArea);
   writer.writeString(offsets[3], object.espacement);
   writer.writeBool(offsets[4], object.isActive);
-  writer.writeObjectList<GeoLocation>(
-    offsets[5],
-    allOffsets,
-    GeoLocationSchema.serialize,
-    object.locations,
-  );
+  writer.writeString(offsets[5], object.jsonLocations);
   writer.writeString(offsets[6], object.mai);
   writer.writeString(offsets[7], object.plannedPlantDate);
   writer.writeDouble(offsets[8], object.polygonArea);
@@ -231,12 +217,7 @@ Compartment _compartmentDeserialize(
     effectiveArea: reader.readDoubleOrNull(offsets[2]),
     espacement: reader.readStringOrNull(offsets[3]),
     isActive: reader.readBoolOrNull(offsets[4]),
-    locations: reader.readObjectList<GeoLocation>(
-      offsets[5],
-      GeoLocationSchema.deserialize,
-      allOffsets,
-      GeoLocation(),
-    ),
+    jsonLocations: reader.readStringOrNull(offsets[5]),
     mai: reader.readStringOrNull(offsets[6]),
     plannedPlantDate: reader.readStringOrNull(offsets[7]),
     polygonArea: reader.readDoubleOrNull(offsets[8]),
@@ -270,12 +251,7 @@ P _compartmentDeserializeProp<P>(
     case 4:
       return (reader.readBoolOrNull(offset)) as P;
     case 5:
-      return (reader.readObjectList<GeoLocation>(
-        offset,
-        GeoLocationSchema.deserialize,
-        allOffsets,
-        GeoLocation(),
-      )) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
@@ -942,109 +918,156 @@ extension CompartmentQueryFilter
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      locationsIsNull() {
+      jsonLocationsIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'locations',
+        property: r'jsonLocations',
       ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      locationsIsNotNull() {
+      jsonLocationsIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'locations',
+        property: r'jsonLocations',
       ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      locationsLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'locations',
-        length,
-        true,
-        length,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      locationsIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'locations',
-        0,
-        true,
-        0,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      locationsIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'locations',
-        0,
-        false,
-        999999,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      locationsLengthLessThan(
-    int length, {
-    bool include = false,
+      jsonLocationsEqualTo(
+    String? value, {
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'locations',
-        0,
-        true,
-        length,
-        include,
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'jsonLocations',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      locationsLengthGreaterThan(
-    int length, {
+      jsonLocationsGreaterThan(
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'locations',
-        length,
-        include,
-        999999,
-        true,
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'jsonLocations',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      locationsLengthBetween(
-    int lower,
-    int upper, {
+      jsonLocationsLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'jsonLocations',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      jsonLocationsBetween(
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'locations',
-        lower,
-        includeLower,
-        upper,
-        includeUpper,
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'jsonLocations',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      jsonLocationsStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'jsonLocations',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      jsonLocationsEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'jsonLocations',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      jsonLocationsContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'jsonLocations',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      jsonLocationsMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'jsonLocations',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      jsonLocationsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'jsonLocations',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
+      jsonLocationsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'jsonLocations',
+        value: '',
+      ));
     });
   }
 
@@ -2360,14 +2383,7 @@ extension CompartmentQueryFilter
 }
 
 extension CompartmentQueryObject
-    on QueryBuilder<Compartment, Compartment, QFilterCondition> {
-  QueryBuilder<Compartment, Compartment, QAfterFilterCondition>
-      locationsElement(FilterQuery<GeoLocation> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.object(q, r'locations');
-    });
-  }
-}
+    on QueryBuilder<Compartment, Compartment, QFilterCondition> {}
 
 extension CompartmentQueryLinks
     on QueryBuilder<Compartment, Compartment, QFilterCondition> {}
@@ -2434,6 +2450,19 @@ extension CompartmentQuerySortBy
   QueryBuilder<Compartment, Compartment, QAfterSortBy> sortByIsActiveDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isActive', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterSortBy> sortByJsonLocations() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'jsonLocations', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterSortBy>
+      sortByJsonLocationsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'jsonLocations', Sort.desc);
     });
   }
 
@@ -2659,6 +2688,19 @@ extension CompartmentQuerySortThenBy
     });
   }
 
+  QueryBuilder<Compartment, Compartment, QAfterSortBy> thenByJsonLocations() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'jsonLocations', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Compartment, Compartment, QAfterSortBy>
+      thenByJsonLocationsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'jsonLocations', Sort.desc);
+    });
+  }
+
   QueryBuilder<Compartment, Compartment, QAfterSortBy> thenByMai() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'mai', Sort.asc);
@@ -2839,6 +2881,14 @@ extension CompartmentQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Compartment, Compartment, QDistinct> distinctByJsonLocations(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'jsonLocations',
+          caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Compartment, Compartment, QDistinct> distinctByMai(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2956,10 +3006,9 @@ extension CompartmentQueryProperty
     });
   }
 
-  QueryBuilder<Compartment, List<GeoLocation>?, QQueryOperations>
-      locationsProperty() {
+  QueryBuilder<Compartment, String?, QQueryOperations> jsonLocationsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'locations');
+      return query.addPropertyName(r'jsonLocations');
     });
   }
 
@@ -3036,249 +3085,59 @@ extension CompartmentQueryProperty
 }
 
 // **************************************************************************
-// IsarEmbeddedGenerator
+// JsonSerializableGenerator
 // **************************************************************************
 
-// coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+_$_Compartment _$$_CompartmentFromJson(Map<String, dynamic> json) =>
+    _$_Compartment(
+      compartmentId: json['CompartmentId'] as int?,
+      compartmentName: json['CompartmentName'] as String?,
+      productGroupId: json['ProductGroupId'] as int?,
+      productGroupName: json['ProductGroupName'] as String?,
+      speciesGroupId: json['SpeciesGroupId'] as int?,
+      speciesGroupName: json['SpeciesGroupName'] as String?,
+      polygonArea: (json['PolygonArea'] as num?)?.toDouble(),
+      unit: json['Unit'] as String?,
+      effectiveArea: (json['EffectiveArea'] as num?)?.toDouble(),
+      espacement: json['Espacement'] as String?,
+      plannedPlantDate: json['PlannedPlantDate'] as String?,
+      survivalPercentage: (json['SurvivalPercentage'] as num?)?.toDouble(),
+      stockingPercentage: (json['StockingPercentage'] as num?)?.toDouble(),
+      rotation: json['Rotation'] as String?,
+      mai: json['MAI'] as String?,
+      jsonLocations: json['Locations'] as String?,
+      isActive: json['IsActive'] as bool?,
+    );
 
-const GeoLocationSchema = Schema(
-  name: r'GeoLocation',
-  id: 4422903911306842414,
-  properties: {
-    r'latitude': PropertySchema(
-      id: 0,
-      name: r'latitude',
-      type: IsarType.double,
-    ),
-    r'longitude': PropertySchema(
-      id: 1,
-      name: r'longitude',
-      type: IsarType.double,
-    )
-  },
-  estimateSize: _geoLocationEstimateSize,
-  serialize: _geoLocationSerialize,
-  deserialize: _geoLocationDeserialize,
-  deserializeProp: _geoLocationDeserializeProp,
-);
+Map<String, dynamic> _$$_CompartmentToJson(_$_Compartment instance) =>
+    <String, dynamic>{
+      'CompartmentId': instance.compartmentId,
+      'CompartmentName': instance.compartmentName,
+      'ProductGroupId': instance.productGroupId,
+      'ProductGroupName': instance.productGroupName,
+      'SpeciesGroupId': instance.speciesGroupId,
+      'SpeciesGroupName': instance.speciesGroupName,
+      'PolygonArea': instance.polygonArea,
+      'Unit': instance.unit,
+      'EffectiveArea': instance.effectiveArea,
+      'Espacement': instance.espacement,
+      'PlannedPlantDate': instance.plannedPlantDate,
+      'SurvivalPercentage': instance.survivalPercentage,
+      'StockingPercentage': instance.stockingPercentage,
+      'Rotation': instance.rotation,
+      'MAI': instance.mai,
+      'Locations': instance.jsonLocations,
+      'IsActive': instance.isActive,
+    };
 
-int _geoLocationEstimateSize(
-  GeoLocation object,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  var bytesCount = offsets.last;
-  return bytesCount;
-}
+_$_GeoLocation _$$_GeoLocationFromJson(Map<String, dynamic> json) =>
+    _$_GeoLocation(
+      latitude: (json['Latitude'] as num?)?.toDouble(),
+      longitude: (json['Longitude'] as num?)?.toDouble(),
+    );
 
-void _geoLocationSerialize(
-  GeoLocation object,
-  IsarWriter writer,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  writer.writeDouble(offsets[0], object.latitude);
-  writer.writeDouble(offsets[1], object.longitude);
-}
-
-GeoLocation _geoLocationDeserialize(
-  Id id,
-  IsarReader reader,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  final object = GeoLocation(
-    latitude: reader.readDoubleOrNull(offsets[0]),
-    longitude: reader.readDoubleOrNull(offsets[1]),
-  );
-  return object;
-}
-
-P _geoLocationDeserializeProp<P>(
-  IsarReader reader,
-  int propertyId,
-  int offset,
-  Map<Type, List<int>> allOffsets,
-) {
-  switch (propertyId) {
-    case 0:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 1:
-      return (reader.readDoubleOrNull(offset)) as P;
-    default:
-      throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-extension GeoLocationQueryFilter
-    on QueryBuilder<GeoLocation, GeoLocation, QFilterCondition> {
-  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
-      latitudeIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'latitude',
-      ));
-    });
-  }
-
-  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
-      latitudeIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'latitude',
-      ));
-    });
-  }
-
-  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition> latitudeEqualTo(
-    double? value, {
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'latitude',
-        value: value,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
-      latitudeGreaterThan(
-    double? value, {
-    bool include = false,
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'latitude',
-        value: value,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
-      latitudeLessThan(
-    double? value, {
-    bool include = false,
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'latitude',
-        value: value,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition> latitudeBetween(
-    double? lower,
-    double? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'latitude',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
-      longitudeIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'longitude',
-      ));
-    });
-  }
-
-  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
-      longitudeIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'longitude',
-      ));
-    });
-  }
-
-  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
-      longitudeEqualTo(
-    double? value, {
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'longitude',
-        value: value,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
-      longitudeGreaterThan(
-    double? value, {
-    bool include = false,
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'longitude',
-        value: value,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
-      longitudeLessThan(
-    double? value, {
-    bool include = false,
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'longitude',
-        value: value,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<GeoLocation, GeoLocation, QAfterFilterCondition>
-      longitudeBetween(
-    double? lower,
-    double? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'longitude',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        epsilon: epsilon,
-      ));
-    });
-  }
-}
-
-extension GeoLocationQueryObject
-    on QueryBuilder<GeoLocation, GeoLocation, QFilterCondition> {}
+Map<String, dynamic> _$$_GeoLocationToJson(_$_GeoLocation instance) =>
+    <String, dynamic>{
+      'Latitude': instance.latitude,
+      'Longitude': instance.longitude,
+    };
