@@ -2,44 +2,47 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_stake_holder/job_description/farmer_stake_holder_select_job_description.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_stake_holder/widgets/farmer_select_gender_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_stake_holder/widgets/farmer_stake_holder_upload_avatar.dart';
+import 'package:cmo/state/labour_management/labour_management_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_worker/widgets/farmer_add_worker_upload_avatar.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_worker/widgets/farmer_select_gender_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class FarmerAddStakeHolderScreen extends StatefulWidget {
-  const FarmerAddStakeHolderScreen({super.key});
+import 'job_description/farmer_add_worker_select_job_description.dart';
+
+class FarmerAddWorkerScreen extends StatefulWidget {
+  const FarmerAddWorkerScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _FarmerAddStakeHolderScreenState();
+  State<StatefulWidget> createState() => _FarmerAddWorkerScreenState();
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const FarmerAddStakeHolderScreen(),
+        builder: (_) => const FarmerAddWorkerScreen(),
       ),
     );
   }
 }
 
-class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen> {
+class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
-  late FarmerStakeHolder stakeHolder;
+  late FarmerWorker farmerWorker;
 
   @override
   void initState() {
     super.initState();
-    stakeHolder = FarmerStakeHolder();
+    farmerWorker = FarmerWorker();
   }
 
   Future<void> onSubmit() async {
@@ -56,7 +59,7 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
       });
       try {
         await hideInputMethod();
-        stakeHolder = stakeHolder.copyWith(
+        farmerWorker = farmerWorker.copyWith(
           dateOfBirth: value['DateOfBirth'].toString(),
         );
 
@@ -66,16 +69,17 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
           final databaseService = cmoDatabaseMasterService;
 
           await (await databaseService.db).writeTxn(() async {
-            resultId = await databaseService.cacheFarmerStakeHolder(stakeHolder);
+            resultId = await databaseService.cacheFarmerWorker(farmerWorker);
           });
         }
 
         if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
-              msg: '${LocaleKeys.addStakeholders.tr()} $resultId',
+              msg: '${LocaleKeys.createWorker.tr()} $resultId',
             );
 
+            await context.read<LabourManagementCubit>().loadListWorkers();
             Navigator.of(context).pop();
           }
         }
@@ -106,9 +110,9 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
             children: [
               FarmerStakeHolderUploadAvatar(
                 onSelectAvatar: (photoPath) {
-                  stakeHolder = stakeHolder.copyWith(
-                    avatarFilePath: photoPath,
-                    avatarFileName: DateTime.now().toString(),
+                  farmerWorker = farmerWorker.copyWith(
+                    photo: photoPath,
+                    // avatarFileName: DateTime.now().toString(),
                   );
                 },
               ),
@@ -146,7 +150,7 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
                   hintText: LocaleKeys.firstName.tr(),
                   hintTextStyle: context.textStyles.bodyBold.black,
                   onChanged: (value) {
-                    stakeHolder = stakeHolder.copyWith(firstName: value);
+                    farmerWorker = farmerWorker.copyWith(firstName: value);
                   },
                 ),
               ),
@@ -155,7 +159,7 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
                   hintText: LocaleKeys.lastName.tr(),
                   hintTextStyle: context.textStyles.bodyBold.black,
                   onChanged: (value) {
-                    stakeHolder = stakeHolder.copyWith(lastName: value);
+                    farmerWorker = farmerWorker.copyWith(lastName: value);
                   },
                 ),
               ),
@@ -170,7 +174,7 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
                         keyboardType: TextInputType.number,
                         hintTextStyle: context.textStyles.bodyBold.black,
                         onChanged: (value) {
-                          stakeHolder = stakeHolder.copyWith(idNumber: int.tryParse(value));
+                          farmerWorker = farmerWorker.copyWith(idNumber: int.tryParse(value));
                         },
                       ),
                     ),
@@ -187,7 +191,7 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
                   keyboardType: TextInputType.number,
                   hintTextStyle: context.textStyles.bodyBold.black,
                   onChanged: (value) {
-                    stakeHolder = stakeHolder.copyWith(phoneNumber: value);
+                    farmerWorker = farmerWorker.copyWith(phoneNumber: value);
                   },
                 ),
               ),
@@ -196,7 +200,7 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
                   hintText: LocaleKeys.nationality.tr(),
                   hintTextStyle: context.textStyles.bodyBold.black,
                   onChanged: (value) {
-                    stakeHolder = stakeHolder.copyWith(nationality: value);
+                    farmerWorker = farmerWorker.copyWith(nationality: value);
                   },
                 ),
               ),
@@ -204,7 +208,7 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: FarmerSelectGenderWidget(
                   onTap: (id) {
-                    stakeHolder = stakeHolder.copyWith(gender: id);
+                    farmerWorker = farmerWorker.copyWith(gender: id);
                   },
                 ),
               ),
@@ -242,9 +246,9 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
   Widget _buildJobDescription() {
     return InkWell(
       onTap: () {
-        FarmerStakeHolderSelectJobDescription.push(context, stakeHolder.jobDescription, (listJobsDesc) {
+        FarmerStakeHolderSelectJobDescription.push(context, farmerWorker.jobDescription, (listJobsDesc) {
           setState(() {
-            stakeHolder = stakeHolder.copyWith(jobDescription: listJobsDesc);
+            farmerWorker = farmerWorker.copyWith(jobDescription: listJobsDesc);
           });
         });
       },
@@ -266,7 +270,7 @@ class _FarmerAddStakeHolderScreenState extends State<FarmerAddStakeHolderScreen>
                 ),
               ),
               Text(
-                stakeHolder.jobDescription?.length.toString() ?? '',
+                farmerWorker.jobDescription?.length.toString() ?? '',
                 style: context.textStyles.bodyBold.black,
               ),
               Assets.icons.icArrowRight.svgBlack,

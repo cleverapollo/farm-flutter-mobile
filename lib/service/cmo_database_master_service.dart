@@ -3,7 +3,6 @@
 import 'dart:io';
 
 import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/model/data/audit_question_comment.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/farm_property_ownner_ship_type/farm_property_owner_ship_type.dart';
@@ -67,7 +66,7 @@ class CmoDatabaseMasterService {
         StakeHolderSchema,
         AnnualProductionSchema,
         AnnualProductionBudgetSchema,
-        FarmerStakeHolderSchema,
+        FarmerWorkerSchema,
         FarmerStakeHolderComplaintSchema,
         BiologicalControlAgentSchema,
         EmployeeGrievanceSchema,
@@ -649,9 +648,9 @@ class CmoDatabaseMasterService {
     return db.annualProductions.put(item);
   }
 
-  Future<int> cacheFarmerStakeHolder(FarmerStakeHolder item) async {
+  Future<int> cacheFarmerWorker(FarmerWorker item) async {
     final db = await _db();
-    return db.farmerStakeHolders.put(item);
+    return db.farmerWorkers.put(item);
   }
 
   Future<int> cacheFarmerStakeHolderComplaint(FarmerStakeHolderComplaint item) async {
@@ -708,6 +707,16 @@ class CmoDatabaseMasterService {
   Future<List<StakeHolderType>> getStakeHolderTypes() async {
     final db = await _db();
     return db.stakeHolderTypes.filter().isActiveEqualTo(1).findAll();
+  }
+
+  Future<List<FarmerWorker>> getFarmerWorkersByFarmId(int farmId) async {
+    final db = await _db();
+    return db.farmerWorkers
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .sortByFirstName()
+        .findAll();
   }
 
   Future<List<Worker>> getWorkersByCompanyId(int companyId) async {

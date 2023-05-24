@@ -7,21 +7,6 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'labour_management_state.dart';
 
-List<FarmerWorker> _mockData = [
-  FarmerWorker(
-    jobTitle: 'Manager',
-    firstName: 'Leon Chetty',
-  ),
-  FarmerWorker(
-    jobTitle: 'Supervisor',
-    firstName: 'Joe Soap ',
-  ),
-  FarmerWorker(
-    jobTitle: 'Supervisor',
-    firstName: 'Leon Chetty',
-  ),
-];
-
 class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
   LabourManagementCubit() : super(const LabourManagementState());
 
@@ -29,8 +14,16 @@ class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
     emit(state.copyWith(loading: true));
     try {
       final service = cmoDatabaseMasterService;
+
+      /// Replace farmID here
       final data = await service.getFarmerWorkersByFarmId(1553253093156);
-      emit(state.copyWith(listWorkers: data));
+
+      emit(
+        state.copyWith(
+          listWorkers: data,
+          filterWorkers: data,
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(error: e));
       showSnackError(msg: e.toString());

@@ -4,7 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/labour_management/labour_management_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_stake_holder/farmer_add_stake_holder_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_worker/farmer_add_worker_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/widgets/labour_management_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +32,9 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() {
+      context.read<LabourManagementCubit>().loadListWorkers();
+    });
   }
 
   @override
@@ -44,7 +47,7 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => FarmerAddStakeHolderScreen.push(context),
+        onTapTrailing: () => FarmerAddWorkerScreen.push(context),
       ),
       body: Column(
         children: [
@@ -64,8 +67,7 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
             ),
           ),
           Expanded(
-            child: BlocSelector<LabourManagementCubit, LabourManagementState,
-                List<FarmerWorker>>(
+            child: BlocSelector<LabourManagementCubit, LabourManagementState, List<FarmerWorker>>(
               selector: (state) {
                 return state.filterWorkers;
               },
