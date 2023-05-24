@@ -13,12 +13,22 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
 
   Future<void> initialize() async {
     try {
+      await getTotalWorkers();
       final service = cmoDatabaseMasterService;
       final totalStakeholders = await service.getStakeHolders();
       emit(state.copyWith(totalStakeholders: totalStakeholders.length));
     } catch (error) {
       handleError(error);
     }
+  }
+
+  Future<void> getTotalWorkers() async {
+    final service = cmoDatabaseMasterService;
+
+    /// Replace farmID here
+    final totalWorkers = await service.getFarmerWorkersByFarmId(1553253093156);
+
+    emit(state.copyWith(totalWorkers: totalWorkers.length));
   }
 
   Future<void> refresh() async {
