@@ -32,11 +32,23 @@ class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
     }
   }
 
-  Future<void> removeAudit(Audit item) async {
-    await cmoDatabaseMasterService.removeAudit(item.auditId!);
-    showSnackSuccess(
-      msg: '${LocaleKeys.removeAudit.tr()} ${item.auditId}!',
-    );
+  Future<void> loadListJobDescriptions() async {
+    emit(state.copyWith(loading: true));
+    try {
+      final service = cmoDatabaseMasterService;
+      final data = await service.getJobDescriptions();
+      emit(
+        state.copyWith(
+          listJobDescriptions: data,
+          filterJobDescriptions: data,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(error: e));
+      showSnackError(msg: e.toString());
+    } finally {
+      emit(state.copyWith(loading: false));
+    }
   }
 
   void searching(String? searchText) {
@@ -66,6 +78,40 @@ class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
         emit(
           state.copyWith(
             filterWorkers: filteredItems,
+          ),
+        );
+      }
+    } catch (e) {
+      emit(state.copyWith(error: e));
+      showSnackError(msg: e.toString());
+    } finally {
+      emit(state.copyWith(loading: false));
+    }
+  }
+
+  void searchJobDescription(String? searchText) {
+    emit(state.copyWith(loading: true));
+    try {
+      if (searchText == null || searchText.isEmpty) {
+        emit(
+          state.copyWith(
+            filterJobDescriptions: state.listJobDescriptions,
+          ),
+        );
+      } else {
+        final filteredItems = state.listJobDescriptions
+            .where(
+              (element) =>
+                  element.jobDescriptionName
+                      ?.toLowerCase()
+                      .contains(searchText.toLowerCase()) ??
+                  false,
+            )
+            .toList();
+
+        emit(
+          state.copyWith(
+            filterJobDescriptions: filteredItems,
           ),
         );
       }

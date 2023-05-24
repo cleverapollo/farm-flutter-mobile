@@ -2,35 +2,26 @@ import 'dart:async';
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/data/job_description.dart';
+import 'package:cmo/state/labour_management/labour_management_cubit.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
-
-List<CmoDropdownItem> _mockData = [
-  CmoDropdownItem(id: 1, name: 'Abatteur'),
-  CmoDropdownItem(id: 2, name: 'Agent Entretien Garage'),
-  CmoDropdownItem(id: 3, name: 'Baboon Watcher'),
-  CmoDropdownItem(id: 4, name: 'Charlie'),
-  CmoDropdownItem(id: 5, name: 'Delta'),
-  CmoDropdownItem(id: 6, name: 'Echo'),
-  CmoDropdownItem(id: 7, name: 'Foxstrat'),
-  CmoDropdownItem(id: 8, name: 'Golf'),
-  CmoDropdownItem(id: 9, name: 'Hotel'),
-  CmoDropdownItem(id: 10, name: 'India'),
-  CmoDropdownItem(id: 11, name: 'Juliet'),
-];
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FarmerStakeHolderSelectJobDescription extends StatefulWidget {
-  final List<int>? selectedJobDesc;
-  final void Function(List<int>) onSave;
-
-  FarmerStakeHolderSelectJobDescription({
+  const FarmerStakeHolderSelectJobDescription({
+    super.key,
     this.selectedJobDesc,
     required this.onSave,
   });
 
+  final List<int>? selectedJobDesc;
+  final void Function(List<int>) onSave;
+
   @override
-  State<StatefulWidget> createState() => _FarmerStakeHolderSelectJobDescriptionState();
+  State<StatefulWidget> createState() =>
+      _FarmerStakeHolderSelectJobDescriptionState();
 
   static Future<void> push(
     BuildContext context,
@@ -49,27 +40,19 @@ class FarmerStakeHolderSelectJobDescription extends StatefulWidget {
   }
 }
 
-class _FarmerStakeHolderSelectJobDescriptionState extends State<FarmerStakeHolderSelectJobDescription> {
+class _FarmerStakeHolderSelectJobDescriptionState
+    extends State<FarmerStakeHolderSelectJobDescription> {
   Timer? _debounceInputTimer;
-  late List<CmoDropdownItem> filteredItems;
 
   List<int> selectedItems = <int>[];
 
   @override
   void initState() {
     super.initState();
-    filteredItems = _mockData;
     selectedItems.addAll(widget.selectedJobDesc ?? <int>[]);
-  }
-
-  void searching(String? input) {
-    if (input == null || input.isEmpty) {
-      filteredItems = _mockData;
-    } else {
-      filteredItems = _mockData.where((element) => element.name.toLowerCase().contains(input.toLowerCase())).toList();
-    }
-
-    setState(() {});
+    Future.microtask(() async {
+      await context.read<LabourManagementCubit>().loadListJobDescriptions();
+    });
   }
 
   @override
@@ -92,18 +75,28 @@ class _FarmerStakeHolderSelectJobDescriptionState extends State<FarmerStakeHolde
               suffixIcon: Assets.icons.icSearch.svg(),
               onChanged: (input) {
                 _debounceInputTimer?.cancel();
-                _debounceInputTimer = Timer(const Duration(milliseconds: 200), () => searching(input));
+                _debounceInputTimer = Timer(
+                  const Duration(milliseconds: 200),
+                  () => context
+                      .read<LabourManagementCubit>()
+                      .searchJobDescription(input),
+                );
               },
             ),
           ),
           Expanded(
-            child: ListView.separated(
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 12,
-              ),
-              itemCount: filteredItems.length,
-              padding: const EdgeInsets.symmetric(horizontal: 21),
-              itemBuilder: (context, index) => _buildItem(filteredItems[index]),
+            child: BlocSelector<LabourManagementCubit, LabourManagementState, List<JobDescription>>(
+              selector: (state) => state.filterJobDescriptions,
+              builder: (context, filterJobDescriptions) {
+                return ListView.separated(
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 12,
+                  ),
+                  itemCount: filterJobDescriptions.length,
+                  padding: const EdgeInsets.symmetric(horizontal: 21),
+                  itemBuilder: (context, index) => _buildItem(filterJobDescriptions[index]),
+                );
+              },
             ),
           ),
         ],
@@ -119,30 +112,31 @@ class _FarmerStakeHolderSelectJobDescriptionState extends State<FarmerStakeHolde
     );
   }
 
-  Widget _buildItem(CmoDropdownItem item) {
+  Widget _buildItem(JobDescription item) {
     return InkWell(
       onTap: () {
         setState(() {
           if (selectedItems.contains(item.id)) {
             selectedItems.remove(item.id);
           } else {
-            selectedItems.add(item.id as int);
+            selectedItems.add(item.id);
           }
         });
       },
       child: AttributeItem(
-        child: Container(
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  item.name,
-                  style: context.textStyles.bodyNormal.black,
-                ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                item.jobDescriptionName ?? '',
+                style: context.textStyles.bodyNormal.black,
               ),
-              if (selectedItems.contains(item.id)) _buildSelectedIcon() else Assets.icons.icCheckCircle.svg(),
-            ],
-          ),
+            ),
+            if (selectedItems.contains(item.id))
+              _buildSelectedIcon()
+            else
+              Assets.icons.icCheckCircle.svg(),
+          ],
         ),
       ),
     );
