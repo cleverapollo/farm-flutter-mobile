@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/company.dart';
+import 'package:cmo/model/compartment/product_group_template.dart';
+import 'package:cmo/model/compartment/species_group_template.dart';
 import 'package:cmo/model/farm.dart';
 import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/master_data_message.dart';
@@ -428,6 +430,50 @@ class CmoApiService {
       return false;
     }
     return true;
+  }
+
+  Future<List<ProductGroupTemplate>?> fetchProductGroupTemplates() async {
+    final uri = Uri.https(
+        Env.cmoApiUrl,
+        '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/ProductGroupTemplate/GetProductGroupTemplateByIds',
+        {"groupSchemeId": "undefined", "areaTypeId": "undefined"});
+
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data
+        ?.map((e) => ProductGroupTemplate.fromJson(e as JsonData))
+        .toList();
+  }
+
+  Future<List<SpeciesGroupTemplate>?> fetchSpeciesGroupTemplates() async {
+    final uri = Uri.https(
+        Env.cmoApiUrl,
+        '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/SpeciesGroupTemplate/GetSpeciesGroupTemplateByIds',
+        {"groupSchemeId": "undefined", "areaTypeId": "undefined"});
+
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data
+        ?.map((e) => SpeciesGroupTemplate.fromJson(e as JsonData))
+        .toList();
   }
 
   String _authApiUri(String path) => '${Env.dnnAuthUrl}$path';

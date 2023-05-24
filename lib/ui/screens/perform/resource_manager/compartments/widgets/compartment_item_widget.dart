@@ -20,11 +20,6 @@ class CompartmentItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CmoTappable(
       onTap: () {
-        // final points = model.locations
-        //         ?.map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0)).toList();
-        // if (points == null) {
-        //   return;
-        // }
         if (model.jsonLocations == null) {
           return;
         }

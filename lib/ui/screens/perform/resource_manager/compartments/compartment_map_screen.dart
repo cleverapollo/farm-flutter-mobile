@@ -42,6 +42,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
     if (widget.points != null) {
       _markers = widget.points!.map((e) => _markerFrom(e)).toList();
       _isFinished = true;
+      _finishDrawing();
     }
   }
 
