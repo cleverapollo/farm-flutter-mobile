@@ -110,19 +110,18 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
     );
   }
 
-  Future _onNext() async {
+  void _onNext() async {
     if (selectedGroupScheme == null || selectedResourceManagerUnit == null) {
       return;
     }
-    await configService.setActiveRegionalManager(
-        groupSchemeId: selectedGroupScheme!.groupSchemeId!,
-        rmUnitId: selectedResourceManagerUnit!.regionalManagerUnitId!,
-        rmName: selectedResourceManagerUnit!.managerName!);
+    await Future.wait([
+      configService.setActiveRegionalManager(
+          unit: selectedResourceManagerUnit!),
+      configService.setActiveGroupScheme(groupScheme: selectedGroupScheme!)
+    ]);
     if (mounted) {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => RMSyncScreen(
-              selectedGroupScheme: selectedGroupScheme!,
-              selectedResourceManagerUnit: selectedResourceManagerUnit!)));
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (_) => RMSyncScreen()));
     }
   }
 }

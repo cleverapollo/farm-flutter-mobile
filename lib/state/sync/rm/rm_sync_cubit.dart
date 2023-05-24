@@ -5,64 +5,51 @@ import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/state/sync/base_sync_cubit.dart';
 import 'package:cmo/state/sync/base_sync_state.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
+import 'package:flutter/material.dart';
 
 part 'rm_sync_state.dart';
 
 class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
-  RMSyncCubit(
-      {required this.userInfoCubit,
-      required this.userDeviceCubit,
-      required this.selectedGroupScheme,
-      required this.selectedResourceManagerUnit})
-      : super(RMSyncState());
+  RMSyncCubit({required this.userInfoCubit, required this.userDeviceCubit})
+      : super(RMSyncState()) {
+    init();
+  }
 
   final UserInfoCubit userInfoCubit;
   final UserDeviceCubit userDeviceCubit;
-  final GroupScheme selectedGroupScheme;
-  final ResourceManagerUnit selectedResourceManagerUnit;
 
   final String topicRegionalManagerMasterDataSync =
       'Cmo.MasterDataDeviceSync.RM.';
   final String topicRegionalManagerUnitMasterDataSync =
       'Cmo.MasterDataDeviceSync.RMU.';
 
-  int userId = 0;
-  int userDeviceId = 0;
-  final groupSchemeId = 1; // Luffy' pirate crew
-  final rmuId = 6; // Jaundre's Unit
+  int get userId => userInfoCubit.data!.userId!;
+
+  int get userDeviceId => userDeviceCubit.data!.userDeviceId!;
+
+  int get groupSchemeId => state.groupScheme!.groupSchemeId!;
+
+  int get rmuId => state.rmUnit!.regionalManagerUnitId!;
 
   Future<void> init() async {
-    // TODO(DONG): init user device, group scheme, rm unit (implemented at Entity module by Nguyen Ngyen)
+    final groupScheme = await configService.getActiveGroupScheme();
+    final rmUnit = await configService.getActiveRegionalManager();
+    emit(state.copyWith(groupScheme: groupScheme, rmUnit: rmUnit));
   }
 
-  Future<void> sync() async {
+  Future<void> sync(BuildContext context) async {
     try {
       emit(
         state.copyWith(
             syncMessage: 'Syncing All Master Data...', isLoading: true),
       );
 
-      // TODO(DONG): force to create user device for test only
-      logger.d('--createUserDevice');
-      final res = await cmoApiService.createUserDevice(
-        appName: 'GroupScheme',
-        appVersionNumber: appInfoService.version,
-        deviceId: deviceInfoService.deviceId ?? '',
-        deviceOS: deviceInfoService.os,
-        deviceVersion: deviceInfoService.version,
-      );
-      logger.d('--createUserDevice done: ${res!.userDeviceId}');
-      userDeviceId = res.userDeviceId!;
-      // TODO(DONG): set user id
-      // userId = res.userId!;
-      // end
-
       logger.d('--RM Sync Data start');
       logger.d('--createSubscriptions');
       await createSubscriptions();
       logger.d('--createSubscriptions done');
-      // TODO(DONG): Check if selected rmu has already been synced before do create below
       logger.d('--createRMSystemEvent');
       await cmoApiService.createRMSystemEvent(
           rmuId: rmuId, userDeviceId: userDeviceId);
@@ -80,9 +67,9 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         state.copyWith(
             syncMessage: 'Sync complete', isLoaded: true, isLoading: false),
       );
-
-      // TODO(DONG): update status for RM data synced to maybe GroupScheme (implemented at Entity module by Nguyen Nguyen)
-      // Navigate to dashboard
+      await Future.delayed(const Duration(milliseconds: 500), () {});
+      await configService.setRMSynced(isSynced: true);
+      if (context.mounted) CmoDashboardBase.push(context);
     } catch (e) {
       logger.e(e);
       emit(

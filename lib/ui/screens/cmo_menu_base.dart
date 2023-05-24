@@ -493,6 +493,7 @@ class __LogoutButtonState extends State<_LogoutButton> {
               context.read<EntityCubit>().clear(),
               context.read<UserDeviceCubit>().clear(),
               context.read<UserInfoCubit>().clear(),
+              configService.logout()
             ]);
           }
           if (context.mounted) Navigator.of(context).pop();

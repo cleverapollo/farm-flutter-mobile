@@ -88,25 +88,12 @@ class _ResourceManagerUnitEntityState<T>
                           selectedItem: entities.firstWhereOrNull(
                               (e) => e.rawData.id == widget.selectedEntity?.id),
                           onTap: (item) {
-                            context
-                                .read<ResourceManagerUnitCubit>()
-                                .setSelectedResourceManagerUnit(item.rawData);
+                            Navigator.of(context).pop(item.rawData);
                           },
                         );
                       },
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40, bottom: 40),
-                    child: CmoFilledButton(
-                      title: LocaleKeys.sync.tr(),
-                      onTap: _selectedItem == null
-                          ? null
-                          : () {
-                              print("Sync data");
-                            },
-                    ),
-                  ),
+                  )
                 ],
               ),
             ),

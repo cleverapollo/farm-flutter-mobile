@@ -73,7 +73,6 @@ class _GroupSchemeEntityScreenState extends State<GroupSchemeEntityScreen> {
                   selectedItem: entities.firstWhereOrNull(
                       (e) => e.rawData.id == widget.selectedEntity?.id),
                   onTap: (item) {
-                    context.read<ResourceManagerGroupSchemeCubit>().setSelectedGroupScheme(item.rawData);
                     Navigator.of(context).pop(item.rawData);
                   },
                 );

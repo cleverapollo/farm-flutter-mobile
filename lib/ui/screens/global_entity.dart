@@ -1,3 +1,4 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -35,7 +36,7 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance
-        .addPostFrameCallback((_) {
+        .addPostFrameCallback((_) async {
       var roles = context
           .read<UserInfoCubit>()
           .data
@@ -63,8 +64,12 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
           Navigator.of(context).pushReplacement(EntityFarmerScreen.pageRoute());
           return;
         }
-        Navigator.of(context).pushReplacement(
-            EntityGroupScreen.pageRoute(isBehave: isBehave));
+        if (await configService.isRMSynced()) {
+          CmoDashboardBase.push(context);
+        } else {
+          Navigator.of(context)
+              .pushReplacement(EntityGroupScreen.pageRoute(isBehave: isBehave));
+        }
         return;
       }
     });
