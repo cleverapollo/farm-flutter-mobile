@@ -2,31 +2,16 @@ import 'dart:async';
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
+import 'package:cmo/model/model.dart';
+import 'package:cmo/state/labour_management/labour_management_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_stake_holder/farmer_add_stake_holder_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/widgets/labour_management_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
-
-List<FarmerStakeHolder> _mockData = [
-  FarmerStakeHolder(
-    jobTitle: 'Manager',
-    farmerStakeHolderName: 'Leon Chetty',
-  ),
-  FarmerStakeHolder(
-    jobTitle: 'Supervisor',
-    farmerStakeHolderName: 'Joe Soap ',
-  ),
-  FarmerStakeHolder(
-    jobTitle: 'Supervisor',
-    farmerStakeHolderName: 'Leon Chetty',
-  ),
-];
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LabourManagementScreen extends StatefulWidget {
-
   const LabourManagementScreen({super.key});
-
 
   @override
   State<StatefulWidget> createState() => _LabourManagementScreenState();
@@ -42,25 +27,11 @@ class LabourManagementScreen extends StatefulWidget {
 }
 
 class _LabourManagementScreenState extends State<LabourManagementScreen> {
-
   Timer? _debounceInputTimer;
-  late List<FarmerStakeHolder> filteredItems;
 
   @override
   void initState() {
     super.initState();
-    filteredItems = _mockData;
-  }
-
-
-  void searching(String? input) {
-    if (input == null || input.isEmpty) {
-      filteredItems = _mockData;
-    } else {
-      filteredItems = _mockData.where((element) => element.farmerStakeHolderName?.toLowerCase().contains(input.toLowerCase()) ?? false).toList();
-    }
-
-    setState(() {});
   }
 
   @override
@@ -75,7 +46,6 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
         trailing: Assets.icons.icAdd.svgBlack,
         onTapTrailing: () => FarmerAddStakeHolderScreen.push(context),
       ),
-
       body: Column(
         children: [
           Padding(
@@ -86,21 +56,32 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
               suffixIcon: Assets.icons.icSearch.svg(),
               onChanged: (input) {
                 _debounceInputTimer?.cancel();
-                _debounceInputTimer = Timer(const Duration(milliseconds: 200), () => searching(input));
+                _debounceInputTimer = Timer(
+                  const Duration(milliseconds: 200),
+                  () => context.read<LabourManagementCubit>().searching(input),
+                );
               },
             ),
           ),
           Expanded(
-            child: ListView.separated(
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 22,
-              ),
-              itemCount: filteredItems.length,
-              padding: const EdgeInsets.symmetric(horizontal: 21),
-              itemBuilder: (context, index) {
-                return LabourManagementItem(
-                  farmerStakeHolder: filteredItems[index],
-                  onTap: () {},
+            child: BlocSelector<LabourManagementCubit, LabourManagementState,
+                List<FarmerWorker>>(
+              selector: (state) {
+                return state.filterWorkers;
+              },
+              builder: (builder, filterWorkers) {
+                return ListView.separated(
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 22,
+                  ),
+                  itemCount: filterWorkers.length,
+                  padding: const EdgeInsets.symmetric(horizontal: 21),
+                  itemBuilder: (context, index) {
+                    return LabourManagementItem(
+                      farmerWorker: filterWorkers[index],
+                      onTap: () {},
+                    );
+                  },
                 );
               },
             ),
@@ -109,5 +90,4 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
       ),
     );
   }
-
 }

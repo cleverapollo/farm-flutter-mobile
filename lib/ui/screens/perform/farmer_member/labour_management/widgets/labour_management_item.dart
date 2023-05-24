@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 class LabourManagementItem extends StatelessWidget {
   const LabourManagementItem({
     super.key,
-    required this.farmerStakeHolder,
+    required this.farmerWorker,
     required this.onTap,
   });
 
-  final FarmerStakeHolder farmerStakeHolder;
+  final FarmerWorker farmerWorker;
   final VoidCallback onTap;
 
   @override
@@ -32,7 +32,7 @@ class LabourManagementItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                farmerStakeHolder.farmerStakeHolderName ?? '',
+                '${farmerWorker.firstName ?? ''} ${farmerWorker.lastName ?? ''}',
                 style: context.textStyles.bodyBold.blue,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -48,7 +48,7 @@ class LabourManagementItem extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        farmerStakeHolder.jobTitle ?? '',
+                        farmerWorker.jobTitle ?? '',
                         style: context.textStyles.bodyNormal.black,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -65,7 +65,7 @@ class LabourManagementItem extends StatelessWidget {
                     Assets.icons.icEdit.svg(),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
