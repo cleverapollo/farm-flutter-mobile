@@ -37,8 +37,8 @@ Future<void> main() async {
 
   await registerGetIt();
   await deviceInfoService.init();
-  await cmoDatabaseService.db;
   await cmoDatabaseMasterService.db;
+  await cmoDatabaseService.db;
   Bloc.observer = CmoGlobalObserver();
 
   runApp(

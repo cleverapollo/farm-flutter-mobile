@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/group_scheme.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/group_scheme_entity_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/resource_manager_unit_entity.dart';
@@ -27,6 +28,7 @@ class EntityGroupScreen extends StatefulWidget {
 class _EntityGroupScreenState extends State<EntityGroupScreen> {
   GroupScheme? selectedGroupScheme;
   ResourceManagerUnit? selectedResourceManagerUnit;
+  Company? selectedCompany;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +57,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
                 selectedItem: selectedGroupScheme,
               );
               setState(() {});
-              _onNext();
+              await _onNext();
             },
           ),
           Divider(
@@ -75,7 +77,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
                   selectedItem: selectedResourceManagerUnit,
                 );
                 setState(() {});
-                _onNext();
+                await _onNext();
               },
             ),
             Divider(
@@ -92,7 +94,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
               alignment: Alignment.centerLeft,
               color: context.colors.blueDark1,
               child: Text(
-                'Compliance Management',
+                LocaleKeys.complianceManagement.tr(),
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.white),
               ),
@@ -100,9 +102,28 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
             _EntityCard(
                   LocaleKeys.company.tr(),
               onTap: () {
-                Navigator.of(context).pop();
-                EntityBehaveScreen.push(context);
+                if (selectedGroupScheme == null ||
+                    selectedResourceManagerUnit == null) {
+                  showSnackError(msg: 'Select Group Scheme and RMU first');
+                } else {
+                  EntityBehaveScreen.push(
+                    context,
+                    onSelectedCompany: (company) async {
+                      setState(() {
+                        selectedCompany = company;
+                      });
+
+                      await _onNext();
+                    },
+                  );
+                }
               },
+            ),
+            Divider(
+              height: 1,
+              color: context.colors.grey,
+              indent: 23,
+              endIndent: 23,
             ),
           ]
         ],
@@ -110,8 +131,10 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
     );
   }
 
-  void _onNext() async {
-    if (selectedGroupScheme == null || selectedResourceManagerUnit == null) {
+  Future<void> _onNext() async {
+    if (selectedGroupScheme == null ||
+        selectedResourceManagerUnit == null ||
+        (widget.isBehave && selectedCompany == null)) {
       return;
     }
     await Future.wait([

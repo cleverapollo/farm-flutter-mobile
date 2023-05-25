@@ -15,14 +15,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EntityBehaveScreen extends StatefulWidget {
+  final void Function(Company)? onSelectedCompany;
+
   const EntityBehaveScreen({
     super.key,
+    this.onSelectedCompany,
   });
 
-  static dynamic push(BuildContext context) {
+  static dynamic push(
+    BuildContext context, {
+    void Function(Company)? onSelectedCompany,
+  }) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const EntityBehaveScreen(),
+        builder: (_) => EntityBehaveScreen(
+          onSelectedCompany: onSelectedCompany,
+        ),
       ),
     );
   }
@@ -75,9 +83,15 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
               company: selected!,
               userDeviceId: context.read<UserDeviceCubit>().data?.userDeviceId,
             );
+
+        if (widget.onSelectedCompany == null) {
+          CmoDashboardBase.push(context);
+        } else {
+          widget.onSelectedCompany!(selected!);
+        }
       }
 
-      if (context.mounted) CmoDashboardBase.push(context);
+
     } finally {
       setState(() => loading = false);
     }

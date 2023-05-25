@@ -268,7 +268,6 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
           onTap: () async {
             final items = await cmoDatabaseMasterService
                 .getPlantationsByCompanyId(companyId);
-            // ignore: use_build_context_synchronously
             if (!context.mounted) return;
             final item = await AssessmentItemSelectedScreen.push(
               context,
@@ -296,7 +295,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
             if (!context.mounted) return;
             final item = await AssessmentItemSelectedScreen.push(
               context,
-              title: LocaleKeys.jobType.tr(),
+              title: LocaleKeys.contractor.tr(),
               items: items
                   .map((e) => AssessmentItem(e.contractorName ?? '', e))
                   .toList(),

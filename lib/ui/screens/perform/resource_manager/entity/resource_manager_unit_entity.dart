@@ -61,10 +61,7 @@ class _ResourceManagerUnitEntityState<T>
         ),
         body: Stack(
           children: [
-            Expanded(
-              child: Column(
-                children: [
-                  Expanded(
+            Positioned.fill(
                     child: BlocSelector<ResourceManagerUnitCubit,
                         ResourceManagerUnitState, List<ResourceManagerUnit>>(
                       selector: (state) => state.resourceManagerUnits,
@@ -93,9 +90,6 @@ class _ResourceManagerUnitEntityState<T>
                         );
                       },
                     ),
-                  )
-                ],
-              ),
             ),
             BlocSelector<ResourceManagerUnitCubit, ResourceManagerUnitState,
                 bool>(

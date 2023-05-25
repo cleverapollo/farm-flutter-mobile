@@ -20,7 +20,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
   late final EntityService service;
 
   Future<void> init() async {
-    final cachedCompanies = await cmoDatabaseService.getAllCachedCompanys();
+    final cachedCompanies = await cmoDatabaseMasterService.getAllCachedCompanies();
     final userCompany =
         cachedCompanies.firstWhereOrNull((e) => e.isInUse ?? false);
     if (userCompany != null) {
@@ -252,27 +252,14 @@ class EntityCubit extends HydratedCubit<EntityState> {
 
     await syncMasterData();
 
-    final db = await cmoDatabaseService.db;
-    final cachedCompanies = await cmoDatabaseService.getAllCachedCompanys();
-    await db.writeTxn(() async {
-      for (final cachedCompany in cachedCompanies) {
-        await cmoDatabaseService.cacheCompany(
-          cachedCompany.copyWith(isInUse: false, isMasterDataSynced: false),
-        );
-      }
-      await cmoDatabaseService.cacheCompany(
-        company.copyWith(isInUse: true, isMasterDataSynced: true),
-      );
-    });
-    final cachedCompanies2 = await cmoDatabaseService.getAllCachedCompanys();
-
+    final cachedCompanies = await cmoDatabaseMasterService.getAllCachedCompanies();
     emit(
       state.copyWith(
         syncMessage: '',
         entity: company.entity,
-        company: company.copyWith(isInUse: true, isMasterDataSynced: true),
+        company: company,
         isLoadingSync: false,
-        companies: cachedCompanies2,
+        companies: cachedCompanies,
       ),
     );
   }
@@ -293,9 +280,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
     }
 
     if (companies != null && companies.isNotEmpty) {
-      final cachedCompanies = await cmoDatabaseService.getAllCachedCompanys();
+      final cachedCompanies = await cmoDatabaseMasterService.getAllCachedCompanies();
 
-      final db = await cmoDatabaseService.db;
+      final db = await cmoDatabaseMasterService.db;
       await db.writeTxn(() async {
         for (final company in companies ?? <Company>[]) {
           final find = cachedCompanies.firstWhereOrNull(
@@ -303,9 +290,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
           );
 
           if (find == null) {
-            await cmoDatabaseService.cacheCompany(company);
+            await cmoDatabaseMasterService.cacheCompany(company);
           }
-          await cmoDatabaseService.db;
+          await cmoDatabaseMasterService.db;
         }
       });
     }

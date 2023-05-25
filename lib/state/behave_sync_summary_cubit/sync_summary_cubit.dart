@@ -76,8 +76,8 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
         debugPrint('TuNT------' + userId.toString());
 
         futures
-          ..add(_databaseService
-              .getAllCachedCompanys()
+          ..add(_databaseMasterService
+              .getAllCachedCompanies()
               .then((value) => data = data.copyWith(mdCompany: value.length)))
           ..add(_databaseMasterService
               .getQuestionByCompanyId(companyId)
@@ -171,16 +171,16 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
 
       await syncMasterData(userDeviceId);
 
-      final db = await _databaseService.db;
-      final cachedCompanies = await _databaseService.getAllCachedCompanys();
+      final db = await _databaseMasterService.db;
+      final cachedCompanies = await _databaseMasterService.getAllCachedCompanies();
       await db.writeTxn(() async {
         for (final cachedCompany in cachedCompanies) {
-          await _databaseService.cacheCompany(
+          await _databaseMasterService.cacheCompany(
             cachedCompany.copyWith(isInUse: false, isMasterDataSynced: false),
           );
         }
 
-        await _databaseService.cacheCompany(
+        await _databaseMasterService.cacheCompany(
           company!.copyWith(isInUse: true, isMasterDataSynced: true),
         );
       });

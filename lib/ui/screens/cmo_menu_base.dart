@@ -178,22 +178,18 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
         buildHeader(context, title: LocaleKeys.dashboard.tr()),
         const _Divider(),
         buildHeader(context, title: LocaleKeys.assessments.tr()),
-        CmoTappable(
+        buildOption(
+          context,
+          title: LocaleKeys.createNew.tr(),
           onTap: () => AssessmentAddScreen.push(context),
-          child: buildOption(
-            context,
-            title: LocaleKeys.createNew.tr(),
-          ),
         ),
         const SizedBox(height: 7),
         const _Divider(),
         buildHeader(context, title: LocaleKeys.workers.tr()),
-        CmoTappable(
+        buildOption(
+          context,
+          title: LocaleKeys.createNew.tr(),
           onTap: () => WorkerAddScreen.push(context),
-          child: buildOption(
-            context,
-            title: LocaleKeys.createNew.tr(),
-          ),
         ),
       ],
     );

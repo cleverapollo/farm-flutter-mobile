@@ -56,7 +56,7 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
       final futures = <Future<dynamic>>[];
 
       for (final item in result) {
-        futures.add(cmoDatabaseService.cacheCompany(item));
+        futures.add(cmoDatabaseMasterService.cacheCompany(item));
       }
 
       await Future.wait(futures);
