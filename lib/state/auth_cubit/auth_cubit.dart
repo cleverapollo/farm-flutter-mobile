@@ -144,6 +144,14 @@ class AuthCubit extends HydratedCubit<AuthState> {
     return isDone;
   }
 
+  Future<void> checkFirstLaunch() async {
+    final isFirstLaunch = await configService.isFirstLaunch();
+    if (isFirstLaunch) {
+      await _clearSecureStorage();
+      await configService.setFirstLaunch(isFirstLaunch: false);
+    }
+  }
+
   @override
   AuthState fromJson(Map<String, dynamic> json) {
     final authorized = json['authorized'] as bool;

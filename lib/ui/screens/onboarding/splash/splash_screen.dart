@@ -1,4 +1,5 @@
 import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/state/audit_cubit/audit_cubit.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
@@ -27,6 +28,8 @@ class _SplashScreenState extends State<SplashScreen> {
         final authState = context.read<AuthCubit>().state;
 
         await context.read<EntityCubit>().init();
+
+        await context.read<AuthCubit>().checkFirstLaunch();
 
         final haveInternet = (await Connectivity().checkConnectivity()) !=
             ConnectivityResult.none;

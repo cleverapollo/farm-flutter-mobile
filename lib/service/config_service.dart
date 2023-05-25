@@ -9,6 +9,16 @@ class ConfigService {
     await setRMSynced(isSynced: false);
   }
 
+  Future<bool> isFirstLaunch() async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.getBool('FirstLaunch') ?? true;
+  }
+
+  Future<bool> setFirstLaunch({required bool isFirstLaunch}) async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setBool('FirstLaunch', isFirstLaunch);
+  }
+
   Future<bool> isRMSynced() async {
     final sp = await SharedPreferences.getInstance();
     return sp.getBool('RegionalManagerMasterDataSynced') ?? false;
