@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/company.dart';
+import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/compartment/product_group_template.dart';
 import 'package:cmo/model/compartment/species_group_template.dart';
 import 'package:cmo/model/farm.dart';
@@ -434,9 +435,15 @@ class CmoApiService {
 
   Future<List<ProductGroupTemplate>?> fetchProductGroupTemplates() async {
     final uri = Uri.https(
-        Env.cmoApiUrl,
-        '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/ProductGroupTemplate/GetProductGroupTemplateByIds',
-        {"groupSchemeId": "undefined", "areaTypeId": "undefined"});
+      Env.cmoApiUrl,
+      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/ProductGroupTemplate/GetProductGroupTemplateByIds',
+      {
+        "groupSchemeId": "undefined",
+        "areaTypeId": "undefined",
+        "sortDirection": "ASC",
+        "isActive": '',
+      },
+    );
 
     final response = await client.getUri<JsonListData>(
       uri,
@@ -456,9 +463,15 @@ class CmoApiService {
 
   Future<List<SpeciesGroupTemplate>?> fetchSpeciesGroupTemplates() async {
     final uri = Uri.https(
-        Env.cmoApiUrl,
-        '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/SpeciesGroupTemplate/GetSpeciesGroupTemplateByIds',
-        {"groupSchemeId": "undefined", "areaTypeId": "undefined"});
+      Env.cmoApiUrl,
+      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/SpeciesGroupTemplate/GetSpeciesGroupTemplateByIds',
+      {
+        "groupSchemeId": "undefined",
+        "areaTypeId": "undefined",
+        "sortDirection": "ASC",
+        "isActive": '',
+      },
+    );
 
     final response = await client.getUri<JsonListData>(
       uri,
@@ -473,6 +486,32 @@ class CmoApiService {
     final data = response.data;
     return data
         ?.map((e) => SpeciesGroupTemplate.fromJson(e as JsonData))
+        .toList();
+  }
+
+  Future<List<AreaType>?> fetchAreaTypes() async {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/AreaType/GetAreaTypeByUserIdAndRole',
+      {
+        "userId": "0",
+        "isRegionalManager": "false",
+      },
+    );
+
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data
+        ?.map((e) => AreaType.fromJson(e as JsonData))
         .toList();
   }
 

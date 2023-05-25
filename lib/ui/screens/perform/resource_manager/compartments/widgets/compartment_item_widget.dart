@@ -48,12 +48,12 @@ class CompartmentItemWidget extends StatelessWidget {
             title: '${LocaleKeys.compartment.tr()}: ${model.compartmentName}',
           ),
           CmoCardItem(
-            title: model.productGroupName ?? LocaleKeys.productGroup.tr(),
+            title: model.productGroupTemplateName ?? LocaleKeys.productGroup.tr(),
             value: '${model.polygonArea?.toStringAsFixed(2)} ha',
             ratioTitleSpace: 3,
           ),
           CmoCardItem(
-            title: model.speciesGroupName ?? LocaleKeys.speciesGroup.tr(),
+            title: model.speciesGroupTemplateName ?? LocaleKeys.speciesGroup.tr(),
             value: '',
             ratioTitleSpace: 3,
           ),

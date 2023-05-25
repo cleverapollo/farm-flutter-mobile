@@ -88,12 +88,6 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
                   },
                 ),
               ),
-              CmoFilledButton(
-                title: LocaleKeys.done.tr(),
-                onTap: () {
-                  print("Submit location");
-                },
-              ),
             ],
           );
           },
