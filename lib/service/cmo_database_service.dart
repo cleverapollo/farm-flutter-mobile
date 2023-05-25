@@ -62,28 +62,10 @@ class CmoDatabaseService {
     });
   }
 
-  Future<int> cacheCompany(Company item) async {
-    final db = await _db();
-
-    return db.writeTxn(() async {
-      return db.companys.put(item);
-    });
-  }
-
   Future<List<FarmPropertyOwnerShipType>>
       getAllFarmPropertyOwnerShipType() async {
     final db = await _db();
     return db.farmPropertyOwnerShipTypes.where().findAll();
-  }
-
-  Future<Company?> getCachedCompany({required int id}) async {
-    final db = await _db();
-    return db.companys.get(id);
-  }
-
-  Future<List<Company>> getAllCachedCompanys() async {
-    final db = await _db();
-    return db.companys.where().findAll();
   }
 
   Future<int> cacheAssessment(Assessment item) async {

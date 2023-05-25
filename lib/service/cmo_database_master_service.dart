@@ -108,6 +108,24 @@ class CmoDatabaseMasterService {
 
   Future<Isar> get db => _db();
 
+  Future<Company?> getCachedCompany({required int id}) async {
+    final db = await _db();
+    return db.companys.get(id);
+  }
+
+  Future<List<Company>> getAllCachedCompanies() async {
+    final db = await _db();
+    return db.companys.where().findAll();
+  }
+
+  Future<int> cacheCompany(Company item) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.companys.put(item);
+    });
+  }
+
   Future<int> cacheGroupScheme(GroupScheme item) async {
     final db = await _db();
     return db.groupSchemes.put(item);

@@ -24,16 +24,16 @@ mixin _$Company {
   int get companyId => throw _privateConstructorUsedError;
   @JsonKey(name: 'CompanyName')
   String? get companyName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'IsInUse')
-  bool? get isInUse => throw _privateConstructorUsedError;
-  @JsonKey(name: 'IsMasterDataSynced')
-  bool? get isMasterDataSynced => throw _privateConstructorUsedError;
   @JsonKey(name: 'IsActive')
   bool? get isActive => throw _privateConstructorUsedError;
   @JsonKey(name: 'CreateDT')
   String? get createDT => throw _privateConstructorUsedError;
   @JsonKey(name: 'UpdateDT')
   String? get updateDT => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IsInUse')
+  bool? get isInUse => throw _privateConstructorUsedError;
+  @JsonKey(name: 'IsMasterDataSynced')
+  bool? get isMasterDataSynced => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -48,11 +48,11 @@ abstract class $CompanyCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'CompanyId') int companyId,
       @JsonKey(name: 'CompanyName') String? companyName,
-      @JsonKey(name: 'IsInUse') bool? isInUse,
-      @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'CreateDT') String? createDT,
-      @JsonKey(name: 'UpdateDT') String? updateDT});
+      @JsonKey(name: 'UpdateDT') String? updateDT,
+      @JsonKey(name: 'IsInUse') bool? isInUse,
+      @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced});
 }
 
 /// @nodoc
@@ -70,11 +70,11 @@ class _$CompanyCopyWithImpl<$Res, $Val extends Company>
   $Res call({
     Object? companyId = null,
     Object? companyName = freezed,
-    Object? isInUse = freezed,
-    Object? isMasterDataSynced = freezed,
     Object? isActive = freezed,
     Object? createDT = freezed,
     Object? updateDT = freezed,
+    Object? isInUse = freezed,
+    Object? isMasterDataSynced = freezed,
   }) {
     return _then(_value.copyWith(
       companyId: null == companyId
@@ -85,14 +85,6 @@ class _$CompanyCopyWithImpl<$Res, $Val extends Company>
           ? _value.companyName
           : companyName // ignore: cast_nullable_to_non_nullable
               as String?,
-      isInUse: freezed == isInUse
-          ? _value.isInUse
-          : isInUse // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      isMasterDataSynced: freezed == isMasterDataSynced
-          ? _value.isMasterDataSynced
-          : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
-              as bool?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -105,6 +97,14 @@ class _$CompanyCopyWithImpl<$Res, $Val extends Company>
           ? _value.updateDT
           : updateDT // ignore: cast_nullable_to_non_nullable
               as String?,
+      isInUse: freezed == isInUse
+          ? _value.isInUse
+          : isInUse // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      isMasterDataSynced: freezed == isMasterDataSynced
+          ? _value.isMasterDataSynced
+          : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ) as $Val);
   }
 }
@@ -119,11 +119,11 @@ abstract class _$$_CompanyCopyWith<$Res> implements $CompanyCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'CompanyId') int companyId,
       @JsonKey(name: 'CompanyName') String? companyName,
-      @JsonKey(name: 'IsInUse') bool? isInUse,
-      @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
       @JsonKey(name: 'IsActive') bool? isActive,
       @JsonKey(name: 'CreateDT') String? createDT,
-      @JsonKey(name: 'UpdateDT') String? updateDT});
+      @JsonKey(name: 'UpdateDT') String? updateDT,
+      @JsonKey(name: 'IsInUse') bool? isInUse,
+      @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced});
 }
 
 /// @nodoc
@@ -138,11 +138,11 @@ class __$$_CompanyCopyWithImpl<$Res>
   $Res call({
     Object? companyId = null,
     Object? companyName = freezed,
-    Object? isInUse = freezed,
-    Object? isMasterDataSynced = freezed,
     Object? isActive = freezed,
     Object? createDT = freezed,
     Object? updateDT = freezed,
+    Object? isInUse = freezed,
+    Object? isMasterDataSynced = freezed,
   }) {
     return _then(_$_Company(
       companyId: null == companyId
@@ -153,14 +153,6 @@ class __$$_CompanyCopyWithImpl<$Res>
           ? _value.companyName
           : companyName // ignore: cast_nullable_to_non_nullable
               as String?,
-      isInUse: freezed == isInUse
-          ? _value.isInUse
-          : isInUse // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      isMasterDataSynced: freezed == isMasterDataSynced
-          ? _value.isMasterDataSynced
-          : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
-              as bool?,
       isActive: freezed == isActive
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
@@ -173,6 +165,14 @@ class __$$_CompanyCopyWithImpl<$Res>
           ? _value.updateDT
           : updateDT // ignore: cast_nullable_to_non_nullable
               as String?,
+      isInUse: freezed == isInUse
+          ? _value.isInUse
+          : isInUse // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      isMasterDataSynced: freezed == isMasterDataSynced
+          ? _value.isMasterDataSynced
+          : isMasterDataSynced // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ));
   }
 }
@@ -183,11 +183,11 @@ class _$_Company extends _Company {
   const _$_Company(
       {@JsonKey(name: 'CompanyId') required this.companyId,
       @JsonKey(name: 'CompanyName') this.companyName,
-      @JsonKey(name: 'IsInUse') this.isInUse,
-      @JsonKey(name: 'IsMasterDataSynced') this.isMasterDataSynced,
       @JsonKey(name: 'IsActive') this.isActive,
       @JsonKey(name: 'CreateDT') this.createDT,
-      @JsonKey(name: 'UpdateDT') this.updateDT})
+      @JsonKey(name: 'UpdateDT') this.updateDT,
+      @JsonKey(name: 'IsInUse') this.isInUse = true,
+      @JsonKey(name: 'IsMasterDataSynced') this.isMasterDataSynced = true})
       : super._();
 
   factory _$_Company.fromJson(Map<String, dynamic> json) =>
@@ -200,12 +200,6 @@ class _$_Company extends _Company {
   @JsonKey(name: 'CompanyName')
   final String? companyName;
   @override
-  @JsonKey(name: 'IsInUse')
-  final bool? isInUse;
-  @override
-  @JsonKey(name: 'IsMasterDataSynced')
-  final bool? isMasterDataSynced;
-  @override
   @JsonKey(name: 'IsActive')
   final bool? isActive;
   @override
@@ -214,10 +208,16 @@ class _$_Company extends _Company {
   @override
   @JsonKey(name: 'UpdateDT')
   final String? updateDT;
+  @override
+  @JsonKey(name: 'IsInUse')
+  final bool? isInUse;
+  @override
+  @JsonKey(name: 'IsMasterDataSynced')
+  final bool? isMasterDataSynced;
 
   @override
   String toString() {
-    return 'Company(companyId: $companyId, companyName: $companyName, isInUse: $isInUse, isMasterDataSynced: $isMasterDataSynced, isActive: $isActive, createDT: $createDT, updateDT: $updateDT)';
+    return 'Company(companyId: $companyId, companyName: $companyName, isActive: $isActive, createDT: $createDT, updateDT: $updateDT, isInUse: $isInUse, isMasterDataSynced: $isMasterDataSynced)';
   }
 
   @override
@@ -229,21 +229,21 @@ class _$_Company extends _Company {
                 other.companyId == companyId) &&
             (identical(other.companyName, companyName) ||
                 other.companyName == companyName) &&
-            (identical(other.isInUse, isInUse) || other.isInUse == isInUse) &&
-            (identical(other.isMasterDataSynced, isMasterDataSynced) ||
-                other.isMasterDataSynced == isMasterDataSynced) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive) &&
             (identical(other.createDT, createDT) ||
                 other.createDT == createDT) &&
             (identical(other.updateDT, updateDT) ||
-                other.updateDT == updateDT));
+                other.updateDT == updateDT) &&
+            (identical(other.isInUse, isInUse) || other.isInUse == isInUse) &&
+            (identical(other.isMasterDataSynced, isMasterDataSynced) ||
+                other.isMasterDataSynced == isMasterDataSynced));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, companyId, companyName, isInUse,
-      isMasterDataSynced, isActive, createDT, updateDT);
+  int get hashCode => Object.hash(runtimeType, companyId, companyName, isActive,
+      createDT, updateDT, isInUse, isMasterDataSynced);
 
   @JsonKey(ignore: true)
   @override
@@ -261,13 +261,20 @@ class _$_Company extends _Company {
 
 abstract class _Company extends Company {
   const factory _Company(
-      {@JsonKey(name: 'CompanyId') required final int companyId,
-      @JsonKey(name: 'CompanyName') final String? companyName,
-      @JsonKey(name: 'IsInUse') final bool? isInUse,
-      @JsonKey(name: 'IsMasterDataSynced') final bool? isMasterDataSynced,
-      @JsonKey(name: 'IsActive') final bool? isActive,
-      @JsonKey(name: 'CreateDT') final String? createDT,
-      @JsonKey(name: 'UpdateDT') final String? updateDT}) = _$_Company;
+      {@JsonKey(name: 'CompanyId')
+          required final int companyId,
+      @JsonKey(name: 'CompanyName')
+          final String? companyName,
+      @JsonKey(name: 'IsActive')
+          final bool? isActive,
+      @JsonKey(name: 'CreateDT')
+          final String? createDT,
+      @JsonKey(name: 'UpdateDT')
+          final String? updateDT,
+      @JsonKey(name: 'IsInUse')
+          final bool? isInUse,
+      @JsonKey(name: 'IsMasterDataSynced')
+          final bool? isMasterDataSynced}) = _$_Company;
   const _Company._() : super._();
 
   factory _Company.fromJson(Map<String, dynamic> json) = _$_Company.fromJson;
@@ -279,12 +286,6 @@ abstract class _Company extends Company {
   @JsonKey(name: 'CompanyName')
   String? get companyName;
   @override
-  @JsonKey(name: 'IsInUse')
-  bool? get isInUse;
-  @override
-  @JsonKey(name: 'IsMasterDataSynced')
-  bool? get isMasterDataSynced;
-  @override
   @JsonKey(name: 'IsActive')
   bool? get isActive;
   @override
@@ -293,6 +294,12 @@ abstract class _Company extends Company {
   @override
   @JsonKey(name: 'UpdateDT')
   String? get updateDT;
+  @override
+  @JsonKey(name: 'IsInUse')
+  bool? get isInUse;
+  @override
+  @JsonKey(name: 'IsMasterDataSynced')
+  bool? get isMasterDataSynced;
   @override
   @JsonKey(ignore: true)
   _$$_CompanyCopyWith<_$_Company> get copyWith =>

@@ -155,6 +155,7 @@
   "latitudeDecimal": "Latitude (Decimal)",
   "longitudeDecimal": "Longitude (Decimal)",
   "photos": "Photos",
+  "complianceManagement": "Compliance Management",
   "locale": {
     "en": "English",
     "fr": "French",

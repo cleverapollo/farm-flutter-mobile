@@ -19,11 +19,13 @@ class Company with _$Company {
   const factory Company({
     @JsonKey(name: 'CompanyId') required int companyId,
     @JsonKey(name: 'CompanyName') String? companyName,
-    @JsonKey(name: 'IsInUse') bool? isInUse,
-    @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,
+    @Default(true)
+    @JsonKey(name: 'IsInUse') bool? isInUse,
+    @Default(true)
+    @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
   }) = _Company;
 
   factory Company.fromJson(Map<String, dynamic> json) =>

@@ -158,6 +158,7 @@ abstract class  LocaleKeys {
   static const latitudeDecimal = 'latitudeDecimal';
   static const longitudeDecimal = 'longitudeDecimal';
   static const photos = 'photos';
+  static const complianceManagement = 'complianceManagement';
   static const locale_en = 'locale.en';
   static const locale_fr = 'locale.fr';
   static const locale_ms = 'locale.ms';
