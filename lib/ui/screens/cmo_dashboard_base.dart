@@ -30,9 +30,6 @@ class _CmoDashboardBaseState extends State<CmoDashboardBase> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      context.read<DashboardCubit>().initialize();
-    });
   }
 
   @override

@@ -11,7 +11,7 @@ part 'dashboard_state.dart';
 class DashboardCubit extends HydratedCubit<DashboardState> {
   DashboardCubit() : super(const DashboardState());
 
-  Future<void> initialize() async {
+  Future<void> initializeRM() async {
     try {
       await getTotalWorkers();
       final service = cmoDatabaseMasterService;
@@ -20,6 +20,20 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     } catch (error) {
       handleError(error);
     }
+  }
+
+  Future<void> initializeBehave() async {
+    try {
+      await getTotalAssessments();
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  Future<void> getTotalAssessments() async {
+    final service = cmoDatabaseMasterService;
+    // final totalAssessments = await service.getAllAssessments();
+    // emit(state.copyWith(totalAssessments: totalAssessments.length));
   }
 
   Future<void> getTotalWorkers() async {
@@ -32,7 +46,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
   }
 
   Future<void> refresh() async {
-    await initialize();
+    await initializeRM();
   }
 
   void handleError(Object error) {

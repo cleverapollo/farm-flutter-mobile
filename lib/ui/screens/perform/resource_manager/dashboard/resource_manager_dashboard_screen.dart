@@ -18,6 +18,15 @@ class ResourceManagerDashboardScreen extends StatefulWidget {
 
 class _ResourceManagerDashboardScreenState
     extends State<ResourceManagerDashboardScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      await context.read<DashboardCubit>().initializeRM();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocSelector<DashboardCubit, DashboardState, DashboardState>(
@@ -44,7 +53,7 @@ class _ResourceManagerDashboardScreenState
 
         return RefreshIndicator(
           onRefresh: () {
-            return context.read<DashboardCubit>().initialize();
+            return context.read<DashboardCubit>().initializeRM();
           },
           child: ListView(
             clipBehavior: Clip.none,
