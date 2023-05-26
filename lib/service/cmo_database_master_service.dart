@@ -2626,4 +2626,9 @@ class CmoDatabaseMasterService {
     final db = await _db();
     return db.txn(() => db.compartments.where().findAll());
   }
+
+  Future<List<Farm>?> getFarms() async {
+    final db = await _db();
+    return db.txn(() => db.farms.where().findAll());
+  }
 }
