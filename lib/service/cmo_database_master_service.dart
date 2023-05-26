@@ -668,11 +668,6 @@ class CmoDatabaseMasterService {
     return db.annualProductions.put(item);
   }
 
-  Future<int> cacheFarmerWorker(FarmerWorker item) async {
-    final db = await _db();
-    return db.farmerWorkers.put(item);
-  }
-
   Future<int> cacheFarmerStakeHolderComplaint(FarmerStakeHolderComplaint item) async {
     final db = await _db();
     return db.farmerStakeHolderComplaints.put(item);
