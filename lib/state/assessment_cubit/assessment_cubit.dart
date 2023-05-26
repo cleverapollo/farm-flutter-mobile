@@ -27,9 +27,8 @@ class AssessmentCubit extends HydratedCubit<AssessmentState> {
   ) async {
     try {
       emit(state.copyWith(loading: true));
-      final service = cmoDatabaseService;
       int? newId;
-      newId = await service.cacheAssessment(value);
+      newId = await cmoDatabaseMasterService.cacheAssessment(value);
       showSnackSuccess(msg: 'Save assessment success with id: $newId');
     } catch (e) {
       showSnackError(msg: e.toString());

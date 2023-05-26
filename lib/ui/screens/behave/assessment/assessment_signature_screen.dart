@@ -51,7 +51,7 @@ class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
   @override
   void initState() {
     super.initState();
-    cmoDatabaseService
+    cmoDatabaseMasterService
         .getCachedAssessment(id: widget.assessmentId)
         .then((assessment) {
       if (assessment?.signatureImage != null) {
@@ -127,11 +127,11 @@ class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
           CmoFilledButton(
             title: LocaleKeys.acceptSignature.tr(),
             onTap: () async {
-              var assessment = await cmoDatabaseService.getCachedAssessment(id: widget.assessmentId);
+              var assessment = await cmoDatabaseMasterService.getCachedAssessment(id: widget.assessmentId);
               assessment = assessment
                   ?.copyWith(signatureImage: _signatureController.toSvg());
               if (assessment != null) {
-                cmoDatabaseService.cacheAssessment(assessment);
+                await cmoDatabaseMasterService.cacheAssessment(assessment);
               }
               if (context.mounted) Navigator.of(context).pop();
             },

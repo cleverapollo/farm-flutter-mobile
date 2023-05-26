@@ -32,6 +32,10 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
         activeCompany?.companyId,
       );
 
+      await getTotalUnsyncBehave(
+        activeUserInfo?.userId,
+        activeCompany?.companyId,
+      );
     } catch (error) {
       handleError(error);
     }
@@ -55,6 +59,28 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
             .where(
                 (element) => element.statusEnum == AssessmentStatus.completed)
             .length,
+      ),
+    );
+  }
+
+  Future<void> getTotalUnsyncBehave(int? userId, int? companyId) async {
+    if (userId == null || companyId == null) return;
+    final service = cmoDatabaseMasterService;
+    final totalAssessments = await service.getAllAssessments(
+      companyId: companyId,
+      userId: userId,
+    );
+
+    final totalWorkersLocal = await service.getWorkersLocal();
+
+    emit(
+      state.copyWith(
+        totalUnsyncBehave: totalWorkersLocal.length +
+            totalAssessments
+                .where(
+                  (element) => element.statusEnum != AssessmentStatus.synced,
+                )
+                .length,
       ),
     );
   }

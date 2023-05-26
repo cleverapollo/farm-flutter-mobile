@@ -41,7 +41,6 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
   SyncSummaryCubit() : super(SyncSummaryState());
 
   final _databaseMasterService = cmoDatabaseMasterService;
-  final _databaseService = cmoDatabaseService;
   final _topicMasterDataSync = 'Cmo.MasterDataDeviceSync.';
 
   SyncSummaryModel data = const SyncSummaryModel();
@@ -215,18 +214,18 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
       systemEventName: 'SyncAssessmentMasterData',
       userDeviceId: userId,
     );
-    final result = await _databaseService
+    final result = await _databaseMasterService
         .getAllAssessmentUnSyncedByCompanyIdAndUserId(companyId, userId);
 
     final futures = <Future<dynamic>>[];
 
-    final db = await _databaseService.db;
+    final db = await _databaseMasterService.db;
 
     await db.writeTxn(() async {
       if (result.isNotEmpty) {
         for (final item in result) {
           futures
-              .add(_databaseService.cacheAssessment(item.copyWith(status: 3)));
+              .add(_databaseMasterService.cacheAssessment(item.copyWith(status: 3)));
         }
       }
     });
@@ -435,7 +434,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
       if (bodyJson == null) return null;
       final assessment = Assessment.fromJson(bodyJson);
 
-      return cmoDatabaseService.cacheAssessment(assessment);
+      return _databaseMasterService.cacheAssessment(assessment);
     } catch (e) {
       logger.d('insert error: $e');
     }

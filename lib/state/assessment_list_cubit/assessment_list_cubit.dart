@@ -15,8 +15,7 @@ class AssessmentListCubit extends HydratedCubit<AssessmentListState> {
   Future<void> loadStarted() async {
     emit(state.copyWith(loadingStarted: true));
     try {
-      final service = cmoDatabaseService;
-      final data = await service.getAllAssessmentsStarted();
+      final data = await cmoDatabaseMasterService.getAllAssessmentsStarted();
       emit(state.copyWith(dataStarted: data));
     } catch (e) {
       emit(state.copyWith(error: e));
@@ -29,8 +28,7 @@ class AssessmentListCubit extends HydratedCubit<AssessmentListState> {
   Future<void> loadCompleted() async {
     emit(state.copyWith(loadingCompleted: true));
     try {
-      final service = cmoDatabaseService;
-      final data = await service.getAllAssessmentsCompleted();
+      final data = await cmoDatabaseMasterService.getAllAssessmentsCompleted();
       emit(state.copyWith(dataCompleted: data));
     } catch (e) {
       emit(state.copyWith(error: e));
@@ -43,8 +41,7 @@ class AssessmentListCubit extends HydratedCubit<AssessmentListState> {
   Future<void> loadSynced() async {
     emit(state.copyWith(loadingSynced: true));
     try {
-      final service = cmoDatabaseService;
-      final data = await service.getAllAssessmentsSynced();
+      final data = await cmoDatabaseMasterService.getAllAssessmentsSynced();
       emit(state.copyWith(dataSynced: data));
     } catch (e) {
       emit(state.copyWith(error: e));
@@ -54,8 +51,8 @@ class AssessmentListCubit extends HydratedCubit<AssessmentListState> {
     }
   }
 
-  Future removeAssessment(Assessment item) async {
-    await cmoDatabaseService.removeAssessment(item.assessmentId!);
+  Future<void> removeAssessment(Assessment item) async {
+    await cmoDatabaseMasterService.removeAssessment(item.assessmentId!);
     return loadStarted();
   }
 

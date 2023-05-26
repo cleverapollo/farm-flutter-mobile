@@ -9,6 +9,7 @@ class DashboardState extends Equatable {
     this.totalIncompleteAssessments,
     this.totalAssessments,
     this.totalCompletedAssessments,
+    this.totalUnsyncBehave,
   });
 
   final bool loading;
@@ -18,6 +19,7 @@ class DashboardState extends Equatable {
   final int? totalIncompleteAssessments;
   final int? totalCompletedAssessments;
   final int? totalAssessments;
+  final int? totalUnsyncBehave;
 
   DashboardState copyWith({
     bool? loading,
@@ -27,6 +29,7 @@ class DashboardState extends Equatable {
     int? totalIncompleteAssessments,
     int? totalCompletedAssessments,
     int? totalAssessments,
+    int? totalUnsyncBehave,
   }) {
     return DashboardState(
       loading: loading ?? this.loading,
@@ -36,6 +39,7 @@ class DashboardState extends Equatable {
       totalAssessments: totalAssessments ?? this.totalAssessments,
       totalCompletedAssessments: totalCompletedAssessments ?? this.totalCompletedAssessments,
       totalIncompleteAssessments: totalIncompleteAssessments ?? this.totalIncompleteAssessments,
+      totalUnsyncBehave: totalUnsyncBehave ?? this.totalUnsyncBehave,
     );
   }
 
@@ -48,5 +52,6 @@ class DashboardState extends Equatable {
         totalAssessments,
         totalCompletedAssessments,
         totalIncompleteAssessments,
+        totalUnsyncBehave,
       ];
 }
