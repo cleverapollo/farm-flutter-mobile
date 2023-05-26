@@ -52,7 +52,9 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       logger.d('--createSubscriptions done');
       logger.d('--createRMSystemEvent');
       await cmoApiService.createRMSystemEvent(
-          rmuId: rmuId, userDeviceId: userDeviceId);
+        rmuId: rmuId,
+        userDeviceId: userDeviceId,
+      );
       logger.d('--createRMSystemEvent done');
       await Future.delayed(const Duration(seconds: 3), () {});
       logger.d('--syncRegionalManagerMasterData');

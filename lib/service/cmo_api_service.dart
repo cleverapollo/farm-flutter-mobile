@@ -402,6 +402,7 @@ class CmoApiService {
     required int currentClientId,
     int pageSize = 200,
   }) async {
+    final accessToken = await _readAccessToken();
     final uri = Uri.https(
       Env.cmoApiUrl,
       '/pubsubapi/api/v1/message',
@@ -415,7 +416,7 @@ class CmoApiService {
 
     final response = await client.getUri<JsonData>(
       uri,
-      options: Options(headers: {'accessToken': 'true'}),
+      options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
     );
 
     if (response.statusCode != 200) {

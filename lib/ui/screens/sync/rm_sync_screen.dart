@@ -45,11 +45,14 @@ class RMSyncScreen extends StatelessWidget {
                               return Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text('You\'re about to sync information for',
-                                      style:
-                                          context.textStyles.bodyNormal.black),
-                                  Text(state.groupSchemeName ?? '',
-                                      style: context.textStyles.bodyBold.black),
+                                  Text(
+                                    "You're about to sync information for",
+                                    style: context.textStyles.bodyNormal.black,
+                                  ),
+                                  Text(
+                                    state.groupSchemeName ?? '',
+                                    style: context.textStyles.bodyBold.black,
+                                  ),
                                 ],
                               );
                             },
@@ -62,8 +65,11 @@ class RMSyncScreen extends StatelessWidget {
                               if (state == null) {
                                 return const SizedBox.shrink();
                               }
-                              return Text(state,
-                                  style: context.textStyles.bodyNormal.black);
+
+                              return Text(
+                                state,
+                                style: context.textStyles.bodyNormal.black,
+                              );
                             },
                           ),
                         ],
@@ -84,8 +90,8 @@ class RMSyncScreen extends StatelessWidget {
                         child: CmoFilledButton(
                           title: LocaleKeys.sync.tr(),
                           loading: state,
-                          onTap: () {
-                            context.read<RMSyncCubit>().sync(context);
+                          onTap: () async {
+                            await context.read<RMSyncCubit>().sync(context);
                           },
                         ),
                       );

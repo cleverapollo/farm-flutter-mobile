@@ -23,6 +23,14 @@ class GlobalEntityScreen extends StatefulWidget {
     );
   }
 
+  static dynamic pushReplacement(BuildContext context) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => const GlobalEntityScreen(),
+      ),
+    );
+  }
+
   const GlobalEntityScreen({super.key});
 
   @override

@@ -1,8 +1,8 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/user_role_portal.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/behave/entity/entity_behave_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/entity_group_screen.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,42 +11,40 @@ Future<void> pushEntityScreen(
   BuildContext context, {
   bool isPushingReplacement = false,
 }) async {
-  final userRoles = context.read<UserInfoCubit>().state.userRoles;
-
-  final behaveRole =
-      userRoles?.firstWhereOrNull((element) => element.isBehaveRole);
-
-  final performRole =
-      userRoles?.firstWhereOrNull((element) => element.isPerformRole);
-
-  MaterialPageRoute<dynamic>? route;
-  String? currentRole;
-
-  if (behaveRole != null) {
-    currentRole = Constants.behaveRoleName;
-
-    route = MaterialPageRoute(
-      builder: (_) => const EntityBehaveScreen(),
+  final roles = context.read<UserInfoCubit>().data?.listRoles;
+  final userPortalRoles = context.read<UserInfoCubit>().state.userRoles;
+  final isBehave =
+      userPortalRoles.firstWhereOrNull((element) => element.isBehaveRole) !=
+          null;
+  final isPerform =
+      userPortalRoles.firstWhereOrNull((element) => element.isPerformRole) !=
+          null;
+  if (!isPerform) {
+    await Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => const EntityBehaveScreen(),
+      ),
     );
+    return;
   }
 
-  if (performRole != null) {
-    currentRole = Constants.performRoleName;
+  if (isPerform) {
+    final isResourceManager = roles.firstWhereOrNull(
+          (element) => element.roleName == Constants.resourceManagerRoleName,
+        ) !=
+        null;
+    if (!isResourceManager) {
+      await Navigator.of(context).pushReplacement(
+        EntityFarmerScreen.pageRoute(),
+      );
+      return;
+    }
 
-    route = MaterialPageRoute(
-      builder: (_) => const EntityGroupScreen(),
+    await Navigator.of(context).pushReplacement(
+      EntityGroupScreen.pageRoute(
+        isBehave: isBehave,
+      ),
     );
-  }
-
-  if (route == null || currentRole == null) return Future.value();
-
-  if (context.mounted) {
-    await context.read<AuthCubit>().saveUserCurrentRole(currentRole);
-  }
-
-  if (isPushingReplacement && context.mounted) {
-    await Navigator.of(context).pushReplacement(route);
-  } else {
-    await Navigator.of(context).push(route);
+    return;
   }
 }

@@ -69,188 +69,188 @@ class EntityCubit extends HydratedCubit<EntityState> {
       userDeviceId: userDeviceId,
     );
 
-    Future<void> syncMasterData() async {
-      var sync = true;
-      while (sync) {
-        MasterDataMessage? resPull;
-        if (context.mounted) {
-          resPull = await cmoApiService.pullMessage(
-            topicMasterDataSync: topicMasterDataSync,
-            pubsubApiKey: appInfoService.pubsubApiKey,
-            currentClientId: userDeviceId,
-          );
-        }
+    var sync = true;
+    while (sync) {
+      MasterDataMessage? resPull;
+      if (context.mounted) {
+        resPull = await cmoApiService.pullMessage(
+          topicMasterDataSync: topicMasterDataSync,
+          pubsubApiKey: appInfoService.pubsubApiKey,
+          currentClientId: userDeviceId,
+        );
+      }
 
-        final messages = resPull?.message;
-        if (messages == null || messages.isEmpty) {
-          sync = false;
-          break;
-        }
+      final messages = resPull?.message;
+      if (messages == null || messages.isEmpty) {
+        sync = false;
+        break;
+      }
 
-        final dbCompany = await cmoDatabaseMasterService.db;
-        await dbCompany.writeTxn(() async {
-          for (var i = 0; i < messages.length; i++) {
-            final item = messages[i];
+      final dbCompany = await cmoDatabaseMasterService.db;
+      await dbCompany.writeTxn(() async {
+        for (var i = 0; i < messages.length; i++) {
+          final item = messages[i];
 
-            try {
-              final topic = item.header?.originalTopic;
-              if (topic == '${topicMasterDataSync}Plantation.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Plantations...'));
-                await insertPlantation(item);
-              }
+          try {
+            final topic = item.header?.originalTopic;
+            if (topic == '${topicMasterDataSync}Plantation.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Plantations...'));
+              await insertPlantation(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Unit.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Units...'));
-                await insertUnit(item);
-              }
+            if (topic == '${topicMasterDataSync}Unit.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Units...'));
+              await insertUnit(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Contractor.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Contractors...'));
-                await insertContractor(item);
-              }
+            if (topic == '${topicMasterDataSync}Contractor.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Contractors...'));
+              await insertContractor(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Province.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Province...'));
-                await insertProvince(item);
-              }
+            if (topic == '${topicMasterDataSync}Province.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Province...'));
+              await insertProvince(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Municipality.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Municipality...'));
-                await insertMunicipality(item);
-              }
+            if (topic == '${topicMasterDataSync}Municipality.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Municipality...'));
+              await insertMunicipality(item);
+            }
 
-              if (topic == '${topicMasterDataSync}ImpactCaused.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Impact Caused...'));
-                await insertImpactCaused(item);
-              }
+            if (topic == '${topicMasterDataSync}ImpactCaused.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Impact Caused...'));
+              await insertImpactCaused(item);
+            }
 
-              if (topic == '${topicMasterDataSync}ImpactOn.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Impact On...'));
-                await insertImpactOn(item);
-              }
+            if (topic == '${topicMasterDataSync}ImpactOn.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Impact On...'));
+              await insertImpactOn(item);
+            }
 
-              if (topic == '${topicMasterDataSync}JobCategory.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Job Types...'));
-                await insertJobCategory(item);
-              }
+            if (topic == '${topicMasterDataSync}JobCategory.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Job Types...'));
+              await insertJobCategory(item);
+            }
 
-              if (topic ==
-                  '${topicMasterDataSync}JobDescription.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
-                await insertJobDescription(item);
-              }
+            if (topic ==
+                '${topicMasterDataSync}JobDescription.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
+              await insertJobDescription(item);
+            }
 
-              if (topic == '${topicMasterDataSync}JobElement.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Job Elements...'));
-                await insertJobElement(item);
-              }
+            if (topic == '${topicMasterDataSync}JobElement.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Job Elements...'));
+              await insertJobElement(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Mmm.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Mmm...'));
-                await insertMmm(item);
-              }
+            if (topic == '${topicMasterDataSync}Mmm.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Mmm...'));
+              await insertMmm(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Pdca.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Pdca...'));
-                await insertPdca(item);
-              }
+            if (topic == '${topicMasterDataSync}Pdca.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Pdca...'));
+              await insertPdca(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Severity.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Severity...'));
-                await insertSeverity(item);
-              }
+            if (topic == '${topicMasterDataSync}Severity.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Severity...'));
+              await insertSeverity(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Speqs.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Speqs...'));
-                await insertSpeqs(item);
-              }
+            if (topic == '${topicMasterDataSync}Speqs.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Speqs...'));
+              await insertSpeqs(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Compliance.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Compliance...'));
-                await insertCompliance(item);
-              }
+            if (topic == '${topicMasterDataSync}Compliance.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Compliance...'));
+              await insertCompliance(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Team.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Team...'));
-                await insertTeam(item);
-              }
+            if (topic == '${topicMasterDataSync}Team.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Team...'));
+              await insertTeam(item);
+            }
 
-              if (topic == '${topicMasterDataSync}RejectReason.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Reject Reason...'));
-                await insertRejectReason(item);
-              }
+            if (topic == '${topicMasterDataSync}RejectReason.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Reject Reason...'));
+              await insertRejectReason(item);
+            }
 
-              if (topic ==
-                  '${topicMasterDataSync}TrainingProvider.$userDeviceId') {
-                emit(
-                  state.copyWith(
-                    syncMessage: 'Syncing Training Provider...',
-                  ),
-                );
-                await insertTrainingProvider(item);
-              }
+            if (topic ==
+                '${topicMasterDataSync}TrainingProvider.$userDeviceId') {
+              emit(
+                state.copyWith(
+                  syncMessage: 'Syncing Training Provider...',
+                ),
+              );
+              await insertTrainingProvider(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Course.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Course...'));
-                await insertCourse(item);
-              }
+            if (topic == '${topicMasterDataSync}Course.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Course...'));
+              await insertCourse(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Schedule.$userDeviceId') {
-                emit(
-                  state.copyWith(
-                    countSchedules: state.countSchedules + 1,
-                    syncMessage:
-                        'Syncing Schedule...${state.countSchedules + 1}',
-                  ),
-                );
-                await insertSchedule(item);
-              }
+            if (topic == '${topicMasterDataSync}Schedule.$userDeviceId') {
+              emit(
+                state.copyWith(
+                  countSchedules: state.countSchedules + 1,
+                  syncMessage:
+                  'Syncing Schedule...${state.countSchedules + 1}',
+                ),
+              );
+              await insertSchedule(item);
+            }
 
-              if (topic ==
-                  '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
-                emit(
-                  state.copyWith(
-                    syncMessage: 'Syncing Schedule Activity...',
-                  ),
-                );
-                await insertScheduleActivity(item);
-              }
+            if (topic ==
+                '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
+              emit(
+                state.copyWith(
+                  syncMessage: 'Syncing Schedule Activity...',
+                ),
+              );
+              await insertScheduleActivity(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Worker.$userDeviceId') {
-                emit(
-                  state.copyWith(
-                    countWorkers: state.countWorkers + 1,
-                    syncMessage: 'Syncing Workers...${state.countWorkers + 1}',
-                  ),
-                );
-                await insertWorker(item);
-              }
+            if (topic == '${topicMasterDataSync}Worker.$userDeviceId') {
+              emit(
+                state.copyWith(
+                  countWorkers: state.countWorkers + 1,
+                  syncMessage: 'Syncing Workers...${state.countWorkers + 1}',
+                ),
+              );
+              await insertWorker(item);
+            }
 
-              if (topic == '${topicMasterDataSync}Question.$userDeviceId') {
-                emit(
-                  state.copyWith(
-                    countQuestion: state.countQuestion + 1,
-                    syncMessage:
-                        'Syncing Questions...${state.countQuestion + 1}',
-                  ),
-                );
-                await insertQuestion(item);
-              }
-            } finally {}
+            if (topic == '${topicMasterDataSync}Question.$userDeviceId') {
+              emit(
+                state.copyWith(
+                  countQuestion: state.countQuestion + 1,
+                  syncMessage:
+                  'Syncing Questions...${state.countQuestion + 1}',
+                ),
+              );
+              await insertQuestion(item);
+            }
+          } catch (error) {
+            handleError(error);
+          } finally {
+            logger.d('Sync successfully!');
           }
-        });
-
-        if (context.mounted) {
-          await cmoApiService.deleteMessage(
-            pubsubApiKey: appInfoService.pubsubApiKey,
-            currentClientId: userDeviceId,
-            messages: messages,
-          );
         }
+      });
+
+      if (context.mounted) {
+        await cmoApiService.deleteMessage(
+          pubsubApiKey: appInfoService.pubsubApiKey,
+          currentClientId: userDeviceId,
+          messages: messages,
+        );
       }
     }
-
-    await syncMasterData();
 
     final cachedCompanies = await cmoDatabaseMasterService.getAllCachedCompanies();
     emit(
@@ -579,6 +579,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
       logger.d('insert error: $e');
     }
     return null;
+  }
+
+  void handleError(Object error) {
+    logger.d(error);
   }
 
   @override

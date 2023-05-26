@@ -132,7 +132,7 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
                 child: CmoFilledButton(
                   title: LocaleKeys.sync.tr(),
                   loading: loading,
-                  onTap: submit,
+                  onTap: () async => submit(),
                 ),
               ),
             ],

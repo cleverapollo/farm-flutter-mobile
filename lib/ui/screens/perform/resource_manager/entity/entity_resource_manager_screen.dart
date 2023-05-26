@@ -87,7 +87,7 @@ class _EntityResourceManagerScreenState
               padding: const EdgeInsets.only(bottom: 40),
               child: CmoFilledButton(
                 title: LocaleKeys.sync.tr(),
-                onTap: () => submit(),
+                onTap: () async => submit(),
               ),
             ),
           ],

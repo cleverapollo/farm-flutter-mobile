@@ -89,9 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
           // Create user device and cache to db
           deviceInfoCubit.createUserDevice(context)]);
 
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_) => const GlobalEntityScreen(),
-        ));
+          GlobalEntityScreen.pushReplacement(context);
       }
     } finally {
       setState(() {

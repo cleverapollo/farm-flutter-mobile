@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
@@ -9,6 +10,7 @@ import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/components/entity_component/utils.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_add_screen.dart';
 import 'package:cmo/ui/screens/behave/create_worker/worker_add_screen.dart';
+import 'package:cmo/ui/screens/global_entity.dart';
 import 'package:cmo/ui/screens/onboarding/login/login_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_production_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/camp_management_screen.dart';
@@ -24,47 +26,28 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-enum UserRoleEnum {
-  behave,
-  resourceManager,
-  farmerMember;
-
-  const UserRoleEnum();
-
-  bool get isBehave {
-    if (this == UserRoleEnum.behave) {
-      return true;
-    }
-    return false;
-  }
-
-  bool get isFarmerMember {
-    if (this == UserRoleEnum.farmerMember) {
-      return true;
-    }
-    return false;
-  }
-
-  bool get isResourceManager {
-    if (this == UserRoleEnum.resourceManager) {
-      return true;
-    }
-    return false;
-  }
-}
-
 class CmoMenuBase extends StatefulWidget {
   factory CmoMenuBase.behave({required VoidCallback onTapClose}) {
-    return CmoMenuBase._(onTapClose: onTapClose, userRole: UserRoleEnum.behave);
+    return CmoMenuBase._(
+      onTapClose: onTapClose,
+      userRole: UserRoleEnum.behave,
+    );
   }
+
   factory CmoMenuBase.resourceManager({required VoidCallback onTapClose}) {
     return CmoMenuBase._(
-        onTapClose: onTapClose, userRole: UserRoleEnum.resourceManager);
+      onTapClose: onTapClose,
+      userRole: UserRoleEnum.resourceManager,
+    );
   }
+
   factory CmoMenuBase.farmerMember({required VoidCallback onTapClose}) {
     return CmoMenuBase._(
-        onTapClose: onTapClose, userRole: UserRoleEnum.farmerMember);
+      onTapClose: onTapClose,
+      userRole: UserRoleEnum.farmerMember,
+    );
   }
+
   const CmoMenuBase._({required this.onTapClose, required this.userRole});
 
   final UserRoleEnum userRole;
@@ -271,6 +254,7 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
   Widget buildEntity(BuildContext context) {
     return CmoTappable(
       onTap: () {
+        // GlobalEntityScreen.pushReplacement(context);
         pushEntityScreen(context);
       },
       child: SizedBox(
@@ -487,14 +471,13 @@ class __LogoutButtonState extends State<_LogoutButton> {
             loading = true;
           });
           await cmoDatabaseService.deleteAll();
-          if (context.mounted) await context.read<AuthCubit>().logOut();
+          await cmoDatabaseMasterService.deleteAll();
           if (context.mounted) {
-            await Future.wait([
-              context.read<EntityCubit>().clear(),
-              context.read<UserDeviceCubit>().clear(),
-              context.read<UserInfoCubit>().clear(),
-              configService.logout()
-            ]);
+            await context.read<AuthCubit>().logOut();
+            await context.read<EntityCubit>().clear();
+            await context.read<UserDeviceCubit>().clear();
+            await context.read<UserInfoCubit>().clear();
+            await configService.logout();
           }
           if (context.mounted) Navigator.of(context).pop();
           if (context.mounted) LoginScreen.push(context);

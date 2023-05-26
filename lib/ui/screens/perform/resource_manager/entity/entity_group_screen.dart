@@ -137,11 +137,9 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
         (widget.isBehave && selectedCompany == null)) {
       return;
     }
-    await Future.wait([
-      configService.setActiveRegionalManager(
-          unit: selectedResourceManagerUnit!),
-      configService.setActiveGroupScheme(groupScheme: selectedGroupScheme!)
-    ]);
+
+    await configService.setActiveRegionalManager(unit: selectedResourceManagerUnit!);
+    await configService.setActiveGroupScheme(groupScheme: selectedGroupScheme!);
     if (mounted) {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (_) => RMSyncScreen()));
