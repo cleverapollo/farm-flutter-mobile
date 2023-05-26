@@ -45,18 +45,8 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
     super.initState();
     WidgetsBinding.instance
         .addPostFrameCallback((_) async {
-      var roles = context
-          .read<UserInfoCubit>()
-          .data
-          ?.listRoles;
-      var userPortalRoles = context
-          .read<UserInfoCubit>()
-          .state
-          .userRoles;
-      var isBehave = userPortalRoles.firstWhereOrNull((element) =>
-      element.isBehaveRole) != null;
-      final isPerform = userPortalRoles.firstWhereOrNull((element) =>
-      element.isPerformRole) != null;
+      final isBehave = context.read<UserInfoCubit>().state.isBehave;
+      final isPerform = context.read<UserInfoCubit>().state.isPerform;
       if (!isPerform) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -66,8 +56,7 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
         return;
       }
       if (isPerform) {
-        final isResourceManager = roles.firstWhereOrNull((element) =>
-        element.roleName == Constants.resourceManagerRoleName) != null;
+        final isResourceManager = context.read<UserInfoCubit>().state.isResourceManager;
         if (!isResourceManager) {
           Navigator.of(context).pushReplacement(EntityFarmerScreen.pageRoute());
           return;

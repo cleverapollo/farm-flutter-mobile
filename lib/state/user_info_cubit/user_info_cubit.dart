@@ -1,10 +1,13 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/user_info.dart';
 import 'package:cmo/model/user_role_portal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
+
+import '../../utils/constants.dart';
 
 part 'user_info_state.dart';
 

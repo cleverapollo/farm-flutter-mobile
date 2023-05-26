@@ -29,6 +29,10 @@ class UserInfoState extends Union3Impl<UserInfoLoadingState, UserInfoDataState,
         (p0) => p0.userRoles,
         (p0) => null,
       );
+
+  bool get isBehave => userRoles?.firstWhereOrNull((element) => element.isBehaveRole) != null;
+  bool get isPerform => userRoles?.firstWhereOrNull((element) => element.isPerformRole) != null;
+  bool get isResourceManager => userInfo?.listRoles?.firstWhereOrNull((element) => element.roleName == Constants.resourceManagerRoleName) != null;
 }
 
 class UserInfoLoadingState extends Equatable {

@@ -11,14 +11,9 @@ Future<void> pushEntityScreen(
   BuildContext context, {
   bool isPushingReplacement = false,
 }) async {
-  final roles = context.read<UserInfoCubit>().data?.listRoles;
-  final userPortalRoles = context.read<UserInfoCubit>().state.userRoles;
-  final isBehave =
-      userPortalRoles.firstWhereOrNull((element) => element.isBehaveRole) !=
-          null;
-  final isPerform =
-      userPortalRoles.firstWhereOrNull((element) => element.isPerformRole) !=
-          null;
+  final isBehave = context.read<UserInfoCubit>().state.isBehave;
+  final isPerform = context.read<UserInfoCubit>().state.isPerform;
+
   if (!isPerform) {
     await Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -29,10 +24,7 @@ Future<void> pushEntityScreen(
   }
 
   if (isPerform) {
-    final isResourceManager = roles.firstWhereOrNull(
-          (element) => element.roleName == Constants.resourceManagerRoleName,
-        ) !=
-        null;
+    final isResourceManager = context.read<UserInfoCubit>().state.isResourceManager;
     if (!isResourceManager) {
       await Navigator.of(context).pushReplacement(
         EntityFarmerScreen.pageRoute(),
