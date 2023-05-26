@@ -11,6 +11,8 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/user/user_role.dart';
 import 'package:cmo/model/user_role_portal.dart';
+import 'package:cmo/model/worker/gender.dart';
+import 'package:cmo/model/worker/race.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
 
