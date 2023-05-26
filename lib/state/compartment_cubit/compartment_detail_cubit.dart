@@ -15,6 +15,8 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
 
   Future fetchData({required BuildContext context}) async {
     emit(state.copyWith(loading: true));
+    final groupScheme = await configService.getActiveGroupScheme();
+    final resourceManagerUnit = await configService.getActiveRegionalManager();
     final result = await Future.wait([
       cmoApiService.fetchAreaTypes(),
       cmoApiService.fetchProductGroupTemplates(),
@@ -25,12 +27,17 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
       areaTypes: result[0] as List<AreaType>?,
       productGroupTemplates: result[1] as List<ProductGroupTemplate>?,
       speciesGroupTemplates: result[2] as List<SpeciesGroupTemplate>?,
+      groupScheme: groupScheme,
+      resourceManagerUnit: resourceManagerUnit,
     ));
   }
 
   Future saveCompartment() {
-    return cmoDatabaseMasterService.cacheCompartment(state.compartment
-        .copyWith(compartmentId: DateTime.now().millisecondsSinceEpoch));
+    return cmoDatabaseMasterService.cacheCompartment(state.compartment.copyWith(
+      compartmentId: DateTime.now().millisecondsSinceEpoch,
+      groupSchemeId: state.groupScheme?.groupSchemeId,
+      regionalManagerUnitId: state.resourceManagerUnit?.regionalManagerUnitId,
+    ));
   }
 
   void onCompartmentNameChanged(String value) {

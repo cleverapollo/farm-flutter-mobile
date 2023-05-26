@@ -10,6 +10,8 @@ part 'compartment.g.dart';
 class Compartment with _$Compartment {
   const factory Compartment({
     @JsonKey(name: 'CompartmentId') int? compartmentId,
+    @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
+    @JsonKey(name: 'RegionalManagerUnitId') int? regionalManagerUnitId,
     @JsonKey(name: 'CompartmentName') String? compartmentName,
     @JsonKey(name: 'AreaTypeId') String? areaTypeId,
     @JsonKey(name: 'ProductGroupTemplateId') String? productGroupTemplateId,
@@ -25,8 +27,6 @@ class Compartment with _$Compartment {
     @JsonKey(name: 'StockingPercentage') double? stockingPercentage,
     @JsonKey(name: 'RotationNumber') double? rotationNumber,
     @JsonKey(name: 'UtilMAI') double? utilMAI,
-    //@ignore
-    //@JsonKey(includeToJson: false, includeFromJson: false)
     @JsonKey(name: 'Locations') String? jsonLocations,
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _Compartment;
