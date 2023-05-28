@@ -9,7 +9,6 @@ part 'worker.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Worker with _$Worker {
-
   const factory Worker({
     @JsonKey(name: 'WorkerId') required String workerId,
     @JsonKey(name: 'FirstName') String? firstName,
@@ -39,6 +38,7 @@ class Worker with _$Worker {
     @JsonKey(name: 'UpStringDT') String? upStringDt,
     @JsonKey(name: 'IsLocal') bool? isLocal,
     @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'FarmId') String? farmId,
   }) = _Worker;
 
   factory Worker.fromJson(Map<String, dynamic> json) => _$WorkerFromJson(json);

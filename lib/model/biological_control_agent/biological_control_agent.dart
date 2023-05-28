@@ -12,24 +12,31 @@ class BiologicalControlAgent with _$BiologicalControlAgent {
     @JsonKey(name: 'BiologicalControlAgentsId') int? biologicalControlAgentId,
     @JsonKey(name: 'NameControlAgent') String? nameControlAgent,
     @JsonKey(name: 'ControlAgentId') int? controlAgentId,
+    @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'ScientificName') String? scientificName,
     @JsonKey(name: 'CountryOrigin') String? countryOrigin,
     @JsonKey(name: 'ReasonBioAgent') String? reasonBioAgent,
     @JsonKey(name: 'DateReleased') String? dateReleased,
     @JsonKey(name: 'StakeholderName') String? stakeholderName,
     @JsonKey(name: 'StakeholderId') int? stakeholderId,
-    @JsonKey(name: 'DescriptionMonitoringRequirements') String? descriptionMonitoringRequirements,
-    @JsonKey(name: 'DescriptionMonitoringRequirementsId') int? descriptionMonitoringRequirementsId,
+    @JsonKey(name: 'DescriptionMonitoringRequirements')
+        String? descriptionMonitoringRequirements,
+    @JsonKey(name: 'DescriptionMonitoringRequirementsId')
+        int? descriptionMonitoringRequirementsId,
     @JsonKey(name: 'GeneralComments') String? generalComments,
     @Default(false) @JsonKey(name: 'CarRaised') bool? carRaised,
     @Default(false) @JsonKey(name: 'CarClosed') bool? carClosed,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(true)
+    @JsonKey(name: 'IsMasterDataSynced')
+        bool? isMasterDataSynced,
     @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
   }) = _BiologicalControlAgent;
 
   const BiologicalControlAgent._();
 
-  factory BiologicalControlAgent.fromJson(Map<String, dynamic> json) => _$BiologicalControlAgentFromJson(json);
+  factory BiologicalControlAgent.fromJson(Map<String, dynamic> json) =>
+      _$BiologicalControlAgentFromJson(json);
 
   @override
   Id get id => biologicalControlAgentId ?? Isar.autoIncrement;

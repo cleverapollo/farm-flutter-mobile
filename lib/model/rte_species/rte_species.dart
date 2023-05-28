@@ -12,6 +12,7 @@ class RteSpecies with _$RteSpecies {
   const factory RteSpecies({
     @JsonKey(name: 'RteSpeciesId') int? rteSpeciesId,
     @JsonKey(name: 'SpeciesType') String? speciesType,
+    @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'SpeciesTypeId') int? speciesTypeId,
     @JsonKey(name: 'CommonName') String? commonName,
     @JsonKey(name: 'ScientificName') String? scientificName,
@@ -28,6 +29,9 @@ class RteSpecies with _$RteSpecies {
     @Default(false) @JsonKey(name: 'CarRaised') bool? carRaised,
     @Default(false) @JsonKey(name: 'CarClosed') bool? carClosed,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(true)
+    @JsonKey(name: 'IsMasterdataSynced')
+        bool? isMasterdataSynced,
     @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
   }) = _RteSpecies;
 

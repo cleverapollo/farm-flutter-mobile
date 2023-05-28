@@ -12,8 +12,12 @@ class RteSpeciesPhotoModel with _$RteSpeciesPhotoModel {
     @JsonKey(name: 'RteSpeciesId') int? rteSpeciesId,
     @JsonKey(name: 'PhotoId') int? photoId,
     @JsonKey(name: 'PhotoName') String? photoName,
+    @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'PhotoPath') String? photoPath,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(true)
+    @JsonKey(name: 'IsMasterdataSynced')
+        bool? isMasterdataSynced,
     @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
   }) = _RteSpeciesPhotoModel;
 

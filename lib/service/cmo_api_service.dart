@@ -175,10 +175,8 @@ class CmoApiService {
   }
 
   Future<List<Farm>?> fetchFarms() async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Mobile/GetFarms'
-    );
+    final uri = Uri.https(Env.cmoApiUrl,
+        '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Mobile/GetFarms');
 
     final response = await client.getUri<JsonListData>(
       uri,
@@ -195,10 +193,8 @@ class CmoApiService {
   }
 
   Future<List<GroupScheme>?> fetchGroupSchemes() async {
-    final uri = Uri.https(
-        Env.cmoApiUrl,
-        'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Mobile/GetGroupschemes'
-    );
+    final uri = Uri.https(Env.cmoApiUrl,
+        'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Mobile/GetGroupschemes');
 
     final response = await client.getUri<JsonListData>(
       uri,
@@ -214,11 +210,12 @@ class CmoApiService {
     return data?.map((e) => GroupScheme.fromJson(e as JsonData)).toList();
   }
 
-  Future<List<ResourceManagerUnit>?> fetchResourceManagerUnits(int groupSchemeId) async {
+  Future<List<ResourceManagerUnit>?> fetchResourceManagerUnits(
+      int groupSchemeId) async {
     final uri = Uri.https(
-        Env.cmoApiUrl,
-        'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Mobile/GetRegionalManagerUnits',
-        {'groupSchemeId': groupSchemeId.toString()},
+      Env.cmoApiUrl,
+      'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Mobile/GetRegionalManagerUnits',
+      {'groupSchemeId': groupSchemeId.toString()},
     );
 
     final response = await client.getUri<JsonListData>(
@@ -232,7 +229,9 @@ class CmoApiService {
     }
 
     final data = response.data;
-    return data?.map((e) => ResourceManagerUnit.fromJson(e as JsonData)).toList();
+    return data
+        ?.map((e) => ResourceManagerUnit.fromJson(e as JsonData))
+        .toList();
   }
 
   Future<bool> createSystemEvent({
@@ -315,6 +314,60 @@ class CmoApiService {
         options: Options(headers: {'accessToken': 'true'}),
       );
     } catch (_) {}
+  }
+
+  Future<bool> createFarmerSystemEvent({
+    required String farmId,
+    required int userDeviceId,
+  }) async {
+    final body = {
+      'SystemEventName': 'SyncGSMasterData',
+      'PrimaryKey': farmId,
+      'UserDeviceId': userDeviceId
+    };
+
+    final response = await client.post<dynamic>(
+      _apiUri('CreateSystemEvent'),
+      data: body,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return false;
+    }
+    return true;
+  }
+
+  Future<MasterDataMessage?> pullFarmerGlobalMessage({
+    required String pubsubApiKey,
+    required String topicMasterDataSync,
+    required String currentClientId,
+    int pageSize = 200,
+  }) async {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      '/pubsubapi/api/v1/message',
+      {
+        'key': pubsubApiKey,
+        'client': currentClientId,
+        'topic': '$topicMasterDataSync*.$currentClientId',
+        'pageSize': '$pageSize',
+      },
+    );
+
+    final response = await client.getUri<JsonData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data == null ? null : MasterDataMessage.fromJson(data);
   }
 
   Future<MasterDataMessage?> pullAssessmentMessage({
@@ -510,9 +563,7 @@ class CmoApiService {
     }
 
     final data = response.data;
-    return data
-        ?.map((e) => AreaType.fromJson(e as JsonData))
-        .toList();
+    return data?.map((e) => AreaType.fromJson(e as JsonData)).toList();
   }
 
   String _authApiUri(String path) => '${Env.dnnAuthUrl}$path';
@@ -520,7 +571,6 @@ class CmoApiService {
   String _apiUri(String path) => '${Env.dnnApiUrl}$path';
 
   String _mqApiUri(String path) => '${Env.apstoryMqApiUrl}$path';
-
 }
 
 class CustomInterceptor extends Interceptor {

@@ -5,17 +5,54 @@ import 'dart:io';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
+import 'package:cmo/model/disciplinaries/disciplonaries.dart';
 import 'package:cmo/model/farm_property_ownner_ship_type/farm_property_owner_ship_type.dart';
+import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
+import 'package:cmo/model/gender/gender.dart';
 import 'package:cmo/model/group_scheme.dart';
+import 'package:cmo/model/group_scheme_stakeholder/group_scheme_stakeholder.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/user/user_role.dart';
 import 'package:cmo/model/user_role_portal.dart';
-import 'package:cmo/model/worker/gender.dart';
-import 'package:cmo/model/worker/race.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:cmo/model/accident_and_incident.dart';
+import 'package:cmo/model/accident_and_incident_property_damaged/accident_and_incident_property_damaged.dart';
+import 'package:cmo/model/annual_budget_transaction/annual_budget_transaction.dart';
+import 'package:cmo/model/annual_budget_transaction_category/annual_budget_transaction_category.dart';
+import 'package:cmo/model/asi.dart';
+import 'package:cmo/model/asi_photo/asi_photo.dart';
+import 'package:cmo/model/asi_type/asi_type.dart';
+import 'package:cmo/model/biological_control_agent/biological_control_agent_type.dart';
+import 'package:cmo/model/camp.dart';
+import 'package:cmo/model/chemical.dart';
+import 'package:cmo/model/chemical_application_method/chemical_application_method.dart';
+import 'package:cmo/model/chemical_type/chemical_type.dart';
+import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
+import 'package:cmo/model/country/country.dart';
+import 'package:cmo/model/customary_use_right/customary_use_right.dart';
+import 'package:cmo/model/fire/fire_register.dart';
+import 'package:cmo/model/fire_cause/fire_cause.dart';
+import 'package:cmo/model/grievance_issue/grievance_issue.dart';
+import 'package:cmo/model/grievance_register/grievance_register.dart';
+import 'package:cmo/model/issue_type/issue_type.dart';
+import 'package:cmo/model/monitoring_requirement/monitoring_requirement.dart';
+import 'package:cmo/model/nature_of_injury/nature_of_injury.dart';
+import 'package:cmo/model/pest_and_disease_type/pest_and_disease_type.dart';
+import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and_diseases_register_treatment_method.dart';
+import 'package:cmo/model/pets_and_disease_type_treatment_method/pets_and_disease_type_treatment_method.dart';
+import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
+import 'package:cmo/model/property_damaged/property_damaged.dart';
+import 'package:cmo/model/sanction_register/sanction_register.dart';
+import 'package:cmo/model/social_upliftment/social_upliftment.dart';
+import 'package:cmo/model/special_site/special_site.dart';
+import 'package:cmo/model/species_range/species_range.dart';
+import 'package:cmo/model/species_type/species_type.dart';
+import 'package:cmo/model/training/training_register.dart';
+import 'package:cmo/model/training_type/training_type.dart';
+import 'package:cmo/model/treament_method/treament_method.dart';
 
 class CmoDatabaseMasterService {
   factory CmoDatabaseMasterService() {
@@ -99,6 +136,45 @@ class CmoDatabaseMasterService {
         GroupSchemeSchema,
         ResourceManagerUnitSchema,
         CompartmentSchema,
+        AsiSchema,
+        AccidentAndIncidentSchema,
+        AsiPhotoSchema,
+        ChemicalSchema,
+        ComplaintsAndDisputesRegisterSchema,
+        GrievanceRegisterSchema,
+        FireRegisterSchema,
+        PetsAndDiseaseRegisterSchema,
+        TrainingRegisterSchema,
+        AnnualBudgetTransactionSchema,
+        AnnualBudgetTransactionCategorySchema,
+        AsiTypeSchema,
+        ChemicalApplicationMethodSchema,
+        ChemicalTypeSchema,
+        CountrySchema,
+        FireCauseSchema,
+        GrievanceIssueSchema,
+        MonitoringRequirementSchema,
+        NatureOfInjurySchema,
+        PestsAndDiseaseTypeTreatmentMethodSchema,
+        PropertyDamagedSchema,
+        SpeciesRangeSchema,
+        TrainingTypeSchema,
+        TreatmentMethodSchema,
+        CustomaryUseRightSchema,
+        SocialUpliftmentSchema,
+        SpecialSiteSchema,
+        AccidentAndIncidentPropertyDamagedSchema,
+        BiologicalControlAgentTypeSchema,
+        SanctionRegisterSchema,
+        IssueTypeSchema,
+        AnimalTypeSchema,
+        PestsAndDiseaseTypeSchema,
+        PestsAndDiseasesRegisterTreatmentMethodSchema,
+        CampSchema,
+        GenderSchema,
+        FarmerStakeHolderSchema,
+        DisciplinariesSchema,
+        GroupSchemeStakeholderSchema,
       ],
       name: _databaseName,
       directory: dir.path,
@@ -113,6 +189,940 @@ class CmoDatabaseMasterService {
   }
 
   Future<Isar> get db => _db();
+
+  Future<int?> cacheAnnFarmPro(AnnualProduction data) async {
+    final db = await _db();
+
+    return db.annualProductions.put(data);
+  }
+
+  Future<int?> cacheGrievanceRegister(GrievanceRegister data) async {
+    final db = await _db();
+
+    return db.grievanceRegisters.put(data);
+  }
+
+  Future<int?> cacheCountry(Country data) async {
+    final db = await _db();
+
+    return await db.countrys.put(data);
+  }
+
+  Future<int?> cacheGender(Gender data) async {
+    final db = await _db();
+
+    return db.genders.put(data);
+  }
+
+  Future<int?> cacheScheduleActivities(ScheduleActivity data) async {
+    final db = await _db();
+
+    return db.scheduleActivitys.put(data);
+  }
+
+  Future<int?> cacheGroupScheme(GroupScheme data) async {
+    final db = await _db();
+
+    return db.groupSchemes.put(data);
+  }
+
+  Future<int?> cacheSocialUpliftment(SocialUpliftment data) async {
+    final db = await _db();
+
+    return db.socialUpliftments.put(data);
+  }
+
+  Future<int?> cacheSpecialSite(SpecialSite data) async {
+    final db = await _db();
+
+    return db.specialSites.put(data);
+  }
+
+  Future<int?> cacheCustomaryUseRight(CustomaryUseRight data) async {
+    final db = await _db();
+
+    return db.customaryUseRights.put(data);
+  }
+
+  Future<int?> cacheFarmStakeHolder(FarmerStakeHolder data) async {
+    final db = await _db();
+
+    return db.farmerStakeHolders.put(data);
+  }
+
+  Future<int?> cacheGroupSchemeStakeholder(GroupSchemeStakeholder data) async {
+    final db = await _db();
+
+    return db.groupSchemeStakeholders.put(data);
+  }
+
+  Future<int?> cacheAccidentAndIncident(AccidentAndIncident data) async {
+    final db = await _db();
+
+    return db.accidentAndIncidents.put(data);
+  }
+
+  Future<int?> cacheAccidentAndIncidentPropertyDamaged(
+      AccidentAndIncidentPropertyDamaged data) async {
+    final db = await _db();
+
+    return db.accidentAndIncidentPropertyDamageds.put(data);
+  }
+
+  Future<int?> cacheAsi(Asi data) async {
+    final db = await _db();
+
+    return db.asis.put(data);
+  }
+
+  Future<int?> cacheAsiPhoto(AsiPhoto data) async {
+    final db = await _db();
+
+    return db.asiPhotos.put(data);
+  }
+
+  Future<int?> cacheChemical(Chemical data) async {
+    final db = await _db();
+
+    return db.chemicals.put(data);
+  }
+
+  Future<int?> cacheDisciplinaries(Disciplinaries data) async {
+    final db = await _db();
+
+    return db.disciplinaries.put(data);
+  }
+
+  Future<int?> cacheStakeholderComplaints(
+      FarmerStakeHolderComplaint data) async {
+    final db = await _db();
+
+    return db.farmerStakeHolderComplaints.put(data);
+  }
+
+  Future<int?> cacheEmployeeGrievances(EmployeeGrievance data) async {
+    final db = await _db();
+
+    return db.employeeGrievances.put(data);
+  }
+
+  Future<int?> cacheFireRegister(FireRegister data) async {
+    final db = await _db();
+
+    return db.fireRegisters.put(data);
+  }
+
+  Future<int?> cachePetsAndDisease(PetsAndDiseaseRegister data) async {
+    final db = await _db();
+
+    return db.petsAndDiseaseRegisters.put(data);
+  }
+
+  Future<int?> cachePetsAndDiseaseTreatmentMethod(
+      PestsAndDiseaseTypeTreatmentMethod data) async {
+    final db = await _db();
+
+    return db.pestsAndDiseaseTypeTreatmentMethods.put(data);
+  }
+
+  Future<int?> cachePetsAndDiseaseRegisterTreatmentMethod(
+      PestsAndDiseasesRegisterTreatmentMethod data) async {
+    final db = await _db();
+
+    return db.pestsAndDiseasesRegisterTreatmentMethods.put(data);
+  }
+
+  Future<int?> cacheRteSpeciesPhotos(RteSpeciesPhotoModel data) async {
+    final db = await _db();
+
+    return db.rteSpeciesPhotoModels.put(data);
+  }
+
+  Future<int?> cacheTraining(TrainingRegister data) async {
+    final db = await _db();
+
+    return db.trainingRegisters.put(data);
+  }
+
+  Future<int?> cacheAnimalType(AnimalType data) async {
+    final db = await _db();
+
+    return db.animalTypes.put(data);
+  }
+
+  Future<int?> cacheSanctionRegister(SanctionRegister data) async {
+    final db = await _db();
+
+    return db.sanctionRegisters.put(data);
+  }
+
+  Future<int?> cacheAnnualBudgets(AnnualProductionBudget data) async {
+    final db = await _db();
+
+    return db.annualProductionBudgets.put(data);
+  }
+
+  Future<int?> cacheAnnualBudgetTransactions(
+      AnnualBudgetTransaction data) async {
+    final db = await _db();
+
+    return db.annualBudgetTransactions.put(data);
+  }
+
+  Future<int?> cacheCamp(Camp data) async {
+    final db = await _db();
+
+    return db.camps.put(data);
+  }
+
+  Future<int?> cacheBiologicalControlAgentTypes(
+      BiologicalControlAgentType data) async {
+    final db = await _db();
+
+    return db.biologicalControlAgentTypes.put(data);
+  }
+
+  Future<int?> cacheIssueType(IssueType data) async {
+    final db = await _db();
+
+    return db.issueTypes.put(data);
+  }
+
+  Future<int?> cacheAnnualFarmBudgetTransactionCategory(
+      AnnualBudgetTransactionCategory data) async {
+    final db = await _db();
+
+    return db.annualBudgetTransactionCategorys.put(data);
+  }
+
+  Future<int?> cacheAsiTypes(AsiType data) async {
+    final db = await _db();
+
+    return db.asiTypes.put(data);
+  }
+
+  Future<int?> cacheChemicalApplicationMethods(
+      ChemicalApplicationMethod data) async {
+    final db = await _db();
+
+    return db.chemicalApplicationMethods.put(data);
+  }
+
+  Future<int?> cacheChemicalTypes(ChemicalType data) async {
+    final db = await _db();
+
+    return db.chemicalTypes.put(data);
+  }
+
+  Future<int?> cacheFireCause(FireCause data) async {
+    final db = await _db();
+
+    return db.fireCauses.put(data);
+  }
+
+  Future<int?> cacheGrievanceIssue(GrievanceIssue data) async {
+    final db = await _db();
+
+    return db.grievanceIssues.put(data);
+  }
+
+  Future<int?> cachePestsAndDiseaseType(PestsAndDiseaseType data) async {
+    final db = await _db();
+
+    return db.pestsAndDiseaseTypes.put(data);
+  }
+
+  Future<int?> cacheMonitoringRequirement(MonitoringRequirement data) async {
+    final db = await _db();
+
+    return db.monitoringRequirements.put(data);
+  }
+
+  Future<int?> cacheNatureOfInjury(NatureOfInjury data) async {
+    final db = await _db();
+
+    return db.natureOfInjurys.put(data);
+  }
+
+  Future<int?> cachePetsAndDiseaseType(NatureOfInjury data) async {
+    final db = await _db();
+
+    return db.natureOfInjurys.put(data);
+  }
+
+  Future<int?> cachePetsAndDiseaseTypeTreatmentMethod(
+      PestsAndDiseaseTypeTreatmentMethod data) async {
+    final db = await _db();
+
+    return db.pestsAndDiseaseTypeTreatmentMethods.put(data);
+  }
+
+  Future<int?> cachePropertyDamaged(PropertyDamaged data) async {
+    final db = await _db();
+
+    return db.propertyDamageds.put(data);
+  }
+
+  Future<int?> cacheSpeciesRange(SpeciesRange data) async {
+    final db = await _db();
+
+    return db.speciesRanges.put(data);
+  }
+
+  Future<int?> cacheTrainingType(TrainingType data) async {
+    final db = await _db();
+
+    return db.trainingTypes.put(data);
+  }
+
+  Future<int?> cacheTreatmentMethod(TreatmentMethod data) async {
+    final db = await _db();
+
+    return db.treatmentMethods.put(data);
+  }
+
+  Future<List<SpecialSite>> getSpecialSite() async {
+    final db = await _db();
+
+    return db.specialSites.filter().isActiveEqualTo(1).findAll();
+  }
+
+  Future<List<BiologicalControlAgentType>>
+      getBiologicalControlAgentTypeByGroupSchemeId(int id) async {
+    final db = await _db();
+
+    return db.biologicalControlAgentTypes
+        .filter()
+        .groupSchemeIdEqualTo(id)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<SocialUpliftment>> getSocialUpliftment() async {
+    final db = await _db();
+
+    return db.socialUpliftments.filter().isActiveEqualTo(1).findAll();
+  }
+
+  Future<List<GroupSchemeStakeholder>> getGroupSchemeStakeholderByGroupSchemeId(
+      int id) async {
+    final db = await _db();
+
+    return db.groupSchemeStakeholders
+        .filter()
+        .groupSchemeIdEqualTo(id)
+        .findAll();
+  }
+
+  Future<List<FarmerStakeHolder>> getFarmerStakeHolderByFarmId(
+      String farmId) async {
+    final db = await _db();
+
+    return db.farmerStakeHolders
+        .filter()
+        .farmIdEqualTo(int.parse(farmId))
+        .findAll();
+  }
+
+  Future<List<CustomaryUseRight>> getCustomaryUseRight() async {
+    final db = await _db();
+
+    return db.customaryUseRights.filter().isActiveEqualTo(1).findAll();
+  }
+
+  Future<List<GroupSchemeStakeholder>>
+      getUnsyncedGroupSchemeStakeholderByGroupSchemeId(int id) async {
+    final db = await _db();
+
+    return db.groupSchemeStakeholders
+        .filter()
+        .groupSchemeIdEqualTo(id)
+        .isMasterDataSyncedGreaterThan(1)
+        .isMasterDataSyncedLessThan(1)
+        .findAll();
+  }
+
+  Future<List<TreatmentMethod>> getTreatmentMethodByGroupSchemeId(
+      int id) async {
+    final db = await _db();
+
+    return db.treatmentMethods
+        .filter()
+        .groupSchemeIdEqualTo(id)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<TrainingType>> getTrainingTypeByGroupSchemeId(int id) async {
+    final db = await _db();
+
+    return db.trainingTypes
+        .filter()
+        .groupSchemeIdEqualTo(id)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<SpeciesRange>> getSpeciesRangeByGroupSchemeId(int id) async {
+    final db = await _db();
+
+    return db.speciesRanges
+        .filter()
+        .groupSchemeIdEqualTo(id)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<PropertyDamaged>> getPropertyDamagedByGroupSchemeId(
+      int id) async {
+    final db = await _db();
+
+    return db.propertyDamageds
+        .filter()
+        .groupSchemeIdEqualTo(id)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<PestsAndDiseaseTypeTreatmentMethod>>
+      getPestsAndDiseaseTypeTreatmentMethod() async {
+    final db = await _db();
+
+    return db.pestsAndDiseaseTypeTreatmentMethods
+        .filter()
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<NatureOfInjury>> getNatureOfInjuryByGroupSchemeId(int id) async {
+    final db = await _db();
+
+    return db.natureOfInjurys
+        .filter()
+        .groupSchemeIdEqualTo(id)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<MonitoringRequirement>> getMonitoringRequirementByGroupSchemeId(
+      int id) async {
+    final db = await _db();
+
+    return db.monitoringRequirements
+        .filter()
+        .groupSchemeIdEqualTo(id)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<GroupScheme>> getGroupScheme() async {
+    final db = await _db();
+
+    return db.groupSchemes.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<GrievanceIssue>> getGrievanceIssueByGroupSchemeId(
+      int groupSchemeId) async {
+    final db = await _db();
+
+    return db.grievanceIssues
+        .filter()
+        .groupSchemeIdEqualTo(groupSchemeId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<Gender>> getGender() async {
+    final db = await _db();
+
+    return db.genders.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<FireCause>> getFireCauseByGroupSchemeId(int groupSchemeId) async {
+    final db = await _db();
+
+    return db.fireCauses
+        .filter()
+        .groupSchemeIdEqualTo(groupSchemeId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<ChemicalType>> getCountry() async {
+    final db = await _db();
+
+    return db.chemicalTypes.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<ChemicalType>> getChemicalTypeByFarmId(String farmId) async {
+    final db = await _db();
+
+    return db.chemicalTypes
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<ChemicalApplicationMethod>>
+      getChemicalApplicationMethodByGroupSchemeId(int groupSchemeId) async {
+    final db = await _db();
+
+    return db.chemicalApplicationMethods
+        .filter()
+        .groupSchemeIEqualTo(groupSchemeId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<AsiType>> getAsiTypeByGroupSchemeId(int groupSchemeId) async {
+    final db = await _db();
+
+    return db.asiTypes
+        .filter()
+        .groupSchemeIdEqualTo(groupSchemeId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<AnnualBudgetTransactionCategory>>
+      getAnnualBudgetTransactionCategory() async {
+    final db = await _db();
+
+    return db.annualBudgetTransactionCategorys
+        .filter()
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<Camp>> getUnsyncedCampByFarmId(String farmId) async {
+    final db = await _db();
+
+    return db.camps
+        .filter()
+        .farmIdEqualTo(farmId)
+        .tonsOfCharcoalProducedIsNotNull()
+        .findAll();
+  }
+
+  Future<List<Camp>> getCamp() async {
+    final db = await _db();
+
+    return db.camps.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<AnnualBudgetTransaction>>
+      getUnsyncedAnnualBudgetTransactionByFarmId(String farmId) async {
+    final db = await _db();
+
+    return db.annualBudgetTransactions
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<AnnualBudgetTransaction>> getAnnualBudgetTransactionByFarmId(
+      String farmId) async {
+    final db = await _db();
+
+    return db.annualBudgetTransactions
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<AnnualProductionBudget>>
+      getUnsyncedAnnualProductionBudgetByFarmId(int farmId) async {
+    final db = await _db();
+
+    return db.annualProductionBudgets
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<AnnualProductionBudget>> getAnnualProductionBudgetByFarmId(
+      int farmId) async {
+    final db = await _db();
+
+    return db.annualProductionBudgets
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<AnnualProduction>> getUnsyncedAnnualProductionByFarmId(
+      String farmId) async {
+    final db = await _db();
+
+    return db.annualProductions
+        .filter()
+        .farmIdEqualTo(int.parse(farmId))
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<AnnualProduction>> getAnnualProductionByFarmId(
+      String farmId) async {
+    final db = await _db();
+
+    return db.annualProductions
+        .filter()
+        .farmIdEqualTo(int.parse(farmId))
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<TrainingRegister>> getUnsyncedTrainingByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.trainingRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<TrainingRegister>> getTrainingByFarmId(String farmId) async {
+    final db = await _db();
+    return db.trainingRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<RteSpeciesPhotoModel>> getUnsyncedRteSpeciesPhotoByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.rteSpeciesPhotoModels
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<RteSpeciesPhotoModel>> getRteSpeciesPhotoByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.rteSpeciesPhotoModels
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<RteSpecies>> getUnsyncedRteSpeciesByFarmId(String farmId) async {
+    final db = await _db();
+    return db.rteSpecies
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<RteSpecies>> getRteSpeciesByFarmId(String farmId) async {
+    final db = await _db();
+    return db.rteSpecies
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<RteSpecies>>
+      getUnsyncedPestsAndDiseasesRegisterTreatmentMethod() async {
+    final db = await _db();
+    return db.rteSpecies.filter().isMasterdataSyncedEqualTo(false).findAll();
+  }
+
+  Future<List<RteSpecies>> getPestsAndDiseasesRegisterTreatmentMethod() async {
+    final db = await _db();
+    return db.rteSpecies.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<PetsAndDiseaseRegister>>
+      getUnsyncedPetsAndDiseaseRegisterByFarmId(String farmId) async {
+    final db = await _db();
+    return db.petsAndDiseaseRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<PetsAndDiseaseRegister>> getPetsAndDiseaseRegisterByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.petsAndDiseaseRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<FireRegister>> getUnsyncedFireRegisterByFarmId(
+      String farmId) async {
+    final db = await _db();
+
+    return db.fireRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<FireRegister>> getFireRegisterByFarmId(String farmId) async {
+    final db = await _db();
+
+    return db.fireRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<GrievanceRegister>> getUnsyncedGrievanceRegisterByFarmId(
+      String farmId) async {
+    final db = await _db();
+
+    return db.grievanceRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<GrievanceRegister>> getGrievanceRegisterByFarmId(
+      String farmId) async {
+    final db = await _db();
+
+    return db.grievanceRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .ssActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<ComplaintsAndDisputesRegister>>
+      getUnsyncedComplaintsAndDisputesRegisterByFarmId(String farmId) async {
+    final db = await _db();
+    return db.complaintsAndDisputesRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<ComplaintsAndDisputesRegister>>
+      getComplaintsAndDisputesRegisterByFarmId(String farmId) async {
+    final db = await _db();
+    return db.complaintsAndDisputesRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<IssueType>> getIssueTypeByGroupSchemeId(int id) async {
+    final db = await _db();
+
+    return db.issueTypes
+        .filter()
+        .groupSchemeIdEqualTo(id)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<SanctionRegister>> getUnsyncedSanctionRegisterByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.sanctionRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<SanctionRegister>> getSanctionRegisterByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.sanctionRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<Chemical>> getUnsyncedChemicalByFarmId(String farmId) async {
+    final db = await _db();
+    return db.chemicals.filter().farmIdEqualTo(int.parse(farmId)).findAll();
+  }
+
+  Future<List<Chemical>> getChemicalByFarmId(String farmId) async {
+    final db = await _db();
+    return db.chemicals
+        .filter()
+        .farmIdEqualTo(int.parse(farmId))
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<BiologicalControlAgent>>
+      getUnsyncedBiologicalControlAgentByFarmId(String farmId) async {
+    final db = await _db();
+    return db.biologicalControlAgents
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterDataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<BiologicalControlAgent>> getBiologicalControlAgentByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.biologicalControlAgents
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<AsiPhoto>> getUnsyncedAsiPhoto() async {
+    final db = await _db();
+    return db.asiPhotos.filter().isMasterdataSyncedEqualTo(false).findAll();
+  }
+
+  Future<List<AsiPhoto>> getAsiPhoto() async {
+    final db = await _db();
+    return db.asiPhotos.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<AccidentAndIncident>>
+      getUnsyncedAccidentAndIncidentRegisterByFarmId(String farmId) async {
+    final db = await _db();
+
+    return db.accidentAndIncidents
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterDataSyncedEqualToEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<AccidentAndIncident>> getCountAccidentAndIncidentRegisterByFarmId(
+      String farmId) async {
+    final db = await _db();
+
+    return db.accidentAndIncidents
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<AnimalType>> getAnimalTypeByGroupSchemeId(int id) async {
+    final db = await _db();
+
+    return db.animalTypes
+        .filter()
+        .groupSchemeIdEqualTo(id)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<PestsAndDiseaseType>> getPestsAndDiseaseTypeByGroupSchemeId(
+      int id) async {
+    final db = await _db();
+
+    return db.pestsAndDiseaseTypes
+        .filter()
+        .groupSchemeIdEqualTo(id)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<AccidentAndIncidentPropertyDamaged>>
+      getUnsyncedAccidentAndIncidentPropertyDamaged() async {
+    final db = await _db();
+
+    return db.accidentAndIncidentPropertyDamageds
+        .filter()
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<AccidentAndIncidentPropertyDamaged>>
+      getCountAccidentAndIncidentPropertyDamaged() async {
+    final db = await _db();
+
+    return db.accidentAndIncidentPropertyDamageds
+        .filter()
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<Schedule>> getUpcomingScheduleCountByUserId(int userId) async {
+    final db = await _db();
+
+    return db.schedules
+        .filter()
+        .userIdEqualTo(userId)
+        .isActiveEqualTo(true)
+        .endGreaterThan(DateTime.now().toString())
+        .findAll();
+  }
+
+  Future<List<Asi>> getAsiRegister() async {
+    final db = await _db();
+
+    return db.asis.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<Asi>> getUnsyncedAsiRegister() async {
+    final db = await _db();
+
+    return db.asis.filter().isMasterdataSyncedEqualTo(true).findAll();
+  }
+
+  Future<List<Schedule>> getUnsyncedScheduleCountByUserId(int userId) async {
+    final db = await _db();
+
+    return db.schedules
+        .filter()
+        .userIdEqualTo(userId)
+        .isActiveEqualTo(true)
+        .endGreaterThan(DateTime.now().toString())
+        .findAll();
+  }
+
+  Future<List<ScheduleActivity>> getScheduleActivities() async {
+    final db = await _db();
+
+    return db.scheduleActivitys.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<Worker>> getUnsyncedWorkerCountByFarmId(String farmId) async {
+    final db = await _db();
+    return db.workers
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .isLocalEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<Worker>> getWorkerCountByFarmId(String farmId) async {
+    final db = await _db();
+    return db.workers
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
 
   Future<Company?> getCachedCompany({required int id}) async {
     final db = await _db();
@@ -130,11 +1140,6 @@ class CmoDatabaseMasterService {
     return db.writeTxn(() async {
       return db.companys.put(item);
     });
-  }
-
-  Future<int> cacheGroupScheme(GroupScheme item) async {
-    final db = await _db();
-    return db.groupSchemes.put(item);
   }
 
   Future<int> cacheResourceManagerUnit(ResourceManagerUnit item) async {
@@ -637,7 +1642,8 @@ class CmoDatabaseMasterService {
     return db.stakeHolderTypes.put(item);
   }
 
-  Future<int> cacheFarmPropertyOwnershipType(FarmPropertyOwnershipType item) async {
+  Future<int> cacheFarmPropertyOwnershipType(
+      FarmPropertyOwnershipType item) async {
     final db = await _db();
     return db.farmPropertyOwnershipTypes.put(item);
   }
@@ -672,7 +1678,8 @@ class CmoDatabaseMasterService {
     return db.annualProductions.put(item);
   }
 
-  Future<int> cacheFarmerStakeHolderComplaint(FarmerStakeHolderComplaint item) async {
+  Future<int> cacheFarmerStakeHolderComplaint(
+      FarmerStakeHolderComplaint item) async {
     final db = await _db();
     return db.farmerStakeHolderComplaints.put(item);
   }
@@ -1033,15 +2040,15 @@ class CmoDatabaseMasterService {
   }
 
   Future<int> cacheAuditQuestionPhoto(
-      AuditQuestionPhoto item,
-      ) async {
+    AuditQuestionPhoto item,
+  ) async {
     final db = await _db();
     return db.writeTxn(() => db.auditQuestionPhotos.put(item));
   }
 
   Future<int> cacheAuditQuestion(
-      AuditQuestion item,
-      ) async {
+    AuditQuestion item,
+  ) async {
     final db = await _db();
     return db.writeTxn(() => db.auditQuestions.put(item));
   }
@@ -1059,23 +2066,31 @@ class CmoDatabaseMasterService {
     return db.questionPhotos.filter().photoPathEqualTo(photoPath).findFirst();
   }
 
-  Future<AuditQuestionPhoto?> getAuditQuestionPhotoByPhotoPath(String? photoPath) async {
+  Future<AuditQuestionPhoto?> getAuditQuestionPhotoByPhotoPath(
+      String? photoPath) async {
     if (photoPath == null) return null;
     final db = await _db();
-    return db.auditQuestionPhotos.filter().photoPathEqualTo(photoPath).findFirst();
+    return db.auditQuestionPhotos
+        .filter()
+        .photoPathEqualTo(photoPath)
+        .findFirst();
   }
 
   Future<int> cacheAuditQuestionComment(
-      AuditQuestionComment item,
-      ) async {
+    AuditQuestionComment item,
+  ) async {
     final db = await _db();
     return db.writeTxn(() => db.auditQuestionComments.put(item));
   }
 
-  Future<AuditQuestionComment?> getAuditQuestionCommentByComment(String? comment) async {
+  Future<AuditQuestionComment?> getAuditQuestionCommentByComment(
+      String? comment) async {
     if (comment == null) return null;
     final db = await _db();
-    return db.auditQuestionComments.filter().commentEqualTo(comment).findFirst();
+    return db.auditQuestionComments
+        .filter()
+        .commentEqualTo(comment)
+        .findFirst();
   }
 
   Future<int> cacheAuditQuestionAnswer(AuditQuestionAnswer item) async {
@@ -1089,7 +2104,8 @@ class CmoDatabaseMasterService {
         .filter()
         .isActiveEqualTo(true)
         .statusEqualTo(1)
-        .completedEqualTo(null).or()
+        .completedEqualTo(null)
+        .or()
         .completedEqualTo(false)
         .sortByCreateDTDesc()
         .findAll();
@@ -1212,8 +2228,8 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<AuditQuestionAnswer>> getAuditQuestionAnswersWithAuditId(
-      int? auditId,
-      ) async {
+    int? auditId,
+  ) async {
     if (auditId == null) return <AuditQuestionAnswer>[];
     final db = await _db();
     try {

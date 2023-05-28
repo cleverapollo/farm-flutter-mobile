@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'annual_production.freezed.dart';
-
 part 'annual_production.g.dart';
 
 @freezed
@@ -21,17 +20,21 @@ class AnnualProduction with _$AnnualProduction {
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,
     @JsonKey(name: 'WorkCycles') double? workCycles,
-    @JsonKey(name: 'AnnualCharcoalProductionPerPerson') double? annualCharcoalProductionPerPerson,
-    @JsonKey(name: 'AnnualCharcoalProductionPerTeam') double? annualCharcoalProductionPerTeam,
+    @JsonKey(name: 'AnnualCharcoalProductionPerPerson')
+        double? annualCharcoalProductionPerPerson,
+    @JsonKey(name: 'AnnualCharcoalProductionPerTeam')
+        double? annualCharcoalProductionPerTeam,
     @JsonKey(name: 'ConversionWoodToCharcoal') double? conversionWoodToCharcoal,
     @JsonKey(name: 'AnnualWoodBiomassRemoved') double? annualWoodBiomassRemoved,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
     @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
   }) = _AnnualProduction;
 
   const AnnualProduction._();
 
-  factory AnnualProduction.fromJson(Map<String, dynamic> json) => _$AnnualProductionFromJson(json);
+  factory AnnualProduction.fromJson(Map<String, dynamic> json) =>
+      _$AnnualProductionFromJson(json);
 
   @override
   Id get id => annualProductionId ?? Isar.autoIncrement;

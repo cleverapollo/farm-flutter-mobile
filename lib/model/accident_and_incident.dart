@@ -25,9 +25,12 @@ class AccidentAndIncident with _$AccidentAndIncident {
     @JsonKey(name: 'CreateDT') DateTime? createDT,
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsMasterDataSyncedEqualTo') bool? isMasterDataSyncedEqualTo,
     @JsonKey(includeFromJson: false, includeToJson: false) String? workerName,
-    @JsonKey(includeFromJson: false, includeToJson: false) String? jobDescription,
-    @JsonKey(includeFromJson: false, includeToJson: false) String? natureOfInjury,
+    @JsonKey(includeFromJson: false, includeToJson: false)
+        String? jobDescription,
+    @JsonKey(includeFromJson: false, includeToJson: false)
+        String? natureOfInjury,
   }) = _AccidentAndIncident;
 
   const AccidentAndIncident._();
