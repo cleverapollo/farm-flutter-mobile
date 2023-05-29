@@ -1121,6 +1121,19 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+  }
+
+  Future<List<Assessment>> getAllAssessments({
+    required int userId,
+    required int companyId,
+  }) async {
+    final db = await _db();
+    return db.assessments
+        .filter()
+        .companyIdEqualTo(companyId)
+        .userIdEqualTo(userId)
+        .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
         .findAll();
   }
 

@@ -38,9 +38,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SyncSummaryCubit extends Cubit<SyncSummaryState> {
-  SyncSummaryCubit() : super(SyncSummaryState()) {
-    onInitialData();
-  }
+  SyncSummaryCubit() : super(SyncSummaryState());
 
   final _databaseMasterService = cmoDatabaseMasterService;
   final _databaseService = cmoDatabaseService;
@@ -57,23 +55,13 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     try {
       await _databaseMasterService.db.then((value) async {
         final futures = <Future<dynamic>>[];
-        user = await CmoApiService().getUser();
-
-        companies =
-            await CmoApiService().getCompaniesByUserId(userId: user!.userId!);
-
-        if (companies!.isEmpty) return;
-
-        company = companies?.firstWhereOrNull((e) => e.isInUse ?? false,
-            orElse: () => companies!.first);
+        user = await configService.getActiveUser();
+        company = await configService.getActiveCompany();
 
         if (company?.companyId == null || user?.userId == null) return;
 
         final companyId = company!.companyId;
         final userId = user!.userId!;
-
-        debugPrint('TuNT------' + companyId.toString());
-        debugPrint('TuNT------' + userId.toString());
 
         futures
           ..add(_databaseMasterService
@@ -82,12 +70,29 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
           ..add(_databaseMasterService
               .getQuestionByCompanyId(companyId)
               .then((value) => data = data.copyWith(mdQuestion: value.length)))
-          ..add(_databaseService
-              .getAssessmentTotalsByCompanyIdAndUserId(companyId, userId)
-              .then((value) => data = data.copyWith(
-                    adInprogress: value.totalInProgress,
-                    adUnsynced: value.totalUnSynced,
-                  )))
+          ..add(
+            _databaseMasterService
+                .getAllAssessments(
+                  companyId: companyId,
+                  userId: userId,
+                )
+                .then(
+                  (value) => data = data.copyWith(
+                    adInprogress: value
+                        .where(
+                          (element) =>
+                              element.statusEnum == AssessmentStatus.started,
+                        )
+                        .length,
+                    adUnsynced: value
+                        .where(
+                          (element) =>
+                              element.statusEnum == AssessmentStatus.completed,
+                        )
+                        .length,
+                  ),
+                ),
+          )
           ..add(_databaseMasterService.getWorkersLocal().then(
               (value) => data = data.copyWith(mdUnsyncWoker: value.length)))
           ..add(_databaseMasterService.getCompliances().then(

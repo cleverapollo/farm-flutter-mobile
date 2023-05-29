@@ -13,6 +13,7 @@ import 'package:cmo/model/data/worker.dart';
 import 'package:cmo/state/assessment_cubit/assessment_cubit.dart';
 import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_item_selected_screen.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_location_screen.dart';
@@ -70,6 +71,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
         context.read<AssessmentListCubit>().loadStarted(),
         context.read<AssessmentListCubit>().loadCompleted(),
         context.read<AssessmentListCubit>().loadSynced(),
+        context.read<DashboardCubit>().getDataBehaveRole(),
       ]);
     }
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cmo/model/group_scheme.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,5 +54,29 @@ class ConfigService {
     final rawJson = sp.getString('ActiveGroupScheme');
     if (rawJson == null) return null;
     return GroupScheme.fromJson(jsonDecode(rawJson) as Map<String, dynamic>);
+  }
+
+  Future<bool> setActiveCompany({required Company company}) async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setString('ActiveCompany', jsonEncode(company.toJson()));
+  }
+
+  Future<Company?> getActiveCompany() async {
+    final sp = await SharedPreferences.getInstance();
+    final rawJson = sp.getString('ActiveCompany');
+    if (rawJson == null) return null;
+    return Company.fromJson(jsonDecode(rawJson) as Map<String, dynamic>);
+  }
+
+  Future<bool> setActiveUser({required UserInfo userInfo}) async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setString('ActiveUser', jsonEncode(userInfo.toJson()));
+  }
+
+  Future<UserInfo?> getActiveUser() async {
+    final sp = await SharedPreferences.getInstance();
+    final rawJson = sp.getString('ActiveUser');
+    if (rawJson == null) return null;
+    return UserInfo.fromJson(jsonDecode(rawJson) as Map<String, dynamic>);
   }
 }

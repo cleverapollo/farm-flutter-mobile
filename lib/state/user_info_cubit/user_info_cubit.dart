@@ -41,6 +41,7 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
 
       await Future.wait(futures);
 
+      await configService.setActiveUser(userInfo: res);
       emit(UserInfoState.data(userInfo: res, userRoles: roles));
     } else {
       emit(UserInfoState.error());

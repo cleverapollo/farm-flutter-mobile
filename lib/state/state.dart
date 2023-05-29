@@ -15,4 +15,5 @@ export 'stake_holder_list_cubit/stake_holder_list_cubit.dart';
 export 'dashboard/dashboard_cubit.dart';
 export 'labour_management/labour_management_cubit.dart';
 export 'compartment_cubit/compartment_cubit.dart';
+export 'behave_sync_summary_cubit/sync_summary_cubit.dart';
 

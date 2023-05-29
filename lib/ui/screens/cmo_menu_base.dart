@@ -254,7 +254,6 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
   Widget buildEntity(BuildContext context) {
     return CmoTappable(
       onTap: () {
-        // GlobalEntityScreen.pushReplacement(context);
         pushEntityScreen(context);
       },
       child: SizedBox(

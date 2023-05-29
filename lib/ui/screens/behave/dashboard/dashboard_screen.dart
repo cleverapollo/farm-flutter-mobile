@@ -18,6 +18,9 @@ class _BehaveDashboardScreenState extends State<BehaveDashboardScreen> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() async {
+      await context.read<DashboardCubit>().getDataBehaveRole();
+    });
   }
 
   @override
@@ -43,12 +46,10 @@ class _BehaveDashboardScreenState extends State<BehaveDashboardScreen> {
         }
 
         return RefreshIndicator(
-          onRefresh: () {
-            return context.read<DashboardCubit>().initializeBehave();
-          },
+          onRefresh: () async => context.read<DashboardCubit>().getDataBehaveRole(),
           child: ListView(
             clipBehavior: Clip.none,
-            physics: const ClampingScrollPhysics(),
+            // physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.all(20),
             children: [
               CmoTappable(

@@ -10,7 +10,7 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SyncSummaryScreen extends StatelessWidget {
+class SyncSummaryScreen extends StatefulWidget {
   const SyncSummaryScreen({super.key});
 
   static void push(BuildContext context) {
@@ -20,11 +20,23 @@ class SyncSummaryScreen extends StatelessWidget {
   }
 
   @override
+  State<StatefulWidget> createState() => _SyncSummaryScreenState();
+}
+
+class _SyncSummaryScreenState extends State<SyncSummaryScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      await context.read<SyncSummaryCubit>().onInitialData();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider<SyncSummaryCubit>(
-        create: (_) => SyncSummaryCubit(),
-        child: BlocConsumer<SyncSummaryCubit, SyncSummaryState>(
-          listener: (_, __) {},
+    return BlocSelector<SyncSummaryCubit, SyncSummaryState, SyncSummaryState>(
+          selector: (state) => state,
           builder: (context, state) {
             return Scaffold(
               appBar: CmoAppBar(
@@ -93,7 +105,7 @@ class SyncSummaryScreen extends StatelessWidget {
               ),
             );
           },
-        ));
+        );
   }
 }
 

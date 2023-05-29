@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:equatable/equatable.dart';
@@ -22,18 +23,40 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     }
   }
 
-  Future<void> initializeBehave() async {
+  Future<void> getDataBehaveRole() async {
     try {
-      await getTotalAssessments();
+      final activeUserInfo = await configService.getActiveUser();
+      final activeCompany = await configService.getActiveCompany();
+      await getTotalAssessments(
+        activeUserInfo?.userId,
+        activeCompany?.companyId,
+      );
+
     } catch (error) {
       handleError(error);
     }
   }
 
-  Future<void> getTotalAssessments() async {
+  Future<void> getTotalAssessments(int? userId, int? companyId) async {
+    if (userId == null || companyId == null) return;
     final service = cmoDatabaseMasterService;
-    // final totalAssessments = await service.getAllAssessments();
-    // emit(state.copyWith(totalAssessments: totalAssessments.length));
+    final totalAssessments = await service.getAllAssessments(
+      companyId: companyId,
+      userId: userId,
+    );
+
+    emit(
+      state.copyWith(
+        totalAssessments: totalAssessments.length,
+        totalIncompleteAssessments: totalAssessments
+            .where((element) => element.statusEnum == AssessmentStatus.started)
+            .length,
+        totalCompletedAssessments: totalAssessments
+            .where(
+                (element) => element.statusEnum == AssessmentStatus.completed)
+            .length,
+      ),
+    );
   }
 
   Future<void> getTotalWorkers() async {

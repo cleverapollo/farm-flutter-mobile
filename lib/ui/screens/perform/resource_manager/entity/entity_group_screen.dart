@@ -104,11 +104,12 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
               onTap: () {
                 if (selectedGroupScheme == null ||
                     selectedResourceManagerUnit == null) {
-                  showSnackError(msg: 'Select Group Scheme and RMU first');
+                  return;
                 } else {
                   EntityBehaveScreen.push(
                     context,
                     onSelectedCompany: (company) async {
+                      await configService.setActiveCompany(company: company);
                       setState(() {
                         selectedCompany = company;
                       });
