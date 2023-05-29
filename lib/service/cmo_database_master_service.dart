@@ -8,7 +8,6 @@ import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/disciplinaries/disciplonaries.dart';
 import 'package:cmo/model/farm_property_ownner_ship_type/farm_property_owner_ship_type.dart';
 import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
-import 'package:cmo/model/gender/gender.dart';
 import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/group_scheme_stakeholder/group_scheme_stakeholder.dart';
 import 'package:cmo/model/model.dart';
@@ -1121,6 +1120,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .findAll();
   }
 
   Future<List<Assessment>> getAllAssessments({

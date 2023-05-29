@@ -17,7 +17,6 @@ import 'package:cmo/model/customary_use_right/customary_use_right.dart';
 import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
 import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/fire_cause/fire_cause.dart';
-import 'package:cmo/model/gender/gender.dart';
 import 'package:cmo/model/grievance_issue/grievance_issue.dart';
 import 'package:cmo/model/grievance_register/grievance_register.dart';
 import 'package:cmo/model/group_scheme.dart';
