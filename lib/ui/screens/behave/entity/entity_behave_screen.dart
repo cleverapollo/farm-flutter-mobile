@@ -83,15 +83,8 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
               company: selected!,
               userDeviceId: context.read<UserDeviceCubit>().data?.userDeviceId,
             );
-
-        if (widget.onSelectedCompany == null) {
-          CmoDashboardBase.push(context);
-        } else {
-          widget.onSelectedCompany!(selected!);
-        }
+        CmoDashboardBase.push(context);
       }
-
-
     } finally {
       setState(() => loading = false);
     }

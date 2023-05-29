@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cmo/enum/user_role_enum.dart';
 import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
@@ -78,5 +79,19 @@ class ConfigService {
     final rawJson = sp.getString('ActiveUser');
     if (rawJson == null) return null;
     return UserInfo.fromJson(jsonDecode(rawJson) as Map<String, dynamic>);
+  }
+
+  Future setActiveUserRole({required UserRoleEnum userRole}) async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setInt('ActiveUserRole', userRole.value);
+  }
+
+  Future<UserRoleEnum> getActiveUserRole() async {
+    final sp = await SharedPreferences.getInstance();
+    int selectedValue = sp.getInt("ActiveUserRole") ?? 0;
+    for (var element in UserRoleEnum.values) {
+      if (element.value == selectedValue) return element;
+    }
+    return UserRoleEnum.behave;
   }
 }

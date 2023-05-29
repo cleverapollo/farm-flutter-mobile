@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/group_scheme.dart';
@@ -102,22 +103,13 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
             _EntityCard(
                   LocaleKeys.company.tr(),
               onTap: () {
-                if (selectedGroupScheme == null ||
-                    selectedResourceManagerUnit == null) {
-                  return;
-                } else {
-                  EntityBehaveScreen.push(
-                    context,
-                    onSelectedCompany: (company) async {
-                      await configService.setActiveCompany(company: company);
-                      setState(() {
-                        selectedCompany = company;
-                      });
-
-                      await _onNext();
-                    },
-                  );
-                }
+                EntityBehaveScreen.push(
+                  context,
+                  onSelectedCompany: (company) async {
+                    await configService.setActiveCompany(company: company);
+                    configService.setActiveUserRole(userRole: UserRoleEnum.behave);
+                  },
+                );
               },
             ),
             Divider(
@@ -141,6 +133,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
 
     await configService.setActiveRegionalManager(unit: selectedResourceManagerUnit!);
     await configService.setActiveGroupScheme(groupScheme: selectedGroupScheme!);
+    configService.setActiveUserRole(userRole: UserRoleEnum.resourceManager);
     if (mounted) {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (_) => RMSyncScreen()));

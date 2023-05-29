@@ -1,9 +1,11 @@
 enum UserRoleEnum {
-  behave,
-  resourceManager,
-  farmerMember;
+  behave(0),
+  resourceManager(1),
+  farmerMember(2);
 
-  const UserRoleEnum();
+  const UserRoleEnum(this.value);
+
+  final int value;
 
   bool get isBehave {
     if (this == UserRoleEnum.behave) {

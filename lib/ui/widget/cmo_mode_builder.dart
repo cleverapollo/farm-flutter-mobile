@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cmo/di.dart';
@@ -16,11 +17,19 @@ class CmoModeBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    behaveBuilder(context);
-    return appInfoService.mode.join(
-      (behave) => behaveBuilder(context),
-      (resourceManager) => resourceManagerBuilder(context),
-      (farmer) => farmerBuilder(context),
+    return FutureBuilder<UserRoleEnum?>(
+      future: configService.getActiveUserRole(),
+      builder: (_, snapshot) {
+        switch (snapshot.data) {
+          case UserRoleEnum.behave:
+            return behaveBuilder(context);
+          case UserRoleEnum.resourceManager:
+            return resourceManagerBuilder(context);
+          case UserRoleEnum.farmerMember:
+            return farmerBuilder(context);
+        }
+        return Container();
+      },
     );
   }
 }

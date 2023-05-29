@@ -1,17 +1,10 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/extensions/iterable_extensions.dart';
-import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/user_role_portal.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/entity_group_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/entity/group_scheme_entity_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/entity/resource_manager_unit_entity.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar.dart';
-import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GlobalEntityScreen extends StatefulWidget {
@@ -48,6 +41,7 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
       final isBehave = context.read<UserInfoCubit>().state.isBehave;
       final isPerform = context.read<UserInfoCubit>().state.isPerform;
       if (!isPerform) {
+        configService.setActiveUserRole(userRole: UserRoleEnum.behave);
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (_) => const EntityBehaveScreen(),
@@ -58,16 +52,12 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
       if (isPerform) {
         final isResourceManager = context.read<UserInfoCubit>().state.isResourceManager;
         if (!isResourceManager) {
+          configService.setActiveUserRole(userRole: UserRoleEnum.farmerMember);
           Navigator.of(context).pushReplacement(EntityFarmerScreen.pageRoute());
           return;
         }
-        if (await configService.isRMSynced()) {
-          CmoDashboardBase.push(context);
-        } else {
-          Navigator.of(context)
-              .pushReplacement(EntityGroupScreen.pageRoute(isBehave: isBehave));
-        }
-        return;
+        Navigator.of(context)
+            .pushReplacement(EntityGroupScreen.pageRoute(isBehave: isBehave));
       }
     });
   }
