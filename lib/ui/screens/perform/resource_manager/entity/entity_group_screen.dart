@@ -105,10 +105,6 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
               onTap: () {
                 EntityBehaveScreen.push(
                   context,
-                  onSelectedCompany: (company) async {
-                    await configService.setActiveCompany(company: company);
-                    configService.setActiveUserRole(userRole: UserRoleEnum.behave);
-                  },
                 );
               },
             ),

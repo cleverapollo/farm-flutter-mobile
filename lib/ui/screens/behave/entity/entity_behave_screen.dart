@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cmo/di.dart';
+import 'package:cmo/enum/user_role_enum.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/company.dart';
 import 'package:cmo/state/assessment_cubit/assessment_cubit.dart';
@@ -78,6 +80,8 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
       await context.read<UserDeviceCubit>().createUserDevice(context);
 
       if (context.mounted) {
+        await configService.setActiveCompany(company: selected!);
+        await configService.setActiveUserRole(userRole: UserRoleEnum.behave);
         await context.read<EntityCubit>().syncBehave(
               context: context,
               company: selected!,
