@@ -2318,30 +2318,6 @@ class CmoDatabaseMasterService {
     return db.audits
         .filter()
         .isActiveEqualTo(true)
-        .statusEqualTo(1)
-        .completedEqualTo(null)
-        .or()
-        .completedEqualTo(false)
-        .sortByCreateDTDesc()
-        .findAll();
-  }
-
-  Future<List<Audit>> getAllAuditsCompleted() async {
-    final db = await _db();
-    return db.audits
-        .filter()
-        .isActiveEqualTo(true)
-        .completedEqualTo(true)
-        .sortByCreateDTDesc()
-        .findAll();
-  }
-
-  Future<List<Audit>> getAllAuditsSynced() async {
-    final db = await _db();
-    return db.audits
-        .filter()
-        .isActiveEqualTo(true)
-        .statusEqualTo(3)
         .sortByCreateDTDesc()
         .findAll();
   }
