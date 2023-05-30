@@ -12,7 +12,7 @@ class Criteria with _$Criteria {
     @JsonKey(name: 'CriteriaId') required int criteriaId,
     @JsonKey(name: 'CriteriaName') String? criteriaName,
     @JsonKey(name: 'CriteriaDescription') String? criteriaDescription,
-    @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
   }) = _Criteria;
 
   factory Criteria.fromJson(Map<String, dynamic> json) =>

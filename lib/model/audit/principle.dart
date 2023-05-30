@@ -12,7 +12,7 @@ class Principle with _$Principle {
     @JsonKey(name: 'PrincipleId') required int principleId,
     @JsonKey(name: 'PrincipleName') String? principleName,
     @JsonKey(name: 'PrincipleDescription') String? principleDescription,
-    @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
   }) = _Principle;
 
   factory Principle.fromJson(Map<String, dynamic> json) =>

@@ -1704,12 +1704,6 @@ class CmoDatabaseMasterService {
     return db.rejectReasons.put(item);
   }
 
-  Future<List<RejectReason>> getRejectReasons() async {
-    final db = await _db();
-
-    return db.rejectReasons.filter().isActiveEqualTo(true).findAll();
-  }
-
   Future<int> cacheTrainingProvider(
     TrainingProvider item,
   ) async {
@@ -2459,6 +2453,91 @@ class CmoDatabaseMasterService {
     }
 
     return <AuditQuestion>[];
+  }
+
+  Future<List<Principle>> getPrinciples() async {
+    final db = await _db();
+    try {
+      final principles = await db.principles
+          .filter()
+          .isActiveEqualTo(true)
+          .sortByPrincipleName()
+          .findAll();
+
+      return principles;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Principle>[];
+  }
+
+  Future<List<Car>> getCars() async {
+    final db = await _db();
+    try {
+      final cars = await db.cars
+          .filter()
+          .isActiveEqualTo(true)
+          .sortByCarName()
+          .findAll();
+
+      return cars;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Car>[];
+  }
+
+  Future<List<Indicator>> getIndicators() async {
+    final db = await _db();
+    try {
+      final indicators = await db.indicators
+          .filter()
+          .isActiveEqualTo(true)
+          .sortByIndicatorName()
+          .findAll();
+
+      return indicators;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Indicator>[];
+  }
+
+  Future<List<Criteria>> getCriterias() async {
+    final db = await _db();
+    try {
+      final criterias = await db.criterias
+          .filter()
+          .isActiveEqualTo(true)
+          .sortByCriteriaName()
+          .findAll();
+
+      return criterias;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Criteria>[];
+  }
+
+  Future<List<RejectReason>> getRejectReasons() async {
+    final db = await _db();
+    try {
+      final rejectReasons = await db.rejectReasons
+          .filter()
+          .isActiveEqualTo(true)
+          .sortByRejectReasonName()
+          .findAll();
+
+      return rejectReasons;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <RejectReason>[];
   }
 
   Future<List<AuditQuestion>> getListAuditQuestion({

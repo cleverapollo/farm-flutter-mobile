@@ -80,38 +80,41 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     emit(state.copyWith(filteredQuestions: filterList));
   }
 
+  Future<void> getPrinciples() async {
+    final principles = await cmoDatabaseMasterService.getPrinciples();
+    emit(state.copyWith(principles: principles));
+  }
+
+  Future<void> getCriterias() async {
+    final criterias = await cmoDatabaseMasterService.getCriterias();
+    emit(state.copyWith(criterias: criterias));
+  }
+
+  Future<void> getCars() async {
+    final cars = await cmoDatabaseMasterService.getCars();
+    emit(state.copyWith(cars: cars));
+  }
+
+  Future<void> getIndicators() async {
+    final indicators = await cmoDatabaseMasterService.getIndicators();
+    emit(state.copyWith(indicators: indicators));
+  }
+
+  Future<void> getRejectReasons() async {
+    final rejectReasons = await cmoDatabaseMasterService.getRejectReasons();
+    emit(state.copyWith(rejectReasons: rejectReasons));
+  }
+
   Future<void> initialize(Audit audit) async {
     try {
       logger.d('Initialise auditId: ${audit.auditId}');
       emit(state.copyWith(audit: audit));
 
-      const principles = <Principle>[
-        Principle(principleId: 1, principleName: 'Principle 1'),
-        Principle(principleId: 2, principleName: 'Principle 2'),
-      ];
-      emit(state.copyWith(principles: principles));
-
-      const criterias = <Criteria>[
-        Criteria(criteriaId: 1, criteriaName: 'Criteria 1'),
-        Criteria(criteriaId: 2, criteriaName: 'Criteria 2'),
-      ];
-      emit(state.copyWith(criterias: criterias));
-
-      const cars = <Car>[
-        Car(carId: 1, carName: 'Car 1'),
-        Car(carId: 2, carName: 'Car 2'),
-      ];
-      emit(state.copyWith(cars: cars));
-
-      const indicators = <Indicator>[
-        Indicator(indicatorId: 1, indicatorName: 'Indicator 1'),
-        Indicator(indicatorId: 2, indicatorName: 'Indicator 2'),
-      ];
-      emit(state.copyWith(indicators: indicators));
-
-      final rejectReasons = await cmoDatabaseMasterService.getRejectReasons();
-      emit(state.copyWith(rejectReasons: rejectReasons));
-
+      await getPrinciples();
+      await getCriterias();
+      await getCars();
+      await getIndicators();
+      await getRejectReasons();
       await getListAuditCompliances();
       await refresh();
     } catch (error) {

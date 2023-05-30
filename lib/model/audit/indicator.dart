@@ -12,7 +12,7 @@ class Indicator with _$Indicator {
     @JsonKey(name: 'IndicatorId') required int indicatorId,
     @JsonKey(name: 'IndicatorName') String? indicatorName,
     @JsonKey(name: 'IndicatorDescription') String? indicatorDescription,
-    @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
   }) = _Indicator;
 
   factory Indicator.fromJson(Map<String, dynamic> json) =>

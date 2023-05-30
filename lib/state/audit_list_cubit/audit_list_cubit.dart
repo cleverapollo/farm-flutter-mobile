@@ -34,7 +34,8 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
     try {
       final data = state.listAudits
           .where(
-              (element) => element.completed == true && element.synced == false)
+            (element) => element.completed == true && element.synced == false,
+          )
           .toList();
       emit(state.copyWith(filterAudits: data));
     } catch (e) {
@@ -50,7 +51,8 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
     try {
       final data = state.listAudits
           .where(
-              (element) => element.completed == true && element.synced == true)
+            (element) => element.completed == true && element.synced == true,
+          )
           .toList();
       emit(state.copyWith(filterAudits: data));
     } catch (e) {
