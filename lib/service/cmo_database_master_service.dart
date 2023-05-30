@@ -3,20 +3,6 @@
 import 'dart:io';
 
 import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/model/data/question_comment.dart';
-import 'package:cmo/model/data/question_photo.dart';
-import 'package:cmo/model/disciplinaries/disciplonaries.dart';
-import 'package:cmo/model/farm_property_ownner_ship_type/farm_property_owner_ship_type.dart';
-import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
-import 'package:cmo/model/group_scheme.dart';
-import 'package:cmo/model/group_scheme_stakeholder/group_scheme_stakeholder.dart';
-import 'package:cmo/model/model.dart';
-import 'package:cmo/model/resource_manager_unit.dart';
-import 'package:cmo/model/user/user_role.dart';
-import 'package:cmo/model/user_role_portal.dart';
-import 'package:cmo/utils/utils.dart';
-import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:cmo/model/accident_and_incident.dart';
 import 'package:cmo/model/accident_and_incident_property_damaged/accident_and_incident_property_damaged.dart';
 import 'package:cmo/model/annual_budget_transaction/annual_budget_transaction.dart';
@@ -30,13 +16,22 @@ import 'package:cmo/model/chemical.dart';
 import 'package:cmo/model/chemical_application_method/chemical_application_method.dart';
 import 'package:cmo/model/chemical_type/chemical_type.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
+import 'package:cmo/model/config/config.dart';
 import 'package:cmo/model/country/country.dart';
 import 'package:cmo/model/customary_use_right/customary_use_right.dart';
+import 'package:cmo/model/data/question_comment.dart';
+import 'package:cmo/model/data/question_photo.dart';
+import 'package:cmo/model/disciplinaries/disciplonaries.dart';
+import 'package:cmo/model/farm_property_ownner_ship_type/farm_property_owner_ship_type.dart';
+import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
 import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/fire_cause/fire_cause.dart';
 import 'package:cmo/model/grievance_issue/grievance_issue.dart';
 import 'package:cmo/model/grievance_register/grievance_register.dart';
+import 'package:cmo/model/group_scheme.dart';
+import 'package:cmo/model/group_scheme_stakeholder/group_scheme_stakeholder.dart';
 import 'package:cmo/model/issue_type/issue_type.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/model/monitoring_requirement/monitoring_requirement.dart';
 import 'package:cmo/model/nature_of_injury/nature_of_injury.dart';
 import 'package:cmo/model/pest_and_disease_type/pest_and_disease_type.dart';
@@ -44,6 +39,7 @@ import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and
 import 'package:cmo/model/pets_and_disease_type_treatment_method/pets_and_disease_type_treatment_method.dart';
 import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
 import 'package:cmo/model/property_damaged/property_damaged.dart';
+import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/sanction_register/sanction_register.dart';
 import 'package:cmo/model/social_upliftment/social_upliftment.dart';
 import 'package:cmo/model/special_site/special_site.dart';
@@ -52,6 +48,11 @@ import 'package:cmo/model/species_type/species_type.dart';
 import 'package:cmo/model/training/training_register.dart';
 import 'package:cmo/model/training_type/training_type.dart';
 import 'package:cmo/model/treament_method/treament_method.dart';
+import 'package:cmo/model/user/user_role.dart';
+import 'package:cmo/model/user_role_portal.dart';
+import 'package:cmo/utils/utils.dart';
+import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CmoDatabaseMasterService {
   factory CmoDatabaseMasterService() {
@@ -174,6 +175,7 @@ class CmoDatabaseMasterService {
         FarmerStakeHolderSchema,
         DisciplinariesSchema,
         GroupSchemeStakeholderSchema,
+        ConfigDataSchema,
       ],
       name: _databaseName,
       directory: dir.path,
@@ -188,6 +190,20 @@ class CmoDatabaseMasterService {
   }
 
   Future<Isar> get db => _db();
+
+  Future<int?> cacheConfigData(ConfigData data) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.configDatas.put(data);
+    });
+  }
+
+  Future<ConfigData?> getConfig(ConfigEnum config) async {
+    final db = await _db();
+
+    return db.configDatas.filter().configNameEqualTo(config.name).findFirst();
+  }
 
   Future<int?> cacheAnnFarmPro(AnnualProduction data) async {
     final db = await _db();

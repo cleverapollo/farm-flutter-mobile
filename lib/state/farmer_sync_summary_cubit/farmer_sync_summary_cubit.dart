@@ -12,6 +12,7 @@ import 'package:cmo/model/camp.dart';
 import 'package:cmo/model/chemical.dart';
 import 'package:cmo/model/chemical_application_method/chemical_application_method.dart';
 import 'package:cmo/model/chemical_type/chemical_type.dart';
+import 'package:cmo/model/config/config.dart';
 import 'package:cmo/model/country/country.dart';
 import 'package:cmo/model/customary_use_right/customary_use_right.dart';
 import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
@@ -63,8 +64,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
 
   int get userDeviceId => userDeviceCubit.data!.userDeviceId!;
 
-  final int groupSchemeId = 12;
-  final String farmId = '1567519395647';
+  late int groupSchemeId;
+  late String farmId;
 
   Future<void> onSync() async {
     if (state.isSyncing) return;
@@ -1390,6 +1391,14 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
 
   Future<void> initData() async {
     emit(state.copyWith(isLoading: true));
+
+    final groupSchemeConfig = await cmoDatabaseMasterService
+        .getConfig(ConfigEnum.activeGroupSchemeId);
+    final farmConfig =
+        await cmoDatabaseMasterService.getConfig(ConfigEnum.activeFarmId);
+
+    groupSchemeId = int.parse(groupSchemeConfig?.configValue ?? '');
+    farmId = farmConfig?.configValue ?? '';
 
     final databaseMasterService = cmoDatabaseMasterService;
     final futures = <Future<dynamic>>[];
