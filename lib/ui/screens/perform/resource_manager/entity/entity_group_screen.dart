@@ -122,8 +122,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
 
   Future<void> _onNext() async {
     if (selectedGroupScheme == null ||
-        selectedResourceManagerUnit == null ||
-        (widget.isBehave && selectedCompany == null)) {
+        selectedResourceManagerUnit == null) {
       return;
     }
 
