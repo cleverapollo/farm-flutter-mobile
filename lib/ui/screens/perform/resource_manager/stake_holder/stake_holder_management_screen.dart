@@ -118,13 +118,13 @@ class _StakeHolderManagementScreenState
   }
 
   PreferredSizeWidget? _buildCustomAppBar() {
-    if (appInfoService.mode == AppMode.resourceManager()) {
+    if (context.read<UserInfoCubit>().state.isResourceManager) {
       return CmoAppBarV2(
         title: LocaleKeys.stakeholderManagement.tr(),
         subtitle: '${LocaleKeys.siteName.tr()}: Imbeza',
         showLeading: true,
       );
-    } else if (appInfoService.mode == AppMode.farmer()) {
+    } else if (context.read<UserInfoCubit>().state.isPerform) {
       return AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -167,12 +167,12 @@ class _StakeHolderManagementScreenState
     required StakeHolder model,
     required bool haveGreyBackground,
   }) {
-    if (appInfoService.mode == AppMode.resourceManager()) {
+    if (context.read<UserInfoCubit>().state.isResourceManager) {
       return RmModeStakeHolderItem(
         model: model,
         onTap: () {},
       );
-    } else if (appInfoService.mode == AppMode.farmer()) {
+    } else if (context.read<UserInfoCubit>().state.isPerform) {
       return FarmerModeStakeHolderItem(
         model: model,
         haveGreyBackground: haveGreyBackground,
