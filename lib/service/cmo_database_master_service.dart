@@ -2319,7 +2319,7 @@ class CmoDatabaseMasterService {
     return db.writeTxn(() => db.auditQuestionAnswers.put(item));
   }
 
-  Future<List<Audit>> getAllAuditsIncomplete() async {
+  Future<List<Audit>> getAllAudits() async {
     final db = await _db();
     return db.audits
         .filter()

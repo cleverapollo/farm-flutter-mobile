@@ -52,6 +52,7 @@ class DismissibleAuditItem extends StatelessWidget {
             }
 
             onRemove();
+            return null;
           },
           background: Container(
             color: context.colors.red,

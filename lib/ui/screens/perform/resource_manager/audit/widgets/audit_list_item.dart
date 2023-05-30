@@ -6,8 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AuditListIncomplete extends StatefulWidget {
-  const AuditListIncomplete({
+class AuditListItem extends StatefulWidget {
+  const AuditListItem({
     super.key,
     required this.onTap,
   });
@@ -15,17 +15,13 @@ class AuditListIncomplete extends StatefulWidget {
   final void Function(Audit) onTap;
 
   @override
-  State<AuditListIncomplete> createState() => _AuditListIncompleteState();
+  State<AuditListItem> createState() => _AuditListItemState();
 }
 
-class _AuditListIncompleteState extends State<AuditListIncomplete> {
+class _AuditListItemState extends State<AuditListItem> {
   @override
   void initState() {
     super.initState();
-
-    Future.microtask(() {
-      context.read<AuditListCubit>().loadIncomplete();
-    });
   }
 
   @override
@@ -35,7 +31,7 @@ class _AuditListIncompleteState extends State<AuditListIncomplete> {
         return state;
       },
       builder: (context, state) {
-        if (state.loadingIncomplete) {
+        if (state.loading) {
           return Center(
             child: CircularProgressIndicator(
               strokeWidth: 2,
@@ -54,13 +50,13 @@ class _AuditListIncompleteState extends State<AuditListIncomplete> {
 
         return RefreshIndicator(
           onRefresh: () {
-            return context.read<AuditListCubit>().loadIncomplete();
+            return context.read<AuditListCubit>().refresh();
           },
           child: ListView.builder(
-            itemCount: state.dataIncomplete.length,
+            itemCount: state.filterAudits.length,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (BuildContext context, int index) {
-              final item = state.dataIncomplete[index];
+              final item = state.filterAudits[index];
               return DismissibleAuditItem(
                 audit: item,
                 onTapAudit: () => widget.onTap(item),

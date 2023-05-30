@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -5,18 +7,14 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/audit_list_cubit/audit_list_cubit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/add_audit/audit_add_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_questions_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/audit_list_incomplete.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/audit_list_synced.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/audit_list_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/status_button.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/audit_list_completed.dart';
-
-class AuditManagementScreen extends StatelessWidget {
+class AuditManagementScreen extends StatefulWidget {
   const AuditManagementScreen({super.key});
-
   static Future<void> push(BuildContext context) {
     return Navigator.push(
       context,
@@ -25,6 +23,20 @@ class AuditManagementScreen extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  State<StatefulWidget> createState() => _AuditManagementScreenState();
+}
+
+class _AuditManagementScreenState extends State<AuditManagementScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<AuditListCubit>().refresh();
+  }
+
+  Timer? _debounceInputTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +52,21 @@ class AuditManagementScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Row(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
+            child: CmoTextField(
+              name: LocaleKeys.search.tr(),
+              hintText: LocaleKeys.search.tr(),
+              suffixIcon: Assets.icons.icSearch.svg(),
+              onChanged: (input) {
+                _debounceInputTimer?.cancel();
+                _debounceInputTimer = Timer(
+                  const Duration(milliseconds: 200),
+                      () => context.read<AuditListCubit>().searching(input),
+                );
+              },
+            ),
+          ),
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -74,28 +100,8 @@ class AuditManagementScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Expanded(
-            child: BlocSelector<AuditListCubit, AuditListState, int>(
-              selector: (state) {
-                return state.indexTab;
-              },
-              builder: (context, indexTab) {
-                switch (indexTab) {
-                  case 0:
-                    return AuditListIncomplete(
-                      onTap: (audit) => onTapAudit(context, audit),
-                    );
-                  case 1:
-                    return AuditListCompleted(
-                      onTap: (audit) => onTapAudit(context, audit),
-                    );
-                  case 2:
-                    return AuditListSynced(
-                      onTap: (audit) => onTapAudit(context, audit),
-                    );
-                  default:
-                    return const SizedBox();
-                }
-              },
+            child: AuditListItem(
+              onTap: (audit) => onTapAudit(context, audit),
             ),
           ),
         ],

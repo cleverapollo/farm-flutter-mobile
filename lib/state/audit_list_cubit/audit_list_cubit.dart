@@ -11,47 +11,67 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
 
   void changeIndexTab(int index) {
     emit(state.copyWith(indexTab: index));
+    applyFilters();
   }
 
-  Future<void> loadIncomplete() async {
-    emit(state.copyWith(loadingIncomplete: true));
+  void loadIncomplete() {
+    emit(state.copyWith(loading: true));
     try {
-      final service = cmoDatabaseMasterService;
-      final data = await service.getAllAuditsIncomplete();
-      emit(state.copyWith(dataIncomplete: data));
+      final data = state.listAudits
+          .where((element) => element.completed == false)
+          .toList();
+      emit(state.copyWith(filterAudits: data));
     } catch (e) {
       emit(state.copyWith(error: e));
       showSnackError(msg: e.toString());
     } finally {
-      emit(state.copyWith(loadingIncomplete: false));
+      emit(state.copyWith(loading: false));
     }
   }
 
-  Future<void> loadCompleted() async {
-    emit(state.copyWith(loadingCompleted: true));
+  void loadCompleted() {
+    emit(state.copyWith(loading: true));
     try {
-      final service = cmoDatabaseMasterService;
-      final data = await service.getAllAuditsCompleted();
-      emit(state.copyWith(dataCompleted: data));
+      final data = state.listAudits
+          .where(
+              (element) => element.completed == true && element.synced == false)
+          .toList();
+      emit(state.copyWith(filterAudits: data));
     } catch (e) {
       emit(state.copyWith(error: e));
       showSnackError(msg: e.toString());
     } finally {
-      emit(state.copyWith(loadingCompleted: false));
+      emit(state.copyWith(loading: false));
     }
   }
 
-  Future<void> loadSynced() async {
-    emit(state.copyWith(loadingSynced: true));
+  void loadSynced() {
+    emit(state.copyWith(loading: true));
     try {
-      final service = cmoDatabaseMasterService;
-      final data = await service.getAllAuditsSynced();
-      emit(state.copyWith(dataSynced: data));
+      final data = state.listAudits
+          .where(
+              (element) => element.completed == true && element.synced == true)
+          .toList();
+      emit(state.copyWith(filterAudits: data));
     } catch (e) {
       emit(state.copyWith(error: e));
       showSnackError(msg: e.toString());
     } finally {
-      emit(state.copyWith(loadingSynced: false));
+      emit(state.copyWith(loading: false));
+    }
+  }
+
+  Future<void> loadListAudits() async {
+    emit(state.copyWith(loading: true));
+    try {
+      final service = cmoDatabaseMasterService;
+      final data = await service.getAllAudits();
+      emit(state.copyWith(listAudits: data));
+    } catch (e) {
+      emit(state.copyWith(error: e));
+      showSnackError(msg: e.toString());
+    } finally {
+      emit(state.copyWith(loading: false));
     }
   }
 
@@ -65,9 +85,81 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
   }
 
   Future<void> refresh() async {
-    await loadIncomplete();
-    await loadCompleted();
-    await loadSynced();
+    await loadListAudits();
+    applyFilters();
+  }
+
+  void applyFilters() {
+    switch (state.indexTab) {
+      case 0:
+        loadIncomplete();
+        break;
+      case 1:
+        loadCompleted();
+        break;
+      case 2:
+        loadSynced();
+        break;
+      default:
+        break;
+    }
+  }
+
+  void searching(String? searchText) {
+    emit(state.copyWith(loading: true));
+    try {
+      if (searchText == null || searchText.isEmpty) {
+        emit(
+          state.copyWith(
+            filterAudits: state.listAudits,
+          ),
+        );
+        applyFilters();
+      } else {
+        final filteredItems = state.listAudits.where((element) {
+          final containName = (element.compartmentName
+                      ?.toLowerCase()
+                      .contains(searchText.toLowerCase()) ??
+                  false) ||
+              (element.auditTemplateName
+                      ?.toLowerCase()
+                      .contains(searchText.toLowerCase()) ??
+                  false) ||
+              (element.siteName
+                      ?.toLowerCase()
+                      .contains(searchText.toLowerCase()) ??
+                  false);
+
+          var isFilter = false;
+          switch (state.indexTab) {
+            case 0:
+              isFilter = element.completed == false;
+              break;
+            case 1:
+              isFilter = element.completed == true && element.synced == false;
+              break;
+            case 2:
+              isFilter = element.completed == true && element.synced == true;
+              break;
+            default:
+              break;
+          }
+
+          return containName && isFilter;
+        }).toList();
+
+        emit(
+          state.copyWith(
+            filterAudits: filteredItems,
+          ),
+        );
+      }
+    } catch (e) {
+      emit(state.copyWith(error: e));
+      showSnackError(msg: e.toString());
+    } finally {
+      emit(state.copyWith(loading: false));
+    }
   }
 
   @override
