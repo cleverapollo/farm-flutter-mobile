@@ -64,11 +64,13 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
 
   int get userDeviceId => userDeviceCubit.data!.userDeviceId!;
 
-  late int groupSchemeId;
-  late String farmId;
+  int groupSchemeId = 0;
+  String farmId = '';
 
   Future<void> onSync() async {
     if (state.isSyncing) return;
+
+    await getData();
 
     emit(state.copyWith(isSyncing: true, syncMessage: 'Sync...'));
 
@@ -1389,9 +1391,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
     return null;
   }
 
-  Future<void> initData() async {
-    emit(state.copyWith(isLoading: true));
-
+  Future<void> getData() async {
     final groupSchemeConfig = await cmoDatabaseMasterService
         .getConfig(ConfigEnum.activeGroupSchemeId);
     final farmConfig =
@@ -1399,6 +1399,11 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
 
     groupSchemeId = int.parse(groupSchemeConfig?.configValue ?? '');
     farmId = farmConfig?.configValue ?? '';
+  }
+
+  Future<void> initData() async {
+    emit(state.copyWith(isLoading: true));
+    await getData();
 
     final databaseMasterService = cmoDatabaseMasterService;
     final futures = <Future<dynamic>>[];

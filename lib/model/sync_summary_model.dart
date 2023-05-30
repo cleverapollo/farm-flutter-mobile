@@ -4,7 +4,6 @@ import 'package:isar/isar.dart';
 part 'sync_summary_model.freezed.dart';
 
 @freezed
-@Collection(ignore: {'copyWith'})
 class SyncSummaryModel with _$SyncSummaryModel {
   const factory SyncSummaryModel({
     num? adInprogress,
