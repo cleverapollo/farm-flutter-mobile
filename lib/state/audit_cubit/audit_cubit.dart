@@ -61,30 +61,29 @@ class AuditCubit extends HydratedCubit<AuditState> {
     return true;
   }
 
+  Future<void> getListAuditTemplates() async {
+    final service = cmoDatabaseMasterService;
+    final auditTemplates = await service.getAuditTemplatesByRmuId(rmuId: 6);
+    emit(state.copyWith(auditTemplates: auditTemplates));
+  }
+
+  Future<void> getListSites() async {
+    final service = cmoDatabaseMasterService;
+    final sites = await service.getSitesByRmuId(rmuId: 6);
+    emit(state.copyWith(sites: sites));
+  }
+
+  Future<void> getListCompartments() async {
+    final service = cmoDatabaseMasterService;
+    final compartments = await service.getCompartmentsByRmuId(rmuId: 6);
+    emit(state.copyWith(compartments: compartments));
+  }
+
   Future<void> initialize() async {
     try {
-
-      const auditTemplates = <AuditTemplate>[
-        AuditTemplate(auditTemplateId: 1, auditTemplateName: 'An Audit Template 1'),
-        AuditTemplate(auditTemplateId: 2, auditTemplateName: 'An Audit Template 2'),
-      ];
-
-      emit(state.copyWith(auditTemplates: auditTemplates));
-
-      const sites = <Site>[
-        Site(siteId: 1, siteName: 'Site name 1'),
-        Site(siteId: 2, siteName: 'Site name 2'),
-      ];
-
-      emit(state.copyWith(sites: sites));
-
-      final compartments = <Compartment>[
-        Compartment(compartmentId: 1, compartmentName: 'Compartment 1'),
-        Compartment(compartmentId: 2, compartmentName: 'Compartment 2'),
-      ];
-
-      emit(state.copyWith(compartments: compartments));
-
+      await getListAuditTemplates();
+      await getListSites();
+      await getListCompartments();
     } catch (error) {
       handleError(error);
     }

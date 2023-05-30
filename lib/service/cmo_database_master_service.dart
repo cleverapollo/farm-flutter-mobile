@@ -2207,6 +2207,7 @@ class CmoDatabaseMasterService {
     return <QuestionAnswer>[];
   }
 
+
   Future<void> removeQuestionAnswer(QuestionAnswer answer) async {
     final db = await _db();
     try {
@@ -2363,6 +2364,101 @@ class CmoDatabaseMasterService {
     return db.writeTxn(() async {
       return db.audits.delete(auditId);
     });
+  }
+
+  Future<List<Site>> getSitesByRmuId({
+    int? rmuId,
+  }) async {
+    if (rmuId == null) return <Site>[];
+    final db = await _db();
+    try {
+      final sites = await db.sites
+          .filter()
+          .isActiveEqualTo(true)
+          .sortBySiteName()
+          .findAll();
+
+      return sites;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Site>[];
+  }
+
+  Future<List<Compartment>> getCompartmentsByRmuId({
+    int? rmuId,
+  }) async {
+    if (rmuId == null) return <Compartment>[];
+    final db = await _db();
+    try {
+      final compartments = await db.compartments
+          .filter()
+          .isActiveEqualTo(true)
+          .sortByCompartmentName()
+          .findAll();
+
+      return compartments;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Compartment>[];
+  }
+
+  Future<List<AuditTemplate>> getAuditTemplatesByRmuId({
+    int? rmuId,
+  }) async {
+    if (rmuId == null) return <AuditTemplate>[];
+    final db = await _db();
+    try {
+      final auditTemplates = await db.auditTemplates
+          .filter()
+          .isActiveEqualTo(true)
+          .sortByAuditTemplateName()
+          .findAll();
+
+      final result = <AuditTemplate>[];
+      for (final item in auditTemplates) {
+        final auditQuestions =
+            await getListAuditQuestionWithRmuIdAndAuditTemplateId(
+          auditTemplateId: item.auditTemplateId,
+          rmuId: rmuId,
+        );
+
+        if (auditQuestions.isNotEmpty) {
+          result.add(item);
+        }
+      }
+
+      return result;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <AuditTemplate>[];
+  }
+
+  Future<List<AuditQuestion>> getListAuditQuestionWithRmuIdAndAuditTemplateId({
+    int? auditTemplateId,
+    int? rmuId,
+  }) async {
+    if (rmuId == null || auditTemplateId == null) return <AuditQuestion>[];
+    final db = await _db();
+    try {
+      final auditQuestions = await db.auditQuestions
+          .filter()
+          .regionalManagerUnitIdEqualTo(rmuId)
+          .auditTemplateIdEqualTo(auditTemplateId)
+          .isActiveEqualTo(true)
+          .findAll();
+
+      return auditQuestions;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <AuditQuestion>[];
   }
 
   Future<List<AuditQuestion>> getListAuditQuestion({
