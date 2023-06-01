@@ -168,19 +168,13 @@ class CmoApiService {
     Response<Map<String, dynamic>>? response;
 
     if (userRole.isBehave) {
-      response = await client.getUri<JsonData>(
-        Uri.https(
-          Env.cmoApiUrl,
-          '/cmo/DesktopModules/Cmo.UI.Dnn.Api.gs/API/Mobile/GetUser',
-        ),
+      response = await client.get<JsonData>(
+        _behaveApiAuthUri('GetUser'),
         options: Options(headers: {'accessToken': 'true'}),
       );
     } else {
-      response = await client.getUri<JsonData>(
-        Uri.https(
-          Env.cmoApiUrl,
-          '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.gs/API/Mobile/GetUser',
-        ),
+      response = await client.get<JsonData>(
+        _performApiAuthUri('GetUser'),
         options: Options(headers: {'accessToken': 'true'}),
       );
     }
@@ -211,7 +205,6 @@ class CmoApiService {
         {'dnnUserId': userId.toString()},
       );
     }
-
     final response = await client.getUri<JsonListData>(
       uri,
       options: Options(headers: {'accessToken': 'true'}),
@@ -241,7 +234,7 @@ class CmoApiService {
     };
 
     final response = await client.post<JsonData>(
-      _apiUri('CreateUserDevice'),
+      _behaveApiAuthUri('CreateUserDevice'),
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -259,7 +252,7 @@ class CmoApiService {
     required int userId,
   }) async {
     final response = await client.get<JsonListData>(
-      _apiUri('GetCompanyByUserId'),
+      _behaveApiAuthUri('GetCompanyByUserId'),
       queryParameters: {'userId': userId.toString()},
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -274,11 +267,8 @@ class CmoApiService {
   }
 
   Future<List<Farm>?> fetchFarms() async {
-    final uri = Uri.https(Env.cmoApiUrl,
-        '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Mobile/GetFarms');
-
-    final response = await client.getUri<JsonListData>(
-      uri,
+    final response = await client.get<JsonListData>(
+      _performApiAuthUri('GetFarms'),
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -292,11 +282,8 @@ class CmoApiService {
   }
 
   Future<List<GroupScheme>?> fetchGroupSchemes() async {
-    final uri = Uri.https(Env.cmoApiUrl,
-        'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Mobile/GetGroupschemes');
-
-    final response = await client.getUri<JsonListData>(
-      uri,
+    final response = await client.get<JsonListData>(
+      _performApiAuthUri('GetGroupschemes'),
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -311,14 +298,9 @@ class CmoApiService {
 
   Future<List<ResourceManagerUnit>?> fetchResourceManagerUnits(
       int groupSchemeId) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Mobile/GetRegionalManagerUnits',
-      {'groupSchemeId': groupSchemeId.toString()},
-    );
-
-    final response = await client.getUri<JsonListData>(
-      uri,
+    final response = await client.get<JsonListData>(
+      _performApiAuthUri('GetRegionalManagerUnits'),
+      queryParameters: {'groupSchemeId': groupSchemeId.toString()},
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -345,7 +327,7 @@ class CmoApiService {
     };
 
     final response = await client.post<dynamic>(
-      _apiUri('CreateSystemEvent', isBehave: true),
+      _behaveApiAuthUri('CreateSystemEvent'),
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -390,7 +372,7 @@ class CmoApiService {
     };
 
     final response = await client.post<dynamic>(
-      _apiUri('CreateSystemEvent', isBehave: false),
+      _performApiAuthUri('CreateSystemEvent'),
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -408,7 +390,7 @@ class CmoApiService {
   Future<void> checkRMSystemEventExist({required int systemEventId}) async {
     try {
       await client.get<dynamic>(
-        _apiUri('SystemEventExists', isBehave: false),
+        _performApiAuthUri('SystemEventExists'),
         queryParameters: {'systemEventId': systemEventId},
         options: Options(headers: {'accessToken': 'true'}),
       );
@@ -426,7 +408,7 @@ class CmoApiService {
     };
 
     final response = await client.post<dynamic>(
-      _apiUri('CreateSystemEvent', isBehave: false),
+      _performApiAuthUri('CreateSystemEvent'),
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -444,19 +426,14 @@ class CmoApiService {
     required String currentClientId,
     int pageSize = 200,
   }) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/pubsubapi/api/v1/message',
-      {
+    final response = await client.get<JsonData>(
+      _mqApiUri('message'),
+      queryParameters: {
         'key': pubsubApiKey,
         'client': currentClientId,
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
       },
-    );
-
-    final response = await client.getUri<JsonData>(
-      uri,
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -502,19 +479,14 @@ class CmoApiService {
     int pageSize = 200,
   }) async {
     final accessToken = await _readAccessToken();
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/pubsubapi/api/v1/message',
-      {
+    final response = await client.get<JsonData>(
+      _mqApiUri('message'),
+      queryParameters: {
         'key': pubsubApiKey,
         'client': '$currentClientId',
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
       },
-    );
-
-    final response = await client.getUri<JsonData>(
-      uri,
       options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
     );
 
@@ -534,8 +506,8 @@ class CmoApiService {
     required List<Message> messages,
   }) async {
     final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/pubsubapi/api/v1/message',
+      _mqApiUri('message'),
+      '',
       {
         'key': pubsubApiKey,
         'client': '$currentClientId',
@@ -565,8 +537,8 @@ class CmoApiService {
     final body = messages.map((e) => e.toJson()).toList();
 
     final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/pubsubapi/api/v1/message',
+      _mqApiUri('message'),
+      '',
       {
         'key': pubsubApiKey,
         'client': '$currentClientId',
