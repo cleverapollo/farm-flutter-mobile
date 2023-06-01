@@ -14,6 +14,8 @@ part 'user_info_state.dart';
 class UserInfoCubit extends HydratedCubit<UserInfoState> {
   UserInfoCubit() : super(UserInfoState.loading());
 
+  Future<void> getUserDataAfterLogin() async {}
+
   Future<void> getUserInfoAndUserRoles(BuildContext context) async {
     final res = await cmoApiService.getUser();
 

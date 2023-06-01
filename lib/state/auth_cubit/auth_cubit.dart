@@ -1,6 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/main.dart';
-import 'package:cmo/model/user_auth.dart';
+import 'package:cmo/model/user_role_config/user_role_config.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
@@ -12,25 +12,18 @@ class AuthCubit extends HydratedCubit<AuthState> {
   AuthCubit() : super(AuthState.unauthorized());
 
   Future<void> logIn(LogInAuthEvent event) async {
-    try {
-      final login = await _login(event.username, event.password);
+    final result = await _login(event.username, event.password);
 
-      if (login != null &&
-          login.accessToken != null &&
-          login.renewalToken != null) {
-        await _saveUsernameAndPassword(event.username, event.password);
-        await _saveAccessRevewalToken(login.accessToken!, login.renewalToken!);
-
-        emit(AuthState.authorized());
-        event.onSuccess();
-      } else {
-        emit(AuthState.unauthorized());
-        event.onFailure();
-      }
-    } catch (e) {
+    if (result == null) {
       emit(AuthState.unauthorized());
-      event.onFailure();
+      event.onResponse(null);
+      return;
     }
+
+    await _saveUsernameAndPassword(event.username, event.password);
+
+    emit(AuthState.authorized());
+    event.onResponse(result);
   }
 
   Future<void> logOut() async {
@@ -54,12 +47,12 @@ class AuthCubit extends HydratedCubit<AuthState> {
       return;
     }
 
+    emit(AuthState.authorized());
+    onSuccess?.call();
+
     final login = await _login(username, password);
 
-    if (login != null &&
-        login.accessToken != null &&
-        login.renewalToken != null) {
-      await _saveAccessRevewalToken(login.accessToken!, login.renewalToken!);
+    if (login != null) {
       await _refreshToken();
       emit(AuthState.authorized());
       onSuccess?.call();
@@ -70,15 +63,51 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
-  Future<UserAuth?> _login(
+  Future<UserRoleConfig?> _login(
     String username,
     String password,
   ) async {
-    return cmoApiService.login(username, password);
+    final result = await cmoApiService.loginUseCase(username, password);
+
+    if (result?.performUserAuth != null && result?.behaveUserAuth != null) {
+      await _savePerformAccessRevewalToken(
+        result!.performUserAuth!.accessToken!,
+        result.performUserAuth!.renewalToken!,
+      );
+
+      await _saveBehaveAccessRevewalToken(
+        result.behaveUserAuth!.accessToken!,
+        result.behaveUserAuth!.renewalToken!,
+      );
+
+      return UserRoleConfig.bothRole;
+    }
+
+    if (result?.behaveUserAuth != null) {
+      await _saveBehaveAccessRevewalToken(
+        result!.behaveUserAuth!.accessToken!,
+        result.behaveUserAuth!.renewalToken!,
+      );
+
+      return UserRoleConfig.behaveRole;
+    }
+
+    if (result?.performUserAuth != null) {
+      await _saveBehaveAccessRevewalToken(
+        result!.performUserAuth!.accessToken!,
+        result.performUserAuth!.renewalToken!,
+      );
+
+      return UserRoleConfig.performRole;
+    }
+
+    return null;
   }
 
   Future<void> _refreshToken() async {
+    final userRole = await configService.getActiveUserRole();
     final renewalToken = await _readRenewalToken();
+
     if (renewalToken == null) {
       return;
     }
@@ -87,12 +116,26 @@ class AuthCubit extends HydratedCubit<AuthState> {
     if (login != null &&
         login.accessToken != null &&
         login.renewalToken != null) {
-      await _saveAccessRevewalToken(login.accessToken!, login.renewalToken!);
+      if (userRole.isBehave) {
+        await _saveBehaveAccessRevewalToken(
+            login.accessToken!, login.renewalToken!);
+      } else {
+        await _savePerformAccessRevewalToken(
+            login.accessToken!, login.renewalToken!);
+      }
     }
   }
 
   Future<String?> _readRenewalToken() async {
-    return secureStorage.read(key: 'renewalToken');
+    final userRole = await configService.getActiveUserRole();
+
+    if (userRole.isBehave) {
+      return secureStorage.read(
+          key: UserRoleConfig.behaveRole.getRenewalTokenKey);
+    } else {
+      return secureStorage.read(
+          key: UserRoleConfig.performRole.getRenewalTokenKey);
+    }
   }
 
   Future<String?> _readUsername() async {
@@ -111,12 +154,21 @@ class AuthCubit extends HydratedCubit<AuthState> {
     await secureStorage.write(key: 'user_password', value: password);
   }
 
-  Future<void> _saveAccessRevewalToken(
-    String accessToken,
-    String renewalToken,
-  ) async {
-    await secureStorage.write(key: 'accessToken', value: accessToken);
-    await secureStorage.write(key: 'renewalToken', value: renewalToken);
+  Future<void> _saveBehaveAccessRevewalToken(
+      String accessToken, String renewalToken) async {
+    await secureStorage.write(
+        key: UserRoleConfig.behaveRole.getAccessTokenKey, value: accessToken);
+    await secureStorage.write(
+        key: UserRoleConfig.behaveRole.getRenewalTokenKey, value: renewalToken);
+  }
+
+  Future<void> _savePerformAccessRevewalToken(
+      String accessToken, String renewalToken) async {
+    await secureStorage.write(
+        key: UserRoleConfig.performRole.getAccessTokenKey, value: accessToken);
+    await secureStorage.write(
+        key: UserRoleConfig.performRole.getRenewalTokenKey,
+        value: renewalToken);
   }
 
   Future<void> saveUserCurrentRole(String userRole) async {
@@ -127,14 +179,37 @@ class AuthCubit extends HydratedCubit<AuthState> {
     return secureStorage.read(key: 'user_role');
   }
 
+  Future<bool> _clearSecureStorageAfterSelectRole(
+      UserRoleConfig userRoleUnselected) async {
+    var isDone = false;
+
+    final futures = <Future<dynamic>>[];
+
+    futures
+      ..add(secureStorage.write(
+          key: userRoleUnselected.getAccessTokenKey, value: null))
+      ..add(secureStorage.write(
+          key: userRoleUnselected.getRenewalTokenKey, value: null));
+
+    await Future.wait(futures).then((value) => isDone = true);
+
+    return isDone;
+  }
+
   Future<bool> _clearSecureStorage() async {
     var isDone = false;
 
     final futures = <Future<dynamic>>[];
 
     futures
-      ..add(secureStorage.write(key: 'accessToken', value: null))
-      ..add(secureStorage.write(key: 'renewalToken', value: null))
+      ..add(secureStorage.write(
+          key: UserRoleConfig.behaveRole.getRenewalTokenKey, value: null))
+      ..add(secureStorage.write(
+          key: UserRoleConfig.behaveRole.getAccessTokenKey, value: null))
+      ..add(secureStorage.write(
+          key: UserRoleConfig.performRole.getRenewalTokenKey, value: null))
+      ..add(secureStorage.write(
+          key: UserRoleConfig.performRole.getAccessTokenKey, value: null))
       ..add(secureStorage.write(key: 'user_name', value: null))
       ..add(secureStorage.write(key: 'user_password', value: null))
       ..add(secureStorage.write(key: 'user_role', value: null));

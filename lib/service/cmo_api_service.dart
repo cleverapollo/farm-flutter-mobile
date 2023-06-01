@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cmo/di.dart';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/company.dart';
@@ -14,6 +15,7 @@ import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
 import 'package:cmo/model/user_info.dart';
+import 'package:cmo/model/user_role_config/user_role_config.dart';
 import 'package:cmo/model/user_role_portal.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:dio/dio.dart';
@@ -24,6 +26,16 @@ typedef JsonData = Map<String, dynamic>;
 typedef JsonListData = List<dynamic>;
 
 class CmoApiService {
+  String _behaveApiAuthUri(String path) => '${Env.behaveDnnAuthUrl}$path';
+
+  String _performApiAuthUri(String path) => '${Env.performDnnAuthUrl}$path';
+
+  String _authApiUri(String path) => '${Env.behaveDnnAuthUrl}$path';
+
+  String _apiUri(String path) => '${Env.behaveDnnApiUrl}$path';
+
+  String _mqApiUri(String path) => '${Env.apstoryMqApiUrl}$path';
+
   Dio client = Dio(
     BaseOptions(
       validateStatus: (status) =>
@@ -40,30 +52,92 @@ class CmoApiService {
     );
 
   Future<String?> _readAccessToken() async {
-    return secureStorage.read(key: 'accessToken');
+    final userRole = await configService.getActiveUserRole();
+
+    if (userRole.isBehave) {
+      return secureStorage.read(
+          key: UserRoleConfig.behaveRole.getAccessTokenKey);
+    } else {
+      return secureStorage.read(
+          key: UserRoleConfig.performRole.getAccessTokenKey);
+    }
   }
 
-  Future<UserAuth?> login(
+  Future<UserRoleResponse?> loginUseCase(
     String username,
     String password,
   ) async {
-    final body = {
-      'u': username,
-      'p': password,
-    };
+    var response = const UserRoleResponse();
 
-    final response = await client.post<JsonData>(
-      _authApiUri('login'),
-      data: body,
-    );
+    var isBehaveException = false;
+    var isPerformException = false;
 
-    if (response.statusCode != 200) {
-      showSnackError(msg: '${response.statusCode} - ${response.data}');
+    final futures = <Future<dynamic>>[
+      _loginBehave(username, password).then((value) {
+        if (value != null) {
+          response = response.copyWith(
+            behaveUserAuth: UserAuth.fromJson(value.data!),
+          );
+        } else {
+          isBehaveException = true;
+        }
+      }),
+      _loginPerform(username, password).then((value) {
+        if (value != null) {
+          response = response.copyWith(
+            performUserAuth: UserAuth.fromJson(value.data!),
+          );
+        } else {
+          isPerformException = true;
+        }
+      }),
+    ];
+
+    await Future.wait(futures);
+
+    if (isBehaveException && isPerformException) {
       return null;
     }
 
-    final data = response.data;
-    return data == null ? null : UserAuth.fromJson(data);
+    return response;
+  }
+
+  Future<Response<Map<String, dynamic>>?> _loginBehave(
+      String username, String password) async {
+    try {
+      final body = {
+        'u': username,
+        'p': password,
+      };
+
+      final response = await client.post<JsonData>(
+        _behaveApiAuthUri('login'),
+        data: body,
+      );
+
+      return response;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<Response<Map<String, dynamic>>?> _loginPerform(
+      String username, String password) async {
+    try {
+      final body = {
+        'u': username,
+        'p': password,
+      };
+
+      final response = await client.post<JsonData>(
+        _performApiAuthUri('login'),
+        data: body,
+      );
+
+      return response;
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<UserAuth?> refreshToken(
@@ -72,8 +146,9 @@ class CmoApiService {
     final body = {
       'rToken': renewalToken,
     };
-
+    final userRole = await configService.getActiveUserRole();
     final accessToken = await _readAccessToken();
+
     final response = await client.post<JsonData>(
       _authApiUri('extendtoken'),
       data: body,
@@ -566,13 +641,6 @@ class CmoApiService {
     final data = response.data;
     return data?.map((e) => AreaType.fromJson(e as JsonData)).toList();
   }
-
-  /// Need to DNN_AUTH_URL and DNN_API_URL check it here.
-  String _authApiUri(String path) => '${Env.behaveDnnAuthUrl}$path';
-
-  String _apiUri(String path) => '${Env.behaveDnnApiUrl}$path';
-
-  String _mqApiUri(String path) => '${Env.apstoryMqApiUrl}$path';
 }
 
 class CustomInterceptor extends Interceptor {

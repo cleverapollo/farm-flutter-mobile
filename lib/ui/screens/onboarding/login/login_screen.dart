@@ -1,9 +1,9 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/user_role_config/user_role_config.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
-import 'package:cmo/ui/components/entity_component/utils.dart';
 import 'package:cmo/ui/screens/global_entity.dart';
 import 'package:cmo/ui/screens/onboarding/login/language_picker.dart';
 import 'package:cmo/ui/theme/theme.dart';
@@ -59,11 +59,21 @@ class _LoginScreenState extends State<LoginScreen> {
       if (context.mounted) {
         await context.read<AuthCubit>().logIn(
               LogInAuthEvent(
-                onFailure: () {
-                  success = false;
-                },
-                onSuccess: () {
-                  success = true;
+                onResponse: (UserRoleConfig? config) {
+                  switch (config) {
+                    case UserRoleConfig.behaveRole:
+                      success = true;
+                      break;
+                    case UserRoleConfig.performRole:
+                      success = true;
+                      break;
+                    case UserRoleConfig.bothRole:
+                      success = true;
+                      break;
+                    case null:
+                      success = false;
+                      break;
+                  }
                 },
                 password: password.toString(),
                 username: username.toString(),
@@ -87,9 +97,10 @@ class _LoginScreenState extends State<LoginScreen> {
           // Get companies by userId and cache to db
           userInfoCubit.getCompaniesByUserId(context),
           // Create user device and cache to db
-          deviceInfoCubit.createUserDevice(context)]);
+          deviceInfoCubit.createUserDevice(context)
+        ]);
 
-          GlobalEntityScreen.pushReplacement(context);
+        GlobalEntityScreen.pushReplacement(context);
       }
     } finally {
       setState(() {
