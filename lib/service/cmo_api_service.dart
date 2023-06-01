@@ -345,7 +345,7 @@ class CmoApiService {
     };
 
     final response = await client.post<dynamic>(
-      _apiUri('CreateSystemEvent'),
+      _apiUri('CreateSystemEvent', isBehave: true),
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -390,7 +390,7 @@ class CmoApiService {
     };
 
     final response = await client.post<dynamic>(
-      _apiUri('CreateSystemEvent'),
+      _apiUri('CreateSystemEvent', isBehave: false),
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -408,7 +408,7 @@ class CmoApiService {
   Future<void> checkRMSystemEventExist({required int systemEventId}) async {
     try {
       await client.get<dynamic>(
-        _apiUri('SystemEventExists'),
+        _apiUri('SystemEventExists', isBehave: false),
         queryParameters: {'systemEventId': systemEventId},
         options: Options(headers: {'accessToken': 'true'}),
       );
@@ -426,7 +426,7 @@ class CmoApiService {
     };
 
     final response = await client.post<dynamic>(
-      _apiUri('CreateSystemEvent'),
+      _apiUri('CreateSystemEvent', isBehave: false),
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
