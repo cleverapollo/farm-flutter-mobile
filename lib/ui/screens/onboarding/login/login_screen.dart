@@ -91,14 +91,14 @@ class _LoginScreenState extends State<LoginScreen> {
         final userInfoCubit = context.read<UserInfoCubit>();
         final deviceInfoCubit = context.read<UserDeviceCubit>();
 
-        // await Future.wait([
-        //   // Init user info and user roles and cache to db
-        //   userInfoCubit.getUserInfoAndUserRoles(context),
-        //   // Get companies by userId and cache to db
-        //   userInfoCubit.getCompaniesByUserId(context),
-        //   // Create user device and cache to db
-        //   deviceInfoCubit.createUserDevice(context)
-        // ]);
+        await Future.wait([
+          // Init user info and user roles and cache to db
+          userInfoCubit.getUserInfoAndUserRoles(context),
+          // Get companies by userId and cache to db
+          userInfoCubit.getCompaniesByUserId(context),
+          // Create user device and cache to db
+          deviceInfoCubit.createUserDevice(context)
+        ]);
 
         GlobalEntityScreen.pushReplacement(context);
       }
