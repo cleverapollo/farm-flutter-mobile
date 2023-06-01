@@ -567,9 +567,10 @@ class CmoApiService {
     return data?.map((e) => AreaType.fromJson(e as JsonData)).toList();
   }
 
-  String _authApiUri(String path) => '${Env.dnnAuthUrl}$path';
+  /// Need to DNN_AUTH_URL and DNN_API_URL check it here.
+  String _authApiUri(String path) => '${Env.behaveDnnAuthUrl}$path';
 
-  String _apiUri(String path) => '${Env.dnnApiUrl}$path';
+  String _apiUri(String path) => '${Env.behaveDnnApiUrl}$path';
 
   String _mqApiUri(String path) => '${Env.apstoryMqApiUrl}$path';
 }
@@ -663,5 +664,6 @@ class CustomInterceptor extends Interceptor {
     return handler.reject(err);
   }
 
-  String _authApiUri(String path) => '${Env.dnnAuthUrl}$path';
+  /// Need to DNN_AUTH_URL check it here.
+  String _authApiUri(String path) => '${Env.behaveDnnAuthUrl}$path';
 }
