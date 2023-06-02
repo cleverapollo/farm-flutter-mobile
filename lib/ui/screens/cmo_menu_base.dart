@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
+import 'package:cmo/env/env.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/user_info.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
@@ -328,7 +330,7 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
       padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
       child: Row(
         children: [
-          const _UserAvatar(imageUrl: 'https://placekitten.com/200/200'),
+          _UserAvatar(imageUrl: 'https://${Env.cmoApiUrl}${context.read<UserInfoCubit>().state.userInfo?.profileImage}'),
           const SizedBox(width: 8),
           Expanded(
             child: FittedBox(
@@ -338,12 +340,12 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Leon Chetty',
+                    context.read<UserInfoCubit>().state.userInfo?.fullName ?? '',
                     maxLines: 1,
                     style: context.textStyles.bodyBold.white,
                   ),
                   Text(
-                    'leon@cmogroup.io',
+                    context.read<UserInfoCubit>().state.userInfo?.userEmail ?? '',
                     style: context.textStyles.bodyBold.white,
                   )
                 ],
