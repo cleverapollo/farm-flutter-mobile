@@ -84,7 +84,7 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
 
       if (context.mounted) {
         await configService.setActiveCompany(company: selected!);
-        context.read<UserInfoCubit>().setActiveUserRole(userRole: UserRoleEnum.behave);
+        await context.read<UserInfoCubit>().setActiveUserRole(userRole: UserRoleEnum.behave);
         await context.read<EntityCubit>().syncBehave(
               context: context,
               company: selected!,

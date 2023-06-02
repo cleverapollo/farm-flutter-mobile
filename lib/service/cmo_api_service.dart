@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/company.dart';
@@ -39,6 +40,18 @@ class CmoApiService {
   String _performApiUri(String path) => '${Env.performDnnApiUrl}$path';
 
   String _mqApiUri(String path) => '${Env.apstoryMqApiUrl}$path';
+
+  Future<String> getDnnApiUrlBasedOnUserRole() async {
+    final userRole = await configService.getActiveUserRole();
+    switch (userRole) {
+      case UserRoleEnum.behave:
+        return Env.behaveDnnApiUrl;
+      case UserRoleEnum.resourceManager:
+        return Env.performDnnApiUrl;
+      case UserRoleEnum.farmerMember:
+        return Env.performDnnApiUrl;
+    }
+  }
 
   Dio client = Dio(
     BaseOptions(
@@ -330,10 +343,12 @@ class CmoApiService {
       'UserDeviceId': userDeviceId
     };
 
+    final baseUrl = await getDnnApiUrlBasedOnUserRole();
+    final accessToken = await _readAccessToken();
     final response = await client.post<dynamic>(
-      _apiUri('CreateSystemEvent'),
+      '${baseUrl}CreateSystemEvent',
       data: body,
-      options: Options(headers: {'accessToken': 'true'}),
+      options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
     );
 
     if (response.statusCode != 200) {
@@ -540,18 +555,13 @@ class CmoApiService {
   }) async {
     final body = messages.map((e) => e.toJson()).toList();
 
-    final uri = Uri.https(
+    final response = await client.delete<dynamic>(
       _mqApiUri('message'),
-      '',
-      {
+      queryParameters: {
         'key': pubsubApiKey,
         'client': '$currentClientId',
         'topic': 'Cmo.MasterDataDeviceSync.*.$currentClientId',
       },
-    );
-
-    final response = await client.deleteUri<dynamic>(
-      uri,
       data: body,
     );
 

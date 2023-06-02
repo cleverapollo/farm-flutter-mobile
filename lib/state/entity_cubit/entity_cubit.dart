@@ -1,3 +1,4 @@
+import 'package:cmo/env/env.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -75,7 +76,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       if (context.mounted) {
         resPull = await cmoApiService.pullMessage(
           topicMasterDataSync: topicMasterDataSync,
-          pubsubApiKey: appInfoService.pubsubApiKey,
+          pubsubApiKey: Env.behaveApstoryMqKey,
           currentClientId: userDeviceId,
         );
       }
@@ -245,7 +246,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
 
       if (context.mounted) {
         await cmoApiService.deleteMessage(
-          pubsubApiKey: appInfoService.pubsubApiKey,
+          pubsubApiKey: Env.behaveApstoryMqKey,
           currentClientId: userDeviceId,
           messages: messages,
         );
