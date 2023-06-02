@@ -40,7 +40,7 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
       final isBehave = context.read<UserInfoCubit>().state.isBehave;
       final isPerform = context.read<UserInfoCubit>().state.isPerform;
       if (!isPerform) {
-        configService.setActiveUserRole(userRole: UserRoleEnum.behave);
+        context.read<UserInfoCubit>().setActiveUserRole(userRole: UserRoleEnum.behave);
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (_) => const EntityBehaveScreen(),
@@ -52,7 +52,7 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
         final isResourceManager =
             context.read<UserInfoCubit>().state.isResourceManager;
         if (!isResourceManager) {
-          configService.setActiveUserRole(userRole: UserRoleEnum.farmerMember);
+          context.read<UserInfoCubit>().setActiveUserRole(userRole: UserRoleEnum.farmerMember);
           Navigator.of(context).pushReplacement(EntityFarmerScreen.pageRoute());
           return;
         }
