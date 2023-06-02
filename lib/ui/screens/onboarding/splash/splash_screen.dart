@@ -1,5 +1,4 @@
 import 'package:cmo/gen/assets.gen.dart';
-import 'package:cmo/state/audit_cubit/audit_cubit.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
@@ -69,20 +68,23 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> getUser() async {
-    if (!context.mounted) return;
-
-    final data = context.read<UserInfoCubit>().data;
-    if (data == null) {
-      await context.read<UserInfoCubit>().getUserInfoAndUserRoles(context);
+    final userInfoCubit = context.read<UserInfoCubit>();
+    if (userInfoCubit.data == null) {
+      await context
+          .read<UserInfoCubit>()
+          .getUserInfoAndUserRoles(context, userInfoCubit.state.userRole!);
     }
   }
 
   Future<void> createUserDevice() async {
     if (!context.mounted) return;
+    final userInfoCubit = context.read<UserInfoCubit>();
 
     final data = context.read<UserDeviceCubit>().data;
     if (data == null) {
-      await context.read<UserDeviceCubit>().createUserDevice(context);
+      await context
+          .read<UserDeviceCubit>()
+          .createUserDevice(context, userInfoCubit.state.userRole!);
     }
   }
 

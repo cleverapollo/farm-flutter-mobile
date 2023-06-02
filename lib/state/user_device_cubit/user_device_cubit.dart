@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/model/user_device.dart';
+import 'package:cmo/model/user_role_config/user_role_config.dart';
 import 'package:cmo/model/user_role_portal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -11,13 +12,15 @@ part 'user_device_state.dart';
 class UserDeviceCubit extends HydratedCubit<UserDeviceState> {
   UserDeviceCubit() : super(UserDeviceState.loading());
 
-  Future<void> createUserDevice(BuildContext context) async {
-    final user = await cmoApiService.getUser();
+  Future<void> createUserDevice(
+      BuildContext context, UserRoleConfig userRole) async {
+    final user = await cmoApiService.getUser(userRole);
 
     List<UserRolePortal>? result = [];
 
     if (user?.userId != null) {
-      result = await cmoApiService.getUserRoles(userId: user!.userId!);
+      result = await cmoApiService.getUserRoles(
+          userId: user!.userId!, userRole: userRole);
     }
     emit(UserDeviceState.loading());
     final res = await cmoApiService.createUserDevice(

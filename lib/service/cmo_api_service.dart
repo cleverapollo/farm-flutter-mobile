@@ -164,14 +164,26 @@ class CmoApiService {
     return data == null ? null : UserAuth.fromJson(data);
   }
 
-  Future<UserInfo?> getUser() async {
-    final response = await client.getUri<JsonData>(
-      Uri.https(
-        Env.cmoApiUrl,
-        '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.gs/API/Mobile/GetUser',
-      ),
-      options: Options(headers: {'accessToken': 'true'}),
-    );
+  Future<UserInfo?> getUser(UserRoleConfig userRole) async {
+    Response<Map<String, dynamic>>? response;
+
+    if (userRole.isBehave) {
+      response = await client.getUri<JsonData>(
+        Uri.https(
+          Env.cmoApiUrl,
+          '/cmo/DesktopModules/Cmo.UI.Dnn.Api.gs/API/Mobile/GetUser',
+        ),
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+    } else {
+      response = await client.getUri<JsonData>(
+        Uri.https(
+          Env.cmoApiUrl,
+          '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.gs/API/Mobile/GetUser',
+        ),
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+    }
 
     if (response.statusCode != 200) {
       showSnackError(msg: 'Unknow error: ${response.statusCode}');
@@ -182,12 +194,24 @@ class CmoApiService {
     return data == null ? null : UserInfo.fromJson(data);
   }
 
-  Future<List<UserRolePortal>?> getUserRoles({required int userId}) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      'cmo/DesktopModules/Cmo.UI.Dnn.Api/API/User/GetUserPortals',
-      {'dnnUserId': userId.toString()},
-    );
+  Future<List<UserRolePortal>?> getUserRoles(
+      {required int userId, required UserRoleConfig userRole}) async {
+    Uri? uri;
+
+    if (userRole.isBehave) {
+      uri = Uri.https(
+        Env.cmoApiUrl,
+        'cmo/DesktopModules/Cmo.UI.Dnn.Api/API/User/GetUserPortals',
+        {'dnnUserId': userId.toString()},
+      );
+    } else {
+      uri = Uri.https(
+        Env.cmoApiUrl,
+        'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api/API/User/GetUserPortals',
+        {'dnnUserId': userId.toString()},
+      );
+    }
+
     final response = await client.getUri<JsonListData>(
       uri,
       options: Options(headers: {'accessToken': 'true'}),

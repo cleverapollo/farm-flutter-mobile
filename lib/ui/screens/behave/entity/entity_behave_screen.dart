@@ -4,6 +4,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/enum/user_role_enum.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/company.dart';
+import 'package:cmo/model/user_role_config/user_role_config.dart';
 import 'package:cmo/state/assessment_cubit/assessment_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
@@ -77,7 +78,9 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
       setState(() => loading = true);
       context.read<AssessmentCubit>().cleanCache();
 
-      await context.read<UserDeviceCubit>().createUserDevice(context);
+      await context
+          .read<UserDeviceCubit>()
+          .createUserDevice(context, UserRoleConfig.behaveRole);
 
       if (context.mounted) {
         await configService.setActiveCompany(company: selected!);

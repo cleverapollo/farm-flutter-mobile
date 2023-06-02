@@ -36,8 +36,7 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final isBehave = context.read<UserInfoCubit>().state.isBehave;
       final isPerform = context.read<UserInfoCubit>().state.isPerform;
       if (!isPerform) {
@@ -50,7 +49,8 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
         return;
       }
       if (isPerform) {
-        final isResourceManager = context.read<UserInfoCubit>().state.isResourceManager;
+        final isResourceManager =
+            context.read<UserInfoCubit>().state.isResourceManager;
         if (!isResourceManager) {
           configService.setActiveUserRole(userRole: UserRoleEnum.farmerMember);
           Navigator.of(context).pushReplacement(EntityFarmerScreen.pageRoute());
@@ -65,10 +65,11 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBar(
-        title: LocaleKeys.entity.tr(),
-      ),
-      body: const Center(child: CircularProgressIndicator(),)
-    );
+        appBar: CmoAppBar(
+          title: LocaleKeys.entity.tr(),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ));
   }
 }

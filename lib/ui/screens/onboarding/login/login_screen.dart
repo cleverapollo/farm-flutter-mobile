@@ -1,9 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/user_role_config/user_role_config.dart';
-import 'package:cmo/state/auth_cubit/auth_cubit.dart';
-import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
-import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/global_entity.dart';
 import 'package:cmo/ui/screens/onboarding/login/language_picker.dart';
 import 'package:cmo/ui/theme/theme.dart';
@@ -54,26 +52,13 @@ class _LoginScreenState extends State<LoginScreen> {
       final username = _formKey.currentState?.value[emailFieldName];
       final password = _formKey.currentState?.value[passwordFieldName];
 
-      var success = false;
+      UserRoleConfig? _userRole;
 
       if (context.mounted) {
         await context.read<AuthCubit>().logIn(
               LogInAuthEvent(
-                onResponse: (UserRoleConfig? config) {
-                  switch (config) {
-                    case UserRoleConfig.behaveRole:
-                      success = true;
-                      break;
-                    case UserRoleConfig.performRole:
-                      success = true;
-                      break;
-                    case UserRoleConfig.bothRole:
-                      success = true;
-                      break;
-                    case null:
-                      success = false;
-                      break;
-                  }
+                onResponse: (UserRoleConfig? userRole) {
+                  _userRole = userRole;
                 },
                 password: password.toString(),
                 username: username.toString(),
@@ -81,26 +66,17 @@ class _LoginScreenState extends State<LoginScreen> {
             );
       }
 
-      if (!success && context.mounted) {
+      if (_userRole == null && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Login failed, please try again'),
         ));
       }
 
-      if (success && context.mounted) {
-        final userInfoCubit = context.read<UserInfoCubit>();
-        final deviceInfoCubit = context.read<UserDeviceCubit>();
-
-        await Future.wait([
-          // Init user info and user roles and cache to db
-          userInfoCubit.getUserInfoAndUserRoles(context),
-          // Get companies by userId and cache to db
-          userInfoCubit.getCompaniesByUserId(context),
-          // Create user device and cache to db
-          deviceInfoCubit.createUserDevice(context)
-        ]);
-
-        GlobalEntityScreen.pushReplacement(context);
+      if (_userRole != null && context.mounted) {
+        await context
+            .read<UserInfoCubit>()
+            .getUserDataAfterLogin(context, _userRole!)
+            .then((_) => GlobalEntityScreen.pushReplacement(context));
       }
     } finally {
       setState(() {

@@ -146,8 +146,10 @@ class _AuditAddScreen extends State<AuditAddScreen> {
       isDense: true,
       hintText: '${LocaleKeys.select.tr()} ${hintText.toLowerCase()}',
       hintStyle: context.textStyles.bodyNormal.grey,
-      border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
+      border: UnderlineInputBorder(
+          borderSide: BorderSide(color: context.colors.grey)),
+      focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: context.colors.blue)),
     );
   }
 
@@ -165,10 +167,11 @@ class _AuditAddScreen extends State<AuditAddScreen> {
             return state.compartments;
           },
           builder: (builder, compartments) {
-            return CmoDropdown(
+            return CmoDropdown<int?>(
               name: 'CompartmentId',
               validator: requiredValidator,
-              inputDecoration: _buildInputDecoration(LocaleKeys.compartment.tr()),
+              inputDecoration:
+                  _buildInputDecoration(LocaleKeys.compartment.tr()),
               itemsData: compartments
                   .map(
                     (e) => CmoDropdownItem(
@@ -262,7 +265,8 @@ class _AuditAddScreen extends State<AuditAddScreen> {
             return CmoDropdown(
               name: 'AuditTemplateId',
               validator: requiredValidator,
-              inputDecoration: _buildInputDecoration(LocaleKeys.auditTemplate.tr()),
+              inputDecoration:
+                  _buildInputDecoration(LocaleKeys.auditTemplate.tr()),
               itemsData: auditTemplates
                   .map(
                     (e) => CmoDropdownItem(

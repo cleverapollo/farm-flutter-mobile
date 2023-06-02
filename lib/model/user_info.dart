@@ -1,8 +1,7 @@
 // ignore_for_file: invalid_annotation_target, override_on_non_overriding_member
 
-import 'package:freezed_annotation/freezed_annotation.dart';
-
 import 'package:cmo/extensions/string.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'user_info.freezed.dart';
 part 'user_info.g.dart';

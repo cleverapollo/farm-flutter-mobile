@@ -5,9 +5,11 @@ class UserInfoState extends Union3Impl<UserInfoLoadingState, UserInfoDataState,
   UserInfoState._(super.union);
 
   factory UserInfoState.data(
-          {required UserInfo? userInfo, List<UserRolePortal>? userRoles}) =>
-      UserInfoState._(unions
-          .second(UserInfoDataState(userInfo: userInfo, userRoles: userRoles)));
+          {required UserInfo? userInfo,
+          List<UserRolePortal>? userRoles,
+          UserRoleConfig? userRole}) =>
+      UserInfoState._(unions.second(UserInfoDataState(
+          userInfo: userInfo, userRoles: userRoles, userRole: userRole)));
 
   factory UserInfoState.error() =>
       UserInfoState._(unions.third(const UserInfoErrorState()));
@@ -30,6 +32,13 @@ class UserInfoState extends Union3Impl<UserInfoLoadingState, UserInfoDataState,
         (p0) => null,
       );
 
+  UserRoleConfig? get userRole => join(
+        (p0) => null,
+        (p0) => p0.userRole,
+        (p0) => null,
+      );
+
+  //TODO NGUYENGUYEN Should remove isBehave, isPerform
   bool get isBehave =>
       userRoles?.firstWhereOrNull((element) => element.isBehaveRole) != null;
   bool get isPerform =>
@@ -51,10 +60,12 @@ class UserInfoDataState extends Equatable {
   const UserInfoDataState({
     required this.userInfo,
     this.userRoles,
+    this.userRole,
   });
 
   final UserInfo? userInfo;
   final List<UserRolePortal>? userRoles;
+  final UserRoleConfig? userRole;
 
   @override
   List<Object?> get props => [

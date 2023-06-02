@@ -1,5 +1,6 @@
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/entity.dart';
+import 'package:cmo/model/user_role_config/user_role_config.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/ui/components/entity_component/entity_search_screen.dart';
@@ -49,7 +50,9 @@ class _EntityResourceManagerScreenState
 
   Future<void> submit() async {
     if (selected == null) return;
-    await context.read<UserDeviceCubit>().createUserDevice(context);
+    await context
+        .read<UserDeviceCubit>()
+        .createUserDevice(context, UserRoleConfig.performRole);
     if (context.mounted) {
       await context.read<EntityCubit>().sync(selected!);
     }
