@@ -124,7 +124,8 @@ class _StakeHolderManagementScreenState
         subtitle: '${LocaleKeys.siteName.tr()}: Imbeza',
         showLeading: true,
       );
-    } else if (context.read<UserInfoCubit>().state.isPerform) {
+    } else if (context.read<UserInfoCubit>().state.userRole?.isBoth == true ||
+        context.read<UserInfoCubit>().state.userRole?.isPerform == true) {
       return AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -172,7 +173,8 @@ class _StakeHolderManagementScreenState
         model: model,
         onTap: () {},
       );
-    } else if (context.read<UserInfoCubit>().state.isPerform) {
+    } else if (context.read<UserInfoCubit>().state.userRole?.isBoth == true ||
+        context.read<UserInfoCubit>().state.userRole?.isPerform == true) {
       return FarmerModeStakeHolderItem(
         model: model,
         haveGreyBackground: haveGreyBackground,

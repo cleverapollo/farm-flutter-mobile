@@ -37,8 +37,6 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final isBehave = context.read<UserInfoCubit>().state.isBehave;
-      final isPerform = context.read<UserInfoCubit>().state.isPerform;
       if (context.read<UserInfoCubit>().state.userRole?.isBehave == true) {
         context.read<UserInfoCubit>().setActiveUserRole(userRole: UserRoleEnum.behave);
         Navigator.of(context).pushReplacement(

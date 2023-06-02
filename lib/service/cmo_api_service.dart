@@ -34,6 +34,10 @@ class CmoApiService {
 
   String _apiUri(String path) => '${Env.behaveDnnApiUrl}$path';
 
+  String _behaveApiUri(String path) => '${Env.behaveDnnApiUrl}$path';
+
+  String _performApiUri(String path) => '${Env.performDnnApiUrl}$path';
+
   String _mqApiUri(String path) => '${Env.apstoryMqApiUrl}$path';
 
   Dio client = Dio(
@@ -169,12 +173,12 @@ class CmoApiService {
 
     if (userRole.isBehave) {
       response = await client.get<JsonData>(
-        _behaveApiAuthUri('GetUser'),
+        _behaveApiUri('GetUser'),
         options: Options(headers: {'accessToken': 'true'}),
       );
     } else {
       response = await client.get<JsonData>(
-        _performApiAuthUri('GetUser'),
+        _performApiUri('GetUser'),
         options: Options(headers: {'accessToken': 'true'}),
       );
     }
@@ -268,7 +272,7 @@ class CmoApiService {
 
   Future<List<Farm>?> fetchFarms() async {
     final response = await client.get<JsonListData>(
-      _performApiAuthUri('GetFarms'),
+      _performApiUri('GetFarms'),
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -283,7 +287,7 @@ class CmoApiService {
 
   Future<List<GroupScheme>?> fetchGroupSchemes() async {
     final response = await client.get<JsonListData>(
-      _performApiAuthUri('GetGroupschemes'),
+      _performApiUri('GetGroupschemes'),
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -299,7 +303,7 @@ class CmoApiService {
   Future<List<ResourceManagerUnit>?> fetchResourceManagerUnits(
       int groupSchemeId) async {
     final response = await client.get<JsonListData>(
-      _performApiAuthUri('GetRegionalManagerUnits'),
+      _performApiUri('GetRegionalManagerUnits'),
       queryParameters: {'groupSchemeId': groupSchemeId.toString()},
       options: Options(headers: {'accessToken': 'true'}),
     );

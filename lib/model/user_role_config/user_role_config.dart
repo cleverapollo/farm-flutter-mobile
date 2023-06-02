@@ -62,7 +62,7 @@ enum UserRoleConfig {
   }
 
   bool get isBoth {
-    if (this == UserRoleConfig.behaveRole) {
+    if (this == UserRoleConfig.bothRole) {
       return true;
     }
     return false;
