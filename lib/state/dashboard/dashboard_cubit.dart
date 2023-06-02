@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
@@ -95,7 +96,17 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
   }
 
   Future<void> refresh() async {
-    await initializeRM();
+    final userRole = await configService.getActiveUserRole();
+    switch (userRole) {
+      case UserRoleEnum.behave:
+        await getDataBehaveRole();
+        break;
+      case UserRoleEnum.resourceManager:
+        await initializeRM();
+        break;
+      case UserRoleEnum.farmerMember:
+        break;
+    }
   }
 
   void handleError(Object error) {

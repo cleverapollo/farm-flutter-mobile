@@ -46,10 +46,9 @@ class _BehaveDashboardScreenState extends State<BehaveDashboardScreen> {
         }
 
         return RefreshIndicator(
-          onRefresh: () async => context.read<DashboardCubit>().getDataBehaveRole(),
+          onRefresh: () async => context.read<DashboardCubit>().refresh(),
           child: ListView(
             clipBehavior: Clip.none,
-            // physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.all(20),
             children: [
               CmoTappable(

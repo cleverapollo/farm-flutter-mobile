@@ -71,7 +71,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
         context.read<AssessmentListCubit>().loadStarted(),
         context.read<AssessmentListCubit>().loadCompleted(),
         context.read<AssessmentListCubit>().loadSynced(),
-        context.read<DashboardCubit>().getDataBehaveRole(),
+        context.read<DashboardCubit>().refresh(),
       ]);
     }
   }

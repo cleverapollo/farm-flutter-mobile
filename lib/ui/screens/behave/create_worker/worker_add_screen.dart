@@ -3,6 +3,7 @@ import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
@@ -87,6 +88,10 @@ class _WorkerAddScreenState extends State<WorkerAddScreen> {
         setState(() {
           loading = false;
         });
+
+        if (context.mounted) {
+          await context.read<DashboardCubit>().refresh();
+        }
       }
     }
   }
