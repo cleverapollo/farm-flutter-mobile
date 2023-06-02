@@ -524,21 +524,16 @@ class CmoApiService {
     required int currentClientId,
     required List<Message> messages,
   }) async {
-    final uri = Uri.https(
+    final body = messages.map((e) => e.toJson()).toList();
+
+    final response = await client.delete<dynamic>(
       _mqApiUri('message'),
-      '',
-      {
+      data: body,
+      queryParameters: {
         'key': pubsubApiKey,
         'client': '$currentClientId',
         'topic': '$topicMasterDataSync*.$currentClientId'
       },
-    );
-
-    final body = messages.map((e) => e.toJson()).toList();
-
-    final response = await client.deleteUri<dynamic>(
-      uri,
-      data: body,
     );
 
     if (response.statusCode != 200) {
