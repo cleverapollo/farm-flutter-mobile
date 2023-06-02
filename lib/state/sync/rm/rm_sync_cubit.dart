@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/env/env.dart';
 import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
@@ -369,7 +370,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     ]
         .map((e) => cmoApiService.createSubscription(
             topic: e,
-            pubsubApiKey: appInfoService.pubsubApiKey,
+            pubsubApiKey: Env.performApstoryMqKey,
             currentClientId: userDeviceId))
         .toList();
     await Future.wait(futures);
@@ -382,7 +383,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
       resPull = await cmoApiService.pullMessage(
         topicMasterDataSync: topicRegionalManagerMasterDataSync,
-        pubsubApiKey: appInfoService.pubsubApiKey,
+        pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
       );
 
@@ -481,7 +482,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         }
       });
       await cmoApiService.commitMessageList(
-        pubsubApiKey: appInfoService.pubsubApiKey,
+        pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
         messages: messages,
         topicMasterDataSync: topicRegionalManagerMasterDataSync,
@@ -496,7 +497,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
       resPull = await cmoApiService.pullMessage(
         topicMasterDataSync: topicRegionalManagerUnitMasterDataSync,
-        pubsubApiKey: appInfoService.pubsubApiKey,
+        pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
       );
 
@@ -530,7 +531,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       });
 
       await cmoApiService.commitMessageList(
-        pubsubApiKey: appInfoService.pubsubApiKey,
+        pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
         messages: messages,
         topicMasterDataSync: topicRegionalManagerUnitMasterDataSync,
