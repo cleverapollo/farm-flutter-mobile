@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/user_role_enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/user_info.dart';
 import 'package:cmo/model/user_role_config/user_role_config.dart';
@@ -66,6 +67,7 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
     emit(UserInfoState.data(userInfo: res, userRoles: roles, userRole: userRole));
   }
 
+
   Future<void> getCompaniesByUserId(
       BuildContext context, UserRoleConfig userRole) async {
     final res = await cmoApiService.getUser(userRole);
@@ -84,6 +86,10 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
 
       await Future.wait(futures);
     }
+  }
+
+  Future setActiveUserRole({required UserRoleEnum userRole}) {
+    return configService.setActiveUserRole(userRole: userRole);
   }
 
   UserInfo? get data => state.join(

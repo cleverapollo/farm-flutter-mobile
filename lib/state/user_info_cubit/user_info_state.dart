@@ -38,11 +38,6 @@ class UserInfoState extends Union3Impl<UserInfoLoadingState, UserInfoDataState,
         (p0) => null,
       );
 
-  //TODO NGUYENGUYEN Should remove isBehave, isPerform
-  bool get isBehave =>
-      userRoles?.firstWhereOrNull((element) => element.isBehaveRole) != null;
-  bool get isPerform =>
-      userRoles?.firstWhereOrNull((element) => element.isPerformRole) != null;
   bool get isResourceManager =>
       userInfo?.listRoles?.firstWhereOrNull(
           (element) => element.roleName == Constants.resourceManagerRoleName) !=

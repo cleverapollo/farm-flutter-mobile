@@ -39,7 +39,7 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final isBehave = context.read<UserInfoCubit>().state.isBehave;
       final isPerform = context.read<UserInfoCubit>().state.isPerform;
-      if (!isPerform) {
+      if (context.read<UserInfoCubit>().state.userRole?.isBehave == true) {
         context.read<UserInfoCubit>().setActiveUserRole(userRole: UserRoleEnum.behave);
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -48,7 +48,8 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
         );
         return;
       }
-      if (isPerform) {
+      if (context.read<UserInfoCubit>().state.userRole?.isPerform == true ||
+          context.read<UserInfoCubit>().state.userRole?.isBoth == true) {
         final isResourceManager =
             context.read<UserInfoCubit>().state.isResourceManager;
         if (!isResourceManager) {
@@ -57,7 +58,9 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
           return;
         }
         Navigator.of(context)
-            .pushReplacement(EntityGroupScreen.pageRoute(isBehave: isBehave));
+            .pushReplacement(EntityGroupScreen.pageRoute(
+            isBehave:
+                context.read<UserInfoCubit>().state.userRole?.isBoth == true));
       }
     });
   }
