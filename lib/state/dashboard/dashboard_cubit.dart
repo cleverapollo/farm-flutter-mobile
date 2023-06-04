@@ -13,6 +13,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
   Future<void> initializeRM() async {
     try {
       await getResourceManagerMembers();
+      await getStakeHolders();
       final service = cmoDatabaseMasterService;
       final totalStakeholders = await service.getStakeHolders();
       emit(state.copyWith(totalStakeholders: totalStakeholders.length));
@@ -87,7 +88,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
       return;
     }
     final farms = await service.getFarms(resourceManagerUnit.id);
-    final info = RMDashboardInfo();
+    final info = state.rmDashboardInfo ?? RMDashboardInfo();
     if (farms != null) {
       for (var farm in farms) {
         if (farm.isGroupSchemeMember == null ||
@@ -100,6 +101,18 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
       info.totalMembers = info.onboardedMembers + info.incompletedMembers;
     }
     emit(state.copyWith(rmDashboardInfo: info));
+  }
+
+  Future<void> getStakeHolders() async {
+    final service = cmoDatabaseMasterService;
+    final groupScheme = await configService.getActiveGroupScheme();
+    if (groupScheme == null) {
+      return;
+    }
+    final stakeHolders = await service.getActiveStakeholderWrappersCountByGroupSchemeId(groupScheme.id);
+    emit(state.copyWith(
+        rmDashboardInfo: state.rmDashboardInfo
+          ?..stakeHolders = stakeHolders?.length ?? 0));
   }
 
   Future<void> refresh() async {

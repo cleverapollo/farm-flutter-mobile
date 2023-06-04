@@ -1902,6 +1902,29 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<List<StakeHolder>?> getActiveStakeholderWrappersCountByGroupSchemeId(int groupSchemeId) async {
+    final db = await _db();
+    final groupSchemeStakeHolders = await db.groupSchemeStakeHolders
+        .filter()
+        .groupSchemeIdEqualTo(groupSchemeId)
+        .findAll();
+    if (groupSchemeStakeHolders == null) {
+      return null;
+    }
+    final stakeHolders = <StakeHolder>[];
+    for (final item in groupSchemeStakeHolders) {
+      final id = int.tryParse(item.stakeHolderId ?? '');
+      if (id == null) {
+        continue;
+      }
+      stakeHolders.addAll(await db.stakeHolders
+          .filter()
+          .stakeHolderIdEqualTo(id)
+          .findAll());
+    }
+    return stakeHolders;
+  }
+
   Future<List<Worker>> getWorkersByCompanyId(int companyId) async {
     final db = await _db();
     return db.workers

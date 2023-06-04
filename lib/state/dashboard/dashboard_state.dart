@@ -64,10 +64,12 @@ class RMDashboardInfo {
   int onboardedMembers;
   int incompletedMembers;
   int totalMembers;
+  int stakeHolders;
 
   RMDashboardInfo({
     this.onboardedMembers = 0,
     this.incompletedMembers = 0,
     this.totalMembers = 0,
+    this.stakeHolders = 0,
   });
 }

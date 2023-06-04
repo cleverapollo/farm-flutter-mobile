@@ -62,7 +62,7 @@ class _ResourceManagerDashboardScreenState
             children: [
               CmoTappable(
                 onTap: () {
-                  MemberManagementScreen.push(context);
+                  context.read<DashboardCubit>().getResourceManagerMembers();
                 },
                 child: BlocSelector<DashboardCubit, DashboardState,
                     RMDashboardInfo?>(
@@ -106,16 +106,23 @@ class _ResourceManagerDashboardScreenState
               const SizedBox(height: 20),
               CmoTappable(
                 onTap: () {
-                  StakeHolderManagementScreen.push(context);
+                  //StakeHolderManagementScreen.push(context);
+                  context.read<DashboardCubit>().initializeRM();
                 },
-                child: CmoCard(
-                  content: [
-                    CmoCardHeader(title: LocaleKeys.stakeholders.tr()),
-                    CmoCardItem(
-                      title: LocaleKeys.national.tr(),
-                      value: state.totalStakeholders?.toString(),
-                    ),
-                  ],
+                child: BlocSelector<DashboardCubit, DashboardState,
+                    RMDashboardInfo?>(
+                  selector: (state) => state.rmDashboardInfo,
+                  builder: (context, dashboardInfo) {
+                    return CmoCard(
+                      content: [
+                        CmoCardHeader(title: LocaleKeys.stakeholders.tr()),
+                        CmoCardItem(
+                          title: LocaleKeys.national.tr(),
+                          value: '${dashboardInfo?.stakeHolders ?? 0}',
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 20),
