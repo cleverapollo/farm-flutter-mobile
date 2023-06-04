@@ -64,14 +64,24 @@ class _ResourceManagerDashboardScreenState
                 onTap: () {
                   MemberManagementScreen.push(context);
                 },
-                child: CmoCard(
-                  content: [
-                    CmoCardHeader(title: LocaleKeys.member_s.tr()),
-                    CmoCardItem(
-                        title: LocaleKeys.onboarded.tr(), value: '5/10'),
-                    CmoCardItem(
-                        title: LocaleKeys.incomplete.tr(), value: '8/10'),
-                  ],
+                child: BlocSelector<DashboardCubit, DashboardState,
+                    RMDashboardInfo?>(
+                  selector: (state) => state.rmDashboardInfo,
+                  builder: (context, dashboardInfo) {
+                    return CmoCard(
+                      content: [
+                        CmoCardHeader(title: LocaleKeys.member_s.tr()),
+                        CmoCardItem(
+                            title: LocaleKeys.onboarded.tr(),
+                            value:
+                                '${dashboardInfo?.onboardedMembers}/${dashboardInfo?.totalMembers}'),
+                        CmoCardItem(
+                            title: LocaleKeys.incomplete.tr(),
+                            value:
+                                '${dashboardInfo?.incompletedMembers}/${dashboardInfo?.totalMembers}'),
+                      ],
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 20),

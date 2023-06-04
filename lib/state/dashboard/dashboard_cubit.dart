@@ -12,7 +12,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
 
   Future<void> initializeRM() async {
     try {
-      await getTotalWorkers();
+      await getResourceManagerMembers();
       final service = cmoDatabaseMasterService;
       final totalStakeholders = await service.getStakeHolders();
       emit(state.copyWith(totalStakeholders: totalStakeholders.length));
@@ -80,13 +80,26 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     );
   }
 
-  Future<void> getTotalWorkers() async {
+  Future<void> getResourceManagerMembers() async {
     final service = cmoDatabaseMasterService;
-
-    /// Replace farmID here
-    final totalWorkers = await service.getFarmerWorkersByFarmId(1553253093156);
-
-    emit(state.copyWith(totalWorkers: totalWorkers.length));
+    final resourceManagerUnit = await configService.getActiveRegionalManager();
+    if (resourceManagerUnit == null) {
+      return;
+    }
+    final farms = await service.getFarms(resourceManagerUnit.id);
+    final info = RMDashboardInfo();
+    if (farms != null) {
+      for (var farm in farms) {
+        if (farm.isGroupSchemeMember == null ||
+            farm.isGroupSchemeMember == false) {
+          info.incompletedMembers = info.incompletedMembers! + 1;
+        } else {
+          info.onboardedMembers = info.onboardedMembers! + 1;
+        }
+      }
+      info.totalMembers = info.onboardedMembers + info.incompletedMembers;
+    }
+    emit(state.copyWith(rmDashboardInfo: info));
   }
 
   Future<void> refresh() async {

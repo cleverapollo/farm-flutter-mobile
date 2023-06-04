@@ -1893,6 +1893,15 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<List<Farm>?> getFarms(int resourceManagerUnit) async {
+    final db = await _db();
+    return db.farms
+        .filter()
+        .regionalManagerUnitIdEqualTo(resourceManagerUnit)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
   Future<List<Worker>> getWorkersByCompanyId(int companyId) async {
     final db = await _db();
     return db.workers
