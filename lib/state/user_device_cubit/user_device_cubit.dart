@@ -14,16 +14,16 @@ class UserDeviceCubit extends HydratedCubit<UserDeviceState> {
 
   Future<void> createUserDevice(
       BuildContext context, UserRoleConfig userRole) async {
-    final user = await cmoApiService.getUser(userRole);
+    final user = await cmoPerformApiService.getUser(userRole);
 
     List<UserRolePortal>? result = [];
 
     if (user?.userId != null) {
-      result = await cmoApiService.getUserRoles(
+      result = await cmoPerformApiService.getUserRoles(
           userId: user!.userId!, userRole: userRole);
     }
     emit(UserDeviceState.loading());
-    final res = await cmoApiService.createUserDevice(
+    final res = await cmoPerformApiService.createUserDevice(
       appName: appInfoService.appName,
       appVersionNumber: appInfoService.version,
       deviceId: deviceInfoService.deviceId ?? '',

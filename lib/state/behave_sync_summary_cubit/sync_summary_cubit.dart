@@ -28,7 +28,7 @@ import 'package:cmo/model/data/worker.dart';
 import 'package:cmo/model/master_data_message.dart';
 import 'package:cmo/model/sync_summary_model.dart';
 import 'package:cmo/model/user_info.dart';
-import 'package:cmo/service/cmo_api_service.dart';
+import 'package:cmo/service/cmo_perform_api_service.dart';
 import 'package:cmo/state/behave_sync_summary_cubit/sync_summary_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/json_converter.dart';
@@ -209,7 +209,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
           isLoadingSync: true, syncMessage: 'Syncing Assessments...'),
     );
 
-    await cmoApiService.createSystemEvent(
+    await cmoPerformApiService.createSystemEvent(
       primaryKey: companyId,
       systemEventName: 'SyncAssessmentMasterData',
       userDeviceId: userId,
@@ -236,13 +236,13 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     while (sync) {
       MasterDataMessage? masterDataPull;
 
-      masterDataPull = await cmoApiService.pullMessage(
+      masterDataPull = await cmoPerformApiService.pullMessage(
         topicMasterDataSync: _topicMasterDataSync,
         pubsubApiKey: appInfoService.pubsubApiKey,
         currentClientId: userDeviceId,
       );
 
-      final result = await cmoApiService.pullAssessmentMessage(
+      final result = await cmoPerformApiService.pullAssessmentMessage(
         topicAssessment: 'Cmo.Assessment.Complete.${company?.companyId}',
         pubsubApiKey: appInfoService.pubsubApiKey,
         currentClientId: userDeviceId,
@@ -408,7 +408,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
         }
       });
 
-      await cmoApiService.deleteMessage(
+      await cmoPerformApiService.deleteMessage(
         pubsubApiKey: appInfoService.pubsubApiKey,
         currentClientId: userDeviceId,
         messages: masterDataMessage ?? [],

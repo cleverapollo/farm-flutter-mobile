@@ -18,9 +18,9 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     final groupScheme = await configService.getActiveGroupScheme();
     final resourceManagerUnit = await configService.getActiveRegionalManager();
     final result = await Future.wait([
-      cmoApiService.fetchAreaTypes(),
-      cmoApiService.fetchProductGroupTemplates(),
-      cmoApiService.fetchSpeciesGroupTemplates()
+      cmoPerformApiService.fetchAreaTypes(),
+      cmoPerformApiService.fetchProductGroupTemplates(),
+      cmoPerformApiService.fetchSpeciesGroupTemplates()
     ]);
     emit(state.copyWith(
       loading: false,

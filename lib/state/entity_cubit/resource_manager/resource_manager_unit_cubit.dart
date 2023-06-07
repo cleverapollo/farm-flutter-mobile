@@ -17,7 +17,7 @@ class ResourceManagerUnitCubit extends Cubit<ResourceManagerUnitState> {
     List<ResourceManagerUnit>? resourceManagerUnits;
     if (context.mounted) {
       resourceManagerUnits =
-          await cmoApiService.fetchResourceManagerUnits(groupSchemeId);
+          await cmoPerformApiService.fetchResourceManagerUnits(groupSchemeId);
     }
     emit(
       state.copyWith(

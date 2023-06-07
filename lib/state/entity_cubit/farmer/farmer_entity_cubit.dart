@@ -14,7 +14,7 @@ class FarmerEntityCubit extends Cubit<FarmerEntityState> {
     emit(state.copyWith(isLoading: true));
     List<Farm>? farms;
     if (context.mounted) {
-      farms = await cmoApiService.fetchFarms();
+      farms = await cmoPerformApiService.fetchFarms();
     }
     emit(
       state.copyWith(

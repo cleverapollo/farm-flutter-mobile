@@ -64,7 +64,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       ),
     );
 
-    await cmoApiService.createSystemEvent(
+    await cmoPerformApiService.createSystemEvent(
       primaryKey: companyId,
       systemEventName: 'SyncAssessmentMasterData',
       userDeviceId: userDeviceId,
@@ -74,7 +74,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     while (sync) {
       MasterDataMessage? resPull;
       if (context.mounted) {
-        resPull = await cmoApiService.pullMessage(
+        resPull = await cmoPerformApiService.pullMessage(
           topicMasterDataSync: topicMasterDataSync,
           pubsubApiKey: Env.behaveApstoryMqKey,
           currentClientId: userDeviceId,
@@ -245,7 +245,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       });
 
       if (context.mounted) {
-        await cmoApiService.deleteMessage(
+        await cmoPerformApiService.deleteMessage(
           pubsubApiKey: Env.behaveApstoryMqKey,
           currentClientId: userDeviceId,
           messages: messages,
@@ -275,7 +275,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     List<Company>? companies;
 
     if (context.mounted) {
-      companies = await cmoApiService.getCompaniesByUserId(
+      companies = await cmoPerformApiService.getCompaniesByUserId(
         userId: userId,
       );
     }

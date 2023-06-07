@@ -33,13 +33,13 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
 
   Future<void> getUserInfoAndUserRoles(
       BuildContext context, UserRoleConfig userRole) async {
-    final res = await cmoApiService.getUser(userRole);
+    final res = await cmoPerformApiService.getUser(userRole);
 
     if (res == null) {
       return emit(UserInfoState.error());
     }
 
-    final roles = await cmoApiService.getUserRoles(
+    final roles = await cmoPerformApiService.getUserRoles(
         userId: res.userId!, userRole: userRole);
     final futures = <Future<dynamic>>[];
 
@@ -70,11 +70,11 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
 
   Future<void> getCompaniesByUserId(
       BuildContext context, UserRoleConfig userRole) async {
-    final res = await cmoApiService.getUser(userRole);
+    final res = await cmoPerformApiService.getUser(userRole);
 
     if (res != null) {
       final result =
-          await cmoApiService.getCompaniesByUserId(userId: res.userId!);
+          await cmoPerformApiService.getCompaniesByUserId(userId: res.userId!);
 
       if (result == null || result.isEmpty) return;
 

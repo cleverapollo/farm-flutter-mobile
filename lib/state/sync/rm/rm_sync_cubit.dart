@@ -52,7 +52,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       await createSubscriptions();
       logger.d('--createSubscriptions done');
       logger.d('--createRMSystemEvent');
-      await cmoApiService.createRMSystemEvent(
+      await cmoPerformApiService.createRMSystemEvent(
         rmuId: rmuId,
         userDeviceId: userDeviceId,
       );
@@ -368,7 +368,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       regionalManagerUnitAllMasterDataTopic,
       userTrickleFeedMasterDataTopicByRmuId
     ]
-        .map((e) => cmoApiService.createSubscription(
+        .map((e) => cmoPerformApiService.createSubscription(
             topic: e,
             pubsubApiKey: Env.performApstoryMqKey,
             currentClientId: userDeviceId))
@@ -381,7 +381,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     while (sync) {
       MasterDataMessage? resPull;
 
-      resPull = await cmoApiService.pullMessage(
+      resPull = await cmoPerformApiService.pullMessage(
         topicMasterDataSync: topicRegionalManagerMasterDataSync,
         pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
@@ -481,7 +481,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           }
         }
       });
-      await cmoApiService.commitMessageList(
+      await cmoPerformApiService.commitMessageList(
         pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
         messages: messages,
@@ -495,7 +495,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     while (sync) {
       MasterDataMessage? resPull;
 
-      resPull = await cmoApiService.pullMessage(
+      resPull = await cmoPerformApiService.pullMessage(
         topicMasterDataSync: topicRegionalManagerUnitMasterDataSync,
         pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
@@ -530,7 +530,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         }
       });
 
-      await cmoApiService.commitMessageList(
+      await cmoPerformApiService.commitMessageList(
         pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
         messages: messages,

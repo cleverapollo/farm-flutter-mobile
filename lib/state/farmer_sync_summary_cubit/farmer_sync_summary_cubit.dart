@@ -80,7 +80,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
       userDeviceId: userDeviceId,
     );
 
-    await cmoApiService.createFarmerSystemEvent(
+    await cmoPerformApiService.createFarmerSystemEvent(
       farmId: farmId,
       userDeviceId: userDeviceId,
     );
@@ -112,7 +112,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
     while (isSync) {
       MasterDataMessage? resPull;
 
-      resPull = await cmoApiService.pullFarmerGlobalMessage(
+      resPull = await cmoPerformApiService.pullFarmerGlobalMessage(
         topicMasterDataSync: topicTrickleFeedFarmerMasterDataByFarmId,
         pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: 'global',
@@ -179,7 +179,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
     while (isSync) {
       MasterDataMessage? resPull;
 
-      resPull = await cmoApiService.pullMessage(
+      resPull = await cmoPerformApiService.pullMessage(
         topicMasterDataSync: topicTrickleFeedFgsMasterDataByGroupSchemeId,
         pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: groupSchemeId,
@@ -306,7 +306,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
     while (isSync) {
       MasterDataMessage? resPull;
 
-      resPull = await cmoApiService.pullMessage(
+      resPull = await cmoPerformApiService.pullMessage(
         topicMasterDataSync: topicTrickleFeedFarmerMasterDataByFarmId,
         pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: int.parse(farmId),
@@ -481,7 +481,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
     while (isSync) {
       MasterDataMessage? resPull;
 
-      resPull = await cmoApiService.pullMessage(
+      resPull = await cmoPerformApiService.pullMessage(
         topicMasterDataSync: topicMasterDataSync,
         pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
@@ -1819,7 +1819,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
       getTrickleFeedMasterDataTopic,
       getTrickleFeedMasterDataTopicByGroupSchemeId,
     ]
-        .map((e) => cmoApiService.createSubscription(
+        .map((e) => cmoPerformApiService.createSubscription(
             topic: e,
             pubsubApiKey: Env.performApstoryMqKey,
             currentClientId: userDeviceId))

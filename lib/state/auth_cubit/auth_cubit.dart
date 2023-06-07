@@ -67,43 +67,56 @@ class AuthCubit extends HydratedCubit<AuthState> {
     String username,
     String password,
   ) async {
-    final result = await cmoApiService.loginUseCase(username, password);
+    final behaveLoginResponse = await cmoBehaveApiService.behaveLogin(username, password);
+    final performLoginResponse = await cmoPerformApiService.performLogin(username, password);
 
-    if (result?.performUserAuth != null && result?.behaveUserAuth != null) {
-      await _savePerformAccessRevewalToken(
-        result!.performUserAuth!.accessToken!,
-        result.performUserAuth!.renewalToken!,
-      );
 
-      await _saveBehaveAccessRevewalToken(
-        result.behaveUserAuth!.accessToken!,
-        result.behaveUserAuth!.renewalToken!,
-      );
-
-      return UserRoleConfig.bothRole;
+    if (performLoginResponse == null && behaveLoginResponse == null) {
+      return null;
+    } else if (performLoginResponse == null) {
+      /// MAKE SURE THIS IS BEHAVE
+      emit(AuthState.authorized(haveBehaveRole: true,));
+    } else if (behaveLoginResponse == null) {
+      /// MAKE SURE THIS IS PERFORM, STILL NEED TO CHECK ABOUT IT
+    } else {
+      /// THIS CASE IS PERFORM HAVE BOTH BEHAVE AND PERFORM
     }
-
-    if (result?.behaveUserAuth != null) {
-      await _saveBehaveAccessRevewalToken(
-        result!.behaveUserAuth!.accessToken!,
-        result.behaveUserAuth!.renewalToken!,
-      );
-
-      return UserRoleConfig.behaveRole;
-    }
-
-    if (result?.performUserAuth != null) {
-      await _saveBehaveAccessRevewalToken(
-        result!.performUserAuth!.accessToken!,
-        result.performUserAuth!.renewalToken!,
-      );
-
-      return UserRoleConfig.performRole;
-    }
+    // if (result?.performUserAuth != null && result?.behaveUserAuth != null) {
+    //   await _savePerformAccessRevewalToken(
+    //     result!.performUserAuth!.accessToken!,
+    //     result.performUserAuth!.renewalToken!,
+    //   );
+    //
+    //   await _saveBehaveAccessRevewalToken(
+    //     result.behaveUserAuth!.accessToken!,
+    //     result.behaveUserAuth!.renewalToken!,
+    //   );
+    //
+    //   return UserRoleConfig.bothRole;
+    // }
+    //
+    // if (result?.behaveUserAuth != null) {
+    //   await _saveBehaveAccessRevewalToken(
+    //     result!.behaveUserAuth!.accessToken!,
+    //     result.behaveUserAuth!.renewalToken!,
+    //   );
+    //
+    //   return UserRoleConfig.behaveRole;
+    // }
+    //
+    // if (result?.performUserAuth != null) {
+    //   await _saveBehaveAccessRevewalToken(
+    //     result!.performUserAuth!.accessToken!,
+    //     result.performUserAuth!.renewalToken!,
+    //   );
+    //
+    //   return UserRoleConfig.performRole;
+    // }
 
     return null;
   }
 
+  Future<>
   Future<void> _refreshToken() async {
     final userRole = await configService.getActiveUserRole();
     final renewalToken = await _readRenewalToken();
@@ -112,7 +125,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
       return;
     }
 
-    final login = await cmoApiService.refreshToken(renewalToken);
+    final login = await cmoPerformApiService.refreshToken(renewalToken);
     if (login != null &&
         login.accessToken != null &&
         login.renewalToken != null) {
@@ -163,12 +176,17 @@ class AuthCubit extends HydratedCubit<AuthState> {
   }
 
   Future<void> _savePerformAccessRevewalToken(
-      String accessToken, String renewalToken) async {
+    String accessToken,
+    String renewalToken,
+  ) async {
     await secureStorage.write(
-        key: UserRoleConfig.performRole.getAccessTokenKey, value: accessToken);
+      key: UserRoleConfig.performRole.getAccessTokenKey,
+      value: accessToken,
+    );
     await secureStorage.write(
-        key: UserRoleConfig.performRole.getRenewalTokenKey,
-        value: renewalToken);
+      key: UserRoleConfig.performRole.getRenewalTokenKey,
+      value: renewalToken,
+    );
   }
 
   Future<void> saveUserCurrentRole(String userRole) async {

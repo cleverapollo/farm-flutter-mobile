@@ -26,7 +26,7 @@ class FarmerSyncCubit extends BaseSyncCubit<FarmerSyncState> {
         MasterDataMessage? resPull;
 
         if (context.mounted) {
-          resPull = await cmoApiService.pullMessage(
+          resPull = await cmoPerformApiService.pullMessage(
             topicMasterDataSync: topicMasterDataSync,
             pubsubApiKey: appInfoService.pubsubApiKey,
             currentClientId: int.parse(userDeviceId),
@@ -297,7 +297,7 @@ class FarmerSyncCubit extends BaseSyncCubit<FarmerSyncState> {
         });
 
         if (context.mounted) {
-          await cmoApiService.deleteMessage(
+          await cmoPerformApiService.deleteMessage(
             pubsubApiKey: appInfoService.pubsubApiKey,
             currentClientId: int.parse(userDeviceId),
             messages: messages,

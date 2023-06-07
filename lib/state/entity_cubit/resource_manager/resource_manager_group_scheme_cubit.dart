@@ -13,7 +13,7 @@ class ResourceManagerGroupSchemeCubit extends Cubit<ResourceManagerGroupSchemeSt
     emit(state.copyWith(isGroupSchemeLoading: true));
     List<GroupScheme>? groupSchemes;
     if (context.mounted) {
-      groupSchemes = await cmoApiService.fetchGroupSchemes();
+      groupSchemes = await cmoPerformApiService.fetchGroupSchemes();
     }
     emit(
       state.copyWith(
