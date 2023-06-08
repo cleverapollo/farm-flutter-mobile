@@ -39,7 +39,7 @@ class CmoMenuBase extends StatefulWidget {
   factory CmoMenuBase.resourceManager({required VoidCallback onTapClose}) {
     return CmoMenuBase._(
       onTapClose: onTapClose,
-      userRole: UserRoleEnum.resourceManager,
+      userRole: UserRoleEnum.regionalManager,
     );
   }
 
@@ -69,7 +69,7 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
       case UserRoleEnum.behave:
         _menuContent = _buildBehaveContentMenu();
         break;
-      case UserRoleEnum.resourceManager:
+      case UserRoleEnum.regionalManager:
         _menuContent = _buildResourceManagerMenu();
         break;
       case UserRoleEnum.farmerMember:
@@ -471,7 +471,6 @@ class __LogoutButtonState extends State<_LogoutButton> {
           setState(() {
             loading = true;
           });
-          await cmoDatabaseService.deleteAll();
           await cmoDatabaseMasterService.deleteAll();
           if (context.mounted) {
             await context.read<AuthCubit>().logOut();

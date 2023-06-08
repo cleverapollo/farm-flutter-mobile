@@ -48,7 +48,6 @@ class EntityCubit extends HydratedCubit<EntityState> {
   }
 
   Future<void> syncBehave({
-    required BuildContext context,
     required Company company,
     required int? userDeviceId,
   }) async {
@@ -64,7 +63,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       ),
     );
 
-    await cmoPerformApiService.createSystemEvent(
+    await cmoBehaveApiService.createSystemEvent(
       primaryKey: companyId,
       systemEventName: 'SyncAssessmentMasterData',
       userDeviceId: userDeviceId,
@@ -73,13 +72,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
     var sync = true;
     while (sync) {
       MasterDataMessage? resPull;
-      if (context.mounted) {
-        resPull = await cmoPerformApiService.pullMessage(
-          topicMasterDataSync: topicMasterDataSync,
-          pubsubApiKey: Env.behaveApstoryMqKey,
-          currentClientId: userDeviceId,
-        );
-      }
+      resPull = await cmoBehaveApiService.pullMessage(
+        topicMasterDataSync: topicMasterDataSync,
+        currentClientId: userDeviceId,
+      );
 
       final messages = resPull?.message;
       if (messages == null || messages.isEmpty) {
@@ -244,13 +240,10 @@ class EntityCubit extends HydratedCubit<EntityState> {
         }
       });
 
-      if (context.mounted) {
-        await cmoPerformApiService.deleteMessage(
-          pubsubApiKey: Env.behaveApstoryMqKey,
-          currentClientId: userDeviceId,
-          messages: messages,
-        );
-      }
+      await cmoBehaveApiService.deleteMessage(
+        currentClientId: userDeviceId,
+        messages: messages,
+      );
     }
 
     final cachedCompanies = await cmoDatabaseMasterService.getAllCachedCompanies();
@@ -265,8 +258,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
     );
   }
 
-  Future<void> getCompanies({
-    required BuildContext context,
+  Future<void> getBehaveCompanies({
     required int? userId,
   }) async {
     if (userId == null) return;
@@ -274,11 +266,43 @@ class EntityCubit extends HydratedCubit<EntityState> {
 
     List<Company>? companies;
 
-    if (context.mounted) {
-      companies = await cmoPerformApiService.getCompaniesByUserId(
-        userId: userId,
-      );
+    companies = await cmoBehaveApiService.getCompaniesByUserId(
+      userId: userId,
+    );
+
+    if (companies != null && companies.isNotEmpty) {
+      final cachedCompanies = await cmoDatabaseMasterService.getAllCachedCompanies();
+
+      for (final company in companies ?? <Company>[]) {
+        final find = cachedCompanies.firstWhereOrNull(
+          (e) => e.companyId == company.companyId,
+        );
+
+        if (find == null) {
+          await cmoDatabaseMasterService.cacheCompany(company);
+        }
+      }
     }
+
+    emit(
+      state.copyWith(
+        companies: companies,
+        isLoading: false,
+      ),
+    );
+  }
+
+  Future<void> getPerformCompanies({
+    required int? userId,
+  }) async {
+    if (userId == null) return;
+    emit(state.copyWith(isLoading: true));
+
+    List<Company>? companies;
+
+    companies = await cmoPerformApiService.getCompaniesByUserId(
+      userId: userId,
+    );
 
     if (companies != null && companies.isNotEmpty) {
       final cachedCompanies = await cmoDatabaseMasterService.getAllCachedCompanies();
@@ -287,7 +311,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       await db.writeTxn(() async {
         for (final company in companies ?? <Company>[]) {
           final find = cachedCompanies.firstWhereOrNull(
-            (e) => e.companyId == company.companyId,
+                (e) => e.companyId == company.companyId,
           );
 
           if (find == null) {

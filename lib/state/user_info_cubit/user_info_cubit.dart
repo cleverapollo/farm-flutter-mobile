@@ -26,7 +26,7 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
     futures
       ..add(getUserInfoAndUserRoles(context, userRole))
       ..add(getCompaniesByUserId(context, userRole))
-      ..add(deviceInfoCubit.createUserDevice(context, userRole));
+      ..add(deviceInfoCubit.createBehaveUserDevice());
 
     await Future.wait(futures);
   }
@@ -35,6 +35,7 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
     required bool haveBehave,
     required bool havePerform,
   }) async {
+    emit(state.copyWith(loading: true));
     if (!havePerform) {
       emit(state.copyWith(isBehave: true));
       await getBehaveUserInfo();
@@ -59,6 +60,8 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
         );
       }
     }
+
+    emit(state.copyWith(loading: false));
   }
 
   Future<void> getBehaveUserInfo() async {

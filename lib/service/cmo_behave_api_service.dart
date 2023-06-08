@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/company.dart';
@@ -22,13 +23,15 @@ class CmoBehaveApiService {
 
   final String _mqApiUrl = Env.apstoryMqApiUrl;
 
+  final String _pubsubApiKey = Env.behaveApstoryMqKey;
+
   Dio client = Dio(
     BaseOptions(
       validateStatus: (status) =>
       status != null && status < 500 && status != 401,
     ),
   )
-    ..interceptors.add(CustomInterceptor())
+    ..interceptors.add(const CustomInterceptor(UserRoleEnum.behave))
     ..interceptors.add(
       PrettyDioLogger(
         requestHeader: true,
@@ -235,7 +238,6 @@ class CmoBehaveApiService {
   }
 
   Future<MasterDataMessage?> pullMessage({
-    required String pubsubApiKey,
     required String topicMasterDataSync,
     required int currentClientId,
     int pageSize = 200,
@@ -244,7 +246,7 @@ class CmoBehaveApiService {
     final response = await client.get<JsonData>(
       '${_mqApiUrl}message',
       queryParameters: {
-        'key': pubsubApiKey,
+        'key': _pubsubApiKey,
         'client': '$currentClientId',
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
@@ -287,7 +289,6 @@ class CmoBehaveApiService {
   }
 
   Future<bool?> deleteMessage({
-    required String pubsubApiKey,
     required int currentClientId,
     required List<Message> messages,
   }) async {
@@ -296,7 +297,7 @@ class CmoBehaveApiService {
     final response = await client.delete<dynamic>(
       '${_mqApiUrl}message',
       queryParameters: {
-        'key': pubsubApiKey,
+        'key': _pubsubApiKey,
         'client': '$currentClientId',
         'topic': 'Cmo.MasterDataDeviceSync.*.$currentClientId',
       },

@@ -14,11 +14,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         addMemberSLIMF: AddMemberSLIMF(isSlimfCompliant: isSlimf)));
   }
 
-  Future<List<FarmPropertyOwnerShipType>>
-      getAllFarmPropertyOwnerShipType() async {
-    final service = cmoDatabaseService;
-    final data = await service.getAllFarmPropertyOwnerShipType();
-    debugPrint('TUNT -----$data');
+  Future<List<FarmPropertyOwnerShipType>> getAllFarmPropertyOwnerShipType() async {
+    final data = await cmoDatabaseMasterService.getAllFarmPropertyOwnerShipType();
     return data;
   }
 

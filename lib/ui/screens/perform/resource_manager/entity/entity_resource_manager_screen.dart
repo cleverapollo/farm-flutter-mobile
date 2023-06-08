@@ -52,7 +52,7 @@ class _EntityResourceManagerScreenState
     if (selected == null) return;
     await context
         .read<UserDeviceCubit>()
-        .createUserDevice(context, UserRoleConfig.performRole);
+        .createPerformUserDevice();
     if (context.mounted) {
       await context.read<EntityCubit>().sync(selected!);
     }

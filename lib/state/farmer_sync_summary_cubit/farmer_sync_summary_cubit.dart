@@ -114,7 +114,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
 
       resPull = await cmoPerformApiService.pullFarmerGlobalMessage(
         topicMasterDataSync: topicTrickleFeedFarmerMasterDataByFarmId,
-        pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: 'global',
       );
 
@@ -181,7 +180,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
 
       resPull = await cmoPerformApiService.pullMessage(
         topicMasterDataSync: topicTrickleFeedFgsMasterDataByGroupSchemeId,
-        pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: groupSchemeId,
       );
 
@@ -308,7 +306,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
 
       resPull = await cmoPerformApiService.pullMessage(
         topicMasterDataSync: topicTrickleFeedFarmerMasterDataByFarmId,
-        pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: int.parse(farmId),
       );
 
@@ -483,7 +480,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
 
       resPull = await cmoPerformApiService.pullMessage(
         topicMasterDataSync: topicMasterDataSync,
-        pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
       );
 
@@ -1821,7 +1817,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
     ]
         .map((e) => cmoPerformApiService.createSubscription(
             topic: e,
-            pubsubApiKey: Env.performApstoryMqKey,
             currentClientId: userDeviceId))
         .toList();
     await Future.wait(futures)

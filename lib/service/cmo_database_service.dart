@@ -36,46 +36,6 @@ class CmoDatabaseService {
     // final db = _database ?? await initializeDatabase();
     // return db;
   }
-
-  Future<int> cacheUserRolePortal(
-      {required int userId,
-      required int portalId,
-      required String portalName}) async {
-    final db = await _db();
-    return db.writeTxn(() async {
-      return db.userRolePortals.put(UserRolePortal(
-          userId: userId, portalId: portalId, portalName: portalName));
-    });
-  }
-
-  Future<int> cacheUserRole(
-      {required int userId, required String roleName}) async {
-    final db = await _db();
-    return db.writeTxn(() async {
-      return db.userRoles.put(UserRole(userId: userId, roleName: roleName));
-    });
-  }
-
-  Future<int> cacheUserDevice(UserDevice userDevice) async {
-    final db = await _db();
-    return db.writeTxn(() async {
-      return db.userDevices.put(userDevice);
-    });
-  }
-
-  Future<List<FarmPropertyOwnerShipType>>
-      getAllFarmPropertyOwnerShipType() async {
-    final db = await _db();
-    return db.farmPropertyOwnerShipTypes.where().findAll();
-  }
-
-  Future<FileSystemEntity?> deleteAll() async {
-    final db = await _db();
-    await db.writeTxn(() async {
-      await db.clear();
-    });
-    return null;
-  }
 }
 
 class AssessmentTotal {

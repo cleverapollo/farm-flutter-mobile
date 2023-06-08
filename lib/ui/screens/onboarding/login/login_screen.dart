@@ -52,32 +52,14 @@ class _LoginScreenState extends State<LoginScreen> {
       final username = _formKey.currentState?.value[emailFieldName];
       final password = _formKey.currentState?.value[passwordFieldName];
 
-      UserRoleConfig? _userRole;
-
       if (context.mounted) {
         await context.read<AuthCubit>().logIn(
               LogInAuthEvent(
-                onResponse: (UserRoleConfig? userRole) {
-                  _userRole = userRole;
-                },
                 password: password.toString(),
                 username: username.toString(),
               ),
             );
       }
-
-      // if (_userRole == null && context.mounted) {
-      //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      //     content: Text('Login failed, please try again'),
-      //   ));
-      // }
-      //
-      // if (_userRole != null && context.mounted) {
-      //   await context
-      //       .read<UserInfoCubit>()
-      //       .getUserDataAfterLogin(context, _userRole!)
-      //       .then((_) => GlobalEntityScreen.pushReplacement(context));
-      // }
     } finally {
       setState(() {
         isLoading = false;

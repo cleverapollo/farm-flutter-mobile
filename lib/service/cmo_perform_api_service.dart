@@ -26,27 +26,13 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class CmoPerformApiService {
 
-  String _performApiAuthUri(String path) => '${Env.performDnnAuthUrl}$path';
+  final String _apiAuthUrl = Env.performDnnAuthUrl;
 
-  String _authApiUri(String path) => '${Env.behaveDnnAuthUrl}$path';
+  final String _apiUrl = Env.performDnnApiUrl;
 
-  String _apiUri(String path) => '${Env.behaveDnnApiUrl}$path';
+  final String _mqApiUrl = Env.apstoryMqApiUrl;
 
-  String _performApiUri(String path) => '${Env.performDnnApiUrl}$path';
-
-  String _mqApiUri(String path) => '${Env.apstoryMqApiUrl}$path';
-
-  Future<String> getDnnApiUrlBasedOnUserRole() async {
-    final userRole = await configService.getActiveUserRole();
-    switch (userRole) {
-      case UserRoleEnum.behave:
-        return Env.behaveDnnApiUrl;
-      case UserRoleEnum.resourceManager:
-        return Env.performDnnApiUrl;
-      case UserRoleEnum.farmerMember:
-        return Env.performDnnApiUrl;
-    }
-  }
+  final String _pubsubApiKey = Env.performApstoryMqKey;
 
   Dio client = Dio(
     BaseOptions(
@@ -54,7 +40,7 @@ class CmoPerformApiService {
           status != null && status < 500 && status != 401,
     ),
   )
-    ..interceptors.add(CustomInterceptor())
+    ..interceptors.add(const CustomInterceptor(UserRoleEnum.regionalManager))
     ..interceptors.add(
       PrettyDioLogger(
         requestHeader: true,
@@ -75,45 +61,6 @@ class CmoPerformApiService {
     }
   }
 
-  Future<UserRoleResponse?> loginUseCase(
-    String username,
-    String password,
-  ) async {
-    // var response = const UserRoleResponse();
-    //
-    // var isBehaveException = false;
-    // var isPerformException = false;
-    //
-    // final futures = <Future<dynamic>>[
-    //   _loginBehave(username, password).then((value) {
-    //     if (value != null) {
-    //       response = response.copyWith(
-    //         behaveUserAuth: UserAuth.fromJson(value.data!),
-    //       );
-    //     } else {
-    //       isBehaveException = true;
-    //     }
-    //   }),
-    //   performLogin(username, password).then((value) {
-    //     if (value != null) {
-    //       response = response.copyWith(
-    //         performUserAuth: UserAuth.fromJson(value.data!),
-    //       );
-    //     } else {
-    //       isPerformException = true;
-    //     }
-    //   }),
-    // ];
-    //
-    // await Future.wait(futures);
-    //
-    // if (isBehaveException && isPerformException) {
-    //   return null;
-    // }
-    //
-    // return response;
-  }
-
   Future<UserAuth?> performLogin(
     String username,
     String password,
@@ -125,7 +72,7 @@ class CmoPerformApiService {
       };
 
       final response = await client.post<JsonData>(
-        _performApiAuthUri('login'),
+        '${_apiAuthUrl}login',
         data: body,
       );
 
@@ -148,7 +95,7 @@ class CmoPerformApiService {
       'rToken': renewalToken,
     };
     final response = await client.post<JsonData>(
-      _authApiUri('extendtoken'),
+      '${_apiAuthUrl}extendtoken',
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -166,7 +113,7 @@ class CmoPerformApiService {
     Response<Map<String, dynamic>>? response;
 
     response = await client.get<JsonData>(
-      _performApiUri('GetUser'),
+      '${_apiUrl}GetUser',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -177,36 +124,6 @@ class CmoPerformApiService {
 
     final data = response.data;
     return data == null ? null : UserInfo.fromJson(data);
-  }
-
-  Future<List<UserRolePortal>?> getUserRoles(
-      {required int userId, required UserRoleConfig userRole}) async {
-    Uri? uri;
-
-    if (userRole.isBehave) {
-      uri = Uri.https(
-        Env.cmoApiUrl,
-        'cmo/DesktopModules/Cmo.UI.Dnn.Api/API/User/GetUserPortals',
-        {'dnnUserId': userId.toString()},
-      );
-    } else {
-      uri = Uri.https(
-        Env.cmoApiUrl,
-        'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api/API/User/GetUserPortals',
-        {'dnnUserId': userId.toString()},
-      );
-    }
-    final response = await client.getUri<JsonListData>(
-      uri,
-      options: Options(headers: {'accessToken': 'true'}),
-    );
-
-    if (response.statusCode != 200) {
-      showSnackError(msg: 'Unknow error: ${response.statusCode}');
-      return null;
-    }
-    final data = response.data;
-    return data?.map((e) => UserRolePortal.fromJson(e as JsonData)).toList();
   }
 
   Future<UserDevice?> createUserDevice({
@@ -225,7 +142,7 @@ class CmoPerformApiService {
     };
 
     final response = await client.post<JsonData>(
-      _apiUri('CreateUserDevice'),
+      '${_apiUrl}CreateUserDevice',
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -243,7 +160,7 @@ class CmoPerformApiService {
     required int userId,
   }) async {
     final response = await client.get<JsonListData>(
-      _apiUri('GetCompanyByUserId'),
+      '${_apiUrl}GetCompanyByUserId',
       queryParameters: {'userId': userId.toString()},
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -259,7 +176,7 @@ class CmoPerformApiService {
 
   Future<List<Farm>?> fetchFarms() async {
     final response = await client.get<JsonListData>(
-      _performApiUri('GetFarms'),
+      '${_apiUrl}GetFarms',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -274,7 +191,7 @@ class CmoPerformApiService {
 
   Future<List<GroupScheme>?> fetchGroupSchemes() async {
     final response = await client.get<JsonListData>(
-      _performApiUri('GetGroupschemes'),
+      '${_apiUrl}GetGroupschemes',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -290,7 +207,7 @@ class CmoPerformApiService {
   Future<List<ResourceManagerUnit>?> fetchResourceManagerUnits(
       int groupSchemeId) async {
     final response = await client.get<JsonListData>(
-      _performApiUri('GetRegionalManagerUnits'),
+      '${_apiUrl}GetRegionalManagerUnits',
       queryParameters: {'groupSchemeId': groupSchemeId.toString()},
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -317,12 +234,10 @@ class CmoPerformApiService {
       'UserDeviceId': userDeviceId
     };
 
-    final baseUrl = await getDnnApiUrlBasedOnUserRole();
-    final accessToken = await _readAccessToken();
     final response = await client.post<dynamic>(
-      '${baseUrl}CreateSystemEvent',
+      '${_apiUrl}CreateSystemEvent',
       data: body,
-      options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      options: Options(headers: {'accessToken': 'true'}),
     );
 
     if (response.statusCode != 200) {
@@ -334,12 +249,12 @@ class CmoPerformApiService {
 
   Future<bool> createSubscription(
       {required String topic,
-      required String pubsubApiKey,
       required int currentClientId}) async {
     try {
-      await client.get<dynamic>(_mqApiUri('message'),
+      await client.get<dynamic>(
+          '${_mqApiUrl}message',
           queryParameters: {
-            'key': pubsubApiKey,
+            'key': _pubsubApiKey,
             'client': '$currentClientId',
             'topic': topic,
             'pageSize': '1',
@@ -365,7 +280,7 @@ class CmoPerformApiService {
     };
 
     final response = await client.post<dynamic>(
-      _performApiUri('CreateSystemEvent'),
+      '${_apiUrl}CreateSystemEvent',
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -383,7 +298,7 @@ class CmoPerformApiService {
   Future<void> checkRMSystemEventExist({required int systemEventId}) async {
     try {
       await client.get<dynamic>(
-        _performApiUri('SystemEventExists'),
+        '${_apiUrl}SystemEventExists',
         queryParameters: {'systemEventId': systemEventId},
         options: Options(headers: {'accessToken': 'true'}),
       );
@@ -401,7 +316,7 @@ class CmoPerformApiService {
     };
 
     final response = await client.post<dynamic>(
-      _apiUri('CreateSystemEvent'),
+      '${_apiUrl}CreateSystemEvent',
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -414,15 +329,14 @@ class CmoPerformApiService {
   }
 
   Future<MasterDataMessage?> pullFarmerGlobalMessage({
-    required String pubsubApiKey,
     required String topicMasterDataSync,
     required String currentClientId,
     int pageSize = 200,
   }) async {
     final response = await client.get<JsonData>(
-      _mqApiUri('message'),
+      '${_mqApiUrl}message',
       queryParameters: {
-        'key': pubsubApiKey,
+        'key': _pubsubApiKey,
         'client': currentClientId,
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
@@ -440,15 +354,14 @@ class CmoPerformApiService {
   }
 
   Future<MasterDataMessage?> pullAssessmentMessage({
-    required String pubsubApiKey,
     required String topicAssessment,
     required int currentClientId,
     int pageSize = 200,
   }) async {
     final response = await client.get<JsonData>(
-      _mqApiUri('message'),
+      '${_mqApiUrl}message',
       queryParameters: {
-        'key': pubsubApiKey,
+        'key': _pubsubApiKey,
         'client': '$currentClientId',
         'topic': '$topicAssessment.$currentClientId',
         'pageSize': '$pageSize',
@@ -466,16 +379,15 @@ class CmoPerformApiService {
   }
 
   Future<MasterDataMessage?> pullMessage({
-    required String pubsubApiKey,
     required String topicMasterDataSync,
     required int currentClientId,
     int pageSize = 200,
   }) async {
     final accessToken = await _readAccessToken();
     final response = await client.get<JsonData>(
-      _mqApiUri('message'),
+      '${_mqApiUrl}message',
       queryParameters: {
-        'key': pubsubApiKey,
+        'key': _pubsubApiKey,
         'client': '$currentClientId',
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
@@ -493,7 +405,6 @@ class CmoPerformApiService {
   }
 
   Future<bool?> commitMessageList({
-    required String pubsubApiKey,
     required String topicMasterDataSync,
     required int currentClientId,
     required List<Message> messages,
@@ -501,10 +412,10 @@ class CmoPerformApiService {
     final body = messages.map((e) => e.toJson()).toList();
 
     final response = await client.delete<dynamic>(
-      _mqApiUri('message'),
+      '${_mqApiUrl}message',
       data: body,
       queryParameters: {
-        'key': pubsubApiKey,
+        'key': _pubsubApiKey,
         'client': '$currentClientId',
         'topic': '$topicMasterDataSync*.$currentClientId'
       },
@@ -518,16 +429,15 @@ class CmoPerformApiService {
   }
 
   Future<bool?> deleteMessage({
-    required String pubsubApiKey,
     required int currentClientId,
     required List<Message> messages,
   }) async {
     final body = messages.map((e) => e.toJson()).toList();
 
     final response = await client.delete<dynamic>(
-      _mqApiUri('message'),
+      '${_mqApiUrl}message',
       queryParameters: {
-        'key': pubsubApiKey,
+        'key': _pubsubApiKey,
         'client': '$currentClientId',
         'topic': 'Cmo.MasterDataDeviceSync.*.$currentClientId',
       },

@@ -1,23 +1,61 @@
 import 'dart:io';
 
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/service/service.dart';
+import 'package:cmo/utils/constants.dart';
 import 'package:dio/dio.dart';
 
 class CustomInterceptor extends Interceptor {
+
+  const CustomInterceptor(this.userRoleEnum);
+
+  final UserRoleEnum userRoleEnum;
+
   Future<String?> _getAccessToken() async {
-    final token = await secureStorage.read(key: 'accessToken');
+    String? token;
+    switch (userRoleEnum) {
+      case UserRoleEnum.behave:
+        token = await secureStorage.read(key: SecureStorageConstant.BEHAVE_ACCESS_TOKEN);
+        break;
+      case UserRoleEnum.regionalManager:
+      case UserRoleEnum.farmerMember:
+        token = await secureStorage.read(key: SecureStorageConstant.PERFORM_ACCESS_TOKEN);
+        break;
+    }
+
     return token;
   }
 
   Future<void> _saveAccessToken(
-      String? accessToken,
-      String? renewalToken,
-      ) async {
-    await secureStorage.write(key: 'accessToken', value: accessToken);
-    await secureStorage.write(key: 'renewalToken', value: renewalToken);
+    String? accessToken,
+    String? renewalToken,
+  ) async {
+    switch (userRoleEnum) {
+      case UserRoleEnum.behave:
+        await secureStorage.write(
+          key: SecureStorageConstant.BEHAVE_ACCESS_TOKEN,
+          value: accessToken,
+        );
+        await secureStorage.write(
+          key: SecureStorageConstant.BEHAVE_RENEWAL_TOKEN,
+          value: renewalToken,
+        );
+        break;
+      case UserRoleEnum.regionalManager:
+      case UserRoleEnum.farmerMember:
+        await secureStorage.write(
+          key: SecureStorageConstant.PERFORM_ACCESS_TOKEN,
+          value: accessToken,
+        );
+        await secureStorage.write(
+          key: SecureStorageConstant.PERFORM_RENEWAL_TOKEN,
+          value: renewalToken,
+        );
+        break;
+    }
   }
 
   @override

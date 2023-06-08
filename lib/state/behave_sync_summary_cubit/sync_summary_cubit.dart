@@ -238,13 +238,11 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
 
       masterDataPull = await cmoPerformApiService.pullMessage(
         topicMasterDataSync: _topicMasterDataSync,
-        pubsubApiKey: appInfoService.pubsubApiKey,
         currentClientId: userDeviceId,
       );
 
       final result = await cmoPerformApiService.pullAssessmentMessage(
         topicAssessment: 'Cmo.Assessment.Complete.${company?.companyId}',
-        pubsubApiKey: appInfoService.pubsubApiKey,
         currentClientId: userDeviceId,
       );
 
@@ -409,7 +407,6 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
       });
 
       await cmoPerformApiService.deleteMessage(
-        pubsubApiKey: appInfoService.pubsubApiKey,
         currentClientId: userDeviceId,
         messages: masterDataMessage ?? [],
       );

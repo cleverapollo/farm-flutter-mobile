@@ -8,18 +8,15 @@ class LogInAuthEvent extends AuthEvent {
   const LogInAuthEvent({
     required this.username,
     required this.password,
-    required this.onResponse,
   });
 
   final String username;
   final String password;
-  final void Function(UserRoleConfig?) onResponse;
 
   @override
   List<Object?> get props => [
         username,
         password,
-        onResponse,
       ];
 }
 

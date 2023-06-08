@@ -81,7 +81,7 @@ class ConfigService {
     return UserInfo.fromJson(jsonDecode(rawJson) as Map<String, dynamic>);
   }
 
-  Future setActiveUserRole({required UserRoleEnum userRole}) async {
+  Future<bool> setActiveUserRole({required UserRoleEnum userRole}) async {
     final sp = await SharedPreferences.getInstance();
     return sp.setInt('ActiveUserRole', userRole.value);
   }

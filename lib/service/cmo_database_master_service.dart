@@ -132,7 +132,6 @@ class CmoDatabaseMasterService {
         UserRolePortalSchema,
         UserRoleSchema,
         UserDeviceSchema,
-        FarmPropertyOwnerShipTypeSchema,
         GroupSchemeSchema,
         ResourceManagerUnitSchema,
         CompartmentSchema,
@@ -2446,6 +2445,18 @@ class CmoDatabaseMasterService {
     } catch (error) {
       handleError(error);
     }
+  }
+
+  Future<int> cacheUserDevice(UserDevice userDevice) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.userDevices.put(userDevice);
+    });
+  }
+
+  Future<List<FarmPropertyOwnerShipType>> getAllFarmPropertyOwnerShipType() async {
+    final db = await _db();
+    return db.farmPropertyOwnerShipTypes.where().findAll();
   }
 
   Future<FileSystemEntity?> deleteAll() async {

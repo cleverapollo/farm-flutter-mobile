@@ -18,22 +18,17 @@ class AuthCubit extends HydratedCubit<AuthState> {
     final result = await _login(event.username, event.password);
 
     if (result == null) {
-      // emit(AuthState.unauthorized());
-      event.onResponse(null);
       return;
     }
 
     await _saveUsernameAndPassword(event.username, event.password);
-
-    // emit(AuthState.authorized());
-    event.onResponse(null);
   }
 
   Future<void> logOut() async {
     final result = await _clearSecureStorage();
 
     if (result) {
-      // emit(AuthState.unauthorized());
+      emit(const AuthState());
     }
   }
 
@@ -45,13 +40,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
     final password = await _readPassword();
 
     if (username == null || password == null) {
-      // emit(AuthState.unauthorized());
+      emit(const AuthState());
       onFailure?.call();
       return;
     }
-
-    // emit(AuthState.authorized());
-    onSuccess?.call();
 
     final login = await _login(username, password);
 
@@ -60,7 +52,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
       // emit(AuthState.authorized());
       onSuccess?.call();
     } else {
-      // emit(AuthState.unauthorized());
+      emit(const AuthState());
       onFailure?.call();
       return;
     }
@@ -72,7 +64,6 @@ class AuthCubit extends HydratedCubit<AuthState> {
   ) async {
     final behaveLoginResponse = await cmoBehaveApiService.behaveLogin(username, password);
     final performLoginResponse = await cmoPerformApiService.performLogin(username, password);
-
 
     if (performLoginResponse == null && behaveLoginResponse == null) {
       showSnackError(msg: 'Login failed, please try again');
@@ -99,48 +90,6 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
       return true;
     }
-
-    //   if (performLoginResponse == null) {
-    //   /// MAKE SURE THIS IS BEHAVE
-    //   emit(AuthState.authorized(haveBehaveRole: true,));
-    // } else if (behaveLoginResponse == null) {
-    //   /// MAKE SURE THIS IS PERFORM, STILL NEED TO CHECK ABOUT IT
-    // } else {
-    //   /// THIS CASE IS PERFORM HAVE BOTH BEHAVE AND PERFORM
-    // }
-    // if (result?.performUserAuth != null && result?.behaveUserAuth != null) {
-    //   await _savePerformAccessRevewalToken(
-    //     result!.performUserAuth!.accessToken!,
-    //     result.performUserAuth!.renewalToken!,
-    //   );
-    //
-    //   await _saveBehaveAccessRevewalToken(
-    //     result.behaveUserAuth!.accessToken!,
-    //     result.behaveUserAuth!.renewalToken!,
-    //   );
-    //
-    //   return UserRoleConfig.bothRole;
-    // }
-    //
-    // if (result?.behaveUserAuth != null) {
-    //   await _saveBehaveAccessRevewalToken(
-    //     result!.behaveUserAuth!.accessToken!,
-    //     result.behaveUserAuth!.renewalToken!,
-    //   );
-    //
-    //   return UserRoleConfig.behaveRole;
-    // }
-    //
-    // if (result?.performUserAuth != null) {
-    //   await _saveBehaveAccessRevewalToken(
-    //     result!.performUserAuth!.accessToken!,
-    //     result.performUserAuth!.renewalToken!,
-    //   );
-    //
-    //   return UserRoleConfig.performRole;
-    // }
-
-    // return null;
   }
 
   Future<void> _refreshToken() async {
@@ -266,12 +215,6 @@ class AuthCubit extends HydratedCubit<AuthState> {
       ..add(
         secureStorage.write(
           key: SecureStorageConstant.USER_PASSWORD,
-          value: null,
-        ),
-      )
-      ..add(
-        secureStorage.write(
-          key: 'user_role',
           value: null,
         ),
       );

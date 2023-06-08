@@ -101,7 +101,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
       case UserRoleEnum.behave:
         await getDataBehaveRole();
         break;
-      case UserRoleEnum.resourceManager:
+      case UserRoleEnum.regionalManager:
         await initializeRM();
         break;
       case UserRoleEnum.farmerMember:

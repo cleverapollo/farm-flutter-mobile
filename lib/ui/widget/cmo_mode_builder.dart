@@ -23,7 +23,7 @@ class CmoModeBuilder extends StatelessWidget {
         switch (snapshot.data) {
           case UserRoleEnum.behave:
             return behaveBuilder(context);
-          case UserRoleEnum.resourceManager:
+          case UserRoleEnum.regionalManager:
             return resourceManagerBuilder(context);
           case UserRoleEnum.farmerMember:
             return farmerBuilder(context);

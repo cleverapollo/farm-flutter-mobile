@@ -54,19 +54,28 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
   void initState() {
     super.initState();
     Future.microtask(() async {
-      // final entityCubit = context.read<EntityCubit>();
-      // final userId = context.read<UserInfoCubit>().data?.userId;
-      //
-      // await entityCubit.getCompanies(context: context, userId: userId);
-      //
-      // if (context.mounted) {
-      //   final entityState = context.read<EntityCubit>().state;
-      //   setState(() {
-      //     isReady = true;
-      //     companies = entityState.companies;
-      //     selected = entityState.company;
-      //   });
-      // }
+      if (context.mounted) {
+        final entityCubit = context.read<EntityCubit>();
+        final isRM = context.read<UserInfoCubit>().state.isRM;
+
+        if (!isRM) {
+          final userId = context.read<UserInfoCubit>().state.behaveUserInfo?.userId;
+          await entityCubit.getBehaveCompanies(
+            userId: userId,
+          );
+        } else {
+          final userId = context.read<UserInfoCubit>().state.performUserInfo?.userId;
+          await entityCubit.getPerformCompanies(
+            userId: userId,
+          );
+        }
+
+        setState(() {
+          isReady = true;
+          companies = context.read<EntityCubit>().state.companies;
+          selected = context.read<EntityCubit>().state.company;
+        });
+      }
     });
   }
 
@@ -77,19 +86,15 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
     try {
       setState(() => loading = true);
       context.read<AssessmentCubit>().cleanCache();
-
-      await context
-          .read<UserDeviceCubit>()
-          .createUserDevice(context, UserRoleConfig.behaveRole);
-
       if (context.mounted) {
         await configService.setActiveCompany(company: selected!);
-        await context.read<UserInfoCubit>().setActiveUserRole(userRole: UserRoleEnum.behave);
+        await configService.setActiveUserRole(userRole: UserRoleEnum.behave);
+        await context.read<UserDeviceCubit>().createBehaveUserDevice();
         await context.read<EntityCubit>().syncBehave(
-              context: context,
               company: selected!,
               userDeviceId: context.read<UserDeviceCubit>().data?.userDeviceId,
             );
+
         CmoDashboardBase.push(context);
       }
     } finally {

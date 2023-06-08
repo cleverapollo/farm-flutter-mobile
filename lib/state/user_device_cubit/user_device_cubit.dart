@@ -12,16 +12,25 @@ part 'user_device_state.dart';
 class UserDeviceCubit extends HydratedCubit<UserDeviceState> {
   UserDeviceCubit() : super(UserDeviceState.loading());
 
-  Future<void> createUserDevice(
-      BuildContext context, UserRoleConfig userRole) async {
-    // final user = await cmoPerformApiService.getUser(userRole);
+  Future<void> createBehaveUserDevice() async {
+    emit(UserDeviceState.loading());
+    final res = await cmoBehaveApiService.createUserDevice(
+      appName: appInfoService.appName,
+      appVersionNumber: appInfoService.version,
+      deviceId: deviceInfoService.deviceId ?? '',
+      deviceOS: deviceInfoService.os,
+      deviceVersion: deviceInfoService.version,
+    );
+    if (res != null) {
+      await cmoDatabaseMasterService.cacheUserDevice(res);
+      emit(UserDeviceState.data(userDevice: res));
+    }
+    else {
+      emit(UserDeviceState.error());
+    }
+  }
 
-    List<UserRolePortal>? result = [];
-
-    // if (user?.userId != null) {
-      // result = await cmoPerformApiService.getUserRoles(
-      //     userId: user!.userId!, userRole: userRole);
-    // }
+  Future<void> createPerformUserDevice() async {
     emit(UserDeviceState.loading());
     final res = await cmoPerformApiService.createUserDevice(
       appName: appInfoService.appName,
@@ -31,14 +40,10 @@ class UserDeviceCubit extends HydratedCubit<UserDeviceState> {
       deviceVersion: deviceInfoService.version,
     );
     if (res != null) {
-      for (final UserRolePortal item in result ?? []) {
-        if (item.isBehaveRole) {
-          await cmoDatabaseService.cacheUserDevice(res);
-        }
-      }
-
+      await cmoDatabaseMasterService.cacheUserDevice(res);
       emit(UserDeviceState.data(userDevice: res));
-    } else {
+    }
+    else {
       emit(UserDeviceState.error());
     }
   }

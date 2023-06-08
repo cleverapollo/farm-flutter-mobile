@@ -131,7 +131,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
 
     await configService.setActiveRegionalManager(unit: selectedResourceManagerUnit!);
     await configService.setActiveGroupScheme(groupScheme: selectedGroupScheme!);
-    await context.read<UserInfoCubit>().setActiveUserRole(userRole: UserRoleEnum.resourceManager);
+    await context.read<UserInfoCubit>().setActiveUserRole(userRole: UserRoleEnum.regionalManager);
     if (mounted) {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (_) => RMSyncScreen()));

@@ -370,8 +370,9 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     ]
         .map((e) => cmoPerformApiService.createSubscription(
             topic: e,
-            pubsubApiKey: Env.performApstoryMqKey,
-            currentClientId: userDeviceId))
+            currentClientId: userDeviceId,
+          ),
+        )
         .toList();
     await Future.wait(futures);
   }
@@ -383,7 +384,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
       resPull = await cmoPerformApiService.pullMessage(
         topicMasterDataSync: topicRegionalManagerMasterDataSync,
-        pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
       );
 
@@ -482,7 +482,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         }
       });
       await cmoPerformApiService.commitMessageList(
-        pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
         messages: messages,
         topicMasterDataSync: topicRegionalManagerMasterDataSync,
@@ -497,7 +496,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
       resPull = await cmoPerformApiService.pullMessage(
         topicMasterDataSync: topicRegionalManagerUnitMasterDataSync,
-        pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
       );
 
@@ -531,7 +529,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       });
 
       await cmoPerformApiService.commitMessageList(
-        pubsubApiKey: Env.performApstoryMqKey,
         currentClientId: userDeviceId,
         messages: messages,
         topicMasterDataSync: topicRegionalManagerUnitMasterDataSync,

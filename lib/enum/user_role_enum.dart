@@ -1,6 +1,6 @@
 enum UserRoleEnum {
   behave(0),
-  resourceManager(1),
+  regionalManager(1),
   farmerMember(2);
 
   const UserRoleEnum(this.value);
@@ -22,7 +22,7 @@ enum UserRoleEnum {
   }
 
   bool get isResourceManager {
-    if (this == UserRoleEnum.resourceManager) {
+    if (this == UserRoleEnum.regionalManager) {
       return true;
     }
     return false;
