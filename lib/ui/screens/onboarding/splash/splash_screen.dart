@@ -33,23 +33,20 @@ class _SplashScreenState extends State<SplashScreen> {
         final haveInternet = (await Connectivity().checkConnectivity()) !=
             ConnectivityResult.none;
 
-        authState.continued(
-          (authorized) async {
-            if (haveInternet) {
-              await getUser();
-              await createUserDevice();
-            }
+        if (authState.isUnauthorized) {
+          if (haveInternet) {
+            return logInWithSavedCredentials();
+          } else {
+            return pushLogin();
+          }
+        } else {
+          if (haveInternet) {
+            await getUser();
+            await createUserDevice();
+          }
 
-            return pushDashboard();
-          },
-          (unauthorized) async {
-            if (haveInternet) {
-              return logInWithSavedCredentials();
-            } else {
-              return pushLogin();
-            }
-          },
-        );
+          return pushDashboard();
+        }
       },
     );
   }
@@ -68,12 +65,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> getUser() async {
-    final userInfoCubit = context.read<UserInfoCubit>();
-    if (userInfoCubit.data == null) {
-      await context
-          .read<UserInfoCubit>()
-          .getUserInfoAndUserRoles(context, userInfoCubit.state.userRole!);
-    }
+    // final userInfoCubit = context.read<UserInfoCubit>();
+    // if (userInfoCubit.data == null) {
+    //   await context
+    //       .read<UserInfoCubit>()
+    //       .getUserInfoAndUserRoles(context, userInfoCubit.state.userRole!);
+    // }
   }
 
   Future<void> createUserDevice() async {
@@ -81,11 +78,11 @@ class _SplashScreenState extends State<SplashScreen> {
     final userInfoCubit = context.read<UserInfoCubit>();
 
     final data = context.read<UserDeviceCubit>().data;
-    if (data == null) {
-      await context
-          .read<UserDeviceCubit>()
-          .createUserDevice(context, userInfoCubit.state.userRole!);
-    }
+    // if (data == null) {
+    //   await context
+    //       .read<UserDeviceCubit>()
+    //       .createUserDevice(context, userInfoCubit.state.userRole!);
+    // }
   }
 
   void pushDashboard() {

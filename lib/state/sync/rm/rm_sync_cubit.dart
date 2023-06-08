@@ -26,7 +26,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   final String topicRegionalManagerUnitMasterDataSync =
       'Cmo.MasterDataDeviceSync.RMU.';
 
-  int get userId => userInfoCubit.data!.userId!;
+  int get userId => 1; //userInfoCubit.data!.userId!;
 
   int get userDeviceId => userDeviceCubit.data!.userDeviceId!;
 

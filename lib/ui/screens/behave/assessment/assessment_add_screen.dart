@@ -82,43 +82,43 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
     });
 
     if (_formKey.currentState?.saveAndValidate() ?? false) {
-      final companyId = context.read<EntityCubit>().state.company?.id;
-      final userId = context.read<UserInfoCubit>().data?.userId;
-
-      if (companyId == null) return;
-      if (userId == null) return;
-      final assessment = Assessment(
-        assessmentId: DateTime.now().millisecondsSinceEpoch,
-        companyId: companyId,
-        createDT: DateTime.now().toIso8601String(),
-        userId: userId,
-        status: 1,
-        isActive: true,
-        jobCategoryId: _jobCategory?.id,
-        jobCategoryName: _jobCategory?.jobCategoryName,
-        jobDescriptionId: _jobDescription?.id,
-        jobDescriptionName: _jobDescription?.jobDescriptionName,
-        plantationId: _plantation?.id,
-        plantationName: _plantation?.plantationName,
-        contractorId: _contractor?.id,
-        contractorName: _contractor?.contractorName,
-        teamId: _team?.id,
-        teamName: _team?.teamName,
-        workerId: _worker?.workerId,
-        workerName:
-            '${_worker?.firstName} ${_worker?.surname} (${_worker?.idNumber})',
-        location: _locationResult?.address,
-        lat: _locationResult?.latLong.latitude,
-        long: _locationResult?.latLong.longitude,
-      );
-      if (context.mounted) {
-        final success =
-            await context.read<AssessmentCubit>().submit(assessment);
-        if (success && context.mounted) {
-          context.read<AssessmentCubit>().cleanCache();
-          Navigator.of(context).pop();
-        }
-      }
+      // final companyId = context.read<EntityCubit>().state.company?.id;
+      // final userId = context.read<UserInfoCubit>().data?.userId;
+      //
+      // if (companyId == null) return;
+      // if (userId == null) return;
+      // final assessment = Assessment(
+      //   assessmentId: DateTime.now().millisecondsSinceEpoch,
+      //   companyId: companyId,
+      //   createDT: DateTime.now().toIso8601String(),
+      //   userId: userId,
+      //   status: 1,
+      //   isActive: true,
+      //   jobCategoryId: _jobCategory?.id,
+      //   jobCategoryName: _jobCategory?.jobCategoryName,
+      //   jobDescriptionId: _jobDescription?.id,
+      //   jobDescriptionName: _jobDescription?.jobDescriptionName,
+      //   plantationId: _plantation?.id,
+      //   plantationName: _plantation?.plantationName,
+      //   contractorId: _contractor?.id,
+      //   contractorName: _contractor?.contractorName,
+      //   teamId: _team?.id,
+      //   teamName: _team?.teamName,
+      //   workerId: _worker?.workerId,
+      //   workerName:
+      //       '${_worker?.firstName} ${_worker?.surname} (${_worker?.idNumber})',
+      //   location: _locationResult?.address,
+      //   lat: _locationResult?.latLong.latitude,
+      //   long: _locationResult?.latLong.longitude,
+      // );
+      // if (context.mounted) {
+      //   final success =
+      //       await context.read<AssessmentCubit>().submit(assessment);
+      //   if (success && context.mounted) {
+      //     context.read<AssessmentCubit>().cleanCache();
+      //     Navigator.of(context).pop();
+      //   }
+      // }
     }
 
     await refesh();

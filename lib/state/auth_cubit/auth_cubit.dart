@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/user_role_config/user_role_config.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -11,20 +12,20 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthCubit extends HydratedCubit<AuthState> {
-  AuthCubit() : super(AuthState.unauthorized());
+  AuthCubit() : super(const AuthState());
 
   Future<void> logIn(LogInAuthEvent event) async {
     final result = await _login(event.username, event.password);
 
     if (result == null) {
-      emit(AuthState.unauthorized());
+      // emit(AuthState.unauthorized());
       event.onResponse(null);
       return;
     }
 
     await _saveUsernameAndPassword(event.username, event.password);
 
-    emit(AuthState.authorized());
+    // emit(AuthState.authorized());
     event.onResponse(null);
   }
 
@@ -32,7 +33,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     final result = await _clearSecureStorage();
 
     if (result) {
-      emit(AuthState.unauthorized());
+      // emit(AuthState.unauthorized());
     }
   }
 
@@ -44,22 +45,22 @@ class AuthCubit extends HydratedCubit<AuthState> {
     final password = await _readPassword();
 
     if (username == null || password == null) {
-      emit(AuthState.unauthorized());
+      // emit(AuthState.unauthorized());
       onFailure?.call();
       return;
     }
 
-    emit(AuthState.authorized());
+    // emit(AuthState.authorized());
     onSuccess?.call();
 
     final login = await _login(username, password);
 
     if (login != null) {
       await _refreshToken();
-      emit(AuthState.authorized());
+      // emit(AuthState.authorized());
       onSuccess?.call();
     } else {
-      emit(AuthState.unauthorized());
+      // emit(AuthState.unauthorized());
       onFailure?.call();
       return;
     }
@@ -74,6 +75,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
 
     if (performLoginResponse == null && behaveLoginResponse == null) {
+      showSnackError(msg: 'Login failed, please try again');
       return null;
     } else {
       await _saveBehaveToken(
@@ -87,9 +89,9 @@ class AuthCubit extends HydratedCubit<AuthState> {
       );
 
       emit(
-        AuthState.authorized(
-          haveBehaveRole: behaveLoginResponse == null,
-          havePerformRole: performLoginResponse == null,
+        state.copyWith(
+          haveBehaveRole: behaveLoginResponse != null,
+          havePerformRole: performLoginResponse != null,
           performUserAuth: performLoginResponse,
           behaveUserAuth: behaveLoginResponse,
         ),
@@ -288,29 +290,12 @@ class AuthCubit extends HydratedCubit<AuthState> {
   }
 
   @override
-  AuthState fromJson(Map<String, dynamic> json) {
-    final authorized = json['authorized'] as bool;
-
-    if (authorized == true) {
-      return AuthState.authorized();
-    } else {
-      return AuthState.unauthorized();
-    }
+  AuthState? fromJson(Map<String, dynamic> json) {
+    return null;
   }
 
   @override
   Map<String, dynamic>? toJson(AuthState state) {
-    return state.join<Map<String, dynamic>?>(
-      (state) {
-        return {
-          'authorized': true,
-        };
-      },
-      (p0) {
-        return {
-          'authorized': false,
-        };
-      },
-    );
+    return null;
   }
 }

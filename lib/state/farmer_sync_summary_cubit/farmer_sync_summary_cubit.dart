@@ -60,7 +60,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
   final UserInfoCubit userInfoCubit;
   final UserDeviceCubit userDeviceCubit;
 
-  int get userId => userInfoCubit.data!.userId!;
+  int get userId => 1; //userInfoCubit.data!.userId!;
 
   int get userDeviceId => userDeviceCubit.data!.userDeviceId!;
 

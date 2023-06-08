@@ -11,31 +11,31 @@ Future<void> pushEntityScreen(
   BuildContext context, {
   bool isPushingReplacement = false,
 }) async {
-  if (context.read<UserInfoCubit>().state.userRole?.isBehave == true) {
-    await Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => const EntityBehaveScreen(),
-      ),
-    );
-    return;
-  }
+  // if (context.read<UserInfoCubit>().state.userRole?.isBehave == true) {
+  //   await Navigator.of(context).pushReplacement(
+  //     MaterialPageRoute(
+  //       builder: (_) => const EntityBehaveScreen(),
+  //     ),
+  //   );
+  //   return;
+  // }
+  //
+  // if (context.read<UserInfoCubit>().state.userRole?.isPerform == true ||
+  //     context.read<UserInfoCubit>().state.userRole?.isBoth == true) {
+  //   final isResourceManager =
+  //       context.read<UserInfoCubit>().state.checkRegionalManagerRoleType;
+  //   if (!isResourceManager) {
+  //     await Navigator.of(context).pushReplacement(
+  //       EntityFarmerScreen.pageRoute(),
+  //     );
+  //     return;
+  //   }
 
-  if (context.read<UserInfoCubit>().state.userRole?.isPerform == true ||
-      context.read<UserInfoCubit>().state.userRole?.isBoth == true) {
-    final isResourceManager =
-        context.read<UserInfoCubit>().state.isResourceManager;
-    if (!isResourceManager) {
-      await Navigator.of(context).pushReplacement(
-        EntityFarmerScreen.pageRoute(),
-      );
-      return;
-    }
-
-    await Navigator.of(context).pushReplacement(
-      EntityGroupScreen.pageRoute(
-        isBehave: context.read<UserInfoCubit>().state.userRole?.isBoth == true,
-      ),
-    );
-    return;
-  }
+    // await Navigator.of(context).pushReplacement(
+    //   EntityGroupScreen.pageRoute(
+    //     isBehave: context.read<UserInfoCubit>().state.userRole?.isBoth == true,
+    //   ),
+    // );
+    // return;
+  // }
 }

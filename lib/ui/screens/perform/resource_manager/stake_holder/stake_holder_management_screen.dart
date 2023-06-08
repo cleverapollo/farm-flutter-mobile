@@ -118,48 +118,49 @@ class _StakeHolderManagementScreenState
   }
 
   PreferredSizeWidget? _buildCustomAppBar() {
-    if (context.read<UserInfoCubit>().state.isResourceManager) {
-      return CmoAppBarV2(
-        title: LocaleKeys.stakeholderManagement.tr(),
-        subtitle: '${LocaleKeys.siteName.tr()}: Imbeza',
-        showLeading: true,
-      );
-    } else if (context.read<UserInfoCubit>().state.userRole?.isBoth == true ||
-        context.read<UserInfoCubit>().state.userRole?.isPerform == true) {
-      return AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leadingWidth: 0,
-        title: Row(
-          children: [
-            Container(
-              width: 45,
-              height: 45,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22.5),
-                border: Border.all(color: context.colors.blueDark2),
-              ),
-              child: Text(
-                'LC',
-                style: context.textStyles.bodyNormal.blueDark2,
-              ),
-            ),
-            Expanded(
-              child: Text(
-                LocaleKeys.stakeholderManagement.tr(),
-                maxLines: 1,
-                textAlign: TextAlign.center,
-                style: context.textStyles.bodyBold.blue,
-              ),
-            ),
-            const SizedBox(
-              width: 45,
-            ),
-          ],
-        ),
-      );
-    }
+    return null;
+    // if (context.read<UserInfoCubit>().state.checkRegionalManagerRoleType) {
+    //   return CmoAppBarV2(
+    //     title: LocaleKeys.stakeholderManagement.tr(),
+    //     subtitle: '${LocaleKeys.siteName.tr()}: Imbeza',
+    //     showLeading: true,
+    //   );
+    // } else if (context.read<UserInfoCubit>().state.userRole?.isBoth == true ||
+    //     context.read<UserInfoCubit>().state.userRole?.isPerform == true) {
+    //   return AppBar(
+    //     backgroundColor: Colors.white,
+    //     elevation: 0,
+    //     leadingWidth: 0,
+    //     title: Row(
+    //       children: [
+    //         Container(
+    //           width: 45,
+    //           height: 45,
+    //           alignment: Alignment.center,
+    //           decoration: BoxDecoration(
+    //             borderRadius: BorderRadius.circular(22.5),
+    //             border: Border.all(color: context.colors.blueDark2),
+    //           ),
+    //           child: Text(
+    //             'LC',
+    //             style: context.textStyles.bodyNormal.blueDark2,
+    //           ),
+    //         ),
+    //         Expanded(
+    //           child: Text(
+    //             LocaleKeys.stakeholderManagement.tr(),
+    //             maxLines: 1,
+    //             textAlign: TextAlign.center,
+    //             style: context.textStyles.bodyBold.blue,
+    //           ),
+    //         ),
+    //         const SizedBox(
+    //           width: 45,
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
 
     return null;
   }
@@ -168,19 +169,19 @@ class _StakeHolderManagementScreenState
     required StakeHolder model,
     required bool haveGreyBackground,
   }) {
-    if (context.read<UserInfoCubit>().state.isResourceManager) {
-      return RmModeStakeHolderItem(
-        model: model,
-        onTap: () {},
-      );
-    } else if (context.read<UserInfoCubit>().state.userRole?.isBoth == true ||
-        context.read<UserInfoCubit>().state.userRole?.isPerform == true) {
-      return FarmerModeStakeHolderItem(
-        model: model,
-        haveGreyBackground: haveGreyBackground,
-        onTap: () {},
-      );
-    }
+    // if (context.read<UserInfoCubit>().state.checkRegionalManagerRoleType) {
+    //   return RmModeStakeHolderItem(
+    //     model: model,
+    //     onTap: () {},
+    //   );
+    // } else if (context.read<UserInfoCubit>().state.userRole?.isBoth == true ||
+    //     context.read<UserInfoCubit>().state.userRole?.isPerform == true) {
+    //   return FarmerModeStakeHolderItem(
+    //     model: model,
+    //     haveGreyBackground: haveGreyBackground,
+    //     onTap: () {},
+    //   );
+    // }
 
     return const SizedBox.shrink();
   }

@@ -56,16 +56,16 @@ class _EntitySearchScreenState extends State<EntitySearchScreen> {
     companies = entityCubit.state.companies;
     isReady = companies.isNotEmpty;
     if (!isReady) {
-      entityCubit
-          .getCompanies(
-        context: context,
-        userId: context.read<UserInfoCubit>().data?.userId,
-      )
-          .then((_) {
-        companies = entityCubit.state.companies;
-        isReady = true;
-        setState(() {});
-      });
+      // entityCubit
+      //     .getCompanies(
+      //   context: context,
+      //   userId: context.read<UserInfoCubit>().data?.userId,
+      // )
+      //     .then((_) {
+      //   companies = entityCubit.state.companies;
+      //   isReady = true;
+      //   setState(() {});
+      // });
     }
   }
 

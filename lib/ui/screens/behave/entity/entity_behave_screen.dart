@@ -54,19 +54,19 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
   void initState() {
     super.initState();
     Future.microtask(() async {
-      final entityCubit = context.read<EntityCubit>();
-      final userId = context.read<UserInfoCubit>().data?.userId;
-
-      await entityCubit.getCompanies(context: context, userId: userId);
-
-      if (context.mounted) {
-        final entityState = context.read<EntityCubit>().state;
-        setState(() {
-          isReady = true;
-          companies = entityState.companies;
-          selected = entityState.company;
-        });
-      }
+      // final entityCubit = context.read<EntityCubit>();
+      // final userId = context.read<UserInfoCubit>().data?.userId;
+      //
+      // await entityCubit.getCompanies(context: context, userId: userId);
+      //
+      // if (context.mounted) {
+      //   final entityState = context.read<EntityCubit>().state;
+      //   setState(() {
+      //     isReady = true;
+      //     companies = entityState.companies;
+      //     selected = entityState.company;
+      //   });
+      // }
     });
   }
 

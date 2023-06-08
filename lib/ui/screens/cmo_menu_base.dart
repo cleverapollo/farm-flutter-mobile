@@ -330,7 +330,7 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
       padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
       child: Row(
         children: [
-          _UserAvatar(imageUrl: 'https://${Env.cmoApiUrl}${context.read<UserInfoCubit>().state.userInfo?.profileImage}'),
+          // _UserAvatar(imageUrl: 'https://${Env.cmoApiUrl}${context.read<UserInfoCubit>().state.userInfo?.profileImage}'),
           const SizedBox(width: 8),
           Expanded(
             child: FittedBox(
@@ -340,12 +340,12 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    context.read<UserInfoCubit>().state.userInfo?.fullName ?? '',
+                    "context.read<UserInfoCubit>().state.userInfo?.fullName ?? ''",
                     maxLines: 1,
                     style: context.textStyles.bodyBold.white,
                   ),
                   Text(
-                    context.read<UserInfoCubit>().state.userInfo?.userEmail ?? '',
+                    "context.read<UserInfoCubit>().state.userInfo?.userEmail ?? ''",
                     style: context.textStyles.bodyBold.white,
                   )
                 ],

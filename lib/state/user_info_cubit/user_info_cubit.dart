@@ -15,7 +15,7 @@ import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 part 'user_info_state.dart';
 
 class UserInfoCubit extends HydratedCubit<UserInfoState> {
-  UserInfoCubit() : super(UserInfoState.loading());
+  UserInfoCubit() : super(const UserInfoState());
 
   Future<void> getUserDataAfterLogin(
       BuildContext context, UserRoleConfig userRole) async {
@@ -31,93 +31,137 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
     await Future.wait(futures);
   }
 
-  Future<void> getUserInfoAndUserRoles(
-      BuildContext context, UserRoleConfig userRole) async {
-    final res = await cmoPerformApiService.getUser(userRole);
-
-    if (res == null) {
-      return emit(UserInfoState.error());
-    }
-
-    final roles = await cmoPerformApiService.getUserRoles(
-        userId: res.userId!, userRole: userRole);
-    final futures = <Future<dynamic>>[];
-
-    if (res.listRoles != null) {
-      for (final item in res.listRoles!) {
-        futures.add(
-          cmoDatabaseService.cacheUserRole(
-              userId: res.userId!, roleName: item.roleName ?? ''),
+  Future<void> getUserInfoWithRole({
+    required bool haveBehave,
+    required bool havePerform,
+  }) async {
+    if (!havePerform) {
+      emit(state.copyWith(isBehave: true));
+      await getBehaveUserInfo();
+    } else {
+      await getPerformUserInfo();
+      if (!state.checkRegionalManagerRoleType) {
+        emit(state.copyWith(isFarmer: true));
+      } else if (haveBehave) {
+        await getBehaveUserInfo();
+        emit(
+          state.copyWith(
+            isBehave: true,
+            isRM: true,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            isBehave: false,
+            isRM: true,
+          ),
         );
       }
     }
+  }
 
-    for (final UserRolePortal item in roles ?? []) {
-      futures.add(
-        cmoDatabaseService.cacheUserRolePortal(
-            userId: res.userId!,
-            portalId: item.portalId!,
-            portalName: item.portalName!),
-      );
+  Future<void> getBehaveUserInfo() async {
+    emit(state.copyWith(loading: true));
+    final res = await cmoBehaveApiService.getBehaveUser();
+    if (res != null) {
+      emit(state.copyWith(behaveUserInfo: res));
     }
 
-    await Future.wait(futures);
+    emit(state.copyWith(loading: false));
+  }
 
-    await configService.setActiveUser(userInfo: res);
-    emit(UserInfoState.data(userInfo: res, userRoles: roles, userRole: userRole));
+  Future<void> getPerformUserInfo() async {
+    emit(state.copyWith(loading: true));
+    final res = await cmoPerformApiService.getPerformUser();
+    if (res != null) {
+      emit(state.copyWith(performUserInfo: res));
+    }
+
+    emit(state.copyWith(loading: false));
+  }
+
+  Future<void> getUserInfoAndUserRoles(
+      BuildContext context, UserRoleConfig userRole) async {
+    // final res = await cmoPerformApiService.getUser(userRole);
+    //
+    // if (res == null) {
+    //   return emit(UserInfoState.error());
+    // }
+    //
+    // final roles = await cmoPerformApiService.getUserRoles(
+    //     userId: res.userId!, userRole: userRole);
+    // final futures = <Future<dynamic>>[];
+    //
+    // if (res.listRoles != null) {
+    //   for (final item in res.listRoles!) {
+    //     futures.add(
+    //       cmoDatabaseService.cacheUserRole(
+    //           userId: res.userId!, roleName: item.roleName ?? ''),
+    //     );
+    //   }
+    // }
+    //
+    // for (final UserRolePortal item in roles ?? []) {
+    //   futures.add(
+    //     cmoDatabaseService.cacheUserRolePortal(
+    //         userId: res.userId!,
+    //         portalId: item.portalId!,
+    //         portalName: item.portalName!),
+    //   );
+    // }
+    //
+    // await Future.wait(futures);
+    //
+    // await configService.setActiveUser(userInfo: res);
+    // emit(UserInfoState.data(userInfo: res, userRoles: roles, userRole: userRole));
   }
 
 
   Future<void> getCompaniesByUserId(
       BuildContext context, UserRoleConfig userRole) async {
-    final res = await cmoPerformApiService.getUser(userRole);
-
-    if (res != null) {
-      final result =
-          await cmoPerformApiService.getCompaniesByUserId(userId: res.userId!);
-
-      if (result == null || result.isEmpty) return;
-
-      final futures = <Future<dynamic>>[];
-
-      for (final item in result) {
-        futures.add(cmoDatabaseMasterService.cacheCompany(item));
-      }
-
-      await Future.wait(futures);
-    }
+    // final res = await cmoPerformApiService.getUser(userRole);
+    //
+    // if (res != null) {
+    //   final result =
+    //       await cmoPerformApiService.getCompaniesByUserId(userId: res.userId!);
+    //
+    //   if (result == null || result.isEmpty) return;
+    //
+    //   final futures = <Future<dynamic>>[];
+    //
+    //   for (final item in result) {
+    //     futures.add(cmoDatabaseMasterService.cacheCompany(item));
+    //   }
+    //
+    //   await Future.wait(futures);
+    // }
   }
 
   Future setActiveUserRole({required UserRoleEnum userRole}) {
     return configService.setActiveUserRole(userRole: userRole);
   }
 
-  UserInfo? get data => state.join(
-        (loading) => null,
-        (data) => data.userInfo,
-        (error) => null,
-      );
-
   @override
   Future<void> clear() async {
-    emit(UserInfoState.loading());
+    // emit(UserInfoState.loading());
     return super.clear();
   }
 
   @override
   UserInfoState? fromJson(Map<String, dynamic>? json) {
     if (json == null) return null;
-    return UserInfoState.data(userInfo: UserInfo.fromJson(json));
+    // return UserInfoState.data(userInfo: UserInfo.fromJson(json));
   }
 
   @override
   Map<String, dynamic>? toJson(UserInfoState state) {
-    return state.join(
-      (loading) => null,
-      (data) {
-        return data.userInfo?.toJson();
-      },
-      (error) => null,
-    );
+    // return state.join(
+    //   (loading) => null,
+    //   (data) {
+    //     return data.userInfo?.toJson();
+    //   },
+    //   (error) => null,
+    // );
   }
 }

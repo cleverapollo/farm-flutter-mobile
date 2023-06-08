@@ -66,18 +66,18 @@ class _LoginScreenState extends State<LoginScreen> {
             );
       }
 
-      if (_userRole == null && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Login failed, please try again'),
-        ));
-      }
-
-      if (_userRole != null && context.mounted) {
-        await context
-            .read<UserInfoCubit>()
-            .getUserDataAfterLogin(context, _userRole!)
-            .then((_) => GlobalEntityScreen.pushReplacement(context));
-      }
+      // if (_userRole == null && context.mounted) {
+      //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //     content: Text('Login failed, please try again'),
+      //   ));
+      // }
+      //
+      // if (_userRole != null && context.mounted) {
+      //   await context
+      //       .read<UserInfoCubit>()
+      //       .getUserDataAfterLogin(context, _userRole!)
+      //       .then((_) => GlobalEntityScreen.pushReplacement(context));
+      // }
     } finally {
       setState(() {
         isLoading = false;
@@ -96,7 +96,11 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (!state.isUnauthorized) {
+          GlobalEntityScreen.pushReplacement(context);
+        }
+      },
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(

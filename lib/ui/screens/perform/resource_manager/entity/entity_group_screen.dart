@@ -6,6 +6,7 @@ import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
+import 'package:cmo/ui/components/entity_component/entity_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/group_scheme_entity_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/resource_manager_unit_entity.dart';
 import 'package:cmo/ui/screens/sync/rm_sync_screen.dart';
@@ -52,7 +53,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
                   .copyWith(color: context.colors.white),
             ),
           ),
-          _EntityCard(
+          EntityWidget(
             selectedGroupScheme?.groupSchemeName ?? LocaleKeys.groupScheme.tr(),
             onTap: () async {
               selectedGroupScheme = await GroupSchemeEntityScreen.push(
@@ -70,7 +71,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
             endIndent: 23,
           ),
           if (selectedGroupScheme != null) ...[
-            _EntityCard(
+            EntityWidget(
               LocaleKeys.resourceManagementUnit.tr(),
               onTap: () async {
                 selectedResourceManagerUnit =
@@ -102,7 +103,7 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
                     .copyWith(color: context.colors.white),
               ),
             ),
-            _EntityCard(
+            EntityWidget(
                   LocaleKeys.company.tr(),
               onTap: () {
                 EntityBehaveScreen.push(
@@ -138,34 +139,4 @@ class _EntityGroupScreenState extends State<EntityGroupScreen> {
   }
 }
 
-class _EntityCard extends StatelessWidget {
-  final String text;
-  final VoidCallback onTap;
 
-  const _EntityCard(this.text, {required this.onTap, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return CmoTappable(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(33, 12, 33, 12),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  text,
-                  style: context.textStyles.bodyBold
-                      .copyWith(color: context.colors.black),
-                ),
-                Assets.icons.icArrowRight.svgBlack
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
