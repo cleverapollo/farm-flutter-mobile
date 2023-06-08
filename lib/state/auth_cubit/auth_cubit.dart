@@ -227,8 +227,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
   Future<void> checkFirstLaunch() async {
     final isFirstLaunch = await configService.isFirstLaunch();
     if (isFirstLaunch) {
-      await _clearSecureStorage();
-      await configService.setFirstLaunch(isFirstLaunch: false);
+      final isDone = await _clearSecureStorage();
+      if (isDone) {
+        await configService.setFirstLaunch(isFirstLaunch: false);
+      }
     }
   }
 

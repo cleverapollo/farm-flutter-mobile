@@ -141,10 +141,6 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
     // }
   }
 
-  Future setActiveUserRole({required UserRoleEnum userRole}) {
-    return configService.setActiveUserRole(userRole: userRole);
-  }
-
   @override
   Future<void> clear() async {
     // emit(UserInfoState.loading());

@@ -4,7 +4,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/components/entity_component/entity_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/entity/entity_group_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/entity/rm_entity_group_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -122,7 +122,7 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
   }
 
   Widget _performWidget() {
-    return Container();
+    return const RMEntityGroupWidget();
   }
 
   Widget _behaveWidget() {
@@ -157,7 +157,12 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
   }
 
   Widget _buildPerformAndBehaveWidget() {
-    return Container();
+    return Column(
+      children: [
+        _performWidget(),
+        _behaveWidget(),
+      ],
+    );
   }
 
   Widget _farmerWidget() {

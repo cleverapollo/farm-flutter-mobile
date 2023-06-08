@@ -1,7 +1,7 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/user_role_portal.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/entity/entity_group_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/entity/rm_entity_group_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
