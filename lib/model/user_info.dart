@@ -1,5 +1,5 @@
 // ignore_for_file: invalid_annotation_target, override_on_non_overriding_member
-
+import 'package:cmo/env/env.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -35,6 +35,14 @@ extension UserInfoX on UserInfo {
     }
 
     return '${firstName ?? ''} ${lastName ?? ''}'.trim();
+  }
+
+  Future<String> get avatarUrl async {
+    if (profileImage.isBlank) {
+      return '';
+    }
+
+    return 'https://${Env.cmoApiUrl}$profileImage';
   }
 }
 

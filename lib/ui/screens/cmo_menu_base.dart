@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
-import 'package:cmo/env/env.dart';
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/user_info.dart';
@@ -9,7 +9,6 @@ import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
-import 'package:cmo/ui/components/entity_component/utils.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_add_screen.dart';
 import 'package:cmo/ui/screens/behave/create_worker/worker_add_screen.dart';
 import 'package:cmo/ui/screens/global_entity.dart';
@@ -210,7 +209,7 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                buildUserRow(context),
+                _UserRowInformation(onTapClose: widget.onTapClose),
                 buildHeader(context, title: LocaleKeys.entity.tr()),
                 buildEntity(context),
                 const SizedBox(height: 7),
@@ -256,7 +255,7 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
   Widget buildEntity(BuildContext context) {
     return CmoTappable(
       onTap: () {
-        pushEntityScreen(context);
+        GlobalEntityScreen.pushReplacement(context);
       },
       child: SizedBox(
         height: 34,
@@ -324,32 +323,60 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
       ),
     );
   }
+}
 
-  Widget buildUserRow(BuildContext context) {
+class _UserRowInformation extends StatefulWidget {
+  const _UserRowInformation({
+    required this.onTapClose,
+  });
+
+  final VoidCallback onTapClose;
+
+  @override
+  State<StatefulWidget> createState() => _UserRowInformationState();
+}
+
+class _UserRowInformationState extends State<_UserRowInformation> {
+
+  UserInfo? userInfo;
+  String? avatarUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      userInfo = await configService.getActiveUser();
+      avatarUrl = await userInfo?.avatarUrl;
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fullname = userInfo?.fullName ?? '';
+    final email = userInfo?.userEmail ?? '';
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
       child: Row(
         children: [
-          // _UserAvatar(imageUrl: 'https://${Env.cmoApiUrl}${context.read<UserInfoCubit>().state.userInfo?.profileImage}'),
+          _UserAvatar(imageUrl: avatarUrl),
           const SizedBox(width: 8),
           Expanded(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "context.read<UserInfoCubit>().state.userInfo?.fullName ?? ''",
-                    maxLines: 1,
-                    style: context.textStyles.bodyBold.white,
-                  ),
-                  Text(
-                    "context.read<UserInfoCubit>().state.userInfo?.userEmail ?? ''",
-                    style: context.textStyles.bodyBold.white,
-                  )
-                ],
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  fullname,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.textStyles.bodyBold.white,
+                ),
+                Text(
+                  email,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.textStyles.bodyBold.white,
+                )
+              ],
             ),
           ),
           CmoTappable(
@@ -367,13 +394,14 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
 
 class _UserAvatar extends StatelessWidget {
   const _UserAvatar({
-    required this.imageUrl,
+    this.imageUrl,
   });
 
-  final String imageUrl;
+  final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
+    if (imageUrl.isBlank) return const SizedBox.shrink();
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(color: context.colors.black),
@@ -386,7 +414,7 @@ class _UserAvatar extends StatelessWidget {
           child: SizedBox.square(
             dimension: 45,
             child: CachedNetworkImage(
-              imageUrl: imageUrl,
+              imageUrl: imageUrl!,
               fit: BoxFit.cover,
             ),
           ),

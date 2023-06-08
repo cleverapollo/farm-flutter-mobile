@@ -29,6 +29,16 @@ class CustomInterceptor extends Interceptor {
     return token;
   }
 
+  String get authApiUrl {
+    switch (userRoleEnum) {
+      case UserRoleEnum.behave:
+        return Env.behaveDnnAuthUrl;
+      case UserRoleEnum.regionalManager:
+      case UserRoleEnum.farmerMember:
+        return Env.performDnnAuthUrl;
+    }
+  }
+
   Future<void> _saveAccessToken(
     String? accessToken,
     String? renewalToken,
@@ -102,7 +112,7 @@ class CustomInterceptor extends Interceptor {
           'p': password,
         };
         final responseReLogin = await dio.post<JsonData>(
-          _authApiUri('login'),
+          '${authApiUrl}login',
           data: body,
         );
         final data = responseReLogin.data;
@@ -132,7 +142,4 @@ class CustomInterceptor extends Interceptor {
 
     return handler.reject(err);
   }
-
-  /// Need to DNN_AUTH_URL check it here.
-  String _authApiUri(String path) => '${Env.behaveDnnAuthUrl}$path';
 }

@@ -84,6 +84,14 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
     emit(state.copyWith(loading: false));
   }
 
+  Future<void> setActiveUserInfo({required bool isBehave}) async {
+    if (isBehave && state.behaveUserInfo != null) {
+      await configService.setActiveUser(userInfo: state.behaveUserInfo!);
+    } else if (state.performUserInfo != null){
+      await configService.setActiveUser(userInfo: state.performUserInfo!);
+    }
+  }
+
   Future<void> getUserInfoAndUserRoles(
       BuildContext context, UserRoleConfig userRole) async {
     // final res = await cmoPerformApiService.getUser(userRole);
@@ -143,24 +151,17 @@ class UserInfoCubit extends HydratedCubit<UserInfoState> {
 
   @override
   Future<void> clear() async {
-    // emit(UserInfoState.loading());
+    emit(const UserInfoState());
     return super.clear();
   }
 
   @override
   UserInfoState? fromJson(Map<String, dynamic>? json) {
     if (json == null) return null;
-    // return UserInfoState.data(userInfo: UserInfo.fromJson(json));
   }
 
   @override
   Map<String, dynamic>? toJson(UserInfoState state) {
-    // return state.join(
-    //   (loading) => null,
-    //   (data) {
-    //     return data.userInfo?.toJson();
-    //   },
-    //   (error) => null,
-    // );
+    return null;
   }
 }

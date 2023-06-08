@@ -1,6 +1,5 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/user_role_config/user_role_config.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/global_entity.dart';
 import 'package:cmo/ui/screens/onboarding/login/language_picker.dart';

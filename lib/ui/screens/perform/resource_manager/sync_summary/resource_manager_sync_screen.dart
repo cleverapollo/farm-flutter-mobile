@@ -1,7 +1,4 @@
-import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/ui/components/sync_summary_component/sync_item_widget.dart';
-import 'package:cmo/ui/screens/behave/sync_summary/behave_sync_summary_enum.dart';
-import 'package:cmo/ui/screens/behave/sync_summary/widget/sync_summary_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
@@ -53,14 +50,5 @@ class ResourceManagerSyncSummaryScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _BuildLoadingIndicator extends StatelessWidget {
-  const _BuildLoadingIndicator();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: CircularProgressIndicator());
   }
 }

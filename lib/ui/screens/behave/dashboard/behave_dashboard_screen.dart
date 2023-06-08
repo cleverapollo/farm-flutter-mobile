@@ -46,7 +46,7 @@ class _BehaveDashboardScreenState extends State<BehaveDashboardScreen> {
         }
 
         return RefreshIndicator(
-          onRefresh: () async => context.read<DashboardCubit>().refresh(),
+          onRefresh: () async => context.read<DashboardCubit>().getDataBehaveRole(),
           child: ListView(
             clipBehavior: Clip.none,
             padding: const EdgeInsets.all(20),
@@ -58,11 +58,11 @@ class _BehaveDashboardScreenState extends State<BehaveDashboardScreen> {
                     CmoCardHeader(title: LocaleKeys.assessments.tr()),
                     CmoCardItem(
                       title: LocaleKeys.completed.tr(),
-                      value: '${state.totalCompletedAssessments}/${state.totalAssessments}',
+                      value: '${state.totalCompletedAssessments ?? 0}/${state.totalAssessments ?? 0}',
                     ),
                     CmoCardItem(
                       title: LocaleKeys.incomplete.tr(),
-                      value: '${state.totalIncompleteAssessments}/${state.totalAssessments}',
+                      value: '${state.totalIncompleteAssessments ?? 0}/${state.totalAssessments ?? 0}',
                     ),
                   ],
                 ),

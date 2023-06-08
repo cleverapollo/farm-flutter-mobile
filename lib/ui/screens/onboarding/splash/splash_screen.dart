@@ -1,3 +1,4 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
@@ -24,8 +25,6 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.microtask(
       () async {
-        final authState = context.read<AuthCubit>().state;
-
         await context.read<EntityCubit>().init();
 
         await context.read<AuthCubit>().checkFirstLaunch();
@@ -33,19 +32,15 @@ class _SplashScreenState extends State<SplashScreen> {
         final haveInternet = (await Connectivity().checkConnectivity()) !=
             ConnectivityResult.none;
 
-        if (authState.isUnauthorized) {
+        final isAuthorized = await configService.isAuthorized();
+        if (isAuthorized) {
+          return pushDashboard();
+        } else {
           if (haveInternet) {
             return logInWithSavedCredentials();
           } else {
             return pushLogin();
           }
-        } else {
-          if (haveInternet) {
-            await getUser();
-            await createUserDevice();
-          }
-
-          return pushDashboard();
         }
       },
     );
@@ -62,27 +57,6 @@ class _SplashScreenState extends State<SplashScreen> {
         pushDashboard();
       },
     );
-  }
-
-  Future<void> getUser() async {
-    // final userInfoCubit = context.read<UserInfoCubit>();
-    // if (userInfoCubit.data == null) {
-    //   await context
-    //       .read<UserInfoCubit>()
-    //       .getUserInfoAndUserRoles(context, userInfoCubit.state.userRole!);
-    // }
-  }
-
-  Future<void> createUserDevice() async {
-    if (!context.mounted) return;
-    final userInfoCubit = context.read<UserInfoCubit>();
-
-    final data = context.read<UserDeviceCubit>().data;
-    // if (data == null) {
-    //   await context
-    //       .read<UserDeviceCubit>()
-    //       .createUserDevice(context, userInfoCubit.state.userRole!);
-    // }
   }
 
   void pushDashboard() {

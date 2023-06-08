@@ -1,6 +1,3 @@
-import 'package:cmo/env/env.dart';
-import 'package:flutter/material.dart';
-
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 import 'package:cmo/di.dart';
@@ -307,19 +304,15 @@ class EntityCubit extends HydratedCubit<EntityState> {
     if (companies != null && companies.isNotEmpty) {
       final cachedCompanies = await cmoDatabaseMasterService.getAllCachedCompanies();
 
-      final db = await cmoDatabaseMasterService.db;
-      await db.writeTxn(() async {
-        for (final company in companies ?? <Company>[]) {
-          final find = cachedCompanies.firstWhereOrNull(
-                (e) => e.companyId == company.companyId,
-          );
+      for (final company in companies ?? <Company>[]) {
+        final find = cachedCompanies.firstWhereOrNull(
+          (e) => e.companyId == company.companyId,
+        );
 
-          if (find == null) {
-            await cmoDatabaseMasterService.cacheCompany(company);
-          }
-          await cmoDatabaseMasterService.db;
+        if (find == null) {
+          await cmoDatabaseMasterService.cacheCompany(company);
         }
-      });
+      }
     }
 
     emit(

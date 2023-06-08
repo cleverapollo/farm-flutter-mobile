@@ -5,7 +5,6 @@ import 'package:get_it/get_it.dart';
 import 'package:cmo/service/app_info_service.dart';
 import 'package:cmo/service/cmo_perform_api_service.dart';
 import 'package:cmo/service/cmo_database_master_service.dart';
-import 'package:cmo/service/cmo_database_service.dart';
 import 'package:cmo/service/device_info_service.dart';
 import 'package:cmo/service/entity_service.dart';
 
@@ -21,8 +20,6 @@ CmoBehaveApiService get cmoBehaveApiService => _get<CmoBehaveApiService>();
 
 CmoPerformApiService get cmoPerformApiService => _get<CmoPerformApiService>();
 
-CmoDatabaseService get cmoDatabaseService => _get<CmoDatabaseService>();
-
 CmoDatabaseMasterService get cmoDatabaseMasterService =>
     _get<CmoDatabaseMasterService>();
 
@@ -34,7 +31,6 @@ Future<void> registerGetIt() async {
   _get.registerLazySingleton(() => EntityService());
   _get.registerLazySingleton(() => CmoBehaveApiService());
   _get.registerLazySingleton(() => CmoPerformApiService());
-  _get.registerLazySingleton(() => CmoDatabaseService());
   _get.registerLazySingleton(() => CmoDatabaseMasterService());
   _get.registerLazySingleton(() => ConfigService());
 

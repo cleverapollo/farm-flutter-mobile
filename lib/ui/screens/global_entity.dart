@@ -11,6 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GlobalEntityScreen extends StatefulWidget {
+
+  const GlobalEntityScreen({super.key});
+
   static dynamic push(BuildContext context) {
     return Navigator.of(context).push(
       MaterialPageRoute(
@@ -26,8 +29,6 @@ class GlobalEntityScreen extends StatefulWidget {
       ),
     );
   }
-
-  const GlobalEntityScreen({super.key});
 
   @override
   State<GlobalEntityScreen> createState() => _GlobalEntityScreenState();
@@ -49,32 +50,6 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
             havePerform: havePerform,
           );
     });
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //   if (context.read<UserInfoCubit>().state.userRole?.isBehave == true) {
-    //     context.read<UserInfoCubit>().setActiveUserRole(userRole: UserRoleEnum.behave);
-    //     Navigator.of(context).pushReplacement(
-    //       MaterialPageRoute(
-    //         builder: (_) => const EntityBehaveScreen(),
-    //       ),
-    //     );
-    //     return;
-    //   }
-    //   if (context.read<UserInfoCubit>().state.userRole?.isPerform == true ||
-    //       context.read<UserInfoCubit>().state.userRole?.isBoth == true) {
-    //     final isResourceManager =
-    //         context.read<UserInfoCubit>().state.isResourceManager;
-    //     if (!isResourceManager) {
-    //       context.read<UserInfoCubit>().setActiveUserRole(userRole: UserRoleEnum.farmerMember);
-    //       Navigator.of(context).pushReplacement(EntityFarmerScreen.pageRoute());
-    //       return;
-    //     }
-    //     Navigator.of(context)
-    //         .pushReplacement(EntityGroupScreen.pageRoute(
-    //         isBehave:
-    //             context.read<UserInfoCubit>().state.userRole?.isBoth == true));
-    //   }
-    // });
   }
 
   @override
@@ -87,10 +62,9 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
         selector: (state) => state,
         builder: (context, state) {
           if (state.loading) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: context.colors.white,
               ),
             );
           }

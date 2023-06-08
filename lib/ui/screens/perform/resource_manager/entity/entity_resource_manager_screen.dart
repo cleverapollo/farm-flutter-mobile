@@ -50,9 +50,6 @@ class _EntityResourceManagerScreenState
 
   Future<void> submit() async {
     if (selected == null) return;
-    await context
-        .read<UserDeviceCubit>()
-        .createPerformUserDevice();
     if (context.mounted) {
       await context.read<EntityCubit>().sync(selected!);
     }

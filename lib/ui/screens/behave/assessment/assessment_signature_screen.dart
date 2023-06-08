@@ -41,6 +41,7 @@ class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
     velocityRange: 3.0,
   );
   String? _legacySignature;
+  UserInfo? userInfo;
 
   void _handleClearButtonPressed() {
     _signatureController.clear();
@@ -59,6 +60,11 @@ class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
         setState(() {});
       }
     });
+
+    Future.microtask(() async {
+      userInfo = await configService.getActiveUser();
+      setState(() {});
+    });
   }
 
   @override
@@ -74,28 +80,19 @@ class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
           Row(),
           const SizedBox(height: 16),
           CmoHeaderTile(title: LocaleKeys.signature.tr()),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-          //   child: Column(
-          //     children: [
-          //       BlocSelector<UserInfoCubit, UserInfoState, String?>(
-          //         selector: (state) => state.userInfo?.userEmail,
-          //         builder: (context, userEmail) {
-          //           return Text(
-          //             LocaleKeys.iNameDeclareThatIWasAssessedByEmailOnDate.tr(
-          //               namedArgs: {
-          //                 'name': 'hereby',
-          //                 'email': userEmail ?? '',
-          //                 'date': DateTime.now().yMd(),
-          //               },
-          //             ),
-          //             style: context.textStyles.bodyNormal,
-          //           );
-          //         },
-          //       ),
-          //     ],
-          //   ),
-          // ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            child: Text(
+              LocaleKeys.iNameDeclareThatIWasAssessedByEmailOnDate.tr(
+                namedArgs: {
+                  'name': 'hereby',
+                  'email': userInfo?.userEmail ?? '',
+                  'date': DateTime.now().yMd(),
+                },
+              ),
+              style: context.textStyles.bodyNormal,
+            ),
+          ),
           LayoutBuilder(
             builder: (context, BoxConstraints constraints) {
               return Center(

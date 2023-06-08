@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ConfigService {
   Future<void> logout() async {
     await setRMSynced(isSynced: false);
+    await setIsAuthorized(isAuthorized: false);
   }
 
   Future<bool> isFirstLaunch() async {
@@ -19,6 +20,16 @@ class ConfigService {
   Future<bool> setFirstLaunch({required bool isFirstLaunch}) async {
     final sp = await SharedPreferences.getInstance();
     return sp.setBool('FirstLaunch', isFirstLaunch);
+  }
+
+  Future<bool> isAuthorized() async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.getBool('isAuthorized') ?? false;
+  }
+
+  Future<bool> setIsAuthorized({required bool isAuthorized}) async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setBool('isAuthorized', isAuthorized);
   }
 
   Future<bool> isRMSynced() async {

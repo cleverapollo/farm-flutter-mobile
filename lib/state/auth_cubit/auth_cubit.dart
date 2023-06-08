@@ -6,7 +6,6 @@ import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -20,16 +19,11 @@ class AuthCubit extends HydratedCubit<AuthState> {
     if (result == null) {
       return;
     }
-
-    await _saveUsernameAndPassword(event.username, event.password);
   }
 
   Future<void> logOut() async {
-    final result = await _clearSecureStorage();
-
-    if (result) {
-      emit(const AuthState());
-    }
+    await _clearSecureStorage();
+    emit(const AuthState());
   }
 
   Future<void> logInWithSavedCredentials({
@@ -49,7 +43,6 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
     if (login != null) {
       await _refreshToken();
-      // emit(AuthState.authorized());
       onSuccess?.call();
     } else {
       emit(const AuthState());
@@ -79,6 +72,12 @@ class AuthCubit extends HydratedCubit<AuthState> {
         performLoginResponse?.renewalToken,
       );
 
+      await _saveUsernameAndPassword(
+        username,
+        password,
+      );
+
+      await configService.setIsAuthorized(isAuthorized: true);
       emit(
         state.copyWith(
           haveBehaveRole: behaveLoginResponse != null,
@@ -128,10 +127,6 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
-  Future<String?> _readBehaveRenewalToken() async {
-    return secureStorage.read(key: SecureStorageConstant.BEHAVE_RENEWAL_TOKEN);
-  }
-
   Future<String?> _readUsername() async {
     return secureStorage.read(key: SecureStorageConstant.USER_NAME);
   }
@@ -176,61 +171,90 @@ class AuthCubit extends HydratedCubit<AuthState> {
     );
   }
 
-  Future<bool> _clearSecureStorage() async {
-    var isDone = false;
+  Future<void> _clearSecureStorage() async {
+    await secureStorage.write(
+      key: SecureStorageConstant.BEHAVE_RENEWAL_TOKEN,
+      value: null,
+    );
 
-    final futures = <Future<dynamic>>[];
+    await secureStorage.write(
+      key: SecureStorageConstant.BEHAVE_ACCESS_TOKEN,
+      value: null,
+    );
 
-    futures
-      ..add(
-        secureStorage.write(
-          key: SecureStorageConstant.BEHAVE_RENEWAL_TOKEN,
-          value: null,
-        ),
-      )
-      ..add(
-        secureStorage.write(
-          key: SecureStorageConstant.BEHAVE_ACCESS_TOKEN,
-          value: null,
-        ),
-      )
-      ..add(
-        secureStorage.write(
-          key: SecureStorageConstant.PERFORM_RENEWAL_TOKEN,
-          value: null,
-        ),
-      )
-      ..add(
-        secureStorage.write(
-          key: SecureStorageConstant.PERFORM_ACCESS_TOKEN,
-          value: null,
-        ),
-      )
-      ..add(
-        secureStorage.write(
-          key: SecureStorageConstant.USER_NAME,
-          value: null,
-        ),
-      )
-      ..add(
-        secureStorage.write(
-          key: SecureStorageConstant.USER_PASSWORD,
-          value: null,
-        ),
-      );
+    await secureStorage.write(
+      key: SecureStorageConstant.PERFORM_RENEWAL_TOKEN,
+      value: null,
+    );
 
-    await Future.wait(futures).then((value) => isDone = true);
+    await secureStorage.write(
+      key: SecureStorageConstant.PERFORM_ACCESS_TOKEN,
+      value: null,
+    );
 
-    return isDone;
+    await secureStorage.write(
+      key: SecureStorageConstant.USER_NAME,
+      value: null,
+    );
+
+    await secureStorage.write(
+      key: SecureStorageConstant.USER_PASSWORD,
+      value: null,
+    );
+    // var isDone = false;
+    //
+    // final futures = <Future<dynamic>>[];
+    //
+    // futures
+    //   ..add(
+    //     secureStorage.write(
+    //       key: SecureStorageConstant.BEHAVE_RENEWAL_TOKEN,
+    //       value: null,
+    //     ),
+    //   )
+    //   ..add(
+    //     secureStorage.write(
+    //       key: SecureStorageConstant.BEHAVE_ACCESS_TOKEN,
+    //       value: null,
+    //     ),
+    //   )
+    //   ..add(
+    //     secureStorage.write(
+    //       key: SecureStorageConstant.PERFORM_RENEWAL_TOKEN,
+    //       value: null,
+    //     ),
+    //   )
+    //   ..add(
+    //     secureStorage.write(
+    //       key: SecureStorageConstant.PERFORM_ACCESS_TOKEN,
+    //       value: null,
+    //     ),
+    //   )
+    //   ..add(
+    //     secureStorage.write(
+    //       key: SecureStorageConstant.USER_NAME,
+    //       value: null,
+    //     ),
+    //   )
+    //   ..add(
+    //     secureStorage.write(
+    //       key: SecureStorageConstant.USER_PASSWORD,
+    //       value: null,
+    //     ),
+    //   );
+    //
+    // await Future.wait(futures).then((value) => isDone = true);
+    //
+    // return isDone;
   }
 
   Future<void> checkFirstLaunch() async {
     final isFirstLaunch = await configService.isFirstLaunch();
     if (isFirstLaunch) {
-      final isDone = await _clearSecureStorage();
-      if (isDone) {
+      await _clearSecureStorage();
+      // if (isDone) {
         await configService.setFirstLaunch(isFirstLaunch: false);
-      }
+      // }
     }
   }
 
