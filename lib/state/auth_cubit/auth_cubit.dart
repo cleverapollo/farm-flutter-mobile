@@ -1,6 +1,8 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/main.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/model/user_role_config/user_role_config.dart';
+import 'package:cmo/utils/constants.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
@@ -23,7 +25,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     await _saveUsernameAndPassword(event.username, event.password);
 
     emit(AuthState.authorized());
-    event.onResponse(result);
+    event.onResponse(null);
   }
 
   Future<void> logOut() async {
@@ -63,7 +65,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
-  Future<UserRoleConfig?> _login(
+  Future<bool?> _login(
     String username,
     String password,
   ) async {
@@ -73,14 +75,37 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
     if (performLoginResponse == null && behaveLoginResponse == null) {
       return null;
-    } else if (performLoginResponse == null) {
-      /// MAKE SURE THIS IS BEHAVE
-      emit(AuthState.authorized(haveBehaveRole: true,));
-    } else if (behaveLoginResponse == null) {
-      /// MAKE SURE THIS IS PERFORM, STILL NEED TO CHECK ABOUT IT
     } else {
-      /// THIS CASE IS PERFORM HAVE BOTH BEHAVE AND PERFORM
+      await _saveBehaveToken(
+        behaveLoginResponse?.accessToken,
+        behaveLoginResponse?.renewalToken,
+      );
+
+      await _savePerformToken(
+        performLoginResponse?.accessToken,
+        performLoginResponse?.renewalToken,
+      );
+
+      emit(
+        AuthState.authorized(
+          haveBehaveRole: behaveLoginResponse == null,
+          havePerformRole: performLoginResponse == null,
+          performUserAuth: performLoginResponse,
+          behaveUserAuth: behaveLoginResponse,
+        ),
+      );
+
+      return true;
     }
+
+    //   if (performLoginResponse == null) {
+    //   /// MAKE SURE THIS IS BEHAVE
+    //   emit(AuthState.authorized(haveBehaveRole: true,));
+    // } else if (behaveLoginResponse == null) {
+    //   /// MAKE SURE THIS IS PERFORM, STILL NEED TO CHECK ABOUT IT
+    // } else {
+    //   /// THIS CASE IS PERFORM HAVE BOTH BEHAVE AND PERFORM
+    // }
     // if (result?.performUserAuth != null && result?.behaveUserAuth != null) {
     //   await _savePerformAccessRevewalToken(
     //     result!.performUserAuth!.accessToken!,
@@ -113,10 +138,9 @@ class AuthCubit extends HydratedCubit<AuthState> {
     //   return UserRoleConfig.performRole;
     // }
 
-    return null;
+    // return null;
   }
 
-  Future<>
   Future<void> _refreshToken() async {
     final userRole = await configService.getActiveUserRole();
     final renewalToken = await _readRenewalToken();
@@ -130,10 +154,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
         login.accessToken != null &&
         login.renewalToken != null) {
       if (userRole.isBehave) {
-        await _saveBehaveAccessRevewalToken(
+        await _saveBehaveToken(
             login.accessToken!, login.renewalToken!);
       } else {
-        await _savePerformAccessRevewalToken(
+        await _savePerformToken(
             login.accessToken!, login.renewalToken!);
       }
     }
@@ -144,40 +168,52 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
     if (userRole.isBehave) {
       return secureStorage.read(
-          key: UserRoleConfig.behaveRole.getRenewalTokenKey);
+        key: UserRoleConfig.behaveRole.getRenewalTokenKey,
+      );
     } else {
       return secureStorage.read(
-          key: UserRoleConfig.performRole.getRenewalTokenKey);
+        key: UserRoleConfig.performRole.getRenewalTokenKey,
+      );
     }
   }
 
+  Future<String?> _readBehaveRenewalToken() async {
+    return secureStorage.read(key: SecureStorageConstant.BEHAVE_RENEWAL_TOKEN);
+  }
+
   Future<String?> _readUsername() async {
-    return secureStorage.read(key: 'user_name');
+    return secureStorage.read(key: SecureStorageConstant.USER_NAME);
   }
 
   Future<String?> _readPassword() async {
-    return secureStorage.read(key: 'user_password');
+    return secureStorage.read(key: SecureStorageConstant.USER_PASSWORD);
   }
 
   Future<void> _saveUsernameAndPassword(
     String username,
     String password,
   ) async {
-    await secureStorage.write(key: 'user_name', value: username);
-    await secureStorage.write(key: 'user_password', value: password);
+    await secureStorage.write(key: SecureStorageConstant.USER_NAME, value: username,);
+    await secureStorage.write(key: SecureStorageConstant.USER_PASSWORD, value: password,);
   }
 
-  Future<void> _saveBehaveAccessRevewalToken(
-      String accessToken, String renewalToken) async {
+  Future<void> _saveBehaveToken(
+    String? accessToken,
+    String? renewalToken,
+  ) async {
     await secureStorage.write(
-        key: UserRoleConfig.behaveRole.getAccessTokenKey, value: accessToken);
+      key: UserRoleConfig.behaveRole.getAccessTokenKey,
+      value: accessToken,
+    );
     await secureStorage.write(
-        key: UserRoleConfig.behaveRole.getRenewalTokenKey, value: renewalToken);
+      key: UserRoleConfig.behaveRole.getRenewalTokenKey,
+      value: renewalToken,
+    );
   }
 
-  Future<void> _savePerformAccessRevewalToken(
-    String accessToken,
-    String renewalToken,
+  Future<void> _savePerformToken(
+    String? accessToken,
+    String? renewalToken,
   ) async {
     await secureStorage.write(
       key: UserRoleConfig.performRole.getAccessTokenKey,
@@ -189,48 +225,54 @@ class AuthCubit extends HydratedCubit<AuthState> {
     );
   }
 
-  Future<void> saveUserCurrentRole(String userRole) async {
-    await secureStorage.write(key: 'user_role', value: userRole);
-  }
-
-  Future<String?> getUserCurrentRole() async {
-    return secureStorage.read(key: 'user_role');
-  }
-
-  Future<bool> _clearSecureStorageAfterSelectRole(
-      UserRoleConfig userRoleUnselected) async {
-    var isDone = false;
-
-    final futures = <Future<dynamic>>[];
-
-    futures
-      ..add(secureStorage.write(
-          key: userRoleUnselected.getAccessTokenKey, value: null))
-      ..add(secureStorage.write(
-          key: userRoleUnselected.getRenewalTokenKey, value: null));
-
-    await Future.wait(futures).then((value) => isDone = true);
-
-    return isDone;
-  }
-
   Future<bool> _clearSecureStorage() async {
     var isDone = false;
 
     final futures = <Future<dynamic>>[];
 
     futures
-      ..add(secureStorage.write(
-          key: UserRoleConfig.behaveRole.getRenewalTokenKey, value: null))
-      ..add(secureStorage.write(
-          key: UserRoleConfig.behaveRole.getAccessTokenKey, value: null))
-      ..add(secureStorage.write(
-          key: UserRoleConfig.performRole.getRenewalTokenKey, value: null))
-      ..add(secureStorage.write(
-          key: UserRoleConfig.performRole.getAccessTokenKey, value: null))
-      ..add(secureStorage.write(key: 'user_name', value: null))
-      ..add(secureStorage.write(key: 'user_password', value: null))
-      ..add(secureStorage.write(key: 'user_role', value: null));
+      ..add(
+        secureStorage.write(
+          key: SecureStorageConstant.BEHAVE_RENEWAL_TOKEN,
+          value: null,
+        ),
+      )
+      ..add(
+        secureStorage.write(
+          key: SecureStorageConstant.BEHAVE_ACCESS_TOKEN,
+          value: null,
+        ),
+      )
+      ..add(
+        secureStorage.write(
+          key: SecureStorageConstant.PERFORM_RENEWAL_TOKEN,
+          value: null,
+        ),
+      )
+      ..add(
+        secureStorage.write(
+          key: SecureStorageConstant.PERFORM_ACCESS_TOKEN,
+          value: null,
+        ),
+      )
+      ..add(
+        secureStorage.write(
+          key: SecureStorageConstant.USER_NAME,
+          value: null,
+        ),
+      )
+      ..add(
+        secureStorage.write(
+          key: SecureStorageConstant.USER_PASSWORD,
+          value: null,
+        ),
+      )
+      ..add(
+        secureStorage.write(
+          key: 'user_role',
+          value: null,
+        ),
+      );
 
     await Future.wait(futures).then((value) => isDone = true);
 

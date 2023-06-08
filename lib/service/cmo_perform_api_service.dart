@@ -32,8 +32,6 @@ class CmoPerformApiService {
 
   String _apiUri(String path) => '${Env.behaveDnnApiUrl}$path';
 
-  String _behaveApiUri(String path) => '${Env.behaveDnnApiUrl}$path';
-
   String _performApiUri(String path) => '${Env.performDnnApiUrl}$path';
 
   String _mqApiUri(String path) => '${Env.apstoryMqApiUrl}$path';
@@ -116,7 +114,7 @@ class CmoPerformApiService {
     // return response;
   }
 
-  Future<Response<Map<String, dynamic>>?> performLogin(
+  Future<UserAuth?> performLogin(
     String username,
     String password,
   ) async {
@@ -131,7 +129,13 @@ class CmoPerformApiService {
         data: body,
       );
 
-      return response;
+      if (response.statusCode != 200) {
+        showSnackError(msg: '${response.statusCode} - ${response.data}');
+        return null;
+      }
+
+      final data = response.data;
+      return data == null ? null : UserAuth.fromJson(data);
     } catch (e) {
       return null;
     }
@@ -143,13 +147,10 @@ class CmoPerformApiService {
     final body = {
       'rToken': renewalToken,
     };
-    final userRole = await configService.getActiveUserRole();
-    final accessToken = await _readAccessToken();
-
     final response = await client.post<JsonData>(
       _authApiUri('extendtoken'),
       data: body,
-      options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      options: Options(headers: {'accessToken': 'true'}),
     );
 
     if (response.statusCode != 200) {
@@ -161,20 +162,13 @@ class CmoPerformApiService {
     return data == null ? null : UserAuth.fromJson(data);
   }
 
-  Future<UserInfo?> getUser(UserRoleConfig userRole) async {
+  Future<UserInfo?> getPerformUser() async {
     Response<Map<String, dynamic>>? response;
 
-    if (userRole.isBehave) {
-      response = await client.get<JsonData>(
-        _behaveApiUri('GetUser'),
-        options: Options(headers: {'accessToken': 'true'}),
-      );
-    } else {
-      response = await client.get<JsonData>(
-        _performApiUri('GetUser'),
-        options: Options(headers: {'accessToken': 'true'}),
-      );
-    }
+    response = await client.get<JsonData>(
+      _performApiUri('GetUser'),
+      options: Options(headers: {'accessToken': 'true'}),
+    );
 
     if (response.statusCode != 200) {
       showSnackError(msg: 'Unknow error: ${response.statusCode}');

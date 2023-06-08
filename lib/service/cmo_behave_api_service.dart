@@ -27,8 +27,6 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 class CmoBehaveApiService {
   String _behaveApiAuthUri(String path) => '${Env.behaveDnnAuthUrl}$path';
 
-  String _performApiAuthUri(String path) => '${Env.performDnnAuthUrl}$path';
-
   String _authApiUri(String path) => '${Env.behaveDnnAuthUrl}$path';
 
   String _apiUri(String path) => '${Env.behaveDnnApiUrl}$path';
@@ -117,7 +115,7 @@ class CmoBehaveApiService {
     // return response;
   }
 
-  Future<Response<JsonData>?> behaveLogin(
+  Future<UserAuth?> behaveLogin(
     String username,
     String password,
   ) async {
@@ -132,7 +130,13 @@ class CmoBehaveApiService {
         data: body,
       );
 
-      return response;
+      if (response.statusCode != 200) {
+        showSnackError(msg: '${response.statusCode} - ${response.data}');
+        return null;
+      }
+
+      final data = response.data;
+      return data == null ? null : UserAuth.fromJson(data);
     } catch (e) {
       return null;
     }
@@ -161,20 +165,13 @@ class CmoBehaveApiService {
     return data == null ? null : UserAuth.fromJson(data);
   }
 
-  Future<UserInfo?> getUser(UserRoleConfig userRole) async {
+  Future<UserInfo?> getBehaveUser() async {
     Response<Map<String, dynamic>>? response;
 
-    if (userRole.isBehave) {
-      response = await client.get<JsonData>(
-        _behaveApiUri('GetUser'),
-        options: Options(headers: {'accessToken': 'true'}),
-      );
-    } else {
-      response = await client.get<JsonData>(
-        _performApiUri('GetUser'),
-        options: Options(headers: {'accessToken': 'true'}),
-      );
-    }
+    response = await client.get<JsonData>(
+      _behaveApiUri('GetUser'),
+      options: Options(headers: {'accessToken': 'true'}),
+    );
 
     if (response.statusCode != 200) {
       showSnackError(msg: 'Unknow error: ${response.statusCode}');
