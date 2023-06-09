@@ -1,3 +1,5 @@
+import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/l10n/locale_keys.g.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -26,8 +28,8 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: const CmoAppBarV2(
-        title: 'Add Training',
+      appBar: CmoAppBarV2(
+        title: LocaleKeys.add_training.tr(),
         showLeading: true,
       ),
       body: Padding(
@@ -38,7 +40,7 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
             children: [
               const SizedBox(height: 12.0),
               Text(
-                '* Training Type',
+                '* ${LocaleKeys.training_type.tr()}',
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -67,7 +69,7 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
               ),
               const SizedBox(height: 12.0),
               Text(
-                '* Date',
+                '* ${LocaleKeys.date.tr()}',
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -92,7 +94,7 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
               ),
               const SizedBox(height: 12.0),
               Text(
-                'Expiry Date',
+                LocaleKeys.expiry_date.tr(),
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -117,7 +119,7 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
               ),
               const SizedBox(height: 12.0),
               Text(
-                '* Trainer Name',
+                '* ${LocaleKeys.trainer_name.tr()}',
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -135,7 +137,7 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
               ),
               const SizedBox(height: 12.0),
               Text(
-                '* Trainee Name',
+                '* ${LocaleKeys.trainee_name.tr()}',
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -164,7 +166,7 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
               ),
               const SizedBox(height: 12.0),
               Text(
-                '* General Comments',
+                '* ${LocaleKeys.generalComments.tr()}',
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -183,7 +185,7 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
               const SizedBox(height: 12),
               Align(
                 child: Text(
-                  'Signature',
+                  LocaleKeys.signature.tr(),
                   style: context.textStyles.bodyBold
                       .copyWith(color: context.colors.black),
                 ),
@@ -210,7 +212,7 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
               const SizedBox(height: 12),
               Align(
                 child: CmoFilledButton(
-                    title: 'Clear Signature',
+                    title: LocaleKeys.clear_signature.tr(),
                     onTap: () {
                       signatureKey.currentState?.clear();
                     }),
@@ -218,7 +220,7 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
               const SizedBox(height: 12),
               Align(
                 child: CmoFilledButton(
-                    title: 'Save',
+                    title: LocaleKeys.save.tr(),
                     onTap: () {
                       Navigator.pop(context);
                     }),

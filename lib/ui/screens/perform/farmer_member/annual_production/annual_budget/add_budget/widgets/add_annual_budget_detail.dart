@@ -73,7 +73,7 @@ class AddAnnualBudgetDetail extends StatelessWidget {
                     focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
                   ),
                   itemsData: [
-                    CmoDropdownItem(id: -1, name: 'Year'),
+                    CmoDropdownItem(id: -1, name: LocaleKeys.year.tr()),
                     CmoDropdownItem(id: 2022, name: '2022'),
                     CmoDropdownItem(id: 2023, name: '2023'),
                     CmoDropdownItem(id: 2024, name: '2024'),

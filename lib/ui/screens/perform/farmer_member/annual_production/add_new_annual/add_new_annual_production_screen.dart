@@ -90,7 +90,7 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
       child: Scaffold(
         appBar: CmoAppBar(
           title: LocaleKeys.addAnnualProduction.tr(),
-          subtitle: 'Imbeza',
+          subtitle: LocaleKeys.imbeza.tr(),
           subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
@@ -190,7 +190,7 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
             focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
           ),
           itemsData: [
-            CmoDropdownItem(id: -1, name: 'Year'),
+            CmoDropdownItem(id: -1, name: LocaleKeys.year.tr()),
             CmoDropdownItem(id: 2022, name: '2022'),
             CmoDropdownItem(id: 2023, name: '2023'),
             CmoDropdownItem(id: 2024, name: '2024'),

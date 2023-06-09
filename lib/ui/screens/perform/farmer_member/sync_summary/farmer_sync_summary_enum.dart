@@ -1,3 +1,4 @@
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/sync_summary/widget/farmer_sync_summary_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -68,23 +69,23 @@ enum FarmerSyncSummaryEnum {
   String get getLabel {
     switch (this) {
       case FarmerSyncSummaryEnum.workers:
-        return 'Workers';
+        return LocaleKeys.workers.tr();
       case FarmerSyncSummaryEnum.registers:
-        return 'Registers';
+        return LocaleKeys.registers.tr();
       case FarmerSyncSummaryEnum.annualProductions:
-        return 'Annual Productions';
+        return LocaleKeys.annual_productions.tr();
       case FarmerSyncSummaryEnum.annualBudgets:
-        return 'Annual Budgets';
+        return LocaleKeys.annualBudgets.tr();
       case FarmerSyncSummaryEnum.annualBudgetTransactions:
-        return 'Annual Budget Transactions';
+        return LocaleKeys.annual_budget_transactions.tr();
       case FarmerSyncSummaryEnum.camps:
-        return 'Camps';
+        return LocaleKeys.camps.tr();
       case FarmerSyncSummaryEnum.scheduler:
-        return 'Scheduler';
+        return LocaleKeys.scheduler.tr();
       case FarmerSyncSummaryEnum.masterData:
-        return 'Master Data';
+        return LocaleKeys.master_data.tr();
       case FarmerSyncSummaryEnum.stakeHolder:
-        return 'Stake Holder';
+        return LocaleKeys.stakeholders.tr();
       case FarmerSyncSummaryEnum.all:
         return '';
     }

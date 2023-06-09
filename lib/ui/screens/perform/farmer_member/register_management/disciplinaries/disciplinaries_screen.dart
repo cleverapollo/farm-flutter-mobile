@@ -65,7 +65,7 @@ class _DisciplinariesScreenState extends State<DisciplinariesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBarV2(
-        title: 'Disciplinary',
+        title: LocaleKeys.disciplinary.tr(),
         showLeading: true,
         showAdding: true,
         onTapAdding: () => DisciplinariesAddScreen.push(context),
@@ -158,7 +158,7 @@ class _DisciplinariesItemWidget extends StatelessWidget {
               horizontal: _itemHorizontalPadding,
             ),
             child: Text(
-              'Disciplinary No : ${data.disciplinayNo}',
+              '${LocaleKeys.disciplinary_no.tr()} : ${data.disciplinayNo}',
               style: context.textStyles.bodyBold
                   .copyWith(color: context.colors.blue),
             ),
@@ -173,16 +173,16 @@ class _DisciplinariesItemWidget extends StatelessWidget {
               color: context.colors.black,
             ),
           ),
-          _buildILineItem(context, 'Worker: ', data.workerName),
-          _buildILineItem(context, 'Date Issued :', data.dateRecieved.yMd()),
+          _buildILineItem(context, '${LocaleKeys.worker.tr()}: ', data.workerName),
+          _buildILineItem(context, '${LocaleKeys.dateIssued.tr()} :', data.dateRecieved.yMd()),
           _buildILineItem(
-              context, 'Camp/Compartment :', data.campOrCompartment),
+              context, '${LocaleKeys.camp_compartment.tr()} :', data.campOrCompartment),
           _buildILineItem(
-              context, 'Disciplinaries Issue :', data.issueTypeName),
-          _buildILineItem(context, 'Disciplinaries Steps Taken : ',
+              context, '${LocaleKeys.disciplinaries_issue.tr()} :', data.issueTypeName),
+          _buildILineItem(context, '${LocaleKeys.disciplinaries_steps_taken.tr()} : ',
               data.descriptionOfSanction),
-          _buildILineItem(context, 'Signed : ', data.signatureDate),
-          _buildILineItem(context, 'General Comments :', data.comment),
+          _buildILineItem(context, '${LocaleKeys.signed.tr()} : ', data.signatureDate),
+          _buildILineItem(context, '${LocaleKeys.generalComments.tr()} :', data.comment),
         ],
       ),
     );

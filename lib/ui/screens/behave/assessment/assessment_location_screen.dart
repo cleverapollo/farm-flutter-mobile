@@ -107,7 +107,7 @@ class _AssessmentLocationScreenState extends State<AssessmentLocationScreen> {
   void submit() {
     if (_loading) return;
     if (_address.isEmpty) {
-      showSnackError(msg: 'Please choose a location!');
+      showSnackError(msg: LocaleKeys.please_choose_location.tr());
       return;
     }
 

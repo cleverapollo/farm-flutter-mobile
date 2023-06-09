@@ -33,7 +33,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
     return Scaffold(
       appBar: CmoAppBarV2(
         title: LocaleKeys.site.tr(),
-        subtitle: 'Imbeza',
+        subtitle: LocaleKeys.imbeza.tr(),
         showLeading: true,
         showTrailing: true,
         trailing: Assets.icons.icClose.svgBlack,

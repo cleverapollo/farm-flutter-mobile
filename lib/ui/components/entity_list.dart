@@ -70,7 +70,7 @@ class _EntityListState<T> extends State<EntityList<T>> {
 
   Widget buildNameList() {
     if (entityItems.isEmpty) {
-      return Text('None', style: context.textStyles.bodyNormal);
+      return Text(LocaleKeys.none.tr(), style: context.textStyles.bodyNormal);
     }
 
     return ListView.builder(

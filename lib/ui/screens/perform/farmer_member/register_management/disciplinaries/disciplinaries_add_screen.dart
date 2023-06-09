@@ -35,8 +35,8 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: const CmoAppBarV2(
-        title: 'Add Disciplinary',
+      appBar: CmoAppBarV2(
+        title: LocaleKeys.add_disciplinary.tr(),
         showLeading: true,
       ),
       body: Padding(
@@ -46,7 +46,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '* Workers',
+                '* ${LocaleKeys.workers.tr()}',
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -75,7 +75,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                '* Date Issued',
+                '* ${LocaleKeys.dateIssued.tr()}',
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -100,7 +100,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Camp/Compartment',
+                LocaleKeys.there_are_no_farms.tr(),
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -119,7 +119,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                '* Disciplinaries Issue',
+                '* ${LocaleKeys.disciplinaries_issue.tr()}',
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -180,7 +180,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                'General Comments',
+                LocaleKeys.generalComments.tr(),
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -200,7 +200,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
               const SizedBox(height: 12),
               Align(
                 child: Text(
-                  'Worker Signature',
+                  LocaleKeys.worker_signature.tr(),
                   style: context.textStyles.bodyBold
                       .copyWith(color: context.colors.black),
                 ),
@@ -227,7 +227,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
               const SizedBox(height: 12),
               Align(
                 child: CmoFilledButton(
-                    title: 'Clear Signature',
+                    title: LocaleKeys.clear_signature.tr(),
                     onTap: () {
                       signatureKey.currentState?.clear();
                     }),
@@ -235,7 +235,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
               const SizedBox(height: 12),
               Align(
                 child: CmoFilledButton(
-                    title: 'Save',
+                    title: LocaleKeys.save.tr(),
                     onTap: () {
                       Navigator.pop(context);
                     }),

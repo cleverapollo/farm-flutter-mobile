@@ -183,9 +183,9 @@ class _WorkerAddScreenState extends State<WorkerAddScreen> {
               validator: requiredValidator,
               hintText: LocaleKeys.gender.tr(),
               itemsData: [
-                CmoDropdownItem(id: 1, name: 'Male'),
-                CmoDropdownItem(id: 2, name: 'Female'),
-                CmoDropdownItem(id: 3, name: 'Unknown'),
+                CmoDropdownItem(id: 1, name: LocaleKeys.male_key.tr()),
+                CmoDropdownItem(id: 2, name: LocaleKeys.female_key.tr()),
+                CmoDropdownItem(id: 3, name: LocaleKeys.unknown.tr()),
               ],
             ),
             CmoDropdown(
@@ -193,7 +193,7 @@ class _WorkerAddScreenState extends State<WorkerAddScreen> {
               validator: requiredValidator,
               hintText: LocaleKeys.disability.tr(),
               itemsData: [
-                CmoDropdownItem(id: 1, name: 'None'),
+                CmoDropdownItem(id: 1, name: LocaleKeys.none.tr()),
               ],
             ),
             FutureBuilder(

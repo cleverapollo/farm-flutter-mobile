@@ -77,7 +77,7 @@ class _AnnualProductionManagementScreen extends State<AnnualProductionManagement
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.annualProduction.tr(),
-        subtitle: 'Imbeza',
+        subtitle: LocaleKeys.imbeza.tr(),
         subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,

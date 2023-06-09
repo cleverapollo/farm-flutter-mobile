@@ -42,7 +42,7 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.labourManagement.tr(),
-        subtitle: 'RMU Name: Border Timbers',
+        subtitle: '${LocaleKeys.rmu_name.tr()}: Border Timbers',
         subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,

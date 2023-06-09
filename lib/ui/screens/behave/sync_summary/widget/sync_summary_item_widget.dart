@@ -1,3 +1,5 @@
+import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/l10n/locale_keys.g.dart';
 import 'package:cmo/state/behave_sync_summary_cubit/sync_summary_cubit.dart';
 import 'package:cmo/state/behave_sync_summary_cubit/sync_summary_state.dart';
 import 'package:cmo/ui/components/sync_summary_component/sync_item_widget.dart';
@@ -30,33 +32,31 @@ class _BehaveSyncSummaryItemWidgetState
     state = cubit.state;
     if (state.dataLoaded) {
       data = [
-        SyncPairItemModel('Company', count: state.data?.mdCompany),
-        SyncPairItemModel('Question', count: state.data?.mdQuestion),
-        SyncPairItemModel('Worker', count: state.data?.mdWoker),
-        SyncPairItemModel('Unsync Worker', count: state.data?.mdUnsyncWoker),
-        SyncPairItemModel('Team', count: state.data?.mdTeam),
-        SyncPairItemModel('Reject Reason', count: state.data?.mdRejectReason),
-        SyncPairItemModel('Plantation', count: state.data?.mdPlantation),
-        SyncPairItemModel('Contractor', count: state.data?.mdContractor),
-        SyncPairItemModel('Job Category', count: state.data?.mdJobCategory),
-        SyncPairItemModel('Job Description',
+        SyncPairItemModel(LocaleKeys.company.tr(), count: state.data?.mdCompany),
+        SyncPairItemModel(LocaleKeys.question.tr(), count: state.data?.mdQuestion),
+        SyncPairItemModel(LocaleKeys.worker.tr(), count: state.data?.mdWoker),
+        SyncPairItemModel(LocaleKeys.unsync_worker.tr(), count: state.data?.mdUnsyncWoker),
+        SyncPairItemModel(LocaleKeys.team.tr(), count: state.data?.mdTeam),
+        SyncPairItemModel(LocaleKeys.reject_reason.tr(), count: state.data?.mdRejectReason),
+        SyncPairItemModel(LocaleKeys.plantation.tr(), count: state.data?.mdPlantation),
+        SyncPairItemModel(LocaleKeys.contractor.tr(), count: state.data?.mdContractor),
+        SyncPairItemModel(LocaleKeys.job_category.tr(), count: state.data?.mdJobCategory),
+        SyncPairItemModel(LocaleKeys.jobDescription.tr(),
             count: state.data?.mdJobDescription),
-        SyncPairItemModel('Job Element', count: state.data?.mdElement),
-        SyncPairItemModel('Pdca', count: state.data?.mdPdca),
-        SyncPairItemModel('Severity', count: state.data?.mdSeverity),
-        SyncPairItemModel('Speqs', count: state.data?.mdSpeqs),
-        SyncPairItemModel('Compliance', count: state.data?.mdCompliance),
-        SyncPairItemModel('Mmm', count: state.data?.mdMmm),
-        SyncPairItemModel('Impact Caused', count: state.data?.mdImpactCaused),
-        SyncPairItemModel('Impact On', count: state.data?.mdImpactOn),
-        SyncPairItemModel('Unit', count: state.data?.mdUnit),
-        SyncPairItemModel('Province', count: state.data?.mdProvince),
-        SyncPairItemModel('Municipality', count: state.data?.mdMunicipality),
-        SyncPairItemModel('Schedule Activity',
-            count: state.data?.mdScheduleActivity),
-        SyncPairItemModel('Training Provider',
-            count: state.data?.mdTrainingProvider),
-        SyncPairItemModel('Course', count: state.data?.mdCourse),
+        SyncPairItemModel(LocaleKeys.jobElement.tr(), count: state.data?.mdElement),
+        SyncPairItemModel(LocaleKeys.pdca.tr(), count: state.data?.mdPdca),
+        SyncPairItemModel(LocaleKeys.severity.tr(), count: state.data?.mdSeverity),
+        SyncPairItemModel(LocaleKeys.speqs.tr(), count: state.data?.mdSpeqs),
+        SyncPairItemModel(LocaleKeys.compliance.tr(), count: state.data?.mdCompliance),
+        SyncPairItemModel(LocaleKeys.mmm.tr(), count: state.data?.mdMmm),
+        SyncPairItemModel(LocaleKeys.impact_caused.tr(), count: state.data?.mdImpactCaused),
+        SyncPairItemModel(LocaleKeys.impact_on.tr(), count: state.data?.mdImpactOn),
+        SyncPairItemModel(LocaleKeys.unit.tr(), count: state.data?.mdUnit),
+        SyncPairItemModel(LocaleKeys.province.tr(), count: state.data?.mdProvince),
+        SyncPairItemModel(LocaleKeys.municipality.tr(), count: state.data?.mdMunicipality),
+        SyncPairItemModel(LocaleKeys.schedule_activity.tr(), count: state.data?.mdScheduleActivity),
+        SyncPairItemModel(LocaleKeys.training_provider.tr(), count: state.data?.mdTrainingProvider),
+        SyncPairItemModel(LocaleKeys.course.tr(), count: state.data?.mdCourse),
       ];
     }
   }

@@ -66,7 +66,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
     return Scaffold(
       appBar: CmoAppBarV2(
         title: LocaleKeys.site.tr(),
-        subtitle: 'Imbeza',
+        subtitle: LocaleKeys.imbeza.tr(),
         showLeading: true,
         showTrailing: true,
         trailing: Assets.icons.icAdd.svgBlack,
@@ -93,7 +93,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
             ),
           ),
           CmoHeaderTile(
-            title: 'Summary: 100 tonnes of Biomass',
+            title: LocaleKeys.summary_tonnes_biomass.tr(args: ['100']),
           ),
           Expanded(
             child: ListView.separated(

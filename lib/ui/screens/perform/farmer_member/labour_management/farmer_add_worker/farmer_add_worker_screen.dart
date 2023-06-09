@@ -98,7 +98,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
       child: Scaffold(
         appBar: CmoAppBar(
           title: LocaleKeys.addStakeholders.tr(),
-          subtitle: 'RMU Name: Border Timbers',
+          subtitle: '${LocaleKeys.rmu_name.tr()}: Border Timbers',
           subtitleTextStyle: context.textStyles.bodyBold.blue,
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,

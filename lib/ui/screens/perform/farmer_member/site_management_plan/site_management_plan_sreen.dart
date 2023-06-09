@@ -17,9 +17,9 @@ class SiteManagementPlanScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CmoAppBarV2(
-        title: 'Site Management Plan',
-        subtitle: 'Imbeza',
+      appBar: CmoAppBarV2(
+        title: LocaleKeys.siteManagementPlan.tr(),
+        subtitle: LocaleKeys.imbeza.tr(),
         showLeading: true,
       ),
       body: SizedBox.expand(
@@ -50,22 +50,22 @@ class SiteManagementPlanScreen extends StatelessWidget {
       _compartmentCard(),
       CmoTappable(
         onTap: () {},
-        child: const CmoCard(
+        child: CmoCard(
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           content: [
-            CmoCardHeader(title: 'Annual Production'),
-            CmoCardItem(title: 'Production', value: '2'),
-            CmoCardItem(title: 'forecast'),
+            CmoCardHeader(title: LocaleKeys.annual_production.tr()),
+            CmoCardItem(title: LocaleKeys.production.tr(), value: '2'),
+            CmoCardItem(title: LocaleKeys.forecast.tr()),
           ],
         ),
       ),
       CmoTappable(
         onTap: () {},
-        child: const CmoCard(
+        child: CmoCard(
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           content: [
-            CmoCardHeader(title: 'Annua Budget'),
-            CmoCardHeader(title: 'Budget', value: '1'),
+            CmoCardHeader(title: LocaleKeys.annual_budget.tr()),
+            CmoCardHeader(title: LocaleKeys.budget.tr(), value: '1'),
           ],
         ),
       ),
@@ -75,12 +75,12 @@ class SiteManagementPlanScreen extends StatelessWidget {
   Widget _compartmentCard() {
     return CmoTappable(
       onTap: () {},
-      child: const CmoCard(
+      child: CmoCard(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         content: [
-          CmoCardHeader(title: 'Compartment Management'),
-          CmoCardItem(title: 'Camp\s', value: '1'),
-          CmoCardItem(title: 'Summary: 7 tons of biomass'),
+          CmoCardHeader(title: LocaleKeys.compartment_management.tr()),
+          CmoCardItem(title: '${LocaleKeys.camp.tr()}\s', value: '1'),
+          CmoCardItem(title: LocaleKeys.summary_tonnes_biomass.tr(args: ["7"])),
         ],
       ),
     );

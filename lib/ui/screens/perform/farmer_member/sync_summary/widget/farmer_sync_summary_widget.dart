@@ -1,3 +1,4 @@
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_cubit.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
 import 'package:cmo/ui/components/sync_summary_component/sync_item_widget.dart';
@@ -56,11 +57,11 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
         children: [
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
-            label: 'Unsynced',
+            label: LocaleKeys.unsynced.tr(),
             count: data?.workersUnsynced ?? 0,
           ),
           SyncItemWidget(
-            label: 'Total Workers',
+            label: LocaleKeys.total_workers.tr(),
             count: data?.workersTotal ?? 0,
           ),
         ],
@@ -69,123 +70,123 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
         children: [
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
-            label: 'Unsynced Accident and Incident',
+            label: LocaleKeys.unsynced_accident_and_incident.tr(),
             count: data?.accidentAndIncidentUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total Accident and Incident',
+            label: LocaleKeys.total_accident_and_incident.tr(),
             count: data?.accidentAndIncidentTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced Accident and Incident Property Damaged',
+            label: LocaleKeys.unsynced_accident_and_incident_property_damaged.tr(),
             count: data?.accidentAndIncidentPropertyDamagedUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total Accident and Incident Property Damaged',
+            label: LocaleKeys.total_accident_and_incident_property_damaged.tr(),
             count: data?.accidentAndIncidentPropertyDamagedTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced ASI',
+            label: LocaleKeys.unsynced_asi.tr(),
             count: data?.asiUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total ASI',
+            label: LocaleKeys.total_asi.tr(),
             count: data?.asiTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced ASI Photos',
+            label: LocaleKeys.unsynced_asi_photos.tr(),
             count: data?.asiPhotosUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total ASI Photos',
+            label: LocaleKeys.total_asi_photos.tr(),
             count: data?.asiPhotosTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced Biological Control Agents',
+            label: LocaleKeys.unsynced_biological_control_agents.tr(),
             count: data?.biologicalControlAgentsUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total Biological Control Agents',
+            label: LocaleKeys.total_biological_control_agents.tr(),
             count: data?.biologicalControlAgentsTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced Chemicals',
+            label: LocaleKeys.unsynced_chemicals.tr(),
             count: data?.chemicalsUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total Chemicals',
+            label: LocaleKeys.total_chemicals.tr(),
             count: data?.chemicalsTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced Disciplinaries',
+            label: LocaleKeys.unsynced_disciplinaries.tr(),
             count: data?.disciplinariesUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total Disciplinaries',
+            label: LocaleKeys.total_disciplinaries.tr(),
             count: data?.disciplinariesTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced Stakeholder Complaints',
+            label: LocaleKeys.unsynced_stakeholder_complaints.tr(),
             count: data?.stakeholderComplaintsUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total Stakeholder Complaint',
+            label: LocaleKeys.total_stakeholder_complaint.tr(),
             count: data?.stakeholderComplaintsTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced Employee Grievances',
+            label: LocaleKeys.unsynced_employee_grievances.tr(),
             count: data?.employeeGrievancesUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total Employee Grievances',
+            label: LocaleKeys.total_employee_grievances.tr(),
             count: data?.employeeGrievancesTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced Fire',
+            label: LocaleKeys.unsynced_fire.tr(),
             count: data?.fireUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total Fire',
+            label: LocaleKeys.total_fire.tr(),
             count: data?.fireTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced Pets and Disease',
+            label: LocaleKeys.unsynced_pets_and_disease.tr(),
             count: data?.petsAndDiseaseUnsyced,
           ),
           SyncItemWidget(
-            label: 'Total Pets and Disease',
+            label: LocaleKeys.total_pets_and_disease.tr(),
             count: data?.petsAndDiseaseTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced Pets and Disease Treatment Methods',
+            label: LocaleKeys.unsynced_pets_and_disease_treatment_methods.tr(),
             count: data?.petsAndDiseaseTreatmentMethodsUnsyced,
           ),
           SyncItemWidget(
-            label: 'Total Pets and Disease Treatment Methods',
+            label: LocaleKeys.total_pets_and_disease_treatment_methods.tr(),
             count: data?.petsAndDiseaseTreatmentMethodsTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced RTE Species Registers',
+            label: LocaleKeys.unsynced_rte_species_registers.tr(),
             count: data?.rteSpeciesRegistersUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total RTE Species Registers',
+            label: LocaleKeys.total_rte_species_registers.tr(),
             count: data?.rteSpeciesRegistersTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced RTE Species Registers Photos',
+            label: LocaleKeys.unsynced_rte_species_registers_photos.tr(),
             count: data?.rteSpeciesRegistersPhotosUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total RTE Species Registers Photos',
+            label: LocaleKeys.total_rte_species_registers_photos.tr(),
             count: data?.rteSpeciesRegistersPhotosTotal,
           ),
           SyncItemWidget(
-            label: 'Unsynced Training',
+            label: LocaleKeys.unsynced_training.tr(),
             count: data?.trainingUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total ',
+            label: LocaleKeys.total.tr(),
             count: data?.trainingTotal,
           ),
         ],

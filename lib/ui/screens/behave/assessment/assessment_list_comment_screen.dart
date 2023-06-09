@@ -80,7 +80,7 @@ class _AssessmentListCommentScreenState
       persistentFooterButtons: [
         CmoFilledButton(
           onTap: Navigator.of(context).pop,
-          title: 'Close',
+          title: LocaleKeys.close.tr(),
         ),
         // CmoFilledButton(
         //   onTap: addComment,

@@ -90,7 +90,7 @@ class _AddAnnualBudgetScreenState extends State<AddAnnualBudgetScreen> {
       child: Scaffold(
         appBar: CmoAppBar(
           title: LocaleKeys.addBudget.tr(),
-          subtitle: 'Imbeza',
+          subtitle: LocaleKeys.imbeza.tr(),
           subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,

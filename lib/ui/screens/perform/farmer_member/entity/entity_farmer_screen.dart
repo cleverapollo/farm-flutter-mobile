@@ -64,7 +64,7 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
                     if (farms.isEmpty) {
                       return Container(
                         child: Text(
-                          'There are no farms',
+                          LocaleKeys.there_are_no_farms.tr(),
                           style: context.textStyles.bodyBold,
                         ),
                       );
@@ -95,7 +95,7 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
                               FarmerSyncSummaryState>(
                             builder: (context, farmSyncState) {
                               return CmoFilledButton(
-                                title: farmSyncState.syncMessage ?? 'Sync',
+                                title: farmSyncState.syncMessage ?? LocaleKeys.sync.tr(),
                                 onTap: _selectedItem == null
                                     ? null
                                     : () async {

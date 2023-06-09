@@ -63,7 +63,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBarV2(
-        title: 'Training',
+        title: LocaleKeys.training.tr(),
         showLeading: true,
         showAdding: true,
         onTapAdding: () {
@@ -157,7 +157,7 @@ class _TrainingItemWidget extends StatelessWidget {
               horizontal: _itemHorizontalPadding,
             ),
             child: Text(
-              'Training No: ${data.trainingRegisterNo}',
+              '${LocaleKeys.training_no.tr()}: ${data.trainingRegisterNo}',
               style: context.textStyles.bodyBold
                   .copyWith(color: context.colors.blue),
             ),
@@ -172,13 +172,13 @@ class _TrainingItemWidget extends StatelessWidget {
               color: context.colors.black,
             ),
           ),
-          _buildILineItem(context, 'Training Type : ', data.trainingTypeName),
-          _buildILineItem(context, 'Date : ', data.date.yMd()),
-          _buildILineItem(context, 'Expiry Date : ', data.expiryDate.yMd()),
-          _buildILineItem(context, 'Trainer Name : ', data.trainerName),
-          _buildILineItem(context, 'Trainee Name : ', data.workerName),
-          _buildILineItem(context, 'Signed : ', data.signatureDate.yMd()),
-          _buildILineItem(context, 'General Comments : ', data.comment),
+          _buildILineItem(context, '${LocaleKeys.training_type.tr()} : ', data.trainingTypeName),
+          _buildILineItem(context, '${LocaleKeys.date.tr()} : ', data.date.yMd()),
+          _buildILineItem(context, '${LocaleKeys.expiry_date.tr()} : ', data.expiryDate.yMd()),
+          _buildILineItem(context, '${LocaleKeys.trainer_name.tr()} : ', data.trainerName),
+          _buildILineItem(context, '${LocaleKeys.trainee_name.tr()} : ', data.workerName),
+          _buildILineItem(context, '${LocaleKeys.signed.tr()} : ', data.signatureDate.yMd()),
+          _buildILineItem(context, '${LocaleKeys.generalComments.tr()} : ', data.comment),
         ],
       ),
     );

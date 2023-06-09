@@ -119,7 +119,7 @@ class _EntitySearchScreenState extends State<EntitySearchScreen> {
     }
 
     if (companies.isEmpty) {
-      return Text('None', style: context.textStyles.bodyNormal);
+      return Text(LocaleKeys.none.tr(), style: context.textStyles.bodyNormal);
     }
 
     void onTapTile(Company name) {

@@ -1,4 +1,5 @@
 import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/dialog/pets_and_disease_adding_dialog.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/dialog/pets_and_disease_required_dialog.dart';
@@ -33,8 +34,8 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CmoAppBarV2(
-        title: 'Add Pets And Disease',
+      appBar: CmoAppBarV2(
+        title: LocaleKeys.add_pets_and_disease.tr(),
         showLeading: true,
       ),
       body: Padding(
@@ -45,7 +46,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
             children: [
               const SizedBox(height: 12.0),
               Text(
-                '* Name Of Pet/Disease',
+                '* ${LocaleKeys.name_pet_disease.tr()}',
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -74,7 +75,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
               ),
               const SizedBox(height: 12.0),
               Text(
-                'Numbers of Outbreaks',
+                LocaleKeys.numbers_of_outbreaks.tr(),
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -92,7 +93,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
               ),
               const SizedBox(height: 12.0),
               Text(
-                'Area Lost(ha)',
+                LocaleKeys.area_lost.tr(),
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -113,8 +114,8 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                 children: [
                   Text(
                     treatmentMethod == null
-                        ? '0 Treatment Methods'
-                        : 'Treatment Method: ${treatmentMethod?.name}',
+                        ? '0 ${LocaleKeys.treatment_methods.tr()}'
+                        : '${LocaleKeys.treatment_method.tr()}: ${treatmentMethod?.name}',
                     style: context.textStyles.bodyBold
                         .copyWith(color: context.colors.black),
                   ),
@@ -152,7 +153,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
               ),
               const SizedBox(height: 12.0),
               Text(
-                'General Comments',
+                LocaleKeys.generalComments.tr(),
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -173,7 +174,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
               AttributeItem(
                 child: SelectorAttributeItem(
                   hintText: '',
-                  text: 'Under Control',
+                  text: LocaleKeys.under_control.tr(),
                   contentPadding: const EdgeInsets.all(4),
                   trailing: SizedBox(
                     width: 24,
@@ -189,7 +190,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
               AttributeItem(
                 child: SelectorAttributeItem(
                   hintText: '',
-                  text: 'CAR Raised',
+                  text: LocaleKeys.carRaised.tr(),
                   contentPadding: const EdgeInsets.all(4),
                   trailing: SizedBox(
                     width: 24,
@@ -205,7 +206,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
               AttributeItem(
                 child: SelectorAttributeItem(
                   hintText: '',
-                  text: 'CAR Closed',
+                  text: LocaleKeys.carClosed.tr(),
                   contentPadding: const EdgeInsets.all(4),
                   trailing: SizedBox(
                     width: 24,
@@ -220,7 +221,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
               const SizedBox(height: 40),
               Align(
                 child: CmoFilledButton(
-                    title: 'Save',
+                    title: LocaleKeys.save.tr(),
                     onTap: () {
                       Navigator.pop(context);
                     }),

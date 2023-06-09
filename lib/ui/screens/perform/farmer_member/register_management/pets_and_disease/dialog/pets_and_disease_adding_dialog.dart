@@ -15,7 +15,7 @@ Future<CmoDropdownItem<int>?> showPetsAndDiseaseAddingDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Select Treatment Method'),
+        title: Text(LocaleKeys.select_treatment_method.tr()),
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[

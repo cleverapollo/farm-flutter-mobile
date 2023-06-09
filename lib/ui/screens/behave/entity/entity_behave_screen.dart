@@ -158,7 +158,7 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
     }
 
     if (companies.isEmpty) {
-      return Text('None', style: context.textStyles.bodyNormal);
+      return Text(LocaleKeys.none.tr(), style: context.textStyles.bodyNormal);
     }
     return EntityList(
       entityItems: companies

@@ -69,7 +69,7 @@ class _PetsAndDiseaseScreenState extends State<PetsAndDiseaseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CmoAppBarV2(
-          title: 'Pets And Disease',
+          title: LocaleKeys.pets_and_disease.tr(),
           showLeading: true,
           showAdding: true,
           onTapAdding: () => PetsAndDiseaseAddScreen.push(context),
@@ -161,7 +161,7 @@ class _PetsAndDiseaseItemWidget extends StatelessWidget {
               horizontal: _itemHorizontalPadding,
             ),
             child: Text(
-              'P&D No : ${data.pestsAndDiseasesRegisterNo}',
+              '${LocaleKeys.p_d_no.tr()} : ${data.pestsAndDiseasesRegisterNo}',
               style: context.textStyles.bodyBold
                   .copyWith(color: context.colors.blue),
             ),
@@ -177,14 +177,14 @@ class _PetsAndDiseaseItemWidget extends StatelessWidget {
             ),
           ),
           _buildILineItem(
-              context, 'Name of Pest/Disease : ', data.pestsAndDiseaseTypeName),
-          _buildILineItem(context, 'Treatment Methods : ',
+              context, '${LocaleKeys.name_pet_disease.tr()} : ', data.pestsAndDiseaseTypeName),
+          _buildILineItem(context, '${LocaleKeys.treatment_methods.tr()} : ',
               data.pestsAndDiseaseTreatmentMethods),
           _buildILineItem(
-              context, 'Number of Outbreaks : ', data.numberOfOutbreaks),
-          _buildILineItem(context, 'Area Lost (ha): ', data.areaLost),
-          _buildILineItem(context, 'Under Control : ', data.isUnderControl),
-          _buildILineItem(context, 'General Comments : ', data.comment),
+              context, '${LocaleKeys.numbers_of_outbreaks.tr()} : ', data.numberOfOutbreaks),
+          _buildILineItem(context, '${LocaleKeys.area_lost.tr()}: ', data.areaLost),
+          _buildILineItem(context, '${LocaleKeys.under_control.tr()} : ', data.isUnderControl),
+          _buildILineItem(context, '${LocaleKeys.generalComments.tr()} : ', data.comment),
         ],
       ),
     );
@@ -230,6 +230,6 @@ class PetsAndDiseaseModel {
   final String? comment;
 
   String get isUnderControl {
-    return underControl! ? 'Yes' : 'No';
+    return underControl! ? '${LocaleKeys.yes.tr()}' : '${LocaleKeys.no.tr()}';
   }
 }

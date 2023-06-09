@@ -1,3 +1,4 @@
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/behave/sync_summary/widget/sync_summary_item_widget.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -12,11 +13,11 @@ enum BehaveSyncSummaryEnum {
   String get getLabel {
     switch (this) {
       case BehaveSyncSummaryEnum.assessmentDetails:
-        return 'Assessment Details';
+        return LocaleKeys.assessment_details.tr();
       case BehaveSyncSummaryEnum.scheduler:
-        return 'Scheduler';
+        return LocaleKeys.scheduler.tr();
       case BehaveSyncSummaryEnum.masterData:
-        return 'Master Data';
+        return LocaleKeys.master_data.tr();
       case BehaveSyncSummaryEnum.all:
         return '';
     }

@@ -1,3 +1,4 @@
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
@@ -40,7 +41,7 @@ class SyncItemWidget extends StatelessWidget {
                 Flexible(
                   fit: FlexFit.tight,
                   child: Text(
-                    'Record Count',
+                    LocaleKeys.record_count.tr(),
                     style: isTitle
                         ? context.textStyles.titleBold
                             .copyWith(color: Colors.white)
