@@ -77,11 +77,11 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
             );
           }
 
-          if (state.isRM) {
-            if (state.isFarmer) {
-              return _farmerWidget();
-            }
+          if (state.isFarmer) {
+            return _farmerWidget();
+          }
 
+          if (state.isRM) {
             if (state.isBehave) {
               return _buildPerformAndBehaveWidget();
             } else {
@@ -140,6 +140,29 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
   }
 
   Widget _farmerWidget() {
-    return Container();
+    return Column(
+      children: [
+        Divider(
+          height: 1,
+          color: context.colors.grey,
+          indent: 23,
+          endIndent: 23,
+        ),
+        EntityWidget(
+          LocaleKeys.site.tr(),
+          onTap: () async {
+            await Navigator.of(context).pushReplacement(
+              EntityFarmerScreen.pageRoute(),
+            );
+          },
+        ),
+        Divider(
+          height: 1,
+          color: context.colors.grey,
+          indent: 23,
+          endIndent: 23,
+        ),
+      ],
+    );
   }
 }

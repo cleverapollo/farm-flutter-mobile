@@ -1,5 +1,4 @@
 export 'components/entity_component/entity_search_screen.dart';
-export 'components/entity_component/utils.dart';
 export 'screens/behave/create_worker/worker_add_screen.dart';
 export 'screens/behave/entity/entity_behave_screen.dart';
 export 'screens/behave/sync_summary/behave_sync_summary_screen.dart';
