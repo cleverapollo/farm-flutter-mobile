@@ -66,6 +66,9 @@ class EntityCubit extends HydratedCubit<EntityState> {
       userDeviceId: userDeviceId,
     );
 
+    // delay after created system event to make sure that the data is ready to pull
+    await Future.delayed(const Duration(seconds: 3), () {});
+
     var sync = true;
     while (sync) {
       MasterDataMessage? resPull;
