@@ -96,8 +96,10 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
               (value) => data = data.copyWith(mdUnsyncWoker: value.length)))
           ..add(_databaseMasterService.getCompliances().then(
               (value) => data = data.copyWith(mdCompliance: value.length)))
-          ..add(_databaseMasterService.getPlantations().then(
-              (value) => data = data.copyWith(mdPlantation: value.length)))
+          ..add(_databaseMasterService
+              .getPlantationsByCompanyId(company!.companyId)
+              .then(
+                  (value) => data = data.copyWith(mdPlantation: value.length)))
           ..add(_databaseMasterService
               .getUnits()
               .then((value) => data = data.copyWith(mdUnit: value.length)))
