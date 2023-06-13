@@ -61,7 +61,7 @@ class _AddMemberMFO extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return CmoCollapseTitle(
-        title: 'Member Farm Objectives',
+        title: LocaleKeys.member_farm_objectives.tr(),
         child: Container(
             height: size.height * 0.8,
             width: double.maxFinite,
@@ -70,25 +70,25 @@ class _AddMemberMFO extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('*Are there any chemical being used on the FME?',
+                Text(LocaleKeys.are_there_any_chemical_being_used_on_the_fme.tr(),
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black, fontSize: 16)),
                 const SizedBox(height: 8),
                 _buildAnswerWidget(),
                 _buildDivider(),
-                Text('*HCVs present?',
+                Text(LocaleKeys.hcvs_present.tr(),
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black, fontSize: 16)),
                 const SizedBox(height: 8),
                 _buildAnswerWidget(),
                 _buildDivider(),
-                Text('*Rivers on FMU',
+                Text(LocaleKeys.rivers_on_fmu.tr(),
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black, fontSize: 16)),
                 const SizedBox(height: 8),
                 _buildAnswerWidget(),
                 _buildDivider(),
-                Text('*Are there any communities in or neighbouring the FME?',
+                Text(LocaleKeys.are_there_any_communities_in_or_neighbouring_the_fme.tr(),
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black, fontSize: 16)),
                 const SizedBox(height: 8),
@@ -98,9 +98,9 @@ class _AddMemberMFO extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    CmoFilledButton(title: 'Finalise Later', onTap: () {}),
+                    CmoFilledButton(title: LocaleKeys.finalise_later.tr(), onTap: () {}),
                     CmoFilledButton(
-                        title: 'Next',
+                        title: LocaleKeys.next.tr(),
                         onTap: () {
                           AddMemberMembershipContractScreen.push(context);
                         }),
@@ -141,7 +141,7 @@ class _AddMemberMRA extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CmoCollapseTitle(
-      title: 'Member Risk Assessment',
+      title: LocaleKeys.member_risk_assessment.tr(),
       showTick: true,
       child: Container(
           padding: const EdgeInsets.all(12),
@@ -153,7 +153,7 @@ class _AddMemberMRA extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('*Are there any chemical being used on the FME?',
+                    Text(LocaleKeys.are_there_any_chemical_being_used_on_the_fme.tr(),
                         style: context.textStyles.bodyNormal.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
@@ -162,7 +162,7 @@ class _AddMemberMRA extends StatelessWidget {
                         onTap: () =>
                             cubit.onTapMRA(firstAnswer: value?.firstAnswer)),
                     _buildDivider(),
-                    Text('*HCVs present?',
+                    Text(LocaleKeys.hcvs_present.tr(),
                         style: context.textStyles.bodyNormal.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
@@ -171,7 +171,7 @@ class _AddMemberMRA extends StatelessWidget {
                         onTap: () =>
                             cubit.onTapMRA(secondAnswer: value?.secondAnswer)),
                     _buildDivider(),
-                    Text('*Rivers on FMU',
+                    Text(LocaleKeys.rivers_on_fmu.tr(),
                         style: context.textStyles.bodyNormal.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
@@ -181,7 +181,7 @@ class _AddMemberMRA extends StatelessWidget {
                             cubit.onTapMRA(thirdAnswer: value?.thirdAnswer)),
                     _buildDivider(),
                     Text(
-                        '*Are there any communities in or neighbouring the FME?',
+                        LocaleKeys.are_there_any_communities_in_or_neighbouring_the_fme.tr(),
                         style: context.textStyles.bodyNormal.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
@@ -226,31 +226,31 @@ class _AddMemberSDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CmoCollapseTitle(
-      title: 'Site Details',
+      title: LocaleKeys.site_details.tr(),
       showTick: true,
       child: Container(
         padding: const EdgeInsets.all(12),
         color: context.colors.white,
         child: Column(
           children: [
-            const CmoTextField(
-              hintText: 'Site Name',
+            CmoTextField(
+              hintText: LocaleKeys.siteName.tr(),
             ),
             const SizedBox(height: 12),
-            const CmoTextField(
-              hintText: 'Town',
+            CmoTextField(
+              hintText: LocaleKeys.town.tr(),
             ),
             const SizedBox(height: 12),
-            const CmoDropDownLayoutWidget(title: 'Province'),
-            const SizedBox(height: 12),
-            const CmoDropDownLayoutWidget(
-                title: 'Site Location', showTick: true),
-            const SizedBox(height: 12),
-            const CmoDropDownLayoutWidget(
-                title: 'Compartment/s', showTick: true),
+            CmoDropDownLayoutWidget(title: LocaleKeys.province.tr()),
             const SizedBox(height: 12),
             CmoDropDownLayoutWidget(
-              title: 'ASI',
+                title: LocaleKeys.siteLocation.tr(), showTick: true),
+            const SizedBox(height: 12),
+            CmoDropDownLayoutWidget(
+                title: LocaleKeys.compartment_s.tr(), showTick: true),
+            const SizedBox(height: 12),
+            CmoDropDownLayoutWidget(
+              title: LocaleKeys.asi.tr(),
               onTap: () {
                 ASIScreen.push(context);
               },
@@ -268,13 +268,13 @@ class _AddMemberMDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CmoCollapseTitle(
-      title: 'Member Details',
+      title: LocaleKeys.memberDetails.tr(),
       showTick: true,
       child: Container(
         color: Colors.white,
         padding: const EdgeInsets.all(12),
-        child: const CmoTextField(
-          hintText: 'Member Details',
+        child: CmoTextField(
+          hintText: LocaleKeys.memberDetails.tr(),
           maxLines: 4,
         ),
       ),
@@ -288,7 +288,7 @@ class _AddMemberMPO extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CmoCollapseTitle(
-      title: 'Member Property ownership',
+      title: LocaleKeys.member_property_ownership.tr(),
       showTick: true,
       child: Container(
         color: Colors.white,
@@ -297,16 +297,16 @@ class _AddMemberMPO extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-                'Does the farmer have a title deed, lease or management contract on their property?',
+                LocaleKeys.does_the_farmer_have_a_title_deed_lease_or_management_contract_on_their_property.tr(),
                 style: context.textStyles.bodyNormal
                     .copyWith(color: context.colors.black, fontSize: 16)),
             Padding(
               padding: const EdgeInsets.only(left: 22.0, top: 12),
-              child: Text('Property type',
+              child: Text(LocaleKeys.propertyType.tr(),
                   style: context.textStyles.titleBold
                       .copyWith(color: context.colors.black, fontSize: 16)),
             ),
-            const ExpansionTile(title: Text('Tribal Authority')),
+            ExpansionTile(title: Text(LocaleKeys.tribal_authority.tr())),
           ],
         ),
       ),
@@ -320,7 +320,7 @@ class _AddMemberSLIMF extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CmoCollapseTitle(
-      title: 'SLIMF compliance',
+      title: LocaleKeys.slimf_compliance.tr(),
       showTick: true,
       child: Container(
         padding:
@@ -340,11 +340,11 @@ class _AddMemberSLIMF extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Is the farmer SLIMF compliant?',
+            Text(LocaleKeys.is_the_farmer_slimf_compliant.tr(),
                 style: context.textStyles.titleBold
                     .copyWith(color: context.colors.black, fontSize: 16)),
             const SizedBox(height: 16),
-            Text('LIMITATION 1: Harvest',
+            Text(LocaleKeys.limitation_1.tr(),
                 style: context.textStyles.titleBold
                     .copyWith(color: context.colors.black, fontSize: 16)),
             Text(
@@ -352,7 +352,7 @@ class _AddMemberSLIMF extends StatelessWidget {
                 style: context.textStyles.bodyNormal
                     .copyWith(color: context.colors.black, fontSize: 16)),
             const SizedBox(height: 12),
-            Text('LIMITATION 2: 5000 M3',
+            Text(LocaleKeys.limitation_2.tr(),
                 style: context.textStyles.titleBold
                     .copyWith(color: context.colors.black, fontSize: 16)),
             const SizedBox(height: 12),

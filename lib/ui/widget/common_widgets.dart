@@ -1,3 +1,5 @@
+import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/l10n/locale_keys.g.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -36,8 +38,8 @@ class GeoLocationText extends StatelessWidget {
     return Text.rich(
       TextSpan(
         children: [
-          const TextSpan(
-            text: 'Lat | Long',
+          TextSpan(
+            text: LocaleKeys.lat_long.tr(),
           ),
           const TextSpan(
             text: ' ',

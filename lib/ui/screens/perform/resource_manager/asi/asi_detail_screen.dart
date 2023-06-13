@@ -28,9 +28,9 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CmoAppBarV2(
-        title: 'Add ASI',
-        subtitle: 'Site Name',
+      appBar: CmoAppBarV2(
+        title: LocaleKeys.addASI.tr(),
+        subtitle: LocaleKeys.siteName.tr(),
         showTrailing: true,
       ),
       body: SizedBox.expand(
@@ -39,21 +39,21 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                  child: CmoDropDownLayoutWidget(title: 'Compartment'),
+                  child: CmoDropDownLayoutWidget(title: LocaleKeys.compartment.tr()),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
                   child: CmoDropDownLayoutWidget(
-                    title: 'Type',
-                    subTitle: 'Grate Site 1',
+                    title: LocaleKeys.type.tr(),
+                    subTitle: LocaleKeys.grate_site_1.tr(),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
                   child: CmoDropDownLayoutWidget(
-                    title: 'Lat | Long',
+                    title: LocaleKeys.lat_long.tr(),
                     subTitle:
                         '${widget.point?.latitude.toStringAsFixed(5)} | ${widget.point?.longitude.toStringAsFixed(5)}',
                   ),
@@ -76,19 +76,19 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
                       currentDate = format.format(result ?? DateTime.now());
                       if (mounted) setState(() {});
                     },
-                    title: 'Date',
-                    subTitle: 'Date $currentDate',
+                    title: LocaleKeys.date.tr(),
+                    subTitle: '${LocaleKeys.date.tr()} $currentDate',
                     trailingWidget: const Icon(Icons.date_range_sharp),
                   ),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                  child: CmoTextField(hintText: 'Comments', maxLines: 5),
+                  child: CmoTextField(hintText: LocaleKeys.comments.tr(), maxLines: 5),
                 ),
                 const SizedBox(height: 300),
                 Align(
                   child: CmoFilledButton(
-                      title: 'Save',
+                      title: LocaleKeys.save.tr(),
                       onTap: () {
                         AddMemberScreen.push(context);
                       }),

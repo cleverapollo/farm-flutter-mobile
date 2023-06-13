@@ -32,7 +32,7 @@ class _SiteLocationScreenState extends State<SiteLocationScreen> {
       appBar: CmoAppBarV2(
         title: LocaleKeys.siteLocation.tr(),
         showLeading: true,
-        subtitle: "Site Name",
+        subtitle: LocaleKeys.siteName.tr(),
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
@@ -45,7 +45,6 @@ class _SiteLocationScreenState extends State<SiteLocationScreen> {
               onMapMoved: (lat, long) {
                 latitude = lat;
                 longitude = long;
-                print("lat: $lat, long: $long");
               },
             ),
           ),

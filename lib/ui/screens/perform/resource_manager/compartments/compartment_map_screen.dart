@@ -182,7 +182,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
     if (_isFinished) {
       polylines.add(
         Polyline(
-          polylineId: PolylineId("${_markers.length - 1}_0"),
+          polylineId: PolylineId('${_markers.length - 1}_0'),
           points: [
             _markers[_markers.length - 1].position,
             _markers[0].position,
@@ -198,7 +198,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   Set<Polygon> _polygon() {
     if (!_isFinished) return Set();
     final polygon = Polygon(
-      polygonId: PolygonId("Polygon"),
+      polygonId: PolygonId('Polygon'),
       points: _markers.map((e) => e.position).toList(),
       fillColor: context.colors.blueDark1.withOpacity(0.4),
       strokeColor: Colors.transparent,

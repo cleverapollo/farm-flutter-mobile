@@ -27,7 +27,7 @@ Future<CmoDropdownItem<int>?> showPetsAndDiseaseAddingDialog(
               ),
               const SizedBox(height: 16.0),
               Text(
-                'Treatment Methods',
+                LocaleKeys.treatment_methods.tr(),
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
@@ -61,7 +61,7 @@ Future<CmoDropdownItem<int>?> showPetsAndDiseaseAddingDialog(
         ),
         actions: <Widget>[
           TextButton(
-            child: const Text('Close'),
+            child: Text(LocaleKeys.close.tr()),
             onPressed: () {
               Navigator.of(context).pop();
             },

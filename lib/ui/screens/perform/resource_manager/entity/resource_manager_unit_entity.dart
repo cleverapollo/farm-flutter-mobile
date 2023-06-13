@@ -70,7 +70,7 @@ class _ResourceManagerUnitEntityState<T>
                           return Container(
                             alignment: Alignment.center,
                             child: Text(
-                              'There are no resource manager unit',
+                              LocaleKeys.there_are_no_resource_manager_unit.tr(),
                               style: context.textStyles.bodyBold,
                             ),
                           );

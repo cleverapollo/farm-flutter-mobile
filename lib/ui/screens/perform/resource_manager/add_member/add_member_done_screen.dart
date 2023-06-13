@@ -25,16 +25,16 @@ class AddMemberDone extends StatelessWidget {
             padding: const EdgeInsets.only(left: 12.0),
             child: Column(
               children: [
-                Text('XXXxxx member is now a Group Scheme member.',
+                Text('XXXxxx ${LocaleKeys.member_is_now_a_group_scheme_member.tr()}',
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black)),
-                Text('Documentation has been emailed to the relevant parties',
+                Text(LocaleKeys.documentation_has_been_emailed_to_the_relevant_parties.tr(),
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black)),
                 const Spacer(),
                 Center(
                     child: CmoFilledButton(
-                        title: 'Close',
+                        title: LocaleKeys.close.tr(),
                         onTap: () {
                           CmoDashboardBase.push(context);
                         })),

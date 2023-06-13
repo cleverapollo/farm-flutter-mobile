@@ -1,4 +1,5 @@
 import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/constants.dart';
@@ -129,7 +130,7 @@ class _CmoMapWidgetState extends State<CmoMapWidget> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8.0),
           child: CmoDropDownLayoutWidget(
-            title: 'Lat | Long',
+            title: LocaleKeys.lat_long.tr(),
             subTitle:
                 '${_markers.first.position.latitude.toStringAsFixed(5)} | ${_markers.first.position.longitude.toStringAsFixed(5)}',
             trailingWidget: const Icon(
@@ -144,10 +145,10 @@ class _CmoMapWidgetState extends State<CmoMapWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Align(
-                child: CmoFilledButton(title: 'Select Photo', onTap: () {}),
+                child: CmoFilledButton(title: LocaleKeys.selectPhoto.tr(), onTap: () {}),
               ),
               Align(
-                child: CmoFilledButton(title: 'Take Photo', onTap: () {}),
+                child: CmoFilledButton(title: LocaleKeys.takePhoto.tr(), onTap: () {}),
               ),
             ],
           ),

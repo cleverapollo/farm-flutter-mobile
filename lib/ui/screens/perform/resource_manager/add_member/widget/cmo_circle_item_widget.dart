@@ -1,3 +1,4 @@
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class CmoChipAnswerWidget extends StatelessWidget {
       {bool? isSelect = false, void Function()? onTap}) {
     return CmoChipAnswerWidget._(
       onTap: onTap,
-      letters: 'C',
+      letters: LocaleKeys.letter_c.tr(),
       color: (isSelect ?? false) ? const Color(0xff04C504) : Colors.white,
       textColor: (isSelect ?? false) ? Colors.white : Colors.black,
     );
@@ -26,7 +27,7 @@ class CmoChipAnswerWidget extends StatelessWidget {
       {bool? isSelect = false, void Function()? onTap}) {
     return CmoChipAnswerWidget._(
       onTap: onTap,
-      letters: 'NC',
+      letters: LocaleKeys.letter_nc.tr(),
       color: (isSelect ?? false) ? const Color(0xff04C504) : Colors.white,
       textColor: (isSelect ?? false) ? Colors.white : Colors.black,
     );
@@ -35,7 +36,7 @@ class CmoChipAnswerWidget extends StatelessWidget {
       {bool? isSelect = false, void Function()? onTap}) {
     return CmoChipAnswerWidget._(
       onTap: onTap,
-      letters: 'Yes',
+      letters: LocaleKeys.yes.tr(),
       color: (isSelect ?? false) ? const Color(0xff2072B9) : Colors.white,
       textColor: (isSelect ?? false) ? Colors.white : Colors.black,
     );
@@ -45,7 +46,7 @@ class CmoChipAnswerWidget extends StatelessWidget {
       {bool? isSelect = false, void Function()? onTap}) {
     return CmoChipAnswerWidget._(
       onTap: onTap,
-      letters: 'No',
+      letters: LocaleKeys.no.tr(),
       color: (isSelect ?? false) ? const Color(0xff2072B9) : Colors.white,
       textColor: (isSelect ?? false) ? Colors.white : Colors.black,
     );
@@ -55,7 +56,7 @@ class CmoChipAnswerWidget extends StatelessWidget {
       {bool? isSelect = false, void Function()? onTap}) {
     return CmoChipAnswerWidget._(
       onTap: onTap,
-      letters: 'Primary',
+      letters: LocaleKeys.primary.tr(),
       isCircle: false,
       color: (isSelect ?? false) ? const Color(0xff2072B9) : Colors.white,
       textColor: (isSelect ?? false) ? Colors.white : Colors.black,
@@ -66,7 +67,7 @@ class CmoChipAnswerWidget extends StatelessWidget {
       {bool? isSelect = false, void Function()? onTap}) {
     return CmoChipAnswerWidget._(
       onTap: onTap,
-      letters: 'Secondary',
+      letters: LocaleKeys.secondary.tr(),
       isCircle: false,
       color: (isSelect ?? false) ? const Color(0xff2072B9) : Colors.white,
       textColor: (isSelect ?? false) ? Colors.white : Colors.black,
@@ -77,7 +78,7 @@ class CmoChipAnswerWidget extends StatelessWidget {
       {bool? isSelect = false, void Function()? onTap}) {
     return CmoChipAnswerWidget._(
       onTap: onTap,
-      letters: 'N/A',
+      letters: LocaleKeys.na.tr(),
       isCircle: false,
       color: (isSelect ?? false) ? const Color(0xff2072B9) : Colors.white,
       textColor: (isSelect ?? false) ? Colors.white : Colors.black,

@@ -1,3 +1,4 @@
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_cubit.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
 import 'package:cmo/state/state.dart';
@@ -24,8 +25,8 @@ class FarmerSyncSummaryScreen extends StatelessWidget {
         userDeviceCubit: context.read<UserDeviceCubit>(),
       ),
       child: Scaffold(
-        appBar: const CmoAppBarV2(
-          title: 'Sync Summary',
+        appBar: CmoAppBarV2(
+          title: LocaleKeys.syncSummary.tr(),
           showLeading: true,
         ),
         body: BlocBuilder<FarmerSyncSummaryCubit, FarmerSyncSummaryState>(

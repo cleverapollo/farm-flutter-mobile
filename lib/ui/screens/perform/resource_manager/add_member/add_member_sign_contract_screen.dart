@@ -46,7 +46,7 @@ class _AddMemberSignContractScreenState
                 width: size.width,
                 color: context.colors.white,
                 child: Text(
-                    'I XXXxx, agree to the conditions laid out in this legally binding document',
+                  LocaleKeys.agree_to_the_conditions_laid_out_in_this_legally_binding_document.tr(args: ['XXXxx']),
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black)),
               ),
@@ -71,14 +71,14 @@ class _AddMemberSignContractScreenState
               const SizedBox(height: 12),
               Center(
                   child: CmoFilledButton(
-                      title: 'Clear',
+                      title: LocaleKeys.clear.tr(),
                       onTap: () {
                         signatureKey.currentState?.clear();
                       })),
               const Spacer(),
               Center(
                   child: CmoFilledButton(
-                      title: 'Accept Signature and Finalise',
+                      title: LocaleKeys.accept_signature_and_finalise.tr(),
                       onTap: () {
                         AddMemberDone.push(context);
                       })),

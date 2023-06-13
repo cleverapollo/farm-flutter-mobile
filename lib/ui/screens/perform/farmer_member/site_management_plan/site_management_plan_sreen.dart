@@ -80,7 +80,7 @@ class SiteManagementPlanScreen extends StatelessWidget {
         content: [
           CmoCardHeader(title: LocaleKeys.compartment_management.tr()),
           CmoCardItem(title: '${LocaleKeys.camp.tr()}\s', value: '1'),
-          CmoCardItem(title: LocaleKeys.summary_tonnes_biomass.tr(args: ["7"])),
+          CmoCardItem(title: LocaleKeys.summary_tonnes_biomass.tr(args: ['7'])),
         ],
       ),
     );

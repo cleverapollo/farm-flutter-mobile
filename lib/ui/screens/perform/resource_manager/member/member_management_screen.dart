@@ -21,7 +21,7 @@ class MemberManagementScreen extends StatelessWidget {
         child: Scaffold(
           appBar: CmoAppBarV2(
             title: LocaleKeys.memberManagement.tr(),
-            subtitle: 'RMU: Border Timbers',
+            subtitle: '${LocaleKeys.rmu_name.tr()}: Border Timbers',
             showLeading: true,
             showTrailing: true,
           ),
@@ -49,7 +49,7 @@ class MemberManagementScreen extends StatelessWidget {
                   CmoFilledButton(
                     onTap: () {},
                     disable: true,
-                    title: 'Members',
+                    title: LocaleKeys.members.tr(),
                     titleStyle: context.textStyles.bodyBold.white
                         .copyWith(fontSize: 12),
                   ),
@@ -81,7 +81,7 @@ class MemberManagementScreen extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(right: 19),
                               child: Text(
-                                'Onboarded',
+                                LocaleKeys.onboarded.tr(),
                                 style: context.textStyles.bodyNormal
                                     .copyWith(color: context.colors.white),
                               ),

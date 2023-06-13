@@ -1,3 +1,4 @@
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/components/sync_summary_component/sync_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -16,8 +17,8 @@ class ResourceManagerSyncSummaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CmoAppBarV2(
-        title: 'Sync Summary',
+      appBar: CmoAppBarV2(
+        title: LocaleKeys.syncSummary.tr(),
         showLeading: true,
       ),
       body: RefreshIndicator(
@@ -27,10 +28,10 @@ class ResourceManagerSyncSummaryScreen extends StatelessWidget {
             SingleChildScrollView(
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    SyncItemWidget(label: 'Audit Detail', isTitle: true),
-                    SyncItemWidget(label: 'Unsynced', count: 0),
-                    SyncItemWidget(label: 'In Progress', count: 0),
+                  children: [
+                    SyncItemWidget(label: LocaleKeys.audit_detail.tr(), isTitle: true),
+                    SyncItemWidget(label: LocaleKeys.unsynced.tr(), count: 0),
+                    SyncItemWidget(label: LocaleKeys.in_progress.tr(), count: 0),
                   ]),
             ),
             Align(
@@ -40,7 +41,7 @@ class ResourceManagerSyncSummaryScreen extends StatelessWidget {
                 children: [
                   CmoFilledButton(
                     onTap: () async {},
-                    title: 'Sync',
+                    title: LocaleKeys.sync.tr(),
                   ),
                   const SizedBox(height: 12),
                 ],

@@ -140,7 +140,7 @@ class _StakeHolderManagementScreenState
                 border: Border.all(color: context.colors.blueDark2),
               ),
               child: Text(
-                'LC',
+                LocaleKeys.stake_holder_lc.tr(),
                 style: context.textStyles.bodyNormal.blueDark2,
               ),
             ),

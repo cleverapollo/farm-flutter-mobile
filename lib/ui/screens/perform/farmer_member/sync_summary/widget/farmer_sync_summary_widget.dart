@@ -195,11 +195,11 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
         children: [
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
-            label: 'Unsynced',
+            label: LocaleKeys.unsynced.tr(),
             count: data?.annualProductionUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total Annual Productions',
+            label: LocaleKeys.total_annual_productions.tr(),
             count: data?.annualProductionTotal,
           ),
         ],
@@ -208,11 +208,11 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
         children: [
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
-            label: 'Unsynced',
+            label: LocaleKeys.unsynced.tr(),
             count: data?.annualBudgetsProductionUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total Annual Budgets Productions',
+            label: LocaleKeys.total_annual_budgets_productions.tr(),
             count: data?.annualBudgetsProductionTotal,
           ),
         ],
@@ -221,11 +221,11 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
         children: [
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
-            label: 'Unsynced',
+            label: LocaleKeys.unsynced.tr(),
             count: data?.annualBudgetTransactionsUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total Annual Budgets Productions',
+            label: LocaleKeys.total_annual_budgets_productions.tr(),
             count: data?.annualBudgetTransactionsTotal,
           ),
         ],
@@ -234,11 +234,11 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
         children: [
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
-            label: 'Unsynced',
+            label: LocaleKeys.unsynced.tr(),
             count: data?.campsUnsynced,
           ),
           SyncItemWidget(
-            label: 'Total Camps',
+            label: LocaleKeys.total_camps.tr(),
             count: data?.campsTotal,
           ),
         ],
@@ -247,11 +247,11 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
         children: [
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
-            label: 'Unsynced',
+            label: LocaleKeys.unsynced.tr(),
             count: data?.schedulerUnsynced,
           ),
           SyncItemWidget(
-            label: 'Upcoming Events',
+            label: LocaleKeys.upcoming_events.tr(),
             count: data?.upcomingEvent,
           ),
         ],
@@ -260,95 +260,95 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
         children: [
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
-            label: 'Biological Control Agent Types',
+            label: LocaleKeys.biological_control_agent_types.tr(),
             count: data?.biologicalControlAgentTypes,
           ),
           SyncItemWidget(
-            label: 'Annual Farm Budget Transaction Category',
+            label: LocaleKeys.annual_farm_budget_transaction_category.tr(),
             count: data?.annualFarmBudgetTransactionCategory,
           ),
           SyncItemWidget(
-            label: 'ASI Types',
+            label: LocaleKeys.asi_types.tr(),
             count: data?.asiType,
           ),
           SyncItemWidget(
-            label: 'Chemical Application Methods',
+            label: LocaleKeys.chemical_application_methods.tr(),
             count: data?.chemicalApplicationMethods,
           ),
           SyncItemWidget(
-            label: 'Chemical Types',
+            label: LocaleKeys.chemical_types.tr(),
             count: data?.chemicalTypes,
           ),
           SyncItemWidget(
-            label: 'Countries',
+            label: LocaleKeys.countries.tr(),
             count: data?.countries,
           ),
           SyncItemWidget(
-            label: 'Fire Causes',
+            label: LocaleKeys.fire_causes.tr(),
             count: data?.fireCause,
           ),
           SyncItemWidget(
-            label: 'Gender',
+            label: LocaleKeys.gender.tr(),
             count: data?.gender,
           ),
           SyncItemWidget(
-            label: 'Grievance Issue',
+            label: LocaleKeys.grievance_issue.tr(),
             count: data?.grievanceIssue,
           ),
           SyncItemWidget(
-            label: 'Group Scheme',
+            label: LocaleKeys.group_scheme.tr(),
             count: data?.groupScheme,
           ),
           SyncItemWidget(
-            label: 'Disciplinaries Issues',
+            label: LocaleKeys.disciplinaries_issues.tr(),
             count: data?.disciplinariesIssues,
           ),
           SyncItemWidget(
-            label: 'Job Description',
+            label: LocaleKeys.job_description.tr(),
             count: data?.jobDescription,
           ),
           SyncItemWidget(
-            label: 'Monitoring Requirement',
+            label: LocaleKeys.monitoring_requirement.tr(),
             count: data?.monitoringRequirement,
           ),
           SyncItemWidget(
-            label: 'Nature of Injury',
+            label: LocaleKeys.nature_of_injury.tr(),
             count: data?.natureOfInjury,
           ),
           SyncItemWidget(
-            label: 'Pets and Disease Type',
+            label: LocaleKeys.pets_and_disease_type.tr(),
             count: data?.petsAndDiseaseType,
           ),
           SyncItemWidget(
-            label: 'Pets and Disease Type Treatment Method',
+            label: LocaleKeys.pets_and_disease_type_treatment_method.tr(),
             count: data?.petsAndDiseaseTypeTreatmentMethod,
           ),
           SyncItemWidget(
-            label: 'Property Damaged',
+            label: LocaleKeys.property_damaged.tr(),
             count: data?.propertyDamaged,
           ),
           SyncItemWidget(
-            label: 'Reject Reasons',
+            label: LocaleKeys.reject_reasons.tr(),
             count: data?.rejectReasons,
           ),
           SyncItemWidget(
-            label: 'Schedule Activity',
+            label: LocaleKeys.schedule_activity.tr(),
             count: data?.scheduleActivity,
           ),
           SyncItemWidget(
-            label: 'Species Range',
+            label: LocaleKeys.species_range.tr(),
             count: data?.speciesRange,
           ),
           SyncItemWidget(
-            label: 'Species Types',
+            label: LocaleKeys.species_types.tr(),
             count: data?.speciesTypes,
           ),
           SyncItemWidget(
-            label: 'Training Type',
+            label: LocaleKeys.training_type.tr(),
             count: data?.trainingType,
           ),
           SyncItemWidget(
-            label: 'Treatment Method',
+            label: LocaleKeys.treatment_method.tr(),
             count: data?.treatmentMethod,
           ),
         ],
@@ -357,31 +357,31 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
         children: [
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
-            label: 'Unsynced',
+            label: LocaleKeys.unsynced.tr(),
             count: data?.stakeholderUnsynced,
           ),
           SyncItemWidget(
-            label: 'Customary Use Rights',
+            label: LocaleKeys.customary_use_rights.tr(),
             count: data?.customaryUseRights,
           ),
           SyncItemWidget(
-            label: 'Farm Stakeholders',
+            label: LocaleKeys.farm_stakeholders.tr(),
             count: data?.farmStakeHolders,
           ),
           SyncItemWidget(
-            label: 'Group Scheme Stakeholders',
+            label: LocaleKeys.group_scheme_stakeholders.tr(),
             count: data?.groupSchemeStakeholders,
           ),
           SyncItemWidget(
-            label: 'Social Upliftments',
+            label: LocaleKeys.social_upliftments.tr(),
             count: data?.socialUpliftments,
           ),
           SyncItemWidget(
-            label: 'Special Sites',
+            label: LocaleKeys.special_sites.tr(),
             count: data?.specialSites,
           ),
           SyncItemWidget(
-            label: 'Stakeholder Types',
+            label: LocaleKeys.stakeholder_types.tr(),
             count: data?.stakeholderTypes,
           ),
         ],

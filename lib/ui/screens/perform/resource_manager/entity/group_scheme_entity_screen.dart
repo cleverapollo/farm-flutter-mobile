@@ -59,7 +59,7 @@ class _GroupSchemeEntityScreenState extends State<GroupSchemeEntityScreen> {
                   return Container(
                     alignment: Alignment.center,
                     child: Text(
-                      'There are no Group Schemes',
+                      LocaleKeys.there_are_no_group_schemes.tr(),
                       style: context.textStyles.bodyBold,
                     ),
                   );

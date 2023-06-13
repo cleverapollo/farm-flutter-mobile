@@ -19,7 +19,7 @@ class RMSyncScreen extends StatelessWidget {
         onWillPop: () async => false,
         child: Scaffold(
           appBar: CmoAppBar(
-            title: 'Regional Manager',
+            title: LocaleKeys.regional_manager.tr(),
           ),
           body: SizedBox.expand(
             child: Padding(
@@ -46,7 +46,7 @@ class RMSyncScreen extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    "You're about to sync information for",
+                                    LocaleKeys.you_re_about_to_sync_information_for.tr(),
                                     style: context.textStyles.bodyNormal.black,
                                   ),
                                   Text(

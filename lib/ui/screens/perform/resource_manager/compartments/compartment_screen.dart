@@ -55,7 +55,7 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
             return Column(
             children: [
               CmoTappable(
-                onTap: () => print("onSummary tapped"),
+                onTap: () => print('onSummary tapped'),
                 child: CmoCard(
                   content: [
                     CmoCardHeader(title: LocaleKeys.summary.tr()),

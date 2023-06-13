@@ -35,7 +35,7 @@ class AddMemberMembershipContractScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 width: size.width,
                 color: context.colors.blueDark1,
-                child: Text('Membership Contract',
+                child: Text(LocaleKeys.membershipContract.tr(),
                     style: context.textStyles.titleBold
                         .copyWith(color: context.colors.white)),
               ),
@@ -45,7 +45,7 @@ class AddMemberMembershipContractScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 12),
-                    Text('Membership Contract',
+                    Text(LocaleKeys.membershipContract.tr(),
                         style: context.textStyles.bodyBold
                             .copyWith(color: context.colors.black)),
                     const SizedBox(height: 8),
@@ -59,7 +59,7 @@ class AddMemberMembershipContractScreen extends StatelessWidget {
               const Spacer(),
               Center(
                   child: CmoFilledButton(
-                      title: 'Accept',
+                      title: LocaleKeys.accept.tr(),
                       onTap: () {
                         AddMemberSignContractScreen.push(context);
                       })),
