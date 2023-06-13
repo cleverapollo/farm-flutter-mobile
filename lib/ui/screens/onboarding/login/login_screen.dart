@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             CmoTextField(
               name: emailFieldName,
-              validator: emailValidator,
+              validator: requiredValidator,
               prefixIcon: Center(child: Assets.icons.icUsername.svg()),
               hintText: LocaleKeys.username.tr(),
               textInputAction: TextInputAction.next,
