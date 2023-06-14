@@ -214,7 +214,7 @@ class _AssessmentListQuestionScreenState
                         AssessmentQuestionState>(
                       selector: (state) => state,
                       builder: (context, state) => Text(
-                        '${state.getAnsweredFilteredQuestions().length}/${allQuestions.length}',
+                        '${state.getAnsweredFilteredQuestions().length}/${state.questions.length}',
                         style: context.textStyles.bodyBold.white,
                       ),
                     ),
