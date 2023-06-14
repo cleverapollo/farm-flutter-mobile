@@ -54,44 +54,49 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBar(
-        title: LocaleKeys.entity.tr(),
-      ),
-      body: BlocSelector<UserInfoCubit, UserInfoState, UserInfoState>(
-        selector: (state) => state,
-        builder: (context, state) {
-          if (state.loading) {
-            return const Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-              ),
-            );
-          }
+    return BlocSelector<UserInfoCubit, UserInfoState, UserInfoState>(
+      selector: (state) => state,
+      builder: (context, state) {
+        Widget widget;
+        if (state.loading) {
+          widget = const Center(
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
+          );
+        }
 
-          if (state.error != null && kDebugMode) {
-            return Center(
-              child: Text(
-                '${state.error}',
-              ),
-            );
-          }
+        if (state.error != null && kDebugMode) {
+          widget = Center(
+            child: Text(
+              '${state.error}',
+            ),
+          );
+        }
 
-          if (state.isFarmer) {
-            return _farmerWidget();
-          }
+        if (state.isFarmer) {
+          widget = _farmerWidget();
+        }
 
-          if (state.isRM) {
-            if (state.isBehave) {
-              return _buildPerformAndBehaveWidget();
-            } else {
-              return _performWidget();
-            }
+        if (state.isRM) {
+          if (state.isBehave) {
+            widget = _buildPerformAndBehaveWidget();
           } else {
-            return _behaveWidget();
+            widget = _performWidget();
           }
-        },
-      ),
+        } else {
+          widget = _behaveWidget();
+        }
+
+        return Scaffold(
+          appBar: state.isRM && state.isBehave
+              ? CmoAppBar(
+                  title: LocaleKeys.entity.tr(),
+                )
+              : null,
+          body: state.isRM && state.isBehave ? widget : SafeArea(child: widget),
+        );
+      },
     );
   }
 

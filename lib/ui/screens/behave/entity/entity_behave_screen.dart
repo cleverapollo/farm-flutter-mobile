@@ -119,29 +119,29 @@ class _EntityBehaveScreenState extends State<EntityBehaveScreen> {
       child: CmoTappable(
         onTap: FocusScope.of(context).unfocus,
         child: Scaffold(
-          appBar: CmoAppBar(
-            title: LocaleKeys.entity.tr(),
-          ),
-          body: Column(
-            children: [
-              Expanded(child: buildNameList()),
-              BlocSelector<EntityCubit, EntityState, String?>(
-                selector: (state) {
-                  return state.syncMessage;
-                },
-                builder: (context, state) {
-                  return Text(state ?? '');
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 40, bottom: 40),
-                child: CmoFilledButton(
-                  title: LocaleKeys.sync.tr(),
-                  loading: loading,
-                  onTap: () async => submit(),
+          body: SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                Expanded(child: buildNameList()),
+                BlocSelector<EntityCubit, EntityState, String?>(
+                  selector: (state) {
+                    return state.syncMessage;
+                  },
+                  builder: (context, state) {
+                    return Text(state ?? '');
+                  },
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 40, bottom: 40),
+                  child: CmoFilledButton(
+                    title: LocaleKeys.sync.tr(),
+                    loading: loading,
+                    onTap: () async => submit(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

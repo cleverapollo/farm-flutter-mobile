@@ -53,75 +53,75 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
         child: CmoTappable(
           onTap: FocusScope.of(context).unfocus,
           child: Scaffold(
-            appBar: CmoAppBar(
-              title: LocaleKeys.entity.tr(),
-            ),
-            body: Stack(
-              children: [
-                BlocSelector<FarmerEntityCubit, FarmerEntityState, List<Farm>>(
-                  selector: (state) => state.farms,
-                  builder: (context, farms) {
-                    if (farms.isEmpty) {
-                      return Container(
-                        child: Text(
-                          LocaleKeys.there_are_no_farms.tr(),
-                          style: context.textStyles.bodyBold,
-                        ),
+            body: SafeArea(
+              bottom: false,
+              child: Stack(
+                children: [
+                  BlocSelector<FarmerEntityCubit, FarmerEntityState, List<Farm>>(
+                    selector: (state) => state.farms,
+                    builder: (context, farms) {
+                      if (farms.isEmpty) {
+                        return Container(
+                          child: Text(
+                            LocaleKeys.there_are_no_farms.tr(),
+                            style: context.textStyles.bodyBold,
+                          ),
+                        );
+                      }
+                      final entities = farms
+                          .map((e) => EntityItem<Farm>(e,
+                              displayString: () => e.farmName ?? ''))
+                          .toList();
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: EntityList(
+                              entityItems: entities,
+                              selectedItem: entities.firstWhereOrNull(
+                                  (e) => e.rawData == _selectedItem),
+                              onTap: (item) {
+                                _selectedItem = item.rawData;
+                                context
+                                    .read<FarmerEntityCubit>()
+                                    .setSelectedFarm(_selectedItem!);
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 40, bottom: 40),
+                            child: BlocBuilder<FarmerSyncSummaryCubit,
+                                FarmerSyncSummaryState>(
+                              builder: (context, farmSyncState) {
+                                return CmoFilledButton(
+                                  title: farmSyncState.syncMessage ?? LocaleKeys.sync.tr(),
+                                  onTap: _selectedItem == null
+                                      ? null
+                                      : () async {
+                                          await _handleSyncFarmButton(context)
+                                              .whenComplete(() =>
+                                                  CmoDashboardBase.push(context));
+                                        },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       );
-                    }
-                    final entities = farms
-                        .map((e) => EntityItem<Farm>(e,
-                            displayString: () => e.farmName ?? ''))
-                        .toList();
-                    return Column(
-                      children: [
-                        Expanded(
-                          child: EntityList(
-                            entityItems: entities,
-                            selectedItem: entities.firstWhereOrNull(
-                                (e) => e.rawData == _selectedItem),
-                            onTap: (item) {
-                              _selectedItem = item.rawData;
-                              context
-                                  .read<FarmerEntityCubit>()
-                                  .setSelectedFarm(_selectedItem!);
-                              setState(() {});
-                            },
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 40, bottom: 40),
-                          child: BlocBuilder<FarmerSyncSummaryCubit,
-                              FarmerSyncSummaryState>(
-                            builder: (context, farmSyncState) {
-                              return CmoFilledButton(
-                                title: farmSyncState.syncMessage ?? LocaleKeys.sync.tr(),
-                                onTap: _selectedItem == null
-                                    ? null
-                                    : () async {
-                                        await _handleSyncFarmButton(context)
-                                            .whenComplete(() =>
-                                                CmoDashboardBase.push(context));
-                                      },
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                BlocSelector<FarmerEntityCubit, FarmerEntityState, bool>(
-                  selector: (state) => state.isLoading,
-                  builder: (context, state) => state
-                      ? Container(
-                          alignment: Alignment.center,
-                          color: Colors.white,
-                          child: const CircularProgressIndicator(),
-                        )
-                      : Container(),
-                ),
-              ],
+                    },
+                  ),
+                  BlocSelector<FarmerEntityCubit, FarmerEntityState, bool>(
+                    selector: (state) => state.isLoading,
+                    builder: (context, state) => state
+                        ? Container(
+                            alignment: Alignment.center,
+                            color: Colors.white,
+                            child: const CircularProgressIndicator(),
+                          )
+                        : Container(),
+                  ),
+                ],
+              ),
             ),
           ),
         ));
