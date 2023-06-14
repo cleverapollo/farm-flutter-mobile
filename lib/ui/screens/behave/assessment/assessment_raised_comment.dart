@@ -63,7 +63,7 @@ class _AssessmentRaiseCommentState extends State<AssessmentRaiseComment> {
 
       Navigator.of(context).pop(
         QuestionComment(
-          commentId: null,
+          commentId: DateTime.now().millisecondsSinceEpoch,
           comment: comment,
           assessmentId: widget.assessment.assessmentId,
           questionId: widget.question.questionId,

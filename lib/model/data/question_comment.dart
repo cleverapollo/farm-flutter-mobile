@@ -10,7 +10,7 @@ part 'question_comment.g.dart';
 @Collection(ignore: {'copyWith'})
 class QuestionComment with _$QuestionComment {
   const factory QuestionComment({
-    @JsonKey(name: 'CommentId') required int? commentId,
+    @JsonKey(name: 'CommentId') required int commentId,
     @JsonKey(name: 'AssessmentId') required int? assessmentId,
     @JsonKey(name: 'QuestionId') required int? questionId,
     @JsonKey(name: 'Comment') required String? comment,
@@ -21,5 +21,5 @@ class QuestionComment with _$QuestionComment {
   const QuestionComment._();
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => commentId ?? Isar.autoIncrement;
 }

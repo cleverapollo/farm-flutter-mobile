@@ -2433,13 +2433,12 @@ class CmoDatabaseMasterService {
     return db.questionComments.filter().commentEqualTo(comment).findFirst();
   }
 
-  Future<void> removeQuestionComment(QuestionComment comment) async {
+  Future removeQuestionComment(QuestionComment comment) async {
     final db = await _db();
     try {
-      final commentData = comment.comment;
-      final find = await getQuestionCommentByComment(commentData);
-      if (find == null) return;
-      return db.writeTxn(() => db.questionPhotos.delete(find.id));
+      return db.writeTxn(() {
+        return db.questionComments.delete(comment.commentId);
+      });
     } catch (error) {
       handleError(error);
     }

@@ -36,8 +36,9 @@ class _AssessmentListCommentScreenState
     // * open alert new comment
   }
 
-  void removeComment(QuestionComment comment) {
-    context.read<AssessmentQuestionCubit>().removeComment(comment: comment);
+  Future<void> removeComment(QuestionComment comment) async {
+    await context.read<AssessmentQuestionCubit>().removeComment(comment: comment);
+    setState(() {});
   }
 
   @override
