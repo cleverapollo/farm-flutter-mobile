@@ -160,7 +160,7 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
     if (state.incompleteFilter == 1) {
       filterList = filterList
           .where(
-            (s) => s.isQuestionComplete == 1,
+            (s) => s.isQuestionComplete != 1,
           )
           .toList();
     }

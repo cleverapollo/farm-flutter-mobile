@@ -152,28 +152,26 @@ class _AssessmentListQuestionScreenState
             selector: (state) {
               return state.incompleteFilter == 1;
             },
-            builder: (context, isComplete) => CmoHeaderTile(
-              title: isComplete
-                  ? LocaleKeys.completed.tr()
-                  : LocaleKeys.incomplete.tr(),
+            builder: (context, incompleteFilter) => CmoHeaderTile(
+              title: LocaleKeys.incomplete.tr(),
               child: Row(
                 children: [
                   CmoTappable(
                     onTap: () {
                       context
                           .read<AssessmentQuestionCubit>()
-                          .setIncompleteFilter(isComplete ? 0 : 1);
+                          .setIncompleteFilter(incompleteFilter ? 0 : 1);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(left: 6.0),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: !isComplete ? Colors.white : Colors.green,
+                          color: incompleteFilter ? Colors.green : Colors.white,
                           shape: BoxShape.circle,
                         ),
-                        child: !isComplete
-                            ? Assets.icons.icTick.svg()
-                            : Assets.icons.icTick.svgWhite,
+                        child: incompleteFilter
+                            ? Assets.icons.icTick.svgWhite
+                            : Assets.icons.icTick.svg(),
                       ),
                     ),
                   ),
