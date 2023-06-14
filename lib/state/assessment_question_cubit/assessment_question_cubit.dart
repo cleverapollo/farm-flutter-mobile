@@ -342,7 +342,10 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
       if (state.assessment?.completed != true) {
         emit(
           state.copyWith(
-            assessment: state.assessment?.copyWith(completed: true),
+            assessment: state.assessment?.copyWith(
+              completed: true,
+              status: 2,
+            ),
           ),
         );
         if (state.assessment != null) {
@@ -354,7 +357,10 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
       if (completed != null && completed == true) {
         emit(
           state.copyWith(
-            assessment: state.assessment?.copyWith(completed: false),
+            assessment: state.assessment?.copyWith(
+              completed: false,
+              status: 1,
+            ),
           ),
         );
         if (state.assessment != null) {

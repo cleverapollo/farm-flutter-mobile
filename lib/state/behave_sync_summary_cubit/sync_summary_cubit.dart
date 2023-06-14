@@ -30,6 +30,7 @@ import 'package:cmo/model/sync_summary_model.dart';
 import 'package:cmo/model/user_info.dart';
 import 'package:cmo/service/cmo_perform_api_service.dart';
 import 'package:cmo/state/behave_sync_summary_cubit/sync_summary_state.dart';
+import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/json_converter.dart';
 import 'package:cmo/utils/logger.dart';
@@ -69,29 +70,13 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
           ..add(_databaseMasterService
               .getQuestionByCompanyId(companyId)
               .then((value) => data = data.copyWith(mdQuestion: value.length)))
-          ..add(
-            _databaseMasterService
-                .getAllAssessments(
-                  companyId: companyId,
-                  userId: userId,
-                )
-                .then(
-                  (value) => data = data.copyWith(
-                    adInprogress: value
-                        .where(
-                          (element) =>
-                              element.statusEnum == AssessmentStatus.started,
-                        )
-                        .length,
-                    adUnsynced: value
-                        .where(
-                          (element) =>
-                              element.statusEnum == AssessmentStatus.completed,
-                        )
-                        .length,
-                  ),
-                ),
-          )
+          ..add(_databaseMasterService
+              .getQuestionByCompanyId(companyId)
+              .then((value) => data = data.copyWith(mdQuestion: value.length)))
+          ..add(_databaseMasterService.getAllAssessmentsStarted().then(
+                  (value) => data = data.copyWith(adInprogress: value.length)))
+          ..add(_databaseMasterService.getAllAssessmentsCompleted().then(
+                  (value) => data = data.copyWith(adUnsynced: value.length)))
           ..add(_databaseMasterService.getWorkersLocal().then(
               (value) => data = data.copyWith(mdUnsyncWoker: value.length)))
           ..add(_databaseMasterService.getCompliances().then(
@@ -164,7 +149,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     }
   }
 
-  Future<void> onSyncData(BuildContext context) async {
+  Future<void> onSyncData(VoidCallback syncSuccess) async {
     try {
       if (state.isLoadingSync || state.isLoading) return;
 
@@ -177,26 +162,26 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
 
       await syncMasterData(userDeviceId);
 
-      final db = await _databaseMasterService.db;
       final cachedCompanies = await _databaseMasterService.getAllCachedCompanies();
-      await db.writeTxn(() async {
-        for (final cachedCompany in cachedCompanies) {
-          await _databaseMasterService.cacheCompany(
-            cachedCompany.copyWith(isInUse: false, isMasterDataSynced: false),
-          );
-        }
-
+      for (final cachedCompany in cachedCompanies) {
         await _databaseMasterService.cacheCompany(
-          company!.copyWith(isInUse: true, isMasterDataSynced: true),
+          cachedCompany.copyWith(isInUse: false, isMasterDataSynced: false),
         );
-      });
+      }
+
+      await _databaseMasterService.cacheCompany(
+        company!.copyWith(isInUse: true, isMasterDataSynced: true),
+      );
 
       emit(
         state.copyWith(syncMessage: '', isLoadingSync: false),
       );
 
       await onInitialData()
-          .whenComplete(() => showSnackSuccess(msg: 'Sync Success'));
+          .whenComplete(() {
+            showSnackSuccess(msg: 'Sync Success');
+            syncSuccess.call();
+      });
     } catch (e) {
       showSnackError(msg: e.toString());
       emit(
@@ -211,26 +196,25 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
           isLoadingSync: true, syncMessage: 'Syncing Assessments...'),
     );
 
-    await cmoPerformApiService.createSystemEvent(
+    await cmoBehaveApiService.createSystemEvent(
       primaryKey: companyId,
       systemEventName: 'SyncAssessmentMasterData',
       userDeviceId: userId,
     );
-    final result = await _databaseMasterService
-        .getAllAssessmentUnSyncedByCompanyIdAndUserId(companyId, userId);
+
+    // delay after created system event to make sure that the data is ready to pull
+    await Future.delayed(const Duration(seconds: 3), () {});
+
+    final result = await _databaseMasterService.getAllAssessmentUnSyncedByCompanyIdAndUserId();
 
     final futures = <Future<dynamic>>[];
 
-    final db = await _databaseMasterService.db;
-
-    await db.writeTxn(() async {
-      if (result.isNotEmpty) {
-        for (final item in result) {
-          futures
-              .add(_databaseMasterService.cacheAssessment(item.copyWith(status: 3)));
-        }
+    if (result.isNotEmpty) {
+      for (final item in result) {
+        futures.add(
+            _databaseMasterService.cacheAssessment(item.copyWith(status: 3)));
       }
-    });
+    }
   }
 
   Future<void> syncMasterData(int userDeviceId) async {
@@ -238,13 +222,8 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     while (sync) {
       MasterDataMessage? masterDataPull;
 
-      masterDataPull = await cmoPerformApiService.pullMessage(
+      masterDataPull = await cmoBehaveApiService.pullMessage(
         topicMasterDataSync: _topicMasterDataSync,
-        currentClientId: userDeviceId,
-      );
-
-      final result = await cmoPerformApiService.pullAssessmentMessage(
-        topicAssessment: 'Cmo.Assessment.Complete.${company?.companyId}',
         currentClientId: userDeviceId,
       );
 
@@ -408,7 +387,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
         }
       });
 
-      await cmoPerformApiService.deleteMessage(
+      await cmoBehaveApiService.deleteMessage(
         currentClientId: userDeviceId,
         messages: masterDataMessage ?? [],
       );

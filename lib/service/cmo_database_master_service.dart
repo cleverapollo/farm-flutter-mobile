@@ -1201,13 +1201,10 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<Assessment>> getAllAssessmentUnSyncedByCompanyIdAndUserId(
-      int companyId, int userId) async {
-    final db = await _db();
+  Future<List<Assessment>> getAllAssessmentUnSyncedByCompanyIdAndUserId() async {
     return [
-      ...await getAllAssessmentsCompletedByCompanyIdAndUserId(
-          companyId, userId),
-      ...await getAllAssessmentsSyncedByCompanyIdAndUserId(companyId, userId)
+      ...await getAllAssessmentsCompleted(),
+      ...await getAllAssessmentsSynced(),
     ];
   }
 
@@ -1217,6 +1214,7 @@ class CmoDatabaseMasterService {
         .filter()
         .isActiveEqualTo(true)
         .completedEqualTo(true)
+        .statusEqualTo(2)
         .sortByCreateDTDesc()
         .findAll();
   }

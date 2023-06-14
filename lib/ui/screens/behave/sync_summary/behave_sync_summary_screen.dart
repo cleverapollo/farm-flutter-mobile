@@ -3,6 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/behave_sync_summary_cubit/sync_summary_cubit.dart';
 import 'package:cmo/state/behave_sync_summary_cubit/sync_summary_state.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/behave/sync_summary/behave_sync_summary_enum.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
@@ -77,7 +78,9 @@ class _SyncSummaryScreenState extends State<SyncSummaryScreen> {
                             onTap: () async {
                               await context
                                   .read<SyncSummaryCubit>()
-                                  .onSyncData(context);
+                                  .onSyncData(() async {
+                                await context.read<DashboardCubit>().refresh();
+                              });
                             },
                             title: state.isLoadingSync
                                 ? state.syncMessage
