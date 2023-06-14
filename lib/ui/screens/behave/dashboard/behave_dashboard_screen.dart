@@ -83,7 +83,7 @@ class _BehaveDashboardScreenState extends State<BehaveDashboardScreen> {
                   content: [
                     CmoCardHeader(title: LocaleKeys.sync.tr()),
                     CmoCardItem(
-                      title: LocaleKeys.synced.tr(),
+                      title: LocaleKeys.to_be_synced.tr(),
                       value: (state.totalUnsyncBehave ?? 0).toString(),
                     ),
                   ],

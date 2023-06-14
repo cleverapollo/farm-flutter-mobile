@@ -499,5 +499,6 @@
   "audit_detail": "Audit Detail",
   "in_progress": "In Progress",
   "regional_manager": "Regional Manager",
-  "you_re_about_to_sync_information_for": "You're about to sync information for"
+  "you_re_about_to_sync_information_for": "You're about to sync information for",
+  "to_be_synced": "To be synced"
 }
