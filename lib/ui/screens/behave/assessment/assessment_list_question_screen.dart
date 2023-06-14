@@ -208,6 +208,17 @@ class _AssessmentListQuestionScreenState
                       ),
                     ],
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32.0),
+                    child: BlocSelector<AssessmentQuestionCubit, AssessmentQuestionState,
+                        AssessmentQuestionState>(
+                      selector: (state) => state,
+                      builder: (context, state) => Text(
+                        '${state.getAnsweredFilteredQuestions().length}/${allQuestions.length}',
+                        style: context.textStyles.bodyBold.white,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

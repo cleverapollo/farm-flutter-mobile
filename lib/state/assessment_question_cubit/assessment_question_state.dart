@@ -100,4 +100,8 @@ class AssessmentQuestionState extends Equatable {
         jobElementFilterId,
         incompleteFilter,
       ];
+
+  List<QuestionAnswer> getAnsweredFilteredQuestions() {
+    return answers.where((x) => x.isQuestionComplete == 1).toList();
+  }
 }
