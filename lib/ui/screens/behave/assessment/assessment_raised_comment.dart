@@ -112,7 +112,7 @@ class _AssessmentRaiseCommentState extends State<AssessmentRaiseComment> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: CmoDropdown(
                 name: 'RejectReason',
-                hintText: LocaleKeys.speqs.tr(),
+                hintText: LocaleKeys.reject_reason.tr(),
                 validator: requiredValidator,
                 onChanged: (int? id) {
                   if (id == -1) {
@@ -127,13 +127,6 @@ class _AssessmentRaiseCommentState extends State<AssessmentRaiseComment> {
                       ),
                     )
                     .toList()
-                  ..insert(
-                    0,
-                    CmoDropdownItem(
-                      id: -1,
-                      name: LocaleKeys.speqs.tr(),
-                    ),
-                  ),
               ),
             ),
             const SizedBox(height: 8),
