@@ -51,9 +51,15 @@ class AssessmentListCubit extends HydratedCubit<AssessmentListState> {
     }
   }
 
+  Future<void> refresh() async {
+    await loadStarted();
+    await loadCompleted();
+    await loadSynced();
+  }
+
   Future<void> removeAssessment(Assessment item) async {
     await cmoDatabaseMasterService.removeAssessment(item.assessmentId!);
-    return loadStarted();
+    return refresh();
   }
 
   @override

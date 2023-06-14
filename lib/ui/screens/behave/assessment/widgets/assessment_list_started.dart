@@ -1,4 +1,5 @@
-import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
+import 'package:cmo/model/model.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/behave/assessment/widgets/widgets.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/foundation.dart';
@@ -58,13 +59,17 @@ class _AssessmentListStartedState extends State<AssessmentListStarted> {
               final item = state.dataStarted[index];
               return AssessmentTile(
                 data: item,
-                onRemovingCallback: (item) async =>
-                    context.read<AssessmentListCubit>().removeAssessment(item),
+                onRemovingCallback: removeAssessment,
               );
             },
           ),
         );
       },
     );
+  }
+
+  Future<void> removeAssessment(Assessment item) async {
+    await context.read<AssessmentListCubit>().removeAssessment(item);
+    await context.read<DashboardCubit>().refresh();
   }
 }

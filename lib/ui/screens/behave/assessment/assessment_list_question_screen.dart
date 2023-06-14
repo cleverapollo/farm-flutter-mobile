@@ -101,6 +101,9 @@ class _AssessmentListQuestionScreenState
             question,
             compliance,
           );
+
+      await context.read<AssessmentListCubit>().refresh();
+      await context.read<DashboardCubit>().refresh();
     }
   }
 

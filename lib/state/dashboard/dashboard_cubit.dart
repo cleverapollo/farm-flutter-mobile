@@ -47,16 +47,13 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
       userId: userId,
     );
 
+    final totalIncompleteAssessments = await service.getAllAssessmentsStarted();
+    final totalCompletedAssessments = await service.getAllAssessmentsCompleted();
     emit(
       state.copyWith(
         totalAssessments: totalAssessments.length,
-        totalIncompleteAssessments: totalAssessments
-            .where((element) => element.statusEnum == AssessmentStatus.started)
-            .length,
-        totalCompletedAssessments: totalAssessments
-            .where(
-                (element) => element.statusEnum == AssessmentStatus.completed)
-            .length,
+        totalIncompleteAssessments: totalIncompleteAssessments.length,
+        totalCompletedAssessments: totalCompletedAssessments.length,
       ),
     );
   }

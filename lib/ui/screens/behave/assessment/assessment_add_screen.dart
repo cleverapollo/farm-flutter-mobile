@@ -67,12 +67,8 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
 
   Future<void> refresh() async {
     if (context.mounted) {
-      await Future.wait([
-        context.read<AssessmentListCubit>().loadStarted(),
-        context.read<AssessmentListCubit>().loadCompleted(),
-        context.read<AssessmentListCubit>().loadSynced(),
-        context.read<DashboardCubit>().refresh(),
-      ]);
+      await context.read<AssessmentListCubit>().refresh();
+      await context.read<DashboardCubit>().refresh();
     }
   }
 
