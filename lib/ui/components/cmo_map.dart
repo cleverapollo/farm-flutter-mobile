@@ -1,18 +1,21 @@
+import 'dart:async';
+
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CmoMap extends StatefulWidget {
-  final LatLng initialMapCenter;
+  final LatLng? initialMapCenter;
   final void Function(double, double) onMapMoved;
 
   const CmoMap({
     Key? key,
-    this.initialMapCenter = Constants.mapCenter,
+    this.initialMapCenter,
     required this.onMapMoved,
   }) : super(key: key);
 
@@ -22,19 +25,29 @@ class CmoMap extends StatefulWidget {
 
 class _CmoMapState extends State<CmoMap> {
   late GoogleMapController _mapController;
-  late LatLng _latLong;
+  LatLng? _latLong;
+  Timer? _debouceOnCameraMove;
 
   void _onCameraMove(CameraPosition position) {
-    widget.onMapMoved(position.target.latitude, position.target.longitude);
-    setState(() {
-      _latLong = position.target;
+    _debouceOnCameraMove?.cancel();
+    _debouceOnCameraMove = Timer(const Duration(milliseconds: 300), () {
+      widget.onMapMoved(position.target.latitude, position.target.longitude);
+      setState(() {
+        _latLong = position.target;
+      });
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _latLong = widget.initialMapCenter;
+  Future _moveMapCameraCurrentLocation() async {
+    final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    await _mapController.animateCamera(
+        CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
+  }
+
+  Future _moveMapCameraToDefaultLocation() async {
+    return _mapController.animateCamera(CameraUpdate.newLatLng(
+        LatLng(Constants.mapCenter.latitude, Constants.mapCenter.longitude)));
   }
 
   @override
@@ -57,10 +70,26 @@ class _CmoMapState extends State<CmoMap> {
                   mapType: MapType.hybrid,
                   onMapCreated: (controller) {
                     _mapController = controller;
+                    Geolocator.checkPermission().then((permission) async {
+                      if (permission == LocationPermission.whileInUse ||
+                          permission == LocationPermission.always) {
+                        _moveMapCameraCurrentLocation();
+                      } else if (permission == LocationPermission.denied) {
+                        permission = await Geolocator.requestPermission();
+                        if (permission == LocationPermission.whileInUse ||
+                            permission == LocationPermission.always) {
+                          _moveMapCameraCurrentLocation();
+                        } else {
+                          _moveMapCameraToDefaultLocation();
+                        }
+                      } else {
+                        _moveMapCameraToDefaultLocation();
+                      }
+                    });
                   },
                   onCameraMove: _onCameraMove,
-                  initialCameraPosition: CameraPosition(
-                    target: widget.initialMapCenter,
+                  initialCameraPosition: const CameraPosition(
+                    target: Constants.mapCenter,
                     zoom: 16.0,
                   ),
                 ),
@@ -105,10 +134,11 @@ class _CmoMapState extends State<CmoMap> {
                   children: [
                     Expanded(
                       child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: GeoLocationText(latLong: _latLong,)
-                      ),
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: GeoLocationText(
+                            latLong: _latLong,
+                          )),
                     ),
                     Assets.icons.icLocation.widget,
                   ],

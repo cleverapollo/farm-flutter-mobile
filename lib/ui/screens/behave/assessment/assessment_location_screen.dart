@@ -46,7 +46,6 @@ class AssessmentLocationScreen extends StatefulWidget {
 }
 
 class _AssessmentLocationScreenState extends State<AssessmentLocationScreen> {
-  late GoogleMapController mapController;
   String _address = '';
   bool _loading = false;
   final _debouncer = Debouncer(milliseconds: 600);
@@ -62,7 +61,6 @@ class _AssessmentLocationScreenState extends State<AssessmentLocationScreen> {
 
   @override
   void dispose() {
-    mapController.dispose();
     _debouncer.dispose();
     super.dispose();
   }
