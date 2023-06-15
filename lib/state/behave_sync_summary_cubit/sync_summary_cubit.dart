@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/model/assessment.dart';
+import 'package:cmo/model/assessment_question_answers/assessment_question_answers.dart';
 import 'package:cmo/model/company.dart';
 import 'package:cmo/model/data/company_question.dart';
 import 'package:cmo/model/data/compliance.dart';
@@ -15,6 +16,9 @@ import 'package:cmo/model/data/municipality.dart';
 import 'package:cmo/model/data/pdca.dart';
 import 'package:cmo/model/data/plantation.dart';
 import 'package:cmo/model/data/province.dart';
+import 'package:cmo/model/data/question_answer.dart';
+import 'package:cmo/model/data/question_comment.dart';
+import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/data/reject_reason.dart';
 import 'package:cmo/model/data/schedule.dart';
 import 'package:cmo/model/data/schedule_activity.dart';
@@ -34,6 +38,8 @@ import 'package:cmo/utils/json_converter.dart';
 import 'package:cmo/utils/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../model/assessment_pay_load/assessment_pay_load.dart';
 
 class SyncSummaryCubit extends Cubit<SyncSummaryState> {
   SyncSummaryCubit(this.userDeviceCubit) : super(SyncSummaryState());
@@ -200,11 +206,8 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     final publishAssessmentTopic =
         'Cmo.Assessment.Complete.$companyId.$userDeviceId';
     final workers = await _databaseMasterService.getWorkersLocal();
-    final assessmentsStarted =
-        await _databaseMasterService.getAllAssessmentsStarted();
-    final assessmentsCompleted =
+    final assessments =
         await _databaseMasterService.getAllAssessmentsCompleted();
-    final assessments = [...assessmentsStarted, ...assessmentsCompleted];
 
     await cmoBehaveApiService.createSystemEvent(
       primaryKey: companyId,
@@ -226,7 +229,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
         ..add(cmoBehaveApiService.public(
           currentClientId: '$userDeviceId',
           topic: publicWorkerTopic,
-          message: item.toJson(),
+          message: item.toString(),
         ))
         ..add(
             _databaseMasterService.cacheWorker(item.copyWith(isLocal: false)));
@@ -236,12 +239,66 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
       state.copyWith(syncMessage: 'Syncing Assessments...'),
     );
 
+    var assessmentPayLoad = const AssessmentPayLoad();
     for (final item in assessments) {
+      assessmentPayLoad = assessmentPayLoad.copyWith(
+        assessmentId: item.assessmentId,
+        companyId: item.companyId,
+        contractorId: item.contractorId,
+        jobCategoryId: item.jobCategoryId,
+        jobDescriptionId: item.jobDescriptionId,
+        location: item.location,
+        plantationId: item.plantationId,
+        teamId: item.teamId,
+        workerId: item.workerId,
+        created: item.createDT,
+        lat: item.lat,
+        lng: item.long,
+        userDeviceId: userDeviceId,
+        userId: userId,
+        signatureDate: item.signatureDate,
+        signatureImage: item.signatureImage,
+        signaturePoints: item.signaturePoints,
+        hasSignature: item.hasSignature,
+      );
+
+      var assessmentQuestionAnswers = const AssessmentQuestionAnswers();
+
+      final questionAnswers = await cmoDatabaseMasterService
+          .getQuestionAnswersByCompanyIdAndJobCategoryIdAndAssessmentId(
+              companyId, item.jobCategoryId, item.assessmentId);
+
+      final questionComment = <QuestionComment>[];
+      final questionPhoto = <QuestionPhoto>[];
+
+      for (final question in questionAnswers) {
+        final questionCommentResult = await cmoDatabaseMasterService
+            .getQuestionComments(item.assessmentId!, question.questionId!);
+
+        questionComment.addAll(questionCommentResult);
+
+        final questionPhotoResult = await cmoDatabaseMasterService
+            .getQuestionPhotosByAssessmentIdAndQuestionId(
+                item.assessmentId!, question.questionId!);
+
+        questionPhoto.addAll(questionPhotoResult);
+      }
+
+      assessmentQuestionAnswers = assessmentQuestionAnswers.copyWith(
+        questionAnswer: questionAnswers,
+        questionComment: questionComment,
+        questionPhoto: questionPhoto,
+      );
+
+      assessmentPayLoad = assessmentPayLoad.copyWith(
+        assessmentQuestionAnswers: assessmentQuestionAnswers,
+      );
+
       futures
         ..add(cmoBehaveApiService.public(
           currentClientId: '$userDeviceId',
           topic: publishAssessmentTopic,
-          message: item.toJson(),
+          message: assessmentPayLoad.toString(),
         ))
         ..add(_databaseMasterService.cacheAssessment(item.copyWith(status: 3)));
     }
@@ -714,6 +771,4 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     }
     return null;
   }
-
-  publishAssessmentPayload() {}
 }

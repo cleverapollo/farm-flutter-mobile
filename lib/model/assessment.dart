@@ -45,13 +45,15 @@ class Assessment with _$Assessment {
     @JsonKey(name: 'ContractorName') String? contractorName,
     @JsonKey(name: 'TeamName') String? teamName,
     @JsonKey(name: 'WorkerName') String? workerName,
-    @Default(1)
-    @JsonKey(name: 'Status') int? status,
+    @Default(1) @JsonKey(name: 'Status') int? status,
     @JsonKey(name: 'Completed') bool? completed,
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,
     @JsonKey(name: 'SignatureImage') String? signatureImage,
+    @JsonKey(name: 'SignatureDate') String? signatureDate,
+    @JsonKey(name: 'SignaturePoints') String? signaturePoints,
+    @JsonKey(name: 'HasSignature') String? hasSignature,
   }) = _Assessment;
 
   const Assessment._();

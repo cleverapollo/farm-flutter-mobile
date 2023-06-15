@@ -170,17 +170,17 @@ class CmoBehaveApiService {
   Future<bool> public({
     required String currentClientId,
     required String topic,
-    required Object? message,
+    required String? message,
   }) async {
     try {
-      await client.post<dynamic>(
+      final result = await client.post<dynamic>(
         '${_mqApiUrl}message',
         queryParameters: {
           'key': _pubsubApiKey,
           'client': currentClientId,
           'topic': topic,
         },
-        data: {'body': message},
+        data: [Message(body: message).toJson()],
         options: Options(headers: {'accessToken': 'true'}),
       );
       return true;

@@ -1201,7 +1201,8 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<Assessment>> getAllAssessmentUnSyncedByCompanyIdAndUserId() async {
+  Future<List<Assessment>>
+      getAllAssessmentUnSyncedByCompanyIdAndUserId() async {
     return [
       ...await getAllAssessmentsCompleted(),
       ...await getAllAssessmentsSynced(),
@@ -2402,6 +2403,17 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<List<QuestionPhoto>> getQuestionPhotosByAssessmentIdAndQuestionId(
+      int assessmentId, int questionId) async {
+    final db = await _db();
+
+    return db.questionPhotos
+        .filter()
+        .assessmentIdEqualTo(assessmentId)
+        .questionIdEqualTo(questionId)
+        .findAll();
+  }
+
   Future<List<QuestionPhoto>> getQuestionPhotosByAssessmentId(
       int? assessmentId) async {
     final db = await _db();
@@ -2451,7 +2463,8 @@ class CmoDatabaseMasterService {
     });
   }
 
-  Future<List<FarmPropertyOwnerShipType>> getAllFarmPropertyOwnerShipType() async {
+  Future<List<FarmPropertyOwnerShipType>>
+      getAllFarmPropertyOwnerShipType() async {
     final db = await _db();
     return db.farmPropertyOwnerShipTypes.where().findAll();
   }
