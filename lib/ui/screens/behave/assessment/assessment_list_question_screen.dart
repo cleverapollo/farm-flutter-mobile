@@ -102,10 +102,7 @@ class _AssessmentListQuestionScreenState
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<AssessmentQuestionCubit>().state;
     final assessment = context.watch<AssessmentQuestionCubit>().getAssessment();
-    final allQuestions =
-        context.watch<AssessmentQuestionCubit>().getFilteredQuestions();
 
     return Scaffold(
       appBar: CmoAppBar(
@@ -220,132 +217,136 @@ class _AssessmentListQuestionScreenState
             ),
           ),
           Expanded(
-            child: ListView.separated(
-              itemCount: allQuestions.length,
-              itemBuilder: (context, index) {
-                final question = allQuestions[index];
-                final answer = context
-                    .watch<AssessmentQuestionCubit>()
-                    .getAnswerByQuestionId(question.questionId);
+            child: BlocSelector<AssessmentQuestionCubit, AssessmentQuestionState,
+                AssessmentQuestionState>(
+              selector: (state) => state,
+              builder: (context, state) =>ListView.separated(
+                itemCount: state.filteredQuestions.length,
+                itemBuilder: (context, index) {
+                  final question = state.filteredQuestions[index];
+                  final answer = context
+                      .watch<AssessmentQuestionCubit>()
+                      .getAnswerByQuestionId(question.questionId);
 
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '${question.questionValue}',
-                              style: context.textStyles.bodyNormal,
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${question.questionValue}',
+                                style: context.textStyles.bodyNormal,
+                              ),
                             ),
-                          ),
-                          if (question.xBone ?? false)
-                            Icon(
-                              IconsaxOutline.danger,
-                              size: 24.0,
-                              color: context.colors.red,
+                            if (question.xBone ?? false)
+                              Icon(
+                                IconsaxOutline.danger,
+                                size: 24.0,
+                                color: context.colors.red,
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Wrap(
+                                spacing: 16,
+                                runSpacing: 8,
+                                children: [
+                                  for (final compliance in state.compliances)
+                                    CmoTappable(
+                                      onTap: ()  {
+                                         _addAnswer(
+                                          question,
+                                          compliance,
+                                        );
+                                      },
+                                      child: CmoCircelButton(
+                                        title: '${compliance.complianceName}',
+                                        color: answer != null &&
+                                                answer.complianceId ==
+                                                    compliance.complianceId
+                                            ? context.colors.yellow
+                                            : context.colors.white,
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Wrap(
-                              spacing: 16,
-                              runSpacing: 8,
+                            const SizedBox(width: 16),
+                            Row(
                               children: [
-                                for (final compliance in state.compliances)
-                                  CmoTappable(
-                                    onTap: () {
-                                      _addAnswer(
-                                        question,
-                                        compliance,
-                                      );
-                                    },
-                                    child: CmoCircelButton(
-                                      title: '${compliance.complianceName}',
-                                      color: answer != null &&
-                                              answer.complianceId ==
-                                                  compliance.complianceId
-                                          ? context.colors.yellow
-                                          : context.colors.white,
+                                CmoTappable(
+                                  onTap: () => _viewListPhoto(
+                                    questionId: question.questionId,
+                                  ),
+                                  child: BlocSelector<AssessmentQuestionCubit,
+                                      AssessmentQuestionState, bool>(
+                                    selector: (state) => state.questionPhotos
+                                        .where(
+                                          (e) =>
+                                              e.questionId == question.questionId,
+                                        )
+                                        .isNotBlank,
+                                    builder: (context, havePhoto) =>
+                                        CmoCircelIconButton(
+                                      color: havePhoto
+                                          ? context.colors.green
+                                          : Colors.transparent,
+                                      icon: SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: Assets.icons.icCamera.svgBlack,
+                                      ),
                                     ),
                                   ),
+                                ),
+                                const SizedBox(width: 16),
+                                CmoTappable(
+                                  onTap: () => _viewListComment(
+                                    questionId: question.questionId,
+                                  ),
+                                  child: BlocSelector<AssessmentQuestionCubit,
+                                      AssessmentQuestionState, bool>(
+                                    selector: (state) => state.questionComments
+                                        .where(
+                                          (e) =>
+                                              e.questionId == question.questionId,
+                                        )
+                                        .isNotBlank,
+                                    builder: (context, haveComment) =>
+                                        CmoCircelIconButton(
+                                      color: haveComment
+                                          ? context.colors.green
+                                          : Colors.transparent,
+                                      icon: SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: Assets.icons.icComment.svgBlack,
+                                      ),
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
-                          ),
-                          const SizedBox(width: 16),
-                          Row(
-                            children: [
-                              CmoTappable(
-                                onTap: () => _viewListPhoto(
-                                  questionId: question.questionId,
-                                ),
-                                child: BlocSelector<AssessmentQuestionCubit,
-                                    AssessmentQuestionState, bool>(
-                                  selector: (state) => state.questionPhotos
-                                      .where(
-                                        (e) =>
-                                            e.questionId == question.questionId,
-                                      )
-                                      .isNotBlank,
-                                  builder: (context, havePhoto) =>
-                                      CmoCircelIconButton(
-                                    color: havePhoto
-                                        ? context.colors.green
-                                        : Colors.transparent,
-                                    icon: SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: Assets.icons.icCamera.svgBlack,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              CmoTappable(
-                                onTap: () => _viewListComment(
-                                  questionId: question.questionId,
-                                ),
-                                child: BlocSelector<AssessmentQuestionCubit,
-                                    AssessmentQuestionState, bool>(
-                                  selector: (state) => state.questionComments
-                                      .where(
-                                        (e) =>
-                                            e.questionId == question.questionId,
-                                      )
-                                      .isNotBlank,
-                                  builder: (context, haveComment) =>
-                                      CmoCircelIconButton(
-                                    color: haveComment
-                                        ? context.colors.green
-                                        : Colors.transparent,
-                                    icon: SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: Assets.icons.icComment.svgBlack,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return Divider(
-                  color: context.colors.grey,
-                );
-              },
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return Divider(
+                    color: context.colors.grey,
+                  );
+                },
+              ),
             ),
           ),
         ],

@@ -138,7 +138,6 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
 
   Future<void> applyFilter() async {
     var filterList = state.questions;
-
     if (state.speqsFilterId > -1) {
       filterList =
           filterList.where((s) => s.speqsId == state.speqsFilterId).toList();
@@ -159,9 +158,11 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
     }
     if (state.incompleteFilter == 1) {
       filterList = filterList
-          .where(
-            (s) => s.isQuestionComplete != 1,
-          )
+          .where((question) {
+            final answer = state.answers.firstWhereOrNull((answer) =>
+                  answer.questionId == question.questionId);
+            return answer?.isQuestionComplete != 1;
+          })
           .toList();
     }
     emit(state.copyWith(filteredQuestions: filterList));
@@ -313,7 +314,7 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
         answer = answer.copyWith(isQuestionComplete: 1);
       } else {
         logger.d('Question is not complete');
-        answer = answer.copyWith(isQuestionComplete: 0);
+        answer = answer.copyWith(isQuestionComplete: 1);
       }
     } else {
       logger.d('Question is complete');
@@ -330,6 +331,7 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
       state.assessment?.assessmentId,
     );
     emit(state.copyWith(answers: answers));
+    applyFilter();
     await checkIfAssessmentIscomplete();
   }
 
