@@ -247,7 +247,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
             if (!context.mounted) return;
             final item = await AssessmentItemSelectedScreen.push(
               context,
-              title: LocaleKeys.jobType.tr(),
+              title: LocaleKeys.jobDescription.tr(),
               items: jobTypes
                   .map((e) => AssessmentItem(e.jobDescriptionName ?? '', e))
                   .toList(),
@@ -271,7 +271,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
             if (!context.mounted) return;
             final item = await AssessmentItemSelectedScreen.push(
               context,
-              title: LocaleKeys.jobType.tr(),
+              title: LocaleKeys.plantation.tr(),
               items: items
                   .map((e) => AssessmentItem(e.plantationName ?? '', e))
                   .toList(),
@@ -334,7 +334,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
             if (!context.mounted) return;
             final item = await AssessmentItemSelectedScreen.push(
               context,
-              title: LocaleKeys.jobType.tr(),
+              title: LocaleKeys.team.tr(),
               items: items
                   .map((e) => AssessmentItem(e.teamName ?? '', e))
                   .toList(),
@@ -365,7 +365,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
             if (!context.mounted) return;
             final item = await AssessmentItemSelectedScreen.push(
               context,
-              title: LocaleKeys.jobType.tr(),
+              title: LocaleKeys.worker.tr(),
               items: items
                   .map((e) => AssessmentItem(
                       '${e.firstName} ${e.surname} (${e.idNumber})' ?? '', e))
