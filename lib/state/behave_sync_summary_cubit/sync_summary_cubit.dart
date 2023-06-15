@@ -239,8 +239,8 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
       state.copyWith(syncMessage: 'Syncing Assessments...'),
     );
 
-    var assessmentPayLoad = const AssessmentPayLoad();
     for (final item in assessments) {
+      var assessmentPayLoad = const AssessmentPayLoad();
       assessmentPayLoad = assessmentPayLoad.copyWith(
         assessmentId: item.assessmentId,
         companyId: item.companyId,
