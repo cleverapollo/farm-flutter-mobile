@@ -22,7 +22,7 @@ class CmoTextField extends StatelessWidget {
     this.focusNode,
     this.inputDecoration,
     this.autocorrect = true,
-    this.enableSuggestions = false,
+    this.enableSuggestions = true,
   });
 
   final Widget? prefixIcon;
