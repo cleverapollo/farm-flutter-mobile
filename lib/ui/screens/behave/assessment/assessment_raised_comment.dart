@@ -144,6 +144,8 @@ class _AssessmentRaiseCommentState extends State<AssessmentRaiseComment> {
                   validator: requiredValidator,
                   hintText: LocaleKeys.addComment.tr(),
                   maxLines: 999,
+                  autocorrect: true,
+                  enableSuggestions: true,
                 ),
               ),
             ),

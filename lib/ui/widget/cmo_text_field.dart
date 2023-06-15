@@ -21,6 +21,8 @@ class CmoTextField extends StatelessWidget {
     this.autofocus = false,
     this.focusNode,
     this.inputDecoration,
+    this.autocorrect = true,
+    this.enableSuggestions = false,
   });
 
   final Widget? prefixIcon;
@@ -55,6 +57,9 @@ class CmoTextField extends StatelessWidget {
 
   final InputDecoration? inputDecoration;
 
+  final bool enableSuggestions;
+  final bool autocorrect;
+
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
@@ -82,6 +87,8 @@ class CmoTextField extends StatelessWidget {
       maxLines: maxLines,
       autofocus: autofocus,
       focusNode: focusNode,
+      autocorrect: autocorrect,
+      enableSuggestions: enableSuggestions,
     );
   }
 }
