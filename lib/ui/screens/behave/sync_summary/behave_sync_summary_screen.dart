@@ -1,7 +1,6 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/state/behave_sync_summary_cubit/sync_summary_cubit.dart';
 import 'package:cmo/state/behave_sync_summary_cubit/sync_summary_state.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/behave/sync_summary/behave_sync_summary_enum.dart';
@@ -15,9 +14,12 @@ class SyncSummaryScreen extends StatefulWidget {
   const SyncSummaryScreen({super.key});
 
   static void push(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const SyncSummaryScreen()),
-    );
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => BlocProvider<SyncSummaryCubit>(
+          create: (context) =>
+              SyncSummaryCubit(context.read<UserDeviceCubit>()),
+          child: const SyncSummaryScreen()),
+    ));
   }
 
   @override
@@ -25,7 +27,6 @@ class SyncSummaryScreen extends StatefulWidget {
 }
 
 class _SyncSummaryScreenState extends State<SyncSummaryScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -37,78 +38,84 @@ class _SyncSummaryScreenState extends State<SyncSummaryScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocSelector<SyncSummaryCubit, SyncSummaryState, SyncSummaryState>(
-          selector: (state) => state,
-          builder: (context, state) {
-            return Scaffold(
-              appBar: CmoAppBar(
-                title: LocaleKeys.syncSummary.tr(),
-                leading: Assets.icons.icArrowLeft.svgBlack,
-                onTapLeading: () {
-                  if (!state.isLoadingSync) {
-                    return Navigator.pop(context);
-                  }
-                },
-              ),
-              body: RefreshIndicator(
-                onRefresh: () async {
-                  if (!state.isLoadingSync) {
-                    await context.read<SyncSummaryCubit>().onInitialData();
-                  }
-                },
-                child: Stack(
-                  children: [
-                    if (state.isLoading)
-                      const _BuildLoadingIndicator()
-                    else
-                      SingleChildScrollView(
+      selector: (state) => state,
+      builder: (context, state) {
+        return Scaffold(
+          appBar: CmoAppBar(
+            title: LocaleKeys.syncSummary.tr(),
+            leading: Assets.icons.icArrowLeft.svgBlack,
+            onTapLeading: () {
+              if (!state.isLoadingSync) {
+                return Navigator.pop(context);
+              }
+            },
+          ),
+          body: state.isLoadingSync
+              ? Center(
+                  child: Text(state.syncMessage),
+                )
+              : RefreshIndicator(
+                  onRefresh: () async {
+                    if (!state.isLoadingSync) {
+                      await context.read<SyncSummaryCubit>().onInitialData();
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      if (state.isLoading)
+                        const _BuildLoadingIndicator()
+                      else
+                        SingleChildScrollView(
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: BehaveSyncSummaryEnum.all.getViews
+                                  .withSpaceBetween(height: 16)
+                                ..add(
+                                  const SizedBox(height: 60),
+                                )),
+                        ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
                         child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: BehaveSyncSummaryEnum.all.getViews
-                                .withSpaceBetween(height: 16)
-                              ..add(
-                                const SizedBox(height: 60),
-                              )),
-                      ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CmoFilledButton(
-                            onTap: () async {
-                              await context
-                                  .read<SyncSummaryCubit>()
-                                  .onSyncData(() async {
-                                await context.read<DashboardCubit>().refresh();
-                              });
-                            },
-                            title: state.isLoadingSync
-                                ? state.syncMessage
-                                : LocaleKeys.sync.tr(),
-                            leading: state.isLoadingSync
-                                ? const Padding(
-                                    padding: EdgeInsets.only(right: 16.0),
-                                    child: SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CmoFilledButton(
+                              onTap: () async {
+                                await context
+                                    .read<SyncSummaryCubit>()
+                                    .onSyncData(() async {
+                                  await context
+                                      .read<DashboardCubit>()
+                                      .refresh();
+                                });
+                              },
+                              title: state.isLoadingSync
+                                  ? state.syncMessage
+                                  : LocaleKeys.sync.tr(),
+                              leading: state.isLoadingSync
+                                  ? const Padding(
+                                      padding: EdgeInsets.only(right: 16.0),
+                                      child: SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                : const SizedBox(),
-                          ),
-                          const SizedBox(height: 12),
-                        ],
+                                    )
+                                  : const SizedBox(),
+                            ),
+                            const SizedBox(height: 12),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
         );
+      },
+    );
   }
 }
 

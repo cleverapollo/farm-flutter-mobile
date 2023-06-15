@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
@@ -17,7 +16,6 @@ import 'package:cmo/model/user_auth.dart';
 import 'package:cmo/model/user_device.dart';
 import 'package:cmo/model/user_info.dart';
 import 'package:cmo/model/user_role_config/user_role_config.dart';
-import 'package:cmo/model/user_role_portal.dart';
 import 'package:cmo/service/service.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:dio/dio.dart';
@@ -25,7 +23,6 @@ import 'package:flutter/material.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class CmoPerformApiService {
-
   final String _apiAuthUrl = Env.performDnnAuthUrl;
 
   final String _apiUrl = Env.performDnnApiUrl;
@@ -58,6 +55,26 @@ class CmoPerformApiService {
     } else {
       return secureStorage.read(
           key: UserRoleConfig.performRole.getAccessTokenKey);
+    }
+  }
+
+  Future<bool> public({
+    required String currentClientId,
+    required String topic,
+    required Object? message,
+  }) async {
+    try {
+      await client.post<dynamic>('${_mqApiUrl}message',
+          queryParameters: {
+            'key': _pubsubApiKey,
+            'client': currentClientId,
+            'topic': topic,
+          },
+          data: message,
+          options: Options(headers: {'accessToken': 'true'}));
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 
@@ -248,11 +265,9 @@ class CmoPerformApiService {
   }
 
   Future<bool> createSubscription(
-      {required String topic,
-      required int currentClientId}) async {
+      {required String topic, required int currentClientId}) async {
     try {
-      await client.get<dynamic>(
-          '${_mqApiUrl}message',
+      await client.get<dynamic>('${_mqApiUrl}message',
           queryParameters: {
             'key': _pubsubApiKey,
             'client': '$currentClientId',
@@ -531,5 +546,3 @@ class CmoPerformApiService {
     return data?.map((e) => AreaType.fromJson(e as JsonData)).toList();
   }
 }
-
-
