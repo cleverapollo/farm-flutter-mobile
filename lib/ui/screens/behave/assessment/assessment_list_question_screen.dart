@@ -210,7 +210,7 @@ class _AssessmentListQuestionScreenState
                         AssessmentQuestionState>(
                       selector: (state) => state,
                       builder: (context, state) => Text(
-                        '${state.getAnsweredFilteredQuestions().length}/${state.questions.length}',
+                        '${state.getAnsweredFilteredQuestions().length}/${state.filteredQuestions.length}',
                         style: context.textStyles.bodyBold.white,
                       ),
                     ),

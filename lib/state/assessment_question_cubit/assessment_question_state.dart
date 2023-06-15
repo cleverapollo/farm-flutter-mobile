@@ -102,6 +102,12 @@ class AssessmentQuestionState extends Equatable {
       ];
 
   List<QuestionAnswer> getAnsweredFilteredQuestions() {
-    return answers.where((x) => x.isQuestionComplete == 1).toList();
+    return answers
+        .where((answer) =>
+            answer.isQuestionComplete == 1 &&
+            filteredQuestions.firstWhereOrNull(
+                    (question) => question.questionId == answer.questionId) !=
+                null)
+        .toList();
   }
 }
