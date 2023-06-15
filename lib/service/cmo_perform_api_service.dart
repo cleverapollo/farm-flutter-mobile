@@ -58,26 +58,6 @@ class CmoPerformApiService {
     }
   }
 
-  Future<bool> public({
-    required String currentClientId,
-    required String topic,
-    required Object? message,
-  }) async {
-    try {
-      await client.post<dynamic>('${_mqApiUrl}message',
-          queryParameters: {
-            'key': _pubsubApiKey,
-            'client': currentClientId,
-            'topic': topic,
-          },
-          data: message,
-          options: Options(headers: {'accessToken': 'true'}));
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
   Future<UserAuth?> performLogin(
     String username,
     String password,

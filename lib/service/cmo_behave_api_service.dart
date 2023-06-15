@@ -28,7 +28,7 @@ class CmoBehaveApiService {
   Dio client = Dio(
     BaseOptions(
       validateStatus: (status) =>
-      status != null && status < 500 && status != 401,
+          status != null && status < 500 && status != 401,
     ),
   )
     ..interceptors.add(const CustomInterceptor(UserRoleEnum.behave))
@@ -80,15 +80,15 @@ class CmoBehaveApiService {
   }
 
   Future<UserAuth?> refreshToken(
-      String renewalToken,
-      ) async {
+    String renewalToken,
+  ) async {
     final body = {
       'rToken': renewalToken,
     };
     final accessToken = await _readAccessToken();
 
     final response = await client.post<JsonData>(
-        '${_apiAuthUrl}extendtoken',
+      '${_apiAuthUrl}extendtoken',
       data: body,
       options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
     );
@@ -106,7 +106,7 @@ class CmoBehaveApiService {
     Response<Map<String, dynamic>>? response;
 
     response = await client.get<JsonData>(
-        '${_apiUrl}GetUser',
+      '${_apiUrl}GetUser',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -167,6 +167,28 @@ class CmoBehaveApiService {
     return data?.map((e) => Company.fromJson(e as JsonData)).toList();
   }
 
+  Future<bool> public({
+    required String currentClientId,
+    required String topic,
+    required Object? message,
+  }) async {
+    try {
+      await client.post<dynamic>(
+        '${_mqApiUrl}message',
+        queryParameters: {
+          'key': _pubsubApiKey,
+          'client': currentClientId,
+          'topic': topic,
+        },
+        data: {'body': message},
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> createSystemEvent({
     required String systemEventName,
     required int primaryKey,
@@ -193,11 +215,10 @@ class CmoBehaveApiService {
 
   Future<bool> createSubscription(
       {required String topic,
-        required String pubsubApiKey,
-        required int currentClientId}) async {
+      required String pubsubApiKey,
+      required int currentClientId}) async {
     try {
-      await client.get<dynamic>(
-          '${_mqApiUrl}message',
+      await client.get<dynamic>('${_mqApiUrl}message',
           queryParameters: {
             'key': pubsubApiKey,
             'client': '$currentClientId',

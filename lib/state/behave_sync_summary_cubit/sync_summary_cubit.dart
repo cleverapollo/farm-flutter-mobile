@@ -214,7 +214,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
 
     for (final item in workers) {
       futures
-        ..add(cmoPerformApiService.public(
+        ..add(cmoBehaveApiService.public(
           currentClientId: '$userDeviceId',
           topic: publicWorkerTopic,
           message: item.toJson(),
@@ -229,7 +229,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
 
     for (final item in assessments) {
       futures
-        ..add(cmoPerformApiService.public(
+        ..add(cmoBehaveApiService.public(
           currentClientId: '$userDeviceId',
           topic: publishAssessmentTopic,
           message: item.toJson(),
