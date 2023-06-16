@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
@@ -170,9 +171,11 @@ class CmoBehaveApiService {
   Future<bool> public({
     required String currentClientId,
     required String topic,
-    required String? message,
+    required List<Message>? messages,
   }) async {
     try {
+      final token = await secureStorage.read(
+          key: UserRoleConfig.behaveRole.getAccessTokenKey);
       final result = await client.post<dynamic>(
         '${_mqApiUrl}message',
         queryParameters: {
@@ -180,10 +183,16 @@ class CmoBehaveApiService {
           'client': currentClientId,
           'topic': topic,
         },
-        data: [Message(body: message).toJson()],
-        options: Options(headers: {'accessToken': 'true'}),
+        data: messages,
+        options: Options(headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        }),
       );
-      return true;
+      if (result.statusCode == 200) {
+        return true;
+      }
+      return false;
     } catch (e) {
       return false;
     }

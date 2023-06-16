@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cmo/di.dart';
 import 'package:cmo/model/assessment.dart';
 import 'package:cmo/model/assessment_question_answers/assessment_question_answers.dart';
@@ -16,7 +18,6 @@ import 'package:cmo/model/data/municipality.dart';
 import 'package:cmo/model/data/pdca.dart';
 import 'package:cmo/model/data/plantation.dart';
 import 'package:cmo/model/data/province.dart';
-import 'package:cmo/model/data/question_answer.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/data/reject_reason.dart';
@@ -39,7 +40,7 @@ import 'package:cmo/utils/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../model/assessment_pay_load/assessment_pay_load.dart';
+import 'package:cmo/model/assessment_pay_load/assessment_pay_load.dart';
 
 class SyncSummaryCubit extends Cubit<SyncSummaryState> {
   SyncSummaryCubit(this.userDeviceCubit) : super(SyncSummaryState());
@@ -159,12 +160,16 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     try {
       if (state.isLoadingSync || state.isLoading) return;
 
-      final userDeviceId = user?.userId;
+      await userDeviceCubit.createBehaveUserDevice();
+
+      final userDeviceId = userDeviceCubit.data?.userDeviceId;
+      final userId = user?.userId;
       final companyId = company?.companyId;
 
-      if (userDeviceId == null || companyId == null) return;
+      if (userDeviceId == null || companyId == null || userId == null) return;
 
-      await syncAssessmentData(companyId, userDeviceId);
+      await syncAssessmentData(
+          companyId: companyId, userDeviceId: userDeviceId, userId: userId);
 
       await syncMasterData(userDeviceId);
 
@@ -196,12 +201,15 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     }
   }
 
-  Future<void> syncAssessmentData(int companyId, int userId) async {
+  Future<void> syncAssessmentData({
+    required int companyId,
+    required int userDeviceId,
+    required int userId,
+  }) async {
     emit(
       state.copyWith(isLoadingSync: true, syncMessage: 'Syncing...'),
     );
 
-    final userDeviceId = userDeviceCubit.data!.userDeviceId!;
     final publicWorkerTopic = 'Cmo.MaserData.Worker.$companyId.$userDeviceId';
     final publishAssessmentTopic =
         'Cmo.Assessment.Complete.$companyId.$userDeviceId';
@@ -212,7 +220,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     await cmoBehaveApiService.createSystemEvent(
       primaryKey: companyId,
       systemEventName: 'SyncAssessmentMasterData',
-      userDeviceId: userId,
+      userDeviceId: userDeviceId,
     );
 
     // delay after created system event to make sure that the data is ready to pull
@@ -224,25 +232,27 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
       state.copyWith(syncMessage: 'Syncing Workers...'),
     );
 
-    for (final item in workers) {
-      futures
-        ..add(cmoBehaveApiService.public(
-          currentClientId: '$userDeviceId',
-          topic: publicWorkerTopic,
-          message: item.toString(),
-        ))
-        ..add(
-            _databaseMasterService.cacheWorker(item.copyWith(isLocal: false)));
-    }
+    // for (final item in workers) {
+    //   futures
+    //     ..add(cmoBehaveApiService.public(
+    //       currentClientId: '$userDeviceId',
+    //       topic: publicWorkerTopic,
+    //       message: item.toString(),
+    //     ))
+    //     ..add(
+    //         _databaseMasterService.cacheWorker(item.copyWith(isLocal: false)));
+    // }
 
     emit(
       state.copyWith(syncMessage: 'Syncing Assessments...'),
     );
 
+    final messages = <Message>[];
+
     for (final item in assessments) {
       var assessmentPayLoad = const AssessmentPayLoad();
       assessmentPayLoad = assessmentPayLoad.copyWith(
-        assessmentId: item.assessmentId,
+        assessmentId: DateTime.now().millisecondsSinceEpoch,
         companyId: item.companyId,
         contractorId: item.contractorId,
         jobCategoryId: item.jobCategoryId,
@@ -294,35 +304,40 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
         assessmentQuestionAnswers: assessmentQuestionAnswers,
       );
 
-      futures
-        ..add(cmoBehaveApiService.public(
-          currentClientId: '$userDeviceId',
-          topic: publishAssessmentTopic,
-          message: {
-            'AssessmentId': assessmentPayLoad.assessmentId,
-            'CompanyId': assessmentPayLoad.companyId,
-            'ContractorId': assessmentPayLoad.contractorId,
-            'JobCategoryId': assessmentPayLoad.jobCategoryId,
-            'JobDescriptionId': assessmentPayLoad.jobDescriptionId,
-            'Location': assessmentPayLoad.location,
-            'PlantationId': assessmentPayLoad.plantationId,
-            'TeamId': assessmentPayLoad.teamId,
-            'WorkerId': assessmentPayLoad.workerId,
-            'CreateDT': assessmentPayLoad.created,
-            'Lat': assessmentPayLoad.lat,
-            'Lng': assessmentPayLoad.lng,
-            'UserDeviceId': userDeviceId,
-            'UserId': userId,
-            'SignatureDate': assessmentPayLoad.signatureDate,
-            'SignatureImage': assessmentPayLoad.signatureImage,
-            'SignaturePoints': assessmentPayLoad.signaturePoints,
-            'HasSignature': assessmentPayLoad.hasSignature,
-            'AssessmentQuestionAnswers':
-                assessmentPayLoad.assessmentQuestionAnswers,
-          }.toString(),
-        ))
-        ..add(_databaseMasterService.cacheAssessment(item.copyWith(status: 3)));
+      messages.add(Message(
+        body: jsonEncode({
+          'UserId': userId,
+          'UserDeviceId': userDeviceId,
+          'AssessmentId': assessmentPayLoad.assessmentId,
+          'CompanyId': assessmentPayLoad.companyId,
+          'ContractorId': assessmentPayLoad.contractorId,
+          'JobCategoryId': assessmentPayLoad.jobCategoryId,
+          'JobDescriptionId': assessmentPayLoad.jobDescriptionId,
+          'Location': assessmentPayLoad.location,
+          'PlantationId': assessmentPayLoad.plantationId,
+          'TeamId': assessmentPayLoad.teamId,
+          'WorkerId': assessmentPayLoad.workerId,
+          'Created': assessmentPayLoad.created,
+          'Lat': assessmentPayLoad.lat,
+          'Lng': assessmentPayLoad.lng,
+          'SignatureDate': assessmentPayLoad.signatureDate,
+          'SignatureImage': assessmentPayLoad.signatureImage,
+          'SignaturePoints': assessmentPayLoad.signaturePoints,
+          'HasSignature': assessmentPayLoad.hasSignature,
+          'AssessmentQuestionAnswers':
+              assessmentPayLoad.assessmentQuestionAnswers,
+        }),
+      ));
+
+      futures.add(
+          _databaseMasterService.cacheAssessment(item.copyWith(status: 3)));
     }
+
+    futures.add(cmoBehaveApiService.public(
+      currentClientId: '$userDeviceId',
+      topic: publishAssessmentTopic,
+      messages: messages,
+    ));
 
     await Future.wait(futures);
   }
