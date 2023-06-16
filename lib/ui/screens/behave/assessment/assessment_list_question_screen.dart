@@ -70,16 +70,12 @@ class _AssessmentListQuestionScreenState
 
     // * raise comment when choose option have reject reason
     if (hasRejectReason) {
-      final rejectReasons =
-          context.read<AssessmentQuestionCubit>().getRejectReasons();
-
       if (context.mounted) {
         await AssessmentRaiseComment.push<QuestionComment?>(
           context,
           widget.assessment,
           question,
           compliance,
-          rejectReasons,
           (comment, rejectReasonId) async {
             await context
                 .read<AssessmentQuestionCubit>()
@@ -89,19 +85,21 @@ class _AssessmentListQuestionScreenState
                   compliance,
                   rejectReasonId,
                 );
+
+            if (context.mounted) {
+              await context.read<AssessmentQuestionCubit>().setAnswer(
+                question,
+                compliance,
+              );
+
+              await context.read<AssessmentListCubit>().refresh();
+              await context.read<DashboardCubit>().refresh();
+            }
           },
+          null,
+          null,
         );
       }
-    }
-
-    if (context.mounted) {
-      await context.read<AssessmentQuestionCubit>().setAnswer(
-            question,
-            compliance,
-          );
-
-      await context.read<AssessmentListCubit>().refresh();
-      await context.read<DashboardCubit>().refresh();
     }
   }
 

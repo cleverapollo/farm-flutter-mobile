@@ -1,11 +1,14 @@
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AssessmentRaiseComment extends StatefulWidget {
@@ -14,14 +17,16 @@ class AssessmentRaiseComment extends StatefulWidget {
     required this.assessment,
     required this.question,
     required this.compliance,
-    required this.rejectReasons,
     required this.onSaveSuccess,
+    this.comment,
+    this.rejectReasonId,
   });
 
   final Assessment assessment;
   final CompanyQuestion question;
   final Compliance? compliance;
-  final List<RejectReason> rejectReasons;
+  final QuestionComment? comment;
+  final int? rejectReasonId;
   final void Function(QuestionComment, int?) onSaveSuccess;
 
   static Future<T?> push<T>(
@@ -29,8 +34,9 @@ class AssessmentRaiseComment extends StatefulWidget {
     Assessment assessment,
     CompanyQuestion question,
     Compliance? compliance,
-    List<RejectReason> rejectReasons,
     void Function(QuestionComment, int?) onSaveSuccess,
+    QuestionComment? comment,
+    int? rejectReasonId,
   ) {
     return Navigator.of(context).push<T>(
       MaterialPageRoute(
@@ -38,8 +44,9 @@ class AssessmentRaiseComment extends StatefulWidget {
           assessment: assessment,
           question: question,
           compliance: compliance,
-          rejectReasons: rejectReasons,
           onSaveSuccess: onSaveSuccess,
+          comment: comment,
+          rejectReasonId: rejectReasonId,
         ),
       ),
     );
@@ -53,6 +60,18 @@ class _AssessmentRaiseCommentState extends State<AssessmentRaiseComment> {
   final _formKey = GlobalKey<FormBuilderState>();
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
+  List<RejectReason> rejectReasons = <RejectReason>[];
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      setState(() {
+        rejectReasons = context.read<AssessmentQuestionCubit>().getRejectReasons();
+      });
+    });
+  }
+
   void _save() {
     setState(() {
       autoValidateMode = AutovalidateMode.always;
@@ -62,16 +81,21 @@ class _AssessmentRaiseCommentState extends State<AssessmentRaiseComment> {
       final value = _formKey.currentState?.value;
       if (value == null) return;
 
-      final rejectReasonId = int.tryParse(value['RejectReason'].toString());
+      final rejectReasonId = int.tryParse(value['RejectReason'].toString()) ?? widget.rejectReasonId;
       final comment = value['Comment']?.toString() ?? '';
 
+      final questionComment = widget.comment == null
+          ? QuestionComment(
+              commentId: DateTime.now().millisecondsSinceEpoch,
+              comment: comment,
+              assessmentId: widget.assessment.assessmentId,
+              questionId: widget.question.questionId,
+            )
+          : widget.comment!.copyWith(
+              comment: comment,
+            );
       widget.onSaveSuccess.call(
-        QuestionComment(
-          commentId: DateTime.now().millisecondsSinceEpoch,
-          comment: comment,
-          assessmentId: widget.assessment.assessmentId,
-          questionId: widget.question.questionId,
-        ),
+        questionComment,
         rejectReasonId,
       );
 
@@ -121,12 +145,13 @@ class _AssessmentRaiseCommentState extends State<AssessmentRaiseComment> {
                 name: 'RejectReason',
                 hintText: LocaleKeys.reject_reason.tr(),
                 validator: requiredValidator,
+                initialValue: widget.rejectReasonId,
                 onChanged: (int? id) {
                   if (id == -1) {
                     _formKey.currentState!.fields['RejectReason']?.reset();
                   }
                 },
-                itemsData: widget.rejectReasons
+                itemsData: rejectReasons
                     .map(
                       (e) => CmoDropdownItem(
                         id: e.rejectReasonId,
@@ -153,6 +178,7 @@ class _AssessmentRaiseCommentState extends State<AssessmentRaiseComment> {
                   maxLines: 999,
                   autocorrect: true,
                   enableSuggestions: true,
+                  initialValue: widget.comment?.comment,
                 ),
               ),
             ),

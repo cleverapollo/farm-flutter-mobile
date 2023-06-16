@@ -27,6 +27,7 @@ class CmoDropdown<T> extends StatelessWidget {
     this.enabled = true,
     this.inputDecoration,
     this.style,
+    this.initialValue,
   });
 
   final String name;
@@ -39,6 +40,7 @@ class CmoDropdown<T> extends StatelessWidget {
   final bool enabled;
   final InputDecoration? inputDecoration;
   final TextStyle? style;
+  final T? initialValue;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +61,7 @@ class CmoDropdown<T> extends StatelessWidget {
       onChanged: onChanged,
       enabled: enabled,
       elevation: 0,
+      initialValue: initialValue,
       selectedItemBuilder: (BuildContext context) {
         return (itemsData ?? <CmoDropdownItem<T>>[])
             .map(

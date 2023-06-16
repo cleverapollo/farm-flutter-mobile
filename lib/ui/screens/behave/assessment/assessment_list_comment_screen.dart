@@ -1,7 +1,9 @@
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/behave/assessment/assessment_raised_comment.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,6 +43,51 @@ class _AssessmentListCommentScreenState
     setState(() {});
   }
 
+  Future<void> editComment(QuestionComment comment) async {
+    final state = context
+        .read<AssessmentQuestionCubit>()
+        .state;
+    final question = state.filteredQuestions.firstWhereOrNull(
+      (e) => e.questionId == widget.questionId,
+    );
+
+    final assessment = state.assessment;
+
+    final answer = state.answers.firstWhereOrNull(
+      (e) => e.questionId == question?.questionId,
+    );
+
+    final compliance = state.compliances.firstWhereOrNull(
+      (element) => element.complianceId == answer?.complianceId,
+    );
+
+    if (question != null &&
+        assessment != null &&
+        answer != null &&
+        compliance != null) {
+      await AssessmentRaiseComment.push<QuestionComment?>(
+        context,
+        assessment,
+        question,
+        compliance,
+        (comment, rejectReasonId) async {
+          await context.read<AssessmentQuestionCubit>().editComment(
+                comment: comment,
+              );
+          await context.read<AssessmentQuestionCubit>().editRejectReasonId(
+                rejectReasonId: rejectReasonId,
+                questionId: widget.questionId,
+              );
+        },
+        comment,
+        answer.rejectReasonId,
+      );
+
+      setState(() {});
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final comments = context
@@ -71,6 +118,10 @@ class _AssessmentListCommentScreenState
               CmoFilledButton(
                 onTap: () => removeComment(comments[index]),
                 title: LocaleKeys.remove.tr(),
+              ),
+              CmoFilledButton(
+                onTap: () => editComment(comments[index]),
+                title: LocaleKeys.edit.tr(),
               ),
             ],
           );

@@ -23,6 +23,7 @@ class CmoTextField extends StatelessWidget {
     this.inputDecoration,
     this.autocorrect = true,
     this.enableSuggestions = true,
+    this.initialValue,
   });
 
   final Widget? prefixIcon;
@@ -58,7 +59,10 @@ class CmoTextField extends StatelessWidget {
   final InputDecoration? inputDecoration;
 
   final bool enableSuggestions;
+
   final bool autocorrect;
+
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +93,7 @@ class CmoTextField extends StatelessWidget {
       focusNode: focusNode,
       autocorrect: autocorrect,
       enableSuggestions: enableSuggestions,
+      initialValue: initialValue,
     );
   }
 }

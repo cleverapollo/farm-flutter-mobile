@@ -243,12 +243,12 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
   ) async {
     final answer = state.answers
         .firstWhereOrNull((e) => e.questionId == question.questionId);
-
+    final questionAnswer = answer?.copyWith(rejectReasonId: rejectReasonId);
     await cmoDatabaseMasterService.cacheQuestionComment(comment);
 
     await checkComplianceHasRejectReason(
       compliance.hasRejectReason ?? false,
-      answer?.copyWith(rejectReasonId: rejectReasonId),
+      questionAnswer,
     );
     final commentData = await cmoDatabaseMasterService
         .getQuestionCommentByComment(comment.comment);
@@ -464,6 +464,22 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
     final comments = await cmoDatabaseMasterService
         .getQuestionCommentsByAssessmentId(state.assessment?.assessmentId);
     emit(state.copyWith(questionComments: comments));
+  }
+
+  Future<void> editRejectReasonId({
+    required int? rejectReasonId,
+    required int? questionId,
+  }) async {
+    final answer = state.answers.firstWhereOrNull((e) => e.questionId == questionId);
+    if (answer == null) return;
+    await cmoDatabaseMasterService.cacheQuestionAnswer(answer.copyWith(rejectReasonId: rejectReasonId));
+    final answers = await cmoDatabaseMasterService
+        .getQuestionAnswersByCompanyIdAndJobCategoryIdAndAssessmentId(
+      state.assessment?.companyId,
+      state.assessment?.jobCategoryId,
+      state.assessment?.assessmentId,
+    );
+    emit(state.copyWith(answers: answers));
   }
 
   void handleError(Object error) {
