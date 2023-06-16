@@ -10,11 +10,7 @@ import 'package:cmo/model/data/job_description.dart';
 import 'package:cmo/model/data/plantation.dart';
 import 'package:cmo/model/data/team.dart';
 import 'package:cmo/model/data/worker.dart';
-import 'package:cmo/state/assessment_cubit/assessment_cubit.dart';
-import 'package:cmo/state/assessment_list_cubit/assessment_list_cubit.dart';
-import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_item_selected_screen.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_location_screen.dart';
 import 'package:cmo/ui/screens/behave/assessment/widgets/assessment_selected_item.dart';
@@ -106,8 +102,8 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
         workerName:
             '${_worker?.firstName} ${_worker?.surname} (${_worker?.idNumber})',
         location: _locationResult?.address,
-        lat: _locationResult?.latLong.latitude,
-        long: _locationResult?.latLong.longitude,
+        lat: _locationResult?.latLong?.latitude,
+        long: _locationResult?.latLong?.longitude,
       );
       if (context.mounted) {
         final success =

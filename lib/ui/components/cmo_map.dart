@@ -12,19 +12,21 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class CmoMap extends StatefulWidget {
   final LatLng? initialMapCenter;
   final void Function(double, double) onMapMoved;
+  final bool showLatLongFooter;
 
   const CmoMap({
     Key? key,
     this.initialMapCenter,
+    this.showLatLongFooter = true,
     required this.onMapMoved,
   }) : super(key: key);
 
   @override
-  State<CmoMap> createState() => _CmoMapState();
+  State<CmoMap> createState() => CmoMapState();
 }
 
-class _CmoMapState extends State<CmoMap> {
-  late GoogleMapController _mapController;
+class CmoMapState extends State<CmoMap> {
+  late GoogleMapController mapController;
   LatLng? _latLong;
   Timer? _debouceOnCameraMove;
 
@@ -41,18 +43,18 @@ class _CmoMapState extends State<CmoMap> {
   Future _moveMapCameraCurrentLocation() async {
     final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    await _mapController.animateCamera(
+    await mapController.animateCamera(
         CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
   }
 
   Future _moveMapCameraToDefaultLocation() async {
-    return _mapController.animateCamera(CameraUpdate.newLatLng(
+    return mapController.animateCamera(CameraUpdate.newLatLng(
         LatLng(Constants.mapCenter.latitude, Constants.mapCenter.longitude)));
   }
 
   @override
   void dispose() {
-    _mapController.dispose();
+    mapController.dispose();
     super.dispose();
   }
 
@@ -69,7 +71,7 @@ class _CmoMapState extends State<CmoMap> {
                 child: GoogleMap(
                   mapType: MapType.hybrid,
                   onMapCreated: (controller) {
-                    _mapController = controller;
+                    mapController = controller;
                     Geolocator.checkPermission().then((permission) async {
                       if (permission == LocationPermission.whileInUse ||
                           permission == LocationPermission.always) {
@@ -120,34 +122,45 @@ class _CmoMapState extends State<CmoMap> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          child: SizedBox(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: context.colors.grey),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerLeft,
-                          child: GeoLocationText(
-                            latLong: _latLong,
-                          )),
-                    ),
-                    Assets.icons.icLocation.widget,
-                  ],
+        if (widget.showLatLongFooter) MapLatLongFooter(_latLong) else Container(),
+      ],
+    );
+  }
+}
+
+class MapLatLongFooter extends StatelessWidget {
+  final LatLng? latLong;
+
+  const MapLatLongFooter(this.latLong, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      child: SizedBox(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: context.colors.grey),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: GeoLocationText(
+                        latLong: latLong,
+                      )),
                 ),
-              ),
+                Assets.icons.icLocation.widget,
+              ],
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
