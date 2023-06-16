@@ -298,7 +298,28 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
         ..add(cmoBehaveApiService.public(
           currentClientId: '$userDeviceId',
           topic: publishAssessmentTopic,
-          message: assessmentPayLoad.toString(),
+          message: {
+            'AssessmentId': assessmentPayLoad.assessmentId,
+            'CompanyId': assessmentPayLoad.companyId,
+            'ContractorId': assessmentPayLoad.contractorId,
+            'JobCategoryId': assessmentPayLoad.jobCategoryId,
+            'JobDescriptionId': assessmentPayLoad.jobDescriptionId,
+            'Location': assessmentPayLoad.location,
+            'PlantationId': assessmentPayLoad.plantationId,
+            'TeamId': assessmentPayLoad.teamId,
+            'WorkerId': assessmentPayLoad.workerId,
+            'CreateDT': assessmentPayLoad.created,
+            'Lat': assessmentPayLoad.lat,
+            'Lng': assessmentPayLoad.lng,
+            'UserDeviceId': userDeviceId,
+            'UserId': userId,
+            'SignatureDate': assessmentPayLoad.signatureDate,
+            'SignatureImage': assessmentPayLoad.signatureImage,
+            'SignaturePoints': assessmentPayLoad.signaturePoints,
+            'HasSignature': assessmentPayLoad.hasSignature,
+            'AssessmentQuestionAnswers':
+                assessmentPayLoad.assessmentQuestionAnswers,
+          }.toString(),
         ))
         ..add(_databaseMasterService.cacheAssessment(item.copyWith(status: 3)));
     }
