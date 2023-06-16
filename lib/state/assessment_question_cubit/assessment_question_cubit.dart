@@ -239,6 +239,7 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
     QuestionComment comment,
     CompanyQuestion question,
     Compliance compliance,
+    int? rejectReasonId,
   ) async {
     final answer = state.answers
         .firstWhereOrNull((e) => e.questionId == question.questionId);
@@ -247,7 +248,7 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
 
     await checkComplianceHasRejectReason(
       compliance.hasRejectReason ?? false,
-      answer,
+      answer?.copyWith(rejectReasonId: rejectReasonId),
     );
     final commentData = await cmoDatabaseMasterService
         .getQuestionCommentByComment(comment.comment);
@@ -451,6 +452,15 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
     required QuestionComment comment,
   }) async {
     await cmoDatabaseMasterService.removeQuestionComment(comment);
+    final comments = await cmoDatabaseMasterService
+        .getQuestionCommentsByAssessmentId(state.assessment?.assessmentId);
+    emit(state.copyWith(questionComments: comments));
+  }
+
+  Future<void> editComment({
+    required QuestionComment comment,
+  }) async {
+    await cmoDatabaseMasterService.cacheQuestionComment(comment);
     final comments = await cmoDatabaseMasterService
         .getQuestionCommentsByAssessmentId(state.assessment?.assessmentId);
     emit(state.copyWith(questionComments: comments));

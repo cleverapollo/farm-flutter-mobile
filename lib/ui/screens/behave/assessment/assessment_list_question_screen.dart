@@ -73,19 +73,24 @@ class _AssessmentListQuestionScreenState
       final rejectReasons =
           context.read<AssessmentQuestionCubit>().getRejectReasons();
 
-      final comment = await AssessmentRaiseComment.push<QuestionComment?>(
-        context,
-        widget.assessment,
-        question,
-        compliance,
-        rejectReasons,
-      );
-      if (context.mounted && comment != null) {
-        await context.read<AssessmentQuestionCubit>().addCommentFromReasonCode(
-              comment,
-              question,
-              compliance,
-            );
+      if (context.mounted) {
+        await AssessmentRaiseComment.push<QuestionComment?>(
+          context,
+          widget.assessment,
+          question,
+          compliance,
+          rejectReasons,
+          (comment, rejectReasonId) async {
+            await context
+                .read<AssessmentQuestionCubit>()
+                .addCommentFromReasonCode(
+                  comment,
+                  question,
+                  compliance,
+                  rejectReasonId,
+                );
+          },
+        );
       }
     }
 

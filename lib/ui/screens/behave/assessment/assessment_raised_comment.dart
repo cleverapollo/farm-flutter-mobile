@@ -15,12 +15,14 @@ class AssessmentRaiseComment extends StatefulWidget {
     required this.question,
     required this.compliance,
     required this.rejectReasons,
+    required this.onSaveSuccess,
   });
 
   final Assessment assessment;
   final CompanyQuestion question;
   final Compliance? compliance;
   final List<RejectReason> rejectReasons;
+  final void Function(QuestionComment, int?) onSaveSuccess;
 
   static Future<T?> push<T>(
     BuildContext context,
@@ -28,6 +30,7 @@ class AssessmentRaiseComment extends StatefulWidget {
     CompanyQuestion question,
     Compliance? compliance,
     List<RejectReason> rejectReasons,
+    void Function(QuestionComment, int?) onSaveSuccess,
   ) {
     return Navigator.of(context).push<T>(
       MaterialPageRoute(
@@ -36,6 +39,7 @@ class AssessmentRaiseComment extends StatefulWidget {
           question: question,
           compliance: compliance,
           rejectReasons: rejectReasons,
+          onSaveSuccess: onSaveSuccess,
         ),
       ),
     );
@@ -61,14 +65,17 @@ class _AssessmentRaiseCommentState extends State<AssessmentRaiseComment> {
       final rejectReasonId = int.tryParse(value['RejectReason'].toString());
       final comment = value['Comment']?.toString() ?? '';
 
-      Navigator.of(context).pop(
+      widget.onSaveSuccess.call(
         QuestionComment(
           commentId: DateTime.now().millisecondsSinceEpoch,
           comment: comment,
           assessmentId: widget.assessment.assessmentId,
           questionId: widget.question.questionId,
         ),
+        rejectReasonId,
       );
+
+      Navigator.of(context).pop();
     }
   }
 
