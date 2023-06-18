@@ -1,5 +1,4 @@
-// ignore_for_file: invalid_annotation_target, override_on_non_overriding_member
-
+import 'package:cmo/model/question_answer_pay_load/question_answer_pay_load.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -25,4 +24,17 @@ class QuestionAnswer with _$QuestionAnswer {
 
   @override
   Id get id => questionAnswerId ?? Isar.autoIncrement;
+}
+
+extension QuestionAnswerPayLoadExtension on QuestionAnswer {
+  QuestionAnswerPayLoad toPayLoad() {
+    return QuestionAnswerPayLoad(
+        QuestionAnswerId: questionAnswerId,
+        AssessmentId: assessmentId,
+        QuestionId: questionId,
+        ComplianceId: complianceId,
+        RejectReasonId: rejectReasonId,
+        RejectComment: rejectComment,
+        IsQuestionComplete: isQuestionComplete);
+  }
 }

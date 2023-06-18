@@ -1,5 +1,6 @@
 // ignore_for_file: invalid_annotation_target, override_on_non_overriding_member
 
+import 'package:cmo/model/worker_pay_load/worker_pay_load.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -46,4 +47,40 @@ class Worker with _$Worker {
 
   @override
   Id get id => int.tryParse(workerId) ?? Isar.autoIncrement;
+}
+
+extension WorkerExtension on Worker {
+  WorkerPayLoad toPayLoad() {
+    return WorkerPayLoad(
+      WorkerId: workerId,
+      FirstName: firstName,
+      Surname: surname,
+      IdNumber: idNumber,
+      CompanyId: companyId,
+      ContractorId: contractorId,
+      Idint: idint,
+      JobDescriptionId: jobDescriptionId,
+      Dob: dob,
+      ContactNumber: contactNumber,
+      Phoneint: phoneint,
+      Email: email,
+      MunicipalityId: municipalityId,
+      ProvinceId: provinceId,
+      Gender: gender,
+      Image: image,
+      Notes: notes,
+      RaceId: raceId,
+      GenderId: genderId,
+      DisabilityId: disabilityId,
+      Driverint: driverint,
+      DriverExpiryDt: driverExpiryDt,
+      Pdpint: pdpint,
+      PdpExpiryDt: pdpExpiryDt,
+      CreateDt: createDt,
+      UpStringDt: upStringDt,
+      IsLocal: isLocal,
+      IsActive: isActive,
+      FarmId: farmId,
+    );
+  }
 }

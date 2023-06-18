@@ -1,5 +1,6 @@
 // ignore_for_file: invalid_annotation_target, override_on_non_overriding_member
 
+import 'package:cmo/model/question_comment_pay_load/question_comment_pay_load.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -22,4 +23,15 @@ class QuestionComment with _$QuestionComment {
 
   @override
   Id get id => commentId ?? Isar.autoIncrement;
+}
+
+extension QuestionCommentExtension on QuestionComment {
+  QuestionCommentPayLoad toPayLoad() {
+    return QuestionCommentPayLoad(
+      Comment: comment,
+      CommentId: commentId,
+      AssessmentId: assessmentId,
+      QuestionId: questionId,
+    );
+  }
 }

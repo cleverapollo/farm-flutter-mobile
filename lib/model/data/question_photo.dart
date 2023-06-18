@@ -1,5 +1,4 @@
-// ignore_for_file: invalid_annotation_target, override_on_non_overriding_member, avoid_js_rounded_ints
-
+import 'package:cmo/model/question_photo_pay_load/question_photo_pay_load.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
@@ -23,4 +22,14 @@ class QuestionPhoto with _$QuestionPhoto {
 
   @override
   Id get id => fastHash(photoPath.toString());
+}
+
+extension QuestionPhotoExtension on QuestionPhoto {
+  QuestionPhotoPayLoad toPayLoad() {
+    return QuestionPhotoPayLoad(
+        PhotoId: photoId,
+        AssessmentId: assessmentId,
+        QuestionId: questionId,
+        PhotoPath: photoPath);
+  }
 }
