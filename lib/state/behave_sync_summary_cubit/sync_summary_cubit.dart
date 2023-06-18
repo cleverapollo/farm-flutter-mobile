@@ -1,37 +1,14 @@
 import 'dart:convert';
 
 import 'package:cmo/di.dart';
-import 'package:cmo/model/assessment.dart';
-import 'package:cmo/model/assessment_question_answers/assessment_question_answers.dart';
-import 'package:cmo/model/company.dart';
-import 'package:cmo/model/data/company_question.dart';
-import 'package:cmo/model/data/compliance.dart';
-import 'package:cmo/model/data/contractor.dart';
-import 'package:cmo/model/data/course.dart';
-import 'package:cmo/model/data/impact_caused.dart';
-import 'package:cmo/model/data/impact_on.dart';
-import 'package:cmo/model/data/job_category.dart';
-import 'package:cmo/model/data/job_description.dart';
-import 'package:cmo/model/data/job_element.dart';
-import 'package:cmo/model/data/mmm.dart';
-import 'package:cmo/model/data/municipality.dart';
-import 'package:cmo/model/data/pdca.dart';
-import 'package:cmo/model/data/plantation.dart';
-import 'package:cmo/model/data/province.dart';
+import 'package:cmo/model/assessment_pay_load/assessment_pay_load.dart';
+import 'package:cmo/model/assessment_question_answers_pay_load/assessment_question_answers.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
-import 'package:cmo/model/data/reject_reason.dart';
-import 'package:cmo/model/data/schedule.dart';
-import 'package:cmo/model/data/schedule_activity.dart';
-import 'package:cmo/model/data/severity.dart';
-import 'package:cmo/model/data/speqs.dart';
-import 'package:cmo/model/data/team.dart';
-import 'package:cmo/model/data/training_provider.dart';
-import 'package:cmo/model/data/unit.dart';
-import 'package:cmo/model/data/worker.dart';
-import 'package:cmo/model/master_data_message.dart';
+import 'package:cmo/model/model.dart';
+import 'package:cmo/model/question_comment_pay_load/question_comment_pay_load.dart';
+import 'package:cmo/model/question_photo_pay_load/question_photo_pay_load.dart';
 import 'package:cmo/model/sync_summary_model.dart';
-import 'package:cmo/model/user_info.dart';
 import 'package:cmo/state/behave_sync_summary_cubit/sync_summary_state.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
@@ -39,8 +16,6 @@ import 'package:cmo/utils/json_converter.dart';
 import 'package:cmo/utils/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:cmo/model/assessment_pay_load/assessment_pay_load.dart';
 
 class SyncSummaryCubit extends Cubit<SyncSummaryState> {
   SyncSummaryCubit(this.userDeviceCubit) : super(SyncSummaryState());
@@ -160,6 +135,10 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     try {
       if (state.isLoadingSync || state.isLoading) return;
 
+      emit(
+        state.copyWith(isLoadingSync: true, syncMessage: 'Syncing...'),
+      );
+
       await userDeviceCubit.createBehaveUserDevice();
 
       final userDeviceId = userDeviceCubit.data?.userDeviceId;
@@ -206,10 +185,6 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     required int userDeviceId,
     required int userId,
   }) async {
-    emit(
-      state.copyWith(isLoadingSync: true, syncMessage: 'Syncing...'),
-    );
-
     final publicWorkerTopic = 'Cmo.MaserData.Worker.$companyId.$userDeviceId';
     final publishAssessmentTopic =
         'Cmo.Assessment.Complete.$companyId.$userDeviceId';
@@ -226,120 +201,115 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     // delay after created system event to make sure that the data is ready to pull
     await Future.delayed(const Duration(seconds: 3), () {});
 
-    final futures = <Future<dynamic>>[];
+    final workerFutures = <Future<dynamic>>[];
+    final assessmentFutures = <Future<dynamic>>[];
+
+    final workerMessages = <Message>[];
+    final assessmentMessages = <Message>[];
 
     emit(
       state.copyWith(syncMessage: 'Syncing Workers...'),
     );
 
-    // for (final item in workers) {
-    //   futures
-    //     ..add(cmoBehaveApiService.public(
-    //       currentClientId: '$userDeviceId',
-    //       topic: publicWorkerTopic,
-    //       message: item.toString(),
-    //     ))
-    //     ..add(
-    //         _databaseMasterService.cacheWorker(item.copyWith(isLocal: false)));
-    // }
+    for (final worker in workers) {
+      workerMessages
+        ..clear()
+        ..add(
+          Message(body: jsonEncode(worker.toPayLoad())),
+        );
+      workerFutures
+        ..add(
+          cmoBehaveApiService.public(
+              currentClientId: '$userDeviceId',
+              topic: publicWorkerTopic,
+              messages: workerMessages),
+        )
+        ..add(
+          _databaseMasterService.updateWorkerSyncStatus(
+              worker.companyId!, worker.workerId, false),
+        );
+    }
+
+    await Future.wait(workerFutures);
 
     emit(
       state.copyWith(syncMessage: 'Syncing Assessments...'),
     );
 
-    final messages = <Message>[];
-
-    for (final item in assessments) {
+    for (final assessment in assessments) {
       var assessmentPayLoad = const AssessmentPayLoad();
       assessmentPayLoad = assessmentPayLoad.copyWith(
-        assessmentId: DateTime.now().millisecondsSinceEpoch,
-        companyId: item.companyId,
-        contractorId: item.contractorId,
-        jobCategoryId: item.jobCategoryId,
-        jobDescriptionId: item.jobDescriptionId,
-        location: item.location,
-        plantationId: item.plantationId,
-        teamId: item.teamId,
-        workerId: item.workerId,
-        created: item.createDT,
-        lat: item.lat,
-        lng: item.long,
-        userDeviceId: userDeviceId,
-        userId: userId,
-        signatureDate: item.signatureDate,
-        signatureImage: item.signatureImage,
-        signaturePoints: item.signaturePoints,
-        hasSignature: item.hasSignature,
+        AssessmentId: DateTime.now().millisecondsSinceEpoch,
+        CompanyId: assessment.companyId,
+        ContractorId: assessment.contractorId,
+        JobCategoryId: assessment.jobCategoryId,
+        JobDescriptionId: assessment.jobDescriptionId,
+        Location: assessment.location,
+        PlantationId: assessment.plantationId,
+        TeamId: assessment.teamId,
+        WorkerId: assessment.workerId,
+        Created: assessment.createDT,
+        Lat: assessment.lat,
+        Lng: assessment.long,
+        UserDeviceId: userDeviceId,
+        UserId: userId,
+        SignatureDate: assessment.signatureDate,
+        SignatureImage: assessment.signatureImage,
+        SignaturePoints: assessment.signaturePoints,
+        HasSignature: assessment.hasSignature,
       );
 
-      var assessmentQuestionAnswers = const AssessmentQuestionAnswers();
+      var assessmentQuestionAnswers = const AssessmentQuestionAnswersPayLoad();
 
       final questionAnswers = await cmoDatabaseMasterService
           .getQuestionAnswersByCompanyIdAndJobCategoryIdAndAssessmentId(
-              companyId, item.jobCategoryId, item.assessmentId);
+              companyId, assessment.jobCategoryId, assessment.assessmentId);
 
-      final questionComment = <QuestionComment>[];
-      final questionPhoto = <QuestionPhoto>[];
+      final questionCommentPayLoad = <QuestionCommentPayLoad>[];
+      final questionPhotoPayLoad = <QuestionPhotoPayLoad>[];
 
       for (final question in questionAnswers) {
-        final questionCommentResult = await cmoDatabaseMasterService
-            .getQuestionComments(item.assessmentId!, question.questionId!);
+        final questionCommentResult =
+            await cmoDatabaseMasterService.getQuestionComments(
+                assessment.assessmentId!, question.questionId!);
 
-        questionComment.addAll(questionCommentResult);
+        questionCommentPayLoad
+            .addAll(questionCommentResult.map((e) => e.toPayLoad()).toList());
 
         final questionPhotoResult = await cmoDatabaseMasterService
             .getQuestionPhotosByAssessmentIdAndQuestionId(
-                item.assessmentId!, question.questionId!);
+                assessment.assessmentId!, question.questionId!);
 
-        questionPhoto.addAll(questionPhotoResult);
+        questionPhotoPayLoad
+            .addAll(questionPhotoResult.map((e) => e.toPayLoad()).toList());
       }
 
+      final questionAnswerPayLoad =
+          questionAnswers.map((e) => e.toPayLoad()).toList();
+
       assessmentQuestionAnswers = assessmentQuestionAnswers.copyWith(
-        questionAnswer: questionAnswers,
-        questionComment: questionComment,
-        questionPhoto: questionPhoto,
+        QuestionAnswer: questionAnswerPayLoad,
+        QuestionComment: questionCommentPayLoad,
+        QuestionPhoto: questionPhotoPayLoad,
       );
 
       assessmentPayLoad = assessmentPayLoad.copyWith(
-        assessmentQuestionAnswers: assessmentQuestionAnswers,
+        AssessmentQuestionAnswers: assessmentQuestionAnswers,
       );
 
-      messages.add(Message(
-        body: jsonEncode({
-          'UserId': userId,
-          'UserDeviceId': userDeviceId,
-          'AssessmentId': assessmentPayLoad.assessmentId,
-          'CompanyId': assessmentPayLoad.companyId,
-          'ContractorId': assessmentPayLoad.contractorId,
-          'JobCategoryId': assessmentPayLoad.jobCategoryId,
-          'JobDescriptionId': assessmentPayLoad.jobDescriptionId,
-          'Location': assessmentPayLoad.location,
-          'PlantationId': assessmentPayLoad.plantationId,
-          'TeamId': assessmentPayLoad.teamId,
-          'WorkerId': assessmentPayLoad.workerId,
-          'Created': assessmentPayLoad.created,
-          'Lat': assessmentPayLoad.lat,
-          'Lng': assessmentPayLoad.lng,
-          'SignatureDate': assessmentPayLoad.signatureDate,
-          'SignatureImage': assessmentPayLoad.signatureImage,
-          'SignaturePoints': assessmentPayLoad.signaturePoints,
-          'HasSignature': assessmentPayLoad.hasSignature,
-          'AssessmentQuestionAnswers':
-              assessmentPayLoad.assessmentQuestionAnswers,
-        }),
-      ));
+      assessmentMessages.add(Message(body: jsonEncode(assessmentPayLoad)));
 
-      futures.add(
-          _databaseMasterService.cacheAssessment(item.copyWith(status: 3)));
+      assessmentFutures.add(_databaseMasterService
+          .cacheAssessment(assessment.copyWith(status: 3)));
     }
 
-    futures.add(cmoBehaveApiService.public(
+    assessmentFutures.add(cmoBehaveApiService.public(
       currentClientId: '$userDeviceId',
       topic: publishAssessmentTopic,
-      messages: messages,
+      messages: assessmentMessages,
     ));
 
-    await Future.wait(futures);
+    await Future.wait(assessmentFutures);
   }
 
   Future<void> syncMasterData(int userDeviceId) async {
