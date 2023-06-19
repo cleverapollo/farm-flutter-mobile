@@ -1,17 +1,13 @@
-import 'package:cmo/di.dart';
-import 'package:cmo/enum/enum.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/components/entity_component/entity_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/entity/rm_entity_group_widget.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GlobalEntityScreen extends StatefulWidget {
-
   const GlobalEntityScreen({super.key});
 
   static dynamic push(BuildContext context) {
@@ -36,6 +32,7 @@ class GlobalEntityScreen extends StatefulWidget {
 
 class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
   dynamic selectedResourceManagerUnit;
+  bool isCheckingUserRole = true;
 
   @override
   void initState() {
@@ -49,54 +46,52 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
             haveBehave: haveBehave,
             havePerform: havePerform,
           );
+      final userInfoState = context.read<UserInfoCubit>().state;
+      if (userInfoState.isFarmer) {
+        Navigator.of(context).pushReplacement(
+          EntityFarmerScreen.pageRoute(),
+        );
+        return;
+      }
+      if (!userInfoState.isRM) {
+        EntityBehaveScreen.push(
+          context,
+        );
+        return;
+      }
+      setState(() {
+        isCheckingUserRole = false;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<UserInfoCubit, UserInfoState, UserInfoState>(
-      selector: (state) => state,
-      builder: (context, state) {
-        Widget widget;
-        if (state.loading) {
-          widget = const Center(
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-            ),
-          );
-        }
+    late Widget widget;
+    if (isCheckingUserRole) {
+      widget = const Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+        ),
+      );
+    } else {
+      final state = context.read<UserInfoCubit>().state;
 
-        if (state.error != null && kDebugMode) {
-          widget = Center(
-            child: Text(
-              '${state.error}',
-            ),
-          );
-        }
-
-        if (state.isFarmer) {
-          widget = _farmerWidget();
-        }
-
-        if (state.isRM) {
-          if (state.isBehave) {
-            widget = _buildPerformAndBehaveWidget();
-          } else {
-            widget = _performWidget();
-          }
+      if (state.isRM) {
+        if (state.isBehave) {
+          widget = _buildPerformAndBehaveWidget();
         } else {
-          widget = _behaveWidget();
+          widget = _performWidget();
         }
-
-        return Scaffold(
-          appBar: state.isRM && state.isBehave
-              ? CmoAppBar(
-                  title: LocaleKeys.entity.tr(),
-                )
-              : null,
-          body: state.isRM && state.isBehave ? widget : SafeArea(child: widget),
-        );
-      },
+      } else {
+        widget = Container();
+      }
+    }
+    return Scaffold(
+      appBar: CmoAppBar(
+        title: LocaleKeys.entity.tr(),
+      ),
+      body: SafeArea(child: widget),
     );
   }
 
@@ -140,33 +135,6 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
       children: [
         _performWidget(),
         _behaveWidget(),
-      ],
-    );
-  }
-
-  Widget _farmerWidget() {
-    return Column(
-      children: [
-        Divider(
-          height: 1,
-          color: context.colors.grey,
-          indent: 23,
-          endIndent: 23,
-        ),
-        EntityWidget(
-          LocaleKeys.site.tr(),
-          onTap: () async {
-            await Navigator.of(context).pushReplacement(
-              EntityFarmerScreen.pageRoute(),
-            );
-          },
-        ),
-        Divider(
-          height: 1,
-          color: context.colors.grey,
-          indent: 23,
-          endIndent: 23,
-        ),
       ],
     );
   }
