@@ -1914,6 +1914,17 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<List<Farm>?> getUnsyncedFarmCountByRegionalManagerUnitId(int resourceManagerUnit) async {
+    final db = await _db();
+    return db.farms
+        .filter()
+        .regionalManagerUnitIdEqualTo(resourceManagerUnit)
+        .isProspectMemberEqualTo(true)
+        .isMasterDataSyncedEqualTo(0)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
   Future<List<RMStakeHolder>?> getActiveStakeholderWrappersCountByGroupSchemeId(int groupSchemeId) async {
     final db = await _db();
     final groupSchemeStakeHolders = await db.groupSchemeStakeHolders

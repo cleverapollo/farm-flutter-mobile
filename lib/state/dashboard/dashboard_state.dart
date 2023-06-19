@@ -65,11 +65,15 @@ class RMDashboardInfo {
   int incompletedMembers;
   int totalMembers;
   int stakeHolders;
+  int memberOutstanding;
+  int unsynced;
 
   RMDashboardInfo({
     this.onboardedMembers = 0,
     this.incompletedMembers = 0,
     this.totalMembers = 0,
     this.stakeHolders = 0,
+    this.memberOutstanding = 0,
+    this.unsynced = 0,
   });
 }

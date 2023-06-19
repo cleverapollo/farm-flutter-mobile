@@ -100,6 +100,9 @@ class _ResourceManagerDashboardScreenState
                             title: LocaleKeys.onboarded.tr(), value: '${state.totalCompletedAssessments}/${state.totalAssessments}'),
                         CmoCardItem(
                             title: LocaleKeys.incomplete.tr(), value: '${state.totalIncompleteAssessments}/${state.totalAssessments}'),
+                        CmoCardItemHighlighted(
+                            title: LocaleKeys.membersOutstanding.tr(),
+                            value: '${state.rmDashboardInfo?.memberOutstanding}/${state.rmDashboardInfo?.totalMembers}'),
                       ],
                     );
                   },
@@ -140,11 +143,17 @@ class _ResourceManagerDashboardScreenState
                 onTap: () {
                   ResourceManagerSyncSummaryScreen.push(context);
                 },
-                child: CmoCard(
-                  content: [
-                    CmoCardHeader(title: LocaleKeys.sync.tr()),
-                    CmoCardItem(title: LocaleKeys.synced.tr(), value: '5'),
-                  ],
+                child: BlocSelector<DashboardCubit, DashboardState,
+                    RMDashboardInfo?>(
+                  selector: (state) => state.rmDashboardInfo,
+                  builder: (context, dashboardInfo) {
+                    return CmoCard(
+                      content: [
+                        CmoCardHeader(title: LocaleKeys.sync.tr()),
+                        CmoCardItem(title: LocaleKeys.audits.tr(), value: (dashboardInfo?.unsynced ?? 0).toString()),
+                      ],
+                    );
+                  },
                 ),
               ),
             ],

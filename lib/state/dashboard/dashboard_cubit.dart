@@ -65,6 +65,10 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     if (activeUserInfo?.userId == null) {
       return;
     }
+    final resourceManagerUnit = await configService.getActiveRegionalManager();
+    if (resourceManagerUnit == null) {
+      return;
+    }
     final service = cmoDatabaseMasterService;
     final totalAssessments = await service.getAssessmentsByUserId(
       userId: activeUserInfo!.userId!,
@@ -75,11 +79,21 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
         previousValue + (element.completed == true ? 1 : 0));
     final totalIncompleteAssessments = totalAssessments.length -
         totalCompletedAssessments;
+
+    state.rmDashboardInfo?.unsynced = totalCompletedAssessments -
+        totalAssessments.fold(
+            0,
+            (previousValue, element) =>
+                previousValue + (element.synced == true ? 1 : 0));
+    state.rmDashboardInfo?.memberOutstanding =
+        (await service.getUnsyncedFarmCountByRegionalManagerUnitId(
+            resourceManagerUnit!.regionalManagerUnitId!))?.length ?? 0;
     emit(
       state.copyWith(
-        totalAssessments: totalAssessments.length,
-        totalIncompleteAssessments: totalCompletedAssessments,
-        totalCompletedAssessments: totalIncompleteAssessments,
+          totalAssessments: totalAssessments.length,
+          totalIncompleteAssessments: totalCompletedAssessments,
+          totalCompletedAssessments: totalIncompleteAssessments,
+          rmDashboardInfo: state.rmDashboardInfo,
       ),
     );
   }
