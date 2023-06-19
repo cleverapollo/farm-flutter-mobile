@@ -1902,7 +1902,7 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<StakeHolder>?> getActiveStakeholderWrappersCountByGroupSchemeId(int groupSchemeId) async {
+  Future<List<RMStakeHolder>?> getActiveStakeholderWrappersCountByGroupSchemeId(int groupSchemeId) async {
     final db = await _db();
     final groupSchemeStakeHolders = await db.groupSchemeStakeHolders
         .filter()
@@ -1911,15 +1911,15 @@ class CmoDatabaseMasterService {
     if (groupSchemeStakeHolders == null) {
       return null;
     }
-    final stakeHolders = <StakeHolder>[];
+    final stakeHolders = <RMStakeHolder>[];
     for (final item in groupSchemeStakeHolders) {
       final id = int.tryParse(item.stakeHolderId ?? '');
       if (id == null) {
         continue;
       }
-      stakeHolders.addAll(await db.stakeHolders
+      stakeHolders.addAll(await db.rMStakeHolders
           .filter()
-          .stakeHolderIdEqualTo(id)
+          .stakeHolderIdEqualTo(id.toString())
           .findAll());
     }
     return stakeHolders;

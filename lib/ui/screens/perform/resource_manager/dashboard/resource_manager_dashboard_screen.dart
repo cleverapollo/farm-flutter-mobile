@@ -62,7 +62,7 @@ class _ResourceManagerDashboardScreenState
             children: [
               CmoTappable(
                 onTap: () {
-                  context.read<DashboardCubit>().getResourceManagerMembers();
+                  MemberManagementScreen.push(context);
                 },
                 child: BlocSelector<DashboardCubit, DashboardState,
                     RMDashboardInfo?>(
@@ -106,8 +106,7 @@ class _ResourceManagerDashboardScreenState
               const SizedBox(height: 20),
               CmoTappable(
                 onTap: () {
-                  //StakeHolderManagementScreen.push(context);
-                  context.read<DashboardCubit>().initializeRM();
+                  StakeHolderManagementScreen.push(context);
                 },
                 child: BlocSelector<DashboardCubit, DashboardState,
                     RMDashboardInfo?>(
