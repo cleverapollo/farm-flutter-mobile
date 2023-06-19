@@ -89,18 +89,20 @@ class _ResourceManagerDashboardScreenState
                 onTap: () {
                   AuditManagementScreen.push(context);
                 },
-                child: CmoCard(
-                  content: [
-                    CmoCardHeader(title: LocaleKeys.audit_s.tr()),
-                    CmoCardItem(
-                        title: LocaleKeys.onboarded.tr(), value: '5/10'),
-                    CmoCardItem(
-                        title: LocaleKeys.incomplete.tr(), value: '8/10'),
-                    CmoCardItemHighlighted(
-                      title: LocaleKeys.membersOutstanding.tr(),
-                      value: '8/10',
-                    ),
-                  ],
+                child: BlocSelector<DashboardCubit, DashboardState,
+                    DashboardState>(
+                  selector: (state) => state,
+                  builder: (context, dashboardInfo) {
+                    return CmoCard(
+                      content: [
+                        CmoCardHeader(title: LocaleKeys.audit_s.tr()),
+                        CmoCardItem(
+                            title: LocaleKeys.onboarded.tr(), value: '${state.totalCompletedAssessments}/${state.totalAssessments}'),
+                        CmoCardItem(
+                            title: LocaleKeys.incomplete.tr(), value: '${state.totalIncompleteAssessments}/${state.totalAssessments}'),
+                      ],
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 20),
@@ -125,14 +127,15 @@ class _ResourceManagerDashboardScreenState
                 ),
               ),
               const SizedBox(height: 20),
-              CmoCard(
-                content: [
-                  CmoCardHeader(title: LocaleKeys.cars.tr()),
-                  CmoCardItem(title: LocaleKeys.opened.tr(), value: '5'),
-                  CmoCardItem(title: LocaleKeys.overdue.tr(), value: '5'),
-                ],
-              ),
-              const SizedBox(height: 20),
+              // Hide it
+              // CmoCard(
+              //   content: [
+              //     CmoCardHeader(title: LocaleKeys.cars.tr()),
+              //     CmoCardItem(title: LocaleKeys.opened.tr(), value: '5'),
+              //     CmoCardItem(title: LocaleKeys.overdue.tr(), value: '5'),
+              //   ],
+              // ),
+              // const SizedBox(height: 20),
               CmoTappable(
                 onTap: () {
                   ResourceManagerSyncSummaryScreen.push(context);

@@ -1188,6 +1188,18 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<List<Assessment>> getAssessmentsByUserId({
+    required int userId,
+  }) async {
+    final db = await _db();
+    return db.assessments
+        .filter()
+        .userIdEqualTo(userId)
+        .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
+        .findAll();
+  }
+
   Future<List<Assessment>> getAllAssessmentsStarted() async {
     final db = await _db();
     return db.assessments

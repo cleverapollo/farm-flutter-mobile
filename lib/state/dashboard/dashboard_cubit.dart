@@ -14,6 +14,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     try {
       await getResourceManagerMembers();
       await getStakeHolders();
+      await RMGetTotalAssessments();
       final service = cmoDatabaseMasterService;
       final totalStakeholders = await service.getStakeHolders();
       emit(state.copyWith(totalStakeholders: totalStakeholders.length));
@@ -55,6 +56,30 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
         totalAssessments: totalAssessments.length,
         totalIncompleteAssessments: totalIncompleteAssessments.length,
         totalCompletedAssessments: totalCompletedAssessments.length,
+      ),
+    );
+  }
+
+  Future<void> RMGetTotalAssessments() async {
+    final activeUserInfo = await configService.getActiveUser();
+    if (activeUserInfo?.userId == null) {
+      return;
+    }
+    final service = cmoDatabaseMasterService;
+    final totalAssessments = await service.getAssessmentsByUserId(
+      userId: activeUserInfo!.userId!,
+    );
+    final totalCompletedAssessments = totalAssessments.fold(
+        0,
+            (previousValue, element) =>
+        previousValue + (element.completed == true ? 1 : 0));
+    final totalIncompleteAssessments = totalAssessments.length -
+        totalCompletedAssessments;
+    emit(
+      state.copyWith(
+        totalAssessments: totalAssessments.length,
+        totalIncompleteAssessments: totalCompletedAssessments,
+        totalCompletedAssessments: totalIncompleteAssessments,
       ),
     );
   }
