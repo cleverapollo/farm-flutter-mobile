@@ -8,14 +8,14 @@ class AuditQuestionCommentState extends Equatable {
     this.rejectReasons = const <RejectReason>[],
   });
 
-  final AuditQuestion? question;
+  final FarmQuestion? question;
   final AuditQuestionComment? questionComment;
   final bool loading;
   final List<RejectReason> rejectReasons;
 
   AuditQuestionCommentState copyWith({
     Audit? audit,
-    AuditQuestion? question,
+    FarmQuestion? question,
     AuditQuestionComment? questionComment,
     bool? loading,
     List<RejectReason>? rejectReasons,

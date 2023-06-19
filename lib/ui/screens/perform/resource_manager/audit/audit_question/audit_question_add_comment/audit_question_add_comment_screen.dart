@@ -17,11 +17,11 @@ class AuditQuestionAddCommentScreen extends StatefulWidget {
     required this.auditQuestion,
   });
 
-  final AuditQuestion auditQuestion;
+  final FarmQuestion auditQuestion;
 
   static Future<bool?> push(
     BuildContext context, {
-    required AuditQuestion auditQuestion,
+    required FarmQuestion auditQuestion,
   }) async {
     return Navigator.of(context).push(
       MaterialPageRoute(
@@ -39,7 +39,7 @@ class AuditQuestionAddCommentScreen extends StatefulWidget {
 class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentScreen> {
   Timer? _debounceInputTimer;
 
-  late AuditQuestion auditQuestion;
+  late FarmQuestion auditQuestion;
   final _formKey = GlobalKey<FormBuilderState>();
 
   String commentValue = '';

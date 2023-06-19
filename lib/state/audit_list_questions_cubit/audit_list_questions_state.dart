@@ -3,11 +3,11 @@ part of 'audit_list_questions_cubit.dart';
 class AuditListQuestionsState extends Equatable {
   const AuditListQuestionsState({
     this.audit,
-    this.questions = const <AuditQuestion>[],
-    this.answers = const <AuditQuestionAnswer>[],
+    this.questions = const <FarmQuestion>[],
+    this.filteredQuestions = const <FarmQuestion>[],
+    this.answers = const <QuestionAnswer>[],
     this.rejectReasons = const <RejectReason>[],
-    this.filteredQuestions = const <AuditQuestion>[],
-    this.compliances = const <AuditCompliance>[],
+    this.compliances = const <Compliance>[],
     this.principles = const <Principle>[],
     this.indicators = const <Indicator>[],
     this.cars = const <Car>[],
@@ -24,10 +24,10 @@ class AuditListQuestionsState extends Equatable {
   });
 
   final Audit? audit;
-  final List<AuditQuestion> questions;
-  final List<AuditQuestionAnswer> answers;
-  final List<AuditQuestion> filteredQuestions;
-  final List<AuditCompliance> compliances;
+  final List<FarmQuestion> questions;
+  final List<FarmQuestion> filteredQuestions;
+  final List<QuestionAnswer> answers;
+  final List<Compliance> compliances;
   final List<RejectReason> rejectReasons;
   final List<Principle> principles;
   final List<Criteria> criterias;
@@ -45,11 +45,11 @@ class AuditListQuestionsState extends Equatable {
 
   AuditListQuestionsState copyWith({
     Audit? audit,
+    List<FarmQuestion>? questions,
+    List<FarmQuestion>? filteredQuestions,
     List<RejectReason>? rejectReasons,
-    List<AuditQuestion>? questions,
-    List<AuditQuestion>? filteredQuestions,
-    List<AuditQuestionAnswer>? answers,
-    List<AuditCompliance>? compliances,
+    List<QuestionAnswer>? answers,
+    List<Compliance>? compliances,
     List<Principle>? principles,
     List<Car>? cars,
     List<Indicator>? indicators,

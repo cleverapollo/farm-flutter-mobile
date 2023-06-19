@@ -12,7 +12,7 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
   AuditQuestionCommentCubit() : super(const AuditQuestionCommentState());
 
   Future<void> initialize({
-    required AuditQuestion auditQuestion,
+    required FarmQuestion auditQuestion,
   }) async {
     try {
       emit(state.copyWith(question: auditQuestion));
@@ -26,24 +26,24 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
   }
 
   Future<void> getListAuditQuestionComment() async {
-    final questionComment = await cmoDatabaseMasterService.getAuditQuestionComments(
-      auditId: state.question?.auditId,
-      questionId: state.question?.questionId,
-    );
-
-    if (questionComment.isEmpty) {
-      questionComment.add(
-        AuditQuestionComment(
-          questionId: state.question?.questionId,
-          auditId: state.question?.auditId,
-          answerId: DateTime.now().millisecondsSinceEpoch,
-          commentId: DateTime.now().millisecondsSinceEpoch,
-          createDT: DateTime.now().toString(),
-        ),
-      );
-    }
-
-    emit(state.copyWith(questionComment: questionComment.first));
+    // final questionComment = await cmoDatabaseMasterService.getAuditQuestionComments(
+    //   auditId: state.question?.auditId,
+    //   questionId: state.question?.questionId,
+    // );
+    //
+    // if (questionComment.isEmpty) {
+    //   questionComment.add(
+    //     AuditQuestionComment(
+    //       questionId: state.question?.questionId,
+    //       auditId: state.question?.auditId,
+    //       answerId: DateTime.now().millisecondsSinceEpoch,
+    //       commentId: DateTime.now().millisecondsSinceEpoch,
+    //       createDT: DateTime.now().toString(),
+    //     ),
+    //   );
+    // }
+    //
+    // emit(state.copyWith(questionComment: questionComment.first));
   }
 
   Future<bool> addComment({

@@ -1651,6 +1651,20 @@ class CmoDatabaseMasterService {
     return db.farms.put(item);
   }
 
+  Future<List<FarmQuestion>?> getFarmQuestions({
+    int? rmuId,
+    int? auditTemplateId,
+  }) async {
+    if (rmuId == null || auditTemplateId == null) return null;
+    final db = await _db();
+    return db.farmQuestions
+        .filter()
+        .regionalManagerUnitIdEqualTo(rmuId)
+        .auditTemplateIdEqualTo(auditTemplateId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
   Future<List<Farm>?> getFarmByRmuId(int? rmuId) async {
     if (rmuId == null) return null;
     final db = await _db();
@@ -1663,8 +1677,17 @@ class CmoDatabaseMasterService {
 
   Future<List<Compliance>> getCompliances() async {
     final db = await _db();
-
     return db.compliances.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<Compliance>?> getCompliancesByRmuId({int? rmuId}) async {
+    if (rmuId == null) return null;
+    final db = await _db();
+    return db.compliances
+        .filter()
+        .regionalManagerUnitIdEqualTo(rmuId)
+        .isActiveEqualTo(true)
+        .findAll();
   }
 
   Future<int> cacheTeam(Team item) async {
@@ -2211,6 +2234,51 @@ class CmoDatabaseMasterService {
     return <QuestionAnswer>[];
   }
 
+  Future<List<QuestionAnswer>>
+      getQuestionAnswersByRmuIdAndAuditTemplateIdAndAssessmentId({
+    int? rmuId,
+    int? auditTemplateId,
+    int? assessmentId,
+  }) async {
+    if (rmuId == null) return <QuestionAnswer>[];
+    final db = await _db();
+    try {
+      final questionAnswers = <QuestionAnswer>[];
+      final farmQuestions = await getFarmQuestions(
+        rmuId: rmuId,
+        auditTemplateId: auditTemplateId,
+      );
+
+      if (farmQuestions == null) return <QuestionAnswer>[];
+
+      for (final question in farmQuestions) {
+        final qAs = await db.questionAnswers
+            .filter()
+            .assessmentIdEqualTo(assessmentId)
+            .questionIdEqualTo(question.questionId)
+            .findAll();
+        QuestionAnswer? qA = qAs.isNotEmpty ? qAs.last : null;
+
+        final questionAnswer = QuestionAnswer(
+          assessmentId: assessmentId,
+          questionId: question.questionId,
+          complianceId: qA?.complianceId ?? 0,
+          isQuestionComplete: qA?.isQuestionComplete,
+          questionAnswerId: qA?.questionAnswerId,
+          rejectReasonId: qA?.rejectReasonId,
+          rejectComment: qA?.rejectComment,
+        );
+
+        questionAnswers.add(questionAnswer);
+      }
+
+      return questionAnswers;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <QuestionAnswer>[];
+  }
 
   Future<void> removeQuestionAnswer(QuestionAnswer answer) async {
     final db = await _db();

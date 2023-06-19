@@ -26,33 +26,3 @@ class AuditCompliance with _$AuditCompliance {
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
   }) = _AuditCompliance;
 }
-
-extension AuditComplianceExtensions on AuditCompliance {
-  AuditComplianceEnum get complianceEnum {
-    switch (complianceId) {
-      case 0:
-        return AuditComplianceEnum.unknown;
-      case 1:
-        return AuditComplianceEnum.n;
-      case 2:
-        return AuditComplianceEnum.nc;
-      case 3:
-        return AuditComplianceEnum.na;
-      default:
-        return AuditComplianceEnum.unknown;
-    }
-  }
-
-  int complianceType(AuditComplianceEnum type) {
-    switch (type) {
-      case AuditComplianceEnum.unknown:
-        return 0;
-      case AuditComplianceEnum.n:
-        return 1;
-      case AuditComplianceEnum.nc:
-        return 2;
-      case AuditComplianceEnum.na:
-        return 3;
-    }
-  }
-}

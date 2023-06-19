@@ -19,12 +19,12 @@ class AuditQuestionItem extends StatelessWidget {
     this.answer,
   });
 
-  final AuditQuestion question;
-  final AuditQuestionAnswer? answer;
-  final List<AuditCompliance> compliances;
+  final FarmQuestion question;
+  final QuestionAnswer? answer;
+  final List<Compliance> compliances;
   final VoidCallback viewListPhoto;
   final VoidCallback viewComment;
-  final void Function(AuditCompliance) addAnswer;
+  final void Function(Compliance) addAnswer;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,7 @@ class AuditQuestionItem extends StatelessWidget {
                         child: CmoCircelButton(
                           title: '${compliance.complianceName}',
                           color: answer != null && answer?.complianceId == compliance.complianceId
-                              ? getComplianceActiveColor(context, compliance)
+                              ? context.colors.yellow
                               : context.colors.white,
                         ),
                       ),
@@ -73,54 +73,41 @@ class AuditQuestionItem extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              if (answer?.complianceId == AuditComplianceEnum.nc.data)
-                Row(
-                  children: [
-                    CmoTappable(
-                      onTap: viewListPhoto,
-                      child: CmoCircelIconButton(
-                        color: (answer?.havePhoto ?? false) ? context.colors.green : Colors.transparent,
-                        icon: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Assets.icons.icCamera.svgBlack,
-                        ),
+              Row(
+                children: [
+                  CmoTappable(
+                    onTap: viewListPhoto,
+                    child: CmoCircelIconButton(
+                      // color: (answer?.havePhoto ?? false)
+                      //     ? context.colors.green
+                      //     : Colors.transparent,
+                      icon: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: Assets.icons.icCamera.svgBlack,
                       ),
                     ),
-                    const SizedBox(width: 16),
-                    CmoTappable(
-                      onTap: viewComment,
-                      child: CmoCircelIconButton(
-                        color: (answer?.haveComment ?? false) ? context.colors.green : Colors.transparent,
-                        icon: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Assets.icons.icComment.svgBlack,
-                        ),
+                  ),
+                  const SizedBox(width: 16),
+                  CmoTappable(
+                    onTap: viewComment,
+                    child: CmoCircelIconButton(
+                      // color: (answer?.haveComment ?? false)
+                      //     ? context.colors.green
+                      //     : Colors.transparent,
+                      icon: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: Assets.icons.icComment.svgBlack,
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
+              ),
             ],
           ),
         ],
       ),
     );
-  }
-
-  Color getComplianceActiveColor(
-    BuildContext context,
-    AuditCompliance auditCompliance,
-  ) {
-    switch (auditCompliance.complianceEnum) {
-      case AuditComplianceEnum.n:
-        return context.colors.green;
-      case AuditComplianceEnum.nc:
-        return context.colors.yellow;
-      case AuditComplianceEnum.na:
-        return context.colors.grey;
-      case AuditComplianceEnum.unknown:
-        return Colors.transparent;
-    }
   }
 }

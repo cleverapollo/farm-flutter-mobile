@@ -78,9 +78,9 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
   }
 
   Future<void> removeAudit(Audit item) async {
-    await cmoDatabaseMasterService.removeAudit(item.auditId!);
+    await cmoDatabaseMasterService.removeAudit(item.assessmentId!);
     showSnackSuccess(
-      msg: '${LocaleKeys.removeAudit.tr()} ${item.auditId}!',
+      msg: '${LocaleKeys.removeAudit.tr()} ${item.assessmentId}!',
     );
 
     return refresh();

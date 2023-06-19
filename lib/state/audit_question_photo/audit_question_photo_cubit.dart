@@ -20,7 +20,7 @@ class AuditQuestionPhotoCubit extends Cubit<AuditQuestionPhotoState> {
   AuditQuestionPhotoCubit() : super(const AuditQuestionPhotoState());
 
   Future<void> initialize({
-    required AuditQuestion auditQuestion,
+    required FarmQuestion auditQuestion,
   }) async {
     try {
       emit(state.copyWith(question: auditQuestion));
@@ -31,11 +31,11 @@ class AuditQuestionPhotoCubit extends Cubit<AuditQuestionPhotoState> {
   }
 
   Future<void> getListAuditQuestionPhotos() async {
-    final auditQuestionPhoto = await cmoDatabaseMasterService.getAuditQuestionPhotos(
-      auditId: state.question?.auditId,
-      questionId: state.question?.questionId,
-    );
-    emit(state.copyWith(photos: auditQuestionPhoto));
+    // final auditQuestionPhoto = await cmoDatabaseMasterService.getAuditQuestionPhotos(
+    //   auditId: state.question?.auditId,
+    //   questionId: state.question?.questionId,
+    // );
+    // emit(state.copyWith(photos: auditQuestionPhoto));
   }
 
   Future<void> addPhoto({
@@ -43,15 +43,15 @@ class AuditQuestionPhotoCubit extends Cubit<AuditQuestionPhotoState> {
     required String photoPath,
     required String photoName,
   }) async {
-    final photo = AuditQuestionPhoto(
-      auditId: state.question?.auditId,
-      questionId: questionId,
-      photoPath: photoPath,
-      photoName: photoName,
-      photoId: DateTime.now().millisecondsSinceEpoch,
-    );
-    await cmoDatabaseMasterService.cacheAuditQuestionPhoto(photo);
-    await getListAuditQuestionPhotos();
+    // final photo = AuditQuestionPhoto(
+    //   auditId: state.question?.auditId,
+    //   questionId: questionId,
+    //   photoPath: photoPath,
+    //   photoName: photoName,
+    //   photoId: DateTime.now().millisecondsSinceEpoch,
+    // );
+    // await cmoDatabaseMasterService.cacheAuditQuestionPhoto(photo);
+    // await getListAuditQuestionPhotos();
   }
 
   Future<void> replacePhoto({

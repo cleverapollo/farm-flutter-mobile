@@ -49,7 +49,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   }
 
   Future<void> _viewComment({
-    required AuditQuestion auditQuestion,
+    required FarmQuestion auditQuestion,
   }) async {
     final result = await AuditQuestionAddCommentScreen.push(
       context,
@@ -62,7 +62,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   }
 
   Future<void> _viewListPhoto({
-    required AuditQuestion auditQuestion,
+    required FarmQuestion auditQuestion,
   }) async {
     final result = await AuditListPhotoScreen.push(context, auditQuestion: auditQuestion);
 
@@ -72,8 +72,8 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   }
 
   Future<void> _addAnswer(
-    AuditQuestion question,
-    AuditCompliance compliance,
+    FarmQuestion question,
+    Compliance compliance,
   ) async {
     await context.read<AuditListQuestionsCubit>().setAnswer(question, compliance);
   }
@@ -89,7 +89,6 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
-      bloc: context.read<AuditListQuestionsCubit>(),
       builder: (context, snapshot) {
         final filterQuestions = snapshot.filteredQuestions;
         return Scaffold(

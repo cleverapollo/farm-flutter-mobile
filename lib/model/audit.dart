@@ -12,7 +12,6 @@ class Audit with _$Audit {
     @JsonKey(name: 'AssessmentId') required int? assessmentId,
     @JsonKey(name: 'PrincipleId') required int? principleId,
     @JsonKey(name: 'IndicatorId') required int? indicatorId,
-    @JsonKey(name: 'AuditId') required int? auditId,
     @JsonKey(name: 'AuditTemplateName') String? auditTemplateName,
     @JsonKey(name: 'AuditTemplateId') int? auditTemplateId,
     @JsonKey(name: 'CompartmentName') String? compartmentName,
@@ -40,5 +39,5 @@ class Audit with _$Audit {
   factory Audit.fromJson(Map<String, dynamic> json) => _$AuditFromJson(json);
 
   @override
-  Id get id => auditId ?? Isar.autoIncrement;
+  Id get id => assessmentId ?? Isar.autoIncrement;
 }

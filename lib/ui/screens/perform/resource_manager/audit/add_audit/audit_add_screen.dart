@@ -58,7 +58,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
       });
       try {
         await hideInputMethod();
-        value['AuditId'] = DateTime.now().millisecondsSinceEpoch;
+        value['AssessmentId'] = DateTime.now().millisecondsSinceEpoch;
         value['AuditTemplateId'] = state.selectedAuditTemplate?.auditTemplateId;
         value['AuditTemplateName'] = state.selectedAuditTemplate?.auditTemplateName;
         value['FarmName'] = state.selectedFarm?.farmName;

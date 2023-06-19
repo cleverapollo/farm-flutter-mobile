@@ -7,12 +7,12 @@ class AuditQuestionPhotoState extends Equatable {
     this.loading = false,
   });
 
-  final AuditQuestion? question;
+  final FarmQuestion? question;
   final List<AuditQuestionPhoto> photos;
   final bool loading;
 
   AuditQuestionPhotoState copyWith({
-    AuditQuestion? question,
+    FarmQuestion? question,
     bool? loading,
     List<AuditQuestionPhoto>? photos,
   }) {

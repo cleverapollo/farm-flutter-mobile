@@ -21,7 +21,7 @@ class AuditListPhotoScreen extends StatefulWidget {
 
   static Future<bool?> push(
     BuildContext context, {
-    required AuditQuestion auditQuestion,
+    required FarmQuestion auditQuestion,
   }) async {
     return Navigator.of(context).push(
       MaterialPageRoute(
@@ -30,7 +30,7 @@ class AuditListPhotoScreen extends StatefulWidget {
     );
   }
 
-  final AuditQuestion auditQuestion;
+  final FarmQuestion auditQuestion;
 
   @override
   State<AuditListPhotoScreen> createState() => _AuditListPhotoScreenState();
