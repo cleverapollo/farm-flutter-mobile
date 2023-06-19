@@ -1,7 +1,6 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_questions_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:flutter/material.dart';
@@ -66,14 +65,14 @@ class DismissibleAuditItem extends StatelessWidget {
             content: [
               CmoCardHeader(
                 title: audit.compartmentName ?? '',
-                value: '${LocaleKeys.created.tr()}: ${DateTime.tryParse(audit.createDT ?? '').ddMMYyyy()}',
+                value: '${LocaleKeys.created.tr()}: ${DateTime.tryParse(audit.created ?? '').ddMMYyyy()}',
               ),
               Text(
                 audit.auditTemplateName ?? '',
                 style: context.textStyles.bodyNormal.white,
               ),
               Text(
-                audit.siteName ?? '',
+                audit.farmName ?? '',
                 style: context.textStyles.bodyNormal.white,
               ),
             ],

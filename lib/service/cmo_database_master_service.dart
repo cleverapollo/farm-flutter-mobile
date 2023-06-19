@@ -1651,6 +1651,16 @@ class CmoDatabaseMasterService {
     return db.farms.put(item);
   }
 
+  Future<List<Farm>?> getFarmByRmuId(int? rmuId) async {
+    if (rmuId == null) return null;
+    final db = await _db();
+    return db.farms
+        .filter()
+        .regionalManagerUnitIdEqualTo(rmuId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
   Future<List<Compliance>> getCompliances() async {
     final db = await _db();
 
@@ -2318,7 +2328,7 @@ class CmoDatabaseMasterService {
     return db.audits
         .filter()
         .isActiveEqualTo(true)
-        .sortByCreateDTDesc()
+        .sortByCreated()
         .findAll();
   }
 
@@ -2376,10 +2386,7 @@ class CmoDatabaseMasterService {
     return <Compartment>[];
   }
 
-  Future<List<AuditTemplate>> getAuditTemplatesByRmuId({
-    int? rmuId,
-  }) async {
-    if (rmuId == null) return <AuditTemplate>[];
+  Future<List<AuditTemplate>> getAuditTemplates() async {
     final db = await _db();
     try {
       final auditTemplates = await db.auditTemplates
@@ -2388,20 +2395,7 @@ class CmoDatabaseMasterService {
           .sortByAuditTemplateName()
           .findAll();
 
-      final result = <AuditTemplate>[];
-      for (final item in auditTemplates) {
-        final auditQuestions =
-            await getListAuditQuestionWithRmuIdAndAuditTemplateId(
-          auditTemplateId: item.auditTemplateId,
-          rmuId: rmuId,
-        );
-
-        if (auditQuestions.isNotEmpty) {
-          result.add(item);
-        }
-      }
-
-      return result;
+      return auditTemplates;
     } catch (error) {
       handleError(error);
     }

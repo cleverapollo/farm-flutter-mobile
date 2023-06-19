@@ -127,7 +127,7 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
                       ?.toLowerCase()
                       .contains(searchText.toLowerCase()) ??
                   false) ||
-              (element.siteName
+              (element.farmName
                       ?.toLowerCase()
                       .contains(searchText.toLowerCase()) ??
                   false);

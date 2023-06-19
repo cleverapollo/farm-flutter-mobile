@@ -23,23 +23,25 @@ class AuditCubit extends HydratedCubit<AuditState> {
     emit(state.copyWith(cacheCreateData: <String, dynamic>{}));
   }
 
-  void updateSelectedSiteName(int siteId) {
-    final siteName = state.sites.firstWhereOrNull((element) => element.siteId == siteId, orElse: null)?.siteName;
-    emit(state.copyWith(selectedSiteName: siteName ?? ''));
+  void updateSelectedFarm(String siteId) {
+    final farm = state.farms.firstWhereOrNull((element) => element.farmId == siteId, orElse: null);
+    emit(state.copyWith(selectedFarm: farm));
   }
 
-  void updateSelectedCompartmentName(int compartmentId) {
-    final compartmentName = state.compartments
-        .firstWhereOrNull((element) => element.compartmentId == compartmentId, orElse: null)
-        ?.compartmentName;
-    emit(state.copyWith(selectedCompartmentName: compartmentName ?? ''));
+  void updateSelectedCompartment(int compartmentId) {
+    final compartment = state.compartments.firstWhereOrNull(
+      (element) => element.compartmentId == compartmentId,
+      orElse: null,
+    );
+    emit(state.copyWith(selectedCompartment: compartment));
   }
 
-  void updateSelectedAuditTemplateName(int auditTemplateId) {
-    final auditTemplateName = state.auditTemplates
-        .firstWhereOrNull((element) => element.auditTemplateId == auditTemplateId, orElse: null)
-        ?.auditTemplateName;
-    emit(state.copyWith(selectedAuditTemplateName: auditTemplateName ?? ''));
+  void updateSelectedAuditTemplate(int auditTemplateId) {
+    final auditTemplate = state.auditTemplates.firstWhereOrNull(
+      (element) => element.auditTemplateId == auditTemplateId,
+      orElse: null,
+    );
+    emit(state.copyWith(selectedAuditTemplate: auditTemplate));
   }
 
   Future<bool> submit(
@@ -63,14 +65,15 @@ class AuditCubit extends HydratedCubit<AuditState> {
 
   Future<void> getListAuditTemplates() async {
     final service = cmoDatabaseMasterService;
-    final auditTemplates = await service.getAuditTemplatesByRmuId(rmuId: 6);
+    final auditTemplates = await service.getAuditTemplates();
     emit(state.copyWith(auditTemplates: auditTemplates));
   }
 
   Future<void> getListSites() async {
+    final rmu = await configService.getActiveRegionalManager();
     final service = cmoDatabaseMasterService;
-    final sites = await service.getSitesByRmuId(rmuId: 6);
-    emit(state.copyWith(sites: sites));
+    final sites = await service.getFarmByRmuId(rmu?.regionalManagerUnitId);
+    emit(state.copyWith(farms: sites));
   }
 
   Future<void> getListCompartments() async {

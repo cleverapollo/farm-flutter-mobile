@@ -8,10 +8,10 @@ class AuditState extends Equatable {
     this.cacheCreateData,
     this.auditTemplates = const <AuditTemplate>[],
     this.compartments = const <Compartment>[],
-    this.sites = const <Site>[],
-    this.selectedAuditTemplateName,
-    this.selectedSiteName,
-    this.selectedCompartmentName,
+    this.farms = const <Farm>[],
+    this.selectedAuditTemplate,
+    this.selectedFarm,
+    this.selectedCompartment,
   });
 
   final bool loading;
@@ -20,10 +20,10 @@ class AuditState extends Equatable {
   final Map<String, dynamic>? cacheCreateData;
   final List<AuditTemplate> auditTemplates;
   final List<Compartment> compartments;
-  final List<Site> sites;
-  final String? selectedSiteName;
-  final String? selectedAuditTemplateName;
-  final String? selectedCompartmentName;
+  final List<Farm> farms;
+  final Farm? selectedFarm;
+  final AuditTemplate? selectedAuditTemplate;
+  final Compartment? selectedCompartment;
 
   AuditState copyWith({
     bool? loading,
@@ -32,10 +32,10 @@ class AuditState extends Equatable {
     Map<String, dynamic>? cacheCreateData,
     List<AuditTemplate>? auditTemplates,
     List<Compartment>? compartments,
-    List<Site>? sites,
-    String? selectedSiteName,
-    String? selectedAuditTemplateName,
-    String? selectedCompartmentName,
+    List<Farm>? farms,
+    Farm? selectedFarm,
+    AuditTemplate? selectedAuditTemplate,
+    Compartment? selectedCompartment,
   }) {
     return AuditState(
       loading: loading ?? this.loading,
@@ -44,10 +44,10 @@ class AuditState extends Equatable {
       cacheCreateData: cacheCreateData ?? this.cacheCreateData,
       auditTemplates: auditTemplates ?? this.auditTemplates,
       compartments: compartments ?? this.compartments,
-      sites: sites ?? this.sites,
-      selectedAuditTemplateName: selectedAuditTemplateName ?? this.selectedAuditTemplateName,
-      selectedCompartmentName: selectedCompartmentName ?? this.selectedCompartmentName,
-      selectedSiteName: selectedSiteName ?? this.selectedSiteName,
+      farms: farms ?? this.farms,
+      selectedAuditTemplate: selectedAuditTemplate ?? this.selectedAuditTemplate,
+      selectedCompartment: selectedCompartment ?? this.selectedCompartment,
+      selectedFarm: selectedFarm ?? this.selectedFarm,
     );
   }
 
@@ -57,12 +57,12 @@ class AuditState extends Equatable {
         error,
         data,
         cacheCreateData,
-        sites,
+        farms,
         compartments,
         auditTemplates,
-        selectedSiteName,
-        selectedCompartmentName,
-        selectedAuditTemplateName,
+        selectedFarm,
+        selectedCompartment,
+        selectedAuditTemplate,
         Json.tryEncode(cacheCreateData),
       ];
 }

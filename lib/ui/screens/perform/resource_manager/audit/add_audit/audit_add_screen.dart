@@ -59,10 +59,13 @@ class _AuditAddScreen extends State<AuditAddScreen> {
       try {
         await hideInputMethod();
         value['AuditId'] = DateTime.now().millisecondsSinceEpoch;
-        value['AuditTemplateName'] = state.selectedAuditTemplateName;
-        value['SiteName'] = state.selectedSiteName;
-        value['CompartmentName'] = state.selectedCompartmentName;
-        value['CreateDT'] = DateTime.now().toString();
+        value['AuditTemplateId'] = state.selectedAuditTemplate?.auditTemplateId;
+        value['AuditTemplateName'] = state.selectedAuditTemplate?.auditTemplateName;
+        value['FarmName'] = state.selectedFarm?.farmName;
+        value['FarmId'] = state.selectedFarm?.farmId;
+        value['CompartmentName'] = state.selectedCompartment?.compartmentName;
+        value['CompartmentId'] = state.selectedCompartment?.compartmentId;
+        value['Created'] = DateTime.now().toString();
         final audit = Audit.fromJson(value);
 
         if (context.mounted) {
@@ -192,7 +195,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
                   _formKey.currentState!.fields['compartmentId']?.reset();
                 }
 
-                context.read<AuditCubit>().updateSelectedCompartmentName(id!);
+                context.read<AuditCubit>().updateSelectedCompartment(id!);
               },
             );
           },
@@ -210,9 +213,9 @@ class _AuditAddScreen extends State<AuditAddScreen> {
           LocaleKeys.site.tr(),
           style: context.textStyles.bodyBold.black,
         ),
-        BlocSelector<AuditCubit, AuditState, List<Site>>(
+        BlocSelector<AuditCubit, AuditState, List<Farm>>(
           selector: (state) {
-            return state.sites;
+            return state.farms;
           },
           builder: (builder, sites) {
             return CmoDropdown(
@@ -222,24 +225,24 @@ class _AuditAddScreen extends State<AuditAddScreen> {
               itemsData: sites
                   .map(
                     (e) => CmoDropdownItem(
-                      id: e.siteId,
-                      name: e.siteName ?? '',
+                      id: e.farmId,
+                      name: e.farmName ?? '',
                     ),
                   )
                   .toList()
                 ..insert(
                   0,
                   CmoDropdownItem(
-                    id: -1,
+                    id: '-1',
                     name: LocaleKeys.site.tr(),
                   ),
                 ),
-              onChanged: (int? id) {
-                if (id == -1) {
+              onChanged: (String? id) {
+                if (id == '-1') {
                   _formKey.currentState!.fields['siteId']?.reset();
                 }
 
-                context.read<AuditCubit>().updateSelectedSiteName(id!);
+                context.read<AuditCubit>().updateSelectedFarm(id!);
               },
             );
           },
@@ -287,7 +290,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
                   _formKey.currentState!.fields['auditTemplateId']?.reset();
                 }
 
-                context.read<AuditCubit>().updateSelectedAuditTemplateName(id!);
+                context.read<AuditCubit>().updateSelectedAuditTemplate(id!);
               },
             );
           },
