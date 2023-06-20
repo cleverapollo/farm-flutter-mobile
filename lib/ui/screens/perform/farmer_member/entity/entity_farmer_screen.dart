@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/user_role_enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/config/config.dart';
@@ -128,6 +129,10 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
   }
 
   Future<void> _handleSyncFarmButton(BuildContext context) async {
+    await configService.setActiveUserRole(userRole: UserRoleEnum.farmerMember);
+    await context.read<UserDeviceCubit>().createPerformUserDevice();
+    await context.read<UserInfoCubit>().setActiveUserInfo(isBehave: false);
+
     final state = context.read<FarmerEntityCubit>().state;
     final farmId = state.selectedFarm?.farmId;
     final groupSchemeId = state.selectedFarm?.groupSchemeId;
