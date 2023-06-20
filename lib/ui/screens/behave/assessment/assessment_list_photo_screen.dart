@@ -92,7 +92,7 @@ class _AssessmentListPhotoScreenState extends State<AssessmentListPhotoScreen> {
         itemCount: images.length,
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         itemBuilder: (BuildContext context, int index) {
-          if (images[index].photoPath == null) return const SizedBox();
+          if (images[index].photo == null) return const SizedBox();
           return SizedBox(
             height: 200,
             child: CmoCard(
@@ -104,7 +104,7 @@ class _AssessmentListPhotoScreenState extends State<AssessmentListPhotoScreen> {
                 const SizedBox(height: 6),
                 Expanded(
                   child: Image.file(
-                    File(images[index].photoPath!),
+                    File(images[index].photo!),
                     fit: BoxFit.cover,
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:equatable/equatable.dart';
@@ -144,6 +145,30 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     emit(state.copyWith(answers: answers));
   }
 
+  Future<void> getListQuestionComment() async {
+    final questionComments =
+        await cmoDatabaseMasterService.getQuestionCommentsByAssessmentId(
+      state.audit?.assessmentId,
+    );
+
+    emit(
+      state.copyWith(
+        questionComments: questionComments,
+        totalComments: questionComments.length,
+      ),
+    );
+  }
+
+  bool checkQuestionHasComments(
+    FarmQuestion question,
+  ) {
+    final questionComments = state.questionComments;
+    final questionCommentsWithQuestionId = questionComments
+        .where((element) => element.questionId == question.questionId)
+        .toList();
+    return questionCommentsWithQuestionId.isNotBlank;
+  }
+
   Future<void> getTotalCommentsAndPhotos() async {
     final questionComments = await cmoDatabaseMasterService.getAuditQuestionComments(
       auditId: state.audit?.assessmentId,
@@ -165,14 +190,18 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     emit(state.copyWith(compliances: compliances));
   }
 
-  Future<void> markQuestionAnswerHasComment(
-      FarmQuestion question,
-  ) async {
-    final answer = state.answers.firstWhereOrNull((e) => e.questionId == question.questionId);
-    if (answer == null) return;
-    // await cmoDatabaseMasterService.cacheAuditQuestionAnswer(answer.copyWith(haveComment: true));
-    await refresh();
-    await markQuestionAnswerIsCompleted(question);
+  Future<void> updateQuestionAnswer({
+    required int? questionId,
+    required int? rejectReasonId,
+  }) async {
+    if (questionId == null || rejectReasonId == null) return;
+    var answer = state.answers
+        .firstWhereOrNull((element) => element.questionId == questionId);
+    if (answer != null) {
+      answer = answer.copyWith(rejectReasonId: rejectReasonId);
+      await cmoDatabaseMasterService.cacheQuestionAnswer(answer);
+      await getListQuestionAnswers();
+    }
   }
 
   Future<void> markQuestionAnswerHasPhoto(
@@ -206,15 +235,20 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     }
 
     logger.d('Question is complete');
-    await cmoDatabaseMasterService.cacheFarmQuestion(question.copyWith(isQuestionComplete: 1));
+    await cmoDatabaseMasterService.cacheFarmQuestion(
+      question.copyWith(isQuestionComplete: 1),
+      isDirect: true,
+    );
     await refresh();
   }
 
   Future<void> setAnswer(
     FarmQuestion question,
-    Compliance compliance,
-  ) async {
-    var answer = state.answers.firstWhereOrNull((e) => e.questionId == question.questionId);
+    Compliance compliance, {
+    void Function()? onCallback,
+  }) async {
+    var answer = state.answers
+        .firstWhereOrNull((e) => e.questionId == question.questionId);
     answer ??= QuestionAnswer(
       questionAnswerId: DateTime.now().millisecondsSinceEpoch,
       assessmentId: state.audit?.assessmentId,
@@ -232,11 +266,13 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     await cmoDatabaseMasterService.cacheQuestionAnswer(answer);
     await getListQuestionAnswers();
     await markQuestionAnswerIsCompleted(question);
+    onCallback?.call();
   }
 
   Future<void> refresh() async {
     await getListAuditQuestion();
     await getListQuestionAnswers();
+    await getListQuestionComment();
     await getTotalCommentsAndPhotos();
     await applyFilter();
   }

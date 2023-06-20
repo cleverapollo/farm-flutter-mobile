@@ -33,7 +33,8 @@ class AuditListQuestionsScreen extends StatefulWidget {
   }
 
   @override
-  State<AuditListQuestionsScreen> createState() => _AuditListQuestionsScreenState();
+  State<AuditListQuestionsScreen> createState() =>
+      _AuditListQuestionsScreenState();
 }
 
 class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
@@ -52,33 +53,35 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   Future<void> _viewComment({
     required FarmQuestion farmQuestion,
   }) async {
-    final listComments = context.read<AuditListQuestionsCubit>().getListQuestionCommentWithQuestionId(farmQuestion);
-    if (listComments.isEmpty) {
-      final result = await AuditQuestionAddCommentScreen.push(
-        context,
-        auditQuestion: farmQuestion,
-        auditId: context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
-      );
+    AuditListCommentScreen.push(
+      context,
+      auditQuestion: farmQuestion,
+      auditId:
+          context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+    );
+  }
 
-      if (result != null && result && context.mounted) {
-        await context.read<AuditListQuestionsCubit>().markQuestionAnswerHasComment(farmQuestion);
-      }
-    } else {
-      AuditListCommentScreen.push(
-        context,
-        listQuestionComment: listComments,
-      );
-    }
-
+  Future<void> addNewComment({
+    required FarmQuestion farmQuestion,
+  }) async {
+    await AuditQuestionAddCommentScreen.push(
+      context,
+      auditQuestion: farmQuestion,
+      auditId:
+          context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+    );
   }
 
   Future<void> _viewListPhoto({
     required FarmQuestion auditQuestion,
   }) async {
-    final result = await AuditListPhotoScreen.push(context, auditQuestion: auditQuestion);
+    final result =
+        await AuditListPhotoScreen.push(context, auditQuestion: auditQuestion);
 
     if (result != null && result && context.mounted) {
-      await context.read<AuditListQuestionsCubit>().markQuestionAnswerHasPhoto(auditQuestion);
+      await context
+          .read<AuditListQuestionsCubit>()
+          .markQuestionAnswerHasPhoto(auditQuestion);
     }
   }
 
@@ -91,7 +94,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
       compliance,
       onCallback: () {
         if (compliance.hasRejectReason != null && compliance.hasRejectReason!) {
-          _viewComment(farmQuestion: question);
+          addNewComment(farmQuestion: question);
         }
       },
     );
@@ -99,7 +102,9 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
 
   Future<void> _saveQuestionAnswer() async {
     if (context.mounted) {
-      await context.read<AuditListQuestionsCubit>().checkAllAuditQuestionCompleted();
+      await context
+          .read<AuditListQuestionsCubit>()
+          .checkAllAuditQuestionCompleted();
       await context.read<AuditListCubit>().refresh();
       Navigator.of(context).pop(true);
     }
@@ -107,89 +112,102 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
-      builder: (context, snapshot) {
-        final filterQuestions = snapshot.filteredQuestions;
-        return Scaffold(
-          appBar: CmoAppBar(
-            title: LocaleKeys.audit.tr(),
-            subtitle: widget.audit.compartmentName,
-            leading: Assets.icons.icArrowLeft.svgBlack,
-            onTapLeading: Navigator.of(context).pop,
-            trailing: Assets.icons.icClose.svgBlack,
-            onTapTrailing: Navigator.of(context).pop,
-          ),
-          body: Column(
-            children: [
-              _buildFilterSection(),
-              BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
-                selector: (state) => state.incompleteFilter == 0,
-                builder: (context, isComplete) => CmoHeaderTile(
-                  title: isComplete ? LocaleKeys.completed.tr() : LocaleKeys.incomplete.tr(),
-                  child: Row(
-                    children: [
-                      CmoTappable(
-                        onTap: () {
-                          context.read<AuditListQuestionsCubit>().setIncompleteFilter(isComplete ? 1 : 0);
-                        },
-                        child: Padding(
+    return Scaffold(
+      appBar: CmoAppBar(
+        title: LocaleKeys.audit.tr(),
+        subtitle: widget.audit.compartmentName,
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
+        trailing: Assets.icons.icClose.svgBlack,
+        onTapTrailing: Navigator.of(context).pop,
+      ),
+      body: Column(
+        children: [
+          _buildFilterSection(),
+          BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
+            selector: (state) => state.incompleteFilter == 0,
+            builder: (context, isComplete) => CmoHeaderTile(
+              title: isComplete
+                  ? LocaleKeys.completed.tr()
+                  : LocaleKeys.incomplete.tr(),
+              child: Row(
+                children: [
+                  CmoTappable(
+                    onTap: () {
+                      context
+                          .read<AuditListQuestionsCubit>()
+                          .setIncompleteFilter(isComplete ? 1 : 0);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 6.0),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: !isComplete ? Colors.white : Colors.green,
+                          shape: BoxShape.circle,
+                        ),
+                        child: !isComplete
+                            ? Assets.icons.icTick.svg()
+                            : Assets.icons.icTick.svgWhite,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Assets.icons.icCamera.svgWhite,
+                        Padding(
                           padding: const EdgeInsets.only(left: 6.0),
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: !isComplete ? Colors.white : Colors.green,
-                              shape: BoxShape.circle,
-                            ),
-                            child: !isComplete ? Assets.icons.icTick.svg() : Assets.icons.icTick.svgWhite,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Assets.icons.icCamera.svgWhite,
-                            Padding(
-                              padding: const EdgeInsets.only(left: 6.0),
-                              child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, int>(
-                                selector: (state) => state.totalPhotos,
-                                builder: (context, lengthPhoto) => Text(
-                                  '$lengthPhoto',
-                                  style: context.textStyles.bodyBold.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Assets.icons.icComment.svgWhite,
-                          const SizedBox(width: 6),
-                          BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, int>(
-                            selector: (state) => state.totalComments,
-                            builder: (context, questionCommentsLength) => Text(
-                              '$questionCommentsLength',
+                          child: BlocSelector<AuditListQuestionsCubit,
+                              AuditListQuestionsState, int>(
+                            selector: (state) => state.totalPhotos,
+                            builder: (context, lengthPhoto) => Text(
+                              '$lengthPhoto',
                               style: context.textStyles.bodyBold.white,
                             ),
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Assets.icons.icComment.svgWhite,
+                      const SizedBox(width: 6),
+                      BlocSelector<AuditListQuestionsCubit,
+                          AuditListQuestionsState, int>(
+                        selector: (state) => state.totalComments,
+                        builder: (context, questionCommentsLength) => Text(
+                          '$questionCommentsLength',
+                          style: context.textStyles.bodyBold.white,
+                        ),
                       ),
                     ],
                   ),
-                ),
+                ],
               ),
-              Expanded(
-                child: ListView.separated(
+            ),
+          ),
+          Expanded(
+            child:
+                BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
+              builder: (context, snapshot) {
+                final filterQuestions = snapshot.filteredQuestions;
+                return ListView.separated(
                   itemCount: filterQuestions.length,
                   itemBuilder: (context, index) {
                     final question = filterQuestions[index];
-                    final answer = context.watch<AuditListQuestionsCubit>().getAnswerByQuestionId(question.questionId);
-
+                    final answer = context
+                        .watch<AuditListQuestionsCubit>()
+                        .getAnswerByQuestionId(question.questionId);
+                    final haveComments = context
+                        .watch<AuditListQuestionsCubit>()
+                        .checkQuestionHasComments(question);
                     return AuditQuestionItem(
                       question: question,
                       answer: answer,
                       compliances: snapshot.compliances,
-                      haveComments: context.read<AuditListQuestionsCubit>().checkQuestionHasComments(question),
+                      haveComments: haveComments,
                       addAnswer: (compliance) {
                         _addAnswer(
                           question,
@@ -213,20 +231,20 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                       color: context.colors.grey,
                     );
                   },
-                ),
-              ),
-            ],
-          ),
-          persistentFooterAlignment: AlignmentDirectional.center,
-          persistentFooterButtons: [
-            CmoFilledButton(
-              onTap: _saveQuestionAnswer,
-              title: LocaleKeys.save.tr(),
-              loading: loading,
+                );
+              },
             ),
-          ],
-        );
-      },
+          ),
+        ],
+      ),
+      persistentFooterAlignment: AlignmentDirectional.center,
+      persistentFooterButtons: [
+        CmoFilledButton(
+          onTap: _saveQuestionAnswer,
+          title: LocaleKeys.save.tr(),
+          loading: loading,
+        ),
+      ],
     );
   }
 
@@ -255,7 +273,8 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     );
   }
 
-  Widget _buildFilterRow({required Widget firstChild, required Widget secondChild}) {
+  Widget _buildFilterRow(
+      {required Widget firstChild, required Widget secondChild}) {
     return Row(
       children: [
         Expanded(child: firstChild),

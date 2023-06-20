@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/data/audit_question_comment.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/model.dart';
@@ -26,31 +27,20 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
         ),
       );
 
-      await getListAuditQuestionComment();
+      await getListQuestionComment();
     } catch (error) {
       handleError(error);
     }
   }
 
-  Future<void> getListAuditQuestionComment() async {
-    // final questionComment = await cmoDatabaseMasterService.getAuditQuestionComments(
-    //   auditId: state.auditId,
-    //   questionId: state.question?.questionId,
-    // );
-    //
-    // if (questionComment.isEmpty) {
-    //   questionComment.add(
-    //     AuditQuestionComment(
-    //       questionId: state.question?.questionId,
-    //       auditId: state.auditId,
-    //       answerId: DateTime.now().millisecondsSinceEpoch,
-    //       commentId: DateTime.now().millisecondsSinceEpoch,
-    //       createDT: DateTime.now().toString(),
-    //     ),
-    //   );
-    // }
-    //
-    // emit(state.copyWith(questionComment: questionComment.first));
+  Future<void> getListQuestionComment() async {
+    if (state.auditId == null || state.question?.questionId == null) return;
+    final listComments = await cmoDatabaseMasterService.getQuestionComments(
+      state.auditId!,
+      state.question!.questionId,
+    );
+
+    emit(state.copyWith(listComments: listComments));
   }
 
   Future<bool> addComment({
@@ -77,6 +67,34 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
     }
 
     return true;
+  }
+
+  Future<bool> updateComment({
+    required String commentValue,
+    required QuestionComment comment,
+  }) async {
+    try {
+      emit(state.copyWith(loading: true));
+      await cmoDatabaseMasterService.cacheQuestionComment(comment.copyWith(comment: commentValue));
+      await getListQuestionComment();
+      showSnackSuccess(
+        msg: 'Update comment success with id: ${comment.commentId}',
+      );
+    } catch (e) {
+      showSnackError(msg: e.toString());
+      return false;
+    } finally {
+      emit(state.copyWith(loading: false));
+    }
+
+    return true;
+  }
+
+  Future<void> removeComment({
+    required QuestionComment comment,
+  }) async {
+    await cmoDatabaseMasterService.removeQuestionComment(comment);
+    await getListQuestionComment();
   }
 
   void handleError(Object error) {

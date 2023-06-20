@@ -6,10 +6,12 @@ class AuditQuestionCommentState extends Equatable {
     this.questionComment,
     this.loading = false,
     this.rejectReasons = const <RejectReason>[],
+    this.listComments = const <QuestionComment>[],
     this.auditId,
   });
 
   final FarmQuestion? question;
+  final List<QuestionComment> listComments;
   final QuestionComment? questionComment;
   final int? auditId;
   final bool loading;
@@ -22,6 +24,7 @@ class AuditQuestionCommentState extends Equatable {
     bool? loading,
     List<RejectReason>? rejectReasons,
     int? auditId,
+    List<QuestionComment>? listComments,
   }) {
     return AuditQuestionCommentState(
       question: question ?? this.question,
@@ -29,15 +32,17 @@ class AuditQuestionCommentState extends Equatable {
       loading: loading ?? this.loading,
       rejectReasons: rejectReasons ?? this.rejectReasons,
       auditId: auditId ?? this.auditId,
+      listComments: listComments ?? this.listComments,
     );
   }
 
   @override
   List<Object?> get props => [
-    question,
-    questionComment,
-    loading,
-    rejectReasons,
-    auditId,
-  ];
+        question,
+        questionComment,
+        loading,
+        rejectReasons,
+        auditId,
+        listComments,
+      ];
 }

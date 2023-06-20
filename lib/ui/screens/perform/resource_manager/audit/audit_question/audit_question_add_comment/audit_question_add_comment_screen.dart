@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
@@ -16,21 +17,29 @@ class AuditQuestionAddCommentScreen extends StatefulWidget {
     super.key,
     required this.question,
     this.auditId,
+    this.comment,
+    this.answer,
   });
 
   final FarmQuestion question;
   final int? auditId;
+  final QuestionComment? comment;
+  final QuestionAnswer? answer;
 
   static Future<bool?> push(
     BuildContext context, {
     required FarmQuestion auditQuestion,
     int? auditId,
+    QuestionComment? comment,
+    QuestionAnswer? answer,
   }) async {
     return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => AuditQuestionAddCommentScreen(
           question: auditQuestion,
           auditId: auditId,
+          comment: comment,
+          answer: answer,
         ),
       ),
     );
@@ -41,27 +50,30 @@ class AuditQuestionAddCommentScreen extends StatefulWidget {
 }
 
 class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentScreen> {
-  Timer? _debounceInputTimer;
 
-  late FarmQuestion auditQuestion;
   final _formKey = GlobalKey<FormBuilderState>();
 
-  String commentValue = '';
   bool loading = false;
+
+  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
   @override
   void initState() {
     super.initState();
-    auditQuestion = widget.question;
     Future.microtask(() async {
       await context.read<AuditQuestionCommentCubit>().initialize(
-            question: auditQuestion,
+            question: widget.question,
             auditId: widget.auditId,
           );
     });
   }
 
-  Future<void> _addComment() async {
+  Future<void> save() async {
+
+    setState(() {
+      autoValidateMode = AutovalidateMode.always;
+    });
+
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       var value = _formKey.currentState?.value;
 
@@ -73,12 +85,22 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
       try {
         await hideInputMethod();
         if (context.mounted) {
-          final rejectReasonId = value['rejectId'] as int;
+          final rejectReasonId =
+              value['rejectId'] as int? ?? widget.answer?.rejectReasonId;
           final comment = value['Comment']?.toString() ?? '';
-          final success =
-              await context.read<AuditQuestionCommentCubit>().addComment(
-                    commentValue: comment,
-                  );
+          var success = false;
+          if (widget.comment == null) {
+            success =
+                await context.read<AuditQuestionCommentCubit>().addComment(
+                      commentValue: comment,
+                    );
+          } else {
+            success =
+                await context.read<AuditQuestionCommentCubit>().updateComment(
+                      commentValue: comment,
+                      comment: widget.comment!,
+                    );
+          }
 
           await context.read<AuditListQuestionsCubit>().updateQuestionAnswer(
                 questionId: widget.question.questionId,
@@ -123,7 +145,7 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
             key: _formKey,
             child: Column(
               children: [
-                if (auditQuestion.xBone ?? false)
+                if (widget.question.xBone ?? false)
                   Icon(
                     IconsaxOutline.danger,
                     size: 24.0,
@@ -152,10 +174,9 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
                     maxLines: 999,
                     autocorrect: true,
                     enableSuggestions: true,
-                    // initialValue: widget.comment?.comment,
+                    initialValue: widget.comment?.comment,
                   ),
                 ),
-                // Expanded(child: _buildAddComment()),
               ],
             ),
           ),
@@ -163,7 +184,7 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
         persistentFooterAlignment: AlignmentDirectional.center,
         persistentFooterButtons: [
           CmoFilledButton(
-            onTap: _addComment,
+            onTap: save,
             title: LocaleKeys.save.tr(),
             loading: loading,
           ),
@@ -174,7 +195,7 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
 
   Widget _buildQuestionValue() {
     return Text(
-      auditQuestion.questionValue ?? '',
+      widget.question.questionValue ?? '',
       maxLines: 2,
       style: context.textStyles.bodyBold.black,
     );
@@ -206,6 +227,7 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
                 border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
                 focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
               ),
+              initialValue: widget.answer?.rejectReasonId,
               onChanged: (int? id) {
                 if (id == -1) {
                   _formKey.currentState!.fields['rejectId']?.reset();
@@ -230,37 +252,6 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
           },
         )
       ],
-    );
-  }
-
-  Widget _buildAddComment() {
-    return Material(
-      borderRadius: BorderRadius.circular(10),
-      elevation: 4,
-      child: TextFormField(
-        keyboardAppearance: Brightness.light,
-        textAlign: TextAlign.left,
-        style: context.textStyles.bodyBold.black,
-        minLines: 1,
-        maxLines: 1000,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(15),
-          hintText: LocaleKeys.addComment.tr(),
-          hintStyle: context.textStyles.bodyBold.black,
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-        ),
-        initialValue: context.read<AuditQuestionCommentCubit>().state.questionComment?.comment,
-        onChanged: (text) {
-          _debounceInputTimer?.cancel();
-          _debounceInputTimer = Timer(
-            const Duration(milliseconds: 200),
-            () => setState(() {
-              commentValue = text;
-            }),
-          );
-        },
-      ),
     );
   }
 }
