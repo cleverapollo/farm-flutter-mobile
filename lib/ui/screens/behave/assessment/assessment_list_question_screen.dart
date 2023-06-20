@@ -65,41 +65,36 @@ class _AssessmentListQuestionScreenState
     CompanyQuestion question,
     Compliance compliance,
   ) async {
-    // final haveRejectReason = compliance;
+    if (context.mounted) {
+      await context.read<AssessmentQuestionCubit>().setAnswer(
+            question,
+            compliance,
+          );
+
+      await context.read<AssessmentListCubit>().refresh();
+      await context.read<DashboardCubit>().refresh();
+    }
+
     final hasRejectReason = compliance.hasRejectReason ?? false;
-
-    // * raise comment when choose option have reject reason
     if (hasRejectReason) {
-      if (context.mounted) {
-        await AssessmentRaiseComment.push<QuestionComment?>(
-          context,
-          widget.assessment,
-          question,
-          compliance,
-          (comment, rejectReasonId) async {
-            await context
-                .read<AssessmentQuestionCubit>()
-                .addCommentFromReasonCode(
-                  comment,
-                  question,
-                  compliance,
-                  rejectReasonId,
-                );
-
-            if (context.mounted) {
-              await context.read<AssessmentQuestionCubit>().setAnswer(
+      await AssessmentRaiseComment.push<QuestionComment?>(
+        context,
+        widget.assessment,
+        question,
+        compliance,
+        (comment, rejectReasonId) async {
+          await context
+              .read<AssessmentQuestionCubit>()
+              .addCommentFromReasonCode(
+                comment,
                 question,
                 compliance,
+                rejectReasonId,
               );
-
-              await context.read<AssessmentListCubit>().refresh();
-              await context.read<DashboardCubit>().refresh();
-            }
-          },
-          null,
-          null,
-        );
-      }
+        },
+        null,
+        null,
+      );
     }
   }
 
