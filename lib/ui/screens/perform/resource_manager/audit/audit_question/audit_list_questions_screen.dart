@@ -3,6 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_comment/audit_list_comment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_list_photo_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_question_add_comment/audit_question_add_comment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/audit_question_item.dart';
@@ -49,16 +50,26 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   }
 
   Future<void> _viewComment({
-    required FarmQuestion auditQuestion,
+    required FarmQuestion farmQuestion,
   }) async {
-    final result = await AuditQuestionAddCommentScreen.push(
-      context,
-      auditQuestion: auditQuestion,
-    );
+    final listComments = context.read<AuditListQuestionsCubit>().getListQuestionCommentWithQuestionId(farmQuestion);
+    if (listComments.isEmpty) {
+      final result = await AuditQuestionAddCommentScreen.push(
+        context,
+        auditQuestion: farmQuestion,
+        auditId: context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+      );
 
-    if (result != null && result && context.mounted) {
-      await context.read<AuditListQuestionsCubit>().markQuestionAnswerHasComment(auditQuestion);
+      if (result != null && result && context.mounted) {
+        await context.read<AuditListQuestionsCubit>().markQuestionAnswerHasComment(farmQuestion);
+      }
+    } else {
+      AuditListCommentScreen.push(
+        context,
+        listQuestionComment: listComments,
+      );
     }
+
   }
 
   Future<void> _viewListPhoto({
@@ -75,13 +86,21 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     FarmQuestion question,
     Compliance compliance,
   ) async {
-    await context.read<AuditListQuestionsCubit>().setAnswer(question, compliance);
+    await context.read<AuditListQuestionsCubit>().setAnswer(
+      question,
+      compliance,
+      onCallback: () {
+        if (compliance.hasRejectReason != null && compliance.hasRejectReason!) {
+          _viewComment(farmQuestion: question);
+        }
+      },
+    );
   }
 
   Future<void> _saveQuestionAnswer() async {
-    await context.read<AuditListQuestionsCubit>().checkAllAuditQuestionCompleted();
-    await context.read<AuditListCubit>().refresh();
     if (context.mounted) {
+      await context.read<AuditListQuestionsCubit>().checkAllAuditQuestionCompleted();
+      await context.read<AuditListCubit>().refresh();
       Navigator.of(context).pop(true);
     }
   }
@@ -170,6 +189,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                       question: question,
                       answer: answer,
                       compliances: snapshot.compliances,
+                      haveComments: context.read<AuditListQuestionsCubit>().checkQuestionHasComments(question),
                       addAnswer: (compliance) {
                         _addAnswer(
                           question,
@@ -183,7 +203,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                       },
                       viewComment: () {
                         _viewComment(
-                          auditQuestion: question,
+                          farmQuestion: question,
                         );
                       },
                     );

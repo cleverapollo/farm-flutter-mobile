@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/model/data/audit_question_comment.dart';
+import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
@@ -12,12 +13,18 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
   AuditQuestionCommentCubit() : super(const AuditQuestionCommentState());
 
   Future<void> initialize({
-    required FarmQuestion auditQuestion,
+    required FarmQuestion question,
+    int? auditId,
   }) async {
     try {
-      emit(state.copyWith(question: auditQuestion));
       final rejectReasons = await cmoDatabaseMasterService.getRejectReasons();
-      emit(state.copyWith(rejectReasons: rejectReasons));
+      emit(
+        state.copyWith(
+          question: question,
+          auditId: auditId,
+          rejectReasons: rejectReasons,
+        ),
+      );
 
       await getListAuditQuestionComment();
     } catch (error) {
@@ -27,7 +34,7 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
 
   Future<void> getListAuditQuestionComment() async {
     // final questionComment = await cmoDatabaseMasterService.getAuditQuestionComments(
-    //   auditId: state.question?.auditId,
+    //   auditId: state.auditId,
     //   questionId: state.question?.questionId,
     // );
     //
@@ -35,7 +42,7 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
     //   questionComment.add(
     //     AuditQuestionComment(
     //       questionId: state.question?.questionId,
-    //       auditId: state.question?.auditId,
+    //       auditId: state.auditId,
     //       answerId: DateTime.now().millisecondsSinceEpoch,
     //       commentId: DateTime.now().millisecondsSinceEpoch,
     //       createDT: DateTime.now().toString(),
@@ -47,22 +54,21 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
   }
 
   Future<bool> addComment({
-    required int rejectId,
-    required int? questionId,
     required String commentValue,
   }) async {
     try {
       emit(state.copyWith(loading: true));
-      var comment = state.questionComment;
-      if (comment == null) return false;
-
-      comment = comment.copyWith(
+      final comment = QuestionComment(
+        questionId: state.question?.questionId,
+        commentId: DateTime.now().millisecondsSinceEpoch,
+        assessmentId: state.auditId,
         comment: commentValue,
-        rejectId: rejectId,
       );
 
-      await cmoDatabaseMasterService.cacheAuditQuestionComment(comment);
-      showSnackSuccess(msg: 'Save comment success with id: ${comment.commentId}');
+      await cmoDatabaseMasterService.cacheQuestionComment(comment);
+      showSnackSuccess(
+        msg: 'Save comment success with id: ${comment.commentId}',
+      );
     } catch (e) {
       showSnackError(msg: e.toString());
       return false;

@@ -6,6 +6,7 @@ class AuditListQuestionsState extends Equatable {
     this.questions = const <FarmQuestion>[],
     this.filteredQuestions = const <FarmQuestion>[],
     this.answers = const <QuestionAnswer>[],
+    this.questionComments = const <QuestionComment>[],
     this.rejectReasons = const <RejectReason>[],
     this.compliances = const <Compliance>[],
     this.principles = const <Principle>[],
@@ -27,6 +28,7 @@ class AuditListQuestionsState extends Equatable {
   final List<FarmQuestion> questions;
   final List<FarmQuestion> filteredQuestions;
   final List<QuestionAnswer> answers;
+  final List<QuestionComment> questionComments;
   final List<Compliance> compliances;
   final List<RejectReason> rejectReasons;
   final List<Principle> principles;
@@ -47,8 +49,9 @@ class AuditListQuestionsState extends Equatable {
     Audit? audit,
     List<FarmQuestion>? questions,
     List<FarmQuestion>? filteredQuestions,
-    List<RejectReason>? rejectReasons,
     List<QuestionAnswer>? answers,
+    List<QuestionComment>? questionComments,
+    List<RejectReason>? rejectReasons,
     List<Compliance>? compliances,
     List<Principle>? principles,
     List<Car>? cars,
@@ -65,13 +68,14 @@ class AuditListQuestionsState extends Equatable {
     int? totalPhotos,
   }) {
     return AuditListQuestionsState(
-      rejectReasons: rejectReasons ?? this.rejectReasons,
+      questions: questions ?? this.questions,
+      filteredQuestions: filteredQuestions ?? this.filteredQuestions,
       answers: answers ?? this.answers,
+      questionComments: questionComments ?? this.questionComments,
+      rejectReasons: rejectReasons ?? this.rejectReasons,
       impactOns: impactOns ?? this.impactOns,
       impactOnFilterId: impactOnFilterId ?? this.impactOnFilterId,
       incompleteFilter: incompleteFilter ?? this.incompleteFilter,
-      questions: questions ?? this.questions,
-      filteredQuestions: filteredQuestions ?? this.filteredQuestions,
       compliances: compliances ?? this.compliances,
       audit: audit ?? this.audit,
       cars: cars ?? this.cars,

@@ -17,6 +17,8 @@ class AuditQuestionItem extends StatelessWidget {
     required this.viewComment,
     required this.addAnswer,
     this.answer,
+    this.haveComments = false,
+    this.havePhotos = false,
   });
 
   final FarmQuestion question;
@@ -25,6 +27,8 @@ class AuditQuestionItem extends StatelessWidget {
   final VoidCallback viewListPhoto;
   final VoidCallback viewComment;
   final void Function(Compliance) addAnswer;
+  final bool haveComments;
+  final bool havePhotos;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +68,9 @@ class AuditQuestionItem extends StatelessWidget {
                         onTap: () => addAnswer(compliance),
                         child: CmoCircelButton(
                           title: '${compliance.complianceName}',
-                          color: answer != null && answer?.complianceId == compliance.complianceId
+                          color: answer != null &&
+                                  answer?.complianceId ==
+                                      compliance.complianceId
                               ? context.colors.yellow
                               : context.colors.white,
                         ),
@@ -78,9 +84,9 @@ class AuditQuestionItem extends StatelessWidget {
                   CmoTappable(
                     onTap: viewListPhoto,
                     child: CmoCircelIconButton(
-                      // color: (answer?.havePhoto ?? false)
-                      //     ? context.colors.green
-                      //     : Colors.transparent,
+                      color: havePhotos
+                          ? context.colors.green
+                          : Colors.transparent,
                       icon: SizedBox(
                         width: 20,
                         height: 20,
@@ -92,9 +98,9 @@ class AuditQuestionItem extends StatelessWidget {
                   CmoTappable(
                     onTap: viewComment,
                     child: CmoCircelIconButton(
-                      // color: (answer?.haveComment ?? false)
-                      //     ? context.colors.green
-                      //     : Colors.transparent,
+                      color: haveComments
+                          ? context.colors.green
+                          : Colors.transparent,
                       icon: SizedBox(
                         width: 20,
                         height: 20,
