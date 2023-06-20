@@ -116,14 +116,6 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
           loading = false;
         });
       }
-
-      await refresh();
-    }
-  }
-
-  Future<void> refresh() async {
-    if (context.mounted) {
-      await context.read<AuditListCubit>().refresh();
     }
   }
 

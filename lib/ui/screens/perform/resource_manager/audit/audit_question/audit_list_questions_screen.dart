@@ -64,12 +64,16 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   Future<void> addNewComment({
     required FarmQuestion farmQuestion,
   }) async {
-    await AuditQuestionAddCommentScreen.push(
+    final result = await AuditQuestionAddCommentScreen.push(
       context,
       auditQuestion: farmQuestion,
       auditId:
           context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
     );
+
+    if (result != null) {
+      await context.read<AuditListQuestionsCubit>().refresh();
+    }
   }
 
   Future<void> _viewListPhoto({

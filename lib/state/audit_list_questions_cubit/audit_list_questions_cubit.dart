@@ -106,6 +106,12 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     emit(state.copyWith(rejectReasons: rejectReasons));
   }
 
+  Future<void> getListCompliances() async {
+    final rmu = await configService.getActiveRegionalManager();
+    final compliances = await cmoDatabaseMasterService.getCompliancesByRmuId(rmuId: rmu?.regionalManagerUnitId);
+    emit(state.copyWith(compliances: compliances));
+  }
+
   Future<void> initialize(Audit audit) async {
     try {
       logger.d('Initialise auditId: ${audit.assessmentId}');
@@ -159,22 +165,6 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     );
   }
 
-  bool checkQuestionHasComments(
-    FarmQuestion question,
-  ) {
-    final questionComments = state.questionComments;
-    final questionCommentsWithQuestionId = questionComments
-        .where((element) => element.questionId == question.questionId)
-        .toList();
-    return questionCommentsWithQuestionId.isNotBlank;
-  }
-
-  Future<void> getListCompliances() async {
-    final rmu = await configService.getActiveRegionalManager();
-    final compliances = await cmoDatabaseMasterService.getCompliancesByRmuId(rmuId: rmu?.regionalManagerUnitId);
-    emit(state.copyWith(compliances: compliances));
-  }
-
   Future<void> updateQuestionAnswer({
     required int? questionId,
     required int? rejectReasonId,
@@ -207,23 +197,12 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
 
     if (answer == null) return;
 
-    final compliance = state.compliances.firstWhereOrNull(
-      (element) => element.complianceId == answer.complianceId,
-    );
-
-    if (compliance == null) return;
-
-    if (compliance.hasRejectReason ?? false) {
-
-    } else {
-
-    }
-
     logger.d('Question is complete');
     await cmoDatabaseMasterService.cacheFarmQuestion(
       question.copyWith(isQuestionComplete: 1),
       isDirect: true,
     );
+
     await refresh();
   }
 
