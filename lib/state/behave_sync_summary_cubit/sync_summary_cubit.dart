@@ -259,7 +259,8 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
         HasSignature: assessment.hasSignature,
       );
 
-      var assessmentQuestionAnswers = const AssessmentQuestionAnswersPayLoad();
+      var assessmentQuestionAnswersPayLoad =
+          const AssessmentQuestionAnswersPayLoad();
 
       final questionAnswers = await cmoDatabaseMasterService
           .getQuestionAnswersByCompanyIdAndJobCategoryIdAndAssessmentId(
@@ -287,14 +288,15 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
       final questionAnswerPayLoad =
           questionAnswers.map((e) => e.toPayLoad()).toList();
 
-      assessmentQuestionAnswers = assessmentQuestionAnswers.copyWith(
+      assessmentQuestionAnswersPayLoad =
+          assessmentQuestionAnswersPayLoad.copyWith(
         QuestionAnswer: questionAnswerPayLoad,
         QuestionComment: questionCommentPayLoad,
         QuestionPhoto: questionPhotoPayLoad,
       );
 
       assessmentPayLoad = assessmentPayLoad.copyWith(
-        AssessmentQuestionAnswers: assessmentQuestionAnswers,
+        AssessmentQuestionAnswers: assessmentQuestionAnswersPayLoad,
       );
 
       assessmentMessages.add(Message(body: jsonEncode(assessmentPayLoad)));

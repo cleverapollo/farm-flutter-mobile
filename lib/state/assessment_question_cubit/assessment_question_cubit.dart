@@ -157,13 +157,11 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
           .toList();
     }
     if (state.incompleteFilter == 1) {
-      filterList = filterList
-          .where((question) {
-            final answer = state.answers.firstWhereOrNull((answer) =>
-                  answer.questionId == question.questionId);
-            return answer?.isQuestionComplete != 1;
-          })
-          .toList();
+      filterList = filterList.where((question) {
+        final answer = state.answers.firstWhereOrNull(
+            (answer) => answer.questionId == question.questionId);
+        return answer?.isQuestionComplete != 1;
+      }).toList();
     }
     emit(state.copyWith(filteredQuestions: filterList));
   }
@@ -470,9 +468,11 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
     required int? rejectReasonId,
     required int? questionId,
   }) async {
-    final answer = state.answers.firstWhereOrNull((e) => e.questionId == questionId);
+    final answer =
+        state.answers.firstWhereOrNull((e) => e.questionId == questionId);
     if (answer == null) return;
-    await cmoDatabaseMasterService.cacheQuestionAnswer(answer.copyWith(rejectReasonId: rejectReasonId));
+    await cmoDatabaseMasterService
+        .cacheQuestionAnswer(answer.copyWith(rejectReasonId: rejectReasonId));
     final answers = await cmoDatabaseMasterService
         .getQuestionAnswersByCompanyIdAndJobCategoryIdAndAssessmentId(
       state.assessment?.companyId,

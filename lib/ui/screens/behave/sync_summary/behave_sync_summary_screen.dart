@@ -16,8 +16,8 @@ class SyncSummaryScreen extends StatefulWidget {
   static void push(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => BlocProvider<SyncSummaryCubit>(
-          create: (context) =>
-              SyncSummaryCubit(context.read<UserDeviceCubit>()),
+          create: (context) => SyncSummaryCubit(context.read<UserDeviceCubit>())
+            ..onInitialData(),
           child: const SyncSummaryScreen()),
     ));
   }
@@ -27,14 +27,6 @@ class SyncSummaryScreen extends StatefulWidget {
 }
 
 class _SyncSummaryScreenState extends State<SyncSummaryScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() async {
-      await context.read<SyncSummaryCubit>().onInitialData();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocSelector<SyncSummaryCubit, SyncSummaryState, SyncSummaryState>(

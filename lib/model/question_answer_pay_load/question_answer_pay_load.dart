@@ -6,7 +6,6 @@ part 'question_answer_pay_load.g.dart';
 @freezed
 class QuestionAnswerPayLoad with _$QuestionAnswerPayLoad {
   const factory QuestionAnswerPayLoad({
-    required int? QuestionAnswerId,
     required int? AssessmentId,
     required int? QuestionId,
     required int? ComplianceId,

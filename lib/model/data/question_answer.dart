@@ -29,7 +29,6 @@ class QuestionAnswer with _$QuestionAnswer {
 extension QuestionAnswerPayLoadExtension on QuestionAnswer {
   QuestionAnswerPayLoad toPayLoad() {
     return QuestionAnswerPayLoad(
-        QuestionAnswerId: questionAnswerId,
         AssessmentId: assessmentId,
         QuestionId: questionId,
         ComplianceId: complianceId,

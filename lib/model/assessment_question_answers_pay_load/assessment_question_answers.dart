@@ -1,6 +1,3 @@
-import 'package:cmo/model/data/question_comment.dart';
-import 'package:cmo/model/data/question_photo.dart';
-import 'package:cmo/model/model.dart';
 import 'package:cmo/model/question_answer_pay_load/question_answer_pay_load.dart';
 import 'package:cmo/model/question_comment_pay_load/question_comment_pay_load.dart';
 import 'package:cmo/model/question_photo_pay_load/question_photo_pay_load.dart';

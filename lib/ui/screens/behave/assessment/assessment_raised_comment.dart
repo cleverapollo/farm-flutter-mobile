@@ -1,4 +1,4 @@
-import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/question_comment.dart';
@@ -67,12 +67,13 @@ class _AssessmentRaiseCommentState extends State<AssessmentRaiseComment> {
     super.initState();
     Future.microtask(() async {
       setState(() {
-        rejectReasons = context.read<AssessmentQuestionCubit>().getRejectReasons();
+        rejectReasons =
+            context.read<AssessmentQuestionCubit>().getRejectReasons();
       });
     });
   }
 
-  void _save() {
+  void _save() async {
     setState(() {
       autoValidateMode = AutovalidateMode.always;
     });
@@ -80,13 +81,15 @@ class _AssessmentRaiseCommentState extends State<AssessmentRaiseComment> {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       final value = _formKey.currentState?.value;
       if (value == null) return;
-
-      final rejectReasonId = int.tryParse(value['RejectReason'].toString()) ?? widget.rejectReasonId;
+      final latestIndex =
+          await cmoDatabaseMasterService.getQuestionCommentsLatestIndex();
+      final rejectReasonId = int.tryParse(value['RejectReason'].toString()) ??
+          widget.rejectReasonId;
       final comment = value['Comment']?.toString() ?? '';
 
       final questionComment = widget.comment == null
           ? QuestionComment(
-              commentId: DateTime.now().millisecondsSinceEpoch,
+              commentId: latestIndex + 1,
               comment: comment,
               assessmentId: widget.assessment.assessmentId,
               questionId: widget.question.questionId,
@@ -142,24 +145,23 @@ class _AssessmentRaiseCommentState extends State<AssessmentRaiseComment> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: CmoDropdown(
-                name: 'RejectReason',
-                hintText: LocaleKeys.reject_reason.tr(),
-                validator: requiredValidator,
-                initialValue: widget.rejectReasonId,
-                onChanged: (int? id) {
-                  if (id == -1) {
-                    _formKey.currentState!.fields['RejectReason']?.reset();
-                  }
-                },
-                itemsData: rejectReasons
-                    .map(
-                      (e) => CmoDropdownItem(
-                        id: e.rejectReasonId,
-                        name: e.rejectReasonName ?? '',
-                      ),
-                    )
-                    .toList()
-              ),
+                  name: 'RejectReason',
+                  hintText: LocaleKeys.reject_reason.tr(),
+                  validator: requiredValidator,
+                  initialValue: widget.rejectReasonId,
+                  onChanged: (int? id) {
+                    if (id == -1) {
+                      _formKey.currentState!.fields['RejectReason']?.reset();
+                    }
+                  },
+                  itemsData: rejectReasons
+                      .map(
+                        (e) => CmoDropdownItem(
+                          id: e.rejectReasonId,
+                          name: e.rejectReasonName ?? '',
+                        ),
+                      )
+                      .toList()),
             ),
             const SizedBox(height: 8),
             CmoOptionTile(

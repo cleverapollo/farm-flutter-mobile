@@ -2242,6 +2242,23 @@ class CmoDatabaseMasterService {
     return <QuestionComment>[];
   }
 
+  Future<int> getQuestionCommentsLatestIndex() async {
+    final db = await _db();
+    try {
+      final questionComments =
+          await db.questionComments.filter().commentIsNotNull().findAll();
+
+      final result = questionComments.map((e) => e.commentId).toList();
+
+      if (result.isEmpty) return 0;
+
+      return result.reduce((curr, next) => curr > next ? curr : next);
+    } catch (error) {
+      handleError(error);
+      return 0;
+    }
+  }
+
   Future<int> cacheAuditQuestionPhoto(
     AuditQuestionPhoto item,
   ) async {
