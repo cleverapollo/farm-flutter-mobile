@@ -100,10 +100,6 @@ class CmoDatabaseMasterService {
         AssessmentSchema,
         QuestionPhotoSchema,
         AuditSchema,
-        AuditQuestionPhotoSchema,
-        AuditQuestionCommentSchema,
-        AuditQuestionSchema,
-        AuditQuestionAnswerSchema,
         StakeHolderSchema,
         AnnualProductionSchema,
         AnnualProductionBudgetSchema,
@@ -2349,20 +2345,6 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<int> cacheAuditQuestionPhoto(
-    AuditQuestionPhoto item,
-  ) async {
-    final db = await _db();
-    return db.writeTxn(() => db.auditQuestionPhotos.put(item));
-  }
-
-  Future<int> cacheAuditQuestion(
-    AuditQuestion item,
-  ) async {
-    final db = await _db();
-    return db.writeTxn(() => db.auditQuestions.put(item));
-  }
-
   Future<int> cacheQuestionPhoto(
     QuestionPhoto item,
   ) async {
@@ -2374,38 +2356,6 @@ class CmoDatabaseMasterService {
     if (photoPath == null) return null;
     final db = await _db();
     return db.questionPhotos.filter().photoEqualTo(photoPath).findFirst();
-  }
-
-  Future<AuditQuestionPhoto?> getAuditQuestionPhotoByPhotoPath(
-      String? photoPath) async {
-    if (photoPath == null) return null;
-    final db = await _db();
-    return db.auditQuestionPhotos
-        .filter()
-        .photoPathEqualTo(photoPath)
-        .findFirst();
-  }
-
-  Future<int> cacheAuditQuestionComment(
-    AuditQuestionComment item,
-  ) async {
-    final db = await _db();
-    return db.writeTxn(() => db.auditQuestionComments.put(item));
-  }
-
-  Future<AuditQuestionComment?> getAuditQuestionCommentByComment(
-      String? comment) async {
-    if (comment == null) return null;
-    final db = await _db();
-    return db.auditQuestionComments
-        .filter()
-        .commentEqualTo(comment)
-        .findFirst();
-  }
-
-  Future<int> cacheAuditQuestionAnswer(AuditQuestionAnswer item) async {
-    final db = await _db();
-    return db.writeTxn(() => db.auditQuestionAnswers.put(item));
   }
 
   Future<List<Audit>> getAllAudits() async {
@@ -2486,28 +2436,6 @@ class CmoDatabaseMasterService {
     }
 
     return <AuditTemplate>[];
-  }
-
-  Future<List<AuditQuestion>> getListAuditQuestionWithRmuIdAndAuditTemplateId({
-    int? auditTemplateId,
-    int? rmuId,
-  }) async {
-    if (rmuId == null || auditTemplateId == null) return <AuditQuestion>[];
-    final db = await _db();
-    try {
-      final auditQuestions = await db.auditQuestions
-          .filter()
-          .regionalManagerUnitIdEqualTo(rmuId)
-          .auditTemplateIdEqualTo(auditTemplateId)
-          .isActiveEqualTo(true)
-          .findAll();
-
-      return auditQuestions;
-    } catch (error) {
-      handleError(error);
-    }
-
-    return <AuditQuestion>[];
   }
 
   Future<List<Principle>> getPrinciples() async {
@@ -2595,108 +2523,6 @@ class CmoDatabaseMasterService {
     return <RejectReason>[];
   }
 
-  Future<List<AuditQuestion>> getListAuditQuestion({
-    int? auditTemplateId,
-    int? auditId,
-  }) async {
-    if (auditId == null || auditTemplateId == null) return <AuditQuestion>[];
-    final db = await _db();
-    try {
-      final auditQuestions = await db.auditQuestions
-          .filter()
-          .auditIdEqualTo(auditId)
-          .auditTemplateIdEqualTo(auditTemplateId)
-          .isActiveEqualTo(true)
-          .findAll();
-
-      return auditQuestions;
-    } catch (error) {
-      handleError(error);
-    }
-
-    return <AuditQuestion>[];
-  }
-
-  Future<List<AuditQuestionPhoto>> getAuditQuestionPhotos({
-    int? auditId,
-    int? questionId,
-  }) async {
-    try {
-      final db = await _db();
-      if (auditId == null) return <AuditQuestionPhoto>[];
-
-      var query = db.auditQuestionPhotos
-          .filter()
-          .auditIdIsNotNull()
-          .auditIdEqualTo(auditId)
-          .photoPathIsNotNull()
-          .photoPathIsNotEmpty();
-      if (questionId != null) {
-        query = query.questionIdEqualTo(questionId).questionIdIsNotNull();
-      }
-
-      return query.findAll();
-    } catch (error) {
-      handleError(error);
-    }
-
-    return <AuditQuestionPhoto>[];
-  }
-
-  Future<List<AuditQuestionComment>> getAuditQuestionComments({
-    int? auditId,
-    int? questionId,
-  }) async {
-    try {
-      final db = await _db();
-      if (auditId == null) return <AuditQuestionComment>[];
-      var query = db.auditQuestionComments
-          .filter()
-          .auditIdIsNotNull()
-          .auditIdEqualTo(auditId)
-          .commentIsNotNull()
-          .commentIsNotEmpty();
-      if (questionId != null) {
-        query = query.questionIdEqualTo(questionId).questionIdIsNotNull();
-      }
-
-      return query.findAll();
-    } catch (error) {
-      handleError(error);
-    }
-
-    return <AuditQuestionComment>[];
-  }
-
-  Future<void> removeAuditQuestionAnswer(AuditQuestionAnswer answer) async {
-    final db = await _db();
-    try {
-      return db.writeTxn(() => db.auditQuestionAnswers.delete(answer.id));
-    } catch (error) {
-      handleError(error);
-    }
-  }
-
-  Future<List<AuditQuestionAnswer>> getAuditQuestionAnswersWithAuditId(
-    int? auditId,
-  ) async {
-    if (auditId == null) return <AuditQuestionAnswer>[];
-    final db = await _db();
-    try {
-      final questionAnswers = await db.auditQuestionAnswers
-          .filter()
-          .auditIdEqualTo(auditId)
-          .isActiveEqualTo(true)
-          .findAll();
-
-      return questionAnswers;
-    } catch (error) {
-      handleError(error);
-    }
-
-    return <AuditQuestionAnswer>[];
-  }
-
   Future<void> removeQuestionPhoto(QuestionPhoto photo) async {
     final db = await _db();
     try {
@@ -2738,6 +2564,23 @@ class CmoDatabaseMasterService {
         .filter()
         .assessmentIdIsNotNull()
         .assessmentIdEqualTo(assessmentId)
+        .photoIsNotNull()
+        .photoIsNotEmpty()
+        .findAll();
+  }
+
+  Future<List<QuestionPhoto>> getQuestionPhotosByAssessmentIdAndQuestionId({
+    int? assessmentId,
+    int? questionId,
+  }) async {
+    final db = await _db();
+
+    return db.questionPhotos
+        .filter()
+        .assessmentIdIsNotNull()
+        .assessmentIdEqualTo(assessmentId)
+        .questionIdIsNotNull()
+        .questionIdEqualTo(questionId)
         .photoIsNotNull()
         .photoIsNotEmpty()
         .findAll();

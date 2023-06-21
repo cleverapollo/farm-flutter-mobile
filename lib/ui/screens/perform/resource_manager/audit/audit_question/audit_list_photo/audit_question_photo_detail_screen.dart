@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/state/state.dart';
@@ -11,22 +12,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuditQuestionsPhotoDetailScreen extends StatefulWidget {
   AuditQuestionsPhotoDetailScreen({
-    required this.auditQuestionPhoto,
+    required this.questionPhoto,
     required this.savePhoto,
   });
 
-  final AuditQuestionPhoto auditQuestionPhoto;
-  final void Function(AuditQuestionPhoto) savePhoto;
+  final QuestionPhoto questionPhoto;
+  final void Function(QuestionPhoto) savePhoto;
 
   static void push(
     BuildContext context, {
-    required AuditQuestionPhoto auditQuestionPhoto,
-    required void Function(AuditQuestionPhoto) savePhoto,
+    required QuestionPhoto auditQuestionPhoto,
+    required void Function(QuestionPhoto) savePhoto,
   }) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => AuditQuestionsPhotoDetailScreen(
-          auditQuestionPhoto: auditQuestionPhoto,
+          questionPhoto: auditQuestionPhoto,
           savePhoto: savePhoto,
         ),
       ),
@@ -38,23 +39,22 @@ class AuditQuestionsPhotoDetailScreen extends StatefulWidget {
 }
 
 class _AuditQuestionsPhotoDetailScreenState extends State<AuditQuestionsPhotoDetailScreen> {
-  late AuditQuestionPhoto auditPhoto;
+  late QuestionPhoto auditPhoto;
 
   final ImagePickerService _imagePickerService = ImagePickerService();
 
   @override
   void initState() {
     super.initState();
-    auditPhoto = widget.auditQuestionPhoto;
+    auditPhoto = widget.questionPhoto;
   }
 
-  Future<void> _selectPhotoFromCamera() async {
+  Future<void> _reselectPhotoFromCamera() async {
     final croppedImage = await _imagePickerService.pickImageFromCamera(title: DateTime.now().toString());
     if (croppedImage != null) {
       if (context.mounted) {
         auditPhoto = auditPhoto.copyWith(
-          photoName: DateTime.now().toString(),
-          photoPath: croppedImage.path,
+          photo: croppedImage.path,
         );
 
         setState(() {});
@@ -62,15 +62,14 @@ class _AuditQuestionsPhotoDetailScreenState extends State<AuditQuestionsPhotoDet
     }
   }
 
-  Future<void> _selectPhotoFromGallery() async {
+  Future<void> _reselectPhotoFromGallery() async {
     final croppedImage = await _imagePickerService.pickImageFromGallery(
       title: DateTime.now().toString(),
     );
     if (croppedImage != null) {
       if (context.mounted) {
         auditPhoto = auditPhoto.copyWith(
-          photoName: DateTime.now().toString(),
-          photoPath: croppedImage.path,
+          photo: croppedImage.path,
         );
 
         setState(() {});
@@ -96,7 +95,7 @@ class _AuditQuestionsPhotoDetailScreenState extends State<AuditQuestionsPhotoDet
         child: Column(
           children: [
             Image.file(
-              File(auditPhoto.photoPath!),
+              File(auditPhoto.photo!),
               fit: BoxFit.fill,
             ),
           ],
@@ -107,11 +106,11 @@ class _AuditQuestionsPhotoDetailScreenState extends State<AuditQuestionsPhotoDet
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CmoFilledButton(
-              onTap: _selectPhotoFromCamera,
+              onTap: _reselectPhotoFromCamera,
               title: LocaleKeys.retakePhoto.tr(),
             ),
             CmoFilledButton(
-              onTap: _selectPhotoFromGallery,
+              onTap: _reselectPhotoFromGallery,
               title: LocaleKeys.reselectPhoto.tr(),
             ),
           ],

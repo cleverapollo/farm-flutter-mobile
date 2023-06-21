@@ -17,20 +17,27 @@ class AuditListPhotoScreen extends StatefulWidget {
   const AuditListPhotoScreen({
     super.key,
     required this.auditQuestion,
+    required this.auditId,
   });
 
   static Future<bool?> push(
     BuildContext context, {
     required FarmQuestion auditQuestion,
+    required int? auditId,
   }) async {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => AuditListPhotoScreen(auditQuestion: auditQuestion),
+        builder: (_) => AuditListPhotoScreen(
+          auditQuestion: auditQuestion,
+          auditId: auditId,
+        ),
       ),
     );
   }
 
   final FarmQuestion auditQuestion;
+
+  final int? auditId;
 
   @override
   State<AuditListPhotoScreen> createState() => _AuditListPhotoScreenState();
@@ -46,24 +53,24 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
     super.initState();
     Future.microtask(() async {
       await context.read<AuditQuestionPhotoCubit>().initialize(
-        auditQuestion: widget.auditQuestion,
-      );
+            auditQuestion: widget.auditQuestion,
+            auditId: widget.auditId,
+          );
     });
   }
 
   Future<void> _selectPhotoFromCamera() async {
-    final croppedImage = await _imagePickerService.pickImageFromCamera(title: DateTime.now().toString());
+    final croppedImage = await _imagePickerService.pickImageFromCamera(
+      title: DateTime.now().toString(),
+    );
     if (croppedImage != null) {
       if (context.mounted) {
-
         setState(() {
           loading = true;
         });
 
         await context.read<AuditQuestionPhotoCubit>().addPhoto(
-              questionId: widget.auditQuestion.questionId,
               photoPath: croppedImage.path,
-              photoName: DateTime.now().toString(),
             );
 
         setState(() {
@@ -84,9 +91,7 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
 
       if (context.mounted) {
         await context.read<AuditQuestionPhotoCubit>().addPhoto(
-              questionId: widget.auditQuestion.questionId,
               photoPath: croppedImage.path,
-              photoName: DateTime.now().toString(),
             );
       }
 
@@ -96,7 +101,7 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
     }
   }
 
-  Future<void> _replacePhoto(AuditQuestionPhoto photo) async {
+  Future<void> _replacePhoto(QuestionPhoto photo) async {
     if (context.mounted) {
       setState(() {
         loading = true;
@@ -127,7 +132,7 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
             itemCount: snapshot.photos.length,
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             itemBuilder: (BuildContext context, int index) {
-              if (snapshot.photos[index].photoPath == null) return const SizedBox();
+              if (snapshot.photos[index].photo == null) return const SizedBox();
               return InkWell(
                 onTap: () {
                   AuditQuestionsPhotoDetailScreen.push(
@@ -144,7 +149,7 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
                   child: Row(
                     children: [
                       Image.file(
-                        File(snapshot.photos[index].photoPath!),
+                        File(snapshot.photos[index].photo!),
                         fit: BoxFit.fitHeight,
                         width: 74,
                         height: 74,
@@ -154,7 +159,7 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
                       ),
                       Expanded(
                         child: Text(
-                          snapshot.photos[index].photoName!,
+                          snapshot.photos[index].photo!,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: context.textStyles.bodyBold.black,
@@ -188,7 +193,8 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
               alignment: Alignment.topCenter,
               padding: const EdgeInsets.only(top: 12),
               child: CmoFilledButton(
-                onTap: () => Navigator.of(context).pop(snapshot.photos.isNotEmpty),
+                onTap: () =>
+                    Navigator.of(context).pop(snapshot.photos.isNotEmpty),
                 title: LocaleKeys.done.tr(),
                 loading: loading,
               ),

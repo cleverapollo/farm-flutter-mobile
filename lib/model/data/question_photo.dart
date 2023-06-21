@@ -23,7 +23,7 @@ class QuestionPhoto with _$QuestionPhoto {
   const QuestionPhoto._();
 
   @override
-  Id get id => fastHash(photo.toString());
+  Id get id => photoId ?? Isar.autoIncrement;
 }
 
 extension QuestionPhotoExtension on QuestionPhoto {
