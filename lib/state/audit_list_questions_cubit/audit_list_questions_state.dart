@@ -7,6 +7,7 @@ class AuditListQuestionsState extends Equatable {
     this.filteredQuestions = const <FarmQuestion>[],
     this.answers = const <QuestionAnswer>[],
     this.questionComments = const <QuestionComment>[],
+    this.questionPhotos = const <QuestionPhoto>[],
     this.rejectReasons = const <RejectReason>[],
     this.compliances = const <Compliance>[],
     this.principles = const <Principle>[],
@@ -15,11 +16,11 @@ class AuditListQuestionsState extends Equatable {
     this.criterias = const <Criteria>[],
     this.impactOns = const <ImpactOn>[],
     this.impactOnFilterId = -1,
-    this.incompleteFilter = 1,
     this.principleFilterId = -1,
     this.indicatorFilterId = -1,
     this.carFilterId = -1,
     this.criteriaFilterId = -1,
+    this.incompleteFilter = 0,
     this.totalComments = 0,
     this.totalPhotos = 0,
   });
@@ -29,6 +30,7 @@ class AuditListQuestionsState extends Equatable {
   final List<FarmQuestion> filteredQuestions;
   final List<QuestionAnswer> answers;
   final List<QuestionComment> questionComments;
+  final List<QuestionPhoto> questionPhotos;
   final List<Compliance> compliances;
   final List<RejectReason> rejectReasons;
   final List<Principle> principles;
@@ -51,6 +53,7 @@ class AuditListQuestionsState extends Equatable {
     List<FarmQuestion>? filteredQuestions,
     List<QuestionAnswer>? answers,
     List<QuestionComment>? questionComments,
+    List<QuestionPhoto>? questionPhotos,
     List<RejectReason>? rejectReasons,
     List<Compliance>? compliances,
     List<Principle>? principles,
@@ -72,6 +75,7 @@ class AuditListQuestionsState extends Equatable {
       filteredQuestions: filteredQuestions ?? this.filteredQuestions,
       answers: answers ?? this.answers,
       questionComments: questionComments ?? this.questionComments,
+      questionPhotos: questionPhotos ?? this.questionPhotos,
       rejectReasons: rejectReasons ?? this.rejectReasons,
       impactOns: impactOns ?? this.impactOns,
       impactOnFilterId: impactOnFilterId ?? this.impactOnFilterId,
@@ -94,6 +98,8 @@ class AuditListQuestionsState extends Equatable {
   @override
   List<Object?> get props => [
     compliances,
+    questionPhotos,
+    questionComments,
     rejectReasons,
     answers,
     impactOns,
@@ -113,4 +119,43 @@ class AuditListQuestionsState extends Equatable {
     totalPhotos,
     totalComments,
   ];
+
+  List<QuestionAnswer> getAnsweredFilteredQuestions() {
+    return answers
+        .where(
+          (answer) =>
+              answer.isQuestionComplete == 1 &&
+              filteredQuestions.firstWhereOrNull(
+                    (question) => question.questionId == answer.questionId,
+                  ) !=
+                  null,
+        )
+        .toList();
+  }
+
+  List<QuestionComment> getListCommentsFilteredQuestions(int? questionId) {
+    return questionComments
+        .where(
+          (comment) =>
+              comment.questionId == questionId &&
+              filteredQuestions.firstWhereOrNull(
+                    (question) => question.questionId == questionId,
+                  ) !=
+                  null,
+        )
+        .toList();
+  }
+
+  List<QuestionPhoto> getListPhotoFilteredQuestions(int? questionId) {
+    return questionPhotos
+        .where(
+          (photo) =>
+              photo.questionId == questionId &&
+              filteredQuestions.firstWhereOrNull(
+                    (question) => question.questionId == questionId,
+                  ) !=
+                  null,
+        )
+        .toList();
+  }
 }

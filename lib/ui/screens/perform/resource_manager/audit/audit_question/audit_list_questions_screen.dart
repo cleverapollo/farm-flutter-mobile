@@ -56,8 +56,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     AuditListCommentScreen.push(
       context,
       auditQuestion: farmQuestion,
-      auditId:
-          context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+      auditId: context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
     );
   }
 
@@ -67,8 +66,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     final result = await AuditQuestionAddCommentScreen.push(
       context,
       auditQuestion: farmQuestion,
-      auditId:
-          context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+      auditId: context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
     );
 
     if (result != null) {
@@ -79,13 +77,14 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   Future<void> _viewListPhoto({
     required FarmQuestion auditQuestion,
   }) async {
-    final result =
-        await AuditListPhotoScreen.push(context, auditQuestion: auditQuestion);
+    final result = await AuditListPhotoScreen.push(
+      context,
+      auditQuestion: auditQuestion,
+      auditId: context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+    );
 
-    if (result != null && result && context.mounted) {
-      await context
-          .read<AuditListQuestionsCubit>()
-          .markQuestionAnswerHasPhoto(auditQuestion);
+    if (result != null) {
+      await context.read<AuditListQuestionsCubit>().refresh();
     }
   }
 
@@ -96,9 +95,13 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     await context.read<AuditListQuestionsCubit>().setAnswer(
       question,
       compliance,
-      onCallback: () {
+      onCallback: () async {
+        if (context.read<AuditListQuestionsCubit>().state.audit!.completed) {
+          await context.read<AuditListCubit>().refresh();
+        }
+
         if (compliance.hasRejectReason != null && compliance.hasRejectReason!) {
-          addNewComment(farmQuestion: question);
+          await addNewComment(farmQuestion: question);
         }
       },
     );
@@ -129,29 +132,27 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
         children: [
           _buildFilterSection(),
           BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
-            selector: (state) => state.incompleteFilter == 0,
-            builder: (context, isComplete) => CmoHeaderTile(
-              title: isComplete
-                  ? LocaleKeys.completed.tr()
-                  : LocaleKeys.incomplete.tr(),
+            selector: (state) => state.incompleteFilter == 1,
+            builder: (context, incompleteFilter) => CmoHeaderTile(
+              title: LocaleKeys.incomplete.tr(),
               child: Row(
                 children: [
                   CmoTappable(
                     onTap: () {
                       context
                           .read<AuditListQuestionsCubit>()
-                          .setIncompleteFilter(isComplete ? 1 : 0);
+                          .setIncompleteFilter(incompleteFilter ? 0 : 1);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(left: 6.0),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: !isComplete ? Colors.white : Colors.green,
+                          color: incompleteFilter ? Colors.green : Colors.white,
                           shape: BoxShape.circle,
                         ),
-                        child: !isComplete
-                            ? Assets.icons.icTick.svg()
-                            : Assets.icons.icTick.svgWhite,
+                        child: incompleteFilter
+                            ? Assets.icons.icTick.svgWhite
+                            : Assets.icons.icTick.svg(),
                       ),
                     ),
                   ),
@@ -187,6 +188,18 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                         ),
                       ),
                     ],
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(left: 40.0),
+                    child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState,
+                        AuditListQuestionsState>(
+                      selector: (state) => state,
+                      builder: (context, state) => Text(
+                        '${state.getAnsweredFilteredQuestions().length}/${state.filteredQuestions.length}',
+                        style: context.textStyles.bodyBold.white,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -239,11 +252,11 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
       ),
       persistentFooterAlignment: AlignmentDirectional.center,
       persistentFooterButtons: [
-        CmoFilledButton(
-          onTap: _saveQuestionAnswer,
-          title: LocaleKeys.save.tr(),
-          loading: loading,
-        ),
+        // CmoFilledButton(
+        //   onTap: _saveQuestionAnswer,
+        //   title: LocaleKeys.save.tr(),
+        //   loading: loading,
+        // ),
       ],
     );
   }

@@ -79,30 +79,32 @@ class AuditQuestionItem extends StatelessWidget {
                 children: [
                   CmoTappable(
                     onTap: viewListPhoto,
-                    child: CmoCircelIconButton(
-                      // color: havePhotos
-                      //     ? context.colors.green
-                      //     : Colors.transparent,
-                      icon: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: Assets.icons.icCamera.svgBlack,
-                      ),
+                    child: BlocSelector<AuditListQuestionsCubit,
+                        AuditListQuestionsState, AuditListQuestionsState>(
+                      selector: (state) => state,
+                      builder: (context, state) {
+                        return CmoCircelIconButton(
+                          color: state.getListPhotoFilteredQuestions(question.questionId).isNotBlank
+                              ? context.colors.green
+                              : Colors.transparent,
+                          icon: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: Assets.icons.icCamera.svgBlack,
+                          ),
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(width: 16),
                   CmoTappable(
                     onTap: viewComment,
                     child: BlocSelector<AuditListQuestionsCubit,
-                        AuditListQuestionsState, bool>(
-                      selector: (state) => state.questionComments
-                          .where(
-                            (e) => e.questionId == question.questionId,
-                          )
-                          .isNotBlank,
-                      builder: (context, haveComment) {
+                        AuditListQuestionsState, AuditListQuestionsState>(
+                      selector: (state) => state,
+                      builder: (context, state) {
                         return CmoCircelIconButton(
-                          color: haveComment
+                          color: state.getListCommentsFilteredQuestions(question.questionId).isNotBlank
                               ? context.colors.green
                               : Colors.transparent,
                           icon: SizedBox(
