@@ -98,6 +98,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
       onCallback: () async {
         if (context.read<AuditListQuestionsCubit>().state.audit!.completed) {
           await context.read<AuditListCubit>().refresh();
+          await context.read<DashboardCubit>().initializeRM();
         }
 
         if (compliance.hasRejectReason != null && compliance.hasRejectReason!) {
