@@ -169,21 +169,6 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     return questionCommentsWithQuestionId.isNotBlank;
   }
 
-  Future<void> getTotalCommentsAndPhotos() async {
-    final questionComments = await cmoDatabaseMasterService.getAuditQuestionComments(
-      auditId: state.audit?.assessmentId,
-    );
-
-    final auditQuestionPhotos = await cmoDatabaseMasterService.getAuditQuestionPhotos(
-      auditId: state.audit?.assessmentId,
-    );
-
-    emit(state.copyWith(
-      totalPhotos: auditQuestionPhotos.length,
-      totalComments: questionComments.length,
-    ));
-  }
-
   Future<void> getListCompliances() async {
     final rmu = await configService.getActiveRegionalManager();
     final compliances = await cmoDatabaseMasterService.getCompliancesByRmuId(rmuId: rmu?.regionalManagerUnitId);
@@ -273,7 +258,6 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     await getListAuditQuestion();
     await getListQuestionAnswers();
     await getListQuestionComment();
-    await getTotalCommentsAndPhotos();
     await applyFilter();
   }
 

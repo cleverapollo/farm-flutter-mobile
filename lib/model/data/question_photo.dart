@@ -13,7 +13,9 @@ class QuestionPhoto with _$QuestionPhoto {
     @JsonKey(name: 'PhotoId') required int? photoId,
     @JsonKey(name: 'AssessmentId') required int? assessmentId,
     @JsonKey(name: 'QuestionId') required int? questionId,
-    @JsonKey(name: 'PhotoPath') required String? photoPath,
+    @JsonKey(name: 'PhotoURL') String? photoURL,
+    @JsonKey(name: 'NormalisedPhotoURL') String? normalisedPhotoURL,
+    @JsonKey(name: 'Photo') required String? photo,
   }) = _QuestionPhoto;
 
   factory QuestionPhoto.fromJson(Map<String, dynamic> json) =>
@@ -21,7 +23,7 @@ class QuestionPhoto with _$QuestionPhoto {
   const QuestionPhoto._();
 
   @override
-  Id get id => fastHash(photoPath.toString());
+  Id get id => fastHash(photo.toString());
 }
 
 extension QuestionPhotoExtension on QuestionPhoto {

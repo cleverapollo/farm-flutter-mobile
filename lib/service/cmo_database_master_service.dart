@@ -1641,9 +1641,14 @@ class CmoDatabaseMasterService {
     return db.compliances.put(item);
   }
 
-  Future<int> cacheFarmQuestion(FarmQuestion item) async {
+  Future<int> cacheFarmQuestion(FarmQuestion item, {bool isDirect = false}) async {
     final db = await _db();
-    return db.farmQuestions.put(item);
+    if (isDirect) {
+      return db.writeTxn(() => db.farmQuestions.put(item));
+    } else {
+      return db.farmQuestions.put(item);
+    }
+
   }
 
   Future<int> cacheFarm(Farm item) async {
@@ -2332,6 +2337,18 @@ class CmoDatabaseMasterService {
     }
   }
 
+  Future<List<QuestionComment>> getQuestionCommentsByAssessmentId(
+      int? assessmentId,
+      ) async {
+    final db = await _db();
+
+    return db.questionComments
+        .filter()
+        .assessmentIdIsNotNull()
+        .assessmentIdEqualTo(assessmentId)
+        .findAll();
+  }
+
   Future<int> cacheAuditQuestionPhoto(
     AuditQuestionPhoto item,
   ) async {
@@ -2356,7 +2373,7 @@ class CmoDatabaseMasterService {
   Future<QuestionPhoto?> getQuestionPhotoByPhotoPath(String? photoPath) async {
     if (photoPath == null) return null;
     final db = await _db();
-    return db.questionPhotos.filter().photoPathEqualTo(photoPath).findFirst();
+    return db.questionPhotos.filter().photoEqualTo(photoPath).findFirst();
   }
 
   Future<AuditQuestionPhoto?> getAuditQuestionPhotoByPhotoPath(
@@ -2683,7 +2700,7 @@ class CmoDatabaseMasterService {
   Future<void> removeQuestionPhoto(QuestionPhoto photo) async {
     final db = await _db();
     try {
-      final path = photo.photoPath;
+      final path = photo.photo;
       final photoFind = await getQuestionPhotoByPhotoPath(path);
       if (photoFind == null) return;
       return db.writeTxn(() => db.questionPhotos.delete(photoFind.id));
@@ -2697,8 +2714,8 @@ class CmoDatabaseMasterService {
 
     return db.questionPhotos
         .filter()
-        .photoPathIsNotNull()
-        .photoPathIsNotEmpty()
+        .photoIsNotNull()
+        .photoIsNotEmpty()
         .findAll();
   }
 
@@ -2721,20 +2738,8 @@ class CmoDatabaseMasterService {
         .filter()
         .assessmentIdIsNotNull()
         .assessmentIdEqualTo(assessmentId)
-        .photoPathIsNotNull()
-        .photoPathIsNotEmpty()
-        .findAll();
-  }
-
-  Future<List<QuestionComment>> getQuestionCommentsByAssessmentId(
-    int? assessmentId,
-  ) async {
-    final db = await _db();
-
-    return db.questionComments
-        .filter()
-        .assessmentIdIsNotNull()
-        .assessmentIdEqualTo(assessmentId)
+        .photoIsNotNull()
+        .photoIsNotEmpty()
         .findAll();
   }
 

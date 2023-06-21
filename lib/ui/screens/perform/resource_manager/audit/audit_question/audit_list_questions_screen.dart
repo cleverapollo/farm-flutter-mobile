@@ -200,14 +200,10 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                     final answer = context
                         .watch<AuditListQuestionsCubit>()
                         .getAnswerByQuestionId(question.questionId);
-                    final haveComments = context
-                        .watch<AuditListQuestionsCubit>()
-                        .checkQuestionHasComments(question);
                     return AuditQuestionItem(
                       question: question,
                       answer: answer,
                       compliances: snapshot.compliances,
-                      haveComments: haveComments,
                       addAnswer: (compliance) {
                         _addAnswer(
                           question,

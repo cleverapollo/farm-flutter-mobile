@@ -390,7 +390,7 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
     final assessment = state.assessment;
     final photo = QuestionPhoto(
       assessmentId: assessment?.assessmentId,
-      photoPath: photoPath,
+      photo: photoPath,
       questionId: questionId,
       photoId: null,
     );

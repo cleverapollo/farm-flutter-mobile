@@ -17,8 +17,6 @@ class AuditQuestionItem extends StatelessWidget {
     required this.viewComment,
     required this.addAnswer,
     this.answer,
-    this.haveComments = false,
-    this.havePhotos = false,
   });
 
   final FarmQuestion question;
@@ -27,8 +25,6 @@ class AuditQuestionItem extends StatelessWidget {
   final VoidCallback viewListPhoto;
   final VoidCallback viewComment;
   final void Function(Compliance) addAnswer;
-  final bool haveComments;
-  final bool havePhotos;
 
   @override
   Widget build(BuildContext context) {
@@ -84,9 +80,9 @@ class AuditQuestionItem extends StatelessWidget {
                   CmoTappable(
                     onTap: viewListPhoto,
                     child: CmoCircelIconButton(
-                      color: havePhotos
-                          ? context.colors.green
-                          : Colors.transparent,
+                      // color: havePhotos
+                      //     ? context.colors.green
+                      //     : Colors.transparent,
                       icon: SizedBox(
                         width: 20,
                         height: 20,
@@ -97,15 +93,25 @@ class AuditQuestionItem extends StatelessWidget {
                   const SizedBox(width: 16),
                   CmoTappable(
                     onTap: viewComment,
-                    child: CmoCircelIconButton(
-                      color: haveComments
-                          ? context.colors.green
-                          : Colors.transparent,
-                      icon: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: Assets.icons.icComment.svgBlack,
-                      ),
+                    child: BlocSelector<AuditListQuestionsCubit,
+                        AuditListQuestionsState, bool>(
+                      selector: (state) => state.questionComments
+                          .where(
+                            (e) => e.questionId == question.questionId,
+                          )
+                          .isNotBlank,
+                      builder: (context, haveComment) {
+                        return CmoCircelIconButton(
+                          color: haveComment
+                              ? context.colors.green
+                              : Colors.transparent,
+                          icon: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: Assets.icons.icComment.svgBlack,
+                          ),
+                        );
+                      },
                     ),
                   )
                 ],
