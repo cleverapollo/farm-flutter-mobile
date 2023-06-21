@@ -279,7 +279,9 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
 
         final questionPhotoResult = await cmoDatabaseMasterService
             .getQuestionPhotosByAssessmentIdAndQuestionId(
-                assessment.assessmentId!, question.questionId!);
+          assessmentId: assessment.assessmentId,
+          questionId: question.questionId,
+        );
 
         questionPhotoPayLoad
             .addAll(questionPhotoResult.map((e) => e.toPayLoad()).toList());

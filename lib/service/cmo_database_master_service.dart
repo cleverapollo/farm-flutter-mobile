@@ -2545,17 +2545,6 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<QuestionPhoto>> getQuestionPhotosByAssessmentIdAndQuestionId(
-      int assessmentId, int questionId) async {
-    final db = await _db();
-
-    return db.questionPhotos
-        .filter()
-        .assessmentIdEqualTo(assessmentId)
-        .questionIdEqualTo(questionId)
-        .findAll();
-  }
-
   Future<List<QuestionPhoto>> getQuestionPhotosByAssessmentId(
       int? assessmentId) async {
     final db = await _db();

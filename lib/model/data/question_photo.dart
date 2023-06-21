@@ -32,6 +32,7 @@ extension QuestionPhotoExtension on QuestionPhoto {
         PhotoId: photoId,
         AssessmentId: assessmentId,
         QuestionId: questionId,
-        PhotoPath: photoPath);
+        PhotoPath: photo,
+    );
   }
 }
