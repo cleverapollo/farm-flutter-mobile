@@ -84,7 +84,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
         totalAssessments.fold(
             0,
             (previousValue, element) =>
-                previousValue + (element.synced == true ? 1 : 0));
+                previousValue + (element.statusEnum == AssessmentStatus.synced ? 1 : 0));
     state.rmDashboardInfo?.memberOutstanding =
         (await service.getUnsyncedFarmCountByRegionalManagerUnitId(
             resourceManagerUnit!.regionalManagerUnitId!))?.length ?? 0;

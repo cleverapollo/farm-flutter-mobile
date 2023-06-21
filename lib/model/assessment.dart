@@ -54,7 +54,6 @@ class Assessment with _$Assessment {
     @JsonKey(name: 'SignatureDate') String? signatureDate,
     @JsonKey(name: 'SignaturePoints') String? signaturePoints,
     @JsonKey(name: 'HasSignature') String? hasSignature,
-    @JsonKey(name: 'Synced') bool? synced,
   }) = _Assessment;
 
   const Assessment._();
