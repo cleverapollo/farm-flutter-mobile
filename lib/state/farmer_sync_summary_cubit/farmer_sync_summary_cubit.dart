@@ -74,12 +74,12 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
 
   Future<bool> initDataConfig() async {
     try {
-      await userInfoCubit.getPerformUserInfo();
       await userDeviceCubit.createPerformUserDevice();
 
+      final user = await configService.getActiveUser();
       final groupSchemeId = await configService.getActiveFarmGroupSchemeId();
       final farmId = await configService.getActiveFarmId();
-      final userId = userInfoCubit.state.performUserInfo?.userId;
+      final userId = user?.userId;
       final userDeviceId = userDeviceCubit.data?.userDeviceId;
 
       if (userId == null ||
@@ -117,12 +117,24 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
         return emit(state.copyWith(isSyncing: true, syncMessage: 'Sync'));
       }
 
-      await cmoPerformApiService.createFarmerSystemEvent(
-        farmId: farmId,
+      final systemEventId = await cmoPerformApiService.createFarmerSystemEvent(
+        primaryKey: farmId,
         userDeviceId: userDeviceId,
+        systemEventName: 'SyncGSMasterData',
       );
 
+      final systemEventExist =
+          await cmoPerformApiService.checkFarmSystemEventExist(
+        systemEventId: int.parse(systemEventId),
+      );
+
+      if (systemEventId.isEmpty || !systemEventExist) {
+        return emit(state.copyWith(isSyncing: false));
+      }
+
       await Future.delayed(const Duration(seconds: 5), () {});
+
+      logger.d('Create System Event Success --- $systemEventId');
 
       await createSubscriptions();
 
@@ -550,7 +562,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
     });
 
     await Future.wait(futures)
-        .whenComplete(() => emit(state.copyWith(data: data, isLoading: false)));
+        .then((_) => emit(state.copyWith(data: data, isLoading: false)));
   }
 
   Future<void> subscribeToTrickleFeedMasterDataTopic() async {

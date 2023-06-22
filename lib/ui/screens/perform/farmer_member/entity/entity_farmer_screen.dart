@@ -158,13 +158,16 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
 
   Future<void> _handleSyncFarmButton(BuildContext context) async {
     context.read<FarmerSyncSummaryCubit>().onSyncStatus('Syncing...');
+    await context.read<UserInfoCubit>().getPerformUserInfo();
 
     final state = context.read<FarmerEntityCubit>().state;
+    final userInfo = context.read<UserInfoCubit>().state.performUserInfo;
     final farm = state.selectedFarm;
 
     final futures = <Future<dynamic>>[];
 
     futures
+      ..add(configService.setActiveUser(userInfo: userInfo!))
       ..add(
           configService.setActiveUserRole(userRole: UserRoleEnum.farmerMember))
       ..add(configService.setActiveFarmId(farmId: '${farm?.id}'))

@@ -300,27 +300,48 @@ class CmoPerformApiService {
     } catch (_) {}
   }
 
-  Future<bool> createFarmerSystemEvent({
-    required String farmId,
-    required int userDeviceId,
-  }) async {
-    final body = {
-      'SystemEventName': 'SyncGSMasterData',
-      'PrimaryKey': farmId,
-      'UserDeviceId': userDeviceId
-    };
-
-    final response = await client.post<dynamic>(
-      '${_apiUrl}CreateSystemEvent',
-      data: body,
-      options: Options(headers: {'accessToken': 'true'}),
-    );
-
-    if (response.statusCode != 200) {
-      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+  Future<bool> checkFarmSystemEventExist({required int systemEventId}) async {
+    try {
+      final result = await client.get<dynamic>(
+        '${_apiUrl}SystemEventExists',
+        queryParameters: {'systemEventId': systemEventId},
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+      if (result.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } catch (_) {
       return false;
     }
-    return true;
+  }
+
+  Future<String> createFarmerSystemEvent({
+    required String primaryKey,
+    required int userDeviceId,
+    required String systemEventName,
+  }) async {
+    try {
+      final body = {
+        'SystemEventName': systemEventName,
+        'PrimaryKey': primaryKey,
+        'UserDeviceId': userDeviceId
+      };
+      final accessToken = await _readAccessToken();
+      final response = await client.post<dynamic>(
+        '${_apiUrl}CreateSystemEvent',
+        data: body,
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return '';
+      }
+      return response.data['SystemEventId'].toString();
+    } catch (e) {
+      return '';
+    }
   }
 
   Future<MasterDataMessage?> pullFarmerGlobalMessage({
@@ -328,6 +349,7 @@ class CmoPerformApiService {
     required String currentClientId,
     int pageSize = 200,
   }) async {
+    final accessToken = await _readAccessToken();
     final response = await client.get<JsonData>(
       '${_mqApiUrl}message',
       queryParameters: {
@@ -336,7 +358,7 @@ class CmoPerformApiService {
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
       },
-      options: Options(headers: {'accessToken': 'true'}),
+      options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
     );
 
     if (response.statusCode != 200) {
@@ -382,7 +404,8 @@ class CmoPerformApiService {
     final response = await client.get<JsonData>(
       '${_mqApiUrl}message',
       queryParameters: {
-        'key': _pubsubApiKey,
+        'key':
+            '9ed921dcada114082707da15fadc368d4ed4da08550ddc8984505763e25c35a2',
         'client': '$currentClientId',
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
