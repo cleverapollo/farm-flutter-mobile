@@ -13,7 +13,7 @@ class SanctionRegister with _$SanctionRegister {
     @JsonKey(name: 'WorkerId') String? workerId,
     @JsonKey(name: 'CampId') String? campId,
     @JsonKey(name: 'CampOrCompartment') String? campOrCompartment,
-    @JsonKey(name: 'DateRecieved') DateTime? dateReciev,
+    @JsonKey(name: 'DateReceived') DateTime? dateReceived,
     @JsonKey(name: 'IssueTypeId') int? issueTypeId,
     @JsonKey(name: 'DescriptionOfSanction') String? descriptionOfSanction,
     @JsonKey(name: 'Comment') String? comment,

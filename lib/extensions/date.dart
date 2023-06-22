@@ -12,4 +12,10 @@ extension DateTimeExtensions on DateTime? {
     final formattedDate = dateFormat.format(this ?? DateTime.now());
     return formattedDate;
   }
+
+  String mmmDdYyyy() {
+    final dateFormat = DateFormat('MMM dd, yyyy');
+    final formattedDate = dateFormat.format(this ?? DateTime.now());
+    return formattedDate;
+  }
 }

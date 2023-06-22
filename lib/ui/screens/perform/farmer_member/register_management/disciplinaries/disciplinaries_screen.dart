@@ -1,9 +1,13 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/sanction_register/sanction_register.dart';
+import 'package:cmo/state/disciplinaries_cubit/disciplinaries_cubit.dart';
+import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_add_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DisciplinariesScreen extends StatefulWidget {
   const DisciplinariesScreen({super.key});
@@ -18,86 +22,63 @@ class DisciplinariesScreen extends StatefulWidget {
 }
 
 class _DisciplinariesScreenState extends State<DisciplinariesScreen> {
-  List<DisciplinariesModel> sampleData = [
-    DisciplinariesModel(
-      disciplinayNo: '1',
-      campOrCompartment: '1',
-      comment: '1',
-      dateRecieved: DateTime.now(),
-      descriptionOfSanction: '1',
-      issueTypeName: '1',
-      signatureDate: '1',
-      workerName: '1',
-    ),
-    DisciplinariesModel(
-      disciplinayNo: '1',
-      campOrCompartment: '1',
-      comment: '1',
-      dateRecieved: DateTime.now(),
-      descriptionOfSanction: '1',
-      issueTypeName: '1',
-      signatureDate: '1',
-      workerName: '1',
-    ),
-    DisciplinariesModel(
-      disciplinayNo: '1',
-      campOrCompartment: '1',
-      comment: '1',
-      dateRecieved: DateTime.now(),
-      descriptionOfSanction: '1',
-      issueTypeName: '1',
-      signatureDate: '1',
-      workerName: '1',
-    ),
-    DisciplinariesModel(
-      disciplinayNo: '1',
-      campOrCompartment: '1',
-      comment: '1',
-      dateRecieved: DateTime.now(),
-      descriptionOfSanction: '1',
-      issueTypeName: '1',
-      signatureDate: '1',
-      workerName: '1',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.disciplinary.tr(),
-        showLeading: true,
-        showAdding: true,
-        onTapAdding: () => DisciplinariesAddScreen.push(context),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _StatusFilterWidget(
-                  text: LocaleKeys.open.tr(),
-                  isSelected: true,
-                ),
-                const SizedBox(width: 8),
-                _StatusFilterWidget(
-                  text: LocaleKeys.close.tr(),
-                  isSelected: false,
-                ),
-              ],
-            ),
-            ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-                separatorBuilder: (_, index) => const SizedBox(height: 14),
-                itemCount: sampleData.length,
-                itemBuilder: (context, index) =>
-                    _DisciplinariesItemWidget(sampleData[index])),
-          ],
+    return BlocProvider<DisciplinariesCubit>(
+      create: (_) => DisciplinariesCubit(),
+      child: Scaffold(
+        appBar: CmoAppBarV2(
+          title: LocaleKeys.disciplinary.tr(),
+          showLeading: true,
+          showAdding: true,
+          onTapAdding: () => DisciplinariesAddScreen.push(context),
+        ),
+        body: BlocBuilder<DisciplinariesCubit, DisciplinariesState>(
+          builder: (context, state) {
+            final cubit = context.read<DisciplinariesCubit>();
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          cubit.onChangeStatus(true);
+                        },
+                        child: _StatusFilterWidget(
+                          text: LocaleKeys.open.tr(),
+                          isSelected: state.isOpen,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      InkWell(
+                        onTap: () {
+                          cubit.onChangeStatus(false);
+                        },
+                        child: _StatusFilterWidget(
+                          text: LocaleKeys.close.tr(),
+                          isSelected: !state.isOpen,
+                        ),
+                      ),
+                    ],
+                  ),
+                  ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 18),
+                      separatorBuilder: (_, index) =>
+                          const SizedBox(height: 14),
+                      itemCount: state.sanctionRegisters.length,
+                      itemBuilder: (context, index) =>
+                          _DisciplinariesItemWidget(
+                              state.sanctionRegisters[index])),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
@@ -138,7 +119,7 @@ class _StatusFilterWidget extends StatelessWidget {
 class _DisciplinariesItemWidget extends StatelessWidget {
   static const double _itemHorizontalPadding = 4;
 
-  final DisciplinariesModel data;
+  final SanctionRegister data;
 
   const _DisciplinariesItemWidget(this.data, {Key? key}) : super(key: key);
 
@@ -158,7 +139,7 @@ class _DisciplinariesItemWidget extends StatelessWidget {
               horizontal: _itemHorizontalPadding,
             ),
             child: Text(
-              '${LocaleKeys.disciplinary_no.tr()} : ${data.disciplinayNo}',
+              '${LocaleKeys.disciplinary_no.tr()} : ${data.sanctionRegisterId}',
               style: context.textStyles.bodyBold
                   .copyWith(color: context.colors.blue),
             ),
@@ -173,16 +154,22 @@ class _DisciplinariesItemWidget extends StatelessWidget {
               color: context.colors.black,
             ),
           ),
-          _buildILineItem(context, '${LocaleKeys.worker.tr()}: ', data.workerName),
-          _buildILineItem(context, '${LocaleKeys.dateIssued.tr()} :', data.dateRecieved.yMd()),
           _buildILineItem(
-              context, '${LocaleKeys.camp_compartment.tr()} :', data.campOrCompartment),
+              context, '${LocaleKeys.worker.tr()}: ', data.displayWorkerName),
+          _buildILineItem(context, '${LocaleKeys.dateIssued.tr()} :',
+              data.dateReceived.yMd()),
+          _buildILineItem(context, '${LocaleKeys.camp_compartment.tr()} :',
+              data.campOrCompartment),
+          _buildILineItem(context, '${LocaleKeys.disciplinaries_issue.tr()} :',
+              data.issueTypeName),
           _buildILineItem(
-              context, '${LocaleKeys.disciplinaries_issue.tr()} :', data.issueTypeName),
-          _buildILineItem(context, '${LocaleKeys.disciplinaries_steps_taken.tr()} : ',
+              context,
+              '${LocaleKeys.disciplinaries_steps_taken.tr()} : ',
               data.descriptionOfSanction),
-          _buildILineItem(context, '${LocaleKeys.signed.tr()} : ', data.signatureDate),
-          _buildILineItem(context, '${LocaleKeys.generalComments.tr()} :', data.comment),
+          _buildILineItem(
+              context, '${LocaleKeys.signed.tr()} : ', data.signatureDate),
+          _buildILineItem(
+              context, '${LocaleKeys.generalComments.tr()} :', data.comment),
         ],
       ),
     );

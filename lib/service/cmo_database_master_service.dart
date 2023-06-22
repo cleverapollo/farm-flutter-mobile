@@ -54,6 +54,8 @@ import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_screen.dart';
+
 class CmoDatabaseMasterService {
   factory CmoDatabaseMasterService() {
     return _inst;
@@ -192,6 +194,16 @@ class CmoDatabaseMasterService {
     return db.writeTxn(() async {
       return db.configDatas.put(data);
     });
+  }
+
+  Future<List<Camp>> getCampByFarmId(int farmId) async {
+    final db = await _db();
+
+    return db.camps
+        .filter()
+        .farmIdEqualTo(farmId.toString())
+        .isActiveEqualTo(true)
+        .findAll();
   }
 
   Future<ConfigData?> getConfig(ConfigEnum config) async {
@@ -958,14 +970,32 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<SanctionRegister>> getSanctionRegisterByFarmId(
-      String farmId) async {
+  Future<List<SanctionRegister>> getSanctionRegisterByFarmId(String farmId,
+      {bool? isOpen}) async {
     final db = await _db();
-    return db.sanctionRegisters
-        .filter()
-        .farmIdEqualTo(farmId)
-        .isActiveEqualTo(true)
-        .findAll();
+    if (isOpen == null) {
+      return db.sanctionRegisters
+          .filter()
+          .farmIdEqualTo(farmId)
+          .isActiveEqualTo(true)
+          .findAll();
+    }
+
+    if (!isOpen) {
+      return db.sanctionRegisters
+          .filter()
+          .farmIdEqualTo(farmId)
+          .isActiveEqualTo(true)
+          .dateReceivedIsNull()
+          .findAll();
+    } else {
+      return db.sanctionRegisters
+          .filter()
+          .farmIdEqualTo(farmId)
+          .isActiveEqualTo(true)
+          .dateReceivedIsNotNull()
+          .findAll();
+    }
   }
 
   Future<List<Chemical>> getUnsyncedChemicalByFarmId(String farmId) async {
@@ -1637,14 +1667,14 @@ class CmoDatabaseMasterService {
     return db.compliances.put(item);
   }
 
-  Future<int> cacheFarmQuestion(FarmQuestion item, {bool isDirect = false}) async {
+  Future<int> cacheFarmQuestion(FarmQuestion item,
+      {bool isDirect = false}) async {
     final db = await _db();
     if (isDirect) {
       return db.writeTxn(() => db.farmQuestions.put(item));
     } else {
       return db.farmQuestions.put(item);
     }
-
   }
 
   Future<int> cacheFarm(Farm item) async {
@@ -1942,7 +1972,8 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<Farm>?> getUnsyncedFarmCountByRegionalManagerUnitId(int resourceManagerUnit) async {
+  Future<List<Farm>?> getUnsyncedFarmCountByRegionalManagerUnitId(
+      int resourceManagerUnit) async {
     final db = await _db();
     return db.farms
         .filter()
@@ -1953,7 +1984,8 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<RMStakeHolder>?> getActiveStakeholderWrappersCountByGroupSchemeId(int groupSchemeId) async {
+  Future<List<RMStakeHolder>?> getActiveStakeholderWrappersCountByGroupSchemeId(
+      int groupSchemeId) async {
     final db = await _db();
     final groupSchemeStakeHolders = await db.groupSchemeStakeHolders
         .filter()
@@ -2334,8 +2366,8 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<QuestionComment>> getQuestionCommentsByAssessmentId(
-      int? assessmentId,
-      ) async {
+    int? assessmentId,
+  ) async {
     final db = await _db();
 
     return db.questionComments
@@ -2360,11 +2392,7 @@ class CmoDatabaseMasterService {
 
   Future<List<Audit>> getAllAudits() async {
     final db = await _db();
-    return db.audits
-        .filter()
-        .isActiveEqualTo(true)
-        .sortByCreated()
-        .findAll();
+    return db.audits.filter().isActiveEqualTo(true).sortByCreated().findAll();
   }
 
   Future<int> cacheAudit(Audit item) async {
