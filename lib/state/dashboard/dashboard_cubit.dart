@@ -126,7 +126,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     if (resourceManagerUnit == null) {
       return;
     }
-    final farms = await service.getFarms(resourceManagerUnit.id);
+    final farms = await service.getFarmsByRMUnit(resourceManagerUnit.id);
     final info = state.rmDashboardInfo ?? RMDashboardInfo();
     info.incompletedMembers = 0;
     info.onboardedMembers = 0;

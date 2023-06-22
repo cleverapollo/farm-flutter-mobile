@@ -4,24 +4,36 @@ import 'package:cmo/model/resource_manager_unit.dart';
 
 class MemberManagementState {
   const MemberManagementState({
-    this.farms = const [],
+    this.allFarms = const [],
+    this.filteringFarms = const [],
     this.resourceManagerUnit,
     this.groupScheme,
+    this.filteringText,
+    this.isInCompleteSelected = true,
   });
 
-  final List<Farm> farms;
+  final List<Farm> allFarms;
   final ResourceManagerUnit? resourceManagerUnit;
   final GroupScheme? groupScheme;
+  final List<Farm> filteringFarms;
+  final String? filteringText;
+  final bool isInCompleteSelected;
 
   MemberManagementState copyWith({
-    List<Farm>? farms,
+    List<Farm>? allFarms,
     ResourceManagerUnit? resourceManagerUnit,
     GroupScheme? groupScheme,
+    List<Farm>? filteringFarms,
+    String? filteringText,
+    bool? isInCompleteSelected,
   }) {
     return MemberManagementState(
-      farms: farms ?? this.farms,
+      allFarms: allFarms ?? this.allFarms,
       resourceManagerUnit: resourceManagerUnit ?? this.resourceManagerUnit,
       groupScheme: groupScheme ?? this.groupScheme,
+      filteringFarms: filteringFarms ?? this.filteringFarms,
+      filteringText: filteringText ?? this.filteringText,
+      isInCompleteSelected: isInCompleteSelected ?? this.isInCompleteSelected,
     );
   }
 }

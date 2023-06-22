@@ -1933,7 +1933,7 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<Farm>?> getFarms(int resourceManagerUnit) async {
+  Future<List<Farm>?> getFarmsByRMUnit(int resourceManagerUnit) async {
     final db = await _db();
     return db.farms
         .filter()
@@ -2625,10 +2625,5 @@ class CmoDatabaseMasterService {
   Future<List<Compartment>?> getCompartments() async {
     final db = await _db();
     return db.txn(() => db.compartments.where().findAll());
-  }
-
-  Future<List<Farm>?> getFarms() async {
-    final db = await _db();
-    return db.txn(() => db.farms.where().findAll());
   }
 }

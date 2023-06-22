@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
@@ -31,6 +33,9 @@ class MemberManagementScreen extends StatefulWidget {
 }
 
 class _MemberManagementScreenState extends State<MemberManagementScreen> {
+
+  Timer? _searchDebounce;
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -50,10 +55,8 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
             ),
             body: BlocSelector<MemberManagementCubit, MemberManagementState,
                 List<Farm>>(
-              selector: (state) => state.farms,
-              builder: (context, allFarms) {
-                // TODO: Need to do filter here
-                final farms = allFarms;
+              selector: (state) => state.filteringFarms,
+              builder: (context, filteringFarms) {
                 return Column(
                   children: [
                     Padding(
@@ -62,25 +65,54 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                         name: LocaleKeys.search.tr(),
                         prefixIcon: Assets.icons.icSearch.svg(),
                         hintText: LocaleKeys.search.tr(),
+                        onChanged: (searchText) {
+                          _searchDebounce?.cancel();
+                          _searchDebounce = Timer(
+                            const Duration(milliseconds: 300),
+                            () {
+                              context
+                                  .read<MemberManagementCubit>()
+                                  .onSearchTextChanged(searchText);
+                            },
+                          );
+                        },
                       ),
                     ),
                     Row(
                       children: [
                         const Spacer(),
-                        CmoFilledButton(
-                          onTap: () {},
-                          disable: false,
-                          title: LocaleKeys.incomplete.tr(),
-                          titleStyle: context.textStyles.bodyBold.white
-                              .copyWith(fontSize: 12),
+                        BlocSelector<MemberManagementCubit, MemberManagementState, bool>(
+                          selector: (state) => state.isInCompleteSelected,
+                          builder: (context, isInCompleteSelected) {
+                            return CmoFilledButton(
+                              onTap: () {
+                                context
+                                    .read<MemberManagementCubit>()
+                                    .onFilterGroupChanged(true);
+                              },
+                              disable: !isInCompleteSelected,
+                              title: LocaleKeys.incomplete.tr(),
+                              titleStyle: context.textStyles.bodyBold.white
+                                  .copyWith(fontSize: 12),
+                            );
+                          },
                         ),
                         const SizedBox(width: 12),
-                        CmoFilledButton(
-                          onTap: () {},
-                          disable: true,
-                          title: LocaleKeys.members.tr(),
-                          titleStyle: context.textStyles.bodyBold.white
-                              .copyWith(fontSize: 12),
+                        BlocSelector<MemberManagementCubit, MemberManagementState, bool>(
+                          selector: (state) => state.isInCompleteSelected,
+                          builder: (context, isInCompleteSelected) {
+                            return CmoFilledButton(
+                              onTap: () {
+                                context
+                                    .read<MemberManagementCubit>()
+                                    .onFilterGroupChanged(false);
+                              },
+                              disable: isInCompleteSelected,
+                              title: LocaleKeys.members.tr(),
+                              titleStyle: context.textStyles.bodyBold.white
+                                  .copyWith(fontSize: 12),
+                            );
+                          },
                         ),
                         const Spacer(),
                       ],
@@ -88,10 +120,10 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                     const SizedBox(height: 20),
                     Expanded(
                       child: ListView.separated(
-                        itemCount: farms.length,
+                        itemCount: filteringFarms.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 20),
                         itemBuilder: (_, index) {
-                          final farm = farms[index];
+                          final farm = filteringFarms[index];
                           return CmoCard(
                             margin: const EdgeInsets.symmetric(horizontal: 23),
                             content: [
@@ -99,7 +131,7 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                               CmoCardHeader(
                                   title: '${farm.firstName} ${farm.lastName}'),
                               CmoCardItem(
-                                title: farm.isProspectMember == true
+                                title: farm.isGroupSchemeMember == true
                                     ? LocaleKeys.onboarded.tr()
                                     : LocaleKeys.incomplete.tr(),
                                 value: '',
