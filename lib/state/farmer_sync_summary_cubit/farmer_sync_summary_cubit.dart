@@ -77,7 +77,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
       await userInfoCubit.getPerformUserInfo();
       await userDeviceCubit.createPerformUserDevice();
 
-      final groupSchemeId = await configService.getActiveGroupSchemeId();
+      final groupSchemeId = await configService.getActiveFarmGroupSchemeId();
       final farmId = await configService.getActiveFarmId();
       final userId = userInfoCubit.state.performUserInfo?.userId;
       final userDeviceId = userDeviceCubit.data?.userDeviceId;

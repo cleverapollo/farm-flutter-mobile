@@ -168,7 +168,7 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
       ..add(
           configService.setActiveUserRole(userRole: UserRoleEnum.farmerMember))
       ..add(configService.setActiveFarmId(farmId: '${farm?.id}'))
-      ..add(configService.setActiveGroupSchemeId(
+      ..add(configService.setActiveFarmGroupSchemeId(
           groupSchemeId: '${farm?.groupSchemeId}'));
 
     await Future.wait(futures).then((_) async {

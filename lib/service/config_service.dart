@@ -118,12 +118,13 @@ class ConfigService {
     return rawJson;
   }
 
-  Future<bool> setActiveGroupSchemeId({required String groupSchemeId}) async {
+  Future<bool> setActiveFarmGroupSchemeId(
+      {required String groupSchemeId}) async {
     final sp = await SharedPreferences.getInstance();
     return sp.setString('GroupSchemeId', groupSchemeId);
   }
 
-  Future<String?> getActiveGroupSchemeId() async {
+  Future<String?> getActiveFarmGroupSchemeId() async {
     final sp = await SharedPreferences.getInstance();
     final rawJson = sp.getString('GroupSchemeId');
     if (rawJson == null) return null;
