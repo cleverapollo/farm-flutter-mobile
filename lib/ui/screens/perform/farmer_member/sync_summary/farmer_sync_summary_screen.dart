@@ -23,7 +23,7 @@ class FarmerSyncSummaryScreen extends StatelessWidget {
       create: (_) => FarmerSyncSummaryCubit(
         userInfoCubit: context.read<UserInfoCubit>(),
         userDeviceCubit: context.read<UserDeviceCubit>(),
-      ),
+      )..initDataSync(),
       child: Scaffold(
         appBar: CmoAppBarV2(
           title: LocaleKeys.syncSummary.tr(),
@@ -35,6 +35,28 @@ class FarmerSyncSummaryScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
 
+            if (state.isSyncing) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  Center(
+                      child: Text(
+                    state.syncMessage ?? LocaleKeys.sync.tr(),
+                  )),
+                  Positioned(
+                      bottom: 30,
+                      child: CmoFilledButton(
+                        title: 'Sync',
+                        onTap: () {
+                          if (!state.isSyncing) {
+                            context.read<FarmerSyncSummaryCubit>().onSync();
+                          }
+                        },
+                      )),
+                ],
+              );
+            }
+
             return Stack(
               alignment: Alignment.center,
               children: [
@@ -44,7 +66,7 @@ class FarmerSyncSummaryScreen extends StatelessWidget {
                 Positioned(
                     bottom: 30,
                     child: CmoFilledButton(
-                      title: state.syncMessage ?? 'Sync',
+                      title: LocaleKeys.sync.tr(),
                       onTap: () {
                         if (!state.isSyncing) {
                           context.read<FarmerSyncSummaryCubit>().onSync();

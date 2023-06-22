@@ -105,4 +105,28 @@ class ConfigService {
     }
     return UserRoleEnum.behave;
   }
+
+  Future<bool> setActiveFarmId({required String farmId}) async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setString('ActiveFarmId', farmId);
+  }
+
+  Future<String?> getActiveFarmId() async {
+    final sp = await SharedPreferences.getInstance();
+    final rawJson = sp.getString('ActiveFarmId');
+    if (rawJson == null) return null;
+    return rawJson;
+  }
+
+  Future<bool> setActiveGroupSchemeId({required String groupSchemeId}) async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setString('GroupSchemeId', groupSchemeId);
+  }
+
+  Future<String?> getActiveGroupSchemeId() async {
+    final sp = await SharedPreferences.getInstance();
+    final rawJson = sp.getString('GroupSchemeId');
+    if (rawJson == null) return null;
+    return rawJson;
+  }
 }

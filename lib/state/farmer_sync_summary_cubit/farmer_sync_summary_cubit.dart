@@ -12,7 +12,6 @@ import 'package:cmo/model/camp.dart';
 import 'package:cmo/model/chemical.dart';
 import 'package:cmo/model/chemical_application_method/chemical_application_method.dart';
 import 'package:cmo/model/chemical_type/chemical_type.dart';
-import 'package:cmo/model/config/config.dart';
 import 'package:cmo/model/country/country.dart';
 import 'package:cmo/model/customary_use_right/customary_use_right.dart';
 import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
@@ -43,73 +42,522 @@ import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
   FarmerSyncSummaryCubit(
       {required this.userInfoCubit, required this.userDeviceCubit})
-      : super(const FarmerSyncSummaryState()) {
-    initData();
-  }
-
-  final topicMasterDataSync = 'Cmo.MasterDataDeviceSync.';
-  final topicTrickleFeedFarmerMasterDataByFarmId = 'Cmo.MasterData.';
-  final topicTrickleFeedFgsMasterDataByGroupSchemeId = 'Cmo.MasterData.FGS.';
-
+      : super(const FarmerSyncSummaryState());
   final UserInfoCubit userInfoCubit;
   final UserDeviceCubit userDeviceCubit;
 
-  int get userId => 1; //userInfoCubit.data!.userId!;
+  String get topicMasterDataSync => 'Cmo.MasterDataDeviceSync.';
+  String get topicTrickleFeedFarmerMasterDataByFarmId => 'Cmo.MasterData.';
+  String get topicTrickleFeedFgsMasterDataByGroupSchemeId =>
+      'Cmo.MasterData.FGS.';
 
-  int get userDeviceId => userDeviceCubit.data!.userDeviceId!;
+  int get userId => state.userId!;
+  int get userDeviceId => state.userDeviceId!;
+  int get groupSchemeId => state.groupSchemeId!;
+  String get farmId => state.farmId!;
 
-  int groupSchemeId = 0;
-  String farmId = '';
+  String get getSyncGroupSchemeAllMasterDataTopic =>
+      '$topicMasterDataSync*.$userDeviceId';
+  String get getFarmerTrickleFeedMasterDataTopicByFarmId =>
+      '$topicTrickleFeedFarmerMasterDataByFarmId*.$farmId';
+  String get getTrickleFeedMasterDataTopic =>
+      '$topicTrickleFeedFarmerMasterDataByFarmId*.Global';
+  String get getTrickleFeedMasterDataTopicByGroupSchemeId =>
+      '$topicTrickleFeedFgsMasterDataByGroupSchemeId*.$groupSchemeId';
+
+  Future<bool> initDataConfig() async {
+    try {
+      await userInfoCubit.getPerformUserInfo();
+      await userDeviceCubit.createPerformUserDevice();
+
+      final groupSchemeId = await configService.getActiveGroupSchemeId();
+      final farmId = await configService.getActiveFarmId();
+      final userId = userInfoCubit.state.performUserInfo?.userId;
+      final userDeviceId = userDeviceCubit.data?.userDeviceId;
+
+      if (userId == null ||
+          farmId == null ||
+          userDeviceId == null ||
+          groupSchemeId == null) return false;
+
+      emit(
+        state.copyWith(
+          userId: userId,
+          farmId: farmId,
+          groupSchemeId: int.parse(groupSchemeId),
+          userDeviceId: userDeviceId,
+        ),
+      );
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  void onSyncStatus(String message) {
+    emit(state.copyWith(syncMessage: message));
+  }
 
   Future<void> onSync() async {
-    if (state.isSyncing) return;
+    try {
+      if (state.isSyncing) return;
+      emit(state.copyWith(isSyncing: true, syncMessage: 'Syncing...'));
+      final canSync = await initDataConfig();
 
-    await getData();
+      if (!canSync) {
+        showSnackError(msg: 'Sync failed. Please try again');
+        return emit(state.copyWith(isSyncing: true, syncMessage: 'Sync'));
+      }
 
-    emit(state.copyWith(isSyncing: true, syncMessage: 'Sync...'));
+      await cmoPerformApiService.createFarmerSystemEvent(
+        farmId: farmId,
+        userDeviceId: userDeviceId,
+      );
 
-    await createSubscriptions(
-      farmId: farmId,
-      groupSchemeId: groupSchemeId,
-      userDeviceId: userDeviceId,
-    );
+      await Future.delayed(const Duration(seconds: 5), () {});
 
-    await cmoPerformApiService.createFarmerSystemEvent(
-      farmId: farmId,
-      userDeviceId: userDeviceId,
-    );
+      await createSubscriptions();
 
-    await Future.delayed(const Duration(seconds: 3), () {});
+      await summaryFarmerSync();
 
-    await summaryFarmerSync();
+      emit(state.copyWith(isSyncing: true, syncMessage: 'Syncing...'));
 
-    emit(state.copyWith(isSyncing: true, syncMessage: 'Sync...'));
+      await Future.delayed(const Duration(seconds: 15), () {});
 
-    await Future.delayed(const Duration(seconds: 15), () {});
+      final futures = <Future<dynamic>>[];
 
+      futures
+        ..add(subscribeToTrickleFeedMasterDataTopic())
+        ..add(subscribeToTrickleFeedMasterDataTopicByFarmId())
+        ..add(subscribeToTrickleFeedMasterDataTopicByGroupSchemeId());
+
+      await Future.wait(futures).then((_) {
+        emit(state.copyWith(syncMessage: 'Sync', isSyncing: false));
+        initDataSync();
+        showSnackSuccess(msg: 'Sync Success');
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        throw FlutterError(e.toString());
+      }
+      showSnackError(msg: 'Sync failed. Please try again');
+      emit(state.copyWith(isSyncing: true, syncMessage: 'Sync'));
+    }
+  }
+
+  Future<void> initDataSync() async {
+    emit(state.copyWith(isLoading: true));
+    await initDataConfig();
+
+    final databaseMasterService = cmoDatabaseMasterService;
     final futures = <Future<dynamic>>[];
 
-    futures
-      ..add(subscribeToTrickleFeedMasterDataTopic())
-      ..add(subscribeToTrickleFeedMasterDataTopicByFarmId())
-      ..add(subscribeToTrickleFeedMasterDataTopicByGroupSchemeId());
+    var data = const FarmerSyncSummaryModel();
 
-    await Future.wait(futures).then((_) {
-      emit(state.copyWith(syncMessage: 'Sync', isSyncing: false));
-      initData();
-      showSnackSuccess(msg: 'Sync Success');
+    await databaseMasterService.db.then((_) async {
+      futures
+        ..add(
+          databaseMasterService.getJobDescriptions().then(
+              (value) => data = data.copyWith(jobDescription: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedSanctionRegisterByFarmId(farmId)
+              .then((value) =>
+                  data = data.copyWith(disciplinariesUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getSanctionRegisterByFarmId(farmId).then(
+              (value) =>
+                  data = data.copyWith(disciplinariesTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService.getIssueTypeByGroupSchemeId(groupSchemeId).then(
+              (value) =>
+                  data = data.copyWith(disciplinariesIssues: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getAnimalTypeByGroupSchemeId(groupSchemeId)
+              .then(
+                  (value) => data = data.copyWith(speciesTypes: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getPestsAndDiseaseTypeByGroupSchemeId(groupSchemeId)
+              .then((value) =>
+                  data = data.copyWith(petsAndDiseaseType: value.length)),
+        )
+        ..add(
+          databaseMasterService.getRejectReasons().then(
+              (value) => data = data.copyWith(rejectReasons: value.length)),
+        )
+        ..add(
+          databaseMasterService.getScheduleActivities().then(
+              (value) => data = data.copyWith(scheduleActivity: value.length)),
+        )
+        ..add(
+          databaseMasterService.getUnsyncedWorkerCountByFarmId(farmId).then(
+              (value) => data = data.copyWith(workersUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getWorkerCountByFarmId(farmId).then(
+              (value) => data = data.copyWith(workersTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService.getStakeHolderTypes().then(
+              (value) => data = data.copyWith(stakeholderTypes: value.length)),
+        )
+        ..add(
+          databaseMasterService.getUpcomingScheduleCountByUserId(userId).then(
+              (value) => data = data.copyWith(upcomingEvent: value.length)),
+        )
+        ..add(
+          databaseMasterService.getUnsyncedScheduleCountByUserId(userId).then(
+              (value) => data = data.copyWith(schedulerUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getAsiRegister()
+              .then((value) => data = data.copyWith(asiTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedAsiRegister()
+              .then((value) => data = data.copyWith(asiUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedAccidentAndIncidentRegisterByFarmId(farmId)
+              .then((value) => data =
+                  data.copyWith(accidentAndIncidentUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getCountAccidentAndIncidentPropertyDamaged()
+              .then((value) => data = data.copyWith(
+                  accidentAndIncidentPropertyDamagedTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedAccidentAndIncidentPropertyDamaged()
+              .then((value) => data = data.copyWith(
+                  accidentAndIncidentPropertyDamagedUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getCountAccidentAndIncidentRegisterByFarmId(farmId)
+              .then((value) =>
+                  data = data.copyWith(accidentAndIncidentTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService.getUnsyncedAsiPhoto().then(
+              (value) => data = data.copyWith(asiPhotosUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getAsiPhoto().then(
+              (value) => data = data.copyWith(asiPhotosTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedBiologicalControlAgentByFarmId(farmId)
+              .then((value) => data =
+                  data.copyWith(biologicalControlAgentsUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getBiologicalControlAgentTypeByGroupSchemeId(groupSchemeId)
+              .then((value) => data =
+                  data.copyWith(biologicalControlAgentTypes: value.length)),
+        )
+        ..add(
+          databaseMasterService.getBiologicalControlAgentByFarmId(farmId).then(
+              (value) => data =
+                  data.copyWith(biologicalControlAgentsTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService.getUnsyncedChemicalByFarmId(farmId).then(
+              (value) => data = data.copyWith(chemicalsUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getChemicalByFarmId(farmId).then(
+              (value) => data = data.copyWith(chemicalsTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getComplaintsAndDisputesRegisterByFarmId(farmId)
+              .then((value) => data =
+                  data.copyWith(stakeholderComplaintsTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedComplaintsAndDisputesRegisterByFarmId(farmId)
+              .then((value) => data =
+                  data.copyWith(stakeholderComplaintsTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedGrievanceRegisterByFarmId(farmId)
+              .then((value) => data =
+                  data.copyWith(employeeGrievancesUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getGrievanceRegisterByFarmId(farmId).then(
+              (value) =>
+                  data = data.copyWith(employeeGrievancesTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getFireRegisterByFarmId(farmId)
+              .then((value) => data = data.copyWith(fireTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService.getUnsyncedFireRegisterByFarmId(farmId).then(
+              (value) => data = data.copyWith(fireUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getPetsAndDiseaseRegisterByFarmId(farmId).then(
+              (value) =>
+                  data = data.copyWith(petsAndDiseaseTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedPetsAndDiseaseRegisterByFarmId(farmId)
+              .then((value) =>
+                  data = data.copyWith(petsAndDiseaseUnsyced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getRteSpeciesByFarmId(farmId).then((value) =>
+              data = data.copyWith(rteSpeciesRegistersTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedPestsAndDiseasesRegisterTreatmentMethod()
+              .then((value) => data = data.copyWith(
+                  petsAndDiseaseTreatmentMethodsUnsyced: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedComplaintsAndDisputesRegisterByFarmId(farmId)
+              .then((value) => data =
+                  data.copyWith(stakeholderComplaintsUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getPestsAndDiseasesRegisterTreatmentMethod()
+              .then((value) => data = data.copyWith(
+                  petsAndDiseaseTreatmentMethodsTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService.getUnsyncedRteSpeciesByFarmId(farmId).then(
+              (value) => data =
+                  data.copyWith(rteSpeciesRegistersUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getUnsyncedRteSpeciesPhotoByFarmId(farmId).then(
+              (value) => data = data.copyWith(
+                  rteSpeciesRegistersPhotosUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getRteSpeciesPhotoByFarmId(farmId).then(
+              (value) => data =
+                  data.copyWith(rteSpeciesRegistersPhotosTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService.getTrainingByFarmId(farmId).then(
+              (value) => data = data.copyWith(trainingTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService.getUnsyncedTrainingByFarmId(farmId).then(
+              (value) => data = data.copyWith(trainingUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedAnnualProductionByFarmId(farmId)
+              .then((value) =>
+                  data = data.copyWith(annualProductionUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getAnnualProductionByFarmId(farmId).then(
+              (value) =>
+                  data = data.copyWith(annualProductionTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedAnnualProductionBudgetByFarmId(int.parse(farmId))
+              .then((value) => data =
+                  data.copyWith(annualBudgetsProductionUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getAnnualProductionBudgetByFarmId(int.parse(farmId))
+              .then((value) => data =
+                  data.copyWith(annualBudgetsProductionTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedAnnualBudgetTransactionByFarmId(farmId)
+              .then((value) => data = data.copyWith(
+                  annualBudgetTransactionsUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getAnnualBudgetTransactionByFarmId(farmId).then(
+              (value) => data =
+                  data.copyWith(annualBudgetTransactionsTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService.getUnsyncedCampByFarmId(farmId).then(
+              (value) => data = data.copyWith(campsUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getCamp()
+              .then((value) => data = data.copyWith(campsTotal: value.length)),
+        )
+        ..add(
+          databaseMasterService.getBiologicalControlAgentByFarmId(farmId).then(
+              (value) => data =
+                  data.copyWith(biologicalControlAgentsUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getAnnualBudgetTransactionCategory().then(
+              (value) => data = data.copyWith(
+                  annualFarmBudgetTransactionCategory: value.length)),
+        )
+        ..add(
+          databaseMasterService.getAnnualBudgetTransactionCategory().then(
+              (value) => data = data.copyWith(
+                  annualFarmBudgetTransactionCategory: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getAsiTypeByGroupSchemeId(groupSchemeId)
+              .then((value) => data = data.copyWith(asiType: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getChemicalApplicationMethodByGroupSchemeId(groupSchemeId)
+              .then((value) => data =
+                  data.copyWith(chemicalApplicationMethods: value.length)),
+        )
+        ..add(
+          databaseMasterService.getChemicalTypeByFarmId(farmId).then(
+              (value) => data = data.copyWith(chemicalTypes: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getCountry()
+              .then((value) => data = data.copyWith(countries: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getFireCauseByGroupSchemeId(groupSchemeId)
+              .then((value) => data = data.copyWith(fireCause: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getGender()
+              .then((value) => data = data.copyWith(gender: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getGrievanceIssueByGroupSchemeId(groupSchemeId)
+              .then((value) =>
+                  data = data.copyWith(grievanceIssue: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getGroupScheme()
+              .then((value) => data = data.copyWith(groupScheme: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getMonitoringRequirementByGroupSchemeId(groupSchemeId)
+              .then((value) =>
+                  data = data.copyWith(monitoringRequirement: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getNatureOfInjuryByGroupSchemeId(groupSchemeId)
+              .then((value) =>
+                  data = data.copyWith(natureOfInjury: value.length)),
+        )
+        ..add(
+          databaseMasterService.getPestsAndDiseaseTypeTreatmentMethod().then(
+              (value) => data = data.copyWith(
+                  petsAndDiseaseTypeTreatmentMethod: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getPropertyDamagedByGroupSchemeId(groupSchemeId)
+              .then((value) =>
+                  data = data.copyWith(propertyDamaged: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getSpeciesRangeByGroupSchemeId(groupSchemeId)
+              .then(
+                  (value) => data = data.copyWith(speciesRange: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getTrainingTypeByGroupSchemeId(groupSchemeId)
+              .then(
+                  (value) => data = data.copyWith(trainingType: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getTreatmentMethodByGroupSchemeId(groupSchemeId)
+              .then((value) =>
+                  data = data.copyWith(treatmentMethod: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getUnsyncedGroupSchemeStakeholderByGroupSchemeId(groupSchemeId)
+              .then((value) =>
+                  data = data.copyWith(stakeholderUnsynced: value.length)),
+        )
+        ..add(
+          databaseMasterService.getCustomaryUseRight().then((value) =>
+              data = data.copyWith(customaryUseRights: value.length)),
+        )
+        ..add(
+          databaseMasterService.getFarmerStakeHolderByFarmId(farmId).then(
+              (value) => data = data.copyWith(farmStakeHolders: value.length)),
+        )
+        ..add(
+          databaseMasterService
+              .getGroupSchemeStakeholderByGroupSchemeId(groupSchemeId)
+              .then((value) =>
+                  data = data.copyWith(groupSchemeStakeholders: value.length)),
+        )
+        ..add(
+          databaseMasterService.getSocialUpliftment().then(
+              (value) => data = data.copyWith(socialUpliftments: value.length)),
+        )
+        ..add(
+          databaseMasterService.getSpecialSite().then(
+              (value) => data = data.copyWith(specialSites: value.length)),
+        );
     });
+
+    await Future.wait(futures)
+        .whenComplete(() => emit(state.copyWith(data: data, isLoading: false)));
   }
 
   Future<void> subscribeToTrickleFeedMasterDataTopic() async {
     var isSync = true;
     while (isSync) {
+      onSyncStatus('Sync Feed Master Data Topic...');
+
       MasterDataMessage? resPull;
 
       resPull = await cmoPerformApiService.pullFarmerGlobalMessage(
@@ -176,6 +624,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
   Future<void> subscribeToTrickleFeedMasterDataTopicByGroupSchemeId() async {
     var isSync = true;
     while (isSync) {
+      onSyncStatus('Sync Feed Master Data Topic By GroupSchemeId...');
       MasterDataMessage? resPull;
 
       resPull = await cmoPerformApiService.pullMessage(
@@ -302,6 +751,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
     var isSync = true;
 
     while (isSync) {
+      onSyncStatus('Sync Feed Master Data Topic By FarmId');
+
       MasterDataMessage? resPull;
 
       resPull = await cmoPerformApiService.pullMessage(
@@ -476,6 +927,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
     var isSync = true;
 
     while (isSync) {
+      onSyncStatus('Sync All Master Data...');
+
       MasterDataMessage? resPull;
 
       resPull = await cmoPerformApiService.pullMessage(
@@ -1387,428 +1840,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
     return null;
   }
 
-  Future<void> getData() async {
-    final groupSchemeConfig = await cmoDatabaseMasterService
-        .getConfig(ConfigEnum.activeGroupSchemeId);
-    final farmConfig =
-        await cmoDatabaseMasterService.getConfig(ConfigEnum.activeFarmId);
-
-    groupSchemeId = int.parse(groupSchemeConfig?.configValue ?? '');
-    farmId = farmConfig?.configValue ?? '';
-  }
-
-  Future<void> initData() async {
-    emit(state.copyWith(isLoading: true));
-    await getData();
-
-    final databaseMasterService = cmoDatabaseMasterService;
-    final futures = <Future<dynamic>>[];
-
-    var data = const FarmerSyncSummaryModel();
-
-    await databaseMasterService.db.then((_) async {
-      futures
-        ..add(
-          databaseMasterService.getJobDescriptions().then(
-              (value) => data = data.copyWith(jobDescription: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedSanctionRegisterByFarmId(farmId)
-              .then((value) =>
-                  data = data.copyWith(disciplinariesUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getSanctionRegisterByFarmId(farmId).then(
-              (value) =>
-                  data = data.copyWith(disciplinariesTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService.getIssueTypeByGroupSchemeId(groupSchemeId).then(
-              (value) =>
-                  data = data.copyWith(disciplinariesIssues: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getAnimalTypeByGroupSchemeId(groupSchemeId)
-              .then(
-                  (value) => data = data.copyWith(speciesTypes: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getPestsAndDiseaseTypeByGroupSchemeId(groupSchemeId)
-              .then((value) =>
-                  data = data.copyWith(petsAndDiseaseType: value.length)),
-        )
-        ..add(
-          databaseMasterService.getRejectReasons().then(
-              (value) => data = data.copyWith(rejectReasons: value.length)),
-        )
-        ..add(
-          databaseMasterService.getScheduleActivities().then(
-              (value) => data = data.copyWith(scheduleActivity: value.length)),
-        )
-        ..add(
-          databaseMasterService.getUnsyncedWorkerCountByFarmId(farmId).then(
-              (value) => data = data.copyWith(workersUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getWorkerCountByFarmId(farmId).then(
-              (value) => data = data.copyWith(workersTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService.getStakeHolderTypes().then(
-              (value) => data = data.copyWith(stakeholderTypes: value.length)),
-        )
-        ..add(
-          databaseMasterService.getUpcomingScheduleCountByUserId(userId).then(
-              (value) => data = data.copyWith(upcomingEvent: value.length)),
-        )
-        ..add(
-          databaseMasterService.getUnsyncedScheduleCountByUserId(userId).then(
-              (value) => data = data.copyWith(schedulerUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getAsiRegister()
-              .then((value) => data = data.copyWith(asiTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedAsiRegister()
-              .then((value) => data = data.copyWith(asiUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedAccidentAndIncidentRegisterByFarmId(farmId)
-              .then((value) => data =
-                  data.copyWith(accidentAndIncidentUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getCountAccidentAndIncidentPropertyDamaged()
-              .then((value) => data = data.copyWith(
-                  accidentAndIncidentPropertyDamagedTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedAccidentAndIncidentPropertyDamaged()
-              .then((value) => data = data.copyWith(
-                  accidentAndIncidentPropertyDamagedUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getCountAccidentAndIncidentRegisterByFarmId(farmId)
-              .then((value) =>
-                  data = data.copyWith(accidentAndIncidentTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService.getUnsyncedAsiPhoto().then(
-              (value) => data = data.copyWith(asiPhotosUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getAsiPhoto().then(
-              (value) => data = data.copyWith(asiPhotosTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedBiologicalControlAgentByFarmId(farmId)
-              .then((value) => data =
-                  data.copyWith(biologicalControlAgentsUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getBiologicalControlAgentTypeByGroupSchemeId(groupSchemeId)
-              .then((value) => data =
-                  data.copyWith(biologicalControlAgentTypes: value.length)),
-        )
-        ..add(
-          databaseMasterService.getBiologicalControlAgentByFarmId(farmId).then(
-              (value) => data =
-                  data.copyWith(biologicalControlAgentsTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService.getUnsyncedChemicalByFarmId(farmId).then(
-              (value) => data = data.copyWith(chemicalsUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getChemicalByFarmId(farmId).then(
-              (value) => data = data.copyWith(chemicalsTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getComplaintsAndDisputesRegisterByFarmId(farmId)
-              .then((value) => data =
-                  data.copyWith(stakeholderComplaintsTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedComplaintsAndDisputesRegisterByFarmId(farmId)
-              .then((value) => data =
-                  data.copyWith(stakeholderComplaintsTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedGrievanceRegisterByFarmId(farmId)
-              .then((value) => data =
-                  data.copyWith(employeeGrievancesUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getGrievanceRegisterByFarmId(farmId).then(
-              (value) =>
-                  data = data.copyWith(employeeGrievancesTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getFireRegisterByFarmId(farmId)
-              .then((value) => data = data.copyWith(fireTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService.getUnsyncedFireRegisterByFarmId(farmId).then(
-              (value) => data = data.copyWith(fireUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getPetsAndDiseaseRegisterByFarmId(farmId).then(
-              (value) =>
-                  data = data.copyWith(petsAndDiseaseTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedPetsAndDiseaseRegisterByFarmId(farmId)
-              .then((value) =>
-                  data = data.copyWith(petsAndDiseaseUnsyced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getRteSpeciesByFarmId(farmId).then((value) =>
-              data = data.copyWith(rteSpeciesRegistersTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedPestsAndDiseasesRegisterTreatmentMethod()
-              .then((value) => data = data.copyWith(
-                  petsAndDiseaseTreatmentMethodsUnsyced: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedComplaintsAndDisputesRegisterByFarmId(farmId)
-              .then((value) => data =
-                  data.copyWith(stakeholderComplaintsUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getPestsAndDiseasesRegisterTreatmentMethod()
-              .then((value) => data = data.copyWith(
-                  petsAndDiseaseTreatmentMethodsTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService.getUnsyncedRteSpeciesByFarmId(farmId).then(
-              (value) => data =
-                  data.copyWith(rteSpeciesRegistersUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getUnsyncedRteSpeciesPhotoByFarmId(farmId).then(
-              (value) => data = data.copyWith(
-                  rteSpeciesRegistersPhotosUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getRteSpeciesPhotoByFarmId(farmId).then(
-              (value) => data =
-                  data.copyWith(rteSpeciesRegistersPhotosTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService.getTrainingByFarmId(farmId).then(
-              (value) => data = data.copyWith(trainingTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService.getUnsyncedTrainingByFarmId(farmId).then(
-              (value) => data = data.copyWith(trainingUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedAnnualProductionByFarmId(farmId)
-              .then((value) =>
-                  data = data.copyWith(annualProductionUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getAnnualProductionByFarmId(farmId).then(
-              (value) =>
-                  data = data.copyWith(annualProductionTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedAnnualProductionBudgetByFarmId(int.parse(farmId))
-              .then((value) => data =
-                  data.copyWith(annualBudgetsProductionUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getAnnualProductionBudgetByFarmId(int.parse(farmId))
-              .then((value) => data =
-                  data.copyWith(annualBudgetsProductionTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedAnnualBudgetTransactionByFarmId(farmId)
-              .then((value) => data = data.copyWith(
-                  annualBudgetTransactionsUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getAnnualBudgetTransactionByFarmId(farmId).then(
-              (value) => data =
-                  data.copyWith(annualBudgetTransactionsTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService.getUnsyncedCampByFarmId(farmId).then(
-              (value) => data = data.copyWith(campsUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getCamp()
-              .then((value) => data = data.copyWith(campsTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService.getBiologicalControlAgentByFarmId(farmId).then(
-              (value) => data =
-                  data.copyWith(biologicalControlAgentsUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getAnnualBudgetTransactionCategory().then(
-              (value) => data = data.copyWith(
-                  annualFarmBudgetTransactionCategory: value.length)),
-        )
-        ..add(
-          databaseMasterService.getAnnualBudgetTransactionCategory().then(
-              (value) => data = data.copyWith(
-                  annualFarmBudgetTransactionCategory: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getAsiTypeByGroupSchemeId(groupSchemeId)
-              .then((value) => data = data.copyWith(asiType: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getChemicalApplicationMethodByGroupSchemeId(groupSchemeId)
-              .then((value) => data =
-                  data.copyWith(chemicalApplicationMethods: value.length)),
-        )
-        ..add(
-          databaseMasterService.getChemicalTypeByFarmId(farmId).then(
-              (value) => data = data.copyWith(chemicalTypes: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getCountry()
-              .then((value) => data = data.copyWith(countries: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getFireCauseByGroupSchemeId(groupSchemeId)
-              .then((value) => data = data.copyWith(fireCause: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getGender()
-              .then((value) => data = data.copyWith(gender: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getGrievanceIssueByGroupSchemeId(groupSchemeId)
-              .then((value) =>
-                  data = data.copyWith(grievanceIssue: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getGroupScheme()
-              .then((value) => data = data.copyWith(groupScheme: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getMonitoringRequirementByGroupSchemeId(groupSchemeId)
-              .then((value) =>
-                  data = data.copyWith(monitoringRequirement: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getNatureOfInjuryByGroupSchemeId(groupSchemeId)
-              .then((value) =>
-                  data = data.copyWith(natureOfInjury: value.length)),
-        )
-        ..add(
-          databaseMasterService.getPestsAndDiseaseTypeTreatmentMethod().then(
-              (value) => data = data.copyWith(
-                  petsAndDiseaseTypeTreatmentMethod: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getPropertyDamagedByGroupSchemeId(groupSchemeId)
-              .then((value) =>
-                  data = data.copyWith(propertyDamaged: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getSpeciesRangeByGroupSchemeId(groupSchemeId)
-              .then(
-                  (value) => data = data.copyWith(speciesRange: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getTrainingTypeByGroupSchemeId(groupSchemeId)
-              .then(
-                  (value) => data = data.copyWith(trainingType: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getTreatmentMethodByGroupSchemeId(groupSchemeId)
-              .then((value) =>
-                  data = data.copyWith(treatmentMethod: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getUnsyncedGroupSchemeStakeholderByGroupSchemeId(groupSchemeId)
-              .then((value) =>
-                  data = data.copyWith(stakeholderUnsynced: value.length)),
-        )
-        ..add(
-          databaseMasterService.getCustomaryUseRight().then((value) =>
-              data = data.copyWith(customaryUseRights: value.length)),
-        )
-        ..add(
-          databaseMasterService.getFarmerStakeHolderByFarmId(farmId).then(
-              (value) => data = data.copyWith(farmStakeHolders: value.length)),
-        )
-        ..add(
-          databaseMasterService
-              .getGroupSchemeStakeholderByGroupSchemeId(groupSchemeId)
-              .then((value) =>
-                  data = data.copyWith(groupSchemeStakeholders: value.length)),
-        )
-        ..add(
-          databaseMasterService.getSocialUpliftment().then(
-              (value) => data = data.copyWith(socialUpliftments: value.length)),
-        )
-        ..add(
-          databaseMasterService.getSpecialSite().then(
-              (value) => data = data.copyWith(specialSites: value.length)),
-        );
-    });
-
-    await Future.wait(futures)
-        .whenComplete(() => emit(state.copyWith(data: data, isLoading: false)));
-  }
-
-  Future<void> createSubscriptions(
-      {required String farmId,
-      required int groupSchemeId,
-      required int userDeviceId}) async {
-    final getSyncGroupSchemeAllMasterDataTopic =
-        'Cmo.MasterDataDeviceSync.*.$userDeviceId';
-    final getFarmerTrickleFeedMasterDataTopicByFarmId =
-        'Cmo.MasterData.*.$farmId';
-    const getTrickleFeedMasterDataTopic = 'Cmo.MasterData.*.Global';
-    final getTrickleFeedMasterDataTopicByGroupSchemeId =
-        'Cmo.MasterData.FGS.*.$groupSchemeId';
-
+  Future<void> createSubscriptions() async {
     final futures = [
       getSyncGroupSchemeAllMasterDataTopic,
       getFarmerTrickleFeedMasterDataTopicByFarmId,
@@ -1816,8 +1848,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
       getTrickleFeedMasterDataTopicByGroupSchemeId,
     ]
         .map((e) => cmoPerformApiService.createSubscription(
-            topic: e,
-            currentClientId: userDeviceId))
+            topic: e, currentClientId: userDeviceId))
         .toList();
     await Future.wait(futures)
         .then((value) => debugPrint('TUNT createSubscriptions - $value'));

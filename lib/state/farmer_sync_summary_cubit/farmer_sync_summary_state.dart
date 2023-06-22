@@ -9,6 +9,10 @@ class FarmerSyncSummaryState with _$FarmerSyncSummaryState {
     @Default(false) bool isSyncing,
     String? syncMessage,
     FarmerSyncSummaryModel? data,
+    int? userId,
+    int? userDeviceId,
+    int? groupSchemeId,
+    String? farmId,
   }) = _FarmerSyncSummaryState;
 }
 
