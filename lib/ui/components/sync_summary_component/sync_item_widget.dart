@@ -30,7 +30,7 @@ class SyncItemWidget extends StatelessWidget {
                   child: Text(
                     label,
                     style: isTitle
-                        ? context.textStyles.titleBold
+                        ? context.textStyles.bodyBold
                             .copyWith(color: context.colors.white)
                         : context.textStyles.bodyNormal.copyWith(
                             color: isHighlight
@@ -43,8 +43,8 @@ class SyncItemWidget extends StatelessWidget {
                   child: Text(
                     LocaleKeys.record_count.tr(),
                     style: isTitle
-                        ? context.textStyles.titleBold
-                            .copyWith(color: Colors.white)
+                        ? context.textStyles.bodyBold
+                            .copyWith(color: context.colors.white)
                         : context.textStyles.bodyBold.copyWith(
                             color: isHighlight
                                 ? Colors.amberAccent
