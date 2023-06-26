@@ -71,7 +71,6 @@ class _AuditAddScreen extends State<AuditAddScreen> {
         if (context.mounted) {
           final success = await context.read<AuditCubit>().submit(audit);
           if (success && context.mounted) {
-            context.read<AuditCubit>().cleanCache();
             Navigator.of(context).pop();
           }
         }
@@ -150,13 +149,17 @@ class _AuditAddScreen extends State<AuditAddScreen> {
       hintText: '${LocaleKeys.select.tr()} ${hintText.toLowerCase()}',
       hintStyle: context.textStyles.bodyNormal.grey,
       border: UnderlineInputBorder(
-          borderSide: BorderSide(color: context.colors.grey)),
+        borderSide: BorderSide(color: context.colors.grey),
+      ),
       focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: context.colors.blue)),
+        borderSide: BorderSide(color: context.colors.blue),
+      ),
     );
   }
 
   Widget _selectCompartmentDropdown() {
+    final selectedFarm = context.watch<AuditCubit>().state.selectedFarm;
+    if (selectedFarm == null) return const SizedBox.shrink();
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,13 +169,10 @@ class _AuditAddScreen extends State<AuditAddScreen> {
           style: context.textStyles.bodyBold.black,
         ),
         BlocSelector<AuditCubit, AuditState, List<Compartment>>(
-          selector: (state) {
-            return state.compartments;
-          },
+          selector: (state) => state.compartments,
           builder: (builder, compartments) {
             return CmoDropdown<int?>(
               name: 'CompartmentId',
-              validator: requiredValidator,
               inputDecoration:
                   _buildInputDecoration(LocaleKeys.compartment.tr()),
               itemsData: compartments
@@ -199,7 +199,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
               },
             );
           },
-        ),
+        )
       ],
     );
   }
@@ -237,12 +237,12 @@ class _AuditAddScreen extends State<AuditAddScreen> {
                     name: LocaleKeys.site.tr(),
                   ),
                 ),
-              onChanged: (String? id) {
+              onChanged: (String? id) async {
                 if (id == '-1') {
                   _formKey.currentState!.fields['siteId']?.reset();
                 }
 
-                context.read<AuditCubit>().updateSelectedFarm(id!);
+                await context.read<AuditCubit>().updateSelectedFarm(id!);
               },
             );
           },

@@ -10,6 +10,7 @@ part 'compartment.g.dart';
 class Compartment with _$Compartment {
   const factory Compartment({
     @JsonKey(name: 'CompartmentId') int? compartmentId,
+    @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
     @JsonKey(name: 'RegionalManagerUnitId') int? regionalManagerUnitId,
     @JsonKey(name: 'CompartmentName') String? compartmentName,

@@ -2433,15 +2433,18 @@ class CmoDatabaseMasterService {
     return <Site>[];
   }
 
-  Future<List<Compartment>> getCompartmentsByRmuId({
+  Future<List<Compartment>> getCompartmentsByRmuIdAndSiteId({
     int? rmuId,
+    String? siteId,
   }) async {
-    if (rmuId == null) return <Compartment>[];
+    if (rmuId == null || siteId == null) return <Compartment>[];
     final db = await _db();
     try {
       final compartments = await db.compartments
           .filter()
           .isActiveEqualTo(true)
+          .regionalManagerUnitIdEqualTo(rmuId)
+          .farmIdEqualTo(siteId)
           .sortByCompartmentName()
           .findAll();
 
