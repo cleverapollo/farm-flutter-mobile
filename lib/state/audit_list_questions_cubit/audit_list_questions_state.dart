@@ -12,7 +12,7 @@ class AuditListQuestionsState extends Equatable {
     this.compliances = const <Compliance>[],
     this.principles = const <Principle>[],
     this.indicators = const <Indicator>[],
-    this.cars = const <Car>[],
+    this.cars = const <Severity>[],
     this.criterias = const <Criteria>[],
     this.impactOns = const <ImpactOn>[],
     this.impactOnFilterId = -1,
@@ -35,7 +35,7 @@ class AuditListQuestionsState extends Equatable {
   final List<RejectReason> rejectReasons;
   final List<Principle> principles;
   final List<Criteria> criterias;
-  final List<Car> cars;
+  final List<Severity> cars;
   final List<Indicator> indicators;
   final List<ImpactOn> impactOns;
   final int impactOnFilterId;
@@ -57,7 +57,7 @@ class AuditListQuestionsState extends Equatable {
     List<RejectReason>? rejectReasons,
     List<Compliance>? compliances,
     List<Principle>? principles,
-    List<Car>? cars,
+    List<Severity>? cars,
     List<Indicator>? indicators,
     List<Criteria>? criterias,
     List<ImpactOn>? impactOns,

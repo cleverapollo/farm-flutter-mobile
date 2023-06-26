@@ -1613,7 +1613,11 @@ class CmoDatabaseMasterService {
   Future<List<Severity>> getSeveritys() async {
     final db = await _db();
 
-    return db.severitys.filter().isActiveEqualTo(true).findAll();
+    return db.severitys
+        .filter()
+        .isActiveEqualTo(true)
+        .sortBySeverityId()
+        .findAll();
   }
 
   Future<int> cacheSpeqs(Speqs item) async {
@@ -2481,23 +2485,6 @@ class CmoDatabaseMasterService {
     }
 
     return <Principle>[];
-  }
-
-  Future<List<Car>> getCars() async {
-    final db = await _db();
-    try {
-      final cars = await db.cars
-          .filter()
-          .isActiveEqualTo(true)
-          .sortByCarName()
-          .findAll();
-
-      return cars;
-    } catch (error) {
-      handleError(error);
-    }
-
-    return <Car>[];
   }
 
   Future<List<Indicator>> getIndicators() async {

@@ -155,6 +155,8 @@
   "longitudeDecimal": "Longitude (Decimal)",
   "photos": "Photos",
   "complianceManagement": "Compliance Management",
+  "minor": "Minor",
+  "major": "Major",
   "locale": {
     "en": "English",
     "fr": "French",

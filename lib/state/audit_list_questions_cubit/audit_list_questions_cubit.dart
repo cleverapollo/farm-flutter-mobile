@@ -60,7 +60,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       filterList = filterList.where((s) => s.criteriaId == state.criteriaFilterId).toList();
     }
     if (state.carFilterId > -1) {
-      // filterList = filterList.where((s) => s.carId == state.carFilterId).toList();
+      filterList = filterList.where((s) => s.severityId == state.carFilterId).toList();
     }
 
     if (state.indicatorFilterId > -1) {
@@ -96,8 +96,17 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   }
 
   Future<void> getCars() async {
-    final cars = await cmoDatabaseMasterService.getCars();
-    emit(state.copyWith(cars: cars));
+    final cars = await cmoDatabaseMasterService.getSeveritys();
+
+    // Only get minor and major item
+    emit(
+      state.copyWith(
+        cars: [
+          cars.first,
+          cars.last,
+        ],
+      ),
+    );
   }
 
   Future<void> getIndicators() async {
