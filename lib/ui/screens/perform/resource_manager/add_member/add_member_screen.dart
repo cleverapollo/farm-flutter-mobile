@@ -53,14 +53,13 @@ class AddMemberScreen extends StatelessWidget {
 }
 
 class _AddMemberMFO extends StatelessWidget {
-  const _AddMemberMFO({
-    super.key,
-  });
+  const _AddMemberMFO();
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return CmoCollapseTitle(
+        showTick: true,
         title: LocaleKeys.member_farm_objectives.tr(),
         child: Container(
             height: size.height * 0.8,
@@ -70,7 +69,9 @@ class _AddMemberMFO extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(LocaleKeys.are_there_any_chemical_being_used_on_the_fme.tr(),
+                Text(
+                    LocaleKeys.are_there_any_chemical_being_used_on_the_fme
+                        .tr(),
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black, fontSize: 16)),
                 const SizedBox(height: 8),
@@ -88,7 +89,10 @@ class _AddMemberMFO extends StatelessWidget {
                 const SizedBox(height: 8),
                 _buildAnswerWidget(),
                 _buildDivider(),
-                Text(LocaleKeys.are_there_any_communities_in_or_neighbouring_the_fme.tr(),
+                Text(
+                    LocaleKeys
+                        .are_there_any_communities_in_or_neighbouring_the_fme
+                        .tr(),
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black, fontSize: 16)),
                 const SizedBox(height: 8),
@@ -98,7 +102,8 @@ class _AddMemberMFO extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    CmoFilledButton(title: LocaleKeys.finalise_later.tr(), onTap: () {}),
+                    CmoFilledButton(
+                        title: LocaleKeys.finalise_later.tr(), onTap: () {}),
                     CmoFilledButton(
                         title: LocaleKeys.next.tr(),
                         onTap: () {
@@ -153,7 +158,9 @@ class _AddMemberMRA extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(LocaleKeys.are_there_any_chemical_being_used_on_the_fme.tr(),
+                    Text(
+                        LocaleKeys.are_there_any_chemical_being_used_on_the_fme
+                            .tr(),
                         style: context.textStyles.bodyNormal.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
@@ -181,7 +188,9 @@ class _AddMemberMRA extends StatelessWidget {
                             cubit.onTapMRA(thirdAnswer: value?.thirdAnswer)),
                     _buildDivider(),
                     Text(
-                        LocaleKeys.are_there_any_communities_in_or_neighbouring_the_fme.tr(),
+                        LocaleKeys
+                            .are_there_any_communities_in_or_neighbouring_the_fme
+                            .tr(),
                         style: context.textStyles.bodyNormal.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
@@ -232,15 +241,18 @@ class _AddMemberSDetails extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         color: context.colors.white,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildTitle(context, 'Site Name (*)'),
             CmoTextField(
               hintText: LocaleKeys.siteName.tr(),
             ),
             const SizedBox(height: 12),
+            _buildTitle(context, 'Town (*)'),
             CmoTextField(
               hintText: LocaleKeys.town.tr(),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             CmoDropDownLayoutWidget(title: LocaleKeys.province.tr()),
             const SizedBox(height: 12),
             CmoDropDownLayoutWidget(
@@ -260,6 +272,16 @@ class _AddMemberSDetails extends StatelessWidget {
       ),
     );
   }
+
+  Padding _buildTitle(BuildContext context, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Text(
+        text,
+        style: context.textStyles.bodyBold,
+      ),
+    );
+  }
 }
 
 class _AddMemberMDetails extends StatelessWidget {
@@ -267,16 +289,72 @@ class _AddMemberMDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CmoCollapseTitle(
-      title: LocaleKeys.memberDetails.tr(),
-      showTick: true,
-      child: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(12),
-        child: CmoTextField(
-          hintText: LocaleKeys.memberDetails.tr(),
-          maxLines: 4,
-        ),
+    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMDetails?>(
+      selector: (state) => state.addMemberMDetails,
+      builder: (context, AddMemberMDetails? data) {
+        final cubit = context.read<AddMemberCubit>();
+        return CmoCollapseTitle(
+          title: LocaleKeys.memberDetails.tr(),
+          showTick: data?.isComplete,
+          child: Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildTitle(context, 'First name (*)'),
+                CmoTextField(
+                  hintText: 'First name',
+                  onChanged: (p0) {
+                    cubit.onDataChangeMemberDetail(firstName: p0);
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildTitle(context, 'Last name (*)'),
+                CmoTextField(
+                  hintText: 'Last Name',
+                  onChanged: (p0) {
+                    cubit.onDataChangeMemberDetail(lastName: p0);
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildTitle(context, 'ID/Passport Number (*)'),
+                CmoTextField(
+                  hintText: 'ID/Passport Number',
+                  onChanged: (p0) {
+                    cubit.onDataChangeMemberDetail(idNumber: p0);
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildTitle(context, 'Mobile Number (*)'),
+                CmoTextField(
+                  hintText: 'Mobile Number',
+                  onChanged: (p0) {
+                    cubit.onDataChangeMemberDetail(mobileNumber: p0);
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildTitle(context, 'Email Address (Optional)'),
+                CmoTextField(
+                  hintText: 'Email Address',
+                  onChanged: (p0) {
+                    cubit.onDataChangeMemberDetail(emailAddress: p0);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Padding _buildTitle(BuildContext context, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Text(
+        text,
+        style: context.textStyles.bodyBold,
       ),
     );
   }
@@ -297,7 +375,9 @@ class _AddMemberMPO extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-                LocaleKeys.does_the_farmer_have_a_title_deed_lease_or_management_contract_on_their_property.tr(),
+                LocaleKeys
+                    .does_the_farmer_have_a_title_deed_lease_or_management_contract_on_their_property
+                    .tr(),
                 style: context.textStyles.bodyNormal
                     .copyWith(color: context.colors.black, fontSize: 16)),
             Padding(
@@ -319,75 +399,74 @@ class _AddMemberSLIMF extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CmoCollapseTitle(
-      title: LocaleKeys.slimf_compliance.tr(),
-      showTick: true,
-      child: Container(
-        padding:
-            const EdgeInsets.only(top: 12.0, left: 8, right: 8, bottom: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: const Offset(5, 5), // changes position of shadow
-            ),
-            //BoxSh
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(LocaleKeys.is_the_farmer_slimf_compliant.tr(),
-                style: context.textStyles.titleBold
-                    .copyWith(color: context.colors.black, fontSize: 16)),
-            const SizedBox(height: 16),
-            Text(LocaleKeys.limitation_1.tr(),
-                style: context.textStyles.titleBold
-                    .copyWith(color: context.colors.black, fontSize: 16)),
-            Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                style: context.textStyles.bodyNormal
-                    .copyWith(color: context.colors.black, fontSize: 16)),
-            const SizedBox(height: 12),
-            Text(LocaleKeys.limitation_2.tr(),
-                style: context.textStyles.titleBold
-                    .copyWith(color: context.colors.black, fontSize: 16)),
-            const SizedBox(height: 12),
-            _buildAnswerWidget(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAnswerWidget() {
     return BlocSelector<AddMemberCubit, AddMemberState, AddMemberSLIMF?>(
         selector: (state) => state.addMemberSLIMF,
         builder: (context, AddMemberSLIMF? data) {
           final isSelect = data?.isSlimfCompliant ?? true;
-
-          return Row(
-            children: [
-              const Spacer(),
-              CmoChipAnswerWidget.c(
-                onTap: () {
-                  context.read<AddMemberCubit>().onTapSlimf(isSlimf: true);
-                },
-                isSelect: isSelect,
+          return CmoCollapseTitle(
+            title: LocaleKeys.slimf_compliance.tr(),
+            showTick: data?.isComplete,
+            child: Container(
+              padding: const EdgeInsets.only(
+                  top: 12.0, left: 8, right: 8, bottom: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(5, 5), // changes position of shadow
+                  ),
+                  //BoxSh
+                ],
               ),
-              const SizedBox(width: 36),
-              CmoChipAnswerWidget.nc(
-                onTap: () {
-                  context.read<AddMemberCubit>().onTapSlimf(isSlimf: false);
-                },
-                isSelect: !isSelect,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(LocaleKeys.is_the_farmer_slimf_compliant.tr(),
+                      style: context.textStyles.titleBold
+                          .copyWith(color: context.colors.black, fontSize: 16)),
+                  const SizedBox(height: 16),
+                  Text(LocaleKeys.limitation_1.tr(),
+                      style: context.textStyles.titleBold
+                          .copyWith(color: context.colors.black, fontSize: 16)),
+                  Text(
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                      style: context.textStyles.bodyNormal
+                          .copyWith(color: context.colors.black, fontSize: 16)),
+                  const SizedBox(height: 12),
+                  Text(LocaleKeys.limitation_2.tr(),
+                      style: context.textStyles.titleBold
+                          .copyWith(color: context.colors.black, fontSize: 16)),
+                  const SizedBox(height: 12),
+                  _buildAnswerWidget(context, isSelect),
+                ],
               ),
-              const Spacer(),
-            ],
+            ),
           );
         });
+  }
+
+  Widget _buildAnswerWidget(BuildContext context, bool isSelect) {
+    return Row(
+      children: [
+        const Spacer(),
+        CmoChipAnswerWidget.c(
+          onTap: () {
+            context.read<AddMemberCubit>().onTapSlimf(isSlimf: true);
+          },
+          isSelect: isSelect,
+        ),
+        const SizedBox(width: 36),
+        CmoChipAnswerWidget.nc(
+          onTap: () {
+            context.read<AddMemberCubit>().onTapSlimf(isSlimf: false);
+          },
+          isSelect: !isSelect,
+        ),
+        const Spacer(),
+      ],
+    );
   }
 }

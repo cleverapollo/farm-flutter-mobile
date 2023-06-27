@@ -12,4 +12,6 @@ extension StringNullExtension on String? {
   bool parseBool() {
     return this?.toLowerCase() == 'true';
   }
+
+  bool get isNullOrEmpty => this == null || this?.isEmpty == true;
 }

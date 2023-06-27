@@ -11,7 +11,7 @@ class CmoCollapseTitle extends StatefulWidget {
 
   final String title;
   final Widget child;
-  final bool showTick;
+  final bool? showTick;
 
   @override
   State<CmoCollapseTitle> createState() => _CmoCollapseTitleState();
@@ -32,7 +32,10 @@ class _CmoCollapseTitleState extends State<CmoCollapseTitle> {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (widget.showTick) Assets.icons.icTick.widget else const SizedBox(),
+          if (widget.showTick ?? false)
+            Assets.icons.icTick.widget
+          else
+            const SizedBox(),
           Icon(
             isCollapse ? Icons.arrow_drop_down : Icons.arrow_drop_up,
             color: context.colors.white,

@@ -2267,6 +2267,11 @@ class CmoDatabaseMasterService {
     return <QuestionAnswer>[];
   }
 
+  Future<List<FarmPropertyOwnershipType>> getFarmPropertyOwnershipType() async {
+    final db = await _db();
+    return db.farmPropertyOwnershipTypes.filter().isActiveEqualTo(1).findAll();
+  }
+
   Future<List<QuestionAnswer>>
       getQuestionAnswersByRmuIdAndAuditTemplateIdAndAssessmentId({
     int? rmuId,
@@ -2625,12 +2630,6 @@ class CmoDatabaseMasterService {
     return db.writeTxn(() async {
       return db.userDevices.put(userDevice);
     });
-  }
-
-  Future<List<FarmPropertyOwnerShipType>>
-      getAllFarmPropertyOwnerShipType() async {
-    final db = await _db();
-    return db.farmPropertyOwnerShipTypes.where().findAll();
   }
 
   Future<FileSystemEntity?> deleteAll() async {
