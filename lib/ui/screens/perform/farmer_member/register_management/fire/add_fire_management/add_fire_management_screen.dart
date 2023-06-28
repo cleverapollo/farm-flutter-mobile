@@ -12,6 +12,7 @@ import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 class AddFireManagementScreen extends StatefulWidget {
   const AddFireManagementScreen({super.key});
@@ -258,7 +259,13 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
       child: CmoDatePicker(
         name: 'DateDetected',
         hintText: LocaleKeys.dateDetected.tr(),
-        validator: requiredValidator,
+        validator: (DateTime? value) {
+          if (value == null) return null;
+          if (value.millisecondsSinceEpoch > DateTime.now().millisecondsSinceEpoch) {
+            return 'Detected date cannot be in the future';
+          }
+          return null;
+        },
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
@@ -282,6 +289,21 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
       child: CmoDatePicker(
         name: 'DateExtinguished',
         hintText: LocaleKeys.dateExtinguished.tr(),
+        validator: (DateTime? value) {
+          if (value == null) return null;
+          if (value.millisecondsSinceEpoch >
+              DateTime.now().millisecondsSinceEpoch) {
+            return 'Extinguished date cannot be in the future';
+          }
+          final detectedValue =
+              _formKey.currentState?.value['DateDetected'] as DateTime?;
+          if (detectedValue != null &&
+              value.millisecondsSinceEpoch <
+                  detectedValue.millisecondsSinceEpoch) {
+            return 'Extinguished date must be after detected date';
+          }
+          return null;
+        },
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
