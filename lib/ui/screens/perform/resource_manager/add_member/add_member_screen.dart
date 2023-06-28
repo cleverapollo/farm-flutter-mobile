@@ -252,7 +252,7 @@ class _AddMemberSDetails extends StatelessWidget {
             CmoDropDownLayoutWidget(
               title: LocaleKeys.asi.tr(),
               onTap: () {
-                ASIScreen.push(context);
+                ASIScreen.push(context, farmName: "Test", farmId: "123");
               },
             ),
           ],

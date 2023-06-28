@@ -1120,6 +1120,13 @@ class CmoDatabaseMasterService {
     return db.asis.filter().isActiveEqualTo(true).findAll();
   }
 
+  Future<List<Asi>> getAsiRegisterByFarmId(String farmId) async {
+    final db = await _db();
+    return db.asis.filter().farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
   Future<List<Asi>> getUnsyncedAsiRegister() async {
     final db = await _db();
 

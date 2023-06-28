@@ -1,3 +1,4 @@
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -6,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ASIMapScreen extends StatefulWidget {
-  const ASIMapScreen({super.key});
+  final String? farmName;
+  const ASIMapScreen({super.key, this.farmName});
 
-  static Future<void> push(BuildContext context) {
+  static Future<void> push(BuildContext context, {String? farmId, String? farmName}) {
     return Navigator.push(
         context, MaterialPageRoute(builder: (_) => const ASIMapScreen()));
   }
@@ -23,9 +25,9 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CmoAppBarV2(
-        title: 'Add ASI',
-        subtitle: 'Site Name',
+      appBar: CmoAppBarV2(
+        title: LocaleKeys.addASI.tr(),
+        subtitle: widget.farmName ?? '',
         showTrailing: true,
       ),
       body: SizedBox.expand(
@@ -41,7 +43,7 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
               const SizedBox(height: 40),
               Align(
                 child: CmoFilledButton(
-                    title: 'Next',
+                    title: LocaleKeys.next.tr(),
                     onTap: () {
                       ASIDetailScreen.push(context, point: marker);
                     }),
