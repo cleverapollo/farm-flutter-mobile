@@ -45,11 +45,12 @@ class CmoDropDownLayoutWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  title,
-                  style: context.textStyles.titleBold.copyWith(fontSize: 16),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: context.textStyles.titleBold.copyWith(fontSize: 16),
+                  ),
                 ),
-                const Spacer(),
                 if (subTitle.isNotEmpty)
                   Text(
                     subTitle,

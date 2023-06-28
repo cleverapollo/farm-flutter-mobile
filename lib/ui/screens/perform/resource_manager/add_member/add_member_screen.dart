@@ -1,6 +1,10 @@
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/data/farm_property_ownership_type.dart';
+import 'package:cmo/model/data/province.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
+import 'package:cmo/ui/screens/behave/assessment/assessment_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_membership_contract_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_circle_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
@@ -11,7 +15,7 @@ import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddMemberScreen extends StatelessWidget {
+class AddMemberScreen extends StatefulWidget {
   const AddMemberScreen({super.key});
 
   static Future<void> push(BuildContext context) {
@@ -20,99 +24,133 @@ class AddMemberScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider<AddMemberCubit>(
-        create: (_) => AddMemberCubit(),
-        child: Scaffold(
-          appBar: CmoAppBarV2(
-            title: LocaleKeys.addMember.tr(),
-            subtitle: LocaleKeys.siteName.tr(),
-            showTrailing: true,
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: const [
-                SizedBox(height: 8),
-                _AddMemberSLIMF(),
-                SizedBox(height: 12),
-                _AddMemberMPO(),
-                SizedBox(height: 12),
-                _AddMemberMDetails(),
-                SizedBox(height: 12),
-                _AddMemberSDetails(),
-                SizedBox(height: 12),
-                _AddMemberMRA(),
-                SizedBox(height: 12),
-                _AddMemberMFO(),
-                SizedBox(height: 12),
-              ],
-            ),
-          ),
-        ));
-  }
+  State<AddMemberScreen> createState() => _AddMemberScreenState();
 }
 
-class _AddMemberMFO extends StatelessWidget {
-  const _AddMemberMFO();
+class _AddMemberScreenState extends State<AddMemberScreen> {
+  late final AddMemberCubit cubit;
+
+  @override
+  void dispose() {
+    super.dispose();
+    cubit.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      cubit = context.read<AddMemberCubit>();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return CmoCollapseTitle(
-        showTick: true,
-        title: LocaleKeys.member_farm_objectives.tr(),
-        child: Container(
-            height: size.height * 0.8,
-            width: double.maxFinite,
-            padding: const EdgeInsets.all(12),
-            color: context.colors.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                    LocaleKeys.are_there_any_chemical_being_used_on_the_fme
-                        .tr(),
+    return Scaffold(
+      appBar: CmoAppBarV2(
+        title: LocaleKeys.addMember.tr(),
+        subtitle: LocaleKeys.siteName.tr(),
+        showTrailing: true,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: const [
+            SizedBox(height: 8),
+            _AddMemberSLIMF(),
+            SizedBox(height: 12),
+            _AddMemberMPO(),
+            SizedBox(height: 12),
+            _AddMemberMDetails(),
+            SizedBox(height: 12),
+            _AddMemberSDetails(),
+            SizedBox(height: 12),
+            _AddMemberInclusionDate(),
+            SizedBox(height: 12),
+            _AddMemberMRA(),
+            SizedBox(height: 12),
+            _AddMemberMFO(),
+            SizedBox(height: 12),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AddMemberInclusionDate extends StatelessWidget {
+  const _AddMemberInclusionDate();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberInclusionDate>(
+      selector: (state) => state.addMemberInclusionDate,
+      builder: (context, AddMemberInclusionDate data) {
+        final cubit = context.read<AddMemberCubit>();
+        return CmoCollapseTitle(
+          showTick: data.isComplete,
+          title: 'Member Inclusion Date',
+          child: ColoredBox(
+            color: Colors.white,
+            child: Container(
+              margin: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(width: 1, color: Colors.grey)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Member Inclusion Date',
+                    style: context.textStyles.bodyBold
+                        .copyWith(color: const Color(0xff2072B9)),
+                  ),
+                  _buildDivider(),
+                  Text(
+                    'The date when the member will be included into Group Scheme',
                     style: context.textStyles.bodyNormal
-                        .copyWith(color: context.colors.black, fontSize: 16)),
-                const SizedBox(height: 8),
-                _buildAnswerWidget(),
-                _buildDivider(),
-                Text(LocaleKeys.hcvs_present.tr(),
-                    style: context.textStyles.bodyNormal
-                        .copyWith(color: context.colors.black, fontSize: 16)),
-                const SizedBox(height: 8),
-                _buildAnswerWidget(),
-                _buildDivider(),
-                Text(LocaleKeys.rivers_on_fmu.tr(),
-                    style: context.textStyles.bodyNormal
-                        .copyWith(color: context.colors.black, fontSize: 16)),
-                const SizedBox(height: 8),
-                _buildAnswerWidget(),
-                _buildDivider(),
-                Text(
-                    LocaleKeys
-                        .are_there_any_communities_in_or_neighbouring_the_fme
-                        .tr(),
-                    style: context.textStyles.bodyNormal
-                        .copyWith(color: context.colors.black, fontSize: 16)),
-                const SizedBox(height: 8),
-                _buildAnswerWidget(),
-                _buildDivider(),
-                const Spacer(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CmoFilledButton(
-                        title: LocaleKeys.finalise_later.tr(), onTap: () {}),
-                    CmoFilledButton(
-                        title: LocaleKeys.next.tr(),
-                        onTap: () {
-                          AddMemberMembershipContractScreen.push(context);
-                        }),
-                  ],
-                ),
-              ],
-            )));
+                        .copyWith(color: Colors.black),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      final result = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.parse(data.inclusionDate ??
+                              DateTime.now().toIso8601String()),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2200));
+
+                      await cubit.onDataChangeInclusionDate(result);
+                    },
+                    child: Container(
+                      padding:
+                          const EdgeInsets.only(left: 16, top: 8, bottom: 8),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            data.inclusionDate != null
+                                ? DateTime.parse(data.inclusionDate!)
+                                    .mmmDdYyyy()
+                                : 'Included Date',
+                            style: context.textStyles.bodyNormal
+                                .copyWith(color: Colors.black),
+                          ),
+                          const Icon(Icons.date_range)
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildDivider() {
@@ -124,17 +162,104 @@ class _AddMemberMFO extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildAnswerWidget({void Function()? onTap, bool? isSelect = false}) {
-    return Row(
-      children: [
-        const Spacer(),
-        CmoChipAnswerWidget.primary(onTap: onTap, isSelect: isSelect),
-        const SizedBox(width: 4),
-        CmoChipAnswerWidget.secondary(onTap: onTap, isSelect: isSelect),
-        const SizedBox(width: 4),
-        CmoChipAnswerWidget.na(onTap: onTap, isSelect: isSelect),
-        const Spacer(),
+class _AddMemberMFO extends StatelessWidget {
+  const _AddMemberMFO();
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMFO>(
+      selector: (state) => state.addMemberMFO,
+      builder: (context, AddMemberMFO data) {
+        final cubit = context.read<AddMemberCubit>();
+        return CmoCollapseTitle(
+            showTick: data.isComplete,
+            title: LocaleKeys.member_farm_objectives.tr(),
+            child: Container(
+                height: size.height * 0.8,
+                width: double.maxFinite,
+                padding: const EdgeInsets.all(12),
+                color: context.colors.white,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        LocaleKeys.are_there_any_chemical_being_used_on_the_fme
+                            .tr(),
+                        style: context.textStyles.bodyNormal.copyWith(
+                            color: context.colors.black, fontSize: 16)),
+                    const SizedBox(height: 8),
+                    CmoMFOQuestion(
+                      initialValue: data.firstAnswer,
+                      onTap: (p0) {
+                        cubit.onDataChangeMFO(firstAnswer: p0);
+                      },
+                    ),
+                    _buildDivider(),
+                    Text(LocaleKeys.hcvs_present.tr(),
+                        style: context.textStyles.bodyNormal.copyWith(
+                            color: context.colors.black, fontSize: 16)),
+                    const SizedBox(height: 8),
+                    CmoMFOQuestion(
+                      initialValue: data.secondAnswer,
+                      onTap: (p0) {
+                        cubit.onDataChangeMFO(secondAnswer: p0);
+                      },
+                    ),
+                    _buildDivider(),
+                    Text(LocaleKeys.rivers_on_fmu.tr(),
+                        style: context.textStyles.bodyNormal.copyWith(
+                            color: context.colors.black, fontSize: 16)),
+                    const SizedBox(height: 8),
+                    CmoMFOQuestion(
+                      initialValue: data.thirdAnswer,
+                      onTap: (p0) {
+                        cubit.onDataChangeMFO(thirdAnswer: p0);
+                      },
+                    ),
+                    _buildDivider(),
+                    Text(
+                        LocaleKeys
+                            .are_there_any_communities_in_or_neighbouring_the_fme
+                            .tr(),
+                        style: context.textStyles.bodyNormal.copyWith(
+                            color: context.colors.black, fontSize: 16)),
+                    const SizedBox(height: 8),
+                    CmoMFOQuestion(
+                      initialValue: data.fourthAnswer,
+                      onTap: (p0) {
+                        cubit.onDataChangeMFO(fourthAnswer: p0);
+                      },
+                    ),
+                    _buildDivider(),
+                    const Spacer(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        CmoFilledButton(
+                            title: LocaleKeys.finalise_later.tr(),
+                            onTap: () {}),
+                        CmoFilledButton(
+                            title: LocaleKeys.next.tr(),
+                            onTap: () {
+                              AddMemberMembershipContractScreen.push(context);
+                            }),
+                      ],
+                    ),
+                  ],
+                )));
+      },
+    );
+  }
+
+  Widget _buildDivider() {
+    return Column(
+      children: const [
+        SizedBox(height: 8),
+        Divider(thickness: 1),
+        SizedBox(height: 8),
       ],
     );
   }
@@ -145,17 +270,17 @@ class _AddMemberMRA extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CmoCollapseTitle(
-      title: LocaleKeys.member_risk_assessment.tr(),
-      showTick: true,
-      child: Container(
-          padding: const EdgeInsets.all(12),
-          color: context.colors.white,
-          child: BlocSelector<AddMemberCubit, AddMemberState, AddMemberMRA?>(
-              selector: (state) => state.addMemberMRA,
-              builder: (context, AddMemberMRA? value) {
-                final cubit = context.read<AddMemberCubit>();
-                return Column(
+    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMRA>(
+        selector: (state) => state.addMemberMRA,
+        builder: (context, AddMemberMRA data) {
+          final cubit = context.read<AddMemberCubit>();
+          return CmoCollapseTitle(
+            title: LocaleKeys.member_risk_assessment.tr(),
+            showTick: data.isComplete,
+            child: Container(
+                padding: const EdgeInsets.all(12),
+                color: context.colors.white,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -164,28 +289,25 @@ class _AddMemberMRA extends StatelessWidget {
                         style: context.textStyles.bodyNormal.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
-                    _buildAnswerWidget(context,
-                        isSelect: value?.firstAnswer,
-                        onTap: () =>
-                            cubit.onTapMRA(firstAnswer: value?.firstAnswer)),
+                    CmoYesNoQuestion(
+                        initialValue: data.firstAnswer,
+                        onTap: (p0) => cubit.onDataChangeMRA(firstAnswer: p0)),
                     _buildDivider(),
                     Text(LocaleKeys.hcvs_present.tr(),
                         style: context.textStyles.bodyNormal.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
-                    _buildAnswerWidget(context,
-                        isSelect: value?.secondAnswer,
-                        onTap: () =>
-                            cubit.onTapMRA(secondAnswer: value?.secondAnswer)),
+                    CmoYesNoQuestion(
+                        initialValue: data.secondAnswer,
+                        onTap: (p0) => cubit.onDataChangeMRA(secondAnswer: p0)),
                     _buildDivider(),
                     Text(LocaleKeys.rivers_on_fmu.tr(),
                         style: context.textStyles.bodyNormal.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
-                    _buildAnswerWidget(context,
-                        isSelect: value?.thirdAnswer,
-                        onTap: () =>
-                            cubit.onTapMRA(thirdAnswer: value?.thirdAnswer)),
+                    CmoYesNoQuestion(
+                        initialValue: data.thirdAnswer,
+                        onTap: (p0) => cubit.onDataChangeMRA(thirdAnswer: p0)),
                     _buildDivider(),
                     Text(
                         LocaleKeys
@@ -194,15 +316,14 @@ class _AddMemberMRA extends StatelessWidget {
                         style: context.textStyles.bodyNormal.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
-                    _buildAnswerWidget(context,
-                        isSelect: value?.fourthAnswer,
-                        onTap: () =>
-                            cubit.onTapMRA(fourthAnswer: value?.fourthAnswer)),
+                    CmoYesNoQuestion(
+                        initialValue: data.fourthAnswer,
+                        onTap: (p0) => cubit.onDataChangeMRA(fourthAnswer: p0)),
                     _buildDivider(),
                   ],
-                );
-              })),
-    );
+                )),
+          );
+        });
   }
 
   Widget _buildDivider() {
@@ -214,19 +335,6 @@ class _AddMemberMRA extends StatelessWidget {
       ],
     );
   }
-
-  Widget _buildAnswerWidget(BuildContext context,
-      {bool? isSelect = false, void Function()? onTap}) {
-    return Row(
-      children: [
-        const Spacer(),
-        CmoChipAnswerWidget.yes(onTap: onTap, isSelect: isSelect),
-        const SizedBox(width: 12),
-        CmoChipAnswerWidget.no(onTap: onTap, isSelect: !(isSelect ?? false)),
-        const Spacer(),
-      ],
-    );
-  }
 }
 
 class _AddMemberSDetails extends StatelessWidget {
@@ -234,42 +342,117 @@ class _AddMemberSDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CmoCollapseTitle(
-      title: LocaleKeys.site_details.tr(),
-      showTick: true,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        color: context.colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTitle(context, 'Site Name (*)'),
-            CmoTextField(
-              hintText: LocaleKeys.siteName.tr(),
+    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberSDetails>(
+      selector: (state) => state.addMemberSDetails,
+      builder: (context, AddMemberSDetails data) {
+        final cubit = context.read<AddMemberCubit>();
+        return CmoCollapseTitle(
+          title: LocaleKeys.site_details.tr(),
+          showTick: data.isComplete,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            color: context.colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildTitle(context, 'Site Name (*)'),
+                CmoTextField(
+                  initialValue: data.siteName,
+                  hintText: LocaleKeys.siteName.tr(),
+                  onChanged: (p0) {
+                    cubit.onDataChangeSiteDetail(siteName: p0);
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildTitle(context, 'Town (*)'),
+                CmoTextField(
+                  initialValue: data.town,
+                  hintText: LocaleKeys.town.tr(),
+                  onChanged: (p0) {
+                    cubit.onDataChangeSiteDetail(town: p0);
+                  },
+                ),
+                const SizedBox(height: 16),
+                Column(children: [
+                  InkWell(
+                    onTap: () {
+                      cubit.onDataChangeSiteDetail(
+                          isExpansionOpen: !data.isExpansionOpen);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 12),
+                      width: double.maxFinite,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            data.provinceSelected?.provinceName ?? 'Province',
+                            style: context.textStyles.bodyBold,
+                          ),
+                          const Icon(Icons.keyboard_arrow_down),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: data.isExpansionOpen,
+                    child: SizedBox(
+                      height: 300,
+                      width: double.maxFinite,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: data.provinces != null
+                              ? data.provinces
+                                  .map((e) => _buildItem(e, context, cubit))
+                                  .toList()
+                              : [],
+                        ),
+                      ),
+                    ),
+                  )
+                ]),
+                const SizedBox(height: 12),
+                CmoDropDownLayoutWidget(
+                    onTap: () async {
+                      final data = await AssessmentLocationScreen.push<
+                          AssessmentLocationScreenResult>(context);
+
+                      if (data is AssessmentLocationScreenResult) {
+                        final latLong = data.latLong;
+                        final address =
+                            '${data.address}\n${latLong?.latitude.toStringAsFixed(6)}, ${latLong?.longitude.toStringAsFixed(6)}';
+
+                        await cubit.onDataChangeSiteDetail(
+                          siteLocationLat: data.latLong?.latitude,
+                          siteLocationLng: data.latLong?.longitude,
+                          siteLocationAddress: address,
+                        );
+                      }
+                    },
+                    title: data.addMemberSiteLocations?.address ??
+                        LocaleKeys.siteLocation.tr(),
+                    showTick: data.isCompleteSiteLocation),
+                const SizedBox(height: 12),
+                CmoDropDownLayoutWidget(
+                    title: LocaleKeys.compartment_s.tr(),
+                    showTick: data.isCompleteCompartments),
+                const SizedBox(height: 12),
+                CmoDropDownLayoutWidget(
+                  onTap: () => ASIScreen.push(context),
+                  title: LocaleKeys.asi.tr(),
+                  showTick: data.isCompleteASI,
+                ),
+                const SizedBox(height: 12),
+              ],
             ),
-            const SizedBox(height: 12),
-            _buildTitle(context, 'Town (*)'),
-            CmoTextField(
-              hintText: LocaleKeys.town.tr(),
-            ),
-            const SizedBox(height: 16),
-            CmoDropDownLayoutWidget(title: LocaleKeys.province.tr()),
-            const SizedBox(height: 12),
-            CmoDropDownLayoutWidget(
-                title: LocaleKeys.siteLocation.tr(), showTick: true),
-            const SizedBox(height: 12),
-            CmoDropDownLayoutWidget(
-                title: LocaleKeys.compartment_s.tr(), showTick: true),
-            const SizedBox(height: 12),
-            CmoDropDownLayoutWidget(
-              title: LocaleKeys.asi.tr(),
-              onTap: () {
-                ASIScreen.push(context);
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -282,6 +465,31 @@ class _AddMemberSDetails extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildItem(
+      Province province, BuildContext context, AddMemberCubit cubit) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: InkWell(
+        onTap: () {
+          cubit.onDataChangeSiteDetail(provinceSelected: province);
+        },
+        child: Container(
+          margin: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(width: 1),
+          ),
+          child: Text(
+            province.provinceName ?? '',
+            style: context.textStyles.bodyBold,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _AddMemberMDetails extends StatelessWidget {
@@ -289,13 +497,13 @@ class _AddMemberMDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMDetails?>(
+    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMDetails>(
       selector: (state) => state.addMemberMDetails,
-      builder: (context, AddMemberMDetails? data) {
+      builder: (context, AddMemberMDetails data) {
         final cubit = context.read<AddMemberCubit>();
         return CmoCollapseTitle(
           title: LocaleKeys.memberDetails.tr(),
-          showTick: data?.isComplete,
+          showTick: data.isComplete,
           child: Container(
             color: Colors.white,
             padding: const EdgeInsets.all(12),
@@ -304,6 +512,7 @@ class _AddMemberMDetails extends StatelessWidget {
               children: [
                 _buildTitle(context, 'First name (*)'),
                 CmoTextField(
+                  initialValue: data.firstName,
                   hintText: 'First name',
                   onChanged: (p0) {
                     cubit.onDataChangeMemberDetail(firstName: p0);
@@ -312,6 +521,7 @@ class _AddMemberMDetails extends StatelessWidget {
                 const SizedBox(height: 12),
                 _buildTitle(context, 'Last name (*)'),
                 CmoTextField(
+                  initialValue: data.lastName,
                   hintText: 'Last Name',
                   onChanged: (p0) {
                     cubit.onDataChangeMemberDetail(lastName: p0);
@@ -320,6 +530,7 @@ class _AddMemberMDetails extends StatelessWidget {
                 const SizedBox(height: 12),
                 _buildTitle(context, 'ID/Passport Number (*)'),
                 CmoTextField(
+                  initialValue: data.idNumber,
                   hintText: 'ID/Passport Number',
                   onChanged: (p0) {
                     cubit.onDataChangeMemberDetail(idNumber: p0);
@@ -328,6 +539,7 @@ class _AddMemberMDetails extends StatelessWidget {
                 const SizedBox(height: 12),
                 _buildTitle(context, 'Mobile Number (*)'),
                 CmoTextField(
+                  initialValue: data.mobileNumber,
                   hintText: 'Mobile Number',
                   onChanged: (p0) {
                     cubit.onDataChangeMemberDetail(mobileNumber: p0);
@@ -336,6 +548,7 @@ class _AddMemberMDetails extends StatelessWidget {
                 const SizedBox(height: 12),
                 _buildTitle(context, 'Email Address (Optional)'),
                 CmoTextField(
+                  initialValue: data.emailAddress,
                   hintText: 'Email Address',
                   onChanged: (p0) {
                     cubit.onDataChangeMemberDetail(emailAddress: p0);
@@ -365,29 +578,103 @@ class _AddMemberMPO extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CmoCollapseTitle(
-      title: LocaleKeys.member_property_ownership.tr(),
-      showTick: true,
-      child: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-                LocaleKeys
-                    .does_the_farmer_have_a_title_deed_lease_or_management_contract_on_their_property
-                    .tr(),
-                style: context.textStyles.bodyNormal
-                    .copyWith(color: context.colors.black, fontSize: 16)),
-            Padding(
-              padding: const EdgeInsets.only(left: 22.0, top: 12),
-              child: Text(LocaleKeys.propertyType.tr(),
-                  style: context.textStyles.titleBold
-                      .copyWith(color: context.colors.black, fontSize: 16)),
+    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMPO>(
+      selector: (state) => state.addMemberMPO,
+      builder: (context, AddMemberMPO data) {
+        final cubit = context.read<AddMemberCubit>();
+        return CmoCollapseTitle(
+          title: LocaleKeys.member_property_ownership.tr(),
+          showTick: data.isComplete,
+          child: Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                    LocaleKeys
+                        .does_the_farmer_have_a_title_deed_lease_or_management_contract_on_their_property
+                        .tr(),
+                    style: context.textStyles.bodyNormal
+                        .copyWith(color: context.colors.black, fontSize: 16)),
+                Padding(
+                  padding: const EdgeInsets.only(left: 22.0, top: 12),
+                  child: Text(LocaleKeys.propertyType.tr(),
+                      style: context.textStyles.titleBold
+                          .copyWith(color: context.colors.black, fontSize: 16)),
+                ),
+                Column(children: [
+                  InkWell(
+                    onTap: () {
+                      cubit.onExpansionChangedMPO(!data.isExpansionOpen);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
+                      width: double.maxFinite,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(width: 1),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            data.propertyTypeSelected
+                                    ?.farmPropertyOwnershipTypeName ??
+                                LocaleKeys.tribal_authority.tr(),
+                            style: context.textStyles.bodyBold,
+                          ),
+                          const Icon(Icons.arrow_drop_down_circle_outlined)
+                        ],
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: data.isExpansionOpen,
+                    child: SizedBox(
+                      height: 300,
+                      width: double.maxFinite,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: data.propertyTypes != null
+                              ? data.propertyTypes!
+                                  .map((e) => _buildItem(e, context, cubit))
+                                  .toList()
+                              : [],
+                        ),
+                      ),
+                    ),
+                  )
+                ]),
+              ],
             ),
-            ExpansionTile(title: Text(LocaleKeys.tribal_authority.tr())),
-          ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildItem(FarmPropertyOwnershipType farmPropertyOwnershipType,
+      BuildContext context, AddMemberCubit cubit) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: InkWell(
+        onTap: () {
+          cubit.onDataChangeMPO(farmPropertyOwnershipType);
+        },
+        child: Container(
+          margin: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(width: 1),
+          ),
+          child: Text(
+            farmPropertyOwnershipType.farmPropertyOwnershipTypeName ?? '',
+            style: context.textStyles.bodyBold,
+          ),
         ),
       ),
     );

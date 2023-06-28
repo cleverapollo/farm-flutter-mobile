@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
@@ -71,6 +72,7 @@ class CmoApp extends StatelessWidget {
         BlocProvider(create: (_) => DashboardCubit()),
         BlocProvider(create: (_) => LabourManagementCubit()),
         BlocProvider(create: (_) => CompartmentCubit()),
+        BlocProvider(create: (_) => AddMemberCubit()),
       ],
       child: MaterialApp(
         title: 'CMO',

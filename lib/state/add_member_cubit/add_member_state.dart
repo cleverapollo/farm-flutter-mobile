@@ -1,3 +1,5 @@
+import 'package:cmo/model/data/farm_property_ownership_type.dart';
+import 'package:cmo/model/data/province.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'add_member_state.freezed.dart';
@@ -11,10 +13,40 @@ class AddMemberState with _$AddMemberState {
     @Default(AddMemberMPO()) AddMemberMPO addMemberMPO,
     @Default(AddMemberMDetails()) AddMemberMDetails addMemberMDetails,
     @Default(AddMemberSDetails()) AddMemberSDetails addMemberSDetails,
+    @Default(AddMemberInclusionDate())
+        AddMemberInclusionDate addMemberInclusionDate,
     @Default(AddMemberMRA()) AddMemberMRA addMemberMRA,
     @Default(AddMemberMFO()) AddMemberMFO addMemberMFO,
     @Default(AddMemberContract()) AddMemberContract addMemberContract,
+    @Default(AddMemberSAF()) AddMemberSAF addMemberSAF,
+    @Default(AddMemberClose()) AddMemberClose addMemberClose,
   }) = _AddMemberState;
+}
+
+@freezed
+class AddMemberSAF with _$AddMemberSAF {
+  const factory AddMemberSAF({
+    @Default(false) bool isComplete,
+    String? signatureImage,
+    String? signaturePoints,
+    String? signatureDate,
+  }) = _AddMemberSAF;
+}
+
+@freezed
+class AddMemberInclusionDate with _$AddMemberInclusionDate {
+  const factory AddMemberInclusionDate({
+    @Default(false) bool isComplete,
+    String? inclusionDate,
+  }) = _AddMemberInclusionDate;
+}
+
+@freezed
+class AddMemberClose with _$AddMemberClose {
+  const factory AddMemberClose({
+    @Default(false) bool isComplete,
+    bool? isClose,
+  }) = _AddMemberClose;
 }
 
 @freezed
@@ -37,7 +69,9 @@ class AddMemberSLIMF with _$AddMemberSLIMF {
 class AddMemberMPO with _$AddMemberMPO {
   const factory AddMemberMPO({
     @Default(false) bool isComplete,
-    String? propertyType,
+    @Default(false) bool isExpansionOpen,
+    FarmPropertyOwnershipType? propertyTypeSelected,
+    List<FarmPropertyOwnershipType>? propertyTypes,
   }) = _AddMemberMPO;
 }
 
@@ -57,9 +91,14 @@ class AddMemberMDetails with _$AddMemberMDetails {
 class AddMemberSDetails with _$AddMemberSDetails {
   const factory AddMemberSDetails({
     @Default(false) bool isComplete,
+    @Default(false) bool isCompleteSiteLocation,
+    @Default(false) bool isCompleteCompartments,
+    @Default(false) bool isCompleteASI,
+    @Default(false) bool isExpansionOpen,
     String? siteName,
     String? town,
-    String? province,
+    Province? provinceSelected,
+    @Default([]) List<Province> provinces,
     AddMemberSiteLocations? addMemberSiteLocations,
     AddMemberCompartmentsState? addMemberCompartmentsState,
     AddMemberAsisState? addMemberAsisState,
@@ -70,7 +109,9 @@ class AddMemberSDetails with _$AddMemberSDetails {
 class AddMemberSiteLocations with _$AddMemberSiteLocations {
   const factory AddMemberSiteLocations({
     @Default(false) bool isComplete,
-    String? siteLocations,
+    double? lat,
+    double? lng,
+    String? address,
   }) = _AddMemberSiteLocations;
 }
 
@@ -105,9 +146,9 @@ class AddMemberMRA with _$AddMemberMRA {
 class AddMemberMFO with _$AddMemberMFO {
   const factory AddMemberMFO({
     @Default(false) bool isComplete,
-    bool? firstAnswer,
-    bool? secondAnswer,
-    bool? thirdAnswer,
-    bool? fourthAnswer,
+    int? firstAnswer,
+    int? secondAnswer,
+    int? thirdAnswer,
+    int? fourthAnswer,
   }) = _AddMemberMFO;
 }

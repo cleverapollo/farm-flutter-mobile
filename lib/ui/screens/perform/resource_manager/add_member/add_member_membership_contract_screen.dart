@@ -1,7 +1,9 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_sign_contract_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../widget/cmo_app_bar_v2.dart';
 
@@ -61,6 +63,9 @@ class AddMemberMembershipContractScreen extends StatelessWidget {
                   child: CmoFilledButton(
                       title: LocaleKeys.accept.tr(),
                       onTap: () {
+                        context
+                            .read<AddMemberCubit>()
+                            .onDataChangeMemberContract();
                         AddMemberSignContractScreen.push(context);
                       })),
               const SizedBox(height: 20),

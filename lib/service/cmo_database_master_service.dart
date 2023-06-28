@@ -22,7 +22,6 @@ import 'package:cmo/model/customary_use_right/customary_use_right.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/disciplinaries/disciplonaries.dart';
-import 'package:cmo/model/farm_property_ownner_ship_type/farm_property_owner_ship_type.dart';
 import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
 import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/fire_cause/fire_cause.dart';

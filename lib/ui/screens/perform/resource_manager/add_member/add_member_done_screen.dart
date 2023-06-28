@@ -1,9 +1,11 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/ui/screens/cmo_dashboard_base.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddMemberDone extends StatelessWidget {
   const AddMemberDone({super.key});
@@ -25,10 +27,14 @@ class AddMemberDone extends StatelessWidget {
             padding: const EdgeInsets.only(left: 12.0),
             child: Column(
               children: [
-                Text('XXXxxx ${LocaleKeys.member_is_now_a_group_scheme_member.tr()}',
+                Text(
+                    'XXXxxx ${LocaleKeys.member_is_now_a_group_scheme_member.tr()}',
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black)),
-                Text(LocaleKeys.documentation_has_been_emailed_to_the_relevant_parties.tr(),
+                Text(
+                    LocaleKeys
+                        .documentation_has_been_emailed_to_the_relevant_parties
+                        .tr(),
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black)),
                 const Spacer(),
@@ -36,6 +42,7 @@ class AddMemberDone extends StatelessWidget {
                     child: CmoFilledButton(
                         title: LocaleKeys.close.tr(),
                         onTap: () {
+                          context.read<AddMemberCubit>().onDataChangeClose();
                           CmoDashboardBase.push(context);
                         })),
                 const SizedBox(height: 20),
