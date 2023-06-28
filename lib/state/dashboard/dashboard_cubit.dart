@@ -61,38 +61,32 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
   }
 
   Future<void> RMGetTotalAssessments() async {
-    final activeUserInfo = await configService.getActiveUser();
-    if (activeUserInfo?.userId == null) {
-      return;
-    }
     final resourceManagerUnit = await configService.getActiveRegionalManager();
     if (resourceManagerUnit == null) {
       return;
     }
     final service = cmoDatabaseMasterService;
-    final totalAssessments = await service.getAssessmentsByUserId(
-      userId: activeUserInfo!.userId!,
-    );
-    final totalCompletedAssessments = totalAssessments.fold(
-        0,
-            (previousValue, element) =>
-        previousValue + (element.completed == true ? 1 : 0));
-    final totalIncompleteAssessments = totalAssessments.length -
-        totalCompletedAssessments;
+    final totalAudits = await service.getAllAudits();
+    final totalIncompleteAudits = totalAudits
+        .where((element) => element.completed == false)
+        .toList()
+        .length;
+    final totalCompletedAudits = totalAudits
+        .where(
+          (element) => element.completed == true && element.synced == false,
+        )
+        .toList()
+        .length;
 
-    state.rmDashboardInfo?.unsynced = totalCompletedAssessments -
-        totalAssessments.fold(
-            0,
-            (previousValue, element) =>
-                previousValue + (element.statusEnum == AssessmentStatus.synced ? 1 : 0));
+    state.rmDashboardInfo?.unsynced = totalCompletedAudits;
     state.rmDashboardInfo?.memberOutstanding =
         (await service.getUnsyncedFarmCountByRegionalManagerUnitId(
             resourceManagerUnit!.regionalManagerUnitId!))?.length ?? 0;
     emit(
       state.copyWith(
-          totalAssessments: totalAssessments.length,
-          totalIncompleteAssessments: totalCompletedAssessments,
-          totalCompletedAssessments: totalIncompleteAssessments,
+          totalAssessments: totalAudits.length,
+          totalIncompleteAssessments: totalIncompleteAudits,
+          totalCompletedAssessments: totalCompletedAudits,
           rmDashboardInfo: state.rmDashboardInfo,
       ),
     );

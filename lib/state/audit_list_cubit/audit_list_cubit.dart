@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
+import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'audit_list_state.dart';
@@ -77,13 +78,14 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
     }
   }
 
-  Future<void> removeAudit(Audit item) async {
+  Future<void> removeAudit(Audit item, {VoidCallback? callback}) async {
     await cmoDatabaseMasterService.removeAudit(item.assessmentId!);
     showSnackSuccess(
       msg: '${LocaleKeys.removeAudit.tr()} ${item.assessmentId}!',
     );
 
-    return refresh();
+    callback?.call();
+    await refresh();
   }
 
   Future<void> refresh() async {

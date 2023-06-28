@@ -1,5 +1,6 @@
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/audit_list_cubit/audit_list_cubit.dart';
+import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/dismissible_audit_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/foundation.dart';
@@ -61,7 +62,10 @@ class _AuditListItemState extends State<AuditListItem> {
                 audit: item,
                 onTapAudit: () => widget.onTap(item),
                 onRemove: () async {
-                  await context.read<AuditListCubit>().removeAudit(item);
+                  await context.read<AuditListCubit>().removeAudit(
+                        item,
+                        callback: () => context.read<DashboardCubit>().refresh(),
+                      );
                 },
               );
             },

@@ -42,6 +42,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
   Future<void> refresh() async {
     if (context.mounted) {
       await context.read<AuditListCubit>().refresh();
+      await context.read<DashboardCubit>().refresh();
     }
   }
 

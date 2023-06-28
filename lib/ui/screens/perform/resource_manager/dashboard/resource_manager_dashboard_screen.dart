@@ -57,7 +57,6 @@ class _ResourceManagerDashboardScreenState
           },
           child: ListView(
             clipBehavior: Clip.none,
-            physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.all(20),
             children: [
               CmoTappable(
@@ -102,7 +101,7 @@ class _ResourceManagerDashboardScreenState
                             title: LocaleKeys.incomplete.tr(), value: '${state.totalIncompleteAssessments}/${state.totalAssessments}'),
                         CmoCardItemHighlighted(
                             title: LocaleKeys.membersOutstanding.tr(),
-                            value: '${state.rmDashboardInfo?.memberOutstanding}/${state.rmDashboardInfo?.totalMembers}'),
+                            value: '${state.totalAssessments}/${state.rmDashboardInfo?.totalMembers}'),
                       ],
                     );
                   },
