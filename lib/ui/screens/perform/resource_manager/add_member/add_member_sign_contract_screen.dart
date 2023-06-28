@@ -1,6 +1,8 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
 import '../../../../widget/cmo_app_bar_v2.dart';
@@ -46,7 +48,9 @@ class _AddMemberSignContractScreenState
                 width: size.width,
                 color: context.colors.white,
                 child: Text(
-                  LocaleKeys.agree_to_the_conditions_laid_out_in_this_legally_binding_document.tr(args: ['XXXxx']),
+                    LocaleKeys
+                        .agree_to_the_conditions_laid_out_in_this_legally_binding_document
+                        .tr(args: ['XXXxx']),
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black)),
               ),
@@ -80,6 +84,9 @@ class _AddMemberSignContractScreenState
                   child: CmoFilledButton(
                       title: LocaleKeys.accept_signature_and_finalise.tr(),
                       onTap: () {
+                        context
+                            .read<AddMemberCubit>()
+                            .onDataChangeMemberSignContract('', '', '');
                         AddMemberDone.push(context);
                       })),
               const SizedBox(height: 20),

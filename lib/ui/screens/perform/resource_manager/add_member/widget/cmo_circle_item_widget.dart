@@ -32,58 +32,6 @@ class CmoChipAnswerWidget extends StatelessWidget {
       textColor: (isSelect ?? false) ? Colors.white : Colors.black,
     );
   }
-  factory CmoChipAnswerWidget.yes(
-      {bool? isSelect = false, void Function()? onTap}) {
-    return CmoChipAnswerWidget._(
-      onTap: onTap,
-      letters: LocaleKeys.yes.tr(),
-      color: (isSelect ?? false) ? const Color(0xff2072B9) : Colors.white,
-      textColor: (isSelect ?? false) ? Colors.white : Colors.black,
-    );
-  }
-
-  factory CmoChipAnswerWidget.no(
-      {bool? isSelect = false, void Function()? onTap}) {
-    return CmoChipAnswerWidget._(
-      onTap: onTap,
-      letters: LocaleKeys.no.tr(),
-      color: (isSelect ?? false) ? const Color(0xff2072B9) : Colors.white,
-      textColor: (isSelect ?? false) ? Colors.white : Colors.black,
-    );
-  }
-
-  factory CmoChipAnswerWidget.primary(
-      {bool? isSelect = false, void Function()? onTap}) {
-    return CmoChipAnswerWidget._(
-      onTap: onTap,
-      letters: LocaleKeys.primary.tr(),
-      isCircle: false,
-      color: (isSelect ?? false) ? const Color(0xff2072B9) : Colors.white,
-      textColor: (isSelect ?? false) ? Colors.white : Colors.black,
-    );
-  }
-
-  factory CmoChipAnswerWidget.secondary(
-      {bool? isSelect = false, void Function()? onTap}) {
-    return CmoChipAnswerWidget._(
-      onTap: onTap,
-      letters: LocaleKeys.secondary.tr(),
-      isCircle: false,
-      color: (isSelect ?? false) ? const Color(0xff2072B9) : Colors.white,
-      textColor: (isSelect ?? false) ? Colors.white : Colors.black,
-    );
-  }
-
-  factory CmoChipAnswerWidget.na(
-      {bool? isSelect = false, void Function()? onTap}) {
-    return CmoChipAnswerWidget._(
-      onTap: onTap,
-      letters: LocaleKeys.na.tr(),
-      isCircle: false,
-      color: (isSelect ?? false) ? const Color(0xff2072B9) : Colors.white,
-      textColor: (isSelect ?? false) ? Colors.white : Colors.black,
-    );
-  }
 
   final Color color;
   final Color textColor;
@@ -128,5 +76,188 @@ class CmoChipAnswerWidget extends StatelessWidget {
             ),
           );
     ;
+  }
+}
+
+class CmoYesNoQuestion extends StatefulWidget {
+  const CmoYesNoQuestion({
+    super.key,
+    this.onTap,
+    this.initialValue,
+  });
+
+  final bool? initialValue;
+  final Function(bool)? onTap;
+
+  @override
+  State<CmoYesNoQuestion> createState() => _CmoYesNoQuestionState();
+}
+
+class _CmoYesNoQuestionState extends State<CmoYesNoQuestion> {
+  final isSelect = ValueNotifier<bool>(false);
+
+  @override
+  void initState() {
+    super.initState();
+    isSelect.value = widget.initialValue ?? true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        isSelect.value = !isSelect.value;
+        widget.onTap?.call(isSelect.value);
+      },
+      child: ValueListenableBuilder(
+        valueListenable: isSelect,
+        builder: (_, value, __) {
+          return Row(
+            children: [
+              Spacer(),
+              Container(
+                alignment: Alignment.center,
+                height: 70,
+                width: 70,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: value ? const Color(0xff2072B9) : Colors.white,
+                  border: Border.all(width: 2),
+                ),
+                child: Text('Yes',
+                    style: context.textStyles.bodyNormal
+                        .copyWith(color: value ? Colors.white : Colors.black)),
+              ),
+              const SizedBox(width: 12),
+              Container(
+                alignment: Alignment.center,
+                height: 70,
+                width: 70,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: !value ? const Color(0xff2072B9) : Colors.white,
+                  border: Border.all(width: 2),
+                ),
+                child: Text('No',
+                    style: context.textStyles.bodyNormal
+                        .copyWith(color: !value ? Colors.white : Colors.black)),
+              ),
+              Spacer(),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class CmoMFOQuestion extends StatefulWidget {
+  const CmoMFOQuestion({
+    super.key,
+    this.onTap,
+    this.initialValue,
+  });
+
+  final int? initialValue;
+  final Function(int)? onTap;
+
+  @override
+  State<CmoMFOQuestion> createState() => _CmoMFOQuestionState();
+}
+
+class _CmoMFOQuestionState extends State<CmoMFOQuestion> {
+  final isSelect = ValueNotifier<int>(1);
+
+  @override
+  void initState() {
+    super.initState();
+    isSelect.value = widget.initialValue ?? 1;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        widget.onTap?.call(isSelect.value);
+      },
+      child: ValueListenableBuilder(
+        valueListenable: isSelect,
+        builder: (_, value, __) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkWell(
+                onTap: () {
+                  isSelect.value = 1;
+                  widget.onTap?.call(isSelect.value);
+                },
+                child: Container(
+                  width: 120,
+                  decoration: BoxDecoration(
+                      color: isSelect.value == 1
+                          ? const Color(0xff2072B9)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(width: 1, color: context.colors.grey)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Text('Primary',
+                      style: context.textStyles.bodyNormal.copyWith(
+                        color:
+                            isSelect.value == 1 ? Colors.white : Colors.black,
+                      )),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  isSelect.value = 2;
+                  widget.onTap?.call(isSelect.value);
+                },
+                child: Container(
+                  width: 120,
+                  decoration: BoxDecoration(
+                      color: isSelect.value == 2
+                          ? const Color(0xff2072B9)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(width: 1, color: context.colors.grey)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Text('Secondary',
+                      style: context.textStyles.bodyNormal.copyWith(
+                        color:
+                            isSelect.value == 2 ? Colors.white : Colors.black,
+                      )),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  isSelect.value = 3;
+                  widget.onTap?.call(isSelect.value);
+                },
+                child: Container(
+                  width: 120,
+                  decoration: BoxDecoration(
+                      color: isSelect.value == 3
+                          ? const Color(0xff2072B9)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(width: 1, color: context.colors.grey)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Text('N/A',
+                      style: context.textStyles.bodyNormal.copyWith(
+                        color:
+                            isSelect.value == 3 ? Colors.white : Colors.black,
+                      )),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }
