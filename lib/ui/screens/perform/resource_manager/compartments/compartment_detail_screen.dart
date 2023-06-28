@@ -23,12 +23,13 @@ class CompartmentDetailScreen extends StatefulWidget {
     BuildContext context, {
     double? measuredArea,
     List<GeoLocation>? locations,
+    required String farmId,
   }) {
     return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
-            create: (_) => CompartmentDetailCubit(),
+            create: (_) => CompartmentDetailCubit(farmId),
             child: CompartmentDetailScreen(
               measuredArea: measuredArea,
               locations: locations,

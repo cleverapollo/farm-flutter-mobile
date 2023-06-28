@@ -1,3 +1,4 @@
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
@@ -6,16 +7,20 @@ import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/com
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
-import 'package:cmo/gen/assets.gen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompartmentScreen extends StatefulWidget {
   const CompartmentScreen({super.key});
 
-  static dynamic push(BuildContext context) {
-    return Navigator.of(context).push(
+  static Future<AddingCompartmentResult?> push(BuildContext context, {String? farmId}) {
+    return Navigator.of(context).push<AddingCompartmentResult?>(
       MaterialPageRoute(
-        builder: (_) => const CompartmentScreen(),
+        builder: (_) {
+          return BlocProvider(
+            create: (_) => CompartmentCubit(farmId ?? ''),
+            child: CompartmentScreen(),
+          );
+        },
       ),
     );
   }
@@ -41,7 +46,7 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
         showTrailing: true,
         trailing: Assets.icons.icAdd.svgBlack,
         onTapTrailing: () async {
-          await CompartmentMapScreen.push(context);
+          await CompartmentMapScreen.push(context, farmId: context.read<CompartmentCubit>().state.farmId);
           context.read<CompartmentCubit>().loadListCompartment();
         },
       ),
@@ -88,11 +93,28 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
                   },
                 ),
               ),
-            ],
+              if (listCompartment.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  CmoFilledButton(
+                    title: LocaleKeys.done.tr(),
+                    onTap: () async {
+                      Navigator.of(context).pop(AddingCompartmentResult()
+                        ..compartments = listCompartment
+                        ..totalAreaHa = total);
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ]
+              ],
           );
           },
         ),
       ),
     );
   }
+}
+
+class AddingCompartmentResult {
+  List<Compartment>? compartments;
+  double totalAreaHa = 0;
 }

@@ -30,6 +30,7 @@ class CompartmentItemWidget extends StatelessWidget {
           return;
         }
         CompartmentMapScreen.push(context,
+            farmId: model.farmId ?? '',
             points: points
                 .map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0))
                 .toList());

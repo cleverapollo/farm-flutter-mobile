@@ -54,8 +54,6 @@ import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_screen.dart';
-
 class CmoDatabaseMasterService {
   factory CmoDatabaseMasterService() {
     return _inst;
@@ -2640,8 +2638,11 @@ class CmoDatabaseMasterService {
     return db.writeTxn(() => db.compartments.put(item));
   }
 
-  Future<List<Compartment>?> getCompartments() async {
+  Future<List<Compartment>?> getCompartmentByFarmId(String farmId) async {
     final db = await _db();
-    return db.txn(() => db.compartments.where().findAll());
+    return db.txn(() =>
+        db.compartments.filter()
+            .farmIdEqualTo(farmId)
+            .findAll());
   }
 }
