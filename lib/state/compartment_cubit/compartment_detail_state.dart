@@ -30,6 +30,7 @@ class CompartmentDetailState {
 
   CompartmentDetailState copyWith(
       {bool? loading,
+        String? farmId,
       Object? error,
       Compartment? compartment,
       List<AreaType>? areaTypes,
@@ -38,6 +39,7 @@ class CompartmentDetailState {
       List<ProductGroupTemplate>? productGroupTemplates,
       List<SpeciesGroupTemplate>? speciesGroupTemplates}) {
     return CompartmentDetailState(
+      farmId: farmId ?? this.farmId,
       loading: loading ?? this.loading,
       error: error ?? this.error,
       compartment: compartment ?? this.compartment,

@@ -17,11 +17,13 @@ class CompartmentState {
     bool? loading,
     Object? error,
     List<Compartment>? listCompartment,
+    String? farmId,
   }) {
     return CompartmentState(
       loading: loading ?? this.loading,
       listCompartment: listCompartment ?? this.listCompartment,
       error: error ?? this.error,
+      farmId: farmId ?? this.farmId,
     );
   }
 }

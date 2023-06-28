@@ -22,21 +22,24 @@ class CompartmentMapScreen extends StatefulWidget {
     BuildContext context, {
     List<map.LatLng>? points,
     required String farmId,
+    String? farmName,
   }) async {
     return Navigator.of(context).push<T>(
       MaterialPageRoute(
         builder: (_) => CompartmentMapScreen(
           points: points,
           farmId: farmId,
+          farmName: farmName,
         ),
       ),
     );
   }
 
-  CompartmentMapScreen({this.points, required this.farmId, Key? key}) : super(key: key);
+  CompartmentMapScreen({this.points, required this.farmId, this.farmName, Key? key}) : super(key: key);
 
   final List<map.LatLng>? points;
   final String farmId;
+  final String? farmName;
 
   @override
   _CompartmentMapScreenState createState() => _CompartmentMapScreenState();
@@ -73,7 +76,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
       appBar: CmoAppBarV2(
         title: LocaleKeys.compartments.tr(),
         showLeading: true,
-        subtitle: LocaleKeys.siteName.tr(),
+        subtitle: widget.farmName ?? LocaleKeys.siteName.tr(),
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
@@ -177,6 +180,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                 ? () {
                     CompartmentDetailScreen.push(context,
                         farmId: widget.farmId,
+                        farmName: widget.farmName,
                         measuredArea: (areaSquareMeters ?? 0) / 10000,
                         locations: _markers
                             .map((e) => GeoLocation(

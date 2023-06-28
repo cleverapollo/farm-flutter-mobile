@@ -10,15 +10,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompartmentScreen extends StatefulWidget {
-  const CompartmentScreen({super.key});
+  final String? farmName;
+  const CompartmentScreen({super.key, this.farmName});
 
-  static Future<AddingCompartmentResult?> push(BuildContext context, {String? farmId}) {
+  static Future<AddingCompartmentResult?> push(BuildContext context, {String? farmId, String? farmName}) {
     return Navigator.of(context).push<AddingCompartmentResult?>(
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
             create: (_) => CompartmentCubit(farmId ?? ''),
-            child: CompartmentScreen(),
+            child: CompartmentScreen(farmName: farmName,),
           );
         },
       ),
@@ -41,12 +42,12 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
     return Scaffold(
       appBar: CmoAppBarV2(
         title: LocaleKeys.compartment.tr(),
-        subtitle: LocaleKeys.siteName.tr(),
+        subtitle: widget.farmName ?? LocaleKeys.siteName.tr(),
         showLeading: true,
         showTrailing: true,
         trailing: Assets.icons.icAdd.svgBlack,
         onTapTrailing: () async {
-          await CompartmentMapScreen.push(context, farmId: context.read<CompartmentCubit>().state.farmId);
+          await CompartmentMapScreen.push(context, farmId: context.read<CompartmentCubit>().state.farmId, farmName: widget.farmName);
           context.read<CompartmentCubit>().loadListCompartment();
         },
       ),

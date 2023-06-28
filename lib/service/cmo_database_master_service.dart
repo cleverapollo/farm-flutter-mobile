@@ -2640,9 +2640,8 @@ class CmoDatabaseMasterService {
 
   Future<List<Compartment>?> getCompartmentByFarmId(String farmId) async {
     final db = await _db();
-    return db.txn(() =>
-        db.compartments.filter()
-            .farmIdEqualTo(farmId)
-            .findAll());
+    return db.compartments.filter()
+        .farmIdEqualTo(farmId)
+        .findAll();
   }
 }
