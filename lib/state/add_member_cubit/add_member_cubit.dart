@@ -86,8 +86,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
 
     debugPrint(stepCount.toString());
     emit(state.copyWith(
-      farm:
-          state.farm?.copyWith(stepCount: stepCount, isGroupSchemeMember: true),
+      farm: state.farm?.copyWith(
+          stepCount: stepCount, isGroupSchemeMember: stepCount == 10),
     ));
     if (stepCount != 0) {
       await cacheFarm();
