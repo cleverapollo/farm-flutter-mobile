@@ -4,6 +4,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
+import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:cmo/model/company.dart';
 import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/compartment/product_group_template.dart';
@@ -494,6 +495,27 @@ class CmoPerformApiService {
     final data = response.data;
     return data
         ?.map((e) => ProductGroupTemplate.fromJson(e as JsonData))
+        .toList();
+  }
+
+  Future<List<AsiType>?> fetchRMAsiType() async {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/AsiType/GetRMAsiType',
+    );
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data
+        ?.map((e) => AsiType.fromJson(e as JsonData))
         .toList();
   }
 

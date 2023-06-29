@@ -29,5 +29,5 @@ class Asi with _$Asi {
       _$AsiFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => int.tryParse(asiRegisterId ?? '') ?? Isar.autoIncrement;
 }

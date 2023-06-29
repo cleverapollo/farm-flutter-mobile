@@ -1,9 +1,12 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/service/image_picker_service.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/src/types/location.dart'
     as map;
@@ -22,12 +25,14 @@ enum MapType {
 }
 
 class CmoMapWidget extends StatefulWidget {
-  const CmoMapWidget._(
-      {required this.mapType,
-      required this.points,
-      required this.marker,
-      required this.height,
-      required this.width});
+  const CmoMapWidget._({
+    required this.mapType,
+    required this.points,
+    required this.marker,
+    required this.height,
+    required this.width,
+    Key? key,
+  }) : super(key: key);
 
   factory CmoMapWidget.marker({
     required LatLng initialPoint,
@@ -45,17 +50,19 @@ class CmoMapWidget extends StatefulWidget {
   }
 
   factory CmoMapWidget.markerWithPhotos({
-    required LatLng initialPoint,
+    required LatLng? initialPoint,
     void Function(LatLng marker)? marker,
     double? height,
     double? width,
+    Key? key,
   }) {
     return CmoMapWidget._(
       mapType: MapType.markerSingleWithPhotos,
-      points: [initialPoint],
+      points: initialPoint != null ? [initialPoint] : [],
       marker: marker,
       height: height,
       width: width,
+      key: key,
     );
   }
 
@@ -66,11 +73,13 @@ class CmoMapWidget extends StatefulWidget {
   final void Function(LatLng point)? marker;
 
   @override
-  State<CmoMapWidget> createState() => _CmoMapWidgetState();
+  State<CmoMapWidget> createState() => CmoMapWidgetState();
 }
 
-class _CmoMapWidgetState extends State<CmoMapWidget> {
+class CmoMapWidgetState extends State<CmoMapWidget> {
   late final GoogleMapController _controller;
+  final ImagePickerService _imagePickerService = ImagePickerService();
+  final locationModel = LocationModel();
 
   List<map.LatLng> points = [];
   List<Marker> _markers = [];
@@ -94,13 +103,28 @@ class _CmoMapWidgetState extends State<CmoMapWidget> {
               GoogleMap(
                 initialCameraPosition:
                     const CameraPosition(target: Constants.mapCenter, zoom: 14),
-                onMapCreated: (GoogleMapController controller) =>
-                    _controller = controller,
+                onMapCreated: (GoogleMapController controller) {
+                  _controller = controller;
+                  Geolocator.checkPermission().then((permission) async {
+                    if (permission == LocationPermission.whileInUse ||
+                        permission == LocationPermission.always) {
+                      _moveMapCameraCurrentLocation();
+                    } else if (permission == LocationPermission.denied) {
+                      permission = await Geolocator.requestPermission();
+                      if (permission == LocationPermission.whileInUse ||
+                          permission == LocationPermission.always) {
+                        _moveMapCameraCurrentLocation();
+                      }
+                    }
+                  });
+                },
                 markers: _markers.isEmpty ? <Marker>{} : _markers.toSet(),
                 onTap: (latLong) {
                   debugPrint(latLong.toString());
                   setState(() {
                     _removePreviousPoint();
+                    locationModel.latitude = latLong.latitude;
+                    locationModel.longitude = latLong.longitude;
                     _markers.add(_markerFrom(latLong));
                   });
                 },
@@ -131,7 +155,7 @@ class _CmoMapWidgetState extends State<CmoMapWidget> {
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8.0),
           child: CmoDropDownLayoutWidget(
             title: LocaleKeys.lat_long.tr(),
-            subTitle:
+            subTitle: _markers.isEmpty ? '' :
                 '${_markers.first.position.latitude.toStringAsFixed(5)} | ${_markers.first.position.longitude.toStringAsFixed(5)}',
             trailingWidget: const Icon(
               Icons.location_on,
@@ -145,10 +169,22 @@ class _CmoMapWidgetState extends State<CmoMapWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Align(
-                child: CmoFilledButton(title: LocaleKeys.selectPhoto.tr(), onTap: () {}),
+                child: CmoFilledButton(
+                    title: LocaleKeys.selectPhoto.tr(),
+                    onTap: () async {
+                      locationModel.imageUri =
+                          (await _imagePickerService.pickImageFromGallery())
+                              ?.path;
+                    }),
               ),
               Align(
-                child: CmoFilledButton(title: LocaleKeys.takePhoto.tr(), onTap: () {}),
+                child: CmoFilledButton(
+                    title: LocaleKeys.takePhoto.tr(),
+                    onTap: () async {
+                      locationModel.imageUri =
+                          (await _imagePickerService.pickImageFromCamera())
+                              ?.path;
+                    }),
               ),
             ],
           ),
@@ -169,5 +205,12 @@ class _CmoMapWidgetState extends State<CmoMapWidget> {
           MarkerId('place_name_${position.latitude}_${position.longitude}'),
       position: position,
     );
+  }
+
+  Future _moveMapCameraCurrentLocation() async {
+    final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    await _controller.animateCamera(
+        CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
   }
 }

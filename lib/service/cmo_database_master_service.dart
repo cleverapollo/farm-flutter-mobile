@@ -290,14 +290,16 @@ class CmoDatabaseMasterService {
 
   Future<int?> cacheAsi(Asi data) async {
     final db = await _db();
-
-    return db.asis.put(data);
+    return db.writeTxn(() async {
+      return db.asis.put(data);
+    });
   }
 
   Future<int?> cacheAsiPhoto(AsiPhoto data) async {
     final db = await _db();
-
-    return db.asiPhotos.put(data);
+    return db.writeTxn(() async {
+      return db.asiPhotos.put(data);
+    });
   }
 
   Future<int?> cacheChemical(Chemical data) async {
@@ -1117,6 +1119,13 @@ class CmoDatabaseMasterService {
     final db = await _db();
 
     return db.asis.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<Asi>> getAsiRegisterByFarmId(String farmId) async {
+    final db = await _db();
+    return db.asis.filter().farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
   }
 
   Future<List<Asi>> getUnsyncedAsiRegister() async {
