@@ -1,9 +1,7 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
+import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_location_widget.dart';
@@ -12,19 +10,20 @@ import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 
 class AddFireManagementScreen extends StatefulWidget {
-  const AddFireManagementScreen({super.key});
+  const AddFireManagementScreen({super.key, this.fireRegister});
+
+  final FireRegister? fireRegister;
 
   @override
   State<StatefulWidget> createState() => _AddFireManagementScreenState();
 
-  static Future<void> push(BuildContext context) {
+  static Future<void> push(BuildContext context, {FireRegister? fireRegister}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const AddFireManagementScreen(),
+        builder: (_) => AddFireManagementScreen(fireRegister: fireRegister),
       ),
     );
   }
@@ -37,12 +36,22 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
-  late FireManagement fireManagement;
+  late FireRegister fireRegister;
+
+  bool carRaised = false;
+  bool carClosed = false;
 
   @override
   void initState() {
     super.initState();
-    fireManagement = FireManagement();
+    if (widget.fireRegister != null) {
+      fireRegister = FireRegister.fromJson(widget.fireRegister!.toJson());
+    } else {
+      fireRegister =
+          FireRegister(fireRegisterNo: DateTime.now().toIso8601String());
+    }
+    carRaised = fireRegister.carRaisedDate != null;
+    carClosed = fireRegister.carClosedDate != null;
   }
 
   Future<void> onSubmit() async {
@@ -59,11 +68,26 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
       });
       try {
         await hideInputMethod();
-        fireManagement = fireManagement.copyWith(
-          dateExtinguished: value['DateExtinguished'].toString(),
-          dateDetected: value['DateDetected'].toString(),
+        final farmId = await configService.getActiveFarmId();
+        fireRegister = fireRegister.copyWith(
+          extinguished: value['DateExtinguished'] as DateTime?,
+          detected: value['DateDetected'] as DateTime?,
+          farmId: farmId,
+          isMasterdataSynced: false,
           fireCauseId: int.tryParse(value['FireCauseId'].toString()),
         );
+
+        if (carRaised && fireRegister.carRaisedDate == null) {
+          fireRegister = fireRegister.copyWith(
+            carRaisedDate: DateTime.now().toIso8601String(),
+          );
+        }
+
+        if (carClosed && fireRegister.carClosedDate == null) {
+          fireRegister = fireRegister.copyWith(
+            carClosedDate: DateTime.now().toIso8601String(),
+          );
+        }
 
         int? resultId;
 
@@ -71,15 +95,15 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
           final databaseService = cmoDatabaseMasterService;
 
           await (await databaseService.db).writeTxn(() async {
-            resultId =
-                await databaseService.cacheFireManagement(fireManagement);
+            resultId = await databaseService.cacheFireRegister(fireRegister);
           });
         }
 
         if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
-              msg: '${LocaleKeys.addFire.tr()} $resultId',
+              msg:
+                  '${widget.fireRegister == null ? LocaleKeys.addFire.tr() : 'Edit Fire'} $resultId',
             );
 
             Navigator.of(context).pop();
@@ -99,7 +123,9 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
-          title: LocaleKeys.addFire.tr(),
+          title: widget.fireRegister == null
+              ? LocaleKeys.addFire.tr()
+              : 'Edit Fire',
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
@@ -146,7 +172,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                   onChanged: (value) {
-                    fireManagement = fireManagement.copyWith(
+                    fireRegister = fireRegister.copyWith(
                       areaBurnt: double.tryParse(value) ?? 0,
                     );
                   },
@@ -159,7 +185,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                   onChanged: (value) {
-                    fireManagement = fireManagement.copyWith(
+                    fireRegister = fireRegister.copyWith(
                       commercialAreaLoss: double.tryParse(value) ?? 0,
                     );
                   },
@@ -170,10 +196,9 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
                 longitudeTitle: LocaleKeys.longitudeOriginDecimal.tr(),
                 appbarTitle: LocaleKeys.location.tr(),
                 onChooseLocation: (locationModel) {
-                  fireManagement = fireManagement.copyWith(
+                  fireRegister = fireRegister.copyWith(
                     longitude: locationModel.longitude ?? 0,
                     latitude: locationModel.latitude ?? 0,
-                    imagePath: locationModel.imageUri ?? '',
                   );
                 },
               ),
@@ -181,7 +206,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
                 child: SelectItemWidget(
                   title: LocaleKeys.carRaised.tr(),
                   onSelect: (isSelected) {
-                    fireManagement = fireManagement.copyWith(carRaised: isSelected);
+                    carRaised = isSelected;
                   },
                 ),
               ),
@@ -189,7 +214,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
                 child: SelectItemWidget(
                   title: LocaleKeys.carClosed.tr(),
                   onSelect: (isSelected) {
-                    fireManagement = fireManagement.copyWith(carClosed: isSelected);
+                    carClosed = isSelected;
                   },
                 ),
               ),
@@ -198,7 +223,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
                 child: GeneralCommentWidget(
                   hintText: LocaleKeys.generalComments.tr(),
                   onChanged: (value) {
-                    fireManagement = fireManagement.copyWith(generalComments: value);
+                    fireRegister = fireRegister.copyWith(comment: value);
                   },
                 ),
               ),
@@ -261,7 +286,8 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
         hintText: LocaleKeys.dateDetected.tr(),
         validator: (DateTime? value) {
           if (value == null) return null;
-          if (value.millisecondsSinceEpoch > DateTime.now().millisecondsSinceEpoch) {
+          if (value.millisecondsSinceEpoch >
+              DateTime.now().millisecondsSinceEpoch) {
             return 'Detected date cannot be in the future';
           }
           return null;
