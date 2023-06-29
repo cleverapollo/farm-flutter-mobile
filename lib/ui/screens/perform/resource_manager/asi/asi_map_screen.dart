@@ -1,4 +1,5 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -8,11 +9,23 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ASIMapScreen extends StatefulWidget {
   final String? farmName;
-  const ASIMapScreen({super.key, this.farmName});
+  final String farmId;
+  const ASIMapScreen({super.key, required this.farmId, this.farmName});
 
-  static Future<void> push(BuildContext context, {String? farmId, String? farmName}) {
+  static Future<void> push(
+    BuildContext context, {
+    String? farmId,
+    String? farmName,
+  }) {
     return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const ASIMapScreen()));
+      context,
+      MaterialPageRoute(
+        builder: (_) => ASIMapScreen(
+          farmId: farmId ?? '',
+          farmName: farmName,
+        ),
+      ),
+    );
   }
 
   @override
@@ -20,6 +33,7 @@ class ASIMapScreen extends StatefulWidget {
 }
 
 class _ASIMapScreenState extends State<ASIMapScreen> {
+  GlobalKey mapWidgetKey = GlobalKey();
   LatLng? marker;
 
   @override
@@ -36,8 +50,8 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
           child: Column(
             children: [
               CmoMapWidget.markerWithPhotos(
-                initialPoint:
-                    const LatLng(-26.015368927981065, 28.042593151330948),
+                key: mapWidgetKey,
+                initialPoint: null,
                 marker: (p0) => marker = p0,
               ),
               const SizedBox(height: 40),
@@ -45,7 +59,18 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                 child: CmoFilledButton(
                     title: LocaleKeys.next.tr(),
                     onTap: () {
-                      ASIDetailScreen.push(context, point: marker);
+                      LocationModel? locationModel;
+                      if (mapWidgetKey.currentState is CmoMapWidgetState) {
+                        final mapState =
+                        mapWidgetKey.currentState! as CmoMapWidgetState;
+                        locationModel = mapState.locationModel;
+                      }
+                      ASIDetailScreen.push(
+                        context,
+                        farmId: widget.farmId,
+                        farmName: widget.farmName,
+                        locationModel: locationModel,
+                      );
                     }),
               ),
               const SizedBox(height: 20),

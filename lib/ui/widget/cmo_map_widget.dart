@@ -25,12 +25,14 @@ enum MapType {
 }
 
 class CmoMapWidget extends StatefulWidget {
-  const CmoMapWidget._(
-      {required this.mapType,
-      required this.points,
-      required this.marker,
-      required this.height,
-      required this.width});
+  const CmoMapWidget._({
+    required this.mapType,
+    required this.points,
+    required this.marker,
+    required this.height,
+    required this.width,
+    Key? key,
+  }) : super(key: key);
 
   factory CmoMapWidget.marker({
     required LatLng initialPoint,
@@ -48,17 +50,19 @@ class CmoMapWidget extends StatefulWidget {
   }
 
   factory CmoMapWidget.markerWithPhotos({
-    required LatLng initialPoint,
+    required LatLng? initialPoint,
     void Function(LatLng marker)? marker,
     double? height,
     double? width,
+    Key? key,
   }) {
     return CmoMapWidget._(
       mapType: MapType.markerSingleWithPhotos,
-      points: [initialPoint],
+      points: initialPoint != null ? [initialPoint] : [],
       marker: marker,
       height: height,
       width: width,
+      key: key,
     );
   }
 
@@ -69,13 +73,13 @@ class CmoMapWidget extends StatefulWidget {
   final void Function(LatLng point)? marker;
 
   @override
-  State<CmoMapWidget> createState() => _CmoMapWidgetState();
+  State<CmoMapWidget> createState() => CmoMapWidgetState();
 }
 
-class _CmoMapWidgetState extends State<CmoMapWidget> {
+class CmoMapWidgetState extends State<CmoMapWidget> {
   late final GoogleMapController _controller;
   final ImagePickerService _imagePickerService = ImagePickerService();
-  final _locationModel = LocationModel();
+  final locationModel = LocationModel();
 
   List<map.LatLng> points = [];
   List<Marker> _markers = [];
@@ -119,8 +123,8 @@ class _CmoMapWidgetState extends State<CmoMapWidget> {
                   debugPrint(latLong.toString());
                   setState(() {
                     _removePreviousPoint();
-                    _locationModel.latitude = latLong.latitude;
-                    _locationModel.longitude = latLong.longitude;
+                    locationModel.latitude = latLong.latitude;
+                    locationModel.longitude = latLong.longitude;
                     _markers.add(_markerFrom(latLong));
                   });
                 },
@@ -151,7 +155,7 @@ class _CmoMapWidgetState extends State<CmoMapWidget> {
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8.0),
           child: CmoDropDownLayoutWidget(
             title: LocaleKeys.lat_long.tr(),
-            subTitle:
+            subTitle: _markers.isEmpty ? '' :
                 '${_markers.first.position.latitude.toStringAsFixed(5)} | ${_markers.first.position.longitude.toStringAsFixed(5)}',
             trailingWidget: const Icon(
               Icons.location_on,
@@ -168,7 +172,7 @@ class _CmoMapWidgetState extends State<CmoMapWidget> {
                 child: CmoFilledButton(
                     title: LocaleKeys.selectPhoto.tr(),
                     onTap: () async {
-                      _locationModel.imageUri =
+                      locationModel.imageUri =
                           (await _imagePickerService.pickImageFromGallery())
                               ?.path;
                     }),
@@ -177,7 +181,7 @@ class _CmoMapWidgetState extends State<CmoMapWidget> {
                 child: CmoFilledButton(
                     title: LocaleKeys.takePhoto.tr(),
                     onTap: () async {
-                      _locationModel.imageUri =
+                      locationModel.imageUri =
                           (await _imagePickerService.pickImageFromCamera())
                               ?.path;
                     }),

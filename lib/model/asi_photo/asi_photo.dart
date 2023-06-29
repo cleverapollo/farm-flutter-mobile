@@ -25,5 +25,5 @@ class AsiPhoto with _$AsiPhoto {
       _$AsiPhotoFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => asiRegisterPhotoId ?? Isar.autoIncrement;
 }

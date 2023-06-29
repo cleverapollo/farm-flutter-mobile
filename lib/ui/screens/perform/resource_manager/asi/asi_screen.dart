@@ -13,7 +13,7 @@ class ASIScreen extends StatelessWidget {
   final String? farmName;
   const ASIScreen({this.farmName, super.key});
 
-  static Future<void> push(BuildContext context,
+  static Future push(BuildContext context,
       {String? farmId, String? farmName}) {
     return Navigator.push(
       context,
@@ -40,7 +40,12 @@ class ASIScreen extends StatelessWidget {
         showLeading: true,
         trailing: Assets.icons.icAdd.svgBlack,
         onTapTrailing: () async {
-          ASIMapScreen.push(context);
+          await ASIMapScreen.push(
+            context,
+            farmId: context.read<AsiCubit>().state.farmId,
+            farmName: farmName,
+          );
+          context.read<AsiCubit>().loadAsis();
         },
       ),
       body: SizedBox.expand(
@@ -76,9 +81,13 @@ class ASIScreen extends StatelessWidget {
                                   onTap: () {},
                                   child: CmoCard(
                                     content: [
-                                      CmoCardHeader(title: LocaleKeys.asiType.tr()),
+                                      CmoCardHeader(
+                                          title: listAsi[index].asiTypeName ??
+                                              LocaleKeys.asiType.tr()),
                                       CmoCardItem(
-                                          title: LocaleKeys.compartments.tr(), value: ''),
+                                        title:
+                                            listAsi[index].asiRegisterNo ?? '',
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -96,7 +105,8 @@ class ASIScreen extends StatelessWidget {
                 child: CmoFilledButton(
                     title: LocaleKeys.done.tr(),
                     onTap: () {
-                      ASIMapScreen.push(context, farmId: context.read<AsiCubit>().state.farmId, farmName: farmName);
+                      Navigator.pop(
+                          context, context.read<AsiCubit>().state.listAsi);
                     }),
               ),
               const SizedBox(height: 20),

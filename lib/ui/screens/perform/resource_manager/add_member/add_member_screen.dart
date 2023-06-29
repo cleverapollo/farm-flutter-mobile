@@ -251,8 +251,9 @@ class _AddMemberSDetails extends StatelessWidget {
             const SizedBox(height: 12),
             CmoDropDownLayoutWidget(
               title: LocaleKeys.asi.tr(),
-              onTap: () {
-                ASIScreen.push(context, farmName: "Test", farmId: "123");
+              onTap: () async {
+                // TODO: Should replace farmId and farmName with member data
+                var result = await ASIScreen.push(context, farmName: "Test", farmId: "123");
               },
             ),
           ],

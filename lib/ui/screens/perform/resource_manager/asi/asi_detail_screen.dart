@@ -1,21 +1,45 @@
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_screen.dart';
+import 'package:cmo/model/asi.dart';
+import 'package:cmo/model/asi_type/asi_type.dart';
+import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
+import 'package:cmo/state/rm_asi/asi_detail_state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 
 class ASIDetailScreen extends StatefulWidget {
-  const ASIDetailScreen({super.key, this.point});
+  const ASIDetailScreen({super.key, this.locationModel, this.farmName});
 
-  final LatLng? point;
+  final LocationModel? locationModel;
+  final String? farmName;
 
-  static Future<void> push(BuildContext context, {required LatLng? point}) {
-    return Navigator.push(context,
-        MaterialPageRoute(builder: (_) => ASIDetailScreen(point: point)));
+  static Future push(
+    BuildContext context, {
+    LocationModel? locationModel,
+    required String farmId,
+    String? farmName,
+  }) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) {
+          return BlocProvider(
+            create: (_) => AsiDetailCubit(
+              farmId ?? '',
+              locationModel: locationModel,
+            )..fetchData(),
+            child: ASIDetailScreen(
+              locationModel: locationModel,
+              farmName: farmName,
+            ),
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -24,13 +48,14 @@ class ASIDetailScreen extends StatefulWidget {
 
 class _ASIDetailScreenState extends State<ASIDetailScreen> {
   String currentDate = '';
+  Asi _asi = Asi();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBarV2(
         title: LocaleKeys.addASI.tr(),
-        subtitle: LocaleKeys.siteName.tr(),
+        subtitle: widget.farmName ?? '',
         showTrailing: true,
       ),
       body: SizedBox.expand(
@@ -41,13 +66,41 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                  child: CmoDropDownLayoutWidget(title: LocaleKeys.compartment.tr()),
+                  child: CmoTextField(
+                    hintText: LocaleKeys.asi_no.tr(),
+                    onChanged: (value) {
+                      _asi = _asi.copyWith(asiRegisterNo: value);
+                    },
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                  child: CmoDropDownLayoutWidget(
-                    title: LocaleKeys.type.tr(),
-                    subTitle: LocaleKeys.grate_site_1.tr(),
+                  child: BlocSelector<AsiDetailCubit, AsiDetailState, List<AsiType>?>(
+                    selector: (state) => state.types,
+                    builder: (context, types) {
+                      return CmoDropdown<AsiType>(
+                        name: '',
+                        hintText: LocaleKeys.type.tr(),
+                        onChanged: (AsiType? value) {
+                          if (value != null) {
+                            _asi = _asi.copyWith(
+                              asiTypeId: value.asiTypeId,
+                              asiTypeName: value.asiTypeName,
+                            );
+                          }
+                        },
+                        itemsData: types == null
+                            ? []
+                            : types
+                                .map(
+                                  (e) => CmoDropdownItem<AsiType>(
+                                    id: e,
+                                    name: e.asiTypeName ?? '',
+                                  ),
+                                )
+                                .toList(),
+                      );
+                    },
                   ),
                 ),
                 Padding(
@@ -55,7 +108,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
                   child: CmoDropDownLayoutWidget(
                     title: LocaleKeys.lat_long.tr(),
                     subTitle:
-                        '${widget.point?.latitude.toStringAsFixed(5)} | ${widget.point?.longitude.toStringAsFixed(5)}',
+                        '${widget.locationModel?.latitude?.toStringAsFixed(5)} | ${widget.locationModel?.longitude?.toStringAsFixed(5)}',
                   ),
                 ),
                 Padding(
@@ -66,34 +119,41 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
                       final result = await DatePicker.showDatePicker(context,
                           showTitleActions: true,
                           minTime: DateTime(2018, 3, 5),
-                          maxTime: DateTime(2019, 6, 7),
+                          maxTime: DateTime(DateTime.now().year + 5, 12, 31),
                           onChanged: (date) {},
                           onConfirm: (date) {},
                           currentTime: DateTime.now());
 
-                      final format = DateFormat('dd mm yyyy');
-
+                      final format = DateFormat('dd MM yyyy');
                       currentDate = format.format(result ?? DateTime.now());
+                      _asi = _asi.copyWith(date: result);
                       if (mounted) setState(() {});
                     },
                     title: LocaleKeys.date.tr(),
-                    subTitle: '${LocaleKeys.date.tr()} $currentDate',
+                    subTitle: '$currentDate',
                     trailingWidget: const Icon(Icons.date_range_sharp),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                  child: CmoTextField(hintText: LocaleKeys.comments.tr(), maxLines: 5),
+                  child: CmoTextField(
+                    hintText: LocaleKeys.comments.tr(),
+                    maxLines: 5,
+                    onChanged: (value) {
+                      _asi = _asi.copyWith(comment: value);
+                    },
+                  ),
                 ),
-                const SizedBox(height: 300),
-                Align(
-                  child: CmoFilledButton(
-                      title: LocaleKeys.save.tr(),
-                      onTap: () {
-                        AddMemberScreen.push(context);
-                      }),
+                SizedBox(height: 24),
+                CmoFilledButton(
+                  title: LocaleKeys.save.tr(),
+                  onTap: () async {
+                    await context.read<AsiDetailCubit>().saveAsi(_asi);
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
               ],
             ),
           ),
