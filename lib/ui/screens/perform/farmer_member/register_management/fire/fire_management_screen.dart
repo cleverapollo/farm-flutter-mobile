@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/fire/add_fire_management/add_fire_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
@@ -11,50 +13,6 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
-
-List<FireManagement> _mockData = [
-  FireManagement(
-    areaBurnt: 12.4,
-    commercialAreaLoss: 113.4,
-    dateDetected: DateTime(2023, 4, 20).toString(),
-    dateExtinguished: DateTime(2023, 4, 26).toString(),
-    fireCause: 'FC Fire',
-    longitude: 132.4123141231,
-    latitude: 123.32123123,
-  ),
-  FireManagement(
-    areaBurnt: 12.4,
-    commercialAreaLoss: 113.4,
-    dateDetected: DateTime(2023, 4, 20).toString(),
-    fireCause: 'FC Fire 1',
-    longitude: 132.4123141231,
-    latitude: 123.32123123,
-  ),
-  FireManagement(
-    areaBurnt: 12.4,
-    commercialAreaLoss: 113.4,
-    dateDetected: DateTime(2023, 4, 20).toString(),
-    fireCause: 'FC Fire 2',
-    longitude: 132.4123141231,
-    latitude: 123.32123123,
-  ),
-  FireManagement(
-    areaBurnt: 12.4,
-    commercialAreaLoss: 113.4,
-    dateDetected: DateTime(2023, 4, 20).toString(),
-    fireCause: 'FC Fire 3',
-    longitude: 132.4123141231,
-    latitude: 123.32123123,
-  ),
-  FireManagement(
-    areaBurnt: 12.4,
-    commercialAreaLoss: 113.4,
-    dateDetected: DateTime(2023, 4, 20).toString(),
-    fireCause: 'FC Fire 4',
-    longitude: 132.4123141231,
-    latitude: 123.32123123,
-  ),
-];
 
 class FireManagementScreen extends StatefulWidget {
   const FireManagementScreen({super.key});
@@ -73,15 +31,25 @@ class FireManagementScreen extends StatefulWidget {
 }
 
 class _FireManagementScreenState extends State<FireManagementScreen> {
+  final List<FireRegister> items = [];
+  bool isLoading = true;
+
   Timer? _debounceInputTimer;
-  late List<FireManagement> filteredItems;
+  late List<FireRegister> filteredItems;
   late StatusFilterEnum statusFilter;
   String? inputSearch;
 
   @override
   void initState() {
     super.initState();
-    filteredItems = _mockData;
+    _init();
+  }
+
+  Future<void> _init() async {
+    items.addAll(await cmoDatabaseMasterService.getFireRegisters());
+    isLoading = false;
+
+    filteredItems = items;
     statusFilter = StatusFilterEnum.open;
     inputSearch = '';
     applyFilter();
@@ -92,20 +60,18 @@ class _FireManagementScreenState extends State<FireManagementScreen> {
     if (input == null || input.isEmpty) {
       applyFilter();
     } else {
-      filteredItems = _mockData.where((element) {
-        final containName = element.fireManagementId
-                .toString()
-                .toLowerCase()
-                .contains(input.toLowerCase()) ??
-            false;
+      filteredItems = items.where((element) {
+        final containName = element.fireRegisterId
+            .toString()
+            .toLowerCase()
+            .contains(input.toLowerCase());
         var isFilter = false;
         switch (statusFilter) {
           case StatusFilterEnum.open:
-            isFilter = element.dateExtinguished.isNull ||
-                (element.dateExtinguished?.isEmpty ?? false);
+            isFilter = element.extinguished == null;
             break;
           case StatusFilterEnum.closed:
-            isFilter = element.dateExtinguished?.isNotEmpty ?? false;
+            isFilter = element.extinguished != null;
             break;
         }
 
@@ -119,18 +85,12 @@ class _FireManagementScreenState extends State<FireManagementScreen> {
     if (inputSearch == null || inputSearch!.isEmpty) {
       switch (statusFilter) {
         case StatusFilterEnum.open:
-          filteredItems = _mockData
-              .where(
-                (element) =>
-                    element.dateExtinguished.isNull ||
-                    (element.dateExtinguished?.isEmpty ?? false),
-              )
-              .toList();
+          filteredItems =
+              items.where((element) => element.extinguished == null).toList();
           break;
         case StatusFilterEnum.closed:
-          filteredItems = _mockData
-              .where((element) => element.dateExtinguished?.isNotEmpty ?? false)
-              .toList();
+          filteredItems =
+              items.where((element) => element.extinguished != null).toList();
           break;
       }
     } else {
@@ -144,67 +104,71 @@ class _FireManagementScreenState extends State<FireManagementScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
-          title: LocaleKeys.fire.tr(),
-          leading: Assets.icons.icArrowLeft.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
-          trailing: Assets.icons.icAdd.svgBlack,
-          onTapTrailing: () => AddFireManagementScreen.push(context),
-          ),
-      body: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
-              child: CmoTextField(
-                name: LocaleKeys.search.tr(),
-                hintText: LocaleKeys.search.tr(),
-                suffixIcon: Assets.icons.icSearch.svg(),
-                onChanged: (input) {
-                  _debounceInputTimer?.cancel();
-                  _debounceInputTimer = Timer(const Duration(milliseconds: 200),
-                      () => searching(input));
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
-              child: StatusFilterWidget(
-                onSelectFilter: (statusFilterEnum) {
-                  statusFilter = statusFilterEnum;
-                  applyFilter();
-                },
-              ),
-            ),
-            Expanded(
-              child: ListView.separated(
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 22,
-                ),
-                itemCount: filteredItems.length,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 21,
-                ),
-                itemBuilder: (context, index) {
-                  return _FireManagementItem(
-                    fireManagement: filteredItems[index],
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+        title: LocaleKeys.fire.tr(),
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
+        trailing: Assets.icons.icAdd.svgBlack,
+        onTapTrailing: () => AddFireManagementScreen.push(context),
       ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
+                    child: CmoTextField(
+                      name: LocaleKeys.search.tr(),
+                      hintText: LocaleKeys.search.tr(),
+                      suffixIcon: Assets.icons.icSearch.svg(),
+                      onChanged: (input) {
+                        _debounceInputTimer?.cancel();
+                        _debounceInputTimer = Timer(
+                            const Duration(milliseconds: 200),
+                            () => searching(input));
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
+                    child: StatusFilterWidget(
+                      onSelectFilter: (statusFilterEnum) {
+                        statusFilter = statusFilterEnum;
+                        applyFilter();
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 22,
+                      ),
+                      itemCount: filteredItems.length,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 21,
+                      ),
+                      itemBuilder: (context, index) {
+                        return _FireManagementItem(
+                          fireRegister: filteredItems[index],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }
 
 class _FireManagementItem extends StatelessWidget {
   const _FireManagementItem({
-    required this.fireManagement,
+    required this.fireRegister,
   });
 
-  final FireManagement fireManagement;
+  final FireRegister fireRegister;
 
   @override
   Widget build(BuildContext context) {
@@ -217,7 +181,7 @@ class _FireManagementItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${LocaleKeys.fireNo.tr()}: ${fireManagement.fireManagementId?.toString()}',
+            '${LocaleKeys.fireNo.tr()}: ${fireRegister.fireRegisterId?.toString()}',
             style: context.textStyles.bodyBold.blue,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -234,33 +198,30 @@ class _FireManagementItem extends StatelessWidget {
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.fireCause.tr(),
-            valueLabel: fireManagement.fireCause,
+            valueLabel: fireRegister.fireCauseName,
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateDetected.tr(),
-            valueLabel: DateTime.tryParse(fireManagement.dateDetected ?? '')
-                ?.ddMMYyyy(),
+            valueLabel: fireRegister.detected?.ddMMYyyy(),
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateExtinguished.tr(),
-            valueLabel: DateTime.tryParse(fireManagement.dateExtinguished ?? '')
-                ?.ddMMYyyy(),
+            valueLabel: fireRegister.extinguished?.ddMMYyyy(),
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.areaBurntHa.tr(),
-            valueLabel: fireManagement.areaBurnt?.toString() ?? '',
+            valueLabel: fireRegister.areaBurnt?.toString() ?? '',
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.commercialAreaLossHa.tr(),
-            valueLabel: fireManagement.commercialAreaLoss?.toString() ?? '',
+            valueLabel: fireRegister.commercialAreaLoss?.toString() ?? '',
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateExtinguished.tr(),
-            valueLabel: DateTime.tryParse(fireManagement.dateExtinguished ?? '')
-                ?.ddMMYyyy(),
+            valueLabel: fireRegister.extinguished?.ddMMYyyy(),
           ),
           GeneralCommentsItem(
-            comment: fireManagement.generalComments,
+            comment: fireRegister.comment,
           ),
         ],
       ),

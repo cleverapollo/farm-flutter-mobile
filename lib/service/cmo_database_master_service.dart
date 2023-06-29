@@ -357,6 +357,11 @@ class CmoDatabaseMasterService {
     return db.fireRegisters.put(data);
   }
 
+  Future<List<FireRegister>> getFireRegisters() async {
+    final db = await _db();
+    return db.fireRegisters.where().findAll();
+  }
+
   Future<int?> cachePetsAndDisease(PetsAndDiseaseRegister data) async {
     final db = await _db();
 
