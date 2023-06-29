@@ -15,51 +15,6 @@ import 'package:flutter/widgets.dart';
 
 class AAIScreen extends StatefulWidget {
   final mockAAIs = <AccidentAndIncident>[
-    AccidentAndIncident(
-      accidentAndIncidentRegisterNo: '2324',
-      workerName: 'Test',
-      jobDescription: 'Felling',
-      natureOfInjury: 'Foot',
-      dateOfIncident: DateTime.now(),
-      createDT: DateTime.now().subtract(const Duration(days: 100)),
-      comment: 'Test comment',
-    ),
-    AccidentAndIncident(
-      accidentAndIncidentRegisterNo: '1111',
-      workerName: 'Test',
-      jobDescription: 'Felling',
-      natureOfInjury: 'Foot',
-      dateOfIncident: DateTime.now(),
-      createDT: DateTime.now().subtract(const Duration(days: 100)),
-      comment: 'Test comment',
-    ),
-    AccidentAndIncident(
-      accidentAndIncidentRegisterNo: '2222',
-      workerName: 'Test',
-      jobDescription: 'Felling',
-      natureOfInjury: 'Foot',
-      dateOfIncident: DateTime.now(),
-      createDT: DateTime.now().subtract(const Duration(days: 23)),
-      comment: 'Test comment',
-    ),
-    AccidentAndIncident(
-      accidentAndIncidentRegisterNo: '3333',
-      workerName: 'Test',
-      jobDescription: 'Felling',
-      natureOfInjury: 'Foot',
-      dateOfIncident: DateTime.now(),
-      createDT: DateTime.now().subtract(const Duration(days: 34)),
-      comment: 'Test comment',
-    ),
-    AccidentAndIncident(
-      accidentAndIncidentRegisterNo: '4444',
-      workerName: 'Test',
-      jobDescription: 'Felling',
-      natureOfInjury: 'Foot',
-      dateOfIncident: DateTime.now(),
-      createDT: DateTime.now().subtract(const Duration(days: 55)),
-      comment: 'Test comment',
-    ),
   ];
 
   AAIScreen({Key? key}) : super(key: key);
@@ -257,7 +212,7 @@ class _AAIItem extends StatelessWidget {
                   style: context.textStyles.bodyNormal,
                 ),
                 Text(
-                  aai.jobDescription ?? '',
+                  aai.jobDescriptionName ?? '',
                   style: context.textStyles.bodyNormal,
                 )
               ],
@@ -276,7 +231,7 @@ class _AAIItem extends StatelessWidget {
                     style: context.textStyles.bodyNormal,
                   ),
                   Text(
-                    aai.natureOfInjury ?? '',
+                    aai.natureOfInjuryName ?? '',
                     style: context.textStyles.bodyNormal,
                   )
                 ],
@@ -313,7 +268,7 @@ class _AAIItem extends StatelessWidget {
                     style: context.textStyles.bodyNormal,
                   ),
                   Text(
-                    aai.createDT?.ddMMYyyy() ?? '',
+                    aai.dateRecieved.ddMMYyyy() ?? '',
                     style: context.textStyles.bodyNormal,
                   )
                 ],

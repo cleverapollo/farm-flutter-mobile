@@ -9,6 +9,8 @@ part 'accident_and_incident.g.dart';
 @Collection(ignore: {'copyWith'})
 class AccidentAndIncident with _$AccidentAndIncident {
   const factory AccidentAndIncident({
+    @JsonKey(name: 'AccidentAndIncidentRegisterId')
+        String? accidentAndIncidentRegisterId,
     @JsonKey(name: 'AccidentAndIncidentRegisterNo')
         String? accidentAndIncidentRegisterNo,
     @JsonKey(name: 'FarmId') String? farmId,
@@ -20,17 +22,15 @@ class AccidentAndIncident with _$AccidentAndIncident {
     @JsonKey(name: 'WorkerDisabled') bool? workerDisabled,
     @JsonKey(name: 'JobDescriptionId') int? jobDescriptionId,
     @JsonKey(name: 'Comment') String? comment,
-    @JsonKey(name: 'CarRaisedDate') DateTime? carRaisedDate,
-    @JsonKey(name: 'CarClosedDate') DateTime? carClosedDate,
-    @JsonKey(name: 'CreateDT') DateTime? createDT,
-    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
+    @JsonKey(name: 'CarRaisedDate') String? carRaisedDate,
+    @JsonKey(name: 'CarClosedDate') String? carClosedDate,
     @JsonKey(name: 'IsActive') bool? isActive,
-    @JsonKey(name: 'IsMasterDataSyncedEqualTo') bool? isMasterDataSyncedEqualTo,
-    @JsonKey(includeFromJson: false, includeToJson: false) String? workerName,
-    @JsonKey(includeFromJson: false, includeToJson: false)
-        String? jobDescription,
-    @JsonKey(includeFromJson: false, includeToJson: false)
-        String? natureOfInjury,
+    @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
+    @JsonKey(name: 'WorkerName') String? workerName,
+    @JsonKey(name: 'JobDescriptionName') String? jobDescriptionName,
+    @JsonKey(name: 'NatureOfInjuryName') String? natureOfInjuryName,
+    @JsonKey(name: 'LostTimeInDays') String? lostTimeInDays,
+    @JsonKey(name: 'PropertyDamaged') String? propertyDamaged,
   }) = _AccidentAndIncident;
 
   const AccidentAndIncident._();
@@ -39,5 +39,6 @@ class AccidentAndIncident with _$AccidentAndIncident {
       _$AccidentAndIncidentFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id =>
+      int.tryParse(accidentAndIncidentRegisterId ?? '') ?? Isar.autoIncrement;
 }

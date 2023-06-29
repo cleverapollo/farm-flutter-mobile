@@ -1126,7 +1126,7 @@ class CmoDatabaseMasterService {
     return db.accidentAndIncidents
         .filter()
         .farmIdEqualTo(farmId)
-        .isMasterDataSyncedEqualToEqualTo(false)
+        .isMasterDataSyncedEqualTo(false)
         .findAll();
   }
 
