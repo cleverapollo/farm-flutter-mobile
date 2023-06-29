@@ -1,3 +1,4 @@
+import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/data/farm_property_ownership_type.dart';
@@ -11,7 +12,7 @@ class AddMemberState with _$AddMemberState {
   const factory AddMemberState({
     @Default(false) isLoading,
     @Default(false) isAllComplete,
-    @Default(Farm()) Farm farm,
+    Farm? farm,
     @Default(AddMemberSLIMF()) AddMemberSLIMF addMemberSLIMF,
     @Default(AddMemberMPO()) AddMemberMPO addMemberMPO,
     @Default(AddMemberMDetails()) AddMemberMDetails addMemberMDetails,
@@ -100,6 +101,7 @@ class AddMemberSDetails with _$AddMemberSDetails {
     @Default(false) bool isExpansionOpen,
     String? siteName,
     String? town,
+    String? province,
     Province? provinceSelected,
     @Default([]) List<Province> provinces,
     @Default(AddMemberSiteLocations())
@@ -130,7 +132,7 @@ class AddMemberCompartmentsState with _$AddMemberCompartmentsState {
 @freezed
 class AddMemberAsisState with _$AddMemberAsisState {
   const factory AddMemberAsisState({
-    String? asis,
+    @Default([]) List<Asi> asis,
   }) = _AddMemberAsisState;
 }
 

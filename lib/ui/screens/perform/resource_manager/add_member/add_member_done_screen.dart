@@ -1,5 +1,6 @@
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
+import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/ui/screens/cmo_dashboard_base.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -43,6 +44,10 @@ class AddMemberDone extends StatelessWidget {
                         title: LocaleKeys.close.tr(),
                         onTap: () {
                           context.read<AddMemberCubit>().onDataChangeClose();
+                          context.read<AddMemberCubit>().stepCount();
+                          context
+                              .read<DashboardCubit>()
+                              .getResourceManagerMembers();
                           CmoDashboardBase.push(context);
                         })),
                 const SizedBox(height: 20),

@@ -6,7 +6,7 @@ part 'farm_member_risk_profile_answer.freezed.dart';
 part 'farm_member_risk_profile_answer.g.dart';
 
 @freezed
-@Embedded(ignore: {'copyWith'})
+@Collection(ignore: {'copyWith'})
 class FarmMemberRiskProfileAnswer with _$FarmMemberRiskProfileAnswer {
   const factory FarmMemberRiskProfileAnswer({
     @JsonKey(name: 'FarmMemberRiskProfileAnswerId')
@@ -24,4 +24,7 @@ class FarmMemberRiskProfileAnswer with _$FarmMemberRiskProfileAnswer {
       _$FarmMemberRiskProfileAnswerFromJson(json);
 
   const FarmMemberRiskProfileAnswer._();
+
+  @override
+  Id get id => Isar.autoIncrement;
 }

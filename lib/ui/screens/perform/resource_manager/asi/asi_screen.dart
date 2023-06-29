@@ -13,7 +13,7 @@ class ASIScreen extends StatelessWidget {
   final String? farmName;
   const ASIScreen({this.farmName, super.key});
 
-  static Future push(BuildContext context,
+  static Future<List<Asi>?> push(BuildContext context,
       {String? farmId, String? farmName}) {
     return Navigator.push(
       context,
@@ -66,7 +66,9 @@ class ASIScreen extends StatelessWidget {
                             child: CmoCard(
                               content: [
                                 CmoCardHeader(title: LocaleKeys.summary.tr()),
-                                CmoCardItem(title: LocaleKeys.total.tr(), value: listAsi.length.toString()),
+                                CmoCardItem(
+                                    title: LocaleKeys.total.tr(),
+                                    value: listAsi.length.toString()),
                               ],
                             ),
                           ),
@@ -105,7 +107,7 @@ class ASIScreen extends StatelessWidget {
                 child: CmoFilledButton(
                     title: LocaleKeys.done.tr(),
                     onTap: () {
-                      Navigator.pop(
+                      Navigator.pop<List<Asi>>(
                           context, context.read<AsiCubit>().state.listAsi);
                     }),
               ),

@@ -170,6 +170,8 @@ class CmoDatabaseMasterService {
         DisciplinariesSchema,
         GroupSchemeStakeholderSchema,
         ConfigDataSchema,
+        FarmMemberObjectiveAnswerSchema,
+        FarmMemberRiskProfileAnswerSchema,
       ],
       name: _databaseName,
       directory: dir.path,
@@ -191,6 +193,42 @@ class CmoDatabaseMasterService {
     return db.writeTxn(() async {
       return db.configDatas.put(data);
     });
+  }
+
+  Future<int?> cacheFarmMemberObjectiveAnswer(
+      FarmMemberObjectiveAnswer item) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.farmMemberObjectiveAnswers.put(item);
+    });
+  }
+
+  Future<int?> cacheFarmMemberRiskProfileAnswer(
+      FarmMemberRiskProfileAnswer item) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.farmMemberRiskProfileAnswers.put(item);
+    });
+  }
+
+  Future<List<FarmMemberRiskProfileAnswer>>
+      getFarmMemberRiskProfileAnswerByFarmId(String farmId) async {
+    final db = await _db();
+    return db.farmMemberRiskProfileAnswers
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<FarmMemberObjectiveAnswer>> getFarmMemberObjectiveAnswerByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.farmMemberObjectiveAnswers
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
   }
 
   Future<List<Camp>> getCampByFarmId(int farmId) async {
@@ -1123,7 +1161,9 @@ class CmoDatabaseMasterService {
 
   Future<List<Asi>> getAsiRegisterByFarmId(String farmId) async {
     final db = await _db();
-    return db.asis.filter().farmIdEqualTo(farmId)
+    return db.asis
+        .filter()
+        .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
         .findAll();
   }
@@ -1690,6 +1730,11 @@ class CmoDatabaseMasterService {
   Future<int> cacheFarm(Farm item) async {
     final db = await _db();
     return db.farms.put(item);
+  }
+
+  Future<int> cacheFarmAddMember(Farm item) async {
+    final db = await _db();
+    return db.writeTxn(() => db.farms.put(item));
   }
 
   Future<List<FarmQuestion>?> getFarmQuestions({
@@ -2647,8 +2692,6 @@ class CmoDatabaseMasterService {
 
   Future<List<Compartment>?> getCompartmentByFarmId(String farmId) async {
     final db = await _db();
-    return db.compartments.filter()
-        .farmIdEqualTo(farmId)
-        .findAll();
+    return db.compartments.filter().farmIdEqualTo(farmId).findAll();
   }
 }

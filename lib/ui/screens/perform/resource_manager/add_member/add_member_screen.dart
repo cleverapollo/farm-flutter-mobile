@@ -1,10 +1,14 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/compartment/compartment.dart';
+import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/data/farm_property_ownership_type.dart';
 import 'package:cmo/model/data/province.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
+import 'package:cmo/state/dashboard/dashboard_cubit.dart';
+import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_membership_contract_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_circle_item_widget.dart';
@@ -18,7 +22,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddMemberScreen extends StatefulWidget {
-  const AddMemberScreen({super.key});
+  const AddMemberScreen({super.key, this.farm});
+
+  final Farm? farm;
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
@@ -31,18 +37,22 @@ class AddMemberScreen extends StatefulWidget {
 
 class _AddMemberScreenState extends State<AddMemberScreen> {
   late final AddMemberCubit cubit;
+  late final DashboardCubit dashboardCubit;
 
   @override
   void dispose() {
-    super.dispose();
+    cubit.stepCount();
     cubit.disposeAddMember();
+    dashboardCubit.getResourceManagerMembers();
+    super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      cubit = context.read<AddMemberCubit>()..initAddMember();
+      cubit = context.read<AddMemberCubit>()..initAddMember(farm: widget.farm);
+      dashboardCubit = context.read<DashboardCubit>();
     });
   }
 
@@ -369,51 +379,60 @@ class _AddMemberSDetails extends StatelessWidget {
                     cubit.onDataChangeSiteDetail(town: p0);
                   },
                 ),
-                const SizedBox(height: 16),
-                Column(children: [
-                  InkWell(
-                    onTap: () {
-                      cubit.onDataChangeSiteDetail(
-                          isExpansionOpen: !data.isExpansionOpen);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 12),
-                      width: double.maxFinite,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            data.provinceSelected?.provinceName ?? 'Province',
-                            style: context.textStyles.bodyBold,
-                          ),
-                          const Icon(Icons.keyboard_arrow_down),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Visibility(
-                    visible: data.isExpansionOpen,
-                    child: SizedBox(
-                      height: 300,
-                      width: double.maxFinite,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: data.provinces != null
-                              ? data.provinces
-                                  .map((e) => _buildItem(e, context, cubit))
-                                  .toList()
-                              : [],
-                        ),
-                      ),
-                    ),
-                  )
-                ]),
                 const SizedBox(height: 12),
+                _buildTitle(context, 'Province (*)'),
+                CmoTextField(
+                  initialValue: data.province,
+                  hintText: 'Province',
+                  onChanged: (p0) {
+                    cubit.onDataChangeSiteDetail(province: p0);
+                  },
+                ),
+                // const SizedBox(height: 16),
+                // Column(children: [
+                //   InkWell(
+                //     onTap: () {
+                //       cubit.onDataChangeSiteDetail(
+                //           isExpansionOpen: !data.isExpansionOpen);
+                //     },
+                //     child: Container(
+                //       padding: const EdgeInsets.symmetric(
+                //           vertical: 12, horizontal: 12),
+                //       width: double.maxFinite,
+                //       decoration: BoxDecoration(
+                //         borderRadius: BorderRadius.circular(12),
+                //         border: Border.all(color: Colors.grey),
+                //       ),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Text(
+                //             data.provinceSelected?.provinceName ?? 'Province',
+                //             style: context.textStyles.bodyBold,
+                //           ),
+                //           const Icon(Icons.keyboard_arrow_down),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                //   Visibility(
+                //     visible: data.isExpansionOpen,
+                //     child: SizedBox(
+                //       height: 300,
+                //       width: double.maxFinite,
+                //       child: SingleChildScrollView(
+                //         child: Column(
+                //           children: data.provinces != null
+                //               ? data.provinces
+                //                   .map((e) => _buildItem(e, context, cubit))
+                //                   .toList()
+                //               : [],
+                //         ),
+                //       ),
+                //     ),
+                //   )
+                // ]),
+                const SizedBox(height: 16),
                 CmoDropDownLayoutWidget(
                   onTap: () async {
                     final data = await AssessmentLocationScreen.push<
@@ -441,8 +460,8 @@ class _AddMemberSDetails extends StatelessWidget {
                   showTick: data.isCompleteCompartments,
                   onTap: () async {
                     final state = context.read<AddMemberCubit>().state;
-                    final farmName = state.addMemberSDetails.siteName;
-                    final farmId = state.farm.farmId;
+                    final farmName = state.farm?.farmName;
+                    final farmId = state.farm?.farmId;
                     final result = await CompartmentScreen.push(context,
                         farmId: farmId, farmName: farmName);
 
@@ -454,7 +473,15 @@ class _AddMemberSDetails extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 CmoDropDownLayoutWidget(
-                  onTap: () => ASIScreen.push(context),
+                  onTap: () async {
+                    final state = context.read<AddMemberCubit>().state;
+                    final farmName = state.farm?.farmName;
+                    final farmId = state.farm?.farmId;
+                    final result = await ASIScreen.push(context,
+                        farmId: farmId, farmName: farmName);
+
+                    await cubit.onDataChangeSiteDetail(asis: result);
+                  },
                   title: LocaleKeys.asi.tr(),
                   showTick: data.isCompleteASI,
                 ),

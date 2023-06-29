@@ -18,7 +18,6 @@ class ResourceManagerDashboardScreen extends StatefulWidget {
 
 class _ResourceManagerDashboardScreenState
     extends State<ResourceManagerDashboardScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -96,12 +95,17 @@ class _ResourceManagerDashboardScreenState
                       content: [
                         CmoCardHeader(title: LocaleKeys.audit_s.tr()),
                         CmoCardItem(
-                            title: LocaleKeys.onboarded.tr(), value: '${state.totalCompletedAssessments}/${state.totalAssessments}'),
+                            title: LocaleKeys.onboarded.tr(),
+                            value:
+                                '${state.totalCompletedAssessments}/${state.totalAssessments}'),
                         CmoCardItem(
-                            title: LocaleKeys.incomplete.tr(), value: '${state.totalIncompleteAssessments}/${state.totalAssessments}'),
+                            title: LocaleKeys.incomplete.tr(),
+                            value:
+                                '${state.totalIncompleteAssessments}/${state.totalAssessments}'),
                         CmoCardItemHighlighted(
                             title: LocaleKeys.membersOutstanding.tr(),
-                            value: '${state.totalAssessments}/${state.rmDashboardInfo?.totalMembers}'),
+                            value:
+                                '${state.totalAssessments}/${state.rmDashboardInfo?.totalMembers}'),
                       ],
                     );
                   },
@@ -149,7 +153,9 @@ class _ResourceManagerDashboardScreenState
                     return CmoCard(
                       content: [
                         CmoCardHeader(title: LocaleKeys.sync.tr()),
-                        CmoCardItem(title: LocaleKeys.audits.tr(), value: (dashboardInfo?.unsynced ?? 0).toString()),
+                        CmoCardItem(
+                            title: LocaleKeys.audits.tr(),
+                            value: (dashboardInfo?.unsynced ?? 0).toString()),
                       ],
                     );
                   },

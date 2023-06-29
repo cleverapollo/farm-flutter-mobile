@@ -54,7 +54,9 @@ class _CmoDashboardBaseState extends State<CmoDashboardBase> {
               onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
             ),
             resourceManagerBuilder: (_) => CmoMenuBase.resourceManager(
-              onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
+              onTapClose: () {
+                scaffoldKey.currentState?.closeDrawer();
+              },
             ),
             farmerBuilder: (_) => CmoMenuBase.farmerMember(
               onTapClose: () => scaffoldKey.currentState?.closeDrawer(),

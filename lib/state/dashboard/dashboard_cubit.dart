@@ -50,7 +50,8 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     );
 
     final totalIncompleteAssessments = await service.getAllAssessmentsStarted();
-    final totalCompletedAssessments = await service.getAllAssessmentsCompleted();
+    final totalCompletedAssessments =
+        await service.getAllAssessmentsCompleted();
     emit(
       state.copyWith(
         totalAssessments: totalAssessments.length,
@@ -81,13 +82,15 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     state.rmDashboardInfo?.unsynced = totalCompletedAudits;
     state.rmDashboardInfo?.memberOutstanding =
         (await service.getUnsyncedFarmCountByRegionalManagerUnitId(
-            resourceManagerUnit!.regionalManagerUnitId!))?.length ?? 0;
+                    resourceManagerUnit!.regionalManagerUnitId!))
+                ?.length ??
+            0;
     emit(
       state.copyWith(
-          totalAssessments: totalAudits.length,
-          totalIncompleteAssessments: totalIncompleteAudits,
-          totalCompletedAssessments: totalCompletedAudits,
-          rmDashboardInfo: state.rmDashboardInfo,
+        totalAssessments: totalAudits.length,
+        totalIncompleteAssessments: totalIncompleteAudits,
+        totalCompletedAssessments: totalCompletedAudits,
+        rmDashboardInfo: state.rmDashboardInfo,
       ),
     );
   }
@@ -115,6 +118,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
   }
 
   Future<void> getResourceManagerMembers() async {
+    emit(state.copyWith(loading: true));
     final service = cmoDatabaseMasterService;
     final resourceManagerUnit = await configService.getActiveRegionalManager();
     if (resourceManagerUnit == null) {
@@ -135,7 +139,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
       }
       info.totalMembers = info.onboardedMembers + info.incompletedMembers;
     }
-    emit(state.copyWith(rmDashboardInfo: info));
+    emit(state.copyWith(rmDashboardInfo: info, loading: false));
   }
 
   Future<void> getStakeHolders() async {
@@ -144,7 +148,8 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     if (groupScheme == null) {
       return;
     }
-    final stakeHolders = await service.getActiveStakeholderWrappersCountByGroupSchemeId(groupScheme.id);
+    final stakeHolders = await service
+        .getActiveStakeholderWrappersCountByGroupSchemeId(groupScheme.id);
     emit(state.copyWith(
         rmDashboardInfo: state.rmDashboardInfo
           ?..stakeHolders = stakeHolders?.length ?? 0));

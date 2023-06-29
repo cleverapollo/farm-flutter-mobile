@@ -6,7 +6,7 @@ part 'farm_member_objective_answer.freezed.dart';
 part 'farm_member_objective_answer.g.dart';
 
 @freezed
-@Embedded(ignore: {'copyWith'})
+@Collection(ignore: {'copyWith'})
 class FarmMemberObjectiveAnswer with _$FarmMemberObjectiveAnswer {
   const factory FarmMemberObjectiveAnswer({
     @JsonKey(name: 'FarmMemberObjectiveAnswerId')
@@ -24,4 +24,7 @@ class FarmMemberObjectiveAnswer with _$FarmMemberObjectiveAnswer {
       _$FarmMemberObjectiveAnswerFromJson(json);
 
   const FarmMemberObjectiveAnswer._();
+
+  @override
+  Id get id => Isar.autoIncrement;
 }

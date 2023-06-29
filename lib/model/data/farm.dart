@@ -12,7 +12,7 @@ part 'farm.g.dart';
 @Collection(ignore: {'copyWith'})
 class Farm with _$Farm {
   const factory Farm({
-    @JsonKey(name: 'FarmId') String? farmId,
+    @JsonKey(name: 'FarmId') required String farmId,
     @JsonKey(name: 'FarmName') String? farmName,
     @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
     @JsonKey(name: 'RegionalManagerUnitId') int? regionalManagerUnitId,
@@ -57,8 +57,9 @@ class Farm with _$Farm {
     @JsonKey(name: 'SignatureDate') String? signatureDate,
     @JsonKey(name: 'CanDelete') int? canDelete,
     @JsonKey(name: 'IsLocal') int? isLocal,
-    List<FarmMemberObjectiveAnswer>? objectiveAnswers,
-    List<FarmMemberRiskProfileAnswer>? riskProfileAnswers,
+    @ignore List<FarmMemberObjectiveAnswer>? objectiveAnswers,
+    @ignore List<FarmMemberRiskProfileAnswer>? riskProfileAnswers,
+    @JsonKey(name: 'StepCount') int? stepCount,
   }) = _Farm;
 
   factory Farm.fromJson(Map<String, dynamic> json) => _$FarmFromJson(json);
@@ -66,5 +67,5 @@ class Farm with _$Farm {
   const Farm._();
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => int.parse(farmId);
 }
