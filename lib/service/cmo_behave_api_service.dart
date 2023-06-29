@@ -272,7 +272,6 @@ class CmoBehaveApiService {
     required int currentClientId,
     int pageSize = 200,
   }) async {
-    final accessToken = await _readAccessToken();
     final response = await client.get<JsonData>(
       '${_mqApiUrl}message',
       queryParameters: {
@@ -281,7 +280,7 @@ class CmoBehaveApiService {
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
       },
-      options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      options: Options(headers: {'accessToken': 'true'}),
     );
 
     if (response.statusCode != 200) {

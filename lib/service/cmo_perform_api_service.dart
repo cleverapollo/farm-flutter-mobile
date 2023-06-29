@@ -393,17 +393,15 @@ class CmoPerformApiService {
     required int currentClientId,
     int pageSize = 200,
   }) async {
-    final accessToken = await _readAccessToken();
     final response = await client.get<JsonData>(
       '${_mqApiUrl}message',
       queryParameters: {
-        'key':
-            '9ed921dcada114082707da15fadc368d4ed4da08550ddc8984505763e25c35a2',
+        'key': _pubsubApiKey,
         'client': '$currentClientId',
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
       },
-      options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      options: Options(headers: {'accessToken': 'true'}),
     );
 
     if (response.statusCode != 200) {
