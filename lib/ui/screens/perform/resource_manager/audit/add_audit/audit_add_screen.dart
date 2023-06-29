@@ -61,7 +61,8 @@ class _AuditAddScreen extends State<AuditAddScreen> {
         await hideInputMethod();
         value['AssessmentId'] = DateTime.now().millisecondsSinceEpoch;
         value['AuditTemplateId'] = state.selectedAuditTemplate?.auditTemplateId;
-        value['AuditTemplateName'] = state.selectedAuditTemplate?.auditTemplateName;
+        value['AuditTemplateName'] =
+            state.selectedAuditTemplate?.auditTemplateName;
         value['FarmName'] = state.selectedFarm?.farmName;
         value['FarmId'] = state.selectedFarm?.farmId;
         value['CompartmentName'] = state.selectedCompartment?.compartmentName;
@@ -219,7 +220,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
             return state.farms;
           },
           builder: (builder, sites) {
-            return CmoDropdown(
+            return CmoDropdown<String?>(
               name: 'SiteId',
               validator: requiredValidator,
               inputDecoration: _buildInputDecoration(LocaleKeys.site.tr()),

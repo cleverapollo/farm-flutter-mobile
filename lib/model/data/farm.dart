@@ -12,7 +12,7 @@ part 'farm.g.dart';
 @Collection(ignore: {'copyWith'})
 class Farm with _$Farm {
   const factory Farm({
-    @JsonKey(name: 'FarmId') required String farmId,
+    @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'FarmName') String? farmName,
     @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
     @JsonKey(name: 'RegionalManagerUnitId') int? regionalManagerUnitId,
@@ -66,5 +66,5 @@ class Farm with _$Farm {
   const Farm._();
 
   @override
-  Id get id => int.tryParse(farmId) ?? Isar.autoIncrement;
+  Id get id => Isar.autoIncrement;
 }

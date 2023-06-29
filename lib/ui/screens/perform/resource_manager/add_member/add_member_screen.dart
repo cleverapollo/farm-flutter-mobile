@@ -1,5 +1,6 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/data/farm_property_ownership_type.dart';
 import 'package:cmo/model/data/province.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
@@ -10,6 +11,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_ci
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
@@ -33,14 +35,14 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   @override
   void dispose() {
     super.dispose();
-    cubit.dispose();
+    cubit.disposeAddMember();
   }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      cubit = context.read<AddMemberCubit>();
+      cubit = context.read<AddMemberCubit>()..initAddMember();
     });
   }
 
@@ -185,10 +187,8 @@ class _AddMemberMFO extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                        LocaleKeys.are_there_any_chemical_being_used_on_the_fme
-                            .tr(),
-                        style: context.textStyles.bodyNormal.copyWith(
+                    Text('*Production Forestry',
+                        style: context.textStyles.bodyBold.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
                     CmoMFOQuestion(
@@ -198,8 +198,8 @@ class _AddMemberMFO extends StatelessWidget {
                       },
                     ),
                     _buildDivider(),
-                    Text(LocaleKeys.hcvs_present.tr(),
-                        style: context.textStyles.bodyNormal.copyWith(
+                    Text('*Community upliftment',
+                        style: context.textStyles.bodyBold.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
                     CmoMFOQuestion(
@@ -209,8 +209,8 @@ class _AddMemberMFO extends StatelessWidget {
                       },
                     ),
                     _buildDivider(),
-                    Text(LocaleKeys.rivers_on_fmu.tr(),
-                        style: context.textStyles.bodyNormal.copyWith(
+                    Text('*Environmental protection',
+                        style: context.textStyles.bodyBold.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
                     CmoMFOQuestion(
@@ -220,11 +220,8 @@ class _AddMemberMFO extends StatelessWidget {
                       },
                     ),
                     _buildDivider(),
-                    Text(
-                        LocaleKeys
-                            .are_there_any_communities_in_or_neighbouring_the_fme
-                            .tr(),
-                        style: context.textStyles.bodyNormal.copyWith(
+                    Text('*Honey production',
+                        style: context.textStyles.bodyBold.copyWith(
                             color: context.colors.black, fontSize: 16)),
                     const SizedBox(height: 8),
                     CmoMFOQuestion(
@@ -418,29 +415,43 @@ class _AddMemberSDetails extends StatelessWidget {
                 ]),
                 const SizedBox(height: 12),
                 CmoDropDownLayoutWidget(
-                    onTap: () async {
-                      final data = await AssessmentLocationScreen.push<
-                          AssessmentLocationScreenResult>(context);
+                  onTap: () async {
+                    final data = await AssessmentLocationScreen.push<
+                        AssessmentLocationScreenResult>(context);
 
-                      if (data is AssessmentLocationScreenResult) {
-                        final latLong = data.latLong;
-                        final address =
-                            '${data.address}\n${latLong?.latitude.toStringAsFixed(6)}, ${latLong?.longitude.toStringAsFixed(6)}';
+                    if (data is AssessmentLocationScreenResult) {
+                      final latLong = data.latLong;
+                      final address =
+                          '${data.address}\n${latLong?.latitude.toStringAsFixed(6)}, ${latLong?.longitude.toStringAsFixed(6)}';
 
-                        await cubit.onDataChangeSiteDetail(
-                          siteLocationLat: data.latLong?.latitude,
-                          siteLocationLng: data.latLong?.longitude,
-                          siteLocationAddress: address,
-                        );
-                      }
-                    },
-                    title: data.addMemberSiteLocations?.address ??
-                        LocaleKeys.siteLocation.tr(),
-                    showTick: data.isCompleteSiteLocation),
+                      await cubit.onDataChangeSiteDetail(
+                        siteLocationLat: data.latLong?.latitude,
+                        siteLocationLng: data.latLong?.longitude,
+                        siteLocationAddress: address,
+                      );
+                    }
+                  },
+                  title: data.addMemberSiteLocations.address ??
+                      LocaleKeys.siteLocation.tr(),
+                  showTick: data.isCompleteSiteLocation,
+                ),
                 const SizedBox(height: 12),
                 CmoDropDownLayoutWidget(
-                    title: LocaleKeys.compartment_s.tr(),
-                    showTick: data.isCompleteCompartments),
+                  title: LocaleKeys.compartment_s.tr(),
+                  showTick: data.isCompleteCompartments,
+                  onTap: () async {
+                    final state = context.read<AddMemberCubit>().state;
+                    final farmName = state.addMemberSDetails.siteName;
+                    final farmId = state.farm.farmId;
+                    final result = await CompartmentScreen.push(context,
+                        farmId: farmId, farmName: farmName);
+
+                    if (result != null) {
+                      await cubit.onDataChangeSiteDetail(
+                          addingCompartmentResult: result);
+                    }
+                  },
+                ),
                 const SizedBox(height: 12),
                 CmoDropDownLayoutWidget(
                   onTap: () => ASIScreen.push(context),

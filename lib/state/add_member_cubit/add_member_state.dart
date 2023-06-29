@@ -1,3 +1,5 @@
+import 'package:cmo/model/compartment/compartment.dart';
+import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/data/farm_property_ownership_type.dart';
 import 'package:cmo/model/data/province.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -9,6 +11,7 @@ class AddMemberState with _$AddMemberState {
   const factory AddMemberState({
     @Default(false) isLoading,
     @Default(false) isAllComplete,
+    @Default(Farm()) Farm farm,
     @Default(AddMemberSLIMF()) AddMemberSLIMF addMemberSLIMF,
     @Default(AddMemberMPO()) AddMemberMPO addMemberMPO,
     @Default(AddMemberMDetails()) AddMemberMDetails addMemberMDetails,
@@ -99,16 +102,17 @@ class AddMemberSDetails with _$AddMemberSDetails {
     String? town,
     Province? provinceSelected,
     @Default([]) List<Province> provinces,
-    AddMemberSiteLocations? addMemberSiteLocations,
-    AddMemberCompartmentsState? addMemberCompartmentsState,
-    AddMemberAsisState? addMemberAsisState,
+    @Default(AddMemberSiteLocations())
+        AddMemberSiteLocations addMemberSiteLocations,
+    @Default(AddMemberCompartmentsState())
+        AddMemberCompartmentsState addMemberCompartmentsState,
+    @Default(AddMemberAsisState()) AddMemberAsisState addMemberAsisState,
   }) = _AddMemberSDetails;
 }
 
 @freezed
 class AddMemberSiteLocations with _$AddMemberSiteLocations {
   const factory AddMemberSiteLocations({
-    @Default(false) bool isComplete,
     double? lat,
     double? lng,
     String? address,
@@ -118,15 +122,14 @@ class AddMemberSiteLocations with _$AddMemberSiteLocations {
 @freezed
 class AddMemberCompartmentsState with _$AddMemberCompartmentsState {
   const factory AddMemberCompartmentsState({
-    @Default(false) bool isComplete,
-    String? compartments,
+    @Default([]) List<Compartment> compartments,
+    double? farmSize,
   }) = _AddMemberCompartmentsState;
 }
 
 @freezed
 class AddMemberAsisState with _$AddMemberAsisState {
   const factory AddMemberAsisState({
-    @Default(false) bool isComplete,
     String? asis,
   }) = _AddMemberAsisState;
 }
