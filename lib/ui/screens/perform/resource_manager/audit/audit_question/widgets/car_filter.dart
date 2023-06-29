@@ -18,7 +18,7 @@ class CarFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     const name = 'car';
 
-    return BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, List<Car>>(
+    return BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, List<Severity>>(
       selector: (state) {
         return state.cars;
       },
@@ -36,8 +36,8 @@ class CarFilter extends StatelessWidget {
           itemsData: cars
               .map(
                 (e) => CmoDropdownItem(
-                  id: e.carId,
-                  name: e.carName ?? '',
+                  id: e.severityId,
+                  name: getCarNameFilter(cars, e.severityId),
                 ),
               )
               .toList()
@@ -51,5 +51,14 @@ class CarFilter extends StatelessWidget {
         );
       },
     );
+  }
+
+  String getCarNameFilter(
+    List<Severity> listSeverity,
+    int severityId,
+  ) {
+    return listSeverity.first.severityId == severityId
+        ? LocaleKeys.minor.tr()
+        : LocaleKeys.major.tr();
   }
 }

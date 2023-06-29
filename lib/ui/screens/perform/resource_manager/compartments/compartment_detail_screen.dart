@@ -15,23 +15,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CompartmentDetailScreen extends StatefulWidget {
   final double? measuredArea;
   final List<GeoLocation>? locations;
+  final String? farmName;
 
-  const CompartmentDetailScreen({Key? key, this.measuredArea, this.locations})
-      : super(key: key);
+  const CompartmentDetailScreen({
+    Key? key,
+    this.measuredArea,
+    this.locations,
+    this.farmName,
+  }) : super(key: key);
 
   static dynamic push(
     BuildContext context, {
     double? measuredArea,
     List<GeoLocation>? locations,
+    required String farmId,
+    String? farmName,
   }) {
     return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
-            create: (_) => CompartmentDetailCubit(),
+            create: (_) => CompartmentDetailCubit(farmId),
             child: CompartmentDetailScreen(
               measuredArea: measuredArea,
               locations: locations,
+              farmName: farmName,
             ),
           );
         },
@@ -63,7 +71,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
     return Scaffold(
       appBar: CmoAppBarV2(
         title: LocaleKeys.compartment.tr(),
-        subtitle: LocaleKeys.siteName.tr(),
+        subtitle: widget.farmName ?? LocaleKeys.siteName.tr(),
         showLeading: true,
       ),
       body: Padding(

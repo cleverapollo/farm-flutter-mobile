@@ -11,21 +11,14 @@ part 'audit_state.dart';
 class AuditCubit extends HydratedCubit<AuditState> {
   AuditCubit() : super(const AuditState());
 
-  void updateCacheCreateData(Map<String, dynamic> data) {
-    emit(
-      state.copyWith(
-        cacheCreateData: data,
-      ),
-    );
-  }
-
   void cleanCache() {
-    emit(state.copyWith(cacheCreateData: <String, dynamic>{}));
+    emit(const AuditState());
   }
 
-  void updateSelectedFarm(String siteId) {
+  Future<void> updateSelectedFarm(String siteId) async {
     final farm = state.farms.firstWhereOrNull((element) => element.farmId == siteId, orElse: null);
     emit(state.copyWith(selectedFarm: farm));
+    await getListCompartments();
   }
 
   void updateSelectedCompartment(int compartmentId) {
@@ -77,16 +70,21 @@ class AuditCubit extends HydratedCubit<AuditState> {
   }
 
   Future<void> getListCompartments() async {
-    final service = cmoDatabaseMasterService;
-    final compartments = await service.getCompartmentsByRmuId(rmuId: 6);
+    final rmu = await configService.getActiveRegionalManager();
+    final compartments =
+        await cmoDatabaseMasterService.getCompartmentsByRmuIdAndSiteId(
+      rmuId: rmu?.regionalManagerUnitId,
+      siteId: state.selectedFarm?.farmId,
+    );
+
     emit(state.copyWith(compartments: compartments));
   }
 
   Future<void> initialize() async {
     try {
+      cleanCache();
       await getListAuditTemplates();
       await getListSites();
-      await getListCompartments();
     } catch (error) {
       handleError(error);
     }

@@ -53,8 +53,6 @@ import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_screen.dart';
-
 class CmoDatabaseMasterService {
   factory CmoDatabaseMasterService() {
     return _inst;
@@ -1612,7 +1610,11 @@ class CmoDatabaseMasterService {
   Future<List<Severity>> getSeveritys() async {
     final db = await _db();
 
-    return db.severitys.filter().isActiveEqualTo(true).findAll();
+    return db.severitys
+        .filter()
+        .isActiveEqualTo(true)
+        .sortBySeverityId()
+        .findAll();
   }
 
   Future<int> cacheSpeqs(Speqs item) async {
@@ -2433,15 +2435,18 @@ class CmoDatabaseMasterService {
     return <Site>[];
   }
 
-  Future<List<Compartment>> getCompartmentsByRmuId({
+  Future<List<Compartment>> getCompartmentsByRmuIdAndSiteId({
     int? rmuId,
+    String? siteId,
   }) async {
-    if (rmuId == null) return <Compartment>[];
+    if (rmuId == null || siteId == null) return <Compartment>[];
     final db = await _db();
     try {
       final compartments = await db.compartments
           .filter()
           .isActiveEqualTo(true)
+          .regionalManagerUnitIdEqualTo(rmuId)
+          .farmIdEqualTo(siteId)
           .sortByCompartmentName()
           .findAll();
 
@@ -2485,23 +2490,6 @@ class CmoDatabaseMasterService {
     }
 
     return <Principle>[];
-  }
-
-  Future<List<Car>> getCars() async {
-    final db = await _db();
-    try {
-      final cars = await db.cars
-          .filter()
-          .isActiveEqualTo(true)
-          .sortByCarName()
-          .findAll();
-
-      return cars;
-    } catch (error) {
-      handleError(error);
-    }
-
-    return <Car>[];
   }
 
   Future<List<Indicator>> getIndicators() async {
@@ -2648,8 +2636,10 @@ class CmoDatabaseMasterService {
     return db.writeTxn(() => db.compartments.put(item));
   }
 
-  Future<List<Compartment>?> getCompartments() async {
+  Future<List<Compartment>?> getCompartmentByFarmId(String farmId) async {
     final db = await _db();
-    return db.txn(() => db.compartments.where().findAll());
+    return db.compartments.filter()
+        .farmIdEqualTo(farmId)
+        .findAll();
   }
 }

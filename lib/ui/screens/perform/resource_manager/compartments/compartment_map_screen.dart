@@ -9,21 +9,37 @@ import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as google_map;
+import 'package:google_maps_flutter_platform_interface/src/types/location.dart'
+    as map;
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:maps_toolkit/src/latlng.dart' as mapToolkitLatlong;
-import 'package:google_maps_flutter_platform_interface/src/types/location.dart' as map;
 
 class CompartmentMapScreen extends StatefulWidget {
-  static Future<T?> push<T>(BuildContext context, {List<map.LatLng>? points}) async {
+  static Future<T?> push<T>(
+    BuildContext context, {
+    List<map.LatLng>? points,
+    required String farmId,
+    String? farmName,
+  }) async {
     return Navigator.of(context).push<T>(
-      MaterialPageRoute(builder: (_) => CompartmentMapScreen(points: points,)),
+      MaterialPageRoute(
+        builder: (_) => CompartmentMapScreen(
+          points: points,
+          farmId: farmId,
+          farmName: farmName,
+        ),
+      ),
     );
   }
 
-  CompartmentMapScreen({this.points, Key? key}) : super(key: key);
+  CompartmentMapScreen({this.points, required this.farmId, this.farmName, Key? key}) : super(key: key);
 
   final List<map.LatLng>? points;
+  final String farmId;
+  final String? farmName;
 
   @override
   _CompartmentMapScreenState createState() => _CompartmentMapScreenState();
@@ -60,7 +76,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
       appBar: CmoAppBarV2(
         title: LocaleKeys.compartments.tr(),
         showLeading: true,
-        subtitle: LocaleKeys.siteName.tr(),
+        subtitle: widget.farmName ?? LocaleKeys.siteName.tr(),
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
@@ -75,8 +91,21 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                       target: Constants.mapCenter, zoom: 14),
                   polylines: _polylines(),
                   polygons: _polygon(),
-                  onMapCreated: (GoogleMapController controller) =>
-                      _controller = controller,
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller = controller;
+                    Geolocator.checkPermission().then((permission) async {
+                      if (permission == LocationPermission.whileInUse ||
+                          permission == LocationPermission.always) {
+                        _moveMapCameraCurrentLocation();
+                      } else if (permission == LocationPermission.denied) {
+                        permission = await Geolocator.requestPermission();
+                        if (permission == LocationPermission.whileInUse ||
+                            permission == LocationPermission.always) {
+                          _moveMapCameraCurrentLocation();
+                        }
+                      }
+                    });
+                  },
                   markers: _markers.toSet(),
                   onTap: (latLong) {
                     if (_isFinished) return;
@@ -149,17 +178,29 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
             title: LocaleKeys.next.tr(),
             onTap: _isFinished
                 ? () {
-                  CompartmentDetailScreen.push(context,
-                    measuredArea: (areaSquareMeters ?? 0) / 10000,
-                    locations: _markers.map((e) => GeoLocation(latitude: e.position.latitude, longitude: e.position.longitude)).toList()
-                  );
-                }
+                    CompartmentDetailScreen.push(context,
+                        farmId: widget.farmId,
+                        farmName: widget.farmName,
+                        measuredArea: (areaSquareMeters ?? 0) / 10000,
+                        locations: _markers
+                            .map((e) => GeoLocation(
+                                latitude: e.position.latitude,
+                                longitude: e.position.longitude))
+                            .toList());
+                  }
                 : null,
           ),
           const SizedBox(height: 20),
         ],
       ),
     );
+  }
+
+  Future _moveMapCameraCurrentLocation() async {
+    final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    await _controller?.animateCamera(CameraUpdate.newLatLng(
+        google_map.LatLng(position.latitude, position.longitude)));
   }
 
   Set<Polyline> _polylines() {
@@ -225,8 +266,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   }
 
   String _presentAreaSquare() {
-    if (areaSquareMeters == null)
-      return '0 ${LocaleKeys.measured.tr()}';
+    if (areaSquareMeters == null) return '0 ${LocaleKeys.measured.tr()}';
     if (areaSquareMeters! > haSquareMeters) {
       return '${(areaSquareMeters! / haSquareMeters).toStringAsFixed(2)} ha ${LocaleKeys.measured.tr()}';
     }

@@ -15,6 +15,7 @@ class CompartmentDetailState {
     this.speciesGroupTemplates = const [],
     this.groupScheme,
     this.resourceManagerUnit,
+    this.farmId = '',
   });
 
   final Object? error;
@@ -24,10 +25,12 @@ class CompartmentDetailState {
   final List<SpeciesGroupTemplate> speciesGroupTemplates;
   final GroupScheme? groupScheme;
   final ResourceManagerUnit? resourceManagerUnit;
+  final String farmId;
   Compartment compartment;
 
   CompartmentDetailState copyWith(
       {bool? loading,
+        String? farmId,
       Object? error,
       Compartment? compartment,
       List<AreaType>? areaTypes,
@@ -36,6 +39,7 @@ class CompartmentDetailState {
       List<ProductGroupTemplate>? productGroupTemplates,
       List<SpeciesGroupTemplate>? speciesGroupTemplates}) {
     return CompartmentDetailState(
+      farmId: farmId ?? this.farmId,
       loading: loading ?? this.loading,
       error: error ?? this.error,
       compartment: compartment ?? this.compartment,

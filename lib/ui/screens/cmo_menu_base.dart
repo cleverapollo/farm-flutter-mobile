@@ -135,15 +135,13 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
         const SizedBox(height: 7),
         const _Divider(),
         buildHeader(context, title: LocaleKeys.audit_s.tr()),
-        CmoTappable(
+        buildOption(
+          context,
+          title: LocaleKeys.createNew.tr(),
           onTap: () {
             if (context.mounted) Navigator.of(context).pop();
             AuditAddScreen.push(context);
           },
-          child: buildOption(
-            context,
-            title: LocaleKeys.createNew.tr(),
-          ),
         ),
         const SizedBox(height: 7),
         const _Divider(),
