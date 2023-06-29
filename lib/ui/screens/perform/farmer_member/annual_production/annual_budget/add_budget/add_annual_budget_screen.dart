@@ -1,7 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/annual_production/annual_production.dart';
+import 'package:cmo/model/annual_production/annual_farm_production.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/add_budget/widgets/add_annual_budget_detail.dart';
 import 'package:cmo/ui/ui.dart';

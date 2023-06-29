@@ -407,7 +407,7 @@ class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState>
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
-      final rs = AnnualProduction.fromJson(bodyJson);
+      final rs = AnnualFarmProduction.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheAnnualProduction(rs);
     } catch (e) {
       logger.d('insert error: $e');

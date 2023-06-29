@@ -1,7 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/annual_production/annual_production.dart';
+import 'package:cmo/model/annual_production/annual_farm_production.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:cmo/utils/validator.dart';
@@ -44,15 +44,15 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
       });
       try {
         await hideInputMethod();
-        final annualProduction = AnnualProduction(
+        final annualProduction = AnnualFarmProduction(
           year: int.tryParse(value['Year'].toString()),
-          annualProductionId: DateTime.now().millisecondsSinceEpoch,
+          annualFarmProductionId: DateTime.now().millisecondsSinceEpoch.toString(),
           createDT: DateTime.now().millisecondsSinceEpoch.toString(),
-          workers: int.tryParse(value['Workers'].toString()),
+          noOfWorkers: int.tryParse(value['Workers'].toString()),
           workPeriodMonths: double.tryParse(value['WorkPeriodMonths'].toString()),
-          workPeriodWeeks: int.tryParse(value['WorkPeriodWeeks'].toString()),
-          productionPerTeam: int.tryParse(value['ProductionPerTeam'].toString()),
-          productionPerWorker: int.tryParse(value['ProductionPerWorker'].toString()),
+          workPeriodWeeks: double.tryParse(value['WorkPeriodWeeks'].toString()),
+          // productionPerTeam: int.tryParse(value['ProductionPerTeam'].toString()),
+          // productionPerWorker: int.tryParse(value['ProductionPerWorker'].toString()),
           conversionWoodToCharcoal: double.tryParse(value['ConversionWoodToCharcoal'].toString()),
         );
 

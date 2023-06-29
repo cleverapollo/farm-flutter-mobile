@@ -100,7 +100,7 @@ class CmoDatabaseMasterService {
         QuestionPhotoSchema,
         AuditSchema,
         StakeHolderSchema,
-        AnnualProductionSchema,
+        AnnualFarmProductionSchema,
         AnnualProductionBudgetSchema,
         FarmerWorkerSchema,
         FarmerStakeHolderComplaintSchema,
@@ -247,10 +247,10 @@ class CmoDatabaseMasterService {
     return db.configDatas.filter().configNameEqualTo(config.name).findFirst();
   }
 
-  Future<int?> cacheAnnFarmPro(AnnualProduction data) async {
+  Future<int?> cacheAnnFarmPro(AnnualFarmProduction data) async {
     final db = await _db();
 
-    return db.annualProductions.put(data);
+    return db.annualFarmProductions.put(data);
   }
 
   Future<int?> cacheGrievanceRegister(GrievanceRegister data) async {
@@ -814,24 +814,23 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<AnnualProduction>> getUnsyncedAnnualProductionByFarmId(
+  Future<List<AnnualFarmProduction>> getUnsyncedAnnualProductionByFarmId(
       String farmId) async {
     final db = await _db();
 
-    return db.annualProductions
+    return db.annualFarmProductions
         .filter()
-        .farmIdEqualTo(int.parse(farmId))
-        .isMasterdataSyncedEqualTo(false)
+        .farmIdEqualTo(farmId)
         .findAll();
   }
 
-  Future<List<AnnualProduction>> getAnnualProductionByFarmId(
+  Future<List<AnnualFarmProduction>> getAnnualProductionByFarmId(
       String farmId) async {
     final db = await _db();
 
-    return db.annualProductions
+    return db.annualFarmProductions
         .filter()
-        .farmIdEqualTo(int.parse(farmId))
+        .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
         .findAll();
   }
@@ -1946,9 +1945,9 @@ class CmoDatabaseMasterService {
     return db.indicators.put(item);
   }
 
-  Future<int> cacheAnnualProduction(AnnualProduction item) async {
+  Future<int> cacheAnnualProduction(AnnualFarmProduction item) async {
     final db = await _db();
-    return db.annualProductions.put(item);
+    return db.annualFarmProductions.put(item);
   }
 
   Future<int> cacheFarmerStakeHolderComplaint(

@@ -54,7 +54,7 @@ export 'data/farm_question.dart';
 export 'worker/disability.dart';
 export 'worker/gender.dart';
 export 'worker/race.dart';
-export 'annual_production/annual_production.dart';
+export 'annual_production/annual_farm_production.dart';
 export 'annual_production/annual_production_budget/annual_production_budget.dart';
 export 'labour_management/farmer_worker.dart';
 export 'farmer_stake_holder_complaint/farmer_stake_holder_complaint.dart';

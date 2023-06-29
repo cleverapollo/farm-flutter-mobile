@@ -5,7 +5,7 @@ import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class AnnualProductionItemWidget extends StatelessWidget {
-  final AnnualProduction annualProduction;
+  final AnnualFarmProduction annualProduction;
 
   const AnnualProductionItemWidget({
     super.key,
@@ -58,23 +58,23 @@ class AnnualProductionItemWidget extends StatelessWidget {
                   _buildInfoItemWidget(
                     context,
                     LocaleKeys.workers.tr(),
-                    annualProduction.workers?.toString(),
+                    annualProduction.noOfWorkers?.toString(),
                   ),
-                  _buildInfoItemWidget(
-                    context,
-                    LocaleKeys.productionPerWorker.tr(),
-                    annualProduction.productionPerWorker?.toString(),
-                  ),
-                  _buildInfoItemWidget(
-                    context,
-                    LocaleKeys.productionPerTeam.tr(),
-                    annualProduction.productionPerTeam?.toString(),
-                  ),
-                  _buildInfoItemWidget(
-                    context,
-                    LocaleKeys.biomassRemoved.tr(),
-                    annualProduction.biomassRemoved?.toString(),
-                  ),
+                  // _buildInfoItemWidget(
+                  //   context,
+                  //   LocaleKeys.productionPerWorker.tr(),
+                  //   annualProduction.productionPerWorker?.toString(),
+                  // ),
+                  // _buildInfoItemWidget(
+                  //   context,
+                  //   LocaleKeys.productionPerTeam.tr(),
+                  //   annualProduction.productionPerTeam?.toString(),
+                  // ),
+                  // _buildInfoItemWidget(
+                  //   context,
+                  //   LocaleKeys.biomassRemoved.tr(),
+                  //   annualProduction.biomassRemoved?.toString(),
+                  // ),
                 ],
               ),
             ),

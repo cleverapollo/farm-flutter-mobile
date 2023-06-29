@@ -2,35 +2,35 @@ import 'dart:async';
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/annual_production/annual_production.dart';
+import 'package:cmo/model/annual_production/annual_farm_production.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/add_new_annual/add_new_annual_production_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/widgets/annual_production_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-List<AnnualProduction> _mockData = [
-  AnnualProduction(
-    biomassRemoved: 3,
-    productionPerTeam: 4,
-    productionPerWorker: 3,
+List<AnnualFarmProduction> _mockData = [
+  AnnualFarmProduction(
+    // biomassRemoved: 3,
+    // productionPerTeam: 4,
+    // productionPerWorker: 3,
     workCycles: 2,
-    workers: 12,
+    // workers: 12,
     year: 2022,
   ),
-  AnnualProduction(
-    biomassRemoved: 3,
-    productionPerTeam: 4,
-    productionPerWorker: 3,
+  AnnualFarmProduction(
+    // biomassRemoved: 3,
+    // productionPerTeam: 4,
+    // productionPerWorker: 3,
     workCycles: 2,
-    workers: 12,
+    // workers: 12,
     year: 2023,
   ),
-  AnnualProduction(
-    biomassRemoved: 3,
-    productionPerTeam: 4,
-    productionPerWorker: 3,
+  AnnualFarmProduction(
+    // biomassRemoved: 3,
+    // productionPerTeam: 4,
+    // productionPerWorker: 3,
     workCycles: 2,
-    workers: 12,
+    // workers: 12,
     year: 2024,
   ),
 ];
@@ -52,7 +52,7 @@ class AnnualProductionManagementScreen extends StatefulWidget {
 
 class _AnnualProductionManagementScreen extends State<AnnualProductionManagementScreen> {
   Timer? _debounceInputTimer;
-  late List<AnnualProduction> filteredItems;
+  late List<AnnualFarmProduction> filteredItems;
 
   @override
   void initState() {
