@@ -6,6 +6,7 @@ import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +51,11 @@ class _MemberManagementScreenState extends State<MemberManagementScreen>
                 '${LocaleKeys.rmu_name.tr()}: ${resourceManagerUnit?.regionalManagerUnitName}',
             showLeading: true,
             showTrailing: true,
+            trailing: Assets.icons.icAdd.svgBlack,
+            onTapTrailing: () async {
+              await AddMemberScreen.push(context);
+              context.read<MemberManagementCubit>().reload();
+            },
           ),
           body: BlocSelector<MemberManagementCubit, MemberManagementState,
               List<Farm>>(

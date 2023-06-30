@@ -23,6 +23,18 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     _applySearch(isInCompleteSelected: true);
   }
 
+  Future reload() async {
+    final rmUnit = await configService.getActiveRegionalManager();
+    if (rmUnit?.id == null) {
+      return;
+    }
+    // it hack to show updated member management since member on-boarding step is updating.
+    await Future.delayed(Duration(seconds: 1));
+    var data = await cmoDatabaseMasterService.getFarmsByRMUnit(rmUnit!.id);
+    emit(state.copyWith(allFarms: data));
+    _applySearch(isInCompleteSelected: state.isInCompleteSelected);
+  }
+
   void onSearchTextChanged(String? value) {
     _applySearch(
         searchText: value, isInCompleteSelected: state.isInCompleteSelected);
