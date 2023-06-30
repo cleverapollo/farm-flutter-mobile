@@ -44,16 +44,25 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
       });
       try {
         await hideInputMethod();
+        final activeFarm = await configService.getActiveFarm();
         final annualProduction = AnnualFarmProduction(
-          year: int.tryParse(value['Year'].toString()),
+          farmId: activeFarm?.farmId,
           annualFarmProductionId: DateTime.now().millisecondsSinceEpoch.toString(),
           createDT: DateTime.now().millisecondsSinceEpoch.toString(),
-          noOfWorkers: int.tryParse(value['Workers'].toString()),
+          year: int.tryParse(value['Year'].toString()),
+          noOfWorkers: int.tryParse(value['noOfWorkers'].toString()),
           workPeriodMonths: double.tryParse(value['WorkPeriodMonths'].toString()),
           workPeriodWeeks: double.tryParse(value['WorkPeriodWeeks'].toString()),
+          conversionWoodToCharcoal: double.tryParse(value['ConversionWoodToCharcoal'].toString()),
           // productionPerTeam: int.tryParse(value['ProductionPerTeam'].toString()),
           // productionPerWorker: int.tryParse(value['ProductionPerWorker'].toString()),
-          conversionWoodToCharcoal: double.tryParse(value['ConversionWoodToCharcoal'].toString()),
+
+          workCycles: ,
+          annualCharcoalProductionPerPerson: ,
+          annualCharcoalProductionPerTeam: ,
+          annualWoodBiomassRemoved: ,
+          cycleLength: ,
+          noOfCycles: ,
         );
 
         int? resultId;
@@ -129,7 +138,7 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
             children: [
               _selectYearDropdown(),
               ..._buildInfoItemWidget(
-                name: 'Workers',
+                name: 'noOfWorkers',
                 title: LocaleKeys.workersHintText.tr(),
               ),
               ..._buildInfoItemWidget(
