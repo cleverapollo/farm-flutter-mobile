@@ -5,12 +5,12 @@ import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class AnnualProductionItemWidget extends StatelessWidget {
-  final AnnualFarmProduction annualProduction;
-
   const AnnualProductionItemWidget({
     super.key,
     required this.annualProduction,
   });
+
+  final AnnualFarmProduction annualProduction;
 
   @override
   Widget build(BuildContext context) {
@@ -53,28 +53,28 @@ class AnnualProductionItemWidget extends StatelessWidget {
                   _buildInfoItemWidget(
                     context,
                     LocaleKeys.workCycles.tr(),
-                    annualProduction.productionPerCycle?.toStringAsFixed(2),
+                    annualProduction.noOfCycles?.toString(),
                   ),
                   _buildInfoItemWidget(
                     context,
                     LocaleKeys.workers.tr(),
                     annualProduction.noOfWorkers?.toString(),
                   ),
-                  // _buildInfoItemWidget(
-                  //   context,
-                  //   LocaleKeys.productionPerWorker.tr(),
-                  //   annualProduction.productionPerWorker?.toString(),
-                  // ),
-                  // _buildInfoItemWidget(
-                  //   context,
-                  //   LocaleKeys.productionPerTeam.tr(),
-                  //   annualProduction.productionPerTeam?.toString(),
-                  // ),
-                  // _buildInfoItemWidget(
-                  //   context,
-                  //   LocaleKeys.biomassRemoved.tr(),
-                  //   annualProduction.biomassRemoved?.toString(),
-                  // ),
+                  _buildInfoItemWidget(
+                    context,
+                    LocaleKeys.productionPerWorker.tr(),
+                    annualProduction.annualCharcoalProductionPerPerson?.toString(),
+                  ),
+                  _buildInfoItemWidget(
+                    context,
+                    LocaleKeys.productionPerTeam.tr(),
+                    annualProduction.annualCharcoalProductionPerTeam?.toString(),
+                  ),
+                  _buildInfoItemWidget(
+                    context,
+                    LocaleKeys.biomassRemoved.tr(),
+                    annualProduction.annualWoodBiomassRemoved?.toString(),
+                  ),
                 ],
               ),
             ),

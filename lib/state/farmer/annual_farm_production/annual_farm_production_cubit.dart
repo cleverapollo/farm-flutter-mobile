@@ -10,18 +10,42 @@ part 'annual_farm_production_state.dart';
 class AnnualFarmProductionCubit extends HydratedCubit<AnnualFarmProductionState> {
   AnnualFarmProductionCubit() : super(const AnnualFarmProductionState());
 
-  Future<void> loadListWorkers() async {
+  Future<void> init() async {
+    final activeFarm = await configService.getActiveFarm();
+    emit(state.copyWith(activeFarm: activeFarm));
+    await loadListAnnualFarmProductions();
+  }
+
+  Future<void> initAddUpdate({
+    AnnualFarmProduction? annualFarmProduction,
+    required bool isEditing,
+  }) async {
+    emit(state.cleanCache());
+    final activeFarm = await configService.getActiveFarm();
+    emit(
+      state.copyWith(
+        activeFarm: activeFarm,
+        annualFarmProduction: annualFarmProduction,
+        isEditing: isEditing,
+      ),
+    );
+  }
+
+  Future<void> loadListAnnualFarmProductions() async {
     emit(state.copyWith(loading: true));
     try {
       final service = cmoDatabaseMasterService;
+      final farmId = state.activeFarm?.farmId;
+      if (farmId == null) {
+        emit(state.copyWith(loading: false));
+        return;
+      }
 
-      /// Replace farmID here
-      final data = await service.getFarmerWorkersByFarmId(1553253093156);
-
+      final data = await service.getAnnualFarmProductionByFarmId(farmId);
       emit(
         state.copyWith(
-          listWorkers: data,
-          filterWorkers: data,
+          filterAnnualFarmProductions: data,
+          listAnnualFarmProductions: data,
         ),
       );
     } catch (e) {
@@ -29,6 +53,29 @@ class AnnualFarmProductionCubit extends HydratedCubit<AnnualFarmProductionState>
       showSnackError(msg: e.toString());
     } finally {
       emit(state.copyWith(loading: false));
+    }
+  }
+
+  void searching(String? input) {
+    if (input == null || input.isEmpty) {
+      emit(
+        state.copyWith(
+          filterAnnualFarmProductions: state.listAnnualFarmProductions,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          filterAnnualFarmProductions: state.listAnnualFarmProductions
+              .where((element) =>
+                  element.year
+                      ?.toString()
+                      .toLowerCase()
+                      .contains(input.toLowerCase()) ??
+                  false)
+              .toList(),
+        ),
+      );
     }
   }
 
@@ -48,10 +95,19 @@ class AnnualFarmProductionCubit extends HydratedCubit<AnnualFarmProductionState>
   }
 
   Future<int?> addReplaceAnnualFarmProduction(Map<String, dynamic> value) async {
-    final activeFarm = await configService.getActiveFarm();
-    var annualProduction = AnnualFarmProduction(
-      farmId: activeFarm?.farmId,
-      annualFarmProductionId: DateTime.now().millisecondsSinceEpoch.toString(),
+    AnnualFarmProduction annualProduction;
+
+    if (state.isEditing) {
+      annualProduction = state.annualFarmProduction!;
+    } else {
+      annualProduction = AnnualFarmProduction(
+        farmId: state.activeFarm?.farmId,
+        annualFarmProductionId: DateTime.now().millisecondsSinceEpoch.toString(),
+        createDT: DateTime.now().millisecondsSinceEpoch.toString(),
+      );
+    }
+
+    annualProduction = annualProduction.copyWith(
       year: int.tryParse(value['Year'].toString()),
       noOfWorkers: double.tryParse(value['noOfWorkers'].toString()),
       workPeriodMonths: double.tryParse(value['WorkPeriodMonths'].toString()),
@@ -59,7 +115,6 @@ class AnnualFarmProductionCubit extends HydratedCubit<AnnualFarmProductionState>
       cycleLength: double.tryParse(value['CycleLength'].toString()),
       productionPerCycle: double.tryParse(value['ProductionPerCycle'].toString()),
       conversionWoodToCharcoal: double.tryParse(value['ConversionWoodToCharcoal'].toString()),
-      createDT: DateTime.now().millisecondsSinceEpoch.toString(),
     );
 
     annualProduction = annualProduction.copyWith(
@@ -73,6 +128,7 @@ class AnnualFarmProductionCubit extends HydratedCubit<AnnualFarmProductionState>
 
     await (await cmoDatabaseMasterService.db).writeTxn(() async {
       resultId = await cmoDatabaseMasterService.cacheAnnualProduction(annualProduction);
+      emit(state.copyWith(annualFarmProduction: annualProduction));
     });
 
     return resultId;

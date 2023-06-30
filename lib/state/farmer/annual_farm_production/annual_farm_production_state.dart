@@ -2,40 +2,51 @@ part of 'annual_farm_production_cubit.dart';
 
 class AnnualFarmProductionState {
   const AnnualFarmProductionState({
-    this.listWorkers = const <FarmerWorker>[],
-    this.filterWorkers = const <FarmerWorker>[],
-    this.listJobDescriptions = const <JobDescription>[],
-    this.filterJobDescriptions = const <JobDescription>[],
     this.loading = false,
     this.error,
     this.annualFarmProduction,
+    this.activeFarm,
+    this.listAnnualFarmProductions = const <AnnualFarmProduction>[],
+    this.filterAnnualFarmProductions = const <AnnualFarmProduction>[],
+    this.isEditing = false,
   });
 
+  final List<AnnualFarmProduction> listAnnualFarmProductions;
+  final List<AnnualFarmProduction> filterAnnualFarmProductions;
+  final AnnualFarmProduction? annualFarmProduction;
+  final Farm? activeFarm;
   final Object? error;
   final bool loading;
-  final List<FarmerWorker> listWorkers;
-  final List<FarmerWorker> filterWorkers;
-  final List<JobDescription> listJobDescriptions;
-  final List<JobDescription> filterJobDescriptions;
-  final AnnualFarmProduction? annualFarmProduction;
+  final bool isEditing;
 
   AnnualFarmProductionState copyWith({
     bool? loading,
     Object? error,
-    List<FarmerWorker>? listWorkers,
-    List<FarmerWorker>? filterWorkers,
-    List<JobDescription>? listJobDescriptions,
-    List<JobDescription>? filterJobDescriptions,
+    List<AnnualFarmProduction>? listAnnualFarmProductions,
+    List<AnnualFarmProduction>? filterAnnualFarmProductions,
     AnnualFarmProduction? annualFarmProduction,
+    Farm? activeFarm,
+    bool? isEditing,
   }) {
     return AnnualFarmProductionState(
-      loading: loading ?? this.loading,
-      listWorkers: listWorkers ?? this.listWorkers,
-      filterWorkers: filterWorkers ?? this.filterWorkers,
+      activeFarm: activeFarm ?? this.activeFarm,
+      isEditing: isEditing ?? this.isEditing,
       error: error ?? this.error,
-      listJobDescriptions: listJobDescriptions ?? this.listJobDescriptions,
-      filterJobDescriptions: filterJobDescriptions ?? this.filterJobDescriptions,
+      loading: loading ?? this.loading,
       annualFarmProduction: annualFarmProduction ?? this.annualFarmProduction,
+      listAnnualFarmProductions:
+          listAnnualFarmProductions ?? this.listAnnualFarmProductions,
+      filterAnnualFarmProductions:
+          filterAnnualFarmProductions ?? this.filterAnnualFarmProductions,
+    );
+  }
+
+  AnnualFarmProductionState cleanCache() {
+    return AnnualFarmProductionState(
+      error: error,
+      loading: loading,
+      listAnnualFarmProductions: listAnnualFarmProductions,
+      filterAnnualFarmProductions: filterAnnualFarmProductions,
     );
   }
 }

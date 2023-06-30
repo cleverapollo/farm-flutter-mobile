@@ -13,27 +13,60 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class AddNewAnnualProductionScreen extends StatefulWidget {
-  const AddNewAnnualProductionScreen({super.key});
+class AddUpdateAnnualProductionScreen extends StatefulWidget {
+  const AddUpdateAnnualProductionScreen({
+    super.key,
+    this.selectedAnnualFarmProduction,
+    this.isEditing = false,
+  });
+
+  final AnnualFarmProduction? selectedAnnualFarmProduction;
+  final bool isEditing;
 
   @override
-  State<StatefulWidget> createState() => _AddNewAnnualProductionScreenState();
+  State<StatefulWidget> createState() => _AddUpdateAnnualProductionScreenState();
 
-  static void push(BuildContext context) {
+  static void push(
+    BuildContext context, {
+    AnnualFarmProduction? selectedAnnualFarmProduction,
+    bool isEditing = false,
+  }) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const AddNewAnnualProductionScreen(),
+        builder: (_) => AddUpdateAnnualProductionScreen(
+          selectedAnnualFarmProduction: selectedAnnualFarmProduction,
+          isEditing: isEditing,
+        ),
       ),
     );
   }
 }
 
-class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScreen> {
+class _AddUpdateAnnualProductionScreenState
+    extends State<AddUpdateAnnualProductionScreen> {
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
   double? workPeriodWeeks;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      await context.read<AnnualFarmProductionCubit>().initAddUpdate(
+            annualFarmProduction: widget.selectedAnnualFarmProduction,
+            isEditing: widget.isEditing,
+          );
+    });
+
+    if(widget.isEditing) {
+      workPeriodWeeks = widget.selectedAnnualFarmProduction?.workPeriodWeeks;
+      setState(() {
+
+      });
+    }
+  }
 
   Future<void> onSubmit() async {
     setState(() {
@@ -44,7 +77,7 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
       if (value == null) return;
       value = {...value};
 
-      if (value['Year'].toString().isNotBlank) {
+      if (!widget.isEditing && value['Year'].toString().isNotBlank) {
         final isExist = await context
             .read<AnnualFarmProductionCubit>()
             .checkIfYearExists(int.tryParse(value['Year'].toString()));
@@ -75,6 +108,7 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
               msg: '${LocaleKeys.addAnnualProduction.tr()} $resultId',
             );
 
+            await context.read<AnnualFarmProductionCubit>().loadListAnnualFarmProductions();
             Navigator.of(context).pop();
           }
         }
@@ -90,41 +124,47 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: CmoAppBar(
-          title: LocaleKeys.addAnnualProduction.tr(),
-          subtitle: LocaleKeys.imbeza.tr(),
-          subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
-          leading: Assets.icons.icArrowLeft.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              CmoHeaderTile(title: LocaleKeys.details.tr()),
-              buildInputArea(),
-              const SizedBox(
-                height: 80,
+      child: BlocSelector<AnnualFarmProductionCubit, AnnualFarmProductionState,
+          AnnualFarmProductionState>(
+        selector: (state) => state,
+        builder: (context, state) {
+          return Scaffold(
+            appBar: CmoAppBar(
+              title: LocaleKeys.addAnnualProduction.tr(),
+              subtitle: state.activeFarm?.farmName ?? '',
+              subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
+              leading: Assets.icons.icArrowLeft.svgBlack,
+              onTapLeading: Navigator.of(context).pop,
+            ),
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CmoHeaderTile(title: LocaleKeys.details.tr()),
+                  buildInputArea(state),
+                  const SizedBox(
+                    height: 80,
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: CmoFilledButton(
-          title: LocaleKeys.save.tr(),
-          onTap: onSubmit,
-          loading: loading,
-        ),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: CmoFilledButton(
+              title: LocaleKeys.save.tr(),
+              onTap: onSubmit,
+              loading: loading,
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget buildInputArea() {
+  Widget buildInputArea(AnnualFarmProductionState state) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
       child: FormBuilder(
         key: _formKey,
-        onChanged: () {},
         autovalidateMode: autoValidateMode,
         child: AutofillGroup(
           child: Column(
@@ -134,15 +174,18 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
                 name: 'Year',
                 title: LocaleKeys.year.tr(),
                 keyboardType: TextInputType.number,
+                initialValue: widget.selectedAnnualFarmProduction?.year.toString(),
               ),
               ..._buildInfoItemWidget(
                 name: 'noOfWorkers',
                 title: LocaleKeys.workersHintText.tr(),
+                initialValue: widget.selectedAnnualFarmProduction?.noOfWorkers.toString(),
               ),
               ..._buildInfoItemWidget(
                 name: 'WorkPeriodMonths',
                 title: LocaleKeys.workCycleHintText.tr(),
                 title2: LocaleKeys.charcoal.tr(),
+                initialValue: widget.selectedAnnualFarmProduction?.workPeriodMonths.toString(),
                 onChanged: (value) {
                   setState(() {
                     if (value.isBlank) {
@@ -157,15 +200,18 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
               ..._buildInfoItemWidget(
                 name: 'CycleLength',
                 title: LocaleKeys.weeksPerCycleHintText.tr(),
+                initialValue: widget.selectedAnnualFarmProduction?.cycleLength.toString(),
               ),
               ..._buildInfoItemWidget(
                 name: 'ProductionPerCycle',
                 title: LocaleKeys.productionPerPersonHintText.tr(),
+                initialValue: widget.selectedAnnualFarmProduction?.productionPerCycle.toString(),
               ),
               ..._buildInfoItemWidget(
                 name: 'ConversionWoodToCharcoal',
                 title: LocaleKeys.conversionWood.tr(),
                 title2: LocaleKeys.woodToCharcoal.tr(),
+                initialValue: widget.selectedAnnualFarmProduction?.conversionWoodToCharcoal.toString(),
               ),
             ],
           ),
@@ -194,10 +240,13 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
           inputDecoration: InputDecoration(
             contentPadding: const EdgeInsets.all(8),
             isDense: true,
-            hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.year.tr().toLowerCase()}',
+            hintText:
+                '${LocaleKeys.select.tr()} ${LocaleKeys.year.tr().toLowerCase()}',
             hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
+            border: UnderlineInputBorder(
+                borderSide: BorderSide(color: context.colors.grey)),
+            focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: context.colors.blue)),
           ),
           itemsData: [
             CmoDropdownItem(id: -1, name: LocaleKeys.year.tr()),
@@ -230,9 +279,7 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
                 border: Border(bottom: BorderSide(color: context.colors.grey)),
               ),
               child: Text(
-                workPeriodWeeks == null
-                    ? ''
-                    : workPeriodWeeks.toString(),
+                workPeriodWeeks == null ? '' : workPeriodWeeks.toString(),
               ),
             ),
           ),
@@ -247,6 +294,7 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
     String? title2,
     TextInputType? keyboardType,
     void Function(String?)? onChanged,
+    String? initialValue,
   }) {
     return [
       const SizedBox(
@@ -259,7 +307,10 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
           style: context.textStyles.bodyNormal.black,
           children: <TextSpan>[
             if (title2 != null) ...[
-              TextSpan(text: ' $title2', style: context.textStyles.bodyBold.red),
+              TextSpan(
+                text: ' $title2',
+                style: context.textStyles.bodyBold.red,
+              ),
               const TextSpan(
                 text: '?',
               ),
@@ -273,6 +324,7 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
         inputDecoration: _buildInputDecoration(context),
         keyboardType: keyboardType ?? const TextInputType.numberWithOptions(decimal: true),
         onChanged: onChanged,
+        initialValue: widget.isEditing ? initialValue : null,
       )
     ];
   }
@@ -281,8 +333,12 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
     return InputDecoration(
       contentPadding: const EdgeInsets.all(8),
       isDense: true,
-      border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: context.colors.grey),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: context.colors.blue),
+      ),
     );
   }
 }

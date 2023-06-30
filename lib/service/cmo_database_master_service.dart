@@ -833,6 +833,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
         .findAll();
   }
 
