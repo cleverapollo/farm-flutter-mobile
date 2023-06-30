@@ -11,16 +11,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddEmployeeGrievanceScreen extends StatefulWidget {
-  const AddEmployeeGrievanceScreen({super.key});
+  const AddEmployeeGrievanceScreen(
+      {super.key, required this.employeeGrievance});
+
+  final EmployeeGrievance? employeeGrievance;
 
   @override
   State<StatefulWidget> createState() => _AddEmployeeGrievanceScreenState();
 
-  static Future<void> push(BuildContext context) {
+  static Future<EmployeeGrievance?> push(BuildContext context,
+      {EmployeeGrievance? employeeGrievance}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const AddEmployeeGrievanceScreen(),
+        builder: (_) =>
+            AddEmployeeGrievanceScreen(employeeGrievance: employeeGrievance),
       ),
     );
   }
@@ -36,10 +41,23 @@ class _AddEmployeeGrievanceScreenState
 
   late EmployeeGrievance employeeGrievance;
 
+  bool carRaised = false;
+  bool carClosed = false;
+
   @override
   void initState() {
     super.initState();
-    employeeGrievance = EmployeeGrievance();
+    if (widget.employeeGrievance == null) {
+      employeeGrievance = EmployeeGrievance(
+          grievanceRegisterNo: DateTime.now().toIso8601String(),
+          isActive: true,
+          isMasterDataSynced: false);
+    } else {
+      employeeGrievance =
+          EmployeeGrievance.fromJson(widget.employeeGrievance!.toJson());
+    }
+    carRaised = employeeGrievance.carRaisedDate != null;
+    carClosed = employeeGrievance.carClosedDate != null;
   }
 
   Future<void> onSubmit() async {
@@ -56,13 +74,27 @@ class _AddEmployeeGrievanceScreenState
       });
       try {
         await hideInputMethod();
+        final farmId = await configService.getActiveFarmId();
         employeeGrievance = employeeGrievance.copyWith(
-          dateReceived: value['DateReceived'].toString(),
-          dateClosed: value['DateClosed'].toString(),
-          allocatedToId: int.tryParse(value['AllocatedToId'].toString()),
-          workerId: int.tryParse(value['WorkerId'].toString()),
+          farmId: farmId,
+          dateReceived: value['DateReceived'] as DateTime?,
+          dateClosed: value['DateClosed'] as DateTime?,
+          allocatedToUserId: value['AllocatedToId']?.toString(),
+          workerId: value['WorkerId']?.toString(),
           grievanceIssueId: int.tryParse(value['GrievanceIssueId'].toString()),
         );
+
+        if (carRaised && employeeGrievance.carRaisedDate == null) {
+          employeeGrievance = employeeGrievance.copyWith(
+            carRaisedDate: DateTime.now().toIso8601String(),
+          );
+        }
+
+        if (carClosed && employeeGrievance.carClosedDate == null) {
+          employeeGrievance = employeeGrievance.copyWith(
+            carClosedDate: DateTime.now().toIso8601String(),
+          );
+        }
 
         int? resultId;
 
@@ -78,10 +110,11 @@ class _AddEmployeeGrievanceScreenState
         if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
-              msg: '${LocaleKeys.addEmployeeGrievance.tr()} $resultId',
+              msg:
+                  '${widget.employeeGrievance == null ? LocaleKeys.addEmployeeGrievance.tr() : 'Edit Employee Grievance'} $resultId',
             );
 
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(employeeGrievance);
           }
         }
       } finally {
@@ -98,7 +131,9 @@ class _AddEmployeeGrievanceScreenState
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
-          title: LocaleKeys.addEmployeeGrievance.tr(),
+          title: widget.employeeGrievance == null
+              ? LocaleKeys.addEmployeeGrievance.tr()
+              : 'Edit Employee Grievance',
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
@@ -164,8 +199,7 @@ class _AddEmployeeGrievanceScreenState
                 child: SelectItemWidget(
                   title: LocaleKeys.carRaised.tr(),
                   onSelect: (isSelected) {
-                    employeeGrievance =
-                        employeeGrievance.copyWith(carRaised: isSelected);
+                    carRaised = isSelected;
                   },
                 ),
               ),
@@ -173,8 +207,7 @@ class _AddEmployeeGrievanceScreenState
                 child: SelectItemWidget(
                   title: LocaleKeys.carClosed.tr(),
                   onSelect: (isSelected) {
-                    employeeGrievance =
-                        employeeGrievance.copyWith(carClosed: isSelected);
+                    carClosed = isSelected;
                   },
                 ),
               ),
@@ -184,7 +217,7 @@ class _AddEmployeeGrievanceScreenState
                   hintText: LocaleKeys.generalComments.tr(),
                   onChanged: (value) {
                     employeeGrievance =
-                        employeeGrievance.copyWith(generalComments: value);
+                        employeeGrievance.copyWith(comment: value);
                   },
                 ),
               ),
@@ -263,7 +296,6 @@ class _AddEmployeeGrievanceScreenState
         CmoDropdown(
           name: 'GrievanceIssueId',
           hintText: LocaleKeys.grievanceIssue.tr(),
-          validator: requiredValidator,
           inputDecoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(
               vertical: 8,
@@ -312,7 +344,6 @@ class _AddEmployeeGrievanceScreenState
         CmoDropdown(
           name: 'AllocatedToId',
           hintText: LocaleKeys.allocatedTo.tr(),
-          validator: requiredValidator,
           inputDecoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(
               vertical: 8,
@@ -351,7 +382,21 @@ class _AddEmployeeGrievanceScreenState
       child: CmoDatePicker(
         name: 'DateReceived',
         hintText: LocaleKeys.dateReceived.tr(),
-        validator: requiredValidator,
+        validator: (DateTime? value) {
+          if (value == null) return null;
+          if (value.millisecondsSinceEpoch >
+              DateTime.now().millisecondsSinceEpoch) {
+            return 'Received date cannot be in the future';
+          }
+          final closedValue =
+              _formKey.currentState?.value['DateClosed'] as DateTime?;
+          if (closedValue != null &&
+              value.millisecondsSinceEpoch <
+                  closedValue.millisecondsSinceEpoch) {
+            return 'Closed date must be after received date';
+          }
+          return null;
+        },
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
@@ -375,6 +420,14 @@ class _AddEmployeeGrievanceScreenState
       child: CmoDatePicker(
         name: 'DateClosed',
         hintText: LocaleKeys.dateClosed.tr(),
+        validator: (DateTime? value) {
+          if (value == null) return null;
+          if (value.millisecondsSinceEpoch >
+              DateTime.now().millisecondsSinceEpoch) {
+            return 'Closed date cannot be in the future';
+          }
+          return null;
+        },
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(

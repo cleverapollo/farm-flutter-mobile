@@ -2012,6 +2012,16 @@ class CmoDatabaseMasterService {
     return db.employeeGrievances.put(item);
   }
 
+  Future<List<EmployeeGrievance>> getEmployeeGrievancesByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.employeeGrievances
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
   Future<int> cacheFireManagement(FireManagement item) async {
     final db = await _db();
     return db.fireManagements.put(item);

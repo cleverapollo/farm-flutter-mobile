@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -13,56 +12,9 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-List<EmployeeGrievance> _mockData = [
-  EmployeeGrievance(
-    employeeGrievanceId: DateTime.now().millisecondsSinceEpoch + 1,
-    workerName: 'Armando Teteleni 1',
-    actionTaken: 'Action Taken 1',
-    allocatedTo: 'Avenger First 1',
-    grievanceIssue: 'Vulgar language 1',
-    generalComments: 'generalComments 1',
-    carClosed: true,
-    closureDetails: 'closureDetails 1',
-    dateReceived: DateTime(2023, 4, 20).toString(),
-  ),
-  EmployeeGrievance(
-    employeeGrievanceId: DateTime.now().millisecondsSinceEpoch + 2,
-    workerName: 'Armando Teteleni 2',
-    actionTaken: 'Action Taken 2',
-    allocatedTo: 'Avenger First 2',
-    grievanceIssue: 'Vulgar language 2',
-    generalComments: 'generalComments 2',
-    carClosed: true,
-    closureDetails: 'closureDetails 2',
-    dateReceived: DateTime(2023, 4, 20).toString(),
-  ),
-  EmployeeGrievance(
-    employeeGrievanceId: DateTime.now().millisecondsSinceEpoch + 3,
-    workerName: 'Armando Teteleni 3',
-    actionTaken: 'Action Taken 3',
-    allocatedTo: 'Avenger First 3',
-    grievanceIssue: 'Vulgar language 3',
-    generalComments: 'generalComments 3',
-    carClosed: true,
-    closureDetails: 'closureDetails 3',
-    dateReceived: DateTime(2023, 4, 20).toString(),
-  ),
-  EmployeeGrievance(
-    employeeGrievanceId: DateTime.now().millisecondsSinceEpoch + 4,
-    workerName: 'Armando Teteleni 4',
-    actionTaken: 'Action Taken 4',
-    allocatedTo: 'Avenger First 4',
-    grievanceIssue: 'Vulgar language 4',
-    generalComments: 'generalComments 4',
-    carClosed: true,
-    closureDetails: 'closureDetails 4',
-    dateReceived: DateTime(2023, 4, 20).toString(),
-    dateClosed: DateTime(2023, 4, 26).toString(),
-  ),
-];
+import '../../../../../../di.dart';
 
 class EmployeeGrievanceScreen extends StatefulWidget {
-
   const EmployeeGrievanceScreen({super.key});
 
   @override
@@ -79,6 +31,8 @@ class EmployeeGrievanceScreen extends StatefulWidget {
 }
 
 class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
+  final List<EmployeeGrievance> items = [];
+  bool isLoading = true;
 
   Timer? _debounceInputTimer;
   late List<EmployeeGrievance> filteredItems;
@@ -88,7 +42,16 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
   @override
   void initState() {
     super.initState();
-    filteredItems = _mockData;
+    _init();
+  }
+
+  Future<void> _init() async {
+    final farmId = await configService.getActiveFarmId();
+    items.addAll(
+        await cmoDatabaseMasterService.getEmployeeGrievancesByFarmId(farmId!));
+    isLoading = false;
+
+    filteredItems = items;
     statusFilter = StatusFilterEnum.open;
     inputSearch = '';
     applyFilter();
@@ -99,15 +62,18 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
     if (input == null || input.isEmpty) {
       applyFilter();
     } else {
-      filteredItems = _mockData.where((element) {
-        final containName = element.employeeGrievanceId.toString().toLowerCase().contains(input.toLowerCase()) ?? false;
+      filteredItems = items.where((element) {
+        final containName = element.grievanceRegisterId
+            .toString()
+            .toLowerCase()
+            .contains(input.toLowerCase());
         var isFilter = false;
         switch (statusFilter) {
           case StatusFilterEnum.open:
-            isFilter = element.dateClosed.isNull || (element.dateClosed?.isEmpty ?? false);
+            isFilter = element.dateClosed == null;
             break;
           case StatusFilterEnum.closed:
-            isFilter = element.dateClosed?.isNotEmpty ?? false;
+            isFilter = element.dateClosed != null;
             break;
         }
 
@@ -121,12 +87,12 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
     if (inputSearch == null || inputSearch!.isEmpty) {
       switch (statusFilter) {
         case StatusFilterEnum.open:
-          filteredItems = _mockData
-              .where((element) => element.dateClosed.isNull || (element.dateClosed?.isEmpty ?? false))
-              .toList();
+          filteredItems =
+              items.where((element) => element.dateClosed == null).toList();
           break;
         case StatusFilterEnum.closed:
-          filteredItems = _mockData.where((element) => element.dateClosed?.isNotEmpty ?? false).toList();
+          filteredItems =
+              items.where((element) => element.dateClosed != null).toList();
           break;
       }
     } else {
@@ -158,7 +124,8 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
                 suffixIcon: Assets.icons.icSearch.svg(),
                 onChanged: (input) {
                   _debounceInputTimer?.cancel();
-                  _debounceInputTimer = Timer(const Duration(milliseconds: 200), () => searching(input));
+                  _debounceInputTimer = Timer(const Duration(milliseconds: 200),
+                      () => searching(input));
                 },
               ),
             ),
@@ -181,8 +148,19 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
                   horizontal: 21,
                 ),
                 itemBuilder: (context, index) {
-                  return _EmployeeGrievanceItem(
-                    employeeGrievance: filteredItems[index],
+                  final item = filteredItems[index];
+                  return GestureDetector(
+                    onTap: () async {
+                      final result = await AddEmployeeGrievanceScreen.push(
+                          context,
+                          employeeGrievance: item);
+                      if (result == null) return;
+                      filteredItems[index] = result;
+                      setState(() {});
+                    },
+                    child: _EmployeeGrievanceItem(
+                      employeeGrievance: item,
+                    ),
                   );
                 },
               ),
@@ -192,7 +170,6 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
       ),
     );
   }
-
 }
 
 class _EmployeeGrievanceItem extends StatelessWidget {
@@ -213,7 +190,7 @@ class _EmployeeGrievanceItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${LocaleKeys.grievanceNo.tr()}: ${employeeGrievance.employeeGrievanceId?.toString()}',
+            '${LocaleKeys.grievanceNo.tr()}: ${employeeGrievance.grievanceRegisterId?.toString()}',
             style: context.textStyles.bodyBold.blue,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -232,31 +209,26 @@ class _EmployeeGrievanceItem extends StatelessWidget {
             keyLabel: LocaleKeys.worker.tr(),
             valueLabel: employeeGrievance.workerName,
           ),
-
           KeyValueItemWidget(
             keyLabel: LocaleKeys.grievanceIssue.tr(),
-            valueLabel: employeeGrievance.grievanceIssue,
+            valueLabel: employeeGrievance.grievanceIssueName,
           ),
-
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateReceived.tr(),
-            valueLabel: DateTime.tryParse(employeeGrievance.dateReceived ?? '')?.ddMMYyyy(),
+            valueLabel: employeeGrievance.dateReceived?.ddMMYyyy(),
             backgroundColor: context.colors.greyLight1,
           ),
-
           KeyValueItemWidget(
             keyLabel: LocaleKeys.allocatedTo.tr(),
-            valueLabel: employeeGrievance.allocatedTo,
+            valueLabel: employeeGrievance.allocatedToName,
           ),
-
           KeyValueItemWidget(
             keyLabel: LocaleKeys.actionTaken.tr(),
             valueLabel: employeeGrievance.actionTaken,
           ),
-
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateClosed.tr(),
-            valueLabel: DateTime.tryParse(employeeGrievance.dateClosed ?? '')?.ddMMYyyy(),
+            valueLabel: employeeGrievance.dateClosed?.ddMMYyyy(),
             backgroundColor: context.colors.greyLight1,
           ),
           KeyValueItemWidget(
@@ -264,7 +236,7 @@ class _EmployeeGrievanceItem extends StatelessWidget {
             valueLabel: employeeGrievance.closureDetails,
           ),
           GeneralCommentsItem(
-            comment: employeeGrievance.generalComments,
+            comment: employeeGrievance.comment,
           ),
         ],
       ),

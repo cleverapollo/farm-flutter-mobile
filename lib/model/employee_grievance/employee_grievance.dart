@@ -9,28 +9,31 @@ part 'employee_grievance.g.dart';
 @Collection(ignore: {'copyWith'})
 class EmployeeGrievance with _$EmployeeGrievance {
   const factory EmployeeGrievance({
-    @JsonKey(name: 'EmployeeGrievanceId') int? employeeGrievanceId,
-    @JsonKey(name: 'WorkerName') String? workerName,
-    @JsonKey(name: 'WorkerId') int? workerId,
-    @JsonKey(name: 'GrievanceIssue') String? grievanceIssue,
+    @JsonKey(name: 'GrievanceRegisterNo') String? grievanceRegisterNo,
+    @JsonKey(name: 'FarmId') String? farmId,
+    @JsonKey(name: 'WorkerId') String? workerId,
+    @JsonKey(name: 'GrievanceRegisterId') String? grievanceRegisterId,
     @JsonKey(name: 'GrievanceIssueId') int? grievanceIssueId,
-    @JsonKey(name: 'AllocatedTo') String? allocatedTo,
-    @JsonKey(name: 'AllocatedToId') int? allocatedToId,
-    @JsonKey(name: 'ClosureDetails') String? closureDetails,
+    @JsonKey(name: 'DateReceived') DateTime? dateReceived,
+    @JsonKey(name: 'AllocatedToUserId') String? allocatedToUserId,
     @JsonKey(name: 'ActionTaken') String? actionTaken,
-    @JsonKey(name: 'GeneralComments') String? generalComments,
-    @JsonKey(name: 'DateReceived') String? dateReceived,
-    @JsonKey(name: 'DateClosed') String? dateClosed,
-    @Default(false) @JsonKey(name: 'CarRaised') bool? carRaised,
-    @Default(false) @JsonKey(name: 'CarClosed') bool? carClosed,
-    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
-    @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
+    @JsonKey(name: 'ClosureDetails') String? closureDetails,
+    @JsonKey(name: 'DateClosed') DateTime? dateClosed,
+    @JsonKey(name: 'Comment') String? comment,
+    @JsonKey(name: 'CarRaisedDate') String? carRaisedDate,
+    @JsonKey(name: 'CarClosedDate') String? carClosedDate,
+    @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
+    @JsonKey(name: 'WorkerName') String? workerName,
+    @JsonKey(name: 'AllocatedToName') String? allocatedToName,
+    @JsonKey(name: 'GrievanceIssueName') String? grievanceIssueName,
   }) = _EmployeeGrievance;
 
   const EmployeeGrievance._();
 
-  factory EmployeeGrievance.fromJson(Map<String, dynamic> json) => _$EmployeeGrievanceFromJson(json);
+  factory EmployeeGrievance.fromJson(Map<String, dynamic> json) =>
+      _$EmployeeGrievanceFromJson(json);
 
   @override
-  Id get id => employeeGrievanceId ?? Isar.autoIncrement;
+  Id get id => int.tryParse(grievanceRegisterId ?? '') ?? Isar.autoIncrement;
 }
