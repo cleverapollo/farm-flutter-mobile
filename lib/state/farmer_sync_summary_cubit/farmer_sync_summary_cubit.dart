@@ -355,7 +355,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
                   data = data.copyWith(annualProductionUnsynced: value.length)),
         )
         ..add(
-          databaseMasterService.getAnnualProductionByFarmId(farmId).then(
+          databaseMasterService.getAnnualFarmProductionByFarmId(farmId).then(
               (value) =>
                   data = data.copyWith(annualProductionTotal: value.length)),
         )

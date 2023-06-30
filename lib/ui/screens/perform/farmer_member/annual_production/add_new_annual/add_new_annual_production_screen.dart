@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/annual_production/annual_farm_production.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddNewAnnualProductionScreen extends StatefulWidget {
@@ -27,9 +32,10 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
-
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
-
+  double? workPeriodWeeks;
+  Timer? _debounceInputTimer;
+  
   Future<void> onSubmit() async {
     setState(() {
       autoValidateMode = AutovalidateMode.always;
@@ -48,21 +54,14 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
         final annualProduction = AnnualFarmProduction(
           farmId: activeFarm?.farmId,
           annualFarmProductionId: DateTime.now().millisecondsSinceEpoch.toString(),
-          createDT: DateTime.now().millisecondsSinceEpoch.toString(),
           year: int.tryParse(value['Year'].toString()),
-          noOfWorkers: int.tryParse(value['noOfWorkers'].toString()),
+          noOfWorkers: double.tryParse(value['noOfWorkers'].toString()),
           workPeriodMonths: double.tryParse(value['WorkPeriodMonths'].toString()),
-          workPeriodWeeks: double.tryParse(value['WorkPeriodWeeks'].toString()),
+          workPeriodWeeks: workPeriodWeeks,
+          cycleLength: double.tryParse(value['CycleLength'].toString()),
+          productionPerCycle: double.tryParse(value['ProductionPerCycle'].toString()),
           conversionWoodToCharcoal: double.tryParse(value['ConversionWoodToCharcoal'].toString()),
-          // productionPerTeam: int.tryParse(value['ProductionPerTeam'].toString()),
-          // productionPerWorker: int.tryParse(value['ProductionPerWorker'].toString()),
-
-          workCycles: ,
-          annualCharcoalProductionPerPerson: ,
-          annualCharcoalProductionPerTeam: ,
-          annualWoodBiomassRemoved: ,
-          cycleLength: ,
-          noOfCycles: ,
+          createDT: DateTime.now().millisecondsSinceEpoch.toString(),
         );
 
         int? resultId;
@@ -78,7 +77,7 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
         if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
-              msg: '${LocaleKeys.createNewStakeholder.tr()} $resultId',
+              msg: '${LocaleKeys.addAnnualProduction.tr()} $resultId',
             );
 
             Navigator.of(context).pop();
@@ -136,7 +135,28 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _selectYearDropdown(),
+              ..._buildInfoItemWidget(
+                name: 'Year',
+                title: LocaleKeys.year.tr(),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  _debounceInputTimer?.cancel();
+                  _debounceInputTimer =
+                      Timer(const Duration(milliseconds: 200), () async {
+                    if (value.isNotBlank) {
+                      final isExist = await context
+                          .read<AnnualFarmProductionCubit>()
+                          .checkIfYearExists(int.tryParse(value!));
+                      if (isExist) {
+                        showSnackError(
+                          msg:
+                              LocaleKeys.annualProductionYearAlreadyExists.tr(),
+                        );
+                      }
+                    }
+                  });
+                },
+              ),
               ..._buildInfoItemWidget(
                 name: 'noOfWorkers',
                 title: LocaleKeys.workersHintText.tr(),
@@ -145,20 +165,23 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
                 name: 'WorkPeriodMonths',
                 title: LocaleKeys.workCycleHintText.tr(),
                 title2: LocaleKeys.charcoal.tr(),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
+                onChanged: (value) {
+                  setState(() {
+                    if (value.isBlank) {
+                      workPeriodWeeks = null;
+                    } else {
+                      workPeriodWeeks = double.tryParse(value!)! * 4.33;
+                    }
+                  });
+                },
               ),
+              ...buildWorkPeriodWeeks(),
               ..._buildInfoItemWidget(
-                name: 'WorkPeriodWeeks',
-                title: LocaleKeys.weeksCycleHintText.tr(),
-              ),
-              ..._buildInfoItemWidget(
-                name: 'ProductionPerTeam',
+                name: 'CycleLength',
                 title: LocaleKeys.weeksPerCycleHintText.tr(),
               ),
               ..._buildInfoItemWidget(
-                name: 'ProductionPerWorker',
+                name: 'ProductionPerCycle',
                 title: LocaleKeys.productionPerPersonHintText.tr(),
               ),
               ..._buildInfoItemWidget(
@@ -210,11 +233,42 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
     );
   }
 
+  List<Widget> buildWorkPeriodWeeks() {
+    return [
+      const SizedBox(
+        height: 12,
+      ),
+      Text(
+        LocaleKeys.weeksCycleHintText.tr(),
+        style: context.textStyles.bodyNormal.black,
+        maxLines: 2,
+      ),
+      Row(
+        children: [
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: context.colors.grey)),
+              ),
+              child: Text(
+                workPeriodWeeks == null
+                    ? ''
+                    : workPeriodWeeks.toString(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ];
+  }
+
   List<Widget> _buildInfoItemWidget({
     required String name,
     required String title,
     String? title2,
     TextInputType? keyboardType,
+    void Function(String?)? onChanged,
   }) {
     return [
       const SizedBox(
@@ -239,7 +293,8 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
         name: name,
         validator: requiredValidator,
         inputDecoration: _buildInputDecoration(context),
-        keyboardType: keyboardType ?? TextInputType.number,
+        keyboardType: keyboardType ?? const TextInputType.numberWithOptions(decimal: true),
+        onChanged: onChanged,
       )
     ];
   }

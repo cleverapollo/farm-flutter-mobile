@@ -159,6 +159,7 @@
   "major": "Major",
   "addLabour": "Add Labour",
   "farmer": "Farmer",
+  "annualProductionYearAlreadyExists": "Annual Production Year already exists",
   "locale": {
     "en": "Anglais",
     "fr": "Français",

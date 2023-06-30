@@ -53,7 +53,7 @@ class AnnualProductionItemWidget extends StatelessWidget {
                   _buildInfoItemWidget(
                     context,
                     LocaleKeys.workCycles.tr(),
-                    annualProduction.workCycles?.toStringAsFixed(2),
+                    annualProduction.productionPerCycle?.toStringAsFixed(2),
                   ),
                   _buildInfoItemWidget(
                     context,

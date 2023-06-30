@@ -49,7 +49,9 @@ class SiteManagementPlanScreen extends StatelessWidget {
     return [
       _compartmentCard(),
       CmoTappable(
-        onTap: () {},
+        onTap: () {
+          AnnualProductionManagementScreen.push(context);
+        },
         child: CmoCard(
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           content: [

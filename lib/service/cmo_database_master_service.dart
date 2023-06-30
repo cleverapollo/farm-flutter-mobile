@@ -824,13 +824,28 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<AnnualFarmProduction>> getAnnualProductionByFarmId(
-      String farmId) async {
+  Future<List<AnnualFarmProduction>> getAnnualFarmProductionByFarmId(
+    String farmId,
+  ) async {
     final db = await _db();
 
     return db.annualFarmProductions
         .filter()
         .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<AnnualFarmProduction>> getAnnualFarmProductionByFarmIdAndYear({
+    String? farmId,
+    int? year,
+  }) async {
+    final db = await _db();
+
+    return db.annualFarmProductions
+        .filter()
+        .farmIdEqualTo(farmId)
+        .yearEqualTo(year)
         .isActiveEqualTo(true)
         .findAll();
   }
