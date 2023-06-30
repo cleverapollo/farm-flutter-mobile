@@ -34,7 +34,6 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
   final _formKey = GlobalKey<FormBuilderState>();
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
   double? workPeriodWeeks;
-  Timer? _debounceInputTimer;
 
   Future<void> onSubmit() async {
     setState(() {
@@ -44,6 +43,19 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
       var value = _formKey.currentState?.value;
       if (value == null) return;
       value = {...value};
+
+      if (value['Year'].toString().isNotBlank) {
+        final isExist = await context
+            .read<AnnualFarmProductionCubit>()
+            .checkIfYearExists(int.tryParse(value['Year'].toString()));
+        if (isExist) {
+          showSnackError(
+            msg: LocaleKeys.annualProductionYearAlreadyExists.tr(),
+          );
+
+          return;
+        }
+      }
 
       setState(() {
         loading = true;
@@ -122,23 +134,6 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
                 name: 'Year',
                 title: LocaleKeys.year.tr(),
                 keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  _debounceInputTimer?.cancel();
-                  _debounceInputTimer =
-                      Timer(const Duration(milliseconds: 200), () async {
-                    if (value.isNotBlank) {
-                      final isExist = await context
-                          .read<AnnualFarmProductionCubit>()
-                          .checkIfYearExists(int.tryParse(value!));
-                      if (isExist) {
-                        showSnackError(
-                          msg:
-                              LocaleKeys.annualProductionYearAlreadyExists.tr(),
-                        );
-                      }
-                    }
-                  });
-                },
               ),
               ..._buildInfoItemWidget(
                 name: 'noOfWorkers',
