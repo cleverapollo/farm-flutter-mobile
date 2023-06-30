@@ -35,7 +35,7 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
   double? workPeriodWeeks;
   Timer? _debounceInputTimer;
-  
+
   Future<void> onSubmit() async {
     setState(() {
       autoValidateMode = AutovalidateMode.always;
@@ -50,28 +50,11 @@ class _AddNewAnnualProductionScreenState extends State<AddNewAnnualProductionScr
       });
       try {
         await hideInputMethod();
-        final activeFarm = await configService.getActiveFarm();
-        final annualProduction = AnnualFarmProduction(
-          farmId: activeFarm?.farmId,
-          annualFarmProductionId: DateTime.now().millisecondsSinceEpoch.toString(),
-          year: int.tryParse(value['Year'].toString()),
-          noOfWorkers: double.tryParse(value['noOfWorkers'].toString()),
-          workPeriodMonths: double.tryParse(value['WorkPeriodMonths'].toString()),
-          workPeriodWeeks: workPeriodWeeks,
-          cycleLength: double.tryParse(value['CycleLength'].toString()),
-          productionPerCycle: double.tryParse(value['ProductionPerCycle'].toString()),
-          conversionWoodToCharcoal: double.tryParse(value['ConversionWoodToCharcoal'].toString()),
-          createDT: DateTime.now().millisecondsSinceEpoch.toString(),
-        );
-
         int? resultId;
-
         if (mounted) {
-          final databaseService = cmoDatabaseMasterService;
-
-          await (await databaseService.db).writeTxn(() async {
-            resultId = await databaseService.cacheAnnualProduction(annualProduction);
-          });
+          resultId = await context
+              .read<AnnualFarmProductionCubit>()
+              .addReplaceAnnualFarmProduction(value);
         }
 
         if (resultId != null) {

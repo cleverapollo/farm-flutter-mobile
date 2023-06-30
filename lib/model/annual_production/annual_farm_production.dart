@@ -36,4 +36,46 @@ class AnnualFarmProduction with _$AnnualFarmProduction {
 
   @override
   Id get id => int.tryParse(annualFarmProductionId ?? '') ?? Isar.autoIncrement;
+
+  double calculateNoOfCycles({bool isRound = false}) {
+    if (isRound) {
+      return (workPeriodWeeks! / cycleLength!).round().toDouble();
+    } else {
+      return workPeriodWeeks! / cycleLength!;
+    }
+  }
+
+  double calculatedAnnualCharcoalProductionPerPerson({bool isRound = false}) {
+    final cycles = calculateNoOfCycles();
+    final productionPerPerson = cycles * productionPerCycle!;
+
+    if (isRound) {
+      return productionPerPerson.round().toDouble();
+    } else {
+      return productionPerPerson;
+    }
+  }
+
+  double calculatedAnnualCharcoalProductionPerTeam({bool isRound = false}) {
+    final cycles = calculateNoOfCycles();
+    final productionPerPerson = cycles * productionPerCycle!;
+    final productionPerTeam = noOfWorkers! * productionPerPerson;
+
+    if (isRound) {
+      return productionPerTeam.round().toDouble();
+    } else {
+      return productionPerTeam;
+    }
+  }
+
+  double calculateAnnualWoodBiomassRemoved({bool isRound = false}) {
+    final productionPerTeam = calculatedAnnualCharcoalProductionPerTeam();
+    final annualBiomassRemoved = conversionWoodToCharcoal! * productionPerTeam;
+
+    if (isRound) {
+      return annualBiomassRemoved.round().toDouble();
+    } else {
+      return annualBiomassRemoved;
+    }
+  }
 }

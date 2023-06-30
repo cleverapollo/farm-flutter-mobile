@@ -72,6 +72,7 @@ class CmoApp extends StatelessWidget {
         BlocProvider(create: (_) => DashboardCubit()),
         BlocProvider(create: (_) => LabourManagementCubit()),
         BlocProvider(create: (_) => AddMemberCubit()),
+        BlocProvider(create: (_) => AnnualFarmProductionCubit()),
       ],
       child: MaterialApp(
         title: 'CMO',
