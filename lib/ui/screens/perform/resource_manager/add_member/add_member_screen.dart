@@ -23,9 +23,9 @@ class AddMemberScreen extends StatefulWidget {
 
   final Farm? farm;
 
-  static Future<void> push(BuildContext context) {
-    return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const AddMemberScreen()));
+  static Future<void> push(BuildContext context, {Farm? farm}) {
+    return Navigator.push(context,
+        MaterialPageRoute(builder: (_) => AddMemberScreen(farm: farm)));
   }
 
   @override
@@ -61,26 +61,34 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         subtitle: LocaleKeys.siteName.tr(),
         showTrailing: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: const [
-            SizedBox(height: 8),
-            _AddMemberSLIMF(),
-            SizedBox(height: 12),
-            _AddMemberMPO(),
-            SizedBox(height: 12),
-            _AddMemberMDetails(),
-            SizedBox(height: 12),
-            _AddMemberSDetails(),
-            SizedBox(height: 12),
-            _AddMemberInclusionDate(),
-            SizedBox(height: 12),
-            _AddMemberMRA(),
-            SizedBox(height: 12),
-            _AddMemberMFO(),
-            SizedBox(height: 12),
-          ],
-        ),
+      body: BlocSelector<AddMemberCubit, AddMemberState, bool>(
+        selector: (state) => state.isLoading,
+        builder: (context, bool isLoading) {
+          if (isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return SingleChildScrollView(
+            child: Column(
+              children: const [
+                SizedBox(height: 8),
+                _AddMemberSLIMF(),
+                SizedBox(height: 12),
+                _AddMemberMPO(),
+                SizedBox(height: 12),
+                _AddMemberMDetails(),
+                SizedBox(height: 12),
+                _AddMemberSDetails(),
+                SizedBox(height: 12),
+                _AddMemberInclusionDate(),
+                SizedBox(height: 12),
+                _AddMemberMRA(),
+                SizedBox(height: 12),
+                _AddMemberMFO(),
+                SizedBox(height: 12),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

@@ -9,8 +9,7 @@ part 'add_member_state.freezed.dart';
 @freezed
 class AddMemberState with _$AddMemberState {
   const factory AddMemberState({
-    @Default(false) isLoading,
-    @Default(false) isAllComplete,
+    @Default(false) bool isLoading,
     Farm? farm,
     @Default(AddMemberSLIMF()) AddMemberSLIMF addMemberSLIMF,
     @Default(AddMemberMPO()) AddMemberMPO addMemberMPO,
@@ -74,7 +73,7 @@ class AddMemberMPO with _$AddMemberMPO {
     @Default(false) bool isComplete,
     @Default(false) bool isExpansionOpen,
     FarmPropertyOwnershipType? propertyTypeSelected,
-    List<FarmPropertyOwnershipType>? propertyTypes,
+    @Default([]) List<FarmPropertyOwnershipType> propertyTypes,
   }) = _AddMemberMPO;
 }
 

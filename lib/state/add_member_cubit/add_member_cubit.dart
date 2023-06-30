@@ -16,7 +16,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   AddMemberCubit() : super(const AddMemberState());
 
   Future<void> initAddMember({Farm? farm}) async {
-    await getAllFarmPropertyOwnerShipType();
     await initDataFarm(farm);
   }
 
@@ -25,13 +24,168 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   }
 
   Future<void> initDataFarm(Farm? farm) async {
+    final groupScheme = await configService.getActiveGroupScheme();
+    final groupSchemeUnit = await configService.getActiveRegionalManager();
+    final loadedFarmPropertyOwnerShipType =
+        await getAllFarmPropertyOwnerShipType();
+
+    if (!loadedFarmPropertyOwnerShipType) return;
+
     if (farm != null) {
       emit(state.copyWith(isLoading: true));
+      final farmMemberObjectiveAnswer = await cmoDatabaseMasterService
+          .getFarmMemberObjectiveAnswerByFarmId(farm.farmId);
+      final farmMemberRiskProfileAnswer = await cmoDatabaseMasterService
+          .getFarmMemberRiskProfileAnswerByFarmId(farm.farmId);
 
-      emit(state.copyWith(isLoading: false));
+      final compartments =
+          await cmoDatabaseMasterService.getCompartmentByFarmId(farm.farmId);
+      final asis =
+          await cmoDatabaseMasterService.getAsiRegisterByFarmId(farm.farmId);
+
+      final addMemberSlimfIsComplete = farm.isSlimfCompliant != null;
+      final addMemberSlimf = AddMemberSLIMF(
+        isComplete: addMemberSlimfIsComplete,
+        isSlimfCompliant: farm.isSlimfCompliant,
+      );
+
+      FarmPropertyOwnershipType? propertyTypeSelected;
+
+      for (final item in state.addMemberMPO.propertyTypes) {
+        if (item.farmPropertyOwnershipTypeId == farm.propertyOwnershipTypeId) {
+          propertyTypeSelected = item;
+        }
+      }
+
+      final addMemberMPOIsComplete = propertyTypeSelected != null;
+      final addMemberMPO = AddMemberMPO(
+        isComplete: addMemberMPOIsComplete,
+        propertyTypeSelected: propertyTypeSelected,
+        propertyTypes: state.addMemberMPO.propertyTypes,
+      );
+
+      final addMemberMDetailIsComplete = farm.firstName != null &&
+          farm.lastName != null &&
+          farm.idNumber != null &&
+          farm.mobileNumber != null;
+      final addMemberMDetail = AddMemberMDetails(
+        isComplete: addMemberMDetailIsComplete,
+        firstName: farm.firstName,
+        lastName: farm.lastName,
+        idNumber: farm.idNumber,
+        mobileNumber: farm.mobileNumber,
+        emailAddress: farm.email,
+      );
+
+      final isCompleteSiteLocation = farm.latitude != null &&
+          farm.longitude != null &&
+          farm.streetName != null;
+      final isCompleteCompartments = compartments?.isNotEmpty ?? false;
+      final isCompleteASI = asis.isNotEmpty;
+      final addMemberSDetailIsComplete = isCompleteSiteLocation &&
+          isCompleteCompartments &&
+          isCompleteASI &&
+          farm.farmName != null &&
+          farm.town != null &&
+          farm.province != null;
+      final addMemberSDetail = AddMemberSDetails(
+        isComplete: addMemberSDetailIsComplete,
+        isCompleteSiteLocation: isCompleteSiteLocation,
+        isCompleteCompartments: isCompleteCompartments,
+        isCompleteASI: isCompleteASI,
+        siteName: farm.farmName,
+        town: farm.town,
+        province: farm.province,
+        addMemberSiteLocations: AddMemberSiteLocations(
+          lat: double.tryParse(farm.latitude ?? ''),
+          lng: double.tryParse(farm.longitude ?? ''),
+          address: farm.streetName,
+        ),
+        addMemberCompartmentsState: AddMemberCompartmentsState(
+          compartments: compartments ?? [],
+          farmSize: farm.farmSize,
+        ),
+        addMemberAsisState: AddMemberAsisState(asis: asis),
+      );
+
+      final addMemberInclusionDateIsComplete = farm.inclusionDate != null;
+      final addMemberInclusionDate = AddMemberInclusionDate(
+          isComplete: addMemberInclusionDateIsComplete,
+          inclusionDate: farm.inclusionDate);
+
+      final firstAnswerMRA = farmMemberRiskProfileAnswer
+          .firstWhere(
+            (element) => element.riskProfileQuestionId == 1,
+            orElse: () => const FarmMemberRiskProfileAnswer(),
+          )
+          .answer;
+      final secondAnswerMRA = farmMemberRiskProfileAnswer
+          .firstWhere((element) => element.riskProfileQuestionId == 2,
+              orElse: () => const FarmMemberRiskProfileAnswer())
+          .answer;
+      final thirdAnswerMRA = farmMemberRiskProfileAnswer
+          .firstWhere((element) => element.riskProfileQuestionId == 3,
+              orElse: () => const FarmMemberRiskProfileAnswer())
+          .answer;
+      final fourthAnswerMRA = farmMemberRiskProfileAnswer
+          .firstWhere((element) => element.riskProfileQuestionId == 4,
+              orElse: () => const FarmMemberRiskProfileAnswer())
+          .answer;
+
+      final addMemberMRAIsComplete = firstAnswerMRA != null &&
+          secondAnswerMRA != null &&
+          thirdAnswerMRA != null &&
+          fourthAnswerMRA != null;
+      final addMemberMRA = AddMemberMRA(
+        isComplete: addMemberMRAIsComplete,
+        firstAnswer: firstAnswerMRA,
+        secondAnswer: secondAnswerMRA,
+        thirdAnswer: thirdAnswerMRA,
+        fourthAnswer: fourthAnswerMRA,
+      );
+
+      final firstAnswerMFO = farmMemberObjectiveAnswer
+          .firstWhere((element) => element.farmObjectiveOptionId == 1,
+              orElse: () => const FarmMemberObjectiveAnswer())
+          .farmMemberObjectiveId;
+      final secondAnswerMFO = farmMemberObjectiveAnswer
+          .firstWhere((element) => element.farmObjectiveOptionId == 2,
+              orElse: () => const FarmMemberObjectiveAnswer())
+          .farmMemberObjectiveId;
+      final thirdAnswerMFO = farmMemberObjectiveAnswer
+          .firstWhere((element) => element.farmObjectiveOptionId == 3,
+              orElse: () => const FarmMemberObjectiveAnswer())
+          .farmMemberObjectiveId;
+      final fourthAnswerMFO = farmMemberObjectiveAnswer
+          .firstWhere((element) => element.farmObjectiveOptionId == 4,
+              orElse: () => const FarmMemberObjectiveAnswer())
+          .farmMemberObjectiveId;
+
+      final addMemberMFOIsComplete = firstAnswerMFO != null &&
+          secondAnswerMFO != null &&
+          thirdAnswerMFO != null &&
+          fourthAnswerMFO != null;
+      final addMemberMFO = AddMemberMFO(
+        isComplete: addMemberMFOIsComplete,
+        firstAnswer: firstAnswerMFO,
+        secondAnswer: secondAnswerMFO,
+        thirdAnswer: thirdAnswerMFO,
+        fourthAnswer: fourthAnswerMFO,
+      );
+
+      emit(state.copyWith(
+        isLoading: false,
+        addMemberSLIMF: addMemberSlimf,
+        addMemberMPO: addMemberMPO,
+        addMemberMDetails: addMemberMDetail,
+        addMemberSDetails: addMemberSDetail,
+        addMemberInclusionDate: addMemberInclusionDate,
+        addMemberMRA: addMemberMRA,
+        addMemberMFO: addMemberMFO,
+      ));
+
+      debugPrint('Done loading farm data');
     } else {
-      final groupScheme = await configService.getActiveGroupScheme();
-      final groupSchemeUnit = await configService.getActiveRegionalManager();
       emit(state.copyWith(
           farm: Farm(
         farmId: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -111,7 +265,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     }
   }
 
-  Future<void> getAllFarmPropertyOwnerShipType() async {
+  Future<bool> getAllFarmPropertyOwnerShipType() async {
     final data = await cmoDatabaseMasterService.getFarmPropertyOwnershipType();
 
     final addMemberMPO = state.addMemberMPO;
@@ -120,7 +274,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       emit(state.copyWith(
         addMemberMPO: addMemberMPO.copyWith(propertyTypes: data),
       ));
+      return true;
     }
+    return false;
   }
 
   Future<void> onDataChangeSiteDetail({

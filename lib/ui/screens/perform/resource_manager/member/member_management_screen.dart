@@ -130,36 +130,41 @@ class _MemberManagementScreenState extends State<MemberManagementScreen>
                       separatorBuilder: (_, __) => const SizedBox(height: 20),
                       itemBuilder: (_, index) {
                         final farm = filteringFarms[index];
-                        return CmoCard(
-                          margin: const EdgeInsets.symmetric(horizontal: 23),
-                          content: [
-                            CmoCardHeader(title: farm.farmName ?? ''),
-                            CmoCardHeader(
-                                title:
-                                    '${farm.firstName ?? ''} ${farm.lastName ?? ''}'),
-                            SizedBox(
-                              width: double.maxFinite,
-                              child: Row(
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      farm.isGroupSchemeMember == true
-                                          ? LocaleKeys.onboarded.tr()
-                                          : LocaleKeys.incomplete.tr(),
-                                      textAlign: TextAlign.start,
-                                      style:
-                                          context.textStyles.bodyNormal.white,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                        return InkWell(
+                          onTap: () {
+                            AddMemberScreen.push(context, farm: farm);
+                          },
+                          child: CmoCard(
+                            margin: const EdgeInsets.symmetric(horizontal: 23),
+                            content: [
+                              CmoCardHeader(title: farm.farmName ?? ''),
+                              CmoCardHeader(
+                                  title:
+                                      '${farm.firstName ?? ''} ${farm.lastName ?? ''}'),
+                              SizedBox(
+                                width: double.maxFinite,
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        farm.isGroupSchemeMember == true
+                                            ? LocaleKeys.onboarded.tr()
+                                            : LocaleKeys.incomplete.tr(),
+                                        textAlign: TextAlign.start,
+                                        style:
+                                            context.textStyles.bodyNormal.white,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
-                                  ),
-                                  Flexible(
-                                    child: Align(child: buildBottom(farm)),
-                                  ),
-                                ],
+                                    Flexible(
+                                      child: Align(child: buildBottom(farm)),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         );
                       },
                     ),
