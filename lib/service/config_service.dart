@@ -42,6 +42,16 @@ class ConfigService {
     return sp.setBool('RegionalManagerMasterDataSynced', isSynced);
   }
 
+  Future<bool> isFarmerSynced() async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.getBool('FarmerMasterDataSynced') ?? false;
+  }
+
+  Future<bool> setFarmerSynced({required bool isSynced}) async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setBool('FarmerMasterDataSynced', isSynced);
+  }
+
   Future<bool> setActiveRegionalManager(
       {required ResourceManagerUnit unit}) async {
     final sp = await SharedPreferences.getInstance();
@@ -106,28 +116,15 @@ class ConfigService {
     return UserRoleEnum.behave;
   }
 
-  Future<bool> setActiveFarmId({required String farmId}) async {
+  Future<bool> setActiveFarm({required Farm farm}) async {
     final sp = await SharedPreferences.getInstance();
-    return sp.setString('ActiveFarmId', farmId);
+    return sp.setString('ActiveFarm', jsonEncode(farm.toJson()));
   }
 
-  Future<String?> getActiveFarmId() async {
+  Future<Farm?> getActiveFarm() async {
     final sp = await SharedPreferences.getInstance();
-    final rawJson = sp.getString('ActiveFarmId');
+    final rawJson = sp.getString('ActiveFarm');
     if (rawJson == null) return null;
-    return rawJson;
-  }
-
-  Future<bool> setActiveFarmGroupSchemeId(
-      {required String groupSchemeId}) async {
-    final sp = await SharedPreferences.getInstance();
-    return sp.setString('GroupSchemeId', groupSchemeId);
-  }
-
-  Future<String?> getActiveFarmGroupSchemeId() async {
-    final sp = await SharedPreferences.getInstance();
-    final rawJson = sp.getString('GroupSchemeId');
-    if (rawJson == null) return null;
-    return rawJson;
+    return Farm.fromJson(jsonDecode(rawJson) as Map<String, dynamic>);
   }
 }

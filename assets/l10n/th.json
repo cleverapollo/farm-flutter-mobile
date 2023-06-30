@@ -158,6 +158,8 @@
   "complianceManagement": "การปฏิบัติตามข้อกำหนด",
   "minor": "Minor",
   "major": "Major",
+  "addLabour": "Add Labour",
+  "farmer": "Farmer",
   "locale": {
     "en": "English",
     "fr": "French",

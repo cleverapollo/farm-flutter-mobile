@@ -21,7 +21,6 @@ class FarmerSyncSummaryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<FarmerSyncSummaryCubit>(
       create: (_) => FarmerSyncSummaryCubit(
-        userInfoCubit: context.read<UserInfoCubit>(),
         userDeviceCubit: context.read<UserDeviceCubit>(),
       )..initDataSync(),
       child: Scaffold(

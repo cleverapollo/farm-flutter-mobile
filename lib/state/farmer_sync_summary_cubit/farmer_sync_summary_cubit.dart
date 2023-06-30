@@ -1,56 +1,16 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/env/env.dart';
-import 'package:cmo/model/accident_and_incident.dart';
-import 'package:cmo/model/accident_and_incident_property_damaged/accident_and_incident_property_damaged.dart';
-import 'package:cmo/model/annual_budget_transaction/annual_budget_transaction.dart';
-import 'package:cmo/model/annual_budget_transaction_category/annual_budget_transaction_category.dart';
-import 'package:cmo/model/asi.dart';
-import 'package:cmo/model/asi_photo/asi_photo.dart';
-import 'package:cmo/model/asi_type/asi_type.dart';
-import 'package:cmo/model/biological_control_agent/biological_control_agent_type.dart';
-import 'package:cmo/model/camp.dart';
-import 'package:cmo/model/chemical.dart';
-import 'package:cmo/model/chemical_application_method/chemical_application_method.dart';
-import 'package:cmo/model/chemical_type/chemical_type.dart';
-import 'package:cmo/model/country/country.dart';
-import 'package:cmo/model/customary_use_right/customary_use_right.dart';
-import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
-import 'package:cmo/model/fire/fire_register.dart';
-import 'package:cmo/model/fire_cause/fire_cause.dart';
-import 'package:cmo/model/grievance_issue/grievance_issue.dart';
-import 'package:cmo/model/grievance_register/grievance_register.dart';
-import 'package:cmo/model/group_scheme.dart';
-import 'package:cmo/model/issue_type/issue_type.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/model/monitoring_requirement/monitoring_requirement.dart';
-import 'package:cmo/model/nature_of_injury/nature_of_injury.dart';
-import 'package:cmo/model/pest_and_disease_type/pest_and_disease_type.dart';
-import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and_diseases_register_treatment_method.dart';
-import 'package:cmo/model/pets_and_disease_type_treatment_method/pets_and_disease_type_treatment_method.dart';
-import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
-import 'package:cmo/model/property_damaged/property_damaged.dart';
-import 'package:cmo/model/sanction_register/sanction_register.dart';
-import 'package:cmo/model/social_upliftment/social_upliftment.dart';
-import 'package:cmo/model/special_site/special_site.dart';
-import 'package:cmo/model/species_range/species_range.dart';
-import 'package:cmo/model/species_type/species_type.dart';
-import 'package:cmo/model/training/training_register.dart';
-import 'package:cmo/model/training_type/training_type.dart';
-import 'package:cmo/model/treament_method/treament_method.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
-import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
   FarmerSyncSummaryCubit(
-      {required this.userInfoCubit, required this.userDeviceCubit})
+      {required this.userDeviceCubit})
       : super(const FarmerSyncSummaryState());
-  final UserInfoCubit userInfoCubit;
   final UserDeviceCubit userDeviceCubit;
 
   String get topicMasterDataSync => 'Cmo.MasterDataDeviceSync.';
@@ -77,21 +37,20 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
       await userDeviceCubit.createPerformUserDevice();
 
       final user = await configService.getActiveUser();
-      final groupSchemeId = await configService.getActiveFarmGroupSchemeId();
-      final farmId = await configService.getActiveFarmId();
+      final activeFarm = await configService.getActiveFarm();
       final userId = user?.userId;
       final userDeviceId = userDeviceCubit.data?.userDeviceId;
 
       if (userId == null ||
-          farmId == null ||
+          activeFarm?.farmId == null ||
           userDeviceId == null ||
-          groupSchemeId == null) return false;
+          activeFarm?.groupSchemeId == null) return false;
 
       emit(
         state.copyWith(
           userId: userId,
           farmId: farmId,
-          groupSchemeId: int.parse(groupSchemeId),
+          groupSchemeId: activeFarm?.groupSchemeId,
           userDeviceId: userDeviceId,
         ),
       );
@@ -108,7 +67,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
 
   Future<void> onSync() async {
     try {
-      if (state.isSyncing) return;
       emit(state.copyWith(isSyncing: true, syncMessage: 'Syncing...'));
       final canSync = await initDataConfig();
 
@@ -118,21 +76,20 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
       }
 
       final systemEventId = await cmoPerformApiService.createFarmerSystemEvent(
-        primaryKey: farmId,
+        farmId: farmId,
         userDeviceId: userDeviceId,
-        systemEventName: 'SyncGSMasterData',
       );
 
-      final systemEventExist =
-          await cmoPerformApiService.checkFarmSystemEventExist(
-        systemEventId: int.parse(systemEventId),
-      );
-
-      if (systemEventId.isEmpty || !systemEventExist) {
-        return emit(state.copyWith(isSyncing: false));
-      }
-
-      await Future.delayed(const Duration(seconds: 5), () {});
+      await Future.delayed(const Duration(seconds: 3), () {});
+      //
+      // final systemEventExist =
+      //     await cmoPerformApiService.checkFarmSystemEventExist(
+      //   systemEventId: int.parse(systemEventId),
+      // );
+      //
+      // if (systemEventId.isEmpty || !systemEventExist) {
+      //   return emit(state.copyWith(isSyncing: false));
+      // }
 
       logger.d('Create System Event Success --- $systemEventId');
 

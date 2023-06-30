@@ -48,8 +48,8 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
           );
       final userInfoState = context.read<UserInfoCubit>().state;
       if (userInfoState.isFarmer) {
-        Navigator.of(context).pushReplacement(
-          EntityFarmerScreen.pageRoute(),
+        await Navigator.of(context).pushReplacement(
+          SelectEntityFarmerScreen.pageRoute(),
         );
         return;
       }

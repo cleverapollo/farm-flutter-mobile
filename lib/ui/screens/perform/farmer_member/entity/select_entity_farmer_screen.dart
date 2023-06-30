@@ -2,52 +2,50 @@ import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/farm.dart';
-import 'package:cmo/state/entity_cubit/farmer/farmer_entity_cubit.dart';
-import 'package:cmo/state/entity_cubit/farmer/farmer_entity_state.dart';
+import 'package:cmo/model/model.dart';
+import 'package:cmo/state/entity_cubit/farmer/select_entity_farmer_cubit.dart';
+import 'package:cmo/state/entity_cubit/farmer/select_entity_farmer_state.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_cubit.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/components/entity_list.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/entity/farmer_sync_onboarding_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EntityFarmerScreen<T> extends StatefulWidget {
-  final Farm? selectedEntity;
+class SelectEntityFarmerScreen<T> extends StatefulWidget {
 
-  const EntityFarmerScreen({this.selectedEntity, super.key});
+  const SelectEntityFarmerScreen({super.key});
 
   static PageRoute pageRoute() {
     return MaterialPageRoute(builder: (_) {
       return BlocProvider(
-        create: (_) => FarmerEntityCubit(),
-        child: const EntityFarmerScreen(selectedEntity: null),
+        create: (_) => SelectEntityFarmerCubit(),
+        child: const SelectEntityFarmerScreen(),
       );
     });
   }
 
   @override
-  State<EntityFarmerScreen> createState() => _EntityFarmerScreenState();
+  State<SelectEntityFarmerScreen> createState() => _SelectEntityFarmerScreenState();
 }
 
-class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
+class _SelectEntityFarmerScreenState<T> extends State<SelectEntityFarmerScreen<T>> {
   Farm? _selectedItem;
 
   @override
   void initState() {
     super.initState();
-    _selectedItem = widget.selectedEntity;
-    final entityCubit = context.read<FarmerEntityCubit>();
-    entityCubit.fetchFarms(context: context);
+    final entityCubit = context.read<SelectEntityFarmerCubit>();
+    entityCubit.fetchFarms();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FarmerSyncSummaryCubit>(
         create: (_) => FarmerSyncSummaryCubit(
-              userInfoCubit: context.read<UserInfoCubit>(),
               userDeviceCubit: context.read<UserDeviceCubit>(),
             ),
         child: CmoTappable(
@@ -58,15 +56,13 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
             ),
             body: Stack(
               children: [
-                BlocSelector<FarmerEntityCubit, FarmerEntityState, List<Farm>>(
+                BlocSelector<SelectEntityFarmerCubit, SelectEntityFarmerState, List<Farm>>(
                   selector: (state) => state.farms,
                   builder: (context, farms) {
                     if (farms.isEmpty) {
-                      return Container(
-                        child: Text(
-                          LocaleKeys.there_are_no_farms.tr(),
-                          style: context.textStyles.bodyBold,
-                        ),
+                      return Text(
+                        LocaleKeys.there_are_no_farms.tr(),
+                        style: context.textStyles.bodyBold,
                       );
                     }
                     final entities = farms
@@ -89,14 +85,11 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
                                 padding:
                                     const EdgeInsets.only(top: 40, bottom: 40),
                                 child: CmoFilledButton(
-                                  title: 'Sync',
+                                  title: LocaleKeys.sync.tr(),
                                   onTap: _selectedItem == null
                                       ? null
                                       : () async {
-                                          await _handleSyncFarmButton(context)
-                                              .then((_) =>
-                                                  CmoDashboardBase.push(
-                                                      context));
+                                          await _handleSyncFarmButton(context);
                                         },
                                 ),
                               ),
@@ -114,7 +107,7 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
                                 onTap: (item) {
                                   _selectedItem = item.rawData;
                                   context
-                                      .read<FarmerEntityCubit>()
+                                      .read<SelectEntityFarmerCubit>()
                                       .setSelectedFarm(_selectedItem!);
                                   setState(() {});
                                 },
@@ -128,9 +121,7 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
                                 onTap: _selectedItem == null
                                     ? null
                                     : () async {
-                                        await _handleSyncFarmButton(context)
-                                            .then((_) =>
-                                                CmoDashboardBase.push(context));
+                                        await _handleSyncFarmButton(context);
                                       },
                               ),
                             ),
@@ -140,7 +131,7 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
                     );
                   },
                 ),
-                BlocSelector<FarmerEntityCubit, FarmerEntityState, bool>(
+                BlocSelector<SelectEntityFarmerCubit, SelectEntityFarmerState, bool>(
                   selector: (state) => state.isLoading,
                   builder: (context, state) => state
                       ? Container(
@@ -160,9 +151,13 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
     context.read<FarmerSyncSummaryCubit>().onSyncStatus('Syncing...');
     await context.read<UserInfoCubit>().getPerformUserInfo();
 
-    final state = context.read<FarmerEntityCubit>().state;
+    final state = context.read<SelectEntityFarmerCubit>().state;
     final userInfo = context.read<UserInfoCubit>().state.performUserInfo;
     final farm = state.selectedFarm;
+
+    if (farm == null) {
+      return;
+    }
 
     final futures = <Future<dynamic>>[];
 
@@ -170,13 +165,16 @@ class _EntityFarmerScreenState<T> extends State<EntityFarmerScreen<T>> {
       ..add(configService.setActiveUser(userInfo: userInfo!))
       ..add(
           configService.setActiveUserRole(userRole: UserRoleEnum.farmerMember))
-      ..add(configService.setActiveFarmId(farmId: '${farm?.id}'))
-      ..add(configService.setActiveFarmGroupSchemeId(
-          groupSchemeId: '${farm?.groupSchemeId}'));
-
+      ..add(configService.setActiveFarm(farm: farm))
+      ..add(context.read<UserInfoCubit>().setActiveUserInfo(isBehave: false))
+      ..add(context.read<UserDeviceCubit>().createPerformUserDevice());
     await Future.wait(futures).then((_) async {
-      if (context.mounted) {
-        await context.read<FarmerSyncSummaryCubit>().onSync();
+      if (mounted) {
+        await Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => FarmerSyncOnboardingScreen(),
+          ),
+        );
       }
     });
   }

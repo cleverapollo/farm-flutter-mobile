@@ -1,7 +1,7 @@
-import 'package:cmo/model/farm.dart';
+import 'package:cmo/model/model.dart';
 
-class FarmerEntityState {
-  const FarmerEntityState({
+class SelectEntityFarmerState {
+  const SelectEntityFarmerState({
     this.isLoading = false,
     this.farms = const [],
     this.selectedFarm,
@@ -11,12 +11,12 @@ class FarmerEntityState {
   final List<Farm> farms;
   final Farm? selectedFarm;
 
-  FarmerEntityState copyWith({
+  SelectEntityFarmerState copyWith({
     bool? isLoading,
     List<Farm>? farms,
     Farm? selectedFarm,
   }) {
-    return FarmerEntityState(
+    return SelectEntityFarmerState(
       isLoading: isLoading ?? this.isLoading,
       farms: farms ?? this.farms,
       selectedFarm: selectedFarm ?? this.selectedFarm,

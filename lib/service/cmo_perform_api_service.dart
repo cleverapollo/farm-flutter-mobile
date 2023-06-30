@@ -4,18 +4,11 @@ import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
-import 'package:cmo/model/asi_type/asi_type.dart';
-import 'package:cmo/model/company.dart';
 import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/compartment/product_group_template.dart';
 import 'package:cmo/model/compartment/species_group_template.dart';
-import 'package:cmo/model/farm.dart';
-import 'package:cmo/model/group_scheme.dart';
-import 'package:cmo/model/master_data_message.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
-import 'package:cmo/model/user_auth.dart';
-import 'package:cmo/model/user_device.dart';
-import 'package:cmo/model/user_info.dart';
 import 'package:cmo/model/user_role_config/user_role_config.dart';
 import 'package:cmo/service/service.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
@@ -301,6 +294,33 @@ class CmoPerformApiService {
     } catch (_) {}
   }
 
+
+  Future<bool> createFarmerSystemEvent({
+    required String farmId,
+    required int userDeviceId,
+  }) async {
+    final body = {
+      'SystemEventName': 'SyncGSMasterData',
+      'PrimaryKey': farmId,
+      'UserDeviceId': userDeviceId
+    };
+
+    final response = await client.post<dynamic>(
+      '${_apiUrl}CreateSystemEvent',
+      data: body,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    await checkFarmSystemEventExist(systemEventId: response.data['SystemEventId'] as int);
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return false;
+    }
+
+    return true;
+  }
+
   Future<bool> checkFarmSystemEventExist({required int systemEventId}) async {
     try {
       final result = await client.get<dynamic>(
@@ -314,34 +334,6 @@ class CmoPerformApiService {
       return false;
     } catch (_) {
       return false;
-    }
-  }
-
-  Future<String> createFarmerSystemEvent({
-    required String primaryKey,
-    required int userDeviceId,
-    required String systemEventName,
-  }) async {
-    try {
-      final body = {
-        'SystemEventName': systemEventName,
-        'PrimaryKey': primaryKey,
-        'UserDeviceId': userDeviceId
-      };
-      final accessToken = await _readAccessToken();
-      final response = await client.post<dynamic>(
-        '${_apiUrl}CreateSystemEvent',
-        data: body,
-        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
-      );
-
-      if (response.statusCode != 200) {
-        showSnackError(msg: 'Unknow error: ${response.statusCode}');
-        return '';
-      }
-      return response.data['SystemEventId'].toString();
-    } catch (e) {
-      return '';
     }
   }
 

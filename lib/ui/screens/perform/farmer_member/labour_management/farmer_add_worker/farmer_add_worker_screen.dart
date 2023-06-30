@@ -97,7 +97,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
-          title: LocaleKeys.addStakeholders.tr(),
+          title: LocaleKeys.addLabour.tr(),
           subtitle: '${LocaleKeys.rmu_name.tr()}: Border Timbers',
           subtitleTextStyle: context.textStyles.bodyBold.blue,
           leading: Assets.icons.icArrowLeft.svgBlack,
