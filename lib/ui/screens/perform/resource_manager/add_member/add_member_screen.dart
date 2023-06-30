@@ -1,17 +1,14 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/asi.dart';
-import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/data/farm_property_ownership_type.dart';
 import 'package:cmo/model/data/province.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
-import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_membership_contract_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_circle_item_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
@@ -388,50 +385,6 @@ class _AddMemberSDetails extends StatelessWidget {
                     cubit.onDataChangeSiteDetail(province: p0);
                   },
                 ),
-                // const SizedBox(height: 16),
-                // Column(children: [
-                //   InkWell(
-                //     onTap: () {
-                //       cubit.onDataChangeSiteDetail(
-                //           isExpansionOpen: !data.isExpansionOpen);
-                //     },
-                //     child: Container(
-                //       padding: const EdgeInsets.symmetric(
-                //           vertical: 12, horizontal: 12),
-                //       width: double.maxFinite,
-                //       decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.circular(12),
-                //         border: Border.all(color: Colors.grey),
-                //       ),
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //           Text(
-                //             data.provinceSelected?.provinceName ?? 'Province',
-                //             style: context.textStyles.bodyBold,
-                //           ),
-                //           const Icon(Icons.keyboard_arrow_down),
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                //   Visibility(
-                //     visible: data.isExpansionOpen,
-                //     child: SizedBox(
-                //       height: 300,
-                //       width: double.maxFinite,
-                //       child: SingleChildScrollView(
-                //         child: Column(
-                //           children: data.provinces != null
-                //               ? data.provinces
-                //                   .map((e) => _buildItem(e, context, cubit))
-                //                   .toList()
-                //               : [],
-                //         ),
-                //       ),
-                //     ),
-                //   )
-                // ]),
                 const SizedBox(height: 16),
                 CmoDropDownLayoutWidget(
                   onTap: () async {
@@ -727,7 +680,7 @@ class _AddMemberSLIMF extends StatelessWidget {
     return BlocSelector<AddMemberCubit, AddMemberState, AddMemberSLIMF?>(
         selector: (state) => state.addMemberSLIMF,
         builder: (context, AddMemberSLIMF? data) {
-          final isSelect = data?.isSlimfCompliant ?? true;
+          final isSelect = data?.isSlimfCompliant;
           return CmoCollapseTitle(
             title: LocaleKeys.slimf_compliance.tr(),
             showTick: data?.isComplete,
@@ -765,33 +718,16 @@ class _AddMemberSLIMF extends StatelessWidget {
                       style: context.textStyles.titleBold
                           .copyWith(color: context.colors.black, fontSize: 16)),
                   const SizedBox(height: 12),
-                  _buildAnswerWidget(context, isSelect),
+                  CmoSlimfQuestion(
+                    onTap: (p0) {
+                      context.read<AddMemberCubit>().onTapSlimf(isSlimf: p0!);
+                    },
+                    initialValue: isSelect,
+                  ),
                 ],
               ),
             ),
           );
         });
-  }
-
-  Widget _buildAnswerWidget(BuildContext context, bool isSelect) {
-    return Row(
-      children: [
-        const Spacer(),
-        CmoChipAnswerWidget.c(
-          onTap: () {
-            context.read<AddMemberCubit>().onTapSlimf(isSlimf: true);
-          },
-          isSelect: isSelect,
-        ),
-        const SizedBox(width: 36),
-        CmoChipAnswerWidget.nc(
-          onTap: () {
-            context.read<AddMemberCubit>().onTapSlimf(isSlimf: false);
-          },
-          isSelect: !isSelect,
-        ),
-        const Spacer(),
-      ],
-    );
   }
 }

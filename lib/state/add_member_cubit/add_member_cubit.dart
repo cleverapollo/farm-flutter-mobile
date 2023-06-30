@@ -16,14 +16,19 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   AddMemberCubit() : super(const AddMemberState());
 
   Future<void> initAddMember({Farm? farm}) async {
-    final groupSchemeUnit = await configService.getActiveRegionalManager();
-    final result = await cmoDatabaseMasterService
-        .getFarmByRmuId(groupSchemeUnit?.regionalManagerUnitId);
-
     await getAllFarmPropertyOwnerShipType();
-    await getProvinces();
+    await initDataFarm(farm);
+  }
+
+  void disposeAddMember() {
+    emit(const AddMemberState());
+  }
+
+  Future<void> initDataFarm(Farm? farm) async {
     if (farm != null) {
-      emit(state.copyWith(farm: farm));
+      emit(state.copyWith(isLoading: true));
+
+      emit(state.copyWith(isLoading: false));
     } else {
       final groupScheme = await configService.getActiveGroupScheme();
       final groupSchemeUnit = await configService.getActiveRegionalManager();
@@ -35,10 +40,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         isActive: true,
       )));
     }
-  }
-
-  void disposeAddMember() {
-    emit(const AddMemberState());
   }
 
   Future<void> stepCount() async {
@@ -122,17 +123,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     }
   }
 
-  Future<void> getProvinces() async {
-    final data = await cmoDatabaseMasterService.getProvinces();
-
-    if (data.isNotEmpty) {
-      emit(state.copyWith(
-          addMemberSDetails: state.addMemberSDetails.copyWith(
-        provinces: data,
-      )));
-    }
-  }
-
   Future<void> onDataChangeSiteDetail({
     String? siteName,
     String? town,
@@ -183,8 +173,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       siteName: siteName ?? state.addMemberSDetails.siteName,
       town: town ?? state.addMemberSDetails.town,
       province: province ?? state.addMemberSDetails.province,
-      provinceSelected:
-          provinceSelected ?? state.addMemberSDetails.provinceSelected,
       addMemberSiteLocations:
           state.addMemberSDetails.addMemberSiteLocations.copyWith(
         lat: siteLocationLat ??

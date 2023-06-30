@@ -2,7 +2,6 @@ import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/data/farm_property_ownership_type.dart';
-import 'package:cmo/model/data/province.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'add_member_state.freezed.dart';
@@ -102,8 +101,6 @@ class AddMemberSDetails with _$AddMemberSDetails {
     String? siteName,
     String? town,
     String? province,
-    Province? provinceSelected,
-    @Default([]) List<Province> provinces,
     @Default(AddMemberSiteLocations())
         AddMemberSiteLocations addMemberSiteLocations,
     @Default(AddMemberCompartmentsState())
