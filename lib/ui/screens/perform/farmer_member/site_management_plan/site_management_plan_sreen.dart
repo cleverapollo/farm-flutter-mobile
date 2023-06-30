@@ -2,6 +2,7 @@ import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_production_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/annual_budget_management_screen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/camp_management/camp_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/site_management_plan/management_plan/management_plan_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -59,7 +60,7 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
   Widget _buildPlantationFMP() {
     return Column(
       children: [
-        _compartmentCard(),
+        _compartmentCard(context),
         CmoTappable(
           onTap: () => ManagementPlanScreen.push(context),
           child: CmoCard(
@@ -80,7 +81,7 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
       builder: (context, state) {
         return Column(
           children: [
-            _compartmentCard(),
+            _compartmentCard(context),
             CmoTappable(
               onTap: () {
                 AnnualProductionManagementScreen.push(context);
@@ -124,9 +125,11 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
     );
   }
 
-  Widget _compartmentCard() {
+  Widget _compartmentCard(BuildContext context) {
     return CmoTappable(
-      onTap: () {},
+      onTap: () {
+        CampManagementScreen.push(context);
+      },
       child: CmoCard(
         padding: const EdgeInsets.symmetric(
           vertical: 8,

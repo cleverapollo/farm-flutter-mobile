@@ -78,3 +78,9 @@ class Camp {
   factory Camp.fromJson(Map<String, dynamic> json) =>
       _$CampFromJson(json);
 }
+
+extension CampExtension on Camp {
+  bool get isFirstStepCompleted => (campName?.isNotEmpty ?? false)
+      && protectedArea != null && cattlePostHousing != null && corridors != null &&
+      roadAndFireBreaks != null && poachingAlleviationZone != null && latitude != null;
+}
