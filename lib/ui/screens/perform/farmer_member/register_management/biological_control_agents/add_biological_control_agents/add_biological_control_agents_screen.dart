@@ -12,22 +12,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddBiologicalControlAgentsScreen extends StatefulWidget {
-  const AddBiologicalControlAgentsScreen({super.key});
+  const AddBiologicalControlAgentsScreen(
+      {super.key, this.biologicalControlAgent});
+
+  final BiologicalControlAgent? biologicalControlAgent;
 
   @override
-  State<StatefulWidget> createState() => _AddBiologicalControlAgentsScreenState();
+  State<StatefulWidget> createState() =>
+      _AddBiologicalControlAgentsScreenState();
 
-  static Future<void> push(BuildContext context) {
+  static Future<BiologicalControlAgent?> push(BuildContext context,
+      {BiologicalControlAgent? biologicalControlAgent}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const AddBiologicalControlAgentsScreen(),
+        builder: (_) => AddBiologicalControlAgentsScreen(
+            biologicalControlAgent: biologicalControlAgent),
       ),
     );
   }
 }
 
-class _AddBiologicalControlAgentsScreenState extends State<AddBiologicalControlAgentsScreen> {
+class _AddBiologicalControlAgentsScreenState
+    extends State<AddBiologicalControlAgentsScreen> {
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
@@ -36,10 +43,23 @@ class _AddBiologicalControlAgentsScreenState extends State<AddBiologicalControlA
 
   late BiologicalControlAgent agent;
 
+  bool carRaised = false;
+  bool carClosed = false;
+
   @override
   void initState() {
     super.initState();
-    agent = BiologicalControlAgent();
+    if (widget.biologicalControlAgent == null) {
+      agent = BiologicalControlAgent(
+          biologicalControlAgentRegisterNo: DateTime.now().toIso8601String(),
+          isActive: true,
+          isMasterDataSynced: false);
+    } else {
+      agent = BiologicalControlAgent.fromJson(
+          widget.biologicalControlAgent!.toJson());
+    }
+    carRaised = agent.carRaisedDate != null;
+    carClosed = agent.carClosedDate != null;
   }
 
   Future<void> onSubmit() async {
@@ -56,11 +76,26 @@ class _AddBiologicalControlAgentsScreenState extends State<AddBiologicalControlA
       });
       try {
         await hideInputMethod();
+        final farmId = await configService.getActiveFarmId();
         agent = agent.copyWith(
-          dateReleased: value['DateReleased'].toString(),
-          stakeholderId: int.tryParse(value['StakeholderId'].toString()),
-          descriptionMonitoringRequirementsId: int.tryParse(value['DescriptionMonitoringRequirementsId'].toString()),
+          farmId: farmId,
+          dateReleased: value['DateReleased'] as DateTime?,
+          stakeholderId: value['StakeholderId']?.toString(),
+          monitoringRequirementId: int.tryParse(
+              value['DescriptionMonitoringRequirementsId']?.toString() ?? ''),
         );
+
+        if (carRaised && agent.carRaisedDate == null) {
+          agent = agent.copyWith(
+            carRaisedDate: DateTime.now().toIso8601String(),
+          );
+        }
+
+        if (carClosed && agent.carClosedDate == null) {
+          agent = agent.copyWith(
+            carClosedDate: DateTime.now().toIso8601String(),
+          );
+        }
 
         int? resultId;
 
@@ -68,17 +103,19 @@ class _AddBiologicalControlAgentsScreenState extends State<AddBiologicalControlA
           final databaseService = cmoDatabaseMasterService;
 
           await (await databaseService.db).writeTxn(() async {
-            resultId = await databaseService.cacheBiologicalControlAgents(agent);
+            resultId =
+                await databaseService.cacheBiologicalControlAgents(agent);
           });
         }
 
         if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
-              msg: '${LocaleKeys.addBCA.tr()} $resultId',
+              msg:
+                  '${widget.biologicalControlAgent == null ? LocaleKeys.addBCA.tr() : 'Edit BCA'} $resultId',
             );
 
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(agent);
           }
         }
       } finally {
@@ -95,7 +132,9 @@ class _AddBiologicalControlAgentsScreenState extends State<AddBiologicalControlA
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
-          title: LocaleKeys.addBCA.tr(),
+          title: widget.biologicalControlAgent == null
+              ? LocaleKeys.addBCA.tr()
+              : 'Edit BCA',
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
@@ -135,12 +174,11 @@ class _AddBiologicalControlAgentsScreenState extends State<AddBiologicalControlA
               SelectControlAgentWidget(
                 onSelect: (controlAgent) {
                   agent = agent.copyWith(
-                    scientificName: controlAgent.scientificName,
-                    countryOrigin: controlAgent.countryOrigin,
-                    controlAgentId: controlAgent.controlAgentId,
-                    reasonBioAgent: controlAgent.reasonBioAgent,
-                    nameControlAgent: controlAgent.nameControlAgent,
-                  );
+                      biologicalControlAgentTypeId: controlAgent.id,
+                      biologicalControlAgentName: controlAgent.scientificName,
+                      biologicalControlAgentTypeCountryName:
+                          controlAgent.countryOrigin,
+                      reasonForBioAgent: controlAgent.reasonBioAgent);
                 },
               ),
               _buildSelectDateReleased(),
@@ -150,7 +188,7 @@ class _AddBiologicalControlAgentsScreenState extends State<AddBiologicalControlA
                 child: SelectItemWidget(
                   title: LocaleKeys.carRaised.tr(),
                   onSelect: (isSelected) {
-                    agent = agent.copyWith(carRaised: isSelected);
+                    carRaised = isSelected;
                   },
                 ),
               ),
@@ -158,7 +196,7 @@ class _AddBiologicalControlAgentsScreenState extends State<AddBiologicalControlA
                 child: SelectItemWidget(
                   title: LocaleKeys.carClosed.tr(),
                   onSelect: (isSelected) {
-                    agent = agent.copyWith(carClosed: isSelected);
+                    carClosed = isSelected;
                   },
                 ),
               ),
@@ -167,7 +205,7 @@ class _AddBiologicalControlAgentsScreenState extends State<AddBiologicalControlA
                 child: GeneralCommentWidget(
                   hintText: LocaleKeys.generalComments.tr(),
                   onChanged: (value) {
-                    agent = agent.copyWith(generalComments: value);
+                    agent = agent.copyWith(comment: value);
                   },
                 ),
               ),
@@ -205,14 +243,15 @@ class _AddBiologicalControlAgentsScreenState extends State<AddBiologicalControlA
     return CmoDropdown(
       name: 'StakeHolderId',
       hintText: LocaleKeys.stakeholderName.tr(),
-      validator: requiredValidator,
       inputDecoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
         isDense: true,
         labelText: LocaleKeys.stakeholderName.tr(),
         labelStyle: context.textStyles.bodyBold.black,
-        border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
+        border: UnderlineInputBorder(
+            borderSide: BorderSide(color: context.colors.grey)),
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: context.colors.blue)),
       ),
       onChanged: (int? id) {
         if (id == -1) {
@@ -231,22 +270,25 @@ class _AddBiologicalControlAgentsScreenState extends State<AddBiologicalControlA
     return CmoDropdown(
       name: 'DescriptionMonitoringRequirementsId',
       hintText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
-      validator: requiredValidator,
       inputDecoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
         isDense: true,
         labelText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
         labelStyle: context.textStyles.bodyBold.black,
-        border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
+        border: UnderlineInputBorder(
+            borderSide: BorderSide(color: context.colors.grey)),
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: context.colors.blue)),
       ),
       onChanged: (int? id) {
         if (id == -1) {
-          _formKey.currentState!.fields['DescriptionMonitoringRequirementsId']?.reset();
+          _formKey.currentState!.fields['DescriptionMonitoringRequirementsId']
+              ?.reset();
         }
       },
       itemsData: [
-        CmoDropdownItem(id: -1, name: LocaleKeys.descriptionOfMonitoringRequirements.tr()),
+        CmoDropdownItem(
+            id: -1, name: LocaleKeys.descriptionOfMonitoringRequirements.tr()),
         CmoDropdownItem(id: 0, name: 'Description Planet 0'),
         CmoDropdownItem(id: 1, name: 'Description Planet 1'),
       ],

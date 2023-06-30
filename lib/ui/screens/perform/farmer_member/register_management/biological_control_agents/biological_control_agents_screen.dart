@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
@@ -11,50 +12,6 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
-
-List<BiologicalControlAgent> _mockData = [
-  BiologicalControlAgent(
-    biologicalControlAgentId: DateTime.now().millisecondsSinceEpoch,
-    generalComments: 'generalComments',
-    descriptionMonitoringRequirements: '',
-    stakeholderName: 'Captain planet',
-    scientificName: 'Hocus Pocus',
-    countryOrigin: 'South Africa',
-    reasonBioAgent: 'Eats the pest',
-    nameControlAgent: 'West Indian Rooster 1',
-    dateReleased: DateTime(2023, 4, 20).toString(),
-  ),
-  BiologicalControlAgent(
-    biologicalControlAgentId: DateTime.now().millisecondsSinceEpoch,
-    generalComments: 'generalComments',
-    countryOrigin: 'South Africa',
-    descriptionMonitoringRequirements: '',
-    stakeholderName: 'Captain planet',
-    scientificName: 'Hocus Pocus',
-    reasonBioAgent: 'Eats the pest',
-    nameControlAgent: 'West Indian Rooster 2',
-  ),
-  BiologicalControlAgent(
-    biologicalControlAgentId: DateTime.now().millisecondsSinceEpoch,
-    generalComments: 'generalComments',
-    countryOrigin: 'South Africa',
-    descriptionMonitoringRequirements: '',
-    stakeholderName: 'Captain planet',
-    scientificName: 'Hocus Pocus',
-    reasonBioAgent: 'Eats the pest',
-    nameControlAgent: 'West Indian Rooster 3',
-  ),
-  BiologicalControlAgent(
-    biologicalControlAgentId: DateTime.now().millisecondsSinceEpoch,
-    generalComments: 'generalComments',
-    countryOrigin: 'South Africa',
-    descriptionMonitoringRequirements: '',
-    stakeholderName: 'Captain planet',
-    scientificName: 'Hocus Pocus',
-    reasonBioAgent: 'Eats the pest',
-    nameControlAgent: 'West Indian Rooster 4',
-  ),
-];
 
 class BiologicalControlAgentsScreen extends StatefulWidget {
   const BiologicalControlAgentsScreen({
@@ -74,7 +31,11 @@ class BiologicalControlAgentsScreen extends StatefulWidget {
   }
 }
 
-class _BiologicalControlAgentsScreenState extends State<BiologicalControlAgentsScreen> {
+class _BiologicalControlAgentsScreenState
+    extends State<BiologicalControlAgentsScreen> {
+  final List<BiologicalControlAgent> items = [];
+  bool isLoading = true;
+
   Timer? _debounceInputTimer;
   late List<BiologicalControlAgent> filteredItems;
   late StatusFilterEnum statusFilter;
@@ -83,7 +44,16 @@ class _BiologicalControlAgentsScreenState extends State<BiologicalControlAgentsS
   @override
   void initState() {
     super.initState();
-    filteredItems = _mockData;
+    _init();
+  }
+
+  Future<void> _init() async {
+    final farmId = await configService.getActiveFarmId();
+    items.addAll(await cmoDatabaseMasterService
+        .getBiologicalControlAgentByFarmId(farmId!));
+    isLoading = false;
+
+    filteredItems = items;
     statusFilter = StatusFilterEnum.open;
     inputSearch = '';
     applyFilter();
@@ -94,15 +64,18 @@ class _BiologicalControlAgentsScreenState extends State<BiologicalControlAgentsS
     if (input == null || input.isEmpty) {
       applyFilter();
     } else {
-      filteredItems = _mockData.where((element) {
-        final containName = element.nameControlAgent?.toLowerCase().contains(input.toLowerCase()) ?? false;
+      filteredItems = items.where((element) {
+        final containName = element.biologicalControlAgentName
+                ?.toLowerCase()
+                .contains(input.toLowerCase()) ??
+            false;
         var isFilter = false;
         switch (statusFilter) {
           case StatusFilterEnum.open:
-            isFilter = element.dateReleased.isNull || (element.dateReleased?.isEmpty ?? false);
+            isFilter = element.dateReleased == null;
             break;
           case StatusFilterEnum.closed:
-            isFilter = element.dateReleased?.isNotEmpty ?? false;
+            isFilter = element.dateReleased != null;
             break;
         }
 
@@ -116,12 +89,12 @@ class _BiologicalControlAgentsScreenState extends State<BiologicalControlAgentsS
     if (inputSearch == null || inputSearch!.isEmpty) {
       switch (statusFilter) {
         case StatusFilterEnum.open:
-          filteredItems = _mockData
-              .where((element) => element.dateReleased.isNull || (element.dateReleased?.isEmpty ?? false))
-              .toList();
+          filteredItems =
+              items.where((element) => element.dateReleased == null).toList();
           break;
         case StatusFilterEnum.closed:
-          filteredItems = _mockData.where((element) => element.dateReleased?.isNotEmpty ?? false).toList();
+          filteredItems =
+              items.where((element) => element.dateReleased != null).toList();
           break;
       }
     } else {
@@ -141,50 +114,67 @@ class _BiologicalControlAgentsScreenState extends State<BiologicalControlAgentsS
         trailing: Assets.icons.icAdd.svgBlack,
         onTapTrailing: () => AddBiologicalControlAgentsScreen.push(context),
       ),
-      body: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
-              child: CmoTextField(
-                name: LocaleKeys.search.tr(),
-                hintText: LocaleKeys.search.tr(),
-                suffixIcon: Assets.icons.icSearch.svg(),
-                onChanged: (input) {
-                  _debounceInputTimer?.cancel();
-                  _debounceInputTimer = Timer(const Duration(milliseconds: 200), () => searching(input));
-                },
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
+                    child: CmoTextField(
+                      name: LocaleKeys.search.tr(),
+                      hintText: LocaleKeys.search.tr(),
+                      suffixIcon: Assets.icons.icSearch.svg(),
+                      onChanged: (input) {
+                        _debounceInputTimer?.cancel();
+                        _debounceInputTimer = Timer(
+                            const Duration(milliseconds: 200),
+                            () => searching(input));
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
+                    child: StatusFilterWidget(
+                      onSelectFilter: (statusFilterEnum) {
+                        statusFilter = statusFilterEnum;
+                        applyFilter();
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 22,
+                      ),
+                      itemCount: filteredItems.length,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 21,
+                      ),
+                      itemBuilder: (context, index) {
+                        final item = filteredItems[index];
+                        return GestureDetector(
+                          onTap: () async {
+                            final result =
+                                await AddBiologicalControlAgentsScreen.push(
+                                    context,
+                                    biologicalControlAgent: item);
+                            if (result == null) return;
+                            filteredItems[index] = result;
+                            setState(() {});
+                          },
+                          child: _BiologicalControlAgentItem(
+                            agent: item,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
-              child: StatusFilterWidget(
-                onSelectFilter: (statusFilterEnum) {
-                  statusFilter = statusFilterEnum;
-                  applyFilter();
-                },
-              ),
-            ),
-            Expanded(
-              child: ListView.separated(
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 22,
-                ),
-                itemCount: filteredItems.length,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 21,
-                ),
-                itemBuilder: (context, index) {
-                  return _BiologicalControlAgentItem(
-                    agent: filteredItems[index],
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -207,7 +197,7 @@ class _BiologicalControlAgentItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${LocaleKeys.complaintNo.tr()}: ${agent.biologicalControlAgentId?.toString()}',
+            '${LocaleKeys.complaintNo.tr()}: ${agent.biologicalControlAgentTypeId?.toString()}',
             style: context.textStyles.bodyBold.blue,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -224,23 +214,23 @@ class _BiologicalControlAgentItem extends StatelessWidget {
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.nameOfControlAgent.tr(),
-            valueLabel: agent.nameControlAgent,
+            valueLabel: agent.biologicalControlAgentName,
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.scientificName.tr(),
-            valueLabel: agent.scientificName,
+            valueLabel: agent.biologicalControlAgentTypeScientificName,
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.countryOfOrigin.tr(),
-            valueLabel: agent.countryOrigin,
+            valueLabel: agent.biologicalControlAgentTypeCountryName,
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.reasonForBioAgent.tr(),
-            valueLabel: agent.reasonBioAgent,
+            valueLabel: agent.reasonForBioAgent,
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateReleased.tr(),
-            valueLabel: DateTime.tryParse(agent.dateReleased ?? '')?.ddMMYyyy(),
+            valueLabel: agent.dateReleased?.ddMMYyyy(),
             backgroundColor: context.colors.greyLight1,
           ),
           KeyValueItemWidget(
@@ -249,10 +239,10 @@ class _BiologicalControlAgentItem extends StatelessWidget {
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.description.tr(),
-            valueLabel: agent.descriptionMonitoringRequirements,
+            valueLabel: agent.issueDescription,
           ),
           GeneralCommentsItem(
-            comment: agent.generalComments,
+            comment: agent.comment,
           ),
         ],
       ),

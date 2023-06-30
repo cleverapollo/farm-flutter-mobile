@@ -9,28 +9,34 @@ part 'biological_control_agent.g.dart';
 @Collection(ignore: {'copyWith'})
 class BiologicalControlAgent with _$BiologicalControlAgent {
   const factory BiologicalControlAgent({
-    @JsonKey(name: 'BiologicalControlAgentsId') int? biologicalControlAgentId,
-    @JsonKey(name: 'NameControlAgent') String? nameControlAgent,
-    @JsonKey(name: 'ControlAgentId') int? controlAgentId,
+    @JsonKey(name: 'BiologicalControlAgentRegisterNo')
+        String? biologicalControlAgentRegisterNo,
     @JsonKey(name: 'FarmId') String? farmId,
-    @JsonKey(name: 'ScientificName') String? scientificName,
-    @JsonKey(name: 'CountryOrigin') String? countryOrigin,
-    @JsonKey(name: 'ReasonBioAgent') String? reasonBioAgent,
-    @JsonKey(name: 'DateReleased') String? dateReleased,
+    @JsonKey(name: 'BiologicalControlAgentTypeId')
+        int? biologicalControlAgentTypeId,
+    @JsonKey(name: 'BiologicalControlAgentName')
+        String? biologicalControlAgentName,
+    @JsonKey(name: 'BiologicalControlAgentRegisterId')
+        String? biologicalControlAgentRegisterId,
+    @JsonKey(name: 'IssueDescription') String? issueDescription,
+    @JsonKey(name: 'DateReleased') DateTime? dateReleased,
+    @JsonKey(name: 'StakeholderId') String? stakeholderId,
+    @JsonKey(name: 'MonitoringRequirementId') int? monitoringRequirementId,
+    @JsonKey(name: 'Comment') String? comment,
+    @JsonKey(name: 'CarRaisedDate') String? carRaisedDate,
+    @JsonKey(name: 'CarClosedDate') String? carClosedDate,
+    @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
     @JsonKey(name: 'StakeholderName') String? stakeholderName,
-    @JsonKey(name: 'StakeholderId') int? stakeholderId,
-    @JsonKey(name: 'DescriptionMonitoringRequirements')
-        String? descriptionMonitoringRequirements,
-    @JsonKey(name: 'DescriptionMonitoringRequirementsId')
-        int? descriptionMonitoringRequirementsId,
-    @JsonKey(name: 'GeneralComments') String? generalComments,
-    @Default(false) @JsonKey(name: 'CarRaised') bool? carRaised,
-    @Default(false) @JsonKey(name: 'CarClosed') bool? carClosed,
-    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
-    @Default(true)
-    @JsonKey(name: 'IsMasterDataSynced')
-        bool? isMasterDataSynced,
-    @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
+    @JsonKey(name: 'BiologicalControlAgentTypeName')
+        String? biologicalControlAgentTypeName,
+    @JsonKey(name: 'BiologicalControlAgentTypeScientificName')
+        String? biologicalControlAgentTypeScientificName,
+    @JsonKey(name: 'BiologicalControlAgentTypeCountryName')
+        String? biologicalControlAgentTypeCountryName,
+    @JsonKey(name: 'ReasonForBioAgent') String? reasonForBioAgent,
+    @JsonKey(name: 'MonitoringRequirementName')
+        String? monitoringRequirementName,
   }) = _BiologicalControlAgent;
 
   const BiologicalControlAgent._();
@@ -39,5 +45,5 @@ class BiologicalControlAgent with _$BiologicalControlAgent {
       _$BiologicalControlAgentFromJson(json);
 
   @override
-  Id get id => biologicalControlAgentId ?? Isar.autoIncrement;
+  Id get id => biologicalControlAgentTypeId ?? Isar.autoIncrement;
 }
