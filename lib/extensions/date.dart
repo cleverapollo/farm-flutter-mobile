@@ -14,7 +14,7 @@ extension DateTimeExtensions on DateTime? {
   }
 
   String mmmDdYyyy() {
-    final dateFormat = DateFormat('MMM dd, yyyy');
+    final dateFormat = DateFormat('MMM dd, yyyy', 'EN');
     final formattedDate = dateFormat.format(this ?? DateTime.now());
     return formattedDate;
   }

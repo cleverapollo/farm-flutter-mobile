@@ -28,7 +28,10 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     final groupSchemeUnit = await configService.getActiveRegionalManager();
     final loadedFarmPropertyOwnerShipType =
         await getAllFarmPropertyOwnerShipType();
-
+    final farmMemberObjective = await cmoDatabaseMasterService
+        .getAllFarmMemberObjectiveByGroupSchemeId(groupScheme!.groupSchemeId!);
+    final farmObjectiveOption = await cmoDatabaseMasterService
+        .getFarmObjectiveOptionByGroupSchemeId(groupScheme.groupSchemeId!);
     if (!loadedFarmPropertyOwnerShipType) return;
 
     if (farm != null) {
@@ -83,8 +86,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       final isCompleteCompartments = compartments?.isNotEmpty ?? false;
       final isCompleteASI = asis.isNotEmpty;
       final addMemberSDetailIsComplete = isCompleteSiteLocation &&
-          isCompleteCompartments &&
-          isCompleteASI &&
           farm.farmName != null &&
           farm.town != null &&
           farm.province != null;
@@ -116,20 +117,24 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       final firstAnswerMRA = farmMemberRiskProfileAnswer
           .firstWhere(
             (element) => element.riskProfileQuestionId == 1,
-            orElse: () => const FarmMemberRiskProfileAnswer(),
+            orElse: () =>
+                FarmMemberRiskProfileAnswer(answer: farm.isChemicalsUsed),
           )
           .answer;
       final secondAnswerMRA = farmMemberRiskProfileAnswer
           .firstWhere((element) => element.riskProfileQuestionId == 2,
-              orElse: () => const FarmMemberRiskProfileAnswer())
+              orElse: () =>
+                  FarmMemberRiskProfileAnswer(answer: farm.isHcvNeighbouring))
           .answer;
       final thirdAnswerMRA = farmMemberRiskProfileAnswer
           .firstWhere((element) => element.riskProfileQuestionId == 3,
-              orElse: () => const FarmMemberRiskProfileAnswer())
+              orElse: () => FarmMemberRiskProfileAnswer(
+                  answer: farm.isRiversOrStreamsNeighbouring))
           .answer;
       final fourthAnswerMRA = farmMemberRiskProfileAnswer
           .firstWhere((element) => element.riskProfileQuestionId == 4,
-              orElse: () => const FarmMemberRiskProfileAnswer())
+              orElse: () => FarmMemberRiskProfileAnswer(
+                  answer: farm.isCommunitiesNeighbouring))
           .answer;
 
       final addMemberMRAIsComplete = firstAnswerMRA != null &&
@@ -182,6 +187,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         addMemberInclusionDate: addMemberInclusionDate,
         addMemberMRA: addMemberMRA,
         addMemberMFO: addMemberMFO,
+        farm: farm,
       ));
 
       debugPrint('Done loading farm data');
@@ -189,7 +195,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       emit(state.copyWith(
           farm: Farm(
         farmId: DateTime.now().millisecondsSinceEpoch.toString(),
-        groupSchemeId: groupScheme?.groupSchemeId,
+        groupSchemeId: groupScheme.groupSchemeId,
         regionalManagerUnitId: groupSchemeUnit?.regionalManagerUnitId,
         isActive: true,
       )));
@@ -240,10 +246,13 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     }
 
     debugPrint(stepCount.toString());
-    emit(state.copyWith(
-      farm: state.farm?.copyWith(
-          stepCount: stepCount, isGroupSchemeMember: stepCount == 10),
-    ));
+    if (state.farm?.isGroupSchemeMember == false ||
+        state.farm?.isGroupSchemeMember == null) {
+      emit(state.copyWith(
+        farm: state.farm?.copyWith(
+            stepCount: stepCount, isGroupSchemeMember: stepCount == 10),
+      ));
+    }
     if (stepCount != 0) {
       await cacheFarm();
     }

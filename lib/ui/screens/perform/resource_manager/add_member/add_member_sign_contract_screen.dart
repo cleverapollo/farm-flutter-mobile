@@ -1,13 +1,14 @@
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
+import 'package:cmo/utils/file_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
-import '../../../../widget/cmo_app_bar_v2.dart';
-import '../../../../widget/cmo_buttons.dart';
-import 'add_member_done_screen.dart';
+import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:cmo/ui/widget/cmo_buttons.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_done_screen.dart';
 
 class AddMemberSignContractScreen extends StatefulWidget {
   const AddMemberSignContractScreen({super.key});
@@ -66,8 +67,18 @@ class _AddMemberSignContractScreenState
                     key: signatureKey,
                     maximumStrokeWidth: 1,
                     minimumStrokeWidth: 1,
-                    onDrawStart: () {
-                      return false;
+                    onDrawEnd: () async {
+                      final points = signatureKey.currentState?.toString();
+                      final image = await signatureKey.currentState?.toImage();
+                      final byteData = await image?.toByteData();
+                      final file = await FileUtil.writeToFile(byteData!);
+                      final base64 = await FileUtil.toBase64(file);
+                      if (context.mounted) {
+                        await context
+                            .read<AddMemberCubit>()
+                            .onDataChangeMemberSignContract(base64, points,
+                                DateTime.now().toIso8601String());
+                      }
                     },
                   ),
                 ),
@@ -83,11 +94,13 @@ class _AddMemberSignContractScreenState
               Center(
                   child: CmoFilledButton(
                       title: LocaleKeys.accept_signature_and_finalise.tr(),
-                      onTap: () {
-                        context
-                            .read<AddMemberCubit>()
-                            .onDataChangeMemberSignContract('', '', '');
-                        AddMemberDone.push(context);
+                      onTap: () async {
+                        final state =
+                            context.read<AddMemberCubit>().state.addMemberSAF;
+                        final goNextStep = state.signatureImage != null;
+                        if (goNextStep && context.mounted) {
+                          await AddMemberDone.push(context);
+                        }
                       })),
               const SizedBox(height: 20),
             ],

@@ -195,6 +195,28 @@ class CmoDatabaseMasterService {
     });
   }
 
+  Future<List<FarmMemberObjective>> getAllFarmMemberObjectiveByGroupSchemeId(
+      int groupSchemeId) async {
+    final db = await _db();
+
+    return db.farmMemberObjectives
+        .filter()
+        .groupSchemeIdEqualTo(groupSchemeId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<FarmObjectiveOption>> getFarmObjectiveOptionByGroupSchemeId(
+      int groupSchemeId) async {
+    final db = await _db();
+
+    return db.farmObjectiveOptions
+        .filter()
+        .groupSchemeIdEqualTo(groupSchemeId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
   Future<int?> cacheFarmMemberObjectiveAnswer(
       FarmMemberObjectiveAnswer item) async {
     final db = await _db();
@@ -818,10 +840,7 @@ class CmoDatabaseMasterService {
       String farmId) async {
     final db = await _db();
 
-    return db.annualFarmProductions
-        .filter()
-        .farmIdEqualTo(farmId)
-        .findAll();
+    return db.annualFarmProductions.filter().farmIdEqualTo(farmId).findAll();
   }
 
   Future<List<AnnualFarmProduction>> getAnnualFarmProductionByFarmId(

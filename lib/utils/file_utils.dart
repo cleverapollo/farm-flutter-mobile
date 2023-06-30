@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -25,5 +26,9 @@ class FileUtil {
         .then((value) => isSave = true);
 
     return isSave;
+  }
+
+  static Future<String> toBase64(File file) async {
+    return base64Encode(file.readAsBytesSync());
   }
 }

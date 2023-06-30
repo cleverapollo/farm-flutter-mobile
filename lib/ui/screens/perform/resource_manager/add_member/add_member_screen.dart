@@ -23,7 +23,7 @@ class AddMemberScreen extends StatefulWidget {
 
   final Farm? farm;
 
-  static Future<void> push(BuildContext context, {Farm? farm}) {
+  static Future<bool?> push(BuildContext context, {Farm? farm}) {
     return Navigator.push(context,
         MaterialPageRoute(builder: (_) => AddMemberScreen(farm: farm)));
   }
@@ -60,6 +60,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         title: LocaleKeys.addMember.tr(),
         subtitle: LocaleKeys.siteName.tr(),
         showTrailing: true,
+        onTapTrailing: () {
+          Navigator.pop(context, true);
+        },
       ),
       body: BlocSelector<AddMemberCubit, AddMemberState, bool>(
         selector: (state) => state.isLoading,
@@ -394,6 +397,7 @@ class _AddMemberSDetails extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 16),
+                _buildTitle(context, 'Site Location (*)'),
                 CmoDropDownLayoutWidget(
                   onTap: () async {
                     final data = await AssessmentLocationScreen.push<
@@ -416,6 +420,7 @@ class _AddMemberSDetails extends StatelessWidget {
                   showTick: data.isCompleteSiteLocation,
                 ),
                 const SizedBox(height: 12),
+                _buildTitle(context, 'Compartment/s'),
                 CmoDropDownLayoutWidget(
                   title: LocaleKeys.compartment_s.tr(),
                   showTick: data.isCompleteCompartments,
@@ -433,6 +438,7 @@ class _AddMemberSDetails extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 12),
+                _buildTitle(context, 'ASI'),
                 CmoDropDownLayoutWidget(
                   onTap: () async {
                     final state = context.read<AddMemberCubit>().state;

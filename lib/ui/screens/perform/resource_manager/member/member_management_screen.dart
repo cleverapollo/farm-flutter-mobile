@@ -33,8 +33,7 @@ class MemberManagementScreen extends StatefulWidget {
   State<MemberManagementScreen> createState() => _MemberManagementScreenState();
 }
 
-class _MemberManagementScreenState extends State<MemberManagementScreen>
-    with RouteAware, TickerProviderStateMixin {
+class _MemberManagementScreenState extends State<MemberManagementScreen> {
   Timer? _searchDebounce;
 
   @override
@@ -53,8 +52,11 @@ class _MemberManagementScreenState extends State<MemberManagementScreen>
             showTrailing: true,
             trailing: Assets.icons.icAdd.svgBlack,
             onTapTrailing: () async {
-              await AddMemberScreen.push(context);
-              context.read<MemberManagementCubit>().reload();
+              final result = await AddMemberScreen.push(context);
+
+              if (result != null) {
+                context.read<MemberManagementCubit>().reload();
+              }
             },
           ),
           body: BlocSelector<MemberManagementCubit, MemberManagementState,
@@ -131,8 +133,15 @@ class _MemberManagementScreenState extends State<MemberManagementScreen>
                       itemBuilder: (_, index) {
                         final farm = filteringFarms[index];
                         return InkWell(
-                          onTap: () {
-                            AddMemberScreen.push(context, farm: farm);
+                          onTap: () async {
+                            final result =
+                                await AddMemberScreen.push(context, farm: farm);
+
+                            if (result != null) {
+                              await context
+                                  .read<MemberManagementCubit>()
+                                  .reload();
+                            }
                           },
                           child: CmoCard(
                             margin: const EdgeInsets.symmetric(horizontal: 23),
