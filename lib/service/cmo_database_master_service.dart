@@ -3,50 +3,14 @@
 import 'dart:io';
 
 import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/model/accident_and_incident.dart';
-import 'package:cmo/model/accident_and_incident_property_damaged/accident_and_incident_property_damaged.dart';
-import 'package:cmo/model/annual_budget_transaction/annual_budget_transaction.dart';
-import 'package:cmo/model/annual_budget_transaction_category/annual_budget_transaction_category.dart';
-import 'package:cmo/model/asi.dart';
-import 'package:cmo/model/asi_photo/asi_photo.dart';
-import 'package:cmo/model/asi_type/asi_type.dart';
-import 'package:cmo/model/biological_control_agent/biological_control_agent_type.dart';
-import 'package:cmo/model/camp.dart';
-import 'package:cmo/model/chemical.dart';
-import 'package:cmo/model/chemical_application_method/chemical_application_method.dart';
-import 'package:cmo/model/chemical_type/chemical_type.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/config/config.dart';
-import 'package:cmo/model/country/country.dart';
-import 'package:cmo/model/customary_use_right/customary_use_right.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/disciplinaries/disciplonaries.dart';
-import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
-import 'package:cmo/model/fire/fire_register.dart';
-import 'package:cmo/model/fire_cause/fire_cause.dart';
-import 'package:cmo/model/grievance_issue/grievance_issue.dart';
-import 'package:cmo/model/grievance_register/grievance_register.dart';
-import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/group_scheme_stakeholder/group_scheme_stakeholder.dart';
-import 'package:cmo/model/issue_type/issue_type.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/model/monitoring_requirement/monitoring_requirement.dart';
-import 'package:cmo/model/nature_of_injury/nature_of_injury.dart';
-import 'package:cmo/model/pest_and_disease_type/pest_and_disease_type.dart';
-import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and_diseases_register_treatment_method.dart';
-import 'package:cmo/model/pets_and_disease_type_treatment_method/pets_and_disease_type_treatment_method.dart';
-import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
-import 'package:cmo/model/property_damaged/property_damaged.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
-import 'package:cmo/model/sanction_register/sanction_register.dart';
-import 'package:cmo/model/social_upliftment/social_upliftment.dart';
-import 'package:cmo/model/special_site/special_site.dart';
-import 'package:cmo/model/species_range/species_range.dart';
-import 'package:cmo/model/species_type/species_type.dart';
-import 'package:cmo/model/training/training_register.dart';
-import 'package:cmo/model/training_type/training_type.dart';
-import 'package:cmo/model/treament_method/treament_method.dart';
 import 'package:cmo/model/user/user_role.dart';
 import 'package:cmo/model/user_role_portal.dart';
 import 'package:cmo/utils/utils.dart';
@@ -101,7 +65,6 @@ class CmoDatabaseMasterService {
         AuditSchema,
         StakeHolderSchema,
         AnnualFarmProductionSchema,
-        AnnualProductionBudgetSchema,
         FarmerWorkerSchema,
         FarmerStakeHolderComplaintSchema,
         BiologicalControlAgentSchema,
@@ -139,6 +102,7 @@ class CmoDatabaseMasterService {
         FireRegisterSchema,
         PetsAndDiseaseRegisterSchema,
         TrainingRegisterSchema,
+        AnnualBudgetSchema,
         AnnualBudgetTransactionSchema,
         AnnualBudgetTransactionCategorySchema,
         AsiTypeSchema,
@@ -437,10 +401,10 @@ class CmoDatabaseMasterService {
     return db.sanctionRegisters.put(data);
   }
 
-  Future<int?> cacheAnnualBudgets(AnnualProductionBudget data) async {
+  Future<int?> cacheAnnualBudgets(AnnualBudget data) async {
     final db = await _db();
 
-    return db.annualProductionBudgets.put(data);
+    return db.annualBudgets.put(data);
   }
 
   Future<int?> cacheAnnualBudgetTransactions(
@@ -798,8 +762,7 @@ class CmoDatabaseMasterService {
 
     return db.annualBudgetTransactions
         .filter()
-        .farmIdEqualTo(farmId)
-        .isMasterdataSyncedEqualTo(false)
+        .isActiveEqualTo(true)
         .findAll();
   }
 
@@ -809,27 +772,26 @@ class CmoDatabaseMasterService {
 
     return db.annualBudgetTransactions
         .filter()
-        .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
         .findAll();
   }
 
-  Future<List<AnnualProductionBudget>>
-      getUnsyncedAnnualProductionBudgetByFarmId(int farmId) async {
+  Future<List<AnnualBudget>>
+      getUnsyncedAnnualProductionBudgetByFarmId(String farmId) async {
     final db = await _db();
 
-    return db.annualProductionBudgets
+    return db.annualBudgets
         .filter()
         .farmIdEqualTo(farmId)
-        .isMasterdataSyncedEqualTo(false)
         .findAll();
   }
 
-  Future<List<AnnualProductionBudget>> getAnnualProductionBudgetByFarmId(
-      int farmId) async {
+  Future<List<AnnualBudget>> getAnnualBudgetsByFarmId(
+    String farmId,
+  ) async {
     final db = await _db();
 
-    return db.annualProductionBudgets
+    return db.annualBudgets
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
@@ -1996,9 +1958,9 @@ class CmoDatabaseMasterService {
     return db.biologicalControlAgents.put(item);
   }
 
-  Future<int> cacheAnnualProductionBudget(AnnualProductionBudget item) async {
+  Future<int> cacheAnnualProductionBudget(AnnualBudget item) async {
     final db = await _db();
-    return db.annualProductionBudgets.put(item);
+    return db.annualBudgets.put(item);
   }
 
   Future<int> cacheEmployeeGrievance(EmployeeGrievance item) async {

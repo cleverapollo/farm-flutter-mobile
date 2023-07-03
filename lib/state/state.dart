@@ -20,3 +20,4 @@ export 'farmer_sync_summary_cubit/farmer_sync_summary_cubit.dart';
 export 'entity_cubit/farmer/farmer_sync_onboarding_cubit.dart';
 export 'entity_cubit/farmer/select_entity_farmer_cubit.dart';
 export 'farmer/annual_farm_production/annual_farm_production_cubit.dart';
+export 'farmer/annual_budget/annual_budget_management_cubit.dart';

@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'annual_budget_transaction.freezed.dart';
+
 part 'annual_budget_transaction.g.dart';
 
 @freezed
@@ -9,18 +10,17 @@ part 'annual_budget_transaction.g.dart';
 class AnnualBudgetTransaction with _$AnnualBudgetTransaction {
   const factory AnnualBudgetTransaction({
     @JsonKey(name: 'AnnualBudgetTransactionId') int? annualBudgetTransactionId,
-    @JsonKey(name: 'AnnualBudgetId') int? annualBudgetId,
-    @JsonKey(name: 'TransactionDescripion') String? transactionDescripion,
-    @JsonKey(name: 'FarmId') String? farmId,
+    @JsonKey(name: 'AnnualBudgetId') String? annualBudgetId,
+    @JsonKey(name: 'TransactionDescription') String? transactionDescription,
     @JsonKey(name: 'TransactionCategoryId') int? transactionCategoryId,
     @JsonKey(name: 'TransactionCategoryName') String? transactionCategoryName,
-    @JsonKey(name: 'TransactionAmount') int? transactionAmount,
-    @JsonKey(name: 'TransactionAttribute1') int? transactionAttribute1,
-    @JsonKey(name: 'IsLocal') bool? isLocal,
-    @JsonKey(name: 'IsActive') bool? isActive,
-    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
-    @JsonKey(name: 'IsIncome') bool? isIncome,
-    @JsonKey(name: 'CanDelete') int? canDelete,
+
+    @JsonKey(name: 'TransactionAmount') double? transactionAmount,
+    @JsonKey(name: 'TransactionAttribute1') double? transactionAttribute1,
+    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(true) @JsonKey(name: 'IsIncome') bool? isIncome,
+    @Default(1) @JsonKey(name: 'CanDelete') int? canDelete,
+    @Default(1) @JsonKey(name: 'IsLocal') int? isLocal,
   }) = _AnnualBudgetTransaction;
 
   const AnnualBudgetTransaction._();
@@ -29,5 +29,5 @@ class AnnualBudgetTransaction with _$AnnualBudgetTransaction {
       _$AnnualBudgetTransactionFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => annualBudgetTransactionId ?? Isar.autoIncrement;
 }

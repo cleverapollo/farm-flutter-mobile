@@ -15,9 +15,9 @@ class AnnualBudgetTransactionCategory with _$AnnualBudgetTransactionCategory {
         String? annualBudgetTransactionCategoryName,
     @JsonKey(name: 'AnnualBudgetTransactionCategoryCode')
         String? annualBudgetTransactionCategoryCode,
-    @JsonKey(name: 'IsIncome') bool? isIncome,
-    @JsonKey(name: 'IsActive') bool? isActive,
-    @JsonKey(name: 'IsCalculated') bool? isCalculated,
+    @Default(true) @JsonKey(name: 'IsIncome') bool? isIncome,
+    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(true) @JsonKey(name: 'IsCalculated') bool? isCalculated,
   }) = _AnnualBudgetTransactionCategory;
 
   const AnnualBudgetTransactionCategory._();
@@ -26,5 +26,5 @@ class AnnualBudgetTransactionCategory with _$AnnualBudgetTransactionCategory {
       _$AnnualBudgetTransactionCategoryFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => annualBudgetTransactionCategoryId ?? Isar.autoIncrement;
 }
