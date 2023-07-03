@@ -361,13 +361,13 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
         )
         ..add(
           databaseMasterService
-              .getUnsyncedAnnualProductionBudgetByFarmId(int.parse(farmId))
+              .getUnsyncedAnnualProductionBudgetByFarmId(farmId)
               .then((value) => data =
                   data.copyWith(annualBudgetsProductionUnsynced: value.length)),
         )
         ..add(
           databaseMasterService
-              .getAnnualProductionBudgetByFarmId(int.parse(farmId))
+              .getAnnualBudgetsByFarmId(farmId)
               .then((value) => data =
                   data.copyWith(annualBudgetsProductionTotal: value.length)),
         )
@@ -1415,7 +1415,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
-      final rs = AnnualProductionBudget.fromJson(bodyJson);
+      final rs = AnnualBudget.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheAnnualBudgets(rs);
     } catch (e) {
       logger.d('insert error: $e');

@@ -45,36 +45,36 @@ class _AddAnnualBudgetScreenState extends State<AddAnnualBudgetScreen> {
         loading = true;
       });
       try {
-        await hideInputMethod();
-        final budget = AnnualProductionBudget(
-          annualBudgetId: DateTime.now().millisecondsSinceEpoch,
-          annualBudgetName: value['AnnualBudgetName'].toString(),
-          year: int.tryParse(value['Year'].toString()),
-          transactionBudgetName: value['TransactionBudgetName'].toString(),
-          transactionBudgetYear: int.tryParse(value['TransactionBudgetYear'].toString()),
-          createDT: DateTime.now().millisecondsSinceEpoch.toString(),
-          annualProductionId: DateTime.now().millisecondsSinceEpoch,
-        );
-
-        int? resultId;
-
-        if (mounted) {
-          final databaseService = cmoDatabaseMasterService;
-
-          await (await databaseService.db).writeTxn(() async {
-            resultId = await databaseService.cacheAnnualProductionBudget(budget);
-          });
-        }
-
-        if (resultId != null) {
-          if (context.mounted) {
-            showSnackSuccess(
-              msg: '${LocaleKeys.addBudget.tr()} $resultId',
-            );
-
-            Navigator.of(context).pop();
-          }
-        }
+    //     await hideInputMethod();
+    //     final budget = AnnualBudget(
+    //       annualBudgetId: DateTime.now().millisecondsSinceEpoch.toString(),
+    //       annualBudgetName: value['AnnualBudgetName'].toString(),
+    //       annualFarmProductionYear: int.tryParse(value['Year'].toString()),
+    //       transactionBudgetName: value['TransactionBudgetName'].toString(),
+    //       transactionBudgetYear: int.tryParse(value['TransactionBudgetYear'].toString()),
+    //       createDT: DateTime.now().millisecondsSinceEpoch.toString(),
+    //       annualProductionId: DateTime.now().millisecondsSinceEpoch,
+    //     );
+    //
+    //     int? resultId;
+    //
+    //     if (mounted) {
+    //       final databaseService = cmoDatabaseMasterService;
+    //
+    //       await (await databaseService.db).writeTxn(() async {
+    //         resultId = await databaseService.cacheAnnualProductionBudget(budget);
+    //       });
+    //     }
+    //
+    //     if (resultId != null) {
+    //       if (context.mounted) {
+    //         showSnackSuccess(
+    //           msg: '${LocaleKeys.addBudget.tr()} $resultId',
+    //         );
+    //
+    //         Navigator.of(context).pop();
+    //       }
+    //     }
       } finally {
         setState(() {
           loading = false;
@@ -128,12 +128,12 @@ class _AddAnnualBudgetScreenState extends State<AddAnnualBudgetScreen> {
               const SizedBox(
                 height: 16,
               ),
-              AddAnnualBudgetDetail(
-                formKey: _formKey,
-                title: LocaleKeys.transactions.tr(),
-                budgetName: 'TransactionBudgetName',
-                annualTransactionYearName: 'TransactionBudgetYear',
-              ),
+              // AddAnnualBudgetDetail(
+              //   formKey: _formKey,
+              //   title: LocaleKeys.transactions.tr(),
+              //   budgetName: 'TransactionBudgetName',
+              //   annualTransactionYearName: 'TransactionBudgetYear',
+              // ),
             ],
           ),
         ),

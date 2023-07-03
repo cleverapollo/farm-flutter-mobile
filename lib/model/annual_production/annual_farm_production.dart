@@ -24,7 +24,7 @@ class AnnualFarmProduction with _$AnnualFarmProduction {
     @JsonKey(name: 'AnnualWoodBiomassRemoved') double? annualWoodBiomassRemoved,
     @Default(1) @JsonKey(name: 'CanDelete') int? canDelete,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
-    @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
+    @Default(1) @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,
   }) = _AnnualFarmProduction;

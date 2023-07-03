@@ -2,7 +2,6 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/widgets/input_text_field_with_title.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/validator.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
