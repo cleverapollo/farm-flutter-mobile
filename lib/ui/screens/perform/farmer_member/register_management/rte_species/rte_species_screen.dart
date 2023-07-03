@@ -12,57 +12,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-List<RteSpecies> _mockData = [
-  RteSpecies(
-    rteSpeciesId: DateTime.now().millisecondsSinceEpoch,
-    speciesType: 'Ant',
-    scientificName: 'Ant Scientific Name',
-    commonName: 'Ant common name',
-    speciesRange: 'Species Range',
-    location: 'Location',
-    generalComments: 'generalComments',
-    dateSpotted: DateTime(2023, 4, 20).toString(),
-    campName: 'campName',
-  ),
-  RteSpecies(
-    rteSpeciesId: DateTime.now().millisecondsSinceEpoch + 1,
-    speciesType: 'Ant 1',
-    scientificName: 'Ant Scientific Name 1',
-    commonName: 'Ant common name 1',
-    speciesRange: 'Species Range 1',
-    location: 'Location 1',
-    generalComments: 'generalComments 1',
-    campName: 'campName 1',
-  ),
-  RteSpecies(
-    rteSpeciesId: DateTime.now().millisecondsSinceEpoch + 2,
-    speciesType: 'Ant 2',
-    scientificName: 'Ant Scientific Name 2',
-    commonName: 'Ant common name 2',
-    speciesRange: 'Species Range 2',
-    location: 'Location 2',
-    generalComments: 'generalComments 2',
-    campName: 'campName 2',
-  ),
-  RteSpecies(
-    rteSpeciesId: DateTime.now().millisecondsSinceEpoch + 3,
-    speciesType: 'Ant 3',
-    scientificName: 'Ant Scientific Name 3',
-    commonName: 'Ant common name 3',
-    speciesRange: 'Species Range 3',
-    location: 'Location 3',
-    generalComments: 'generalComments 3',
-  ),
-  RteSpecies(
-    rteSpeciesId: DateTime.now().millisecondsSinceEpoch + 4,
-    speciesType: 'Ant 4',
-    scientificName: 'Ant Scientific Name 4',
-    commonName: 'Ant common name 4',
-    speciesRange: 'Species Range 4',
-    location: 'Location 4',
-    generalComments: 'generalComments 4',
-  ),
-];
+import '../../../../../../di.dart';
 
 class RteSpeciesScreen extends StatefulWidget {
   const RteSpeciesScreen({super.key});
@@ -81,6 +31,9 @@ class RteSpeciesScreen extends StatefulWidget {
 }
 
 class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
+  final List<RteSpecies> items = [];
+  bool isLoading = true;
+
   Timer? _debounceInputTimer;
   late List<RteSpecies> filteredItems;
   late StatusFilterEnum statusFilter;
@@ -89,7 +42,16 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
   @override
   void initState() {
     super.initState();
-    filteredItems = _mockData;
+    _init();
+  }
+
+  Future<void> _init() async {
+    final farm = await configService.getActiveFarm();
+    items.addAll(
+        await cmoDatabaseMasterService.getRteSpeciesByFarmId(farm!.farmId));
+    isLoading = false;
+
+    filteredItems = items;
     statusFilter = StatusFilterEnum.open;
     inputSearch = '';
     applyFilter();
@@ -100,20 +62,18 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
     if (input == null || input.isEmpty) {
       applyFilter();
     } else {
-      filteredItems = _mockData.where((element) {
-        final containName = element.rteSpeciesId
-                .toString()
-                .toLowerCase()
-                .contains(input.toLowerCase()) ??
-            false;
+      filteredItems = items.where((element) {
+        final containName = element.rteSpeciesRegisterId
+            .toString()
+            .toLowerCase()
+            .contains(input.toLowerCase());
         var isFilter = false;
         switch (statusFilter) {
           case StatusFilterEnum.open:
-            isFilter = element.dateSpotted.isNull ||
-                (element.dateSpotted?.isEmpty ?? false);
+            isFilter = element.dateSpotted == null;
             break;
           case StatusFilterEnum.closed:
-            isFilter = element.dateSpotted?.isNotEmpty ?? false;
+            isFilter = element.dateSpotted != null;
             break;
         }
 
@@ -127,18 +87,15 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
     if (inputSearch == null || inputSearch!.isEmpty) {
       switch (statusFilter) {
         case StatusFilterEnum.open:
-          filteredItems = _mockData
+          filteredItems = items
               .where(
-                (element) =>
-                    element.dateSpotted.isNull ||
-                    (element.dateSpotted?.isEmpty ?? false),
+                (element) => element.dateSpotted == null,
               )
               .toList();
           break;
         case StatusFilterEnum.closed:
-          filteredItems = _mockData
-              .where((element) => element.dateSpotted?.isNotEmpty ?? false)
-              .toList();
+          filteredItems =
+              items.where((element) => element.dateSpotted != null).toList();
           break;
       }
     } else {
@@ -196,8 +153,18 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
                   horizontal: 21,
                 ),
                 itemBuilder: (context, index) {
-                  return _RteSpeciesItem(
-                    rteSpecies: filteredItems[index],
+                  final item = filteredItems[index];
+                  return GestureDetector(
+                    onTap: () async {
+                      final result = await AddRteSpeciesScreen.push(context,
+                          rteSpecies: item);
+                      if (result == null) return;
+                      filteredItems[index] = result;
+                      setState(() {});
+                    },
+                    child: _RteSpeciesItem(
+                      rteSpecies: item,
+                    ),
                   );
                 },
               ),
@@ -227,7 +194,7 @@ class _RteSpeciesItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${LocaleKeys.speciesNo.tr()}: ${rteSpecies.rteSpeciesId?.toString()}',
+            '${LocaleKeys.speciesNo.tr()}: ${rteSpecies.rteSpeciesRegisterNo?.toString()}',
             style: context.textStyles.bodyBold.blue,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -250,18 +217,17 @@ class _RteSpeciesItem extends StatelessWidget {
             keyLabel: LocaleKeys.scientificName.tr(),
             valueLabel: rteSpecies.scientificName,
           ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.speciesType.tr(),
-            valueLabel: rteSpecies.speciesType,
-          ),
+          // KeyValueItemWidget(
+          //   keyLabel: LocaleKeys.speciesType.tr(),
+          //   valueLabel: rteSpecies.speciesType,
+          // ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.speciesRange.tr(),
-            valueLabel: rteSpecies.speciesRange,
+            valueLabel: rteSpecies.speciesRangeName,
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateSpotted.tr(),
-            valueLabel:
-                DateTime.tryParse(rteSpecies.dateSpotted ?? '')?.ddMMYyyy(),
+            valueLabel: rteSpecies.dateSpotted?.ddMMYyyy(),
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.camp.tr(),
@@ -272,7 +238,7 @@ class _RteSpeciesItem extends StatelessWidget {
             valueLabel: rteSpecies.location,
           ),
           GeneralCommentsItem(
-            comment: rteSpecies.generalComments,
+            comment: rteSpecies.comment,
           ),
         ],
       ),

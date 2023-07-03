@@ -920,7 +920,7 @@ class CmoDatabaseMasterService {
     return db.rteSpecies
         .filter()
         .farmIdEqualTo(farmId)
-        .isMasterdataSyncedEqualTo(false)
+        .isMasterDataSyncedEqualTo(false)
         .findAll();
   }
 
@@ -933,10 +933,13 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<RteSpecies>>
+  Future<List<PetsAndDiseaseRegister>>
       getUnsyncedPestsAndDiseasesRegisterTreatmentMethod() async {
     final db = await _db();
-    return db.rteSpecies.filter().isMasterdataSyncedEqualTo(false).findAll();
+    return db.petsAndDiseaseRegisters
+        .filter()
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
   }
 
   Future<List<RteSpecies>> getPestsAndDiseasesRegisterTreatmentMethod() async {

@@ -70,6 +70,7 @@ class InputAttributeItem extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final TextStyle? hintTextStyle;
   final EdgeInsetsGeometry contentPadding;
+  final FormFieldValidator<String?>? validator;
 
   const InputAttributeItem({
     required this.hintText,
@@ -77,6 +78,7 @@ class InputAttributeItem extends StatefulWidget {
     this.keyboardType,
     this.onChanged,
     this.hintTextStyle,
+    this.validator,
     this.contentPadding = const EdgeInsets.fromLTRB(14, 4, 14, 4),
     super.key,
   });
@@ -96,13 +98,14 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       minLines: 1,
       onChanged: widget.onChanged,
       maxLines: _controller.text.isEmpty ? widget.maxLines : 1,
       controller: _controller,
       style: context.textStyles.bodyBold,
       keyboardType: widget.keyboardType,
+      validator: widget.validator,
       decoration: InputDecoration(
         hintText: widget.hintText,
         labelText: _controller.text.isEmpty ? null : widget.hintText,

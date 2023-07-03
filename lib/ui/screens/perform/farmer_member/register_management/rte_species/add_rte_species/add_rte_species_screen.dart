@@ -13,18 +13,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddRteSpeciesScreen extends StatefulWidget {
-  const AddRteSpeciesScreen({super.key});
+  const AddRteSpeciesScreen({super.key, this.rteSpecies});
+
+  final RteSpecies? rteSpecies;
 
   @override
   State<StatefulWidget> createState() => _AddRteSpeciesScreenState();
 
-  static Future<void> push(
-    BuildContext context,
-  ) {
+  static Future<RteSpecies?> push(BuildContext context,
+      {RteSpecies? rteSpecies}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const AddRteSpeciesScreen(),
+        builder: (_) => AddRteSpeciesScreen(rteSpecies: rteSpecies),
       ),
     );
   }
@@ -41,10 +42,23 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
 
   late List<RteSpeciesPhotoModel> listPhotos;
 
+  bool carRaised = false;
+  bool carClosed = false;
+
   @override
   void initState() {
     super.initState();
-    rteSpecies = RteSpecies();
+    if (widget.rteSpecies == null) {
+      rteSpecies = RteSpecies(
+          rteSpeciesRegisterNo: DateTime.now().toIso8601String(),
+          isActive: true,
+          isMasterDataSynced: false);
+    } else {
+      rteSpecies = RteSpecies.fromJson(widget.rteSpecies!.toJson());
+    }
+    carRaised = rteSpecies.carRaisedDate != null;
+    carClosed = rteSpecies.carClosedDate != null;
+
     listPhotos = <RteSpeciesPhotoModel>[];
   }
 
@@ -62,11 +76,24 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
       });
       try {
         await hideInputMethod();
+        final farm = await configService.getActiveFarm();
         rteSpecies = rteSpecies.copyWith(
-          dateSpotted: value['DateSpotted'].toString(),
+          farmId: farm?.farmId,
+          dateSpotted: value['DateSpotted'] as DateTime?,
           speciesRangeId: int.tryParse(value['SpeciesRangeId'].toString()),
-          speciesTypeId: int.tryParse(value['SpeciesTypeId'].toString()),
         );
+
+        if (carRaised && rteSpecies.carRaisedDate == null) {
+          rteSpecies = rteSpecies.copyWith(
+            carRaisedDate: DateTime.now().toIso8601String(),
+          );
+        }
+
+        if (carClosed && rteSpecies.carClosedDate == null) {
+          rteSpecies = rteSpecies.copyWith(
+            carClosedDate: DateTime.now().toIso8601String(),
+          );
+        }
 
         int? resultId;
 
@@ -76,8 +103,8 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
           await (await databaseService.db).writeTxn(() async {
             resultId = await databaseService.cacheRteSpecies(rteSpecies);
             if (listPhotos.isNotEmpty) {
-              for(final item in listPhotos){
-                await databaseService.cacheRteSpeciesPhotoModel(item );
+              for (final item in listPhotos) {
+                await databaseService.cacheRteSpeciesPhotoModel(item);
               }
             }
           });
@@ -86,10 +113,11 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
         if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
-              msg: '${LocaleKeys.addRteSpecies.tr()} $resultId',
+              msg:
+                  '${widget.rteSpecies == null ? LocaleKeys.addRteSpecies.tr() : 'Edit RTE Species'} $resultId',
             );
 
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(rteSpecies);
           }
         }
       } finally {
@@ -168,6 +196,7 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
               AttributeItem(
                 child: InputAttributeItem(
                   hintText: LocaleKeys.commonName.tr(),
+                  validator: requiredValidator,
                   hintTextStyle: context.textStyles.bodyBold.black,
                   onChanged: (value) {
                     rteSpecies = rteSpecies.copyWith(
@@ -206,17 +235,15 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
                 appbarTitle: LocaleKeys.location.tr(),
                 onChooseLocation: (locationModel) {
                   rteSpecies = rteSpecies.copyWith(
-                    longitude: locationModel.longitude ?? 0,
-                    latitude: locationModel.latitude ?? 0,
-                    imagePath: locationModel.imageUri ?? '',
-                  );
+                      longitude: locationModel.longitude ?? 0,
+                      latitude: locationModel.latitude ?? 0);
                 },
               ),
               AttributeItem(
                 child: SelectItemWidget(
                   title: LocaleKeys.carRaised.tr(),
                   onSelect: (isSelected) {
-                    rteSpecies = rteSpecies.copyWith(carRaised: isSelected);
+                    carRaised = isSelected;
                   },
                 ),
               ),
@@ -224,7 +251,7 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
                 child: SelectItemWidget(
                   title: LocaleKeys.carClosed.tr(),
                   onSelect: (isSelected) {
-                    rteSpecies = rteSpecies.copyWith(carClosed: isSelected);
+                    carClosed = isSelected;
                   },
                 ),
               ),
@@ -233,7 +260,7 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
                 child: GeneralCommentWidget(
                   hintText: LocaleKeys.generalComments.tr(),
                   onChanged: (value) {
-                    rteSpecies = rteSpecies.copyWith(generalComments: value);
+                    rteSpecies = rteSpecies.copyWith(comment: value);
                   },
                 ),
               ),
@@ -261,7 +288,6 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
         CmoDropdown(
           name: 'SpeciesTypeId',
           hintText: LocaleKeys.speciesType.tr(),
-          validator: requiredValidator,
           inputDecoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(
               vertical: 8,
@@ -312,7 +338,6 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
         CmoDropdown(
           name: 'SpeciesRangeId',
           hintText: LocaleKeys.speciesRange.tr(),
-          validator: requiredValidator,
           inputDecoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(
               vertical: 8,
@@ -351,6 +376,14 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
       child: CmoDatePicker(
         name: 'DateSpotted',
         hintText: LocaleKeys.dateSpotted.tr(),
+        validator: (DateTime? value) {
+          if (value == null) return null;
+          if (value.millisecondsSinceEpoch >
+              DateTime.now().millisecondsSinceEpoch) {
+            return 'Date spotted cannot be in the future';
+          }
+          return null;
+        },
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
