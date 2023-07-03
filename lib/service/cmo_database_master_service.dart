@@ -795,7 +795,15 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .sortByAnnualBudgetName()
         .findAll();
+  }
+
+  Future<bool> removeAnnualBudget(int annualBudgetId) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.annualBudgets.delete(annualBudgetId);
+    });
   }
 
   Future<List<AnnualFarmProduction>> getUnsyncedAnnualProductionByFarmId(

@@ -6,6 +6,7 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/add_update_budget/add_update_annual_budget_screen.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -89,28 +90,71 @@ class _AnnualBudgetManagementScreenState
 
   Widget _buildItemCard(AnnualBudget model) {
     return CmoTappable(
-      onTap: () {},
-      child: CmoCard(
-        padding: const EdgeInsets.only(bottom: 20),
-        content: [
-          CmoCardHeader(
-            title: model.annualBudgetName ?? '',
-            maxLines: 2,
+      onTap: () => AddAnnualBudgetScreen.push(
+        context,
+        isEditing: true,
+        selectedAnnualBudget: model,
+      ),
+      child: Dismissible(
+        key: Key(model.id.toString()),
+        direction: DismissDirection.endToStart,
+          confirmDismiss: (test) async {
+            final shouldRemoved = await showDefaultAlert(
+              context,
+              title: LocaleKeys.removeAnnualBudget.tr(),
+              content: LocaleKeys.removeAnnualBudgetAlertContent.tr(),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(LocaleKeys.ok.tr().toUpperCase()),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                TextButton(
+                  child: Text(LocaleKeys.cancel.tr().toUpperCase()),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+            if (shouldRemoved != true) {
+              return;
+            }
+
+            await context.read<AnnualBudgetManagementCubit>().onRemoveBudget(model);
+            return null;
+          },
+          background: Container(
+            color: context.colors.red,
+            alignment: Alignment.center,
+            child: Text(
+              LocaleKeys.remove.tr(),
+              style: context.textStyles.bodyBold.white,
+            ),
           ),
-          const SizedBox(height: 10),
-          CmoCardItem(
-            title: LocaleKeys.profitLoss.tr(),
-            value: model.profitAndLoss().toStringAsFixed(2),
-          ),
-          CmoCardItem(
-            title: LocaleKeys.income.tr(),
-            value: model.totalIncome?.toStringAsFixed(2) ?? '000',
-          ),
-          CmoCardItem(
-            title: LocaleKeys.expenses.tr(),
-            value: model.totalExpense?.toStringAsFixed(2) ?? '000',
-          ),
-        ],
+        child: CmoCard(
+          padding: const EdgeInsets.only(bottom: 20),
+          content: [
+            CmoCardHeader(
+              title: model.annualBudgetName ?? '',
+              maxLines: 2,
+            ),
+            const SizedBox(height: 10),
+            CmoCardItem(
+              title: LocaleKeys.profitLoss.tr(),
+              value: model.profitAndLoss().toStringAsFixed(2),
+            ),
+            CmoCardItem(
+              title: LocaleKeys.income.tr(),
+              value: model.totalIncome?.toStringAsFixed(2) ?? '000',
+            ),
+            CmoCardItem(
+              title: LocaleKeys.expenses.tr(),
+              value: model.totalExpense?.toStringAsFixed(2) ?? '000',
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -284,6 +284,8 @@
   "removeAssessmentAlertContent": "Are you sure you want to remove this assessment?",
   "removeAudit": "Remove audit",
   "removeAuditAlertContent": "Are you sure you want to remove this audit?",
+  "removeAnnualBudget": "Remove Annual Budget",
+  "removeAnnualBudgetAlertContent": "Are you sure you want to remove this annual budget?",
   "ok": "ok",
   "cancel": "cancel",
   "group_scheme_management": "Group Scheme Management",

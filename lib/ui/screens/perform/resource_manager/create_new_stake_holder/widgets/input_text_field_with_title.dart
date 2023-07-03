@@ -14,6 +14,7 @@ class InputTextFieldWithTitle extends StatelessWidget {
     this.secondSuffixIcon,
     this.validator,
     this.keyboardType,
+    this.initialValue,
   });
 
   final String name;
@@ -22,6 +23,7 @@ class InputTextFieldWithTitle extends StatelessWidget {
   final Widget? secondSuffixIcon;
   final FormFieldValidator<String?>? validator;
   final TextInputType? keyboardType;
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,7 @@ class InputTextFieldWithTitle extends StatelessWidget {
                 validator: validator,
                 inputDecoration: _buildInputDecoration(context),
                 keyboardType: keyboardType,
+                initialValue: initialValue,
               ),
             ],
           ),

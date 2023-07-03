@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/utils.dart';
@@ -29,7 +32,7 @@ class AnnualBudgetManagementCubit extends HydratedCubit<AnnualBudgetManagementSt
         isEditing: isEditing,
       ),
     );
-    
+
     await loadListAnnualFarmProductions();
   }
 
@@ -119,9 +122,11 @@ class AnnualBudgetManagementCubit extends HydratedCubit<AnnualBudgetManagementSt
       );
     }
 
+    final annualFarmProduction = value['AnnualFarmProduction'] as AnnualFarmProduction;
     annualBudget = annualBudget.copyWith(
       annualBudgetName: value['AnnualBudgetName'].toString(),
-      annualFarmProductionYear: int.tryParse(value['Year'].toString()),
+      annualFarmProductionYear: annualFarmProduction.year,
+      annualFarmProductionId: annualFarmProduction.annualFarmProductionId,
     );
 
     int? resultId;
@@ -133,6 +138,15 @@ class AnnualBudgetManagementCubit extends HydratedCubit<AnnualBudgetManagementSt
     });
 
     return resultId;
+  }
+
+  Future<void> onRemoveBudget(AnnualBudget budget) async {
+    await cmoDatabaseMasterService.removeAnnualBudget(budget.id);
+    showSnackSuccess(
+      msg: '${LocaleKeys.remove.tr()} ${budget.annualBudgetId}!',
+    );
+
+    await loadListAnnualBudgets();
   }
 
   void handleError(Object error) {
