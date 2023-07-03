@@ -1,23 +1,31 @@
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/model.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/widgets/input_text_field_with_title.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class AddAnnualBudgetDetail extends StatelessWidget {
-  const AddAnnualBudgetDetail({
+class AddUpdateAnnualBudgetDetail extends StatelessWidget {
+  const AddUpdateAnnualBudgetDetail({
     super.key,
     required this.title,
     required this.formKey,
     required this.budgetName,
-    required this.annualTransactionYearName,
+    required this.year,
+    this.annualBudget,
+    this.listAnnualFarmProductions = const <AnnualFarmProduction>[],
   });
 
   final GlobalKey<FormBuilderState> formKey;
   final String title;
   final String budgetName;
-  final String annualTransactionYearName;
+  final String year;
+  final AnnualBudget? annualBudget;
+  final List<AnnualFarmProduction> listAnnualFarmProductions;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +45,7 @@ class AddAnnualBudgetDetail extends StatelessWidget {
                     name: budgetName,
                     title: LocaleKeys.budgetName.tr(),
                     validator: requiredValidator,
+                    initialValue: annualBudget?.annualBudgetName,
                   ),
                 ),
                 RichText(
@@ -55,29 +64,48 @@ class AddAnnualBudgetDetail extends StatelessWidget {
                     ],
                   ),
                 ),
-                CmoDropdown(
-                  name: annualTransactionYearName,
+                CmoDropdown<AnnualFarmProduction?>(
+                  name: year,
                   validator: requiredValidator,
-                  onChanged: (int? id) {
-                    if (id == -1) {
-                      formKey.currentState!.fields[annualTransactionYearName]?.reset();
+                  initialValue: listAnnualFarmProductions.firstWhereOrNull(
+                    (element) =>
+                        element.annualFarmProductionId ==
+                        annualBudget?.annualFarmProductionId,
+                  ),
+                  onChanged: (AnnualFarmProduction? id) {
+                    if (id?.annualFarmProductionId == '-1') {
+                      formKey.currentState!.fields[year]?.reset();
                     }
                   },
                   inputDecoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(8),
                     isDense: true,
-                    hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.year.tr().toLowerCase()}',
+                    hintText:
+                        '${LocaleKeys.select.tr()} ${LocaleKeys.year.tr().toLowerCase()}',
                     hintStyle: context.textStyles.bodyNormal.grey,
-                    border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: context.colors.grey),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: context.colors.blue),
+                    ),
                   ),
-                  itemsData: [
-                    CmoDropdownItem(id: -1, name: LocaleKeys.year.tr()),
-                    CmoDropdownItem(id: 2022, name: '2022'),
-                    CmoDropdownItem(id: 2023, name: '2023'),
-                    CmoDropdownItem(id: 2024, name: '2024'),
-                    CmoDropdownItem(id: 2025, name: '2025'),
-                  ],
+                  itemsData: listAnnualFarmProductions
+                      .map(
+                        (e) => CmoDropdownItem<AnnualFarmProduction>(
+                          id: e,
+                          name: e.year.toString(),
+                        ),
+                      )
+                      .toList()
+                    ..insert(
+                      0,
+                      CmoDropdownItem(
+                        id: const AnnualFarmProduction(
+                            annualFarmProductionId: '-1'),
+                        name: LocaleKeys.year.tr(),
+                      ),
+                    ),
                 ),
               ],
             ),

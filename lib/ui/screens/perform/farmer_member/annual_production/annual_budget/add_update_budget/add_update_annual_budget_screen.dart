@@ -1,25 +1,40 @@
-import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/annual_production/annual_farm_production.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/add_budget/widgets/add_annual_budget_detail.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
-import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+import 'widgets/add_update_annual_budget_detail.dart';
+
 class AddAnnualBudgetScreen extends StatefulWidget {
-  const AddAnnualBudgetScreen({super.key});
+
+  const AddAnnualBudgetScreen({
+    super.key,
+    this.selectedAnnualBudget,
+    this.isEditing = false,
+  });
+
+  final AnnualBudget? selectedAnnualBudget;
+  final bool isEditing;
 
   @override
   State<StatefulWidget> createState() => _AddAnnualBudgetScreenState();
 
-  static void push(BuildContext context) {
+  static void push(
+      BuildContext context, {
+        AnnualBudget? selectedAnnualBudget,
+        bool isEditing = false,
+      }) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const AddAnnualBudgetScreen(),
+        builder: (_) => AddAnnualBudgetScreen(
+          selectedAnnualBudget: selectedAnnualBudget,
+          isEditing: isEditing,
+        ),
       ),
     );
   }
@@ -31,6 +46,17 @@ class _AddAnnualBudgetScreenState extends State<AddAnnualBudgetScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      await context.read<AnnualBudgetManagementCubit>().initAddUpdate(
+        annualBudget: widget.selectedAnnualBudget,
+        isEditing: widget.isEditing,
+      );
+    });
+  }
 
   Future<void> onSubmit() async {
     setState(() {
@@ -45,36 +71,25 @@ class _AddAnnualBudgetScreenState extends State<AddAnnualBudgetScreen> {
         loading = true;
       });
       try {
-    //     await hideInputMethod();
-    //     final budget = AnnualBudget(
-    //       annualBudgetId: DateTime.now().millisecondsSinceEpoch.toString(),
-    //       annualBudgetName: value['AnnualBudgetName'].toString(),
-    //       annualFarmProductionYear: int.tryParse(value['Year'].toString()),
-    //       transactionBudgetName: value['TransactionBudgetName'].toString(),
-    //       transactionBudgetYear: int.tryParse(value['TransactionBudgetYear'].toString()),
-    //       createDT: DateTime.now().millisecondsSinceEpoch.toString(),
-    //       annualProductionId: DateTime.now().millisecondsSinceEpoch,
-    //     );
-    //
-    //     int? resultId;
-    //
-    //     if (mounted) {
-    //       final databaseService = cmoDatabaseMasterService;
-    //
-    //       await (await databaseService.db).writeTxn(() async {
-    //         resultId = await databaseService.cacheAnnualProductionBudget(budget);
-    //       });
-    //     }
-    //
-    //     if (resultId != null) {
-    //       if (context.mounted) {
-    //         showSnackSuccess(
-    //           msg: '${LocaleKeys.addBudget.tr()} $resultId',
-    //         );
-    //
-    //         Navigator.of(context).pop();
-    //       }
-    //     }
+        await hideInputMethod();
+
+        int? resultId;
+        if (mounted) {
+          resultId = await context
+              .read<AnnualBudgetManagementCubit>()
+              .addReplaceAnnualBudget(value);
+        }
+
+        if (resultId != null) {
+          if (context.mounted) {
+            showSnackSuccess(
+              msg: '${LocaleKeys.addBudget.tr()} $resultId',
+            );
+
+            await context.read<AnnualBudgetManagementCubit>().loadListAnnualBudgets();
+            Navigator.of(context).pop();
+          }
+        }
       } finally {
         setState(() {
           loading = false;
@@ -87,26 +102,31 @@ class _AddAnnualBudgetScreenState extends State<AddAnnualBudgetScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: CmoAppBar(
-          title: LocaleKeys.addBudget.tr(),
-          subtitle: LocaleKeys.imbeza.tr(),
-          subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
-          leading: Assets.icons.icArrowLeft.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
-        ),
-        body: buildInputArea(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: CmoFilledButton(
-          title: LocaleKeys.save.tr(),
-          onTap: onSubmit,
-          loading: loading,
-        ),
+      child: BlocSelector<AnnualBudgetManagementCubit, AnnualBudgetManagementState, AnnualBudgetManagementState>(
+        selector: (state) => state,
+        builder: (context, state) {
+          return Scaffold(
+            appBar: CmoAppBar(
+              title: LocaleKeys.addBudget.tr(),
+              subtitle: state.activeFarm?.farmName ?? '',
+              subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
+              leading: Assets.icons.icArrowLeft.svgBlack,
+              onTapLeading: Navigator.of(context).pop,
+            ),
+            body: buildInputArea(state.listAnnualFarmProductions),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: CmoFilledButton(
+              title: LocaleKeys.save.tr(),
+              onTap: onSubmit,
+              loading: loading,
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget buildInputArea() {
+  Widget buildInputArea(List<AnnualFarmProduction> listAnnualFarmProductions) {
     return FormBuilder(
       key: _formKey,
       onChanged: () {},
@@ -119,16 +139,18 @@ class _AddAnnualBudgetScreenState extends State<AddAnnualBudgetScreen> {
               const SizedBox(
                 height: 16,
               ),
-              AddAnnualBudgetDetail(
+              AddUpdateAnnualBudgetDetail(
                 formKey: _formKey,
                 title: LocaleKeys.details.tr(),
                 budgetName: 'AnnualBudgetName',
-                annualTransactionYearName: 'Year',
+                year: 'AnnualFarmProduction',
+                annualBudget: widget.selectedAnnualBudget,
+                listAnnualFarmProductions: listAnnualFarmProductions,
               ),
               const SizedBox(
                 height: 16,
               ),
-              // AddAnnualBudgetDetail(
+              // AddUpdateAnnualBudgetDetail(
               //   formKey: _formKey,
               //   title: LocaleKeys.transactions.tr(),
               //   budgetName: 'TransactionBudgetName',
