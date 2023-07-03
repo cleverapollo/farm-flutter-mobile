@@ -1,4 +1,5 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/utils/file_utils.dart';
@@ -11,11 +12,12 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_done_screen.dart';
 
 class AddMemberSignContractScreen extends StatefulWidget {
-  const AddMemberSignContractScreen({super.key});
+  const AddMemberSignContractScreen({super.key, this.farm});
+  final Farm? farm;
 
-  static Future<void> push(BuildContext context) {
+  static Future<void> push(BuildContext context, {Farm? farm}) {
     return Navigator.push(context,
-        MaterialPageRoute(builder: (_) => const AddMemberSignContractScreen()));
+        MaterialPageRoute(builder: (_) => AddMemberSignContractScreen(farm: farm,)));
   }
 
   @override
@@ -34,7 +36,7 @@ class _AddMemberSignContractScreenState
     return Scaffold(
       appBar: CmoAppBarV2(
         title: LocaleKeys.addMember.tr(),
-        subtitle: LocaleKeys.siteName.tr(),
+        subtitle: widget.farm?.farmName ?? '',
         showTrailing: true,
       ),
       body: SizedBox.expand(
@@ -51,7 +53,7 @@ class _AddMemberSignContractScreenState
                 child: Text(
                     LocaleKeys
                         .agree_to_the_conditions_laid_out_in_this_legally_binding_document
-                        .tr(args: ['XXXxx']),
+                        .tr(args: ['${widget.farm?.firstName ?? ''} ${widget.farm?.lastName ?? ''}']),
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black)),
               ),
@@ -99,7 +101,7 @@ class _AddMemberSignContractScreenState
                             context.read<AddMemberCubit>().state.addMemberSAF;
                         final goNextStep = state.signatureImage != null;
                         if (goNextStep && context.mounted) {
-                          await AddMemberDone.push(context);
+                          await AddMemberDone.push(context, farm: widget.farm);
                         }
                       })),
               const SizedBox(height: 20),

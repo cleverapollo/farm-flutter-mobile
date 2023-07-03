@@ -58,7 +58,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     return Scaffold(
       appBar: CmoAppBarV2(
         title: LocaleKeys.addMember.tr(),
-        subtitle: LocaleKeys.siteName.tr(),
         showTrailing: true,
         onTapTrailing: () {
           Navigator.pop(context, true);
@@ -259,7 +258,13 @@ class _AddMemberMFO extends StatelessWidget {
                         CmoFilledButton(
                             title: LocaleKeys.next.tr(),
                             onTap: () {
-                              AddMemberMembershipContractScreen.push(context);
+                              AddMemberMembershipContractScreen.push(
+                                context,
+                                farm: context
+                                    .read<AddMemberCubit>()
+                                    .state
+                                    .farm,
+                              );
                             }),
                       ],
                     ),
