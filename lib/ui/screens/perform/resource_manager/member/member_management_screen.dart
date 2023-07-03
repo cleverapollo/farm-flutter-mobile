@@ -52,11 +52,8 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
             showTrailing: true,
             trailing: Assets.icons.icAdd.svgBlack,
             onTapTrailing: () async {
-              final result = await AddMemberScreen.push(context);
-
-              if (result != null) {
-                context.read<MemberManagementCubit>().reload();
-              }
+              await AddMemberScreen.push(context);
+              context.read<MemberManagementCubit>().reload();
             },
           ),
           body: BlocSelector<MemberManagementCubit, MemberManagementState,
@@ -135,13 +132,10 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                         return InkWell(
                           onTap: () async {
                             final result =
-                                await AddMemberScreen.push(context, farm: farm);
-
-                            if (result != null) {
-                              await context
-                                  .read<MemberManagementCubit>()
-                                  .reload();
-                            }
+                            await AddMemberScreen.push(context, farm: farm);
+                            await context
+                                .read<MemberManagementCubit>()
+                                .reload();
                           },
                           child: CmoCard(
                             margin: const EdgeInsets.symmetric(horizontal: 23),
