@@ -74,9 +74,9 @@ class _AddEmployeeGrievanceScreenState
       });
       try {
         await hideInputMethod();
-        final farmId = await configService.getActiveFarmId();
+        final farm = await configService.getActiveFarm();
         employeeGrievance = employeeGrievance.copyWith(
-          farmId: farmId,
+          farmId: farm?.farmId,
           dateReceived: value['DateReceived'] as DateTime?,
           dateClosed: value['DateClosed'] as DateTime?,
           allocatedToUserId: value['AllocatedToId']?.toString(),

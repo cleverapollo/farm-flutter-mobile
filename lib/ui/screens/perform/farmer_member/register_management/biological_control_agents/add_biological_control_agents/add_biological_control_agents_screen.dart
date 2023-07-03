@@ -76,9 +76,9 @@ class _AddBiologicalControlAgentsScreenState
       });
       try {
         await hideInputMethod();
-        final farmId = await configService.getActiveFarmId();
+        final farm = await configService.getActiveFarm();
         agent = agent.copyWith(
-          farmId: farmId,
+          farmId: farm?.farmId,
           dateReleased: value['DateReleased'] as DateTime?,
           stakeholderId: value['StakeholderId']?.toString(),
           monitoringRequirementId: int.tryParse(

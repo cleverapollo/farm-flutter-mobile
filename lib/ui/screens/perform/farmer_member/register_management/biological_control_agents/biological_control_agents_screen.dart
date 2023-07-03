@@ -48,9 +48,9 @@ class _BiologicalControlAgentsScreenState
   }
 
   Future<void> _init() async {
-    final farmId = await configService.getActiveFarmId();
+    final farm = await configService.getActiveFarm();
     items.addAll(await cmoDatabaseMasterService
-        .getBiologicalControlAgentByFarmId(farmId!));
+        .getBiologicalControlAgentByFarmId(farm!.farmId));
     isLoading = false;
 
     filteredItems = items;

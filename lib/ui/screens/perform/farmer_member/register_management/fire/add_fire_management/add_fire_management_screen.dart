@@ -68,11 +68,11 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
       });
       try {
         await hideInputMethod();
-        final farmId = await configService.getActiveFarmId();
+        final farm = await configService.getActiveFarm();
         fireRegister = fireRegister.copyWith(
           extinguished: value['DateExtinguished'] as DateTime?,
           detected: value['DateDetected'] as DateTime?,
-          farmId: farmId,
+          farmId: farm?.farmId,
           isMasterdataSynced: false,
           fireCauseId: int.tryParse(value['FireCauseId'].toString()),
         );

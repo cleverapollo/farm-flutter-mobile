@@ -46,9 +46,9 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
   }
 
   Future<void> _init() async {
-    final farmId = await configService.getActiveFarmId();
-    items.addAll(
-        await cmoDatabaseMasterService.getEmployeeGrievancesByFarmId(farmId!));
+    final farm = await configService.getActiveFarm();
+    items.addAll(await cmoDatabaseMasterService
+        .getEmployeeGrievancesByFarmId(farm!.farmId));
     isLoading = false;
 
     filteredItems = items;
