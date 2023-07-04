@@ -1,14 +1,16 @@
 import 'dart:async';
 
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/user_role_enum.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/create_new_stake_holder_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/farmer_mode_stake_holder_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/rm_mode_stake_holder_item.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,7 +39,7 @@ class _StakeHolderManagementScreenState
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<StakeHolderListCubit>().loadListStakeHolderForRMRole();
+      context.read<StakeHolderListCubit>().refresh();
     });
   }
 
@@ -45,84 +47,99 @@ class _StakeHolderManagementScreenState
   Widget build(BuildContext context) {
     return CmoTappable(
       onTap: FocusScope.of(context).unfocus,
-      child: Scaffold(
-        appBar: _buildCustomAppBar(),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
-              child: CmoTextField(
-                name: LocaleKeys.search.tr(),
-                hintText: LocaleKeys.search.tr(),
-                suffixIcon: Assets.icons.icSearch.svg(),
-                onChanged: (input) {
-                  _debounceInputTimer?.cancel();
-                  _debounceInputTimer = Timer(
-                    const Duration(milliseconds: 200),
-                    () => context.read<StakeHolderListCubit>().searching(input),
-                  );
-                },
-              ),
-            ),
-            Expanded(
-              child: BlocSelector<StakeHolderListCubit, StakeHolderListState,
-                  StakeHolderListState>(
-                selector: (state) {
-                  return state;
-                },
-                builder: (context, state) {
-                  if (state.loadingList) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: context.colors.white,
-                      ),
-                    );
-                  }
-
-                  if (state.error != null && kDebugMode) {
-                    return Center(
-                      child: Text(
-                        '${state.error}',
-                      ),
-                    );
-                  }
-
-                  return RefreshIndicator(
-                    onRefresh: () {
-                      return context
-                          .read<StakeHolderListCubit>()
-                          .loadListStakeHolderForRMRole();
+      child: FutureBuilder(
+        future: configService.getActiveUserRole(),
+        builder: (context, snapshot) {
+          if(!snapshot.hasData) return Container();
+          return Scaffold(
+            appBar: _buildCustomAppBar(snapshot.data),
+            body: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
+                  child: CmoTextField(
+                    name: LocaleKeys.search.tr(),
+                    hintText: LocaleKeys.search.tr(),
+                    suffixIcon: Assets.icons.icSearch.svg(),
+                    onChanged: (input) {
+                      _debounceInputTimer?.cancel();
+                      _debounceInputTimer = Timer(
+                        const Duration(milliseconds: 200),
+                        () => context.read<StakeHolderListCubit>().searching(input),
+                      );
                     },
-                    child: ListView.separated(
-                      separatorBuilder: (context, index) => const SizedBox(
-                        height: 22,
-                      ),
-                      itemCount: state.filterListStakeHolders.length,
-                      padding: const EdgeInsets.symmetric(horizontal: 21),
-                      itemBuilder: (context, index) {
-                        return _buildItemCard(
-                          model: state.filterListStakeHolders[index],
-                          haveGreyBackground: index.isEven,
+                  ),
+                ),
+                Expanded(
+                  child: BlocSelector<StakeHolderListCubit, StakeHolderListState,
+                      StakeHolderListState>(
+                    selector: (state) {
+                      return state;
+                    },
+                    builder: (context, state) {
+                      if (state.loadingList) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: context.colors.white,
+                          ),
                         );
-                      },
-                    ),
-                  );
-                },
-              ),
+                      }
+
+                      if (state.error != null && kDebugMode) {
+                        return Center(
+                          child: Text(
+                            '${state.error}',
+                          ),
+                        );
+                      }
+
+                      return RefreshIndicator(
+                        onRefresh: () {
+                          return context
+                              .read<StakeHolderListCubit>()
+                              .loadListStakeHolderForRMRole();
+                        },
+                        child: ListView.separated(
+                          separatorBuilder: (context, index) => const SizedBox(
+                            height: 22,
+                          ),
+                          itemCount: state.filterListStakeHolders.length,
+                          padding: const EdgeInsets.symmetric(horizontal: 21),
+                          itemBuilder: (context, index) {
+                            return _buildItemCard(
+                              model: state.filterListStakeHolders[index],
+                              haveGreyBackground: index.isEven,
+                              isRM: snapshot.data == UserRoleEnum.regionalManager,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  PreferredSizeWidget? _buildCustomAppBar() {
-    if (context.read<UserInfoCubit>().state.checkRegionalManagerRoleType) {
-      return CmoAppBarV2(
-        title: LocaleKeys.stakeholderManagement.tr(),
-        subtitle: '${LocaleKeys.siteName.tr()}: Imbeza',
-        showLeading: true,
+  PreferredSizeWidget? _buildCustomAppBar([UserRoleEnum? data]) {
+    if (data == UserRoleEnum.regionalManager) {
+      return PreferredSize(
+        preferredSize: const Size.fromHeight(72),
+        child: BlocSelector<StakeHolderListCubit, StakeHolderListState, ResourceManagerUnit?>(
+          selector: (state) => state.resourceManagerUnit,
+          builder: (context, resourceManagerUnit) {
+            return CmoAppBar(
+              title: LocaleKeys.stakeholderManagement.tr(),
+              subtitle: '${LocaleKeys.siteName.tr()}: ${resourceManagerUnit?.regionalManagerUnitName}',
+              //showLeading: true,
+            );
+          },
+        ),
       );
     } else {
       return AppBar(
@@ -163,12 +180,14 @@ class _StakeHolderManagementScreenState
 
   Widget _buildItemCard({
     required StakeHolder model,
-    required bool haveGreyBackground,
+    required bool haveGreyBackground, required bool isRM,
   }) {
-    if (context.read<UserInfoCubit>().state.checkRegionalManagerRoleType) {
+    if (isRM) {
       return RmModeStakeHolderItem(
         model: model,
-        onTap: () {},
+        onTap: () {
+          CreateNewStakeHolderScreen.push(context, stakeHolder: model);
+        },
       );
     } else {
       return FarmerModeStakeHolderItem(

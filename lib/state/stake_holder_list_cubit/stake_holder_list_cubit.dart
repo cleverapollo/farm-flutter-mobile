@@ -1,10 +1,7 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/utils/utils.dart';
-import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'stake_holder_list_state.dart';
@@ -90,6 +87,8 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
   }
 
   Future<void> refresh() async {
+    final rmUnit = await configService.getActiveRegionalManager();
+    emit(state.copyWith(resourceManagerUnit: rmUnit));
     await loadListStakeHolderForRMRole();
   }
 

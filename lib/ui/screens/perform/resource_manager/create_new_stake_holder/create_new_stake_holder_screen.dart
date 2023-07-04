@@ -18,7 +18,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/
 class CreateNewStakeHolderScreen extends StatefulWidget {
   const CreateNewStakeHolderScreen({super.key});
 
-  static void push(BuildContext context) {
+  static void push(BuildContext context, {StakeHolder? stakeHolder}) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => const CreateNewStakeHolderScreen(),

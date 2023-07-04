@@ -7,6 +7,7 @@ class StakeHolderListState {
     this.filterListStakeHolders = const <StakeHolder>[],
     this.loadingList = false,
     this.error,
+    this.resourceManagerUnit,
   });
 
   final bool loadingList;
@@ -14,6 +15,7 @@ class StakeHolderListState {
   final List<StakeHolder> listStakeHolders;
   final List<StakeHolder> filterListStakeHolders;
   final List<StakeHolderType> listStakeholderTypes;
+  final ResourceManagerUnit? resourceManagerUnit;
 
   StakeHolderListState copyWith({
     bool? loadingList,
@@ -22,13 +24,16 @@ class StakeHolderListState {
     List<StakeHolder>? listStakeHolders,
     List<StakeHolder>? filterListStakeHolders,
     Map<String, dynamic>? cacheCreateData,
+    ResourceManagerUnit? resourceManagerUnit,
   }) {
     return StakeHolderListState(
       loadingList: loadingList ?? this.loadingList,
       error: error ?? this.error,
-      filterListStakeHolders: filterListStakeHolders ?? this.filterListStakeHolders,
+      filterListStakeHolders: filterListStakeHolders ??
+          this.filterListStakeHolders,
       listStakeHolders: listStakeHolders ?? this.listStakeHolders,
       listStakeholderTypes: listStakeholderTypes ?? this.listStakeholderTypes,
+      resourceManagerUnit: resourceManagerUnit ?? this.resourceManagerUnit,
     );
   }
 }
