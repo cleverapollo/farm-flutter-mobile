@@ -9,24 +9,33 @@ part 'farmer_stake_holder_complaint.g.dart';
 @Collection(ignore: {'copyWith'})
 class FarmerStakeHolderComplaint with _$FarmerStakeHolderComplaint {
   const factory FarmerStakeHolderComplaint({
-    @JsonKey(name: 'FarmerStakeHolderComplaintId') int? farmerStakeHolderComplaintId,
-    @JsonKey(name: 'ComplaintId') int? complaintId,
-    @JsonKey(name: 'ComplaintName') String? complaintName,
-    @JsonKey(name: 'IssueRaised') String? issueRaised,
+    @JsonKey(name: 'ComplaintsAndDisputesRegisterNo')
+        String? complaintsAndDisputesRegisterNo,
+    @JsonKey(name: 'FarmId') String? farmId,
+    @JsonKey(name: 'StakeholderId') String? stakeholderId,
+    @JsonKey(name: 'ComplaintsAndDisputesRegisterId')
+        String? complaintsAndDisputesRegisterId,
+    @JsonKey(name: 'IssueDescription') String? issueDescription,
+    @JsonKey(name: 'DateReceived') DateTime? dateReceived,
+    @JsonKey(name: 'AllocatedToUserId') int? allocatedToUserId,
     @JsonKey(name: 'ClosureDetails') String? closureDetails,
-    @JsonKey(name: 'GeneralComments') String? generalComments,
-    @JsonKey(name: 'DateReceived') String? dateReceived,
-    @JsonKey(name: 'DateClosed') String? dateClosed,
-    @Default(false) @JsonKey(name: 'CarRaised') bool? carRaised,
-    @Default(false) @JsonKey(name: 'CarClosed') bool? carClosed,
-    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
-    @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
+    @JsonKey(name: 'DateClosed') DateTime? dateClosed,
+    @JsonKey(name: 'Comment') String? comment,
+    @JsonKey(name: 'CarRaisedDate') String? carRaisedDate,
+    @JsonKey(name: 'CarClosedDate') String? carClosedDate,
+    @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
+    @JsonKey(name: 'StakeholderName') String? stakeholderName,
+    @JsonKey(name: 'ComplaintsAndDisputesRegisterName')
+        String? complaintsAndDisputesRegisterName,
   }) = _FarmerStakeHolderComplaint;
 
   const FarmerStakeHolderComplaint._();
 
-  factory FarmerStakeHolderComplaint.fromJson(Map<String, dynamic> json) => _$FarmerStakeHolderComplaintFromJson(json);
+  factory FarmerStakeHolderComplaint.fromJson(Map<String, dynamic> json) =>
+      _$FarmerStakeHolderComplaintFromJson(json);
 
   @override
-  Id get id => complaintId ?? Isar.autoIncrement;
+  Id get id =>
+      int.tryParse(complaintsAndDisputesRegisterId ?? '') ?? Isar.autoIncrement;
 }

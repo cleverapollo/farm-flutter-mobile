@@ -1,34 +1,36 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/farmer_stake_holder_complaint/farmer_stake_holder_complaint.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_switch.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddStakeHolderComplaintScreen extends StatefulWidget {
-  const AddStakeHolderComplaintScreen({super.key});
+  const AddStakeHolderComplaintScreen({super.key, this.complaint});
+
+  final FarmerStakeHolderComplaint? complaint;
 
   @override
   State<StatefulWidget> createState() => _AddStakeHolderComplaintScreenState();
 
-  static Future<void> push(BuildContext context) {
+  static Future<FarmerStakeHolderComplaint?> push(BuildContext context,
+      {FarmerStakeHolderComplaint? complaint}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const AddStakeHolderComplaintScreen(),
+        builder: (_) => AddStakeHolderComplaintScreen(complaint: complaint),
       ),
     );
   }
 }
 
-class _AddStakeHolderComplaintScreenState extends State<AddStakeHolderComplaintScreen> {
+class _AddStakeHolderComplaintScreenState
+    extends State<AddStakeHolderComplaintScreen> {
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
@@ -37,10 +39,23 @@ class _AddStakeHolderComplaintScreenState extends State<AddStakeHolderComplaintS
 
   late FarmerStakeHolderComplaint complaint;
 
+  bool carRaised = false;
+  bool carClosed = false;
+
   @override
   void initState() {
     super.initState();
-    complaint = FarmerStakeHolderComplaint();
+    if (widget.complaint == null) {
+      complaint = FarmerStakeHolderComplaint(
+          complaintsAndDisputesRegisterNo: DateTime.now().toIso8601String(),
+          isActive: true,
+          isMasterDataSynced: false);
+    } else {
+      complaint =
+          FarmerStakeHolderComplaint.fromJson(widget.complaint!.toJson());
+    }
+    carRaised = complaint.carRaisedDate != null;
+    carClosed = complaint.carClosedDate != null;
   }
 
   Future<void> onSubmit() async {
@@ -57,11 +72,24 @@ class _AddStakeHolderComplaintScreenState extends State<AddStakeHolderComplaintS
       });
       try {
         await hideInputMethod();
+        final farm = await configService.getActiveFarm();
         complaint = complaint.copyWith(
-          dateReceived: value['DateReceived'].toString(),
-          dateClosed: value['DateClosed'].toString(),
-          complaintId: int.tryParse(value['ComplaintId'].toString()),
-        );
+            farmId: farm?.farmId,
+            dateReceived: value['DateReceived'] as DateTime?,
+            dateClosed: value['DateClosed'] as DateTime?,
+            complaintsAndDisputesRegisterId: value['ComplaintId'] as String?);
+
+        if (carRaised && complaint.carRaisedDate == null) {
+          complaint = complaint.copyWith(
+            carRaisedDate: DateTime.now().toIso8601String(),
+          );
+        }
+
+        if (carClosed && complaint.carClosedDate == null) {
+          complaint = complaint.copyWith(
+            carClosedDate: DateTime.now().toIso8601String(),
+          );
+        }
 
         int? resultId;
 
@@ -69,17 +97,19 @@ class _AddStakeHolderComplaintScreenState extends State<AddStakeHolderComplaintS
           final databaseService = cmoDatabaseMasterService;
 
           await (await databaseService.db).writeTxn(() async {
-            resultId = await databaseService.cacheFarmerStakeHolderComplaint(complaint);
+            resultId = await databaseService
+                .cacheFarmerStakeHolderComplaint(complaint);
           });
         }
 
         if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
-              msg: '${LocaleKeys.addStakeHolderComplaint.tr()} $resultId',
+              msg:
+                  '${widget.complaint == null ? LocaleKeys.addStakeHolderComplaint.tr() : 'Edit Complaint'} $resultId',
             );
 
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(complaint);
           }
         }
       } finally {
@@ -96,7 +126,9 @@ class _AddStakeHolderComplaintScreenState extends State<AddStakeHolderComplaintS
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
-          title: LocaleKeys.addStakeHolderComplaint.tr(),
+          title: widget.complaint == null
+              ? LocaleKeys.addStakeHolderComplaint.tr()
+              : 'Edit Complaint',
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
@@ -139,7 +171,7 @@ class _AddStakeHolderComplaintScreenState extends State<AddStakeHolderComplaintS
                   hintText: LocaleKeys.issueRaised.tr(),
                   hintTextStyle: context.textStyles.bodyBold.black,
                   onChanged: (value) {
-                    complaint = complaint.copyWith(issueRaised: value);
+                    complaint = complaint.copyWith(issueDescription: value);
                   },
                 ),
               ),
@@ -158,7 +190,7 @@ class _AddStakeHolderComplaintScreenState extends State<AddStakeHolderComplaintS
                 child: SelectItemWidget(
                   title: LocaleKeys.carRaised.tr(),
                   onSelect: (isSelected) {
-                    complaint = complaint.copyWith(carRaised: isSelected);
+                    carRaised = isSelected;
                   },
                 ),
               ),
@@ -166,7 +198,7 @@ class _AddStakeHolderComplaintScreenState extends State<AddStakeHolderComplaintS
                 child: SelectItemWidget(
                   title: LocaleKeys.carClosed.tr(),
                   onSelect: (isSelected) {
-                    complaint = complaint.copyWith(carClosed: isSelected);
+                    carClosed = isSelected;
                   },
                 ),
               ),
@@ -175,7 +207,7 @@ class _AddStakeHolderComplaintScreenState extends State<AddStakeHolderComplaintS
                 child: GeneralCommentWidget(
                   hintText: LocaleKeys.generalComments.tr(),
                   onChanged: (value) {
-                    complaint = complaint.copyWith(generalComments: value);
+                    complaint = complaint.copyWith(comment: value);
                   },
                 ),
               ),
@@ -204,10 +236,13 @@ class _AddStakeHolderComplaintScreenState extends State<AddStakeHolderComplaintS
           inputDecoration: InputDecoration(
             contentPadding: const EdgeInsets.all(8),
             isDense: true,
-            hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.complaintName.tr().toLowerCase()}',
+            hintText:
+                '${LocaleKeys.select.tr()} ${LocaleKeys.complaintName.tr().toLowerCase()}',
             hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
+            border: UnderlineInputBorder(
+                borderSide: BorderSide(color: context.colors.grey)),
+            focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: context.colors.blue)),
           ),
           onChanged: (int? id) {
             if (id == -1) {
@@ -229,7 +264,14 @@ class _AddStakeHolderComplaintScreenState extends State<AddStakeHolderComplaintS
       child: CmoDatePicker(
         name: 'DateReceived',
         hintText: LocaleKeys.dateReceived.tr(),
-        validator: requiredValidator,
+        validator: (DateTime? value) {
+          if (value == null) return null;
+          if (value.millisecondsSinceEpoch >
+              DateTime.now().millisecondsSinceEpoch) {
+            return 'Received date cannot be in the future';
+          }
+          return null;
+        },
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
@@ -253,6 +295,21 @@ class _AddStakeHolderComplaintScreenState extends State<AddStakeHolderComplaintS
       child: CmoDatePicker(
         name: 'DateClosed',
         hintText: LocaleKeys.dateClosed.tr(),
+        validator: (DateTime? value) {
+          if (value == null) return null;
+          if (value.millisecondsSinceEpoch >
+              DateTime.now().millisecondsSinceEpoch) {
+            return 'Closed date cannot be in the future';
+          }
+          final receivedValue =
+              _formKey.currentState?.value['DateReceived'] as DateTime?;
+          if (receivedValue != null &&
+              value.millisecondsSinceEpoch <
+                  receivedValue.millisecondsSinceEpoch) {
+            return 'Closed date must be after received date';
+          }
+          return null;
+        },
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(

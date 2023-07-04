@@ -2000,6 +2000,16 @@ class CmoDatabaseMasterService {
     return db.farmerStakeHolderComplaints.put(item);
   }
 
+  Future<List<FarmerStakeHolderComplaint>>
+      getFarmerStakeHolderComplaintsByFarmId(String farmId) async {
+    final db = await _db();
+    return db.farmerStakeHolderComplaints
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
   Future<int> cacheBiologicalControlAgents(BiologicalControlAgent item) async {
     final db = await _db();
     return db.biologicalControlAgents.put(item);

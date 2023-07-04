@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
@@ -11,46 +12,6 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
-
-List<FarmerStakeHolderComplaint> _mockData = [
-  FarmerStakeHolderComplaint(
-    farmerStakeHolderComplaintId: DateTime.now().millisecondsSinceEpoch,
-    generalComments: 'generalComments',
-    issueRaised: 'issueRaised',
-    complaintName: 'complaintName',
-    carClosed: true,
-    closureDetails: 'closureDetails',
-    dateReceived: DateTime(2023, 4, 20).toString(),
-    dateClosed: DateTime(2023, 4, 26).toString(),
-  ),
-  FarmerStakeHolderComplaint(
-    farmerStakeHolderComplaintId: DateTime.now().millisecondsSinceEpoch,
-    generalComments: 'generalComments 1',
-    issueRaised: 'issueRaised 1',
-    complaintName: 'complaintName 1',
-    carClosed: true,
-    closureDetails: 'closureDetails 1',
-    dateReceived: DateTime(2023, 4, 1).toString(),
-  ),
-  FarmerStakeHolderComplaint(
-    farmerStakeHolderComplaintId: DateTime.now().millisecondsSinceEpoch,
-    generalComments: 'generalComments 2',
-    issueRaised: 'issueRaised 2',
-    complaintName: 'complaintName 2',
-    carClosed: true,
-    closureDetails: 'closureDetails 2',
-    dateReceived: DateTime(2023, 4, 2).toString(),
-  ),
-  FarmerStakeHolderComplaint(
-    farmerStakeHolderComplaintId: DateTime.now().millisecondsSinceEpoch,
-    generalComments: 'generalComments 3',
-    issueRaised: 'issueRaised 3',
-    complaintName: 'complaintName 3',
-    carClosed: true,
-    closureDetails: 'closureDetails 3',
-    dateReceived: DateTime(2023, 4, 3).toString(),
-  ),
-];
 
 class StakeHolderComplaintScreen extends StatefulWidget {
   const StakeHolderComplaintScreen({
@@ -70,7 +31,11 @@ class StakeHolderComplaintScreen extends StatefulWidget {
   }
 }
 
-class _StakeHolderComplaintScreenState extends State<StakeHolderComplaintScreen> {
+class _StakeHolderComplaintScreenState
+    extends State<StakeHolderComplaintScreen> {
+  final List<FarmerStakeHolderComplaint> items = [];
+  bool isLoading = true;
+
   Timer? _debounceInputTimer;
   late List<FarmerStakeHolderComplaint> filteredItems;
   late StatusFilterEnum statusFilter;
@@ -79,7 +44,16 @@ class _StakeHolderComplaintScreenState extends State<StakeHolderComplaintScreen>
   @override
   void initState() {
     super.initState();
-    filteredItems = _mockData;
+    _init();
+  }
+
+  Future<void> _init() async {
+    final farm = await configService.getActiveFarm();
+    items.addAll(await cmoDatabaseMasterService
+        .getFarmerStakeHolderComplaintsByFarmId(farm!.farmId));
+    isLoading = false;
+
+    filteredItems = items;
     statusFilter = StatusFilterEnum.open;
     inputSearch = '';
     applyFilter();
@@ -90,15 +64,18 @@ class _StakeHolderComplaintScreenState extends State<StakeHolderComplaintScreen>
     if (input == null || input.isEmpty) {
       applyFilter();
     } else {
-      filteredItems = _mockData.where((element) {
-        final containName = element.complaintName?.toLowerCase().contains(input.toLowerCase()) ?? false;
+      filteredItems = items.where((element) {
+        final containName = element.complaintsAndDisputesRegisterName
+                ?.toLowerCase()
+                .contains(input.toLowerCase()) ??
+            false;
         var isFilter = false;
         switch (statusFilter) {
           case StatusFilterEnum.open:
-            isFilter = element.dateClosed.isNull || (element.dateClosed?.isEmpty ?? false);
+            isFilter = element.dateClosed == null;
             break;
           case StatusFilterEnum.closed:
-            isFilter = element.dateClosed?.isNotEmpty ?? false;
+            isFilter = element.dateClosed != null;
             break;
         }
 
@@ -112,12 +89,12 @@ class _StakeHolderComplaintScreenState extends State<StakeHolderComplaintScreen>
     if (inputSearch == null || inputSearch!.isEmpty) {
       switch (statusFilter) {
         case StatusFilterEnum.open:
-          filteredItems = _mockData
-              .where((element) => element.dateClosed.isNull || (element.dateClosed?.isEmpty ?? false))
-              .toList();
+          filteredItems =
+              items.where((element) => element.dateClosed == null).toList();
           break;
         case StatusFilterEnum.closed:
-          filteredItems = _mockData.where((element) => element.dateClosed?.isNotEmpty ?? false).toList();
+          filteredItems =
+              items.where((element) => element.dateClosed != null).toList();
           break;
       }
     } else {
@@ -149,7 +126,8 @@ class _StakeHolderComplaintScreenState extends State<StakeHolderComplaintScreen>
                 suffixIcon: Assets.icons.icSearch.svg(),
                 onChanged: (input) {
                   _debounceInputTimer?.cancel();
-                  _debounceInputTimer = Timer(const Duration(milliseconds: 200), () => searching(input));
+                  _debounceInputTimer = Timer(const Duration(milliseconds: 200),
+                      () => searching(input));
                 },
               ),
             ),
@@ -157,8 +135,8 @@ class _StakeHolderComplaintScreenState extends State<StakeHolderComplaintScreen>
               padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
               child: StatusFilterWidget(
                 onSelectFilter: (statusFilterEnum) {
-                    statusFilter = statusFilterEnum;
-                    applyFilter();
+                  statusFilter = statusFilterEnum;
+                  applyFilter();
                 },
               ),
             ),
@@ -172,8 +150,19 @@ class _StakeHolderComplaintScreenState extends State<StakeHolderComplaintScreen>
                   horizontal: 21,
                 ),
                 itemBuilder: (context, index) {
-                  return _StakeHolderComplaintItem(
-                    complaint: filteredItems[index],
+                  final item = filteredItems[index];
+                  return GestureDetector(
+                    onTap: () async {
+                      final result = await AddStakeHolderComplaintScreen.push(
+                          context,
+                          complaint: item);
+                      if (result == null) return;
+                      filteredItems[index] = result;
+                      setState(() {});
+                    },
+                    child: _StakeHolderComplaintItem(
+                      complaint: filteredItems[index],
+                    ),
                   );
                 },
               ),
@@ -203,7 +192,7 @@ class _StakeHolderComplaintItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${LocaleKeys.complaintNo.tr()}: ${complaint.farmerStakeHolderComplaintId?.toString()}',
+            '${LocaleKeys.complaintNo.tr()}: ${complaint.complaintsAndDisputesRegisterNo?.toString()}',
             style: context.textStyles.bodyBold.blue,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -220,20 +209,20 @@ class _StakeHolderComplaintItem extends StatelessWidget {
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.complaintName.tr(),
-            valueLabel: complaint.complaintName,
+            valueLabel: complaint.complaintsAndDisputesRegisterName,
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.issueRaised.tr(),
-            valueLabel: complaint.issueRaised,
+            valueLabel: complaint.issueDescription,
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateReceived.tr(),
-            valueLabel: DateTime.tryParse(complaint.dateReceived ?? '')?.ddMMYyyy(),
+            valueLabel: complaint.dateReceived?.ddMMYyyy(),
             backgroundColor: context.colors.greyLight1,
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateClosed.tr(),
-            valueLabel: DateTime.tryParse(complaint.dateClosed ?? '')?.ddMMYyyy(),
+            valueLabel: complaint.dateClosed?.ddMMYyyy(),
             backgroundColor: context.colors.greyLight1,
           ),
           KeyValueItemWidget(
@@ -241,7 +230,7 @@ class _StakeHolderComplaintItem extends StatelessWidget {
             valueLabel: complaint.closureDetails,
           ),
           GeneralCommentsItem(
-            comment: complaint.generalComments,
+            comment: complaint.comment,
           ),
         ],
       ),
