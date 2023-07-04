@@ -6,6 +6,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/add_update_annual_farm_production/add_update_annual_production_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/transaction/add_update_annual_budget_transaction_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/status_button.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_alert.dart';
@@ -60,7 +61,8 @@ class _AnnualBudgetTransactionsScreenState
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => AddUpdateAnnualProductionScreen.push(context),
+        onTapTrailing: () =>
+            AddUpdateAnnualBudgetTransactionScreen.push(context),
       ),
       body: BlocSelector<AnnualBudgetTransactionsCubit,
           AnnualBudgetTransactionsState, AnnualBudgetTransactionsState>(
@@ -88,7 +90,8 @@ class _AnnualBudgetTransactionsScreenState
               const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: BlocSelector<AnnualBudgetTransactionsCubit, AnnualBudgetTransactionsState, int>(
+                child: BlocSelector<AnnualBudgetTransactionsCubit,
+                    AnnualBudgetTransactionsState, int>(
                   selector: (state) {
                     return state.indexTab;
                   },
@@ -97,12 +100,16 @@ class _AnnualBudgetTransactionsScreenState
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         StatusButton(
-                          onTap: () => context.read<AnnualBudgetTransactionsCubit>().changeIndexTab(0),
+                          onTap: () => context
+                              .read<AnnualBudgetTransactionsCubit>()
+                              .changeIndexTab(0),
                           isDisable: indexTab != 0,
                           title: LocaleKeys.income.tr(),
                         ),
                         StatusButton(
-                          onTap: () => context.read<AnnualBudgetTransactionsCubit>().changeIndexTab(1),
+                          onTap: () => context
+                              .read<AnnualBudgetTransactionsCubit>()
+                              .changeIndexTab(1),
                           isDisable: indexTab != 1,
                           title: LocaleKeys.expense.tr(),
                         ),
@@ -118,11 +125,12 @@ class _AnnualBudgetTransactionsScreenState
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   itemBuilder: (context, index) {
                     return InkWell(
-                      // onTap: () => AddUpdateAnnualProductionScreen.push(
-                      //   context,
-                      //   selectedAnnualFarmProduction: state.filterAnnualBudgetTransactions[index],
-                      //   isEditing: true,
-                      // ),
+                      onTap: () => AddUpdateAnnualBudgetTransactionScreen.push(
+                        context,
+                        isEditing: true,
+                        selectedAnnualBudgetTransaction: state.filterAnnualBudgetTransactions[index],
+                        selectedAnnualBudget: state.annualBudget,
+                      ),
                       child: _buildItemCard(
                         state.filterAnnualBudgetTransactions[index],
                       ),
@@ -138,73 +146,63 @@ class _AnnualBudgetTransactionsScreenState
   }
 
   Widget _buildItemCard(AnnualBudgetTransaction model) {
-    return CmoTappable(
-      onTap: () {},
-      // => AddAnnualBudgetScreen.push(
-      // context,
-      // isEditing: true,
-      // selectedAnnualBudget: model,
-      // ),
-      child: Dismissible(
-        key: Key(model.id.toString()),
-        direction: DismissDirection.endToStart,
-        confirmDismiss: (test) async {
-          final shouldRemoved = await showDefaultAlert(
-            context,
-            title: LocaleKeys.removeAnnualBudget.tr(),
-            content: LocaleKeys.removeAnnualBudgetAlertContent.tr(),
-            actions: <Widget>[
-              TextButton(
-                child: Text(LocaleKeys.ok.tr().toUpperCase()),
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-              ),
-              TextButton(
-                child: Text(LocaleKeys.cancel.tr().toUpperCase()),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-          if (shouldRemoved != true) {
-            return;
-          }
-
-          // await context.read<AnnualBudgetManagementCubit>().onRemoveBudget(model);
-          return null;
-        },
-        background: Container(
-          color: context.colors.red,
-          alignment: Alignment.center,
-          child: Text(
-            LocaleKeys.remove.tr(),
-            style: context.textStyles.bodyBold.white,
-          ),
-        ),
-        child: CmoCard(
-          padding: const EdgeInsets.only(bottom: 20),
-          content: [
-            CmoCardHeader(
-              title: model.transactionDescription ?? '',
-              maxLines: 2,
+    return Dismissible(
+      key: Key(model.id.toString()),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (test) async {
+        final shouldRemoved = await showDefaultAlert(
+          context,
+          title: LocaleKeys.removeAnnualBudgetTransaction.tr(),
+          content: LocaleKeys.removeAnnualBudgetTransactionAlertContent.tr(),
+          actions: <Widget>[
+            TextButton(
+              child: Text(LocaleKeys.ok.tr().toUpperCase()),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
             ),
-            const SizedBox(height: 10),
-            // CmoCardItem(
-            //   title: LocaleKeys.tran.tr(),
-            //   value: model.profitAndLoss().toStringAsFixed(2),
-            // ),
-            // CmoCardItem(
-            //   title: LocaleKeys.income.tr(),
-            //   value: model.totalIncome?.toStringAsFixed(2) ?? '000',
-            // ),
-            // CmoCardItem(
-            //   title: LocaleKeys.expenses.tr(),
-            //   value: model.totalExpense?.toStringAsFixed(2) ?? '000',
-            // ),
+            TextButton(
+              child: Text(LocaleKeys.cancel.tr().toUpperCase()),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
           ],
+        );
+        if (shouldRemoved != true) {
+          return;
+        }
+
+        await context
+            .read<AnnualBudgetTransactionsCubit>()
+            .onRemoveTransaction(model);
+        return null;
+      },
+      background: Container(
+        color: context.colors.red,
+        alignment: Alignment.center,
+        child: Text(
+          LocaleKeys.remove.tr(),
+          style: context.textStyles.bodyBold.white,
         ),
+      ),
+      child: CmoCard(
+        padding: const EdgeInsets.only(bottom: 20),
+        content: [
+          CmoCardHeader(
+            title: model.transactionDescription ?? '',
+            maxLines: 2,
+          ),
+          const SizedBox(height: 10),
+          CmoCardItem(
+            title: LocaleKeys.transactionCategory.tr(),
+            value: model.transactionCategoryName ?? '',
+          ),
+          CmoCardItem(
+            title: LocaleKeys.amount.tr(),
+            value: model.transactionAmount?.toStringAsFixed(2) ?? '000',
+          ),
+        ],
       ),
     );
   }

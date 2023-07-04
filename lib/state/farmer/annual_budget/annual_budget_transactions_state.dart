@@ -6,10 +6,10 @@ class AnnualBudgetTransactionsState {
     this.error,
     this.annualBudget,
     this.activeFarm,
+    this.annualBudgetTransaction,
     this.listAnnualBudgetTransactions = const <AnnualBudgetTransaction>[],
     this.filterAnnualBudgetTransactions = const <AnnualBudgetTransaction>[],
-    this.listAnnualBudgetTransactionCategories =
-        const <AnnualBudgetTransactionCategory>[],
+    this.listAnnualBudgetTransactionCategories = const <AnnualBudgetTransactionCategory>[],
     this.listAnnualFarmProductions = const <AnnualFarmProduction>[],
     this.isEditing = false,
     this.indexTab = 0,
@@ -17,12 +17,12 @@ class AnnualBudgetTransactionsState {
 
   final List<AnnualBudgetTransaction> listAnnualBudgetTransactions;
   final List<AnnualBudgetTransaction> filterAnnualBudgetTransactions;
-  final List<AnnualBudgetTransactionCategory>
-      listAnnualBudgetTransactionCategories;
+  final List<AnnualBudgetTransactionCategory>listAnnualBudgetTransactionCategories;
   final Farm? activeFarm;
+  final AnnualBudgetTransaction? annualBudgetTransaction;
+  final AnnualBudget? annualBudget;
 
   final List<AnnualFarmProduction> listAnnualFarmProductions;
-  final AnnualBudget? annualBudget;
   final Object? error;
   final bool loading;
   final bool isEditing;
@@ -33,10 +33,10 @@ class AnnualBudgetTransactionsState {
     Object? error,
     List<AnnualBudgetTransaction>? listAnnualBudgetTransactions,
     List<AnnualBudgetTransaction>? filterAnnualBudgetTransactions,
-    List<AnnualBudgetTransactionCategory>?
-        listAnnualBudgetTransactionCategories,
+    List<AnnualBudgetTransactionCategory>?listAnnualBudgetTransactionCategories,
     List<AnnualFarmProduction>? listAnnualFarmProductions,
     AnnualBudget? annualBudget,
+    AnnualBudgetTransaction? annualBudgetTransaction,
     Farm? activeFarm,
     bool? isEditing,
     int? indexTab,
@@ -47,15 +47,11 @@ class AnnualBudgetTransactionsState {
       error: error ?? this.error,
       loading: loading ?? this.loading,
       annualBudget: annualBudget ?? this.annualBudget,
-      listAnnualBudgetTransactions:
-          listAnnualBudgetTransactions ?? this.listAnnualBudgetTransactions,
-      filterAnnualBudgetTransactions:
-          filterAnnualBudgetTransactions ?? this.filterAnnualBudgetTransactions,
-      listAnnualFarmProductions:
-          listAnnualFarmProductions ?? this.listAnnualFarmProductions,
-      listAnnualBudgetTransactionCategories:
-          listAnnualBudgetTransactionCategories ??
-              this.listAnnualBudgetTransactionCategories,
+      annualBudgetTransaction: annualBudgetTransaction ?? this.annualBudgetTransaction,
+      listAnnualBudgetTransactions: listAnnualBudgetTransactions ?? this.listAnnualBudgetTransactions,
+      filterAnnualBudgetTransactions: filterAnnualBudgetTransactions ?? this.filterAnnualBudgetTransactions,
+      listAnnualFarmProductions: listAnnualFarmProductions ?? this.listAnnualFarmProductions,
+      listAnnualBudgetTransactionCategories: listAnnualBudgetTransactionCategories ?? this.listAnnualBudgetTransactionCategories,
       indexTab: indexTab ?? this.indexTab,
     );
   }

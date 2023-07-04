@@ -20,7 +20,6 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
     );
 
     await loadListAnnualBudgetTransactions();
-    await loadListAnnualBudgetTransactionCategories();
   }
 
   Future<void> initAddUpdate({
@@ -37,7 +36,7 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
       ),
     );
 
-    await loadListAnnualFarmProductions();
+    await loadListAnnualBudgetTransactionCategories();
   }
 
   Future<void> loadListAnnualBudgetTransactions() async {
@@ -68,7 +67,17 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
   Future<void> loadListAnnualBudgetTransactionCategories() async {
     emit(state.copyWith(loading: true));
     try {
-      final data = await cmoDatabaseMasterService.getAnnualBudgetTransactionCategory();
+      final data =
+          await cmoDatabaseMasterService.getAnnualBudgetTransactionCategory();
+      if (data.isEmpty) {
+        data.add(
+          AnnualBudgetTransactionCategory(
+            annualBudgetTransactionCategoryCode: 'EXP005',
+            annualBudgetTransactionCategoryId: 1,
+            annualBudgetTransactionCategoryName: 'Category',
+          ),
+        );
+      }
       emit(
         state.copyWith(
           listAnnualBudgetTransactionCategories: data,
@@ -82,22 +91,51 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
     }
   }
 
-  Future<void> loadListAnnualFarmProductions() async {
+  Future<int?> addUpdateTransaction(Map<String, dynamic> value) async {
+    AnnualBudgetTransaction annualBudgetTransaction;
+
+    if (state.isEditing) {
+      annualBudgetTransaction = state.annualBudgetTransaction!;
+    } else {
+      annualBudgetTransaction = AnnualBudgetTransaction(
+        annualBudgetTransactionId: DateTime.now().millisecondsSinceEpoch,
+        annualBudgetId: state.annualBudget?.annualBudgetId,
+      );
+    }
+
+    final annualBudgetTransactionCategory = value['TransactionCategory'] as AnnualBudgetTransactionCategory;
+    annualBudgetTransaction = annualBudgetTransaction.copyWith(
+      transactionCategoryId: annualBudgetTransactionCategory.annualBudgetTransactionCategoryId,
+      transactionCategoryName: annualBudgetTransactionCategory.annualBudgetTransactionCategoryName,
+      isIncome: state.indexTab == 0,
+      transactionAmount: double.tryParse(value['Amount'].toString()),
+      transactionDescription: value['TransactionDetail'].toString(),
+      // transactionAttribute1: ,
+    );
+
+    int? resultId;
+
+    await (await cmoDatabaseMasterService.db).writeTxn(() async {
+      resultId =
+      await cmoDatabaseMasterService.cacheAnnualBudgetTransactions(annualBudgetTransaction);
+      emit(state.copyWith(annualBudgetTransaction: annualBudgetTransaction));
+    });
+
+    return resultId;
+  }
+
+  void changeIndexTab(int index) {
+    emit(state.copyWith(indexTab: index));
+    applyFilters();
+  }
+
+  void loadIncomes() {
     emit(state.copyWith(loading: true));
     try {
-      final service = cmoDatabaseMasterService;
-      final farmId = state.activeFarm?.farmId;
-      if (farmId == null) {
-        emit(state.copyWith(loading: false));
-        return;
-      }
-
-      final data = await service.getAnnualFarmProductionByFarmId(farmId);
-      emit(
-        state.copyWith(
-          listAnnualFarmProductions: data,
-        ),
-      );
+      final data = state.listAnnualBudgetTransactions
+          .where((element) => element.isIncome != null && element.isIncome!)
+          .toList();
+      emit(state.copyWith(filterAnnualBudgetTransactions: data));
     } catch (e) {
       emit(state.copyWith(error: e));
       showSnackError(msg: e.toString());
@@ -106,65 +144,89 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
     }
   }
 
-  void searching(String? input) {
-    if (input == null || input.isEmpty) {
-      emit(
-        state.copyWith(
-          filterAnnualBudgetTransactions: state.listAnnualBudgetTransactions,
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          filterAnnualBudgetTransactions: state.listAnnualBudgetTransactions
-              .where((element) =>
-          element.transactionDescription
-              ?.toString()
-              .toLowerCase()
-              .contains(input.toLowerCase()) ??
-              false)
-              .toList(),
-        ),
-      );
+  void loadExpenses() {
+    emit(state.copyWith(loading: true));
+    try {
+      final data = state.listAnnualBudgetTransactions
+          .where((element) => element.isIncome != null && !element.isIncome!)
+          .toList();
+      emit(state.copyWith(filterAnnualBudgetTransactions: data));
+    } catch (e) {
+      emit(state.copyWith(error: e));
+      showSnackError(msg: e.toString());
+    } finally {
+      emit(state.copyWith(loading: false));
     }
   }
 
-  Future<int?> addReplaceAnnualBudget(Map<String, dynamic> value) async {
-    AnnualBudget annualBudget;
-
-    if (state.isEditing) {
-      annualBudget = state.annualBudget!;
-    } else {
-      annualBudget = AnnualBudget(
-        farmId: state.activeFarm?.farmId,
-        annualBudgetId: DateTime.now().millisecondsSinceEpoch.toString(),
-        groupSchemeId: state.activeFarm?.groupSchemeId,
-        annualFarmProductionId: DateTime.now().millisecondsSinceEpoch.toString(),
-      );
+  void applyFilters() {
+    switch (state.indexTab) {
+      case 0:
+        loadIncomes();
+        break;
+      case 1:
+        loadExpenses();
+        break;
+      default:
+        break;
     }
-
-    final annualFarmProduction = value['AnnualFarmProduction'] as AnnualFarmProduction;
-    annualBudget = annualBudget.copyWith(
-      annualBudgetName: value['AnnualBudgetName'].toString(),
-      annualFarmProductionYear: annualFarmProduction.year,
-      annualFarmProductionId: annualFarmProduction.annualFarmProductionId,
-    );
-
-    int? resultId;
-
-    await (await cmoDatabaseMasterService.db).writeTxn(() async {
-      resultId =
-      await cmoDatabaseMasterService.cacheAnnualBudgets(annualBudget);
-      emit(state.copyWith(annualBudget: annualBudget));
-    });
-
-    return resultId;
   }
 
-  Future<void> onRemoveBudget(AnnualBudget budget) async {
-    await cmoDatabaseMasterService.removeAnnualBudget(budget.id);
+  void searching(String? searchText) {
+    emit(state.copyWith(loading: true));
+    try {
+      if (searchText == null || searchText.isEmpty) {
+        emit(
+          state.copyWith(
+            filterAnnualBudgetTransactions: state.listAnnualBudgetTransactions,
+          ),
+        );
+        applyFilters();
+      } else {
+        final filteredItems = state.listAnnualBudgetTransactions.where((element) {
+          final containName = element.transactionDescription
+                  ?.toLowerCase()
+                  .contains(searchText.toLowerCase()) ??
+              false;
+
+          var isFilter = false;
+          switch (state.indexTab) {
+            case 0:
+              isFilter = element.isIncome != null && element.isIncome!;
+              break;
+            case 1:
+              isFilter = element.isIncome != null && !element.isIncome!;
+              break;
+            default:
+              break;
+          }
+
+          return containName && isFilter;
+        }).toList();
+
+        emit(
+          state.copyWith(
+            filterAnnualBudgetTransactions: filteredItems,
+          ),
+        );
+      }
+    } catch (e) {
+      emit(state.copyWith(error: e));
+      showSnackError(msg: e.toString());
+    } finally {
+      emit(state.copyWith(loading: false));
+    }
+  }
+
+  Future<void> refresh() async {
+    await loadListAnnualBudgetTransactions();
+    applyFilters();
+  }
+
+  Future<void> onRemoveTransaction(AnnualBudgetTransaction transaction) async {
+    await cmoDatabaseMasterService.removeAnnualBudgetTransaction(transaction.annualBudgetTransactionId!);
     showSnackSuccess(
-      msg: '${LocaleKeys.remove.tr()} ${budget.annualBudgetId}!',
+      msg: '${LocaleKeys.remove.tr()} ${transaction.annualBudgetTransactionId}!',
     );
 
     await loadListAnnualBudgetTransactions();
@@ -173,162 +235,6 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
   void handleError(Object error) {
     logger.d(error);
   }
-
-  void changeIndexTab(int index) {
-    emit(state.copyWith(indexTab: index));
-    applyFilters();
-  }
-
-  // void loadIncomplete() {
-  //   emit(state.copyWith(loading: true));
-  //   try {
-  //     final data = state.listAudits
-  //         .where((element) => element.completed == false)
-  //         .toList();
-  //     emit(state.copyWith(filterAudits: data));
-  //   } catch (e) {
-  //     emit(state.copyWith(error: e));
-  //     showSnackError(msg: e.toString());
-  //   } finally {
-  //     emit(state.copyWith(loading: false));
-  //   }
-  // }
-  //
-  // void loadCompleted() {
-  //   emit(state.copyWith(loading: true));
-  //   try {
-  //     final data = state.listAudits
-  //         .where(
-  //           (element) => element.completed == true && element.synced == false,
-  //     )
-  //         .toList();
-  //     emit(state.copyWith(filterAudits: data));
-  //   } catch (e) {
-  //     emit(state.copyWith(error: e));
-  //     showSnackError(msg: e.toString());
-  //   } finally {
-  //     emit(state.copyWith(loading: false));
-  //   }
-  // }
-  //
-  // void loadSynced() {
-  //   emit(state.copyWith(loading: true));
-  //   try {
-  //     final data = state.listAudits
-  //         .where(
-  //           (element) => element.completed == true && element.synced == true,
-  //     )
-  //         .toList();
-  //     emit(state.copyWith(filterAudits: data));
-  //   } catch (e) {
-  //     emit(state.copyWith(error: e));
-  //     showSnackError(msg: e.toString());
-  //   } finally {
-  //     emit(state.copyWith(loading: false));
-  //   }
-  // }
-  //
-  // Future<void> loadListAudits() async {
-  //   emit(state.copyWith(loading: true));
-  //   try {
-  //     final service = cmoDatabaseMasterService;
-  //     final data = await service.getAllAudits();
-  //     emit(state.copyWith(listAudits: data));
-  //   } catch (e) {
-  //     emit(state.copyWith(error: e));
-  //     showSnackError(msg: e.toString());
-  //   } finally {
-  //     emit(state.copyWith(loading: false));
-  //   }
-  // }
-  //
-  // Future<void> removeAudit(Audit item, {VoidCallback? callback}) async {
-  //   await cmoDatabaseMasterService.removeAudit(item.assessmentId!);
-  //   showSnackSuccess(
-  //     msg: '${LocaleKeys.removeAudit.tr()} ${item.assessmentId}!',
-  //   );
-  //
-  //   callback?.call();
-  //   await refresh();
-  // }
-
-  Future<void> refresh() async {
-    // await loadListAudits();
-    applyFilters();
-  }
-
-  void applyFilters() {
-    switch (state.indexTab) {
-      case 0:
-        // loadIncomplete();
-        break;
-      case 1:
-        // loadCompleted();
-        break;
-      case 2:
-        // loadSynced();
-        break;
-      default:
-        break;
-    }
-  }
-
-  // void searching(String? searchText) {
-  //   emit(state.copyWith(loading: true));
-  //   try {
-  //     if (searchText == null || searchText.isEmpty) {
-  //       emit(
-  //         state.copyWith(
-  //           filterAudits: state.listAudits,
-  //         ),
-  //       );
-  //       applyFilters();
-  //     } else {
-  //       final filteredItems = state.listAudits.where((element) {
-  //         final containName = (element.compartmentName
-  //             ?.toLowerCase()
-  //             .contains(searchText.toLowerCase()) ??
-  //             false) ||
-  //             (element.auditTemplateName
-  //                 ?.toLowerCase()
-  //                 .contains(searchText.toLowerCase()) ??
-  //                 false) ||
-  //             (element.farmName
-  //                 ?.toLowerCase()
-  //                 .contains(searchText.toLowerCase()) ??
-  //                 false);
-  //
-  //         var isFilter = false;
-  //         switch (state.indexTab) {
-  //           case 0:
-  //             isFilter = element.completed == false;
-  //             break;
-  //           case 1:
-  //             isFilter = element.completed == true && element.synced == false;
-  //             break;
-  //           case 2:
-  //             isFilter = element.completed == true && element.synced == true;
-  //             break;
-  //           default:
-  //             break;
-  //         }
-  //
-  //         return containName && isFilter;
-  //       }).toList();
-  //
-  //       emit(
-  //         state.copyWith(
-  //           filterAudits: filteredItems,
-  //         ),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     emit(state.copyWith(error: e));
-  //     showSnackError(msg: e.toString());
-  //   } finally {
-  //     emit(state.copyWith(loading: false));
-  //   }
-  // }
 
   @override
   AnnualBudgetTransactionsState? fromJson(Map<String, dynamic> json) {
