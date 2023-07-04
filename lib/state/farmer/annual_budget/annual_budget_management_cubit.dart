@@ -43,11 +43,37 @@ class AnnualBudgetManagementCubit extends HydratedCubit<AnnualBudgetManagementSt
         return;
       }
 
+      final listBudgets = <AnnualBudget>[];
       final data = await service.getAnnualBudgetsByFarmId(farmId);
+
+      for (final element in data) {
+        if (element.annualBudgetId != null) {
+          final transactions = await service.getAnnualBudgetTransactionByBudgetId(element.annualBudgetId!);
+          var totalIncomes = 0.0;
+          var totalExpenses = 0.0;
+          for (final transaction in transactions) {
+            if (transaction.isIncome != null) {
+              if (transaction.isIncome!) {
+                totalIncomes += transaction.transactionAmount ?? 0;
+              } else {
+                totalExpenses += transaction.transactionAmount ?? 0;
+              }
+            }
+          }
+
+          listBudgets.add(
+            element.copyWith(
+              totalIncome: totalIncomes,
+              totalExpense: totalExpenses,
+            ),
+          );
+        }
+      }
+
       emit(
         state.copyWith(
-          filterAnnualBudgets: data,
-          listAnnualBudgets: data,
+          filterAnnualBudgets: listBudgets,
+          listAnnualBudgets: listBudgets,
         ),
       );
     } catch (e) {

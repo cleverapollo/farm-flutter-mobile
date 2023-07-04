@@ -5,7 +5,6 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/annual_production/add_update_annual_farm_production/add_update_annual_production_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/transaction/add_update_annual_budget_transaction_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/status_button.dart';
 import 'package:cmo/ui/ui.dart';
@@ -61,8 +60,10 @@ class _AnnualBudgetTransactionsScreenState
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () =>
-            AddUpdateAnnualBudgetTransactionScreen.push(context),
+        onTapTrailing: () => AddUpdateAnnualBudgetTransactionScreen.push(
+          context,
+          selectedAnnualBudget: widget.annualBudget,
+        ),
       ),
       body: BlocSelector<AnnualBudgetTransactionsCubit,
           AnnualBudgetTransactionsState, AnnualBudgetTransactionsState>(
@@ -176,11 +177,14 @@ class _AnnualBudgetTransactionsScreenState
         await context
             .read<AnnualBudgetTransactionsCubit>()
             .onRemoveTransaction(model);
+
+        await context.read<AnnualBudgetManagementCubit>().loadListAnnualBudgets();
         return null;
       },
       background: Container(
         color: context.colors.red,
         alignment: Alignment.center,
+        margin: EdgeInsets.only(bottom: 20),
         child: Text(
           LocaleKeys.remove.tr(),
           style: context.textStyles.bodyBold.white,

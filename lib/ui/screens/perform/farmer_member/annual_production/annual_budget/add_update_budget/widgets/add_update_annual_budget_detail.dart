@@ -1,12 +1,10 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/widgets/input_text_field_with_title.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddUpdateAnnualBudgetDetail extends StatelessWidget {
@@ -102,7 +100,8 @@ class AddUpdateAnnualBudgetDetail extends StatelessWidget {
                       0,
                       CmoDropdownItem(
                         id: const AnnualFarmProduction(
-                            annualFarmProductionId: '-1'),
+                          annualFarmProductionId: '-1',
+                        ),
                         name: LocaleKeys.year.tr(),
                       ),
                     ),
