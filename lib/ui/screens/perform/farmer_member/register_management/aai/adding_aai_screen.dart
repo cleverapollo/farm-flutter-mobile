@@ -1,23 +1,25 @@
-import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/accident_and_incident.dart';
-import 'package:cmo/model/asi.dart';
-import 'package:cmo/service/image_picker_service.dart';
-import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
-import 'package:cmo/utils/constants.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 class AddingAAIScreen extends StatefulWidget {
-  AddingAAIScreen({Key? key}) : super(key: key);
+  final AccidentAndIncident? aai;
 
-  static Future<void> push(BuildContext context) {
+  AddingAAIScreen({Key? key, this.aai}) : super(key: key);
+
+  static Future<AccidentAndIncident?> push(BuildContext context,
+      {AccidentAndIncident? aai}) {
     return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => AddingAAIScreen()));
+        context, MaterialPageRoute(builder: (_) => AddingAAIScreen(aai: aai)));
   }
 
   @override
@@ -25,7 +27,93 @@ class AddingAAIScreen extends StatefulWidget {
 }
 
 class _AddingAAIScreenState extends State<AddingAAIScreen> {
-  AccidentAndIncident aai = AccidentAndIncident();
+  bool loading = false;
+
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
+
+  late AccidentAndIncident aai;
+
+  bool carRaised = false;
+  bool carClosed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.aai == null) {
+      aai = AccidentAndIncident(
+          accidentAndIncidentRegisterNo: DateTime.now().toIso8601String(),
+          isActive: true,
+          isMasterDataSynced: false);
+    } else {
+      aai = AccidentAndIncident.fromJson(widget.aai!.toJson());
+    }
+    carRaised = aai.carRaisedDate != null;
+    carClosed = aai.carClosedDate != null;
+  }
+
+  Future<void> onSubmit() async {
+    setState(() {
+      autoValidateMode = AutovalidateMode.always;
+    });
+    if (_formKey.currentState?.saveAndValidate() ?? false) {
+      var value = _formKey.currentState?.value;
+      if (value == null) return;
+      value = {...value};
+
+      setState(() {
+        loading = true;
+      });
+      try {
+        await hideInputMethod();
+        final farm = await configService.getActiveFarm();
+        aai = aai.copyWith(
+            farmId: farm?.farmId,
+            dateRecieved: value['DateReceived'] as DateTime?,
+            dateOfIncident: value['DateIncident'] as DateTime?,
+            dateResumeWork: value['DateResumeWork'] as DateTime?,
+            workerId: int.tryParse(value['WorkerId'] as String? ?? ''));
+
+        if (carRaised && aai.carRaisedDate == null) {
+          aai = aai.copyWith(
+            carRaisedDate: DateTime.now().toIso8601String(),
+          );
+        }
+
+        if (carClosed && aai.carClosedDate == null) {
+          aai = aai.copyWith(
+            carClosedDate: DateTime.now().toIso8601String(),
+          );
+        }
+
+        int? resultId;
+
+        if (mounted) {
+          final databaseService = cmoDatabaseMasterService;
+
+          await (await databaseService.db).writeTxn(() async {
+            resultId = await databaseService.cacheAccidentAndIncident(aai);
+          });
+        }
+
+        if (resultId != null) {
+          if (context.mounted) {
+            showSnackSuccess(
+              msg:
+                  '${widget.aai == null ? LocaleKeys.add_aai.tr() : 'Edit AAI'} $resultId',
+            );
+
+            Navigator.of(context).pop(aai);
+          }
+        }
+      } finally {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +134,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
                     name: 'worker',
                     style: context.textStyles.bodyBold
                         .copyWith(color: context.colors.black),
+                    validator: requiredValidator,
                     inputDecoration: InputDecoration(
                       contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
                       isDense: true,
@@ -111,63 +200,9 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
                       aai = aai.copyWith(natureOfInjuryId: value);
                     },
                   ),
-                  GestureDetector(
-                    onTap: () async {
-                      var date = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime.now().add(Duration(days: -1000000)),
-                        lastDate: DateTime.now().add(Duration(days: 1000000)),
-                      );
-                      aai = aai.copyWith(dateOfIncident: date);
-                      setState(() {});
-                    },
-                    child: AttributeItem(
-                      child: SelectorAttributeItem(
-                          hintText: LocaleKeys.date_of_incident.tr(),
-                          text: aai.dateOfIncident?.ddMMYyyy(),
-                          contentPadding: const EdgeInsets.all(4),
-                          trailing: Assets.icons.icCalendar.svgBlack),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      var date = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime.now().add(Duration(days: -1000000)),
-                        lastDate: DateTime.now().add(Duration(days: 1000000)),
-                      );
-                      aai = aai.copyWith(dateRecieved: date);
-                      setState(() {});
-                    },
-                    child: AttributeItem(
-                      child: SelectorAttributeItem(
-                          hintText: LocaleKeys.date_reported.tr(),
-                          text: aai.dateRecieved?.ddMMYyyy(),
-                          contentPadding: const EdgeInsets.all(4),
-                          trailing: Assets.icons.icCalendar.svgBlack),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      var date = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime.now().add(Duration(days: -1000000)),
-                        lastDate: DateTime.now().add(Duration(days: 1000000)),
-                      );
-                      aai = aai.copyWith(dateResumeWork: date);
-                      setState(() {});
-                    },
-                    child: AttributeItem(
-                      child: SelectorAttributeItem(
-                          hintText: LocaleKeys.resumed_work_on.tr(),
-                          text: aai.dateResumeWork?.ddMMYyyy(),
-                          contentPadding: const EdgeInsets.all(4),
-                          trailing: Assets.icons.icCalendar.svgBlack),
-                    ),
-                  ),
+                  _buildSelectDateIncident(),
+                  _buildSelectDateIncident(),
+                  _buildSelectDateResumeWork(),
                   AttributeItem(
                     child: SelectorAttributeItem(
                       hintText: LocaleKeys.worker_disabled.tr(),
@@ -203,7 +238,8 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
                   Center(
                     child: CmoFilledButton(
                       title: LocaleKeys.save.tr(),
-                      onTap: () => submit(),
+                      onTap: () => onSubmit(),
+                      loading: loading,
                     ),
                   ),
                 ],
@@ -215,89 +251,181 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     );
   }
 
-  void submit() {
-    Navigator.of(context).pop();
-  }
-}
-
-class _AsiMapScreen extends StatefulWidget {
-  static Future push(BuildContext context) {
-    return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => _AsiMapScreen()));
-  }
-
-  @override
-  State<_AsiMapScreen> createState() => _AsiMapScreenState();
-}
-
-class _AsiMapScreenState extends State<_AsiMapScreen> {
-  final ImagePickerService _imagePickerService = ImagePickerService();
-  final _asiMapResult = _AsiMapResult()
-    ..latitude = Constants.mapCenter.latitude
-    ..longitude = Constants.mapCenter.longitude;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.asi.tr(),
-        showLeading: true,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: CmoMap(
-              onMapMoved: (latitude, longitude) {
-                _asiMapResult.latitude = latitude;
-                _asiMapResult.longitude = longitude;
-              },
-            ),
+  Widget _buildInputArea() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: FormBuilder(
+        key: _formKey,
+        onChanged: () {},
+        autovalidateMode: autoValidateMode,
+        child: AutofillGroup(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [],
           ),
-          const SizedBox(height: 32),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Align(
-                child: CmoFilledButton(
-                  title: LocaleKeys.selectPhoto.tr(),
-                  onTap: () async {
-                    _asiMapResult.imageUri =
-                        (await _imagePickerService.pickImageFromGallery())
-                            ?.path;
-                  },
-                ),
-              ),
-              Align(
-                child: CmoFilledButton(
-                  title: LocaleKeys.takePhoto.tr(),
-                  onTap: () async {
-                    _asiMapResult.imageUri =
-                        (await _imagePickerService.pickImageFromCamera())?.path;
-                  },
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Center(
-            child: CmoFilledButton(
-              title: LocaleKeys.save.tr(),
-              onTap: () => save(),
-            ),
-          ),
-          const SizedBox(height: 24),
-        ],
+        ),
       ),
     );
   }
 
-  void save() {
-    Navigator.of(context).pop(_asiMapResult);
+  Widget _selectWorker() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            LocaleKeys.worker.tr(),
+            style: context.textStyles.bodyBold.black,
+          ),
+        ),
+        CmoDropdown(
+          name: 'WorkerId',
+          hintText: LocaleKeys.worker.tr(),
+          validator: requiredValidator,
+          inputDecoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(8),
+            isDense: true,
+            hintText:
+                '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
+            hintStyle: context.textStyles.bodyNormal.grey,
+            border: UnderlineInputBorder(
+                borderSide: BorderSide(color: context.colors.grey)),
+            focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: context.colors.blue)),
+          ),
+          onChanged: (int? id) {
+            if (id == -1) {
+              _formKey.currentState!.fields['WorkerId']?.reset();
+            }
+          },
+          itemsData: [
+            CmoDropdownItem(id: -1, name: LocaleKeys.worker.tr()),
+            CmoDropdownItem(id: 0, name: 'Criminals'),
+            CmoDropdownItem(id: 1, name: 'Primary'),
+          ],
+        ),
+      ],
+    );
   }
-}
 
-class _AsiMapResult {
-  double? latitude;
-  double? longitude;
-  String? imageUri;
+  Widget _buildSelectDateReceived() {
+    return AttributeItem(
+      child: CmoDatePicker(
+        name: 'DateReceived',
+        hintText: LocaleKeys.dateReceived.tr(),
+        validator: FormBuilderValidators.compose([
+          FormBuilderValidators.required(),
+          (DateTime? value) {
+            if (value!.millisecondsSinceEpoch >
+                DateTime.now().millisecondsSinceEpoch) {
+              return 'Received date cannot be in the future';
+            }
+            final incidentValue =
+                _formKey.currentState?.value['DateIncident'] as DateTime?;
+            if (incidentValue != null &&
+                value.millisecondsSinceEpoch <
+                    incidentValue.millisecondsSinceEpoch) {
+              return 'Reported date must be on or after incident date';
+            }
+            return null;
+          }
+        ]),
+        inputDecoration: InputDecoration(
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 12,
+          ),
+          suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
+          suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
+          isDense: true,
+          hintText: LocaleKeys.dateReceived.tr(),
+          hintStyle: context.textStyles.bodyBold.black,
+          labelText: LocaleKeys.dateReceived.tr(),
+          labelStyle: context.textStyles.bodyBold.black,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectDateIncident() {
+    return AttributeItem(
+      child: CmoDatePicker(
+        name: 'DateIncident',
+        hintText: LocaleKeys.date_of_incident.tr(),
+        validator: FormBuilderValidators.compose([
+          FormBuilderValidators.required(),
+          (DateTime? value) {
+            if (value!.millisecondsSinceEpoch >
+                DateTime.now().millisecondsSinceEpoch) {
+              return 'Date of incident cannot be in the future';
+            }
+            final receivedValue =
+                _formKey.currentState?.value['DateReceived'] as DateTime?;
+            if (receivedValue != null &&
+                value.millisecondsSinceEpoch >
+                    receivedValue.millisecondsSinceEpoch) {
+              return 'Reported date must be on or after incident date';
+            }
+            return null;
+          }
+        ]),
+        inputDecoration: InputDecoration(
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 12,
+          ),
+          suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
+          suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
+          isDense: true,
+          hintText: LocaleKeys.dateClosed.tr(),
+          hintStyle: context.textStyles.bodyBold.black,
+          labelText: LocaleKeys.dateClosed.tr(),
+          labelStyle: context.textStyles.bodyBold.black,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectDateResumeWork() {
+    return AttributeItem(
+      child: CmoDatePicker(
+        name: 'DateResumeWork',
+        hintText: 'Date of Resume Work',
+        validator: FormBuilderValidators.compose([
+          FormBuilderValidators.required(),
+          (DateTime? value) {
+            if (value!.millisecondsSinceEpoch >
+                DateTime.now().millisecondsSinceEpoch) {
+              return 'Resumed work date cannot be in the future';
+            }
+            final incidentValue =
+                _formKey.currentState?.value['DateIncident'] as DateTime?;
+            if (incidentValue != null &&
+                value.millisecondsSinceEpoch <
+                    incidentValue.millisecondsSinceEpoch) {
+              return 'Resume work date must be on or after incident date';
+            }
+            return null;
+          }
+        ]),
+        inputDecoration: InputDecoration(
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 12,
+          ),
+          suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
+          suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
+          isDense: true,
+          hintText: LocaleKeys.dateClosed.tr(),
+          hintStyle: context.textStyles.bodyBold.black,
+          labelText: LocaleKeys.dateClosed.tr(),
+          labelStyle: context.textStyles.bodyBold.black,
+        ),
+      ),
+    );
+  }
 }
