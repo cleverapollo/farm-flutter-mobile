@@ -67,26 +67,7 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
   Future<void> loadListAnnualBudgetTransactionCategories() async {
     emit(state.copyWith(loading: true));
     try {
-      final data =
-          await cmoDatabaseMasterService.getAnnualBudgetTransactionCategory();
-      if (data.isEmpty) {
-        data.add(
-          AnnualBudgetTransactionCategory(
-            annualBudgetTransactionCategoryCode: 'EXP005',
-            annualBudgetTransactionCategoryId: 1,
-            annualBudgetTransactionCategoryName: 'Category',
-          ),
-        );
-
-        data.add(
-          AnnualBudgetTransactionCategory(
-            annualBudgetTransactionCategoryCode: 'EXP005',
-            annualBudgetTransactionCategoryId: 2,
-            annualBudgetTransactionCategoryName: 'Category isCalculated',
-            isCalculated: true,
-          ),
-        );
-      }
+      final data = await cmoDatabaseMasterService.getAnnualBudgetTransactionCategory();
       emit(
         state.copyWith(
           listAnnualBudgetTransactionCategories: data,
