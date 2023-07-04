@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -89,6 +90,8 @@ class AuditListCubit extends HydratedCubit<AuditListState> {
   }
 
   Future<void> refresh() async {
+    final rmUnit = await configService.getActiveRegionalManager();
+    emit(state.copyWith(resourceManagerUnit: rmUnit));
     await loadListAudits();
     applyFilters();
   }

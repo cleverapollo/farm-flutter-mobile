@@ -6,6 +6,7 @@ class AuditListState {
     this.listAudits = const <Audit>[],
     this.loading = false,
     this.indexTab = 0,
+    this.resourceManagerUnit,
     this.error,
   });
 
@@ -14,6 +15,7 @@ class AuditListState {
   final List<Audit> filterAudits;
   final Object? error;
   final int indexTab;
+  final ResourceManagerUnit? resourceManagerUnit;
 
   AuditListState copyWith({
     bool? loading,
@@ -22,6 +24,7 @@ class AuditListState {
     Object? error,
     int? indexTab,
     Map<String, dynamic>? cacheCreateData,
+    ResourceManagerUnit? resourceManagerUnit,
   }) {
     return AuditListState(
       loading: loading ?? this.loading,
@@ -29,6 +32,7 @@ class AuditListState {
       filterAudits: filterAudits ?? this.filterAudits,
       error: error ?? this.error,
       indexTab: indexTab ?? this.indexTab,
+      resourceManagerUnit: resourceManagerUnit ?? this.resourceManagerUnit,
     );
   }
 }

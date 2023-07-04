@@ -64,8 +64,8 @@ class DismissibleAuditItem extends StatelessWidget {
           child: CmoCard(
             content: [
               CmoCardHeader(
-                title: audit.compartmentName ?? '',
-                value: '${LocaleKeys.created.tr()}: ${DateTime.tryParse(audit.created ?? '').ddMMYyyy()}',
+                title:
+                    '${audit.compartmentName} \t\t\t\t\t ${LocaleKeys.created.tr()}: ${DateTime.tryParse(audit.created ?? '').ddMMYyyy()}',
               ),
               Text(
                 audit.auditTemplateName ?? '',
