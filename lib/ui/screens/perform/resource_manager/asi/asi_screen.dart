@@ -102,7 +102,7 @@ class ASIScreen extends StatelessWidget {
                   },
                 ),
               ),
-              const Spacer(),
+              const SizedBox(height: 20),
               Align(
                 child: CmoFilledButton(
                     title: LocaleKeys.done.tr(),
