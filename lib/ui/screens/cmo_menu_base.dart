@@ -18,7 +18,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/camp_management/camp_manage
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/add_audit/audit_add_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/create_new_stake_holder_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/stake_holder_detail_screen.dart';
 import 'package:cmo/ui/screens/setting/legal/legal_screen.dart';
 import 'package:cmo/ui/screens/setting/settings_screen.dart';
 import 'package:cmo/ui/screens/setting/support/support_screen.dart';
@@ -110,7 +110,7 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
           title: LocaleKeys.createNewStakeholder.tr(),
           onTap: () {
             if (context.mounted) Navigator.of(context).pop();
-            CreateNewStakeHolderScreen.push(context);
+            StakeHolderDetailScreen.push(context);
           },
         ),
       ],
@@ -151,7 +151,7 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
           title: LocaleKeys.createNewStakeholder.tr(),
           onTap: () {
             if (context.mounted) Navigator.of(context).pop();
-            CreateNewStakeHolderScreen.push(context);
+            StakeHolderDetailScreen.push(context);
           },
         ),
       ],

@@ -7,7 +7,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/create_new_stake_holder_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/stake_holder_detail_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/farmer_mode_stake_holder_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/rm_mode_stake_holder_item.dart';
 import 'package:cmo/ui/ui.dart';
@@ -186,7 +186,7 @@ class _StakeHolderManagementScreenState
       return RmModeStakeHolderItem(
         model: model,
         onTap: () {
-          CreateNewStakeHolderScreen.push(context, stakeHolder: model);
+          StakeHolderDetailScreen.push(context, stakeHolder: model);
         },
       );
     } else {

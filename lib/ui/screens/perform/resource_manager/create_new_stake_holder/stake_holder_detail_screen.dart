@@ -15,23 +15,23 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/widgets/input_text_field_with_title.dart';
 
-class CreateNewStakeHolderScreen extends StatefulWidget {
-  const CreateNewStakeHolderScreen({super.key});
+class StakeHolderDetailScreen extends StatefulWidget {
+  const StakeHolderDetailScreen({super.key});
 
   static void push(BuildContext context, {StakeHolder? stakeHolder}) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const CreateNewStakeHolderScreen(),
+        builder: (_) => const StakeHolderDetailScreen(),
       ),
     );
   }
 
   @override
-  State<CreateNewStakeHolderScreen> createState() => _CreateNewStakeHolderScreenState();
+  State<StakeHolderDetailScreen> createState() => _StakeHolderDetailScreenState();
 }
 
-class _CreateNewStakeHolderScreenState
-    extends State<CreateNewStakeHolderScreen> {
+class _StakeHolderDetailScreenState
+    extends State<StakeHolderDetailScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
