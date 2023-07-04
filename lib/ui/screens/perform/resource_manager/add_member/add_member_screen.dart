@@ -254,7 +254,9 @@ class _AddMemberMFO extends StatelessWidget {
                       children: [
                         CmoFilledButton(
                             title: LocaleKeys.finalise_later.tr(),
-                            onTap: () {}),
+                            onTap: () {
+                              Navigator.pop(context, true);
+                            }),
                         CmoFilledButton(
                             title: LocaleKeys.next.tr(),
                             onTap: () {
