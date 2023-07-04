@@ -766,6 +766,25 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<bool> removeAnnualBudgetTransaction(int transactionId) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.annualBudgetTransactions.delete(transactionId);
+    });
+  }
+
+  Future<List<AnnualBudgetTransaction>> getAnnualBudgetTransactionByBudgetId(
+    String budgetId,
+  ) async {
+    final db = await _db();
+
+    return db.annualBudgetTransactions
+        .filter()
+        .annualBudgetIdEqualTo(budgetId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
   Future<List<AnnualBudgetTransaction>> getAnnualBudgetTransactionByFarmId(
       String farmId) async {
     final db = await _db();
@@ -826,17 +845,16 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<AnnualFarmProduction>> getAnnualFarmProductionById(
-      String id,
-      ) async {
+  Future<AnnualFarmProduction?> getAnnualFarmProductionById(
+    String id,
+  ) async {
     final db = await _db();
 
     return db.annualFarmProductions
         .filter()
         .annualFarmProductionIdEqualTo(id)
         .isActiveEqualTo(true)
-        .sortByCreateDTDesc()
-        .findAll();
+        .findFirst();
   }
 
   Future<List<AnnualFarmProduction>> getAnnualFarmProductionByFarmIdAndYear({

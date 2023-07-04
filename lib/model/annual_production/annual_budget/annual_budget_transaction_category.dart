@@ -17,7 +17,7 @@ class AnnualBudgetTransactionCategory with _$AnnualBudgetTransactionCategory {
         String? annualBudgetTransactionCategoryCode,
     @Default(true) @JsonKey(name: 'IsIncome') bool? isIncome,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
-    @Default(true) @JsonKey(name: 'IsCalculated') bool? isCalculated,
+    @JsonKey(name: 'IsCalculated') bool? isCalculated,
   }) = _AnnualBudgetTransactionCategory;
 
   const AnnualBudgetTransactionCategory._();

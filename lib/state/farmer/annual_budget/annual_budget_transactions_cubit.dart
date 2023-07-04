@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
@@ -11,28 +12,27 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
   AnnualBudgetTransactionsCubit() : super(const AnnualBudgetTransactionsState());
 
   Future<void> init(AnnualBudget? annualBudget,) async {
-    final activeFarm = await configService.getActiveFarm();
+    emit(state.cleanCache());
     emit(
       state.copyWith(
-        activeFarm: activeFarm,
         annualBudget: annualBudget,
       ),
     );
 
-    await loadListAnnualBudgetTransactions();
+    await refresh();
   }
 
   Future<void> initAddUpdate({
     AnnualBudget? annualBudget,
+    AnnualBudgetTransaction? annualBudgetTransaction,
     required bool isEditing,
   }) async {
     emit(state.cleanCache());
-    final activeFarm = await configService.getActiveFarm();
     emit(
       state.copyWith(
-        activeFarm: activeFarm,
         annualBudget: annualBudget,
         isEditing: isEditing,
+        annualBudgetTransaction: annualBudgetTransaction,
       ),
     );
 
@@ -43,7 +43,7 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
     emit(state.copyWith(loading: true));
     try {
       final service = cmoDatabaseMasterService;
-      final farmId = state.activeFarm?.farmId;
+      final farmId = state.annualBudget?.farmId;
       if (farmId == null) {
         emit(state.copyWith(loading: false));
         return;
@@ -77,10 +77,24 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
             annualBudgetTransactionCategoryName: 'Category',
           ),
         );
+
+        data.add(
+          AnnualBudgetTransactionCategory(
+            annualBudgetTransactionCategoryCode: 'EXP005',
+            annualBudgetTransactionCategoryId: 2,
+            annualBudgetTransactionCategoryName: 'Category isCalculated',
+            isCalculated: true,
+          ),
+        );
       }
       emit(
         state.copyWith(
           listAnnualBudgetTransactionCategories: data,
+          selectedCategory: data.firstWhereOrNull(
+            (element) =>
+                element.annualBudgetTransactionCategoryId ==
+                state.annualBudgetTransaction?.transactionCategoryId,
+          ),
         ),
       );
     } catch (e) {
@@ -110,8 +124,15 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
       isIncome: state.indexTab == 0,
       transactionAmount: double.tryParse(value['Amount'].toString()),
       transactionDescription: value['TransactionDetail'].toString(),
-      // transactionAttribute1: ,
     );
+
+    if (state.selectedCategory?.isCalculated ?? false) {
+      final amount = await getAmountBasedOnTransactionAttribute1(value['Amount'].toString());
+      annualBudgetTransaction = annualBudgetTransaction.copyWith(
+        transactionAttribute1: double.tryParse(value['Amount'].toString()),
+        transactionAmount: amount,
+      );
+    }
 
     int? resultId;
 
@@ -124,9 +145,44 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
     return resultId;
   }
 
+  void updateSelectedCategory(AnnualBudgetTransactionCategory? selectedCategory) {
+    emit(state.copyWith(selectedCategory: selectedCategory));
+  }
+
   void changeIndexTab(int index) {
     emit(state.copyWith(indexTab: index));
     applyFilters();
+  }
+
+  Future<double?> getAmountBasedOnTransactionAttribute1(String? input) async {
+    if (input == null ||
+        input.isEmpty ||
+        state.selectedCategory?.annualBudgetTransactionCategoryCode == null ||
+        state.annualBudget?.annualFarmProductionId == null) return null;
+
+    final annualProduction = await cmoDatabaseMasterService.getAnnualFarmProductionById(
+      state.annualBudget!.annualFarmProductionId!,
+    );
+
+    if (annualProduction == null) return null;
+
+    if (state.selectedCategory?.annualBudgetTransactionCategoryCode == 'EXP002' ||
+        state.selectedCategory?.annualBudgetTransactionCategoryCode ==
+            'EXP003' ||
+        state.selectedCategory?.annualBudgetTransactionCategoryCode ==
+            'INC002') {
+      return (double.tryParse(input) ?? 0) *
+          annualProduction.calculatedAnnualCharcoalProductionPerTeam();
+    } else if (state.selectedCategory?.annualBudgetTransactionCategoryCode ==
+            'EXP005' ||
+        state.selectedCategory?.annualBudgetTransactionCategoryCode ==
+            'EXP006' ||
+        state.selectedCategory?.annualBudgetTransactionCategoryCode ==
+            'EXP007') {
+      return (double.tryParse(input) ?? 0) * (annualProduction.noOfWorkers ?? 0);
+    }
+
+    return double.tryParse(input);
   }
 
   void loadIncomes() {
@@ -229,7 +285,7 @@ class AnnualBudgetTransactionsCubit extends HydratedCubit<AnnualBudgetTransactio
       msg: '${LocaleKeys.remove.tr()} ${transaction.annualBudgetTransactionId}!',
     );
 
-    await loadListAnnualBudgetTransactions();
+    await refresh();
   }
 
   void handleError(Object error) {

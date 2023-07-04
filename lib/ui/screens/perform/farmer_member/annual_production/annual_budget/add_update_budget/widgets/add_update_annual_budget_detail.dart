@@ -99,7 +99,7 @@ class AddUpdateAnnualBudgetDetail extends StatelessWidget {
                     ..insert(
                       0,
                       CmoDropdownItem(
-                        id: const AnnualFarmProduction(
+                        id: AnnualFarmProduction(
                           annualFarmProductionId: '-1',
                         ),
                         name: LocaleKeys.year.tr(),

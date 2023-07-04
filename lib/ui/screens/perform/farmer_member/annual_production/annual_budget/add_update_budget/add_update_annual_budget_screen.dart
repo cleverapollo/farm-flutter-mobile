@@ -2,6 +2,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/transaction/annual_budget_transactions_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -114,12 +115,22 @@ class _AddAnnualBudgetScreenState extends State<AddAnnualBudgetScreen> {
               onTapLeading: Navigator.of(context).pop,
             ),
             body: buildInputArea(state.listAnnualFarmProductions),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-            floatingActionButton: CmoFilledButton(
-              title: LocaleKeys.save.tr(),
-              onTap: onSubmit,
-              loading: loading,
-            ),
+            persistentFooterAlignment: AlignmentDirectional.center,
+            persistentFooterButtons: [
+              if (widget.isEditing)
+                CmoFilledButton(
+                  title: LocaleKeys.transactions.tr(),
+                  onTap: () => AnnualBudgetTransactionsScreen.push(
+                    context,
+                    annualBudget: widget.selectedAnnualBudget!,
+                  ),
+                ),
+              CmoFilledButton(
+                title: LocaleKeys.save.tr(),
+                onTap: onSubmit,
+                loading: loading,
+              ),
+            ],
           );
         },
       ),

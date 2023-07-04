@@ -13,6 +13,7 @@ class ItemInfoWidget extends StatelessWidget {
     this.onChanged,
     this.initialValue,
     this.hasValidator = true,
+    this.enabled = true,
   });
 
   final String name;
@@ -23,6 +24,7 @@ class ItemInfoWidget extends StatelessWidget {
   final String? initialValue;
   final bool isEditing;
   final bool hasValidator;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +60,7 @@ class ItemInfoWidget extends StatelessWidget {
               const TextInputType.numberWithOptions(decimal: true),
           onChanged: onChanged,
           initialValue: isEditing ? initialValue : null,
+          enabled: enabled,
         ),
       ],
     );

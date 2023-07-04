@@ -1,14 +1,13 @@
 import 'dart:async';
 
-import 'package:cmo/di.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/annual_production/annual_farm_production.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/annual_production/widgets/item_info_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
-import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -170,21 +169,24 @@ class _AddUpdateAnnualProductionScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ..._buildInfoItemWidget(
+              ItemInfoWidget(
                 name: 'Year',
                 title: LocaleKeys.year.tr(),
                 keyboardType: TextInputType.number,
                 initialValue: widget.selectedAnnualFarmProduction?.year.toString(),
+                isEditing: widget.isEditing,
               ),
-              ..._buildInfoItemWidget(
+              ItemInfoWidget(
                 name: 'noOfWorkers',
                 title: LocaleKeys.workersHintText.tr(),
                 initialValue: widget.selectedAnnualFarmProduction?.noOfWorkers.toString(),
+                isEditing: widget.isEditing,
               ),
-              ..._buildInfoItemWidget(
+              ItemInfoWidget(
                 name: 'WorkPeriodMonths',
                 title: LocaleKeys.workCycleHintText.tr(),
                 title2: LocaleKeys.charcoal.tr(),
+                isEditing: widget.isEditing,
                 initialValue: widget.selectedAnnualFarmProduction?.workPeriodMonths.toString(),
                 onChanged: (value) {
                   setState(() {
@@ -197,66 +199,29 @@ class _AddUpdateAnnualProductionScreenState
                 },
               ),
               ...buildWorkPeriodWeeks(),
-              ..._buildInfoItemWidget(
+              ItemInfoWidget(
                 name: 'CycleLength',
                 title: LocaleKeys.weeksPerCycleHintText.tr(),
                 initialValue: widget.selectedAnnualFarmProduction?.cycleLength.toString(),
+                isEditing: widget.isEditing,
               ),
-              ..._buildInfoItemWidget(
+              ItemInfoWidget(
                 name: 'ProductionPerCycle',
+                isEditing: widget.isEditing,
                 title: LocaleKeys.productionPerPersonHintText.tr(),
                 initialValue: widget.selectedAnnualFarmProduction?.productionPerCycle.toString(),
               ),
-              ..._buildInfoItemWidget(
+              ItemInfoWidget(
                 name: 'ConversionWoodToCharcoal',
                 title: LocaleKeys.conversionWood.tr(),
                 title2: LocaleKeys.woodToCharcoal.tr(),
+                isEditing: widget.isEditing,
                 initialValue: widget.selectedAnnualFarmProduction?.conversionWoodToCharcoal.toString(),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _selectYearDropdown() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          LocaleKeys.year.tr(),
-          style: context.textStyles.bodyBold.black,
-        ),
-        CmoDropdown(
-          name: 'Year',
-          validator: requiredValidator,
-          onChanged: (int? id) {
-            if (id == -1) {
-              _formKey.currentState!.fields['year']?.reset();
-            }
-          },
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            isDense: true,
-            hintText:
-                '${LocaleKeys.select.tr()} ${LocaleKeys.year.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.blue)),
-          ),
-          itemsData: [
-            CmoDropdownItem(id: -1, name: LocaleKeys.year.tr()),
-            CmoDropdownItem(id: 2022, name: '2022'),
-            CmoDropdownItem(id: 2023, name: '2023'),
-            CmoDropdownItem(id: 2024, name: '2024'),
-            CmoDropdownItem(id: 2025, name: '2025'),
-          ],
-        ),
-      ],
     );
   }
 
@@ -286,59 +251,5 @@ class _AddUpdateAnnualProductionScreenState
         ],
       ),
     ];
-  }
-
-  List<Widget> _buildInfoItemWidget({
-    required String name,
-    required String title,
-    String? title2,
-    TextInputType? keyboardType,
-    void Function(String?)? onChanged,
-    String? initialValue,
-  }) {
-    return [
-      const SizedBox(
-        height: 12,
-      ),
-      RichText(
-        maxLines: 2,
-        text: TextSpan(
-          text: title,
-          style: context.textStyles.bodyNormal.black,
-          children: <TextSpan>[
-            if (title2 != null) ...[
-              TextSpan(
-                text: ' $title2',
-                style: context.textStyles.bodyBold.red,
-              ),
-              const TextSpan(
-                text: '?',
-              ),
-            ],
-          ],
-        ),
-      ),
-      CmoTextField(
-        name: name,
-        validator: requiredValidator,
-        inputDecoration: _buildInputDecoration(context),
-        keyboardType: keyboardType ?? const TextInputType.numberWithOptions(decimal: true),
-        onChanged: onChanged,
-        initialValue: widget.isEditing ? initialValue : null,
-      )
-    ];
-  }
-
-  InputDecoration _buildInputDecoration(BuildContext context) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.all(8),
-      isDense: true,
-      border: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.grey),
-      ),
-      focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.blue),
-      ),
-    );
   }
 }

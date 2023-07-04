@@ -23,8 +23,7 @@ class AddUpdateAnnualBudgetTransactionScreen extends StatefulWidget {
   final bool isEditing;
 
   @override
-  State<StatefulWidget> createState() =>
-      _AddUpdateAnnualBudgetTransactionScreenState();
+  State<StatefulWidget> createState() => _AddUpdateAnnualBudgetTransactionScreenState();
 
   static void push(
     BuildContext context, {
@@ -36,8 +35,8 @@ class AddUpdateAnnualBudgetTransactionScreen extends StatefulWidget {
       MaterialPageRoute(
         builder: (_) => AddUpdateAnnualBudgetTransactionScreen(
           selectedAnnualBudget: selectedAnnualBudget,
-          isEditing: isEditing,
           selectedAnnualBudgetTransaction: selectedAnnualBudgetTransaction,
+          isEditing: isEditing,
         ),
       ),
     );
@@ -52,9 +51,15 @@ class _AddUpdateAnnualBudgetTransactionScreenState
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
+  double? amountTransaction;
+
   @override
   void initState() {
     super.initState();
+    if (widget.isEditing) {
+      amountTransaction = widget.selectedAnnualBudgetTransaction?.transactionAmount;
+    }
+
     Future.microtask(() async {
       await context.read<AnnualBudgetTransactionsCubit>().initAddUpdate(
             annualBudget: widget.selectedAnnualBudget,
@@ -108,6 +113,21 @@ class _AddUpdateAnnualBudgetTransactionScreenState
     }
   }
 
+  void onChangeCategory(AnnualBudgetTransactionCategory? selectedCategory) {
+    if (selectedCategory?.annualBudgetTransactionCategoryId == -1) {
+      _formKey.currentState!.fields['TransactionCategory']?.reset();
+    }
+
+    _formKey.currentState!.fields['Amount']?.reset();
+    context
+        .read<AnnualBudgetTransactionsCubit>()
+        .updateSelectedCategory(selectedCategory);
+
+    setState(() {
+      amountTransaction = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -125,8 +145,10 @@ class _AddUpdateAnnualBudgetTransactionScreenState
               onTapLeading: Navigator.of(context).pop,
             ),
             body: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 8,
+              ),
               child: FormBuilder(
                 key: _formKey,
                 autovalidateMode: autoValidateMode,
@@ -144,20 +166,15 @@ class _AddUpdateAnnualBudgetTransactionScreenState
                       CmoDropdown<AnnualBudgetTransactionCategory?>(
                         name: 'TransactionCategory',
                         validator: requiredValidator,
-                        initialValue: state
-                            .listAnnualBudgetTransactionCategories
-                            .firstWhereOrNull(
-                          (element) =>
-                              element.annualBudgetTransactionCategoryId ==
-                              widget.selectedAnnualBudgetTransaction
-                                  ?.transactionCategoryId,
-                        ),
-                        onChanged: (AnnualBudgetTransactionCategory? id) {
-                          if (id?.annualBudgetTransactionCategoryId == -1) {
-                            _formKey.currentState!.fields['TransactionCategory']
-                                ?.reset();
-                          }
-                        },
+                        initialValue: widget.isEditing
+                            ? state.listAnnualBudgetTransactionCategories
+                                .firstWhereOrNull(
+                                (element) =>
+                                    element.annualBudgetTransactionCategoryId ==
+                                    widget.selectedAnnualBudgetTransaction?.transactionCategoryId,
+                              )
+                            : null,
+                        onChanged: onChangeCategory,
                         inputDecoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(8),
                           isDense: true,
@@ -175,8 +192,7 @@ class _AddUpdateAnnualBudgetTransactionScreenState
                               (e) => CmoDropdownItem<
                                   AnnualBudgetTransactionCategory>(
                                 id: e,
-                                name:
-                                    e.annualBudgetTransactionCategoryName ?? '',
+                                name: e.annualBudgetTransactionCategoryName ?? '',
                               ),
                             )
                             .toList()
@@ -198,11 +214,11 @@ class _AddUpdateAnnualBudgetTransactionScreenState
                         keyboardType: TextInputType.text,
                         initialValue: widget.selectedAnnualBudgetTransaction?.transactionDescription,
                       ),
-                      ItemInfoWidget(
-                        name: 'Amount',
-                        title: LocaleKeys.amount.tr(),
-                        isEditing: widget.isEditing,
-                        initialValue: widget.selectedAnnualBudgetTransaction?.transactionAmount.toString(),
+                      buildAmountItem(state),
+                      buildDisableAmount(
+                          title: LocaleKeys.amount.tr(),
+                          value: amountTransaction?.toStringAsFixed(2),
+                          isDisplay: state.selectedCategory?.isCalculated ?? false,
                       ),
                     ],
                   ),
@@ -218,6 +234,64 @@ class _AddUpdateAnnualBudgetTransactionScreenState
           );
         },
       ),
+    );
+  }
+
+  Widget buildAmountItem(AnnualBudgetTransactionsState state) {
+    final isCalculated = state.selectedCategory?.isCalculated ?? false;
+    return ItemInfoWidget(
+      name: 'Amount',
+      title: isCalculated
+          ? (state.selectedCategory?.annualBudgetTransactionCategoryName ?? '')
+          : LocaleKeys.amount.tr(),
+      isEditing: widget.isEditing,
+      initialValue: isCalculated
+          ? widget.selectedAnnualBudgetTransaction?.transactionAttribute1?.toStringAsFixed(2)
+          : widget.selectedAnnualBudgetTransaction?.transactionAmount?.toStringAsFixed(2),
+      onChanged: (value) async {
+        amountTransaction = await context
+            .read<AnnualBudgetTransactionsCubit>()
+            .getAmountBasedOnTransactionAttribute1(value);
+        setState(() {});
+      },
+    );
+  }
+  
+  Widget buildDisableAmount({
+    String? title,
+    String? value,
+    required bool isDisplay,
+  }) {
+    if (!isDisplay) return const SizedBox.shrink();
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(
+          height: 12,
+        ),
+        Text(
+          title ?? '',
+          style: context.textStyles.bodyNormal.black,
+          maxLines: 1,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  border:
+                      Border(bottom: BorderSide(color: context.colors.grey)),
+                ),
+                child: Text(
+                  value ?? '',
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
