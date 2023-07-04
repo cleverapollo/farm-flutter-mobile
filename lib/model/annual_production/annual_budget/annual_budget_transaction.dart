@@ -14,7 +14,6 @@ class AnnualBudgetTransaction with _$AnnualBudgetTransaction {
     @JsonKey(name: 'TransactionDescription') String? transactionDescription,
     @JsonKey(name: 'TransactionCategoryId') int? transactionCategoryId,
     @JsonKey(name: 'TransactionCategoryName') String? transactionCategoryName,
-
     @JsonKey(name: 'TransactionAmount') double? transactionAmount,
     @JsonKey(name: 'TransactionAttribute1') double? transactionAttribute1,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
