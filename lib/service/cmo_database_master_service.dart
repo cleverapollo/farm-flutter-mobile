@@ -2547,16 +2547,30 @@ class CmoDatabaseMasterService {
     return <Compartment>[];
   }
 
-  Future<List<AuditTemplate>> getAuditTemplates() async {
+  Future<List<AuditTemplate>> getAuditTemplatesByRMU(int? rmuId) async {
     final db = await _db();
     try {
-      final auditTemplates = await db.auditTemplates
+      final questions = await db.farmQuestions
           .filter()
-          .isActiveEqualTo(true)
-          .sortByAuditTemplateName()
+          .regionalManagerUnitIdEqualTo(rmuId)
           .findAll();
-
-      return auditTemplates;
+      List<AuditTemplate> templates = [];
+      for (var question in questions) {
+        if (templates.firstWhereOrNull(
+                (element) => element.id == question.auditTemplateId) !=
+            null) {
+          continue;
+        }
+        templates.addAll(
+          await db.auditTemplates
+              .filter()
+              .idEqualTo(question.auditTemplateId ?? 0)
+              .isActiveEqualTo(true)
+              .sortByAuditTemplateName()
+              .findAll(),
+        );
+      }
+      return templates;
     } catch (error) {
       handleError(error);
     }

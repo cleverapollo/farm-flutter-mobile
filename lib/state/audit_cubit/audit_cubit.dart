@@ -58,7 +58,9 @@ class AuditCubit extends HydratedCubit<AuditState> {
 
   Future<void> getListAuditTemplates() async {
     final service = cmoDatabaseMasterService;
-    final auditTemplates = await service.getAuditTemplates();
+    final groupSchemeUnit = await configService.getActiveRegionalManager();
+    final auditTemplates = await service
+        .getAuditTemplatesByRMU(groupSchemeUnit?.regionalManagerUnitId ?? 0);
     emit(state.copyWith(auditTemplates: auditTemplates));
   }
 
