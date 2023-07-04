@@ -78,7 +78,6 @@ class AuditCubit extends HydratedCubit<AuditState> {
       rmuId: rmu?.regionalManagerUnitId,
       siteId: state.selectedFarm?.farmId,
     );
-
     emit(state.copyWith(compartments: compartments));
   }
 

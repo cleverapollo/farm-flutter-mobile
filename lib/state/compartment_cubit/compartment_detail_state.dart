@@ -9,7 +9,7 @@ class CompartmentDetailState {
   CompartmentDetailState({
     this.loading = false,
     this.error,
-    this.compartment = const Compartment(),
+    this.compartment = const Compartment(isActive: true),
     this.areaTypes = const [],
     this.productGroupTemplates = const [],
     this.speciesGroupTemplates = const [],

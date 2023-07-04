@@ -184,14 +184,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
                       name: e.compartmentName ?? '',
                     ),
                   )
-                  .toList()
-                ..insert(
-                  0,
-                  CmoDropdownItem(
-                    id: -1,
-                    name: LocaleKeys.compartment.tr(),
-                  ),
-                ),
+                  .toList(),
               onChanged: (int? id) {
                 if (id == -1) {
                   _formKey.currentState!.fields['compartmentId']?.reset();
