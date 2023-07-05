@@ -32,7 +32,6 @@ export 'user_device.dart';
 export 'user_info.dart';
 export 'stakeholder/stakeholder_type.dart';
 export 'stakeholder/stake_holder.dart';
-export 'stakeholder/rm_stake_holder.dart';
 export 'stakeholder/group_scheme_stake_holder.dart';
 export 'data/farm_property_ownership_type.dart';
 export 'data/rm_schedule.dart';

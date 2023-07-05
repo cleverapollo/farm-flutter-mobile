@@ -148,11 +148,13 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     if (groupScheme == null) {
       return;
     }
-    final stakeHolders = await service
-        .getActiveStakeholderWrappersCountByGroupSchemeId(groupScheme.id);
-    emit(state.copyWith(
+    final stakeHolders = await service.getStakeHolders();
+    emit(
+      state.copyWith(
         rmDashboardInfo: state.rmDashboardInfo
-          ?..stakeHolders = stakeHolders?.length ?? 0));
+          ?..stakeHolders = stakeHolders.length,
+      ),
+    );
   }
 
   Future<void> refresh() async {

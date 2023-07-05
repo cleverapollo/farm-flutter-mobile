@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/ui/ui.dart';
@@ -86,6 +87,15 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
     } finally {
       emit(state.copyWith(loadingList: false));
     }
+  }
+
+  Future<void> onRemoveStakeholder(StakeHolder stakeHolder) async {
+    await cmoDatabaseMasterService.removeStakeHolder(stakeHolder.stakeHolderId!);
+    showSnackSuccess(
+      msg: '${LocaleKeys.remove.tr()} ${stakeHolder.stakeHolderId}!',
+    );
+
+    await loadListStakeHolderForRMRole();
   }
 
   Future<void> refresh() async {

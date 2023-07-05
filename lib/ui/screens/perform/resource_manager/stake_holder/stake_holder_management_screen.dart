@@ -184,11 +184,24 @@ class _StakeHolderManagementScreenState
     required bool haveGreyBackground, required bool isRM,
   }) {
     if (isRM) {
-      return RmModeStakeHolderItem(
-        model: model,
-        onTap: () {
-          StakeHolderDetailScreen.push(context, stakeHolder: model);
+      return CmoDismissibleItem(
+        key: Key(model.id.toString()),
+        title: LocaleKeys.removeStakeholder.tr(),
+        subtitle: LocaleKeys.removeStakeholderAlertContent.tr(),
+        onRemove: () async {
+          await context.read<StakeHolderListCubit>().onRemoveStakeholder(model);
+          await context.read<DashboardCubit>().refresh();
         },
+        child: RmModeStakeHolderItem(
+          model: model,
+          onTap: () {
+            StakeHolderDetailScreen.push(
+              context,
+              stakeHolder: model,
+              isEditing: true,
+            );
+          },
+        ),
       );
     } else {
       return FarmerModeStakeHolderItem(

@@ -23,3 +23,4 @@ export 'widget/cmo_logo.dart';
 export 'widget/cmo_mode_builder.dart';
 export 'widget/cmo_option_tile.dart';
 export 'widget/cmo_text_field.dart';
+export 'widget/cmo_dismissible_item.dart';

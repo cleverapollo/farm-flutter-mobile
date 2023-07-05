@@ -83,7 +83,6 @@ class CmoDatabaseMasterService {
         RiskProfileQuestionSchema,
         RMScheduleSchema,
         GroupSchemeStakeHolderSchema,
-        RMStakeHolderSchema,
         StakeHolderTypeSchema,
         AuditTemplateSchema,
         FarmSchema,
@@ -1953,11 +1952,6 @@ class CmoDatabaseMasterService {
     return db.stakeHolders.put(item);
   }
 
-  Future<int> cacheRMStakeHolder(RMStakeHolder item) async {
-    final db = await _db();
-    return db.rMStakeHolders.put(item);
-  }
-
   Future<int> cacheGroupSchemeStakeHolder(GroupSchemeStakeHolder item) async {
     final db = await _db();
     return db.groupSchemeStakeHolders.put(item);
@@ -2076,6 +2070,13 @@ class CmoDatabaseMasterService {
     return db.stakeHolders.filter().isActiveEqualTo(1).findAll();
   }
 
+  Future<bool> removeStakeHolder(int stakeHolderId) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.stakeHolders.delete(stakeHolderId);
+    });
+  }
+
   Future<List<StakeHolderType>> getStakeHolderTypes() async {
     final db = await _db();
     return db.stakeHolderTypes.filter().isActiveEqualTo(1).findAll();
@@ -2112,29 +2113,29 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<RMStakeHolder>?> getActiveStakeholderWrappersCountByGroupSchemeId(
-      int groupSchemeId) async {
-    final db = await _db();
-    final groupSchemeStakeHolders = await db.groupSchemeStakeHolders
-        .filter()
-        .groupSchemeIdEqualTo(groupSchemeId)
-        .findAll();
-    if (groupSchemeStakeHolders == null) {
-      return null;
-    }
-    final stakeHolders = <RMStakeHolder>[];
-    for (final item in groupSchemeStakeHolders) {
-      final id = int.tryParse(item.stakeHolderId ?? '');
-      if (id == null) {
-        continue;
-      }
-      stakeHolders.addAll(await db.rMStakeHolders
-          .filter()
-          .stakeHolderIdEqualTo(id.toString())
-          .findAll());
-    }
-    return stakeHolders;
-  }
+  // Future<List<RMStakeHolder>?> getActiveStakeholderWrappersCountByGroupSchemeId(
+  //     int groupSchemeId) async {
+  //   final db = await _db();
+  //   final groupSchemeStakeHolders = await db.groupSchemeStakeHolders
+  //       .filter()
+  //       .groupSchemeIdEqualTo(groupSchemeId)
+  //       .findAll();
+  //   if (groupSchemeStakeHolders == null) {
+  //     return null;
+  //   }
+  //   final stakeHolders = <RMStakeHolder>[];
+  //   for (final item in groupSchemeStakeHolders) {
+  //     final id = int.tryParse(item.stakeHolderId ?? '');
+  //     if (id == null) {
+  //       continue;
+  //     }
+  //     stakeHolders.addAll(await db.rMStakeHolders
+  //         .filter()
+  //         .stakeHolderIdEqualTo(id.toString())
+  //         .findAll());
+  //   }
+  //   return stakeHolders;
+  // }
 
   Future<List<Worker>> getWorkersByCompanyId(int companyId) async {
     final db = await _db();

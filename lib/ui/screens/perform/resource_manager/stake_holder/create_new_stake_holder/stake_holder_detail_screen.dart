@@ -16,12 +16,26 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/ui.dart';
 
 class StakeHolderDetailScreen extends StatefulWidget {
-  const StakeHolderDetailScreen({super.key});
+  const StakeHolderDetailScreen({
+    super.key,
+    this.stakeHolder,
+    this.isEditing = false,
+  });
 
-  static void push(BuildContext context, {StakeHolder? stakeHolder}) {
+  final StakeHolder? stakeHolder;
+  final bool isEditing;
+
+  static void push(
+    BuildContext context, {
+    StakeHolder? stakeHolder,
+    bool isEditing = false,
+  }) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const StakeHolderDetailScreen(),
+        builder: (_) => StakeHolderDetailScreen(
+          stakeHolder: stakeHolder,
+          isEditing: isEditing,
+        ),
       ),
     );
   }
@@ -59,7 +73,7 @@ class _StakeHolderDetailScreenState
       });
       try {
         await hideInputMethod();
-        value['StakeHolderId'] = DateTime.now().millisecondsSinceEpoch;
+        value['StakeHolderId'] = widget.isEditing ? widget.stakeHolder?.stakeHolderId : DateTime.now().millisecondsSinceEpoch;
         value['IsActive'] = 1;
         final stakeHolder = StakeHolder.fromJson(value);
 
@@ -79,6 +93,7 @@ class _StakeHolderDetailScreenState
               msg: '${LocaleKeys.createNewStakeholder.tr()} $resultId',
             );
 
+            await context.read<StakeHolderListCubit>().refresh();
             await context.read<DashboardCubit>().refresh();
             Navigator.of(context).pop();
           }
@@ -148,16 +163,19 @@ class _StakeHolderDetailScreenState
               name: 'StakeholderName',
               title: LocaleKeys.entityName.tr(),
               validator: requiredValidator,
+              initialValue: widget.isEditing ? widget.stakeHolder?.stakeholderName : null,
             ),
             InputTextFieldWithTitle(
               name: 'ContactName',
               title: LocaleKeys.contactName.tr(),
               validator: requiredValidator,
+              initialValue: widget.isEditing ? widget.stakeHolder?.contactName : null,
             ),
             InputTextFieldWithTitle(
               name: 'Email',
               title: LocaleKeys.email.tr(),
               firstSuffixIcon: Assets.icons.icMail.svgBlue,
+              initialValue: widget.isEditing ? widget.stakeHolder?.email : null,
               validator: FormBuilderValidators.compose([
                 FormBuilderValidators.email(),
               ]),
@@ -165,11 +183,13 @@ class _StakeHolderDetailScreenState
             InputTextFieldWithTitle(
               name: 'Address1',
               title: LocaleKeys.address.tr(),
+              initialValue: widget.isEditing ? widget.stakeHolder?.address1 : null,
               validator: requiredValidator,
             ),
             InputTextFieldWithTitle(
               name: 'Cell',
               title: LocaleKeys.phoneNumber.tr(),
+              initialValue: widget.isEditing ? widget.stakeHolder?.cell : null,
               firstSuffixIcon: Assets.icons.icCallBlue.svg(),
               secondSuffixIcon: Assets.icons.icSmsBlue.svg(),
               keyboardType: TextInputType.number,
@@ -217,6 +237,13 @@ class _StakeHolderDetailScreenState
                   borderSide: BorderSide(color: context.colors.blue),
                 ),
               ),
+              initialValue: listStakeholderTypes
+                  .firstWhereOrNull(
+                    (element) =>
+                        element.stakeHolderTypeId ==
+                        widget.stakeHolder?.stakeHolderTypeId,
+                  )
+                  ?.stakeHolderTypeId,
               itemsData: listStakeholderTypes
                   .map(
                     (e) => CmoDropdownItem(

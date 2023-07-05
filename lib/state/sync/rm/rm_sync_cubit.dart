@@ -86,8 +86,8 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
-      final stakeHolder = RMStakeHolder.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheRMStakeHolder(stakeHolder);
+      final stakeHolder = StakeHolder.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheStakeHolder(stakeHolder);
     } catch (e) {
       logger.d('insert error: $e');
     }
