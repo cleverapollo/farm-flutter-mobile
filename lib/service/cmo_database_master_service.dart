@@ -221,7 +221,6 @@ class CmoDatabaseMasterService {
 
   Future<List<Camp>> getCampByFarmId(int farmId) async {
     final db = await _db();
-
     return db.camps
         .filter()
         .farmIdEqualTo(farmId.toString())
@@ -464,8 +463,9 @@ class CmoDatabaseMasterService {
 
   Future<int?> cacheCamp(Camp data) async {
     final db = await _db();
-
-    return db.camps.put(data);
+    return db.writeTxn(() async {
+      return db.camps.put(data);
+    });
   }
 
   Future<int?> cacheBiologicalControlAgentTypes(
@@ -790,7 +790,6 @@ class CmoDatabaseMasterService {
 
   Future<List<Camp>> getUnsyncedCampByFarmId(String farmId) async {
     final db = await _db();
-
     return db.camps
         .filter()
         .farmIdEqualTo(farmId)

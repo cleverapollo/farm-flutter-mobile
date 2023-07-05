@@ -1,18 +1,19 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/camp.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../state/farmer/camp_management/add_camp_cubit.dart';
 
 class AddCampStep3Screen extends StatefulWidget {
-  Camp camp;
 
-  AddCampStep3Screen(this.camp, {Key? key}) : super(key: key);
+  AddCampStep3Screen({Key? key}) : super(key: key);
 
-  static void push(BuildContext context, Camp camp) {
+  static void push(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => AddCampStep3Screen(camp)),
+      MaterialPageRoute(builder: (_) => AddCampStep3Screen()),
     );
   }
 
@@ -21,12 +22,13 @@ class AddCampStep3Screen extends StatefulWidget {
 }
 
 class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
-  late Camp camp;
+
+  late AddCampCubit cubit;
 
   @override
   void initState() {
     super.initState();
-    camp = widget.camp;
+    cubit = context.read<AddCampCubit>();
   }
 
   @override
@@ -57,7 +59,7 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
                     ),
                   ),
                   _YearDropdown(
-                      onChanged: (value) => camp.plannedYearOfHarvest = value),
+                      onChanged: (value) => cubit.onPlannedYearOfHarvestChanged(value)),
                   const SizedBox(height: 24),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -66,7 +68,7 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
                     ),
                   ),
                   _YearDropdown(
-                      onChanged: (value) => camp.actualYearOfHarvest = value),
+                      onChanged: (value) => cubit.onActualYearOfHarvestChanged(value)),
                 ],
               ),
             ),

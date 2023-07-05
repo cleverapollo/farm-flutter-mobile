@@ -119,6 +119,8 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
         contentPadding: widget.contentPadding,
         enabledBorder: InputBorder.none,
         focusedBorder: InputBorder.none,
+        errorBorder: InputBorder.none,
+        focusedErrorBorder: InputBorder.none,
       ),
     );
   }

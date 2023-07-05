@@ -1,19 +1,20 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/camp.dart';
+import 'package:cmo/state/farmer/camp_management/add_camp_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_step3_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddCampStep2Screen extends StatefulWidget {
-  Camp camp;
 
-  AddCampStep2Screen(this.camp, {Key? key}) : super(key: key);
+  AddCampStep2Screen({Key? key}) : super(key: key);
 
   static void push(BuildContext context, Camp camp) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => AddCampStep2Screen(camp)),
+      MaterialPageRoute(builder: (_) => AddCampStep2Screen()),
     );
   }
 
@@ -22,12 +23,12 @@ class AddCampStep2Screen extends StatefulWidget {
 }
 
 class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
-  late Camp camp;
+  late AddCampCubit cubit;
 
   @override
   void initState() {
     super.initState();
-    camp = widget.camp;
+    cubit = context.read<AddCampCubit>();
   }
 
   @override
@@ -83,35 +84,35 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
                             part2:
                             ' ${LocaleKeys.add_camp_category_1_infested.tr()} ',
                             part3: LocaleKeys.add_camp_category_1.tr(),
-                            onChanged: (value) => camp.infestationCategory1 = double.tryParse(value),
+                            onChanged: (value) => cubit.onInfestationCategory1Changed(value),
                           ),
                           _CategoryItem(
                             part1: '${LocaleKeys.category.tr()} 2:',
                             part2:
                             ' ${LocaleKeys.add_camp_category_2_infested.tr()} ',
                             part3: LocaleKeys.add_camp_category_2.tr(),
-                            onChanged: (value) => camp.infestationCategory2 = double.tryParse(value),
+                            onChanged: (value) => cubit.onInfestationCategory2Changed(value),
                           ),
                           _CategoryItem(
                             part1: '${LocaleKeys.category.tr()} 3:',
                             part2:
                             ' ${LocaleKeys.add_camp_category_3_infested.tr()} ',
                             part3: LocaleKeys.add_camp_category_3.tr(),
-                            onChanged: (value) => camp.infestationCategory3 = double.tryParse(value),
+                            onChanged: (value) => cubit.onInfestationCategory3Changed(value),
                           ),
                           _CategoryItem(
                             part1: '${LocaleKeys.category.tr()} 4:',
                             part2:
                             ' ${LocaleKeys.add_camp_category_4_infested.tr()} ',
                             part3: LocaleKeys.add_camp_category_4.tr(),
-                            onChanged: (value) => camp.infestationCategory4 = double.tryParse(value),
+                            onChanged: (value) => cubit.onInfestationCategory4Changed(value),
                           ),
                           _CategoryItem(
                             part1: '${LocaleKeys.category.tr()} 5:',
                             part2:
                             ' ${LocaleKeys.add_camp_category_5_infested.tr()} ',
                             part3: LocaleKeys.add_camp_category_5.tr(),
-                            onChanged: (value) => camp.infestationCategory5 = double.tryParse(value),
+                            onChanged: (value) => cubit.onInfestationCategory5Changed(value),
                           ),
                         ],
                       ),
@@ -135,7 +136,7 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
   }
 
   void _next() {
-    AddCampStep3Screen.push(context, camp);
+    AddCampStep3Screen.push(context);
   }
 }
 
