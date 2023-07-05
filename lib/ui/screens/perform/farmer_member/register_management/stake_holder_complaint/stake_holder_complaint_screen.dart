@@ -114,62 +114,67 @@ class _StakeHolderComplaintScreenState
         trailing: Assets.icons.icAdd.svgBlack,
         onTapTrailing: () => AddStakeHolderComplaintScreen.push(context),
       ),
-      body: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
-              child: CmoTextField(
-                name: LocaleKeys.search.tr(),
-                hintText: LocaleKeys.search.tr(),
-                suffixIcon: Assets.icons.icSearch.svg(),
-                onChanged: (input) {
-                  _debounceInputTimer?.cancel();
-                  _debounceInputTimer = Timer(const Duration(milliseconds: 200),
-                      () => searching(input));
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
-              child: StatusFilterWidget(
-                onSelectFilter: (statusFilterEnum) {
-                  statusFilter = statusFilterEnum;
-                  applyFilter();
-                },
-              ),
-            ),
-            Expanded(
-              child: ListView.separated(
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 22,
-                ),
-                itemCount: filteredItems.length,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 21,
-                ),
-                itemBuilder: (context, index) {
-                  final item = filteredItems[index];
-                  return GestureDetector(
-                    onTap: () async {
-                      final result = await AddStakeHolderComplaintScreen.push(
-                          context,
-                          complaint: item);
-                      if (result == null) return;
-                      filteredItems[index] = result;
-                      setState(() {});
-                    },
-                    child: _StakeHolderComplaintItem(
-                      complaint: filteredItems[index],
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
+                    child: CmoTextField(
+                      name: LocaleKeys.search.tr(),
+                      hintText: LocaleKeys.search.tr(),
+                      suffixIcon: Assets.icons.icSearch.svg(),
+                      onChanged: (input) {
+                        _debounceInputTimer?.cancel();
+                        _debounceInputTimer = Timer(
+                            const Duration(milliseconds: 200),
+                            () => searching(input));
+                      },
                     ),
-                  );
-                },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
+                    child: StatusFilterWidget(
+                      onSelectFilter: (statusFilterEnum) {
+                        statusFilter = statusFilterEnum;
+                        applyFilter();
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 22,
+                      ),
+                      itemCount: filteredItems.length,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 21,
+                      ),
+                      itemBuilder: (context, index) {
+                        final item = filteredItems[index];
+                        return GestureDetector(
+                          onTap: () async {
+                            final result =
+                                await AddStakeHolderComplaintScreen.push(
+                                    context,
+                                    complaint: item);
+                            if (result == null) return;
+                            filteredItems[index] = result;
+                            setState(() {});
+                          },
+                          child: _StakeHolderComplaintItem(
+                            complaint: filteredItems[index],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -305,6 +305,16 @@ class CmoDatabaseMasterService {
     return db.accidentAndIncidents.put(data);
   }
 
+  Future<List<AccidentAndIncident>> getAccidentAndIncidentRegistersByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.accidentAndIncidents
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
   Future<int?> cacheAccidentAndIncidentPropertyDamaged(
       AccidentAndIncidentPropertyDamaged data) async {
     final db = await _db();

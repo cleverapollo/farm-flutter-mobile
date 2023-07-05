@@ -2,14 +2,15 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/accident_and_incident.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+
+import '../widgets/add_general_comment_widget.dart';
+import '../widgets/select_item_widget.dart';
 
 class AddingAAIScreen extends StatefulWidget {
   final AccidentAndIncident? aai;
@@ -73,6 +74,10 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
             dateRecieved: value['DateReceived'] as DateTime?,
             dateOfIncident: value['DateIncident'] as DateTime?,
             dateResumeWork: value['DateResumeWork'] as DateTime?,
+            natureOfInjuryId:
+                int.tryParse(value['natureOfInjury'] as String? ?? ''),
+            jobDescriptionId:
+                int.tryParse(value['jobDescription'] as String? ?? ''),
             workerId: int.tryParse(value['WorkerId'] as String? ?? ''));
 
         if (carRaised && aai.carRaisedDate == null) {
@@ -117,136 +122,32 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.add_aai.tr(),
-        showLeading: true,
-      ),
-      body: CustomScrollView(
-        slivers: [
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-              child: Column(
-                children: [
-                  CmoDropdown(
-                    name: 'worker',
-                    style: context.textStyles.bodyBold
-                        .copyWith(color: context.colors.black),
-                    validator: requiredValidator,
-                    inputDecoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                      isDense: true,
-                      hintText: LocaleKeys.worker.tr(),
-                      hintStyle: context.textStyles.bodyNormal.grey,
-                      border: UnderlineInputBorder(
-                          borderSide: BorderSide(color: context.colors.grey)),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: context.colors.blue)),
-                    ),
-                    itemsData: [
-                      CmoDropdownItem(id: 1, name: 'Test 1'),
-                      CmoDropdownItem(id: 2, name: 'Test 2'),
-                      CmoDropdownItem(id: 3, name: 'Test 3'),
-                    ],
-                    onChanged: (value) {
-                      aai = aai.copyWith(workerId: value);
-                    },
-                  ),
-                  CmoDropdown(
-                    name: 'jobDescription',
-                    style: context.textStyles.bodyBold
-                        .copyWith(color: context.colors.black),
-                    inputDecoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                      isDense: true,
-                      hintText: LocaleKeys.jobDescription.tr(),
-                      hintStyle: context.textStyles.bodyNormal.grey,
-                      border: UnderlineInputBorder(
-                          borderSide: BorderSide(color: context.colors.grey)),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: context.colors.blue)),
-                    ),
-                    itemsData: [
-                      CmoDropdownItem(id: 1, name: 'Test 1'),
-                      CmoDropdownItem(id: 2, name: 'Test 2'),
-                      CmoDropdownItem(id: 3, name: 'Test 3'),
-                    ],
-                    onChanged: (value) {
-                      aai = aai.copyWith(workerId: value);
-                    },
-                  ),
-                  CmoDropdown(
-                    name: 'natureOfInjury',
-                    style: context.textStyles.bodyBold
-                        .copyWith(color: context.colors.black),
-                    inputDecoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                      isDense: true,
-                      hintText: LocaleKeys.nature_of_injury.tr(),
-                      hintStyle: context.textStyles.bodyNormal.grey,
-                      border: UnderlineInputBorder(
-                          borderSide: BorderSide(color: context.colors.grey)),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: context.colors.blue)),
-                    ),
-                    itemsData: [
-                      CmoDropdownItem(id: 1, name: 'Test 1'),
-                      CmoDropdownItem(id: 2, name: 'Test 2'),
-                      CmoDropdownItem(id: 3, name: 'Test 3'),
-                    ],
-                    onChanged: (value) {
-                      aai = aai.copyWith(natureOfInjuryId: value);
-                    },
-                  ),
-                  _buildSelectDateIncident(),
-                  _buildSelectDateIncident(),
-                  _buildSelectDateResumeWork(),
-                  AttributeItem(
-                    child: SelectorAttributeItem(
-                      hintText: LocaleKeys.worker_disabled.tr(),
-                      text: LocaleKeys.worker_disabled.tr(),
-                      contentPadding: const EdgeInsets.all(4),
-                      trailing: SizedBox(
-                        width: 24,
-                        child: Switch(
-                          value: aai.workerDisabled == true,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          onChanged: (bool value) {
-                            aai = aai.copyWith(workerDisabled: value);
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Expanded(
-                    child: TextField(
-                      minLines: 10,
-                      maxLines: 100,
-                      onChanged: (value) {
-                        aai = aai.copyWith(comment: value);
-                      },
-                      decoration: InputDecoration(
-                        hintText: LocaleKeys.comments.tr(),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: CmoFilledButton(
-                      title: LocaleKeys.save.tr(),
-                      onTap: () => onSubmit(),
-                      loading: loading,
-                    ),
-                  ),
-                ],
+    return GestureDetector(
+      onTap: FocusScope.of(context).unfocus,
+      child: Scaffold(
+        appBar: CmoAppBar(
+          title: widget.aai == null ? LocaleKeys.add_aai.tr() : 'Edit AAI',
+          leading: Assets.icons.icArrowLeft.svgBlack,
+          onTapLeading: Navigator.of(context).pop,
+          trailing: Assets.icons.icClose.svgBlack,
+          onTapTrailing: Navigator.of(context).pop,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildInputArea(),
+              const SizedBox(
+                height: 80,
               ),
-            ),
-          )
-        ],
+            ],
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: CmoFilledButton(
+          title: LocaleKeys.save.tr(),
+          onTap: onSubmit,
+          loading: loading,
+        ),
       ),
     );
   }
@@ -261,7 +162,31 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
         child: AutofillGroup(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [],
+            children: [
+              _selectWorker(),
+              _selectJobDescription(),
+              _selectNatureOfInjury(),
+              _buildSelectDateIncident(),
+              _buildSelectDateReceived(),
+              _buildSelectDateResumeWork(),
+              AttributeItem(
+                child: SelectItemWidget(
+                  title: LocaleKeys.worker_disabled.tr(),
+                  onSelect: (value) {
+                    aai = aai.copyWith(workerDisabled: value);
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 250,
+                child: GeneralCommentWidget(
+                  hintText: LocaleKeys.generalComments.tr(),
+                  onChanged: (value) {
+                    aai = aai.copyWith(comment: value);
+                  },
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -269,42 +194,86 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
   }
 
   Widget _selectWorker() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            LocaleKeys.worker.tr(),
-            style: context.textStyles.bodyBold.black,
-          ),
-        ),
-        CmoDropdown(
-          name: 'WorkerId',
-          hintText: LocaleKeys.worker.tr(),
-          validator: requiredValidator,
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            isDense: true,
-            hintText:
-                '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.blue)),
-          ),
-          onChanged: (int? id) {
-            if (id == -1) {
-              _formKey.currentState!.fields['WorkerId']?.reset();
-            }
-          },
-          itemsData: [
-            CmoDropdownItem(id: -1, name: LocaleKeys.worker.tr()),
-            CmoDropdownItem(id: 0, name: 'Criminals'),
-            CmoDropdownItem(id: 1, name: 'Primary'),
-          ],
-        ),
+    return CmoDropdown(
+      name: 'WorkerId',
+      hintText: LocaleKeys.worker.tr(),
+      validator: requiredValidator,
+      inputDecoration: InputDecoration(
+        contentPadding: const EdgeInsets.all(8),
+        isDense: true,
+        hintText:
+            '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
+        hintStyle: context.textStyles.bodyNormal.grey,
+        border: UnderlineInputBorder(
+            borderSide: BorderSide(color: context.colors.grey)),
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: context.colors.blue)),
+      ),
+      onChanged: (int? id) {
+        if (id == -1) {
+          _formKey.currentState!.fields['WorkerId']?.reset();
+        }
+      },
+      itemsData: [
+        CmoDropdownItem(id: -1, name: LocaleKeys.worker.tr()),
+        CmoDropdownItem(id: 0, name: 'Criminals'),
+        CmoDropdownItem(id: 1, name: 'Primary'),
+      ],
+    );
+  }
+
+  Widget _selectJobDescription() {
+    return CmoDropdown(
+      name: 'jobDescription',
+      hintText: LocaleKeys.jobDescription.tr(),
+      inputDecoration: InputDecoration(
+        contentPadding: const EdgeInsets.all(8),
+        isDense: true,
+        hintText:
+            '${LocaleKeys.select.tr()} ${LocaleKeys.jobDescription.tr().toLowerCase()}',
+        hintStyle: context.textStyles.bodyNormal.grey,
+        border: UnderlineInputBorder(
+            borderSide: BorderSide(color: context.colors.grey)),
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: context.colors.blue)),
+      ),
+      onChanged: (int? id) {
+        if (id == -1) {
+          _formKey.currentState!.fields['jobDescription']?.reset();
+        }
+      },
+      itemsData: [
+        CmoDropdownItem(id: -1, name: LocaleKeys.jobDescription.tr()),
+        CmoDropdownItem(id: 0, name: 'Criminals'),
+        CmoDropdownItem(id: 1, name: 'Primary'),
+      ],
+    );
+  }
+
+  Widget _selectNatureOfInjury() {
+    return CmoDropdown(
+      name: 'natureOfInjury',
+      hintText: LocaleKeys.nature_of_injury.tr(),
+      inputDecoration: InputDecoration(
+        contentPadding: const EdgeInsets.all(8),
+        isDense: true,
+        hintText:
+            '${LocaleKeys.select.tr()} ${LocaleKeys.nature_of_injury.tr().toLowerCase()}',
+        hintStyle: context.textStyles.bodyNormal.grey,
+        border: UnderlineInputBorder(
+            borderSide: BorderSide(color: context.colors.grey)),
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: context.colors.blue)),
+      ),
+      onChanged: (int? id) {
+        if (id == -1) {
+          _formKey.currentState!.fields['natureOfInjury']?.reset();
+        }
+      },
+      itemsData: [
+        CmoDropdownItem(id: -1, name: LocaleKeys.nature_of_injury.tr()),
+        CmoDropdownItem(id: 0, name: 'Criminals'),
+        CmoDropdownItem(id: 1, name: 'Primary'),
       ],
     );
   }
@@ -394,23 +363,21 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
       child: CmoDatePicker(
         name: 'DateResumeWork',
         hintText: 'Date of Resume Work',
-        validator: FormBuilderValidators.compose([
-          FormBuilderValidators.required(),
-          (DateTime? value) {
-            if (value!.millisecondsSinceEpoch >
-                DateTime.now().millisecondsSinceEpoch) {
-              return 'Resumed work date cannot be in the future';
-            }
-            final incidentValue =
-                _formKey.currentState?.value['DateIncident'] as DateTime?;
-            if (incidentValue != null &&
-                value.millisecondsSinceEpoch <
-                    incidentValue.millisecondsSinceEpoch) {
-              return 'Resume work date must be on or after incident date';
-            }
-            return null;
+        validator: (DateTime? value) {
+          if (value == null) return null;
+          if (value!.millisecondsSinceEpoch >
+              DateTime.now().millisecondsSinceEpoch) {
+            return 'Resumed work date cannot be in the future';
           }
-        ]),
+          final incidentValue =
+              _formKey.currentState?.value['DateIncident'] as DateTime?;
+          if (incidentValue != null &&
+              value.millisecondsSinceEpoch <
+                  incidentValue.millisecondsSinceEpoch) {
+            return 'Resume work date must be on or after incident date';
+          }
+          return null;
+        },
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(

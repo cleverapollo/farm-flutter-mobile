@@ -1,27 +1,22 @@
 import 'dart:async';
 
+import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/accident_and_incident.dart';
-import 'package:cmo/model/asi.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/aai/adding_aai_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/asi/adding_asi_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class AAIScreen extends StatefulWidget {
-  final mockAAIs = <AccidentAndIncident>[
-  ];
-
-  AAIScreen({Key? key}) : super(key: key);
+  const AAIScreen({super.key});
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => AAIScreen()));
+        context, MaterialPageRoute(builder: (_) => const AAIScreen()));
   }
 
   @override
@@ -29,116 +24,143 @@ class AAIScreen extends StatefulWidget {
 }
 
 class _AAIScreenState extends State<AAIScreen> {
-  List<AccidentAndIncident> filteredAAIs = [];
-  bool _isOpenSelected = true;
-  Timer? _debounceSearching;
+  final List<AccidentAndIncident> items = [];
+  bool isLoading = true;
+
+  Timer? _debounceInputTimer;
+  late List<AccidentAndIncident> filteredItems;
+  late StatusFilterEnum statusFilter;
+  String? inputSearch;
 
   @override
   void initState() {
     super.initState();
-    filteredAAIs = widget.mockAAIs;
+    _init();
+  }
+
+  Future<void> _init() async {
+    final farm = await configService.getActiveFarm();
+    items.addAll(await cmoDatabaseMasterService
+        .getAccidentAndIncidentRegistersByFarmId(farm!.farmId));
+    isLoading = false;
+
+    filteredItems = items;
+    statusFilter = StatusFilterEnum.open;
+    inputSearch = '';
+    applyFilter();
+  }
+
+  void searching(String? input) {
+    inputSearch = input;
+    if (input == null || input.isEmpty) {
+      applyFilter();
+    } else {
+      filteredItems = items.where((element) {
+        final containName = element.accidentAndIncidentRegisterNo
+                ?.toLowerCase()
+                .contains(input.toLowerCase()) ??
+            false;
+        var isFilter = false;
+        switch (statusFilter) {
+          case StatusFilterEnum.open:
+            isFilter = element.dateResumeWork == null;
+            break;
+          case StatusFilterEnum.closed:
+            isFilter = element.dateResumeWork != null;
+            break;
+        }
+
+        return containName && isFilter;
+      }).toList();
+      setState(() {});
+    }
+  }
+
+  void applyFilter() {
+    if (inputSearch == null || inputSearch!.isEmpty) {
+      switch (statusFilter) {
+        case StatusFilterEnum.open:
+          filteredItems =
+              items.where((element) => element.dateResumeWork == null).toList();
+          break;
+        case StatusFilterEnum.closed:
+          filteredItems =
+              items.where((element) => element.dateResumeWork != null).toList();
+          break;
+      }
+    } else {
+      searching(inputSearch);
+    }
+
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoAppBar(
         title: LocaleKeys.accident_incidents.tr(),
-        showLeading: true,
-        showTrailing: true,
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
         onTapTrailing: () => AddingAAIScreen.push(context),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-            child: CmoTextField(
-              onChanged: _search,
-              name: LocaleKeys.search.tr(),
-              prefixIcon: Assets.icons.icSearch.svg(),
-              hintText: LocaleKeys.search.tr(),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () => setState(() => _isOpenSelected = true),
-                child: _StatusFilterWidget(
-                  text: LocaleKeys.open.tr(),
-                  isSelected: _isOpenSelected,
-                ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
+                    child: CmoTextField(
+                      name: LocaleKeys.search.tr(),
+                      hintText: LocaleKeys.search.tr(),
+                      suffixIcon: Assets.icons.icSearch.svg(),
+                      onChanged: (input) {
+                        _debounceInputTimer?.cancel();
+                        _debounceInputTimer = Timer(
+                            const Duration(milliseconds: 200),
+                            () => searching(input));
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
+                    child: StatusFilterWidget(
+                      onSelectFilter: (statusFilterEnum) {
+                        statusFilter = statusFilterEnum;
+                        applyFilter();
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 22,
+                      ),
+                      itemCount: filteredItems.length,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 21,
+                      ),
+                      itemBuilder: (context, index) {
+                        final item = filteredItems[index];
+                        return GestureDetector(
+                            onTap: () async {
+                              final result = await AddingAAIScreen.push(context,
+                                  aai: item);
+                              if (result == null) return;
+                              filteredItems[index] = result;
+                              setState(() {});
+                            },
+                            child: _AAIItem(item));
+                      },
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              GestureDetector(
-                onTap: () => setState(() => _isOpenSelected = false),
-                child: _StatusFilterWidget(
-                  text: LocaleKeys.close.tr(),
-                  isSelected: !_isOpenSelected,
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-              itemCount: filteredAAIs.length,
-              separatorBuilder: (_, index) => const SizedBox(height: 14),
-              itemBuilder: (_, index) => _AAIItem(filteredAAIs[index]),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _search(String? value) {
-    _debounceSearching?.cancel();
-    _debounceSearching = Timer(
-      const Duration(milliseconds: 300),
-      () {
-        if (value?.isEmpty ?? true) {
-          filteredAAIs = widget.mockAAIs;
-        } else {
-          filteredAAIs = widget.mockAAIs
-              .where(
-                  (element) => element.accidentAndIncidentRegisterNo?.contains(value!) ?? false)
-              .toList();
-        }
-        setState(() {});
-      },
-    );
-  }
-}
-
-class _StatusFilterWidget extends StatelessWidget {
-  final bool isSelected;
-  final String text;
-
-  const _StatusFilterWidget({
-    required this.text,
-    this.isSelected = false,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: isSelected ? context.colors.blue : context.colors.white,
-        border: isSelected ? null : Border.all(color: context.colors.black),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 35),
-      alignment: Alignment.center,
-      child: Text(
-        text,
-        style: context.textStyles.bodyNormal.copyWith(
-          fontSize: 12,
-          color: isSelected ? context.colors.white : context.colors.black,
-        ),
-      ),
     );
   }
 }
@@ -203,7 +225,7 @@ class _AAIItem extends StatelessWidget {
           ),
           Padding(
             padding:
-            const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+                const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -222,7 +244,7 @@ class _AAIItem extends StatelessWidget {
             color: context.colors.greyLight1,
             child: Padding(
               padding:
-              const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+                  const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -240,7 +262,7 @@ class _AAIItem extends StatelessWidget {
           ),
           Padding(
             padding:
-            const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+                const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -259,7 +281,7 @@ class _AAIItem extends StatelessWidget {
             color: context.colors.greyLight1,
             child: Padding(
               padding:
-              const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+                  const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -277,7 +299,7 @@ class _AAIItem extends StatelessWidget {
           ),
           Padding(
             padding:
-            const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+                const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -296,7 +318,7 @@ class _AAIItem extends StatelessWidget {
             color: context.colors.greyLight1,
             child: Padding(
               padding:
-              const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+                  const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -319,7 +341,7 @@ class _AAIItem extends StatelessWidget {
           ),
           Padding(
             padding:
-            const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+                const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -328,7 +350,9 @@ class _AAIItem extends StatelessWidget {
                   style: context.textStyles.bodyNormal,
                 ),
                 Text(
-                  aai.workerDisabled == true ? LocaleKeys.yes.tr() : LocaleKeys.no.tr(),
+                  aai.workerDisabled == true
+                      ? LocaleKeys.yes.tr()
+                      : LocaleKeys.no.tr(),
                   style: context.textStyles.bodyNormal,
                 )
               ],
