@@ -2,20 +2,22 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'training_register.freezed.dart';
+
 part 'training_register.g.dart';
 
 @freezed
 @Collection(ignore: {'copyWith'})
 class TrainingRegister with _$TrainingRegister {
   const factory TrainingRegister({
-    @JsonKey(name: 'TrainingRegisterNo') int? trainingRegisterNo,
+    @JsonKey(name: 'TrainingRegisterNo') String? trainingRegisterNo,
     @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'TrainingTypeId') int? trainingTypeId,
     @JsonKey(name: 'Date') DateTime? date,
     @JsonKey(name: 'TrainerName') String? trainerName,
-    @JsonKey(name: 'TrainingRegisterId') bool? trainingRegisterId,
-    @JsonKey(name: 'WorkerId') bool? workerId,
+    @JsonKey(name: 'TrainingRegisterId') String? trainingRegisterId,
+    @JsonKey(name: 'WorkerId') String? workerId,
     @JsonKey(name: 'ExpiryDate') DateTime? expiryDate,
+    @JsonKey(name: 'Comment') String? comment,
     @JsonKey(name: 'CarRaisedDate') String? carRaisedDate,
     @JsonKey(name: 'CarClosedDate') String? carClosedDate,
     @JsonKey(name: 'SignaturePoints') String? signaturePoints,
@@ -33,5 +35,5 @@ class TrainingRegister with _$TrainingRegister {
       _$TrainingRegisterFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => int.tryParse(trainingRegisterId ?? '') ?? Isar.autoIncrement;
 }
