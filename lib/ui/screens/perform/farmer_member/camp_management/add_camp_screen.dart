@@ -187,7 +187,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
       return;
     }
     await cubit.saveCamp();
-    // AddCampStep2Screen.push(context, cubit.state.camp!);
+    AddCampStep2Screen.push(context, cubit);
   }
 }
 

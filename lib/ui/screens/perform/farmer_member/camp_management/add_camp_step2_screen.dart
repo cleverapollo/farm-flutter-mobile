@@ -12,9 +12,14 @@ class AddCampStep2Screen extends StatefulWidget {
 
   AddCampStep2Screen({Key? key}) : super(key: key);
 
-  static void push(BuildContext context, Camp camp) {
+  static void push(BuildContext context, AddCampCubit cubit) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => AddCampStep2Screen()),
+      MaterialPageRoute(builder: (_) {
+        return BlocProvider.value(
+          value: cubit,
+          child: AddCampStep2Screen(),
+        );
+      },),
     );
   }
 
@@ -135,8 +140,9 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
     );
   }
 
-  void _next() {
-    AddCampStep3Screen.push(context);
+  Future _next() async {
+    await cubit.saveCamp();
+    AddCampStep3Screen.push(context, cubit);
   }
 }
 
