@@ -12,9 +12,8 @@ class StakeHolderType with _$StakeHolderType {
   const factory StakeHolderType({
     @JsonKey(name: 'StakeholderTypeId') required String stakeHolderTypeId,
     @JsonKey(name: 'StakeholderTypeName') String? stakeHolderTypeName,
-    @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
+    @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
     @JsonKey(name: 'IsActive') int? isActive,
-    @JsonKey(name: 'IsLocal') bool? isLocal,
   }) = _StakeHolderType;
 
   const StakeHolderType._();

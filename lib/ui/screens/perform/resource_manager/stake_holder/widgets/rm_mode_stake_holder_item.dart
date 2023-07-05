@@ -20,13 +20,13 @@ class RmModeStakeHolderItem extends StatelessWidget {
       child: CmoCard(
         content: [
           CmoCardHeader(
-            title: model.entityName ?? '',
+            title: model.stakeholderName ?? '',
             maxLines: 2,
           ),
           const SizedBox(height: 10),
           CmoCardItemWithIcon(
             icon: Assets.icons.icHome,
-            title: model.address,
+            title: model.address1,
           ),
           CmoCardItemWithIcon(
             icon: Assets.icons.icProfile,

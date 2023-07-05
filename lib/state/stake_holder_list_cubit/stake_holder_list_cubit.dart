@@ -14,10 +14,12 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
     try {
       final service = cmoDatabaseMasterService;
       final data = await service.getStakeHolders();
-      emit(state.copyWith(
-        listStakeHolders: data,
-        filterListStakeHolders: data,
-      ));
+      emit(
+        state.copyWith(
+          listStakeHolders: data,
+          filterListStakeHolders: data,
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(error: e));
       showSnackError(msg: e.toString());
@@ -39,7 +41,7 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
         final filteredItems = state.listStakeHolders
             .where(
               (element) =>
-                  (element.entityName
+                  (element.stakeholderName
                           ?.toLowerCase()
                           .contains(searchText.toLowerCase()) ??
                       false) ||

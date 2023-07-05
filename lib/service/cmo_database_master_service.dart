@@ -2073,7 +2073,7 @@ class CmoDatabaseMasterService {
 
   Future<List<StakeHolder>> getStakeHolders() async {
     final db = await _db();
-    return db.stakeHolders.filter().isActiveEqualTo(true).findAll();
+    return db.stakeHolders.filter().isActiveEqualTo(1).findAll();
   }
 
   Future<List<StakeHolderType>> getStakeHolderTypes() async {

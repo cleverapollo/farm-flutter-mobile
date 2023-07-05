@@ -33,14 +33,14 @@ class FarmerModeStakeHolderItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CmoCardHeader(
-                    title: model.entityName ?? '',
+                    title: model.stakeholderName ?? '',
                     maxLines: 2,
                     textStyle: context.textStyles.bodyBold.black,
                   ),
                   const SizedBox(height: 10),
                   CmoCardItemWithIcon(
                     icon: Assets.icons.icHome,
-                    title: model.address,
+                    title: model.address1,
                     textStyle: context.textStyles.bodyNormal.black,
                     iconColor: context.colors.black,
                   ),

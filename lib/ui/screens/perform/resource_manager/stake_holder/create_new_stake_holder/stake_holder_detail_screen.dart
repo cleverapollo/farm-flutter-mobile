@@ -4,6 +4,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/widgets/input_text_field_with_title.dart';
 import 'package:cmo/utils/helpers.dart';
 import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/create_new_stake_holder/widgets/input_text_field_with_title.dart';
 
 class StakeHolderDetailScreen extends StatefulWidget {
   const StakeHolderDetailScreen({super.key});
@@ -59,10 +59,8 @@ class _StakeHolderDetailScreenState
       });
       try {
         await hideInputMethod();
-        final stakeHolderId = DateTime.now().millisecondsSinceEpoch;
-        value['StakeHolderId'] = stakeHolderId;
-        value['IsActive'] = true;
-        value['IsLocal'] = true;
+        value['StakeHolderId'] = DateTime.now().millisecondsSinceEpoch;
+        value['IsActive'] = 1;
         final stakeHolder = StakeHolder.fromJson(value);
 
         int? resultId;
@@ -147,17 +145,17 @@ class _StakeHolderDetailScreenState
           children: [
             _selectTypeDropdown(),
             InputTextFieldWithTitle(
-              name: 'entityName',
+              name: 'StakeholderName',
               title: LocaleKeys.entityName.tr(),
               validator: requiredValidator,
             ),
             InputTextFieldWithTitle(
-              name: 'contactName',
+              name: 'ContactName',
               title: LocaleKeys.contactName.tr(),
               validator: requiredValidator,
             ),
             InputTextFieldWithTitle(
-              name: 'email',
+              name: 'Email',
               title: LocaleKeys.email.tr(),
               firstSuffixIcon: Assets.icons.icMail.svgBlue,
               validator: FormBuilderValidators.compose([
@@ -165,12 +163,12 @@ class _StakeHolderDetailScreenState
               ]),
             ),
             InputTextFieldWithTitle(
-              name: 'address',
+              name: 'Address1',
               title: LocaleKeys.address.tr(),
               validator: requiredValidator,
             ),
             InputTextFieldWithTitle(
-              name: 'phoneNumber',
+              name: 'Cell',
               title: LocaleKeys.phoneNumber.tr(),
               firstSuffixIcon: Assets.icons.icCallBlue.svg(),
               secondSuffixIcon: Assets.icons.icSmsBlue.svg(),
@@ -205,7 +203,7 @@ class _StakeHolderDetailScreenState
               style: context.textStyles.bodyBold.black,
             ),
             CmoDropdown(
-              name: 'type',
+              name: 'StakeholderTypeId',
               validator: requiredValidator,
               inputDecoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(8),
