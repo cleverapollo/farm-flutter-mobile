@@ -292,6 +292,8 @@
   "removeAnnualBudgetTransactionAlertContent": "Are you sure you want to remove this annual budget transaction?",
   "removeStakeholder": "Remove Stakeholder",
   "removeStakeholderAlertContent": "Are you sure you want to remove this stakeholder?",
+  "removeLabour": "Remove Labour",
+  "removeLabourAlertContent": "Are you sure you want to remove this Labour?",
   "ok": "ok",
   "cancel": "cancel",
   "enter": "Enter",

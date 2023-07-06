@@ -79,12 +79,20 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
                   itemCount: filterWorkers.length,
                   padding: const EdgeInsets.symmetric(horizontal: 21),
                   itemBuilder: (context, index) {
-                    return LabourManagementItem(
-                      farmerWorker: filterWorkers[index],
-                      onTap: () => FarmerAddWorkerScreen.push(
-                        context,
+                    return CmoDismissibleItem(
+                      key: Key(filterWorkers[index].id.toString()),
+                      title: LocaleKeys.removeLabour.tr(),
+                      subtitle: LocaleKeys.removeLabourAlertContent.tr(),
+                      onRemove: () async {
+                        await context.read<LabourManagementCubit>().onRemoveLabour(filterWorkers[index]);
+                      },
+                      child: LabourManagementItem(
                         farmerWorker: filterWorkers[index],
-                        isEditing: true,
+                        onTap: () => FarmerAddWorkerScreen.push(
+                          context,
+                          farmerWorker: filterWorkers[index],
+                          isEditing: true,
+                        ),
                       ),
                     );
                   },

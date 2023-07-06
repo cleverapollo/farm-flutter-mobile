@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -125,6 +126,15 @@ class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
     } finally {
       emit(state.copyWith(loading: false));
     }
+  }
+
+  Future<void> onRemoveLabour(FarmerWorker worker) async {
+    await cmoDatabaseMasterService.removeFarmerWorker(worker.id);
+    showSnackSuccess(
+      msg: '${LocaleKeys.remove.tr()} ${worker.id}!',
+    );
+
+    await loadListWorkers();
   }
 
   @override

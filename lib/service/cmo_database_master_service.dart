@@ -2092,6 +2092,13 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<bool> removeFarmerWorker(int farmerWorkerId) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.farmerWorkers.delete(farmerWorkerId);
+    });
+  }
+
   Future<List<Farm>?> getFarmsByRMUnit(int resourceManagerUnit) async {
     final db = await _db();
     return db.farms
