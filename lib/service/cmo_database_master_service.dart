@@ -2082,12 +2082,12 @@ class CmoDatabaseMasterService {
     return db.stakeHolderTypes.filter().isActiveEqualTo(1).findAll();
   }
 
-  Future<List<FarmerWorker>> getFarmerWorkersByFarmId(int farmId) async {
+  Future<List<FarmerWorker>?> getFarmerWorkersByFarmId(String farmId) async {
     final db = await _db();
     return db.farmerWorkers
         .filter()
         .farmIdEqualTo(farmId)
-        .isActiveEqualTo(true)
+        .isActiveEqualTo(1)
         .sortByFirstName()
         .findAll();
   }

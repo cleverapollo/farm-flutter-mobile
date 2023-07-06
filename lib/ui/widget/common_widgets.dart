@@ -71,6 +71,7 @@ class InputAttributeItem extends StatefulWidget {
   final TextStyle? hintTextStyle;
   final EdgeInsetsGeometry contentPadding;
   final FormFieldValidator<String?>? validator;
+  final String? initialValue;
 
   const InputAttributeItem({
     required this.hintText,
@@ -79,6 +80,7 @@ class InputAttributeItem extends StatefulWidget {
     this.onChanged,
     this.hintTextStyle,
     this.validator,
+    this.initialValue,
     this.contentPadding = const EdgeInsets.fromLTRB(14, 4, 14, 4),
     super.key,
   });
@@ -88,11 +90,12 @@ class InputAttributeItem extends StatefulWidget {
 }
 
 class _InputAttributeItemState extends State<InputAttributeItem> {
-  final _controller = TextEditingController();
+  late TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
+    _controller = TextEditingController(text: widget.initialValue);
     _controller.addListener(() => setState(() {}));
   }
 

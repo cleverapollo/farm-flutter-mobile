@@ -33,7 +33,7 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<LabourManagementCubit>().loadListWorkers();
+      context.read<LabourManagementCubit>().init();
     });
   }
 
@@ -81,7 +81,11 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
                   itemBuilder: (context, index) {
                     return LabourManagementItem(
                       farmerWorker: filterWorkers[index],
-                      onTap: () {},
+                      onTap: () => FarmerAddWorkerScreen.push(
+                        context,
+                        farmerWorker: filterWorkers[index],
+                        isEditing: true,
+                      ),
                     );
                   },
                 );

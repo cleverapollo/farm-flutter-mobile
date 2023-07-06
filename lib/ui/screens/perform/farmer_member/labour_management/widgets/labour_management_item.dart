@@ -32,7 +32,7 @@ class LabourManagementItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${farmerWorker.firstName ?? ''} ${farmerWorker.lastName ?? ''}',
+                '${farmerWorker.firstName ?? ''} ${farmerWorker.surname ?? ''}',
                 style: context.textStyles.bodyBold.blue,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -48,7 +48,7 @@ class LabourManagementItem extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        farmerWorker.jobTitle ?? '',
+                        farmerWorker.phoneNumber ?? '',
                         style: context.textStyles.bodyNormal.black,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

@@ -12,19 +12,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-import 'job_description/farmer_add_worker_select_job_description.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_worker/job_description/farmer_add_worker_select_job_description.dart';
 
 class FarmerAddWorkerScreen extends StatefulWidget {
-  const FarmerAddWorkerScreen({super.key});
+
+  final FarmerWorker? farmerWorker;
+  final bool isEditing;
+
+  FarmerAddWorkerScreen({
+    super.key,
+    this.farmerWorker,
+    this.isEditing = false,
+  });
 
   @override
   State<StatefulWidget> createState() => _FarmerAddWorkerScreenState();
 
-  static Future<void> push(BuildContext context) {
+  static Future<void> push(
+    BuildContext context, {
+    FarmerWorker? farmerWorker,
+    bool isEditing = false,
+  }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const FarmerAddWorkerScreen(),
+        builder: (_) => FarmerAddWorkerScreen(
+          isEditing: isEditing,
+          farmerWorker: farmerWorker,
+        ),
       ),
     );
   }
@@ -42,7 +57,15 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
   @override
   void initState() {
     super.initState();
-    farmerWorker = FarmerWorker();
+    if (widget.isEditing && widget.farmerWorker != null) {
+      farmerWorker = widget.farmerWorker!;
+    } else {
+      farmerWorker = FarmerWorker(
+        farmId: context.read<LabourManagementCubit>().state.activeFarm?.farmId,
+        createDT: DateTime.now().millisecondsSinceEpoch.toString(),
+        workerId: DateTime.now().millisecondsSinceEpoch.toString(),
+      );
+    }
   }
 
   Future<void> onSubmit() async {
@@ -149,6 +172,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                 child: InputAttributeItem(
                   hintText: LocaleKeys.firstName.tr(),
                   hintTextStyle: context.textStyles.bodyBold.black,
+                  initialValue: farmerWorker.firstName,
                   onChanged: (value) {
                     farmerWorker = farmerWorker.copyWith(firstName: value);
                   },
@@ -158,8 +182,9 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                 child: InputAttributeItem(
                   hintText: LocaleKeys.lastName.tr(),
                   hintTextStyle: context.textStyles.bodyBold.black,
+                  initialValue: farmerWorker.surname,
                   onChanged: (value) {
-                    farmerWorker = farmerWorker.copyWith(lastName: value);
+                    farmerWorker = farmerWorker.copyWith(surname: value);
                   },
                 ),
               ),
@@ -173,8 +198,9 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                         hintText: LocaleKeys.idNumber.tr(),
                         keyboardType: TextInputType.number,
                         hintTextStyle: context.textStyles.bodyBold.black,
+                        initialValue: farmerWorker.idNumber,
                         onChanged: (value) {
-                          farmerWorker = farmerWorker.copyWith(idNumber: int.tryParse(value));
+                          farmerWorker = farmerWorker.copyWith(idNumber: value);
                         },
                       ),
                     ),
@@ -189,6 +215,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                 child: InputAttributeItem(
                   hintText: LocaleKeys.phoneNumber.tr(),
                   keyboardType: TextInputType.number,
+                  initialValue: farmerWorker.phoneNumber,
                   hintTextStyle: context.textStyles.bodyBold.black,
                   onChanged: (value) {
                     farmerWorker = farmerWorker.copyWith(phoneNumber: value);
@@ -199,6 +226,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                 child: InputAttributeItem(
                   hintText: LocaleKeys.nationality.tr(),
                   hintTextStyle: context.textStyles.bodyBold.black,
+                  initialValue: farmerWorker.nationality,
                   onChanged: (value) {
                     farmerWorker = farmerWorker.copyWith(nationality: value);
                   },
@@ -207,8 +235,9 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: FarmerSelectGenderWidget(
+                  initialValue: farmerWorker.genderId,
                   onTap: (id) {
-                    farmerWorker = farmerWorker.copyWith(gender: id);
+                    farmerWorker = farmerWorker.copyWith(genderId: id);
                   },
                 ),
               ),
@@ -225,6 +254,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
         name: 'DateOfBirth',
         hintText: LocaleKeys.dateOfBirth.tr(),
         validator: requiredValidator,
+        initialValue: DateTime.tryParse(farmerWorker.dateOfBirth ?? ''),
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
@@ -246,11 +276,16 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
   Widget _buildJobDescription() {
     return InkWell(
       onTap: () {
-        FarmerStakeHolderSelectJobDescription.push(context, farmerWorker.jobDescription, (listJobsDesc) {
-          setState(() {
-            farmerWorker = farmerWorker.copyWith(jobDescription: listJobsDesc);
-          });
-        });
+        FarmerStakeHolderSelectJobDescription.push(
+          context,
+          farmerWorker.jobDescription,
+          (listJobsDesc) {
+            setState(() {
+              farmerWorker =
+                  farmerWorker.copyWith(jobDescription: listJobsDesc);
+            });
+          },
+        );
       },
       child: AttributeItem(
         child: Padding(

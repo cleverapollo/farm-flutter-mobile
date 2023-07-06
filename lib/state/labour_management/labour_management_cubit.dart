@@ -10,13 +10,19 @@ part 'labour_management_state.dart';
 class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
   LabourManagementCubit() : super(const LabourManagementState());
 
+  Future<void> init() async {
+    final activeFarm = await configService.getActiveFarm();
+    emit(state.copyWith(activeFarm: activeFarm));
+    await loadListWorkers();
+  }
+
   Future<void> loadListWorkers() async {
     emit(state.copyWith(loading: true));
     try {
       final service = cmoDatabaseMasterService;
 
-      /// Replace farmID here
-      final data = await service.getFarmerWorkersByFarmId(1553253093156);
+      if (state.activeFarm?.farmId == null) return;
+      final data = await service.getFarmerWorkersByFarmId(state.activeFarm!.farmId);
 
       emit(
         state.copyWith(
@@ -68,7 +74,7 @@ class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
                           ?.toLowerCase()
                           .contains(searchText.toLowerCase()) ??
                       false) ||
-                  (element.lastName
+                  (element.surname
                           ?.toLowerCase()
                           .contains(searchText.toLowerCase()) ??
                       false),

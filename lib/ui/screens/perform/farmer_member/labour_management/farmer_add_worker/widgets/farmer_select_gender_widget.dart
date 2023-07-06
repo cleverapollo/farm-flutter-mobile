@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 
 class FarmerSelectGenderWidget extends StatefulWidget {
   final void Function(int) onTap;
+  final int? initialValue;
 
   const FarmerSelectGenderWidget({
     super.key,
     required this.onTap,
+    this.initialValue,
   });
 
   @override
@@ -27,7 +29,9 @@ class _FarmerSelectGenderWidgetState extends State<FarmerSelectGenderWidget> {
   @override
   void initState() {
     super.initState();
-    selectedGender = listGender.first;
+    selectedGender = listGender
+            .firstWhereOrNull((element) => element.id == widget.initialValue) ??
+        listGender.first;
   }
 
   void _onSelectGender(CmoDropdownItem selectedItem) {

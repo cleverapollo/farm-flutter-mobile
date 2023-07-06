@@ -83,7 +83,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                               id: e.workerId, name: e.firstName ?? ''))
                           .toList(),
                       onChanged: (value) {
-                        cubit.onChangeData(workerId: value);
+                        cubit.onChangeData(workerId: int.tryParse(value ?? ''));
                       },
                     ),
                     const SizedBox(height: 12),

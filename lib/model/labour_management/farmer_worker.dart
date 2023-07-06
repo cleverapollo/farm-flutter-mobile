@@ -1,3 +1,4 @@
+import 'package:cmo/model/model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -13,27 +14,25 @@ part 'farmer_worker.g.dart';
 @Collection(ignore: {'copyWith'})
 class FarmerWorker with _$FarmerWorker {
   const factory FarmerWorker({
-    @JsonKey(name: 'WorkerId') int? workerId,
-    @JsonKey(name: 'FarmId') int? farmId,
-    @JsonKey(name: 'JobTitle') String? jobTitle,
+    @JsonKey(name: 'WorkerId') String? workerId,
     @JsonKey(name: 'FirstName') String? firstName,
-    @JsonKey(name: 'LastName') String? lastName,
+    @JsonKey(name: 'Surname') String? surname,
+    @JsonKey(name: 'FarmId') String? farmId,
+    @JsonKey(name: 'IdNumber') String? idNumber,
+    @JsonKey(name: 'GenderId') int? genderId,
+    @JsonKey(name: 'PhoneNumber') String? phoneNumber,
     @JsonKey(name: 'DateOfBirth') String? dateOfBirth,
-    @JsonKey(name: 'IdNumber') int? idNumber,
+    @JsonKey(name: 'Nationality') String? nationality,
     @Default(<int>[])
     @JsonKey(name: 'JobDescription') List<int>? jobDescription,
-    @JsonKey(name: 'PhoneNumber') String? phoneNumber,
-    @JsonKey(name: 'Nationality') String? nationality,
-    @JsonKey(name: 'Gender') int? gender,
-    @JsonKey(name: 'CanDelete') int? canDelete,
-    @JsonKey(name: 'Photo') String? photo,
-    @JsonKey(name: 'NormalisedPhotoURL') String? normalisedPhotoURL,
     @JsonKey(name: 'PhotoURL') String? photoURL,
-    @JsonKey(name: 'AvatarFileName') String? avatarFileName,
+    @JsonKey(name: 'NormalisedPhotoURL') String? normalisedPhotoURL,
+    @JsonKey(name: 'Photo') String? photo,
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,
-    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
-    @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
+    @Default(1) @JsonKey(name: 'IsLocal') int? isLocal,
+    @Default(1) @JsonKey(name: 'CanDelete') int? canDelete,
+    @Default(1) @JsonKey(name: 'IsActive') int? isActive,
   }) = _FarmerWorker;
 
   const FarmerWorker._();
@@ -41,5 +40,5 @@ class FarmerWorker with _$FarmerWorker {
   factory FarmerWorker.fromJson(Map<String, dynamic> json) => _$FarmerWorkerFromJson(json);
 
   @override
-  Id get id => workerId ?? Isar.autoIncrement;
+  Id get id => int.tryParse(workerId ?? '') ?? Isar.autoIncrement;
 }

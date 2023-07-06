@@ -9,17 +9,17 @@ part 'job_description.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class JobDescription with _$JobDescription {
-
   const factory JobDescription({
-    @JsonKey(name: 'JobDescriptionId') required int jobDescriptionId,
+    @JsonKey(name: 'JobDescriptionId') int? jobDescriptionId,
     @JsonKey(name: 'JobDescriptionName') String? jobDescriptionName,
     @JsonKey(name: 'IsAssignedToWorker') bool? isAssignedToWorker,
     @JsonKey(name: 'IsActive') bool? isActive,
   }) = _JobDescription;
 
+  const JobDescription._();
+
   factory JobDescription.fromJson(Map<String, dynamic> json) => _$JobDescriptionFromJson(json);
-    const JobDescription._();
 
   @override
-  Id get id => jobDescriptionId;
+  Id get id => jobDescriptionId ?? DateTime.now().millisecondsSinceEpoch;
 }

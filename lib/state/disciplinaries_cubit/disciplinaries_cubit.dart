@@ -52,8 +52,8 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     futures
       ..add(
         cmoDatabaseMasterService
-            .getFarmerWorkersByFarmId(int.parse(state.farmId!))
-            .then((value) => workers = value),
+            .getFarmerWorkersByFarmId(state.farmId!)
+            .then((value) => workers = value!),
       )
       ..add(
         cmoDatabaseMasterService
