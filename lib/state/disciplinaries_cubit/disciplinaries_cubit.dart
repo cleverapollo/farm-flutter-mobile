@@ -31,15 +31,10 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
   }
 
   Future<void> initConfigData() async {
-    final farmConfig =
-        await cmoDatabaseMasterService.getConfig(ConfigEnum.activeFarmId);
-    final groupSchemeConfig = await cmoDatabaseMasterService
-        .getConfig(ConfigEnum.activeGroupSchemeId);
+    final farm = await configService.getActiveFarm();
 
-    final farmId = farmConfig?.configValue ?? '';
-    final groupSchemeId = groupSchemeConfig?.configValue ?? '';
-
-    emit(state.copyWith(farmId: farmId, groupSchemeId: groupSchemeId));
+    emit(state.copyWith(
+        farmId: farm?.farmId, groupSchemeId: farm?.groupSchemeId.toString()));
   }
 
   Future<void> initAddData() async {

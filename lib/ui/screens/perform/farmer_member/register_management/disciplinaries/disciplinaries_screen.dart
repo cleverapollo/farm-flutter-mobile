@@ -196,25 +196,3 @@ class _DisciplinariesItemWidget extends StatelessWidget {
     );
   }
 }
-
-class DisciplinariesModel {
-  DisciplinariesModel({
-    this.disciplinayNo,
-    this.workerName,
-    this.dateRecieved,
-    this.campOrCompartment,
-    this.issueTypeName,
-    this.descriptionOfSanction,
-    this.signatureDate,
-    this.comment,
-  });
-
-  final String? disciplinayNo;
-  final String? workerName;
-  final DateTime? dateRecieved;
-  final String? campOrCompartment;
-  final String? issueTypeName;
-  final String? descriptionOfSanction;
-  final String? signatureDate;
-  final String? comment;
-}
