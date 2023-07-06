@@ -3,6 +3,8 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/service/image_picker_service.dart';
+import 'package:cmo/state/register_management_asi_cubit/register_management_asi_cubit.dart';
+import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/ui.dart';
@@ -11,13 +13,21 @@ import 'package:cmo/ui/widget/cmo_map_widget.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../../model/asi_type/asi_type.dart';
 
 class AddingAsiScreen extends StatefulWidget {
   AddingAsiScreen({Key? key}) : super(key: key);
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => AddingAsiScreen()));
+        context,
+        MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (_) => RMAsiCubit()..initAddData(),
+                  child: AddingAsiScreen(),
+                )));
   }
 
   @override
@@ -25,165 +35,156 @@ class AddingAsiScreen extends StatefulWidget {
 }
 
 class _AddingAsiScreenState extends State<AddingAsiScreen> {
-  Asi asi = Asi();
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.asi.tr(),
-        showLeading: true,
-      ),
-      body: CustomScrollView(
-        slivers: [
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-              child: Column(
-                children: [
-                  CmoDropdown(
-                    name: 'asiType',
-                    style: context.textStyles.bodyBold
-                        .copyWith(color: context.colors.black),
-                    inputDecoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                      isDense: true,
-                      hintText: LocaleKeys.asiType.tr().toLowerCase(),
-                      hintStyle: context.textStyles.bodyNormal.grey,
-                      border: UnderlineInputBorder(
-                          borderSide: BorderSide(color: context.colors.grey)),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: context.colors.blue)),
-                    ),
-                    itemsData: [
-                      CmoDropdownItem(id: 1, name: 'Test 1'),
-                      CmoDropdownItem(id: 2, name: 'Test 2'),
-                      CmoDropdownItem(id: 3, name: 'Test 3'),
-                    ],
-                    onChanged: (value) {
-                      asi = asi.copyWith(asiTypeId: value);
-                    },
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      final result = await _AsiMapScreen.push(context);
-                      if (result == null) return;
-                      final mapResult = result as _AsiMapResult;
-                      asi = asi.copyWith(
-                          latitude: mapResult.latitude,
-                          longitude: mapResult.longitude);
-                      setState(() {});
-                    },
-                    child: AttributeItem(
-                      child: SelectorAttributeItem(
-                        hintText: LocaleKeys.lat_long.tr(),
-                        text: asi.latitude == null
-                            ? null
-                            : '${asi.latitude?.toStringAsFixed(5)} | ${asi.longitude?.toStringAsFixed(5)}',
-                        contentPadding: const EdgeInsets.all(4),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      var date = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime.now().add(Duration(days: -1000000)),
-                        lastDate: DateTime.now().add(Duration(days: 1000000)),
-                      );
-                      asi = asi.copyWith(date: date);
-                      setState(() {});
-                    },
-                    child: AttributeItem(
-                      child: SelectorAttributeItem(
-                          hintText: LocaleKeys.date_captured.tr(),
-                          text: asi.date?.ddMMYyyy(),
-                          contentPadding: const EdgeInsets.all(4),
-                          trailing: Assets.icons.icCalendar.svgBlack),
-                    ),
-                  ),
-                  AttributeItem(
-                    child: SelectorAttributeItem(
-                      hintText: LocaleKeys.car_raised.tr(),
-                      text: LocaleKeys.car_raised.tr(),
-                      contentPadding: const EdgeInsets.all(4),
-                      trailing: SizedBox(
-                        width: 24,
-                        child: Switch(
-                          value: asi.carRaisedDate != null,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          onChanged: (bool value) {
-                            if (asi.carRaisedDate == null) {
-                              asi = asi.copyWith(
-                                  carRaisedDate:
-                                      DateTime.now().toIso8601String());
-                            } else {
-                              asi = asi.copyWith(carRaisedDate: null);
-                            }
-                            setState(() {});
-                          },
+    return BlocBuilder<RMAsiCubit, RMAsiState>(
+      builder: (context, state) {
+        final cubit = context.read<RMAsiCubit>();
+        return Scaffold(
+          appBar: CmoAppBarV2(
+            title: LocaleKeys.asi.tr(),
+            showLeading: true,
+          ),
+          body: CustomScrollView(
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                  child: Column(
+                    children: [
+                      CmoDropdown<AsiType>(
+                        name: 'asiType',
+                        style: context.textStyles.bodyBold
+                            .copyWith(color: context.colors.black),
+                        inputDecoration: InputDecoration(
+                          contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+                          isDense: true,
+                          hintText: LocaleKeys.asiType.tr().toLowerCase(),
+                          hintStyle: context.textStyles.bodyNormal.grey,
+                          border: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: context.colors.grey)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: context.colors.blue)),
                         ),
+                        itemsData: state.asiTypes
+                            .map((e) => CmoDropdownItem<AsiType>(
+                                id: e, name: e.asiTypeName ?? ''))
+                            .toList(),
+                        onChanged: (value) {
+                          cubit.onChangeData(asiType: value);
+                        },
                       ),
-                    ),
-                  ),
-                  AttributeItem(
-                    child: SelectorAttributeItem(
-                      hintText: LocaleKeys.car_closed.tr(),
-                      text: LocaleKeys.car_closed.tr(),
-                      contentPadding: const EdgeInsets.all(4),
-                      trailing: SizedBox(
-                        width: 24,
-                        child: Switch(
-                          value: asi.carClosedDate != null,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          onChanged: (bool value) {
-                            if (asi.carClosedDate == null) {
-                              asi = asi.copyWith(
-                                  carClosedDate:
-                                      DateTime.now().toIso8601String());
-                            } else {
-                              asi = asi.copyWith(carClosedDate: null);
-                            }
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Expanded(
-                    child: TextField(
-                      minLines: 10,
-                      maxLines: 100,
-                      onChanged: (value) {
-                        asi = asi.copyWith(comment: value);
-                      },
-                      decoration: InputDecoration(
-                        hintText: LocaleKeys.comments.tr(),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: CmoFilledButton(
-                      title: LocaleKeys.save.tr(),
-                      onTap: () => submit(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
+                      GestureDetector(
+                        onTap: () async {
+                          final result = await _AsiMapScreen.push(context);
+                          if (result == null) return;
+                          final mapResult = result as _AsiMapResult;
 
-  void submit() {
-    Navigator.of(context).pop();
+                          cubit.onChangeData(
+                            lat: mapResult.latitude,
+                            lng: mapResult.longitude,
+                          );
+                        },
+                        child: AttributeItem(
+                          child: SelectorAttributeItem(
+                            hintText: LocaleKeys.lat_long.tr(),
+                            text: state.asiData.latitude == null
+                                ? ''
+                                : '${state.asiData.latitude?.toStringAsFixed(5)} | ${state.asiData.longitude?.toStringAsFixed(5)}',
+                            contentPadding: const EdgeInsets.all(4),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          final date = await showDatePicker(
+                            context: context,
+                            initialDate: state.asiData.date ?? DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now()
+                                .add(const Duration(days: 1000000)),
+                          );
+
+                          if (date != null) {
+                            cubit.onChangeData(dateTimeCaptured: date);
+                          }
+                        },
+                        child: AttributeItem(
+                          child: SelectorAttributeItem(
+                              hintText: LocaleKeys.date_captured.tr(),
+                              text: state.asiData.date.ddMMYyyy(),
+                              contentPadding: const EdgeInsets.all(4),
+                              trailing: Assets.icons.icCalendar.svgBlack),
+                        ),
+                      ),
+                      AttributeItem(
+                        child: SelectorAttributeItem(
+                          hintText: LocaleKeys.car_raised.tr(),
+                          text: LocaleKeys.car_raised.tr(),
+                          contentPadding: const EdgeInsets.all(4),
+                          trailing: SizedBox(
+                            width: 24,
+                            child: Switch(
+                              value: state.asiData.carRaisedDate != null,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              onChanged: (bool value) {
+                                cubit.onChangeData(carRaised: value);
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      AttributeItem(
+                        child: SelectorAttributeItem(
+                          hintText: LocaleKeys.car_closed.tr(),
+                          text: LocaleKeys.car_closed.tr(),
+                          contentPadding: const EdgeInsets.all(4),
+                          trailing: SizedBox(
+                            width: 24,
+                            child: Switch(
+                              value: state.asiData.carClosedDate != null,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              onChanged: (bool value) {
+                                cubit.onChangeData(carClosed: value);
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Expanded(
+                        child: TextField(
+                          minLines: 10,
+                          maxLines: 100,
+                          onChanged: (value) {
+                            cubit.onChangeData(comment: value);
+                          },
+                          decoration: InputDecoration(
+                            hintText: LocaleKeys.comments.tr(),
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: CmoFilledButton(
+                          title: LocaleKeys.save.tr(),
+                          onTap: () => cubit.onSave(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 
