@@ -774,10 +774,7 @@ class CmoDatabaseMasterService {
       getUnsyncedAnnualBudgetTransactionByFarmId(String farmId) async {
     final db = await _db();
 
-    return db.annualBudgetTransactions
-        .filter()
-        .isActiveEqualTo(true)
-        .findAll();
+    return db.annualBudgetTransactions.filter().isActiveEqualTo(true).findAll();
   }
 
   Future<bool> removeAnnualBudgetTransaction(int transactionId) async {
@@ -803,20 +800,14 @@ class CmoDatabaseMasterService {
       String farmId) async {
     final db = await _db();
 
-    return db.annualBudgetTransactions
-        .filter()
-        .isActiveEqualTo(true)
-        .findAll();
+    return db.annualBudgetTransactions.filter().isActiveEqualTo(true).findAll();
   }
 
-  Future<List<AnnualBudget>>
-      getUnsyncedAnnualProductionBudgetByFarmId(String farmId) async {
+  Future<List<AnnualBudget>> getUnsyncedAnnualProductionBudgetByFarmId(
+      String farmId) async {
     final db = await _db();
 
-    return db.annualBudgets
-        .filter()
-        .farmIdEqualTo(farmId)
-        .findAll();
+    return db.annualBudgets.filter().farmIdEqualTo(farmId).findAll();
   }
 
   Future<List<AnnualBudget>> getAnnualBudgetsByFarmId(
@@ -967,12 +958,29 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<PetsAndDiseaseRegister>> getPetsAndDiseaseRegisterByFarmId(
-      String farmId) async {
+      String farmId,
+      {bool? isUnderControl}) async {
     final db = await _db();
+    if (isUnderControl == null) {
+      return db.petsAndDiseaseRegisters
+          .filter()
+          .farmIdEqualTo(farmId)
+          .isActiveEqualTo(false)
+          .findAll();
+    }
+    if (isUnderControl == true) {
+      return db.petsAndDiseaseRegisters
+          .filter()
+          .farmIdEqualTo(farmId)
+          .isActiveEqualTo(false)
+          .underControlEqualTo(true)
+          .findAll();
+    }
     return db.petsAndDiseaseRegisters
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(false)
+        .underControlEqualTo(false)
         .findAll();
   }
 
@@ -1334,6 +1342,26 @@ class CmoDatabaseMasterService {
         .or()
         .completedEqualTo(false)
         .sortByCreateDTDesc()
+        .findAll();
+  }
+
+  Future<List<PestsAndDiseaseType>> getAllPetsAndDiseaseTypeByGroupSchemeId(
+      int groupSchemeId) async {
+    final db = await _db();
+
+    return db.pestsAndDiseaseTypes
+        .filter()
+        .groupSchemeIdEqualTo(groupSchemeId)
+        .findAll();
+  }
+
+  Future<List<PestsAndDiseasesRegisterTreatmentMethod>>
+      getAllPestsAndDiseasesRegisterTreatmentMethod() async {
+    final db = await _db();
+
+    return db.pestsAndDiseasesRegisterTreatmentMethods
+        .filter()
+        .isActiveEqualTo(true)
         .findAll();
   }
 

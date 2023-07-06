@@ -1,15 +1,23 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
+import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_cubit.dart';
+import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/pets_and_disease_add_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PetsAndDiseaseScreen extends StatefulWidget {
   const PetsAndDiseaseScreen({super.key});
 
   static Future<void> push(BuildContext context) {
-    return Navigator.push(context,
-        MaterialPageRoute(builder: (_) => const PetsAndDiseaseScreen()));
+    return Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => BlocProvider<PetsAndDiseasesCubit>(
+                create: (_) => PetsAndDiseasesCubit()..initData(),
+                child: const PetsAndDiseaseScreen())));
   }
 
   @override
@@ -17,54 +25,6 @@ class PetsAndDiseaseScreen extends StatefulWidget {
 }
 
 class _PetsAndDiseaseScreenState extends State<PetsAndDiseaseScreen> {
-  List<PetsAndDiseaseModel> sampleData = [
-    PetsAndDiseaseModel(
-      pestsAndDiseasesRegisterNo: '1',
-      pestsAndDiseaseTypeName: '1',
-      pestsAndDiseaseTreatmentMethods: '1',
-      numberOfOutbreaks: '1',
-      areaLost: '1',
-      underControl: false,
-      comment: '1',
-    ),
-    PetsAndDiseaseModel(
-      pestsAndDiseasesRegisterNo: '1',
-      pestsAndDiseaseTypeName: '1',
-      pestsAndDiseaseTreatmentMethods: '1',
-      numberOfOutbreaks: '1',
-      areaLost: '1',
-      underControl: true,
-      comment: '1',
-    ),
-    PetsAndDiseaseModel(
-      pestsAndDiseasesRegisterNo: '1',
-      pestsAndDiseaseTypeName: '1',
-      pestsAndDiseaseTreatmentMethods: '1',
-      numberOfOutbreaks: '1',
-      areaLost: '1',
-      underControl: false,
-      comment: '1',
-    ),
-    PetsAndDiseaseModel(
-      pestsAndDiseasesRegisterNo: '1',
-      pestsAndDiseaseTypeName: '1',
-      pestsAndDiseaseTreatmentMethods: '1',
-      numberOfOutbreaks: '1',
-      areaLost: '1',
-      underControl: true,
-      comment: '1',
-    ),
-    PetsAndDiseaseModel(
-      pestsAndDiseasesRegisterNo: '1',
-      pestsAndDiseaseTypeName: '1',
-      pestsAndDiseaseTreatmentMethods: '1',
-      numberOfOutbreaks: '1',
-      areaLost: '1',
-      underControl: false,
-      comment: '1',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,35 +34,45 @@ class _PetsAndDiseaseScreenState extends State<PetsAndDiseaseScreen> {
           showAdding: true,
           onTapAdding: () => PetsAndDiseaseAddScreen.push(context),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        body: BlocBuilder<PetsAndDiseasesCubit, PetsAndDiseasesState>(
+          buildWhen: (previous, current) =>
+              previous.isOpen != current.isOpen ||
+              previous.petsAndDiseaseRegisters !=
+                  current.petsAndDiseaseRegisters,
+          builder: (context, state) {
+            return SingleChildScrollView(
+              child: Column(
                 children: [
-                  _StatusFilterWidget(
-                    text: LocaleKeys.open.tr(),
-                    isSelected: true,
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _StatusFilterWidget(
+                        text: LocaleKeys.open.tr(),
+                        isSelected: state.isOpen ?? true,
+                      ),
+                      const SizedBox(width: 8),
+                      _StatusFilterWidget(
+                        text: LocaleKeys.close.tr(),
+                        isSelected: !(state.isOpen ?? true),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  _StatusFilterWidget(
-                    text: LocaleKeys.close.tr(),
-                    isSelected: false,
-                  ),
+                  ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 18),
+                      separatorBuilder: (_, index) =>
+                          const SizedBox(height: 14),
+                      itemCount: state.petsAndDiseaseRegisters.length,
+                      itemBuilder: (context, index) =>
+                          _PetsAndDiseaseItemWidget(
+                              data: state.petsAndDiseaseRegisters[index])),
                 ],
               ),
-              ListView.separated(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-                  separatorBuilder: (_, index) => const SizedBox(height: 14),
-                  itemCount: sampleData.length,
-                  itemBuilder: (context, index) =>
-                      _PetsAndDiseaseItemWidget(data: sampleData[index])),
-            ],
-          ),
+            );
+          },
         ));
   }
 }
@@ -139,11 +109,11 @@ class _StatusFilterWidget extends StatelessWidget {
 }
 
 class _PetsAndDiseaseItemWidget extends StatelessWidget {
-  const _PetsAndDiseaseItemWidget({super.key, required this.data});
+  const _PetsAndDiseaseItemWidget({required this.data});
 
   static const double _itemHorizontalPadding = 4;
 
-  final PetsAndDiseaseModel data;
+  final PetsAndDiseaseRegister data;
 
   @override
   Widget build(BuildContext context) {
@@ -176,15 +146,18 @@ class _PetsAndDiseaseItemWidget extends StatelessWidget {
               color: context.colors.black,
             ),
           ),
-          _buildILineItem(
-              context, '${LocaleKeys.name_pet_disease.tr()} : ', data.pestsAndDiseaseTypeName),
+          _buildILineItem(context, '${LocaleKeys.name_pet_disease.tr()} : ',
+              data.pestsAndDiseaseTypeName),
           _buildILineItem(context, '${LocaleKeys.treatment_methods.tr()} : ',
               data.pestsAndDiseaseTreatmentMethods),
+          _buildILineItem(context, '${LocaleKeys.numbers_of_outbreaks.tr()} : ',
+              (data.numberOfOutbreaks ?? 0).toString()),
+          _buildILineItem(context, '${LocaleKeys.area_lost.tr()}: ',
+              (data.areaLost ?? 0).toString()),
+          _buildILineItem(context, '${LocaleKeys.under_control.tr()} : ',
+              (data.underControl ?? false).toString()),
           _buildILineItem(
-              context, '${LocaleKeys.numbers_of_outbreaks.tr()} : ', data.numberOfOutbreaks),
-          _buildILineItem(context, '${LocaleKeys.area_lost.tr()}: ', data.areaLost),
-          _buildILineItem(context, '${LocaleKeys.under_control.tr()} : ', data.isUnderControl),
-          _buildILineItem(context, '${LocaleKeys.generalComments.tr()} : ', data.comment),
+              context, '${LocaleKeys.generalComments.tr()} : ', data.comment),
         ],
       ),
     );
@@ -207,29 +180,5 @@ class _PetsAndDiseaseItemWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class PetsAndDiseaseModel {
-  PetsAndDiseaseModel({
-    this.pestsAndDiseasesRegisterNo,
-    this.pestsAndDiseaseTypeName,
-    this.pestsAndDiseaseTreatmentMethods,
-    this.numberOfOutbreaks,
-    this.areaLost,
-    this.underControl = false,
-    this.comment,
-  });
-
-  final String? pestsAndDiseasesRegisterNo;
-  final String? pestsAndDiseaseTypeName;
-  final String? pestsAndDiseaseTreatmentMethods;
-  final String? numberOfOutbreaks;
-  final String? areaLost;
-  final bool? underControl;
-  final String? comment;
-
-  String get isUnderControl {
-    return underControl! ? '${LocaleKeys.yes.tr()}' : '${LocaleKeys.no.tr()}';
   }
 }

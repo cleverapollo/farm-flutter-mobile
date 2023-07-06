@@ -1,17 +1,14 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and_diseases_register_treatment_method.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-Future<CmoDropdownItem<int>?> showPetsAndDiseaseAddingDialog(
-    BuildContext context) async {
-  final dropDownNameData = <CmoDropdownItem<int>>[
-    CmoDropdownItem(id: 1, name: 'Test 1'),
-    CmoDropdownItem(id: 2, name: 'Test 2'),
-    CmoDropdownItem(id: 3, name: 'Test 3'),
-  ];
-
-  final result = await showDialog<CmoDropdownItem<int>?>(
+Future<PestsAndDiseasesRegisterTreatmentMethod?> showPetsAndDiseaseAddingDialog(
+    BuildContext context,
+    List<PestsAndDiseasesRegisterTreatmentMethod>
+        pestsAndDiseasesRegisterTreatmentMethod) async {
+  final result = await showDialog<PestsAndDiseasesRegisterTreatmentMethod?>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
@@ -31,7 +28,7 @@ Future<CmoDropdownItem<int>?> showPetsAndDiseaseAddingDialog(
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
               ),
-              CmoDropdown(
+              CmoDropdown<PestsAndDiseasesRegisterTreatmentMethod?>(
                 name: '',
                 style: context.textStyles.bodyBold
                     .copyWith(color: context.colors.black),
@@ -47,13 +44,15 @@ Future<CmoDropdownItem<int>?> showPetsAndDiseaseAddingDialog(
                     borderSide: BorderSide(color: context.colors.blue),
                   ),
                 ),
-                itemsData: dropDownNameData,
-                onChanged: (int? value) {
-                  Navigator.pop(
-                      context,
-                      dropDownNameData
-                          .where((element) => element.id == value)
-                          .first);
+                itemsData: pestsAndDiseasesRegisterTreatmentMethod
+                    .map((e) => CmoDropdownItem<
+                            PestsAndDiseasesRegisterTreatmentMethod>(
+                        id: e,
+                        name:
+                            e.pestsAndDiseasesRegisterTreatmentMethodNo ?? ''))
+                    .toList(),
+                onChanged: (PestsAndDiseasesRegisterTreatmentMethod? value) {
+                  Navigator.pop(context, value);
                 },
               ),
             ],
