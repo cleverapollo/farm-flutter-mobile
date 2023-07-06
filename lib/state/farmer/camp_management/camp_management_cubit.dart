@@ -8,10 +8,6 @@ class CampManagementCubit extends Cubit<CampManagementState> {
   Future init() async {
     final activeFarm = await configService.getActiveFarm();
     final camps = await cmoDatabaseMasterService.getCampByFarmId(activeFarm?.id ?? 0);
-    for(var item in camps) {
-      print("NGUYEN DEBUG: ${item.toString()}");
-    }
-    // final camps = await cmoDatabaseMasterService.getCamp();
     emit(state.copyWith(camps: camps));
   }
 }

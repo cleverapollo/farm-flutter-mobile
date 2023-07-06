@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, inference_failure_on_function_invocation
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
@@ -225,6 +226,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId.toString())
         .isActiveEqualTo(true)
+        .sortByCampOrder()
         .findAll();
   }
 
@@ -463,9 +465,67 @@ class CmoDatabaseMasterService {
 
   Future<int?> cacheCamp(Camp data) async {
     final db = await _db();
-    return db.writeTxn(() async {
+    if (data.campOrder == null) {
+      var camps = await db.camps.where().findAll();
+      var maxOrder = 0;
+      if (camps.isNotEmpty) {
+        maxOrder = camps.map((obj) => (obj.campOrder ?? 0)).reduce(max);
+      }
+      data = data.copyWith(campOrder: maxOrder + 1);
+    }
+    var totalBiomass = data.calculateTotalBiomass();
+    var estimatedBiomassRemoved = await data.calculateEstimatedBiomassRemoved();
+    data = data.copyWith(
+      infestedWieghtedAverage: data.calculateInfestationWeightAverage(),
+      totalBiomass: totalBiomass,
+      totalArea: data.calculateTotalArea(),
+      totalRangeInfestation: data.calculateTotalRangeInfestation(),
+      estimatedBiomass: data.calculateEstimatedBiomass(),
+      estimatedBiomassRemoved: estimatedBiomassRemoved,
+      variance: totalBiomass != 0
+          ? ((totalBiomass - estimatedBiomassRemoved) / totalBiomass) * 100
+          : 0,
+    );
+    var result = await db.writeTxn(() async {
       return db.camps.put(data);
     });
+    await _reCalculateFarmCamps(int.tryParse(data.farmId ?? '') ?? 0);
+    return result;
+  }
+
+  Future _reCalculateFarmCamps(int farmId) async {
+    final db = await _db();
+    var camps = await getCampByFarmId(farmId);
+    var currentYear = DateTime.now().year;
+    var annualWoodBiomassRemoved =
+        (await getAnnualFarmProductionByFarmId(farmId.toString()))
+                .firstOrNull
+                ?.annualWoodBiomassRemoved ??
+            0.0;
+    var cululativeBiomass = 0.0;
+    for (var element in camps) {
+      cululativeBiomass += element.calculateTotalBiomass();
+      var amountOfYearsToAdd = annualWoodBiomassRemoved != 0
+          ? (cululativeBiomass / annualWoodBiomassRemoved)
+          : 0;
+      if (amountOfYearsToAdd < 1) {
+        element = element.copyWith(
+          plannedYearOfHarvest: currentYear,
+          cumulativeBiomass: cululativeBiomass,
+        );
+      } else {
+        amountOfYearsToAdd = amountOfYearsToAdd - 1;
+        element = element.copyWith(
+          plannedYearOfHarvest: currentYear + (amountOfYearsToAdd != 0
+              ? amountOfYearsToAdd.ceil()
+              : 0),
+          cumulativeBiomass: cululativeBiomass,
+        );
+      }
+      await db.writeTxn(() async {
+        return db.camps.put(element);
+      });
+    }
   }
 
   Future<int?> cacheBiologicalControlAgentTypes(
@@ -879,7 +939,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
-        .sortByCreateDTDesc()
+        .sortByYearDesc().thenByCreateDTDesc()
         .findAll();
   }
 

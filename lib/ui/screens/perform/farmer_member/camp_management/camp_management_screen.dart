@@ -72,17 +72,17 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
             ),
           ),
           Expanded(
-            child: BlocSelector<CampManagementCubit,
-                CampManagementState,
+            child: BlocSelector<CampManagementCubit, CampManagementState,
                 List<Camp>?>(
               selector: (state) => state.camps,
               builder: (context, camps) {
                 _filteredCamps = camps ?? [];
+                final total = _filteredCamps.fold(0.0, (previousValue, element) => previousValue + (element.totalBiomass ?? 0.0));
                 return Column(
                   children: [
                     CmoHeaderTile(
                       title:
-                      LocaleKeys.summary_tonnes_biomass.tr(args: ['100']),
+                          LocaleKeys.summary_tonnes_biomass.tr(args: [total.toString()]),
                     ),
                     Expanded(
                       child: ListView.separated(
@@ -90,7 +90,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                             vertical: 22, horizontal: 22),
                         itemCount: _filteredCamps.length,
                         separatorBuilder: (_, index) =>
-                        const SizedBox(height: 22),
+                            const SizedBox(height: 22),
                         itemBuilder: (_, index) {
                           final camp = _filteredCamps[index];
                           return Container(
@@ -107,10 +107,9 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                                 children: [
                                   Padding(
                                     padding:
-                                    const EdgeInsets.fromLTRB(4, 4, 4, 10),
+                                        const EdgeInsets.fromLTRB(4, 4, 4, 10),
                                     child: Text(
-                                      '${LocaleKeys.campName.tr()}: ${camp
-                                          .campName}',
+                                      '${LocaleKeys.campName.tr()}: ${camp.campName}',
                                       style: context.textStyles.bodyBold
                                           .copyWith(color: context.colors.blue),
                                     ),
@@ -121,47 +120,43 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                                         .infestation_weighted_average
                                         .tr(),
                                     value:
-                                    '${camp.infestedWieghtedAverage
-                                        ?.toStringAsFixed(0)}%',
+                                        '${camp.infestedWieghtedAverage != null ? camp.infestedWieghtedAverage?.toStringAsFixed(0) : ''}%',
                                   ),
                                   _CampAttributeWidget(
                                     name: LocaleKeys.estimated_biomass.tr(),
                                     value:
-                                    '${camp.estimatedBiomass?.toStringAsFixed(
-                                        0)}',
+                                        '${camp.estimatedBiomass != null ? camp.estimatedBiomass?.toStringAsFixed(0) : ''}',
                                   ),
                                   _CampAttributeWidget(
                                     color: context.colors.greyLight1,
                                     name: LocaleKeys.total_biomass.tr(),
                                     value:
-                                    '${camp.totalBiomass?.toStringAsFixed(0)}',
+                                        '${camp.totalBiomass != null ? camp.totalBiomass?.toStringAsFixed(0) : ''}',
                                   ),
                                   _CampAttributeWidget(
                                     name: LocaleKeys.cumulative_biomass.tr(),
                                     value:
-                                    '${camp.cumulativeBiomass?.toStringAsFixed(
-                                        2)}',
+                                        '${camp.cumulativeBiomass != null ? camp.cumulativeBiomass?.toStringAsFixed(2) : ''}',
                                   ),
                                   _CampAttributeWidget(
                                     color: context.colors.greyLight1,
                                     name:
-                                    LocaleKeys.planned_year_of_harvest.tr(),
+                                        LocaleKeys.planned_year_of_harvest.tr(),
                                     value:
-                                    '${camp.plannedYearOfHarvest?.toString()}',
+                                        '${camp.plannedYearOfHarvest != null ? camp.plannedYearOfHarvest?.toString() : ''}',
                                   ),
                                   _CampAttributeWidget(
                                     name:
-                                    LocaleKeys.actual_year_of_harvest.tr(),
+                                        LocaleKeys.actual_year_of_harvest.tr(),
                                     value:
-                                    '${camp.actualYearOfHarvest?.toString()}',
+                                        '${camp.actualYearOfHarvest != null ? camp.actualYearOfHarvest?.toString() : ''}',
                                   ),
                                   _CampAttributeWidget(
                                     color: context.colors.greyLight1,
                                     name: LocaleKeys.tons_of_charcoal_produced
                                         .tr(),
                                     value:
-                                    '${camp.tonsOfCharcoalProduced
-                                        ?.toStringAsFixed(0)}',
+                                        '${camp.tonsOfCharcoalProduced != null ? camp.tonsOfCharcoalProduced?.toStringAsFixed(0) : ''}',
                                   ),
                                 ],
                               ),

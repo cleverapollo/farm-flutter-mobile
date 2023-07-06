@@ -1,8 +1,9 @@
+import 'package:cmo/di.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'camp.freezed.dart';
-
 part 'camp.g.dart';
 
 @freezed
@@ -49,12 +50,94 @@ class Camp with _$Camp {
   Id get id => int.tryParse(campId ?? '') ?? Isar.autoIncrement;
 
   factory Camp.fromJson(Map<String, dynamic> json) => _$CampFromJson(json);
-
-
 }
 
-// extension CampExtension on Camp {
-//   bool get isFirstStepCompleted => (campName?.isNotEmpty ?? false)
-//       && protectedArea != null && cattlePostHousing != null && corridors != null &&
-//       roadAndFireBreaks != null && poachingAlleviationZone != null && latitude != null;
-// }
+extension CampExtension on Camp {
+  bool get isFirstStepCompleted => (campName?.isNotEmpty ?? false)
+      && protectedArea != null && cattlePostHousing != null && corridors != null &&
+      roadAndFireBreaks != null && poachingAlleviationZone != null && latitude != null;
+
+  double totalInfestationRemaining() {
+    double remainingInfestation = 100;
+    if (this.infestationCategory1 != null) {
+      remainingInfestation -= this.infestationCategory1!;
+    }
+    if (this.infestationCategory2 != null) {
+      remainingInfestation -= this.infestationCategory2!;
+    }
+    if (this.infestationCategory3 != null) {
+      remainingInfestation -= this.infestationCategory3!;
+    }
+    if (this.infestationCategory4 != null) {
+      remainingInfestation -= this.infestationCategory4!;
+    }
+    if (this.infestationCategory5 != null) {
+      remainingInfestation -= this.infestationCategory5!;
+    }
+
+    return remainingInfestation;
+  }
+
+  double calculateInfestationWeightAverage() {
+    //TODO: Need to make 1, 2, 3, 4, 5 master data, hardcoded cause of time
+    double average = ((this.infestationCategory1 ?? 0) * 0) +
+        ((this.infestationCategory2 ?? 0) * 1) +
+        ((this.infestationCategory3 ?? 0) * 2) +
+        ((this.infestationCategory4 ?? 0) * 3) +
+        ((this.infestationCategory5 ?? 0) * 4);
+    double total = ((this.infestationCategory1 ?? 0)) +
+        ((this.infestationCategory2 ?? 0)) +
+        ((this.infestationCategory3 ?? 0)) +
+        ((this.infestationCategory4 ?? 0)) +
+        ((this.infestationCategory5 ?? 0));
+    return double.parse((average / total).toStringAsFixed(2));
+  }
+
+  double calculateEstimatedBiomass() {
+    //TODO: Need to make 0, 3, 8, 12, 20 master data, hardcoded cause of time
+    double average = ((this.infestationCategory1 ?? 0) * 0) +
+        ((this.infestationCategory2 ?? 0) * 3) +
+        ((this.infestationCategory3 ?? 0) * 8) +
+        ((this.infestationCategory4 ?? 0) * 12) +
+        ((this.infestationCategory5 ?? 0) * 20);
+    return double.parse((average / 100).toStringAsFixed(2));
+  }
+
+  double calculateTotalBiomass() {
+    return double.parse((this.calculateEstimatedBiomass() *
+            ((this.rangeLand ?? 0) +
+                (this.convertedToGrassland ?? 0) +
+                (this.poachingAlleviationZone ?? 0) +
+                (this.roadAndFireBreaks ?? 0) +
+                (this.cattlePostHousing ?? 0) +
+                (this.corridors ?? 0)))
+        .toStringAsFixed(2));
+  }
+
+  double calculateTotalArea() {
+    double totalArea = (this.protectedArea ?? 0) +
+        (this.cattlePostHousing ?? 0) +
+        (this.corridors ?? 0) +
+        (this.roadAndFireBreaks ?? 0) +
+        (this.poachingAlleviationZone ?? 0) +
+        (this.convertedToGrassland ?? 0) +
+        (this.rangeLand ?? 0);
+    return double.parse(totalArea.toStringAsFixed(2));
+  }
+
+  double calculateTotalRangeInfestation() {
+    return (infestationCategory1 ?? 0) +
+        (infestationCategory2 ?? 0) +
+        (infestationCategory3 ?? 0) +
+        (infestationCategory4 ?? 0) +
+        (infestationCategory5 ?? 0);
+  }
+
+  Future<double> calculateEstimatedBiomassRemoved() async {
+    var productions = await cmoDatabaseMasterService
+        .getAnnualFarmProductionByFarmId(this.farmId ?? '');
+    var conversionOfWoodToCharcoal =
+        productions.firstOrNull?.conversionWoodToCharcoal ?? 1;
+    return conversionOfWoodToCharcoal * (this.tonsOfCharcoalProduced ?? 0);
+  }
+}
