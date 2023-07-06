@@ -98,7 +98,7 @@ class _StakeHolderManagementScreenState
                         onRefresh: () {
                           return context
                               .read<StakeHolderListCubit>()
-                              .loadListStakeHolderForRMRole();
+                              .loadListStakeHolders();
                         },
                         child: ListView.separated(
                           separatorBuilder: (context, index) => const SizedBox(

@@ -10,7 +10,7 @@ part 'stake_holder_list_state.dart';
 class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
   StakeHolderListCubit() : super(const StakeHolderListState());
 
-  Future<void> loadListStakeHolderForRMRole() async {
+  Future<void> loadListStakeHolders() async {
     emit(state.copyWith(loadingList: true));
     try {
       final service = cmoDatabaseMasterService;
@@ -90,18 +90,20 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
   }
 
   Future<void> onRemoveStakeholder(StakeHolder stakeHolder) async {
-    await cmoDatabaseMasterService.removeStakeHolder(stakeHolder.stakeHolderId!);
+    await cmoDatabaseMasterService
+        .removeStakeHolder(stakeHolder.stakeHolderId!);
     showSnackSuccess(
       msg: '${LocaleKeys.remove.tr()} ${stakeHolder.stakeHolderId}!',
     );
 
-    await loadListStakeHolderForRMRole();
+    await loadListStakeHolders();
   }
 
   Future<void> refresh() async {
     final rmUnit = await configService.getActiveRegionalManager();
-    emit(state.copyWith(resourceManagerUnit: rmUnit));
-    await loadListStakeHolderForRMRole();
+    final farm = await configService.getActiveFarm();
+    emit(state.copyWith(resourceManagerUnit: rmUnit, farm: farm));
+    await loadListStakeHolders();
   }
 
   @override
