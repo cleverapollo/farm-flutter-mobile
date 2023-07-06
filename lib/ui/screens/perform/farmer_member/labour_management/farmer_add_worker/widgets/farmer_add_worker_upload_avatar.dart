@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 
 class FarmerStakeHolderUploadAvatar extends StatefulWidget {
   final void Function(String path) onSelectAvatar;
+  final String? photoUrl;
 
   const FarmerStakeHolderUploadAvatar({
     super.key,
     required this.onSelectAvatar,
+    this.photoUrl,
   });
 
   @override
@@ -22,6 +24,13 @@ class _FarmerStakeHolderUploadAvatarState extends State<FarmerStakeHolderUploadA
   final ImagePickerService _imagePickerService = ImagePickerService();
 
   String photoPath = '';
+
+  @override
+  void initState() {
+    super.initState();
+    photoPath = widget.photoUrl ?? '';
+  }
+
 
   Future<void> _selectPhotoFromCamera() async {
     Navigator.of(context).pop();

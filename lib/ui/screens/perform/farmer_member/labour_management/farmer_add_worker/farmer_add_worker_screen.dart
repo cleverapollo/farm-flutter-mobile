@@ -132,10 +132,10 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
           child: Column(
             children: [
               FarmerStakeHolderUploadAvatar(
+                photoUrl: farmerWorker.photo,
                 onSelectAvatar: (photoPath) {
                   farmerWorker = farmerWorker.copyWith(
                     photo: photoPath,
-                    // avatarFileName: DateTime.now().toString(),
                   );
                 },
               ),
