@@ -1,6 +1,8 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_add_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
@@ -20,44 +22,42 @@ class TrainingScreen extends StatefulWidget {
 }
 
 class _TrainingScreenState extends State<TrainingScreen> {
-  var sampleData = <TrainingModel>[
-    TrainingModel(
-        trainingRegisterNo: '1',
-        trainerName: '1',
-        trainingTypeName: '1',
-        workerName: '1',
-        date: DateTime.now(),
-        expiryDate: DateTime.now(),
-        signatureDate: DateTime.now(),
-        comment: 'Comment'),
-    TrainingModel(
-        trainingRegisterNo: '1',
-        trainerName: '1',
-        trainingTypeName: '1',
-        workerName: '1',
-        date: DateTime.now(),
-        expiryDate: DateTime.now(),
-        signatureDate: DateTime.now(),
-        comment: 'Comment'),
-    TrainingModel(
-        trainingRegisterNo: '1',
-        trainerName: '1',
-        trainingTypeName: '1',
-        workerName: '1',
-        date: DateTime.now(),
-        expiryDate: DateTime.now(),
-        signatureDate: DateTime.now(),
-        comment: 'Comment'),
-    TrainingModel(
-        trainingRegisterNo: '1',
-        trainerName: '1',
-        trainingTypeName: '1',
-        workerName: '1',
-        date: DateTime.now(),
-        expiryDate: DateTime.now(),
-        signatureDate: DateTime.now(),
-        comment: 'Comment'),
-  ];
+  final List<TrainingRegister> items = [];
+  bool isLoading = true;
+
+  late List<TrainingRegister> filteredItems;
+  late StatusFilterEnum statusFilter;
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  Future<void> _init() async {
+    final farm = await configService.getActiveFarm();
+    items.addAll(
+        await cmoDatabaseMasterService.getTrainingByFarmId(farm!.farmId));
+    isLoading = false;
+
+    filteredItems = items;
+    statusFilter = StatusFilterEnum.open;
+    applyFilter();
+  }
+
+  void applyFilter() {
+    switch (statusFilter) {
+      case StatusFilterEnum.open:
+        filteredItems =
+            items.where((element) => element.signatureDate == null).toList();
+        break;
+      case StatusFilterEnum.closed:
+        filteredItems =
+            items.where((element) => element.signatureDate != null).toList();
+        break;
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,66 +70,41 @@ class _TrainingScreenState extends State<TrainingScreen> {
           TrainingAddScreen.push(context);
         },
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _StatusFilterWidget(
-                  text: LocaleKeys.open.tr(),
-                  isSelected: true,
-                ),
-                const SizedBox(width: 8),
-                _StatusFilterWidget(
-                  text: LocaleKeys.close.tr(),
-                  isSelected: false,
-                ),
-              ],
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 12),
+                  StatusFilterWidget(
+                    onSelectFilter: (statusFilterEnum) {
+                      statusFilter = statusFilterEnum;
+                      applyFilter();
+                    },
+                  ),
+                  ListView.separated(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 18),
+                    separatorBuilder: (_, index) => const SizedBox(height: 14),
+                    itemCount: filteredItems.length,
+                    itemBuilder: (context, index) {
+                      final item = filteredItems[index];
+                      return GestureDetector(
+                          onTap: () async {
+                            final result = await TrainingAddScreen.push(context,
+                                training: item);
+                            if (result == null) return;
+                            filteredItems[index] = result;
+                            setState(() {});
+                          },
+                          child: _TrainingItemWidget(data: item));
+                    },
+                  )
+                ],
+              ),
             ),
-            ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-              separatorBuilder: (_, index) => const SizedBox(height: 14),
-              itemCount: sampleData.length,
-              itemBuilder: (context, index) =>
-                  _TrainingItemWidget(data: sampleData[index]),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _StatusFilterWidget extends StatelessWidget {
-  const _StatusFilterWidget({
-    required this.text,
-    this.isSelected = false,
-  });
-
-  final bool isSelected;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: isSelected ? context.colors.blue : context.colors.white,
-        border: isSelected ? null : Border.all(color: context.colors.black),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 35),
-      alignment: Alignment.center,
-      child: Text(
-        text,
-        style: context.textStyles.bodyNormal.copyWith(
-          fontSize: 12,
-          color: isSelected ? context.colors.white : context.colors.black,
-        ),
-      ),
     );
   }
 }
@@ -139,7 +114,7 @@ class _TrainingItemWidget extends StatelessWidget {
 
   static const double _itemHorizontalPadding = 4;
 
-  final TrainingModel data;
+  final TrainingRegister data;
 
   @override
   Widget build(BuildContext context) {
@@ -172,13 +147,20 @@ class _TrainingItemWidget extends StatelessWidget {
               color: context.colors.black,
             ),
           ),
-          _buildILineItem(context, '${LocaleKeys.training_type.tr()} : ', data.trainingTypeName),
-          _buildILineItem(context, '${LocaleKeys.date.tr()} : ', data.date.yMd()),
-          _buildILineItem(context, '${LocaleKeys.expiry_date.tr()} : ', data.expiryDate.yMd()),
-          _buildILineItem(context, '${LocaleKeys.trainer_name.tr()} : ', data.trainerName),
-          _buildILineItem(context, '${LocaleKeys.trainee_name.tr()} : ', data.workerName),
-          _buildILineItem(context, '${LocaleKeys.signed.tr()} : ', data.signatureDate.yMd()),
-          _buildILineItem(context, '${LocaleKeys.generalComments.tr()} : ', data.comment),
+          _buildILineItem(context, '${LocaleKeys.training_type.tr()} : ',
+              data.trainingTypeName),
+          _buildILineItem(
+              context, '${LocaleKeys.date.tr()} : ', data.date.yMd()),
+          _buildILineItem(context, '${LocaleKeys.expiry_date.tr()} : ',
+              data.expiryDate.yMd()),
+          _buildILineItem(
+              context, '${LocaleKeys.trainer_name.tr()} : ', data.trainerName),
+          _buildILineItem(
+              context, '${LocaleKeys.trainee_name.tr()} : ', data.workerName),
+          _buildILineItem(context, '${LocaleKeys.signed.tr()} : ',
+              data.signatureDate.yMd()),
+          _buildILineItem(
+              context, '${LocaleKeys.generalComments.tr()} : ', data.comment),
         ],
       ),
     );
@@ -202,25 +184,4 @@ class _TrainingItemWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-class TrainingModel {
-  TrainingModel({
-    this.trainingRegisterNo,
-    this.trainingTypeName,
-    this.date,
-    this.expiryDate,
-    this.trainerName,
-    this.workerName,
-    this.signatureDate,
-    this.comment,
-  });
-  final String? trainingRegisterNo;
-  final String? trainingTypeName;
-  final DateTime? date;
-  final DateTime? expiryDate;
-  final String? trainerName;
-  final String? workerName;
-  final DateTime? signatureDate;
-  final String? comment;
 }

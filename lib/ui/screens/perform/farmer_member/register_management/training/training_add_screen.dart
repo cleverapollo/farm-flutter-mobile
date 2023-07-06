@@ -5,6 +5,7 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
+import 'package:cmo/utils/file_utils.dart';
 import 'package:cmo/utils/helpers.dart';
 import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,8 @@ class TrainingAddScreen extends StatefulWidget {
 
   final TrainingRegister? training;
 
-  static Future<void> push(BuildContext context, {TrainingRegister? training}) {
+  static Future<TrainingRegister?> push(BuildContext context,
+      {TrainingRegister? training}) {
     return Navigator.push(
         context,
         MaterialPageRoute(
@@ -83,7 +85,13 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
           training = training.copyWith(
             signatureDate: DateTime.now(),
           );
-          // TODO(TuNT): construct list of points, to image and upload image to get url
+          final image = await signatureKey.currentState?.toImage();
+          final byteData = await image?.toByteData();
+          final file = await FileUtil.writeToFile(byteData!);
+          final base64 = await FileUtil.toBase64(file);
+          training = training.copyWith(
+            signatureImage: base64,
+          );
         }
 
         int? resultId;
@@ -197,36 +205,38 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
                         ),
                         border: InputBorder.none),
                   ),
-                  const SizedBox(height: 12),
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Container(
-                      height: size.height * 0.35,
-                      width: size.width,
-                      decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(12)),
-                      child: SfSignaturePad(
-                        key: signatureKey,
-                        maximumStrokeWidth: 1,
-                        minimumStrokeWidth: 1,
-                        onDrawEnd: () {
-                          hasDrawn = true;
-                        },
+                  if (widget.training == null) const SizedBox(height: 12),
+                  if (widget.training == null)
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Container(
+                        height: size.height * 0.35,
+                        width: size.width,
+                        decoration: BoxDecoration(
+                            border: Border.all(),
+                            borderRadius: BorderRadius.circular(12)),
+                        child: SfSignaturePad(
+                          key: signatureKey,
+                          maximumStrokeWidth: 1,
+                          minimumStrokeWidth: 1,
+                          onDrawEnd: () {
+                            hasDrawn = true;
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Align(
-                    child: CmoFilledButton(
-                        title: LocaleKeys.clear_signature.tr(),
-                        onTap: () {
-                          hasDrawn = false;
-                          signatureKey.currentState?.clear();
-                        },
-                        loading: loading),
-                  ),
-                  const SizedBox(height: 12),
+                  if (widget.training == null) const SizedBox(height: 12),
+                  if (widget.training == null)
+                    Align(
+                      child: CmoFilledButton(
+                          title: LocaleKeys.clear_signature.tr(),
+                          onTap: () {
+                            hasDrawn = false;
+                            signatureKey.currentState?.clear();
+                          },
+                          loading: loading),
+                    ),
+                  if (widget.training == null) const SizedBox(height: 12),
                   Align(
                     child: CmoFilledButton(
                         title: LocaleKeys.save.tr(),
