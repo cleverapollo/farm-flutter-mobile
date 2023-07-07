@@ -301,8 +301,7 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<FarmStakeholderSocialUpliftment>>
-      getFarmStakeholderSocialUpliftments(
-          {required int stakeholderId}) async {
+      getFarmStakeholderSocialUpliftments({required int stakeholderId}) async {
     final db = await _db();
     return db.farmStakeholderSocialUpliftments
         .filter()
@@ -374,6 +373,14 @@ class CmoDatabaseMasterService {
     final db = await _db();
 
     return db.chemicals.put(data);
+  }
+
+  Future<int?> cacheChemicalFromRM(Chemical data) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.chemicals.put(data);
+    });
   }
 
   Future<int?> cacheDisciplinaries(Disciplinaries data) async {
@@ -516,9 +523,8 @@ class CmoDatabaseMasterService {
       } else {
         amountOfYearsToAdd = amountOfYearsToAdd - 1;
         element = element.copyWith(
-          plannedYearOfHarvest: currentYear + (amountOfYearsToAdd != 0
-              ? amountOfYearsToAdd.ceil()
-              : 0),
+          plannedYearOfHarvest: currentYear +
+              (amountOfYearsToAdd != 0 ? amountOfYearsToAdd.ceil() : 0),
           cumulativeBiomass: cululativeBiomass,
         );
       }
@@ -939,7 +945,8 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
-        .sortByYearDesc().thenByCreateDTDesc()
+        .sortByYearDesc()
+        .thenByCreateDTDesc()
         .findAll();
   }
 
@@ -1193,11 +1200,28 @@ class CmoDatabaseMasterService {
     return db.chemicals.filter().farmIdEqualTo(int.parse(farmId)).findAll();
   }
 
-  Future<List<Chemical>> getChemicalByFarmId(String farmId) async {
+  Future<List<Chemical>> getChemicalByFarmId(String farmId,
+      {bool? isOpen}) async {
     final db = await _db();
+    if (isOpen == null) {
+      return db.chemicals
+          .filter()
+          .farmIdEqualTo(int.parse(farmId))
+          .isActiveEqualTo(true)
+          .findAll();
+    }
+    if (isOpen == true) {
+      return db.chemicals
+          .filter()
+          .farmIdEqualTo(int.parse(farmId))
+          .dateIsNotNull()
+          .isActiveEqualTo(true)
+          .findAll();
+    }
     return db.chemicals
         .filter()
         .farmIdEqualTo(int.parse(farmId))
+        .dateIsNull()
         .isActiveEqualTo(true)
         .findAll();
   }

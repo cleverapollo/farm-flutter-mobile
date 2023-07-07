@@ -4,71 +4,24 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/chemical.dart';
+import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_cubit.dart';
+import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/chemicals/adding_chemical_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChemicalsScreen extends StatefulWidget {
-  final mockChemicals = <Chemical>[
-    Chemical(
-      chemicalNo: '123',
-      chemicalTypeId: 1,
-      chemicalApplicationMethodId: 1,
-      date: DateTime.now(),
-      openingStock: 100,
-      issued: 10,
-      balance: 20,
-      mixture: 'Test',
-      campId: 1,
-      usagePerHa: 20,
-      createDT: DateTime.now().subtract(const Duration(days: 100)),
-      comment: 'Test comment',
-    )
-      ..chemicalType = 'Type 1'
-      ..chemicalApplicationMethod = 'Method 1'
-      ..campName = 'Test',
-    Chemical(
-      chemicalNo: '456',
-      chemicalTypeId: 1,
-      chemicalApplicationMethodId: 1,
-      date: DateTime.now(),
-      openingStock: 100,
-      issued: 10,
-      balance: 20,
-      mixture: 'Test',
-      campId: 1,
-      usagePerHa: 20,
-      createDT: DateTime.now().subtract(const Duration(days: 100)),
-      comment: 'Test comment',
-    )
-      ..chemicalType = 'Type 1'
-      ..chemicalApplicationMethod = 'Method 1'
-      ..campName = 'Test',
-    Chemical(
-      chemicalNo: '789',
-      chemicalTypeId: 1,
-      chemicalApplicationMethodId: 1,
-      date: DateTime.now(),
-      openingStock: 100,
-      issued: 10,
-      balance: 20,
-      mixture: 'Test',
-      campId: 1,
-      usagePerHa: 20,
-      createDT: DateTime.now().subtract(const Duration(days: 100)),
-      comment: 'Test comment',
-    )
-      ..chemicalType = 'Type 1'
-      ..chemicalApplicationMethod = 'Method 1'
-      ..campName = 'Test'
-  ];
-
-  ChemicalsScreen({Key? key}) : super(key: key);
+  const ChemicalsScreen({super.key});
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => ChemicalsScreen()));
+        context,
+        MaterialPageRoute(
+            builder: (_) => BlocProvider<RMChemicalCubit>(
+                create: (_) => RMChemicalCubit()..initListData(),
+                child: const ChemicalsScreen())));
   }
 
   @override
@@ -76,98 +29,80 @@ class ChemicalsScreen extends StatefulWidget {
 }
 
 class _ChemicalsScreenState extends State<ChemicalsScreen> {
-  List<Chemical> filteredChemicals = [];
-  bool _isOpenSelected = true;
-  Timer? _debounceSearching;
-
-  @override
-  void initState() {
-    super.initState();
-    filteredChemicals = widget.mockChemicals;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.chemicals.tr(),
-        showLeading: true,
-        showTrailing: true,
-        trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => AddingChemicalScreen.push(context),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-            child: CmoTextField(
-              onChanged: _search,
-              name: LocaleKeys.search.tr(),
-              prefixIcon: Assets.icons.icSearch.svg(),
-              hintText: LocaleKeys.search.tr(),
-            ),
+    return BlocBuilder<RMChemicalCubit, RMChemicalState>(
+      builder: (context, state) {
+        final cubit = context.read<RMChemicalCubit>();
+        return Scaffold(
+          appBar: CmoAppBarV2(
+            title: LocaleKeys.chemicals.tr(),
+            showLeading: true,
+            showTrailing: true,
+            trailing: Assets.icons.icAdd.svgBlack,
+            onTapTrailing: () => AddingChemicalScreen.push(context),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          body: Column(
             children: [
-              GestureDetector(
-                onTap: () => setState(() => _isOpenSelected = true),
-                child: _StatusFilterWidget(
-                  text: LocaleKeys.open.tr(),
-                  isSelected: _isOpenSelected,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+                child: CmoTextField(
+                  onChanged: (p0) {
+                    cubit.onSearch(p0 ?? '');
+                  },
+                  name: LocaleKeys.search.tr(),
+                  prefixIcon: Assets.icons.icSearch.svg(),
+                  hintText: LocaleKeys.search.tr(),
                 ),
               ),
-              const SizedBox(width: 8),
-              GestureDetector(
-                onTap: () => setState(() => _isOpenSelected = false),
-                child: _StatusFilterWidget(
-                  text: LocaleKeys.close.tr(),
-                  isSelected: !_isOpenSelected,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () => cubit.onChangeStatus(true),
+                    child: _StatusFilterWidget(
+                      text: LocaleKeys.open.tr(),
+                      isSelected: state.isOpen,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () => cubit.onChangeStatus(false),
+                    child: _StatusFilterWidget(
+                      text: LocaleKeys.close.tr(),
+                      isSelected: !state.isOpen,
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: state.isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView.separated(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 18),
+                        itemCount: state.chemicalsSearch.length,
+                        separatorBuilder: (_, index) =>
+                            const SizedBox(height: 14),
+                        itemBuilder: (_, index) =>
+                            _ChemicalsItem(state.chemicalsSearch[index]),
+                      ),
               ),
             ],
           ),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-              itemCount: filteredChemicals.length,
-              separatorBuilder: (_, index) => const SizedBox(height: 14),
-              itemBuilder: (_, index) =>
-                  _ChemicalsItem(filteredChemicals[index]),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _search(String? value) {
-    _debounceSearching?.cancel();
-    _debounceSearching = Timer(
-      const Duration(milliseconds: 300),
-      () {
-        if (value?.isEmpty ?? true) {
-          filteredChemicals = widget.mockChemicals;
-        } else {
-          filteredChemicals = widget.mockChemicals
-              .where((element) => element.chemicalNo?.contains(value!) ?? false)
-              .toList();
-        }
-        setState(() {});
+        );
       },
     );
   }
 }
 
 class _StatusFilterWidget extends StatelessWidget {
-  final bool isSelected;
-  final String text;
-
   const _StatusFilterWidget({
     required this.text,
     this.isSelected = false,
-    Key? key,
-  }) : super(key: key);
+  });
+  final bool isSelected;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -191,11 +126,10 @@ class _StatusFilterWidget extends StatelessWidget {
 }
 
 class _ChemicalsItem extends StatelessWidget {
+  const _ChemicalsItem(this.chemical, {super.key});
   static const double _itemHorizontalPadding = 4;
 
   final Chemical chemical;
-
-  const _ChemicalsItem(this.chemical, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -304,15 +238,13 @@ class _ChemicalsItem extends StatelessWidget {
 }
 
 class _ItemRow extends StatelessWidget {
-  static const double _itemHorizontalPadding = 4;
-  final String title;
-  final String value;
-
   const _ItemRow({
     required this.title,
     required this.value,
-    Key? key,
-  }) : super(key: key);
+  });
+  static const double _itemHorizontalPadding = 4;
+  final String title;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
