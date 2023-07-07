@@ -57,6 +57,7 @@ dependencies:
   geolocator: ^9.0.2
   map_autocomplete_field: ^0.0.2
   flutter_html: ^3.0.0-beta.2
+  tuple: ^2.0.2
 
 #dependency_overrides:
 #  flutter_svg: ^2.0.1

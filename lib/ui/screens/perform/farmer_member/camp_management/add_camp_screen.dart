@@ -247,7 +247,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
     if (_formKey.currentState?.validate() == false) {
       return;
     }
-    await cubit.saveCamp();
+    await cubit.saveCamp(context);
     AddCampStep2Screen.push(context, cubit);
   }
 }

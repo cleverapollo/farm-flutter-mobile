@@ -1,5 +1,4 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/enum/enum.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
@@ -67,7 +66,15 @@ class SiteManagementPlanCubit extends HydratedCubit<SiteManagementPlanState> {
     }
   }
 
+  Future<void> getTotalCamp() async {
+    final camps = await cmoDatabaseMasterService
+        .getCampByFarmId(int.tryParse(state.activeFarm?.farmId ?? '') ?? 0);
+    final total = camps.fold(0.0, (previousValue, element) => previousValue + (element.totalBiomass ?? 0.0));
+    emit(state.copyWith(campCount: camps.length, campTonnesOfBiomass: total));
+  }
+
   Future<void> refresh() async {
+    await getTotalCamp();
     await getTotalAnnualProductions();
     await getTotalAnnualBudgets();
   }

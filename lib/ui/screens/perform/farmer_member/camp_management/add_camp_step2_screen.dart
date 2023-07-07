@@ -167,7 +167,7 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
   }
 
   Future _next() async {
-    await cubit.saveCamp();
+    await cubit.saveCamp(context);
     AddCampStep3Screen.push(context, cubit);
   }
 }

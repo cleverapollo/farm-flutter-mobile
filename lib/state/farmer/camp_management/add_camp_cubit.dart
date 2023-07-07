@@ -2,7 +2,9 @@ import 'package:cmo/di.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/camp.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
+import 'package:cmo/state/farmer/site_management_plan/site_management_plan_cubit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddCampCubit extends Cubit<AddCampState> {
@@ -99,13 +101,14 @@ class AddCampCubit extends Cubit<AddCampState> {
     emit(state.copyWith(asis: asis ?? []));
   }
 
-  Future saveCamp() async {
+  Future saveCamp(BuildContext context) async {
     if (state.camp == null) {
       return;
     }
     emit(state.copyWith(
       camp: state.camp?.copyWith(farmId: state.farm?.farmId, isActive: true),
     ));
-    return cmoDatabaseMasterService.cacheCamp(state.camp!);
+    await cmoDatabaseMasterService.cacheCamp(state.camp!);
+    await context.read<SiteManagementPlanCubit>().refresh();
   }
 }

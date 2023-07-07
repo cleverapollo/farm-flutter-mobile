@@ -1,13 +1,14 @@
-import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_production_management_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/annual_budget_management_screen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/annual_budget_management_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_production_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/camp_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/site_management_plan/management_plan/management_plan_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tuple/tuple.dart';
 
 class SiteManagementPlanScreen extends StatefulWidget {
   const SiteManagementPlanScreen({super.key});
@@ -130,16 +131,21 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
       onTap: () {
         CampManagementScreen.push(context);
       },
-      child: CmoCard(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 12,
-        ),
-        content: [
-          CmoCardHeader(title: LocaleKeys.compartment_management.tr()),
-          CmoCardItem(title: '${LocaleKeys.camp.tr()}\s', value: '1'),
-          CmoCardItem(title: LocaleKeys.summary_tonnes_biomass.tr(args: ['7'])),
-        ],
+      child: BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState, Tuple2<int, double>>(
+        selector: (state) => Tuple2(state.campCount ?? 0, state.campTonnesOfBiomass ?? 0),
+        builder: (context, tuple2) {
+          return CmoCard(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
+              horizontal: 12,
+            ),
+            content: [
+              CmoCardHeader(title: LocaleKeys.compartment_management.tr()),
+              CmoCardItem(title: '${LocaleKeys.camp.tr()}\s', value: tuple2.item1.toString()),
+              CmoCardItem(title: LocaleKeys.summary_tonnes_biomass.tr(args: [tuple2.item2.toStringAsFixed(2)])),
+            ],
+          );
+        },
       ),
     );
   }

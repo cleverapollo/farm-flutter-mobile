@@ -94,7 +94,7 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
   }
 
    Future _save() async {
-    await cubit.saveCamp();
+    await cubit.saveCamp(context);
     Navigator.of(context).pop();
     Navigator.of(context).pop();
     Navigator.of(context).pop();
