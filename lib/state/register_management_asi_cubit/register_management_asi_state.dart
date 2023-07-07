@@ -7,11 +7,13 @@ part 'register_management_asi_state.freezed.dart';
 @freezed
 class RMAsiState with _$RMAsiState {
   const factory RMAsiState({
+    @Default(false) bool isLoading,
+    @Default(true) bool isOpen,
     @Default(Asi()) Asi asiData,
     @Default([]) List<AsiType> asiTypes,
     @Default([]) List<Asi> asisData,
+    @Default([]) List<Asi> asisDataSearch,
     AsiType? selectAsiType,
-    bool? isOpen,
     String? farmId,
     int? groupSchemeId,
     @Default(false) bool carRaised,

@@ -3,10 +3,26 @@ import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RMAsiCubit extends Cubit<RMAsiState> {
   RMAsiCubit() : super(const RMAsiState());
+
+  Future<void> onChangeStatus(bool isOpen) async {
+    emit(state.copyWith(isOpen: isOpen, isLoading: true));
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    final result = await cmoDatabaseMasterService
+        .getAsiRegisterByFarmId(state.farmId!, isOpen: isOpen);
+
+    if (result.isNotEmpty) {
+      emit(state.copyWith(asisData: result, asisDataSearch: result));
+    }
+
+    emit(state.copyWith(isLoading: false));
+  }
 
   Future<bool> initConfig() async {
     try {
@@ -43,7 +59,7 @@ class RMAsiCubit extends Cubit<RMAsiState> {
         await cmoDatabaseMasterService.getAsiRegisterByFarmId(state.farmId!);
 
     if (result.isNotEmpty) {
-      emit(state.copyWith(asisData: result));
+      emit(state.copyWith(asisData: result, asisDataSearch: result));
     }
   }
 
@@ -94,22 +110,40 @@ class RMAsiCubit extends Cubit<RMAsiState> {
     );
   }
 
-  Future<void> onSave() async {
-    if (state.asiData != const Asi()) {
-      await cmoDatabaseMasterService
-          .cacheAsi(state.asiData.copyWith(
-        farmId: state.farmId,
-        asiRegisterId: DateTime.now().microsecondsSinceEpoch.toString(),
-        isActive: true,
-        isMasterdataSynced: false,
-      ))
-          .then((value) {
-        if (value != null) {
-          showSnackSuccess(msg: 'Save ASI Successfully}');
-        } else {
-          showSnackError(msg: 'Something was wrong, please try again.');
-        }
-      });
+  Future<void> onSave(BuildContext context) async {
+    if (state.asiData.carRaisedDate == null ||
+        state.asiData.carClosedDate == null ||
+        state.asiData.asiTypeId == null ||
+        state.asiData.latitude == null) {
+      return;
     }
+
+    await cmoDatabaseMasterService
+        .cacheAsi(state.asiData.copyWith(
+      farmId: state.farmId,
+      asiRegisterId: DateTime.now().microsecondsSinceEpoch.toString(),
+      asiRegisterNo: DateTime.now().microsecondsSinceEpoch.toString(),
+      isActive: true,
+      isMasterdataSynced: false,
+    ))
+        .then((value) {
+      if (value != null) {
+        showSnackSuccess(msg: 'Save ASI Successfully}');
+        Navigator.pop(context);
+      } else {
+        showSnackError(msg: 'Something was wrong, please try again.');
+      }
+    });
+  }
+
+  void onSearch(String text) {
+    if (text.isEmpty) {
+      return emit(state.copyWith(asisDataSearch: state.asisData));
+    }
+
+    emit(state.copyWith(
+        asisDataSearch: state.asisData
+            .where((element) => element.asiRegisterNo?.contains(text) ?? false)
+            .toList()));
   }
 }

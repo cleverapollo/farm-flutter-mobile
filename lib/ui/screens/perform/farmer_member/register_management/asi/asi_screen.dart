@@ -5,6 +5,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_cubit.dart';
+import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/asi/adding_asi_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -29,88 +30,70 @@ class AsiScreen extends StatefulWidget {
 }
 
 class _AsiScreenState extends State<AsiScreen> {
-  List<Asi> filteredAsis = [];
-  bool _isOpenSelected = true;
-  Timer? _debounceSearching;
-  late final RMAsiCubit cubit;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      cubit = context.read<RMAsiCubit>();
-      filteredAsis = cubit.state.asisData;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.accident_incidents.tr(),
-        showLeading: true,
-        showTrailing: true,
-        trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => AddingAsiScreen.push(context),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-            child: CmoTextField(
-              onChanged: _search,
-              name: LocaleKeys.search.tr(),
-              prefixIcon: Assets.icons.icSearch.svg(),
-              hintText: LocaleKeys.search.tr(),
-            ),
+    return BlocBuilder<RMAsiCubit, RMAsiState>(
+      builder: (context, state) {
+        final cubit = context.read<RMAsiCubit>();
+
+        return Scaffold(
+          appBar: CmoAppBarV2(
+            title: LocaleKeys.accident_incidents.tr(),
+            showLeading: true,
+            showTrailing: true,
+            trailing: Assets.icons.icAdd.svgBlack,
+            onTapTrailing: () => AddingAsiScreen.push(context),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          body: Column(
             children: [
-              GestureDetector(
-                onTap: () => setState(() => _isOpenSelected = true),
-                child: _StatusFilterWidget(
-                  text: LocaleKeys.open.tr(),
-                  isSelected: _isOpenSelected,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+                child: CmoTextField(
+                  onChanged: (p0) {
+                    cubit.onSearch(p0 ?? '');
+                  },
+                  name: LocaleKeys.search.tr(),
+                  prefixIcon: Assets.icons.icSearch.svg(),
+                  hintText: LocaleKeys.search.tr(),
                 ),
               ),
-              const SizedBox(width: 8),
-              GestureDetector(
-                onTap: () => setState(() => _isOpenSelected = false),
-                child: _StatusFilterWidget(
-                  text: LocaleKeys.close.tr(),
-                  isSelected: !_isOpenSelected,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () => cubit.onChangeStatus(true),
+                    child: _StatusFilterWidget(
+                      text: LocaleKeys.open.tr(),
+                      isSelected: state.isOpen,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () => cubit.onChangeStatus(false),
+                    child: _StatusFilterWidget(
+                      text: LocaleKeys.close.tr(),
+                      isSelected: !state.isOpen,
+                    ),
+                  ),
+                ],
               ),
+              if (state.isLoading)
+                const Expanded(
+                    child: Center(child: CircularProgressIndicator()))
+              else
+                Expanded(
+                  child: ListView.separated(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 18),
+                    itemCount: state.asisDataSearch.length,
+                    separatorBuilder: (_, index) => const SizedBox(height: 14),
+                    itemBuilder: (_, index) =>
+                        _AsiItem(state.asisDataSearch[index]),
+                  ),
+                ),
             ],
           ),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-              itemCount: filteredAsis.length,
-              separatorBuilder: (_, index) => const SizedBox(height: 14),
-              itemBuilder: (_, index) => _AsiItem(filteredAsis[index]),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _search(String? value) {
-    _debounceSearching?.cancel();
-    _debounceSearching = Timer(
-      const Duration(milliseconds: 300),
-      () {
-        if (value?.isEmpty ?? true) {
-          filteredAsis = cubit.state.asisData;
-        } else {
-          filteredAsis = cubit.state.asisData
-              .where(
-                  (element) => element.asiRegisterNo?.contains(value!) ?? false)
-              .toList();
-        }
-        setState(() {});
+        );
       },
     );
   }

@@ -1312,12 +1312,30 @@ class CmoDatabaseMasterService {
     return db.asis.filter().isActiveEqualTo(true).findAll();
   }
 
-  Future<List<Asi>> getAsiRegisterByFarmId(String farmId) async {
+  Future<List<Asi>> getAsiRegisterByFarmId(String farmId,
+      {bool? isOpen}) async {
     final db = await _db();
+    if (isOpen == null) {
+      return db.asis
+          .filter()
+          .farmIdEqualTo(farmId)
+          .isActiveEqualTo(true)
+          .findAll();
+    }
+    if (isOpen == true) {
+      return db.asis
+          .filter()
+          .farmIdEqualTo(farmId)
+          .isActiveEqualTo(true)
+          .dateIsNotNull()
+          .findAll();
+    }
+
     return db.asis
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .dateIsNull()
         .findAll();
   }
 

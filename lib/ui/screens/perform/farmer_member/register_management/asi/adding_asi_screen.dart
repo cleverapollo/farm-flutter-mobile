@@ -114,7 +114,7 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
                         child: AttributeItem(
                           child: SelectorAttributeItem(
                               hintText: LocaleKeys.date_captured.tr(),
-                              text: state.asiData.date.ddMMYyyy(),
+                              text: state.asiData.date.mmmDdYyyy(),
                               contentPadding: const EdgeInsets.all(4),
                               trailing: Assets.icons.icCalendar.svgBlack),
                         ),
@@ -171,7 +171,9 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
                       Center(
                         child: CmoFilledButton(
                           title: LocaleKeys.save.tr(),
-                          onTap: () => cubit.onSave(),
+                          onTap: () {
+                            cubit.onSave(context);
+                          },
                         ),
                       ),
                     ],
