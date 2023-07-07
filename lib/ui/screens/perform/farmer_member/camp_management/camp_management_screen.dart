@@ -34,6 +34,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
   Timer? _debounceInputTimer;
   List<Camp> _filteredCamps = [];
   late CampManagementCubit cubit;
+  String? filteringText;
 
   @override
   void initState() {
@@ -74,7 +75,10 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                   onChanged: (input) {
                     _debounceInputTimer?.cancel();
                     _debounceInputTimer = Timer(
-                        const Duration(milliseconds: 200), () => filter(input));
+                        const Duration(milliseconds: 200), () {
+                      filteringText = input;
+                          filter(isCallingSetState: true);
+                        });
                   },
                 ),
               ),
@@ -83,7 +87,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                     List<Camp>?>(
                   selector: (state) => state.camps,
                   builder: (context, camps) {
-                    _filteredCamps = camps ?? [];
+                    filter();
                     final total = _filteredCamps.fold(0.0, (previousValue, element) => previousValue + (element.totalBiomass ?? 0.0));
                     return Column(
                       children: [
@@ -190,18 +194,20 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
     );
   }
 
-  void filter(String? input) {
+  void filter({bool isCallingSetState = false}) {
     final camps = cubit.state.camps ?? [];
-    if (input == null || input.isEmpty) {
+    if (filteringText == null || filteringText!.isEmpty) {
       _filteredCamps = camps;
     } else {
       _filteredCamps = camps
           .where((element) =>
-              element.campName?.toLowerCase().contains(input.toLowerCase()) ??
+              element.campName?.toLowerCase().contains(filteringText!.toLowerCase()) ??
               false)
           .toList();
     }
-    setState(() {});
+    if (isCallingSetState) {
+      setState(() {});
+    }
   }
 }
 
