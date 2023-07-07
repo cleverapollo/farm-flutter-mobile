@@ -4,52 +4,24 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/asi.dart';
+import 'package:cmo/state/register_management_asi_cubit/register_management_asi_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/asi/adding_asi_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/ui/widget/cmo_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AsiScreen extends StatefulWidget {
-  final mockAsis = <Asi>[
-    Asi(
-      asiRegisterNo: '12345',
-      asiTypeName: 'Grave Site',
-      date: DateTime.now(),
-      comment: 'Test comment',
-    ),
-    Asi(
-      asiRegisterNo: '1111',
-      asiTypeName: 'Grave Site',
-      date: DateTime.now().subtract(const Duration(days: 100)),
-      comment: 'Test comment',
-    ),
-    Asi(
-      asiRegisterNo: '2222',
-      asiTypeName: 'Grave Site',
-      date: DateTime.now().subtract(const Duration(days: 23)),
-      comment: 'Test comment',
-    ),
-    Asi(
-      asiRegisterNo: '3333',
-      asiTypeName: 'Grave Site',
-      date: DateTime.now().subtract(const Duration(days: 34)),
-      comment: 'Test comment',
-    ),
-    Asi(
-      asiRegisterNo: '4444',
-      asiTypeName: 'Grave Site',
-      date: DateTime.now().subtract(const Duration(days: 55)),
-      comment: 'Test comment',
-    ),
-  ];
-
-  AsiScreen({Key? key}) : super(key: key);
+  const AsiScreen({super.key});
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => AsiScreen()));
+        context,
+        MaterialPageRoute(
+            builder: (_) => BlocProvider<RMAsiCubit>(
+                  create: (_) => RMAsiCubit()..initListData(),
+                  child: const AsiScreen(),
+                )));
   }
 
   @override
@@ -60,11 +32,15 @@ class _AsiScreenState extends State<AsiScreen> {
   List<Asi> filteredAsis = [];
   bool _isOpenSelected = true;
   Timer? _debounceSearching;
+  late final RMAsiCubit cubit;
 
   @override
   void initState() {
     super.initState();
-    filteredAsis = widget.mockAsis;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      cubit = context.read<RMAsiCubit>();
+      filteredAsis = cubit.state.asisData;
+    });
   }
 
   @override
@@ -127,9 +103,9 @@ class _AsiScreenState extends State<AsiScreen> {
       const Duration(milliseconds: 300),
       () {
         if (value?.isEmpty ?? true) {
-          filteredAsis = widget.mockAsis;
+          filteredAsis = cubit.state.asisData;
         } else {
-          filteredAsis = widget.mockAsis
+          filteredAsis = cubit.state.asisData
               .where(
                   (element) => element.asiRegisterNo?.contains(value!) ?? false)
               .toList();

@@ -9,6 +9,7 @@ class RMAsiState with _$RMAsiState {
   const factory RMAsiState({
     @Default(Asi()) Asi asiData,
     @Default([]) List<AsiType> asiTypes,
+    @Default([]) List<Asi> asisData,
     AsiType? selectAsiType,
     bool? isOpen,
     String? farmId,

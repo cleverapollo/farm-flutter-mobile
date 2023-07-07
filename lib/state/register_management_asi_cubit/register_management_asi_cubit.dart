@@ -6,24 +6,45 @@ import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RMAsiCubit extends Cubit<RMAsiState> {
-  RMAsiCubit() : super(const RMAsiState()) {
-    initConfig();
-  }
+  RMAsiCubit() : super(const RMAsiState());
 
-  Future<void> initConfig() async {
-    if (state.farmId != null && state.groupSchemeId != null) return;
+  Future<bool> initConfig() async {
+    try {
+      if (state.farmId != null && state.groupSchemeId != null) return true;
 
-    final farm = await configService.getActiveFarm();
+      final farm = await configService.getActiveFarm();
 
-    emit(state.copyWith(
-        farmId: farm?.farmId, groupSchemeId: farm?.groupSchemeId));
+      emit(state.copyWith(
+          farmId: farm?.farmId, groupSchemeId: farm?.groupSchemeId));
+
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<void> initAddData() async {
+    final initResult = await initConfig();
+
+    if (!initResult) return;
+
     final result = await cmoDatabaseMasterService
         .getAsiTypeByGroupSchemeId(state.groupSchemeId!);
 
     emit(state.copyWith(asiTypes: result));
+  }
+
+  Future<void> initListData() async {
+    final initResult = await initConfig();
+
+    if (!initResult) return;
+
+    final result =
+        await cmoDatabaseMasterService.getAsiRegisterByFarmId(state.farmId!);
+
+    if (result.isNotEmpty) {
+      emit(state.copyWith(asisData: result));
+    }
   }
 
   void onChangeData({
@@ -75,7 +96,14 @@ class RMAsiCubit extends Cubit<RMAsiState> {
 
   Future<void> onSave() async {
     if (state.asiData != const Asi()) {
-      await cmoDatabaseMasterService.cacheAsi(state.asiData).then((value) {
+      await cmoDatabaseMasterService
+          .cacheAsi(state.asiData.copyWith(
+        farmId: state.farmId,
+        asiRegisterId: DateTime.now().microsecondsSinceEpoch.toString(),
+        isActive: true,
+        isMasterdataSynced: false,
+      ))
+          .then((value) {
         if (value != null) {
           showSnackSuccess(msg: 'Save ASI Successfully}');
         } else {

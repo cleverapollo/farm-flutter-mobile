@@ -146,7 +146,9 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     if (!canSave) return;
 
     await cmoDatabaseMasterService
-        .cacheSanctionRegister(state.data!)
+        .cacheSanctionRegister(state.data!.copyWith(
+      isActive: true,
+    ))
         .then((value) {
       if (value != null) {
         showSnackSuccess(msg: 'Save Disciplinaries Successfully}');

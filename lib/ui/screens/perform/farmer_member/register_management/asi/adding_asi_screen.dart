@@ -1,7 +1,6 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/asi.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_cubit.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
@@ -9,7 +8,6 @@ import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/ui/widget/cmo_map_widget.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +59,7 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
                         inputDecoration: InputDecoration(
                           contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
                           isDense: true,
-                          hintText: LocaleKeys.asiType.tr().toLowerCase(),
+                          hintText: 'Asi Type',
                           hintStyle: context.textStyles.bodyNormal.grey,
                           border: UnderlineInputBorder(
                               borderSide:
