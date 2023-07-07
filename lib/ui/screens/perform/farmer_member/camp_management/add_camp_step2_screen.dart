@@ -1,11 +1,11 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/camp.dart';
+import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_cubit.dart';
+import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_step3_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,130 +39,136 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.add_camp.tr(),
-        showLeading: true,
-        showTrailing: true,
-        trailing: Assets.icons.icClose.svgBlack,
-      ),
-      body: Column(
-        children: [
-          const SizedBox(height: 24),
-          CmoHeaderTile(title: LocaleKeys.infestation.tr()),
-          const SizedBox(height: 8),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Text(
-                      '${LocaleKeys.summary.tr()}: 0% ${LocaleKeys
-                          .ofLandAllocated.tr()}',
-                      style: context.textStyles.bodyBold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Padding(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          LocaleKeys.what_percentage_land.tr(),
-                          style: context.textStyles.bodyBold
-                              .copyWith(fontSize: 14),
+    return BlocSelector<AddCampCubit, AddCampState, Farm?>(
+      selector: (state) => state.farm,
+      builder: (context, farm) {
+        return Scaffold(
+          appBar: CmoAppBarV2(
+            title: LocaleKeys.add_camp.tr(),
+            subtitle: farm?.farmName ?? '',
+            showLeading: true,
+            showTrailing: true,
+            trailing: Assets.icons.icClose.svgBlack,
+          ),
+          body: Column(
+            children: [
+              const SizedBox(height: 24),
+              CmoHeaderTile(title: LocaleKeys.infestation.tr()),
+              const SizedBox(height: 8),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(
+                          '${LocaleKeys.summary.tr()}: 0% ${LocaleKeys
+                              .ofLandAllocated.tr()}',
+                          style: context.textStyles.bodyBold,
                         ),
-                        const SizedBox(height: 4),
-                        Container(height: 2, color: context.colors.grey)
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          _CategoryItem(
-                            initialValue:
-                                cubit.state.camp?.infestationCategory1 != null
-                                    ? cubit.state.camp?.infestationCategory1
-                                        .toString()
-                                    : null,
-                            part1: '${LocaleKeys.category.tr()} 1:',
-                            part2:
-                            ' ${LocaleKeys.add_camp_category_1_infested.tr()} ',
-                            part3: LocaleKeys.add_camp_category_1.tr(),
-                            onChanged: (value) => cubit.onInfestationCategory1Changed(value),
-                          ),
-                          _CategoryItem(
-                            initialValue:
-                            cubit.state.camp?.infestationCategory2 != null
-                                ? cubit.state.camp?.infestationCategory2
-                                .toString()
-                                : null,
-                            part1: '${LocaleKeys.category.tr()} 2:',
-                            part2:
-                            ' ${LocaleKeys.add_camp_category_2_infested.tr()} ',
-                            part3: LocaleKeys.add_camp_category_2.tr(),
-                            onChanged: (value) => cubit.onInfestationCategory2Changed(value),
-                          ),
-                          _CategoryItem(
-                            initialValue:
-                            cubit.state.camp?.infestationCategory3 != null
-                                ? cubit.state.camp?.infestationCategory3
-                                .toString()
-                                : null,
-                            part1: '${LocaleKeys.category.tr()} 3:',
-                            part2:
-                            ' ${LocaleKeys.add_camp_category_3_infested.tr()} ',
-                            part3: LocaleKeys.add_camp_category_3.tr(),
-                            onChanged: (value) => cubit.onInfestationCategory3Changed(value),
-                          ),
-                          _CategoryItem(
-                            initialValue:
-                            cubit.state.camp?.infestationCategory4 != null
-                                ? cubit.state.camp?.infestationCategory4
-                                .toString()
-                                : null,
-                            part1: '${LocaleKeys.category.tr()} 4:',
-                            part2:
-                            ' ${LocaleKeys.add_camp_category_4_infested.tr()} ',
-                            part3: LocaleKeys.add_camp_category_4.tr(),
-                            onChanged: (value) => cubit.onInfestationCategory4Changed(value),
-                          ),
-                          _CategoryItem(
-                            initialValue:
-                            cubit.state.camp?.infestationCategory5 != null
-                                ? cubit.state.camp?.infestationCategory5
-                                .toString()
-                                : null,
-                            part1: '${LocaleKeys.category.tr()} 5:',
-                            part2:
-                            ' ${LocaleKeys.add_camp_category_5_infested.tr()} ',
-                            part3: LocaleKeys.add_camp_category_5.tr(),
-                            onChanged: (value) => cubit.onInfestationCategory5Changed(value),
-                          ),
-                        ],
                       ),
-                    ),
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              LocaleKeys.what_percentage_land.tr(),
+                              style: context.textStyles.bodyBold
+                                  .copyWith(fontSize: 14),
+                            ),
+                            const SizedBox(height: 4),
+                            Container(height: 2, color: context.colors.grey)
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              _CategoryItem(
+                                initialValue:
+                                    cubit.state.camp?.infestationCategory1 != null
+                                        ? cubit.state.camp?.infestationCategory1
+                                            .toString()
+                                        : null,
+                                part1: '${LocaleKeys.category.tr()} 1:',
+                                part2:
+                                ' ${LocaleKeys.add_camp_category_1_infested.tr()} ',
+                                part3: LocaleKeys.add_camp_category_1.tr(),
+                                onChanged: (value) => cubit.onInfestationCategory1Changed(value),
+                              ),
+                              _CategoryItem(
+                                initialValue:
+                                cubit.state.camp?.infestationCategory2 != null
+                                    ? cubit.state.camp?.infestationCategory2
+                                    .toString()
+                                    : null,
+                                part1: '${LocaleKeys.category.tr()} 2:',
+                                part2:
+                                ' ${LocaleKeys.add_camp_category_2_infested.tr()} ',
+                                part3: LocaleKeys.add_camp_category_2.tr(),
+                                onChanged: (value) => cubit.onInfestationCategory2Changed(value),
+                              ),
+                              _CategoryItem(
+                                initialValue:
+                                cubit.state.camp?.infestationCategory3 != null
+                                    ? cubit.state.camp?.infestationCategory3
+                                    .toString()
+                                    : null,
+                                part1: '${LocaleKeys.category.tr()} 3:',
+                                part2:
+                                ' ${LocaleKeys.add_camp_category_3_infested.tr()} ',
+                                part3: LocaleKeys.add_camp_category_3.tr(),
+                                onChanged: (value) => cubit.onInfestationCategory3Changed(value),
+                              ),
+                              _CategoryItem(
+                                initialValue:
+                                cubit.state.camp?.infestationCategory4 != null
+                                    ? cubit.state.camp?.infestationCategory4
+                                    .toString()
+                                    : null,
+                                part1: '${LocaleKeys.category.tr()} 4:',
+                                part2:
+                                ' ${LocaleKeys.add_camp_category_4_infested.tr()} ',
+                                part3: LocaleKeys.add_camp_category_4.tr(),
+                                onChanged: (value) => cubit.onInfestationCategory4Changed(value),
+                              ),
+                              _CategoryItem(
+                                initialValue:
+                                cubit.state.camp?.infestationCategory5 != null
+                                    ? cubit.state.camp?.infestationCategory5
+                                    .toString()
+                                    : null,
+                                part1: '${LocaleKeys.category.tr()} 5:',
+                                part2:
+                                ' ${LocaleKeys.add_camp_category_5_infested.tr()} ',
+                                part3: LocaleKeys.add_camp_category_5.tr(),
+                                onChanged: (value) => cubit.onInfestationCategory5Changed(value),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+              const SizedBox(height: 16),
+              Center(
+                child: CmoFilledButton(
+                  title: LocaleKeys.next.tr(),
+                  onTap: () => _next(),
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
           ),
-          const SizedBox(height: 16),
-          Center(
-            child: CmoFilledButton(
-              title: LocaleKeys.next.tr(),
-              onTap: () => _next(),
-            ),
-          ),
-          const SizedBox(height: 24),
-        ],
-      ),
+        );
+      },
     );
   }
 

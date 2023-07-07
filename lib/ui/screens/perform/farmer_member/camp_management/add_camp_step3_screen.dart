@@ -1,5 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/data/farm.dart';
+import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
@@ -38,58 +40,64 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.add_camp.tr(),
-        showLeading: true,
-        showTrailing: true,
-        trailing: Assets.icons.icClose.svgBlack,
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 24),
-          CmoHeaderTile(title: LocaleKeys.actuals.tr()),
-          const SizedBox(height: 16),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      LocaleKeys.estimated_year_harvest.tr(),
-                    ),
+    return BlocSelector<AddCampCubit, AddCampState, Farm?>(
+      selector: (state) => state.farm,
+      builder: (context, farm) {
+        return Scaffold(
+          appBar: CmoAppBarV2(
+            title: LocaleKeys.add_camp.tr(),
+            showLeading: true,
+            showTrailing: true,
+            subtitle: farm?.farmName ?? '',
+            trailing: Assets.icons.icClose.svgBlack,
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
+              CmoHeaderTile(title: LocaleKeys.actuals.tr()),
+              const SizedBox(height: 16),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          LocaleKeys.estimated_year_harvest.tr(),
+                        ),
+                      ),
+                      _YearDropdown(
+                          initialValue: cubit.state.camp?.plannedYearOfHarvest,
+                          onChanged: (value) =>
+                              cubit.onPlannedYearOfHarvestChanged(value)),
+                      const SizedBox(height: 24),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          LocaleKeys.actual_year_of_harvest.tr(),
+                        ),
+                      ),
+                      _YearDropdown(
+                          initialValue: cubit.state.camp?.actualYearOfHarvest,
+                          onChanged: (value) => cubit.onActualYearOfHarvestChanged(value)),
+                    ],
                   ),
-                  _YearDropdown(
-                      initialValue: cubit.state.camp?.plannedYearOfHarvest,
-                      onChanged: (value) =>
-                          cubit.onPlannedYearOfHarvestChanged(value)),
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      LocaleKeys.actual_year_of_harvest.tr(),
-                    ),
-                  ),
-                  _YearDropdown(
-                      initialValue: cubit.state.camp?.actualYearOfHarvest,
-                      onChanged: (value) => cubit.onActualYearOfHarvestChanged(value)),
-                ],
+                ),
               ),
-            ),
+              Center(
+                child: CmoFilledButton(
+                  title: LocaleKeys.save.tr(),
+                  onTap: () => _save(),
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
           ),
-          Center(
-            child: CmoFilledButton(
-              title: LocaleKeys.save.tr(),
-              onTap: () => _save(),
-            ),
-          ),
-          const SizedBox(height: 24),
-        ],
-      ),
+        );
+      },
     );
   }
 
