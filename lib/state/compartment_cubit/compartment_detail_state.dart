@@ -16,6 +16,7 @@ class CompartmentDetailState {
     this.groupScheme,
     this.resourceManagerUnit,
     this.farmId = '',
+    this.campId,
   });
 
   final Object? error;
@@ -26,11 +27,13 @@ class CompartmentDetailState {
   final GroupScheme? groupScheme;
   final ResourceManagerUnit? resourceManagerUnit;
   final String farmId;
+  final String? campId;
   Compartment compartment;
 
   CompartmentDetailState copyWith(
       {bool? loading,
         String? farmId,
+        String? campId,
       Object? error,
       Compartment? compartment,
       List<AreaType>? areaTypes,
@@ -40,6 +43,7 @@ class CompartmentDetailState {
       List<SpeciesGroupTemplate>? speciesGroupTemplates}) {
     return CompartmentDetailState(
       farmId: farmId ?? this.farmId,
+      campId: campId ?? this.campId,
       loading: loading ?? this.loading,
       error: error ?? this.error,
       compartment: compartment ?? this.compartment,

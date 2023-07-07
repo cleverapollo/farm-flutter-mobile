@@ -159,6 +159,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                             context,
                             farmId: cubit.state.farm?.farmId,
                             farmName: cubit.state.farm?.farmName,
+                            campId: cubit.state.camp?.campId,
                           );
                           if (result != null) {
                             cubit.onCompartmentChanged(

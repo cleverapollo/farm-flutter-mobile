@@ -22,6 +22,7 @@ class CompartmentMapScreen extends StatefulWidget {
     BuildContext context, {
     List<map.LatLng>? points,
     required String farmId,
+    String? campId,
     String? farmName,
   }) async {
     return Navigator.of(context).push<T>(
@@ -30,16 +31,18 @@ class CompartmentMapScreen extends StatefulWidget {
           points: points,
           farmId: farmId,
           farmName: farmName,
+          campId: campId,
         ),
       ),
     );
   }
 
-  CompartmentMapScreen({this.points, required this.farmId, this.farmName, Key? key}) : super(key: key);
+  CompartmentMapScreen({this.points, required this.farmId, this.farmName, this.campId, Key? key}) : super(key: key);
 
   final List<map.LatLng>? points;
   final String farmId;
   final String? farmName;
+  final String? campId;
 
   @override
   _CompartmentMapScreenState createState() => _CompartmentMapScreenState();
@@ -181,6 +184,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                     CompartmentDetailScreen.push(context,
                         farmId: widget.farmId,
                         farmName: widget.farmName,
+                        campId: widget.campId,
                         measuredArea: (areaSquareMeters ?? 0) / 10000,
                         locations: _markers
                             .map((e) => GeoLocation(

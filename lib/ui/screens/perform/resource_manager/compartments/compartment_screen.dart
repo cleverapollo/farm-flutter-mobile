@@ -13,12 +13,17 @@ class CompartmentScreen extends StatefulWidget {
   final String? farmName;
   const CompartmentScreen({super.key, this.farmName});
 
-  static Future<AddingCompartmentResult?> push(BuildContext context, {String? farmId, String? farmName}) {
+  static Future<AddingCompartmentResult?> push(
+    BuildContext context, {
+    String? farmId,
+    String? farmName,
+    String? campId,
+  }) {
     return Navigator.of(context).push<AddingCompartmentResult?>(
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
-            create: (_) => CompartmentCubit(farmId ?? ''),
+            create: (_) => CompartmentCubit(farmId ?? '', campId: campId),
             child: CompartmentScreen(farmName: farmName,),
           );
         },
@@ -47,7 +52,12 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
         showTrailing: true,
         trailing: Assets.icons.icAdd.svgBlack,
         onTapTrailing: () async {
-          await CompartmentMapScreen.push(context, farmId: context.read<CompartmentCubit>().state.farmId, farmName: widget.farmName);
+          await CompartmentMapScreen.push(
+            context,
+            farmId: context.read<CompartmentCubit>().state.farmId,
+            farmName: widget.farmName,
+            campId: context.read<CompartmentCubit>().state.campId,
+          );
           context.read<CompartmentCubit>().loadListCompartment();
         },
       ),

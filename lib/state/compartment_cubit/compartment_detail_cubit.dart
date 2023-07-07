@@ -11,7 +11,7 @@ import 'package:flutter/widgets.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
-  CompartmentDetailCubit(String farmId) : super(CompartmentDetailState(farmId: farmId));
+  CompartmentDetailCubit(String farmId, {String? campId}) : super(CompartmentDetailState(farmId: farmId, campId: campId));
 
   Future fetchData({required BuildContext context}) async {
     emit(state.copyWith(loading: true));
@@ -38,6 +38,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
       groupSchemeId: state.groupScheme?.groupSchemeId,
       regionalManagerUnitId: state.resourceManagerUnit?.regionalManagerUnitId,
       farmId: state.farmId,
+      campId: state.campId,
     ));
   }
 

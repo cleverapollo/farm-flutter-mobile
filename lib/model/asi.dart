@@ -10,6 +10,7 @@ class Asi with _$Asi {
   const factory Asi({
     @JsonKey(name: 'AsiRegisterNo') String? asiRegisterNo,
     @JsonKey(name: 'FarmId') String? farmId,
+    @JsonKey(name: 'CampId') String? campId,
     @JsonKey(name: 'AsiRegisterId') String? asiRegisterId,
     @JsonKey(name: 'AsiTypeId') int? asiTypeId,
     @JsonKey(name: 'Latitude') double? latitude,
