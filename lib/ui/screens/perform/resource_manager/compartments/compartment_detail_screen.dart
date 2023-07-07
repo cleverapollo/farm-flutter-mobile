@@ -1,11 +1,9 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
-import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_cubit.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';

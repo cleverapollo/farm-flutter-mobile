@@ -5,6 +5,7 @@ import 'package:cmo/state/farmer/camp_management/add_camp_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_step3_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -85,6 +86,11 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
                       child: Column(
                         children: [
                           _CategoryItem(
+                            initialValue:
+                                cubit.state.camp?.infestationCategory1 != null
+                                    ? cubit.state.camp?.infestationCategory1
+                                        .toString()
+                                    : null,
                             part1: '${LocaleKeys.category.tr()} 1:',
                             part2:
                             ' ${LocaleKeys.add_camp_category_1_infested.tr()} ',
@@ -92,6 +98,11 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
                             onChanged: (value) => cubit.onInfestationCategory1Changed(value),
                           ),
                           _CategoryItem(
+                            initialValue:
+                            cubit.state.camp?.infestationCategory2 != null
+                                ? cubit.state.camp?.infestationCategory2
+                                .toString()
+                                : null,
                             part1: '${LocaleKeys.category.tr()} 2:',
                             part2:
                             ' ${LocaleKeys.add_camp_category_2_infested.tr()} ',
@@ -99,6 +110,11 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
                             onChanged: (value) => cubit.onInfestationCategory2Changed(value),
                           ),
                           _CategoryItem(
+                            initialValue:
+                            cubit.state.camp?.infestationCategory3 != null
+                                ? cubit.state.camp?.infestationCategory3
+                                .toString()
+                                : null,
                             part1: '${LocaleKeys.category.tr()} 3:',
                             part2:
                             ' ${LocaleKeys.add_camp_category_3_infested.tr()} ',
@@ -106,6 +122,11 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
                             onChanged: (value) => cubit.onInfestationCategory3Changed(value),
                           ),
                           _CategoryItem(
+                            initialValue:
+                            cubit.state.camp?.infestationCategory4 != null
+                                ? cubit.state.camp?.infestationCategory4
+                                .toString()
+                                : null,
                             part1: '${LocaleKeys.category.tr()} 4:',
                             part2:
                             ' ${LocaleKeys.add_camp_category_4_infested.tr()} ',
@@ -113,6 +134,11 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
                             onChanged: (value) => cubit.onInfestationCategory4Changed(value),
                           ),
                           _CategoryItem(
+                            initialValue:
+                            cubit.state.camp?.infestationCategory5 != null
+                                ? cubit.state.camp?.infestationCategory5
+                                .toString()
+                                : null,
                             part1: '${LocaleKeys.category.tr()} 5:',
                             part2:
                             ' ${LocaleKeys.add_camp_category_5_infested.tr()} ',
@@ -150,12 +176,14 @@ class _CategoryItem extends StatelessWidget {
   final String part1;
   final String part2;
   final String part3;
+  final String? initialValue;
   final ValueChanged<String>? onChanged;
 
   const _CategoryItem({
     required this.part1,
     required this.part2,
     required this.part3,
+    this.initialValue,
     this.onChanged,
     Key? key,
   }) : super(key: key);
@@ -180,7 +208,7 @@ class _CategoryItem extends StatelessWidget {
             ],
           ),
         ),
-        _InputItem(onChanged: onChanged),
+        _InputItem(onChanged: onChanged, initialValue: initialValue),
       ],
     );
   }
@@ -188,12 +216,19 @@ class _CategoryItem extends StatelessWidget {
 
 class _InputItem extends StatelessWidget {
   final ValueChanged<String>? onChanged;
+  final String? initialValue;
 
-  const _InputItem({this.onChanged, Key? key}) : super(key: key);
+  const _InputItem({this.initialValue, this.onChanged, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController? controller;
+    if (initialValue != null) {
+      controller = TextEditingController();
+      controller.text = initialValue!;
+    }
     return TextField(
+      controller: controller,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.number,
       onChanged: onChanged,

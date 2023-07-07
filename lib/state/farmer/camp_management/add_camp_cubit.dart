@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/model/camp.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddCampCubit extends Cubit<AddCampState> {
@@ -11,6 +12,11 @@ class AddCampCubit extends Cubit<AddCampState> {
                 Camp(campId: DateTime.now().millisecondsSinceEpoch.toString()),
           ),
         );
+
+  Future init() async {
+    final activeFarm = await configService.getActiveFarm();
+    emit(state.copyWith(farm: activeFarm));
+  }
 
   void onCampNameChanged(String value) {
     emit(state.copyWith(camp: state.camp?.copyWith(campName : value)));
@@ -68,15 +74,18 @@ class AddCampCubit extends Cubit<AddCampState> {
     emit(state.copyWith(camp: state.camp?.copyWith(actualYearOfHarvest : value)));
   }
 
+  void onCompartmentChanged({required AddingCompartmentResult addingCompartmentResult}) {
+    emit(state.copyWith(
+        compartments: addingCompartmentResult.compartments ?? []));
+  }
+
   Future saveCamp() async {
     if (state.camp == null) {
       return;
     }
-    final activeFarm = await configService.getActiveFarm();
     emit(state.copyWith(
-      camp: state.camp?.copyWith(farmId: activeFarm?.farmId,
-          isActive: true
-      ),));
+      camp: state.camp?.copyWith(farmId: state.farm?.farmId, isActive: true),
+    ));
     return cmoDatabaseMasterService.cacheCamp(state.camp!);
   }
 }

@@ -1,6 +1,9 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/camp.dart';
+import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_cubit.dart';
+import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_step2_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
@@ -17,11 +20,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class AddCampScreen extends StatefulWidget {
   AddCampScreen({Key? key}) : super(key: key);
 
-  static void push(BuildContext context) {
-    Navigator.of(context).push(
+  static Future push(BuildContext context, {Camp? camp}) {
+    return Navigator.of(context).push(
       MaterialPageRoute(builder: (_) {
         return BlocProvider(
-          create: (_) => AddCampCubit(),
+          create: (_) => AddCampCubit(camp: camp)..init(),
           child: AddCampScreen(),
         );
       },),
@@ -69,6 +72,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                     children: [
                       AttributeItem(
                         child: InputAttributeItem(
+                          initialValue: cubit.state.camp?.campName,
                           maxLines: 1,
                           hintText: LocaleKeys.campName.tr(),
                           onChanged: (value) => cubit.onCampNameChanged(value),
@@ -77,6 +81,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                       ),
                       AttributeItem(
                         child: InputAttributeItem(
+                          initialValue: cubit.state.camp?.protectedArea?.toString(),
                           maxLines: 2,
                           keyboardType: TextInputType.number,
                           hintText: LocaleKeys.hectares_camp_protected.tr(),
@@ -86,6 +91,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                       ),
                       AttributeItem(
                         child: InputAttributeItem(
+                          initialValue: cubit.state.camp?.protectedArea?.toString(),
                           maxLines: 2,
                           keyboardType: TextInputType.number,
                           hintText: LocaleKeys.hectares_camp_cattle_posts_housing.tr(),
@@ -95,6 +101,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                       ),
                       AttributeItem(
                         child: InputAttributeItem(
+                          initialValue: cubit.state.camp?.corridors?.toString(),
                           maxLines: 2,
                           keyboardType: TextInputType.number,
                           hintText: LocaleKeys.hectares_are_corridors.tr(),
@@ -104,6 +111,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                       ),
                       AttributeItem(
                         child: InputAttributeItem(
+                          initialValue: cubit.state.camp?.roadAndFireBreaks?.toString(),
                           maxLines: 2,
                           keyboardType: TextInputType.number,
                           hintText: LocaleKeys.hectares_road_fire_breaks.tr(),
@@ -113,6 +121,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                       ),
                       AttributeItem(
                         child: InputAttributeItem(
+                          initialValue: cubit.state.camp?.poachingAlleviationZone?.toString(),
                           maxLines: 2,
                           keyboardType: TextInputType.number,
                           hintText: LocaleKeys.hectares_poaching_alleviation_zones.tr(),
@@ -146,12 +155,37 @@ class _AddCampScreenState extends State<AddCampScreen> {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          await CompartmentScreen.push(context);
+                          final result = await CompartmentScreen.push(
+                            context,
+                            farmId: cubit.state.farm?.farmId,
+                            farmName: cubit.state.farm?.farmName,
+                          );
+                          if (result != null) {
+                            cubit.onCompartmentChanged(
+                                addingCompartmentResult: result!);
+                          }
                         },
-                        child: AttributeItem(
-                          child: SelectorAttributeItem(
-                            hintText: LocaleKeys.compartments.tr(),
-                          ),
+                        child: BlocSelector<AddCampCubit, AddCampState, List<Compartment>>(
+                          selector: (state) => state.compartments,
+                          builder: (context, compartments) {
+                            return AttributeItem(
+                              child: SelectorAttributeItem(
+                                hintText: LocaleKeys.compartments.tr(),
+                                text: compartments.isNotEmpty
+                                    ? LocaleKeys.compartments.tr()
+                                    : null,
+                                trailing: compartments.isEmpty
+                                    ? null
+                                    : Row(
+                                        children: [
+                                          Assets.icons.icTick.widget,
+                                          const SizedBox(width: 8),
+                                          Assets.icons.icArrowRight.svgBlack,
+                                        ],
+                                      ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                       GestureDetector(

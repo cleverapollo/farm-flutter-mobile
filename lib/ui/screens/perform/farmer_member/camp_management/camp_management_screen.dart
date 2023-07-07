@@ -49,7 +49,10 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
         showLeading: true,
         showTrailing: true,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => AddCampScreen.push(context),
+        onTapTrailing: () async {
+          await AddCampScreen.push(context);
+          cubit.init();
+        },
       ),
       body: Column(
         children: [
@@ -82,7 +85,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                   children: [
                     CmoHeaderTile(
                       title:
-                          LocaleKeys.summary_tonnes_biomass.tr(args: [total.toString()]),
+                          LocaleKeys.summary_tonnes_biomass.tr(args: [total.toStringAsFixed(2)]),
                     ),
                     Expanded(
                       child: ListView.separated(
@@ -99,66 +102,72 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                               border: Border.all(color: context.colors.blue),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(4, 4, 4, 10),
-                                    child: Text(
-                                      '${LocaleKeys.campName.tr()}: ${camp.campName}',
-                                      style: context.textStyles.bodyBold
-                                          .copyWith(color: context.colors.blue),
+                            child: GestureDetector(
+                              onTap: () async {
+                                await AddCampScreen.push(context, camp: camp);
+                                cubit.init();
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(4, 4, 4, 10),
+                                      child: Text(
+                                        '${LocaleKeys.campName.tr()}: ${camp.campName}',
+                                        style: context.textStyles.bodyBold
+                                            .copyWith(color: context.colors.blue),
+                                      ),
                                     ),
-                                  ),
-                                  _CampAttributeWidget(
-                                    color: context.colors.greyLight1,
-                                    name: LocaleKeys
-                                        .infestation_weighted_average
-                                        .tr(),
-                                    value:
-                                        '${camp.infestedWieghtedAverage != null ? camp.infestedWieghtedAverage?.toStringAsFixed(0) : ''}%',
-                                  ),
-                                  _CampAttributeWidget(
-                                    name: LocaleKeys.estimated_biomass.tr(),
-                                    value:
-                                        '${camp.estimatedBiomass != null ? camp.estimatedBiomass?.toStringAsFixed(0) : ''}',
-                                  ),
-                                  _CampAttributeWidget(
-                                    color: context.colors.greyLight1,
-                                    name: LocaleKeys.total_biomass.tr(),
-                                    value:
-                                        '${camp.totalBiomass != null ? camp.totalBiomass?.toStringAsFixed(0) : ''}',
-                                  ),
-                                  _CampAttributeWidget(
-                                    name: LocaleKeys.cumulative_biomass.tr(),
-                                    value:
-                                        '${camp.cumulativeBiomass != null ? camp.cumulativeBiomass?.toStringAsFixed(2) : ''}',
-                                  ),
-                                  _CampAttributeWidget(
-                                    color: context.colors.greyLight1,
-                                    name:
-                                        LocaleKeys.planned_year_of_harvest.tr(),
-                                    value:
-                                        '${camp.plannedYearOfHarvest != null ? camp.plannedYearOfHarvest?.toString() : ''}',
-                                  ),
-                                  _CampAttributeWidget(
-                                    name:
-                                        LocaleKeys.actual_year_of_harvest.tr(),
-                                    value:
-                                        '${camp.actualYearOfHarvest != null ? camp.actualYearOfHarvest?.toString() : ''}',
-                                  ),
-                                  _CampAttributeWidget(
-                                    color: context.colors.greyLight1,
-                                    name: LocaleKeys.tons_of_charcoal_produced
-                                        .tr(),
-                                    value:
-                                        '${camp.tonsOfCharcoalProduced != null ? camp.tonsOfCharcoalProduced?.toStringAsFixed(0) : ''}',
-                                  ),
-                                ],
+                                    _CampAttributeWidget(
+                                      color: context.colors.greyLight1,
+                                      name: LocaleKeys
+                                          .infestation_weighted_average
+                                          .tr(),
+                                      value:
+                                          '${camp.infestedWieghtedAverage != null ? camp.infestedWieghtedAverage?.toStringAsFixed(0) : ''}%',
+                                    ),
+                                    _CampAttributeWidget(
+                                      name: LocaleKeys.estimated_biomass.tr(),
+                                      value:
+                                          '${camp.estimatedBiomass != null ? camp.estimatedBiomass?.toStringAsFixed(0) : ''}',
+                                    ),
+                                    _CampAttributeWidget(
+                                      color: context.colors.greyLight1,
+                                      name: LocaleKeys.total_biomass.tr(),
+                                      value:
+                                          '${camp.totalBiomass != null ? camp.totalBiomass?.toStringAsFixed(0) : ''}',
+                                    ),
+                                    _CampAttributeWidget(
+                                      name: LocaleKeys.cumulative_biomass.tr(),
+                                      value:
+                                          '${camp.cumulativeBiomass != null ? camp.cumulativeBiomass?.toStringAsFixed(2) : ''}',
+                                    ),
+                                    _CampAttributeWidget(
+                                      color: context.colors.greyLight1,
+                                      name:
+                                          LocaleKeys.planned_year_of_harvest.tr(),
+                                      value:
+                                          '${camp.plannedYearOfHarvest != null ? camp.plannedYearOfHarvest?.toString() : ''}',
+                                    ),
+                                    _CampAttributeWidget(
+                                      name:
+                                          LocaleKeys.actual_year_of_harvest.tr(),
+                                      value:
+                                          '${camp.actualYearOfHarvest != null ? camp.actualYearOfHarvest?.toString() : ''}',
+                                    ),
+                                    _CampAttributeWidget(
+                                      color: context.colors.greyLight1,
+                                      name: LocaleKeys.tons_of_charcoal_produced
+                                          .tr(),
+                                      value:
+                                          '${camp.tonsOfCharcoalProduced != null ? camp.tonsOfCharcoalProduced?.toStringAsFixed(0) : ''}',
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );

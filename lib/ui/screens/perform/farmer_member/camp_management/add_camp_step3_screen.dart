@@ -64,7 +64,9 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
                     ),
                   ),
                   _YearDropdown(
-                      onChanged: (value) => cubit.onPlannedYearOfHarvestChanged(value)),
+                      initialValue: cubit.state.camp?.plannedYearOfHarvest,
+                      onChanged: (value) =>
+                          cubit.onPlannedYearOfHarvestChanged(value)),
                   const SizedBox(height: 24),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -73,6 +75,7 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
                     ),
                   ),
                   _YearDropdown(
+                      initialValue: cubit.state.camp?.actualYearOfHarvest,
                       onChanged: (value) => cubit.onActualYearOfHarvestChanged(value)),
                 ],
               ),
@@ -100,14 +103,16 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
 
 class _YearDropdown extends StatelessWidget {
   final ValueChanged<int?>? onChanged;
+  final int? initialValue;
 
-  const _YearDropdown({this.onChanged, Key? key}) : super(key: key);
+  const _YearDropdown({this.onChanged, this.initialValue, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CmoDropdown<int>(
       name: 'Year',
       onChanged: onChanged,
+      initialValue: initialValue,
       inputDecoration: InputDecoration(
         contentPadding: const EdgeInsets.all(8),
         isDense: true,
