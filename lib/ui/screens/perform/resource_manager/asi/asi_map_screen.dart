@@ -10,12 +10,20 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class ASIMapScreen extends StatefulWidget {
   final String? farmName;
   final String farmId;
-  const ASIMapScreen({super.key, required this.farmId, this.farmName});
+  final String? campId;
+
+  const ASIMapScreen({
+    super.key,
+    required this.farmId,
+    this.farmName,
+    this.campId,
+  });
 
   static Future<void> push(
     BuildContext context, {
     String? farmId,
     String? farmName,
+    String? campId,
   }) {
     return Navigator.push(
       context,
@@ -23,6 +31,7 @@ class ASIMapScreen extends StatefulWidget {
         builder: (_) => ASIMapScreen(
           farmId: farmId ?? '',
           farmName: farmName,
+            campId: campId,
         ),
       ),
     );
@@ -70,6 +79,7 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                         farmId: widget.farmId,
                         farmName: widget.farmName,
                         locationModel: locationModel,
+                        campId: widget.campId,
                       );
                     }),
               ),

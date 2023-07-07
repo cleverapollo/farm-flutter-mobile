@@ -24,6 +24,7 @@ class ASIDetailScreen extends StatefulWidget {
     LocationModel? locationModel,
     required String farmId,
     String? farmName,
+    String? campId,
   }) {
     return Navigator.push(
       context,
@@ -33,6 +34,7 @@ class ASIDetailScreen extends StatefulWidget {
             create: (_) => AsiDetailCubit(
               farmId ?? '',
               locationModel: locationModel,
+              campId : campId,
             )..fetchData(),
             child: ASIDetailScreen(
               locationModel: locationModel,

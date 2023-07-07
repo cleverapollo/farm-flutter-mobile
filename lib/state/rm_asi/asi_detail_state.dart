@@ -6,19 +6,23 @@ class AsiDetailState {
     this.farmId = '',
     this.locationModel,
     this.types,
+    this.campId,
   });
 
   final String farmId;
   final LocationModel? locationModel;
   final List<AsiType>? types;
+  final String? campId;
 
   AsiDetailState copyWith({
     String? farmId,
     LocationModel? locationModel,
-    List<AsiType>? types
+    List<AsiType>? types,
+    String? campId,
   }) {
     return AsiDetailState(
       farmId: farmId ?? this.farmId,
+      campId: campId ?? this.campId,
       locationModel: locationModel ?? this.locationModel,
       types: types ?? this.types,
     );

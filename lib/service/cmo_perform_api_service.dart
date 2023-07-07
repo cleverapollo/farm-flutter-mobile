@@ -509,6 +509,27 @@ class CmoPerformApiService {
         .toList();
   }
 
+  Future<List<AsiType>?> fetchFarmerAsiType() async {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/AsiType/GetFarmersAsiType',
+    );
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data
+        ?.map((e) => AsiType.fromJson(e as JsonData))
+        .toList();
+  }
+
   Future<List<SpeciesGroupTemplate>?> fetchSpeciesGroupTemplates() async {
     final uri = Uri.https(
       Env.cmoApiUrl,

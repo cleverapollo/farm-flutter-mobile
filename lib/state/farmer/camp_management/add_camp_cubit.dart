@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/camp.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
@@ -15,7 +16,22 @@ class AddCampCubit extends Cubit<AddCampState> {
 
   Future init() async {
     final activeFarm = await configService.getActiveFarm();
-    emit(state.copyWith(farm: activeFarm));
+    var compartments = await cmoDatabaseMasterService
+        .getCompartmentByFarmId(activeFarm?.farmId ?? '');
+    if (compartments != null) {
+      compartments = compartments
+          .where((element) => element.campId == state.camp?.campId)
+          .toList();
+    }
+    var asis = await cmoDatabaseMasterService
+        .getAsiRegisterByFarmId(activeFarm?.farmId ?? '');
+    asis =
+        asis.where((element) => element.campId == state.camp?.campId).toList();
+    emit(state.copyWith(
+      farm: activeFarm,
+      compartments: compartments,
+      asis: asis,
+    ));
   }
 
   void onCampNameChanged(String value) {
@@ -77,6 +93,10 @@ class AddCampCubit extends Cubit<AddCampState> {
   void onCompartmentChanged({required AddingCompartmentResult addingCompartmentResult}) {
     emit(state.copyWith(
         compartments: addingCompartmentResult.compartments ?? []));
+  }
+
+  void onAsisChanged({List<Asi>? asis}) {
+    emit(state.copyWith(asis: asis ?? []));
   }
 
   Future saveCamp() async {

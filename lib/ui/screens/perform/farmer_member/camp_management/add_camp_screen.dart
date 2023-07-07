@@ -1,5 +1,6 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/camp.dart';
 import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_cubit.dart';
@@ -191,12 +192,37 @@ class _AddCampScreenState extends State<AddCampScreen> {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          await ASIScreen.push(context);
+                          final result = await ASIScreen.push(
+                            context,
+                            farmId: cubit.state.farm?.farmId,
+                            farmName: cubit.state.farm?.farmName,
+                            campId: cubit.state.camp?.campId,
+                          );
+                          if (result != null) {
+                            cubit.onAsisChanged(asis: result);
+                          }
                         },
-                        child: AttributeItem(
-                          child: SelectorAttributeItem(
-                            hintText: LocaleKeys.asi.tr(),
-                          ),
+                        child: BlocSelector<AddCampCubit, AddCampState, List<Asi>>(
+                          selector: (state) => state.asis,
+                          builder: (context, asis) {
+                            return AttributeItem(
+                              child: SelectorAttributeItem(
+                                hintText: LocaleKeys.asi.tr(),
+                                text: asis.isNotEmpty
+                                    ? LocaleKeys.asi.tr()
+                                    : null,
+                                trailing: asis.isEmpty
+                                    ? null
+                                    : Row(
+                                  children: [
+                                    Assets.icons.icTick.widget,
+                                    const SizedBox(width: 8),
+                                    Assets.icons.icArrowRight.svgBlack,
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ],

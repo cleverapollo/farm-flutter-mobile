@@ -14,13 +14,13 @@ class ASIScreen extends StatelessWidget {
   const ASIScreen({this.farmName, super.key});
 
   static Future<List<Asi>?> push(BuildContext context,
-      {String? farmId, String? farmName}) {
+      {String? farmId, String? farmName, String? campId}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
-            create: (_) => AsiCubit(farmId ?? '')..loadAsis(),
+            create: (_) => AsiCubit(farmId ?? '', campId: campId)..loadAsis(),
             child: ASIScreen(
               farmName: farmName,
             ),
@@ -44,6 +44,7 @@ class ASIScreen extends StatelessWidget {
             context,
             farmId: context.read<AsiCubit>().state.farmId,
             farmName: farmName,
+            campId: context.read<AsiCubit>().state.campId,
           );
           context.read<AsiCubit>().loadAsis();
         },
