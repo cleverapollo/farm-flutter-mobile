@@ -123,6 +123,7 @@ class _AnnualBudgetManagementScreenState
             }
 
             await context.read<AnnualBudgetManagementCubit>().onRemoveBudget(model);
+            await context.read<SiteManagementPlanCubit>().refresh();
             return null;
           },
           background: Container(

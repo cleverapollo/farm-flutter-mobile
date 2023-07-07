@@ -88,6 +88,7 @@ class _AddAnnualBudgetScreenState extends State<AddAnnualBudgetScreen> {
             );
 
             await context.read<AnnualBudgetManagementCubit>().loadListAnnualBudgets();
+            await context.read<SiteManagementPlanCubit>().refresh();
             Navigator.of(context).pop();
           }
         }

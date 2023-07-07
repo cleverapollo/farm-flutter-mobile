@@ -108,6 +108,7 @@ class _AddUpdateAnnualProductionScreenState
             );
 
             await context.read<AnnualFarmProductionCubit>().loadListAnnualFarmProductions();
+            await context.read<SiteManagementPlanCubit>().refresh();
             Navigator.of(context).pop();
           }
         }

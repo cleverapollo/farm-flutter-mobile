@@ -22,3 +22,4 @@ export 'entity_cubit/farmer/select_entity_farmer_cubit.dart';
 export 'farmer/annual_farm_production/annual_farm_production_cubit.dart';
 export 'farmer/annual_budget/annual_budget_management_cubit.dart';
 export 'farmer/annual_budget/annual_budget_transactions_cubit.dart';
+export 'farmer/site_management_plan/site_management_plan_cubit.dart';
