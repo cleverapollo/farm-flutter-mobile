@@ -9,6 +9,9 @@ class StakeHolderListState {
     this.error,
     this.resourceManagerUnit,
     this.farm,
+    this.listSocialUpliftments,
+    this.listCustomaryUseRights,
+    this.listSpecialSites,
   });
 
   final bool loadingList;
@@ -18,6 +21,9 @@ class StakeHolderListState {
   final List<StakeHolderType> listStakeholderTypes;
   final ResourceManagerUnit? resourceManagerUnit;
   final Farm? farm;
+  final List<FarmStakeholderSocialUpliftment>? listSocialUpliftments;
+  final List<FarmStakeholderCustomaryUseRight>? listCustomaryUseRights;
+  final List<FarmStakeholderSpecialSite>? listSpecialSites;
 
   StakeHolderListState copyWith({
     bool? loadingList,
@@ -28,16 +34,24 @@ class StakeHolderListState {
     Map<String, dynamic>? cacheCreateData,
     ResourceManagerUnit? resourceManagerUnit,
     Farm? farm,
+    List<FarmStakeholderSocialUpliftment>? listSocialUpliftments,
+    List<FarmStakeholderCustomaryUseRight>? listCustomaryUseRights,
+    List<FarmStakeholderSpecialSite>? listSpecialSites,
   }) {
     return StakeHolderListState(
       loadingList: loadingList ?? this.loadingList,
       error: error ?? this.error,
-      filterListStakeHolders: filterListStakeHolders ??
-          this.filterListStakeHolders,
+      filterListStakeHolders:
+          filterListStakeHolders ?? this.filterListStakeHolders,
       listStakeHolders: listStakeHolders ?? this.listStakeHolders,
       listStakeholderTypes: listStakeholderTypes ?? this.listStakeholderTypes,
       resourceManagerUnit: resourceManagerUnit ?? this.resourceManagerUnit,
       farm: farm ?? this.farm,
+      listSocialUpliftments:
+          listSocialUpliftments ?? this.listSocialUpliftments,
+      listCustomaryUseRights:
+          listCustomaryUseRights ?? this.listCustomaryUseRights,
+      listSpecialSites: listSpecialSites ?? this.listSpecialSites,
     );
   }
 }

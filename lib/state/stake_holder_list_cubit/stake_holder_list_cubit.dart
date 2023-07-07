@@ -71,16 +71,34 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
     }
   }
 
-  Future<void> loadListStakeHolderType() async {
+  Future<void> initStakeholderDetailData(int? stakeHolderId) async {
     emit(state.copyWith(loadingList: true));
     try {
       final service = cmoDatabaseMasterService;
       final data = await service.getStakeHolderTypes();
-      emit(
-        state.copyWith(
-          listStakeholderTypes: data,
-        ),
-      );
+      final farm = await configService.getActiveFarm();
+      if (farm != null && stakeHolderId != null) {
+        final additionalInfos = await Future.wait([
+          service.getFarmStakeholderCustomaryUseRights(stakeholderId: stakeHolderId),
+          service.getFarmStakeholderSocialUpliftments(stakeholderId: stakeHolderId),
+          service.getFarmStakeholderSpecialSites(stakeholderId: stakeHolderId),
+        ]);
+        emit(
+          state.copyWith(
+            listStakeholderTypes: data,
+            listCustomaryUseRights: additionalInfos[0] as List<FarmStakeholderCustomaryUseRight>?,
+            listSocialUpliftments: additionalInfos[1] as List<FarmStakeholderSocialUpliftment>?,
+            listSpecialSites: additionalInfos[2] as List<FarmStakeholderSpecialSite>?,
+            farm: farm,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            listStakeholderTypes: data,
+          ),
+        );
+      }
     } catch (e) {
       emit(state.copyWith(error: e));
       showSnackError(msg: e.toString());

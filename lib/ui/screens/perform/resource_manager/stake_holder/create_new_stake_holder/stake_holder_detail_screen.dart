@@ -54,7 +54,9 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
   void initState() {
     super.initState();
     Future.microtask(() async {
-      await context.read<StakeHolderListCubit>().loadListStakeHolderType();
+      await context
+          .read<StakeHolderListCubit>()
+          .initStakeholderDetailData(widget.stakeHolder?.id);
     });
   }
 
@@ -138,6 +140,7 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
                 height: 12,
               ),
               buildInputArea(),
+              _buildAdditionalInfo(),
               const SizedBox(
                 height: 80,
               ),
@@ -261,6 +264,47 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
                   )
                   .toList(),
             ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildAdditionalInfo() {
+    return BlocSelector<StakeHolderListCubit, StakeHolderListState, Farm?>(
+      selector: (state) {
+        return state.farm;
+      },
+      builder: (context, farm) {
+        if (farm == null) return const SizedBox.shrink();
+        final state = context.read<StakeHolderListCubit>().state;
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 24),
+            Text(
+              'Additional Info',
+              textAlign: TextAlign.start,
+              style: context.textStyles.bodyBold.black,
+            ),
+            _buildDividerWidget(),
+            const SizedBox(height: 12),
+            Text(
+              '${state.listSocialUpliftments?.length ?? 0} Social Upliftments',
+              style: context.textStyles.bodyNormal.black,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '${state.listSpecialSites?.length ?? 0} Special Sites',
+              style: context.textStyles.bodyNormal.black,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '${state.listCustomaryUseRights?.length ?? 0} Customary Use Rights',
+              style: context.textStyles.bodyNormal.black,
+            ),
+            const SizedBox(height: 32),
           ],
         );
       },

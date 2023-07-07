@@ -135,6 +135,9 @@ class CmoDatabaseMasterService {
         ConfigDataSchema,
         FarmMemberObjectiveAnswerSchema,
         FarmMemberRiskProfileAnswerSchema,
+        FarmStakeholderSocialUpliftmentSchema,
+        FarmStakeholderCustomaryUseRightSchema,
+        FarmStakeholderSpecialSiteSchema,
       ],
       name: _databaseName,
       directory: dir.path,
@@ -284,6 +287,37 @@ class CmoDatabaseMasterService {
     final db = await _db();
 
     return db.customaryUseRights.put(data);
+  }
+
+  Future<List<FarmStakeholderCustomaryUseRight>>
+      getFarmStakeholderCustomaryUseRights({required int stakeholderId}) async {
+    final db = await _db();
+    return db.farmStakeholderCustomaryUseRights
+        .filter()
+        .farmStakeholderIdEqualTo(stakeholderId.toString())
+        .isActiveEqualTo(1)
+        .findAll();
+  }
+
+  Future<List<FarmStakeholderSocialUpliftment>>
+      getFarmStakeholderSocialUpliftments(
+          {required int stakeholderId}) async {
+    final db = await _db();
+    return db.farmStakeholderSocialUpliftments
+        .filter()
+        .farmStakeholderIdEqualTo(stakeholderId.toString())
+        .isActiveEqualTo(1)
+        .findAll();
+  }
+
+  Future<List<FarmStakeholderSpecialSite>> getFarmStakeholderSpecialSites(
+      {required int stakeholderId}) async {
+    final db = await _db();
+    return db.farmStakeholderSpecialSites
+        .filter()
+        .farmStakeholderIdEqualTo(stakeholderId.toString())
+        .isActiveEqualTo(1)
+        .findAll();
   }
 
   Future<int?> cacheFarmStakeHolder(FarmerStakeHolder data) async {
