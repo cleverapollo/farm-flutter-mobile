@@ -71,123 +71,124 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
             label: LocaleKeys.unsynced_accident_and_incident.tr(),
-            count: data?.accidentAndIncidentUnsynced,
+            count: data?.accidentAndIncidentUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_accident_and_incident.tr(),
-            count: data?.accidentAndIncidentTotal,
+            count: data?.accidentAndIncidentTotal ?? 0,
           ),
           SyncItemWidget(
-            label: LocaleKeys.unsynced_accident_and_incident_property_damaged.tr(),
-            count: data?.accidentAndIncidentPropertyDamagedUnsynced,
+            label:
+                LocaleKeys.unsynced_accident_and_incident_property_damaged.tr(),
+            count: data?.accidentAndIncidentPropertyDamagedUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_accident_and_incident_property_damaged.tr(),
-            count: data?.accidentAndIncidentPropertyDamagedTotal,
+            count: data?.accidentAndIncidentPropertyDamagedTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_asi.tr(),
-            count: data?.asiUnsynced,
+            count: data?.asiUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_asi.tr(),
-            count: data?.asiTotal,
+            count: data?.asiTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_asi_photos.tr(),
-            count: data?.asiPhotosUnsynced,
+            count: data?.asiPhotosUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_asi_photos.tr(),
-            count: data?.asiPhotosTotal,
+            count: data?.asiPhotosTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_biological_control_agents.tr(),
-            count: data?.biologicalControlAgentsUnsynced,
+            count: data?.biologicalControlAgentsUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_biological_control_agents.tr(),
-            count: data?.biologicalControlAgentsTotal,
+            count: data?.biologicalControlAgentsTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_chemicals.tr(),
-            count: data?.chemicalsUnsynced,
+            count: data?.chemicalsUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_chemicals.tr(),
-            count: data?.chemicalsTotal,
+            count: data?.chemicalsTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_disciplinaries.tr(),
-            count: data?.disciplinariesUnsynced,
+            count: data?.disciplinariesUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_disciplinaries.tr(),
-            count: data?.disciplinariesTotal,
+            count: data?.disciplinariesTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_stakeholder_complaints.tr(),
-            count: data?.stakeholderComplaintsUnsynced,
+            count: data?.stakeholderComplaintsUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_stakeholder_complaint.tr(),
-            count: data?.stakeholderComplaintsTotal,
+            count: data?.stakeholderComplaintsTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_employee_grievances.tr(),
-            count: data?.employeeGrievancesUnsynced,
+            count: data?.employeeGrievancesUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_employee_grievances.tr(),
-            count: data?.employeeGrievancesTotal,
+            count: data?.employeeGrievancesTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_fire.tr(),
-            count: data?.fireUnsynced,
+            count: data?.fireUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_fire.tr(),
-            count: data?.fireTotal,
+            count: data?.fireTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_pets_and_disease.tr(),
-            count: data?.petsAndDiseaseUnsyced,
+            count: data?.petsAndDiseaseUnsyced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_pets_and_disease.tr(),
-            count: data?.petsAndDiseaseTotal,
+            count: data?.petsAndDiseaseTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_pets_and_disease_treatment_methods.tr(),
-            count: data?.petsAndDiseaseTreatmentMethodsUnsyced,
+            count: data?.petsAndDiseaseTreatmentMethodsUnsyced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_pets_and_disease_treatment_methods.tr(),
-            count: data?.petsAndDiseaseTreatmentMethodsTotal,
+            count: data?.petsAndDiseaseTreatmentMethodsTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_rte_species_registers.tr(),
-            count: data?.rteSpeciesRegistersUnsynced,
+            count: data?.rteSpeciesRegistersUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_rte_species_registers.tr(),
-            count: data?.rteSpeciesRegistersTotal,
+            count: data?.rteSpeciesRegistersTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_rte_species_registers_photos.tr(),
-            count: data?.rteSpeciesRegistersPhotosUnsynced,
+            count: data?.rteSpeciesRegistersPhotosUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_rte_species_registers_photos.tr(),
-            count: data?.rteSpeciesRegistersPhotosTotal,
+            count: data?.rteSpeciesRegistersPhotosTotal ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.unsynced_training.tr(),
-            count: data?.trainingUnsynced,
+            count: data?.trainingUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total.tr(),
-            count: data?.trainingTotal,
+            count: data?.trainingTotal ?? 0,
           ),
         ],
       );
@@ -196,11 +197,11 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
             label: LocaleKeys.unsynced.tr(),
-            count: data?.annualProductionUnsynced,
+            count: data?.annualProductionUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_annual_productions.tr(),
-            count: data?.annualProductionTotal,
+            count: data?.annualProductionTotal ?? 0,
           ),
         ],
       );
@@ -209,11 +210,11 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
             label: LocaleKeys.unsynced.tr(),
-            count: data?.annualBudgetsProductionUnsynced,
+            count: data?.annualBudgetsProductionUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_annual_budgets_productions.tr(),
-            count: data?.annualBudgetsProductionTotal,
+            count: data?.annualBudgetsProductionTotal ?? 0,
           ),
         ],
       );
@@ -222,11 +223,11 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
             label: LocaleKeys.unsynced.tr(),
-            count: data?.annualBudgetTransactionsUnsynced,
+            count: data?.annualBudgetTransactionsUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_annual_budgets_productions.tr(),
-            count: data?.annualBudgetTransactionsTotal,
+            count: data?.annualBudgetTransactionsTotal ?? 0,
           ),
         ],
       );
@@ -235,11 +236,11 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
             label: LocaleKeys.unsynced.tr(),
-            count: data?.campsUnsynced,
+            count: data?.campsUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.total_camps.tr(),
-            count: data?.campsTotal,
+            count: data?.campsTotal ?? 0,
           ),
         ],
       );
@@ -248,11 +249,11 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
             label: LocaleKeys.unsynced.tr(),
-            count: data?.schedulerUnsynced,
+            count: data?.schedulerUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.upcoming_events.tr(),
-            count: data?.upcomingEvent,
+            count: data?.upcomingEvent ?? 0,
           ),
         ],
       );
@@ -261,95 +262,95 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
             label: LocaleKeys.biological_control_agent_types.tr(),
-            count: data?.biologicalControlAgentTypes,
+            count: data?.biologicalControlAgentTypes ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.annual_farm_budget_transaction_category.tr(),
-            count: data?.annualFarmBudgetTransactionCategory,
+            count: data?.annualFarmBudgetTransactionCategory ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.asi_types.tr(),
-            count: data?.asiType,
+            count: data?.asiType ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.chemical_application_methods.tr(),
-            count: data?.chemicalApplicationMethods,
+            count: data?.chemicalApplicationMethods ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.chemical_types.tr(),
-            count: data?.chemicalTypes,
+            count: data?.chemicalTypes ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.countries.tr(),
-            count: data?.countries,
+            count: data?.countries ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.fire_causes.tr(),
-            count: data?.fireCause,
+            count: data?.fireCause ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.gender.tr(),
-            count: data?.gender,
+            count: data?.gender ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.grievance_issue.tr(),
-            count: data?.grievanceIssue,
+            count: data?.grievanceIssue ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.group_scheme.tr(),
-            count: data?.groupScheme,
+            count: data?.groupScheme ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.disciplinaries_issues.tr(),
-            count: data?.disciplinariesIssues,
+            count: data?.disciplinariesIssues ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.job_description.tr(),
-            count: data?.jobDescription,
+            count: data?.jobDescription ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.monitoring_requirement.tr(),
-            count: data?.monitoringRequirement,
+            count: data?.monitoringRequirement ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.nature_of_injury.tr(),
-            count: data?.natureOfInjury,
+            count: data?.natureOfInjury ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.pets_and_disease_type.tr(),
-            count: data?.petsAndDiseaseType,
+            count: data?.petsAndDiseaseType ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.pets_and_disease_type_treatment_method.tr(),
-            count: data?.petsAndDiseaseTypeTreatmentMethod,
+            count: data?.petsAndDiseaseTypeTreatmentMethod ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.property_damaged.tr(),
-            count: data?.propertyDamaged,
+            count: data?.propertyDamaged ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.reject_reasons.tr(),
-            count: data?.rejectReasons,
+            count: data?.rejectReasons ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.schedule_activity.tr(),
-            count: data?.scheduleActivity,
+            count: data?.scheduleActivity ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.species_range.tr(),
-            count: data?.speciesRange,
+            count: data?.speciesRange ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.species_types.tr(),
-            count: data?.speciesTypes,
+            count: data?.speciesTypes ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.training_type.tr(),
-            count: data?.trainingType,
+            count: data?.trainingType ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.treatment_method.tr(),
-            count: data?.treatmentMethod,
+            count: data?.treatmentMethod ?? 0,
           ),
         ],
       );
@@ -358,31 +359,31 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
           SyncItemWidget(label: widget.type.getLabel, isTitle: true),
           SyncItemWidget(
             label: LocaleKeys.unsynced.tr(),
-            count: data?.stakeholderUnsynced,
+            count: data?.stakeholderUnsynced ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.customary_use_rights.tr(),
-            count: data?.customaryUseRights,
+            count: data?.customaryUseRights ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.farm_stakeholders.tr(),
-            count: data?.farmStakeHolders,
+            count: data?.farmStakeHolders ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.group_scheme_stakeholders.tr(),
-            count: data?.groupSchemeStakeholders,
+            count: data?.groupSchemeStakeholders ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.social_upliftments.tr(),
-            count: data?.socialUpliftments,
+            count: data?.socialUpliftments ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.special_sites.tr(),
-            count: data?.specialSites,
+            count: data?.specialSites ?? 0,
           ),
           SyncItemWidget(
             label: LocaleKeys.stakeholder_types.tr(),
-            count: data?.stakeholderTypes,
+            count: data?.stakeholderTypes ?? 0,
           ),
         ],
       );

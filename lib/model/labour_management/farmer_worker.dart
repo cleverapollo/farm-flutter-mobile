@@ -24,20 +24,22 @@ class FarmerWorker with _$FarmerWorker {
     @JsonKey(name: 'DateOfBirth') String? dateOfBirth,
     @JsonKey(name: 'Nationality') String? nationality,
     @Default(<int>[])
-    @JsonKey(name: 'JobDescription') List<int>? jobDescription,
+    @JsonKey(name: 'JobDescriptions')
+        List<int>? jobDescription,
     @JsonKey(name: 'PhotoURL') String? photoURL,
     @JsonKey(name: 'NormalisedPhotoURL') String? normalisedPhotoURL,
     @JsonKey(name: 'Photo') String? photo,
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,
-    @Default(1) @JsonKey(name: 'IsLocal') int? isLocal,
+    @JsonKey(name: 'IsLocal') int? isLocal,
     @Default(1) @JsonKey(name: 'CanDelete') int? canDelete,
-    @Default(1) @JsonKey(name: 'IsActive') int? isActive,
+    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
   }) = _FarmerWorker;
 
   const FarmerWorker._();
 
-  factory FarmerWorker.fromJson(Map<String, dynamic> json) => _$FarmerWorkerFromJson(json);
+  factory FarmerWorker.fromJson(Map<String, dynamic> json) =>
+      _$FarmerWorkerFromJson(json);
 
   @override
   Id get id => int.tryParse(workerId ?? '') ?? Isar.autoIncrement;

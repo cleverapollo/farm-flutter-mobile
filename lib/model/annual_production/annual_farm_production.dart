@@ -11,15 +11,17 @@ class AnnualFarmProduction with _$AnnualFarmProduction {
   const factory AnnualFarmProduction({
     @JsonKey(name: 'AnnualFarmProductionId') String? annualFarmProductionId,
     @JsonKey(name: 'FarmId') String? farmId,
-    @JsonKey(name: 'Year') int? year,
+    @JsonKey(name: 'Year') String? year,
     @JsonKey(name: 'NoOfWorkers') double? noOfWorkers,
     @JsonKey(name: 'WorkPeriodMonths') double? workPeriodMonths,
     @JsonKey(name: 'WorkPeriodWeeks') double? workPeriodWeeks,
     @JsonKey(name: 'CycleLength') double? cycleLength,
     @JsonKey(name: 'NoOfCycles') double? noOfCycles,
     @JsonKey(name: 'ProductionPerCycle') double? productionPerCycle,
-    @JsonKey(name: 'AnnualCharcoalProductionPerPerson') double? annualCharcoalProductionPerPerson,
-    @JsonKey(name: 'AnnualCharcoalProductionPerTeam') double? annualCharcoalProductionPerTeam,
+    @JsonKey(name: 'AnnualCharcoalProductionPerPerson')
+        double? annualCharcoalProductionPerPerson,
+    @JsonKey(name: 'AnnualCharcoalProductionPerTeam')
+        double? annualCharcoalProductionPerTeam,
     @JsonKey(name: 'ConversionWoodToCharcoal') double? conversionWoodToCharcoal,
     @JsonKey(name: 'AnnualWoodBiomassRemoved') double? annualWoodBiomassRemoved,
     @Default(1) @JsonKey(name: 'CanDelete') int? canDelete,

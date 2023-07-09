@@ -971,7 +971,7 @@ class CmoDatabaseMasterService {
     return db.annualFarmProductions
         .filter()
         .farmIdEqualTo(farmId)
-        .yearEqualTo(year)
+        .yearEqualTo(year.toString())
         .isActiveEqualTo(true)
         .findAll();
   }
@@ -1386,19 +1386,20 @@ class CmoDatabaseMasterService {
     return db.scheduleActivitys.filter().isActiveEqualTo(true).findAll();
   }
 
-  Future<List<Worker>> getUnsyncedWorkerCountByFarmId(String farmId) async {
+  Future<List<FarmerWorker>> getUnsyncedWorkerCountByFarmId(
+      String farmId) async {
     final db = await _db();
-    return db.workers
+    return db.farmerWorkers
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
-        .isLocalEqualTo(true)
+        .isLocalEqualTo(1)
         .findAll();
   }
 
-  Future<List<Worker>> getWorkerCountByFarmId(String farmId) async {
+  Future<List<FarmerWorker>> getWorkerCountByFarmId(String farmId) async {
     final db = await _db();
-    return db.workers
+    return db.farmerWorkers
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
@@ -2250,7 +2251,7 @@ class CmoDatabaseMasterService {
     return db.farmerWorkers
         .filter()
         .farmIdEqualTo(farmId)
-        .isActiveEqualTo(1)
+        .isActiveEqualTo(true)
         .sortByFirstName()
         .findAll();
   }

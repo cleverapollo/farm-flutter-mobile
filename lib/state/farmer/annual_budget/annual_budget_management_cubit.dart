@@ -7,7 +7,8 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'annual_budget_management_state.dart';
 
-class AnnualBudgetManagementCubit extends HydratedCubit<AnnualBudgetManagementState> {
+class AnnualBudgetManagementCubit
+    extends HydratedCubit<AnnualBudgetManagementState> {
   AnnualBudgetManagementCubit() : super(const AnnualBudgetManagementState());
 
   Future<void> init() async {
@@ -48,7 +49,8 @@ class AnnualBudgetManagementCubit extends HydratedCubit<AnnualBudgetManagementSt
 
       for (final element in data) {
         if (element.annualBudgetId != null) {
-          final transactions = await service.getAnnualBudgetTransactionByBudgetId(element.annualBudgetId!);
+          final transactions = await service
+              .getAnnualBudgetTransactionByBudgetId(element.annualBudgetId!);
           var totalIncomes = 0.0;
           var totalExpenses = 0.0;
           for (final transaction in transactions) {
@@ -120,11 +122,11 @@ class AnnualBudgetManagementCubit extends HydratedCubit<AnnualBudgetManagementSt
         state.copyWith(
           filterAnnualBudgets: state.listAnnualBudgets
               .where((element) =>
-          element.annualBudgetName
-              ?.toString()
-              .toLowerCase()
-              .contains(input.toLowerCase()) ??
-              false)
+                  element.annualBudgetName
+                      ?.toString()
+                      .toLowerCase()
+                      .contains(input.toLowerCase()) ??
+                  false)
               .toList(),
         ),
       );
@@ -141,14 +143,16 @@ class AnnualBudgetManagementCubit extends HydratedCubit<AnnualBudgetManagementSt
         farmId: state.activeFarm?.farmId,
         annualBudgetId: DateTime.now().millisecondsSinceEpoch.toString(),
         groupSchemeId: state.activeFarm?.groupSchemeId,
-        annualFarmProductionId: DateTime.now().millisecondsSinceEpoch.toString(),
+        annualFarmProductionId:
+            DateTime.now().millisecondsSinceEpoch.toString(),
       );
     }
 
-    final annualFarmProduction = value['AnnualFarmProduction'] as AnnualFarmProduction;
+    final annualFarmProduction =
+        value['AnnualFarmProduction'] as AnnualFarmProduction;
     annualBudget = annualBudget.copyWith(
       annualBudgetName: value['AnnualBudgetName'].toString(),
-      annualFarmProductionYear: annualFarmProduction.year,
+      annualFarmProductionYear: int.tryParse(annualFarmProduction.year!),
       annualFarmProductionId: annualFarmProduction.annualFarmProductionId,
     );
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cmo/di.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
@@ -8,8 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
-  FarmerSyncSummaryCubit(
-      {required this.userDeviceCubit})
+  FarmerSyncSummaryCubit({required this.userDeviceCubit})
       : super(const FarmerSyncSummaryState());
   final UserDeviceCubit userDeviceCubit;
 
@@ -34,24 +35,31 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
 
   Future<bool> initDataConfig() async {
     try {
+      if (state.userId != null &&
+          state.farmId != null &&
+          state.userDeviceId != null &&
+          state.groupSchemeId != null) return true;
+
       await userDeviceCubit.createPerformUserDevice();
 
       final user = await configService.getActiveUser();
       final activeFarm = await configService.getActiveFarm();
-      final userId = user?.userId;
-      final userDeviceId = userDeviceCubit.data?.userDeviceId;
+      final activeUserId = user?.userId;
+      final activeUserDeviceId = userDeviceCubit.data?.userDeviceId;
+      final activeFarmId = activeFarm?.farmId;
+      final activeGroupSchemeId = activeFarm?.groupSchemeId;
 
-      if (userId == null ||
-          activeFarm?.farmId == null ||
-          userDeviceId == null ||
-          activeFarm?.groupSchemeId == null) return false;
+      if (activeUserId == null ||
+          activeFarmId == null ||
+          activeUserDeviceId == null ||
+          activeGroupSchemeId == null) return false;
 
       emit(
         state.copyWith(
-          userId: userId,
-          farmId: farmId,
-          groupSchemeId: activeFarm?.groupSchemeId,
-          userDeviceId: userDeviceId,
+          userId: activeUserId,
+          farmId: activeFarmId,
+          groupSchemeId: activeGroupSchemeId,
+          userDeviceId: activeUserDeviceId,
         ),
       );
 
@@ -80,26 +88,22 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
         userDeviceId: userDeviceId,
       );
 
-      await Future.delayed(const Duration(seconds: 3), () {});
-      //
-      // final systemEventExist =
-      //     await cmoPerformApiService.checkFarmSystemEventExist(
-      //   systemEventId: int.parse(systemEventId),
-      // );
-      //
-      // if (systemEventId.isEmpty || !systemEventExist) {
-      //   return emit(state.copyWith(isSyncing: false));
-      // }
-
       logger.d('Create System Event Success --- $systemEventId');
+
+      var totalTime = 30;
+
+      Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (totalTime == 0) return timer.cancel();
+
+        totalTime--;
+        onSyncStatus('Syncing... Please wait...($totalTime s)');
+      });
+
+      await Future.delayed(const Duration(seconds: 30), () {});
 
       await createSubscriptions();
 
       await summaryFarmerSync();
-
-      emit(state.copyWith(isSyncing: true, syncMessage: 'Syncing...'));
-
-      await Future.delayed(const Duration(seconds: 15), () {});
 
       final futures = <Future<dynamic>>[];
 
@@ -118,13 +122,19 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
         throw FlutterError(e.toString());
       }
       showSnackError(msg: 'Sync failed. Please try again');
-      emit(state.copyWith(isSyncing: true, syncMessage: 'Sync'));
+      emit(state.copyWith(
+          isSyncing: false, syncMessage: 'Sync', isLoading: false));
     }
   }
 
   Future<void> initDataSync() async {
     emit(state.copyWith(isLoading: true));
-    await initDataConfig();
+    final canSync = await initDataConfig();
+
+    if (!canSync) {
+      showSnackError(msg: 'Something was wrong, please try again');
+      return emit(state.copyWith(isLoading: false));
+    }
 
     final databaseMasterService = cmoDatabaseMasterService;
     final futures = <Future<dynamic>>[];
@@ -366,10 +376,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
                   data.copyWith(annualBudgetsProductionUnsynced: value.length)),
         )
         ..add(
-          databaseMasterService
-              .getAnnualBudgetsByFarmId(farmId)
-              .then((value) => data =
-                  data.copyWith(annualBudgetsProductionTotal: value.length)),
+          databaseMasterService.getAnnualBudgetsByFarmId(farmId).then((value) =>
+              data = data.copyWith(annualBudgetsProductionTotal: value.length)),
         )
         ..add(
           databaseMasterService

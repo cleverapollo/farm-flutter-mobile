@@ -15,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SelectEntityFarmerScreen<T> extends StatefulWidget {
-
   const SelectEntityFarmerScreen({super.key});
 
   static PageRoute pageRoute() {
@@ -28,11 +27,12 @@ class SelectEntityFarmerScreen<T> extends StatefulWidget {
   }
 
   @override
-  State<SelectEntityFarmerScreen> createState() => _SelectEntityFarmerScreenState();
+  State<SelectEntityFarmerScreen> createState() =>
+      _SelectEntityFarmerScreenState();
 }
 
-class _SelectEntityFarmerScreenState<T> extends State<SelectEntityFarmerScreen<T>> {
-
+class _SelectEntityFarmerScreenState<T>
+    extends State<SelectEntityFarmerScreen<T>> {
   bool loading = false;
 
   @override
@@ -45,17 +45,14 @@ class _SelectEntityFarmerScreenState<T> extends State<SelectEntityFarmerScreen<T
   @override
   Widget build(BuildContext context) {
     return CmoTappable(
-      onTap: FocusScope
-          .of(context)
-          .unfocus,
+      onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
           title: LocaleKeys.entity.tr(),
         ),
         body: Stack(
           children: [
-            BlocSelector<SelectEntityFarmerCubit,
-                SelectEntityFarmerState,
+            BlocSelector<SelectEntityFarmerCubit, SelectEntityFarmerState,
                 SelectEntityFarmerState>(
               selector: (state) => state,
               builder: (context, state) {
@@ -74,8 +71,7 @@ class _SelectEntityFarmerScreenState<T> extends State<SelectEntityFarmerScreen<T
                   );
                 }
                 final entities = state.farms
-                    .map((e) =>
-                    EntityItem<Farm>(e,
+                    .map((e) => EntityItem<Farm>(e,
                         displayString: () => e.farmName ?? ''))
                     .toList();
                 return Column(
@@ -84,7 +80,7 @@ class _SelectEntityFarmerScreenState<T> extends State<SelectEntityFarmerScreen<T
                       child: EntityList(
                         entityItems: entities,
                         selectedItem: entities.firstWhereOrNull(
-                              (e) => e.rawData == state.selectedFarm,
+                          (e) => e.rawData == state.selectedFarm,
                         ),
                         onTap: (item) {
                           context
@@ -101,8 +97,8 @@ class _SelectEntityFarmerScreenState<T> extends State<SelectEntityFarmerScreen<T
                         onTap: state.selectedFarm == null
                             ? null
                             : () async {
-                          await _handleSyncFarmButton(context);
-                        },
+                                await _handleSyncFarmButton(context);
+                              },
                       ),
                     ),
                   ],
@@ -119,18 +115,19 @@ class _SelectEntityFarmerScreenState<T> extends State<SelectEntityFarmerScreen<T
     setState(() {
       loading = true;
     });
-
     await context.read<UserInfoCubit>().getPerformUserInfo();
     final state = context.read<SelectEntityFarmerCubit>().state;
+    final user = context.read<UserInfoCubit>().state.performUserInfo;
     final farm = state.selectedFarm;
 
-    if (farm == null) {
+    if (farm == null || user == null) {
       return;
     }
 
     final futures = <Future<dynamic>>[];
 
     futures
+      ..add(configService.setActiveUser(userInfo: user))
       ..add(
           configService.setActiveUserRole(userRole: UserRoleEnum.farmerMember))
       ..add(configService.setActiveFarm(farm: farm))

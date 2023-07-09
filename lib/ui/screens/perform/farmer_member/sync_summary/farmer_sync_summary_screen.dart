@@ -23,59 +23,69 @@ class FarmerSyncSummaryScreen extends StatelessWidget {
       create: (_) => FarmerSyncSummaryCubit(
         userDeviceCubit: context.read<UserDeviceCubit>(),
       )..initDataSync(),
-      child: Scaffold(
-        appBar: CmoAppBarV2(
-          title: LocaleKeys.syncSummary.tr(),
-          showLeading: true,
-        ),
-        body: BlocBuilder<FarmerSyncSummaryCubit, FarmerSyncSummaryState>(
-          builder: (context, state) {
-            if (state.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      child: BlocSelector<FarmerSyncSummaryCubit, FarmerSyncSummaryState, bool>(
+        selector: (state) => state.isSyncing,
+        builder: (context, isSyncing) {
+          return Scaffold(
+            appBar: CmoAppBarV2(
+              title: LocaleKeys.syncSummary.tr(),
+              showLeading: true,
+              onTapLeading: () {
+                if (isSyncing) return;
+                Navigator.pop(context);
+              },
+            ),
+            body: BlocBuilder<FarmerSyncSummaryCubit, FarmerSyncSummaryState>(
+              builder: (context, state) {
+                if (state.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            if (state.isSyncing) {
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  Center(
-                      child: Text(
-                    state.syncMessage ?? LocaleKeys.sync.tr(),
-                  )),
-                  Positioned(
-                      bottom: 30,
-                      child: CmoFilledButton(
-                        title: 'Sync',
-                        onTap: () {
-                          if (!state.isSyncing) {
-                            context.read<FarmerSyncSummaryCubit>().onSync();
-                          }
-                        },
+                if (state.isSyncing) {
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Center(
+                          child: Text(
+                        state.syncMessage ?? LocaleKeys.sync.tr(),
                       )),
-                ],
-              );
-            }
+                      Positioned(
+                          bottom: 30,
+                          child: CmoFilledButton(
+                            title: 'Sync',
+                            onTap: () {
+                              if (!state.isSyncing) {
+                                context.read<FarmerSyncSummaryCubit>().onSync();
+                              }
+                            },
+                          )),
+                    ],
+                  );
+                }
 
-            return Stack(
-              alignment: Alignment.center,
-              children: [
-                SingleChildScrollView(
-                  child: Column(children: FarmerSyncSummaryEnum.all.getViews),
-                ),
-                Positioned(
-                    bottom: 30,
-                    child: CmoFilledButton(
-                      title: LocaleKeys.sync.tr(),
-                      onTap: () {
-                        if (!state.isSyncing) {
-                          context.read<FarmerSyncSummaryCubit>().onSync();
-                        }
-                      },
-                    )),
-              ],
-            );
-          },
-        ),
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SingleChildScrollView(
+                      child:
+                          Column(children: FarmerSyncSummaryEnum.all.getViews),
+                    ),
+                    Positioned(
+                        bottom: 30,
+                        child: CmoFilledButton(
+                          title: LocaleKeys.sync.tr(),
+                          onTap: () {
+                            if (!state.isSyncing) {
+                              context.read<FarmerSyncSummaryCubit>().onSync();
+                            }
+                          },
+                        )),
+                  ],
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
