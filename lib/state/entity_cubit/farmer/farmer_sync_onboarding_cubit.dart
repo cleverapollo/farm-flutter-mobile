@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 
 part 'farmer_sync_onboarding_state.dart';
 
-class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState> {
+class FarmerSyncOnboardingCubit
+    extends BaseSyncCubit<FarmerSyncOnboardingState> {
   FarmerSyncOnboardingCubit({required this.userDeviceCubit})
       : super(FarmerSyncOnboardingState()) {
     init();
@@ -24,8 +25,8 @@ class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState>
 
   String get topicMasterDataSync => 'Cmo.MasterDataDeviceSync.';
   String get topicTrickleFeedFarmerMasterDataByFarmId => 'Cmo.MasterData.';
-  String get topicTrickleFeedFgsMasterDataByGroupSchemeId => 'Cmo.MasterData.FGS.';
-
+  String get topicTrickleFeedFgsMasterDataByGroupSchemeId =>
+      'Cmo.MasterData.FGS.';
 
   Future<void> init() async {
     final farm = await configService.getActiveFarm();
@@ -51,7 +52,7 @@ class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState>
         userDeviceId: userDeviceId,
       );
       logger.d('--createFarmerSystemEvent done');
-      await Future.delayed(const Duration(seconds: 3), () {});
+      await Future.delayed(const Duration(seconds: 30), () {});
       logger.d('--syncFarmerMasterData');
       await subscribeToSyncAllFarmerMasterData();
       logger.d('--syncFarmerMasterData done');
@@ -167,8 +168,7 @@ class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState>
             emit(state.copyWith(syncMessage: 'Syncing Special Site...'));
             await insertSpecialSite(item);
           } else if (topic == '${topicMasterDataSync}CUR.$userDeviceId') {
-            emit(state.copyWith(
-                syncMessage: 'Syncing Customary Use Right...'));
+            emit(state.copyWith(syncMessage: 'Syncing Customary Use Right...'));
             await insertCustomaryUseRight(item);
           } else if (topic == '${topicMasterDataSync}SHT.$userDeviceId') {
             emit(state.copyWith(syncMessage: 'Syncing Stakeholder Type...'));
@@ -186,12 +186,11 @@ class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState>
           } else if (topic == '${topicMasterDataSync}FSCUR.$userDeviceId') {
             emit(state.copyWith(
                 syncMessage:
-                'Syncing Farm Stakeholder Customary Use Right...'));
+                    'Syncing Farm Stakeholder Customary Use Right...'));
             await insertFarmStakeholderCustomaryUseRight(item);
           } else if (topic == '${topicMasterDataSync}FSSU.$userDeviceId') {
             emit(state.copyWith(
-                syncMessage:
-                'Syncing Farm Stakeholder Social Upliftment...'));
+                syncMessage: 'Syncing Farm Stakeholder Social Upliftment...'));
             await insertFarmStakeholderSocialUpliftment(item);
           } else if (topic == '${topicMasterDataSync}FSSS.$userDeviceId') {
             emit(state.copyWith(
@@ -201,20 +200,17 @@ class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState>
               '${topicMasterDataSync}AnnFrmBudTransCat.$userDeviceId') {
             emit(state.copyWith(
                 syncMessage:
-                'Syncing Annual Farm Annual Farm Budget Transaction Categories...'));
+                    'Syncing Annual Farm Annual Farm Budget Transaction Categories...'));
             await insertAnnualFarmBudgetTransactionCategory(item);
-          } else if (topic ==
-              '${topicMasterDataSync}AnnFrmBud.$userDeviceId') {
-            emit(state.copyWith(
-                syncMessage: 'Syncing Annual Farm Budgets...'));
+          } else if (topic == '${topicMasterDataSync}AnnFrmBud.$userDeviceId') {
+            emit(state.copyWith(syncMessage: 'Syncing Annual Farm Budgets...'));
             await insertAnnualFarmBudget(item);
           } else if (topic ==
               '${topicMasterDataSync}AnnFrmBudTrans.$userDeviceId') {
             emit(state.copyWith(
                 syncMessage: 'Syncing Annual Farm Budget Transactions...'));
             await insertAnnualFarmTransactionBudget(item);
-          } else if (topic ==
-              '${topicMasterDataSync}Schedule.$userDeviceId') {
+          } else if (topic == '${topicMasterDataSync}Schedule.$userDeviceId') {
             emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
             await insertSchedule(item);
           } else if (topic ==
@@ -225,13 +221,11 @@ class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState>
           } else if (topic ==
               '${topicMasterDataSync}BcaRegister.$userDeviceId') {
             emit(state.copyWith(
-                syncMessage:
-                'Syncing Biological Control Agent Registers...'));
+                syncMessage: 'Syncing Biological Control Agent Registers...'));
             await insertBiologicalControlAgentRegister(item);
           } else if (topic ==
               '${topicMasterDataSync}ChemicalRegister.$userDeviceId') {
-            emit(
-                state.copyWith(syncMessage: 'Syncing Chemical Registers...'));
+            emit(state.copyWith(syncMessage: 'Syncing Chemical Registers...'));
             await insertChemicalRegister(item);
           } else if (topic ==
               '${topicMasterDataSync}AsiRegister.$userDeviceId') {
@@ -248,8 +242,7 @@ class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState>
             await insertComplaintsAndDisputesRegister(item);
           } else if (topic ==
               '${topicMasterDataSync}GrievanceRegister.$userDeviceId') {
-            emit(state.copyWith(
-                syncMessage: 'Syncing Grievance Registers...'));
+            emit(state.copyWith(syncMessage: 'Syncing Grievance Registers...'));
             await insertGrievanceRegister(item);
           } else if (topic ==
               '${topicMasterDataSync}PndRegister.$userDeviceId') {
@@ -299,8 +292,7 @@ class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState>
             emit(state.copyWith(
                 syncMessage: 'Syncing Biological Control Agent Type...'));
             await insertBiologicalControlAgentType(item);
-          } else if (topic ==
-              '${topicMasterDataSync}IssueType.$userDeviceId') {
+          } else if (topic == '${topicMasterDataSync}IssueType.$userDeviceId') {
             emit(state.copyWith(
                 syncMessage: 'Syncing Disciplinaries Issues...'));
             await insertIssueType(item);
@@ -311,8 +303,7 @@ class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState>
           } else if (topic == '${topicMasterDataSync}AsiType.$userDeviceId') {
             emit(state.copyWith(syncMessage: 'Syncing Asi Type...'));
             await insertAsiType(item);
-          } else if (topic ==
-              '${topicMasterDataSync}FireCause.$userDeviceId') {
+          } else if (topic == '${topicMasterDataSync}FireCause.$userDeviceId') {
             emit(state.copyWith(syncMessage: 'Syncing Fire Cause...'));
             await insertFireCause(item);
           } else if (topic ==
@@ -329,14 +320,13 @@ class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState>
             await insertTreatmentMethod(item);
           } else if (topic ==
               '${topicMasterDataSync}AsiRegisterPhoto.$userDeviceId') {
-            emit(state.copyWith(
-                syncMessage: 'Syncing Asi Register Photos...'));
+            emit(state.copyWith(syncMessage: 'Syncing Asi Register Photos...'));
             await insertAsiRegisterPhoto(item);
           } else if (topic ==
               '${topicMasterDataSync}AaiRegPropertyDamaged.$userDeviceId') {
             emit(state.copyWith(
                 syncMessage:
-                'Syncing Accident and Incident Property Damaged...'));
+                    'Syncing Accident and Incident Property Damaged...'));
             await insertAccidentAndIncidentPropertyDamaged(item);
           } else if (topic ==
               '${topicMasterDataSync}PndRegisterTreatmentMethod.$userDeviceId') {
@@ -347,7 +337,7 @@ class FarmerSyncOnboardingCubit extends BaseSyncCubit<FarmerSyncOnboardingState>
               '${topicMasterDataSync}PndTypeTreatmentMethod.$userDeviceId') {
             emit(state.copyWith(
                 syncMessage:
-                'Syncing Pests and Disease Type Treatment Method...'));
+                    'Syncing Pests and Disease Type Treatment Method...'));
             await insertPestsAndDiseaseTypeTreatmentMethod(item);
           } else if (topic ==
               '${topicMasterDataSync}RteSpeciesRegisterPhoto.$userDeviceId') {
