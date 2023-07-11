@@ -3,16 +3,39 @@ import 'dart:async';
 import 'package:cmo/di.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farmer_upload_summary_mixin.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
+class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
+    with FarmUploadSummaryMixin {
   FarmerSyncSummaryCubit({required this.userDeviceCubit})
       : super(const FarmerSyncSummaryState());
   final UserDeviceCubit userDeviceCubit;
+
+  @override
+  String? get mixinFarmId => state.farmId;
+
+  @override
+  int? get mixinGroupSchemeId => state.groupSchemeId;
+
+  @override
+  int? get mixinRmuId => state.rmuId;
+
+  @override
+  int? get mixinUserId => state.userId;
+
+  @override
+  int? get mixinUserDeviceId => state.userDeviceId;
+
+  @override
+  FarmerSyncSummaryState get mixinState => state;
+
+  @override
+  void Function(FarmerSyncSummaryState state)? get mixinEmit => emit;
 
   String get topicMasterDataSync => 'Cmo.MasterDataDeviceSync.';
   String get topicTrickleFeedFarmerMasterDataByFarmId => 'Cmo.MasterData.';
@@ -82,6 +105,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState> {
         showSnackError(msg: 'Sync failed. Please try again');
         return emit(state.copyWith(isSyncing: true, syncMessage: 'Sync'));
       }
+
+      await onUploadingFarmData();
 
       final systemEventId = await cmoPerformApiService.createFarmerSystemEvent(
         farmId: farmId,

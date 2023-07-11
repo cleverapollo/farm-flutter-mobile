@@ -13,6 +13,7 @@ class FarmerSyncSummaryState with _$FarmerSyncSummaryState {
     int? userDeviceId,
     int? groupSchemeId,
     String? farmId,
+    int? rmuId,
   }) = _FarmerSyncSummaryState;
 }
 
