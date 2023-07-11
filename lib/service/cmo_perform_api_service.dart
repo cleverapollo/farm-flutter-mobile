@@ -7,6 +7,7 @@ import 'package:cmo/main.dart';
 import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/compartment/product_group_template.dart';
 import 'package:cmo/model/compartment/species_group_template.dart';
+import 'package:cmo/model/hirac.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/user_role_config/user_role_config.dart';
@@ -580,5 +581,30 @@ class CmoPerformApiService {
 
     final data = response.data;
     return data?.map((e) => AreaType.fromJson(e as JsonData)).toList();
+  }
+
+  Future<List<Hirac>?> fetchHirac(int hiracId) async {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS.Main/API/HiracMain/GetHiracByUserId',
+      {
+        "isActive": "true",
+      },
+    );
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    print("NGUYEN DEBUG: $data");
+    return data
+        ?.map((e) => Hirac.fromJson(e as JsonData))
+        .toList();
   }
 }

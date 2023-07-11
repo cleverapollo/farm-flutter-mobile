@@ -10,6 +10,9 @@ import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/disciplinaries/disciplonaries.dart';
 import 'package:cmo/model/group_scheme_stakeholder/group_scheme_stakeholder.dart';
+import 'package:cmo/model/hirac.dart';
+import 'package:cmo/model/hirac_template.dart';
+import 'package:cmo/model/hirac_type.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/user/user_role.dart';
@@ -139,6 +142,9 @@ class CmoDatabaseMasterService {
         FarmStakeholderSocialUpliftmentSchema,
         FarmStakeholderCustomaryUseRightSchema,
         FarmStakeholderSpecialSiteSchema,
+        HiracSchema,
+        HiracTemplateSchema,
+        HiracTypeSchema,
       ],
       name: _databaseName,
       directory: dir.path,
@@ -778,6 +784,15 @@ class CmoDatabaseMasterService {
     final db = await _db();
 
     return db.groupSchemes.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<GroupScheme?> getGroupSchemeById(int id) async {
+    final db = await _db();
+    return db.groupSchemes
+        .filter()
+        .isActiveEqualTo(true)
+        .groupSchemeIdEqualTo(id)
+        .findFirst();
   }
 
   Future<List<GrievanceIssue>> getGrievanceIssueByGroupSchemeId(
@@ -2952,5 +2967,32 @@ class CmoDatabaseMasterService {
   Future<List<Compartment>?> getCompartmentByFarmId(String farmId) async {
     final db = await _db();
     return db.compartments.filter().farmIdEqualTo(farmId).findAll();
+  }
+
+  Future<Hirac?> getHiracById(int id) async {
+    final db = await _db();
+    return db.hiracs
+        .filter()
+        .isActiveEqualTo(true)
+        .hiracIdEqualTo(id)
+        .findFirst();
+  }
+
+  Future<HiracTemplate?> getHiracTemplateById(int id) async {
+    final db = await _db();
+    return db.hiracTemplates
+        .filter()
+        .isActiveEqualTo(true)
+        .hiracTemplateIdEqualTo(id)
+        .findFirst();
+  }
+
+  Future<HiracType?> getHiracTypeByid(int id) async {
+    final db = await _db();
+    return db.hiracTypes
+        .filter()
+        .isActiveEqualTo(true)
+        .hiracTypeIdEqualTo(id)
+        .findFirst();
   }
 }

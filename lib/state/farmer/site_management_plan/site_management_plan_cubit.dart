@@ -14,15 +14,46 @@ class SiteManagementPlanCubit extends HydratedCubit<SiteManagementPlanState> {
     try {
       emit(state.copyWith(loading: true));
       final activeFarm = await configService.getActiveFarm();
+
+      if (activeFarm?.groupSchemeId != null) {
+        getFarmType(activeFarm!.groupSchemeId!);
+      }
+
       emit(state.copyWith(activeFarm: activeFarm));
       await refresh();
-
     } catch (error) {
       handleError(error);
     } finally {
       emit(state.copyWith(loading: false));
     }
   }
+
+  Future getFarmType(int groupSchemeId) async {
+    final groupSchemes = await cmoDatabaseMasterService.getGroupScheme();
+    print("NGUYEN DEBUG: groupSchemes: ${groupSchemes.length} ");
+
+
+    final groupScheme = await cmoDatabaseMasterService
+        .getGroupSchemeById(groupSchemeId);
+    print("NGUYEN DEBUG groupSchemeId: $groupSchemeId groupScheme: ${groupScheme?.groupSchemeId}");
+    // if (groupScheme?.groupSchemeId == null) {
+    //   return;
+    // }
+    //  final result = await cmoPerformApiService.fetchHirac(groupScheme?.hiracId!);
+     final result = await cmoPerformApiService.fetchHirac(0);
+    print("NGUYEN DEBUG: ${result?.length}");
+    // final hirac = await cmoDatabaseMasterService.getHiracById(groupScheme?.hiracId ?? 0);
+    // if (hirac?.hiracId == null) {
+    //   return;
+    // }
+    // final hiracTemplate = await cmoDatabaseMasterService.getHiracTemplateById(hirac?.hiracTemplateId ?? 0);
+    // if (hiracTemplate?.hiracTemplateId == null) {
+    //   return;
+    // }
+    // final hiracType = await cmoDatabaseMasterService.getHiracTypeByid(hiracTemplate?.hiracTypeId ?? 0);
+  }
+
+
 
   Future<void> getTotalAnnualProductions() async {
     try {
