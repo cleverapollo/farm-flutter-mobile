@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/social_upliftment_payload/social_upliftment_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -22,4 +23,15 @@ class SocialUpliftment with _$SocialUpliftment {
 
   @override
   Id get id => Isar.autoIncrement;
+}
+
+extension SocialUpliftmentX on SocialUpliftment {
+  SocialUpliftmentPayLoad toPayLoad() {
+    return SocialUpliftmentPayLoad(
+      SocialUpliftmentId: socialUpliftmentId,
+      SocialUpliftmentName: socialUpliftmentName,
+      IsActive: isActive,
+      IsMasterDataSynced: isMasterDataSynced,
+    );
+  }
 }

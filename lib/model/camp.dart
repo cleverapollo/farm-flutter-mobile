@@ -1,5 +1,7 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/bool_estension.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/camp_payload/camp_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -38,10 +40,12 @@ class Camp with _$Camp {
     @JsonKey(name: 'Variance') double? variance,
     @JsonKey(name: 'CampOrder') int? campOrder,
     @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsLocal') bool? isLocal,
     @JsonKey(name: 'CreateDT') DateTime? createDT,
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @JsonKey(name: 'latitude') double? latitude,
     @JsonKey(name: 'longitude') double? longitude,
+    @JsonKey(name: 'CanDelete') int? canDelete,
   }) = _Camp;
 
   const Camp._();
@@ -53,9 +57,43 @@ class Camp with _$Camp {
 }
 
 extension CampExtension on Camp {
-  bool get isFirstStepCompleted => (campName?.isNotEmpty ?? false)
-      && protectedArea != null && cattlePostHousing != null && corridors != null &&
-      roadAndFireBreaks != null && poachingAlleviationZone != null && latitude != null;
+  CampPayLoad toPayLoad() {
+    return CampPayLoad(
+      CampId: campId,
+      CampName: campName,
+      FarmId: farmId,
+      IsActive: isActive,
+      IsLocal: isLocal.toInt,
+      CampOrder: campOrder,
+      ProtectedArea: protectedArea?.toInt(),
+      CattlePostHousing: cattlePostHousing?.toInt(),
+      Corridors: corridors?.toInt(),
+      RoadAndFireBreaks: roadAndFireBreaks?.toInt(),
+      PoachingAlleviationZone: poachingAlleviationZone?.toInt(),
+      ConvertedToGrassland: convertedToGrassland?.toInt(),
+      RangeLand: rangeLand?.toInt(),
+      InfestationCategory1: infestationCategory1?.toInt(),
+      InfestationCategory2: infestationCategory2?.toInt(),
+      InfestationCategory3: infestationCategory3?.toInt(),
+      InfestationCategory4: infestationCategory4?.toInt(),
+      InfestationCategory5: infestationCategory5?.toInt(),
+      CumulativeBiomass: cumulativeBiomass?.toInt(),
+      PlannedYearOfHarvest: plannedYearOfHarvest,
+      ActualYearOfHarvest: actualYearOfHarvest,
+      TonsOfCharcoalProduced: tonsOfCharcoalProduced?.toInt(),
+      TotalArea: totalArea?.toInt(),
+      CanDelete: canDelete,
+    );
+  }
+
+  bool get isFirstStepCompleted =>
+      (campName?.isNotEmpty ?? false) &&
+      protectedArea != null &&
+      cattlePostHousing != null &&
+      corridors != null &&
+      roadAndFireBreaks != null &&
+      poachingAlleviationZone != null &&
+      latitude != null;
 
   double totalInfestationRemaining() {
     double remainingInfestation = 100;

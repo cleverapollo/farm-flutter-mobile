@@ -17,25 +17,10 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
   final UserDeviceCubit userDeviceCubit;
 
   @override
-  String? get mixinFarmId => state.farmId;
+  FarmerSyncSummaryState get mState => state;
 
   @override
-  int? get mixinGroupSchemeId => state.groupSchemeId;
-
-  @override
-  int? get mixinRmuId => state.rmuId;
-
-  @override
-  int? get mixinUserId => state.userId;
-
-  @override
-  int? get mixinUserDeviceId => state.userDeviceId;
-
-  @override
-  FarmerSyncSummaryState get mixinState => state;
-
-  @override
-  void Function(FarmerSyncSummaryState state)? get mixinEmit => emit;
+  void Function(FarmerSyncSummaryState state)? get mEmit => emit;
 
   String get topicMasterDataSync => 'Cmo.MasterDataDeviceSync.';
   String get topicTrickleFeedFarmerMasterDataByFarmId => 'Cmo.MasterData.';
@@ -71,11 +56,13 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final activeUserDeviceId = userDeviceCubit.data?.userDeviceId;
       final activeFarmId = activeFarm?.farmId;
       final activeGroupSchemeId = activeFarm?.groupSchemeId;
+      final activeRmuId = activeFarm?.regionalManagerUnitId;
 
       if (activeUserId == null ||
           activeFarmId == null ||
           activeUserDeviceId == null ||
-          activeGroupSchemeId == null) return false;
+          activeGroupSchemeId == null ||
+          activeRmuId == null) return false;
 
       emit(
         state.copyWith(
@@ -83,6 +70,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
           farmId: activeFarmId,
           groupSchemeId: activeGroupSchemeId,
           userDeviceId: activeUserDeviceId,
+          rmuId: activeRmuId,
         ),
       );
 

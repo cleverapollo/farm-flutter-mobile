@@ -120,6 +120,36 @@ class CmoPerformApiService {
     return data == null ? null : UserInfo.fromJson(data);
   }
 
+  Future<bool> public({
+    required String currentClientId,
+    required String topic,
+    required List<Message>? messages,
+  }) async {
+    try {
+      final token = await secureStorage.read(
+          key: UserRoleConfig.performRole.getAccessTokenKey);
+      final result = await client.post<dynamic>(
+        '${_mqApiUrl}message',
+        queryParameters: {
+          'key': _pubsubApiKey,
+          'client': currentClientId,
+          'topic': topic,
+        },
+        data: messages,
+        options: Options(headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        }),
+      );
+      if (result.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<UserDevice?> createUserDevice({
     required String? deviceId,
     required String? deviceOS,
@@ -297,7 +327,6 @@ class CmoPerformApiService {
     } catch (_) {}
   }
 
-
   Future<bool> createFarmerSystemEvent({
     required String farmId,
     required int userDeviceId,
@@ -314,7 +343,8 @@ class CmoPerformApiService {
       options: Options(headers: {'accessToken': 'true'}),
     );
 
-    await checkFarmSystemEventExist(systemEventId: response.data['SystemEventId'] as int);
+    await checkFarmSystemEventExist(
+        systemEventId: response.data['SystemEventId'] as int);
 
     if (response.statusCode != 200) {
       showSnackError(msg: 'Unknow error: ${response.statusCode}');
@@ -507,9 +537,7 @@ class CmoPerformApiService {
     }
 
     final data = response.data;
-    return data
-        ?.map((e) => AsiType.fromJson(e as JsonData))
-        .toList();
+    return data?.map((e) => AsiType.fromJson(e as JsonData)).toList();
   }
 
   Future<List<AsiType>?> fetchFarmerAsiType() async {
@@ -528,9 +556,7 @@ class CmoPerformApiService {
     }
 
     final data = response.data;
-    return data
-        ?.map((e) => AsiType.fromJson(e as JsonData))
-        .toList();
+    return data?.map((e) => AsiType.fromJson(e as JsonData)).toList();
   }
 
   Future<List<SpeciesGroupTemplate>?> fetchSpeciesGroupTemplates() async {

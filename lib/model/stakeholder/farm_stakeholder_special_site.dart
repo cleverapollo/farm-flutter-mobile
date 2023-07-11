@@ -1,5 +1,6 @@
 // ignore_for_file: invalid_annotation_target
 
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_special_site_payload/farm_stakeholder_special_site_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -27,4 +28,16 @@ class FarmStakeholderSpecialSite with _$FarmStakeholderSpecialSite {
   @override
   Id get id =>
       int.tryParse(farmStakeholderSpecialSiteId ?? '') ?? Isar.autoIncrement;
+}
+
+extension FarmStakeholderSpecialSiteX on FarmStakeholderSpecialSite {
+  FarmStakeholderSpecialSitePayLoad toPayLoad() {
+    return FarmStakeholderSpecialSitePayLoad(
+      FarmStakeholderSpecialSiteId: farmStakeholderSpecialSiteId,
+      SpecialSiteId: specialSiteId,
+      FarmStakeholderId: farmStakeholderId,
+      IsActive: isActive,
+      IsMasterDataSynced: isMasterDataSynced,
+    );
+  }
 }

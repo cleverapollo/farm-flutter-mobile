@@ -5,8 +5,8 @@ part 'worker_payload.freezed.dart';
 part 'worker_payload.g.dart';
 
 @freezed
-class WorkerPayload with _$WorkerPayload {
-  const factory WorkerPayload({
+class FarmWorkerPayload with _$FarmWorkerPayload {
+  const factory FarmWorkerPayload({
     String? WorkerId,
     String? FirstName,
     String? Surname,
@@ -23,7 +23,7 @@ class WorkerPayload with _$WorkerPayload {
     String? NormalisedPhotoURL,
     String? Photo,
     List<JobDescriptionPayLoad>? JobDescriptions,
-  }) = _WorkerPayload;
-  factory WorkerPayload.fromJson(Map<String, dynamic> json) =>
-      _$WorkerPayloadFromJson(json);
+  }) = _FarmWorkerPayload;
+  factory FarmWorkerPayload.fromJson(Map<String, dynamic> json) =>
+      _$FarmWorkerPayloadFromJson(json);
 }

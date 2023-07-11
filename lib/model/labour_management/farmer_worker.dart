@@ -1,4 +1,5 @@
-import 'package:cmo/model/model.dart';
+import 'package:cmo/extensions/bool_estension.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/worker_payload/worker_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -43,4 +44,26 @@ class FarmerWorker with _$FarmerWorker {
 
   @override
   Id get id => int.tryParse(workerId ?? '') ?? Isar.autoIncrement;
+}
+
+extension FarmerWorkerX on FarmerWorker {
+  FarmWorkerPayload toPayLoad() {
+    return FarmWorkerPayload(
+      FirstName: firstName,
+      WorkerId: workerId,
+      Surname: surname,
+      FarmId: farmId,
+      IdNumber: idNumber,
+      GenderId: genderId,
+      PhoneNumber: phoneNumber,
+      CreateDT: DateTime.parse(createDT ?? ''),
+      UpdateDT: DateTime.parse(updateDT ?? ''),
+      IsLocal: isLocal,
+      CanDelete: canDelete,
+      IsActive: isActive.toInt,
+      PhotoURL: photoURL,
+      NormalisedPhotoURL: normalisedPhotoURL,
+      Photo: photo,
+    );
+  }
 }

@@ -17,6 +17,8 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/user/user_role.dart';
 import 'package:cmo/model/user_role_portal.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_payload/farm_stakeholder_payload.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_farm_stakeholder_payload/main_farm_stakeholder_payload.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -160,6 +162,19 @@ class CmoDatabaseMasterService {
 
   Future<Isar> get db => _db();
 
+  Future<List<FarmerWorker>> getUnsyncedWorkersWithJobDescriptionsByFarmId(
+      String farmId) async {
+    final db = await _db();
+
+    final farmWorkers = await db.farmerWorkers
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isLocalEqualTo(1)
+        .findAll();
+
+    return farmWorkers;
+  }
+
   Future<int?> cacheConfigData(ConfigData data) async {
     final db = await _db();
 
@@ -234,6 +249,83 @@ class CmoDatabaseMasterService {
         .isActiveEqualTo(true)
         .sortByCampOrder()
         .findAll();
+  }
+
+  Future<List<Camp>> getUnsyncedFarmCampByFarmId(String farmId) async {
+    final db = await _db();
+    return db.camps
+        .filter()
+        .farmIdEqualTo(farmId)
+        .tonsOfCharcoalProducedIsNotNull()
+        .isLocalEqualTo(true)
+        .sortByCampOrder()
+        .findAll();
+  }
+
+  Future<List<CustomaryUseRight>> getUnsyncedCustomaryUseRights() async {
+    final db = await _db();
+
+    return db.customaryUseRights
+        .filter()
+        .isMasterDataSyncedEqualTo(0)
+        .findAll();
+  }
+
+  Future<List<SocialUpliftment>> getUnsyncedSocialUpliftments() async {
+    final db = await _db();
+
+    return db.socialUpliftments.filter().isMasterDataSyncedEqualTo(0).findAll();
+  }
+
+  Future<List<SpecialSite>> getUnsyncedSpecialSite() async {
+    final db = await _db();
+
+    return db.specialSites.filter().isMasterDataSyncedEqualTo(0).findAll();
+  }
+
+  Future<List<FarmerStakeHolder>> getFarmStakeholder() async {
+    final db = await _db();
+
+    return db.farmerStakeHolders
+        .filter()
+        .farmIdIsNotNull()
+        .farmIdIsNull()
+        .findAll();
+  }
+
+  Future<List<FarmStakeholderSocialUpliftment>>
+      getUnsycnedFarmStakeholderSocialUpliftments() async {
+    final db = await _db();
+
+    return db.farmStakeholderSocialUpliftments
+        .filter()
+        .isMasterDataSyncedEqualTo(0)
+        .findAll();
+  }
+
+  Future<List<FarmStakeholderSpecialSite>>
+      getUnsycnedFarmStakeholderSpecialSites() async {
+    final db = await _db();
+
+    return db.farmStakeholderSpecialSites
+        .filter()
+        .isMasterDataSyncedEqualTo(0)
+        .findAll();
+  }
+
+  Future<List<FarmStakeholderCustomaryUseRight>>
+      getUnsycnedFarmStakeholderCustomaryUseRights() async {
+    final db = await _db();
+    return db.farmStakeholderCustomaryUseRights
+        .filter()
+        .isMasterDataSyncedEqualTo(0)
+        .findAll();
+  }
+
+  Future<List<StakeHolder>> getUnsyncedStakeholder() async {
+    final db = await _db();
+
+    return db.stakeHolders.filter().isMasterDataSyncedEqualTo(0).findAll();
   }
 
   Future<ConfigData?> getConfig(ConfigEnum config) async {
@@ -960,6 +1052,21 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .sortByYearDesc()
+        .thenByCreateDTDesc()
+        .findAll();
+  }
+
+  Future<List<AnnualFarmProduction>> getUnsyncedAnnualFarmProductionByFarmId(
+    String farmId,
+  ) async {
+    final db = await _db();
+
+    return db.annualFarmProductions
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .isLocalEqualTo(true)
         .sortByYearDesc()
         .thenByCreateDTDesc()
         .findAll();

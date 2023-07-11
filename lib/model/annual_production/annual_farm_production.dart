@@ -1,3 +1,5 @@
+import 'package:cmo/extensions/bool_estension.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/annual_farm_production_payload/annual_farm_production_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -79,5 +81,29 @@ class AnnualFarmProduction with _$AnnualFarmProduction {
     } else {
       return annualBiomassRemoved;
     }
+  }
+}
+
+extension AnnualFarmProductionX on AnnualFarmProduction {
+  AnnualFarmProductionPayload toPayLoad() {
+    return AnnualFarmProductionPayload(
+      AnnualFarmProductionId: annualFarmProductionId,
+      Year: int.tryParse(year ?? ''),
+      FarmId: farmId,
+      NoOfWorkers: noOfWorkers?.toInt(),
+      WorkPeriodMonths: workPeriodMonths?.toInt(),
+      WorkPeriodWeeks: workPeriodWeeks?.toInt(),
+      CycleLength: cycleLength?.toInt(),
+      NoOfCycles: noOfCycles?.toInt(),
+      ProductionPerCycle: productionPerCycle?.toInt(),
+      AnnualCharcoalProductionPerPerson:
+          annualCharcoalProductionPerPerson?.toInt(),
+      AnnualCharcoalProductionPerTeam: annualCharcoalProductionPerTeam?.toInt(),
+      ConversionWoodToCharcoal: conversionWoodToCharcoal?.toInt(),
+      AnnualWoodBiomassRemoved: annualWoodBiomassRemoved?.toInt(),
+      IsLocal: isLocal.toInt,
+      IsActive: isActive.toInt,
+      CanDelete: canDelete,
+    );
   }
 }

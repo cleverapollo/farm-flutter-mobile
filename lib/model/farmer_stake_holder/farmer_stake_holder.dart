@@ -1,3 +1,5 @@
+import 'package:cmo/extensions/bool_estension.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_payload/farm_stakeholder_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -30,15 +32,29 @@ class FarmerStakeHolder with _$FarmerStakeHolder {
     @JsonKey(name: 'AvatarFilePath') String? avatarFilePath,
     @JsonKey(name: 'AvatarFileName') String? avatarFileName,
     @Default(<int>[])
-    @JsonKey(name: 'JobDescription') List<int>? jobDescription,
+    @JsonKey(name: 'JobDescription')
+        List<int>? jobDescription,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
     @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
+    @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
   }) = _FarmerStakeHolder;
 
   const FarmerStakeHolder._();
 
-  factory FarmerStakeHolder.fromJson(Map<String, dynamic> json) => _$FarmerStakeHolderFromJson(json);
+  factory FarmerStakeHolder.fromJson(Map<String, dynamic> json) =>
+      _$FarmerStakeHolderFromJson(json);
 
   @override
   Id get id => farmerStakeHolderId ?? Isar.autoIncrement;
+}
+
+extension FarmerStakeHolderX on FarmerStakeHolder {
+  FarmStakeholderPayLoad toPayLoad() {
+    return FarmStakeholderPayLoad(
+      FarmStakeholderId: farmerStakeHolderId.toString(),
+      StakeholderId: stakeholderId.toString(),
+      FarmId: farmId.toString(),
+      IsMasterDataSynced: isMasterDataSynced.toInt,
+    );
+  }
 }
