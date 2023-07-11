@@ -77,6 +77,13 @@ class SiteManagementPlanCubit extends HydratedCubit<SiteManagementPlanState> {
     await getTotalCamp();
     await getTotalAnnualProductions();
     await getTotalAnnualBudgets();
+    await getCompartments();
+  }
+
+  Future getCompartments() async {
+    final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(state.activeFarm?.farmId ?? '');
+    final total = compartments?.fold(0.0, (previousValue, element) => previousValue + (element.polygonArea ?? 0.0));
+    emit(state.copyWith(compartmentCount: compartments?.length, compartmentTotalArea: total));
   }
 
   void handleError(Object error) {

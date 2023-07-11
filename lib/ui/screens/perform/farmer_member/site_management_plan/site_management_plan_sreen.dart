@@ -3,7 +3,7 @@ import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/annual_budget_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_production_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/camp_management_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/site_management_plan/management_plan/management_plan_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
@@ -56,21 +56,13 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
 
   Widget _buildContentWidget() {
     return _buildCharcoalManagementPlan();
+    // return _buildPlantationFMP();
   }
 
   Widget _buildPlantationFMP() {
     return Column(
       children: [
         _compartmentCard(context),
-        CmoTappable(
-          onTap: () => ManagementPlanScreen.push(context),
-          child: CmoCard(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-            content: [
-              CmoCardHeader(title: LocaleKeys.managementPlan.tr()),
-            ],
-          ),
-        ),
       ],
     );
   }
@@ -82,7 +74,7 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
       builder: (context, state) {
         return Column(
           children: [
-            _compartmentCard(context),
+            _campCard(context),
             CmoTappable(
               onTap: () {
                 AnnualProductionManagementScreen.push(context);
@@ -126,7 +118,7 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
     );
   }
 
-  Widget _compartmentCard(BuildContext context) {
+  Widget _campCard(BuildContext context) {
     return CmoTappable(
       onTap: () {
         CampManagementScreen.push(context);
@@ -140,9 +132,39 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
               horizontal: 12,
             ),
             content: [
-              CmoCardHeader(title: LocaleKeys.compartment_management.tr()),
+              CmoCardHeader(title: LocaleKeys.campManagement.tr()),
               CmoCardItem(title: '${LocaleKeys.camp.tr()}\s', value: tuple2.item1.toString()),
               CmoCardItem(title: LocaleKeys.summary_tonnes_biomass.tr(args: [tuple2.item2.toStringAsFixed(2)])),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _compartmentCard(BuildContext context) {
+    return CmoTappable(
+      onTap: () async {
+        final state = context.read<SiteManagementPlanCubit>().state;
+        await CompartmentScreen.push(
+          context,
+          farmId: state.activeFarm?.farmId,
+          farmName: state.activeFarm?.farmName,
+        );
+        context.read<SiteManagementPlanCubit>().refresh();
+      },
+      child: BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState, Tuple2<int, double>>(
+        selector: (state) => Tuple2(state.compartmentCount ?? 0, state.compartmentTotalArea ?? 0),
+        builder: (context, tuple2) {
+          return CmoCard(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
+              horizontal: 12,
+            ),
+            content: [
+              CmoCardHeader(title: LocaleKeys.compartment_management.tr()),
+              CmoCardItem(title: '${LocaleKeys.compartments.tr()}', value: tuple2.item1.toString()),
+              CmoCardItem(title: '${LocaleKeys.total.tr()}', value: tuple2.item2.toStringAsFixed(2)),
             ],
           );
         },
