@@ -45,7 +45,7 @@ class _CmoSlimfQuestionState extends State<CmoSlimfQuestion> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: buildColor(value, true),
+                  color: buildColor(context, value, true),
                   border: Border.all(width: 2),
                 ),
                 child: Text('C',
@@ -66,7 +66,7 @@ class _CmoSlimfQuestionState extends State<CmoSlimfQuestion> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: buildColor(value, false),
+                  color: buildColor(context, value, false),
                   border: Border.all(width: 2),
                 ),
                 child: Text('NC',
@@ -81,13 +81,13 @@ class _CmoSlimfQuestionState extends State<CmoSlimfQuestion> {
     );
   }
 
-  Color buildColor(bool? isSelect, bool isC) {
+  Color buildColor(BuildContext context, bool? isSelect, bool isC) {
     if (isC) {
       if (isSelect == null) {
         return Colors.white;
       }
       if (isSelect) {
-        return const Color(0xff2072B9);
+        return context.colors.green;
       }
       return Colors.white;
     }
@@ -98,7 +98,8 @@ class _CmoSlimfQuestionState extends State<CmoSlimfQuestion> {
     if (isSelect) {
       return Colors.white;
     }
-    return const Color(0xff2072B9);
+
+    return context.colors.yellow;
   }
 }
 

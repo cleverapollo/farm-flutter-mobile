@@ -727,17 +727,24 @@ class _AddMemberSLIMF extends StatelessWidget {
                       style: context.textStyles.titleBold
                           .copyWith(color: context.colors.black, fontSize: 16)),
                   const SizedBox(height: 16),
-                  Text(LocaleKeys.limitation_1.tr(),
+                  Text(LocaleKeys.slimf_compliant_limitation_1.tr(),
                       style: context.textStyles.titleBold
                           .copyWith(color: context.colors.black, fontSize: 16)),
                   Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                      LocaleKeys.slimf_compliant_limitation_1_content.tr(),
                       style: context.textStyles.bodyNormal
                           .copyWith(color: context.colors.black, fontSize: 16)),
                   const SizedBox(height: 12),
-                  Text(LocaleKeys.limitation_2.tr(),
+                  Text(LocaleKeys.slimf_compliant_limitation_2.tr(),
                       style: context.textStyles.titleBold
                           .copyWith(color: context.colors.black, fontSize: 16)),
+                  Text(
+                    LocaleKeys.slimf_compliant_limitation_2_content.tr(),
+                    style: context.textStyles.bodyNormal.copyWith(
+                      color: context.colors.black,
+                      fontSize: 16,
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   CmoSlimfQuestion(
                     onTap: (p0) {
