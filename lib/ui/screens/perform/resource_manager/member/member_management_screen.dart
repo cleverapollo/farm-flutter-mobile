@@ -185,7 +185,7 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
     return farm.isGroupSchemeMember == true
         ? Assets.icons.icTick.widget
         : Text(
-            '${farm.stepCount}/10',
+            '${farm.stepCount ?? 0}/10',
             style: context.textStyles.bodyNormal.white,
           );
   }
