@@ -506,7 +506,7 @@
   "member_details":"Member Details",
   "member_property_ownership": "Member Property ownership",
   "slimf_compliance":"SLIMF compliance",
-  "does_the_farmer_have_a_title_deed_lease_or_management_contract_on_their_property": "Does the farmer have a title deed, lease or management contract on their property",
+  "member_property_ownership_question": "Which property ownership applies to the farmers property?",
   "compartment_s": "Compartment/s",
   "agree_to_the_conditions_laid_out_in_this_legally_binding_document": "I {} agree to the conditions laid out in this legally binding document",
   "accept_signature_and_finalise": "Accept Signature and Finalise",

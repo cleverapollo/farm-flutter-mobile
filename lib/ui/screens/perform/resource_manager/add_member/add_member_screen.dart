@@ -15,6 +15,8 @@ import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:cmo/utils/validator.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -604,61 +606,60 @@ class _AddMemberMPO extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                    LocaleKeys
-                        .does_the_farmer_have_a_title_deed_lease_or_management_contract_on_their_property
-                        .tr(),
+                    LocaleKeys.member_property_ownership_question.tr(),
                     style: context.textStyles.bodyNormal
                         .copyWith(color: context.colors.black, fontSize: 16)),
                 Padding(
-                  padding: const EdgeInsets.only(left: 22.0, top: 12),
+                  padding: const EdgeInsets.only(left: 8.0, top: 12),
                   child: Text(LocaleKeys.propertyType.tr(),
                       style: context.textStyles.titleBold
                           .copyWith(color: context.colors.black, fontSize: 16)),
                 ),
-                Column(children: [
-                  InkWell(
-                    onTap: () {
-                      cubit.onExpansionChangedMPO(!data.isExpansionOpen);
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(8),
-                      padding: const EdgeInsets.all(8),
-                      width: double.maxFinite,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(width: 1),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            data.propertyTypeSelected
-                                    ?.farmPropertyOwnershipTypeName ??
-                                LocaleKeys.tribal_authority.tr(),
-                            style: context.textStyles.bodyBold,
-                          ),
-                          const Icon(Icons.arrow_drop_down_circle_outlined)
-                        ],
-                      ),
-                    ),
-                  ),
-                  Visibility(
-                    visible: data.isExpansionOpen,
-                    child: SizedBox(
-                      height: 300,
-                      width: double.maxFinite,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: data.propertyTypes != null
-                              ? data.propertyTypes!
-                                  .map((e) => _buildItem(e, context, cubit))
-                                  .toList()
-                              : [],
-                        ),
-                      ),
-                    ),
-                  )
-                ]),
+                selectPropertyType(),
+                // Column(children: [
+                //   InkWell(
+                //     onTap: () {
+                //       cubit.onExpansionChangedMPO(!data.isExpansionOpen);
+                //     },
+                //     child: Container(
+                //       margin: const EdgeInsets.all(8),
+                //       padding: const EdgeInsets.all(8),
+                //       width: double.maxFinite,
+                //       decoration: BoxDecoration(
+                //         borderRadius: BorderRadius.circular(12),
+                //         border: Border.all(width: 1),
+                //       ),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Text(
+                //             data.propertyTypeSelected
+                //                     ?.farmPropertyOwnershipTypeName ??
+                //                 LocaleKeys.tribal_authority.tr(),
+                //             style: context.textStyles.bodyBold,
+                //           ),
+                //           const Icon(Icons.arrow_drop_down_circle_outlined)
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                //   Visibility(
+                //     visible: data.isExpansionOpen,
+                //     child: SizedBox(
+                //       height: 300,
+                //       width: double.maxFinite,
+                //       child: SingleChildScrollView(
+                //         child: Column(
+                //           children: data.propertyTypes != null
+                //               ? data.propertyTypes!
+                //                   .map((e) => _buildItem(e, context, cubit))
+                //                   .toList()
+                //               : [],
+                //         ),
+                //       ),
+                //     ),
+                //   )
+                // ]),
               ],
             ),
           ),
@@ -688,6 +689,47 @@ class _AddMemberMPO extends StatelessWidget {
             style: context.textStyles.bodyBold,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget selectPropertyType() {
+    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMPO>(
+      selector: (state) {
+        return state.addMemberMPO;
+      },
+      builder: (context, addMemberMPO) {
+        return CmoDropdown<FarmPropertyOwnershipType>(
+          name: 'propertyType',
+          inputDecoration: _buildInputDecoration(context, LocaleKeys.propertyType.tr()),
+          initialValue: addMemberMPO.propertyTypeSelected,
+          itemsData: addMemberMPO.propertyTypes
+              .map(
+                (e) => CmoDropdownItem<FarmPropertyOwnershipType>(
+                  id: e,
+                  name: e.farmPropertyOwnershipTypeName ?? '',
+                ),
+              )
+              .toList(),
+          onChanged: (FarmPropertyOwnershipType? farmPropertyOwnershipType) {
+            context.read<AddMemberCubit>().onDataChangeMPO(farmPropertyOwnershipType);
+          },
+        );
+      },
+    );
+  }
+
+  InputDecoration _buildInputDecoration(BuildContext context, String hintText) {
+    return InputDecoration(
+      contentPadding: const EdgeInsets.all(8),
+      isDense: true,
+      hintText: '${LocaleKeys.select.tr()} ${hintText.toLowerCase()}',
+      hintStyle: context.textStyles.bodyNormal.grey,
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: context.colors.grey),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: context.colors.blue),
       ),
     );
   }
