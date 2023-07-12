@@ -167,6 +167,8 @@
   "transactionCategory": "Transaction Category",
   "transactionDetail": "Transaction Detail",
   "amount": "Amount",
+  "idPassportNumber": "ID/Passport Number",
+  "optional": "Optional",
   "locale": {
     "en": "English",
     "fr": "French",

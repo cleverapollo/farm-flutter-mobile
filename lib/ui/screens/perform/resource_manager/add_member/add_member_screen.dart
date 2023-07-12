@@ -524,46 +524,49 @@ class _AddMemberMDetails extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTitle(context, 'First name (*)'),
+                _buildTitle(context, '${LocaleKeys.firstName.tr()} (*)'),
                 CmoTextField(
                   initialValue: data.firstName,
-                  hintText: 'First name',
+                  hintText: LocaleKeys.firstName.tr(),
                   onChanged: (p0) {
                     cubit.onDataChangeMemberDetail(firstName: p0);
                   },
                 ),
                 const SizedBox(height: 12),
-                _buildTitle(context, 'Last name (*)'),
+                _buildTitle(context, '${LocaleKeys.lastName.tr()} (*)'),
                 CmoTextField(
                   initialValue: data.lastName,
-                  hintText: 'Last Name',
+                  hintText: LocaleKeys.lastName.tr(),
                   onChanged: (p0) {
                     cubit.onDataChangeMemberDetail(lastName: p0);
                   },
                 ),
                 const SizedBox(height: 12),
-                _buildTitle(context, 'ID/Passport Number (*)'),
+                _buildTitle(context, '${LocaleKeys.idPassportNumber.tr()} (*)'),
                 CmoTextField(
                   initialValue: data.idNumber,
-                  hintText: 'ID/Passport Number',
+                  keyboardType: TextInputType.emailAddress,
+                  hintText: LocaleKeys.idPassportNumber.tr(),
                   onChanged: (p0) {
                     cubit.onDataChangeMemberDetail(idNumber: p0);
                   },
                 ),
                 const SizedBox(height: 12),
-                _buildTitle(context, 'Mobile Number (*)'),
+                _buildTitle(context, '${LocaleKeys.mobileNumber.tr()} (*)'),
                 CmoTextField(
                   initialValue: data.mobileNumber,
-                  hintText: 'Mobile Number',
+                  keyboardType: TextInputType.phone,
+                  hintText: LocaleKeys.mobileNumber.tr(),
                   onChanged: (p0) {
                     cubit.onDataChangeMemberDetail(mobileNumber: p0);
                   },
                 ),
                 const SizedBox(height: 12),
-                _buildTitle(context, 'Email Address (Optional)'),
+                _buildTitle(context, '${LocaleKeys.emailAddress.tr()} (${LocaleKeys.optional.tr()})'),
                 CmoTextField(
                   initialValue: data.emailAddress,
-                  hintText: 'Email Address',
+                  keyboardType: TextInputType.emailAddress,
+                  hintText: LocaleKeys.emailAddress.tr(),
                   onChanged: (p0) {
                     cubit.onDataChangeMemberDetail(emailAddress: p0);
                   },
