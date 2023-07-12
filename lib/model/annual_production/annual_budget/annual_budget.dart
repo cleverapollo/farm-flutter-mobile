@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/annual_budget_payload/annual_budget_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -29,11 +30,25 @@ class AnnualBudget with _$AnnualBudget {
 
   @override
   Id get id => int.tryParse(annualBudgetId ?? '') ?? Isar.autoIncrement;
-
-
 }
 
 extension AnnualBudgetExtensions on AnnualBudget {
+  AnnualBudgetPayLoad toPayLoad() {
+    return AnnualBudgetPayLoad(
+      AnnualBudgetId: annualBudgetId,
+      AnnualBudgetName: annualBudgetName,
+      GroupschemeId: groupSchemeId,
+      FarmId: farmId,
+      AnnualFarmProductionId: annualFarmProductionId,
+      AnnualFarmProductionYear: annualFarmProductionYear,
+      TotalIncome: totalIncome?.toInt(),
+      TotalExpense: totalExpense?.toInt(),
+      IsLocal: isLocal,
+      IsActive: isActive,
+      CanDelete: canDelete,
+    );
+  }
+
   double profitAndLoss() {
     if (totalIncome != null && totalExpense != null) {
       return totalIncome! - totalExpense!;

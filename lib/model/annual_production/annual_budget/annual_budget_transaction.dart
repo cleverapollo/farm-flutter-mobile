@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/annual_budget_transaction_payload/annual_budget_transaction_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -29,4 +30,22 @@ class AnnualBudgetTransaction with _$AnnualBudgetTransaction {
 
   @override
   Id get id => annualBudgetTransactionId ?? Isar.autoIncrement;
+}
+
+extension AnnualBudgetTransactionX on AnnualBudgetTransaction {
+  AnnualBudgetTransactionPayLoad toPayLoad() {
+    return AnnualBudgetTransactionPayLoad(
+      AnnualBudgetTransactionId: annualBudgetTransactionId,
+      AnnualBudgetId: annualBudgetId,
+      TransactionDescripion: transactionDescription,
+      TransactionCategoryId: transactionCategoryId,
+      TransactionCategoryName: transactionCategoryName,
+      TransactionAmount: transactionAmount?.toInt(),
+      TransactionAttribute1: transactionAttribute1?.toInt(),
+      IsLocal: isLocal,
+      IsActive: isActive,
+      IsIncome: isIncome,
+      CanDelete: canDelete,
+    );
+  }
 }

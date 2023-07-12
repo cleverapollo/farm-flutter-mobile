@@ -328,6 +328,66 @@ class CmoDatabaseMasterService {
     return db.stakeHolders.filter().isMasterDataSyncedEqualTo(0).findAll();
   }
 
+  Future<List<AnnualBudget>> getUnsyncedAnnualBudgetByFarmId(
+      String farmId) async {
+    final db = await _db();
+
+    return db.annualBudgets
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isLocalEqualTo(1)
+        .findAll();
+  }
+
+  Future<List<AnnualBudgetTransaction>>
+      getUnsyncedAnnualBudgetTransaction() async {
+    final db = await _db();
+
+    return db.annualBudgetTransactions.filter().isLocalEqualTo(1).findAll();
+  }
+
+  Future<List<SanctionRegister>> getUnsyncedSanctionRegistersByFarmId(
+      String farmId) async {
+    final db = await _db();
+
+    return db.sanctionRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isLocalEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<Chemical>> getUnsyncedChemicalRegisters(int farmId) async {
+    final db = await _db();
+
+    return db.chemicals
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<TrainingRegister>> getUnsyncedTrainingRegisters(
+      String farmId) async {
+    final db = await _db();
+
+    return db.trainingRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<Asi>> getUnsyncedAsiRegisters(String farmId) async {
+    final db = await _db();
+
+    return db.asis
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
   Future<ConfigData?> getConfig(ConfigEnum config) async {
     final db = await _db();
 

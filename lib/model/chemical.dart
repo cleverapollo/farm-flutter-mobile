@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/chemical_register_payload/chemical_register_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -11,6 +12,7 @@ class Chemical with _$Chemical {
   const factory Chemical({
     @JsonKey(name: 'TotalRows') int? totalRows,
     @JsonKey(name: 'ChemicalNo') String? chemicalNo,
+    @JsonKey(name: 'ChemicalId') String? chemicalId,
     @JsonKey(name: 'FarmId', fromJson: JsonConverterUtil.toLong) int? farmId,
     @JsonKey(name: 'ChemicalTypeId') int? chemicalTypeId,
     @JsonKey(name: 'ChemicalApplicationMethodId')
@@ -28,6 +30,7 @@ class Chemical with _$Chemical {
     @JsonKey(name: 'CreateDT') DateTime? createDT,
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
     @JsonKey(includeToJson: false, includeFromJson: false) String? chemicalType,
     @JsonKey(includeToJson: false, includeFromJson: false)
         String? chemicalApplicationMethod,
@@ -41,6 +44,33 @@ class Chemical with _$Chemical {
 
   @override
   Id get id => Isar.autoIncrement;
+}
+
+extension ChemicalX on Chemical {
+  ChemicalRegisterPayLoad toPayLoad() {
+    return ChemicalRegisterPayLoad(
+      ChemicalRegisterNo: chemicalNo,
+      FarmId: farmId.toString(),
+      ChemicalRegisterId: chemicalId,
+      ChemicalTypeId: chemicalTypeId,
+      ChemicalApplicationMethodId: chemicalApplicationMethodId,
+      CampId: campId.toString(),
+      Date: date,
+      OpeningStock: openingStock?.toInt(),
+      Issued: issued?.toInt(),
+      Balance: balance?.toInt(),
+      Mixture: mixture,
+      UsagePerHa: usagePerHa?.toInt(),
+      Comment: comment,
+      CarRaisedDate: carRaisedDate?.toIso8601String(),
+      CarClosedDate: carClosedDate?.toIso8601String(),
+      IsActive: isActive,
+      IsMasterdataSynced: isMasterdataSynced,
+      ChemicalTypeName: chemicalType,
+      ChemicalApplicationMethodName: chemicalApplicationMethod,
+      CampName: campName,
+    );
+  }
 }
 
 class JsonConverterUtil {

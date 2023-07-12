@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/training_register_payload/training_register_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -36,4 +37,29 @@ class TrainingRegister with _$TrainingRegister {
 
   @override
   Id get id => int.tryParse(trainingRegisterId ?? '') ?? Isar.autoIncrement;
+}
+
+extension TrainingRegisterX on TrainingRegister {
+  TrainingRegisterPayLoad toPayLoad() {
+    return TrainingRegisterPayLoad(
+      TrainingRegisterNo: trainingRegisterNo,
+      FarmId: farmId,
+      TrainingTypeId: trainingTypeId,
+      Date: date,
+      TrainerName: trainerName,
+      WorkerId: workerId,
+      TrainingRegisterId: trainingRegisterId,
+      ExpiryDate: expiryDate,
+      Comment: comment,
+      CarRaisedDate: carRaisedDate,
+      CarClosedDate: carClosedDate,
+      SignaturePoints: signaturePoints,
+      SignatureImage: signatureImage,
+      SignatureDate: signatureDate,
+      IsActive: isActive,
+      IsMasterdataSynced: isMasterdataSynced,
+      WorkerName: workerName,
+      TrainingTypeName: trainingTypeName,
+    );
+  }
 }

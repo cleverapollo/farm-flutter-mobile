@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/asi_register_payload/asi_register_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -28,9 +29,28 @@ class Asi with _$Asi {
 
   const Asi._();
 
-  factory Asi.fromJson(Map<String, dynamic> json) =>
-      _$AsiFromJson(json);
+  factory Asi.fromJson(Map<String, dynamic> json) => _$AsiFromJson(json);
 
   @override
   Id get id => int.tryParse(asiRegisterId ?? '') ?? Isar.autoIncrement;
+}
+
+extension AsiX on Asi {
+  AsiRegisterPayLoad toPayLoad() {
+    return AsiRegisterPayLoad(
+      AsiRegisterNo: asiRegisterNo,
+      FarmId: farmId,
+      AsiRegisterId: asiRegisterId,
+      AsiTypeId: asiTypeId,
+      Latitude: latitude?.toInt(),
+      Longitude: longitude?.toInt(),
+      Date: date,
+      Comment: comment,
+      CarRaisedDate: carRaisedDate,
+      CarClosedDate: carClosedDate,
+      IsActive: isActive,
+      IsMasterdataSynced: isMasterdataSynced,
+      AsiTypeName: asiTypeName,
+    );
+  }
 }
