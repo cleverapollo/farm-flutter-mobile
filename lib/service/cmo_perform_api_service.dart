@@ -196,6 +196,23 @@ class CmoPerformApiService {
     return data?.map((e) => GroupScheme.fromJson(e as JsonData)).toList();
   }
 
+  Future<List<GroupScheme>?> getGroupSchemeSearchByUserId() async {
+    var _apiUrl = 'https://logistics.myeu.africa/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/';
+    final response = await client.get<JsonListData>(
+      '${_apiUrl}GroupScheme/GetGroupSchemeSearchByUserId',
+      //queryParameters: {'filterString': ''},
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data?.map((e) => GroupScheme.fromJson(e as JsonData)).toList();
+  }
+
   Future<List<ResourceManagerUnit>?> fetchResourceManagerUnits(
       int groupSchemeId) async {
     final response = await client.get<JsonListData>(
@@ -602,7 +619,6 @@ class CmoPerformApiService {
     }
 
     final data = response.data;
-    print("NGUYEN DEBUG: $data");
     return data
         ?.map((e) => Hirac.fromJson(e as JsonData))
         .toList();

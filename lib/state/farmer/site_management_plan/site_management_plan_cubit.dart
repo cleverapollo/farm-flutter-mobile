@@ -30,17 +30,21 @@ class SiteManagementPlanCubit extends HydratedCubit<SiteManagementPlanState> {
 
   Future getFarmType(int groupSchemeId) async {
     final groupSchemes = await cmoDatabaseMasterService.getGroupScheme();
-    print("NGUYEN DEBUG: groupSchemes: ${groupSchemes.length} ");
+    print("NGUYEN DEBUG selected groupSchemeId: $groupSchemeId");
 
 
-    final groupScheme = await cmoDatabaseMasterService
-        .getGroupSchemeById(groupSchemeId);
+    final groupScheme =
+        await cmoDatabaseMasterService.getGroupSchemeById(groupSchemeId);
     print("NGUYEN DEBUG groupSchemeId: $groupSchemeId groupScheme: ${groupScheme?.groupSchemeId}");
     // if (groupScheme?.groupSchemeId == null) {
     //   return;
     // }
     //  final result = await cmoPerformApiService.fetchHirac(groupScheme?.hiracId!);
-     final result = await cmoPerformApiService.fetchHirac(0);
+    // final groupSchemeFetcheds = await cmoPerformApiService.getGroupSchemeSearchByUserId();
+    // print("NGUYEN DEBUG: ${groupSchemeFetcheds.toString()}");
+
+
+    final result = await cmoPerformApiService.fetchHirac(0);
     print("NGUYEN DEBUG: ${result?.length}");
     // final hirac = await cmoDatabaseMasterService.getHiracById(groupScheme?.hiracId ?? 0);
     // if (hirac?.hiracId == null) {
