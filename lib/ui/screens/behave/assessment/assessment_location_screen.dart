@@ -34,11 +34,23 @@ class AssessmentLocationScreenResult extends Equatable {
 }
 
 class AssessmentLocationScreen extends StatefulWidget {
-  const AssessmentLocationScreen({super.key});
 
-  static Future<T?> push<T>(BuildContext context) async {
+  final bool showMarker;
+
+  const AssessmentLocationScreen({
+    super.key,
+    this.showMarker = false,
+  });
+
+  static Future<T?> push<T>(BuildContext context,
+      {bool showMarker = false,}) async {
     return Navigator.of(context).push<T>(
-      MaterialPageRoute(builder: (_) => const AssessmentLocationScreen()),
+      MaterialPageRoute(
+        builder: (_) =>
+            AssessmentLocationScreen(
+              showMarker: showMarker,
+            ),
+      ),
     );
   }
 
@@ -218,11 +230,11 @@ class _AssessmentLocationScreenState extends State<AssessmentLocationScreen> {
               key: mapKey,
               onMapMoved: onCameraMoved,
               showLatLongFooter: false,
+              showMarker: widget.showMarker,
             ),
           ),
           MapLatLongFooter(_latLong),
           Expanded(
-            flex: 1,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(

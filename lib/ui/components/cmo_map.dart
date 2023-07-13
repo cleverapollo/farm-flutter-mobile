@@ -13,12 +13,14 @@ class CmoMap extends StatefulWidget {
   final LatLng? initialMapCenter;
   final void Function(double, double) onMapMoved;
   final bool showLatLongFooter;
+  final bool showMarker;
 
   const CmoMap({
     Key? key,
     this.initialMapCenter,
     this.showLatLongFooter = true,
     required this.onMapMoved,
+    this.showMarker = false,
   }) : super(key: key);
 
   @override
@@ -29,6 +31,8 @@ class CmoMapState extends State<CmoMap> {
   late GoogleMapController mapController;
   LatLng? _latLong;
   Timer? _debouceOnCameraMove;
+
+  Marker? marker;
 
   void _onCameraMove(CameraPosition position) {
     _debouceOnCameraMove?.cancel();
@@ -94,6 +98,12 @@ class CmoMapState extends State<CmoMap> {
                     target: Constants.mapCenter,
                     zoom: 16.0,
                   ),
+                  markers: shouldShowMarker(),
+                  onTap: (latLong) {
+                    setState(() {
+                      marker = _markerFrom(latLong);
+                    });
+                  },
                 ),
               ),
               Center(
@@ -119,11 +129,80 @@ class CmoMapState extends State<CmoMap> {
                   ),
                 ),
               ),
+
+              if(widget.showMarker) ...[
+                Positioned(
+                  right: 5,
+                  top: 24,
+                  child: marker == null
+                      ? const SizedBox.shrink()
+                      : IconButton(
+                          onPressed: () {
+                            setState(() {
+                              marker = null;
+                            });
+                          },
+                          iconSize: 38,
+                          icon: Container(
+                            padding: const EdgeInsets.all(8),
+                            alignment: Alignment.center,
+                            color: Colors.white,
+                            child: SvgGenImage(Assets.icons.icRefresh.path).svg(
+                              colorFilter: const ColorFilter.mode(
+                                Colors.grey,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
+                        ),
+                ),
+
+                Positioned(
+                  right: 5,
+                  top: 74,
+                  child: marker == null
+                      ? const SizedBox.shrink()
+                      : IconButton(
+                    onPressed: () {
+                      setState(() {
+                        marker = _markerFrom(_latLong);
+                      });
+                    },
+                    iconSize: 38,
+                    icon: Container(
+                      padding: const EdgeInsets.all(8),
+                      alignment: Alignment.center,
+                      color: Colors.white,
+                      child: SvgGenImage(Assets.icons.icAccept.path).svg(
+                        colorFilter: const ColorFilter.mode(
+                          Colors.grey,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ]
             ],
           ),
         ),
         if (widget.showLatLongFooter) MapLatLongFooter(_latLong) else Container(),
       ],
+    );
+  }
+
+  Set<Marker> shouldShowMarker() {
+    if (!widget.showMarker || marker == null) return <Marker>{};
+    return {marker!};
+  }
+
+  Marker? _markerFrom(LatLng? latLng) {
+    if (latLng == null) return null;
+    return Marker(
+      markerId: MarkerId(
+        'place_name_${latLng.latitude}_${latLng.longitude}',
+      ),
+      position: latLng,
     );
   }
 }

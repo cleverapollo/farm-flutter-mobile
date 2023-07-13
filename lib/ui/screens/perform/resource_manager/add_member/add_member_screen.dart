@@ -410,7 +410,10 @@ class _AddMemberSDetails extends StatelessWidget {
                 CmoDropDownLayoutWidget(
                   onTap: () async {
                     final data = await AssessmentLocationScreen.push<
-                        AssessmentLocationScreenResult>(context);
+                        AssessmentLocationScreenResult>(
+                      context,
+                      showMarker: true,
+                    );
 
                     if (data is AssessmentLocationScreenResult) {
                       final latLong = data.latLong;
