@@ -108,6 +108,25 @@ class AddMemberSDetails with _$AddMemberSDetails {
   }) = _AddMemberSDetails;
 }
 
+extension AddMemberSDetailsExtension on AddMemberSDetails {
+  String initAddressForSiteLocation() {
+    var address = '';
+    if (town != null) {
+      address = town!;
+    }
+
+    if (province != null) {
+      if (address.isNotEmpty) {
+        address = '$address, $province';
+      } else {
+        address = province!;
+      }
+    }
+
+    return address;
+  }
+}
+
 @freezed
 class AddMemberSiteLocations with _$AddMemberSiteLocations {
   const factory AddMemberSiteLocations({

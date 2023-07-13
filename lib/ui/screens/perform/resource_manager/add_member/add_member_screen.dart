@@ -6,7 +6,7 @@ import 'package:cmo/model/data/province.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
-import 'package:cmo/ui/screens/behave/assessment/assessment_location_screen.dart';
+import 'package:cmo/ui/components/select_site_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_membership_contract_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
@@ -409,20 +409,26 @@ class _AddMemberSDetails extends StatelessWidget {
                 _buildTitle(context, 'Site Location (*)'),
                 CmoDropDownLayoutWidget(
                   onTap: () async {
-                    final data = await AssessmentLocationScreen.push<
-                        AssessmentLocationScreenResult>(
+                    final siteLocationScreenResult = await SelectSiteLocationScreen.push<
+                        SiteLocationScreenResult>(
                       context,
                       showMarker: true,
+                      showResetAcceptIcons: true,
+                      initAddress: data.addMemberSiteLocations.address ?? data.initAddressForSiteLocation(),
                     );
 
-                    if (data is AssessmentLocationScreenResult) {
-                      final latLong = data.latLong;
+                    if (siteLocationScreenResult is SiteLocationScreenResult) {
+                      final latLong = siteLocationScreenResult.latLong;
+                      if (latLong?.latitude == null || latLong?.longitude == null) {
+                        return;
+                      }
+
                       final address =
-                          '${data.address}\n${latLong?.latitude.toStringAsFixed(6)}, ${latLong?.longitude.toStringAsFixed(6)}';
+                          '${siteLocationScreenResult.address}\n${latLong?.latitude.toStringAsFixed(6)}, ${latLong?.longitude.toStringAsFixed(6)}';
 
                       await cubit.onDataChangeSiteDetail(
-                        siteLocationLat: data.latLong?.latitude,
-                        siteLocationLng: data.latLong?.longitude,
+                        siteLocationLat: siteLocationScreenResult.latLong?.latitude,
+                        siteLocationLng: siteLocationScreenResult.latLong?.longitude,
                         siteLocationAddress: address,
                       );
                     }

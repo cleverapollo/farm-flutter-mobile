@@ -12,15 +12,19 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class CmoMap extends StatefulWidget {
   final LatLng? initialMapCenter;
   final void Function(double, double) onMapMoved;
+  final void Function(double, double)? onPinned;
   final bool showLatLongFooter;
   final bool showMarker;
+  final bool showResetAcceptIcons;
 
   const CmoMap({
     Key? key,
     this.initialMapCenter,
     this.showLatLongFooter = true,
     required this.onMapMoved,
+    this.onPinned,
     this.showMarker = false,
+    this.showResetAcceptIcons = false,
   }) : super(key: key);
 
   @override
@@ -30,13 +34,18 @@ class CmoMap extends StatefulWidget {
 class CmoMapState extends State<CmoMap> {
   late GoogleMapController mapController;
   LatLng? _latLong;
-  Timer? _debouceOnCameraMove;
+  Timer? _debounceOnCameraMove;
 
   Marker? marker;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void _onCameraMove(CameraPosition position) {
-    _debouceOnCameraMove?.cancel();
-    _debouceOnCameraMove = Timer(const Duration(milliseconds: 300), () {
+    _debounceOnCameraMove?.cancel();
+    _debounceOnCameraMove = Timer(const Duration(milliseconds: 300), () {
       widget.onMapMoved(position.target.latitude, position.target.longitude);
       setState(() {
         _latLong = position.target;
@@ -44,22 +53,64 @@ class CmoMapState extends State<CmoMap> {
     });
   }
 
-  Future _moveMapCameraCurrentLocation() async {
+  Future<void> _moveMapCameraCurrentLocation() async {
     final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
     await mapController.animateCamera(
-        CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
+      CameraUpdate.newLatLng(
+        LatLng(
+          position.latitude,
+          position.longitude,
+        ),
+      ),
+    );
   }
 
-  Future _moveMapCameraToDefaultLocation() async {
-    return mapController.animateCamera(CameraUpdate.newLatLng(
-        LatLng(Constants.mapCenter.latitude, Constants.mapCenter.longitude)));
+  Future<void> _moveMapCameraToDefaultLocation() async {
+    return mapController.animateCamera(
+      CameraUpdate.newLatLng(
+        LatLng(
+          Constants.mapCenter.latitude,
+          Constants.mapCenter.longitude,
+        ),
+      ),
+    );
   }
 
-  @override
-  void dispose() {
-    mapController.dispose();
-    super.dispose();
+  Set<Marker> shouldShowMarker() {
+    if (!widget.showMarker || marker == null) return <Marker>{};
+    return {marker!};
+  }
+
+  Marker? _markerFrom(LatLng? latLng) {
+    if (latLng == null) return null;
+    return Marker(
+      markerId: MarkerId(
+        'place_name_${latLng.latitude}_${latLng.longitude}',
+      ),
+      position: latLng,
+    );
+  }
+
+  void checkPermission() {
+    GeolocatorPlatform.instance.checkPermission().then((permission) async {
+      if (permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always) {
+        await _moveMapCameraCurrentLocation();
+      } else if (permission == LocationPermission.denied) {
+        permission = await GeolocatorPlatform.instance.requestPermission();
+        if (permission == LocationPermission.whileInUse ||
+            permission == LocationPermission.always) {
+          await _moveMapCameraCurrentLocation();
+        } else {
+          await _moveMapCameraToDefaultLocation();
+        }
+      } else {
+        await _moveMapCameraToDefaultLocation();
+      }
+    });
   }
 
   @override
@@ -76,22 +127,7 @@ class CmoMapState extends State<CmoMap> {
                   mapType: MapType.hybrid,
                   onMapCreated: (controller) {
                     mapController = controller;
-                    Geolocator.checkPermission().then((permission) async {
-                      if (permission == LocationPermission.whileInUse ||
-                          permission == LocationPermission.always) {
-                        _moveMapCameraCurrentLocation();
-                      } else if (permission == LocationPermission.denied) {
-                        permission = await Geolocator.requestPermission();
-                        if (permission == LocationPermission.whileInUse ||
-                            permission == LocationPermission.always) {
-                          _moveMapCameraCurrentLocation();
-                        } else {
-                          _moveMapCameraToDefaultLocation();
-                        }
-                      } else {
-                        _moveMapCameraToDefaultLocation();
-                      }
-                    });
+                    checkPermission();
                   },
                   onCameraMove: _onCameraMove,
                   initialCameraPosition: const CameraPosition(
@@ -129,81 +165,93 @@ class CmoMapState extends State<CmoMap> {
                   ),
                 ),
               ),
-
-              if(widget.showMarker) ...[
-                Positioned(
-                  right: 5,
-                  top: 24,
-                  child: marker == null
-                      ? const SizedBox.shrink()
-                      : IconButton(
-                          onPressed: () {
-                            setState(() {
-                              marker = null;
-                            });
-                          },
-                          iconSize: 38,
-                          icon: Container(
-                            padding: const EdgeInsets.all(8),
-                            alignment: Alignment.center,
-                            color: Colors.white,
-                            child: SvgGenImage(Assets.icons.icRefresh.path).svg(
-                              colorFilter: const ColorFilter.mode(
-                                Colors.grey,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
-                        ),
-                ),
-
-                Positioned(
-                  right: 5,
-                  top: 74,
-                  child: marker == null
-                      ? const SizedBox.shrink()
-                      : IconButton(
-                    onPressed: () {
-                      setState(() {
-                        marker = _markerFrom(_latLong);
-                      });
-                    },
-                    iconSize: 38,
-                    icon: Container(
-                      padding: const EdgeInsets.all(8),
-                      alignment: Alignment.center,
-                      color: Colors.white,
-                      child: SvgGenImage(Assets.icons.icAccept.path).svg(
-                        colorFilter: const ColorFilter.mode(
-                          Colors.grey,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+              if(widget.showResetAcceptIcons) ...[
+                resetIcon(),
+                acceptIcon(),
               ]
             ],
           ),
         ),
-        if (widget.showLatLongFooter) MapLatLongFooter(_latLong) else Container(),
+
+        mapLatLongFooterWidget(),
       ],
     );
   }
 
-  Set<Marker> shouldShowMarker() {
-    if (!widget.showMarker || marker == null) return <Marker>{};
-    return {marker!};
+  Widget resetIcon() {
+    return Positioned(
+      right: 5,
+      top: 24,
+      child: IconButton(
+        onPressed: () {
+          setState(() {
+            marker = null;
+          });
+        },
+        iconSize: 38,
+        icon: Container(
+          padding: const EdgeInsets.all(8),
+          alignment: Alignment.center,
+          color: Colors.white,
+          child: SvgGenImage(Assets.icons.icRefresh.path).svg(
+            colorFilter: const ColorFilter.mode(
+              Colors.grey,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  Marker? _markerFrom(LatLng? latLng) {
-    if (latLng == null) return null;
-    return Marker(
-      markerId: MarkerId(
-        'place_name_${latLng.latitude}_${latLng.longitude}',
+  Widget acceptIcon() {
+    return Positioned(
+      right: 5,
+      top: 74,
+      child: IconButton(
+        onPressed: () {
+          setState(() {
+            marker ??= _markerFrom(_latLong);
+            if (_latLong != null) {
+              widget.onPinned?.call(
+                _latLong!.latitude,
+                _latLong!.longitude,
+              );
+            }
+          });
+        },
+        iconSize: 38,
+        icon: Container(
+          padding: const EdgeInsets.all(8),
+          alignment: Alignment.center,
+          color: Colors.white,
+          child: SvgGenImage(Assets.icons.icAccept.path).svg(
+            colorFilter: const ColorFilter.mode(
+              Colors.grey,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
       ),
-      position: latLng,
     );
+  }
+
+  Widget mapLatLongFooterWidget() {
+    if (widget.showLatLongFooter) {
+      if (widget.showMarker) {
+        return MapLatLongFooter(marker?.position);
+      } else {
+        return MapLatLongFooter(_latLong);
+      }
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  @override
+  void dispose() {
+    mapController.dispose();
+    super.dispose();
   }
 }
 

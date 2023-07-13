@@ -12,7 +12,7 @@ import 'package:cmo/model/data/team.dart';
 import 'package:cmo/model/data/worker.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_item_selected_screen.dart';
-import 'package:cmo/ui/screens/behave/assessment/assessment_location_screen.dart';
+import 'package:cmo/ui/components/select_site_location_screen.dart';
 import 'package:cmo/ui/screens/behave/assessment/widgets/assessment_selected_item.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
@@ -47,7 +47,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
   Contractor? _contractor;
   Team? _team;
   Worker? _worker;
-  AssessmentLocationScreenResult? _locationResult;
+  SiteLocationScreenResult? _locationResult;
   final _jobCategoryController = TextEditingController();
   final _jobDescriptionController = TextEditingController();
   final _plantationController = TextEditingController();
@@ -381,11 +381,11 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
           title: LocaleKeys.siteLocation.tr(),
           textEditingController: _locationResultController,
           onTap: () async {
-            final data = await AssessmentLocationScreen.push<
-                AssessmentLocationScreenResult>(
+            final data = await SelectSiteLocationScreen.push<
+                SiteLocationScreenResult>(
               context,
             );
-            if (data is AssessmentLocationScreenResult) {
+            if (data is SiteLocationScreenResult) {
               _locationResult = data;
               _latLong = data.latLong;
               _locationResultController.text =
