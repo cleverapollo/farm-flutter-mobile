@@ -1,4 +1,8 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/model/hirac.dart';
+import 'package:cmo/model/hirac_template.dart';
+import 'package:cmo/model/hirac_type.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
@@ -14,12 +18,11 @@ class SiteManagementPlanCubit extends HydratedCubit<SiteManagementPlanState> {
     try {
       emit(state.copyWith(loading: true));
       final activeFarm = await configService.getActiveFarm();
-
-      if (activeFarm?.groupSchemeId != null) {
-        getFarmType(activeFarm!.groupSchemeId!);
-      }
-
       emit(state.copyWith(activeFarm: activeFarm));
+      if (activeFarm?.groupSchemeId != null) {
+        final isCharcoal = await isCharcoalFarm(activeFarm!.groupSchemeId!);
+        emit(state.copyWith(isCharcoalFarm: isCharcoal));
+      }
       await refresh();
     } catch (error) {
       handleError(error);
@@ -28,33 +31,45 @@ class SiteManagementPlanCubit extends HydratedCubit<SiteManagementPlanState> {
     }
   }
 
-  Future getFarmType(int groupSchemeId) async {
-    final groupSchemes = await cmoDatabaseMasterService.getGroupScheme();
-    print("NGUYEN DEBUG selected groupSchemeId: $groupSchemeId");
-
-
-    final groupScheme =
-        await cmoDatabaseMasterService.getGroupSchemeById(groupSchemeId);
-    print("NGUYEN DEBUG groupSchemeId: $groupSchemeId groupScheme: ${groupScheme?.groupSchemeId}");
-    // if (groupScheme?.groupSchemeId == null) {
-    //   return;
-    // }
-    //  final result = await cmoPerformApiService.fetchHirac(groupScheme?.hiracId!);
-    // final groupSchemeFetcheds = await cmoPerformApiService.getGroupSchemeSearchByUserId();
-    // print("NGUYEN DEBUG: ${groupSchemeFetcheds.toString()}");
-
-
-    final result = await cmoPerformApiService.fetchHirac(0);
-    print("NGUYEN DEBUG: ${result?.length}");
-    // final hirac = await cmoDatabaseMasterService.getHiracById(groupScheme?.hiracId ?? 0);
-    // if (hirac?.hiracId == null) {
-    //   return;
-    // }
-    // final hiracTemplate = await cmoDatabaseMasterService.getHiracTemplateById(hirac?.hiracTemplateId ?? 0);
-    // if (hiracTemplate?.hiracTemplateId == null) {
-    //   return;
-    // }
-    // final hiracType = await cmoDatabaseMasterService.getHiracTypeByid(hiracTemplate?.hiracTypeId ?? 0);
+  Future<bool> isCharcoalFarm(int groupSchemeId) async {
+    final result = await Future.wait(
+      [
+        cmoPerformApiService.getGroupSchemeByGroupSchemeId(groupSchemeId),
+        cmoPerformApiService.getHiracSearch(),
+        cmoPerformApiService.getHiracTemplateSearch(),
+        cmoPerformApiService.getHiracTypeSearch()
+      ],
+    );
+    final groupSchemes = result[0] as List<GroupScheme>?;
+    final hiracs = result[1] as List<Hirac>?;
+    final hiracTemplates = result[2] as List<HiracTemplate>?;
+    final hiracTypes = result[3] as List<HiracType>?;
+    if (groupSchemes?.isEmpty ?? false) {
+      return true;
+    }
+    if (hiracs?.isEmpty ?? false) {
+      return true;
+    }
+    if (hiracTemplates?.isEmpty ?? false) {
+      return true;
+    }
+    if (hiracTypes?.isEmpty ?? false) {
+      return true;
+    }
+    final hiracId = groupSchemes!.first.hiracId ?? 0;
+    final hirac = hiracs.firstWhereOrNull((e) => e.id == hiracId);
+    if (hirac == null) {
+      return true;
+    }
+    final hiracTemplate = hiracTemplates.firstWhereOrNull((element) => element.hiracTemplateId == hirac.hiracTemplateId);
+    if (hiracTemplate == null) {
+      return true;
+    }
+    final hiracType = hiracTypes.firstWhereOrNull((element) => element.hiracTypeId == hiracTemplate.hiracTypeId);
+    if (hiracType?.hiracTypeName?.toLowerCase() == 'plantation') {
+      return false;
+    }
+    return true;
   }
 
 

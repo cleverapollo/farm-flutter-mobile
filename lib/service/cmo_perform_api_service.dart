@@ -8,6 +8,8 @@ import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/compartment/product_group_template.dart';
 import 'package:cmo/model/compartment/species_group_template.dart';
 import 'package:cmo/model/hirac.dart';
+import 'package:cmo/model/hirac_template.dart';
+import 'package:cmo/model/hirac_type.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/user_role_config/user_role_config.dart';
@@ -184,23 +186,6 @@ class CmoPerformApiService {
   Future<List<GroupScheme>?> fetchGroupSchemes() async {
     final response = await client.get<JsonListData>(
       '${_apiUrl}GetGroupschemes',
-      options: Options(headers: {'accessToken': 'true'}),
-    );
-
-    if (response.statusCode != 200) {
-      showSnackError(msg: 'Unknow error: ${response.statusCode}');
-      return null;
-    }
-
-    final data = response.data;
-    return data?.map((e) => GroupScheme.fromJson(e as JsonData)).toList();
-  }
-
-  Future<List<GroupScheme>?> getGroupSchemeSearchByUserId() async {
-    var _apiUrl = 'https://logistics.myeu.africa/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/';
-    final response = await client.get<JsonListData>(
-      '${_apiUrl}GroupScheme/GetGroupSchemeSearchByUserId',
-      //queryParameters: {'filterString': ''},
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -600,14 +585,16 @@ class CmoPerformApiService {
     return data?.map((e) => AreaType.fromJson(e as JsonData)).toList();
   }
 
-  Future<List<Hirac>?> fetchHirac(int hiracId) async {
+  Future<List<GroupScheme>?> getGroupSchemeByGroupSchemeId(int id) async {
     final uri = Uri.https(
       Env.cmoApiUrl,
-      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS.Main/API/HiracMain/GetHiracByUserId',
+      'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS.Main/API/GroupSchemeMain/GetGroupSchemeById',
       {
+        'GroupSchemeId': '$id',
         "isActive": "true",
       },
     );
+
     final response = await client.getUri<JsonListData>(
       uri,
       options: Options(headers: {'accessToken': 'true'}),
@@ -619,8 +606,81 @@ class CmoPerformApiService {
     }
 
     final data = response.data;
+    return data?.map((e) => GroupScheme.fromJson(e as JsonData)).toList();
+  }
+
+  Future<List<Hirac>?> getHiracSearch({String? filterString}) async {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracSearch',
+      {
+        'filterString': filterString ?? '',
+        "isActive": "true",
+      },
+    );
+
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
     return data
         ?.map((e) => Hirac.fromJson(e as JsonData))
+        .toList();
+  }
+
+  Future<List<HiracType>?> getHiracTypeSearch({String? filterString}) async {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracTypeSearch',
+      {
+        'filterString': filterString ?? '',
+        "isActive": "true",
+      },
+    );
+
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data
+        ?.map((e) => HiracType.fromJson(e as JsonData))
+        .toList();
+  }
+
+  Future<List<HiracTemplate>?> getHiracTemplateSearch({String? filterString}) async {
+    final uri = Uri.https(
+      Env.cmoApiUrl,
+      'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracTemplateSearch',
+      {
+        'filterString': filterString ?? '',
+        "isActive": "true",
+      },
+    );
+
+    final response = await client.getUri<JsonListData>(
+      uri,
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data
+        ?.map((e) => HiracTemplate.fromJson(e as JsonData))
         .toList();
   }
 }

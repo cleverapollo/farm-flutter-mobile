@@ -48,15 +48,28 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
             ?.farmName ?? '',
         showLeading: true,
       ),
-      body: SizedBox.expand(
-        child: _buildContentWidget(),
+      body: BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState, bool>(
+        selector: (state) => state.loading,
+        builder: (context, isLoading) {
+          if (isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return SizedBox.expand(
+            child: BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState, bool> (
+              selector: (state) => state.isCharcoalFarm,
+              builder: (context, isCharcoalFarm) {
+                if (isCharcoalFarm) {
+                  return _buildCharcoalManagementPlan();
+                }
+                return _buildPlantationFMP();
+              },
+            ),
+          );
+        },
       ),
     );
-  }
-
-  Widget _buildContentWidget() {
-    return _buildCharcoalManagementPlan();
-    // return _buildPlantationFMP();
   }
 
   Widget _buildPlantationFMP() {
