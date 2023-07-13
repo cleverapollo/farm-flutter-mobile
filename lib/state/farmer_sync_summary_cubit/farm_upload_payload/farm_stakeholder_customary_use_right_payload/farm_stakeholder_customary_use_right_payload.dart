@@ -10,8 +10,8 @@ class FarmStakeholderCustomaryUseRightPayLoad
     String? FarmStakeholderCustomaryUseRightId,
     String? FarmStakeholderId,
     String? CustomaryUseRightId,
-    int? IsActive,
-    int? IsMasterDataSynced,
+    num? IsActive,
+    num? IsMasterDataSynced,
   }) = _FarmStakeholderCustomaryUseRightPayLoad;
   factory FarmStakeholderCustomaryUseRightPayLoad.fromJson(
           Map<String, dynamic> json) =>

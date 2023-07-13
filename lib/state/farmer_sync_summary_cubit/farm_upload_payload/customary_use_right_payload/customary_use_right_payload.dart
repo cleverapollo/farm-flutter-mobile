@@ -8,8 +8,8 @@ class CustomaryUseRightPayLoad with _$CustomaryUseRightPayLoad {
   const factory CustomaryUseRightPayLoad({
     String? CustomaryUseRightId,
     String? CustomaryUseRightName,
-    int? IsActive,
-    int? IsMasterDataSynced,
+    num? IsActive,
+    num? IsMasterDataSynced,
   }) = _CustomaryUseRightPayLoad;
   factory CustomaryUseRightPayLoad.fromJson(Map<String, dynamic> json) =>
       _$CustomaryUseRightPayLoadFromJson(json);

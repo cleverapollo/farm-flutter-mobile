@@ -7,15 +7,15 @@ part 'schedule_payload.g.dart';
 class SchedulePayLoad with _$SchedulePayLoad {
   const factory SchedulePayLoad({
     String? ScheduleId,
-    int? ScheduleActivityId,
-    int? GroupSchemeId,
+    num? ScheduleActivityId,
+    num? GroupSchemeId,
     DateTime? Start,
     DateTime? End,
     String? FarmId,
     String? UserId,
     String? Venue,
-    int? IsMasterDataSynced,
-    int? IsActive,
+    num? IsMasterDataSynced,
+    num? IsActive,
   }) = _SchedulePayLoad;
   factory SchedulePayLoad.fromJson(Map<String, dynamic> json) =>
       _$SchedulePayLoadFromJson(json);

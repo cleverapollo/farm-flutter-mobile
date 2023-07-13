@@ -8,8 +8,8 @@ class GroupSchemeStakeholderPayLoad with _$GroupSchemeStakeholderPayLoad {
   const factory GroupSchemeStakeholderPayLoad({
     String? GroupSchemeStakeholderId,
     String? StakeholderId,
-    int? GroupSchemeId,
-    int? IsMasterDataSynced,
+    num? GroupSchemeId,
+    num? IsMasterDataSynced,
   }) = _GroupSchemeStakeholderPayLoad;
   factory GroupSchemeStakeholderPayLoad.fromJson(Map<String, dynamic> json) =>
       _$GroupSchemeStakeholderPayLoadFromJson(json);

@@ -6,17 +6,17 @@ part 'annual_budget_transaction_payload.g.dart';
 @freezed
 class AnnualBudgetTransactionPayLoad with _$AnnualBudgetTransactionPayLoad {
   const factory AnnualBudgetTransactionPayLoad({
-    int? AnnualBudgetTransactionId,
+    num? AnnualBudgetTransactionId,
     String? AnnualBudgetId,
     String? TransactionDescripion,
-    int? TransactionCategoryId,
+    num? TransactionCategoryId,
     String? TransactionCategoryName,
-    int? TransactionAmount,
-    int? TransactionAttribute1,
-    int? IsLocal,
+    num? TransactionAmount,
+    num? TransactionAttribute1,
+    num? IsLocal,
     bool? IsActive,
     bool? IsIncome,
-    int? CanDelete,
+    num? CanDelete,
   }) = _AnnualBudgetTransactionPayLoad;
   factory AnnualBudgetTransactionPayLoad.fromJson(Map<String, dynamic> json) =>
       _$AnnualBudgetTransactionPayLoadFromJson(json);

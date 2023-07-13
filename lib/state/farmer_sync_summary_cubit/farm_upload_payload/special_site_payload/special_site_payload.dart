@@ -8,8 +8,8 @@ class SpecialSitePayLoad with _$SpecialSitePayLoad {
   const factory SpecialSitePayLoad({
     String? SpecialSiteId,
     String? SpecialSiteName,
-    int? IsActive,
-    int? IsMasterDataSynced,
+    num? IsActive,
+    num? IsMasterDataSynced,
   }) = _SpecialSitePayLoad;
   factory SpecialSitePayLoad.fromJson(Map<String, dynamic> json) =>
       _$SpecialSitePayLoadFromJson(json);

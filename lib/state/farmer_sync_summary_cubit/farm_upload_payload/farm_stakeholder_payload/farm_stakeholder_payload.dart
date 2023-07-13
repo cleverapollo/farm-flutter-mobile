@@ -9,7 +9,7 @@ class FarmStakeholderPayLoad with _$FarmStakeholderPayLoad {
     String? FarmStakeholderId,
     String? StakeholderId,
     String? FarmId,
-    int? IsMasterDataSynced,
+    num? IsMasterDataSynced,
   }) = _FarmStakeholderPayLoad;
   factory FarmStakeholderPayLoad.fromJson(Map<String, dynamic> json) =>
       _$FarmStakeholderPayLoadFromJson(json);

@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/grievance_register_payload/grievance_register_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -22,7 +23,7 @@ class GrievanceRegister with _$GrievanceRegister {
     @JsonKey(name: 'Comment') String? comment,
     @JsonKey(name: 'CarRaisedDate') String? carRaisedDate,
     @JsonKey(name: 'CarClosedDate') String? carClosedDate,
-    @JsonKey(name: 'IsActive') bool? ssActive,
+    @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
     @JsonKey(name: 'WorkerName') String? workerName,
     @JsonKey(name: 'AllocatedToName') String? allocatedToName,
@@ -36,4 +37,29 @@ class GrievanceRegister with _$GrievanceRegister {
 
   @override
   Id get id => Isar.autoIncrement;
+}
+
+extension GrievanceRegisterX on GrievanceRegister {
+  GrievanceRegisterPayLoad toPayLoad() {
+    return GrievanceRegisterPayLoad(
+      GrievanceRegisterNo: grievanceRegisterNo,
+      FarmId: farmId,
+      WorkerId: workerId,
+      GrievanceRegisterId: grievanceRegisterId,
+      GrievanceIssueId: grievanceIssueId,
+      DateReceived: dateReceived,
+      AllocatedToUserId: allocatedToUserId,
+      ActionTaken: actionTaken,
+      ClosureDetails: closureDetails,
+      DateClosed: dateClosed,
+      Comment: comment,
+      CarRaisedDate: carRaisedDate,
+      CarClosedDate: carClosedDate,
+      IsActive: isActive,
+      IsMasterdataSynced: isMasterdataSynced,
+      WorkerName: workerName,
+      AllocatedToName: allocatedToName,
+      GrievanceIssueName: grievanceIssueName,
+    );
+  }
 }

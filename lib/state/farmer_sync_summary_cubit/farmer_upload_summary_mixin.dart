@@ -2,31 +2,17 @@ import 'dart:convert';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
-import 'package:cmo/model/annual_production/annual_budget/annual_budget.dart';
-import 'package:cmo/model/annual_production/annual_budget/annual_budget_transaction.dart';
-import 'package:cmo/model/annual_production/annual_farm_production.dart';
-import 'package:cmo/model/asi.dart';
-import 'package:cmo/model/camp.dart';
-import 'package:cmo/model/chemical.dart';
-import 'package:cmo/model/customary_use_right/customary_use_right.dart';
-import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
-import 'package:cmo/model/labour_management/farmer_worker.dart';
-import 'package:cmo/model/master_data_message.dart';
-import 'package:cmo/model/sanction_register/sanction_register.dart';
-import 'package:cmo/model/social_upliftment/social_upliftment.dart';
-import 'package:cmo/model/special_site/special_site.dart';
-import 'package:cmo/model/stakeholder/farm_stakeholder_customary_use_right.dart';
-import 'package:cmo/model/stakeholder/farm_stakeholder_social_upliftment.dart';
-import 'package:cmo/model/stakeholder/farm_stakeholder_special_site.dart';
-import 'package:cmo/model/stakeholder/stake_holder.dart';
-import 'package:cmo/model/training/training_register.dart';
+import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
+import 'package:cmo/model/model.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_customary_use_right_payload/farm_stakeholder_customary_use_right_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_social_upliftment_payload/farm_stakeholder_social_upliftment_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_special_site_payload/farm_stakeholder_special_site_payload.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_accident_and_incident_register_payload/main_accident_and_incident_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_farm_stakeholder_payload/main_farm_stakeholder_payload.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_pests_and_diseases_register_payload/main_pests_and_diseases_register_payload.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/properties_payload/properties_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
 import 'package:cmo/utils/logger.dart';
-
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_customary_use_right_payload/farm_stakeholder_customary_use_right_payload.dart';
 
 mixin FarmUploadSummaryMixin {
   void Function(FarmerSyncSummaryState)? get mEmit => null;
@@ -47,10 +33,9 @@ mixin FarmUploadSummaryMixin {
   String topicByGroupSchemeIdAndUserDeviceId(String field) =>
       '$masterTopic$field.$mGroupSchemeId.$mUserDeviceId';
 
-  // Message globalMessage = Message(properties: [
-  //   Properties('DbSchemaVersion', '12'),
-  // ]);
-  Message globalMessage = const Message();
+  Message globalMessage = const Message(properties: [
+    Properties(key: 'DbSchemaVersion', value: '12'),
+  ]);
 
   Future<void> onUploadingFarmData() async {
     await _publishWorker();
@@ -66,6 +51,13 @@ mixin FarmUploadSummaryMixin {
     await _publishChemicalRegister();
     await _publishTrainingRegisters();
     await _publishAsiRegisters();
+    await _publishFireRegisters();
+    await _publishGrievanceRegisters();
+    await _publishRteSpeciesRegisters();
+    await _publishPestsAndDiseasesRegisters();
+    await _publishComplaintsAndDisputesRegisters();
+    await _publishBiologicalControlAgentRegisters();
+    await _publishAccidentAndIncidentRegisters();
   }
 
   Future<void> _publishWorker() async {
@@ -506,14 +498,259 @@ mixin FarmUploadSummaryMixin {
     }
   }
 
+  Future<void> _publishFireRegisters() async {
+    try {
+      onStatus('Sync Fire Registers...');
+      final messages = <Message>[];
+      final futures = <Future<void>>[];
+
+      final fireRegisters =
+          await cmoDatabaseMasterService.getUnsyncedFireRegisters(mFarmId);
+
+      final fireRegistersPayLoad =
+          fireRegisters.map((e) => e.toPayLoad()).toList();
+
+      for (final item in fireRegistersPayLoad) {
+        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
+      }
+
+      futures.add(cmoPerformApiService.public(
+        currentClientId: mUserDeviceId.toString(),
+        topic: topicByFarmIdAndUserDeviceId('FireRegister'),
+        messages: messages,
+      ));
+
+      await Future.wait(futures);
+    } catch (e) {
+      logger.d(e);
+    }
+  }
+
+  Future<void> _publishGrievanceRegisters() async {
+    try {
+      onStatus('Sync Grievance Registers...');
+      final messages = <Message>[];
+      final futures = <Future<void>>[];
+
+      final grievanceRegisters =
+          await cmoDatabaseMasterService.getUnsyncedGrievanceRegisters(mFarmId);
+
+      final grievanceRegistersPayLoad =
+          grievanceRegisters.map((e) => e.toPayLoad()).toList();
+
+      for (final item in grievanceRegistersPayLoad) {
+        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
+      }
+
+      futures.add(cmoPerformApiService.public(
+        currentClientId: mUserDeviceId.toString(),
+        topic: topicByFarmIdAndUserDeviceId('GrievanceRegister'),
+        messages: messages,
+      ));
+
+      await Future.wait(futures);
+    } catch (e) {
+      logger.d(e);
+    }
+  }
+
+  Future<void> _publishRteSpeciesRegisters() async {
+    try {
+      onStatus('Sync RTE Species Registers...');
+      final messages = <Message>[];
+      final futures = <Future<void>>[];
+
+      final rteSpeciesRegisters =
+          await cmoDatabaseMasterService.getUnsyncedRteSpeciesByFarmId(mFarmId);
+
+      final rteSpeciesRegistersPayLoad =
+          rteSpeciesRegisters.map((e) => e.toPayLoad()).toList();
+
+      for (final item in rteSpeciesRegistersPayLoad) {
+        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
+      }
+
+      futures.add(cmoPerformApiService.public(
+        currentClientId: mUserDeviceId.toString(),
+        topic: topicByFarmIdAndUserDeviceId('RteSpeciesRegister'),
+        messages: messages,
+      ));
+
+      await Future.wait(futures);
+    } catch (e) {
+      logger.d(e);
+    }
+  }
+
+  Future<void> _publishPestsAndDiseasesRegisters() async {
+    try {
+      onStatus('Sync RTE Species Registers...');
+      final messages = <Message>[];
+      final futures = <Future<void>>[];
+
+      final pestsAndDiseasesRegisters = await cmoDatabaseMasterService
+          .getUnsyncedPetsAndDiseaseRegisterByFarmId(mFarmId);
+
+      final pestsAndDiseasesRegistersPayLoad =
+          <MainPestsAndDiseasesRegisterPayLoad>[];
+
+      for (final item in pestsAndDiseasesRegisters) {
+        var payLoadItem = const MainPestsAndDiseasesRegisterPayLoad();
+
+        final registerTreatmentMethod = await cmoDatabaseMasterService
+            .getUnsyncedPestsAndDiseasesRegisterTreatmentMethodByPestsAndDiseasesRegisterNo(
+                item.pestsAndDiseasesRegisterNo.toString());
+
+        var registerTreatmentMethodPayLoad =
+            registerTreatmentMethod.map((e) => e.toPayLoad()).toList();
+
+        registerTreatmentMethodPayLoad =
+            registerTreatmentMethodPayLoad.map((e) {
+          if (e.PestsAndDiseasesRegisterId == null) {
+            return e.copyWith(
+                PestsAndDiseasesRegisterId:
+                    '00000000-0000-0000-0000-000000000000');
+          }
+          return e;
+        }).toList();
+
+        payLoadItem = payLoadItem.copyWith(
+          Register: item.toPayLoad(),
+          TreatmentMethod: registerTreatmentMethodPayLoad,
+        );
+
+        pestsAndDiseasesRegistersPayLoad.add(payLoadItem);
+      }
+
+      for (final item in pestsAndDiseasesRegistersPayLoad) {
+        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
+      }
+
+      futures.add(cmoPerformApiService.public(
+        currentClientId: mUserDeviceId.toString(),
+        topic: topicByFarmIdAndUserDeviceId('PestsAndDiseasesRegister'),
+        messages: messages,
+      ));
+
+      await Future.wait(futures);
+    } catch (e) {
+      logger.d(e);
+    }
+  }
+
+  Future<void> _publishComplaintsAndDisputesRegisters() async {
+    try {
+      onStatus('Sync Complaints And Disputes Registers...');
+      final messages = <Message>[];
+      final futures = <Future<void>>[];
+
+      final complaintsAndDisputesRegisters = await cmoDatabaseMasterService
+          .getUnsyncedComplaintsAndDisputesRegisterByFarmId(mFarmId);
+
+      final complaintsAndDisputesRegistersPayLoad =
+          complaintsAndDisputesRegisters.map((e) => e.toPayLoad()).toList();
+
+      for (final item in complaintsAndDisputesRegistersPayLoad) {
+        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
+      }
+
+      futures.add(cmoPerformApiService.public(
+        currentClientId: mUserDeviceId.toString(),
+        topic: topicByFarmIdAndUserDeviceId('ComplaintsAndDisputesRegister'),
+        messages: messages,
+      ));
+
+      await Future.wait(futures);
+    } catch (e) {
+      logger.d(e);
+    }
+  }
+
+  Future<void> _publishBiologicalControlAgentRegisters() async {
+    try {
+      onStatus('Sync Biological Control Agent Registers...');
+      final messages = <Message>[];
+      final futures = <Future<void>>[];
+
+      final biologicalControlAgentRegisters = await cmoDatabaseMasterService
+          .getUnsyncedBiologicalControlAgentRegisterByFarmId(mFarmId);
+
+      final biologicalControlAgentRegistersPayLoad =
+          biologicalControlAgentRegisters.map((e) => e.toPayLoad()).toList();
+
+      for (final item in biologicalControlAgentRegistersPayLoad) {
+        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
+      }
+
+      futures.add(cmoPerformApiService.public(
+        currentClientId: mUserDeviceId.toString(),
+        topic: topicByFarmIdAndUserDeviceId('BiologicalControlAgentRegister'),
+        messages: messages,
+      ));
+
+      await Future.wait(futures);
+    } catch (e) {
+      logger.d(e);
+    }
+  }
+
+  Future<void> _publishAccidentAndIncidentRegisters() async {
+    try {
+      onStatus('Sync Accident And Incident Registers...');
+      final messages = <Message>[];
+      final futures = <Future<void>>[];
+
+      final accidentAndIncidentRegistersRegistersPayLoad =
+          <MainAccidentAndIncidentRegisterPayLoad>[];
+
+      final accidentAndIncidentRegisters = await cmoDatabaseMasterService
+          .getUnsyncedAccidentAndIncidentRegistersByFarmId(mFarmId);
+
+      for (final item in accidentAndIncidentRegisters) {
+        var itemPayLoad = const MainAccidentAndIncidentRegisterPayLoad();
+
+        final accidentAndIncidentPropertyDamaged = await cmoDatabaseMasterService
+            .getAllAccidentAndIncidentRegisterPropertyDamagedByAccidentAndIncidentRegisterNo(
+                item.accidentAndIncidentRegisterNo ?? '');
+
+        var accidentAndIncidentPropertyDamagedPayLoad =
+            accidentAndIncidentPropertyDamaged
+                .map((e) => e.toPayLoad())
+                .toList();
+
+        accidentAndIncidentPropertyDamagedPayLoad =
+            accidentAndIncidentPropertyDamagedPayLoad.map((e) {
+          if (e.AccidentAndIncidentRegisterId == null) {
+            return e.copyWith(
+                AccidentAndIncidentRegisterId:
+                    '00000000-0000-0000-0000-000000000000');
+          }
+          return e;
+        }).toList();
+
+        itemPayLoad = itemPayLoad.copyWith(
+          Register: item.toPayLoad(),
+          PropertyDamaged: accidentAndIncidentPropertyDamagedPayLoad,
+        );
+      }
+
+      for (final item in accidentAndIncidentRegistersRegistersPayLoad) {
+        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
+      }
+
+      futures.add(cmoPerformApiService.public(
+        currentClientId: mUserDeviceId.toString(),
+        topic: topicByFarmIdAndUserDeviceId('AccidentAndIncidentRegister'),
+        messages: messages,
+      ));
+
+      await Future.wait(futures);
+    } catch (e) {
+      logger.d(e);
+    }
+  }
+
   void onStatus(String message) {
     _emit(_state.copyWith(syncMessage: message));
   }
-}
-
-class Properties {
-  Properties(this.key, this.value);
-
-  final String key;
-  final String value;
 }

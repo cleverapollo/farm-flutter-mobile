@@ -10,7 +10,7 @@ class GrievanceRegisterPayLoad with _$GrievanceRegisterPayLoad {
     String? FarmId,
     String? WorkerId,
     String? GrievanceRegisterId,
-    int? GrievanceIssueId,
+    num? GrievanceIssueId,
     DateTime? DateReceived,
     String? AllocatedToUserId,
     String? ActionTaken,

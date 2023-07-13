@@ -388,6 +388,71 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<List<FireRegister>> getUnsyncedFireRegisters(String farmId) async {
+    final db = await _db();
+
+    return db.fireRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<GrievanceRegister>> getUnsyncedGrievanceRegisters(
+      String farmId) async {
+    final db = await _db();
+
+    return db.grievanceRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<PestsAndDiseasesRegisterTreatmentMethod>>
+      getUnsyncedPestsAndDiseasesRegisterTreatmentMethodByPestsAndDiseasesRegisterNo(
+          String pestsAndDiseasesRegisterNo) async {
+    final db = await _db();
+
+    return db.pestsAndDiseasesRegisterTreatmentMethods
+        .filter()
+        .pestsAndDiseasesRegisterNoEqualTo(pestsAndDiseasesRegisterNo)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<BiologicalControlAgent>>
+      getUnsyncedBiologicalControlAgentRegisterByFarmId(String farmId) async {
+    final db = await _db();
+
+    return db.biologicalControlAgents
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterDataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<AccidentAndIncident>>
+      getUnsyncedAccidentAndIncidentRegistersByFarmId(String farmId) async {
+    final db = await _db();
+    return db.accidentAndIncidents
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterDataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<AccidentAndIncidentPropertyDamaged>>
+      getAllAccidentAndIncidentRegisterPropertyDamagedByAccidentAndIncidentRegisterNo(
+          String accidentAndIncidentRegisterNo) async {
+    final db = await _db();
+
+    return db.accidentAndIncidentPropertyDamageds
+        .filter()
+        .accidentAndIncidentRegisterNoEqualTo(accidentAndIncidentRegisterNo)
+        .findAll();
+  }
+
   Future<ConfigData?> getConfig(ConfigEnum config) async {
     final db = await _db();
 
@@ -1305,7 +1370,7 @@ class CmoDatabaseMasterService {
     return db.grievanceRegisters
         .filter()
         .farmIdEqualTo(farmId)
-        .ssActiveEqualTo(true)
+        .isActiveEqualTo(true)
         .findAll();
   }
 

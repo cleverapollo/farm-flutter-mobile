@@ -7,11 +7,11 @@ part 'pests_and_diseases_treatment_method_payload.g.dart';
 class PestsAndDiseasesTreatmentMethodPayLoad
     with _$PestsAndDiseasesTreatmentMethodPayLoad {
   const factory PestsAndDiseasesTreatmentMethodPayLoad({
-    int? PestsAndDiseasesRegisterTreatmentMethodId,
+    num? PestsAndDiseasesRegisterTreatmentMethodId,
     String? PestsAndDiseasesRegisterTreatmentMethodNo,
     String? PestsAndDiseasesRegisterId,
     String? PestsAndDiseasesRegisterNo,
-    int? TreatmentMethodId,
+    num? TreatmentMethodId,
     bool? IsActive,
     bool? IsMasterdataSynced,
   }) = _PestsAndDiseasesTreatmentMethodPayLoad;

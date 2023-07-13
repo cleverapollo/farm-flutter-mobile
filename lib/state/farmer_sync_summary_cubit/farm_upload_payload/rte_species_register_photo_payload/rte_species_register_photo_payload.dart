@@ -6,7 +6,7 @@ part 'rte_species_register_photo_payload.g.dart';
 @freezed
 class RteSpeciesRegisterPhotoPayLoad with _$RteSpeciesRegisterPhotoPayLoad {
   const factory RteSpeciesRegisterPhotoPayLoad({
-    int? RteSpeciesRegisterPhotoId,
+    num? RteSpeciesRegisterPhotoId,
     String? RteSpeciesRegisterPhotoNo,
     String? RteSpeciesRegisterId,
     String? RteSpeciesRegisterNo,

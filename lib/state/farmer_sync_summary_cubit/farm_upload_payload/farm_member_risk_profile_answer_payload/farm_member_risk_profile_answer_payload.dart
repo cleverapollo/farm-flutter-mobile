@@ -9,7 +9,7 @@ class FarmMemberRiskProfileAnswerPayLoad
   const factory FarmMemberRiskProfileAnswerPayLoad({
     String? FarmMemberRiskProfileAnswerId,
     String? FarmMemberRiskProfileAnswerNo,
-    int? RiskProfileQuestionId,
+    num? RiskProfileQuestionId,
     bool? Answer,
     String? FarmId,
     bool? IsActive,

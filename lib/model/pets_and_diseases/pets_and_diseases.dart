@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/pests_and_diseases_register_payload/pests_and_diseases_register_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -34,4 +35,25 @@ class PetsAndDiseaseRegister with _$PetsAndDiseaseRegister {
 
   @override
   Id get id => Isar.autoIncrement;
+}
+
+extension PetsAndDiseaseRegisterX on PetsAndDiseaseRegister {
+  PestsAndDiseasesRegisterPayLoad toPayLoad() {
+    return PestsAndDiseasesRegisterPayLoad(
+      PestsAndDiseasesRegisterNo: pestsAndDiseasesRegisterNo,
+      FarmId: farmId,
+      PestsAndDiseaseTypeId: pestsAndDiseaseTypeId,
+      PestsAndDiseasesRegisterId: pestsAndDiseasesRegisterId,
+      NumberOfOutbreaks: numberOfOutbreaks,
+      AreaLost: areaLost,
+      UnderControl: underControl,
+      Comment: comment,
+      CarRaisedDate: carRaisedDate,
+      CarClosedDate: carClosedDate,
+      IsActive: isActive,
+      IsMasterdataSynced: isMasterdataSynced,
+      PestsAndDiseaseTypeName: pestsAndDiseaseTypeName,
+      PestsAndDiseaseTreatmentMethods: pestsAndDiseaseTreatmentMethods,
+    );
+  }
 }

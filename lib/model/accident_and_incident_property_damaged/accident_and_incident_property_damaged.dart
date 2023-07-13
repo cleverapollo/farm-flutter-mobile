@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/accident_and_incident_register_property_damaged_payload/accident_and_incident_register_property_damaged_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -31,4 +32,21 @@ class AccidentAndIncidentPropertyDamaged
 
   @override
   Id get id => Isar.autoIncrement;
+}
+
+extension AccidentAndIncidentPropertyDamagedX
+    on AccidentAndIncidentPropertyDamaged {
+  AccidentAndIncidentRegisterPropertyDamagedPayLoad toPayLoad() {
+    return AccidentAndIncidentRegisterPropertyDamagedPayLoad(
+      AccidentAndIncidentRegisterPropertyDamagedId:
+          accidentAndIncidentRegisterPropertyDamagedId,
+      AccidentAndIncidentRegisterPropertyDamagedNo:
+          accidentAndIncidentRegisterPropertyDamagedNo,
+      AccidentAndIncidentRegisterId: accidentAndIncidentRegisterId,
+      AccidentAndIncidentRegisterNo: accidentAndIncidentRegisterNo,
+      PropertyDamagedId: propertyDamagedId,
+      IsActive: isActive,
+      IsMasterdataSynced: isMasterdataSynced,
+    );
+  }
 }

@@ -8,10 +8,10 @@ class PestsAndDiseasesRegisterPayLoad with _$PestsAndDiseasesRegisterPayLoad {
   const factory PestsAndDiseasesRegisterPayLoad({
     String? PestsAndDiseasesRegisterNo,
     String? FarmId,
-    int? PestsAndDiseaseTypeId,
+    num? PestsAndDiseaseTypeId,
     String? PestsAndDiseasesRegisterId,
-    int? NumberOfOutbreaks,
-    int? AreaLost,
+    num? NumberOfOutbreaks,
+    num? AreaLost,
     bool? UnderControl,
     String? Comment,
     String? CarRaisedDate,

@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/fire_register_payload/fire_register_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -34,4 +35,28 @@ class FireRegister with _$FireRegister {
 
   @override
   Id get id => Isar.autoIncrement;
+}
+
+extension FireRegisterX on FireRegister {
+  FireRegisterPayLoad toPayLoad() {
+    return FireRegisterPayLoad(
+      FireRegisterNo: fireRegisterNo,
+      FarmId: farmId,
+      FireRegisterId: fireRegisterId,
+      Date: date,
+      Detected: detected,
+      Extinguished: extinguished,
+      FireCauseId: fireCauseId,
+      AreaBurnt: areaBurnt,
+      CommercialAreaLoss: commercialAreaLoss,
+      Latitude: latitude,
+      Longitude: longitude,
+      Comment: comment,
+      CarRaisedDate: carRaisedDate,
+      CarClosedDate: carClosedDate,
+      IsActive: isActive,
+      IsMasterdataSynced: isMasterdataSynced,
+      FireCauseName: fireCauseName,
+    );
+  }
 }

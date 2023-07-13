@@ -6,10 +6,10 @@ part 'job_description_payload.g.dart';
 @freezed
 class JobDescriptionPayLoad with _$JobDescriptionPayLoad {
   const factory JobDescriptionPayLoad({
-    int? JobDescriptionId,
+    num? JobDescriptionId,
     String? JobDescriptionName,
     bool? IsAssignedToWorker,
-    int? IsActive,
+    num? IsActive,
   }) = _JobDescriptionPayLoad;
   factory JobDescriptionPayLoad.fromJson(Map<String, dynamic> json) =>
       _$JobDescriptionPayLoadFromJson(json);

@@ -8,8 +8,8 @@ class FarmMemberObjectiveAnswerPayLoad with _$FarmMemberObjectiveAnswerPayLoad {
   const factory FarmMemberObjectiveAnswerPayLoad({
     String? FarmMemberObjectiveAnswerId,
     String? FarmMemberObjectiveAnswerNo,
-    int? FarmMemberObjectiveId,
-    int? FarmObjectiveOptionId,
+    num? FarmMemberObjectiveId,
+    num? FarmObjectiveOptionId,
     String? FarmId,
     bool? IsActive,
     bool? IsMasterdataSynced,

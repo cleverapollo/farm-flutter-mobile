@@ -12,7 +12,7 @@ class SanctionRegisterPayLoad with _$SanctionRegisterPayLoad {
     String? CampId,
     String? CampOrCompartment,
     DateTime? DateRecieved,
-    int? IssueTypeId,
+    num? IssueTypeId,
     String? DescriptionOfSanction,
     String? Comment,
     String? CarRaisedDate,

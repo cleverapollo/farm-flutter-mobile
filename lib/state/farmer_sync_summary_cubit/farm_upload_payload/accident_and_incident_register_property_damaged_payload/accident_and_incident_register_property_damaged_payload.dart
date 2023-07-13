@@ -11,7 +11,7 @@ class AccidentAndIncidentRegisterPropertyDamagedPayLoad
     String? AccidentAndIncidentRegisterPropertyDamagedNo,
     String? AccidentAndIncidentRegisterId,
     String? AccidentAndIncidentRegisterNo,
-    int? PropertyDamagedId,
+    num? PropertyDamagedId,
     bool? IsActive,
     bool? IsMasterdataSynced,
   }) = _AccidentAndIncidentRegisterPropertyDamagedPayLoad;

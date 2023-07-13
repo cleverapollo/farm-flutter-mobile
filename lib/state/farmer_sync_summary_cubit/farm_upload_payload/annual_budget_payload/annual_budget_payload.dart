@@ -8,15 +8,15 @@ class AnnualBudgetPayLoad with _$AnnualBudgetPayLoad {
   const factory AnnualBudgetPayLoad({
     String? AnnualBudgetId,
     String? AnnualBudgetName,
-    int? GroupschemeId,
+    num? GroupschemeId,
     String? FarmId,
     String? AnnualFarmProductionId,
-    int? AnnualFarmProductionYear,
-    int? TotalIncome,
-    int? TotalExpense,
-    int? IsLocal,
+    num? AnnualFarmProductionYear,
+    num? TotalIncome,
+    num? TotalExpense,
+    num? IsLocal,
     bool? IsActive,
-    int? CanDelete,
+    num? CanDelete,
   }) = _AnnualBudgetPayLoad;
   factory AnnualBudgetPayLoad.fromJson(Map<String, dynamic> json) =>
       _$AnnualBudgetPayLoadFromJson(json);

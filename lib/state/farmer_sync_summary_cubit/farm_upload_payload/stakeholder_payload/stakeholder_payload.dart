@@ -15,8 +15,8 @@ class StakeholderPayLoad with _$StakeholderPayLoad {
     String? Email,
     String? Tel,
     String? Cell,
-    int? IsActive,
-    int? IsMasterDataSynced,
+    num? IsActive,
+    num? IsMasterDataSynced,
   }) = _StakeholderPayLoad;
   factory StakeholderPayLoad.fromJson(Map<String, dynamic> json) =>
       _$StakeholderPayLoadFromJson(json);

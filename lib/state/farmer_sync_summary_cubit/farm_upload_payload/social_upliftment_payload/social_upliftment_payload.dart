@@ -8,8 +8,8 @@ class SocialUpliftmentPayLoad with _$SocialUpliftmentPayLoad {
   const factory SocialUpliftmentPayLoad({
     String? SocialUpliftmentId,
     String? SocialUpliftmentName,
-    int? IsActive,
-    int? IsMasterDataSynced,
+    num? IsActive,
+    num? IsMasterDataSynced,
   }) = _SocialUpliftmentPayLoad;
   factory SocialUpliftmentPayLoad.fromJson(Map<String, dynamic> json) =>
       _$SocialUpliftmentPayLoadFromJson(json);

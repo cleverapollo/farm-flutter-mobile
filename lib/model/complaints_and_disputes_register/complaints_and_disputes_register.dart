@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/complains_and_disputes_register_payload/complains_and_disputes_register_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -37,4 +38,27 @@ class ComplaintsAndDisputesRegister with _$ComplaintsAndDisputesRegister {
 
   @override
   Id get id => Isar.autoIncrement;
+}
+
+extension ComplaintsAndDisputesRegisterX on ComplaintsAndDisputesRegister {
+  ComplainsAndDisputesRegisterPayLoad toPayLoad() {
+    return ComplainsAndDisputesRegisterPayLoad(
+      ComplaintsAndDisputesRegisterNo: complaintsAndDisputesRegisterNo,
+      FarmId: farmId,
+      StakeholderId: stakeholderId,
+      ComplaintsAndDisputesRegisterId: complaintsAndDisputesRegisterId,
+      IssueDescription: issueDescription,
+      DateReceived: dateReceived,
+      AllocatedToUserId: allocatedToUserId,
+      ClosureDetails: closureDetails,
+      DateClosed: dateClosed,
+      Comment: comment,
+      CarRaisedDate: carRaisedDate,
+      CarClosedDate: carClosedDate,
+      IsActive: isActive,
+      IsMasterdataSynced: isMasterdataSynced,
+      StakeholderName: stakeholderName,
+      ComplaintsAndDisputesRegisterName: complaintsAndDisputesRegisterName,
+    );
+  }
 }

@@ -10,8 +10,8 @@ class FarmStakeholderSocialUpliftmentPayLoad
     String? FarmStakeholderSocialUpliftmentId,
     String? FarmStakeholderId,
     String? SocialUpliftmentId,
-    int? IsActive,
-    int? IsMasterDataSynced,
+    num? IsActive,
+    num? IsMasterDataSynced,
   }) = _FarmStakeholderSocialUpliftmentPayLoad;
   factory FarmStakeholderSocialUpliftmentPayLoad.fromJson(
           Map<String, dynamic> json) =>

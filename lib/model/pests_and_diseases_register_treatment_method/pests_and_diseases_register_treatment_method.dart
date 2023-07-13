@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/pests_and_diseases_treatment_method_payload/pests_and_diseases_treatment_method_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -30,4 +31,21 @@ class PestsAndDiseasesRegisterTreatmentMethod
 
   @override
   Id get id => Isar.autoIncrement;
+}
+
+extension PestsAndDiseasesRegisterTreatmentMethodX
+    on PestsAndDiseasesRegisterTreatmentMethod {
+  PestsAndDiseasesTreatmentMethodPayLoad toPayLoad() {
+    return PestsAndDiseasesTreatmentMethodPayLoad(
+      PestsAndDiseasesRegisterTreatmentMethodId:
+          pestsAndDiseasesRegisterTreatmentMethodId,
+      PestsAndDiseasesRegisterTreatmentMethodNo:
+          pestsAndDiseasesRegisterTreatmentMethodNo,
+      PestsAndDiseasesRegisterId: pestsAndDiseasesRegisterId,
+      PestsAndDiseasesRegisterNo: pestsAndDiseasesRegisterNo,
+      TreatmentMethodId: treatmentMethodId,
+      IsActive: isActive,
+      IsMasterdataSynced: isMasterdataSynced,
+    );
+  }
 }

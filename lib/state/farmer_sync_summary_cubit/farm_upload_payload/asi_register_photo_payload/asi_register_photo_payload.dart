@@ -6,7 +6,7 @@ part 'asi_register_photo_payload.g.dart';
 @freezed
 class AsiRegisterPhotoPayLoad with _$AsiRegisterPhotoPayLoad {
   const factory AsiRegisterPhotoPayLoad({
-    int? AsiRegisterPhotoId,
+    num? AsiRegisterPhotoId,
     String? AsiRegisterPhotoNo,
     String? AsiRegisterId,
     String? AsiRegisterNo,

@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
+import '../../state/farmer_sync_summary_cubit/farm_upload_payload/biological_control_agent_register_payload/biological_control_agent_register_payload.dart';
+
 part 'biological_control_agent.freezed.dart';
 
 part 'biological_control_agent.g.dart';
@@ -46,4 +48,33 @@ class BiologicalControlAgent with _$BiologicalControlAgent {
 
   @override
   Id get id => biologicalControlAgentTypeId ?? Isar.autoIncrement;
+}
+
+extension BiologicalControlAgentX on BiologicalControlAgent {
+  BiologicalControlAgentRegisterPayLoad toPayLoad() {
+    return BiologicalControlAgentRegisterPayLoad(
+      BiologicalControlAgentRegisterNo: biologicalControlAgentRegisterNo,
+      FarmId: farmId,
+      BiologicalControlAgentTypeId: biologicalControlAgentTypeId,
+      BiologicalControlAgentName: biologicalControlAgentName,
+      BiologicalControlAgentRegisterId: biologicalControlAgentRegisterId,
+      IssueDescription: issueDescription,
+      DateReleased: dateReleased,
+      StakeholderId: stakeholderId,
+      MonitoringRequirementId: monitoringRequirementId,
+      Comment: comment,
+      CarRaisedDate: carRaisedDate,
+      CarClosedDate: carClosedDate,
+      IsActive: isActive,
+      IsMasterdataSynced: isMasterDataSynced,
+      StakeholderName: stakeholderName,
+      BiologicalControlAgentTypeName: biologicalControlAgentTypeName,
+      BiologicalControlAgentTypeScientificName:
+          biologicalControlAgentTypeScientificName,
+      BiologicalControlAgentTypeCountryName:
+          biologicalControlAgentTypeCountryName,
+      ReasonForBioAgent: reasonForBioAgent,
+      MonitoringRequirementName: monitoringRequirementName,
+    );
+  }
 }

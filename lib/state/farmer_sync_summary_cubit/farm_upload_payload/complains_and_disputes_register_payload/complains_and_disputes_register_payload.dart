@@ -13,7 +13,7 @@ class ComplainsAndDisputesRegisterPayLoad
     String? ComplaintsAndDisputesRegisterId,
     String? IssueDescription,
     DateTime? DateReceived,
-    int? AllocatedToUserId,
+    num? AllocatedToUserId,
     String? ClosureDetails,
     DateTime? DateClosed,
     String? Comment,

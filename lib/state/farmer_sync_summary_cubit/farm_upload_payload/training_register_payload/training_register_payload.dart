@@ -7,7 +7,7 @@ class TrainingRegisterPayLoad with _$TrainingRegisterPayLoad {
   const factory TrainingRegisterPayLoad({
     String? TrainingRegisterNo,
     String? FarmId,
-    int? TrainingTypeId,
+    num? TrainingTypeId,
     DateTime? Date,
     String? TrainerName,
     String? WorkerId,

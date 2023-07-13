@@ -1,3 +1,4 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/rte_species_register_payload/rte_species_register_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -38,4 +39,31 @@ class RteSpecies with _$RteSpecies {
 
   @override
   Id get id => int.tryParse(rteSpeciesRegisterId ?? '') ?? Isar.autoIncrement;
+}
+
+extension RteSpeciesX on RteSpecies {
+  RteSpeciesRegisterPayLoad toPayLoad() {
+    return RteSpeciesRegisterPayLoad(
+      RteSpeciesRegisterNo: rteSpeciesRegisterNo,
+      FarmId: farmId,
+      CommonName: commonName,
+      RteSpeciesRegisterId: rteSpeciesRegisterId,
+      ScientificName: scientificName,
+      AnimalTypeId: animalTypeId,
+      SpeciesRangeId: speciesRangeId,
+      DateSpotted: dateSpotted,
+      CampId: campId,
+      Location: location,
+      Latitude: latitude,
+      Longitude: longitude,
+      Comment: comment,
+      CarRaisedDate: carRaisedDate,
+      CarClosedDate: carClosedDate,
+      IsActive: isActive,
+      IsMasterdataSynced: isMasterDataSynced,
+      CampName: campName,
+      AnimalTypeName: animalTypeName,
+      SpeciesRangeName: speciesRangeName,
+    );
+  }
 }
