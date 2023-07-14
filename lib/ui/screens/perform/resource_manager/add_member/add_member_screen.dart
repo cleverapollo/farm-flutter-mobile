@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
@@ -11,6 +13,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_me
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/slimf_and_mpo_section.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/ui.dart';
@@ -73,12 +76,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           }
           return SingleChildScrollView(
             child: Column(
-              children: const [
-                SizedBox(height: 8),
-                _AddMemberSLIMF(),
-                SizedBox(height: 12),
-                _AddMemberMPO(),
-                SizedBox(height: 12),
+              children: [
+                const SizedBox(height: 8),
+                SlimfAndMpoSection(),
+                const SizedBox(height: 12),
                 _AddMemberMDetails(),
                 SizedBox(height: 12),
                 _AddMemberSDetails(),
@@ -596,220 +597,5 @@ class _AddMemberMDetails extends StatelessWidget {
         style: context.textStyles.bodyBold,
       ),
     );
-  }
-}
-
-class _AddMemberMPO extends StatelessWidget {
-  const _AddMemberMPO();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMPO>(
-      selector: (state) => state.addMemberMPO,
-      builder: (context, AddMemberMPO data) {
-        final cubit = context.read<AddMemberCubit>();
-        return CmoCollapseTitle(
-          title: LocaleKeys.member_property_ownership.tr(),
-          showTick: data.isComplete,
-          child: Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                    LocaleKeys.member_property_ownership_question.tr(),
-                    style: context.textStyles.bodyNormal
-                        .copyWith(color: context.colors.black, fontSize: 16)),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, top: 12),
-                  child: Text(LocaleKeys.propertyType.tr(),
-                      style: context.textStyles.titleBold
-                          .copyWith(color: context.colors.black, fontSize: 16)),
-                ),
-                selectPropertyType(),
-                // Column(children: [
-                //   InkWell(
-                //     onTap: () {
-                //       cubit.onExpansionChangedMPO(!data.isExpansionOpen);
-                //     },
-                //     child: Container(
-                //       margin: const EdgeInsets.all(8),
-                //       padding: const EdgeInsets.all(8),
-                //       width: double.maxFinite,
-                //       decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.circular(12),
-                //         border: Border.all(width: 1),
-                //       ),
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //           Text(
-                //             data.propertyTypeSelected
-                //                     ?.farmPropertyOwnershipTypeName ??
-                //                 LocaleKeys.tribal_authority.tr(),
-                //             style: context.textStyles.bodyBold,
-                //           ),
-                //           const Icon(Icons.arrow_drop_down_circle_outlined)
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                //   Visibility(
-                //     visible: data.isExpansionOpen,
-                //     child: SizedBox(
-                //       height: 300,
-                //       width: double.maxFinite,
-                //       child: SingleChildScrollView(
-                //         child: Column(
-                //           children: data.propertyTypes != null
-                //               ? data.propertyTypes!
-                //                   .map((e) => _buildItem(e, context, cubit))
-                //                   .toList()
-                //               : [],
-                //         ),
-                //       ),
-                //     ),
-                //   )
-                // ]),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildItem(FarmPropertyOwnershipType farmPropertyOwnershipType,
-      BuildContext context, AddMemberCubit cubit) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: InkWell(
-        onTap: () {
-          cubit.onDataChangeMPO(farmPropertyOwnershipType);
-        },
-        child: Container(
-          margin: const EdgeInsets.all(8),
-          padding: const EdgeInsets.all(8),
-          width: double.maxFinite,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(width: 1),
-          ),
-          child: Text(
-            farmPropertyOwnershipType.farmPropertyOwnershipTypeName ?? '',
-            style: context.textStyles.bodyBold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget selectPropertyType() {
-    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMPO>(
-      selector: (state) {
-        return state.addMemberMPO;
-      },
-      builder: (context, addMemberMPO) {
-        return CmoDropdown<FarmPropertyOwnershipType>(
-          name: 'propertyType',
-          inputDecoration: _buildInputDecoration(context, LocaleKeys.propertyType.tr()),
-          initialValue: addMemberMPO.propertyTypeSelected,
-          itemsData: addMemberMPO.propertyTypes
-              .map(
-                (e) => CmoDropdownItem<FarmPropertyOwnershipType>(
-                  id: e,
-                  name: e.farmPropertyOwnershipTypeName ?? '',
-                ),
-              )
-              .toList(),
-          onChanged: (FarmPropertyOwnershipType? farmPropertyOwnershipType) {
-            context.read<AddMemberCubit>().onDataChangeMPO(farmPropertyOwnershipType);
-          },
-        );
-      },
-    );
-  }
-
-  InputDecoration _buildInputDecoration(BuildContext context, String hintText) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.all(8),
-      isDense: true,
-      hintText: '${LocaleKeys.select.tr()} ${hintText.toLowerCase()}',
-      hintStyle: context.textStyles.bodyNormal.grey,
-      border: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.grey),
-      ),
-      focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.blue),
-      ),
-    );
-  }
-}
-
-class _AddMemberSLIMF extends StatelessWidget {
-  const _AddMemberSLIMF();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberSLIMF?>(
-        selector: (state) => state.addMemberSLIMF,
-        builder: (context, AddMemberSLIMF? data) {
-          final isSelect = data?.isSlimfCompliant;
-          return CmoCollapseTitle(
-            title: LocaleKeys.slimf_compliance.tr(),
-            showTick: data?.isComplete,
-            child: Container(
-              padding: const EdgeInsets.only(
-                  top: 12.0, left: 8, right: 8, bottom: 12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: const Offset(5, 5), // changes position of shadow
-                  ),
-                  //BoxSh
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(LocaleKeys.is_the_farmer_slimf_compliant.tr(),
-                      style: context.textStyles.titleBold
-                          .copyWith(color: context.colors.black, fontSize: 16)),
-                  const SizedBox(height: 16),
-                  Text(LocaleKeys.slimf_compliant_limitation_1.tr(),
-                      style: context.textStyles.titleBold
-                          .copyWith(color: context.colors.black, fontSize: 16)),
-                  Text(
-                      LocaleKeys.slimf_compliant_limitation_1_content.tr(),
-                      style: context.textStyles.bodyNormal
-                          .copyWith(color: context.colors.black, fontSize: 16)),
-                  const SizedBox(height: 12),
-                  Text(LocaleKeys.slimf_compliant_limitation_2.tr(),
-                      style: context.textStyles.titleBold
-                          .copyWith(color: context.colors.black, fontSize: 16)),
-                  Text(
-                    LocaleKeys.slimf_compliant_limitation_2_content.tr(),
-                    style: context.textStyles.bodyNormal.copyWith(
-                      color: context.colors.black,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  CmoSlimfQuestion(
-                    onTap: (p0) {
-                      context.read<AddMemberCubit>().onTapSlimf(isSlimf: p0!);
-                    },
-                    initialValue: isSelect,
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
   }
 }

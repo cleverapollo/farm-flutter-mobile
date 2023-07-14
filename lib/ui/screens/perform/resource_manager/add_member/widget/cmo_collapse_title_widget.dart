@@ -3,15 +3,18 @@ import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class CmoCollapseTitle extends StatefulWidget {
-  const CmoCollapseTitle(
-      {super.key,
-      required this.title,
-      required this.child,
-      this.showTick = false});
+  const CmoCollapseTitle({
+    super.key,
+    required this.title,
+    required this.child,
+    this.initiallyExpanded = false,
+    this.showTick = false,
+  });
 
   final String title;
   final Widget child;
   final bool? showTick;
+  final bool initiallyExpanded;
 
   @override
   State<CmoCollapseTitle> createState() => _CmoCollapseTitleState();
@@ -29,6 +32,7 @@ class _CmoCollapseTitleState extends State<CmoCollapseTitle> {
       },
       backgroundColor: context.colors.blueDark1,
       collapsedBackgroundColor: context.colors.blueDark1,
+      initiallyExpanded: widget.initiallyExpanded,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
