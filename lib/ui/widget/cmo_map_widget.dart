@@ -165,29 +165,7 @@ class CmoMapWidgetState extends State<CmoMapWidget> {
         ),
         Visibility(
           visible: widget.mapType.isMarkerSingleWithPhotos,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Align(
-                child: CmoFilledButton(
-                    title: LocaleKeys.selectPhoto.tr(),
-                    onTap: () async {
-                      locationModel.imageUri =
-                          (await _imagePickerService.pickImageFromGallery())
-                              ?.path;
-                    }),
-              ),
-              Align(
-                child: CmoFilledButton(
-                    title: LocaleKeys.takePhoto.tr(),
-                    onTap: () async {
-                      locationModel.imageUri =
-                          (await _imagePickerService.pickImageFromCamera())
-                              ?.path;
-                    }),
-              ),
-            ],
-          ),
+          child: buttonsListWidget(),
         ),
       ],
     );
@@ -212,5 +190,81 @@ class CmoMapWidgetState extends State<CmoMapWidget> {
         desiredAccuracy: LocationAccuracy.high);
     await _controller.animateCamera(
         CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
+  }
+
+
+  Widget buttonsListWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        resetIcon(),
+        const SizedBox(width: 15,),
+        acceptIcon(),
+        const SizedBox(width: 15,),
+        selectPhotoIcon(),
+        const SizedBox(width: 15,),
+        takePhotoIcon(),
+      ],
+    );
+  }
+
+  Widget resetIcon() {
+    return InkWell(
+      onTap: _removePreviousPoint,
+      child: Container(
+        alignment: Alignment.center,
+        child: SvgGenImage(Assets.icons.icRefreshMap.path).svg(
+          height: 68,
+          width: 68,
+        ),
+      ),
+    );
+  }
+
+  Widget acceptIcon() {
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        alignment: Alignment.center,
+        child: SvgGenImage(Assets.icons.icAcceptMap.path).svg(
+          height: 68,
+          width: 68,
+        ),
+      ),
+    );
+  }
+
+  Widget selectPhotoIcon() {
+    return InkWell(
+      onTap: () async {
+        locationModel.imageUri =
+            (await _imagePickerService.pickImageFromGallery())
+                ?.path;
+      },
+      child: Container(
+        alignment: Alignment.center,
+        child: SvgGenImage(Assets.icons.icSelectPhotoMap.path).svg(
+          height: 60,
+          width: 60,
+        ),
+      ),
+    );
+  }
+
+  Widget takePhotoIcon() {
+    return InkWell(
+      onTap: () async {
+        locationModel.imageUri =
+            (await _imagePickerService.pickImageFromCamera())
+                ?.path;
+      },
+      child: Container(
+        alignment: Alignment.center,
+        child: SvgGenImage(Assets.icons.icTakePhotoMap.path).svg(
+          height: 60,
+          width: 60,
+        ),
+      ),
+    );
   }
 }

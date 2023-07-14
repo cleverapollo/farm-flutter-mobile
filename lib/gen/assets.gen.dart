@@ -17,6 +17,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_accept.svg
   SvgGenImage get icAccept => const SvgGenImage('assets/icons/ic_accept.svg');
 
+  /// File path: assets/icons/ic_accept_map.svg
+  SvgGenImage get icAcceptMap =>
+      const SvgGenImage('assets/icons/ic_accept_map.svg');
+
   /// File path: assets/icons/ic_add.svg
   SvgGenImage get icAdd => const SvgGenImage('assets/icons/ic_add.svg');
 
@@ -93,12 +97,24 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_refresh.svg
   SvgGenImage get icRefresh => const SvgGenImage('assets/icons/ic_refresh.svg');
 
+  /// File path: assets/icons/ic_refresh_map.svg
+  SvgGenImage get icRefreshMap =>
+      const SvgGenImage('assets/icons/ic_refresh_map.svg');
+
   /// File path: assets/icons/ic_search.svg
   SvgGenImage get icSearch => const SvgGenImage('assets/icons/ic_search.svg');
+
+  /// File path: assets/icons/ic_select_photo_map.svg
+  SvgGenImage get icSelectPhotoMap =>
+      const SvgGenImage('assets/icons/ic_select_photo_map.svg');
 
   /// File path: assets/icons/ic_sms_blue.svg
   SvgGenImage get icSmsBlue =>
       const SvgGenImage('assets/icons/ic_sms_blue.svg');
+
+  /// File path: assets/icons/ic_take_photo_map.svg
+  SvgGenImage get icTakePhotoMap =>
+      const SvgGenImage('assets/icons/ic_take_photo_map.svg');
 
   /// File path: assets/icons/ic_tick.svg
   SvgGenImage get icTick => const SvgGenImage('assets/icons/ic_tick.svg');
@@ -120,6 +136,7 @@ class $AssetsIconsGen {
   /// List of all assets
   List<SvgGenImage> get values => [
         icAccept,
+        icAcceptMap,
         icAdd,
         icArrowLeft,
         icArrowRight,
@@ -143,8 +160,11 @@ class $AssetsIconsGen {
         icPassword,
         icProfile,
         icRefresh,
+        icRefreshMap,
         icSearch,
+        icSelectPhotoMap,
         icSmsBlue,
+        icTakePhotoMap,
         icTick,
         icUser,
         icUsername,
