@@ -527,5 +527,6 @@
   "you_re_about_to_sync_information_for": "You're about to sync information for",
   "to_be_synced": "ส่งข้อมูล",
   "location_is_required": "Location is required",
-  "date_is_required": "Date is required"
+  "date_is_required": "Date is required",
+  "complete_polygon": "Complete polygon"
 }

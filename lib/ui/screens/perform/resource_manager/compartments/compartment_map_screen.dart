@@ -1,14 +1,18 @@
 import 'dart:async';
+import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/compartment/compartment.dart';
+import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_detail_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as google_map;
@@ -59,18 +63,27 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   void initState() {
     super.initState();
     if (widget.points != null) {
-      _markers = widget.points!.map((e) => _markerFrom(e)).toList();
-      _isFinished = true;
-      _finishDrawing();
+      _drawInitialPolygon();
     }
   }
 
-  Marker _markerFrom(map.LatLng position) {
+  Future _drawInitialPolygon() async {
+    for (final item in widget.points!) {
+      _markers.add(await _markerFrom(item));
+    }
+    _isFinished = true;
+    _finishDrawing();
+  }
+
+  Future<Marker> _markerFrom(map.LatLng position) async {
     return Marker(
-      markerId: MarkerId(
-          'place_name_${position.latitude}_${position.longitude}'),
-      position: position,
-    );
+        markerId: MarkerId(
+            'place_name_${position.latitude}_${position.longitude}'),
+        position: position,
+        icon: await BitmapDescriptorHelper.getBitmapDescriptorFromSvgAsset(
+          Assets.icons.mapPolygonPoint.path,
+          Size(8, 8),
+        ));
   }
 
   @override
@@ -81,7 +94,9 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
         showLeading: true,
         subtitle: widget.farmName ?? LocaleKeys.siteName.tr(),
         leading: Assets.icons.icArrowLeft.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
+        onTapLeading: Navigator
+            .of(context)
+            .pop,
       ),
       body: Column(
         children: [
@@ -110,55 +125,8 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                     });
                   },
                   markers: _markers.toSet(),
-                  onTap: (latLong) {
-                    if (_isFinished) return;
-                    setState(() {
-                      _markers.add(_markerFrom(latLong));
-                    });
-                  },
                 ),
-                Positioned(
-                  right: 5,
-                  top: 24,
-                  child: _markers.isEmpty
-                      ? Container()
-                      : IconButton(
-                          onPressed: _removePreviousPoint,
-                          iconSize: 38,
-                          icon: Container(
-                            padding: const EdgeInsets.all(8),
-                            alignment: Alignment.center,
-                            color: Colors.white,
-                            child: SvgGenImage(Assets.icons.icRefresh.path).svg(
-                              colorFilter: const ColorFilter.mode(
-                                  Colors.grey, BlendMode.srcIn),
-                            ),
-                          ),
-                        ),
-                ),
-                Positioned(
-                  right: 5,
-                  top: 74,
-                  child: _markers.length < 3
-                      ? Container()
-                      : IconButton(
-                          onPressed: () {
-                            _finishDrawing();
-                          },
-                          iconSize: 38,
-                          icon: Container(
-                            padding: const EdgeInsets.all(8),
-                            alignment: Alignment.center,
-                            color: Colors.white,
-                            child: SvgGenImage(Assets.icons.icAccept.path).svg(
-                              colorFilter: const ColorFilter.mode(
-                                Colors.grey,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
-                        ),
-                ),
+                MapCenterIcon(),
               ],
             ),
           ),
@@ -176,28 +144,109 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
               style: context.textStyles.bodyBold,
             ),
           ),
-          const SizedBox(height: 64),
-          CmoFilledButton(
-            title: LocaleKeys.next.tr(),
-            onTap: _isFinished
-                ? () {
-                    CompartmentDetailScreen.push(context,
-                        farmId: widget.farmId,
-                        farmName: widget.farmName,
-                        campId: widget.campId,
-                        measuredArea: (areaSquareMeters ?? 0) / 10000,
-                        locations: _markers
-                            .map((e) => GeoLocation(
-                                latitude: e.position.latitude,
-                                longitude: e.position.longitude))
-                            .toList());
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: _removePreviousPoint,
+                padding: EdgeInsets.zero,
+                iconSize: 36,
+                icon: Container(
+                  alignment: Alignment.center,
+                  color: Colors.white,
+                  child: SvgGenImage(Assets.icons.icRefresh.path).svg(
+                    width: 36, height: 36, colorFilter: const ColorFilter.mode(
+                    Colors.blue,
+                    BlendMode.srcIn,
+                  ),),
+                ),
+              ),
+              const SizedBox(width: 16),
+              IconButton(
+                onPressed: () async {
+                  var center = await getCenter();
+                  if (center != null) {
+                    if (_isCompletedPoint(center)) {
+                      _finishDrawing();
+                    } else {
+                      _markers.add(await _markerFrom(center));
+                      if (_isFinished) {
+                        _finishDrawing();
+                      } else {
+                        setState(() {});
+                      }
+                    }
                   }
-                : null,
+                },
+                padding: EdgeInsets.zero,
+                iconSize: 36,
+                icon: Container(
+                  alignment: Alignment.center,
+                  color: Colors.white,
+                  child: SvgGenImage(Assets.icons.icAccept.path).svg(
+                    width: 36, height: 36, colorFilter: const ColorFilter.mode(
+                    Colors.blue,
+                    BlendMode.srcIn,
+                  ),),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: CmoFilledButton(
+                    title: LocaleKeys.complete_polygon.tr(),
+                    onTap: _markers.length > 2
+                        ? () => _finishDrawing()
+                        : null,
+                  ),
+                ),
+                const SizedBox(width: 24),
+                Expanded(
+                  child: CmoFilledButton(
+                    title: LocaleKeys.next.tr(),
+                    onTap: _isFinished
+                        ? () {
+                      CompartmentDetailScreen.push(context,
+                          farmId: widget.farmId,
+                          farmName: widget.farmName,
+                          campId: widget.campId,
+                          measuredArea: (areaSquareMeters ?? 0) / 10000,
+                          locations: _markers
+                              .map((e) =>
+                              GeoLocation(
+                                  latitude: e.position.latitude,
+                                  longitude: e.position.longitude))
+                              .toList());
+                    }
+                        : null,
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 20),
         ],
       ),
     );
+  }
+
+  Future<map.LatLng?> getCenter() async {
+    if (_controller == null) {
+      return null;
+    }
+    LatLngBounds visibleRegion = await _controller!.getVisibleRegion();
+    map.LatLng centerLatLng = map.LatLng(
+      (visibleRegion.northeast.latitude + visibleRegion.southwest.latitude) / 2,
+      (visibleRegion.northeast.longitude + visibleRegion.southwest.longitude) /
+          2,
+    );
+    return centerLatLng;
   }
 
   Future _moveMapCameraCurrentLocation() async {
@@ -213,7 +262,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
       return polylines;
     }
     final color =
-        widget.points == null ? context.colors.yellow : context.colors.red;
+    widget.points == null ? context.colors.yellow : context.colors.red;
     for (var i = 1; i < _markers.length; i++) {
       polylines.add(
         Polyline(
@@ -262,9 +311,10 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   void _finishDrawing() {
     _isFinished = true;
     areaSquareMeters = SphericalUtil.computeArea(_markers
-            .map((e) => mapToolkitLatlong.LatLng(
-                e.position.latitude, e.position.longitude))
-            .toList())
+        .map((e) =>
+        mapToolkitLatlong.LatLng(
+            e.position.latitude, e.position.longitude))
+        .toList())
         .toDouble();
     setState(() {});
   }
@@ -272,8 +322,54 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   String _presentAreaSquare() {
     if (areaSquareMeters == null) return '0 ${LocaleKeys.measured.tr()}';
     if (areaSquareMeters! > haSquareMeters) {
-      return '${(areaSquareMeters! / haSquareMeters).toStringAsFixed(2)} ha ${LocaleKeys.measured.tr()}';
+      return '${(areaSquareMeters! / haSquareMeters).toStringAsFixed(
+          2)} ha ${LocaleKeys.measured.tr()}';
     }
     return '$areaSquareMeters m2 ${LocaleKeys.measured.tr()}';
+  }
+
+  bool _isCompletedPoint(map.LatLng lastPoint) {
+    if (_markers.length < 3) {
+      return false;
+    }
+    var distance = SphericalUtil.computeDistanceBetween(
+      mapToolkitLatlong.LatLng(
+          _markers.first.position.latitude, _markers.first.position.longitude),
+      mapToolkitLatlong.LatLng(
+          lastPoint.latitude, lastPoint.longitude),
+    );
+    return distance < 3;
+  }
+}
+
+class BitmapDescriptorHelper {
+
+  static Future<BitmapDescriptor> getBitmapDescriptorFromSvgAsset(
+      String assetName, [
+        Size size = const Size(48, 48),
+      ]) async {
+    final pictureInfo = await vg.loadPicture(SvgAssetLoader(assetName), null);
+
+    double devicePixelRatio = ui.window.devicePixelRatio;
+    int width = (size.width * devicePixelRatio).toInt();
+    int height = (size.height * devicePixelRatio).toInt();
+
+    final scaleFactor = min(
+      width / pictureInfo.size.width,
+      height / pictureInfo.size.height,
+    );
+
+    final recorder = ui.PictureRecorder();
+
+    ui.Canvas(recorder)
+      ..scale(scaleFactor)
+      ..drawPicture(pictureInfo.picture);
+
+    final rasterPicture = recorder.endRecording();
+
+    final image = rasterPicture.toImageSync(width, height);
+    final bytes = (await image.toByteData(format: ui.ImageByteFormat.png))!;
+
+    return BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
   }
 }
