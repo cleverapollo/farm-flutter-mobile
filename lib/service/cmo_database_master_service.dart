@@ -175,6 +175,16 @@ class CmoDatabaseMasterService {
     return farmWorkers;
   }
 
+  Future<List<JobDescription>> getJobDescriptionsByJobDescriptionId(
+      int jobDescriptionId) async {
+    final db = await _db();
+
+    return db.jobDescriptions
+        .filter()
+        .jobDescriptionIdEqualTo(jobDescriptionId)
+        .findAll();
+  }
+
   Future<int?> cacheConfigData(ConfigData data) async {
     final db = await _db();
 
@@ -303,6 +313,14 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<int?> cacheFarmStakeholderSocialUpliftments(
+      FarmStakeholderSocialUpliftment item) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.farmStakeholderSocialUpliftments.put(item);
+    });
+  }
+
   Future<List<FarmStakeholderSpecialSite>>
       getUnsycnedFarmStakeholderSpecialSites() async {
     final db = await _db();
@@ -313,6 +331,14 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<int?> cacheFarmStakeholderSpecialSites(
+      FarmStakeholderSpecialSite item) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.farmStakeholderSpecialSites.put(item);
+    });
+  }
+
   Future<List<FarmStakeholderCustomaryUseRight>>
       getUnsycnedFarmStakeholderCustomaryUseRights() async {
     final db = await _db();
@@ -320,6 +346,14 @@ class CmoDatabaseMasterService {
         .filter()
         .isMasterDataSyncedEqualTo(0)
         .findAll();
+  }
+
+  Future<int?> cacheFarmStakeholderCustomaryUseRights(
+      FarmStakeholderCustomaryUseRight item) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.farmStakeholderCustomaryUseRights.put(item);
+    });
   }
 
   Future<List<StakeHolder>> getUnsyncedStakeholder() async {
@@ -1382,6 +1416,15 @@ class CmoDatabaseMasterService {
         .farmIdEqualTo(farmId)
         .isMasterdataSyncedEqualTo(false)
         .findAll();
+  }
+
+  Future<int?> cacheComplaintsAndDisputesRegister(
+      ComplaintsAndDisputesRegister item) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.complaintsAndDisputesRegisters.put(item);
+    });
   }
 
   Future<List<ComplaintsAndDisputesRegister>>
