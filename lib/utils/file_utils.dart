@@ -5,6 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FileUtil {
+  static Future<File> writeToFileWithUint8List(Uint8List data) async {
+    final tempDir = await getTemporaryDirectory();
+    final tempPath = tempDir.path;
+    final filePath = '$tempPath/screenshot.tmp';
+    return File(filePath).writeAsBytes(data);
+  }
+
   static Future<File> writeToFile(ByteData data) async {
     final buffer = data.buffer;
     final tempDir = await getTemporaryDirectory();

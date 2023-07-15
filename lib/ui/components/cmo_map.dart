@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -16,6 +18,10 @@ class CmoMap extends StatefulWidget {
   final bool showLatLongFooter;
   final bool showMarker;
   final bool showResetAcceptIcons;
+  final bool showButtonList;
+  final void Function(Uint8List?)? takeScreenshot;
+  final VoidCallback? onSelectPhotos;
+  final VoidCallback? onRemoveMarker;
 
   const CmoMap({
     Key? key,
@@ -25,6 +31,10 @@ class CmoMap extends StatefulWidget {
     this.onPinned,
     this.showMarker = false,
     this.showResetAcceptIcons = false,
+    this.showButtonList = false,
+    this.takeScreenshot,
+    this.onSelectPhotos,
+    this.onRemoveMarker,
   }) : super(key: key);
 
   @override
@@ -174,6 +184,7 @@ class CmoMapState extends State<CmoMap> {
         ),
 
         mapLatLongFooterWidget(),
+        buttonsListWidget(),
       ],
     );
   }
@@ -246,6 +257,99 @@ class CmoMapState extends State<CmoMap> {
     } else {
       return const SizedBox.shrink();
     }
+  }
+
+  Widget buttonsListWidget() {
+    if (!widget.showButtonList) return const SizedBox.shrink();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        resetOutsideIcon(),
+        const SizedBox(
+          width: 15,
+        ),
+        acceptOutsideIcon(),
+        const SizedBox(
+          width: 15,
+        ),
+        selectPhotoIcon(),
+        const SizedBox(
+          width: 15,
+        ),
+        takePhotoIcon(),
+      ],
+    );
+  }
+
+  Widget resetOutsideIcon() {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          marker = null;
+        });
+
+        widget.onRemoveMarker?.call();
+      },
+      child: Container(
+        alignment: Alignment.center,
+        child: SvgGenImage(Assets.icons.icRefreshMap.path).svg(
+          height: 68,
+          width: 68,
+        ),
+      ),
+    );
+  }
+
+  Widget acceptOutsideIcon() {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          marker ??= _markerFrom(_latLong);
+          if (_latLong != null) {
+            widget.onPinned?.call(
+              _latLong!.latitude,
+              _latLong!.longitude,
+            );
+          }
+        });
+      },
+      child: Container(
+        alignment: Alignment.center,
+        child: SvgGenImage(Assets.icons.icAcceptMap.path).svg(
+          height: 68,
+          width: 68,
+        ),
+      ),
+    );
+  }
+
+  Widget selectPhotoIcon() {
+    return InkWell(
+      onTap: () => widget.onSelectPhotos?.call(),
+      child: Container(
+        alignment: Alignment.center,
+        child: SvgGenImage(Assets.icons.icSelectPhotoMap.path).svg(
+          height: 60,
+          width: 60,
+        ),
+      ),
+    );
+  }
+
+  Widget takePhotoIcon() {
+    return InkWell(
+      onTap: () async {
+        final snapshot = await mapController.takeSnapshot();
+        widget.takeScreenshot?.call(snapshot);
+      },
+      child: Container(
+        alignment: Alignment.center,
+        child: SvgGenImage(Assets.icons.icTakePhotoMap.path).svg(
+          height: 60,
+          width: 60,
+        ),
+      ),
+    );
   }
 
   @override

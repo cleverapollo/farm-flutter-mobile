@@ -48,10 +48,11 @@ class GeoLocationText extends StatelessWidget {
             text: latLong?.latitude.toStringAsFixed(6) ?? '',
             style: context.textStyles.bodyNormal,
           ),
-          TextSpan(
-            text: ', ',
-            style: context.textStyles.bodyNormal,
-          ),
+          if (latLong != null)
+            TextSpan(
+              text: ', ',
+              style: context.textStyles.bodyNormal,
+            ),
           TextSpan(
             text: latLong?.longitude.toStringAsFixed(6) ?? '',
             style: context.textStyles.bodyNormal,

@@ -1,14 +1,13 @@
-import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/ui/widget/cmo_map_widget.dart';
+import 'package:cmo/utils/file_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter/services.dart';
 
 class ASIMapScreen extends StatefulWidget {
   final String? farmName;
@@ -45,85 +44,56 @@ class ASIMapScreen extends StatefulWidget {
 }
 
 class _ASIMapScreenState extends State<ASIMapScreen> {
-  GlobalKey mapWidgetKey = GlobalKey();
-  LatLng? marker;
+
+  late LocationModel locationModel;
 
   final mapKey = GlobalKey<CmoMapState>();
 
-  void onCameraMoved(double latitude, double longitude, {bool isInit = false}) {
-    // setState(() {
-    //   _latLong = LatLng(latitude, longitude);
-    // });
-    //
-    // if (_isMapMovingBySelectingAddress) {
-    //   return;
-    // }
-    //
-    // debounce.run(() async {
-    //   try {
-    //     setState(() {
-    //       _loading = true;
-    //     });
-    //
-    //     await setAddress(latitude, longitude);
-    //   } finally {
-    //     setState(() {
-    //       _loading = false;
-    //     });
-    //   }
-    // });
+  final ImagePickerService imagePickerService = ImagePickerService();
+
+  bool get isEnableNextButton => locationModel.latitude != null && locationModel.longitude != null;
+
+  @override
+  void initState() {
+    super.initState();
+    locationModel = LocationModel();
   }
 
   void onPinned(double latitude, double longitude) {
-    // setState(() {
-    //   _latLong = LatLng(latitude, longitude);
-    // });
-    //
-    // if (_isMapMovingBySelectingAddress) {
-    //   return;
-    // }
-    //
-    // debounce.run(() async {
-    //   try {
-    //     setState(() {
-    //       _loading = true;
-    //     });
-    //
-    //     await setAddress(latitude, longitude);
-    //   } finally {
-    //     setState(() {
-    //       _loading = false;
-    //     });
-    //   }
-    // });
+    setState(() {
+      locationModel.latitude = latitude;
+      locationModel.longitude = longitude;
+    });
   }
 
-  Future<void> setAddress(double latitude, double longitude) async {
-    await placemarkFromCoordinates(
-      latitude,
-      longitude,
-      localeIdentifier: 'en_US',
-    ).then((placemarks) {
-      if (placemarks.isNotEmpty && context.mounted) {
-        final placeMark = placemarks[0];
-        final name = placeMark.name ?? '';
-        final subLocality = placeMark.subLocality ?? '';
-        final locality = placeMark.locality ?? '';
-        final administrativeArea = placeMark.administrativeArea ?? '';
-        final postalCode = placeMark.postalCode ?? '';
-        final country = placeMark.country ?? '';
-        final address =
-            '$name, $subLocality, $locality, $administrativeArea $postalCode, $country';
-        // if (context.mounted) {
-        //   setState(() {
-        //     addressTextController.removeListener(addressChangedListener);
-        //     addressTextController.text = address;
-        //     _legacyAddress = addressTextController.text;
-        //     addressTextController.addListener(addressChangedListener);
-        //   });
-        // }
-      }
+  void onRemoveMarker() {
+    setState(() {
+      locationModel.latitude = null;
+      locationModel.longitude = null;
     });
+  }
+
+  Future<void> takeScreenshot(Uint8List? screenshot) async {
+    if (screenshot != null && isEnableNextButton) {
+      final screenshotFile = await FileUtil.writeToFileWithUint8List(screenshot);
+      setState(() {
+        locationModel.imageUri = screenshotFile.path;
+      });
+
+      showSnackSuccess(msg: 'Captured successfully!');
+    }
+  }
+
+  Future<void> onSelectPhoto() async {
+    final croppedImage = await imagePickerService.pickImageFromGallery(
+      title: DateTime.now().toString(),
+    );
+    if (croppedImage != null) {
+      setState(() {
+        locationModel.imageUri = croppedImage.path;
+        showSnackSuccess(msg: 'Selected photo successfully!');
+      });
+    }
   }
 
   @override
@@ -139,32 +109,38 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
           color: context.colors.white,
           child: Column(
             children: [
-              CmoMapWidget.markerWithPhotos(
-                key: mapWidgetKey,
-                initialPoint: null,
-                marker: (p0) => marker = p0,
+              Expanded(
+                flex: 6,
+                child: CmoMap(
+                  key: mapKey,
+                  showMarker: true,
+                  showButtonList: true,
+                  onMapMoved: (_, __) {},
+                  onPinned: onPinned,
+                  onRemoveMarker: onRemoveMarker,
+                  takeScreenshot: takeScreenshot,
+                  onSelectPhotos: onSelectPhoto,
+                ),
               ),
               const SizedBox(height: 40),
               Align(
                 child: CmoFilledButton(
                     title: LocaleKeys.next.tr(),
+                    disable: !isEnableNextButton,
                     onTap: () {
-                      LocationModel? locationModel;
-                      if (mapWidgetKey.currentState is CmoMapWidgetState) {
-                        final mapState =
-                        mapWidgetKey.currentState! as CmoMapWidgetState;
-                        locationModel = mapState.locationModel;
+                      if (isEnableNextButton) {
+                        ASIDetailScreen.push(
+                          context,
+                          farmId: widget.farmId,
+                          farmName: widget.farmName,
+                          locationModel: locationModel,
+                          campId: widget.campId,
+                        );
                       }
-                      ASIDetailScreen.push(
-                        context,
-                        farmId: widget.farmId,
-                        farmName: widget.farmName,
-                        locationModel: locationModel,
-                        campId: widget.campId,
-                      );
-                    }),
+                    },
+                ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
             ],
           ),
         ),
