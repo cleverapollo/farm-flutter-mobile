@@ -27,10 +27,20 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     } else {
       types = await cmoPerformApiService.fetchRMAsiType();
     }
-    emit(state.copyWith(types: types));
+
+    final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(state.farmId);
+    emit(
+      state.copyWith(
+        types: types,
+        compartments: compartments,
+      ),
+    );
   }
 
-  Future saveAsi(Asi asi) async {
+  Future<void> saveAsi(
+    Asi asi,
+    String? imageUri,
+  ) async {
     final asiId = DateTime.now().millisecondsSinceEpoch.toString();
     final savingAsi = asi.copyWith(
       farmId: state.farmId,

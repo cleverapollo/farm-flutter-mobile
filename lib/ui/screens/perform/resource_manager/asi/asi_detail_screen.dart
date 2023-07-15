@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/extensions/string.dart';
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/asi.dart';
-import 'package:cmo/model/asi_type/asi_type.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
@@ -82,6 +86,41 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
                     ),
                   ),
                   Padding(
+                    padding: const EdgeInsets.only(
+                      top: 20,
+                      right: 8.0,
+                      left: 8.0,
+                    ),
+                    child: BlocSelector<AsiDetailCubit, AsiDetailState,
+                        List<Compartment>>(
+                      selector: (state) => state.compartments,
+                      builder: (context, compartments) {
+                        return CmoDropdown<Compartment>(
+                          name: '',
+                          hintText: LocaleKeys.compartment.tr(),
+                          onChanged: (Compartment? value) {
+                            if (value != null) {
+                              _asi = _asi.copyWith(
+                                compartmentId: value.compartmentId,
+                                compartmentName: value.compartmentName,
+                              );
+                            }
+                          },
+                          itemsData: compartments.isBlank
+                              ? []
+                              : compartments
+                                  .map(
+                                    (e) => CmoDropdownItem<Compartment>(
+                                      id: e,
+                                      name: e.compartmentName ?? '',
+                                    ),
+                                  )
+                                  .toList(),
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
                     padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
                     child: BlocSelector<AsiDetailCubit, AsiDetailState, List<AsiType>?>(
                       selector: (state) => state.types,
@@ -156,6 +195,8 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
                     ),
                   ),
                   SizedBox(height: 24),
+                  buildImageWidget(),
+                  const SizedBox(height: 40),
                   CmoFilledButton(
                     title: LocaleKeys.save.tr(),
                     onTap: () async {
@@ -174,7 +215,10 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
                         );
                         return;
                       }
-                      await context.read<AsiDetailCubit>().saveAsi(_asi);
+                      await context.read<AsiDetailCubit>().saveAsi(
+                            _asi,
+                            widget.locationModel?.imageUri,
+                          );
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
                     },
@@ -185,6 +229,50 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget buildImageWidget() {
+    if (widget.locationModel!.imageUri.isBlank) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: context.colors.white,
+      ),
+      child: Row(
+        children: [
+          Image.file(
+            File(widget.locationModel!.imageUri!),
+            fit: BoxFit.fitHeight,
+            width: 74,
+            height: 74,
+          ),
+          const SizedBox(
+            width: 24,
+          ),
+          Expanded(
+            child: Text(
+              widget.locationModel!.imageUri!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.textStyles.bodyBold.black,
+            ),
+          ),
+
+          CmoTappable(
+            onTap: () {
+              setState(() {
+                widget.locationModel!.imageUri = null;
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Assets.icons.icClose.svgBlack,
+            ),
+          ),
+        ],
       ),
     );
   }
