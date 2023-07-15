@@ -9,7 +9,8 @@ import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ASIScreen extends StatelessWidget {
+class ASIScreen extends StatefulWidget {
+
   final String? farmName;
   const ASIScreen({this.farmName, super.key});
 
@@ -31,11 +32,23 @@ class ASIScreen extends StatelessWidget {
   }
 
   @override
+  State<StatefulWidget> createState() => _ASIScreenState();
+}
+class _ASIScreenState extends State<ASIScreen> {
+
+  bool isCollapse = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBarV2(
         title: LocaleKeys.asi.tr(),
-        subtitle: farmName ?? '',
+        subtitle: widget.farmName ?? '',
         showTrailing: true,
         showLeading: true,
         trailing: Assets.icons.icAdd.svgBlack,
@@ -43,7 +56,7 @@ class ASIScreen extends StatelessWidget {
           await ASIMapScreen.push(
             context,
             farmId: context.read<AsiCubit>().state.farmId,
-            farmName: farmName,
+            farmName: widget.farmName,
             campId: context.read<AsiCubit>().state.campId,
           );
           context.read<AsiCubit>().loadAsis();
@@ -63,39 +76,65 @@ class ASIScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: CmoTappable(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                isCollapse = !isCollapse;
+                              });
+                            },
                             child: CmoCard(
+                              backgroundColor: context.colors.blueDark2,
+                              trailing: Icon(
+                                isCollapse ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+                                color: context.colors.white,
+                                size: 40,
+                              ),
                               content: [
-                                CmoCardHeader(title: LocaleKeys.summary.tr()),
-                                CmoCardItem(
-                                    title: LocaleKeys.total.tr(),
-                                    value: listAsi.length.toString()),
+                                CmoCardHeader(
+                                  title: LocaleKeys.summary.tr(),
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        LocaleKeys.total.tr(),
+                                        style: context.textStyles.bodyBold.white,
+                                      ),
+                                    ),
+                                    Text(
+                                      listAsi.length.toString(),
+                                      style: context.textStyles.bodyNormal.white,
+                                    ),
+                                    const SizedBox(width: 50),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
                         ),
                         Expanded(
-                          child: ListView.builder(
-                            itemCount: listAsi.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CmoTappable(
-                                  onTap: () {},
-                                  child: CmoCard(
-                                    content: [
-                                      CmoCardHeader(
-                                          title: listAsi[index].asiTypeName ??
-                                              LocaleKeys.asiType.tr()),
-                                      CmoCardItem(
-                                        title:
-                                            listAsi[index].asiRegisterNo ?? '',
-                                      ),
-                                    ],
+                          child: Visibility(
+                            visible: !isCollapse,
+                            child: ListView.builder(
+                              itemCount: listAsi.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CmoTappable(
+                                    onTap: () {},
+                                    child: CmoCard(
+                                      content: [
+                                        CmoCardHeader(
+                                          title: listAsi[index].asiTypeName ?? LocaleKeys.asiType.tr(),
+                                        ),
+                                        CmoCardItem(
+                                          title: listAsi[index].asiRegisterNo ?? '',
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ],

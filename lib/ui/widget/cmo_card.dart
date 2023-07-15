@@ -12,6 +12,7 @@ class CmoCard extends StatelessWidget {
     this.trailing,
     this.containerGradient,
     this.onTap,
+    this.backgroundColor,
   });
 
   final List<Widget> content;
@@ -21,9 +22,11 @@ class CmoCard extends StatelessWidget {
   final Widget? trailing;
   final Gradient? containerGradient;
   final void Function()? onTap;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
+    final background = backgroundColor ?? context.colors.blueDark1;
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -32,7 +35,7 @@ class CmoCard extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             gradient: containerGradient,
-            color: containerGradient == null ? context.colors.blueDark1 : null,
+            color: containerGradient == null ? background : null,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
