@@ -2593,7 +2593,11 @@ class CmoDatabaseMasterService {
 
   Future<List<FarmPropertyOwnershipType>> getFarmPropertyOwnershipType() async {
     final db = await _db();
-    return db.farmPropertyOwnershipTypes.filter().isActiveEqualTo(1).findAll();
+    return db.farmPropertyOwnershipTypes
+        .filter()
+        .isActiveEqualTo(1)
+        .sortByFarmPropertyOwnershipTypeName()
+        .findAll();
   }
 
   Future<List<QuestionAnswer>>

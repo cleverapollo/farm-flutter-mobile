@@ -1,9 +1,9 @@
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -158,38 +158,66 @@ class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
         return state.addMemberMPO;
       },
       builder: (context, addMemberMPO) {
-        return CmoDropdown<FarmPropertyOwnershipType>(
-          name: 'propertyType',
-          inputDecoration: _buildInputDecoration(context, LocaleKeys.propertyType.tr()),
-          initialValue: addMemberMPO.propertyTypeSelected,
-          itemsData: addMemberMPO.propertyTypes
-              .map(
-                (e) => CmoDropdownItem<FarmPropertyOwnershipType>(
-              id: e,
-              name: e.farmPropertyOwnershipTypeName ?? '',
-            ),
-          )
-              .toList(),
-          onChanged: (FarmPropertyOwnershipType? farmPropertyOwnershipType) {
-            context.read<AddMemberCubit>().onDataChangeMPO(farmPropertyOwnershipType);
+        final isHintText = addMemberMPO.propertyTypeSelected?.farmPropertyOwnershipTypeName == null;
+        return InkWell(
+          onTap: () async {
+            await showCustomBottomSheet(
+              context,
+              content: ListView.builder(
+                itemCount: addMemberMPO.propertyTypes.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      context
+                          .read<AddMemberCubit>()
+                          .onDataChangeMPO(addMemberMPO.propertyTypes[index]);
+                      Navigator.pop(context);
+                    },
+
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      child: Text(
+                        addMemberMPO.propertyTypes[index]
+                                .farmPropertyOwnershipTypeName ??
+                            '',
+                        style: context.textStyles.bodyBold.black,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
           },
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: context.colors.grey),
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    addMemberMPO.propertyTypeSelected
+                            ?.farmPropertyOwnershipTypeName ??
+                        '${LocaleKeys.select.tr()} ${LocaleKeys.propertyType.tr().toLowerCase()}',
+                    style: isHintText
+                        ? context.textStyles.bodyNormal.grey
+                        : context.textStyles.bodyNormal.black,
+                  ),
+                ),
+                Icon(
+                  Icons.keyboard_arrow_down_sharp,
+                  color: context.colors.black,
+                  size: 40,
+                )
+              ],
+            ),
+          ),
         );
       },
-    );
-  }
-
-  InputDecoration _buildInputDecoration(BuildContext context, String hintText) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.all(8),
-      isDense: true,
-      hintText: '${LocaleKeys.select.tr()} ${hintText.toLowerCase()}',
-      hintStyle: context.textStyles.bodyNormal.grey,
-      border: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.grey),
-      ),
-      focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.blue),
-      ),
     );
   }
 }
