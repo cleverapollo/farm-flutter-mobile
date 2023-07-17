@@ -1992,6 +1992,15 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<Farm?> getFarmById(String id) async {
+    final db = await _db();
+    return db.farms
+        .filter()
+        .farmIdEqualTo(id)
+        .isActiveEqualTo(true)
+        .findFirst();
+  }
+
   Future<List<Compliance>> getCompliances() async {
     final db = await _db();
     return db.compliances.filter().isActiveEqualTo(true).findAll();

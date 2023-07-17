@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cmo/di.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_map_screen.dart';
@@ -19,7 +20,7 @@ class CompartmentItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CmoTappable(
-      onTap: () {
+      onTap: () async {
         if (model.jsonLocations == null) {
           return;
         }
@@ -29,8 +30,10 @@ class CompartmentItemWidget extends StatelessWidget {
         if (points == null) {
           return;
         }
+        final farm = await cmoDatabaseMasterService.getFarmById(model.farmId ?? '');
         CompartmentMapScreen.push(context,
             farmId: model.farmId ?? '',
+            farmName: farm?.farmName ?? '',
             points: points
                 .map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0))
                 .toList());
