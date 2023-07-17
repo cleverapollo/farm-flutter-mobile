@@ -5,6 +5,7 @@ import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
@@ -12,6 +13,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_dr
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/utils/utils.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -235,7 +237,53 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
 
   Widget buildImageWidget() {
     if (widget.locationModel!.imageUri.isBlank) return const SizedBox.shrink();
+    return _ThumbnailImage(
+      widget.locationModel!.imageUri!,
+      onRemoved: () {
+        setState(() {
+          widget.locationModel!.imageUri = null;
+        });
+      },
+      onChanged: (path) {
+        setState(() {
+          widget.locationModel!.imageUri = path;
+        });
+      },
+    );
+  }
+}
 
+class _ThumbnailImage extends StatefulWidget {
+  final String uri;
+  final Function()? onRemoved;
+  final Function(String)? onChanged;
+
+  const _ThumbnailImage(
+    this.uri, {
+    this.onRemoved,
+    this.onChanged,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<_ThumbnailImage> createState() => _ThumbnailImageState();
+}
+
+class _ThumbnailImageState extends State<_ThumbnailImage> {
+  final _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.text = widget.uri;
+    context.read<AsiDetailCubit>().onPhotoNameChanged(_controller.text);
+    _controller.addListener(() {
+      context.read<AsiDetailCubit>().onPhotoNameChanged(_controller.text);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
@@ -243,34 +291,54 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
       ),
       child: Row(
         children: [
-          Image.file(
-            File(widget.locationModel!.imageUri!),
-            fit: BoxFit.fitHeight,
-            width: 74,
-            height: 74,
+          GestureDetector(
+            onTap: () {
+              final imageProvider = FileImage(File(widget.uri));
+              showImageViewer(context, imageProvider);
+            },
+            child: Image.file(
+              File(widget.uri),
+              fit: BoxFit.fitHeight,
+              width: 74,
+              height: 74,
+            ),
           ),
           const SizedBox(
             width: 24,
           ),
           Expanded(
-            child: Text(
-              widget.locationModel!.imageUri!,
+            child: TextField(
+              controller: _controller,
               maxLines: 1,
-              overflow: TextOverflow.ellipsis,
               style: context.textStyles.bodyBold.black,
             ),
           ),
-
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: () async {
+              var path = (await ImagePickerService().pickImageFromGallery())?.path;
+              if (path != null) {
+                widget.onChanged?.call(path);
+              }
+            },
+            child: Assets.icons.icSelectPhotoMap.svg(width: 32, height: 32),
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: () async {
+              var path = (await ImagePickerService().pickImageFromCamera())?.path;
+              if (path != null) {
+                widget.onChanged?.call(path);
+              }
+            },
+            child: Assets.icons.icTakePhotoMap.svg(width: 32, height: 32),
+          ),
+          const SizedBox(width: 8),
           CmoTappable(
             onTap: () {
-              setState(() {
-                widget.locationModel!.imageUri = null;
-              });
+              widget.onRemoved?.call();
             },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Assets.icons.icClose.svgBlack,
-            ),
+            child: Assets.icons.icClose.svgBlack,
           ),
         ],
       ),

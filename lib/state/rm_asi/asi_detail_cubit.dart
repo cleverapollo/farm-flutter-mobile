@@ -56,7 +56,12 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
         asiRegisterPhotoId: DateTime.now().millisecondsSinceEpoch,
         asiRegisterId: asiId,
         photo: state.locationModel?.imageUri,
+        asiRegisterPhotoNo: state.photoName,
       ),
     );
+  }
+
+  void onPhotoNameChanged(String text) {
+    emit(state.copyWith(photoName: text));
   }
 }

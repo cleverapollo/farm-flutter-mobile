@@ -9,6 +9,7 @@ class AsiDetailState {
     this.types,
     this.campId,
     this.compartments = const <Compartment>[],
+    this.photoName,
   });
 
   final String farmId;
@@ -16,6 +17,7 @@ class AsiDetailState {
   final List<AsiType>? types;
   final String? campId;
   final List<Compartment> compartments;
+  String? photoName;
 
   AsiDetailState copyWith({
     String? farmId,
@@ -23,6 +25,7 @@ class AsiDetailState {
     List<AsiType>? types,
     String? campId,
     List<Compartment>? compartments,
+    String? photoName,
   }) {
     return AsiDetailState(
       farmId: farmId ?? this.farmId,
@@ -30,6 +33,7 @@ class AsiDetailState {
       locationModel: locationModel ?? this.locationModel,
       types: types ?? this.types,
       compartments: compartments ?? this.compartments,
+      photoName: photoName ?? this.photoName,
     );
   }
 }
