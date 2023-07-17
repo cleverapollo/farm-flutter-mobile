@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'special_site.freezed.dart';
-
 part 'special_site.g.dart';
 
 @freezed
@@ -22,7 +21,7 @@ class SpecialSite with _$SpecialSite {
       _$SpecialSiteFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => int.tryParse(specialSiteId ?? '') ?? Isar.autoIncrement;
 }
 
 extension SpecialSiteX on SpecialSite {

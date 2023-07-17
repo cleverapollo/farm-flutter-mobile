@@ -34,7 +34,7 @@ class FireRegister with _$FireRegister {
       _$FireRegisterFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => int.tryParse(fireRegisterId ?? '') ?? Isar.autoIncrement;
 }
 
 extension FireRegisterX on FireRegister {

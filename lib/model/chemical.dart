@@ -1,7 +1,6 @@
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/chemical_register_payload/chemical_register_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'chemical.freezed.dart';
 part 'chemical.g.dart';
@@ -43,7 +42,7 @@ class Chemical with _$Chemical {
       _$ChemicalFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => int.tryParse(chemicalId ?? '') ?? Isar.autoIncrement;
 }
 
 extension ChemicalX on Chemical {

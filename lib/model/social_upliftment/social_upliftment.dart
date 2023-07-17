@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'social_upliftment.freezed.dart';
-
 part 'social_upliftment.g.dart';
 
 @freezed
@@ -22,7 +21,7 @@ class SocialUpliftment with _$SocialUpliftment {
       _$SocialUpliftmentFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => int.tryParse(socialUpliftmentId ?? '') ?? Isar.autoIncrement;
 }
 
 extension SocialUpliftmentX on SocialUpliftment {

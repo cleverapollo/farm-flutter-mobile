@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'customary_use_right.freezed.dart';
-
 part 'customary_use_right.g.dart';
 
 @freezed
@@ -22,7 +21,7 @@ class CustomaryUseRight with _$CustomaryUseRight {
       _$CustomaryUseRightFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => int.tryParse(customaryUseRightId ?? '') ?? Isar.autoIncrement;
 }
 
 extension CustomaryUseRightX on CustomaryUseRight {

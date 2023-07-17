@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'grievance_register.freezed.dart';
-
 part 'grievance_register.g.dart';
 
 @freezed
@@ -36,7 +35,7 @@ class GrievanceRegister with _$GrievanceRegister {
       _$GrievanceRegisterFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => int.tryParse(grievanceRegisterId ?? '') ?? Isar.autoIncrement;
 }
 
 extension GrievanceRegisterX on GrievanceRegister {

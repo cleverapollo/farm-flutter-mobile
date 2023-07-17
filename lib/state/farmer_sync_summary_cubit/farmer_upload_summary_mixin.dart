@@ -3,27 +3,9 @@ import 'dart:convert';
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
-import 'package:cmo/model/annual_production/annual_budget/annual_budget.dart';
-import 'package:cmo/model/annual_production/annual_budget/annual_budget_transaction.dart';
-import 'package:cmo/model/annual_production/annual_farm_production.dart';
-import 'package:cmo/model/asi.dart';
-import 'package:cmo/model/camp.dart';
-import 'package:cmo/model/chemical.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
-import 'package:cmo/model/customary_use_right/customary_use_right.dart';
-import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
-import 'package:cmo/model/labour_management/farmer_worker.dart';
-import 'package:cmo/model/master_data_message.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/model/sanction_register/sanction_register.dart';
-import 'package:cmo/model/social_upliftment/social_upliftment.dart';
-import 'package:cmo/model/special_site/special_site.dart';
-import 'package:cmo/model/stakeholder/farm_stakeholder_customary_use_right.dart';
-import 'package:cmo/model/stakeholder/farm_stakeholder_social_upliftment.dart';
-import 'package:cmo/model/stakeholder/farm_stakeholder_special_site.dart';
-import 'package:cmo/model/stakeholder/stake_holder.dart';
-import 'package:cmo/model/training/training_register.dart';
-import 'package:cmo/model/worker_pay_load/worker_pay_load.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_customary_use_right_payload/farm_stakeholder_customary_use_right_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_social_upliftment_payload/farm_stakeholder_social_upliftment_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_special_site_payload/farm_stakeholder_special_site_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/job_description_payload/job_description_payload.dart';
@@ -34,8 +16,6 @@ import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/properti
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/worker_payload/worker_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
 import 'package:cmo/utils/logger.dart';
-
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_customary_use_right_payload/farm_stakeholder_customary_use_right_payload.dart';
 
 mixin FarmUploadSummaryMixin {
   void Function(FarmerSyncSummaryState)? get mEmit => null;
@@ -123,7 +103,7 @@ mixin FarmUploadSummaryMixin {
 
         if (enableUpdateStatus) {
           futures.add(cmoDatabaseMasterService
-              .cacheFarmerWorker(worker.copyWith(isLocal: 0)));
+              .cacheWorkerFromFarm(worker.copyWith(isLocal: 0)));
         }
       }
 
@@ -164,7 +144,7 @@ mixin FarmUploadSummaryMixin {
       if (enableUpdateStatus) {
         for (final item in annFarmProductions) {
           futures.add(cmoDatabaseMasterService
-              .cacheAnnualProduction(item.copyWith(isLocal: false)));
+              .cacheAnnualProductionFromFarm(item.copyWith(isLocal: false)));
         }
       }
 
@@ -232,8 +212,8 @@ mixin FarmUploadSummaryMixin {
 
       if (enableUpdateStatus) {
         for (final item in customaryUseRights) {
-          futures.add(cmoDatabaseMasterService
-              .cacheCustomaryUseRight(item.copyWith(isMasterDataSynced: 1)));
+          futures.add(cmoDatabaseMasterService.cacheCustomaryUseRightFromFarm(
+              item.copyWith(isMasterDataSynced: 1)));
         }
       }
 
@@ -267,8 +247,8 @@ mixin FarmUploadSummaryMixin {
 
       if (enableUpdateStatus) {
         for (final item in socialUpliftments) {
-          futures.add(cmoDatabaseMasterService
-              .cacheSocialUpliftment(item.copyWith(isMasterDataSynced: 1)));
+          futures.add(cmoDatabaseMasterService.cacheSocialUpliftmentFromFarm(
+              item.copyWith(isMasterDataSynced: 1)));
         }
       }
 
@@ -303,7 +283,7 @@ mixin FarmUploadSummaryMixin {
       if (enableUpdateStatus) {
         for (final item in specialSites) {
           futures.add(cmoDatabaseMasterService
-              .cacheSpecialSite(item.copyWith(isMasterDataSynced: 1)));
+              .cacheSpecialSiteFromFarm(item.copyWith(isMasterDataSynced: 1)));
         }
       }
 
@@ -407,7 +387,7 @@ mixin FarmUploadSummaryMixin {
         ));
 
         if (enableUpdateStatus) {
-          futures.add(cmoDatabaseMasterService.cacheStakeHolder(
+          futures.add(cmoDatabaseMasterService.cacheStakeHolderFromFarm(
               unsyncedStakeholderItem.copyWith(isMasterDataSynced: 1)));
 
           for (final item in unsyncedFSCUR) {
@@ -465,7 +445,7 @@ mixin FarmUploadSummaryMixin {
       if (enableUpdateStatus) {
         for (final item in annualFarmBudgets) {
           futures.add(cmoDatabaseMasterService
-              .cacheAnnualBudgets(item.copyWith(isLocal: 0)));
+              .cacheAnnualBudgetsFromFarm(item.copyWith(isLocal: 0)));
         }
       }
 
@@ -499,8 +479,9 @@ mixin FarmUploadSummaryMixin {
 
       if (enableUpdateStatus) {
         for (final item in annualFarmBudgetTransactions) {
-          futures.add(cmoDatabaseMasterService
-              .cacheAnnualBudgetTransactions(item.copyWith(isLocal: 0)));
+          futures.add(
+              cmoDatabaseMasterService.cacheAnnualBudgetTransactionsFromFarm(
+                  item.copyWith(isLocal: 0)));
         }
       }
 
@@ -535,7 +516,7 @@ mixin FarmUploadSummaryMixin {
       if (enableUpdateStatus) {
         for (final item in sanctionRegisters) {
           futures.add(cmoDatabaseMasterService
-              .cacheSanctionRegister(item.copyWith(isSynced: true)));
+              .cacheSanctionRegisterFromFarm(item.copyWith(isSynced: true)));
         }
       }
 
@@ -569,8 +550,8 @@ mixin FarmUploadSummaryMixin {
 
       if (enableUpdateStatus) {
         for (final item in chemicalRegisters) {
-          futures.add(cmoDatabaseMasterService
-              .cacheChemical(item.copyWith(isMasterdataSynced: true)));
+          futures.add(cmoDatabaseMasterService.cacheChemicalRegisterFromFarm(
+              item.copyWith(isMasterdataSynced: true)));
         }
       }
 
@@ -604,8 +585,8 @@ mixin FarmUploadSummaryMixin {
 
       if (enableUpdateStatus) {
         for (final item in trainingRegisters) {
-          futures.add(cmoDatabaseMasterService
-              .cacheTraining(item.copyWith(isMasterdataSynced: true)));
+          futures.add(cmoDatabaseMasterService.cacheTrainingRegisterFromFarm(
+              item.copyWith(isMasterdataSynced: true)));
         }
       }
 
@@ -674,8 +655,8 @@ mixin FarmUploadSummaryMixin {
 
       if (enableUpdateStatus) {
         for (final item in fireRegisters) {
-          futures.add(cmoDatabaseMasterService
-              .cacheFireRegister(item.copyWith(isMasterdataSynced: true)));
+          futures.add(cmoDatabaseMasterService.cacheFireRegisterFromFarm(
+              item.copyWith(isMasterdataSynced: true)));
         }
       }
 
@@ -709,8 +690,8 @@ mixin FarmUploadSummaryMixin {
 
       if (enableUpdateStatus) {
         for (final item in grievanceRegisters) {
-          futures.add(cmoDatabaseMasterService
-              .cacheGrievanceRegister(item.copyWith(isMasterdataSynced: true)));
+          futures.add(cmoDatabaseMasterService.cacheGrievanceRegisterFromFarm(
+              item.copyWith(isMasterdataSynced: true)));
         }
       }
 
@@ -744,8 +725,8 @@ mixin FarmUploadSummaryMixin {
 
       if (enableUpdateStatus) {
         for (final item in rteSpeciesRegisters) {
-          futures.add(cmoDatabaseMasterService
-              .cacheRteSpecies(item.copyWith(isMasterDataSynced: true)));
+          futures.add(cmoDatabaseMasterService.cacheRteSpeciesFromFarm(
+              item.copyWith(isMasterDataSynced: true)));
         }
       }
 
@@ -801,12 +782,12 @@ mixin FarmUploadSummaryMixin {
         pestsAndDiseasesRegistersPayLoad.add(payLoadItem);
 
         if (enableUpdateStatus) {
-          futures.add(cmoDatabaseMasterService
-              .cachePetsAndDisease(item.copyWith(isMasterdataSynced: true)));
+          futures.add(cmoDatabaseMasterService.cachePetsAndDiseaseFromFarm(
+              item.copyWith(isMasterdataSynced: true)));
 
           for (final item in registerTreatmentMethod) {
             futures.add(cmoDatabaseMasterService
-                .cachePetsAndDiseaseRegisterTreatmentMethod(
+                .cachePetsAndDiseaseRegisterTreatmentMethodFromFarm(
                     item.copyWith(isMasterdataSynced: true)));
           }
         }
@@ -882,8 +863,9 @@ mixin FarmUploadSummaryMixin {
 
       if (enableUpdateStatus) {
         for (final item in biologicalControlAgentRegisters) {
-          futures.add(cmoDatabaseMasterService.cacheBiologicalControlAgents(
-              item.copyWith(isMasterDataSynced: true)));
+          futures.add(
+              cmoDatabaseMasterService.cacheBiologicalControlAgentsFromFarm(
+                  item.copyWith(isMasterDataSynced: true)));
         }
       }
 
@@ -939,12 +921,12 @@ mixin FarmUploadSummaryMixin {
         );
 
         if (enableUpdateStatus) {
-          futures.add(cmoDatabaseMasterService.cacheAccidentAndIncident(
+          futures.add(cmoDatabaseMasterService.cacheAccidentAndIncidentFromFarm(
               item.copyWith(isMasterDataSynced: true)));
 
           for (final item in accidentAndIncidentPropertyDamaged) {
             futures.add(cmoDatabaseMasterService
-                .cacheAccidentAndIncidentPropertyDamaged(
+                .cacheAccidentAndIncidentPropertyDamagedFromFarm(
                     item.copyWith(isMasterdataSynced: true)));
           }
         }

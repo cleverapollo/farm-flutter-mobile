@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'accident_and_incident_property_damaged.freezed.dart';
-
 part 'accident_and_incident_property_damaged.g.dart';
 
 @freezed
@@ -31,7 +30,8 @@ class AccidentAndIncidentPropertyDamaged
       _$AccidentAndIncidentPropertyDamagedFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id =>
+      accidentAndIncidentRegisterPropertyDamagedId ?? Isar.autoIncrement;
 }
 
 extension AccidentAndIncidentPropertyDamagedX

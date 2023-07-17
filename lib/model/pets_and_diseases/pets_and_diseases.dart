@@ -34,7 +34,8 @@ class PetsAndDiseaseRegister with _$PetsAndDiseaseRegister {
       _$PetsAndDiseaseRegisterFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id =>
+      int.tryParse(pestsAndDiseasesRegisterId ?? '') ?? Isar.autoIncrement;
 }
 
 extension PetsAndDiseaseRegisterX on PetsAndDiseaseRegister {

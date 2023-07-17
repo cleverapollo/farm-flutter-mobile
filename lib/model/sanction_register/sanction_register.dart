@@ -37,7 +37,7 @@ class SanctionRegister with _$SanctionRegister {
       _$SanctionRegisterFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => int.tryParse(sanctionRegisterId ?? '') ?? Isar.autoIncrement;
 }
 
 extension SanctionRegisterX on SanctionRegister {

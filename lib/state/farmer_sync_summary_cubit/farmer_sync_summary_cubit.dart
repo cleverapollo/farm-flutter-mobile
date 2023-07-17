@@ -223,7 +223,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         )
         ..add(
           databaseMasterService
-              .getUnsyncedAsiRegister()
+              .getUnsyncedAsiRegister(farmId)
               .then((value) => data = data.copyWith(asiUnsynced: value.length)),
         )
         ..add(

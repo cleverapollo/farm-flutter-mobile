@@ -17,8 +17,6 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/user/user_role.dart';
 import 'package:cmo/model/user_role_portal.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_payload/farm_stakeholder_payload.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_farm_stakeholder_payload/main_farm_stakeholder_payload.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,6 +27,7 @@ class CmoDatabaseMasterService {
   }
 
   CmoDatabaseMasterService._internal();
+
   static final CmoDatabaseMasterService _inst =
       CmoDatabaseMasterService._internal();
 
@@ -505,6 +504,14 @@ class CmoDatabaseMasterService {
     return db.grievanceRegisters.put(data);
   }
 
+  Future<int?> cacheGrievanceRegisterFromFarm(GrievanceRegister data) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.grievanceRegisters.put(data);
+    });
+  }
+
   Future<int?> cacheCountry(Country data) async {
     final db = await _db();
 
@@ -535,16 +542,40 @@ class CmoDatabaseMasterService {
     return db.socialUpliftments.put(data);
   }
 
+  Future<int?> cacheSocialUpliftmentFromFarm(SocialUpliftment data) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.socialUpliftments.put(data);
+    });
+  }
+
   Future<int?> cacheSpecialSite(SpecialSite data) async {
     final db = await _db();
 
     return db.specialSites.put(data);
   }
 
+  Future<int?> cacheSpecialSiteFromFarm(SpecialSite data) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.specialSites.put(data);
+    });
+  }
+
   Future<int?> cacheCustomaryUseRight(CustomaryUseRight data) async {
     final db = await _db();
 
     return db.customaryUseRights.put(data);
+  }
+
+  Future<int?> cacheCustomaryUseRightFromFarm(CustomaryUseRight data) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.customaryUseRights.put(data);
+    });
   }
 
   Future<List<FarmStakeholderCustomaryUseRight>>
@@ -595,6 +626,14 @@ class CmoDatabaseMasterService {
     return db.accidentAndIncidents.put(data);
   }
 
+  Future<int?> cacheAccidentAndIncidentFromFarm(
+      AccidentAndIncident data) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.accidentAndIncidents.put(data);
+    });
+  }
+
   Future<List<AccidentAndIncident>> getAccidentAndIncidentRegistersByFarmId(
       String farmId) async {
     final db = await _db();
@@ -610,6 +649,15 @@ class CmoDatabaseMasterService {
     final db = await _db();
 
     return db.accidentAndIncidentPropertyDamageds.put(data);
+  }
+
+  Future<int?> cacheAccidentAndIncidentPropertyDamagedFromFarm(
+      AccidentAndIncidentPropertyDamaged data) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.accidentAndIncidentPropertyDamageds.put(data);
+    });
   }
 
   Future<int?> cacheAsi(Asi data) async {
@@ -633,6 +681,14 @@ class CmoDatabaseMasterService {
   }
 
   Future<int?> cacheChemicalFromRM(Chemical data) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.chemicals.put(data);
+    });
+  }
+
+  Future<int?> cacheChemicalRegisterFromFarm(Chemical data) async {
     final db = await _db();
 
     return db.writeTxn(() async {
@@ -665,6 +721,13 @@ class CmoDatabaseMasterService {
     return db.fireRegisters.put(data);
   }
 
+  Future<int?> cacheFireRegisterFromFarm(FireRegister data) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.fireRegisters.put(data);
+    });
+  }
+
   Future<List<FireRegister>> getFireRegisters() async {
     final db = await _db();
     return db.fireRegisters.where().findAll();
@@ -674,6 +737,13 @@ class CmoDatabaseMasterService {
     final db = await _db();
 
     return db.petsAndDiseaseRegisters.put(data);
+  }
+
+  Future<int?> cachePetsAndDiseaseFromFarm(PetsAndDiseaseRegister data) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.petsAndDiseaseRegisters.put(data);
+    });
   }
 
   Future<int?> cachePetsAndDiseaseTreatmentMethod(
@@ -690,6 +760,15 @@ class CmoDatabaseMasterService {
     return db.pestsAndDiseasesRegisterTreatmentMethods.put(data);
   }
 
+  Future<int?> cachePetsAndDiseaseRegisterTreatmentMethodFromFarm(
+      PestsAndDiseasesRegisterTreatmentMethod data) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.pestsAndDiseasesRegisterTreatmentMethods.put(data);
+    });
+  }
+
   Future<int?> cacheRteSpeciesPhotos(RteSpeciesPhotoModel data) async {
     final db = await _db();
 
@@ -700,6 +779,13 @@ class CmoDatabaseMasterService {
     final db = await _db();
 
     return db.trainingRegisters.put(data);
+  }
+
+  Future<int?> cacheTrainingRegisterFromFarm(TrainingRegister data) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.trainingRegisters.put(data);
+    });
   }
 
   Future<int?> cacheAnimalType(AnimalType data) async {
@@ -714,10 +800,25 @@ class CmoDatabaseMasterService {
     return db.sanctionRegisters.put(data);
   }
 
+  Future<int?> cacheSanctionRegisterFromFarm(SanctionRegister data) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.sanctionRegisters.put(data);
+    });
+  }
+
   Future<int?> cacheAnnualBudgets(AnnualBudget data) async {
     final db = await _db();
 
     return db.annualBudgets.put(data);
+  }
+
+  Future<int?> cacheAnnualBudgetsFromFarm(AnnualBudget data) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.annualBudgets.put(data);
+    });
   }
 
   Future<int?> cacheAnnualBudgetTransactions(
@@ -725,6 +826,14 @@ class CmoDatabaseMasterService {
     final db = await _db();
 
     return db.annualBudgetTransactions.put(data);
+  }
+
+  Future<int?> cacheAnnualBudgetTransactionsFromFarm(
+      AnnualBudgetTransaction data) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.annualBudgetTransactions.put(data);
+    });
   }
 
   Future<int?> cacheCamp(Camp data) async {
@@ -1125,7 +1234,7 @@ class CmoDatabaseMasterService {
     return db.camps
         .filter()
         .farmIdEqualTo(farmId)
-        .tonsOfCharcoalProducedIsNotNull()
+        .isLocalEqualTo(true)
         .findAll();
   }
 
@@ -1487,7 +1596,11 @@ class CmoDatabaseMasterService {
 
   Future<List<Chemical>> getUnsyncedChemicalByFarmId(String farmId) async {
     final db = await _db();
-    return db.chemicals.filter().farmIdEqualTo(int.parse(farmId)).findAll();
+    return db.chemicals
+        .filter()
+        .farmIdEqualTo(int.parse(farmId))
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
   }
 
   Future<List<Chemical>> getChemicalByFarmId(String farmId,
@@ -1653,10 +1766,14 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<Asi>> getUnsyncedAsiRegister() async {
+  Future<List<Asi>> getUnsyncedAsiRegister(String farmId) async {
     final db = await _db();
 
-    return db.asis.filter().isMasterdataSyncedEqualTo(true).findAll();
+    return db.asis
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
   }
 
   Future<List<Schedule>> getUnsyncedScheduleCountByUserId(int userId) async {
@@ -2410,9 +2527,23 @@ class CmoDatabaseMasterService {
     return db.farmerWorkers.put(item);
   }
 
+  Future<int> cacheWorkerFromFarm(FarmerWorker item) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.farmerWorkers.put(item);
+    });
+  }
+
   Future<int> cacheStakeHolder(StakeHolder item) async {
     final db = await _db();
     return db.stakeHolders.put(item);
+  }
+
+  Future<int> cacheStakeHolderFromFarm(StakeHolder item) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.stakeHolders.put(item);
+    });
   }
 
   Future<int> cacheGroupSchemeStakeHolder(GroupSchemeStakeHolder item) async {
@@ -2461,6 +2592,14 @@ class CmoDatabaseMasterService {
     return db.annualFarmProductions.put(item);
   }
 
+  Future<int> cacheAnnualProductionFromFarm(AnnualFarmProduction item) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.annualFarmProductions.put(item);
+    });
+  }
+
   Future<int> cacheFarmerStakeHolderComplaint(
       FarmerStakeHolderComplaint item) async {
     final db = await _db();
@@ -2480,6 +2619,14 @@ class CmoDatabaseMasterService {
   Future<int> cacheBiologicalControlAgents(BiologicalControlAgent item) async {
     final db = await _db();
     return db.biologicalControlAgents.put(item);
+  }
+
+  Future<int> cacheBiologicalControlAgentsFromFarm(
+      BiologicalControlAgent item) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.biologicalControlAgents.put(item);
+    });
   }
 
   Future<int> cacheAnnualProductionBudget(AnnualBudget item) async {
@@ -2510,6 +2657,13 @@ class CmoDatabaseMasterService {
   Future<int> cacheRteSpecies(RteSpecies item) async {
     final db = await _db();
     return db.rteSpecies.put(item);
+  }
+
+  Future<int> cacheRteSpeciesFromFarm(RteSpecies item) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.rteSpecies.put(item);
+    });
   }
 
   Future<int> cacheRteSpeciesPhotoModel(RteSpeciesPhotoModel item) async {
