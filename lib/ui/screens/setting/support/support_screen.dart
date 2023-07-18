@@ -77,7 +77,7 @@ class _SupportScreenState extends State<SupportScreen> {
                 title: LocaleKeys.email.tr(),
                 onTap: () {
                   launchUrl(
-                    Uri.parse('mailto:support@cmo.org?subject=Support'),
+                    Uri.parse('mailto:Support@cmogroup.io?subject=Support'),
                   );
                 },
               ),
