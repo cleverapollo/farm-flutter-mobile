@@ -87,7 +87,8 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
             await FileUtil.writeToFileWithUint8List(screenshot);
         final base64 = await FileUtil.toBase64(screenshotFile);
         setState(() {
-          locationModel.listImage.add(base64);
+          locationModel.imageUri = base64;
+          // locationModel.listImage.add(base64);
         });
 
         showSnackSuccess(msg: 'Captured successfully!');
@@ -117,7 +118,8 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
             await FileUtil.writeToFileWithUint8List(uint8ListImage);
         final base64 = await FileUtil.toBase64(imageFile);
         setState(() {
-          locationModel.listImage.add(base64);
+          locationModel.imageUri = base64;
+          // locationModel.listImage.add(base64);
           showSnackSuccess(msg: 'Selected photo successfully!');
         });
       }

@@ -352,6 +352,24 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
     );
   }
 
+  InputDecoration _buildInputDecoration(
+      BuildContext context,
+      String hintText,
+      ) {
+    return InputDecoration(
+      contentPadding: const EdgeInsets.all(8),
+      hintText: hintText,
+      hintStyle: context.textStyles.bodyBold.black,
+      isDense: true,
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: context.colors.grey),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: context.colors.blue),
+      ),
+    );
+  }
+
   Widget buildImageItem({
     String? imageUri,
     VoidCallback? onRemove,
@@ -369,24 +387,6 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
           widget.locationModel!.imageUri = path;
         });
       },
-    );
-  }
-
-  InputDecoration _buildInputDecoration(
-    BuildContext context,
-    String hintText,
-  ) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.all(8),
-      hintText: hintText,
-      hintStyle: context.textStyles.bodyBold.black,
-      isDense: true,
-      border: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.grey),
-      ),
-      focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.blue),
-      ),
     );
   }
 }
