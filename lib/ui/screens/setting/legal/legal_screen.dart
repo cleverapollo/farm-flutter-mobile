@@ -1,3 +1,6 @@
+import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
+import 'package:cmo/env/env.dart';
 import 'package:flutter/material.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -32,22 +35,28 @@ class LegalScreen extends StatelessWidget {
           const SizedBox(height: 24),
           CmoHeaderTile(title: LocaleKeys.information.tr()),
           CmoTappable(
-            onTap: () {
-              launchUrl(
-                Uri.parse(
-                  'https://cmologistics.azurewebsites.net/behave/Terms',
-                ),
-              );
+            onTap: () async {
+              final activeUserRole = await configService.getActiveUserRole();
+              late Uri uri;
+              if (activeUserRole == UserRoleEnum.behave) {
+                uri = Uri.https(Env.cmoApiUrl, '/cmo/behave/Terms');
+              } else {
+                uri = Uri.https(Env.cmoApiUrl, '/cmo/Terms');
+              }
+              launchUrl(uri);
             },
             child: CmoOptionTile(title: LocaleKeys.termsConditions.tr()),
           ),
           CmoTappable(
-            onTap: () {
-              launchUrl(
-                Uri.parse(
-                  'https://cmologistics.azurewebsites.net/behave/Privacy',
-                ),
-              );
+            onTap: () async {
+              final activeUserRole = await configService.getActiveUserRole();
+              late Uri uri;
+              if (activeUserRole == UserRoleEnum.behave) {
+                uri = Uri.https(Env.cmoApiUrl, '/cmo/behave/Privacy');
+              } else {
+                uri = Uri.https(Env.cmoApiUrl, '/cmo/Privacy');
+              }
+              launchUrl(uri);
             },
             child: CmoOptionTile(title: LocaleKeys.privacyPolicy.tr()),
           ),
