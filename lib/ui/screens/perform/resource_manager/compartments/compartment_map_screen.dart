@@ -9,6 +9,7 @@ import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_detail_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +59,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   List<Marker> _markers = [];
   bool _isFinished = false;
   double? areaSquareMeters;
+  var _mapType = MapType.normal;
 
   @override
   void initState() {
@@ -109,6 +111,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                       target: Constants.mapCenter, zoom: 14),
                   polylines: _polylines(),
                   polygons: _polygon(),
+                  mapType: _mapType,
                   onMapCreated: (GoogleMapController controller) {
                     _controller = controller;
                     Geolocator.checkPermission().then((permission) async {
@@ -127,6 +130,26 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                   markers: _markers.toSet(),
                 ),
                 MapCenterIcon(),
+                Positioned(
+                  right: 6,
+                  top: 6,
+                  child: FloatingActionButton(
+                    onPressed: () async {
+                      var mapType = await showCustomModalBottomSheet(
+                        context,
+                        content: const _MapTypeSelector(),
+                      );
+                      if (mapType != null) {
+                        setState(() {
+                          _mapType = mapType as MapType;
+                        });
+                      }
+                    },
+                    mini: true,
+                    backgroundColor: Colors.white,
+                    child: Icon(Icons.satellite_outlined, color: Colors.black54,),
+                  ),
+                ),
               ],
             ),
           ),
@@ -341,6 +364,80 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
     return distance < 3;
   }
 }
+
+class _MapTypeSelector extends StatelessWidget {
+  const _MapTypeSelector({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.topLeft,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 8),
+          Text(
+            LocaleKeys.map_type.tr(),
+            style: context.textStyles.bodyNormal.copyWith(
+              fontWeight: FontWeight.w600,
+              color: context.colors.blueDark2,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _item(
+                  context,
+                  icon: Icons.map_outlined,
+                  text: LocaleKeys.default_text.tr(),
+                  onTapped: () => Navigator.of(context).pop(MapType.normal),
+                ),
+                _item(
+                  context,
+                  icon: Icons.satellite_outlined,
+                  text: LocaleKeys.satellite.tr(),
+                  onTapped: () => Navigator.of(context).pop(MapType.satellite),
+                ),
+                _item(
+                  context,
+                  icon: Icons.terrain_outlined,
+                  text: LocaleKeys.terrain.tr(),
+                  onTapped: () => Navigator.of(context).pop(MapType.terrain),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _item(
+    BuildContext context, {
+    required IconData icon,
+    required String text,
+    required Function() onTapped,
+  }) {
+    return InkWell(
+      onTap: onTapped,
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            size: 84,
+            color: context.colors.blue,
+          ),
+          Text(text),
+        ],
+      ),
+    );
+  }
+}
+
 
 class BitmapDescriptorHelper {
 

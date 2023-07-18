@@ -538,5 +538,9 @@
   "to_be_synced": "To be synced",
   "location_is_required": "Location is required",
   "date_is_required": "Date is required",
-  "complete_polygon": "Complete polygon"
+  "complete_polygon": "Complete polygon",
+  "map_type": "Map Type",
+  "default_text": "Default",
+  "satellite": "Satellite",
+  "terrain": "Terrain"
 }
