@@ -83,11 +83,11 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
 
     try {
       if (screenshot != null && isEnableNextButton) {
-        final screenshotFile =
-            await FileUtil.writeToFileWithUint8List(screenshot);
-        final base64 = await FileUtil.toBase64(screenshotFile);
+        /// Comment code for supporting multiple image
+        final screenshotFile = await FileUtil.writeToFileWithUint8List(screenshot);
+        // final base64 = await FileUtil.toBase64(screenshotFile);
         setState(() {
-          locationModel.imageUri = base64;
+          locationModel.imageUri = screenshotFile.path;
           // locationModel.listImage.add(base64);
         });
 
@@ -113,12 +113,13 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
       );
 
       if (croppedImage != null) {
-        final uint8ListImage = await croppedImage.readAsBytes();
-        final imageFile =
-            await FileUtil.writeToFileWithUint8List(uint8ListImage);
-        final base64 = await FileUtil.toBase64(imageFile);
+        /// Comment code for supporting multiple image
+        // final uint8ListImage = await croppedImage.readAsBytes();
+        // final imageFile = await FileUtil.writeToFileWithUint8List(uint8ListImage);
+        // final base64 = await FileUtil.toBase64(imageFile);
         setState(() {
-          locationModel.imageUri = base64;
+
+          locationModel.imageUri = croppedImage.path;
           // locationModel.listImage.add(base64);
           showSnackSuccess(msg: 'Selected photo successfully!');
         });
