@@ -10,17 +10,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../state/farmer/camp_management/add_camp_cubit.dart';
 
 class AddCampStep3Screen extends StatefulWidget {
-
   AddCampStep3Screen({Key? key}) : super(key: key);
 
   static void push(BuildContext context, AddCampCubit cubit) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) {
-        return BlocProvider.value(
-          value: cubit,
-          child: AddCampStep3Screen(),
-        );
-      },),
+      MaterialPageRoute(
+        builder: (_) {
+          return BlocProvider.value(
+            value: cubit,
+            child: AddCampStep3Screen(),
+          );
+        },
+      ),
     );
   }
 
@@ -29,7 +30,6 @@ class AddCampStep3Screen extends StatefulWidget {
 }
 
 class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
-
   late AddCampCubit cubit;
 
   @override
@@ -82,7 +82,8 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
                       ),
                       _YearDropdown(
                           initialValue: cubit.state.camp?.actualYearOfHarvest,
-                          onChanged: (value) => cubit.onActualYearOfHarvestChanged(value)),
+                          onChanged: (value) =>
+                              cubit.onActualYearOfHarvestChanged(value)),
                     ],
                   ),
                 ),
@@ -90,7 +91,7 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
               Center(
                 child: CmoFilledButton(
                   title: LocaleKeys.save.tr(),
-                  onTap: () => _save(),
+                  onTap: () => _save(cubit.state),
                 ),
               ),
               const SizedBox(height: 24),
@@ -101,11 +102,21 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
     );
   }
 
-   Future _save() async {
+  Future<void> _save(AddCampState state) async {
+    final canNotNext = state.camp?.actualYearOfHarvest == null ||
+        state.camp?.plannedYearOfHarvest == null;
+
+    if (canNotNext) {
+      return showSnackError(msg: 'Please select required field');
+    }
+
     await cubit.saveCamp(context);
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
+
+    if (context.mounted) {
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    }
   }
 }
 
@@ -113,7 +124,8 @@ class _YearDropdown extends StatelessWidget {
   final ValueChanged<int?>? onChanged;
   final int? initialValue;
 
-  const _YearDropdown({this.onChanged, this.initialValue, Key? key}) : super(key: key);
+  const _YearDropdown({this.onChanged, this.initialValue, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -131,16 +143,22 @@ class _YearDropdown extends StatelessWidget {
             borderSide: BorderSide(color: context.colors.grey)),
         focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: context.colors.blue)),
-
       ),
       itemsData: [
-        CmoDropdownItem(id: DateTime.now().year - 1, name: '${DateTime.now().year - 1}'),
-        CmoDropdownItem(id: DateTime.now().year, name: '${DateTime.now().year}'),
-        CmoDropdownItem(id: DateTime.now().year + 1, name: '${DateTime.now().year + 1}'),
-        CmoDropdownItem(id: DateTime.now().year + 2, name: '${DateTime.now().year + 2}'),
-        CmoDropdownItem(id: DateTime.now().year + 3, name: '${DateTime.now().year + 3}'),
-        CmoDropdownItem(id: DateTime.now().year + 4, name: '${DateTime.now().year + 4}'),
-        CmoDropdownItem(id: DateTime.now().year + 5, name: '${DateTime.now().year + 5}'),
+        CmoDropdownItem(
+            id: DateTime.now().year - 1, name: '${DateTime.now().year - 1}'),
+        CmoDropdownItem(
+            id: DateTime.now().year, name: '${DateTime.now().year}'),
+        CmoDropdownItem(
+            id: DateTime.now().year + 1, name: '${DateTime.now().year + 1}'),
+        CmoDropdownItem(
+            id: DateTime.now().year + 2, name: '${DateTime.now().year + 2}'),
+        CmoDropdownItem(
+            id: DateTime.now().year + 3, name: '${DateTime.now().year + 3}'),
+        CmoDropdownItem(
+            id: DateTime.now().year + 4, name: '${DateTime.now().year + 4}'),
+        CmoDropdownItem(
+            id: DateTime.now().year + 5, name: '${DateTime.now().year + 5}'),
       ],
     );
   }

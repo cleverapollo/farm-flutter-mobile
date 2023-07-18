@@ -24,12 +24,14 @@ class AddCampScreen extends StatefulWidget {
 
   static Future push(BuildContext context, {Camp? camp}) {
     return Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) {
-        return BlocProvider(
-          create: (_) => AddCampCubit(camp: camp)..init(),
-          child: AddCampScreen(),
-        );
-      },),
+      MaterialPageRoute(
+        builder: (_) {
+          return BlocProvider(
+            create: (_) => AddCampCubit(camp: camp)..init(),
+            child: AddCampScreen(),
+          );
+        },
+      ),
     );
   }
 
@@ -260,7 +262,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
               Center(
                 child: CmoFilledButton(
                   title: LocaleKeys.next.tr(),
-                  onTap: () => _next(),
+                  onTap: () => _next(cubit.state),
                 ),
               ),
               const SizedBox(height: 24),
@@ -271,10 +273,18 @@ class _AddCampScreenState extends State<AddCampScreen> {
     );
   }
 
-  Future _next() async{
+  Future<void> _next(AddCampState state) async {
     if (_formKey.currentState?.validate() == false) {
       return;
     }
+
+    final canNotNext =
+        state.compartments.isEmpty || state.asis.isEmpty || state.farm == null;
+
+    if (canNotNext) {
+      return showSnackError(msg: 'Please select required field');
+    }
+
     await cubit.saveCamp(context);
     AddCampStep2Screen.push(context, cubit);
   }

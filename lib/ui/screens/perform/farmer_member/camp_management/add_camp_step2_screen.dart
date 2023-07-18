@@ -10,17 +10,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddCampStep2Screen extends StatefulWidget {
-
   AddCampStep2Screen({Key? key}) : super(key: key);
 
   static void push(BuildContext context, AddCampCubit cubit) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) {
-        return BlocProvider.value(
-          value: cubit,
-          child: AddCampStep2Screen(),
-        );
-      },),
+      MaterialPageRoute(
+        builder: (_) {
+          return BlocProvider.value(
+            value: cubit,
+            child: AddCampStep2Screen(),
+          );
+        },
+      ),
     );
   }
 
@@ -63,15 +64,14 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
                     children: [
                       Center(
                         child: Text(
-                          '${LocaleKeys.summary.tr()}: 0% ${LocaleKeys
-                              .ofLandAllocated.tr()}',
+                          '${LocaleKeys.summary.tr()}: 0% ${LocaleKeys.ofLandAllocated.tr()}',
                           style: context.textStyles.bodyBold,
                         ),
                       ),
                       const SizedBox(height: 12),
                       Padding(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -91,63 +91,73 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
                             children: [
                               _CategoryItem(
                                 initialValue:
-                                    cubit.state.camp?.infestationCategory1 != null
+                                    cubit.state.camp?.infestationCategory1 !=
+                                            null
                                         ? cubit.state.camp?.infestationCategory1
                                             .toString()
                                         : null,
                                 part1: '${LocaleKeys.category.tr()} 1:',
                                 part2:
-                                ' ${LocaleKeys.add_camp_category_1_infested.tr()} ',
+                                    ' ${LocaleKeys.add_camp_category_1_infested.tr()} ',
                                 part3: LocaleKeys.add_camp_category_1.tr(),
-                                onChanged: (value) => cubit.onInfestationCategory1Changed(value),
+                                onChanged: (value) =>
+                                    cubit.onInfestationCategory1Changed(value),
                               ),
                               _CategoryItem(
                                 initialValue:
-                                cubit.state.camp?.infestationCategory2 != null
-                                    ? cubit.state.camp?.infestationCategory2
-                                    .toString()
-                                    : null,
+                                    cubit.state.camp?.infestationCategory2 !=
+                                            null
+                                        ? cubit.state.camp?.infestationCategory2
+                                            .toString()
+                                        : null,
                                 part1: '${LocaleKeys.category.tr()} 2:',
                                 part2:
-                                ' ${LocaleKeys.add_camp_category_2_infested.tr()} ',
+                                    ' ${LocaleKeys.add_camp_category_2_infested.tr()} ',
                                 part3: LocaleKeys.add_camp_category_2.tr(),
-                                onChanged: (value) => cubit.onInfestationCategory2Changed(value),
+                                onChanged: (value) =>
+                                    cubit.onInfestationCategory2Changed(value),
                               ),
                               _CategoryItem(
                                 initialValue:
-                                cubit.state.camp?.infestationCategory3 != null
-                                    ? cubit.state.camp?.infestationCategory3
-                                    .toString()
-                                    : null,
+                                    cubit.state.camp?.infestationCategory3 !=
+                                            null
+                                        ? cubit.state.camp?.infestationCategory3
+                                            .toString()
+                                        : null,
                                 part1: '${LocaleKeys.category.tr()} 3:',
                                 part2:
-                                ' ${LocaleKeys.add_camp_category_3_infested.tr()} ',
+                                    ' ${LocaleKeys.add_camp_category_3_infested.tr()} ',
                                 part3: LocaleKeys.add_camp_category_3.tr(),
-                                onChanged: (value) => cubit.onInfestationCategory3Changed(value),
+                                onChanged: (value) =>
+                                    cubit.onInfestationCategory3Changed(value),
                               ),
                               _CategoryItem(
                                 initialValue:
-                                cubit.state.camp?.infestationCategory4 != null
-                                    ? cubit.state.camp?.infestationCategory4
-                                    .toString()
-                                    : null,
+                                    cubit.state.camp?.infestationCategory4 !=
+                                            null
+                                        ? cubit.state.camp?.infestationCategory4
+                                            .toString()
+                                        : null,
                                 part1: '${LocaleKeys.category.tr()} 4:',
                                 part2:
-                                ' ${LocaleKeys.add_camp_category_4_infested.tr()} ',
+                                    ' ${LocaleKeys.add_camp_category_4_infested.tr()} ',
                                 part3: LocaleKeys.add_camp_category_4.tr(),
-                                onChanged: (value) => cubit.onInfestationCategory4Changed(value),
+                                onChanged: (value) =>
+                                    cubit.onInfestationCategory4Changed(value),
                               ),
                               _CategoryItem(
                                 initialValue:
-                                cubit.state.camp?.infestationCategory5 != null
-                                    ? cubit.state.camp?.infestationCategory5
-                                    .toString()
-                                    : null,
+                                    cubit.state.camp?.infestationCategory5 !=
+                                            null
+                                        ? cubit.state.camp?.infestationCategory5
+                                            .toString()
+                                        : null,
                                 part1: '${LocaleKeys.category.tr()} 5:',
                                 part2:
-                                ' ${LocaleKeys.add_camp_category_5_infested.tr()} ',
+                                    ' ${LocaleKeys.add_camp_category_5_infested.tr()} ',
                                 part3: LocaleKeys.add_camp_category_5.tr(),
-                                onChanged: (value) => cubit.onInfestationCategory5Changed(value),
+                                onChanged: (value) =>
+                                    cubit.onInfestationCategory5Changed(value),
                               ),
                             ],
                           ),
@@ -161,7 +171,7 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
               Center(
                 child: CmoFilledButton(
                   title: LocaleKeys.next.tr(),
-                  onTap: () => _next(),
+                  onTap: () => _next(cubit.state),
                 ),
               ),
               const SizedBox(height: 24),
@@ -172,9 +182,22 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
     );
   }
 
-  Future _next() async {
+  Future<void> _next(AddCampState state) async {
+    final canNotNext = (state.camp?.infestationCategory1 ?? 0) == 0 ||
+        (state.camp?.infestationCategory2 ?? 0) == 0 ||
+        (state.camp?.infestationCategory3 ?? 0) == 0 ||
+        (state.camp?.infestationCategory4 ?? 0) == 0 ||
+        (state.camp?.infestationCategory5 ?? 0) == 0;
+
+    if (canNotNext) {
+      return showSnackError(msg: 'Please select required field');
+    }
+
     await cubit.saveCamp(context);
-    AddCampStep3Screen.push(context, cubit);
+
+    if (context.mounted) {
+      AddCampStep3Screen.push(context, cubit);
+    }
   }
 }
 
@@ -224,7 +247,8 @@ class _InputItem extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final String? initialValue;
 
-  const _InputItem({this.initialValue, this.onChanged, Key? key}) : super(key: key);
+  const _InputItem({this.initialValue, this.onChanged, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
