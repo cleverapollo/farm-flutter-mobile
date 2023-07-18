@@ -82,6 +82,21 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     }
   }
 
+  Future<void> syncSummary() async {
+    logger.d('--RM Sync Summary start--');
+    await publishFarm();
+  }
+
+  Future<void> publishFarm() async {
+    emit(
+      state.copyWith(
+        syncMessage: 'Syncing Farms...',
+        isLoading: true,
+      ),
+    );
+
+  }
+
   Future<int?> insertStakeholder(Message item) async {
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
@@ -360,13 +375,16 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     final regionalManagerUnitAllMasterDataTopic =
         '$topicRegionalManagerUnitMasterDataSync*.$userDeviceId';
     final userTrickleFeedMasterDataTopicByRmuId = 'Cmo.MasterData.RMU.*.$rmuId';
+    final publishFarmTopic = 'Cmo.MasterData.RM.Farm.$groupSchemeId.$userDeviceId';
+
     final futures = [
       groupSchemeAllMasterDataTopic,
       regionalManagerTrickleFeedMasterDataTopic,
       trickleFeedMasterDataTopic,
       userTrickleFeedMasterDataTopicByUserId,
       regionalManagerUnitAllMasterDataTopic,
-      userTrickleFeedMasterDataTopicByRmuId
+      userTrickleFeedMasterDataTopicByRmuId,
+      publishFarmTopic,
     ]
         .map((e) => cmoPerformApiService.createSubscription(
             topic: e,
