@@ -175,12 +175,14 @@ class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
                     },
 
                     title: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       child: Text(
                         addMemberMPO.propertyTypes[index]
                                 .farmPropertyOwnershipTypeName ??
                             '',
-                        style: context.textStyles.bodyBold.black,
+                        style: context.textStyles.bodyBold.copyWith(
+                          color: context.colors.blueDark2,
+                        ),
                       ),
                     ),
                   );

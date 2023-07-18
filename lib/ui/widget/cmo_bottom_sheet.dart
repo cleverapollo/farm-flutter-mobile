@@ -1,3 +1,4 @@
+import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
 Future showCustomModalBottomSheet(
@@ -50,19 +51,19 @@ Future<Object> showCustomBottomSheet<T>(
     context: context,
     enableDrag: true,
     elevation: 4,
-    constraints: BoxConstraints(
-      maxHeight: MediaQuery.of(context).size.height * 2 / 3,
-      minHeight: MediaQuery.of(context).size.height / 2,
-    ),
     clipBehavior: Clip.antiAliasWithSaveLayer,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16.0),
+      borderRadius: BorderRadius.circular(10.0),
     ),
     builder: (builder) {
-      return DecoratedBox(
-        decoration: const BoxDecoration(
+      return Container(
+        height: MediaQuery.of(context).size.height / 2.4,
+        decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(width: 5),
+            top: BorderSide(
+              width: 5,
+              color: context.colors.blueDark2,
+            ),
           ),
         ),
         child: Column(
@@ -75,7 +76,7 @@ Future<Object> showCustomBottomSheet<T>(
               width: 100,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
-                color: Colors.black,
+                color: context.colors.blueDark2,
               ),
             ),
             const SizedBox(
