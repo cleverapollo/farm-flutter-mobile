@@ -10,8 +10,10 @@ import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
@@ -77,161 +79,264 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
               key: _formKey,
               child: Column(
                 children: [
+                  CmoHeaderTile(title: LocaleKeys.asiNumber.tr()),
+                  const SizedBox(height: 12),
                   Padding(
-                    padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                    ),
+                    child: buildASINoWidget(),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: buildSelectCompartment(),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: buildSelectASIType(),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: buildLatLngWidget(),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: buildDatePicker(),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: CmoTextField(
-                      hintText: LocaleKeys.asi_no.tr(),
-                      onChanged: (value) {
-                        _asi = _asi.copyWith(asiRegisterNo: value);
-                      },
-                      validator: requiredValidator,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 20,
-                      right: 8.0,
-                      left: 8.0,
-                    ),
-                    child: BlocSelector<AsiDetailCubit, AsiDetailState,
-                        List<Compartment>>(
-                      selector: (state) => state.compartments,
-                      builder: (context, compartments) {
-                        return CmoDropdown<Compartment>(
-                          name: '',
-                          hintText: LocaleKeys.compartment.tr(),
-                          onChanged: (Compartment? value) {
-                            if (value != null) {
-                              _asi = _asi.copyWith(
-                                compartmentId: value.compartmentId,
-                                compartmentName: value.compartmentName,
-                              );
-                            }
-                          },
-                          itemsData: compartments.isBlank
-                              ? []
-                              : compartments
-                                  .map(
-                                    (e) => CmoDropdownItem<Compartment>(
-                                      id: e,
-                                      name: e.compartmentName ?? '',
-                                    ),
-                                  )
-                                  .toList(),
-                        );
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                    child: BlocSelector<AsiDetailCubit, AsiDetailState, List<AsiType>?>(
-                      selector: (state) => state.types,
-                      builder: (context, types) {
-                        return CmoDropdown<AsiType>(
-                          validator: requiredValidator,
-                          name: '',
-                          hintText: LocaleKeys.type.tr(),
-                          onChanged: (AsiType? value) {
-                            if (value != null) {
-                              _asi = _asi.copyWith(
-                                asiTypeId: value.asiTypeId,
-                                asiTypeName: value.asiTypeName,
-                              );
-                            }
-                          },
-                          itemsData: types == null
-                              ? []
-                              : types
-                                  .map(
-                                    (e) => CmoDropdownItem<AsiType>(
-                                      id: e,
-                                      name: e.asiTypeName ?? '',
-                                    ),
-                                  )
-                                  .toList(),
-                        );
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                    child: CmoDropDownLayoutWidget(
-                      showTick: widget.locationModel?.latitude != null,
-                      title: LocaleKeys.lat_long.tr(),
-                      subTitle:
-                          '${widget.locationModel?.latitude?.toStringAsFixed(5)} | ${widget.locationModel?.longitude?.toStringAsFixed(5)}',
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                    child: CmoDropDownLayoutWidget(
-                      showTick: currentDate.isNotEmpty,
-                      onTap: () async {
-                        final result = await DatePicker.showDatePicker(context,
-                            showTitleActions: true,
-                            minTime: DateTime(2018, 3, 5),
-                            maxTime: DateTime(DateTime.now().year + 5, 12, 31),
-                            onChanged: (date) {},
-                            onConfirm: (date) {},
-                            currentTime: DateTime.now());
-
-                        final format = DateFormat('dd MM yyyy');
-                        currentDate = format.format(result ?? DateTime.now());
-                        _asi = _asi.copyWith(date: result);
-                        if (mounted) setState(() {});
-                      },
-                      title: LocaleKeys.date.tr(),
-                      subTitle: '$currentDate',
-                      trailingWidget: const Icon(Icons.date_range_sharp),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 20, right: 8.0, left: 8.0),
-                    child: CmoTextField(
-                      hintText: LocaleKeys.comments.tr(),
+                      inputDecoration: _buildInputDecoration(
+                        context,
+                        LocaleKeys.comments.tr(),
+                      ),
                       maxLines: 5,
                       onChanged: (value) {
                         _asi = _asi.copyWith(comment: value);
                       },
                     ),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   buildImageWidget(),
-                  const SizedBox(height: 40),
-                  CmoFilledButton(
-                    title: LocaleKeys.save.tr(),
-                    onTap: () async {
-                      if (_formKey.currentState?.validate() == false) {
-                        return;
-                      }
-                      if (widget.locationModel?.latitude == null) {
-                        showSnackError(
-                          msg: LocaleKeys.location_is_required.tr()
-                        );
-                        return;
-                      }
-                      if (currentDate.isEmpty) {
-                        showSnackError(
-                            msg: LocaleKeys.date_is_required.tr()
-                        );
-                        return;
-                      }
-                      await context.read<AsiDetailCubit>().saveAsi(
-                            _asi,
-                            widget.locationModel?.imageUri,
-                          );
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  const SizedBox(height: 16),
                 ],
               ),
             ),
           ),
         ),
       ),
+
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: CmoFilledButton(
+        title: LocaleKeys.save.tr(),
+        onTap: () async {
+          if (_formKey.currentState?.validate() == false) {
+            return;
+          }
+          if (widget.locationModel?.latitude == null) {
+            showSnackError(
+                msg: LocaleKeys.location_is_required.tr()
+            );
+            return;
+          }
+          if (currentDate.isEmpty) {
+            showSnackError(
+                msg: LocaleKeys.date_is_required.tr()
+            );
+            return;
+          }
+          await context.read<AsiDetailCubit>().saveAsi(
+            _asi,
+            widget.locationModel?.imageUri,
+          );
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+  }
+
+  Widget buildASINoWidget() {
+    return CmoTextField(
+      hintText: LocaleKeys.asi_no.tr(),
+      validator: requiredValidator,
+      inputDecoration: _buildInputDecoration(
+        context,
+        LocaleKeys.asi_no.tr(),
+      ),
+      onChanged: (value) {
+        _asi = _asi.copyWith(asiRegisterNo: value);
+      },
+    );
+  }
+
+  Widget buildSelectCompartment() {
+    return BlocSelector<AsiDetailCubit, AsiDetailState, List<Compartment>>(
+      selector: (state) => state.compartments,
+      builder: (context, compartments) {
+        return BottomSheetSelection(
+          hintText: LocaleKeys.compartment.tr(),
+          value: _asi.compartmentName,
+          onTap: () async {
+            if (compartments.isBlank) return;
+            await showCustomBottomSheet(
+              context,
+              content: ListView.builder(
+                itemCount: compartments.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      if (compartments[index] != null) {
+                        setState(() {
+                          _asi = _asi.copyWith(
+                            compartmentId: compartments[index].compartmentId,
+                            compartmentName: compartments[index].compartmentName,
+                          );
+                        });
+
+                        Navigator.pop(context);
+                      }
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        compartments[index].compartmentName ?? '',
+                        style: context.textStyles.bodyBold.copyWith(
+                          color: context.colors.blueDark2,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildSelectASIType() {
+    return BlocSelector<AsiDetailCubit, AsiDetailState, List<AsiType>?>(
+      selector: (state) => state.types,
+      builder: (context, types) {
+        return BottomSheetSelection(
+          hintText: LocaleKeys.type.tr(),
+          value: _asi.asiTypeName,
+          onTap: () async {
+            if (types.isBlank) return;
+            await showCustomBottomSheet(
+              context,
+              content: ListView.builder(
+                itemCount: types!.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      if (types[index] != null) {
+                        setState(() {
+                          _asi = _asi.copyWith(
+                            asiTypeId: types[index].asiTypeId,
+                            asiTypeName: types[index].asiTypeName,
+                          );
+                        });
+
+                        Navigator.pop(context);
+                      }
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        types[index].asiTypeName ?? '',
+                        style: context.textStyles.bodyBold.copyWith(
+                          color: context.colors.blueDark2,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildLatLngWidget() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: context.colors.grey),
+        ),
+      ),
+      child: Row(
+        children: [
+          Text(
+            LocaleKeys.lat_long.tr(),
+            style: context.textStyles.bodyBold.black,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Expanded(
+            child: Text(
+              '${widget.locationModel?.latitude?.toStringAsFixed(5)} | ${widget.locationModel?.longitude?.toStringAsFixed(5)}',
+              style: context.textStyles.bodyNormal.black,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          if (widget.locationModel?.latitude != null)
+            Assets.icons.icTick.widget,
+          Icon(
+            Icons.keyboard_arrow_right_rounded,
+            color: context.colors.black,
+            size: 32,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildDatePicker() {
+    return BottomSheetSelection(
+      hintText: LocaleKeys.date.tr(),
+      value: currentDate,
+      rightIconData: Padding(
+        padding: const EdgeInsets.only(bottom: 4.0),
+        child: Row(
+          children: [
+            if (currentDate.isNotEmpty) Assets.icons.icTick.widget,
+            const SizedBox(
+              width: 8,
+            ),
+            Icon(
+              Icons.date_range_sharp,
+              color: context.colors.black,
+              size: 24,
+            ),
+          ],
+        ),
+      ),
+      onTap: () async {
+        final result = await DatePicker.showDatePicker(
+          context,
+          minTime: DateTime(2018, 3, 5),
+          maxTime: DateTime(DateTime.now().year + 5, 12, 31),
+          onChanged: (date) {},
+          onConfirm: (date) {},
+          currentTime: DateTime.now(),
+        );
+
+        final format = DateFormat('dd MM yyyy');
+        currentDate = format.format(result ?? DateTime.now());
+        _asi = _asi.copyWith(date: result);
+        if (mounted) setState(() {});
+      },
     );
   }
 
@@ -285,7 +390,7 @@ class _ThumbnailImageState extends State<_ThumbnailImage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         color: context.colors.white,
       ),
@@ -341,6 +446,24 @@ class _ThumbnailImageState extends State<_ThumbnailImage> {
             child: Assets.icons.icClose.svgBlack,
           ),
         ],
+      ),
+    );
+  }
+
+  InputDecoration _buildInputDecoration(
+    BuildContext context,
+    String hintText,
+  ) {
+    return InputDecoration(
+      contentPadding: const EdgeInsets.all(8),
+      hintText: hintText,
+      hintStyle: context.textStyles.bodyBold.black,
+      isDense: true,
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: context.colors.grey),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: context.colors.blue),
       ),
     );
   }

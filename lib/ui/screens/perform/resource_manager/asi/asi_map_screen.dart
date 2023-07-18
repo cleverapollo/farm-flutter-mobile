@@ -100,7 +100,7 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBarV2(
-        title: LocaleKeys.addASI.tr(),
+        title: LocaleKeys.asi.tr(),
         subtitle: widget.farmName ?? '',
         showTrailing: true,
       ),
@@ -122,7 +122,7 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                   onSelectPhotos: onSelectPhoto,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 32),
               Align(
                 child: CmoFilledButton(
                     title: LocaleKeys.next.tr(),
