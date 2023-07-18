@@ -10,7 +10,7 @@ class LocationModel {
   double? latitude;
   double? longitude;
   String? imageUri;
-  List<String> listImage = const <String>[];
+  List<String> listImage = <String>[];
 }
 
 class SelectLocationScreen extends StatefulWidget {

@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
@@ -39,7 +40,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
 
   Future<void> saveAsi(
     Asi asi,
-    String? imageUri,
+    List<String>? listImage,
   ) async {
     final asiId = DateTime.now().millisecondsSinceEpoch.toString();
     final savingAsi = asi.copyWith(
@@ -59,6 +60,18 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
         asiRegisterPhotoNo: state.photoName,
       ),
     );
+
+    // if (listImage.isNotBlank) {
+    //   for (final image in listImage!) {
+    //     await cmoDatabaseMasterService.cacheAsiPhoto(
+    //       AsiPhoto(
+    //         asiRegisterPhotoId: DateTime.now().millisecondsSinceEpoch,
+    //         asiRegisterId: asiId,
+    //         photo: image,
+    //       ),
+    //     );
+    //   }
+    // }
   }
 
   void onPhotoNameChanged(String text) {

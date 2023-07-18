@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cmo/extensions/iterable_extensions.dart';
@@ -9,7 +10,6 @@ import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -42,7 +42,7 @@ class ASIDetailScreen extends StatefulWidget {
             create: (_) => AsiDetailCubit(
               farmId ?? '',
               locationModel: locationModel,
-              campId : campId,
+              campId: campId,
             )..fetchData(),
             child: ASIDetailScreen(
               locationModel: locationModel,
@@ -71,65 +71,79 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
         subtitle: widget.farmName ?? '',
         showTrailing: true,
       ),
-      body: SizedBox.expand(
-        child: ColoredBox(
-          color: context.colors.white,
-          child: SingleChildScrollView(
-            child: FormBuilder(
-              key: _formKey,
-              child: Column(
-                children: [
-                  CmoHeaderTile(title: LocaleKeys.asiNumber.tr()),
-                  const SizedBox(height: 12),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0,
-                    ),
-                    child: buildASINoWidget(),
-                  ),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: buildSelectCompartment(),
-                  ),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: buildSelectASIType(),
-                  ),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: buildLatLngWidget(),
-                  ),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: buildDatePicker(),
-                  ),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: CmoTextField(
-                      inputDecoration: _buildInputDecoration(
-                        context,
-                        LocaleKeys.comments.tr(),
-                      ),
-                      maxLines: 5,
-                      onChanged: (value) {
-                        _asi = _asi.copyWith(comment: value);
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  buildImageWidget(),
-                ],
+      body: FormBuilder(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CmoHeaderTile(title: LocaleKeys.asiNumber.tr()),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24.0,
+                ),
+                child: buildASINoWidget(),
               ),
-            ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: buildSelectCompartment(),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: buildSelectASIType(),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: buildLatLngWidget(),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: buildDatePicker(),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: CmoTextField(
+                  inputDecoration: _buildInputDecoration(
+                    context,
+                    LocaleKeys.comments.tr(),
+                  ),
+                  maxLines: 5,
+                  onChanged: (value) {
+                    _asi = _asi.copyWith(comment: value);
+                  },
+                ),
+              ),
+              const SizedBox(height: 12),
+              if (widget.locationModel!.imageUri.isNotBlank)
+                buildImageItem(
+                  imageUri: widget.locationModel!.imageUri,
+                  onRemove: () {
+                    setState(() {
+                      widget.locationModel!.imageUri = null;
+                    });
+                  },
+                ),
+              if (widget.locationModel!.listImage.isNotBlank)
+                ...widget.locationModel!.listImage.map(
+                      (e) =>
+                      buildImageItem(
+                        imageUri: e,
+                        onRemove: () {
+                          setState(() {
+                            widget.locationModel!.listImage.remove(e);
+                          });
+                        },
+                      ),
+                ),
+            ],
           ),
         ),
       ),
-
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: CmoFilledButton(
         title: LocaleKeys.save.tr(),
@@ -138,20 +152,19 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
             return;
           }
           if (widget.locationModel?.latitude == null) {
-            showSnackError(
-                msg: LocaleKeys.location_is_required.tr()
-            );
+            showSnackError(msg: LocaleKeys.location_is_required.tr());
             return;
           }
           if (currentDate.isEmpty) {
-            showSnackError(
-                msg: LocaleKeys.date_is_required.tr()
-            );
+            showSnackError(msg: LocaleKeys.date_is_required.tr());
             return;
           }
           await context.read<AsiDetailCubit>().saveAsi(
             _asi,
-            widget.locationModel?.imageUri,
+            widget.locationModel!.listImage.isBlank &&
+                widget.locationModel!.imageUri.isNotBlank
+                ? [widget.locationModel!.imageUri!]
+                : widget.locationModel!.listImage,
           );
           Navigator.of(context).pop();
           Navigator.of(context).pop();
@@ -183,23 +196,21 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
           value: _asi.compartmentName,
           onTap: () async {
             if (compartments.isBlank) return;
-            await showCustomBottomSheet(
+            await showCustomBottomSheet<void>(
               context,
               content: ListView.builder(
                 itemCount: compartments.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () {
-                      if (compartments[index] != null) {
-                        setState(() {
-                          _asi = _asi.copyWith(
-                            compartmentId: compartments[index].compartmentId,
-                            compartmentName: compartments[index].compartmentName,
-                          );
-                        });
+                      setState(() {
+                        _asi = _asi.copyWith(
+                          compartmentId: compartments[index].compartmentId,
+                          compartmentName: compartments[index].compartmentName,
+                        );
+                      });
 
-                        Navigator.pop(context);
-                      }
+                      Navigator.pop(context);
                     },
                     title: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -229,23 +240,21 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
           value: _asi.asiTypeName,
           onTap: () async {
             if (types.isBlank) return;
-            await showCustomBottomSheet(
+            await showCustomBottomSheet<void>(
               context,
               content: ListView.builder(
                 itemCount: types!.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () {
-                      if (types[index] != null) {
-                        setState(() {
-                          _asi = _asi.copyWith(
-                            asiTypeId: types[index].asiTypeId,
-                            asiTypeName: types[index].asiTypeName,
-                          );
-                        });
+                      setState(() {
+                        _asi = _asi.copyWith(
+                          asiTypeId: types[index].asiTypeId,
+                          asiTypeName: types[index].asiTypeName,
+                        );
+                      });
 
-                        Navigator.pop(context);
-                      }
+                      Navigator.pop(context);
                     },
                     title: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -285,7 +294,8 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
           ),
           Expanded(
             child: Text(
-              '${widget.locationModel?.latitude?.toStringAsFixed(5)} | ${widget.locationModel?.longitude?.toStringAsFixed(5)}',
+              '${widget.locationModel?.latitude?.toStringAsFixed(5)} | ${widget
+                  .locationModel?.longitude?.toStringAsFixed(5)}',
               style: context.textStyles.bodyNormal.black,
               textAlign: TextAlign.center,
             ),
@@ -326,7 +336,9 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
         final result = await DatePicker.showDatePicker(
           context,
           minTime: DateTime(2018, 3, 5),
-          maxTime: DateTime(DateTime.now().year + 5, 12, 31),
+          maxTime: DateTime(DateTime
+              .now()
+              .year + 5, 12, 31),
           onChanged: (date) {},
           onConfirm: (date) {},
           currentTime: DateTime.now(),
@@ -340,8 +352,11 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
     );
   }
 
-  Widget buildImageWidget() {
-    if (widget.locationModel!.imageUri.isBlank) return const SizedBox.shrink();
+  Widget buildImageItem({
+    String? imageUri,
+    VoidCallback? onRemove,
+  }) {
+    if (imageUri.isBlank) return const SizedBox.shrink();
     return _ThumbnailImage(
       widget.locationModel!.imageUri!,
       onRemoved: () {
@@ -354,6 +369,24 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
           widget.locationModel!.imageUri = path;
         });
       },
+    );
+  }
+
+  InputDecoration _buildInputDecoration(
+    BuildContext context,
+    String hintText,
+  ) {
+    return InputDecoration(
+      contentPadding: const EdgeInsets.all(8),
+      hintText: hintText,
+      hintStyle: context.textStyles.bodyBold.black,
+      isDense: true,
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: context.colors.grey),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: context.colors.blue),
+      ),
     );
   }
 }
@@ -390,7 +423,10 @@ class _ThumbnailImageState extends State<_ThumbnailImage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 12,
+      ),
       decoration: BoxDecoration(
         color: context.colors.white,
       ),
@@ -402,11 +438,17 @@ class _ThumbnailImageState extends State<_ThumbnailImage> {
               showImageViewer(context, imageProvider);
             },
             child: Image.file(
-              File(widget.uri),
-              fit: BoxFit.fitHeight,
-              width: 74,
-              height: 74,
-            ),
+                File(widget.uri),
+                fit: BoxFit.fitHeight,
+                width: 74,
+                height: 74,
+              ),
+            // Image.memory(
+            //   base64Decode(widget.uri),
+            //   fit: BoxFit.fitHeight,
+            //   width: 74,
+            //   height: 74,
+            // ),
           ),
           const SizedBox(
             width: 24,
@@ -440,30 +482,13 @@ class _ThumbnailImageState extends State<_ThumbnailImage> {
           ),
           const SizedBox(width: 8),
           CmoTappable(
-            onTap: () {
-              widget.onRemoved?.call();
-            },
-            child: Assets.icons.icClose.svgBlack,
+            onTap: () => widget.onRemoved?.call(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Assets.icons.icClose.svgBlack,
+            ),
           ),
         ],
-      ),
-    );
-  }
-
-  InputDecoration _buildInputDecoration(
-    BuildContext context,
-    String hintText,
-  ) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.all(8),
-      hintText: hintText,
-      hintStyle: context.textStyles.bodyBold.black,
-      isDense: true,
-      border: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.grey),
-      ),
-      focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.blue),
       ),
     );
   }

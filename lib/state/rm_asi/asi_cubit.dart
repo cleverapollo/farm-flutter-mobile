@@ -13,12 +13,42 @@ class AsiCubit extends Cubit<AsiState> {
       if (state.campId != null) {
         data = data.where((element) => element.campId == state.campId).toList();
       }
-      emit(state.copyWith(listAsi: data));
+      emit(
+        state.copyWith(
+          listAsi: data,
+          filterAsi: data,
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(error: e));
       showSnackError(msg: e.toString());
     } finally {
       emit(state.copyWith(loading: false));
+    }
+  }
+
+  void searching(String? input) {
+    if (input == null || input.isEmpty) {
+      emit(
+        state.copyWith(
+          filterAsi: state.listAsi,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          filterAsi: state.listAsi
+              .where(
+                (element) =>
+                    element.asiTypeName
+                        ?.toString()
+                        .toLowerCase()
+                        .contains(input.toLowerCase()) ??
+                    false,
+              )
+              .toList(),
+        ),
+      );
     }
   }
 }

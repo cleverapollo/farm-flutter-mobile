@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/asi.dart';
@@ -38,6 +40,8 @@ class _ASIScreenState extends State<ASIScreen> {
 
   bool isCollapse = true;
 
+  Timer? _debounceInputTimer;
+
   @override
   void initState() {
     super.initState();
@@ -67,9 +71,30 @@ class _ASIScreenState extends State<ASIScreen> {
           color: context.colors.white,
           child: Column(
             children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
+                child: CmoTextField(
+                  name: LocaleKeys.search.tr(),
+                  hintText: LocaleKeys.search.tr(),
+                  suffixIcon: Assets.icons.icSearch.svg(),
+                  onChanged: (input) {
+                    _debounceInputTimer?.cancel();
+                    _debounceInputTimer = Timer(
+                      const Duration(milliseconds: 200),
+                      () {
+                        setState(() {
+                          isCollapse = false;
+                        });
+
+                        context.read<AsiCubit>().searching(input);
+                      },
+                    );
+                  },
+                ),
+              ),
               Expanded(
                 child: BlocSelector<AsiCubit, AsiState, List<Asi>>(
-                  selector: (state) => state.listAsi,
+                  selector: (state) => state.filterAsi,
                   builder: (context, listAsi) {
                     return Column(
                       children: [

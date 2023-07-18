@@ -6,6 +6,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_detail_screen.da
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/utils/file_utils.dart';
+import 'package:cmo/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -53,6 +54,8 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
 
   bool get isEnableNextButton => locationModel.latitude != null && locationModel.longitude != null;
 
+  bool loading = false;
+
   @override
   void initState() {
     super.initState();
@@ -74,24 +77,55 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
   }
 
   Future<void> takeScreenshot(Uint8List? screenshot) async {
-    if (screenshot != null && isEnableNextButton) {
-      final screenshotFile = await FileUtil.writeToFileWithUint8List(screenshot);
-      setState(() {
-        locationModel.imageUri = screenshotFile.path;
-      });
+    setState(() {
+      loading = true;
+    });
 
-      showSnackSuccess(msg: 'Captured successfully!');
+    try {
+      if (screenshot != null && isEnableNextButton) {
+        final screenshotFile =
+            await FileUtil.writeToFileWithUint8List(screenshot);
+        final base64 = await FileUtil.toBase64(screenshotFile);
+        setState(() {
+          locationModel.listImage.add(base64);
+        });
+
+        showSnackSuccess(msg: 'Captured successfully!');
+      }
+    } catch (e) {
+      logger.d(e.toString());
+    } finally {
+      setState(() {
+        loading = false;
+      });
     }
   }
 
   Future<void> onSelectPhoto() async {
-    final croppedImage = await imagePickerService.pickImageFromGallery(
-      title: DateTime.now().toString(),
-    );
-    if (croppedImage != null) {
+    setState(() {
+      loading = true;
+    });
+
+    try {
+      final croppedImage = await imagePickerService.pickImageFromGallery(
+        title: DateTime.now().toString(),
+      );
+
+      if (croppedImage != null) {
+        final uint8ListImage = await croppedImage.readAsBytes();
+        final imageFile =
+            await FileUtil.writeToFileWithUint8List(uint8ListImage);
+        final base64 = await FileUtil.toBase64(imageFile);
+        setState(() {
+          locationModel.listImage.add(base64);
+          showSnackSuccess(msg: 'Selected photo successfully!');
+        });
+      }
+    } catch (e) {
+      logger.d(e.toString());
+    } finally {
       setState(() {
-        locationModel.imageUri = croppedImage.path;
-        showSnackSuccess(msg: 'Selected photo successfully!');
+        loading = false;
       });
     }
   }
@@ -127,6 +161,7 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                 child: CmoFilledButton(
                     title: LocaleKeys.next.tr(),
                     disable: !isEnableNextButton,
+                    loading: loading,
                     onTap: () {
                       if (isEnableNextButton) {
                         ASIDetailScreen.push(
