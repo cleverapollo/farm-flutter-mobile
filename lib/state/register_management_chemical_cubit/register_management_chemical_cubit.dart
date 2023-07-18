@@ -121,9 +121,7 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
   }
 
   Future<void> onSave(BuildContext context) async {
-    final canSave = state.chemical.chemicalType != null &&
-        state.chemical.chemicalApplicationMethod != null &&
-        state.chemical.campId != null &&
+    final canSave = state.chemical.campId != null &&
         state.chemical.openingStock != null &&
         state.chemical.issued != null &&
         state.chemical.balance != null &&
@@ -131,13 +129,17 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
         state.chemical.usagePerHa != null &&
         state.chemical.comment != null;
 
-    if (!canSave) return;
+    if (!canSave) {
+      return showSnackError(msg: 'Please select required field');
+    }
 
     await cmoDatabaseMasterService
         .cacheChemicalFromRM(state.chemical.copyWith(
       farmId: int.parse(state.farmId!),
       chemicalNo: DateTime.now().microsecondsSinceEpoch.toString(),
+      chemicalId: null,
       isActive: true,
+      isMasterdataSynced: false,
     ))
         .then((value) async {
       if (value != null) {
