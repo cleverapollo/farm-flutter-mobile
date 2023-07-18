@@ -1,5 +1,4 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
@@ -115,14 +114,14 @@ class RMAsiCubit extends Cubit<RMAsiState> {
         state.asiData.carClosedDate == null ||
         state.asiData.asiTypeId == null ||
         state.asiData.latitude == null) {
-      return;
+      return showSnackError(msg: 'Required fields are missing.');
     }
 
     await cmoDatabaseMasterService
         .cacheAsi(state.asiData.copyWith(
       farmId: state.farmId,
-      asiRegisterId: DateTime.now().microsecondsSinceEpoch.toString(),
       asiRegisterNo: DateTime.now().microsecondsSinceEpoch.toString(),
+      asiRegisterId: null,
       isActive: true,
       isMasterdataSynced: false,
     ))

@@ -48,7 +48,7 @@ mixin FarmUploadSummaryMixin {
   Future<void> onUploadingFarmData() async {
     await _publishWorker();
     await _publishAnnFarmProduction();
-    await _publishCamp();
+    await _publishCamp(); //done
     await _publishCustomaryUseRight();
     await _publishSocialUpliftments();
     await _publishSpecialSites();
@@ -56,16 +56,16 @@ mixin FarmUploadSummaryMixin {
     await _publishAnnualFarmBudgets();
     await _publishAnnualFarmBudgetTransactions();
     await _publishSanctionRegisters();
-    await _publishChemicalRegister();
+    await _publishChemicalRegister(); //done
     await _publishTrainingRegisters();
-    await _publishAsiRegisters();
+    await _publishAsiRegisters(); //wait for testing
     await _publishFireRegisters();
     await _publishGrievanceRegisters();
     await _publishRteSpeciesRegisters();
     await _publishPestsAndDiseasesRegisters();
     await _publishComplaintsAndDisputesRegisters();
-    await _publishAccidentAndIncidentRegisters();
-    await _publishBiologicalControlAgentRegisters();
+    await _publishAccidentAndIncidentRegisters(); //wait for testing
+    await _publishBiologicalControlAgentRegisters(); //wait for testing
   }
 
   Future<void> _publishWorker() async {
@@ -177,8 +177,8 @@ mixin FarmUploadSummaryMixin {
 
       final campsTest = [
         CampPayLoad(
-          CampId: "1689499406642",
-          CampName: "test camp 1 by TUNT",
+          CampId: '1689499406642',
+          CampName: 'test camp 1 by TUNT',
           FarmId: mFarmId,
           IsActive: true,
           IsLocal: 1,
@@ -200,7 +200,6 @@ mixin FarmUploadSummaryMixin {
           ActualYearOfHarvest: 2023,
           TonsOfCharcoalProduced: 0,
           TotalArea: 289.0,
-          CanDelete: null,
         )
       ];
 
@@ -585,26 +584,19 @@ mixin FarmUploadSummaryMixin {
 
       final chemicalTest = [
         ChemicalRegisterPayLoad(
-            ChemicalRegisterNo: "1689499467089377",
-            FarmId: mFarmId,
-            ChemicalRegisterId: null,
-            ChemicalTypeId: null,
-            ChemicalApplicationMethodId: null,
-            CampId: '1689499406642',
-            Date: DateTime.now(),
-            OpeningStock: 12.0,
-            Issued: 22.0,
-            Balance: 11.0,
-            Mixture: "11",
-            UsagePerHa: 2.0,
-            Comment: "this is chemical 1 test by tu",
-            CarRaisedDate: null,
-            CarClosedDate: null,
-            IsActive: true,
-            IsMasterdataSynced: false,
-            ChemicalTypeName: null,
-            ChemicalApplicationMethodName: null,
-            CampName: null),
+          ChemicalRegisterNo: '1689499467089377',
+          FarmId: mFarmId,
+          CampId: '1689499406642',
+          Date: DateTime.now(),
+          OpeningStock: 12.0,
+          Issued: 22.0,
+          Balance: 11.0,
+          Mixture: '11',
+          UsagePerHa: 2.0,
+          Comment: 'this is chemical 1 test by tu',
+          IsActive: true,
+          IsMasterdataSynced: false,
+        ),
       ];
 
       if (_enableTestMode) {
@@ -928,26 +920,28 @@ mixin FarmUploadSummaryMixin {
 
       final biologicalTest = [
         BiologicalControlAgentRegisterPayLoad(
-            BiologicalControlAgentRegisterNo: "2023-07-16T17:30:19.342900",
-            FarmId: mFarmId,
-            BiologicalControlAgentTypeId: null,
-            BiologicalControlAgentName: "Hocus Pocus",
-            BiologicalControlAgentRegisterId: null,
-            IssueDescription: null,
-            DateReleased: DateTime.now(),
-            StakeholderId: null,
-            MonitoringRequirementId: 0,
-            Comment: null,
-            CarRaisedDate: "2023-07-16T17:30:38.395718",
-            CarClosedDate: "2023-07-16T17:30:38.395941",
-            IsActive: true,
-            IsMasterdataSynced: false,
-            StakeholderName: null,
-            BiologicalControlAgentTypeName: null,
-            BiologicalControlAgentTypeScientificName: null,
-            BiologicalControlAgentTypeCountryName: "South Africa",
-            ReasonForBioAgent: "Eats the pest",
-            MonitoringRequirementName: null)
+          BiologicalControlAgentRegisterNo:
+              DateTime.now().microsecondsSinceEpoch.toString(),
+          FarmId: mFarmId,
+          BiologicalControlAgentTypeId: null,
+          BiologicalControlAgentName: 'Hocus Pocus',
+          BiologicalControlAgentRegisterId: null,
+          IssueDescription: null,
+          DateReleased: DateTime.now(),
+          StakeholderId: null,
+          MonitoringRequirementId: 0,
+          Comment: null,
+          CarRaisedDate: DateTime.now().toIso8601String(),
+          CarClosedDate: DateTime.now().toIso8601String(),
+          IsActive: true,
+          IsMasterdataSynced: false,
+          StakeholderName: null,
+          BiologicalControlAgentTypeName: null,
+          BiologicalControlAgentTypeScientificName: null,
+          BiologicalControlAgentTypeCountryName: 'South Africa',
+          ReasonForBioAgent: 'Eats the pest',
+          MonitoringRequirementName: null,
+        )
       ];
 
       if (_enableTestMode) {
@@ -970,7 +964,7 @@ mixin FarmUploadSummaryMixin {
 
       futures.add(cmoPerformApiService.public(
         currentClientId: mUserDeviceId.toString(),
-        topic: topicByFarmIdAndUserDeviceId('BiologicalControlAgentRegister'),
+        topic: topicByFarmIdAndUserDeviceId('BcaRegister'),
         messages: messages,
       ));
 

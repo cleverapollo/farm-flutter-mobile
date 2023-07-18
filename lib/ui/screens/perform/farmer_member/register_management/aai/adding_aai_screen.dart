@@ -44,7 +44,8 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     super.initState();
     if (widget.aai == null) {
       aai = AccidentAndIncident(
-          accidentAndIncidentRegisterNo: DateTime.now().toIso8601String(),
+          accidentAndIncidentRegisterNo:
+              DateTime.now().microsecondsSinceEpoch.toString(),
           isActive: true,
           isMasterDataSynced: false);
     } else {
@@ -74,11 +75,9 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
             dateRecieved: value['DateReceived'] as DateTime?,
             dateOfIncident: value['DateIncident'] as DateTime?,
             dateResumeWork: value['DateResumeWork'] as DateTime?,
-            natureOfInjuryId:
-                int.tryParse(value['natureOfInjury'] as String? ?? ''),
-            jobDescriptionId:
-                int.tryParse(value['jobDescription'] as String? ?? ''),
-            workerId: int.tryParse(value['WorkerId'] as String? ?? ''));
+            natureOfInjuryId: value['natureOfInjury'] as int?,
+            jobDescriptionId: value['jobDescription'] as int?,
+            workerId: value['WorkerId'] as int?);
 
         if (carRaised && aai.carRaisedDate == null) {
           aai = aai.copyWith(
@@ -112,6 +111,10 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
             Navigator.of(context).pop(aai);
           }
         }
+      } catch (e) {
+        setState(() {
+          loading = false;
+        });
       } finally {
         setState(() {
           loading = false;

@@ -1,6 +1,5 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/model/camp.dart';
-import 'package:cmo/model/config/config.dart';
 import 'package:cmo/model/issue_type/issue_type.dart';
 import 'package:cmo/model/labour_management/farmer_worker.dart';
 import 'package:cmo/model/sanction_register/sanction_register.dart';
@@ -143,7 +142,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
         state.data?.issueTypeId != null &&
         state.data?.signatureImage != null;
 
-    if (!canSave) return;
+    if (!canSave) return showSnackError(msg: 'Required fields are missing');
 
     await cmoDatabaseMasterService
         .cacheSanctionRegister(state.data!.copyWith(
