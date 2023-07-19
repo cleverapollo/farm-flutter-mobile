@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:cmo/di.dart';
 import 'package:cmo/env/env.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/properties_payload/properties_payload.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/state/sync/base_sync_cubit.dart';
 import 'package:cmo/state/sync/base_sync_state.dart';
@@ -95,6 +99,90 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       ),
     );
 
+    try {
+      final publishFarmTopic = 'Cmo.MasterData.RM.Farm.$groupSchemeId.$userDeviceId';
+      logger.d('Get unsynced farms by rmuIds: $rmuId');
+      final farms = await cmoDatabaseMasterService.getUnsyncedFarmsByRegionalManagerUnitId(rmuId);
+      if (farms.isNotBlank) {
+        logger.d('Unsynced farms count: ${farms!.length}');
+        for (final farm in farms) {
+          final objectiveAnswers = await cmoDatabaseMasterService.getFarmMemberObjectiveAnswerByFarmIdAndIsMasterDataSynced(farm.farmId);
+          final riskProfileAnswers = await cmoDatabaseMasterService.getFarmMemberRiskProfileAnswerByFarmIdAndIsMasterDataSynced(farm.farmId);
+          final message = Message(
+            properties: getMessageProperties(),
+            body: jsonEncode(
+              farm
+                  .copyWith(
+                    objectiveAnswers: objectiveAnswers,
+                    riskProfileAnswers: riskProfileAnswers,
+                  )
+                  .toJson(),
+            ),
+          );
+
+          logger.d('Publish message to topic $publishFarmTopic');
+          final isPublicFarm = await cmoPerformApiService.public(
+            currentClientId: userDeviceId.toString(),
+            topic: publishFarmTopic,
+            messages: [message],
+          );
+
+          if (isPublicFarm) {
+            await cmoDatabaseMasterService.cacheFarm(
+              farm.copyWith(
+                isMasterDataSynced: 1,
+                canDelete: 0,
+              ),
+            );
+
+            for (final objectiveAnswer in objectiveAnswers) {
+              await cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(
+                objectiveAnswer.copyWith(
+                  isMasterDataSynced: true,
+                ),
+              );
+            }
+
+            for (final riskProfileAnswer in riskProfileAnswers) {
+              await cmoDatabaseMasterService.cacheFarmMemberRiskProfileAnswer(
+                riskProfileAnswer.copyWith(
+                  isMasterDataSynced: true,
+                ),
+              );
+            }
+
+            logger.d('Successfully published farmId: ${farm.farmId}');
+          } else {
+            logger.e('Failed to publish farmId: ${farm.farmId}');
+          }
+        }
+      } else {
+        logger.d('No farm to sync');
+      }
+    } catch (error) {
+      logger.e(error);
+    }
+  }
+
+  Future<void> publishAssessments() async {
+    emit(
+      state.copyWith(
+        syncMessage: 'Syncing Assessments, Comments and Photos...',
+        isLoading: true,
+      ),
+    );
+
+    final publishAssessmentsTopic = 'Cmo.Assessment.RM.Complete.$groupSchemeId.$userDeviceId';
+
+  }
+
+  List<Properties> getMessageProperties() {
+    return [
+      Properties(
+        key: 'DbSchemaVersion',
+        value: Env.dbSchemaVersion,
+      ),
+    ];
   }
 
   Future<int?> insertStakeholder(Message item) async {
@@ -375,7 +463,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     final regionalManagerUnitAllMasterDataTopic =
         '$topicRegionalManagerUnitMasterDataSync*.$userDeviceId';
     final userTrickleFeedMasterDataTopicByRmuId = 'Cmo.MasterData.RMU.*.$rmuId';
-    final publishFarmTopic = 'Cmo.MasterData.RM.Farm.$groupSchemeId.$userDeviceId';
 
     final futures = [
       groupSchemeAllMasterDataTopic,
@@ -384,7 +471,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       userTrickleFeedMasterDataTopicByUserId,
       regionalManagerUnitAllMasterDataTopic,
       userTrickleFeedMasterDataTopicByRmuId,
-      publishFarmTopic,
     ]
         .map((e) => cmoPerformApiService.createSubscription(
             topic: e,

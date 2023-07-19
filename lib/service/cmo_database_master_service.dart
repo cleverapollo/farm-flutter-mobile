@@ -240,6 +240,20 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<List<FarmMemberRiskProfileAnswer>> getFarmMemberRiskProfileAnswerByFarmIdAndIsMasterDataSynced(
+    String farmId,
+  ) async {
+    final db = await _db();
+    return db.farmMemberRiskProfileAnswers
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .isMasterDataSyncedEqualTo(null)
+        .or()
+        .isMasterDataSyncedEqualTo(false)
+        .findAll();
+  }
+
   Future<List<FarmMemberObjectiveAnswer>> getFarmMemberObjectiveAnswerByFarmId(
       String farmId) async {
     final db = await _db();
@@ -247,6 +261,20 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<FarmMemberObjectiveAnswer>> getFarmMemberObjectiveAnswerByFarmIdAndIsMasterDataSynced(
+    String farmId,
+  ) async {
+    final db = await _db();
+    return db.farmMemberObjectiveAnswers
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .isMasterDataSyncedEqualTo(null)
+        .or()
+        .isMasterDataSyncedEqualTo(false)
         .findAll();
   }
 
@@ -2381,6 +2409,17 @@ class CmoDatabaseMasterService {
         .filter()
         .regionalManagerUnitIdEqualTo(rmuId)
         .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<Farm>?> getUnsyncedFarmsByRegionalManagerUnitId(int? rmuId) async {
+    if (rmuId == null) return null;
+    final db = await _db();
+    return db.farms
+        .filter()
+        .regionalManagerUnitIdEqualTo(rmuId)
+        .isProspectMemberEqualTo(true)
+        .isMasterDataSyncedEqualTo(0)
         .findAll();
   }
 
