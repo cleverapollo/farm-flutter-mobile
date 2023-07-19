@@ -42,19 +42,21 @@ class SelectSiteLocationScreen extends StatefulWidget {
   final bool showMarker;
   final bool showResetAcceptIcons;
   final String? initAddress;
+  final LatLng? initLatLng;
 
-  const SelectSiteLocationScreen({
-    super.key,
-    this.initAddress,
-    this.showMarker = false,
-    this.showResetAcceptIcons = false,
-  });
+  const SelectSiteLocationScreen(
+      {super.key,
+      this.initAddress,
+      this.showMarker = false,
+      this.showResetAcceptIcons = false,
+      this.initLatLng});
 
   static Future<T?> push<T>(
     BuildContext context, {
     String? initAddress,
     bool showMarker = false,
     bool showResetAcceptIcons = false,
+    LatLng? latLng,
   }) async {
     return Navigator.of(context).push<T>(
       MaterialPageRoute(
@@ -62,6 +64,7 @@ class SelectSiteLocationScreen extends StatefulWidget {
           showMarker: showMarker,
           showResetAcceptIcons: showResetAcceptIcons,
           initAddress: initAddress,
+          initLatLng: latLng,
         ),
       ),
     );
@@ -95,15 +98,21 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
   void initState() {
     super.initState();
     addressTextController = TextEditingController(text: widget.initAddress);
+    _latLong = widget.initLatLng;
     Future.microtask(() async {
       await initData();
     });
-
     addressTextController.addListener(addressChangedListener);
   }
 
   Future<void> initData() async {
-    if (widget.initAddress.isBlank) {
+    if (widget.initLatLng != null) {
+      onCameraMoved(
+        widget.initLatLng!.latitude,
+        widget.initLatLng!.longitude,
+        isInit: true,
+      );
+    } else if (widget.initAddress.isBlank) {
       onCameraMoved(
         Constants.mapCenter.latitude,
         Constants.mapCenter.longitude,
@@ -115,6 +124,9 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
   }
 
   void onCameraMoved(double latitude, double longitude, {bool isInit = false}) {
+    if(widget.showMarker) {
+      return;
+    }
     setState(() {
       _latLong = LatLng(latitude, longitude);
     });
@@ -294,6 +306,7 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
               showResetAcceptIcons: widget.showResetAcceptIcons,
               showMarker: widget.showMarker,
               initialMapCenter: _latLong,
+              selectedPoint: _latLong,
             ),
           ),
           Expanded(

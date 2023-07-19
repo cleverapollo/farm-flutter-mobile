@@ -22,6 +22,7 @@ class CmoMap extends StatefulWidget {
   final void Function(Uint8List?)? takeScreenshot;
   final VoidCallback? onSelectPhotos;
   final VoidCallback? onRemoveMarker;
+  final LatLng? selectedPoint;
 
   const CmoMap({
     Key? key,
@@ -35,6 +36,7 @@ class CmoMap extends StatefulWidget {
     this.takeScreenshot,
     this.onSelectPhotos,
     this.onRemoveMarker,
+    this.selectedPoint,
   }) : super(key: key);
 
   @override
@@ -51,6 +53,9 @@ class CmoMapState extends State<CmoMap> {
   @override
   void initState() {
     super.initState();
+    if (widget.selectedPoint != null) {
+      marker = _markerFrom(widget.selectedPoint);
+    }
   }
 
   void _onCameraMove(CameraPosition position) {
@@ -64,6 +69,9 @@ class CmoMapState extends State<CmoMap> {
   }
 
   Future<void> _moveMapCameraCurrentLocation() async {
+    if (widget.selectedPoint != null) {
+      return;
+    }
     final position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
@@ -79,6 +87,9 @@ class CmoMapState extends State<CmoMap> {
   }
 
   Future<void> _moveMapCameraToDefaultLocation() async {
+    if (widget.selectedPoint != null) {
+      return;
+    }
     return mapController.animateCamera(
       CameraUpdate.newLatLng(
         LatLng(
@@ -140,8 +151,8 @@ class CmoMapState extends State<CmoMap> {
                     checkPermission();
                   },
                   onCameraMove: _onCameraMove,
-                  initialCameraPosition: const CameraPosition(
-                    target: Constants.mapCenter,
+                  initialCameraPosition: CameraPosition(
+                    target: widget.initialMapCenter ?? Constants.mapCenter,
                     zoom: 16.0,
                   ),
                   markers: shouldShowMarker(),

@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
-import 'package:cmo/model/data/farm_property_ownership_type.dart';
 import 'package:cmo/model/data/province.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
@@ -18,10 +15,9 @@ import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/utils/validator.dart';
-import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AddMemberScreen extends StatefulWidget {
   const AddMemberScreen({super.key, this.farm});
@@ -410,17 +406,25 @@ class _AddMemberSDetails extends StatelessWidget {
                 _buildTitle(context, 'Site Location (*)'),
                 CmoDropDownLayoutWidget(
                   onTap: () async {
-                    final siteLocationScreenResult = await SelectSiteLocationScreen.push<
-                        SiteLocationScreenResult>(
+                    final siteLocationScreenResult =
+                        await SelectSiteLocationScreen.push<
+                            SiteLocationScreenResult>(
                       context,
                       showMarker: true,
                       showResetAcceptIcons: true,
-                      initAddress: data.addMemberSiteLocations.address ?? data.initAddressForSiteLocation(),
+                      initAddress: data.addMemberSiteLocations.address ??
+                          data.initAddressForSiteLocation(),
+                          latLng: data.addMemberSiteLocations.lat != null &&
+                              data.addMemberSiteLocations.lng != null
+                          ? LatLng(data.addMemberSiteLocations.lat!,
+                              data.addMemberSiteLocations.lng!)
+                          : null,
                     );
 
                     if (siteLocationScreenResult is SiteLocationScreenResult) {
                       final latLong = siteLocationScreenResult.latLong;
-                      if (latLong?.latitude == null || latLong?.longitude == null) {
+                      if (latLong?.latitude == null ||
+                          latLong?.longitude == null) {
                         return;
                       }
 
@@ -428,14 +432,15 @@ class _AddMemberSDetails extends StatelessWidget {
                           '${siteLocationScreenResult.address}\n${latLong?.latitude.toStringAsFixed(6)}, ${latLong?.longitude.toStringAsFixed(6)}';
 
                       await cubit.onDataChangeSiteDetail(
-                        siteLocationLat: siteLocationScreenResult.latLong?.latitude,
-                        siteLocationLng: siteLocationScreenResult.latLong?.longitude,
+                        siteLocationLat:
+                            siteLocationScreenResult.latLong?.latitude,
+                        siteLocationLng:
+                            siteLocationScreenResult.latLong?.longitude,
                         siteLocationAddress: address,
                       );
                     }
                   },
-                  title: data.addMemberSiteLocations.address ??
-                      LocaleKeys.siteLocation.tr(),
+                  title: LocaleKeys.siteLocation.tr(),
                   showTick: data.isCompleteSiteLocation,
                 ),
                 const SizedBox(height: 12),
