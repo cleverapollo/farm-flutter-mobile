@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cmo/di.dart';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/model/audit/audit_payload.dart';
 import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
@@ -89,6 +90,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   Future<void> syncSummary() async {
     logger.d('--RM Sync Summary start--');
     await publishFarm();
+    await publishAudits();
   }
 
   Future<void> publishFarm() async {
@@ -164,16 +166,94 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     }
   }
 
-  Future<void> publishAssessments() async {
+  Future<void> publishAudits() async {
     emit(
       state.copyWith(
-        syncMessage: 'Syncing Assessments, Comments and Photos...',
+        syncMessage: 'Syncing Audits, Comments and Photos...',
         isLoading: true,
       ),
     );
 
-    final publishAssessmentsTopic = 'Cmo.Assessment.RM.Complete.$groupSchemeId.$userDeviceId';
+    try {
+      final publishAuditsTopic = 'Cmo.Assessment.RM.Complete.$groupSchemeId.$userDeviceId';
+      logger.d('Get unsynced /audits by userId');
+      var audits = await cmoDatabaseMasterService.getAllAudits();
+      if (audits.isNotBlank) {
+        audits = audits
+            .where(
+              (element) => element.completed == true && element.synced == false,
+            )
+            .toList();
+        logger.d('Unsynced audit: ${audits.length}');
 
+        for (var audit in audits) {
+          final auditPayload = AuditPayload.fromAudit(audit).copyWith(
+            userDeviceId: userDeviceId,
+          );
+
+          final questionAnswers = await cmoDatabaseMasterService
+              .getQuestionAnswersByRmuIdAndAuditTemplateIdAndAssessmentId(
+            rmuId: rmuId,
+            assessmentId: audit.assessmentId,
+            auditTemplateId: audit.auditTemplateId,
+          );
+
+          for (final answer in questionAnswers) {
+            auditPayload.auditQuestionAnswers!.questionAnswer.add(answer);
+            final questionComments =
+                await cmoDatabaseMasterService.getQuestionComments(
+              audit.assessmentId!,
+              answer.questionId!,
+            );
+
+            auditPayload.auditQuestionAnswers!.questionComment
+                .addAll(questionComments);
+
+            final questionPhotos = await cmoDatabaseMasterService
+                .getQuestionPhotosByAssessmentIdAndQuestionId(
+              assessmentId: audit.assessmentId,
+              questionId: answer.questionId,
+            );
+
+            auditPayload.auditQuestionAnswers!.questionPhoto
+                .addAll(questionPhotos);
+          }
+
+          logger.d('Assign assessment/audit Payload to message $auditPayload');
+
+          final message = Message(
+            properties: getMessageProperties(),
+            body: jsonEncode(
+              auditPayload.toJson(),
+            ),
+          );
+
+          logger.d('Publish message to topic $publishAuditsTopic');
+
+          final isPublicFarm = await cmoPerformApiService.public(
+            currentClientId: userDeviceId.toString(),
+            topic: publishAuditsTopic,
+            messages: [message],
+          );
+
+          if (isPublicFarm) {
+            await cmoDatabaseMasterService.cacheAudit(
+              audit.copyWith(
+                synced: true,
+              ),
+            );
+
+            logger.d('Successfully published assessments/audits: ${audit.id}');
+          } else {
+            logger.e('Failed to publish assessments/audits: ${audit.id}');
+          }
+        }
+      } else {
+        logger.d('No assessments/audits to sync');
+      }
+    } catch (error) {
+      logger.e(error);
+    }
   }
 
   List<Properties> getMessageProperties() {
