@@ -1,3 +1,4 @@
+import 'package:cmo/model/model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'stakeholder_payload.freezed.dart';
@@ -20,4 +21,20 @@ class StakeholderPayLoad with _$StakeholderPayLoad {
   }) = _StakeholderPayLoad;
   factory StakeholderPayLoad.fromJson(Map<String, dynamic> json) =>
       _$StakeholderPayLoadFromJson(json);
+
+  factory StakeholderPayLoad.fromStakeholder(StakeHolder stakeholder) {
+    return StakeholderPayLoad(
+      Tel: stakeholder.tel,
+      Address1: stakeholder.address1,
+      Address2: stakeholder.address2,
+      Cell: stakeholder.cell,
+      ContactName: stakeholder.contactName,
+      Email: stakeholder.email,
+      IsActive: stakeholder.isActive,
+      IsMasterDataSynced: stakeholder.isMasterDataSynced,
+      StakeholderId: stakeholder.stakeHolderId?.toString(),
+      StakeholderName: stakeholder.stakeholderName,
+      StakeholderTypeId: stakeholder.stakeHolderTypeId,
+    );
+  }
 }

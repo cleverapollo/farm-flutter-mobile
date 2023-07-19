@@ -1,5 +1,6 @@
 // ignore_for_file: invalid_annotation_target
 
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/group_scheme_stakeholder_payload/group_scheme_stakeholder_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -21,6 +22,16 @@ class GroupSchemeStakeHolder with _$GroupSchemeStakeHolder {
 
   factory GroupSchemeStakeHolder.fromJson(Map<String, dynamic> json) =>
       _$GroupSchemeStakeHolderFromJson(json);
+
+  factory GroupSchemeStakeHolder.fromGroupSchemeStakeHolderPayLoad(
+      GroupSchemeStakeholderPayLoad groupSchemeStakeHolderPayLoad) {
+    return GroupSchemeStakeHolder(
+      stakeHolderId: groupSchemeStakeHolderPayLoad.StakeholderId,
+      isMasterDataSynced: groupSchemeStakeHolderPayLoad.IsMasterDataSynced?.toInt(),
+      groupSchemeId: groupSchemeStakeHolderPayLoad.GroupSchemeId?.toInt(),
+      groupSchemeStakeHolderId: groupSchemeStakeHolderPayLoad.GroupSchemeStakeholderId,
+    );
+  }
 
   @override
   Id get id =>

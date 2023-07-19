@@ -105,3 +105,5 @@ export 'treament_method/treament_method.dart';
 export 'stakeholder/farm_stakeholder_customary_use_right.dart';
 export 'stakeholder/farm_stakeholder_social_upliftment.dart';
 export 'stakeholder/farm_stakeholder_special_site.dart';
+export 'group_scheme_stakeholder/group_scheme_stakeholder.dart';
+

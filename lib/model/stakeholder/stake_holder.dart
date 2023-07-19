@@ -11,6 +11,23 @@ part 'stake_holder.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class StakeHolder with _$StakeHolder {
+
+  factory StakeHolder.fromStakeholderPayLoad(StakeholderPayLoad stakeholderPayLoad) {
+    return StakeHolder(
+      isMasterDataSynced: stakeholderPayLoad.IsMasterDataSynced?.toInt(),
+      isActive: stakeholderPayLoad.IsActive?.toInt(),
+      address1: stakeholderPayLoad.Address1,
+      address2: stakeholderPayLoad.Address2,
+      cell: stakeholderPayLoad.Cell,
+      contactName: stakeholderPayLoad.ContactName,
+      email: stakeholderPayLoad.Email,
+      stakeHolderId: int.tryParse(stakeholderPayLoad.StakeholderId ?? ''),
+      stakeholderName: stakeholderPayLoad.StakeholderName,
+      stakeHolderTypeId: stakeholderPayLoad.StakeholderTypeId,
+      tel: stakeholderPayLoad.Tel,
+    );
+  }
+
   const factory StakeHolder({
     @JsonKey(name: 'StakeHolderId') int? stakeHolderId,
     @JsonKey(name: 'StakeholderName') String? stakeholderName,

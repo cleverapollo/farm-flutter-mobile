@@ -136,7 +136,6 @@ class CmoDatabaseMasterService {
         GenderSchema,
         FarmerStakeHolderSchema,
         DisciplinariesSchema,
-        GroupSchemeStakeholderSchema,
         ConfigDataSchema,
         FarmMemberObjectiveAnswerSchema,
         FarmMemberRiskProfileAnswerSchema,
@@ -642,12 +641,6 @@ class CmoDatabaseMasterService {
     return db.farmerStakeHolders.put(data);
   }
 
-  Future<int?> cacheGroupSchemeStakeholder(GroupSchemeStakeholder data) async {
-    final db = await _db();
-
-    return db.groupSchemeStakeholders.put(data);
-  }
-
   Future<int?> cacheAccidentAndIncident(AccidentAndIncident data) async {
     final db = await _db();
 
@@ -1064,6 +1057,15 @@ class CmoDatabaseMasterService {
     return db.groupSchemeStakeholders
         .filter()
         .groupSchemeIdEqualTo(id)
+        .findAll();
+  }
+
+  Future<List<StakeHolder>> getUnsycnedStakeholders() async {
+    final db = await _db();
+
+    return db.stakeHolders
+        .filter()
+        .isMasterDataSyncedEqualTo(1)
         .findAll();
   }
 

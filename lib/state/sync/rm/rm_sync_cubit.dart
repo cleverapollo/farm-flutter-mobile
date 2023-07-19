@@ -7,7 +7,10 @@ import 'package:cmo/model/audit/audit_payload.dart';
 import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/group_scheme_stakeholder_payload/group_scheme_stakeholder_payload.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_group_scheme_stakeholder_payload/main_group_scheme_stakeholder_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/properties_payload/properties_payload.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/stakeholder_payload/stakeholder_payload.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/state/sync/base_sync_cubit.dart';
 import 'package:cmo/state/sync/base_sync_state.dart';
@@ -91,6 +94,16 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     logger.d('--RM Sync Summary start--');
     await publishFarm();
     await publishAudits();
+    await publishGroupSchemeStakeholders();
+  }
+
+  List<Properties> getMessageProperties() {
+    return [
+      Properties(
+        key: 'DbSchemaVersion',
+        value: Env.dbSchemaVersion,
+      ),
+    ];
   }
 
   Future<void> publishFarm() async {
@@ -256,13 +269,88 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     }
   }
 
-  List<Properties> getMessageProperties() {
-    return [
-      Properties(
-        key: 'DbSchemaVersion',
-        value: Env.dbSchemaVersion,
+  Future<void> publishGroupSchemeStakeholders() async {
+    emit(
+      state.copyWith(
+        syncMessage: 'Syncing Group Scheme Stakeholders...',
+        isLoading: true,
       ),
-    ];
+    );
+
+    try {
+      final publishGroupSchemeStakeholdersTopic = 'Cmo.MasterData.RM.GSS.$groupSchemeId.$userDeviceId';
+      logger.d('Get unsynced group scheme stakeholders');
+      final groupSchemas = await cmoDatabaseMasterService.getGroupSchemeStakeholderByGroupSchemeId(groupSchemeId);
+      final unsyncedStakeholders = await cmoDatabaseMasterService.getUnsycnedStakeholders();
+      final groupSchemeStakeholderPayloads = <MainGroupSchemeStakeholderPayLoad>[];
+
+      for (final stakeholder in unsyncedStakeholders) {
+        var mainGroupSchemeStakeholderPayLoad = MainGroupSchemeStakeholderPayLoad();
+        mainGroupSchemeStakeholderPayLoad = mainGroupSchemeStakeholderPayLoad.copyWith(Stakeholder: StakeholderPayLoad.fromStakeholder(stakeholder));
+        final groupSchema = groupSchemas.firstWhereOrNull(
+          (element) =>
+              element.stakeholderId ==
+              mainGroupSchemeStakeholderPayLoad.Stakeholder?.StakeholderId,
+        );
+
+        if (groupSchema != null) {
+          mainGroupSchemeStakeholderPayLoad = mainGroupSchemeStakeholderPayLoad.copyWith(
+            GroupSchemeStakeholder: GroupSchemeStakeholderPayLoad.fromGroupSchemeStakeholder(groupSchema),
+          );
+        }
+
+        groupSchemeStakeholderPayloads.add(mainGroupSchemeStakeholderPayLoad);
+      }
+
+
+      if (groupSchemeStakeholderPayloads.isNotBlank) {
+        logger.d('Unsynced group scheme stakeholders count: ${groupSchemeStakeholderPayloads.length}');
+
+        for (var groupSchemeStakeholderPayload in groupSchemeStakeholderPayloads) {
+          final message = Message(
+            properties: getMessageProperties(),
+            body: jsonEncode(groupSchemeStakeholderPayload.toJson()),
+          );
+
+          logger.d('Publish message to topic $publishGroupSchemeStakeholdersTopic');
+
+          final isPublic = await cmoPerformApiService.public(
+            currentClientId: userDeviceId.toString(),
+            topic: publishGroupSchemeStakeholdersTopic,
+            messages: [message],
+          );
+
+          if (isPublic) {
+            logger.d('Try update stakeholder status to synced');
+            await cmoDatabaseMasterService.cacheStakeHolder(
+              StakeHolder.fromStakeholderPayLoad(
+                groupSchemeStakeholderPayload.Stakeholder!.copyWith(
+                  IsMasterDataSynced: 1,
+                ),
+              ),
+            );
+
+            logger.d('Try update group scheme stakeholder status to synced');
+
+            await cmoDatabaseMasterService.cacheGroupSchemeStakeHolder(
+              GroupSchemeStakeHolder.fromGroupSchemeStakeHolderPayLoad(
+                groupSchemeStakeholderPayload.GroupSchemeStakeholder!.copyWith(
+                  IsMasterDataSynced: 1,
+                ),
+              ),
+            );
+
+            logger.d('Successfully published groupSchemeStakeholderId: ${groupSchemeStakeholderPayload.GroupSchemeStakeholder?.GroupSchemeStakeholderId}');
+          } else {
+            logger.e('Failed to publish groupSchemeStakeholderId: ${groupSchemeStakeholderPayload.GroupSchemeStakeholder?.GroupSchemeStakeholderId}');
+          }
+        }
+      } else {
+        logger.d('No group scheme stakeholders to sync');
+      }
+    } catch (error) {
+      logger.e(error);
+    }
   }
 
   Future<int?> insertStakeholder(Message item) async {
