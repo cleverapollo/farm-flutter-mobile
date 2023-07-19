@@ -107,6 +107,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
     await Future.delayed(const Duration(seconds: 15), () async {
       await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
+      await subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId();
     });
 
   }
@@ -654,13 +655,17 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       regionalManagerUnitAllMasterDataTopic,
       userTrickleFeedMasterDataTopicByRmuId,
     ]
-        .map((e) => cmoPerformApiService.createSubscription(
-            topic: e,
-            currentClientId: userDeviceId,
-          ),
+        .map((e) => subscribe(e),
         )
         .toList();
     await Future.wait(futures);
+  }
+
+  Future<void> subscribe(String topic) async {
+    await cmoPerformApiService.createSubscription(
+      topic: topic,
+      currentClientId: userDeviceId,
+    );
   }
 
   Future<void> syncRegionalManagerMasterData() async {
@@ -834,7 +839,8 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       var sync = true;
       while (sync) {
         MasterDataMessage? resPull;
-
+        await subscribe(trickleFeedMasterDataTopic);
+        logger.d('Subscribe to topic $trickleFeedMasterDataTopic');
         resPull = await cmoPerformApiService.pullMessage(
           topicMasterDataSync: trickleFeedMasterDataTopic,
           currentClientId: userDeviceId,
@@ -884,6 +890,84 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           currentClientId: userDeviceId,
           messages: messages,
           topicMasterDataSync: trickleFeedMasterDataTopic,
+        );
+      }
+    } catch (error) {
+      logger.e('Failed to sync trickle feed master data');
+    }
+  }
+
+  Future<void> subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId() async {
+    emit(
+      state.copyWith(
+        syncMessage: 'Syncing updated rm master data...',
+        isLoading: true,
+      ),
+    );
+
+    try {
+      var sync = true;
+      while (sync) {
+        MasterDataMessage? resPull;
+        final trickleFeedTopicByGroupSchemeId = 'Cmo.MasterData.RM.*.$groupSchemeId';
+
+        await subscribe(trickleFeedTopicByGroupSchemeId);
+        logger.d('Subscribe to topic $trickleFeedTopicByGroupSchemeId');
+
+        resPull = await cmoPerformApiService.pullMessage(
+          topicMasterDataSync: trickleFeedTopicByGroupSchemeId,
+          currentClientId: userDeviceId,
+        );
+
+        final messages = resPull?.message;
+        if (messages == null || messages.isEmpty) {
+          sync = false;
+          emit(state.copyWith(syncMessage: 'No messages on the queue...'));
+          logger.d('No messages on the queue');
+          break;
+        }
+
+        final dbCompany = await cmoDatabaseMasterService.db;
+        await dbCompany.writeTxn(() async {
+          for (var i = 0; i < messages.length; i++) {
+            final item = messages[i];
+
+            final topic = item.header?.originalTopic;
+
+            if (topic == 'Cmo.MasterData.RM.RiskProQuestion.$groupSchemeId') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated risk profile questions...'));
+              await insertRiskProfileQuestion(item);
+            } else if (topic == 'Cmo.MasterData.RM.FrmMemObj.$groupSchemeId') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Farm Member Objectives...'));
+              await insertFarmMemberObjective(item);
+            } else if (topic == 'Cmo.MasterData.RM.FrmObjOpt.$groupSchemeId') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Farm Objective Options...'));
+              await insertFarmObjectiveOption(item);
+            } else if (topic == 'Cmo.MasterData.RM.SH.$groupSchemeId') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated stakeholder...'));
+              await insertStakeholder(item);
+            } else if (topic == 'Cmo.MasterData.RM.GSS.$groupSchemeId') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated groupscheme stakeholder...'));
+              await insertGroupSchemeStakeholder(item);
+            } else if (topic == 'Cmo.MasterData.RM.Principle.$groupSchemeId') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Principle...'));
+              await insertPrinciple(item);
+            } else if (topic == 'Cmo.MasterData.RM.Criteria.$groupSchemeId') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Criteria...'));
+              await insertCriteria(item);
+            } else if (topic == 'Cmo.MasterData.RM.Indicator.$groupSchemeId') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Indicator...'));
+              await insertIndicator(item);
+            } else {
+              logger.e('Error - Could not process topic: ${item.header?.originalTopic}');
+            }
+          }
+        });
+
+        await cmoPerformApiService.commitMessageList(
+          currentClientId: userDeviceId,
+          messages: messages,
+          topicMasterDataSync: trickleFeedTopicByGroupSchemeId,
         );
       }
     } catch (error) {
