@@ -34,6 +34,8 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   final String topicRegionalManagerUnitMasterDataSync =
       'Cmo.MasterDataDeviceSync.RMU.';
 
+  final String trickleFeedMasterDataTopic = 'Cmo.MasterData.RM.*.Global';
+
   int get userId => 1; //userInfoCubit.data!.userId!;
 
   int get userDeviceId => userDeviceCubit.data!.userDeviceId!;
@@ -95,6 +97,18 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     await publishFarm();
     await publishAudits();
     await publishGroupSchemeStakeholders();
+
+    emit(
+      state.copyWith(
+        syncMessage: 'Syncing...',
+        isLoading: true,
+      ),
+    );
+
+    await Future.delayed(const Duration(seconds: 15), () async {
+      await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
+    });
+
   }
 
   List<Properties> getMessageProperties() {
@@ -805,6 +819,75 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         messages: messages,
         topicMasterDataSync: topicRegionalManagerUnitMasterDataSync,
       );
+    }
+  }
+
+  Future<void> subscribeToRegionalManagerTrickleFeedMasterDataTopic() async {
+    emit(
+      state.copyWith(
+        syncMessage: 'Syncing RM updated master data...',
+        isLoading: true,
+      ),
+    );
+
+    try {
+      var sync = true;
+      while (sync) {
+        MasterDataMessage? resPull;
+
+        resPull = await cmoPerformApiService.pullMessage(
+          topicMasterDataSync: trickleFeedMasterDataTopic,
+          currentClientId: userDeviceId,
+        );
+
+        final messages = resPull?.message;
+        if (messages == null || messages.isEmpty) {
+          sync = false;
+          emit(state.copyWith(syncMessage: 'No messages on the queue...'));
+          logger.d('No messages on the queue');
+          break;
+        }
+
+        final dbCompany = await cmoDatabaseMasterService.db;
+        await dbCompany.writeTxn(() async {
+          for (var i = 0; i < messages.length; i++) {
+            final item = messages[i];
+
+            final topic = item.header?.originalTopic;
+
+            if (topic == 'Cmo.MasterData.RM.PropOwnerType.Global') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Farm Property Ownership Type...'));
+              await insertFarmPropertyOwnershipType(item);
+            } else if (topic == 'Cmo.MasterData.RM.ScheduleActivity.Global') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Schedule Activities...'));
+              await insertScheduleActivity(item);
+            } else if (topic == 'Cmo.MasterData.RM.AuditTemplate.Global') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Audit Templates...'));
+              await insertAuditTemplate(item);
+            } else if (topic == 'Cmo.MasterData.RM.RejectReason.Global') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated RejectReason...'));
+              await insertRejectReason(item);
+            } else if (topic == 'Cmo.MasterData.RM.ImpactOn.Global') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated ImpactOn...'));
+              await insertImpactOn(item);
+            } else if (topic == 'Cmo.MasterData.RM.ImpactCaused.Global') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated ImpactCaused...'));
+              await insertImpactCaused(item);
+            } else if (topic == 'Cmo.MasterData.RM.Severity.Global') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Severity...'));
+              await insertSeverity(item);
+            }
+          }
+        });
+
+        await cmoPerformApiService.commitMessageList(
+          currentClientId: userDeviceId,
+          messages: messages,
+          topicMasterDataSync: trickleFeedMasterDataTopic,
+        );
+      }
+    } catch (error) {
+      logger.e('Failed to sync trickle feed master data');
     }
   }
 }
