@@ -93,23 +93,42 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> syncSummary() async {
-    logger.d('--RM Sync Summary start--');
-    await publishFarm();
-    await publishAudits();
-    await publishGroupSchemeStakeholders();
+    try {
+      logger.d('--RM Sync Summary start--');
+      await publishFarm();
+      await publishAudits();
+      await publishGroupSchemeStakeholders();
 
-    emit(
-      state.copyWith(
-        syncMessage: 'Syncing...',
-        isLoading: true,
-      ),
-    );
+      emit(
+        state.copyWith(
+          syncMessage: 'Syncing...',
+          isLoading: true,
+        ),
+      );
 
-    await Future.delayed(const Duration(seconds: 15), () async {
-      await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
-      await subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId();
-    });
-
+      await Future.delayed(const Duration(seconds: 15), () async {
+        await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
+        await subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId();
+        await subscribeToRegionalManagerUnitTrickleFeedTopicByRegionalManagerUnitId();
+        emit(
+          state.copyWith(
+            syncMessage: 'Sync complete',
+            isLoaded: true,
+            isLoading: false,
+          ),
+        );
+        await Future.delayed(const Duration(milliseconds: 500), () {});
+      });
+    } catch (e) {
+      logger.e(e);
+      emit(
+        state.copyWith(
+          syncMessage: 'Sync Failed, please check your network connectivity. Contact support if the problem persists.',
+          isLoaded: false,
+          isLoading: false,
+        ),
+      );
+    }
   }
 
   List<Properties> getMessageProperties() {
@@ -972,6 +991,69 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       }
     } catch (error) {
       logger.e('Failed to sync trickle feed master data');
+    }
+  }
+
+  Future<void> subscribeToRegionalManagerUnitTrickleFeedTopicByRegionalManagerUnitId() async {
+    emit(
+      state.copyWith(
+        syncMessage: 'Syncing updated rmu master data...',
+        isLoading: true,
+      ),
+    );
+
+    try {
+      var sync = true;
+      while (sync) {
+        MasterDataMessage? resPull;
+        final trickleFeedTopicByRegionalManagerUnitId = 'Cmo.MasterData.RMU.*.$rmuId';
+
+        await subscribe(trickleFeedTopicByRegionalManagerUnitId);
+        logger.d('Subscribe to topic $trickleFeedTopicByRegionalManagerUnitId');
+
+        resPull = await cmoPerformApiService.pullMessage(
+          topicMasterDataSync: trickleFeedTopicByRegionalManagerUnitId,
+          currentClientId: userDeviceId,
+        );
+
+        final messages = resPull?.message;
+        if (messages == null || messages.isEmpty) {
+          sync = false;
+          emit(state.copyWith(syncMessage: 'No messages on the queue...'));
+          logger.d('No messages on the queue');
+          break;
+        }
+
+        final dbCompany = await cmoDatabaseMasterService.db;
+        await dbCompany.writeTxn(() async {
+          for (var i = 0; i < messages.length; i++) {
+            final item = messages[i];
+
+            final topic = item.header?.originalTopic;
+
+            if (topic == 'Cmo.MasterData.RMU.Farm.$rmuId') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated farm...'));
+              await insertFarm(item);
+            } else if (topic == 'Cmo.MasterData.RMU.Compliance.$rmuId') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated compliance...'));
+              await insertCompliance(item);
+            } else if (topic == 'Cmo.MasterData.RMU.Question.$rmuId') {
+              emit(state.copyWith(syncMessage: 'Syncing new and updated question...'));
+              await insertQuestion(item);
+            } else {
+              logger.e('Error - Could not process topic: ${item.header?.originalTopic}');
+            }
+          }
+        });
+
+        await cmoPerformApiService.commitMessageList(
+          currentClientId: userDeviceId,
+          messages: messages,
+          topicMasterDataSync: trickleFeedTopicByRegionalManagerUnitId,
+        );
+      }
+    } catch (error) {
+      logger.e('Failed to sync trickle feed RMU master data');
     }
   }
 }
