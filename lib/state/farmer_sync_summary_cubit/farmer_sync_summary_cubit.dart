@@ -545,636 +545,670 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
   Future<void> subscribeToTrickleFeedMasterDataTopic() async {
     var isSync = true;
-    while (isSync) {
-      onSyncStatus('Sync Feed Master Data Topic...');
 
-      MasterDataMessage? resPull;
+    try {
+      while (isSync) {
+        onSyncStatus('Sync Feed Master Data Topic...');
 
-      resPull = await cmoPerformApiService.pullFarmerGlobalMessage(
-        topicMasterDataSync: topicTrickleFeedFarmerMasterDataByFarmId,
-        currentClientId: 'global',
-      );
+        MasterDataMessage? resPull;
 
-      final messages = resPull?.message;
-      if (messages == null || messages.isEmpty) {
-        isSync = false;
-        break;
-      }
-      final dbCompany = await cmoDatabaseMasterService.db;
-      await dbCompany.writeTxn(() async {
-        for (var i = 0; i < messages.length; i++) {
-          final item = messages[i];
+        resPull = await cmoPerformApiService.pullFarmerGlobalMessage(
+          topicMasterDataSync: topicTrickleFeedFarmerMasterDataByFarmId,
+          currentClientId: 'global',
+        );
 
-          try {
-            final topic = item.header?.originalTopic;
-            if (topic == 'Cmo.MasterData.Gender.Global') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Genders...'));
-              await insertGender(item);
-            }
-
-            if (topic == 'Cmo.MasterData.ScheduleActivity.Global') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated JobDescriptions...'));
-              await insertScheduleActivity(item);
-            }
-
-            if (topic == 'Cmo.MasterData.JobDescription.Global') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated JobDescriptions...'));
-              await insertJobDescription(item);
-            }
-
-            if (topic == 'Cmo.MasterData.Country.Global') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Countries...'));
-              await insertCountry(item);
-            }
-
-            if (topic == 'Cmo.MasterData.SHT.Global') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Stakeholder Types...'));
-              await insertStakeholderType(item);
-            }
-
-            if (topic == 'Cmo.MasterData.AnnFrmBudTransCat.Global') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated Annual Farm Budget Transaction Category...'));
-              await insertAnnualFarmBudgetTransactionCategory(item);
-            }
-          } finally {
-            isSync = false;
-          }
+        final messages = resPull?.message;
+        if (messages == null || messages.isEmpty) {
+          isSync = false;
+          break;
         }
-      });
+        final dbCompany = await cmoDatabaseMasterService.db;
+        await dbCompany.writeTxn(() async {
+          for (var i = 0; i < messages.length; i++) {
+            final item = messages[i];
+
+            try {
+              final topic = item.header?.originalTopic;
+              if (topic == 'Cmo.MasterData.Gender.Global') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Genders...'));
+                await insertGender(item);
+              }
+
+              if (topic == 'Cmo.MasterData.ScheduleActivity.Global') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated JobDescriptions...'));
+                await insertScheduleActivity(item);
+              }
+
+              if (topic == 'Cmo.MasterData.JobDescription.Global') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated JobDescriptions...'));
+                await insertJobDescription(item);
+              }
+
+              if (topic == 'Cmo.MasterData.Country.Global') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Countries...'));
+                await insertCountry(item);
+              }
+
+              if (topic == 'Cmo.MasterData.SHT.Global') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Stakeholder Types...'));
+                await insertStakeholderType(item);
+              }
+
+              if (topic == 'Cmo.MasterData.AnnFrmBudTransCat.Global') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Annual Farm Budget Transaction Category...'));
+                await insertAnnualFarmBudgetTransactionCategory(item);
+              }
+            } finally {
+              isSync = false;
+            }
+          }
+        });
+      }
+    } catch (e) {
+      isSync = false;
     }
   }
 
   Future<void> subscribeToTrickleFeedMasterDataTopicByGroupSchemeId() async {
     var isSync = true;
-    while (isSync) {
-      onSyncStatus('Sync Feed Master Data Topic By GroupSchemeId...');
-      MasterDataMessage? resPull;
+    try {
+      while (isSync) {
+        onSyncStatus('Sync Feed Master Data Topic By GroupSchemeId...');
+        MasterDataMessage? resPull;
 
-      resPull = await cmoPerformApiService.pullMessage(
-        topicMasterDataSync: topicTrickleFeedFgsMasterDataByGroupSchemeId,
-        currentClientId: groupSchemeId,
-      );
+        resPull = await cmoPerformApiService.pullMessage(
+          topicMasterDataSync: topicTrickleFeedFgsMasterDataByGroupSchemeId,
+          currentClientId: groupSchemeId,
+        );
 
-      final messages = resPull?.message;
-      if (messages == null || messages.isEmpty) {
-        isSync = false;
-        break;
-      }
-
-      final dbCompany = await cmoDatabaseMasterService.db;
-      await dbCompany.writeTxn(() async {
-        for (var i = 0; i < messages.length; i++) {
-          final item = messages[i];
-
-          try {
-            final topic = item.header?.originalTopic;
-            if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}GSS.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated GroupScheme Stakeholder...'));
-              await insertGroupSchemeStakeholder(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}SH.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Stakeholder...'));
-              await insertStakeholder(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}AnimalType.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Species Types...'));
-              await insertAnimalType(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}SpeciesRange.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Species Range...'));
-              await insertSpeciesRange(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}MonitoringRequirement.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated Monitoring Requirements...'));
-              await insertMonitoringRequirement(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}TrainingType.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Training Types...'));
-              await insertTrainingType(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}PestsAndDiseaseType.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated Pests and Disease Types...'));
-              await insertPestsAndDiseaseType(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}GrievanceIssue.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Grievance Issues...'));
-              await insertGrievanceIssue(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}PropertyDamaged.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Species Types...'));
-              await insertPropertyDamaged(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}BCAType.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated Biological Control Agent Types...'));
-              await insertBiologicalControlAgentType(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}AsiType.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Asi Types...'));
-              await insertAsiType(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}FireCause.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Fire Causes...'));
-              await insertFireCause(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}NatureOfInjury.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated Nature of Injuries...'));
-              await insertNatureOfInjury(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}CAM.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated Chemical Application Methods...'));
-              await insertChemicalApplicationMethod(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}TreatmentMethod.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Treatment Methods...'));
-              await insertTreatmentMethod(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}IssueType.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated Disciplinaries Issues...'));
-              await insertIssueType(item);
-            } else if (topic ==
-                '${topicTrickleFeedFgsMasterDataByGroupSchemeId}PndTypeTreatmentMethod.$groupSchemeId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing Pests and Disease Type Treatment Method...'));
-              await insertPestsAndDiseaseTypeTreatmentMethod(item);
-            } else {}
-          } finally {
-            isSync = false;
-          }
+        final messages = resPull?.message;
+        if (messages == null || messages.isEmpty) {
+          isSync = false;
+          break;
         }
-      });
+
+        final dbCompany = await cmoDatabaseMasterService.db;
+        await dbCompany.writeTxn(() async {
+          for (var i = 0; i < messages.length; i++) {
+            final item = messages[i];
+
+            try {
+              final topic = item.header?.originalTopic;
+              if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}GSS.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated GroupScheme Stakeholder...'));
+                await insertGroupSchemeStakeholder(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}SH.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Stakeholder...'));
+                await insertStakeholder(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}AnimalType.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Species Types...'));
+                await insertAnimalType(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}SpeciesRange.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Species Range...'));
+                await insertSpeciesRange(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}MonitoringRequirement.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Monitoring Requirements...'));
+                await insertMonitoringRequirement(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}TrainingType.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Training Types...'));
+                await insertTrainingType(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}PestsAndDiseaseType.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Pests and Disease Types...'));
+                await insertPestsAndDiseaseType(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}GrievanceIssue.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Grievance Issues...'));
+                await insertGrievanceIssue(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}PropertyDamaged.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Species Types...'));
+                await insertPropertyDamaged(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}BCAType.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Biological Control Agent Types...'));
+                await insertBiologicalControlAgentType(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}AsiType.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Asi Types...'));
+                await insertAsiType(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}FireCause.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Fire Causes...'));
+                await insertFireCause(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}NatureOfInjury.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Nature of Injuries...'));
+                await insertNatureOfInjury(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}CAM.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Chemical Application Methods...'));
+                await insertChemicalApplicationMethod(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}TreatmentMethod.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Treatment Methods...'));
+                await insertTreatmentMethod(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}IssueType.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Disciplinaries Issues...'));
+                await insertIssueType(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}PndTypeTreatmentMethod.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Pests and Disease Type Treatment Method...'));
+                await insertPestsAndDiseaseTypeTreatmentMethod(item);
+              } else {}
+            } finally {
+              isSync = false;
+            }
+          }
+        });
+      }
+    } catch (e) {
+      isSync = false;
     }
   }
 
   Future<void> subscribeToTrickleFeedMasterDataTopicByFarmId() async {
     var isSync = true;
+    try {
+      while (isSync) {
+        onSyncStatus('Sync Feed Master Data Topic By FarmId');
 
-    while (isSync) {
-      onSyncStatus('Sync Feed Master Data Topic By FarmId');
+        MasterDataMessage? resPull;
 
-      MasterDataMessage? resPull;
+        resPull = await cmoPerformApiService.pullMessage(
+          topicMasterDataSync: topicTrickleFeedFarmerMasterDataByFarmId,
+          currentClientId: int.parse(farmId),
+        );
 
-      resPull = await cmoPerformApiService.pullMessage(
-        topicMasterDataSync: topicTrickleFeedFarmerMasterDataByFarmId,
-        currentClientId: int.parse(farmId),
-      );
-
-      final messages = resPull?.message;
-      if (messages == null || messages.isEmpty) {
-        isSync = false;
-        break;
-      }
-      final dbCompany = await cmoDatabaseMasterService.db;
-      await dbCompany.writeTxn(() async {
-        for (var i = 0; i < messages.length; i++) {
-          final item = messages[i];
-
-          try {
-            final topic = item.header?.originalTopic;
-
-            if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}Worker.$farmId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Worker...'));
-              await insertWorker(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}SanctionRegister.$farmId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated Sanction Registers...'));
-              await insertDisciplinaryRegister(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}AnnFarmProd.$farmId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated Annual Farm Production...'));
-              await insertAnnualFarmProduction(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}Camp.$farmId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Camp...'));
-              await insertCamp(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}FS.$farmId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Farm stakeholder...'));
-              await insertFarmStakeholder(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}FSCUR.$farmId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated Farm Stakeholder Customary Use Right...'));
-              await insertFarmStakeholderCustomaryUseRight(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}FSSU.$farmId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated Farm Stakeholder Social Upliftment...'));
-              await insertFarmStakeholderSocialUpliftment(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}FSSS.$farmId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated Farm Stakeholder Special Site...'));
-              await insertFarmStakeholderSpecialSite(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}SH.$farmId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated stakeholder...'));
-              await insertStakeholder(item);
-            } else if (topic ==
-                'is.topicTrickleFeedFarmerMasterDataByFarmIdAnnFrmBud.$farmId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated annual farm budgets...'));
-              await insertAnnualFarmBudget(item);
-            } else if (topic ==
-                'is.topicTrickleFeedFarmerMasterDataByFarmIdAnnFrmBudTrans.$farmId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing new and updated annual farm budget transactions...'));
-              await insertAnnualFarmTransactionBudget(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}Schedule.$farmId') {
-              emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
-              await insertSchedule(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}AaiRegister.$farmId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Accident and Incident Registers...'));
-              await insertAccidentAndIncidentRegister(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}BcaRegister.$farmId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing Biological Control Agent Registers...'));
-              await insertBiologicalControlAgentRegister(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}ChemicalRegister.$farmId') {
-              emit(
-                  state.copyWith(syncMessage: 'Syncing Chemical Registers...'));
-              await insertChemicalRegister(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}AsiRegister.$farmId') {
-              emit(state.copyWith(syncMessage: 'Syncing Asi Registers...'));
-              await insertAsiRegister(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}FireRegister.$farmId') {
-              emit(state.copyWith(syncMessage: 'Syncing Fire Registers...'));
-              await insertFireRegister(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}CndRegister.$farmId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Complaints and Disputes Registers...'));
-              await insertComplaintsAndDisputesRegister(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}GrievanceRegister.$farmId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Grievance Registers...'));
-              await insertGrievanceRegister(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}PndRegister.$farmId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Pests and Diseases Registers...'));
-              await insertPestsAndDiseasesRegister(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}RteSpeciesRegister.$farmId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Rte Species Registers...'));
-              await insertRteSpeciesRegister(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}TrainingRegister.$farmId') {
-              emit(state.copyWith(syncMessage: 'Syncing Training Register...'));
-              await insertTrainingRegister(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}AsiRegisterPhoto.$farmId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Asi Register Photos...'));
-              await insertAsiRegisterPhoto(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}AaiRegPropertyDamaged.$farmId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing Accident and Incident Property Damaged...'));
-              await insertAccidentAndIncidentPropertyDamaged(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}PndRegisterTreatmentMethod.$farmId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing Pests and Disease Register Treatment Method...'));
-              await insertPestsAndDiseasesRegisterTreatmentMethod(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}RteSpeciesRegisterPhoto.$farmId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Rte Species Register Photos...'));
-              await insertRteSpeciesRegisterPhoto(item);
-            } else if (topic ==
-                '${topicTrickleFeedFarmerMasterDataByFarmId}ChemicalType.$farmId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing new and updated Chemical Types...'));
-              await insertChemicalType(item);
-            } else {}
-          } finally {
-            isSync = false;
-          }
+        final messages = resPull?.message;
+        if (messages == null || messages.isEmpty) {
+          isSync = false;
+          break;
         }
-      });
+        final dbCompany = await cmoDatabaseMasterService.db;
+        await dbCompany.writeTxn(() async {
+          for (var i = 0; i < messages.length; i++) {
+            final item = messages[i];
+
+            try {
+              final topic = item.header?.originalTopic;
+
+              if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}Worker.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Worker...'));
+                await insertWorker(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}SanctionRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Sanction Registers...'));
+                await insertDisciplinaryRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}AnnFarmProd.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Annual Farm Production...'));
+                await insertAnnualFarmProduction(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}Camp.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Camp...'));
+                await insertCamp(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}FS.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Farm stakeholder...'));
+                await insertFarmStakeholder(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}FSCUR.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Farm Stakeholder Customary Use Right...'));
+                await insertFarmStakeholderCustomaryUseRight(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}FSSU.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Farm Stakeholder Social Upliftment...'));
+                await insertFarmStakeholderSocialUpliftment(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}FSSS.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Farm Stakeholder Special Site...'));
+                await insertFarmStakeholderSpecialSite(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}SH.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated stakeholder...'));
+                await insertStakeholder(item);
+              } else if (topic ==
+                  'is.topicTrickleFeedFarmerMasterDataByFarmIdAnnFrmBud.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated annual farm budgets...'));
+                await insertAnnualFarmBudget(item);
+              } else if (topic ==
+                  'is.topicTrickleFeedFarmerMasterDataByFarmIdAnnFrmBudTrans.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated annual farm budget transactions...'));
+                await insertAnnualFarmTransactionBudget(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}Schedule.$farmId') {
+                emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
+                await insertSchedule(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}AaiRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Accident and Incident Registers...'));
+                await insertAccidentAndIncidentRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}BcaRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Biological Control Agent Registers...'));
+                await insertBiologicalControlAgentRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}ChemicalRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Chemical Registers...'));
+                await insertChemicalRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}AsiRegister.$farmId') {
+                emit(state.copyWith(syncMessage: 'Syncing Asi Registers...'));
+                await insertAsiRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}FireRegister.$farmId') {
+                emit(state.copyWith(syncMessage: 'Syncing Fire Registers...'));
+                await insertFireRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}CndRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Complaints and Disputes Registers...'));
+                await insertComplaintsAndDisputesRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}GrievanceRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Grievance Registers...'));
+                await insertGrievanceRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}PndRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Pests and Diseases Registers...'));
+                await insertPestsAndDiseasesRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}RteSpeciesRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Rte Species Registers...'));
+                await insertRteSpeciesRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}TrainingRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Training Register...'));
+                await insertTrainingRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}AsiRegisterPhoto.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Asi Register Photos...'));
+                await insertAsiRegisterPhoto(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}AaiRegPropertyDamaged.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Accident and Incident Property Damaged...'));
+                await insertAccidentAndIncidentPropertyDamaged(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}PndRegisterTreatmentMethod.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Pests and Disease Register Treatment Method...'));
+                await insertPestsAndDiseasesRegisterTreatmentMethod(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}RteSpeciesRegisterPhoto.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Rte Species Register Photos...'));
+                await insertRteSpeciesRegisterPhoto(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}ChemicalType.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Chemical Types...'));
+                await insertChemicalType(item);
+              } else {}
+            } finally {
+              isSync = false;
+            }
+          }
+        });
+      }
+    } catch (e) {
+      isSync = false;
     }
   }
 
   Future<void> summaryFarmerSync() async {
     var isSync = true;
 
-    while (isSync) {
-      onSyncStatus('Sync All Master Data...');
+    try {
+      while (isSync) {
+        onSyncStatus('Sync All Master Data...');
 
-      MasterDataMessage? resPull;
+        MasterDataMessage? resPull;
 
-      resPull = await cmoPerformApiService.pullMessage(
-        topicMasterDataSync: topicMasterDataSync,
-        currentClientId: userDeviceId,
-      );
+        resPull = await cmoPerformApiService.pullMessage(
+          topicMasterDataSync: topicMasterDataSync,
+          currentClientId: userDeviceId,
+        );
 
-      final messages = resPull?.message;
-      if (messages == null || messages.isEmpty) {
-        isSync = false;
-        break;
-      }
-
-      final dbCompany = await cmoDatabaseMasterService.db;
-      await dbCompany.writeTxn(() async {
-        for (var i = 0; i < messages.length; i++) {
-          final item = messages[i];
-
-          try {
-            final topic = item.header?.originalTopic;
-
-            if (topic == '${topicMasterDataSync}Workers.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Workers...'));
-              await insertWorker(item);
-            } else if (topic ==
-                '${topicMasterDataSync}SanctionRegister.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Disciplinary Register...'));
-              await insertDisciplinaryRegister(item);
-            } else if (topic ==
-                '${topicMasterDataSync}AnnFarmProd.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Annual Farm Production...'));
-              await insertAnnualFarmProduction(item);
-            } else if (topic == '${topicMasterDataSync}Camp.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Camps...'));
-              await insertCamp(item);
-            } else if (topic ==
-                '${topicMasterDataSync}JobDescription.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
-              await insertJobDescription(item);
-            } else if (topic == '${topicMasterDataSync}Country.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Country...'));
-              await insertCountry(item);
-            } else if (topic == '${topicMasterDataSync}Gender.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Gender...'));
-              await insertGender(item);
-            } else if (topic ==
-                '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Schedule Activity...'));
-              await insertScheduleActivity(item);
-            } else if (topic ==
-                '${topicMasterDataSync}GroupScheme.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Group Scheme...'));
-              await insertGroupScheme(item);
-            } else if (topic == '${topicMasterDataSync}SU.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Social Upliftment...'));
-              await insertSocialUpliftment(item);
-            } else if (topic == '${topicMasterDataSync}SS.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Special Site...'));
-              await insertSpecialSite(item);
-            } else if (topic == '${topicMasterDataSync}CUR.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Customary Use Right...'));
-              await insertCustomaryUseRight(item);
-            } else if (topic == '${topicMasterDataSync}SHT.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Stakeholder Type...'));
-              await insertStakeholderType(item);
-            } else if (topic == '${topicMasterDataSync}SH.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Stakeholder...'));
-              await insertStakeholder(item);
-            } else if (topic == '${topicMasterDataSync}FS.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Farm Stakeholder...'));
-              await insertFarmStakeholder(item);
-            } else if (topic == '${topicMasterDataSync}GSS.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing GroupScheme Stakeholder...'));
-              await insertGroupSchemeStakeholder(item);
-            } else if (topic == '${topicMasterDataSync}FSCUR.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing Farm Stakeholder Customary Use Right...'));
-              await insertFarmStakeholderCustomaryUseRight(item);
-            } else if (topic == '${topicMasterDataSync}FSSU.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing Farm Stakeholder Social Upliftment...'));
-              await insertFarmStakeholderSocialUpliftment(item);
-            } else if (topic == '${topicMasterDataSync}FSSS.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Farm Stakeholder Special Site...'));
-              await insertFarmStakeholderSpecialSite(item);
-            } else if (topic ==
-                '${topicMasterDataSync}AnnFrmBudTransCat.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing Annual Farm Annual Farm Budget Transaction Categories...'));
-              await insertAnnualFarmBudgetTransactionCategory(item);
-            } else if (topic ==
-                '${topicMasterDataSync}AnnFrmBud.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Annual Farm Budgets...'));
-              await insertAnnualFarmBudget(item);
-            } else if (topic ==
-                '${topicMasterDataSync}AnnFrmBudTrans.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Annual Farm Budget Transactions...'));
-              await insertAnnualFarmTransactionBudget(item);
-            } else if (topic ==
-                '${topicMasterDataSync}Schedule.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
-              await insertSchedule(item);
-            } else if (topic ==
-                '${topicMasterDataSync}AaiRegister.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Accident and Incident Registers...'));
-              await insertAccidentAndIncidentRegister(item);
-            } else if (topic ==
-                '${topicMasterDataSync}BcaRegister.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing Biological Control Agent Registers...'));
-              await insertBiologicalControlAgentRegister(item);
-            } else if (topic ==
-                '${topicMasterDataSync}ChemicalRegister.$userDeviceId') {
-              emit(
-                  state.copyWith(syncMessage: 'Syncing Chemical Registers...'));
-              await insertChemicalRegister(item);
-            } else if (topic ==
-                '${topicMasterDataSync}AsiRegister.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Asi Registers...'));
-              await insertAsiRegister(item);
-            } else if (topic ==
-                '${topicMasterDataSync}FireRegister.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Fire Registers...'));
-              await insertFireRegister(item);
-            } else if (topic ==
-                '${topicMasterDataSync}CndRegister.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Complaints and Disputes Registers...'));
-              await insertComplaintsAndDisputesRegister(item);
-            } else if (topic ==
-                '${topicMasterDataSync}GrievanceRegister.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Grievance Registers...'));
-              await insertGrievanceRegister(item);
-            } else if (topic ==
-                '${topicMasterDataSync}PndRegister.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Pests and Diseases Registers...'));
-              await insertPestsAndDiseasesRegister(item);
-            } else if (topic ==
-                '${topicMasterDataSync}RteSpeciesRegister.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Rte Species Registers...'));
-              await insertRteSpeciesRegister(item);
-            } else if (topic ==
-                '${topicMasterDataSync}TrainingRegister.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Training Register...'));
-              await insertTrainingRegister(item);
-            } else if (topic ==
-                '${topicMasterDataSync}AnimalType.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Species Type...'));
-              await insertAnimalType(item);
-            } else if (topic ==
-                '${topicMasterDataSync}SpeciesRange.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Species Range...'));
-              await insertSpeciesRange(item);
-            } else if (topic ==
-                '${topicMasterDataSync}MonitoringRequirement.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Monitoring Requirement...'));
-              await insertMonitoringRequirement(item);
-            } else if (topic ==
-                '${topicMasterDataSync}TrainingType.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Training Type...'));
-              await insertTrainingType(item);
-            } else if (topic ==
-                '${topicMasterDataSync}PestsAndDiseaseType.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Pests and Disease Type...'));
-              await insertPestsAndDiseaseType(item);
-            } else if (topic ==
-                '${topicMasterDataSync}GrievanceIssue.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Grievance Issue...'));
-              await insertGrievanceIssue(item);
-            } else if (topic ==
-                '${topicMasterDataSync}PropertyDamaged.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Property Damaged...'));
-              await insertPropertyDamaged(item);
-            } else if (topic == '${topicMasterDataSync}BCAType.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Biological Control Agent Type...'));
-              await insertBiologicalControlAgentType(item);
-            } else if (topic ==
-                '${topicMasterDataSync}IssueType.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Disciplinaries Issues...'));
-              await insertIssueType(item);
-            } else if (topic ==
-                '${topicMasterDataSync}ChemicalType.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Chemical Type...'));
-              await insertChemicalType(item);
-            } else if (topic == '${topicMasterDataSync}AsiType.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Asi Type...'));
-              await insertAsiType(item);
-            } else if (topic ==
-                '${topicMasterDataSync}FireCause.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Fire Cause...'));
-              await insertFireCause(item);
-            } else if (topic ==
-                '${topicMasterDataSync}NatureOfInjury.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Nature of Injury...'));
-              await insertNatureOfInjury(item);
-            } else if (topic == '${topicMasterDataSync}CAM.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Chemical Application Method...'));
-              await insertChemicalApplicationMethod(item);
-            } else if (topic ==
-                '${topicMasterDataSync}TreatmentMethod.$userDeviceId') {
-              emit(state.copyWith(syncMessage: 'Syncing Treatment Method...'));
-              await insertTreatmentMethod(item);
-            } else if (topic ==
-                '${topicMasterDataSync}AsiRegisterPhoto.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Asi Register Photos...'));
-              await insertAsiRegisterPhoto(item);
-            } else if (topic ==
-                '${topicMasterDataSync}AaiRegPropertyDamaged.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing Accident and Incident Property Damaged...'));
-              await insertAccidentAndIncidentPropertyDamaged(item);
-            } else if (topic ==
-                '${topicMasterDataSync}PndRegisterTreatmentMethod.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Pest and Disease Treatment Method...'));
-              await insertPestsAndDiseasesRegisterTreatmentMethod(item);
-            } else if (topic ==
-                '${topicMasterDataSync}PndTypeTreatmentMethod.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage:
-                      'Syncing Pests and Disease Type Treatment Method...'));
-              await insertPestsAndDiseaseTypeTreatmentMethod(item);
-            } else if (topic ==
-                '${topicMasterDataSync}RteSpeciesRegisterPhoto.$userDeviceId') {
-              emit(state.copyWith(
-                  syncMessage: 'Syncing Rte Species Register Photos...'));
-              await insertRteSpeciesRegisterPhoto(item);
-            }
-          } finally {
-            isSync = false;
-          }
+        final messages = resPull?.message;
+        if (messages == null || messages.isEmpty) {
+          isSync = false;
+          break;
         }
-      });
-    }
+
+        final dbCompany = await cmoDatabaseMasterService.db;
+        await dbCompany.writeTxn(() async {
+          for (var i = 0; i < messages.length; i++) {
+            final item = messages[i];
+
+            try {
+              final topic = item.header?.originalTopic;
+
+              if (topic == '${topicMasterDataSync}Workers.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Workers...'));
+                await insertWorker(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}SanctionRegister.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Disciplinary Register...'));
+                await insertDisciplinaryRegister(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}AnnFarmProd.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Annual Farm Production...'));
+                await insertAnnualFarmProduction(item);
+              } else if (topic == '${topicMasterDataSync}Camp.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Camps...'));
+                await insertCamp(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}JobDescription.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
+                await insertJobDescription(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}Country.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Country...'));
+                await insertCountry(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}Gender.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Gender...'));
+                await insertGender(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Schedule Activity...'));
+                await insertScheduleActivity(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}GroupScheme.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Group Scheme...'));
+                await insertGroupScheme(item);
+              } else if (topic == '${topicMasterDataSync}SU.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Social Upliftment...'));
+                await insertSocialUpliftment(item);
+              } else if (topic == '${topicMasterDataSync}SS.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Special Site...'));
+                await insertSpecialSite(item);
+              } else if (topic == '${topicMasterDataSync}CUR.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Customary Use Right...'));
+                await insertCustomaryUseRight(item);
+              } else if (topic == '${topicMasterDataSync}SHT.$userDeviceId') {
+                emit(
+                    state.copyWith(syncMessage: 'Syncing Stakeholder Type...'));
+                await insertStakeholderType(item);
+              } else if (topic == '${topicMasterDataSync}SH.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Stakeholder...'));
+                await insertStakeholder(item);
+              } else if (topic == '${topicMasterDataSync}FS.$userDeviceId') {
+                emit(
+                    state.copyWith(syncMessage: 'Syncing Farm Stakeholder...'));
+                await insertFarmStakeholder(item);
+              } else if (topic == '${topicMasterDataSync}GSS.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing GroupScheme Stakeholder...'));
+                await insertGroupSchemeStakeholder(item);
+              } else if (topic == '${topicMasterDataSync}FSCUR.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Farm Stakeholder Customary Use Right...'));
+                await insertFarmStakeholderCustomaryUseRight(item);
+              } else if (topic == '${topicMasterDataSync}FSSU.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Farm Stakeholder Social Upliftment...'));
+                await insertFarmStakeholderSocialUpliftment(item);
+              } else if (topic == '${topicMasterDataSync}FSSS.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Farm Stakeholder Special Site...'));
+                await insertFarmStakeholderSpecialSite(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}AnnFrmBudTransCat.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Annual Farm Annual Farm Budget Transaction Categories...'));
+                await insertAnnualFarmBudgetTransactionCategory(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}AnnFrmBud.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Annual Farm Budgets...'));
+                await insertAnnualFarmBudget(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}AnnFrmBudTrans.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Annual Farm Budget Transactions...'));
+                await insertAnnualFarmTransactionBudget(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}Schedule.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
+                await insertSchedule(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}AaiRegister.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Accident and Incident Registers...'));
+                await insertAccidentAndIncidentRegister(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}BcaRegister.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Biological Control Agent Registers...'));
+                await insertBiologicalControlAgentRegister(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}ChemicalRegister.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Chemical Registers...'));
+                await insertChemicalRegister(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}AsiRegister.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Asi Registers...'));
+                await insertAsiRegister(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}FireRegister.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Fire Registers...'));
+                await insertFireRegister(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}CndRegister.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Complaints and Disputes Registers...'));
+                await insertComplaintsAndDisputesRegister(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}GrievanceRegister.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Grievance Registers...'));
+                await insertGrievanceRegister(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}PndRegister.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Pests and Diseases Registers...'));
+                await insertPestsAndDiseasesRegister(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}RteSpeciesRegister.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Rte Species Registers...'));
+                await insertRteSpeciesRegister(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}TrainingRegister.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Training Register...'));
+                await insertTrainingRegister(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}AnimalType.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Species Type...'));
+                await insertAnimalType(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}SpeciesRange.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Species Range...'));
+                await insertSpeciesRange(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}MonitoringRequirement.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Monitoring Requirement...'));
+                await insertMonitoringRequirement(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}TrainingType.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Training Type...'));
+                await insertTrainingType(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}PestsAndDiseaseType.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Pests and Disease Type...'));
+                await insertPestsAndDiseaseType(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}GrievanceIssue.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Grievance Issue...'));
+                await insertGrievanceIssue(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}PropertyDamaged.$userDeviceId') {
+                emit(
+                    state.copyWith(syncMessage: 'Syncing Property Damaged...'));
+                await insertPropertyDamaged(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}BCAType.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Biological Control Agent Type...'));
+                await insertBiologicalControlAgentType(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}IssueType.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Disciplinaries Issues...'));
+                await insertIssueType(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}ChemicalType.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Chemical Type...'));
+                await insertChemicalType(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}AsiType.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Asi Type...'));
+                await insertAsiType(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}FireCause.$userDeviceId') {
+                emit(state.copyWith(syncMessage: 'Syncing Fire Cause...'));
+                await insertFireCause(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}NatureOfInjury.$userDeviceId') {
+                emit(
+                    state.copyWith(syncMessage: 'Syncing Nature of Injury...'));
+                await insertNatureOfInjury(item);
+              } else if (topic == '${topicMasterDataSync}CAM.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Chemical Application Method...'));
+                await insertChemicalApplicationMethod(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}TreatmentMethod.$userDeviceId') {
+                emit(
+                    state.copyWith(syncMessage: 'Syncing Treatment Method...'));
+                await insertTreatmentMethod(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}AsiRegisterPhoto.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Asi Register Photos...'));
+                await insertAsiRegisterPhoto(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}AaiRegPropertyDamaged.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Accident and Incident Property Damaged...'));
+                await insertAccidentAndIncidentPropertyDamaged(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}PndRegisterTreatmentMethod.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Pest and Disease Treatment Method...'));
+                await insertPestsAndDiseasesRegisterTreatmentMethod(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}PndTypeTreatmentMethod.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Pests and Disease Type Treatment Method...'));
+                await insertPestsAndDiseaseTypeTreatmentMethod(item);
+              } else if (topic ==
+                  '${topicMasterDataSync}RteSpeciesRegisterPhoto.$userDeviceId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Rte Species Register Photos...'));
+                await insertRteSpeciesRegisterPhoto(item);
+              }
+            } finally {
+              isSync = false;
+            }
+          }
+        });
+      }
+    } catch (e) {}
   }
 
   Future<int?> insertWorker(Message item) async {

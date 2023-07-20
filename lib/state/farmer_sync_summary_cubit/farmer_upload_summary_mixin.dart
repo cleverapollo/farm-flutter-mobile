@@ -55,17 +55,17 @@ mixin FarmUploadSummaryMixin {
     await _publishFarmStakeholders();
     await _publishAnnualFarmBudgets();
     await _publishAnnualFarmBudgetTransactions();
-    await _publishSanctionRegisters();
+    await _publishSanctionRegisters(); //done implement
     await _publishChemicalRegister(); //done
-    await _publishTrainingRegisters();
+    await _publishTrainingRegisters(); //done implement
     await _publishAsiRegisters(); //wait for testing
-    await _publishFireRegisters();
-    await _publishGrievanceRegisters();
-    await _publishRteSpeciesRegisters();
-    await _publishPestsAndDiseasesRegisters();
-    await _publishComplaintsAndDisputesRegisters();
-    await _publishAccidentAndIncidentRegisters(); //wait for testing
-    await _publishBiologicalControlAgentRegisters(); //wait for testing
+    await _publishFireRegisters(); //done implement
+    await _publishGrievanceRegisters(); //not find
+    await _publishRteSpeciesRegisters(); //done implement
+    await _publishPestsAndDiseasesRegisters(); //done implement
+    await _publishComplaintsAndDisputesRegisters(); //done implement
+    await _publishAccidentAndIncidentRegisters(); //done
+    await _publishBiologicalControlAgentRegisters(); //done implement
   }
 
   Future<void> _publishWorker() async {
@@ -923,13 +923,13 @@ mixin FarmUploadSummaryMixin {
           BiologicalControlAgentRegisterNo:
               DateTime.now().microsecondsSinceEpoch.toString(),
           FarmId: mFarmId,
-          BiologicalControlAgentTypeId: null,
+          BiologicalControlAgentTypeId: 1,
           BiologicalControlAgentName: 'Hocus Pocus',
           BiologicalControlAgentRegisterId: null,
           IssueDescription: null,
           DateReleased: DateTime.now(),
           StakeholderId: null,
-          MonitoringRequirementId: 0,
+          MonitoringRequirementId: 1,
           Comment: null,
           CarRaisedDate: DateTime.now().toIso8601String(),
           CarClosedDate: DateTime.now().toIso8601String(),
@@ -1002,16 +1002,19 @@ mixin FarmUploadSummaryMixin {
             accidentAndIncidentPropertyDamagedPayLoad.map((e) {
           if (e.AccidentAndIncidentRegisterId == null) {
             return e.copyWith(
-                AccidentAndIncidentRegisterId:
-                    '00000000-0000-0000-0000-000000000000');
+              AccidentAndIncidentRegisterId:
+                  '00000000-0000-0000-0000-000000000000',
+            );
           }
           return e;
         }).toList();
 
         itemPayLoad = itemPayLoad.copyWith(
-          Register: item.toPayLoad(),
+          Register: item.toPayLoad().copyWith(WorkerId: '1548065459292'),
           PropertyDamaged: accidentAndIncidentPropertyDamagedPayLoad,
         );
+
+        accidentAndIncidentRegistersRegistersPayLoad.add(itemPayLoad);
 
         if (_enableUpdateStatus) {
           futures.add(cmoDatabaseMasterService.cacheAccidentAndIncidentFromFarm(
@@ -1031,7 +1034,7 @@ mixin FarmUploadSummaryMixin {
 
       futures.add(cmoPerformApiService.public(
         currentClientId: mUserDeviceId.toString(),
-        topic: topicByFarmIdAndUserDeviceId('AccidentAndIncidentRegister'),
+        topic: topicByFarmIdAndUserDeviceId('AaiRegister'),
         messages: messages,
       ));
 
