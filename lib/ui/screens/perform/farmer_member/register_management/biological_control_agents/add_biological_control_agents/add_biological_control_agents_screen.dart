@@ -35,6 +35,12 @@ class AddBiologicalControlAgentsScreen extends StatefulWidget {
 
 class _AddBiologicalControlAgentsScreenState
     extends State<AddBiologicalControlAgentsScreen> {
+  final monitorings = ValueNotifier(<MonitoringRequirement>[]);
+  final stakeHolders = ValueNotifier(<FarmerStakeHolder>[]);
+
+  MonitoringRequirement? selectMonitoringRequirement;
+  FarmerStakeHolder? selectStakeHolder;
+
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
@@ -60,6 +66,15 @@ class _AddBiologicalControlAgentsScreenState
     }
     carRaised = agent.carRaisedDate != null;
     carClosed = agent.carClosedDate != null;
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final farm = await configService.getActiveFarm();
+
+      monitorings.value = await cmoDatabaseMasterService
+          .getMonitoringRequirementByGroupSchemeId(farm?.groupSchemeId ?? 0);
+      stakeHolders.value = await cmoDatabaseMasterService
+          .getFarmerStakeHolderByFarmId(farm?.farmId ?? '');
+    });
   }
 
   Future<void> onSubmit() async {
@@ -77,12 +92,23 @@ class _AddBiologicalControlAgentsScreenState
       try {
         await hideInputMethod();
         final farm = await configService.getActiveFarm();
+
+        if (agent.monitoringRequirementId == null ||
+            agent.stakeholderId == null ||
+            agent.biologicalControlAgentTypeId == null) {
+          return showSnackError(msg: 'Required fields are missing.');
+        }
+
         agent = agent.copyWith(
           farmId: farm?.farmId,
+          biologicalControlAgentRegisterNo:
+              DateTime.now().millisecondsSinceEpoch.toString(),
           dateReleased: value['DateReleased'] as DateTime?,
-          stakeholderId: value['StakeholderId']?.toString(),
-          monitoringRequirementId: int.tryParse(
-              value['DescriptionMonitoringRequirementsId']?.toString() ?? ''),
+          stakeholderId: selectStakeHolder?.stakeholderId.toString(),
+          monitoringRequirementId:
+              selectMonitoringRequirement?.monitoringRequirementId,
+          isActive: true,
+          isMasterDataSynced: false,
         );
 
         if (carRaised && agent.carRaisedDate == null) {
@@ -171,16 +197,16 @@ class _AddBiologicalControlAgentsScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SelectControlAgentWidget(
-                onSelect: (controlAgent) {
-                  agent = agent.copyWith(
-                      biologicalControlAgentTypeId: controlAgent.id,
-                      biologicalControlAgentName: controlAgent.scientificName,
-                      biologicalControlAgentTypeCountryName:
-                          controlAgent.countryOrigin,
-                      reasonForBioAgent: controlAgent.reasonBioAgent);
-                },
-              ),
+              SelectControlAgentWidget(onSelect: (controlAgent) {
+                agent = agent.copyWith(
+                    biologicalControlAgentTypeId:
+                        controlAgent.biologicalControlAgentTypeId,
+                    biologicalControlAgentName:
+                        controlAgent.biologicalControlAgentTypeName,
+                    biologicalControlAgentTypeCountryName:
+                        controlAgent.biologicalControlAgentTypeScientificName,
+                    reasonForBioAgent: controlAgent.reasonForBioAgent);
+              }),
               _buildSelectDateReleased(),
               _buildSelectStakeHolderWidget(),
               _buildSelectDescriptionWidget(),
@@ -240,58 +266,63 @@ class _AddBiologicalControlAgentsScreenState
   }
 
   Widget _buildSelectStakeHolderWidget() {
-    return CmoDropdown(
-      name: 'StakeHolderId',
-      hintText: LocaleKeys.stakeholderName.tr(),
-      inputDecoration: InputDecoration(
-        contentPadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-        isDense: true,
-        labelText: LocaleKeys.stakeholderName.tr(),
-        labelStyle: context.textStyles.bodyBold.black,
-        border: UnderlineInputBorder(
-            borderSide: BorderSide(color: context.colors.grey)),
-        focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: context.colors.blue)),
-      ),
-      onChanged: (int? id) {
-        if (id == -1) {
-          _formKey.currentState!.fields['StakeHolderId']?.reset();
-        }
+    return ValueListenableBuilder(
+      valueListenable: stakeHolders,
+      builder: (_, value, __) {
+        return CmoDropdown<FarmerStakeHolder>(
+          name: 'StakeHolderId',
+          hintText: LocaleKeys.stakeholderName.tr(),
+          inputDecoration: InputDecoration(
+            contentPadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+            isDense: true,
+            labelText: LocaleKeys.stakeholderName.tr(),
+            labelStyle: context.textStyles.bodyBold.black,
+            border: UnderlineInputBorder(
+                borderSide: BorderSide(color: context.colors.grey)),
+            focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: context.colors.blue)),
+          ),
+          onChanged: (data) {
+            selectStakeHolder = data;
+          },
+          initialValue: selectStakeHolder,
+          itemsData: value
+              .map((e) =>
+                  CmoDropdownItem(id: e, name: e.farmerStakeHolderName ?? ''))
+              .toList(),
+        );
       },
-      itemsData: [
-        CmoDropdownItem(id: -1, name: LocaleKeys.stakeholderName.tr()),
-        CmoDropdownItem(id: 0, name: 'Captain Planet 0'),
-        CmoDropdownItem(id: 1, name: 'Captain Planet 1'),
-      ],
     );
   }
 
   Widget _buildSelectDescriptionWidget() {
-    return CmoDropdown(
-      name: 'DescriptionMonitoringRequirementsId',
-      hintText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
-      inputDecoration: InputDecoration(
-        contentPadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-        isDense: true,
-        labelText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
-        labelStyle: context.textStyles.bodyBold.black,
-        border: UnderlineInputBorder(
-            borderSide: BorderSide(color: context.colors.grey)),
-        focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: context.colors.blue)),
-      ),
-      onChanged: (int? id) {
-        if (id == -1) {
-          _formKey.currentState!.fields['DescriptionMonitoringRequirementsId']
-              ?.reset();
-        }
+    return ValueListenableBuilder(
+      valueListenable: monitorings,
+      builder: (_, value, __) {
+        return CmoDropdown<MonitoringRequirement>(
+          name: 'DescriptionMonitoringRequirementsId',
+          hintText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
+          inputDecoration: InputDecoration(
+            contentPadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+            isDense: true,
+            labelText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
+            labelStyle: context.textStyles.bodyBold.black,
+            border: UnderlineInputBorder(
+                borderSide: BorderSide(color: context.colors.grey)),
+            focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: context.colors.blue)),
+          ),
+          onChanged: (data) {
+            selectMonitoringRequirement = data;
+            setState(() {});
+          },
+          initialValue: selectMonitoringRequirement,
+          itemsData: value
+              .map((e) => CmoDropdownItem(
+                  id: e, name: e.monitoringRequirementName ?? ''))
+              .toList(),
+        );
       },
-      itemsData: [
-        CmoDropdownItem(
-            id: -1, name: LocaleKeys.descriptionOfMonitoringRequirements.tr()),
-        CmoDropdownItem(id: 0, name: 'Description Planet 0'),
-        CmoDropdownItem(id: 1, name: 'Description Planet 1'),
-      ],
     );
   }
 }
