@@ -280,7 +280,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                     const SizedBox(height: 12),
                     Align(
                       child: CmoFilledButton(
-                          title: 'Save', onTap: () => cubit.onSave()),
+                          title: 'Save', onTap: () => cubit.onSave(context)),
                     ),
                     const SizedBox(height: 24),
                   ],

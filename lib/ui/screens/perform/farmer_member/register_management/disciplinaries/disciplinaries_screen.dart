@@ -155,7 +155,7 @@ class _DisciplinariesItemWidget extends StatelessWidget {
             ),
           ),
           _buildILineItem(
-              context, '${LocaleKeys.worker.tr()}: ', data.displayWorkerName),
+              context, '${LocaleKeys.worker.tr()}: ', data.workerId),
           _buildILineItem(context, '${LocaleKeys.dateIssued.tr()} :',
               data.dateReceived.yMd()),
           _buildILineItem(context, '${LocaleKeys.camp_compartment.tr()} :',

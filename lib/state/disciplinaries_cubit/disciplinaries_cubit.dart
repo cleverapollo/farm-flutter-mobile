@@ -37,6 +37,8 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
   }
 
   Future<void> initAddData() async {
+    await initConfigData();
+
     final futures = <Future<dynamic>>[];
 
     var workers = <FarmerWorker>[];
@@ -61,10 +63,6 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
       );
 
     await Future.wait(futures).then((_) {
-      debugPrint('TUNT -- add disciplinaries -- workers $workers');
-      debugPrint('TUNT -- add disciplinaries -- camps $camps');
-      debugPrint('TUNT -- add disciplinaries -- issueTypes $issueTypes');
-
       emit(state.copyWith(
         workers: workers,
         issueTypes: issueTypes,
@@ -136,21 +134,30 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     )));
   }
 
-  Future<void> onSave() async {
-    final canSave = state.data?.workerId != null &&
-        state.data?.dateReceived != null &&
-        state.data?.issueTypeId != null &&
-        state.data?.signatureImage != null;
+  Future<void> onSave(BuildContext context) async {
+    final canSave = state.data?.dateReceived != null;
 
     if (!canSave) return showSnackError(msg: 'Required fields are missing');
 
     await cmoDatabaseMasterService
-        .cacheSanctionRegister(state.data!.copyWith(
+        .cacheSanctionRegisterFromFarm(state.data!.copyWith(
       isActive: true,
+      isSynced: false,
+      farmId: state.farmId,
     ))
         .then((value) {
+      debugPrint(state.data!
+          .copyWith(
+            isActive: true,
+            isSynced: false,
+            farmId: state.farmId,
+          )
+          .toJson()
+          .toString());
+
       if (value != null) {
-        showSnackSuccess(msg: 'Save Disciplinaries Successfully}');
+        showSnackSuccess(msg: 'Save Disciplinaries $value Successfully}');
+        Navigator.pop(context);
       } else {
         showSnackError(msg: 'Something was wrong, please try again.');
       }
