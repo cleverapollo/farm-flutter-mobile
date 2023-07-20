@@ -31,6 +31,12 @@ class TrainingAddScreen extends StatefulWidget {
 }
 
 class _TrainingAddScreenState extends State<TrainingAddScreen> {
+  final trainingTypes = ValueNotifier(<TrainingType>[]);
+  final workers = ValueNotifier(<FarmerWorker>[]);
+
+  TrainingType? selectTrainingType;
+  FarmerWorker? selectFarmerWorker;
+
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
@@ -59,15 +65,23 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
         loading = true;
       });
       try {
+        if (selectTrainingType == null || selectFarmerWorker == null) {
+          return showSnackError(msg: 'Required fields are missing.');
+        }
+
         await hideInputMethod();
         final farm = await configService.getActiveFarm();
         training = training.copyWith(
-            farmId: farm?.farmId,
-            trainingTypeId:
-                int.tryParse(value['TrainingType'] as String? ?? ''),
-            date: value['Date'] as DateTime?,
-            expiryDate: value['ExpiryDate'] as DateTime?,
-            workerId: value['TraineeName'] as String?);
+          trainingRegisterId: null,
+          trainingRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
+          farmId: farm?.farmId,
+          trainingTypeId: selectTrainingType?.trainingTypeId ?? 0,
+          date: value['Date'] as DateTime?,
+          expiryDate: value['ExpiryDate'] as DateTime?,
+          workerId: selectFarmerWorker?.workerId ?? '',
+          isActive: true,
+          isMasterdataSynced: false,
+        );
 
         if (carRaised && training.carRaisedDate == null) {
           training = training.copyWith(
@@ -134,6 +148,16 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
     }
     carRaised = training.carRaisedDate != null;
     carClosed = training.carClosedDate != null;
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final farm = await configService.getActiveFarm();
+
+      trainingTypes.value = await cmoDatabaseMasterService
+          .getTrainingTypeByGroupSchemeId(farm?.groupSchemeId ?? 0);
+      workers.value = await cmoDatabaseMasterService
+              .getFarmerWorkersByFarmId(farm?.farmId ?? '') ??
+          [];
+    });
   }
 
   @override
@@ -263,31 +287,34 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
           style:
               context.textStyles.bodyBold.copyWith(color: context.colors.black),
         ),
-        CmoDropdown(
-          name: 'TrainingType',
-          hintText: LocaleKeys.training_type.tr(),
-          validator: requiredValidator,
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            isDense: true,
-            hintText:
-                '${LocaleKeys.select.tr()} ${LocaleKeys.training_type.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.blue)),
-          ),
-          onChanged: (int? id) {
-            if (id == -1) {
-              _formKey.currentState!.fields['TrainingType']?.reset();
-            }
+        ValueListenableBuilder(
+          valueListenable: trainingTypes,
+          builder: (_, value, __) {
+            return CmoDropdown<TrainingType>(
+                name: 'TrainingType',
+                hintText: LocaleKeys.training_type.tr(),
+                validator: requiredValidator,
+                inputDecoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(8),
+                  isDense: true,
+                  hintText:
+                      '${LocaleKeys.select.tr()} ${LocaleKeys.training_type.tr().toLowerCase()}',
+                  hintStyle: context.textStyles.bodyNormal.grey,
+                  border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: context.colors.grey)),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: context.colors.blue)),
+                ),
+                onChanged: (data) {
+                  selectTrainingType = data;
+                  setState(() {});
+                },
+                initialValue: selectTrainingType,
+                itemsData: value
+                    .map((e) =>
+                        CmoDropdownItem(id: e, name: e.trainingTypeName ?? ''))
+                    .toList());
           },
-          itemsData: [
-            CmoDropdownItem(id: -1, name: LocaleKeys.training_type.tr()),
-            CmoDropdownItem(id: 0, name: 'Criminals'),
-            CmoDropdownItem(id: 1, name: 'Primary'),
-          ],
         ),
       ],
     );
@@ -366,31 +393,34 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
           style:
               context.textStyles.bodyBold.copyWith(color: context.colors.black),
         ),
-        CmoDropdown(
-          name: 'TraineeName',
-          hintText: LocaleKeys.trainee_name.tr(),
-          validator: requiredValidator,
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            isDense: true,
-            hintText:
-                '${LocaleKeys.select.tr()} ${LocaleKeys.trainee_name.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.blue)),
-          ),
-          onChanged: (int? id) {
-            if (id == -1) {
-              _formKey.currentState!.fields['TraineeName']?.reset();
-            }
+        ValueListenableBuilder(
+          valueListenable: workers,
+          builder: (_, value, __) {
+            return CmoDropdown(
+              name: 'TraineeName',
+              hintText: LocaleKeys.trainee_name.tr(),
+              validator: requiredValidator,
+              inputDecoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(8),
+                isDense: true,
+                hintText:
+                    '${LocaleKeys.select.tr()} ${LocaleKeys.trainee_name.tr().toLowerCase()}',
+                hintStyle: context.textStyles.bodyNormal.grey,
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: context.colors.grey)),
+                focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: context.colors.blue)),
+              ),
+              onChanged: (data) {
+                selectFarmerWorker = data;
+                setState(() {});
+              },
+              initialValue: selectFarmerWorker,
+              itemsData: value
+                  .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
+                  .toList(),
+            );
           },
-          itemsData: [
-            CmoDropdownItem(id: -1, name: LocaleKeys.trainee_name.tr()),
-            CmoDropdownItem(id: 0, name: 'Criminals'),
-            CmoDropdownItem(id: 1, name: 'Primary'),
-          ],
         ),
       ],
     );
