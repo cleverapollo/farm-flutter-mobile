@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/farmer_stake_holder_complaint/farmer_stake_holder_complaint.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
@@ -31,6 +32,10 @@ class AddStakeHolderComplaintScreen extends StatefulWidget {
 
 class _AddStakeHolderComplaintScreenState
     extends State<AddStakeHolderComplaintScreen> {
+  final complaints = ValueNotifier(<FarmerStakeHolder>[]);
+
+  FarmerStakeHolder? selectFarmerStakeHolder;
+
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
@@ -56,6 +61,13 @@ class _AddStakeHolderComplaintScreenState
     }
     carRaised = complaint.carRaisedDate != null;
     carClosed = complaint.carClosedDate != null;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final farm = await configService.getActiveFarm();
+
+      complaints.value = await cmoDatabaseMasterService
+          .getFarmerStakeHolderByFarmId(farm?.farmId ?? '');
+    });
   }
 
   Future<void> onSubmit() async {
@@ -71,13 +83,22 @@ class _AddStakeHolderComplaintScreenState
         loading = true;
       });
       try {
+        if (selectFarmerStakeHolder == null) {
+          return showSnackError(msg: 'Required fields are missing.');
+        }
+
         await hideInputMethod();
         final farm = await configService.getActiveFarm();
         complaint = complaint.copyWith(
+            isActive: true,
+            isMasterDataSynced: false,
+            complaintsAndDisputesRegisterId: null,
+            complaintsAndDisputesRegisterNo:
+                DateTime.now().millisecondsSinceEpoch.toString(),
             farmId: farm?.farmId,
             dateReceived: value['DateReceived'] as DateTime?,
             dateClosed: value['DateClosed'] as DateTime?,
-            complaintsAndDisputesRegisterId: value['ComplaintId'] as String?);
+            stakeholderId: selectFarmerStakeHolder?.stakeholderId.toString());
 
         if (carRaised && complaint.carRaisedDate == null) {
           complaint = complaint.copyWith(
@@ -229,31 +250,34 @@ class _AddStakeHolderComplaintScreenState
             style: context.textStyles.bodyBold.black,
           ),
         ),
-        CmoDropdown(
-          name: 'ComplaintId',
-          hintText: LocaleKeys.complaintName.tr(),
-          validator: requiredValidator,
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            isDense: true,
-            hintText:
-                '${LocaleKeys.select.tr()} ${LocaleKeys.complaintName.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.blue)),
-          ),
-          onChanged: (int? id) {
-            if (id == -1) {
-              _formKey.currentState!.fields['ComplaintId']?.reset();
-            }
+        ValueListenableBuilder(
+          valueListenable: complaints,
+          builder: (_, value, __) {
+            return CmoDropdown<FarmerStakeHolder>(
+                name: 'ComplaintId',
+                hintText: LocaleKeys.complaintName.tr(),
+                validator: requiredValidator,
+                inputDecoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(8),
+                  isDense: true,
+                  hintText:
+                      '${LocaleKeys.select.tr()} ${LocaleKeys.complaintName.tr().toLowerCase()}',
+                  hintStyle: context.textStyles.bodyNormal.grey,
+                  border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: context.colors.grey)),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: context.colors.blue)),
+                ),
+                onChanged: (data) {
+                  selectFarmerStakeHolder = data;
+                  setState(() {});
+                },
+                initialValue: selectFarmerStakeHolder,
+                itemsData: value
+                    .map((e) => CmoDropdownItem(
+                        id: e, name: e.farmerStakeHolderName ?? ''))
+                    .toList());
           },
-          itemsData: [
-            CmoDropdownItem(id: -1, name: LocaleKeys.complaintName.tr()),
-            CmoDropdownItem(id: 0, name: 'Criminals'),
-            CmoDropdownItem(id: 1, name: 'Primary'),
-          ],
         ),
       ],
     );
