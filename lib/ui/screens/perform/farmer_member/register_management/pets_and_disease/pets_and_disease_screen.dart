@@ -40,6 +40,8 @@ class _PetsAndDiseaseScreenState extends State<PetsAndDiseaseScreen> {
               previous.petsAndDiseaseRegisters !=
                   current.petsAndDiseaseRegisters,
           builder: (context, state) {
+            final cubit = context.read<PetsAndDiseasesCubit>();
+
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -47,14 +49,24 @@ class _PetsAndDiseaseScreenState extends State<PetsAndDiseaseScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _StatusFilterWidget(
-                        text: LocaleKeys.open.tr(),
-                        isSelected: state.isOpen ?? true,
+                      InkWell(
+                        onTap: () {
+                          cubit.onChangeStatus(true);
+                        },
+                        child: _StatusFilterWidget(
+                          text: LocaleKeys.open.tr(),
+                          isSelected: state.isOpen ?? true,
+                        ),
                       ),
                       const SizedBox(width: 8),
-                      _StatusFilterWidget(
-                        text: LocaleKeys.close.tr(),
-                        isSelected: !(state.isOpen ?? true),
+                      InkWell(
+                        onTap: () {
+                          cubit.onChangeStatus(false);
+                        },
+                        child: _StatusFilterWidget(
+                          text: LocaleKeys.close.tr(),
+                          isSelected: !(state.isOpen ?? true),
+                        ),
                       ),
                     ],
                   ),

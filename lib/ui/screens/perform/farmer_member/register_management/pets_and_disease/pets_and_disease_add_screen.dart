@@ -132,7 +132,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                   Row(
                     children: [
                       Text(
-                        state.pestsAndDiseasesRegisterTreatmentMethods.isEmpty
+                        state.data.pestsAndDiseaseTreatmentMethods == null
                             ? '0 ${LocaleKeys.treatment_methods.tr()}'
                             : '${LocaleKeys.treatment_method.tr()}: ${state.pestsAndDiseasesRegisterTreatmentMethods.length}',
                         style: context.textStyles.bodyBold
@@ -201,7 +201,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                       trailing: SizedBox(
                         width: 24,
                         child: Switch(
-                          value: state.underControl ?? false,
+                          value: state.data.underControl ?? false,
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
                           onChanged: (bool value) {
@@ -253,9 +253,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                   Align(
                     child: CmoFilledButton(
                         title: LocaleKeys.save.tr(),
-                        onTap: () {
-                          Navigator.pop(context);
-                        }),
+                        onTap: () => cubit.onSave(context)),
                   ),
                   const SizedBox(height: 24),
                 ],

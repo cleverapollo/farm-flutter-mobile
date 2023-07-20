@@ -3,10 +3,12 @@ import 'package:cmo/model/config/config.dart';
 import 'package:cmo/model/pest_and_disease_type/pest_and_disease_type.dart';
 import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and_diseases_register_treatment_method.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
+import 'package:cmo/ui/snack/snack_helper.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
-  PetsAndDiseasesCubit() : super(const PetsAndDiseasesState()) {
+  PetsAndDiseasesCubit() : super(PetsAndDiseasesState()) {
     initConfigData();
   }
 
@@ -67,15 +69,43 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
     }
 
     emit(state.copyWith(
-      comment: comment ?? state.comment,
-      numberOfOutbreaks: numberOfOutbreaks ?? state.numberOfOutbreaks,
-      areaLost: areaLost ?? state.areaLost,
-      underControl: underControl ?? state.underControl,
+      data: state.data.copyWith(
+        comment: comment ?? state.data.comment,
+        numberOfOutbreaks: numberOfOutbreaks ?? state.data.numberOfOutbreaks,
+        areaLost: areaLost ?? state.data.areaLost,
+        underControl: underControl ?? state.data.underControl,
+        pestsAndDiseaseTypeName:
+            selectPetsAndDiseaseType?.pestsAndDiseaseTypeName ??
+                state.selectPetsAndDiseaseType?.pestsAndDiseaseTypeName,
+        pestsAndDiseaseTreatmentMethods:
+            selectPestsAndDiseasesRegisterTreatmentMethods
+                    ?.pestsAndDiseasesRegisterTreatmentMethodNo ??
+                state.data.pestsAndDiseaseTreatmentMethods,
+      ),
       carClosed: carClosed ?? state.carClosed,
       carRaised: carRaised ?? state.carRaised,
       selectPetsAndDiseaseType:
           selectPetsAndDiseaseType ?? state.selectPetsAndDiseaseType,
       selectPestsAndDiseasesRegisterTreatmentMethods: selectMethods,
     ));
+  }
+
+  Future<void> onSave(BuildContext context) async {
+    await cmoDatabaseMasterService
+        .cachePetsAndDiseaseFromFarm(state.data.copyWith(
+      isActive: true,
+      isMasterdataSynced: false,
+      pestsAndDiseasesRegisterNo:
+          DateTime.now().millisecondsSinceEpoch.toString(),
+      pestsAndDiseasesRegisterId: null,
+    ))
+        .then((value) {
+      if (value != null) {
+        showSnackSuccess(msg: 'Save Pests And Disease $value Successfully}');
+        Navigator.pop(context);
+      } else {
+        showSnackError(msg: 'Something was wrong, please try again.');
+      }
+    });
   }
 }

@@ -17,15 +17,11 @@ class PetsAndDiseasesState with _$PetsAndDiseasesState {
             selectPestsAndDiseasesRegisterTreatmentMethods,
     @Default([]) List<PetsAndDiseaseRegister> petsAndDiseaseRegisters,
     PestsAndDiseaseType? selectPetsAndDiseaseType,
-    PetsAndDiseaseRegister? data,
+    @Default(PetsAndDiseaseRegister()) PetsAndDiseaseRegister data,
     int? groupSchemeId,
     String? farmId,
     bool? carRaised,
     bool? carClosed,
-    bool? underControl,
-    String? comment,
-    int? areaLost,
-    int? numberOfOutbreaks,
     bool? isOpen,
   }) = _PetsAndDiseasesState;
 }
