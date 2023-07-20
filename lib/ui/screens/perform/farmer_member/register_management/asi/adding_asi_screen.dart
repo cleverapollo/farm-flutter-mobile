@@ -12,11 +12,10 @@ import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../../../model/asi_type/asi_type.dart';
+import 'package:cmo/model/asi_type/asi_type.dart';
 
 class AddingAsiScreen extends StatefulWidget {
-  AddingAsiScreen({Key? key}) : super(key: key);
+  const AddingAsiScreen({super.key});
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
@@ -24,7 +23,7 @@ class AddingAsiScreen extends StatefulWidget {
         MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (_) => RMAsiCubit()..initAddData(),
-                  child: AddingAsiScreen(),
+                  child: const AddingAsiScreen(),
                 )));
   }
 

@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/accident_and_incident.dart';
+import 'package:cmo/model/labour_management/farmer_worker.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
@@ -28,6 +29,9 @@ class AddingAAIScreen extends StatefulWidget {
 }
 
 class _AddingAAIScreenState extends State<AddingAAIScreen> {
+  final workers = ValueNotifier(<FarmerWorker>[]);
+  FarmerWorker? selectWorker;
+
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
@@ -53,6 +57,14 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     }
     carRaised = aai.carRaisedDate != null;
     carClosed = aai.carClosedDate != null;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final farm = await configService.getActiveFarm();
+
+      workers.value = await cmoDatabaseMasterService
+              .getFarmerWorkersByFarmId(farm?.farmId ?? '') ??
+          [];
+    });
   }
 
   Future<void> onSubmit() async {
@@ -77,7 +89,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
             dateResumeWork: value['DateResumeWork'] as DateTime?,
             natureOfInjuryId: value['natureOfInjury'] as int?,
             jobDescriptionId: value['jobDescription'] as int?,
-            workerId: value['WorkerId'] as int?);
+            workerId: int.tryParse(selectWorker?.workerId ?? ''));
 
         if (carRaised && aai.carRaisedDate == null) {
           aai = aai.copyWith(
@@ -197,32 +209,33 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
   }
 
   Widget _selectWorker() {
-    return CmoDropdown(
-      name: 'WorkerId',
-      hintText: LocaleKeys.worker.tr(),
-      validator: requiredValidator,
-      inputDecoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(8),
-        isDense: true,
-        hintText:
-            '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
-        hintStyle: context.textStyles.bodyNormal.grey,
-        border: UnderlineInputBorder(
-            borderSide: BorderSide(color: context.colors.grey)),
-        focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: context.colors.blue)),
-      ),
-      onChanged: (int? id) {
-        if (id == -1) {
-          _formKey.currentState!.fields['WorkerId']?.reset();
-        }
-      },
-      itemsData: [
-        CmoDropdownItem(id: -1, name: LocaleKeys.worker.tr()),
-        CmoDropdownItem(id: 0, name: 'Criminals'),
-        CmoDropdownItem(id: 1, name: 'Primary'),
-      ],
-    );
+    return ValueListenableBuilder(
+        valueListenable: workers,
+        builder: (_, value, __) {
+          return CmoDropdown<FarmerWorker>(
+              name: 'WorkerId',
+              hintText: LocaleKeys.worker.tr(),
+              validator: requiredValidator,
+              inputDecoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(8),
+                isDense: true,
+                hintText:
+                    '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
+                hintStyle: context.textStyles.bodyNormal.grey,
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: context.colors.grey)),
+                focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: context.colors.blue)),
+              ),
+              onChanged: (data) {
+                selectWorker = data!;
+                setState(() {});
+              },
+              initialValue: selectWorker,
+              itemsData: value
+                  .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
+                  .toList());
+        });
   }
 
   Widget _selectJobDescription() {
