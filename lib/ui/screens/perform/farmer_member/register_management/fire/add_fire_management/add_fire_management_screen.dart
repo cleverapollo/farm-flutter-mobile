@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/fire/fire_register.dart';
+import 'package:cmo/model/fire_cause/fire_cause.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_location_widget.dart';
@@ -30,6 +31,10 @@ class AddFireManagementScreen extends StatefulWidget {
 }
 
 class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
+  final fireCauses = ValueNotifier(<FireCause>[]);
+
+  FireCause? selectFireCause;
+
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
@@ -52,6 +57,13 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
     }
     carRaised = fireRegister.carRaisedDate != null;
     carClosed = fireRegister.carClosedDate != null;
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final farm = await configService.getActiveFarm();
+
+      fireCauses.value = await cmoDatabaseMasterService
+          .getFireCauseByGroupSchemeId(farm?.groupSchemeId ?? 0);
+    });
   }
 
   Future<void> onSubmit() async {
@@ -67,14 +79,22 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
         loading = true;
       });
       try {
+        if (selectFireCause == null) {
+          return showSnackError(msg: 'Required fields are missing.');
+        }
+
         await hideInputMethod();
+
         final farm = await configService.getActiveFarm();
         fireRegister = fireRegister.copyWith(
+          fireRegisterId: null,
+          fireRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
+          isActive: true,
+          isMasterdataSynced: false,
           extinguished: value['DateExtinguished'] as DateTime?,
           detected: value['DateDetected'] as DateTime?,
           farmId: farm?.farmId,
-          isMasterdataSynced: false,
-          fireCauseId: int.tryParse(value['FireCauseId'].toString()),
+          fireCauseId: selectFireCause?.fireCauseId ?? 0,
         );
 
         if (carRaised && fireRegister.carRaisedDate == null) {
@@ -245,35 +265,37 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
             style: context.textStyles.bodyBold.black,
           ),
         ),
-        CmoDropdown(
-          name: 'FireCauseId',
-          hintText: LocaleKeys.fireCause.tr(),
-          validator: requiredValidator,
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            isDense: true,
-            hintText:
-                '${LocaleKeys.select.tr()} ${LocaleKeys.fireCause.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.colors.grey),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.colors.blue),
-            ),
-          ),
-          onChanged: (int? id) {
-            if (id == -1) {
-              _formKey.currentState!.fields['FireCauseId']?.reset();
-            }
+        ValueListenableBuilder(
+          valueListenable: fireCauses,
+          builder: (_, value, __) {
+            return CmoDropdown<FireCause>(
+              name: 'FireCauseId',
+              hintText: LocaleKeys.fireCause.tr(),
+              validator: requiredValidator,
+              inputDecoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(8),
+                isDense: true,
+                hintText:
+                    '${LocaleKeys.select.tr()} ${LocaleKeys.fireCause.tr().toLowerCase()}',
+                hintStyle: context.textStyles.bodyNormal.grey,
+                border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: context.colors.grey),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: context.colors.blue),
+                ),
+              ),
+              onChanged: (data) {
+                selectFireCause = data;
+                setState(() {});
+              },
+              initialValue: selectFireCause,
+              itemsData: value
+                  .map((e) =>
+                      CmoDropdownItem(id: e, name: e.fireCauseName ?? ''))
+                  .toList(),
+            );
           },
-          itemsData: [
-            CmoDropdownItem(id: -1, name: LocaleKeys.fireCause.tr()),
-            CmoDropdownItem(id: 1, name: 'Fire Cause 1'),
-            CmoDropdownItem(id: 2, name: 'Fire Cause 2'),
-            CmoDropdownItem(id: 3, name: 'Fire Cause 3'),
-            CmoDropdownItem(id: 4, name: 'Fire Cause 4'),
-          ],
         ),
       ],
     );
