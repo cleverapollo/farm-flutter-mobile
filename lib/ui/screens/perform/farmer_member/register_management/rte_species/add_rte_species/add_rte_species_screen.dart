@@ -32,6 +32,12 @@ class AddRteSpeciesScreen extends StatefulWidget {
 }
 
 class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
+  final animalTypes = ValueNotifier(<AnimalType>[]);
+  final speciesRanges = ValueNotifier(<SpeciesRange>[]);
+
+  AnimalType? selectAnimalType;
+  SpeciesRange? selectSpeciesRange;
+
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
@@ -78,9 +84,15 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
         await hideInputMethod();
         final farm = await configService.getActiveFarm();
         rteSpecies = rteSpecies.copyWith(
+          isActive: true,
+          isMasterDataSynced: false,
+          rteSpeciesRegisterId: null,
+          rteSpeciesRegisterNo:
+              DateTime.now().millisecondsSinceEpoch.toString(),
           farmId: farm?.farmId,
           dateSpotted: value['DateSpotted'] as DateTime?,
-          speciesRangeId: int.tryParse(value['SpeciesRangeId'].toString()),
+          animalTypeId: selectAnimalType?.animalTypeId,
+          speciesRangeId: selectSpeciesRange?.speciesRangeId,
         );
 
         if (carRaised && rteSpecies.carRaisedDate == null) {
@@ -285,37 +297,38 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
             style: context.textStyles.bodyBold.black,
           ),
         ),
-        CmoDropdown(
-          name: 'SpeciesTypeId',
-          hintText: LocaleKeys.speciesType.tr(),
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 8,
-              horizontal: 12,
-            ),
-            isDense: true,
-            hintText:
-                '${LocaleKeys.select.tr()} ${LocaleKeys.speciesType.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.colors.grey),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.colors.blue),
-            ),
-          ),
-          onChanged: (int? id) {
-            if (id == -1) {
-              _formKey.currentState!.fields['SpeciesTypeId']?.reset();
-            }
+        ValueListenableBuilder(
+          valueListenable: animalTypes,
+          builder: (_, value, __) {
+            return CmoDropdown<AnimalType>(
+                name: 'SpeciesTypeId',
+                hintText: LocaleKeys.speciesType.tr(),
+                inputDecoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 12,
+                  ),
+                  isDense: true,
+                  hintText:
+                      '${LocaleKeys.select.tr()} ${LocaleKeys.speciesType.tr().toLowerCase()}',
+                  hintStyle: context.textStyles.bodyNormal.grey,
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: context.colors.grey),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: context.colors.blue),
+                  ),
+                ),
+                onChanged: (data) {
+                  selectAnimalType = data;
+                  setState(() {});
+                },
+                initialValue: selectAnimalType,
+                itemsData: value
+                    .map((e) =>
+                        CmoDropdownItem(id: e, name: e.animalTypeName ?? ''))
+                    .toList());
           },
-          itemsData: [
-            CmoDropdownItem(id: -1, name: LocaleKeys.speciesType.tr()),
-            CmoDropdownItem(id: 1, name: 'Species Type 1'),
-            CmoDropdownItem(id: 2, name: 'Species Type 2'),
-            CmoDropdownItem(id: 3, name: 'Species Type 3'),
-            CmoDropdownItem(id: 4, name: 'Species Type 4'),
-          ],
         ),
       ],
     );
@@ -335,37 +348,39 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
             style: context.textStyles.bodyBold.black,
           ),
         ),
-        CmoDropdown(
-          name: 'SpeciesRangeId',
-          hintText: LocaleKeys.speciesRange.tr(),
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 8,
-              horizontal: 12,
-            ),
-            isDense: true,
-            hintText:
-                '${LocaleKeys.select.tr()} ${LocaleKeys.speciesRange.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.colors.grey),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.colors.blue),
-            ),
-          ),
-          onChanged: (int? id) {
-            if (id == -1) {
-              _formKey.currentState!.fields['SpeciesRangeId']?.reset();
-            }
+        ValueListenableBuilder(
+          valueListenable: speciesRanges,
+          builder: (_, value, __) {
+            return CmoDropdown<SpeciesRange>(
+              name: 'SpeciesRangeId',
+              hintText: LocaleKeys.speciesRange.tr(),
+              inputDecoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 12,
+                ),
+                isDense: true,
+                hintText:
+                    '${LocaleKeys.select.tr()} ${LocaleKeys.speciesRange.tr().toLowerCase()}',
+                hintStyle: context.textStyles.bodyNormal.grey,
+                border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: context.colors.grey),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: context.colors.blue),
+                ),
+              ),
+              onChanged: (data) {
+                selectSpeciesRange = data;
+                setState(() {});
+              },
+              initialValue: selectSpeciesRange,
+              itemsData: value
+                  .map((e) =>
+                      CmoDropdownItem(id: e, name: e.speciesRangeName ?? ''))
+                  .toList(),
+            );
           },
-          itemsData: [
-            CmoDropdownItem(id: -1, name: LocaleKeys.speciesRange.tr()),
-            CmoDropdownItem(id: 1, name: 'Species Range 1'),
-            CmoDropdownItem(id: 2, name: 'Species Range 2'),
-            CmoDropdownItem(id: 3, name: 'Species Range 3'),
-            CmoDropdownItem(id: 4, name: 'Species Range 4'),
-          ],
         ),
       ],
     );
