@@ -87,7 +87,7 @@ class CmoDatabaseMasterService {
         RegionalManagerUnitSchema,
         RiskProfileQuestionSchema,
         RMScheduleSchema,
-        GroupSchemeStakeHolderSchema,
+        GroupSchemeStakeholderSchema,
         StakeHolderTypeSchema,
         AuditTemplateSchema,
         FarmSchema,
@@ -2619,9 +2619,9 @@ class CmoDatabaseMasterService {
     });
   }
 
-  Future<int> cacheGroupSchemeStakeHolder(GroupSchemeStakeHolder item) async {
+  Future<int> cacheGroupSchemeStakeholder(GroupSchemeStakeholder item) async {
     final db = await _db();
-    return db.groupSchemeStakeHolders.put(item);
+    return db.groupSchemeStakeholders.put(item);
   }
 
   Future<int> cacheStakeHolderType(StakeHolderType item) async {

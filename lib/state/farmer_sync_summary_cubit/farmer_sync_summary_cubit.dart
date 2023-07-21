@@ -1409,8 +1409,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
-      final rs = GroupSchemeStakeHolder.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheGroupSchemeStakeHolder(rs);
+      final rs = GroupSchemeStakeholder.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheGroupSchemeStakeholder(rs);
     } catch (e) {
       logger.d('insert error: $e');
     }

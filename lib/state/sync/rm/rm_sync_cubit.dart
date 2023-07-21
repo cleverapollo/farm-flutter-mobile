@@ -50,6 +50,67 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     emit(state.copyWith(groupScheme: groupScheme, rmUnit: rmUnit));
   }
 
+  Future<void> getSummaryInformation() async {
+
+    final summaryInformation = RmSyncSummaryInformation();
+    await cmoDatabaseMasterService.getAllAudits().then((audits) {
+      summaryInformation.unsyncedAudit = audits
+          .where(
+            (element) => element.completed == true && element.synced == false,
+          )
+          .toList()
+          .length;
+      summaryInformation.inProgressAudit = audits
+          .where(
+            (element) => element.completed == false && element.synced == false,
+          )
+          .toList()
+          .length;
+    });
+
+    await cmoDatabaseMasterService.getUnsyncedFarmsByRegionalManagerUnitId(rmuId).then((value) => summaryInformation.unsyncedFarm = value?.length ?? 0);
+
+    await cmoDatabaseMasterService.getFarmByRmuId(rmuId).then((value) => summaryInformation.totalFarms = value?.length ?? 0);
+
+    await cmoDatabaseMasterService.getAuditTemplatesByRMU(rmuId).then((value) => summaryInformation.auditTemplates = value.length);
+
+    await cmoDatabaseMasterService.getCompliancesByRmuId(rmuId: rmuId).then((value) => summaryInformation.compliances = value?.length ?? 0);
+
+    await cmoDatabaseMasterService.getCriterias().then((value) => summaryInformation.compliances = value.length);
+
+    await cmoDatabaseMasterService.getAllFarmMemberObjectiveByGroupSchemeId(groupSchemeId).then((value) => summaryInformation.farmMemberObjectives = value.length);
+
+    await cmoDatabaseMasterService.getFarmObjectiveOptionByGroupSchemeId(groupSchemeId).then((value) => summaryInformation.farmObjectivesOptions = value.length);
+
+    await cmoDatabaseMasterService.getFarmPropertyOwnershipType().then((value) => summaryInformation.farmPropertyOwnershipTypes = value.length);
+
+    await cmoDatabaseMasterService.getGroupSchemeStakeholderByGroupSchemeId(groupSchemeId).then((value) => summaryInformation.groupScheme = value.length);
+
+    await cmoDatabaseMasterService.getImpactCauseds().then((value) => summaryInformation.impactCaused = value.length);
+
+    await cmoDatabaseMasterService.getImpactOns().then((value) => summaryInformation.impactOn = value.length);
+
+    await cmoDatabaseMasterService.getIndicators().then((value) => summaryInformation.indicators = value.length);
+
+    await cmoDatabaseMasterService.getPrinciples().then((value) => summaryInformation.principle = value.length);
+
+    await cmoDatabaseMasterService.getFarmQuestionsByRmuId(rmuId: rmuId).then((value) => summaryInformation.question = value?.length ?? 0);
+
+    await cmoDatabaseMasterService.getRegionalManagerUnits().then((value) => summaryInformation.resourceManagementUnits = value.length);
+
+    await cmoDatabaseMasterService.getRejectReasons().then((value) => summaryInformation.rejectReasons = value.length);
+
+    await cmoDatabaseMasterService.getRiskProfileQuestionByGroupSchemeId(groupSchemeId).then((value) => summaryInformation.riskProfileQuestions = value.length);
+
+    await cmoDatabaseMasterService.getSeverities().then((value) => summaryInformation.severity = value.length);
+
+    await cmoDatabaseMasterService.getUnsycnedStakeholders().then((value) => summaryInformation.unsyncedStakeholders = value.length);
+
+    await cmoDatabaseMasterService.getStakeHolderTypes().then((value) => summaryInformation.stakeholderTypes = value.length);
+
+    emit(state.copyWith(rmSyncSummaryInformation: summaryInformation));
+  }
+
   Future<void> sync(BuildContext context) async {
     try {
       emit(
@@ -92,7 +153,9 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     }
   }
 
-  Future<void> syncSummary() async {
+  Future<void> syncSummary({
+    required VoidCallback onSuccess,
+  }) async {
     try {
       logger.d('--RM Sync Summary start--');
       await publishFarm();
@@ -117,7 +180,10 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             isLoading: false,
           ),
         );
-        await Future.delayed(const Duration(milliseconds: 500), () {});
+        await Future.delayed(const Duration(seconds: 2), () async {
+          await getSummaryInformation();
+          onSuccess.call();
+        });
       });
     } catch (e) {
       logger.e(e);
@@ -234,9 +300,11 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         logger.d('Unsynced audit: ${audits.length}');
 
         for (var audit in audits) {
-          final auditPayload = AuditPayload.fromAudit(audit).copyWith(
+          var auditPayload = AuditPayload.fromAudit(audit).copyWith(
             userDeviceId: userDeviceId,
           );
+
+          var auditQuestionAnswers = const AuditQuestionAnswers();
 
           final questionAnswers = await cmoDatabaseMasterService
               .getQuestionAnswersByRmuIdAndAuditTemplateIdAndAssessmentId(
@@ -245,27 +313,25 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             auditTemplateId: audit.auditTemplateId,
           );
 
+          auditQuestionAnswers = auditQuestionAnswers.copyWith(questionAnswer: questionAnswers);
+
           for (final answer in questionAnswers) {
-            auditPayload.auditQuestionAnswers!.questionAnswer.add(answer);
-            final questionComments =
-                await cmoDatabaseMasterService.getQuestionComments(
+            final questionComments = await cmoDatabaseMasterService.getQuestionComments(
               audit.assessmentId!,
               answer.questionId!,
             );
 
-            auditPayload.auditQuestionAnswers!.questionComment
-                .addAll(questionComments);
+            auditQuestionAnswers = auditQuestionAnswers.copyWith(questionComment: auditQuestionAnswers.questionComment + questionComments);
 
-            final questionPhotos = await cmoDatabaseMasterService
-                .getQuestionPhotosByAssessmentIdAndQuestionId(
+            final questionPhotos = await cmoDatabaseMasterService.getQuestionPhotosByAssessmentIdAndQuestionId(
               assessmentId: audit.assessmentId,
               questionId: answer.questionId,
             );
 
-            auditPayload.auditQuestionAnswers!.questionPhoto
-                .addAll(questionPhotos);
+            auditQuestionAnswers = auditQuestionAnswers.copyWith(questionPhoto: auditQuestionAnswers.questionPhoto + questionPhotos);
           }
 
+          auditPayload = auditPayload.copyWith(auditQuestionAnswers: auditQuestionAnswers);
           logger.d('Assign assessment/audit Payload to message $auditPayload');
 
           final message = Message(
@@ -366,8 +432,8 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
             logger.d('Try update group scheme stakeholder status to synced');
 
-            await cmoDatabaseMasterService.cacheGroupSchemeStakeHolder(
-              GroupSchemeStakeHolder.fromGroupSchemeStakeHolderPayLoad(
+            await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
+              GroupSchemeStakeholder.fromGroupSchemeStakeholderPayLoad(
                 groupSchemeStakeholderPayload.GroupSchemeStakeholder!.copyWith(
                   IsMasterDataSynced: 1,
                 ),
@@ -403,8 +469,8 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
-      final stakeHolder = GroupSchemeStakeHolder.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheGroupSchemeStakeHolder(stakeHolder);
+      final stakeholder = GroupSchemeStakeholder.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheGroupSchemeStakeholder(stakeholder);
     } catch (e) {
       logger.d('insert error: $e');
     }
