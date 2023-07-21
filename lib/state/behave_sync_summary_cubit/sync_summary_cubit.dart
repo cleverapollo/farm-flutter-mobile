@@ -109,7 +109,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
           ..add(_databaseMasterService.getSchedules().then((value) =>
               data = data.copyWith(schedulerUpcommingEvent: value.length)))
           ..add(_databaseMasterService
-              .getSeveritys()
+              .getSeverities()
               .then((value) => data = data.copyWith(mdSeverity: value.length)))
           ..add(_databaseMasterService.getScheduleActivitys().then((value) =>
               data = data.copyWith(mdScheduleActivity: value.length)))

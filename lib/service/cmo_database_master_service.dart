@@ -2294,9 +2294,29 @@ class CmoDatabaseMasterService {
     return db.regionalManagerUnits.put(item);
   }
 
+  Future<List<RegionalManagerUnit>> getRegionalManagerUnits() async {
+    final db = await _db();
+
+    return db.regionalManagerUnits
+        .filter()
+        .isActiveEqualTo(1)
+        .sortByRegionalManagerUnitName()
+        .findAll();
+  }
+
   Future<int> cacheRiskProfileQuestion(RiskProfileQuestion item) async {
     final db = await _db();
     return db.riskProfileQuestions.put(item);
+  }
+
+  Future<List<RiskProfileQuestion>> getRiskProfileQuestionByGroupSchemeId(int? groupSchemeId) async {
+    final db = await _db();
+
+    return db.riskProfileQuestions
+        .filter()
+        .groupSchemeIdEqualTo(groupSchemeId)
+        .isActiveEqualTo(true)
+        .findAll();
   }
 
   Future<int> cacheFarmMemberObjective(FarmMemberObjective item) async {
@@ -2309,7 +2329,7 @@ class CmoDatabaseMasterService {
     return db.farmObjectiveOptions.put(item);
   }
 
-  Future<List<Severity>> getSeveritys() async {
+  Future<List<Severity>> getSeverities() async {
     final db = await _db();
 
     return db.severitys
@@ -2400,6 +2420,18 @@ class CmoDatabaseMasterService {
         .filter()
         .regionalManagerUnitIdEqualTo(rmuId)
         .auditTemplateIdEqualTo(auditTemplateId)
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<FarmQuestion>?> getFarmQuestionsByRmuId({
+    int? rmuId,
+  }) async {
+    if (rmuId == null) return null;
+    final db = await _db();
+    return db.farmQuestions
+        .filter()
+        .regionalManagerUnitIdEqualTo(rmuId)
         .isActiveEqualTo(true)
         .findAll();
   }

@@ -96,7 +96,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   }
 
   Future<void> getCars() async {
-    final cars = await cmoDatabaseMasterService.getSeveritys();
+    final cars = await cmoDatabaseMasterService.getSeverities();
 
     // Only get minor and major item
     emit(
