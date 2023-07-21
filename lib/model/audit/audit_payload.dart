@@ -11,7 +11,7 @@ class AuditPayload with _$AuditPayload {
   const factory AuditPayload({
     @JsonKey(name: 'AssessmentId') required int? assessmentId,
     @JsonKey(name: 'IndicatorId') int? indicatorId,
-    @JsonKey(name: 'PrincipleId') int? principleId,
+    @Default(0) @JsonKey(name: 'PrincipleId') int? principleId,
     @JsonKey(name: 'AuditTemplateName') String? auditTemplateName,
     @JsonKey(name: 'AuditTemplateId') int? auditTemplateId,
     @JsonKey(name: 'CompartmentName') String? compartmentName,
@@ -19,8 +19,8 @@ class AuditPayload with _$AuditPayload {
     @JsonKey(name: 'FarmName') String? farmName,
     @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'Created') String? created,
-    @JsonKey(name: 'Lat') required double? lat,
-    @JsonKey(name: 'Lng') required double? lng,
+    @Default(0) @JsonKey(name: 'Lat') required double? lat,
+    @Default(0) @JsonKey(name: 'Lng') required double? lng,
     @JsonKey(name: 'UserId') required int? userId,
     @JsonKey(name: 'UserDeviceId') required int? userDeviceId,
     @JsonKey(name: 'Location') required String? location,
@@ -29,7 +29,7 @@ class AuditPayload with _$AuditPayload {
     @JsonKey(name: 'HasSignature') required String? hasSignature,
     @JsonKey(name: 'SignatureDate') required String? signatureDate,
     @JsonKey(name: 'UpdateDT') String? updateDT,
-    @JsonKey(name: 'AuditQuestionAnswers') AuditQuestionAnswers? auditQuestionAnswers,
+    @JsonKey(name: 'AssessmentQuestionAnswers') AssessmentQuestionAnswers? assessmentQuestionAnswers,
     @Default(false) @JsonKey(name: 'Completed') bool completed,
     @Default(false) @JsonKey(name: 'Synced') bool synced,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
@@ -56,21 +56,21 @@ class AuditPayload with _$AuditPayload {
       signatureDate: audit.signatureDate,
       hasSignature: audit.hasSignature,
       userDeviceId: null,
-      auditQuestionAnswers: const AuditQuestionAnswers(),
+      assessmentQuestionAnswers: AssessmentQuestionAnswers(),
     );
   }
 }
 
 @freezed
-class AuditQuestionAnswers with _$AuditQuestionAnswers {
-  const factory AuditQuestionAnswers({
+class AssessmentQuestionAnswers with _$AssessmentQuestionAnswers {
+  const factory AssessmentQuestionAnswers({
     @Default(<QuestionAnswer>[]) @JsonKey(name: 'QuestionAnswer') List<QuestionAnswer> questionAnswer,
     @Default(<QuestionComment>[]) @JsonKey(name: 'QuestionComment') List<QuestionComment> questionComment,
     @Default(<QuestionPhoto>[]) @JsonKey(name: 'QuestionPhoto') List<QuestionPhoto> questionPhoto,
-  }) = _AuditQuestionAnswers;
+  }) = _AssessmentQuestionAnswers;
 
-  const AuditQuestionAnswers._();
+  const AssessmentQuestionAnswers._();
 
-  factory AuditQuestionAnswers.fromJson(Map<String, dynamic> json) =>
-      _$AuditQuestionAnswersFromJson(json);
+  factory AssessmentQuestionAnswers.fromJson(Map<String, dynamic> json) =>
+      _$AssessmentQuestionAnswersFromJson(json);
 }

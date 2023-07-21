@@ -302,9 +302,10 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         for (var audit in audits) {
           var auditPayload = AuditPayload.fromAudit(audit).copyWith(
             userDeviceId: userDeviceId,
+            userId: userId,
           );
 
-          var auditQuestionAnswers = const AuditQuestionAnswers();
+          var auditQuestionAnswers = const AssessmentQuestionAnswers();
 
           final questionAnswers = await cmoDatabaseMasterService
               .getQuestionAnswersByRmuIdAndAuditTemplateIdAndAssessmentId(
@@ -331,7 +332,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             auditQuestionAnswers = auditQuestionAnswers.copyWith(questionPhoto: auditQuestionAnswers.questionPhoto + questionPhotos);
           }
 
-          auditPayload = auditPayload.copyWith(auditQuestionAnswers: auditQuestionAnswers);
+          auditPayload = auditPayload.copyWith(assessmentQuestionAnswers: auditQuestionAnswers);
           logger.d('Assign assessment/audit Payload to message $auditPayload');
 
           final message = Message(

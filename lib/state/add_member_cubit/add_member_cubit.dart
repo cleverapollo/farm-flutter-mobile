@@ -98,8 +98,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         town: farm.town,
         province: farm.province,
         addMemberSiteLocations: AddMemberSiteLocations(
-          lat: double.tryParse(farm.latitude ?? ''),
-          lng: double.tryParse(farm.longitude ?? ''),
+          lat: farm.latitude ?? 0.0,
+          lng: farm.longitude ?? 0.0,
           address: farm.streetName,
         ),
         addMemberCompartmentsState: AddMemberCompartmentsState(
@@ -373,8 +373,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         farm: state.farm?.copyWith(
           farmName: currentData.siteName,
           town: currentData.town,
-          latitude: currentData.addMemberSiteLocations.lat.toString(),
-          longitude: currentData.addMemberSiteLocations.lng.toString(),
+          latitude: currentData.addMemberSiteLocations.lat,
+          longitude: currentData.addMemberSiteLocations.lng,
           streetName: currentData.addMemberSiteLocations.address,
           province: currentData.province,
           farmSize: currentData.addMemberCompartmentsState.farmSize,

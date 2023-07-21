@@ -47,15 +47,15 @@ class _ResourceManagerSyncSummaryScreenState
         title: LocaleKeys.syncSummary.tr(),
         showLeading: true,
       ),
-      body: BlocSelector<RMSyncCubit, RMSyncState, RmSyncSummaryInformation?>(
-        selector: (state) => state.rmSyncSummaryInformation,
-        builder: (context, summaryInformation) {
-          if (summaryInformation == null) return const SizedBox.shrink();
-          return RefreshIndicator(
-            onRefresh: () async {},
-            child: Stack(
-              children: [
-                SingleChildScrollView(
+      body: RefreshIndicator(
+        onRefresh: () async {},
+        child: Stack(
+          children: [
+            BlocSelector<RMSyncCubit, RMSyncState, RmSyncSummaryInformation?>(
+              selector: (state) => state.rmSyncSummaryInformation,
+              builder: (context, summaryInformation) {
+                if (summaryInformation == null) return const SizedBox.shrink();
+                return SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -195,27 +195,45 @@ class _ResourceManagerSyncSummaryScreenState
                         count: summaryInformation.stakeholderTypes,
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).padding.bottom + 50,
+                        height: MediaQuery
+                            .of(context)
+                            .padding
+                            .bottom + 50,
                       ),
                     ],
                   ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom,
-                    ),
-                    child: CmoFilledButton(
-                      onTap: () async {},
-                      title: LocaleKeys.sync.tr(),
-                    ),
-                  ),
-                ),
-              ],
+                );
+              },
             ),
-          );
-        },
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery
+                      .of(context)
+                      .padding
+                      .bottom,
+                ),
+                child: BlocSelector<RMSyncCubit, RMSyncState, bool>(
+                  selector: (state) => state.isLoading,
+                  builder: (context, isLoading) {
+                    return CmoFilledButton(
+                      loading: isLoading,
+                      title: LocaleKeys.sync.tr(),
+                      onTap: () async {
+                        await context.read<RMSyncCubit>().syncSummary(
+                          onSuccess: () async {
+                            await context.read<DashboardCubit>().initializeRM();
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
