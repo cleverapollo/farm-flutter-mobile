@@ -1060,6 +1060,15 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<GroupSchemeStakeholder?> getGroupSchemeStakeholderByStakeholderId(String id) async {
+    final db = await _db();
+
+    return db.groupSchemeStakeholders
+        .filter()
+        .stakeholderIdEqualTo(id)
+        .findFirst();
+  }
+
   Future<List<StakeHolder>> getUnsycnedStakeholders() async {
     final db = await _db();
 

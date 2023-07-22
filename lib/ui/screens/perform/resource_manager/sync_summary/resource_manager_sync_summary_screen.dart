@@ -223,6 +223,7 @@ class _ResourceManagerSyncSummaryScreenState
                       onTap: () async {
                         await context.read<RMSyncCubit>().syncSummary(
                           onSuccess: () async {
+                            showSnackSuccess(msg: 'The summary sync was successful!');
                             await context.read<DashboardCubit>().initializeRM();
                           },
                         );

@@ -8,6 +8,7 @@ import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/widgets/input_text_field_with_title.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/helpers.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -76,7 +77,7 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
         await hideInputMethod();
         value['StakeHolderId'] = widget.isEditing
             ? widget.stakeHolder?.stakeHolderId
-            : DateTime.now().millisecondsSinceEpoch;
+            : DateTime.now().millisecondsSinceEpoch.toString();
         value['IsActive'] = 1;
         final stakeHolder = StakeHolder.fromJson(value);
 
@@ -90,11 +91,41 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
           });
         }
 
+        if (widget.isEditing) {
+          final groupSchemeStakeholder = await cmoDatabaseMasterService
+              .getGroupSchemeStakeholderByStakeholderId(
+            stakeHolder.stakeHolderId!,
+          );
+          if (groupSchemeStakeholder != null) {
+            await (await cmoDatabaseMasterService.db).writeTxn(() async {
+              await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
+                groupSchemeStakeholder.copyWith(
+                  isMasterDataSynced: 0,
+                ),
+              );
+            });
+          }
+        } else {
+          final activeGroupScheme = await configService.getActiveGroupScheme();
+          final groupSchemeStakeholder =
+              const GroupSchemeStakeholder().copyWith(
+            groupSchemeId: activeGroupScheme?.groupSchemeId,
+            stakeholderId: stakeHolder.stakeHolderId,
+            isMasterDataSynced: 0,
+            groupSchemeStakeholderId: DateTime.now().millisecondsSinceEpoch.toString(),
+          );
+
+          await (await cmoDatabaseMasterService.db).writeTxn(() async {
+            await cmoDatabaseMasterService
+                .cacheGroupSchemeStakeholder(groupSchemeStakeholder);
+          });
+        }
+
         if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
               msg:
-                  '${widget.isEditing ? 'Edit Stakeholder' : LocaleKeys.createNewStakeholder.tr()} $resultId',
+                  '${widget.isEditing ? LocaleKeys.edit_stakeholder.tr() : LocaleKeys.createNewStakeholder.tr()} $resultId',
             );
 
             await context.read<StakeHolderListCubit>().refresh();
@@ -117,8 +148,8 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
       child: Scaffold(
         appBar: CmoAppBar(
           title: widget.isEditing
-              ? 'Edit Stakeholder'
-              : LocaleKeys.addStakeholders.tr(),
+              ? LocaleKeys.edit_stakeholder.tr()
+              : LocaleKeys.add_stakeholder.tr(),
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
         ),
