@@ -21,7 +21,7 @@ class StakeHolder with _$StakeHolder {
       cell: stakeholderPayLoad.Cell,
       contactName: stakeholderPayLoad.ContactName,
       email: stakeholderPayLoad.Email,
-      stakeHolderId: int.tryParse(stakeholderPayLoad.StakeholderId ?? ''),
+      stakeHolderId: stakeholderPayLoad.StakeholderId,
       stakeholderName: stakeholderPayLoad.StakeholderName,
       stakeHolderTypeId: stakeholderPayLoad.StakeholderTypeId,
       tel: stakeholderPayLoad.Tel,
@@ -29,7 +29,7 @@ class StakeHolder with _$StakeHolder {
   }
 
   const factory StakeHolder({
-    @JsonKey(name: 'StakeHolderId') int? stakeHolderId,
+    @JsonKey(name: 'StakeHolderId') String? stakeHolderId,
     @JsonKey(name: 'StakeholderName') String? stakeholderName,
     @JsonKey(name: 'StakeholderTypeId') String? stakeHolderTypeId,
     @JsonKey(name: 'ContactName') String? contactName,
@@ -39,7 +39,7 @@ class StakeHolder with _$StakeHolder {
     @JsonKey(name: 'Tel') String? tel,
     @JsonKey(name: 'Cell') String? cell,
     @Default(1) @JsonKey(name: 'IsActive') int? isActive,
-    @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
+    @Default(0) @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _StakeHolder;
 
   const StakeHolder._();
@@ -48,7 +48,7 @@ class StakeHolder with _$StakeHolder {
       _$StakeHolderFromJson(json);
 
   @override
-  Id get id => stakeHolderId ?? Isar.autoIncrement;
+  Id get id => int.tryParse(stakeHolderId ?? '') ?? Isar.autoIncrement;
 }
 
 extension StakeHolderX on StakeHolder {

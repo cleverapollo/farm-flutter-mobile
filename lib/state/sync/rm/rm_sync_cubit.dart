@@ -243,7 +243,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           );
 
           if (isPublicFarm) {
-            await cmoDatabaseMasterService.cacheFarm(
+            await cmoDatabaseMasterService.cacheFarmAddMember(
               farm.copyWith(
                 isMasterDataSynced: 1,
                 canDelete: 0,
@@ -422,26 +422,28 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           );
 
           if (isPublic) {
-            logger.d('Try update stakeholder status to synced');
-            await cmoDatabaseMasterService.cacheStakeHolder(
-              StakeHolder.fromStakeholderPayLoad(
-                groupSchemeStakeholderPayload.Stakeholder!.copyWith(
-                  IsMasterDataSynced: 1,
+            await (await cmoDatabaseMasterService.db).writeTxn(() async {
+              logger.d('Try update stakeholder status to synced');
+              await cmoDatabaseMasterService.cacheStakeHolder(
+                StakeHolder.fromStakeholderPayLoad(
+                  groupSchemeStakeholderPayload.Stakeholder!.copyWith(
+                    IsMasterDataSynced: 1,
+                  ),
                 ),
-              ),
-            );
+              );
 
-            logger.d('Try update group scheme stakeholder status to synced');
+              logger.d('Try update group scheme stakeholder status to synced');
 
-            await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
-              GroupSchemeStakeholder.fromGroupSchemeStakeholderPayLoad(
-                groupSchemeStakeholderPayload.GroupSchemeStakeholder!.copyWith(
-                  IsMasterDataSynced: 1,
+              await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
+                GroupSchemeStakeholder.fromGroupSchemeStakeholderPayLoad(
+                  groupSchemeStakeholderPayload.GroupSchemeStakeholder!.copyWith(
+                    IsMasterDataSynced: 1,
+                  ),
                 ),
-              ),
-            );
+              );
 
-            logger.d('Successfully published groupSchemeStakeholderId: ${groupSchemeStakeholderPayload.GroupSchemeStakeholder?.GroupSchemeStakeholderId}');
+              logger.d('Successfully published groupSchemeStakeholderId: ${groupSchemeStakeholderPayload.GroupSchemeStakeholder?.GroupSchemeStakeholderId}');
+            });
           } else {
             logger.e('Failed to publish groupSchemeStakeholderId: ${groupSchemeStakeholderPayload.GroupSchemeStakeholder?.GroupSchemeStakeholderId}');
           }

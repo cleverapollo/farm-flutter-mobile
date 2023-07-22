@@ -11,6 +11,7 @@ import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uuid/uuid.dart';
 
 class AddMemberCubit extends Cubit<AddMemberState> {
   AddMemberCubit() : super(const AddMemberState());
@@ -269,6 +270,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           AddMemberSLIMF(isSlimfCompliant: isSlimf, isComplete: true),
     ));
 
+    checkIsProspectMember();
     if (state.addMemberSLIMF.isComplete) {
       await cacheFarm();
     }
@@ -406,9 +408,41 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       ),
     ));
 
+    checkIsProspectMember();
     if (state.addMemberMPO.isComplete) {
       await cacheFarm();
     }
+  }
+
+  void checkIsProspectMember() {
+    emit(
+      state.copyWith(
+        farm: state.farm?.copyWith(
+          isProspectMember: state.addMemberSLIMF.isComplete &&
+              state.addMemberMPO.isComplete &&
+              state.addMemberMDetails.isComplete,
+        ),
+      ),
+    );
+  }
+
+  void checkIsGroupSchemeMember() {
+    emit(
+      state.copyWith(
+        farm: state.farm?.copyWith(
+          isGroupSchemeMember: state.addMemberSLIMF.isComplete &&
+              state.addMemberMPO.isComplete &&
+              state.addMemberMDetails.isComplete &&
+              state.addMemberSDetails.isComplete &&
+              state.addMemberInclusionDate.isComplete &&
+              state.addMemberMRA.isComplete &&
+              state.addMemberMFO.isComplete &&
+              state.addMemberContract.isComplete &&
+              state.addMemberSAF.isComplete &&
+              state.addMemberClose.isComplete,
+        ),
+      ),
+    );
   }
 
   Future<void> onExpansionChangedMPO(bool isExpansionOpen) async {
@@ -449,35 +483,36 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         ),
         addMemberMRA: state.addMemberMRA.copyWith(isComplete: isComplete)));
 
+    var now = DateTime.now().millisecondsSinceEpoch;
     if (isComplete) {
       final listAnswer = [
         FarmMemberRiskProfileAnswer(
-          farmMemberRiskProfileAnswerId:
-              DateTime.now().microsecondsSinceEpoch.toString(),
+          farmMemberRiskProfileAnswerNo: (now++).toString(),
+          farmMemberRiskProfileAnswerId: const Uuid().v4(),
           farmId: state.farm?.farmId,
           riskProfileQuestionId: 1,
           answer: state.addMemberMRA.firstAnswer,
           isActive: true,
         ),
         FarmMemberRiskProfileAnswer(
-          farmMemberRiskProfileAnswerId:
-              DateTime.now().microsecondsSinceEpoch.toString(),
+          farmMemberRiskProfileAnswerNo: (now++).toString(),
+          farmMemberRiskProfileAnswerId: const Uuid().v4(),
           farmId: state.farm?.farmId,
           riskProfileQuestionId: 2,
           answer: state.addMemberMRA.secondAnswer,
           isActive: true,
         ),
         FarmMemberRiskProfileAnswer(
-          farmMemberRiskProfileAnswerId:
-              DateTime.now().microsecondsSinceEpoch.toString(),
+          farmMemberRiskProfileAnswerNo: (now++).toString(),
+          farmMemberRiskProfileAnswerId: const Uuid().v4(),
           farmId: state.farm?.farmId,
           riskProfileQuestionId: 3,
           answer: state.addMemberMRA.thirdAnswer,
           isActive: true,
         ),
         FarmMemberRiskProfileAnswer(
-          farmMemberRiskProfileAnswerId:
-              DateTime.now().microsecondsSinceEpoch.toString(),
+          farmMemberRiskProfileAnswerNo: (now++).toString(),
+          farmMemberRiskProfileAnswerId: const Uuid().v4(),
           farmId: state.farm?.farmId,
           riskProfileQuestionId: 4,
           answer: state.addMemberMRA.fourthAnswer,
@@ -525,35 +560,36 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     emit(state.copyWith(
         addMemberMFO: state.addMemberMFO.copyWith(isComplete: isComplete)));
 
+    var now = DateTime.now().millisecondsSinceEpoch;
     if (isComplete) {
       final listAnwser = [
         FarmMemberObjectiveAnswer(
-          farmMemberObjectiveAnswerId:
-              DateTime.now().microsecondsSinceEpoch.toString(),
+          farmMemberObjectiveAnswerId: const Uuid().v4(),
+          farmMemberObjectiveAnswerNo: (now++).toString(),
           farmId: state.farm?.farmId,
           farmObjectiveOptionId: 1,
           farmMemberObjectiveId: state.addMemberMFO.firstAnswer,
           isActive: true,
         ),
         FarmMemberObjectiveAnswer(
-          farmMemberObjectiveAnswerId:
-              DateTime.now().microsecondsSinceEpoch.toString(),
+          farmMemberObjectiveAnswerId: const Uuid().v4(),
+          farmMemberObjectiveAnswerNo: (now++).toString(),
           farmId: state.farm?.farmId,
           farmObjectiveOptionId: 2,
           farmMemberObjectiveId: state.addMemberMFO.secondAnswer,
           isActive: true,
         ),
         FarmMemberObjectiveAnswer(
-          farmMemberObjectiveAnswerId:
-              DateTime.now().microsecondsSinceEpoch.toString(),
+          farmMemberObjectiveAnswerId: const Uuid().v4(),
+          farmMemberObjectiveAnswerNo: (now++).toString(),
           farmId: state.farm?.farmId,
           farmObjectiveOptionId: 3,
           farmMemberObjectiveId: state.addMemberMFO.thirdAnswer,
           isActive: true,
         ),
         FarmMemberObjectiveAnswer(
-          farmMemberObjectiveAnswerId:
-              DateTime.now().microsecondsSinceEpoch.toString(),
+          farmMemberObjectiveAnswerId: const Uuid().v4(),
+          farmMemberObjectiveAnswerNo: (now++).toString(),
           farmId: state.farm?.farmId,
           farmObjectiveOptionId: 4,
           farmMemberObjectiveId: state.addMemberMFO.fourthAnswer,
@@ -612,6 +648,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         addMemberMDetails:
             state.addMemberMDetails.copyWith(isComplete: isComplete)));
 
+    checkIsProspectMember();
     if (isComplete) {
       await cacheFarm();
     }
@@ -650,6 +687,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         isComplete: true,
       )));
 
+      checkIsGroupSchemeMember();
       await cacheFarm();
     }
   }

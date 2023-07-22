@@ -1065,7 +1065,7 @@ class CmoDatabaseMasterService {
 
     return db.stakeHolders
         .filter()
-        .isMasterDataSyncedEqualTo(1)
+        .isMasterDataSyncedEqualTo(0)
         .findAll();
   }
 

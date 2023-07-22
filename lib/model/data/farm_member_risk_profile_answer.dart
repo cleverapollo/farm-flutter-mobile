@@ -9,10 +9,8 @@ part 'farm_member_risk_profile_answer.g.dart';
 @Collection(ignore: {'copyWith'})
 class FarmMemberRiskProfileAnswer with _$FarmMemberRiskProfileAnswer {
   const factory FarmMemberRiskProfileAnswer({
-    @JsonKey(name: 'FarmMemberRiskProfileAnswerId')
-        String? farmMemberRiskProfileAnswerId,
-    @JsonKey(name: 'FarmMemberRiskProfileAnswerNo')
-        String? farmMemberRiskProfileAnswerNo,
+    @JsonKey(name: 'FarmMemberRiskProfileAnswerId') String? farmMemberRiskProfileAnswerId,
+    @JsonKey(name: 'FarmMemberRiskProfileAnswerNo') String? farmMemberRiskProfileAnswerNo,
     @JsonKey(name: 'RiskProfileQuestionId') int? riskProfileQuestionId,
     @JsonKey(name: 'Answer') bool? answer,
     @JsonKey(name: 'FarmId') String? farmId,

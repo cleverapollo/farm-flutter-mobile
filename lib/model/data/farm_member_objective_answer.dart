@@ -9,10 +9,8 @@ part 'farm_member_objective_answer.g.dart';
 @Collection(ignore: {'copyWith'})
 class FarmMemberObjectiveAnswer with _$FarmMemberObjectiveAnswer {
   const factory FarmMemberObjectiveAnswer({
-    @JsonKey(name: 'FarmMemberObjectiveAnswerId')
-        String? farmMemberObjectiveAnswerId,
-    @JsonKey(name: 'FarmMemberObjectiveAnswerNo')
-        String? farmMemberObjectiveAnswerNo,
+    @JsonKey(name: 'FarmMemberObjectiveAnswerId') String? farmMemberObjectiveAnswerId,
+    @JsonKey(name: 'FarmMemberObjectiveAnswerNo') String? farmMemberObjectiveAnswerNo,
     @JsonKey(name: 'FarmMemberObjectiveId') int? farmMemberObjectiveId,
     @JsonKey(name: 'FarmObjectiveOptionId') int? farmObjectiveOptionId,
     @JsonKey(name: 'FarmId') String? farmId,
