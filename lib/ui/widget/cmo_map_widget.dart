@@ -11,22 +11,22 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/src/types/location.dart'
     as map;
 
-enum MapType {
+enum GoogleMapType {
   markerSingle,
   markerSingleWithPhotos;
 
   bool get isMarkerSingleWithPhotos {
-    return this == MapType.markerSingleWithPhotos;
+    return this == GoogleMapType.markerSingleWithPhotos;
   }
 
   bool get isMarkerSingle {
-    return this == MapType.markerSingle;
+    return this == GoogleMapType.markerSingle;
   }
 }
 
 class CmoMapWidget extends StatefulWidget {
   const CmoMapWidget._({
-    required this.mapType,
+    required this.googleMapType,
     required this.points,
     required this.marker,
     required this.height,
@@ -41,7 +41,7 @@ class CmoMapWidget extends StatefulWidget {
     double? width,
   }) {
     return CmoMapWidget._(
-      mapType: MapType.markerSingle,
+      googleMapType: GoogleMapType.markerSingle,
       points: [initialPoint],
       marker: marker,
       height: height,
@@ -57,7 +57,7 @@ class CmoMapWidget extends StatefulWidget {
     Key? key,
   }) {
     return CmoMapWidget._(
-      mapType: MapType.markerSingleWithPhotos,
+      googleMapType: GoogleMapType.markerSingleWithPhotos,
       points: initialPoint != null ? [initialPoint] : [],
       marker: marker,
       height: height,
@@ -68,7 +68,7 @@ class CmoMapWidget extends StatefulWidget {
 
   final double? height;
   final double? width;
-  final MapType mapType;
+  final GoogleMapType googleMapType;
   final List<LatLng> points;
   final void Function(LatLng point)? marker;
 
@@ -103,6 +103,7 @@ class CmoMapWidgetState extends State<CmoMapWidget> {
               GoogleMap(
                 initialCameraPosition:
                     const CameraPosition(target: Constants.mapCenter, zoom: 14),
+                mapType: MapType.satellite,
                 onMapCreated: (GoogleMapController controller) {
                   _controller = controller;
                   Geolocator.checkPermission().then((permission) async {
@@ -164,7 +165,7 @@ class CmoMapWidgetState extends State<CmoMapWidget> {
           ),
         ),
         Visibility(
-          visible: widget.mapType.isMarkerSingleWithPhotos,
+          visible: widget.googleMapType.isMarkerSingleWithPhotos,
           child: buttonsListWidget(),
         ),
       ],

@@ -145,7 +145,7 @@ class CmoMapState extends State<CmoMap> {
             children: [
               Positioned.fill(
                 child: GoogleMap(
-                  mapType: MapType.hybrid,
+                  mapType: MapType.satellite,
                   onMapCreated: (controller) {
                     mapController = controller;
                     checkPermission();

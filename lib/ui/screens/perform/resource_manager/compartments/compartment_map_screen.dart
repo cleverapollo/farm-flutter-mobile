@@ -111,7 +111,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                       target: Constants.mapCenter, zoom: 14),
                   polylines: _polylines(),
                   polygons: _polygon(),
-                  mapType: _mapType,
+                  mapType: MapType.satellite,
                   onMapCreated: (GoogleMapController controller) {
                     _controller = controller;
                     Geolocator.checkPermission().then((permission) async {
