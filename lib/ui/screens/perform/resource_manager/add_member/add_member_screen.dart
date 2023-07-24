@@ -507,6 +507,42 @@ class _AddMemberSDetails extends StatelessWidget {
                     );
                   },
                 ),
+                BlocSelector<AddMemberCubit, AddMemberState, double?>(
+                  selector: (state) => state
+                      .addMemberSDetails.addMemberCompartmentsState.farmSize,
+                  builder: (context, farmSize) {
+                    if (farmSize == null || farmSize == 0) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return Container(
+                      padding: const EdgeInsets.all(12),
+                      margin: const EdgeInsets.only(top: 16),
+                      decoration: BoxDecoration(
+                          color: context.colors.white,
+                          border: Border.all(width: 1, color: context.colors.grey),
+                          borderRadius: BorderRadius.circular(12),
+                      ),
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          Text(
+                            LocaleKeys.total_hectares.tr(),
+                            style: context.textStyles.titleBold
+                                .copyWith(fontSize: 16),
+                          ),
+                          Expanded(
+                            child: Text(
+                              '${farmSize.toStringAsFixed(2)}${LocaleKeys.ha_unit.tr()}',
+                              style: context.textStyles.bodyNormal.copyWith(fontSize: 16),
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 12),
                 _buildTitle(context, 'ASI'),
                 CmoDropDownLayoutWidget(
