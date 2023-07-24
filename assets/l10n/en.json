@@ -82,6 +82,8 @@
   "groupScheme": "Group Scheme",
   "groupSchemeManagement": "Group Scheme Management",
   "ha": "Hectar",
+  "ha_unit": "ha",
+  "total_hectares": "Total Hectares",
   "iNameDeclareThatIWasAssessedByEmailOnDate": "I {name}, declare that I was assessed by {email} on {date}",
   "idNumber": "Passport or ID Number",
   "income": "Income",

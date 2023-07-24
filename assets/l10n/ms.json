@@ -84,6 +84,8 @@
   "groupScheme": "Skim Kumpulan",
   "groupSchemeManagement": "Pengurusan Skim Kumpulan",
   "ha": "Hektar",
+  "ha_unit": "ha",
+  "total_hectares": "Total Hectares",
   "iNameDeclareThatIWasAssessedByEmailOnDate": "I {name}, declare that I was assessed by {email} on {date}",
   "idNumber": "Nombor Pasport atau Nombor Kad Pengenalan",
   "income": "Pendapatan",

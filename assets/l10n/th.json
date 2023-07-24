@@ -82,6 +82,8 @@
   "groupScheme": "โครงการกลุ่ม",
   "groupSchemeManagement": "การจัดการโครงการกลุ่ม",
   "ha": "เฮกแตร์",
+  "ha_unit": "ha",
+  "total_hectares": "Total Hectares",
   "iNameDeclareThatIWasAssessedByEmailOnDate": "I {name}, declare that I was assessed by {email} on {date}",
   "idNumber": "เลขประจำตัวประชาชน",
   "income": "รายได้",

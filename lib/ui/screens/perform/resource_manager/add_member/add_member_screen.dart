@@ -461,6 +461,42 @@ class _AddMemberSDetails extends StatelessWidget {
                     }
                   },
                 ),
+                BlocSelector<AddMemberCubit, AddMemberState, double?>(
+                  selector: (state) => state
+                      .addMemberSDetails.addMemberCompartmentsState.farmSize,
+                  builder: (context, farmSize) {
+                    if (farmSize == null || farmSize == 0) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return Container(
+                      padding: const EdgeInsets.all(12),
+                      margin: const EdgeInsets.only(top: 16),
+                      decoration: BoxDecoration(
+                          color: context.colors.white,
+                          border: Border.all(width: 1, color: context.colors.grey),
+                          borderRadius: BorderRadius.circular(12),
+                      ),
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          Text(
+                            LocaleKeys.total_hectares.tr(),
+                            style: context.textStyles.titleBold
+                                .copyWith(fontSize: 16),
+                          ),
+                          Expanded(
+                            child: Text(
+                              '${farmSize.toStringAsFixed(2)}${LocaleKeys.ha_unit.tr()}',
+                              style: context.textStyles.bodyNormal.copyWith(fontSize: 16),
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 12),
                 _buildTitle(context, 'ASI'),
                 CmoDropDownLayoutWidget(
@@ -491,31 +527,6 @@ class _AddMemberSDetails extends StatelessWidget {
       child: Text(
         text,
         style: context.textStyles.bodyBold,
-      ),
-    );
-  }
-
-  Widget _buildItem(
-      Province province, BuildContext context, AddMemberCubit cubit) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: InkWell(
-        onTap: () {
-          cubit.onDataChangeSiteDetail(provinceSelected: province);
-        },
-        child: Container(
-          margin: const EdgeInsets.all(8),
-          padding: const EdgeInsets.all(8),
-          width: double.maxFinite,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(width: 1),
-          ),
-          child: Text(
-            province.provinceName ?? '',
-            style: context.textStyles.bodyBold,
-          ),
-        ),
       ),
     );
   }

@@ -83,6 +83,8 @@
   "groupScheme": "UHLELO LWEQEMBU",
   "groupSchemeManagement": "UKUPHATHWA KWEQEMBU",
   "ha": "AMAHETHA",
+  "ha_unit": "ha",
+  "total_hectares": "Total Hectares",
   "iNameDeclareThatIWasAssessedByEmailOnDate": "I {name}, declare that I was assessed by {email} on {date}",
   "idNumber": "INOMBOLO YE ID",
   "income": "IMALI ENGENAYO",
