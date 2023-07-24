@@ -70,7 +70,10 @@ class CmoDropDownLayoutWidget extends StatelessWidget {
                 if (trailingWidget != null)
                   trailingWidget!
                 else
-                  const Icon(Icons.keyboard_arrow_down),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Assets.icons.icArrowRight.svgBlack,
+                  ),
               ],
             ),
           ),
