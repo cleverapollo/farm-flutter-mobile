@@ -35,4 +35,34 @@ extension QuestionPhotoExtension on QuestionPhoto {
         PhotoPath: photo,
     );
   }
+
+  QuestionPhotoPayloadWithBase64 toPayLoadWithBase64() {
+    return QuestionPhotoPayloadWithBase64(
+      photoId: photoId,
+      assessmentId: assessmentId,
+      questionId: questionId,
+      photo: 'data:image/jpeg;base64,$photo',
+      normalisedPhotoURL: normalisedPhotoURL,
+      photoURL: photoURL,
+    );
+  }
+}
+
+@freezed
+class QuestionPhotoPayloadWithBase64 with _$QuestionPhotoPayloadWithBase64 {
+  const factory QuestionPhotoPayloadWithBase64({
+    @JsonKey(name: 'PhotoId') required int? photoId,
+    @JsonKey(name: 'AssessmentId') required int? assessmentId,
+    @JsonKey(name: 'QuestionId') required int? questionId,
+    @JsonKey(name: 'PhotoURL') String? photoURL,
+    @JsonKey(name: 'NormalisedPhotoURL') String? normalisedPhotoURL,
+    @JsonKey(name: 'Photo') required String? photo,
+  }) = _QuestionPhotoPayloadWithBase64;
+
+  factory QuestionPhotoPayloadWithBase64.fromJson(Map<String, dynamic> json) =>
+      _$QuestionPhotoPayloadWithBase64FromJson(json);
+  const QuestionPhotoPayloadWithBase64._();
+
+  @override
+  Id get id => photoId ?? Isar.autoIncrement;
 }

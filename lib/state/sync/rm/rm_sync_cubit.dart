@@ -235,6 +235,14 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             ),
           );
 
+          debugPrint(jsonEncode(
+            farm
+                .copyWith(
+              objectiveAnswers: objectiveAnswers,
+              riskProfileAnswers: riskProfileAnswers,
+            )
+                .toJson(),
+          ));
           logger.d('Publish message to topic $publishFarmTopic');
           final isPublicFarm = await cmoPerformApiService.public(
             currentClientId: userDeviceId.toString(),
@@ -329,7 +337,10 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
               questionId: answer.questionId,
             );
 
-            auditQuestionAnswers = auditQuestionAnswers.copyWith(questionPhoto: auditQuestionAnswers.questionPhoto + questionPhotos);
+            auditQuestionAnswers = auditQuestionAnswers.copyWith(
+              questionPhoto: auditQuestionAnswers.questionPhoto +
+                  questionPhotos.map((e) => e.toPayLoadWithBase64()).toList(),
+            );
           }
 
           auditPayload = auditPayload.copyWith(assessmentQuestionAnswers: auditQuestionAnswers);

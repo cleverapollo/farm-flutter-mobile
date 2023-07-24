@@ -85,8 +85,7 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
       try {
         await hideInputMethod();
         if (context.mounted) {
-          final rejectReasonId =
-              value['rejectId'] as int? ?? widget.answer?.rejectReasonId;
+          final rejectReasonId = value['rejectId'] as int? ?? widget.answer?.rejectReasonId;
           final comment = value['Comment']?.toString() ?? '';
           var success = false;
           if (widget.comment == null) {

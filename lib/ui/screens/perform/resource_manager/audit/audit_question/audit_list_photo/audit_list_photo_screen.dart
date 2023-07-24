@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cmo/gen/assets.gen.dart';
@@ -10,6 +11,7 @@ import 'package:cmo/state/audit_list_questions_cubit/audit_list_questions_cubit.
 import 'package:cmo/state/audit_question_photo/audit_question_photo_cubit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_question_photo_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/utils/file_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -69,8 +71,9 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
           loading = true;
         });
 
+        final base64 = await FileUtil.toBase64(await FileUtil.writeToFileWithUint8List(await croppedImage.readAsBytes()));
         await context.read<AuditQuestionPhotoCubit>().addPhoto(
-              photoPath: croppedImage.path,
+              photoPath: base64,
             );
 
         setState(() {
@@ -84,14 +87,16 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
     final croppedImage = await _imagePickerService.pickImageFromGallery(
       title: DateTime.now().toString(),
     );
+
     if (croppedImage != null) {
       setState(() {
         loading = true;
       });
 
+      final base64 = await FileUtil.toBase64(await FileUtil.writeToFileWithUint8List(await croppedImage.readAsBytes()));
       if (context.mounted) {
         await context.read<AuditQuestionPhotoCubit>().addPhoto(
-              photoPath: croppedImage.path,
+              photoPath: base64,
             );
       }
 
@@ -148,8 +153,8 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
                   ),
                   child: Row(
                     children: [
-                      Image.file(
-                        File(snapshot.photos[index].photo!),
+                      Image.memory(
+                        const Base64Decoder().convert(snapshot.photos[index].photo!),
                         fit: BoxFit.fitHeight,
                         width: 74,
                         height: 74,

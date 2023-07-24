@@ -42,7 +42,7 @@ class AuditQuestionPhotoCubit extends Cubit<AuditQuestionPhotoState> {
       photo: photoPath,
       assessmentId: state.auditId,
       questionId: state.question?.questionId,
-      photoId: DateTime.now().millisecondsSinceEpoch,
+      photoId: generatorInt32Id(),
     );
     await cmoDatabaseMasterService.cacheQuestionPhoto(photo);
     await getListQuestionPhotos();

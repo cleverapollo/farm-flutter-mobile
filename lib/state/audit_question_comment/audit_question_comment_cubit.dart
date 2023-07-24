@@ -1,3 +1,6 @@
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:cmo/di.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/model.dart';
@@ -48,7 +51,7 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
       emit(state.copyWith(loading: true));
       final comment = QuestionComment(
         questionId: state.question?.questionId,
-        commentId: DateTime.now().millisecondsSinceEpoch,
+        commentId: generatorInt32Id(),
         assessmentId: state.auditId,
         comment: commentValue,
       );

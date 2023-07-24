@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cmo/gen/assets.gen.dart';
@@ -7,6 +8,7 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/utils/file_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -53,8 +55,9 @@ class _AuditQuestionsPhotoDetailScreenState extends State<AuditQuestionsPhotoDet
     final croppedImage = await _imagePickerService.pickImageFromCamera(title: DateTime.now().toString());
     if (croppedImage != null) {
       if (context.mounted) {
+        final base64 = await FileUtil.toBase64(await FileUtil.writeToFileWithUint8List(await croppedImage.readAsBytes()));
         auditPhoto = auditPhoto.copyWith(
-          photo: croppedImage.path,
+          photo: base64,
         );
 
         setState(() {});
@@ -68,8 +71,9 @@ class _AuditQuestionsPhotoDetailScreenState extends State<AuditQuestionsPhotoDet
     );
     if (croppedImage != null) {
       if (context.mounted) {
+        final base64 = await FileUtil.toBase64(await FileUtil.writeToFileWithUint8List(await croppedImage.readAsBytes()));
         auditPhoto = auditPhoto.copyWith(
-          photo: croppedImage.path,
+          photo: base64,
         );
 
         setState(() {});
@@ -94,8 +98,8 @@ class _AuditQuestionsPhotoDetailScreenState extends State<AuditQuestionsPhotoDet
         ),
         child: Column(
           children: [
-            Image.file(
-              File(auditPhoto.photo!),
+            Image.memory(
+              const Base64Decoder().convert(auditPhoto.photo!),
               fit: BoxFit.fill,
             ),
           ],

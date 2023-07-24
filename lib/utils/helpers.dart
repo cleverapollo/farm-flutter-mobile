@@ -1,7 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:cmo/utils/logger.dart';
+
+int generatorInt32Id() {
+  return Random().nextInt(2147483647);
+}
 
 Future<void> delay(int milliseconds) async {
   await Future<void>.delayed(Duration(milliseconds: milliseconds));
