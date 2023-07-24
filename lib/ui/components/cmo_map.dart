@@ -163,9 +163,7 @@ class CmoMapState extends State<CmoMap> {
                   },
                 ),
               ),
-              Center(
-                child: Assets.icons.icPan.svgWhite,
-              ),
+              const MapCenterIcon(),
               Align(
                 alignment: Alignment.topCenter,
                 child: SizedBox(
