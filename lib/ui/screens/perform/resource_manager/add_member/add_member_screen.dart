@@ -445,58 +445,29 @@ class _AddMemberSDetails extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 _buildTitle(context, 'Compartment/s'),
-                CmoDropDownLayoutWidget(
-                  title: LocaleKeys.compartment_s.tr(),
-                  showTick: data.isCompleteCompartments,
-                  onTap: () async {
-                    final state = context.read<AddMemberCubit>().state;
-                    final farmName = state.farm?.farmName;
-                    final farmId = state.farm?.farmId;
-                    final result = await CompartmentScreen.push(context,
-                        farmId: farmId, farmName: farmName);
-
-                    if (result != null) {
-                      await cubit.onDataChangeSiteDetail(
-                          addingCompartmentResult: result);
-                    }
-                  },
-                ),
                 BlocSelector<AddMemberCubit, AddMemberState, double?>(
-                  selector: (state) => state
-                      .addMemberSDetails.addMemberCompartmentsState.farmSize,
+                  selector: (state) => state.addMemberSDetails.addMemberCompartmentsState.farmSize,
                   builder: (context, farmSize) {
-                    if (farmSize == null || farmSize == 0) {
-                      return const SizedBox.shrink();
-                    }
+                    final farmSizeTitle = farmSize == null ? null : '${farmSize.toStringAsFixed(2)}${LocaleKeys.ha_unit.tr()}';
+                    return CmoDropDownLayoutWidget(
+                      title: LocaleKeys.compartment_s.tr(),
+                      showTick: data.isCompleteCompartments,
+                      subTitle: farmSizeTitle,
+                      subTitleAlignment: Alignment.center,
+                      subTitleTextStyle: context.textStyles.titleBold.copyWith(fontSize: 16),
+                      onTap: () async {
+                        final state = context.read<AddMemberCubit>().state;
+                        final farmName = state.farm?.farmName;
+                        final farmId = state.farm?.farmId;
+                        final result = await CompartmentScreen.push(context,
+                            farmId: farmId, farmName: farmName);
 
-                    return Container(
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.only(top: 16),
-                      decoration: BoxDecoration(
-                          color: context.colors.white,
-                          border: Border.all(width: 1, color: context.colors.grey),
-                          borderRadius: BorderRadius.circular(12),
-                      ),
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Text(
-                            LocaleKeys.total_hectares.tr(),
-                            style: context.textStyles.titleBold
-                                .copyWith(fontSize: 16),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Text(
-                                '${farmSize.toStringAsFixed(2)}${LocaleKeys.ha_unit.tr()}',
-                                style: context.textStyles.bodyNormal.copyWith(fontSize: 16),
-                                textAlign: TextAlign.right,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+                        if (result != null) {
+                          await cubit.onDataChangeSiteDetail(
+                              addingCompartmentResult: result,
+                          );
+                        }
+                      },
                     );
                   },
                 ),

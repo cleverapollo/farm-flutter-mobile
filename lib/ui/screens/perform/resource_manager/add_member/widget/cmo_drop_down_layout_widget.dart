@@ -1,3 +1,4 @@
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -7,18 +8,22 @@ class CmoDropDownLayoutWidget extends StatelessWidget {
     super.key,
     this.label = '',
     required this.title,
-    this.subTitle = '',
+    this.subTitle,
     this.showTick = false,
     this.onTap,
     this.trailingWidget,
+    this.subTitleAlignment,
+    this.subTitleTextStyle,
   });
 
   final String label;
   final String title;
-  final String subTitle;
+  final String? subTitle;
   final bool showTick;
   final Function? onTap;
   final Widget? trailingWidget;
+  final Alignment? subTitleAlignment;
+  final TextStyle? subTitleTextStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -45,20 +50,22 @@ class CmoDropDownLayoutWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Text(
-                    title,
-                    style: context.textStyles.titleBold.copyWith(fontSize: 16),
-                  ),
+                Text(
+                  title,
+                  style: context.textStyles.titleBold.copyWith(fontSize: 16),
                 ),
-                if (subTitle.isNotEmpty)
-                  Text(
-                    subTitle,
-                    style: context.textStyles.bodyNormal.copyWith(fontSize: 16),
+                if (subTitle.isNotBlank)
+                  Expanded(
+                    child: Align(
+                      alignment: subTitleAlignment ?? Alignment.centerLeft,
+                      child: Text(
+                        subTitle!,
+                        style: subTitleTextStyle ?? context.textStyles.bodyNormal.copyWith(fontSize: 16),
+                      ),
+                    ),
                   )
                 else
-                  const SizedBox(),
-                const Spacer(),
+                  const Spacer(),
                 if (showTick) Assets.icons.icTick.widget else const SizedBox(),
                 if (trailingWidget != null)
                   trailingWidget!
