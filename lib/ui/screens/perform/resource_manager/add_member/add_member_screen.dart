@@ -486,10 +486,13 @@ class _AddMemberSDetails extends StatelessWidget {
                                 .copyWith(fontSize: 16),
                           ),
                           Expanded(
-                            child: Text(
-                              '${farmSize.toStringAsFixed(2)}${LocaleKeys.ha_unit.tr()}',
-                              style: context.textStyles.bodyNormal.copyWith(fontSize: 16),
-                              textAlign: TextAlign.center,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                              child: Text(
+                                '${farmSize.toStringAsFixed(2)}${LocaleKeys.ha_unit.tr()}',
+                                style: context.textStyles.bodyNormal.copyWith(fontSize: 16),
+                                textAlign: TextAlign.right,
+                              ),
                             ),
                           )
                         ],
