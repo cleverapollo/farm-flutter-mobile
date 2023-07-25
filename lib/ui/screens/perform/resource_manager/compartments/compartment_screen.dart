@@ -47,7 +47,7 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
     return Scaffold(
       appBar: CmoAppBarV2(
         title: LocaleKeys.compartment.tr(),
-        subtitle: widget.farmName ?? LocaleKeys.siteName.tr(),
+        subtitle: widget.farmName ?? '',
         showLeading: true,
         showTrailing: true,
         trailing: Assets.icons.icAdd.svgBlack,

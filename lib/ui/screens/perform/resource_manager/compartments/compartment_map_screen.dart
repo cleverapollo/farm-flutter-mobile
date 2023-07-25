@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
 
+import 'package:cmo/env/env.dart';
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/compartment/compartment.dart';
@@ -14,11 +16,13 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as google_map;
 import 'package:google_maps_flutter_platform_interface/src/types/location.dart'
     as map;
+import 'package:map_autocomplete_field/map_autocomplete_field.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:maps_toolkit/src/latlng.dart' as mapToolkitLatlong;
 
@@ -94,7 +98,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
       appBar: CmoAppBarV2(
         title: LocaleKeys.compartments.tr(),
         showLeading: true,
-        subtitle: widget.farmName ?? LocaleKeys.siteName.tr(),
+        subtitle: widget.farmName ?? '',
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator
             .of(context)

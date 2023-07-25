@@ -70,7 +70,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
     return Scaffold(
       appBar: CmoAppBarV2(
         title: LocaleKeys.compartment.tr(),
-        subtitle: widget.farmName ?? LocaleKeys.siteName.tr(),
+        subtitle: widget.farmName ?? '',
         showLeading: true,
       ),
       body: Padding(
