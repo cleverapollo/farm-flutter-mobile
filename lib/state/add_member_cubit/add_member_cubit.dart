@@ -489,7 +489,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       final listAnswer = [
         FarmMemberRiskProfileAnswer(
           farmMemberRiskProfileAnswerNo: (now++).toString(),
-          farmMemberRiskProfileAnswerId: const Uuid().v4(),
           farmId: state.farm?.farmId,
           riskProfileQuestionId: 1,
           answer: state.addMemberMRA.firstAnswer,
@@ -497,7 +496,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         ),
         FarmMemberRiskProfileAnswer(
           farmMemberRiskProfileAnswerNo: (now++).toString(),
-          farmMemberRiskProfileAnswerId: const Uuid().v4(),
           farmId: state.farm?.farmId,
           riskProfileQuestionId: 2,
           answer: state.addMemberMRA.secondAnswer,
@@ -505,7 +503,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         ),
         FarmMemberRiskProfileAnswer(
           farmMemberRiskProfileAnswerNo: (now++).toString(),
-          farmMemberRiskProfileAnswerId: const Uuid().v4(),
           farmId: state.farm?.farmId,
           riskProfileQuestionId: 3,
           answer: state.addMemberMRA.thirdAnswer,
@@ -513,7 +510,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         ),
         FarmMemberRiskProfileAnswer(
           farmMemberRiskProfileAnswerNo: (now++).toString(),
-          farmMemberRiskProfileAnswerId: const Uuid().v4(),
           farmId: state.farm?.farmId,
           riskProfileQuestionId: 4,
           answer: state.addMemberMRA.fourthAnswer,
@@ -565,7 +561,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     if (isComplete) {
       final listAnwser = [
         FarmMemberObjectiveAnswer(
-          farmMemberObjectiveAnswerId: const Uuid().v4(),
           farmMemberObjectiveAnswerNo: (now++).toString(),
           farmId: state.farm?.farmId,
           farmObjectiveOptionId: 1,
@@ -573,7 +568,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           isActive: true,
         ),
         FarmMemberObjectiveAnswer(
-          farmMemberObjectiveAnswerId: const Uuid().v4(),
           farmMemberObjectiveAnswerNo: (now++).toString(),
           farmId: state.farm?.farmId,
           farmObjectiveOptionId: 2,
@@ -581,7 +575,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           isActive: true,
         ),
         FarmMemberObjectiveAnswer(
-          farmMemberObjectiveAnswerId: const Uuid().v4(),
           farmMemberObjectiveAnswerNo: (now++).toString(),
           farmId: state.farm?.farmId,
           farmObjectiveOptionId: 3,
@@ -589,7 +582,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           isActive: true,
         ),
         FarmMemberObjectiveAnswer(
-          farmMemberObjectiveAnswerId: const Uuid().v4(),
           farmMemberObjectiveAnswerNo: (now++).toString(),
           farmId: state.farm?.farmId,
           farmObjectiveOptionId: 4,

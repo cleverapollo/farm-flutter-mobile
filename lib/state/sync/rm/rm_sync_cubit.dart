@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/env/env.dart';
@@ -235,7 +236,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             ),
           );
 
-          debugPrint(jsonEncode(
+          log(jsonEncode(
             farm
                 .copyWith(
               objectiveAnswers: objectiveAnswers,
@@ -243,6 +244,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             )
                 .toJson(),
           ));
+
           logger.d('Publish message to topic $publishFarmTopic');
           final isPublicFarm = await cmoPerformApiService.public(
             currentClientId: userDeviceId.toString(),
