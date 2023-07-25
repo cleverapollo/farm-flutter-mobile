@@ -81,6 +81,10 @@ class AddMemberMPO with _$AddMemberMPO {
 class AddMemberMDetails with _$AddMemberMDetails {
   const factory AddMemberMDetails({
     @Default(false) bool isComplete,
+    @Default(false) bool isFirstNameError,
+    @Default(false) bool isLastNameError,
+    @Default(false) bool isIdNumberError,
+    @Default(false) bool isMobileNumberError,
     String? firstName,
     String? lastName,
     String? idNumber,

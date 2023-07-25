@@ -1,3 +1,4 @@
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/l10n/locale_keys.g.dart';
 import 'package:cmo/ui/ui.dart';
@@ -8,23 +9,55 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class AttributeItem extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
+  final bool isShowError;
+  final String? errorText;
 
-  const AttributeItem(
-      {required this.child,
-      this.padding = const EdgeInsets.symmetric(vertical: 6),
-      super.key});
+  const AttributeItem({
+    required this.child,
+    this.padding = const EdgeInsets.symmetric(vertical: 6),
+    this.isShowError = false,
+    this.errorText,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(width: 1, color: context.colors.grey),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: padding,
+          decoration: BoxDecoration(
+            border: isShowError
+                ? errorBorder(context)
+                : Border(
+                    bottom: BorderSide(
+                      color: context.colors.blueDark2,
+                    ),
+                  ),
+            borderRadius: isShowError ? BorderRadius.circular(4) : null,
+          ),
+          child: child,
         ),
-      ),
-      child: child,
+        if (errorText.isNotBlank && isShowError)
+          Padding(
+            padding: const EdgeInsets.only(top: 4.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                errorText!,
+                style: context.textStyles.bodyNormal.redError.copyWith(fontSize: 12),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+      ],
     );
+  }
+
+  Border errorBorder(BuildContext context) {
+    return Border.all(color: context.colors.redError);
   }
 }
 
@@ -65,17 +98,21 @@ class GeoLocationText extends StatelessWidget {
 }
 
 class InputAttributeItem extends StatefulWidget {
-  final String hintText;
+  final String? hintText;
+  final String? labelText;
   final int maxLines;
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
   final TextStyle? hintTextStyle;
+  final TextStyle? labelTextStyle;
+  final TextStyle? textStyle;
+
   final EdgeInsetsGeometry contentPadding;
   final FormFieldValidator<String?>? validator;
   final String? initialValue;
 
   const InputAttributeItem({
-    required this.hintText,
+    this.hintText,
     this.maxLines = 1,
     this.keyboardType,
     this.onChanged,
@@ -83,6 +120,9 @@ class InputAttributeItem extends StatefulWidget {
     this.validator,
     this.initialValue,
     this.contentPadding = const EdgeInsets.fromLTRB(14, 4, 14, 4),
+    this.textStyle,
+    this.labelText,
+    this.labelTextStyle,
     super.key,
   });
 
@@ -107,16 +147,26 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
       onChanged: widget.onChanged,
       maxLines: _controller.text.isEmpty ? widget.maxLines : 1,
       controller: _controller,
-      style: context.textStyles.bodyBold,
+      style: widget.textStyle ?? context.textStyles.bodyBold,
       keyboardType: widget.keyboardType,
-      validator: widget.validator,
+      validator: widget.validator ?? (value) {
+        if (value.isBlank) {
+          return widget.labelText ?? widget.hintText ?? '';
+        } else {
+          return null;
+        }
+      },
       decoration: InputDecoration(
         hintText: widget.hintText,
-        labelText: _controller.text.isEmpty ? null : widget.hintText,
-        labelStyle: context.textStyles.bodyNormal
-            .copyWith(fontSize: 16, overflow: TextOverflow.ellipsis),
         hintStyle: widget.hintTextStyle ??
-            context.textStyles.bodyNormal.copyWith(color: context.colors.grey),
+            context.textStyles.bodyNormal.copyWith(
+              color: context.colors.grey,
+            ),
+        labelText: widget.labelText,
+        labelStyle: widget.labelTextStyle ?? context.textStyles.bodyNormal.copyWith(
+          fontSize: 16,
+          overflow: TextOverflow.ellipsis,
+        ),
         contentPadding: widget.contentPadding,
         enabledBorder: InputBorder.none,
         focusedBorder: InputBorder.none,

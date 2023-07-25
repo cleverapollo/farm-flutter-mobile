@@ -645,8 +645,15 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           mobileNumber: state.addMemberMDetails.mobileNumber,
           email: state.addMemberMDetails.emailAddress,
         ),
-        addMemberMDetails:
-            state.addMemberMDetails.copyWith(isComplete: isComplete)));
+        addMemberMDetails: state.addMemberMDetails.copyWith(
+          isComplete: isComplete,
+          isFirstNameError: firstName?.isBlank ?? state.addMemberMDetails.isFirstNameError,
+          isLastNameError: lastName?.isBlank ?? state.addMemberMDetails.isLastNameError,
+          isIdNumberError: idNumber?.isBlank ?? state.addMemberMDetails.isIdNumberError,
+          isMobileNumberError: mobileNumber?.isBlank ?? state.addMemberMDetails.isMobileNumberError,
+        ),
+      ),
+    );
 
     checkIsProspectMember();
     if (isComplete) {
@@ -698,5 +705,19 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       isClose: true,
       isComplete: true,
     )));
+  }
+
+  void checkErrorAllSteps() {
+    // Step 3 with AddMemberMDetails
+    emit(
+      state.copyWith(
+        addMemberMDetails: state.addMemberMDetails.copyWith(
+          isFirstNameError: state.addMemberMDetails.firstName.isBlank,
+          isLastNameError: state.addMemberMDetails.lastName.isBlank,
+          isIdNumberError: state.addMemberMDetails.idNumber.isBlank,
+          isMobileNumberError: state.addMemberMDetails.mobileNumber.isBlank,
+        ),
+      ),
+    );
   }
 }

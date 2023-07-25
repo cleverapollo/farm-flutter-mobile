@@ -15,6 +15,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -256,17 +257,28 @@ class _AddMemberMFO extends StatelessWidget {
                             onTap: () {
                               Navigator.pop(context, true);
                             }),
-                        CmoFilledButton(
-                            title: LocaleKeys.next.tr(),
-                            onTap: () {
-                              AddMemberMembershipContractScreen.push(
-                                context,
-                                farm: context
-                                    .read<AddMemberCubit>()
-                                    .state
-                                    .farm,
-                              );
-                            }),
+                        BlocSelector<AddMemberCubit, AddMemberState, AddMemberState>(
+                          selector: (state) => state,
+                          builder: (context, state) {
+                            return CmoFilledButton(
+                                title: LocaleKeys.next.tr(),
+                                onTap: () {
+                                  if (state.addMemberMDetails.isComplete) {
+                                    AddMemberMembershipContractScreen.push(
+                                      context,
+                                      farm: context
+                                          .read<AddMemberCubit>()
+                                          .state
+                                          .farm,
+                                    );
+                                  } else {
+                                    context.read<AddMemberCubit>().checkErrorAllSteps();
+                                    showSnackError(msg: 'Should complete all steps.');
+                                  }
+                                },
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ],
@@ -524,68 +536,81 @@ class _AddMemberMDetails extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTitle(context, '${LocaleKeys.firstName.tr()} (*)'),
-                CmoTextField(
-                  initialValue: data.firstName,
-                  hintText: LocaleKeys.firstName.tr(),
-                  onChanged: (p0) {
-                    cubit.onDataChangeMemberDetail(firstName: p0);
-                  },
+                AttributeItem(
+                  isShowError: data.isFirstNameError,
+                  errorText: LocaleKeys.firstName.tr(),
+                  child: InputAttributeItem(
+                    initialValue: data.firstName,
+                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                    labelText: LocaleKeys.firstName.tr(),
+                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    onChanged: (value) {
+                      cubit.onDataChangeMemberDetail(firstName: value);
+                    },
+                  ),
                 ),
                 const SizedBox(height: 12),
-                _buildTitle(context, '${LocaleKeys.lastName.tr()} (*)'),
-                CmoTextField(
-                  initialValue: data.lastName,
-                  hintText: LocaleKeys.lastName.tr(),
-                  onChanged: (p0) {
-                    cubit.onDataChangeMemberDetail(lastName: p0);
-                  },
+                AttributeItem(
+                  isShowError: data.isLastNameError,
+                  errorText: LocaleKeys.lastName.tr(),
+                  child: InputAttributeItem(
+                    initialValue: data.lastName,
+                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                    labelText: LocaleKeys.lastName.tr(),
+                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    onChanged: (value) {
+                      cubit.onDataChangeMemberDetail(lastName: value);
+                    },
+                  ),
                 ),
                 const SizedBox(height: 12),
-                _buildTitle(context, '${LocaleKeys.idPassportNumber.tr()} (*)'),
-                CmoTextField(
-                  initialValue: data.idNumber,
-                  keyboardType: TextInputType.emailAddress,
-                  hintText: LocaleKeys.idPassportNumber.tr(),
-                  onChanged: (p0) {
-                    cubit.onDataChangeMemberDetail(idNumber: p0);
-                  },
+                AttributeItem(
+                  isShowError: data.isIdNumberError,
+                  errorText: LocaleKeys.idPassportNumber.tr(),
+                  child: InputAttributeItem(
+                    initialValue: data.idNumber,
+                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                    labelText: LocaleKeys.idPassportNumber.tr(),
+                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) {
+                      cubit.onDataChangeMemberDetail(idNumber: value);
+                    },
+                  ),
                 ),
                 const SizedBox(height: 12),
-                _buildTitle(context, '${LocaleKeys.mobileNumber.tr()} (*)'),
-                CmoTextField(
-                  initialValue: data.mobileNumber,
-                  keyboardType: TextInputType.phone,
-                  hintText: LocaleKeys.mobileNumber.tr(),
-                  onChanged: (p0) {
-                    cubit.onDataChangeMemberDetail(mobileNumber: p0);
-                  },
+                AttributeItem(
+                  isShowError: data.isMobileNumberError,
+                  errorText: LocaleKeys.mobileNumber.tr(),
+                  child: InputAttributeItem(
+                    initialValue: data.mobileNumber,
+                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                    labelText: LocaleKeys.mobileNumber.tr(),
+                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    keyboardType: TextInputType.phone,
+                    onChanged: (value) {
+                      cubit.onDataChangeMemberDetail(mobileNumber: value);
+                    },
+                  ),
                 ),
                 const SizedBox(height: 12),
-                _buildTitle(context, '${LocaleKeys.emailAddress.tr()} (${LocaleKeys.optional.tr()})'),
-                CmoTextField(
-                  initialValue: data.emailAddress,
-                  keyboardType: TextInputType.emailAddress,
-                  hintText: LocaleKeys.emailAddress.tr(),
-                  onChanged: (p0) {
-                    cubit.onDataChangeMemberDetail(emailAddress: p0);
-                  },
+                AttributeItem(
+                  child: InputAttributeItem(
+                    initialValue: data.emailAddress,
+                    textStyle: context.textStyles.bodyNormal.black,
+                    labelText: '${LocaleKeys.emailAddress.tr()} (${LocaleKeys.optional.tr()})',
+                    labelTextStyle: context.textStyles.bodyNormal.blueDark2,
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) {
+                      cubit.onDataChangeMemberDetail(emailAddress: value);
+                    },
+                  ),
                 ),
               ],
             ),
           ),
         );
       },
-    );
-  }
-
-  Padding _buildTitle(BuildContext context, String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Text(
-        text,
-        style: context.textStyles.bodyBold,
-      ),
     );
   }
 }
