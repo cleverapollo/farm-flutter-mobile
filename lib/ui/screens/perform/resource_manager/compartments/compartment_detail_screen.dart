@@ -2,6 +2,7 @@ import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/compartment/compartment.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_cubit.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_state.dart';
 import 'package:cmo/ui/ui.dart';
@@ -104,169 +105,127 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                   .onCompartmentNameChanged,
                             ),
                           ),
-                          BlocSelector<CompartmentDetailCubit,
-                              CompartmentDetailState, List<AreaType>>(
-                            selector: (state) => state.areaTypes,
-                            builder: (context, areaTypes) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: CmoDropdown(
-                                  name: LocaleKeys.type.tr(),
-                                  style: context.textStyles.bodyBold
-                                      .copyWith(color: context.colors.black),
-                                  inputDecoration: InputDecoration(
-                                    contentPadding:
-                                        const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                                    isDense: true,
-                                    hintText: LocaleKeys.type.tr(),
-                                    hintStyle:
-                                        context.textStyles.bodyNormal.grey,
-                                    border: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: context.colors.grey)),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: context.colors.blue)),
-                                  ),
-                                  itemsData: areaTypes
-                                      .map((e) => CmoDropdownItem(
-                                          id: e.areaTypeId,
-                                          name: e.areaTypeName ?? ''))
-                                      .toList(),
-                                  onChanged: (value) {
-                                    _compartmentDetailCubit
-                                        .onAreaTypeChanged(value!);
-                                  },
-                                ),
-                              );
-                            },
-                          ),
-                          BlocSelector<CompartmentDetailCubit,
-                              CompartmentDetailState, Compartment>(
-                            selector: (state) => state.compartment,
-                            builder: (context, compartment) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: CmoDropdown(
+                          AttributeItem(
+                            child: BlocSelector<
+                                CompartmentDetailCubit,
+                                CompartmentDetailState,
+                                List<ProductGroupTemplate>?>(
+                              selector: (state) => state.productGroupTemplates,
+                              builder: (context, productGroupTemplates) {
+                                return CmoDropdown<ProductGroupTemplate>(
                                   name: LocaleKeys.productGroup.tr(),
                                   style: context.textStyles.bodyBold
                                       .copyWith(color: context.colors.black),
                                   inputDecoration: InputDecoration(
-                                    contentPadding:
-                                        const EdgeInsets.fromLTRB(4, 8, 4, 8),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
                                     isDense: true,
                                     hintText: LocaleKeys.productGroup.tr(),
                                     hintStyle:
                                         context.textStyles.bodyNormal.grey,
-                                    border: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: context.colors.grey)),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: context.colors.blue)),
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
                                   ),
-                                  itemsData: _compartmentDetailCubit
-                                      .state.productGroupTemplates
-                                      .where((element) =>
-                                          element.areaTypeId ==
-                                          _compartmentDetailCubit
-                                              .state.compartment.areaTypeId)
-                                      .map((e) => CmoDropdownItem(
-                                          id: e.productGroupTemplateId,
+                                  initialValue:
+                                      productGroupTemplates.firstWhereOrNull(
+                                    (element) =>
+                                        element.productGroupTemplateId ==
+                                        context
+                                            .read<CompartmentDetailCubit>()
+                                            .state
+                                            .compartment
+                                            .productGroupTemplateId,
+                                  ),
+                                  itemsData: productGroupTemplates
+                                      ?.map(
+                                        (e) => CmoDropdownItem<
+                                            ProductGroupTemplate>(
+                                          id: e,
                                           name:
-                                              e.productGroupTemplateName ?? ''))
+                                              e.productGroupTemplateName ?? '',
+                                        ),
+                                      )
                                       .toList(),
                                   onChanged: (value) {
                                     _compartmentDetailCubit
                                         .onProductGroupChanged(
-                                      productGroupId: value!,
-                                      productGroupName: _compartmentDetailCubit
-                                          .state.productGroupTemplates
-                                          .firstWhereOrNull((e) =>
-                                              e.productGroupTemplateId == value)
-                                          ?.productGroupTemplateName,
+                                      productGroupId:
+                                          value?.productGroupTemplateId,
+                                      productGroupName:
+                                          value?.productGroupTemplateName,
                                     );
                                   },
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
-                          BlocSelector<CompartmentDetailCubit,
-                              CompartmentDetailState, Compartment>(
-                            selector: (state) => state.compartment,
-                            builder: (context, compartment) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: CmoDropdown(
-                                  name: LocaleKeys.speciesGroup.tr(),
-                                  style: context.textStyles.bodyBold
-                                      .copyWith(color: context.colors.black),
-                                  inputDecoration: InputDecoration(
-                                    contentPadding:
-                                        const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                                    isDense: true,
-                                    hintText: LocaleKeys.speciesGroup.tr(),
-                                    hintStyle:
-                                        context.textStyles.bodyNormal.grey,
-                                    border: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: context.colors.grey)),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: context.colors.blue)),
+                          AttributeItem(
+                            child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, List<SpeciesGroupTemplate>?>(
+                              selector: (state) => state.speciesGroupTemplates,
+                              builder: (context, speciesGroupTemplates) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  child: CmoDropdown<SpeciesGroupTemplate>(
+                                    name: LocaleKeys.speciesGroup.tr(),
+                                    style: context.textStyles.bodyBold.copyWith(color: context.colors.black),
+                                    inputDecoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                                      isDense: true,
+                                      hintText: LocaleKeys.speciesGroup.tr(),
+                                      hintStyle: context.textStyles.bodyNormal.grey,
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                    ),
+                                    itemsData: speciesGroupTemplates
+                                        ?.map(
+                                          (e) => CmoDropdownItem<
+                                              SpeciesGroupTemplate>(
+                                            id: e,
+                                            name: e.speciesGroupTemplateName ??
+                                                '',
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (value) {
+                                      _compartmentDetailCubit
+                                          .onSpeciesGroupChanged(
+                                        speciesGroupId: value?.speciesGroupTemplateId,
+                                        speciesGroupName: value?.speciesGroupTemplateName,
+                                      );
+                                    },
                                   ),
-                                  itemsData: _compartmentDetailCubit
-                                      .state.speciesGroupTemplates
-                                      .where((element) =>
-                                          element.areaTypeId ==
-                                          _compartmentDetailCubit
-                                              .state.compartment.areaTypeId)
-                                      .map((e) => CmoDropdownItem(
-                                          id: e.speciesGroupTemplateId,
-                                          name:
-                                              e.speciesGroupTemplateName ?? ''))
-                                      .toList(),
-                                  onChanged: (value) {
-                                    _compartmentDetailCubit
-                                        .onSpeciesGroupChanged(
-                                      speciesGroupId: value!,
-                                      speciesGroupName: _compartmentDetailCubit
-                                          .state.speciesGroupTemplates
-                                          .firstWhereOrNull((e) =>
-                                              e.speciesGroupTemplateId == value)
-                                          ?.speciesGroupTemplateName,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                          ),
-                          AttributeItem(
-                            child: Row(
-                              children: [
-                                const SizedBox(width: 16),
-                                Text(
-                                  LocaleKeys.polygonArea.tr(),
-                                  style: context.textStyles.bodyBold,
-                                ),
-                                const SizedBox(width: 36),
-                                Text(
-                                  '${widget.measuredArea?.toStringAsFixed(2)}ha ${LocaleKeys.measured.tr()}',
-                                  style: context.textStyles.bodyNormal,
-                                ),
-                              ],
+                                );
+                              },
                             ),
                           ),
                           AttributeItem(
-                            child: InputAttributeItem(
-                              hintText: LocaleKeys.unit.tr(),
-                              onChanged: _compartmentDetailCubit
-                                  .onCompartmentUnitChanged,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Row(
+                                children: [
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    LocaleKeys.polygonArea.tr(),
+                                    style: context.textStyles.bodyBold,
+                                  ),
+                                  const SizedBox(width: 36),
+                                  Text(
+                                    '${widget.measuredArea?.toStringAsFixed(2)}ha ${LocaleKeys.measured.tr()}',
+                                    style: context.textStyles.bodyNormal,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
+                          // AttributeItem(
+                          //   child: InputAttributeItem(
+                          //     hintText: LocaleKeys.unit.tr(),
+                          //     onChanged: _compartmentDetailCubit
+                          //         .onCompartmentUnitChanged,
+                          //   ),
+                          // ),
                           AttributeItem(
                             child: InputAttributeItem(
                               hintText: '${LocaleKeys.effectiveArea.tr()} ha',
@@ -278,7 +237,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                           ),
                           AttributeItem(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              padding: const EdgeInsets.symmetric(vertical: 8),
                               child: Row(
                                 children: [
                                   const SizedBox(width: 16),
@@ -340,39 +299,41 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             ),
                           ),
                           AttributeItem(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Text(
-                                    _plannedPlantDate == null
-                                        ? LocaleKeys.plannedPlantDate.tr()
-                                        : DateFormat.yMMMd()
-                                            .format(_plannedPlantDate!),
-                                    style: context.textStyles.bodyBold,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _plannedPlantDate == null
+                                          ? LocaleKeys.plannedPlantDate.tr()
+                                          : DateFormat.yMMMd()
+                                              .format(_plannedPlantDate!),
+                                      style: context.textStyles.bodyBold,
+                                    ),
                                   ),
-                                ),
-                                IconButton(
-                                  padding: const EdgeInsets.all(4),
-                                  constraints: const BoxConstraints(),
-                                  onPressed: () async {
-                                    _plannedPlantDate = await showDatePicker(
-                                      context: context,
-                                      initialDate: DateTime.now(),
-                                      firstDate: DateTime.now()
-                                          .add(Duration(days: -1000000)),
-                                      lastDate: DateTime.now()
-                                          .add(Duration(days: 1000000)),
-                                    );
-                                    _compartmentDetailCubit
-                                        .onPlannedPlantDateChanged(
-                                            _plannedPlantDate);
-                                    setState(() {});
-                                  },
-                                  icon: const Icon(Icons.calendar_month),
-                                ),
-                              ],
+                                  IconButton(
+                                    padding: const EdgeInsets.all(4),
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () async {
+                                      _plannedPlantDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime.now()
+                                            .add(Duration(days: -1000000)),
+                                        lastDate: DateTime.now()
+                                            .add(Duration(days: 1000000)),
+                                      );
+                                      _compartmentDetailCubit
+                                          .onPlannedPlantDateChanged(
+                                              _plannedPlantDate);
+                                      setState(() {});
+                                    },
+                                    icon: const Icon(Icons.calendar_month),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           AttributeItem(

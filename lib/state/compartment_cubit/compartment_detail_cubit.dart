@@ -7,6 +7,7 @@ import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/compartment/product_group_template.dart';
 import 'package:cmo/model/compartment/species_group_template.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_state.dart';
+import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
@@ -14,22 +15,27 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   CompartmentDetailCubit(String farmId, {String? campId}) : super(CompartmentDetailState(farmId: farmId, campId: campId));
 
   Future fetchData({required BuildContext context}) async {
-    emit(state.copyWith(loading: true));
-    final groupScheme = await configService.getActiveGroupScheme();
-    final resourceManagerUnit = await configService.getActiveRegionalManager();
-    final result = await Future.wait([
-      cmoPerformApiService.fetchAreaTypes(),
-      cmoPerformApiService.fetchProductGroupTemplates(),
-      cmoPerformApiService.fetchSpeciesGroupTemplates()
-    ]);
-    emit(state.copyWith(
-      loading: false,
-      areaTypes: result[0] as List<AreaType>?,
-      productGroupTemplates: result[1] as List<ProductGroupTemplate>?,
-      speciesGroupTemplates: result[2] as List<SpeciesGroupTemplate>?,
-      groupScheme: groupScheme,
-      resourceManagerUnit: resourceManagerUnit,
-    ));
+    try {
+      emit(state.copyWith(loading: true));
+      final groupScheme = await configService.getActiveGroupScheme();
+      final resourceManagerUnit = await configService.getActiveRegionalManager();
+      final result = await Future.wait([
+        cmoPerformApiService.fetchAreaTypes(),
+        cmoPerformApiService.fetchProductGroupTemplates(),
+        cmoPerformApiService.fetchSpeciesGroupTemplates()
+      ]);
+      emit(state.copyWith(
+        areaTypes: result[0] as List<AreaType>?,
+        productGroupTemplates: result[1] as List<ProductGroupTemplate>?,
+        speciesGroupTemplates: result[2] as List<SpeciesGroupTemplate>?,
+        groupScheme: groupScheme,
+        resourceManagerUnit: resourceManagerUnit,
+      ));
+    } catch (e) {
+      showSnackError(msg: e.toString());
+    } finally {
+      emit(state.copyWith(loading: false));
+    }
   }
 
   Future saveCompartment() {
@@ -60,16 +66,20 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
         compartment: state.compartment.copyWith(areaTypeId: areaTypeId)));
   }
 
-  void onProductGroupChanged(
-      {required String productGroupId, String? productGroupName}) {
+  void onProductGroupChanged({
+    String? productGroupId,
+    String? productGroupName,
+  }) {
     state.compartment = state.compartment.copyWith(
       productGroupTemplateId: productGroupId,
       productGroupTemplateName: productGroupName,
     );
   }
 
-  void onSpeciesGroupChanged(
-      {required String speciesGroupId, String? speciesGroupName}) {
+  void onSpeciesGroupChanged({
+    String? speciesGroupId,
+    String? speciesGroupName,
+  }) {
     state.compartment = state.compartment.copyWith(
       speciesGroupTemplateId: speciesGroupId,
       speciesGroupTemplateName: speciesGroupName,
