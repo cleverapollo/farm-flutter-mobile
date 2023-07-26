@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:cmo/di.dart';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/audit/audit_payload.dart';
 import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/model.dart';
@@ -231,6 +232,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
                   .copyWith(
                     objectiveAnswers: objectiveAnswers,
                     riskProfileAnswers: riskProfileAnswers,
+                    signatureImage: farm.signatureImage.stringToBase64SyncServer,
                   )
                   .toJson(),
             ),
@@ -241,6 +243,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
                 .copyWith(
               objectiveAnswers: objectiveAnswers,
               riskProfileAnswers: riskProfileAnswers,
+              signatureImage: '',
             )
                 .toJson(),
           ));
@@ -447,13 +450,15 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
               logger.d('Try update group scheme stakeholder status to synced');
 
-              await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
-                GroupSchemeStakeholder.fromGroupSchemeStakeholderPayLoad(
-                  groupSchemeStakeholderPayload.GroupSchemeStakeholder!.copyWith(
-                    IsMasterDataSynced: 1,
+              if (groupSchemeStakeholderPayload.GroupSchemeStakeholder != null) {
+                await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
+                  GroupSchemeStakeholder.fromGroupSchemeStakeholderPayLoad(
+                    groupSchemeStakeholderPayload.GroupSchemeStakeholder!.copyWith(
+                      IsMasterDataSynced: 1,
+                    ),
                   ),
-                ),
-              );
+                );
+              }
 
               logger.d('Successfully published groupSchemeStakeholderId: ${groupSchemeStakeholderPayload.GroupSchemeStakeholder?.GroupSchemeStakeholderId}');
             });

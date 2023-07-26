@@ -14,4 +14,9 @@ extension StringNullExtension on String? {
   }
 
   bool get isNullOrEmpty => this == null || this?.isEmpty == true;
+
+  String? get stringToBase64SyncServer {
+    if (isBlank) return null;
+    return 'data:image/jpeg;base64,$this';
+  }
 }

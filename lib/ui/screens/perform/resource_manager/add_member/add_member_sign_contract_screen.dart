@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
@@ -69,18 +71,10 @@ class _AddMemberSignContractScreenState
                     key: signatureKey,
                     maximumStrokeWidth: 1,
                     minimumStrokeWidth: 1,
-                    onDrawEnd: () async {
-                      final points = signatureKey.currentState?.toString();
-                      final image = await signatureKey.currentState?.toImage();
-                      final byteData = await image?.toByteData();
-                      final file = await FileUtil.writeToFile(byteData!);
-                      final base64 = await FileUtil.toBase64(file);
-                      if (context.mounted) {
-                        await context
-                            .read<AddMemberCubit>()
-                            .onDataChangeMemberSignContract(base64, points,
-                                DateTime.now().toIso8601String());
-                      }
+                    onDrawEnd: (){
+                      setState(() {
+
+                      });
                     },
                   ),
                 ),
@@ -97,12 +91,26 @@ class _AddMemberSignContractScreenState
                   child: CmoFilledButton(
                       title: LocaleKeys.accept_signature_and_finalise.tr(),
                       onTap: () async {
-                        final state =
-                            context.read<AddMemberCubit>().state.addMemberSAF;
-                        final goNextStep = state.signatureImage != null;
-                        if (goNextStep && context.mounted) {
-                          await AddMemberDone.push(context, farm: widget.farm);
-                        }
+                        final points = signatureKey.currentState?.toString();
+                        final image = await signatureKey.currentState?.toImage();
+                        final byteData = await image?.toByteData();
+                        final file = await FileUtil.writeToFile(byteData!);
+                        final base64 = await FileUtil.toBase64(file);
+                        await context
+                            .read<AddMemberCubit>()
+                            .onDataChangeMemberSignContract(
+                              base64,
+                              points,
+                              DateTime.now().toIso8601String(),
+                            );
+
+                        log(base64);
+                        // final state =
+                        //     context.read<AddMemberCubit>().state.addMemberSAF;
+                        // final goNextStep = state.signatureImage != null;
+                        // if (goNextStep && context.mounted) {
+                        //   await AddMemberDone.push(context, farm: widget.farm);
+                        // }
                       })),
               const SizedBox(height: 20),
             ],

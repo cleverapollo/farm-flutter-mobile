@@ -12,10 +12,10 @@ class FarmMemberRiskProfileAnswer with _$FarmMemberRiskProfileAnswer {
     @JsonKey(name: 'FarmMemberRiskProfileAnswerId') String? farmMemberRiskProfileAnswerId,
     @JsonKey(name: 'FarmMemberRiskProfileAnswerNo') String? farmMemberRiskProfileAnswerNo,
     @JsonKey(name: 'RiskProfileQuestionId') int? riskProfileQuestionId,
-    @JsonKey(name: 'Answer') bool? answer,
     @JsonKey(name: 'FarmId') String? farmId,
-    @JsonKey(name: 'IsActive') bool? isActive,
-    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
+    @JsonKey(name: 'Answer') bool? answer,
+    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(false) @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
   }) = _FarmMemberRiskProfileAnswer;
 
   factory FarmMemberRiskProfileAnswer.fromJson(Map<String, dynamic> json) =>
@@ -24,5 +24,5 @@ class FarmMemberRiskProfileAnswer with _$FarmMemberRiskProfileAnswer {
   const FarmMemberRiskProfileAnswer._();
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => int.tryParse(farmMemberRiskProfileAnswerNo ?? '') ?? Isar.autoIncrement;
 }

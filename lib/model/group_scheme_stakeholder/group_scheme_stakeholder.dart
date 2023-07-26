@@ -12,7 +12,7 @@ class GroupSchemeStakeholder with _$GroupSchemeStakeholder {
     @JsonKey(name: 'GroupSchemeStakeholderId') String? groupSchemeStakeholderId,
     @JsonKey(name: 'StakeholderId') String? stakeholderId,
     @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
-    @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
+    @Default(0) @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _GroupSchemeStakeholder;
 
   const GroupSchemeStakeholder._();

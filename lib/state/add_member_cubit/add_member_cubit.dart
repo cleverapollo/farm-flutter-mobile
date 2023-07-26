@@ -119,29 +119,51 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           isComplete: addMemberInclusionDateIsComplete,
           inclusionDate: farm.inclusionDate);
 
+      var now = DateTime.now().millisecondsSinceEpoch;
       final firstAnswerMRA = farmMemberRiskProfileAnswer
           .firstWhere(
             (element) => element.riskProfileQuestionId == 1,
-            orElse: () =>
-                FarmMemberRiskProfileAnswer(answer: farm.isChemicalsUsed),
+            orElse: () => FarmMemberRiskProfileAnswer(
+              answer: farm.isChemicalsUsed,
+              riskProfileQuestionId: 1,
+              farmMemberRiskProfileAnswerNo: (now++).toString(),
+              farmId: state.farm?.farmId,
+            ),
           )
           .answer;
       final secondAnswerMRA = farmMemberRiskProfileAnswer
-          .firstWhere((element) => element.riskProfileQuestionId == 2,
-              orElse: () =>
-                  FarmMemberRiskProfileAnswer(answer: farm.isHcvNeighbouring))
+          .firstWhere(
+            (element) => element.riskProfileQuestionId == 2,
+            orElse: () => FarmMemberRiskProfileAnswer(
+              answer: farm.isHcvNeighbouring,
+              riskProfileQuestionId: 2,
+              farmMemberRiskProfileAnswerNo: (now++).toString(),
+              farmId: state.farm?.farmId,
+            ),
+          )
           .answer;
       final thirdAnswerMRA = farmMemberRiskProfileAnswer
-          .firstWhere((element) => element.riskProfileQuestionId == 3,
-              orElse: () => FarmMemberRiskProfileAnswer(
-                  answer: farm.isRiversOrStreamsNeighbouring))
+          .firstWhere(
+            (element) => element.riskProfileQuestionId == 3,
+            orElse: () => FarmMemberRiskProfileAnswer(
+              answer: farm.isRiversOrStreamsNeighbouring,
+              riskProfileQuestionId: 3,
+              farmMemberRiskProfileAnswerNo: (now++).toString(),
+              farmId: state.farm?.farmId,
+            ),
+          )
           .answer;
       final fourthAnswerMRA = farmMemberRiskProfileAnswer
-          .firstWhere((element) => element.riskProfileQuestionId == 4,
-              orElse: () => FarmMemberRiskProfileAnswer(
-                  answer: farm.isCommunitiesNeighbouring))
+          .firstWhere(
+            (element) => element.riskProfileQuestionId == 4,
+            orElse: () => FarmMemberRiskProfileAnswer(
+              answer: farm.isCommunitiesNeighbouring,
+              riskProfileQuestionId: 4,
+              farmMemberRiskProfileAnswerNo: (now++).toString(),
+              farmId: state.farm?.farmId,
+            ),
+          )
           .answer;
-
       final addMemberMRAIsComplete = firstAnswerMRA != null &&
           secondAnswerMRA != null &&
           thirdAnswerMRA != null &&
@@ -563,29 +585,29 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         FarmMemberObjectiveAnswer(
           farmMemberObjectiveAnswerNo: (now++).toString(),
           farmId: state.farm?.farmId,
-          farmObjectiveOptionId: 1,
-          farmMemberObjectiveId: state.addMemberMFO.firstAnswer,
+          farmObjectiveOptionId: state.addMemberMFO.firstAnswer,
+          farmMemberObjectiveId: 1,
           isActive: true,
         ),
         FarmMemberObjectiveAnswer(
           farmMemberObjectiveAnswerNo: (now++).toString(),
           farmId: state.farm?.farmId,
-          farmObjectiveOptionId: 2,
-          farmMemberObjectiveId: state.addMemberMFO.secondAnswer,
+          farmObjectiveOptionId: state.addMemberMFO.secondAnswer,
+          farmMemberObjectiveId: 2,
           isActive: true,
         ),
         FarmMemberObjectiveAnswer(
           farmMemberObjectiveAnswerNo: (now++).toString(),
           farmId: state.farm?.farmId,
-          farmObjectiveOptionId: 3,
-          farmMemberObjectiveId: state.addMemberMFO.thirdAnswer,
+          farmObjectiveOptionId: state.addMemberMFO.thirdAnswer,
+          farmMemberObjectiveId: 3,
           isActive: true,
         ),
         FarmMemberObjectiveAnswer(
           farmMemberObjectiveAnswerNo: (now++).toString(),
           farmId: state.farm?.farmId,
-          farmObjectiveOptionId: 4,
-          farmMemberObjectiveId: state.addMemberMFO.fourthAnswer,
+          farmObjectiveOptionId: state.addMemberMFO.fourthAnswer,
+          farmMemberObjectiveId: 4,
           isActive: true,
         ),
       ];
@@ -679,13 +701,21 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   Future<void> onDataChangeMemberSignContract(
       String? image, String? points, String? date) async {
     if (image != null && points != null && date != null) {
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
+          farm: state.farm?.copyWith(
+            signatureImage: image,
+            signatureDate: date,
+            signaturePoints: points,
+          ),
           addMemberSAF: state.addMemberSAF.copyWith(
-        signatureImage: image,
-        signatureDate: date,
-        signaturePoints: points,
-        isComplete: true,
-      )));
+            signatureImage: image,
+            signatureDate: date,
+            signaturePoints: points,
+            isComplete: true,
+          ),
+        ),
+      );
 
       checkIsGroupSchemeMember();
       await cacheFarm();
