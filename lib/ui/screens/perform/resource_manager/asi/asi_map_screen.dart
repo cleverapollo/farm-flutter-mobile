@@ -76,22 +76,27 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
     });
   }
 
-  Future<void> takeScreenshot(Uint8List? screenshot) async {
+  Future<void> takePhotoFromCamera() async {
     setState(() {
       loading = true;
     });
 
     try {
-      if (screenshot != null && isEnableNextButton) {
-        /// Comment code for supporting multiple image
-        final screenshotFile = await FileUtil.writeToFileWithUint8List(screenshot);
-        // final base64 = await FileUtil.toBase64(screenshotFile);
-        setState(() {
-          locationModel.imageUri = screenshotFile.path;
-          // locationModel.listImage.add(base64);
-        });
+      final croppedImage = await imagePickerService.pickImageFromCamera(
+        title: DateTime.now().toString(),
+      );
 
-        showSnackSuccess(msg: 'Captured successfully!');
+      if (croppedImage != null) {
+        /// Comment code for supporting multiple image
+        // final uint8ListImage = await croppedImage.readAsBytes();
+        // final imageFile = await FileUtil.writeToFileWithUint8List(uint8ListImage);
+        // final base64 = await FileUtil.toBase64(imageFile);
+        setState(() {
+
+          locationModel.imageUri = croppedImage.path;
+          // locationModel.listImage.add(base64);
+          showSnackSuccess(msg: 'Take photo successfully!');
+        });
       }
     } catch (e) {
       logger.d(e.toString());
@@ -155,7 +160,7 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                   onMapMoved: (_, __) {},
                   onPinned: onPinned,
                   onRemoveMarker: onRemoveMarker,
-                  takeScreenshot: takeScreenshot,
+                  takePhotoFromCamera: takePhotoFromCamera,
                   onSelectPhotos: onSelectPhoto,
                 ),
               ),

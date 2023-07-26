@@ -19,7 +19,7 @@ class CmoMap extends StatefulWidget {
   final bool showMarker;
   final bool showResetAcceptIcons;
   final bool showButtonList;
-  final void Function(Uint8List?)? takeScreenshot;
+  final VoidCallback? takePhotoFromCamera;
   final VoidCallback? onSelectPhotos;
   final VoidCallback? onRemoveMarker;
   final LatLng? selectedPoint;
@@ -33,7 +33,7 @@ class CmoMap extends StatefulWidget {
     this.showMarker = false,
     this.showResetAcceptIcons = false,
     this.showButtonList = false,
-    this.takeScreenshot,
+    this.takePhotoFromCamera,
     this.onSelectPhotos,
     this.onRemoveMarker,
     this.selectedPoint,
@@ -348,8 +348,7 @@ class CmoMapState extends State<CmoMap> {
   Widget takePhotoIcon() {
     return InkWell(
       onTap: () async {
-        final snapshot = await mapController.takeSnapshot();
-        widget.takeScreenshot?.call(snapshot);
+        widget.takePhotoFromCamera?.call();
       },
       child: Container(
         alignment: Alignment.center,
