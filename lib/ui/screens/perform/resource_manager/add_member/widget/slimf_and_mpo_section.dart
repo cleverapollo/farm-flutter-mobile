@@ -58,13 +58,12 @@ class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
   }
 
   Widget buildSlimfCompliance() {
-    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberSLIMF?>(
+    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberSLIMF>(
       selector: (state) => state.addMemberSLIMF,
-      builder: (context, AddMemberSLIMF? data) {
-        final isSelect = data?.isSlimfCompliant;
+      builder: (context, data) {
         return ExpandableItemWidget(
           title: LocaleKeys.slimf_compliance.tr(),
-          showTick: data?.isComplete,
+          showTick: data.isComplete,
           isCollapse: isCollapseSlimfCompliance,
           onTap: () => setState(() {
             isCollapseSlimfCompliance = !isCollapseSlimfCompliance;
@@ -75,9 +74,13 @@ class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(LocaleKeys.is_the_farmer_slimf_compliant.tr(),
-                    style: context.textStyles.titleBold
-                        .copyWith(color: context.colors.black, fontSize: 16)),
+                Text(
+                  LocaleKeys.is_the_farmer_slimf_compliant.tr(),
+                  style: context.textStyles.titleBold.copyWith(
+                    color: context.colors.black,
+                    fontSize: 16,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 Text(
                   LocaleKeys.slimf_compliant_limitation_1.tr().toUpperCase(),
@@ -92,9 +95,9 @@ class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
                 const SlimfCompliantLimitation2Content(),
                 const SizedBox(height: 12),
                 CmoSlimfQuestion(
-                  initialValue: isSelect,
-                  onTap: (p0) {
-                    context.read<AddMemberCubit>().onTapSlimf(isSlimf: p0!);
+                  initialValue: data.isSlimfCompliant,
+                  onTap: (p0) async {
+                    await context.read<AddMemberCubit>().onTapSlimf(isSlimf: p0!);
                     setState(() {
                       isCollapseSlimfCompliance = true;
                       isCollapseMPO = false;

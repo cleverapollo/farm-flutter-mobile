@@ -22,11 +22,11 @@ class _CmoSlimfQuestionState extends State<CmoSlimfQuestion> {
   @override
   void initState() {
     super.initState();
-    isSelect.value = widget.initialValue;
   }
 
   @override
   Widget build(BuildContext context) {
+    isSelect.value = widget.initialValue;
     return ValueListenableBuilder(
       valueListenable: isSelect,
       builder: (_, value, __) {
@@ -100,6 +100,12 @@ class _CmoSlimfQuestionState extends State<CmoSlimfQuestion> {
     }
 
     return context.colors.yellow;
+  }
+
+  @override
+  void dispose() {
+    isSelect.dispose();
+    super.dispose();
   }
 }
 

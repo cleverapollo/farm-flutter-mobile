@@ -27,7 +27,12 @@ class AddMemberScreen extends StatefulWidget {
 
   static Future<bool?> push(BuildContext context, {Farm? farm}) {
     return Navigator.push(context,
-        MaterialPageRoute(builder: (_) => AddMemberScreen(farm: farm)));
+        MaterialPageRoute(builder: (_) => BlocProvider<AddMemberCubit>(
+          create: (context) => AddMemberCubit(),
+          child: AddMemberScreen(farm: farm),
+        ),
+      ),
+    );
   }
 
   @override
@@ -41,7 +46,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   @override
   void dispose() {
     cubit.stepCount();
-    cubit.disposeAddMember();
     dashboardCubit.getResourceManagerMembers();
     super.dispose();
   }
@@ -49,9 +53,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      cubit = context.read<AddMemberCubit>()..initAddMember(farm: widget.farm);
-      dashboardCubit = context.read<DashboardCubit>();
+    dashboardCubit = context.read<DashboardCubit>();
+    Future.microtask(() async {
+      await context.read<AddMemberCubit>().initAddMember(farm: widget.farm);
+      cubit = context.read<AddMemberCubit>();
     });
   }
 
@@ -69,7 +74,12 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         selector: (state) => state.isLoading,
         builder: (context, bool isLoading) {
           if (isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: context.colors.blueDark2,
+              ),
+            );
           }
           return SingleChildScrollView(
             child: Column(

@@ -25,6 +25,12 @@ class AddMemberState with _$AddMemberState {
   }) = _AddMemberState;
 }
 
+extension AddMemberStateExtension on AddMemberState {
+  AddMemberState cleanCache() {
+    return const AddMemberState();
+  }
+}
+
 @freezed
 class AddMemberSAF with _$AddMemberSAF {
   const factory AddMemberSAF({

@@ -17,11 +17,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   AddMemberCubit() : super(const AddMemberState());
 
   Future<void> initAddMember({Farm? farm}) async {
+    emit(state.cleanCache().copyWith(isLoading: true));
     await initDataFarm(farm);
-  }
-
-  void disposeAddMember() {
-    emit(const AddMemberState());
+    emit(state.copyWith(isLoading: false));
   }
 
   Future<void> initDataFarm(Farm? farm) async {
@@ -36,7 +34,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     if (!loadedFarmPropertyOwnerShipType) return;
 
     if (farm != null) {
-      emit(state.copyWith(isLoading: true));
+      emit(state.copyWith(farm: farm));
       final farmMemberObjectiveAnswer = await cmoDatabaseMasterService
           .getFarmMemberObjectiveAnswerByFarmId(farm.farmId);
       final farmMemberRiskProfileAnswer = await cmoDatabaseMasterService
@@ -51,6 +49,12 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       final addMemberSlimf = AddMemberSLIMF(
         isComplete: addMemberSlimfIsComplete,
         isSlimfCompliant: farm.isSlimfCompliant,
+      );
+
+      emit(
+        state.copyWith(
+          addMemberSLIMF: addMemberSlimf,
+        ),
       );
 
       FarmPropertyOwnershipType? propertyTypeSelected;
@@ -180,15 +184,12 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       );
 
       emit(state.copyWith(
-        isLoading: false,
-        addMemberSLIMF: addMemberSlimf,
         addMemberMPO: addMemberMPO,
         addMemberMDetails: addMemberMDetail,
         addMemberSDetails: addMemberSDetail,
         addMemberInclusionDate: addMemberInclusionDate,
         addMemberMRA: addMemberMRA,
         addMemberMFO: addMemberMFO,
-        farm: farm,
       ));
 
       debugPrint('Done loading farm data');
