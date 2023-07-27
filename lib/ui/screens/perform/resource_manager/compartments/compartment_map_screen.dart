@@ -348,11 +348,8 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
 
   String _presentAreaSquare() {
     if (areaSquareMeters == null) return '0 ${LocaleKeys.measured.tr()}';
-    if (areaSquareMeters! > haSquareMeters) {
       return '${(areaSquareMeters! / haSquareMeters).toStringAsFixed(
           2)} ha ${LocaleKeys.measured.tr()}';
-    }
-    return '$areaSquareMeters m2 ${LocaleKeys.measured.tr()}';
   }
 
   bool _isCompletedPoint(map.LatLng lastPoint) {
