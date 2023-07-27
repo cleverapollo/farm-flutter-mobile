@@ -40,7 +40,7 @@ class AsiCubit extends Cubit<AsiState> {
           filterAsi: state.listAsi
               .where(
                 (element) =>
-                    element.asiTypeName
+                    element.asiRegisterNo
                         ?.toString()
                         .toLowerCase()
                         .contains(input.toLowerCase()) ??

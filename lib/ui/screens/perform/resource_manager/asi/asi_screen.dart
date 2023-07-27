@@ -38,7 +38,7 @@ class ASIScreen extends StatefulWidget {
 }
 class _ASIScreenState extends State<ASIScreen> {
 
-  bool isCollapse = true;
+  bool isCollapse = false;
 
   Timer? _debounceInputTimer;
 
@@ -109,7 +109,7 @@ class _ASIScreenState extends State<ASIScreen> {
                             child: CmoCard(
                               backgroundColor: context.colors.blueDark2,
                               trailing: Icon(
-                                isCollapse ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+                                isCollapse ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                                 color: context.colors.white,
                                 size: 40,
                               ),
