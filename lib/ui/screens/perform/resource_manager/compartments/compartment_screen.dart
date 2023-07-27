@@ -42,84 +42,96 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
     context.read<CompartmentCubit>().loadListCompartment();
   }
 
+  void onBack(
+    List<Compartment> listCompartment,
+    double total,
+  ) {
+    Navigator.of(context).pop(
+      AddingCompartmentResult()
+        ..compartments = listCompartment
+        ..totalAreaHa = total,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.compartment.tr(),
-        subtitle: widget.farmName ?? '',
-        showLeading: true,
-        showTrailing: true,
-        trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () async {
-          await CompartmentMapScreen.push(
-            context,
-            farmId: context.read<CompartmentCubit>().state.farmId,
-            farmName: widget.farmName,
-            campId: context.read<CompartmentCubit>().state.campId,
-          );
-          context.read<CompartmentCubit>().loadListCompartment();
-        },
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child:
-            BlocSelector<CompartmentCubit, CompartmentState, List<Compartment>>(
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: BlocSelector<CompartmentCubit, CompartmentState, List<Compartment>>(
           selector: (state) => state.listCompartment,
-          builder: (context, listCompartment) {
-            final total = listCompartment.fold(0.0, (previousValue, element) => previousValue +  (element.polygonArea ?? 0));
-            return Column(
-            children: [
-              CmoTappable(
-                onTap: () => print('onSummary tapped'),
-                child: CmoCard(
-                  content: [
-                    CmoCardHeader(title: LocaleKeys.summary.tr()),
-                    CmoCardItem(
-                      title: LocaleKeys.total.tr(),
-                      value: '${total.toStringAsFixed(2)} ha',
-                      ratioTitleSpace: 3,
+        builder: (context, listCompartment) {
+          final total = listCompartment.fold(0.0, (previousValue, element) => previousValue + (element.polygonArea ?? 0));
+          return Scaffold(
+            appBar: CmoAppBarV2(
+              title: LocaleKeys.compartment.tr(),
+              subtitle: widget.farmName ?? '',
+              showLeading: true,
+              showTrailing: true,
+              trailing: Assets.icons.icAdd.svgBlack,
+              onTapLeading: () => onBack(listCompartment, total),
+              onTapTrailing: () async {
+                await CompartmentMapScreen.push(
+                  context,
+                  farmId: context.read<CompartmentCubit>().state.farmId,
+                  farmName: widget.farmName,
+                  campId: context.read<CompartmentCubit>().state.campId,
+                );
+                context.read<CompartmentCubit>().loadListCompartment();
+              },
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  CmoTappable(
+                    onTap: () => print('onSummary tapped'),
+                    child: CmoCard(
+                      content: [
+                        CmoCardHeader(title: LocaleKeys.summary.tr()),
+                        CmoCardItem(
+                          title: LocaleKeys.total.tr(),
+                          value: '${total.toStringAsFixed(2)} ha',
+                          ratioTitleSpace: 3,
+                        ),
+                        CmoCardItem(
+                          title: LocaleKeys.compartments.tr(),
+                          value: listCompartment.length.toString(),
+                          ratioTitleSpace: 3,
+                        ),
+                      ],
+                      trailing: Assets.icons.icDown.svgWhite,
                     ),
-                    CmoCardItem(
-                      title: LocaleKeys.compartments.tr(),
-                      value: listCompartment.length.toString(),
-                      ratioTitleSpace: 3,
-                    ),
-                  ],
-                  trailing: Assets.icons.icDown.svgWhite,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: listCompartment.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0),
-                      child: CompartmentItemWidget(
-                        model: listCompartment[index],
-                        onTap: () {},
-                      ),
-                    );
-                  },
-                ),
-              ),
-              if (listCompartment.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  CmoFilledButton(
-                    title: LocaleKeys.done.tr(),
-                    onTap: () async {
-                      Navigator.of(context).pop(AddingCompartmentResult()
-                        ..compartments = listCompartment
-                        ..totalAreaHa = total);
-                    },
                   ),
-                  const SizedBox(height: 16),
-                ]
-              ],
+                  const SizedBox(height: 24),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: listCompartment.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: CompartmentItemWidget(
+                            model: listCompartment[index],
+                            onTap: () {},
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  if (listCompartment.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    CmoFilledButton(
+                      title: LocaleKeys.done.tr(),
+                      onTap: () => onBack(listCompartment, total),
+                    ),
+                    const SizedBox(height: 16),
+                  ]
+                ],
+              ),
+            ),
           );
-          },
-        ),
+        },
       ),
     );
   }
