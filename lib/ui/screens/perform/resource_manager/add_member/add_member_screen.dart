@@ -1,4 +1,5 @@
 import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/data/province.dart';
@@ -119,7 +120,7 @@ class _AddMemberInclusionDate extends StatelessWidget {
           child: ColoredBox(
             color: Colors.white,
             child: Container(
-              margin: const EdgeInsets.all(8),
+              margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
@@ -150,8 +151,9 @@ class _AddMemberInclusionDate extends StatelessWidget {
                       await cubit.onDataChangeInclusionDate(result);
                     },
                     child: Container(
+                      margin: const EdgeInsets.only(bottom: 10, left: 6, right: 6, top: 4),
                       padding:
-                          const EdgeInsets.only(left: 16, top: 8, bottom: 8),
+                          const EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 12),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: Colors.grey)),
@@ -162,11 +164,11 @@ class _AddMemberInclusionDate extends StatelessWidget {
                             data.inclusionDate != null
                                 ? DateTime.parse(data.inclusionDate!)
                                     .mmmDdYyyy()
-                                : 'Included Date',
+                                : LocaleKeys.inclusion_date.tr(),
                             style: context.textStyles.bodyNormal
                                 .copyWith(color: Colors.black),
                           ),
-                          const Icon(Icons.date_range)
+                          Assets.icons.icCalendar.svgBlack
                         ],
                       ),
                     ),
