@@ -552,5 +552,6 @@
   "map_type": "Map Type",
   "default_text": "Default",
   "satellite": "Satellite",
-  "terrain": "Terrain"
+  "terrain": "Terrain",
+  "inclusion_date": "Inclusion Date"
 }
