@@ -23,6 +23,8 @@ class CmoTextField extends StatelessWidget {
     this.inputDecoration,
     this.autocorrect = true,
     this.enableSuggestions = true,
+    this.textAlign,
+    this.hintStyle,
     this.initialValue,
   });
 
@@ -64,10 +66,15 @@ class CmoTextField extends StatelessWidget {
 
   final String? initialValue;
 
+  final TextAlign? textAlign;
+
+  final TextStyle? hintStyle;
+
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
       name: name,
+      textAlign: textAlign ?? TextAlign.start,
       validator: validator,
       enabled: enabled,
       style: context.textStyles.bodyNormal,
@@ -88,6 +95,7 @@ class CmoTextField extends StatelessWidget {
             suffixIcon: suffixIcon != null ? Center(child: suffixIcon) : null,
             isDense: true,
             hintText: hintText,
+            hintStyle: hintStyle
           ),
       maxLines: maxLines,
       autofocus: autofocus,

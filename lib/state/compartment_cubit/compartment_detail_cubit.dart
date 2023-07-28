@@ -94,8 +94,11 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     state.compartment = state.compartment.copyWith(effectiveArea: value);
   }
 
-  void onEspacementChanged(String? value) {
-    state.compartment = state.compartment.copyWith(espacement: value);
+  void onEspacementWidthChanged(String? value) {
+    state.compartment = state.compartment.copyWith(espacementWidth: value);
+  }
+  void onEspacementLengthChanged(String? value) {
+    state.compartment = state.compartment.copyWith(espacementLength: value);
   }
 
   void onPlannedPlantDateChanged(DateTime? value) {
