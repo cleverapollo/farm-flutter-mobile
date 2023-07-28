@@ -13,7 +13,6 @@ import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart';
 
 class AddMemberCubit extends Cubit<AddMemberState> {
   AddMemberCubit() : super(const AddMemberState());
