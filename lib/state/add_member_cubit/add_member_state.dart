@@ -1,7 +1,9 @@
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/data/farm_property_ownership_type.dart';
+import 'package:cmo/model/model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'add_member_state.freezed.dart';
@@ -18,7 +20,7 @@ class AddMemberState with _$AddMemberState {
     @Default(AddMemberInclusionDate())
         AddMemberInclusionDate addMemberInclusionDate,
     @Default(AddMemberMRA()) AddMemberMRA addMemberMRA,
-    @Default(AddMemberMFO()) AddMemberMFO addMemberMFO,
+    @Default(FarmMemberObjectivesState()) FarmMemberObjectivesState farmMemberObjectivesState,
     @Default(AddMemberContract()) AddMemberContract addMemberContract,
     @Default(AddMemberSAF()) AddMemberSAF addMemberSAF,
     @Default(AddMemberClose()) AddMemberClose addMemberClose,
@@ -173,12 +175,33 @@ class AddMemberMRA with _$AddMemberMRA {
 }
 
 @freezed
-class AddMemberMFO with _$AddMemberMFO {
-  const factory AddMemberMFO({
-    @Default(false) bool isComplete,
-    int? firstAnswer,
-    int? secondAnswer,
-    int? thirdAnswer,
-    int? fourthAnswer,
-  }) = _AddMemberMFO;
+class FarmMemberObjectivesState with _$FarmMemberObjectivesState {
+  const factory FarmMemberObjectivesState({
+    @Default(<FarmMemberObjective>[]) List<FarmMemberObjective> listFarmMemberObjectives,
+    @Default(<FarmObjectiveOption>[]) List<FarmObjectiveOption> listFarmObjectiveOptions,
+    @Default(<FarmMemberObjectiveAnswer>[]) List<FarmMemberObjectiveAnswer> listFarmMemberObjectiveAnswers,
+  }) = _FarmMemberObjectivesState;
+}
+
+extension FarmMemberObjectivesStateExtension on FarmMemberObjectivesState {
+  bool get isComplete => listFarmMemberObjectiveAnswers.firstWhereOrNull((element) => element.farmObjectiveOptionId == null) == null;
+
+  String getFarmMemberObjectiveAnswerTitle(int farmMemberObjectiveId) {
+    final answer = listFarmMemberObjectiveAnswers.firstWhereOrNull((element) => element.farmMemberObjectiveId == farmMemberObjectiveId);
+    if (answer != null) {
+      final answerTitle = listFarmObjectiveOptions.firstWhereOrNull(
+        (element) => element.farmObjectiveOptionId == answer.farmObjectiveOptionId,
+      );
+
+      if (answerTitle == null) return '';
+      return answerTitle.farmObjectiveOptionName ?? '';
+    }
+
+    return '';
+  }
+
+  FarmMemberObjectiveAnswer? getFarmMemberObjectiveAnswer(int farmMemberObjectiveId) {
+    final answer = listFarmMemberObjectiveAnswers.firstWhereOrNull((element) => element.farmMemberObjectiveId == farmMemberObjectiveId);
+    return answer;
+  }
 }

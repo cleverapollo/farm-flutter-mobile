@@ -1,12 +1,13 @@
 import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
+import 'package:cmo/model/data/province.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/ui/components/select_site_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_membership_contract_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/farm_member_objectives_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
@@ -27,10 +28,7 @@ class AddMemberScreen extends StatefulWidget {
 
   static Future<bool?> push(BuildContext context, {Farm? farm}) {
     return Navigator.push(context,
-        MaterialPageRoute(builder: (_) => BlocProvider<AddMemberCubit>(
-          create: (context) => AddMemberCubit(),
-          child: AddMemberScreen(farm: farm),
-        ),
+        MaterialPageRoute(builder: (_) => AddMemberScreen(farm: farm),
       ),
     );
   }
@@ -81,12 +79,12 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
               ),
             );
           }
-          return const SingleChildScrollView(
+          return SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 SlimfAndMpoSection(),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 _AddMemberMDetails(),
                 SizedBox(height: 12),
                 _AddMemberSDetails(),
@@ -95,7 +93,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                 SizedBox(height: 12),
                 _AddMemberMRA(),
                 SizedBox(height: 12),
-                _AddMemberMFO(),
+                FarmMemberObjectivesWidget(),
                 SizedBox(height: 12),
               ],
             ),
@@ -121,7 +119,7 @@ class _AddMemberInclusionDate extends StatelessWidget {
           child: ColoredBox(
             color: Colors.white,
             child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              margin: const EdgeInsets.all(8),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
@@ -152,9 +150,8 @@ class _AddMemberInclusionDate extends StatelessWidget {
                       await cubit.onDataChangeInclusionDate(result);
                     },
                     child: Container(
-                      margin: const EdgeInsets.only(bottom: 10, left: 6, right: 6, top: 4),
                       padding:
-                          const EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 12),
+                          const EdgeInsets.only(left: 16, top: 8, bottom: 8),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: Colors.grey)),
@@ -165,11 +162,11 @@ class _AddMemberInclusionDate extends StatelessWidget {
                             data.inclusionDate != null
                                 ? DateTime.parse(data.inclusionDate!)
                                     .mmmDdYyyy()
-                                : LocaleKeys.inclusion_date.tr(),
+                                : 'Included Date',
                             style: context.textStyles.bodyNormal
                                 .copyWith(color: Colors.black),
                           ),
-                          Assets.icons.icCalendar.svgBlack
+                          const Icon(Icons.date_range)
                         ],
                       ),
                     ),
@@ -184,123 +181,8 @@ class _AddMemberInclusionDate extends StatelessWidget {
   }
 
   Widget _buildDivider() {
-    return const Column(
-      children: [
-        SizedBox(height: 8),
-        Divider(thickness: 1),
-        SizedBox(height: 8),
-      ],
-    );
-  }
-}
-
-class _AddMemberMFO extends StatelessWidget {
-  const _AddMemberMFO();
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMFO>(
-      selector: (state) => state.addMemberMFO,
-      builder: (context, AddMemberMFO data) {
-        final cubit = context.read<AddMemberCubit>();
-        return CmoCollapseTitle(
-            showTick: data.isComplete,
-            title: LocaleKeys.member_farm_objectives.tr(),
-            child: Container(
-                height: size.height * 0.8,
-                width: double.maxFinite,
-                padding: const EdgeInsets.all(12),
-                color: context.colors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('*Production Forestry',
-                        style: context.textStyles.bodyBold.copyWith(
-                            color: context.colors.black, fontSize: 16)),
-                    const SizedBox(height: 8),
-                    CmoMFOQuestion(
-                      initialValue: data.firstAnswer,
-                      onTap: (p0) {
-                        cubit.onDataChangeMFO(firstAnswer: p0);
-                      },
-                    ),
-                    _buildDivider(),
-                    Text('*Community upliftment',
-                        style: context.textStyles.bodyBold.copyWith(
-                            color: context.colors.black, fontSize: 16)),
-                    const SizedBox(height: 8),
-                    CmoMFOQuestion(
-                      initialValue: data.secondAnswer,
-                      onTap: (p0) {
-                        cubit.onDataChangeMFO(secondAnswer: p0);
-                      },
-                    ),
-                    _buildDivider(),
-                    Text('*Environmental protection',
-                        style: context.textStyles.bodyBold.copyWith(
-                            color: context.colors.black, fontSize: 16)),
-                    const SizedBox(height: 8),
-                    CmoMFOQuestion(
-                      initialValue: data.thirdAnswer,
-                      onTap: (p0) {
-                        cubit.onDataChangeMFO(thirdAnswer: p0);
-                      },
-                    ),
-                    _buildDivider(),
-                    Text('*Honey production',
-                        style: context.textStyles.bodyBold.copyWith(
-                            color: context.colors.black, fontSize: 16)),
-                    const SizedBox(height: 8),
-                    CmoMFOQuestion(
-                      initialValue: data.fourthAnswer,
-                      onTap: (p0) {
-                        cubit.onDataChangeMFO(fourthAnswer: p0);
-                      },
-                    ),
-                    _buildDivider(),
-                    const Spacer(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        CmoFilledButton(
-                            title: LocaleKeys.finalise_later.tr(),
-                            onTap: () {
-                              Navigator.pop(context, true);
-                            }),
-                        BlocSelector<AddMemberCubit, AddMemberState, AddMemberState>(
-                          selector: (state) => state,
-                          builder: (context, state) {
-                            return CmoFilledButton(
-                                title: LocaleKeys.next.tr(),
-                                onTap: () {
-                                  if (state.addMemberMDetails.isComplete) {
-                                    AddMemberMembershipContractScreen.push(
-                                      context,
-                                      farm: context
-                                          .read<AddMemberCubit>()
-                                          .state
-                                          .farm,
-                                    );
-                                  } else {
-                                    context.read<AddMemberCubit>().checkErrorAllSteps();
-                                    showSnackError(msg: 'Should complete all steps.');
-                                  }
-                                },
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                )));
-      },
-    );
-  }
-
-  Widget _buildDivider() {
-    return const Column(
-      children: [
+    return Column(
+      children: const [
         SizedBox(height: 8),
         Divider(thickness: 1),
         SizedBox(height: 8),
@@ -371,8 +253,8 @@ class _AddMemberMRA extends StatelessWidget {
   }
 
   Widget _buildDivider() {
-    return const Column(
-      children: [
+    return Column(
+      children: const [
         SizedBox(height: 8),
         Divider(thickness: 1),
         SizedBox(height: 8),

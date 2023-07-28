@@ -105,12 +105,12 @@ class _AddMemberSignContractScreenState
                             );
 
                         log(base64);
-                        // final state =
-                        //     context.read<AddMemberCubit>().state.addMemberSAF;
-                        // final goNextStep = state.signatureImage != null;
-                        // if (goNextStep && context.mounted) {
-                        //   await AddMemberDone.push(context, farm: widget.farm);
-                        // }
+                        final state =
+                            context.read<AddMemberCubit>().state.addMemberSAF;
+                        final goNextStep = state.signatureImage != null;
+                        if (goNextStep && context.mounted) {
+                          await AddMemberDone.push(context, farm: widget.farm);
+                        }
                       })),
               const SizedBox(height: 20),
             ],

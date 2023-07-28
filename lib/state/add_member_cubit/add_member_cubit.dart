@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/compartment/compartment.dart';
@@ -7,6 +8,7 @@ import 'package:cmo/model/data/farm_member_objective_answer.dart';
 import 'package:cmo/model/data/farm_member_risk_profile_answer.dart';
 import 'package:cmo/model/data/farm_property_ownership_type.dart';
 import 'package:cmo/model/data/province.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -27,16 +29,10 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     final groupSchemeUnit = await configService.getActiveRegionalManager();
     final loadedFarmPropertyOwnerShipType =
         await getAllFarmPropertyOwnerShipType();
-    final farmMemberObjective = await cmoDatabaseMasterService
-        .getAllFarmMemberObjectiveByGroupSchemeId(groupScheme!.groupSchemeId!);
-    final farmObjectiveOption = await cmoDatabaseMasterService
-        .getFarmObjectiveOptionByGroupSchemeId(groupScheme.groupSchemeId!);
     if (!loadedFarmPropertyOwnerShipType) return;
 
     if (farm != null) {
       emit(state.copyWith(farm: farm));
-      final farmMemberObjectiveAnswer = await cmoDatabaseMasterService
-          .getFarmMemberObjectiveAnswerByFarmId(farm.farmId);
       final farmMemberRiskProfileAnswer = await cmoDatabaseMasterService
           .getFarmMemberRiskProfileAnswerByFarmId(farm.farmId);
 
@@ -119,51 +115,29 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           isComplete: addMemberInclusionDateIsComplete,
           inclusionDate: farm.inclusionDate);
 
-      var now = DateTime.now().millisecondsSinceEpoch;
       final firstAnswerMRA = farmMemberRiskProfileAnswer
           .firstWhere(
             (element) => element.riskProfileQuestionId == 1,
-            orElse: () => FarmMemberRiskProfileAnswer(
-              answer: farm.isChemicalsUsed,
-              riskProfileQuestionId: 1,
-              farmMemberRiskProfileAnswerNo: (now++).toString(),
-              farmId: state.farm?.farmId,
-            ),
+            orElse: () =>
+                FarmMemberRiskProfileAnswer(answer: farm.isChemicalsUsed),
           )
           .answer;
       final secondAnswerMRA = farmMemberRiskProfileAnswer
-          .firstWhere(
-            (element) => element.riskProfileQuestionId == 2,
-            orElse: () => FarmMemberRiskProfileAnswer(
-              answer: farm.isHcvNeighbouring,
-              riskProfileQuestionId: 2,
-              farmMemberRiskProfileAnswerNo: (now++).toString(),
-              farmId: state.farm?.farmId,
-            ),
-          )
+          .firstWhere((element) => element.riskProfileQuestionId == 2,
+              orElse: () =>
+                  FarmMemberRiskProfileAnswer(answer: farm.isHcvNeighbouring))
           .answer;
       final thirdAnswerMRA = farmMemberRiskProfileAnswer
-          .firstWhere(
-            (element) => element.riskProfileQuestionId == 3,
-            orElse: () => FarmMemberRiskProfileAnswer(
-              answer: farm.isRiversOrStreamsNeighbouring,
-              riskProfileQuestionId: 3,
-              farmMemberRiskProfileAnswerNo: (now++).toString(),
-              farmId: state.farm?.farmId,
-            ),
-          )
+          .firstWhere((element) => element.riskProfileQuestionId == 3,
+              orElse: () => FarmMemberRiskProfileAnswer(
+                  answer: farm.isRiversOrStreamsNeighbouring))
           .answer;
       final fourthAnswerMRA = farmMemberRiskProfileAnswer
-          .firstWhere(
-            (element) => element.riskProfileQuestionId == 4,
-            orElse: () => FarmMemberRiskProfileAnswer(
-              answer: farm.isCommunitiesNeighbouring,
-              riskProfileQuestionId: 4,
-              farmMemberRiskProfileAnswerNo: (now++).toString(),
-              farmId: state.farm?.farmId,
-            ),
-          )
+          .firstWhere((element) => element.riskProfileQuestionId == 4,
+              orElse: () => FarmMemberRiskProfileAnswer(
+                  answer: farm.isCommunitiesNeighbouring))
           .answer;
+
       final addMemberMRAIsComplete = firstAnswerMRA != null &&
           secondAnswerMRA != null &&
           thirdAnswerMRA != null &&
@@ -176,42 +150,12 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         fourthAnswer: fourthAnswerMRA,
       );
 
-      final firstAnswerMFO = farmMemberObjectiveAnswer
-          .firstWhere((element) => element.farmObjectiveOptionId == 1,
-              orElse: () => const FarmMemberObjectiveAnswer())
-          .farmMemberObjectiveId;
-      final secondAnswerMFO = farmMemberObjectiveAnswer
-          .firstWhere((element) => element.farmObjectiveOptionId == 2,
-              orElse: () => const FarmMemberObjectiveAnswer())
-          .farmMemberObjectiveId;
-      final thirdAnswerMFO = farmMemberObjectiveAnswer
-          .firstWhere((element) => element.farmObjectiveOptionId == 3,
-              orElse: () => const FarmMemberObjectiveAnswer())
-          .farmMemberObjectiveId;
-      final fourthAnswerMFO = farmMemberObjectiveAnswer
-          .firstWhere((element) => element.farmObjectiveOptionId == 4,
-              orElse: () => const FarmMemberObjectiveAnswer())
-          .farmMemberObjectiveId;
-
-      final addMemberMFOIsComplete = firstAnswerMFO != null &&
-          secondAnswerMFO != null &&
-          thirdAnswerMFO != null &&
-          fourthAnswerMFO != null;
-      final addMemberMFO = AddMemberMFO(
-        isComplete: addMemberMFOIsComplete,
-        firstAnswer: firstAnswerMFO,
-        secondAnswer: secondAnswerMFO,
-        thirdAnswer: thirdAnswerMFO,
-        fourthAnswer: fourthAnswerMFO,
-      );
-
       emit(state.copyWith(
         addMemberMPO: addMemberMPO,
         addMemberMDetails: addMemberMDetail,
         addMemberSDetails: addMemberSDetail,
         addMemberInclusionDate: addMemberInclusionDate,
         addMemberMRA: addMemberMRA,
-        addMemberMFO: addMemberMFO,
       ));
 
       debugPrint('Done loading farm data');
@@ -219,11 +163,56 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       emit(state.copyWith(
           farm: Farm(
         farmId: DateTime.now().millisecondsSinceEpoch.toString(),
-        groupSchemeId: groupScheme.groupSchemeId,
+        groupSchemeId: groupScheme?.groupSchemeId,
         regionalManagerUnitId: groupSchemeUnit?.regionalManagerUnitId,
         isActive: true,
       )));
     }
+
+    await initDataFarmMemberObjectives();
+  }
+
+  Future<void> initDataFarmMemberObjectives() async {
+    final activeGroupScheme = await configService.getActiveGroupScheme();
+
+    final farmMemberObjective = await cmoDatabaseMasterService.getAllFarmMemberObjectiveByGroupSchemeId(
+      activeGroupScheme?.groupSchemeId,
+    );
+
+    final farmObjectiveOption = await cmoDatabaseMasterService.getFarmObjectiveOptionByGroupSchemeId(
+      activeGroupScheme?.groupSchemeId,
+    );
+
+    final farmMemberObjectiveAnswer = await cmoDatabaseMasterService.getFarmMemberObjectiveAnswerByFarmId(state.farm?.farmId);
+
+    final listAnswer = <FarmMemberObjectiveAnswer>[];
+
+    var now = DateTime.now().millisecondsSinceEpoch;
+
+    for (final question in farmMemberObjective) {
+      final currentAnswer = farmMemberObjectiveAnswer.firstWhereOrNull((element) => element.farmMemberObjectiveId == question.farmMemberObjectiveId);
+      if (currentAnswer != null) {
+        listAnswer.add(currentAnswer);
+      } else {
+        final answer = FarmMemberObjectiveAnswer(
+          farmMemberObjectiveId: question.farmMemberObjectiveId,
+          farmMemberObjectiveAnswerNo: (now++).toString(),
+          farmId: state.farm?.farmId,
+        );
+
+        listAnswer.add(answer);
+      }
+    }
+
+    emit(
+      state.copyWith(
+        farmMemberObjectivesState: state.farmMemberObjectivesState.copyWith(
+          listFarmMemberObjectiveAnswers: listAnswer,
+          listFarmObjectiveOptions: farmObjectiveOption,
+          listFarmMemberObjectives: farmMemberObjective,
+        ),
+      ),
+    );
   }
 
   Future<void> stepCount() async {
@@ -253,7 +242,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       stepCount++;
     }
 
-    if (state.addMemberMFO.isComplete) {
+    if (state.farmMemberObjectivesState.isComplete) {
       stepCount++;
     }
 
@@ -459,7 +448,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
               state.addMemberSDetails.isComplete &&
               state.addMemberInclusionDate.isComplete &&
               state.addMemberMRA.isComplete &&
-              state.addMemberMFO.isComplete &&
+              state.farmMemberObjectivesState.isComplete &&
               state.addMemberContract.isComplete &&
               state.addMemberSAF.isComplete &&
               state.addMemberClose.isComplete,
@@ -555,71 +544,31 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     }
   }
 
-  Future<void> onDataChangeMFO({
-    int? firstAnswer,
-    int? secondAnswer,
-    int? thirdAnswer,
-    int? fourthAnswer,
+  Future<void> onAnswerFarmMemberObjective({
+    required FarmMemberObjective question,
+    required FarmObjectiveOption option,
   }) async {
-    final data = state.addMemberMFO;
-
-    emit(state.copyWith(
-        addMemberMFO: data.copyWith(
-      firstAnswer: firstAnswer ?? data.firstAnswer,
-      secondAnswer: secondAnswer ?? data.secondAnswer,
-      thirdAnswer: thirdAnswer ?? data.thirdAnswer,
-      fourthAnswer: fourthAnswer ?? data.fourthAnswer,
-    )));
-
-    final isComplete = state.addMemberMFO.firstAnswer != null &&
-        state.addMemberMFO.secondAnswer != null &&
-        state.addMemberMFO.thirdAnswer != null &&
-        state.addMemberMFO.fourthAnswer != null;
-
-    emit(state.copyWith(
-        addMemberMFO: state.addMemberMFO.copyWith(isComplete: isComplete)));
-
-    var now = DateTime.now().millisecondsSinceEpoch;
-    if (isComplete) {
-      final listAnwser = [
-        FarmMemberObjectiveAnswer(
-          farmMemberObjectiveAnswerNo: (now++).toString(),
-          farmId: state.farm?.farmId,
-          farmObjectiveOptionId: state.addMemberMFO.firstAnswer,
-          farmMemberObjectiveId: 1,
-          isActive: true,
+    final farmMemberObjectivesState = state.farmMemberObjectivesState;
+    final listFarmMemberObjectiveAnswers = <FarmMemberObjectiveAnswer>[];
+    listFarmMemberObjectiveAnswers.addAll(farmMemberObjectivesState.listFarmMemberObjectiveAnswers);
+    var currentAnswer = listFarmMemberObjectiveAnswers.firstWhereOrNull((element) => element.farmMemberObjectiveId == question.farmMemberObjectiveId);
+    if (currentAnswer != null) {
+      listFarmMemberObjectiveAnswers.remove(currentAnswer);
+      currentAnswer = currentAnswer.copyWith(farmObjectiveOptionId: option.id);
+      listFarmMemberObjectiveAnswers.add(currentAnswer);
+      emit(
+        state.copyWith(
+          farm: state.farm?.copyWith(objectiveAnswers: listFarmMemberObjectiveAnswers),
+          farmMemberObjectivesState: state.farmMemberObjectivesState.copyWith(
+            listFarmMemberObjectiveAnswers: listFarmMemberObjectiveAnswers,
+          ),
         ),
-        FarmMemberObjectiveAnswer(
-          farmMemberObjectiveAnswerNo: (now++).toString(),
-          farmId: state.farm?.farmId,
-          farmObjectiveOptionId: state.addMemberMFO.secondAnswer,
-          farmMemberObjectiveId: 2,
-          isActive: true,
-        ),
-        FarmMemberObjectiveAnswer(
-          farmMemberObjectiveAnswerNo: (now++).toString(),
-          farmId: state.farm?.farmId,
-          farmObjectiveOptionId: state.addMemberMFO.thirdAnswer,
-          farmMemberObjectiveId: 3,
-          isActive: true,
-        ),
-        FarmMemberObjectiveAnswer(
-          farmMemberObjectiveAnswerNo: (now++).toString(),
-          farmId: state.farm?.farmId,
-          farmObjectiveOptionId: state.addMemberMFO.fourthAnswer,
-          farmMemberObjectiveId: 4,
-          isActive: true,
-        ),
-      ];
-
-      emit(state.copyWith(
-          farm: state.farm?.copyWith(objectiveAnswers: listAnwser)));
+      );
 
       final futures = <Future<dynamic>>[];
 
-      for (final item in listAnwser) {
-        futures
-            .add(cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(item));
+      for (final item in listFarmMemberObjectiveAnswers) {
+        futures.add(cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(item));
       }
 
       futures.add(cacheFarm());
@@ -701,21 +650,13 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   Future<void> onDataChangeMemberSignContract(
       String? image, String? points, String? date) async {
     if (image != null && points != null && date != null) {
-      emit(
-        state.copyWith(
-          farm: state.farm?.copyWith(
-            signatureImage: image,
-            signatureDate: date,
-            signaturePoints: points,
-          ),
+      emit(state.copyWith(
           addMemberSAF: state.addMemberSAF.copyWith(
-            signatureImage: image,
-            signatureDate: date,
-            signaturePoints: points,
-            isComplete: true,
-          ),
-        ),
-      );
+        signatureImage: image,
+        signatureDate: date,
+        signaturePoints: points,
+        isComplete: true,
+      )));
 
       checkIsGroupSchemeMember();
       await cacheFarm();

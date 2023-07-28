@@ -15,7 +15,7 @@ class RiskProfileQuestion with _$RiskProfileQuestion {
     @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
     @JsonKey(name: 'RiskProfileQuestionId') required int riskProfileQuestionId,
     @JsonKey(name: 'IsActive') bool? isActive,
-    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
+    @Default(false) @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
   }) = _RiskProfileQuestion;
 
   const RiskProfileQuestion._();

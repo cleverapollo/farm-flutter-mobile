@@ -14,7 +14,7 @@ class FarmMemberObjectiveAnswer with _$FarmMemberObjectiveAnswer {
     @JsonKey(name: 'FarmMemberObjectiveId') int? farmMemberObjectiveId,
     @JsonKey(name: 'FarmObjectiveOptionId') int? farmObjectiveOptionId,
     @JsonKey(name: 'FarmId') String? farmId,
-    @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
     @Default(false) @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
   }) = _FarmMemberObjectiveAnswer;
 
@@ -24,5 +24,7 @@ class FarmMemberObjectiveAnswer with _$FarmMemberObjectiveAnswer {
   const FarmMemberObjectiveAnswer._();
 
   @override
-  Id get id => Isar.autoIncrement;
+  // Use FarmMemberObjectiveAnswerNo for Id because must not change farmMemberObjectiveAnswerId
+  // farmMemberObjectiveAnswerId always null.
+  Id get id => int.tryParse(farmMemberObjectiveAnswerNo ?? '') ?? Isar.autoIncrement;
 }

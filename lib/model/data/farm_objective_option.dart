@@ -15,7 +15,7 @@ class FarmObjectiveOption with _$FarmObjectiveOption {
     @JsonKey(name: 'FarmObjectiveOptionId') required int farmObjectiveOptionId,
     @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
     @JsonKey(name: 'IsActive') bool? isActive,
-    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
+    @Default(false) @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
   }) = _FarmObjectiveOption;
 
   const FarmObjectiveOption._();

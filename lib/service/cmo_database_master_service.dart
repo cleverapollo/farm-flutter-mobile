@@ -192,7 +192,11 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<FarmMemberObjective>> getAllFarmMemberObjectiveByGroupSchemeId(
-      int groupSchemeId) async {
+    int? groupSchemeId,
+  ) async {
+
+    if (groupSchemeId == null) return <FarmMemberObjective>[];
+
     final db = await _db();
 
     return db.farmMemberObjectives
@@ -203,7 +207,11 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<FarmObjectiveOption>> getFarmObjectiveOptionByGroupSchemeId(
-      int groupSchemeId) async {
+    int? groupSchemeId,
+  ) async {
+
+    if (groupSchemeId == null) return <FarmObjectiveOption>[];
+
     final db = await _db();
 
     return db.farmObjectiveOptions
@@ -254,7 +262,11 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<FarmMemberObjectiveAnswer>> getFarmMemberObjectiveAnswerByFarmId(
-      String farmId) async {
+    String? farmId,
+  ) async {
+
+    if (farmId == null) return <FarmMemberObjectiveAnswer>[];
+
     final db = await _db();
     return db.farmMemberObjectiveAnswers
         .filter()
