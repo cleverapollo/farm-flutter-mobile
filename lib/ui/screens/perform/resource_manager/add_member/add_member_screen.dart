@@ -12,6 +12,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/farm_m
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/farm_member_risk_assessments_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/slimf_and_mpo_section.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
@@ -82,17 +83,17 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           }
           return SingleChildScrollView(
             child: Column(
-              children: [
-                const SizedBox(height: 8),
+              children: const [
+                SizedBox(height: 8),
                 SlimfAndMpoSection(),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 _AddMemberMDetails(),
                 SizedBox(height: 12),
                 _AddMemberSDetails(),
                 SizedBox(height: 12),
                 _AddMemberInclusionDate(),
                 SizedBox(height: 12),
-                _AddMemberMRA(),
+                FarmMemberRiskAssessmentsWidget(),
                 SizedBox(height: 12),
                 FarmMemberObjectivesWidget(),
                 SizedBox(height: 12),
@@ -180,78 +181,6 @@ class _AddMemberInclusionDate extends StatelessWidget {
         );
       },
     );
-  }
-
-  Widget _buildDivider() {
-    return Column(
-      children: const [
-        SizedBox(height: 8),
-        Divider(thickness: 1),
-        SizedBox(height: 8),
-      ],
-    );
-  }
-}
-
-class _AddMemberMRA extends StatelessWidget {
-  const _AddMemberMRA();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMRA>(
-        selector: (state) => state.addMemberMRA,
-        builder: (context, AddMemberMRA data) {
-          final cubit = context.read<AddMemberCubit>();
-          return CmoCollapseTitle(
-            title: LocaleKeys.member_risk_assessment.tr(),
-            showTick: data.isComplete,
-            child: Container(
-                padding: const EdgeInsets.all(12),
-                color: context.colors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        LocaleKeys.are_there_any_chemical_being_used_on_the_fme
-                            .tr(),
-                        style: context.textStyles.bodyNormal.copyWith(
-                            color: context.colors.black, fontSize: 16)),
-                    const SizedBox(height: 8),
-                    CmoYesNoQuestion(
-                        initialValue: data.firstAnswer,
-                        onTap: (p0) => cubit.onDataChangeMRA(firstAnswer: p0)),
-                    _buildDivider(),
-                    Text(LocaleKeys.hcvs_present.tr(),
-                        style: context.textStyles.bodyNormal.copyWith(
-                            color: context.colors.black, fontSize: 16)),
-                    const SizedBox(height: 8),
-                    CmoYesNoQuestion(
-                        initialValue: data.secondAnswer,
-                        onTap: (p0) => cubit.onDataChangeMRA(secondAnswer: p0)),
-                    _buildDivider(),
-                    Text(LocaleKeys.rivers_on_fmu.tr(),
-                        style: context.textStyles.bodyNormal.copyWith(
-                            color: context.colors.black, fontSize: 16)),
-                    const SizedBox(height: 8),
-                    CmoYesNoQuestion(
-                        initialValue: data.thirdAnswer,
-                        onTap: (p0) => cubit.onDataChangeMRA(thirdAnswer: p0)),
-                    _buildDivider(),
-                    Text(
-                        LocaleKeys
-                            .are_there_any_communities_in_or_neighbouring_the_fme
-                            .tr(),
-                        style: context.textStyles.bodyNormal.copyWith(
-                            color: context.colors.black, fontSize: 16)),
-                    const SizedBox(height: 8),
-                    CmoYesNoQuestion(
-                        initialValue: data.fourthAnswer,
-                        onTap: (p0) => cubit.onDataChangeMRA(fourthAnswer: p0)),
-                    _buildDivider(),
-                  ],
-                )),
-          );
-        });
   }
 
   Widget _buildDivider() {

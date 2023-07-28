@@ -19,10 +19,10 @@ class AddMemberState with _$AddMemberState {
     @Default(AddMemberSDetails()) AddMemberSDetails addMemberSDetails,
     @Default(AddMemberInclusionDate())
         AddMemberInclusionDate addMemberInclusionDate,
-    @Default(AddMemberMRA()) AddMemberMRA addMemberMRA,
     @Default(FarmMemberObjectivesState()) FarmMemberObjectivesState farmMemberObjectivesState,
     @Default(AddMemberContract()) AddMemberContract addMemberContract,
     @Default(AddMemberSAF()) AddMemberSAF addMemberSAF,
+    @Default(FarmMemberRiskAssessmentsState()) FarmMemberRiskAssessmentsState farmMemberRiskAssessmentsState,
     @Default(AddMemberClose()) AddMemberClose addMemberClose,
   }) = _AddMemberState;
 }
@@ -164,14 +164,26 @@ class AddMemberAsisState with _$AddMemberAsisState {
 }
 
 @freezed
-class AddMemberMRA with _$AddMemberMRA {
-  const factory AddMemberMRA({
-    @Default(false) bool isComplete,
-    bool? firstAnswer,
-    bool? secondAnswer,
-    bool? thirdAnswer,
-    bool? fourthAnswer,
-  }) = _AddMemberMRA;
+class FarmMemberRiskAssessmentsState with _$FarmMemberRiskAssessmentsState {
+  const factory FarmMemberRiskAssessmentsState({
+    @Default(<RiskProfileQuestion>[]) List<RiskProfileQuestion> listRiskProfileQuestions,
+    @Default(<FarmMemberRiskProfileAnswer>[]) List<FarmMemberRiskProfileAnswer> listFarmMemberRiskProfileAnswers,
+  }) = _FarmMemberRiskAssessmentsState;
+}
+
+extension FarmMemberRiskAssessmentsStateExtension
+    on FarmMemberRiskAssessmentsState {
+  bool get isComplete => listFarmMemberRiskProfileAnswers.firstWhereOrNull((element) => element.answer == null) == null;
+
+  FarmMemberRiskProfileAnswer? getFarmMemberRiskProfileAnswer(
+    int riskProfileQuestionId,
+  ) {
+    final answer = listFarmMemberRiskProfileAnswers.firstWhereOrNull(
+      (element) => element.riskProfileQuestionId == riskProfileQuestionId,
+    );
+
+    return answer;
+  }
 }
 
 @freezed

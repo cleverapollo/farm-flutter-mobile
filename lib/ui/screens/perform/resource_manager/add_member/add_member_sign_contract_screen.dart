@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
@@ -93,9 +94,10 @@ class _AddMemberSignContractScreenState
                       onTap: () async {
                         final points = signatureKey.currentState?.toString();
                         final image = await signatureKey.currentState?.toImage();
-                        final byteData = await image?.toByteData();
+                        final byteData = await image?.toByteData(format: ImageByteFormat.png);
                         final file = await FileUtil.writeToFile(byteData!);
                         final base64 = await FileUtil.toBase64(file);
+
                         await context
                             .read<AddMemberCubit>()
                             .onDataChangeMemberSignContract(
@@ -104,7 +106,6 @@ class _AddMemberSignContractScreenState
                               DateTime.now().toIso8601String(),
                             );
 
-                        log(base64);
                         final state =
                             context.read<AddMemberCubit>().state.addMemberSAF;
                         final goNextStep = state.signatureImage != null;

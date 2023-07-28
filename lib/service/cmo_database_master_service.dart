@@ -237,8 +237,10 @@ class CmoDatabaseMasterService {
     });
   }
 
-  Future<List<FarmMemberRiskProfileAnswer>>
-      getFarmMemberRiskProfileAnswerByFarmId(String farmId) async {
+  Future<List<FarmMemberRiskProfileAnswer>> getFarmMemberRiskProfileAnswerByFarmId(String? farmId) async {
+
+    if (farmId == null) return <FarmMemberRiskProfileAnswer>[];
+
     final db = await _db();
     return db.farmMemberRiskProfileAnswers
         .filter()

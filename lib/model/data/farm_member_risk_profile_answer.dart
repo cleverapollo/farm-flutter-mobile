@@ -24,5 +24,7 @@ class FarmMemberRiskProfileAnswer with _$FarmMemberRiskProfileAnswer {
   const FarmMemberRiskProfileAnswer._();
 
   @override
+  // Use farmMemberRiskProfileAnswerNo for Id because must not change farmMemberRiskProfileAnswerId
+  // farmMemberRiskProfileAnswerId always null.
   Id get id => int.tryParse(farmMemberRiskProfileAnswerNo ?? '') ?? Isar.autoIncrement;
 }

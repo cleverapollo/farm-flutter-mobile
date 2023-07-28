@@ -32,9 +32,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
 
     if (farm != null) {
       emit(state.copyWith(farm: farm));
-      final farmMemberRiskProfileAnswer = await cmoDatabaseMasterService
-          .getFarmMemberRiskProfileAnswerByFarmId(farm.farmId);
-
       final compartments =
           await cmoDatabaseMasterService.getCompartmentByFarmId(farm.farmId);
       final asis =
@@ -114,47 +111,46 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           isComplete: addMemberInclusionDateIsComplete,
           inclusionDate: farm.inclusionDate);
 
-      final firstAnswerMRA = farmMemberRiskProfileAnswer
-          .firstWhere(
-            (element) => element.riskProfileQuestionId == 1,
-            orElse: () =>
-                FarmMemberRiskProfileAnswer(answer: farm.isChemicalsUsed),
-          )
-          .answer;
-      final secondAnswerMRA = farmMemberRiskProfileAnswer
-          .firstWhere((element) => element.riskProfileQuestionId == 2,
-              orElse: () =>
-                  FarmMemberRiskProfileAnswer(answer: farm.isHcvNeighbouring))
-          .answer;
-      final thirdAnswerMRA = farmMemberRiskProfileAnswer
-          .firstWhere((element) => element.riskProfileQuestionId == 3,
-              orElse: () => FarmMemberRiskProfileAnswer(
-                  answer: farm.isRiversOrStreamsNeighbouring))
-          .answer;
-      final fourthAnswerMRA = farmMemberRiskProfileAnswer
-          .firstWhere((element) => element.riskProfileQuestionId == 4,
-              orElse: () => FarmMemberRiskProfileAnswer(
-                  answer: farm.isCommunitiesNeighbouring))
-          .answer;
-
-      final addMemberMRAIsComplete = firstAnswerMRA != null &&
-          secondAnswerMRA != null &&
-          thirdAnswerMRA != null &&
-          fourthAnswerMRA != null;
-      final addMemberMRA = AddMemberMRA(
-        isComplete: addMemberMRAIsComplete,
-        firstAnswer: firstAnswerMRA,
-        secondAnswer: secondAnswerMRA,
-        thirdAnswer: thirdAnswerMRA,
-        fourthAnswer: fourthAnswerMRA,
-      );
-
+      // final firstAnswerMRA = farmMemberRiskProfileAnswer
+      //     .firstWhere(
+      //       (element) => element.riskProfileQuestionId == 1,
+      //       orElse: () =>
+      //           FarmMemberRiskProfileAnswer(answer: farm.isChemicalsUsed),
+      //     )
+      //     .answer;
+      // final secondAnswerMRA = farmMemberRiskProfileAnswer
+      //     .firstWhere((element) => element.riskProfileQuestionId == 2,
+      //         orElse: () =>
+      //             FarmMemberRiskProfileAnswer(answer: farm.isHcvNeighbouring))
+      //     .answer;
+      // final thirdAnswerMRA = farmMemberRiskProfileAnswer
+      //     .firstWhere((element) => element.riskProfileQuestionId == 3,
+      //         orElse: () => FarmMemberRiskProfileAnswer(
+      //             answer: farm.isRiversOrStreamsNeighbouring))
+      //     .answer;
+      // final fourthAnswerMRA = farmMemberRiskProfileAnswer
+      //     .firstWhere((element) => element.riskProfileQuestionId == 4,
+      //         orElse: () => FarmMemberRiskProfileAnswer(
+      //             answer: farm.isCommunitiesNeighbouring))
+      //     .answer;
+      //
+      // final addMemberMRAIsComplete = firstAnswerMRA != null &&
+      //     secondAnswerMRA != null &&
+      //     thirdAnswerMRA != null &&
+      //     fourthAnswerMRA != null;
+      // final addMemberMRA = FarmMemberRiskAssessmentsState(
+      //   isComplete: addMemberMRAIsComplete,
+      //   firstAnswer: firstAnswerMRA,
+      //   secondAnswer: secondAnswerMRA,
+      //   thirdAnswer: thirdAnswerMRA,
+      //   fourthAnswer: fourthAnswerMRA,
+      // );
+      //
       emit(state.copyWith(
         addMemberMPO: addMemberMPO,
         addMemberMDetails: addMemberMDetail,
         addMemberSDetails: addMemberSDetail,
         addMemberInclusionDate: addMemberInclusionDate,
-        addMemberMRA: addMemberMRA,
       ));
 
       debugPrint('Done loading farm data');
@@ -168,7 +164,52 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       )));
     }
 
+    await initDataRiskProfileQuestion();
     await initDataFarmMemberObjectives();
+  }
+
+  Future<void> initDataRiskProfileQuestion() async {
+    final activeGroupScheme = await configService.getActiveGroupScheme();
+
+    final riskProfileQuestions = await cmoDatabaseMasterService.getRiskProfileQuestionByGroupSchemeId(
+      activeGroupScheme?.groupSchemeId,
+    );
+
+    final farmMemberRiskProfileAnswer = await cmoDatabaseMasterService
+        .getFarmMemberRiskProfileAnswerByFarmId(state.farm?.farmId);
+
+    final listAnswer = <FarmMemberRiskProfileAnswer>[];
+
+    var now = DateTime.now().millisecondsSinceEpoch;
+
+    for (final question in riskProfileQuestions) {
+      final currentAnswer = farmMemberRiskProfileAnswer.firstWhereOrNull(
+        (element) =>
+            element.riskProfileQuestionId == question.riskProfileQuestionId,
+      );
+
+      if (currentAnswer != null) {
+        listAnswer.add(currentAnswer);
+      } else {
+        final answer = FarmMemberRiskProfileAnswer(
+          farmId: state.farm?.farmId,
+          riskProfileQuestionId: question.riskProfileQuestionId,
+          farmMemberRiskProfileAnswerNo: (now++).toString(),
+        );
+
+        listAnswer.add(answer);
+      }
+    }
+
+    emit(
+      state.copyWith(
+        farmMemberRiskAssessmentsState:
+            state.farmMemberRiskAssessmentsState.copyWith(
+          listRiskProfileQuestions: riskProfileQuestions,
+          listFarmMemberRiskProfileAnswers: listAnswer,
+        ),
+      ),
+    );
   }
 
   Future<void> initDataFarmMemberObjectives() async {
@@ -237,7 +278,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       stepCount++;
     }
 
-    if (state.addMemberMRA.isComplete) {
+    if (state.farmMemberRiskAssessmentsState.isComplete) {
       stepCount++;
     }
 
@@ -446,7 +487,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
               state.addMemberMDetails.isComplete &&
               state.addMemberSDetails.isComplete &&
               state.addMemberInclusionDate.isComplete &&
-              state.addMemberMRA.isComplete &&
+              state.farmMemberRiskAssessmentsState.isComplete &&
               state.farmMemberObjectivesState.isComplete &&
               state.addMemberContract.isComplete &&
               state.addMemberSAF.isComplete &&
@@ -464,75 +505,36 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     ));
   }
 
-  Future<void> onDataChangeMRA({
-    bool? firstAnswer,
-    bool? secondAnswer,
-    bool? thirdAnswer,
-    bool? fourthAnswer,
+  Future<void> onAnswerRiskProfileQuestion({
+    required RiskProfileQuestion question,
+    required bool answer,
   }) async {
-    final data = state.addMemberMRA;
-
-    emit(state.copyWith(
-        addMemberMRA: data.copyWith(
-      firstAnswer: firstAnswer ?? data.firstAnswer,
-      secondAnswer: secondAnswer ?? data.secondAnswer,
-      thirdAnswer: thirdAnswer ?? data.thirdAnswer,
-      fourthAnswer: fourthAnswer ?? data.fourthAnswer,
-    )));
-
-    final isComplete = state.addMemberMRA.firstAnswer != null &&
-        state.addMemberMRA.secondAnswer != null &&
-        state.addMemberMRA.thirdAnswer != null &&
-        state.addMemberMRA.fourthAnswer != null;
-
-    emit(state.copyWith(
-        farm: state.farm?.copyWith(
-          isChemicalsUsed: state.addMemberMRA.firstAnswer,
-          isHcvNeighbouring: state.addMemberMRA.secondAnswer,
-          isRiversOrStreamsNeighbouring: state.addMemberMRA.thirdAnswer,
-          isCommunitiesNeighbouring: state.addMemberMRA.fourthAnswer,
+    final farmMemberRiskAssessmentsState = state.farmMemberRiskAssessmentsState;
+    final listFarmMemberRiskProfileAnswers = <FarmMemberRiskProfileAnswer>[];
+    listFarmMemberRiskProfileAnswers.addAll(farmMemberRiskAssessmentsState.listFarmMemberRiskProfileAnswers);
+    var currentAnswer = listFarmMemberRiskProfileAnswers.firstWhereOrNull(
+        (element) =>
+            element.riskProfileQuestionId == question.riskProfileQuestionId,
+    )
+    ;
+    if (currentAnswer != null) {
+      listFarmMemberRiskProfileAnswers.remove(currentAnswer);
+      currentAnswer = currentAnswer.copyWith(answer: answer);
+      listFarmMemberRiskProfileAnswers.add(currentAnswer);
+      emit(
+        state.copyWith(
+          farm: state.farm
+              ?.copyWith(riskProfileAnswers: listFarmMemberRiskProfileAnswers),
+          farmMemberRiskAssessmentsState:
+              state.farmMemberRiskAssessmentsState.copyWith(
+            listFarmMemberRiskProfileAnswers: listFarmMemberRiskProfileAnswers,
+          ),
         ),
-        addMemberMRA: state.addMemberMRA.copyWith(isComplete: isComplete)));
-
-    var now = DateTime.now().millisecondsSinceEpoch;
-    if (isComplete) {
-      final listAnswer = [
-        FarmMemberRiskProfileAnswer(
-          farmMemberRiskProfileAnswerNo: (now++).toString(),
-          farmId: state.farm?.farmId,
-          riskProfileQuestionId: 1,
-          answer: state.addMemberMRA.firstAnswer,
-          isActive: true,
-        ),
-        FarmMemberRiskProfileAnswer(
-          farmMemberRiskProfileAnswerNo: (now++).toString(),
-          farmId: state.farm?.farmId,
-          riskProfileQuestionId: 2,
-          answer: state.addMemberMRA.secondAnswer,
-          isActive: true,
-        ),
-        FarmMemberRiskProfileAnswer(
-          farmMemberRiskProfileAnswerNo: (now++).toString(),
-          farmId: state.farm?.farmId,
-          riskProfileQuestionId: 3,
-          answer: state.addMemberMRA.thirdAnswer,
-          isActive: true,
-        ),
-        FarmMemberRiskProfileAnswer(
-          farmMemberRiskProfileAnswerNo: (now++).toString(),
-          farmId: state.farm?.farmId,
-          riskProfileQuestionId: 4,
-          answer: state.addMemberMRA.fourthAnswer,
-          isActive: true,
-        )
-      ];
-
-      emit(state.copyWith(
-          farm: state.farm?.copyWith(riskProfileAnswers: listAnswer)));
+      );
 
       final futures = <Future<dynamic>>[];
 
-      for (final item in listAnswer) {
+      for (final item in listFarmMemberRiskProfileAnswers) {
         futures.add(
             cmoDatabaseMasterService.cacheFarmMemberRiskProfileAnswer(item));
       }
