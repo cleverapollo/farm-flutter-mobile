@@ -1,13 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
-import 'package:cmo/model/asi.dart';
-import 'package:cmo/model/compartment/compartment.dart';
-import 'package:cmo/model/data/farm.dart';
-import 'package:cmo/model/data/farm_member_objective_answer.dart';
-import 'package:cmo/model/data/farm_member_risk_profile_answer.dart';
-import 'package:cmo/model/data/farm_property_ownership_type.dart';
-import 'package:cmo/model/data/province.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
@@ -110,42 +103,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       final addMemberInclusionDate = AddMemberInclusionDate(
           isComplete: addMemberInclusionDateIsComplete,
           inclusionDate: farm.inclusionDate);
-
-      // final firstAnswerMRA = farmMemberRiskProfileAnswer
-      //     .firstWhere(
-      //       (element) => element.riskProfileQuestionId == 1,
-      //       orElse: () =>
-      //           FarmMemberRiskProfileAnswer(answer: farm.isChemicalsUsed),
-      //     )
-      //     .answer;
-      // final secondAnswerMRA = farmMemberRiskProfileAnswer
-      //     .firstWhere((element) => element.riskProfileQuestionId == 2,
-      //         orElse: () =>
-      //             FarmMemberRiskProfileAnswer(answer: farm.isHcvNeighbouring))
-      //     .answer;
-      // final thirdAnswerMRA = farmMemberRiskProfileAnswer
-      //     .firstWhere((element) => element.riskProfileQuestionId == 3,
-      //         orElse: () => FarmMemberRiskProfileAnswer(
-      //             answer: farm.isRiversOrStreamsNeighbouring))
-      //     .answer;
-      // final fourthAnswerMRA = farmMemberRiskProfileAnswer
-      //     .firstWhere((element) => element.riskProfileQuestionId == 4,
-      //         orElse: () => FarmMemberRiskProfileAnswer(
-      //             answer: farm.isCommunitiesNeighbouring))
-      //     .answer;
-      //
-      // final addMemberMRAIsComplete = firstAnswerMRA != null &&
-      //     secondAnswerMRA != null &&
-      //     thirdAnswerMRA != null &&
-      //     fourthAnswerMRA != null;
-      // final addMemberMRA = FarmMemberRiskAssessmentsState(
-      //   isComplete: addMemberMRAIsComplete,
-      //   firstAnswer: firstAnswerMRA,
-      //   secondAnswer: secondAnswerMRA,
-      //   thirdAnswer: thirdAnswerMRA,
-      //   fourthAnswer: fourthAnswerMRA,
-      // );
-      //
       emit(state.copyWith(
         addMemberMPO: addMemberMPO,
         addMemberMDetails: addMemberMDetail,
