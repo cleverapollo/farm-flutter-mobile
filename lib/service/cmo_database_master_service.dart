@@ -257,8 +257,6 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
-        .isMasterDataSyncedEqualTo(null)
-        .or()
         .isMasterDataSyncedEqualTo(false)
         .findAll();
   }
@@ -285,8 +283,6 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
-        .isMasterDataSyncedEqualTo(null)
-        .or()
         .isMasterDataSyncedEqualTo(false)
         .findAll();
   }

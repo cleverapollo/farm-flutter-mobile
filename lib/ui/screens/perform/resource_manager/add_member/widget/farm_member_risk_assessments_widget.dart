@@ -37,43 +37,6 @@ class FarmMemberRiskAssessmentsWidget extends StatelessWidget {
                             ?.answer,
                       ),
                     ),
-                    // Text(
-                    //     LocaleKeys.are_there_any_chemical_being_used_on_the_fme
-                    //         .tr(),
-                    //     style: context.textStyles.bodyNormal.copyWith(
-                    //         color: context.colors.black, fontSize: 16)),
-                    // const SizedBox(height: 8),
-                    // CmoYesNoQuestion(
-                    //     initialValue: data.firstAnswer,
-                    //     onTap: (p0) => cubit.onDataChangeMRA(firstAnswer: p0)),
-                    // _buildDivider(),
-                    // Text(LocaleKeys.hcvs_present.tr(),
-                    //     style: context.textStyles.bodyNormal.copyWith(
-                    //         color: context.colors.black, fontSize: 16)),
-                    // const SizedBox(height: 8),
-                    // CmoYesNoQuestion(
-                    //     initialValue: data.secondAnswer,
-                    //     onTap: (p0) => cubit.onDataChangeMRA(secondAnswer: p0)),
-                    // _buildDivider(),
-                    // Text(LocaleKeys.rivers_on_fmu.tr(),
-                    //     style: context.textStyles.bodyNormal.copyWith(
-                    //         color: context.colors.black, fontSize: 16)),
-                    // const SizedBox(height: 8),
-                    // CmoYesNoQuestion(
-                    //     initialValue: data.thirdAnswer,
-                    //     onTap: (p0) => cubit.onDataChangeMRA(thirdAnswer: p0)),
-                    // _buildDivider(),
-                    // Text(
-                    //     LocaleKeys
-                    //         .are_there_any_communities_in_or_neighbouring_the_fme
-                    //         .tr(),
-                    //     style: context.textStyles.bodyNormal.copyWith(
-                    //         color: context.colors.black, fontSize: 16)),
-                    // const SizedBox(height: 8),
-                    // CmoYesNoQuestion(
-                    //     initialValue: data.fourthAnswer,
-                    //     onTap: (p0) => cubit.onDataChangeMRA(fourthAnswer: p0)),
-                    _buildDivider(),
                   ],
                 ),
             ),
@@ -96,7 +59,7 @@ class FarmMemberRiskAssessmentsWidget extends StatelessWidget {
             fontSize: 16,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         CmoYesNoQuestion(
           initialValue: answer,
           onTap: (value) =>
@@ -105,16 +68,7 @@ class FarmMemberRiskAssessmentsWidget extends StatelessWidget {
                     question: question,
                   ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildDivider() {
-    return Column(
-      children: const [
-        SizedBox(height: 8),
-        Divider(thickness: 1),
-        SizedBox(height: 8),
+        const SizedBox(height: 12),
       ],
     );
   }

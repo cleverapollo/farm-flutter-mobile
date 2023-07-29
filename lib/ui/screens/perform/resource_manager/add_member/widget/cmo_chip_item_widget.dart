@@ -129,17 +129,16 @@ class _CmoYesNoQuestionState extends State<CmoYesNoQuestion> {
   @override
   void initState() {
     super.initState();
-    isSelect.value = widget.initialValue;
   }
 
   @override
   Widget build(BuildContext context) {
+    isSelect.value = widget.initialValue;
     return ValueListenableBuilder(
       valueListenable: isSelect,
       builder: (_, value, __) {
         return Row(
           children: [
-            const Spacer(),
             InkWell(
               onTap: () {
                 isSelect.value = true;
@@ -147,16 +146,18 @@ class _CmoYesNoQuestionState extends State<CmoYesNoQuestion> {
               },
               child: Container(
                 alignment: Alignment.center,
-                height: 70,
-                width: 70,
+                width: 110,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(10),
                   color: buildColor(value, true),
-                  border: Border.all(width: 2),
+                  border: (value ?? false) ? null : Border.all(
+                    width: 2,
+                    color: context.colors.blueDark2,
+                  ),
                 ),
                 child: Text('Yes',
-                    style: context.textStyles.bodyNormal.copyWith(
+                    style: context.textStyles.bodyBold.copyWith(
                         color: (value ?? false) ? Colors.white : Colors.black)),
               ),
             ),
@@ -168,16 +169,18 @@ class _CmoYesNoQuestionState extends State<CmoYesNoQuestion> {
               },
               child: Container(
                 alignment: Alignment.center,
-                height: 70,
-                width: 70,
+                width: 110,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(10),
                   color: buildColor(value, false),
-                  border: Border.all(width: 2),
+                  border: (value ?? true) ? Border.all(
+                    width: 2,
+                    color: context.colors.blueDark2,
+                  ) : null,
                 ),
                 child: Text('No',
-                    style: context.textStyles.bodyNormal.copyWith(
+                    style: context.textStyles.bodyBold.copyWith(
                         color: !(value ?? true) ? Colors.white : Colors.black)),
               ),
             ),

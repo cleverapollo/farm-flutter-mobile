@@ -515,8 +515,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     var currentAnswer = listFarmMemberRiskProfileAnswers.firstWhereOrNull(
         (element) =>
             element.riskProfileQuestionId == question.riskProfileQuestionId,
-    )
-    ;
+    );
+
     if (currentAnswer != null) {
       listFarmMemberRiskProfileAnswers.remove(currentAnswer);
       currentAnswer = currentAnswer.copyWith(answer: answer);
@@ -652,6 +652,11 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       String? image, String? points, String? date) async {
     if (image != null && points != null && date != null) {
       emit(state.copyWith(
+          farm: state.farm?.copyWith(
+            signatureImage: image,
+            signatureDate: date,
+            signaturePoints: points,
+          ),
           addMemberSAF: state.addMemberSAF.copyWith(
         signatureImage: image,
         signatureDate: date,
