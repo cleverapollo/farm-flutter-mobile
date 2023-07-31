@@ -249,38 +249,39 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 18),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      LocaleKeys.locationName.tr(),
-                      style: context.textStyles.bodyBold,
-                      textAlign: TextAlign.start,
-                    ),
-                    const SizedBox(width: 4),
-                    if (_loading)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2.0),
-                        child: SizedBox(
-                          width: 8,
-                          height: 8,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: context.colors.blue,
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 18),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        LocaleKeys.locationName.tr(),
+                        style: context.textStyles.bodyBold,
+                        textAlign: TextAlign.start,
+                      ),
+                      const SizedBox(width: 4),
+                      if (_loading)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2.0),
+                          child: SizedBox(
+                            width: 8,
+                            height: 8,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: context.colors.blue,
+                            ),
                           ),
                         ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
                     height: 64,
                     child: MapAutoCompleteField(
                       googleMapApiKey: Env.googlePlaceApiKey,
@@ -292,42 +293,33 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
                       },
                       onSuggestionSelected: onSuggestionSelected,
                     ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Expanded(
-            flex: 4,
-            child: CmoMap(
-              key: mapKey,
-              onMapMoved: onCameraMoved,
-              onPinned: onPinned,
-              showResetAcceptIcons: widget.showResetAcceptIcons,
-              showMarker: widget.showMarker,
-              initialMapCenter: _latLong,
-              selectedPoint: _latLong,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: CmoFilledButton(
-                      title: LocaleKeys.save.tr(),
-                      disable: _loading,
-                      onTap: () => submit(),
-                    ),
                   ),
-                  const Spacer(),
                 ],
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            Expanded(
+              flex: 4,
+              child: CmoMap(
+                key: mapKey,
+                onMapMoved: onCameraMoved,
+                onPinned: onPinned,
+                showResetAcceptIcons: widget.showResetAcceptIcons,
+                showMarker: widget.showMarker,
+                initialMapCenter: _latLong,
+                selectedPoint: _latLong,
+              ),
+            ),
+            const SizedBox(height: 32),
+            Center(
+              child: CmoFilledButton(
+                title: widget.showResetAcceptIcons ? LocaleKeys.done.tr() : LocaleKeys.save.tr(),
+                disable: _loading,
+                onTap: () => submit(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

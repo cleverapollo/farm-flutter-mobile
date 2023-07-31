@@ -184,16 +184,12 @@ class CmoMapState extends State<CmoMap> {
                   ),
                 ),
               ),
-              if(widget.showResetAcceptIcons) ...[
-                resetIcon(),
-                acceptIcon(),
-              ]
             ],
           ),
         ),
-
         mapLatLongFooterWidget(),
         buttonsListWidget(),
+        resetAcceptButton(),
       ],
     );
   }
@@ -287,6 +283,23 @@ class CmoMapState extends State<CmoMap> {
         ),
         takePhotoIcon(),
       ],
+    );
+  }
+
+  Widget resetAcceptButton() {
+    if (!widget.showResetAcceptIcons) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          resetOutsideIcon(),
+          const SizedBox(
+            width: 15,
+          ),
+          acceptOutsideIcon(),
+        ],
+      ),
     );
   }
 
