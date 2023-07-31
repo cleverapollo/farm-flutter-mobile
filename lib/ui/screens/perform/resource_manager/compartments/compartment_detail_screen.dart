@@ -5,6 +5,7 @@ import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_cubit.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_state.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/espacement_input_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -14,7 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompartmentDetailScreen extends StatefulWidget {
   final double? measuredArea;
-  final List<GeoLocation>? locations;
+  final List<PolygonItem>? locations;
   final String? farmName;
 
   const CompartmentDetailScreen({
@@ -27,7 +28,7 @@ class CompartmentDetailScreen extends StatefulWidget {
   static dynamic push(
     BuildContext context, {
     double? measuredArea,
-    List<GeoLocation>? locations,
+    List<PolygonItem>? locations,
     required String farmId,
     String? farmName,
     String? campId,
@@ -103,8 +104,58 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                               ),
                             ),
                             AttributeItem(
-                              child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState,
-                                  List<ProductGroupTemplate>?>(
+                              child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, List<AreaType>?>(
+                                selector: (state) => state.areaTypes,
+                                builder: (context, areaTypes) {
+                                  return CmoDropdown<AreaType>(
+                                    name: LocaleKeys.type.tr(),
+                                    style: context.textStyles.bodyBold
+                                        .copyWith(color: context.colors.black),
+                                    inputDecoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 8,
+                                      ),
+                                      isDense: true,
+                                      hintText: LocaleKeys.type.tr(),
+                                      hintStyle:
+                                          context.textStyles.bodyNormal.grey,
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                    ),
+                                    initialValue: areaTypes.firstWhereOrNull(
+                                      (element) =>
+                                          element.areaTypeId ==
+                                          context
+                                              .read<CompartmentDetailCubit>()
+                                              .state
+                                              .compartment
+                                              .areaTypeId,
+                                    ),
+                                    itemsData: areaTypes
+                                        ?.map(
+                                          (e) => CmoDropdownItem<AreaType>(
+                                            id: e,
+                                            name: e.areaTypeName ?? '',
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        _compartmentDetailCubit
+                                            .onAreaTypeChanged(
+                                          value.areaTypeId!,
+                                        );
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+
+                            AttributeItem(
+                              child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, List<ProductGroupTemplate>?>(
                                 selector: (state) => state.productGroupTemplates,
                                 builder: (context, productGroupTemplates) {
                                   return CmoDropdown<ProductGroupTemplate>(
@@ -130,8 +181,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                               .compartment
                                               .productGroupTemplateId,
                                     ),
-                                    itemsData: productGroupTemplates
-                                        ?.map(
+                                    itemsData: productGroupTemplates?.map(
                                           (e) => CmoDropdownItem<ProductGroupTemplate>(
                                             id: e,
                                             name: e.productGroupTemplateName ?? '',
@@ -153,9 +203,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                   List<SpeciesGroupTemplate>?>(
                                 selector: (state) => state.speciesGroupTemplates,
                                 builder: (context, speciesGroupTemplates) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                                    child: CmoDropdown<SpeciesGroupTemplate>(
+                                  return CmoDropdown<SpeciesGroupTemplate>(
                                       name: LocaleKeys.speciesGroup.tr(),
                                       style: context.textStyles.bodyBold.copyWith(color: context.colors.black),
                                       inputDecoration: InputDecoration(
@@ -180,7 +228,6 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                           speciesGroupName: value?.speciesGroupTemplateName,
                                         );
                                       },
-                                    ),
                                   );
                                 },
                               ),
@@ -204,13 +251,12 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                 ),
                               ),
                             ),
-                            // AttributeItem(
-                            //   child: InputAttributeItem(
-                            //     hintText: LocaleKeys.unit.tr(),
-                            //     onChanged: _compartmentDetailCubit
-                            //         .onCompartmentUnitChanged,
-                            //   ),
-                            // ),
+                            AttributeItem(
+                              child: InputAttributeItem(
+                                hintText: LocaleKeys.unit.tr(),
+                                onChanged: _compartmentDetailCubit.onCompartmentUnitChanged,
+                              ),
+                            ),
                             AttributeItem(
                               child: InputAttributeItem(
                                 hintText: '${LocaleKeys.effectiveArea.tr()} ha',
@@ -288,7 +334,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             ),
                             AttributeItem(
                               child: InputAttributeItem(
-                                hintText: '${LocaleKeys.stocking.tr()}',
+                                hintText: LocaleKeys.stocking.tr(),
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) =>
                                     _compartmentDetailCubit.onStockingPercentageDateChanged(double.tryParse(value)),
@@ -296,16 +342,16 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             ),
                             AttributeItem(
                               child: InputAttributeItem(
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: TextInputType.phone,
                                   hintText: LocaleKeys.rotation.tr(),
                                   onChanged: (value) =>
-                                      _compartmentDetailCubit.onRotationChanged(double.tryParse(value))),
+                                      _compartmentDetailCubit.onRotationChanged(int.tryParse(value))),
                             ),
                             AttributeItem(
                               child: InputAttributeItem(
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: TextInputType.phone,
                                   hintText: LocaleKeys.mai.tr(),
-                                  onChanged: (value) => _compartmentDetailCubit.onMAIChanged(double.tryParse(value))),
+                                  onChanged: (value) => _compartmentDetailCubit.onMAIChanged(int.tryParse(value))),
                             ),
                           ],
                         ),

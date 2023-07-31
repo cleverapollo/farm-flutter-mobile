@@ -9,29 +9,45 @@ part 'compartment.g.dart';
 @Collection(ignore: {'copyWith'})
 class Compartment with _$Compartment {
   const factory Compartment({
-    @JsonKey(name: 'CompartmentId') int? compartmentId,
-    @JsonKey(name: 'FarmId') String? farmId,
-    @JsonKey(name: 'CampId') String? campId,
+    @JsonKey(name: 'ManagementUnitName') String? managementUnitName,
+    @JsonKey(name: 'ManagementUnitId') String? managementUnitId,
+    @JsonKey(name: 'ParentManagementUnitId') String? parentManagementUnitId,
     @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
-    @JsonKey(name: 'RegionalManagerUnitId') int? regionalManagerUnitId,
-    @JsonKey(name: 'CompartmentName') String? compartmentName,
     @JsonKey(name: 'AreaTypeId') String? areaTypeId,
-    @JsonKey(name: 'ProductGroupTemplateId') String? productGroupTemplateId,
-    @JsonKey(name: 'ProductGroupTemplateName') String? productGroupTemplateName,
-    @JsonKey(name: 'SpeciesGroupTemplateId') String? speciesGroupTemplateId,
-    @JsonKey(name: 'SpeciesGroupTemplateName') String? speciesGroupTemplateName,
-    @JsonKey(name: 'PolygonArea') double? polygonArea,
+    @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'UnitNumber') String? unitNumber,
+    @JsonKey(name: 'Status') bool? status,
+    @JsonKey(name: 'PolygonArea') double? polygonArea,
     @JsonKey(name: 'EffectiveArea') double? effectiveArea,
+    @JsonKey(name: 'PlannedPlantDT') String? plannedPlantDT,
+    @JsonKey(name: 'PlantDT') String? plantDT,
+    @JsonKey(name: 'PlannedFellDT') String? plannedFellDT,
+    @JsonKey(name: 'Survival') double? survival,
+    @JsonKey(name: 'RotationNumber') int? rotationNumber,
+    @JsonKey(name: 'UtilMAI') int? utilMAI,
+    @JsonKey(name: 'SpeciesGroupTemplateId') String? speciesGroupTemplateId,
+    @JsonKey(name: 'ProductGroupTemplateId') String? productGroupTemplateId,
+    @JsonKey(name: 'WorkingCircleTemplateId') String? workingCircleTemplateId,
+    @JsonKey(name: 'NextWorkingCircleTemplateId') String? nextWorkingCircleTemplateId,
+    @JsonKey(name: 'SphaAge') double? sphaAge,
+    @JsonKey(name: 'SphaSurvival') double? sphaSurvival,
+    @JsonKey(name: 'GeologyClassMasterDataId') String? geologyClassMasterDataId,
+    @JsonKey(name: 'OwnershipClassMasterDataId') String? ownershipClassMasterDataId,
+    @JsonKey(name: 'CreateDT') String? createDT,
+    @JsonKey(name: 'UpdateDT') String? updateDT,
+    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'Polygon') String? polygon,
+    @ignore
+    @Default(<PolygonItem>[])
+    @JsonKey(name: 'PolygonItems') List<PolygonItem>? polygonItems,
+
+    // New key value fields
+    @JsonKey(name: 'CampId') String? campId,
+    @JsonKey(name: 'ProductGroupTemplateName') String? productGroupTemplateName,
+    @JsonKey(name: 'SpeciesGroupTemplateName') String? speciesGroupTemplateName,
     @JsonKey(name: 'EspacementWidth') String? espacementWidth,
     @JsonKey(name: 'EspacementLength') String? espacementLength,
-    @JsonKey(name: 'PlannedPlantDT') String? plannedPlantDT,
-    @JsonKey(name: 'Survival') double? survival,
     @JsonKey(name: 'StockingPercentage') double? stockingPercentage,
-    @JsonKey(name: 'RotationNumber') double? rotationNumber,
-    @JsonKey(name: 'UtilMAI') double? utilMAI,
-    @JsonKey(name: 'Locations') String? jsonLocations,
-    @JsonKey(name: 'IsActive') bool? isActive,
   }) = _Compartment;
 
   const Compartment._();
@@ -40,16 +56,17 @@ class Compartment with _$Compartment {
       _$CompartmentFromJson(json);
 
   @override
-  Id get id => compartmentId ?? Isar.autoIncrement;
+  Id get id => int.tryParse(managementUnitId ?? '') ?? Isar.autoIncrement;
 }
 
 @freezed
-class GeoLocation with _$GeoLocation {
-  const factory GeoLocation({
-    @JsonKey(name: 'Latitude') double? latitude,
-    @JsonKey(name: 'Longitude') double? longitude,
-  }) = _GeoLocation;
+class PolygonItem with _$PolygonItem {
+  const factory PolygonItem({
+    @JsonKey(name: 'lat') double? latitude,
+    @JsonKey(name: 'lng') double? longitude,
+  }) = _PolygonItem;
 
-  factory GeoLocation.fromJson(Map<String, dynamic> json) =>
-      _$GeoLocationFromJson(json);
+  factory PolygonItem.fromJson(Map<String, dynamic> json) =>
+      _$PolygonItemFromJson(json);
 }
+

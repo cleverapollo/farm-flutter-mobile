@@ -21,12 +21,12 @@ class CompartmentItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CmoTappable(
       onTap: () async {
-        if (model.jsonLocations == null) {
+        if (model.polygon == null) {
           return;
         }
-        var jsonArray = json.decode(model.jsonLocations!) as List?;
-        var points = List<GeoLocation>.from(jsonArray!.map(
-            (model) => GeoLocation.fromJson(model as Map<String, dynamic>)));
+        var jsonArray = json.decode(model.polygon!) as List?;
+        var points = List<PolygonItem>.from(jsonArray!.map(
+            (model) => PolygonItem.fromJson(model as Map<String, dynamic>)));
         if (points == null) {
           return;
         }
@@ -49,7 +49,7 @@ class CompartmentItemWidget extends StatelessWidget {
         ),
         content: [
           CmoCardHeader(
-            title: '${LocaleKeys.compartment.tr()}: ${model.compartmentName}',
+            title: '${LocaleKeys.compartment.tr()}: ${model.managementUnitName}',
           ),
           CmoCardItem(
             title: model.productGroupTemplateName ?? LocaleKeys.productGroup.tr(),

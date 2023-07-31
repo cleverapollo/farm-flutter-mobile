@@ -15,7 +15,7 @@ class Audit with _$Audit {
     @JsonKey(name: 'AuditTemplateName') String? auditTemplateName,
     @JsonKey(name: 'AuditTemplateId') int? auditTemplateId,
     @JsonKey(name: 'CompartmentName') String? compartmentName,
-    @JsonKey(name: 'CompartmentId') int? compartmentId,
+    @JsonKey(name: 'CompartmentId') String? compartmentId,
     @JsonKey(name: 'FarmName') String? farmName,
     @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'Created') String? created,

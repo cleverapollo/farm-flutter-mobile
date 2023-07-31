@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -11,11 +12,27 @@ class CompartmentCubit extends HydratedCubit<CompartmentState> {
   Future<void> loadListCompartment() async {
     emit(state.copyWith(loading: true));
     try {
-      var data = await cmoDatabaseMasterService.getCompartmentByFarmId(state.farmId);
-      if (data != null && state.campId != null) {
-        data = data.where((element) => element.campId == state.campId).toList();
+      final userRole = await configService.getActiveUserRole();
+      switch (userRole) {
+        case UserRoleEnum.farmerMember:
+          var data = await cmoDatabaseMasterService.getCompartmentByFarmId(state.farmId);
+          if (data != null && state.campId != null) {
+            data = data.where((element) => element.campId == state.campId).toList();
+          }
+          emit(state.copyWith(listCompartment: data));
+          break;
+        case UserRoleEnum.regionalManager:
+          final activeGroupScheme = await configService.getActiveGroupScheme();
+          final data = await cmoDatabaseMasterService.getCompartmentsByGroupSchemeIdAndFarmId(
+            groupSchemeId: activeGroupScheme?.groupSchemeId,
+            farmId: state.farmId,
+          );
+
+          emit(state.copyWith(listCompartment: data));
+          break;
+        case UserRoleEnum.behave:
+          break;
       }
-      emit(state.copyWith(listCompartment: data));
     } catch (e) {
       emit(state.copyWith(error: e));
       showSnackError(msg: e.toString());

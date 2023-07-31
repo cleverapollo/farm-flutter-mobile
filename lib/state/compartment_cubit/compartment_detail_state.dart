@@ -14,7 +14,6 @@ class CompartmentDetailState {
     this.productGroupTemplates = const [],
     this.speciesGroupTemplates = const [],
     this.groupScheme,
-    this.resourceManagerUnit,
     this.farmId = '',
     this.campId,
   });
@@ -25,22 +24,21 @@ class CompartmentDetailState {
   final List<ProductGroupTemplate> productGroupTemplates;
   final List<SpeciesGroupTemplate> speciesGroupTemplates;
   final GroupScheme? groupScheme;
-  final ResourceManagerUnit? resourceManagerUnit;
   final String farmId;
   final String? campId;
   Compartment compartment;
 
-  CompartmentDetailState copyWith(
-      {bool? loading,
-        String? farmId,
-        String? campId,
-      Object? error,
-      Compartment? compartment,
-      List<AreaType>? areaTypes,
-      GroupScheme? groupScheme,
-      ResourceManagerUnit? resourceManagerUnit,
-      List<ProductGroupTemplate>? productGroupTemplates,
-      List<SpeciesGroupTemplate>? speciesGroupTemplates}) {
+  CompartmentDetailState copyWith({
+    bool? loading,
+    String? farmId,
+    String? campId,
+    Object? error,
+    Compartment? compartment,
+    List<AreaType>? areaTypes,
+    GroupScheme? groupScheme,
+    List<ProductGroupTemplate>? productGroupTemplates,
+    List<SpeciesGroupTemplate>? speciesGroupTemplates,
+  }) {
     return CompartmentDetailState(
       farmId: farmId ?? this.farmId,
       campId: campId ?? this.campId,
@@ -53,7 +51,6 @@ class CompartmentDetailState {
       speciesGroupTemplates:
           speciesGroupTemplates ?? this.speciesGroupTemplates,
       groupScheme: groupScheme ?? this.groupScheme,
-      resourceManagerUnit: resourceManagerUnit ?? this.resourceManagerUnit,
     );
   }
 }

@@ -217,8 +217,8 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
                     onTap: () {
                       setState(() {
                         _asi = _asi.copyWith(
-                          compartmentId: compartments[index].compartmentId,
-                          compartmentName: compartments[index].compartmentName,
+                          compartmentId: int.tryParse(compartments[index].managementUnitId ?? ''),
+                          compartmentName: compartments[index].managementUnitName,
                         );
                       });
 
@@ -227,7 +227,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
                     title: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       child: Text(
-                        compartments[index].compartmentName ?? '',
+                        compartments[index].managementUnitName ?? '',
                         style: context.textStyles.bodyBold.copyWith(
                           color: context.colors.blueDark2,
                         ),

@@ -1,9 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar/isar.dart';
 
 part 'area_type.freezed.dart';
 part 'area_type.g.dart';
 
 @freezed
+@Collection(ignore: {'copyWith'})
 class AreaType with _$AreaType {
   const factory AreaType({
     @JsonKey(name: 'AreaTypeId') String? areaTypeId,
@@ -15,6 +17,11 @@ class AreaType with _$AreaType {
     @JsonKey(name: 'UpdateDT') String? updateDT,
   }) = _AreaType;
 
+  const AreaType._();
+
   factory AreaType.fromJson(Map<String, dynamic> json) =>
       _$AreaTypeFromJson(json);
+
+  @override
+  Id get id => Isar.autoIncrement;
 }

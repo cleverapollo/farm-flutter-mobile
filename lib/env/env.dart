@@ -60,4 +60,7 @@ abstract class Env {
 
   @EnviedField(varName: 'FORCE_RESYNC', obfuscate: true)
   static final forceResync = _Env.forceResync;
+
+  @EnviedField(varName: 'PERFORM_FORESTRY_URL', obfuscate: true)
+  static final performForestryUrl = _Env.performForestryUrl;
 }

@@ -8,6 +8,7 @@ import 'package:cmo/model/compartment/product_group_template.dart';
 import 'package:cmo/model/compartment/species_group_template.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
@@ -18,18 +19,17 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     try {
       emit(state.copyWith(loading: true));
       final groupScheme = await configService.getActiveGroupScheme();
-      final resourceManagerUnit = await configService.getActiveRegionalManager();
       final result = await Future.wait([
-        cmoPerformApiService.fetchAreaTypes(),
-        cmoPerformApiService.fetchProductGroupTemplates(),
-        cmoPerformApiService.fetchSpeciesGroupTemplates()
+        cmoDatabaseMasterService.getAreaTypes(),
+        cmoDatabaseMasterService.getProductGroupTemplates(),
+        cmoDatabaseMasterService.getSpeciesGroupTemplates(),
       ]);
+
       emit(state.copyWith(
         areaTypes: result[0] as List<AreaType>?,
         productGroupTemplates: result[1] as List<ProductGroupTemplate>?,
         speciesGroupTemplates: result[2] as List<SpeciesGroupTemplate>?,
         groupScheme: groupScheme,
-        resourceManagerUnit: resourceManagerUnit,
       ));
     } catch (e) {
       showSnackError(msg: e.toString());
@@ -38,32 +38,46 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     }
   }
 
-  Future saveCompartment() {
-    return cmoDatabaseMasterService.cacheCompartment(state.compartment.copyWith(
-      compartmentId: DateTime.now().millisecondsSinceEpoch,
-      groupSchemeId: state.groupScheme?.groupSchemeId,
-      regionalManagerUnitId: state.resourceManagerUnit?.regionalManagerUnitId,
-      farmId: state.farmId,
-      campId: state.campId,
-    ));
+  Future<void> saveCompartment() async {
+    try {
+      emit(state.copyWith(loading: true));
+      await cmoDatabaseMasterService.cacheCompartment(
+        state.compartment.copyWith(
+          createDT: DateTime.now().toString(),
+          groupSchemeId: state.groupScheme?.groupSchemeId,
+          farmId: state.farmId,
+          campId: state.campId,
+        ),
+        isDirect: true,
+      );
+    } catch (e) {
+      logger.d('Could not create compartment $e');
+    } finally {
+      emit(state.copyWith(loading: false));
+    }
   }
 
   void onCompartmentNameChanged(String value) {
-    state.compartment = state.compartment.copyWith(compartmentName: value);
+    state.compartment = state.compartment.copyWith(managementUnitName: value);
   }
 
   void onPolygonAreaChanged(double? value) {
     state.compartment = state.compartment.copyWith(polygonArea: value);
   }
 
-  void onLocationsChanged(List<GeoLocation>? locations) {
-    state.compartment =
-        state.compartment.copyWith(jsonLocations: json.encode(locations));
+  void onLocationsChanged(List<PolygonItem>? locations) {
+    state.compartment = state.compartment.copyWith(
+      polygonItems: locations,
+      polygon: json.encode(locations),
+    );
   }
 
   void onAreaTypeChanged(String areaTypeId) {
-    emit(state.copyWith(
-        compartment: state.compartment.copyWith(areaTypeId: areaTypeId)));
+    emit(
+      state.copyWith(
+        compartment: state.compartment.copyWith(areaTypeId: areaTypeId),
+      ),
+    );
   }
 
   void onProductGroupChanged({
@@ -102,8 +116,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   }
 
   void onPlannedPlantDateChanged(DateTime? value) {
-    state.compartment =
-        state.compartment.copyWith(plannedPlantDT: value?.toIso8601String());
+    state.compartment = state.compartment.copyWith(plannedPlantDT: value?.toString());
   }
 
   void onSurvivalPercentageDateChanged(double? value) {
@@ -114,11 +127,11 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     state.compartment = state.compartment.copyWith(stockingPercentage: value);
   }
 
-  void onRotationChanged(double? value) {
+  void onRotationChanged(int? value) {
     state.compartment = state.compartment.copyWith(rotationNumber: value);
   }
 
-  void onMAIChanged(double? value) {
+  void onMAIChanged(int? value) {
     state.compartment = state.compartment.copyWith(utilMAI: value);
   }
 }

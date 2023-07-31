@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/config/config.dart';
 import 'package:cmo/model/data/question_comment.dart';
@@ -148,7 +149,10 @@ class CmoDatabaseMasterService {
         HiracTemplateSchema,
         HiracTypeSchema,
         WorkerJobDescriptionSchema,
-        FarmStakeHolderSchema
+        FarmStakeHolderSchema,
+        AreaTypeSchema,
+        ProductGroupTemplateSchema,
+        SpeciesGroupTemplateSchema
       ],
       name: _databaseName,
       directory: dir.path,
@@ -3383,19 +3387,40 @@ class CmoDatabaseMasterService {
     return <Site>[];
   }
 
-  Future<List<Compartment>> getCompartmentsByRmuIdAndSiteId({
-    int? rmuId,
-    String? siteId,
+  Future<List<Compartment>> getCompartmentsByGroupSchemeId({
+    int? groupSchemeId,
   }) async {
-    if (rmuId == null || siteId == null) return <Compartment>[];
+    if (groupSchemeId == null) return <Compartment>[];
     final db = await _db();
     try {
       final compartments = await db.compartments
           .filter()
           .isActiveEqualTo(true)
-          .regionalManagerUnitIdEqualTo(rmuId)
-          .farmIdEqualTo(siteId)
-          .sortByCompartmentName()
+          .groupSchemeIdEqualTo(groupSchemeId)
+          .sortByManagementUnitName()
+          .findAll();
+
+      return compartments;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Compartment>[];
+  }
+
+  Future<List<Compartment>> getCompartmentsByGroupSchemeIdAndFarmId({
+    int? groupSchemeId,
+    String? farmId,
+  }) async {
+    if (groupSchemeId == null || farmId == null) return <Compartment>[];
+    final db = await _db();
+    try {
+      final compartments = await db.compartments
+          .filter()
+          .isActiveEqualTo(true)
+          .groupSchemeIdEqualTo(groupSchemeId)
+          .farmIdEqualTo(farmId)
+          .sortByManagementUnitName()
           .findAll();
 
       return compartments;
@@ -3593,9 +3618,55 @@ class CmoDatabaseMasterService {
     logger.d(error);
   }
 
-  Future<int> cacheCompartment(Compartment item) async {
+  Future<int> cacheCompartment(Compartment item, {bool isDirect = false}) async {
     final db = await _db();
-    return db.writeTxn(() => db.compartments.put(item));
+    if (isDirect) {
+      return db.writeTxn(() => db.compartments.put(item));
+    }
+
+    return db.compartments.put(item);
+  }
+
+  Future<int> cacheAreaTypes(AreaType item) async {
+    final db = await _db();
+    return db.areaTypes.put(item);
+  }
+
+  Future<int> cacheProductGroupTemplates(ProductGroupTemplate item) async {
+    final db = await _db();
+    return db.productGroupTemplates.put(item);
+  }
+
+  Future<int> cacheSpeciesGroupTemplates(SpeciesGroupTemplate item) async {
+    final db = await _db();
+    return db.speciesGroupTemplates.put(item);
+  }
+
+  Future<List<AreaType>?> getAreaTypes() async {
+    final db = await _db();
+    return db.areaTypes
+        .filter()
+        .isActiveEqualTo(true)
+        .sortByAreaTypeNameDesc()
+        .findAll();
+  }
+
+  Future<List<ProductGroupTemplate>?> getProductGroupTemplates() async {
+    final db = await _db();
+    return db.productGroupTemplates
+        .filter()
+        .isActiveEqualTo(true)
+        .sortByProductGroupTemplateNameDesc()
+        .findAll();
+  }
+
+  Future<List<SpeciesGroupTemplate>?> getSpeciesGroupTemplates() async {
+    final db = await _db();
+    return db.speciesGroupTemplates
+        .filter()
+        .isActiveEqualTo(true)
+        .sortBySpeciesGroupTemplateNameDesc()
+        .findAll();
   }
 
   Future<List<Compartment>?> getCompartmentByFarmId(String farmId) async {

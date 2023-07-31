@@ -239,18 +239,22 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                     title: LocaleKeys.next.tr(),
                     onTap: _isFinished
                         ? () {
-                      CompartmentDetailScreen.push(context,
-                          farmId: widget.farmId,
-                          farmName: widget.farmName,
-                          campId: widget.campId,
-                          measuredArea: (areaSquareMeters ?? 0) / 10000,
-                          locations: _markers
-                              .map((e) =>
-                              GeoLocation(
-                                  latitude: e.position.latitude,
-                                  longitude: e.position.longitude))
-                              .toList());
-                    }
+                      CompartmentDetailScreen.push(
+                              context,
+                              farmId: widget.farmId,
+                              farmName: widget.farmName,
+                              campId: widget.campId,
+                              measuredArea: (areaSquareMeters ?? 0) / 10000,
+                              locations: _markers
+                                  .map(
+                                    (e) => PolygonItem(
+                                      latitude: e.position.latitude,
+                                      longitude: e.position.longitude,
+                                    ),
+                                  )
+                                  .toList(),
+                            );
+                          }
                         : null,
                   ),
                 ),

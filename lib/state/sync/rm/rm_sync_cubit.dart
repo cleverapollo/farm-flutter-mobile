@@ -139,6 +139,10 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       await syncRegionalManagerUnitMasterData();
       logger.d('--syncRegionalManagerUnitMasterData done');
 
+      logger.d('--insertByCallingAPI start');
+      await insertByCallingAPI();
+      logger.d('--insertByCallingAPI done');
+
       emit(
         state.copyWith(
             syncMessage: 'Sync complete', isLoaded: true, isLoading: false),
@@ -172,9 +176,11 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       );
 
       await Future.delayed(const Duration(seconds: 15), () async {
+        await publishCompartments();
         await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
         await subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId();
         await subscribeToRegionalManagerUnitTrickleFeedTopicByRegionalManagerUnitId();
+
         emit(
           state.copyWith(
             syncMessage: 'Sync complete',
@@ -474,6 +480,35 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     }
   }
 
+  Future<void> publishCompartments() async {
+    emit(
+      state.copyWith(
+        syncMessage: 'Syncing Compartments...',
+        isLoading: true,
+      ),
+    );
+
+    try {
+      logger.d('Get unsynced compartment');
+      final compartments = await cmoDatabaseMasterService.getCompartmentsByGroupSchemeId(groupSchemeId: groupSchemeId);
+      if (compartments.isNotBlank) {
+        logger.d('Unsynced compartments count: ${compartments.length}');
+        for (final compartment in compartments) {
+          final syncedCompartment = await cmoPerformApiService.insertUpdatedCompartment(compartment);
+          if (syncedCompartment != null) {
+            logger.d('Successfully published compartment: ${syncedCompartment.managementUnitId}');
+          } else {
+            logger.e('Failed to publish compartment: ${compartment.managementUnitId}');
+          }
+        }
+      } else {
+        logger.d('No Compartments to sync');
+      }
+    } catch (error) {
+      logger.e(error);
+    }
+  }
+
   Future<int?> insertStakeholder(Message item) async {
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
@@ -739,6 +774,65 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       logger.d('insert error: $e');
     }
     return null;
+  }
+
+  Future<void> insertCompartmentsByRMUId() async {
+    final compartments = await cmoPerformApiService.getCompartmentsByRMUId();
+    if (compartments.isNotBlank) {
+      for (final compartment in compartments!) {
+        await cmoDatabaseMasterService.cacheCompartment(compartment);
+      }
+    }
+  }
+
+  Future<void> insertByCallingAPI({bool isOnlyCompartment = false}) async {
+    final dbCompany = await cmoDatabaseMasterService.db;
+    await dbCompany.writeTxn(() async {
+      if (!isOnlyCompartment) {
+        logger.d('--getProductGroupTemplates start');
+        await insertProductGroupTemplates();
+        logger.d('--getProductGroupTemplates done');
+
+        logger.d('--getSpeciesGroupTemplates start');
+        await insertSpeciesGroupTemplates();
+        logger.d('--getSpeciesGroupTemplates done');
+
+        logger.d('--getAreaTypes start');
+        await insertAreaTypes();
+        logger.d('--getAreaTypes done');
+      }
+
+      logger.d('--insertCompartmentsByRMUId start');
+      await insertCompartmentsByRMUId();
+      logger.d('--getCompartmentsByRMUId done');
+    });
+  }
+
+  Future<void> insertAreaTypes() async {
+    final areaTypes = await cmoPerformApiService.fetchAreaTypes();
+    if (areaTypes.isNotBlank) {
+      for (final areaType in areaTypes!) {
+        await cmoDatabaseMasterService.cacheAreaTypes(areaType);
+      }
+    }
+  }
+
+  Future<void> insertProductGroupTemplates() async {
+    final productGroupTemplates = await cmoPerformApiService.fetchProductGroupTemplates();
+    if (productGroupTemplates.isNotBlank) {
+      for (final productGroupTemplate in productGroupTemplates!) {
+        await cmoDatabaseMasterService.cacheProductGroupTemplates(productGroupTemplate);
+      }
+    }
+  }
+
+  Future<void> insertSpeciesGroupTemplates() async {
+    final speciesGroupTemplates = await cmoPerformApiService.fetchSpeciesGroupTemplates();
+    if (speciesGroupTemplates.isNotBlank) {
+      for (final speciesGroupTemplate in speciesGroupTemplates!) {
+        await cmoDatabaseMasterService.cacheSpeciesGroupTemplates(speciesGroupTemplate);
+      }
+    }
   }
 
   Future<void> createSubscriptions() async {

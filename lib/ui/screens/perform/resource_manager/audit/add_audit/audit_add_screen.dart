@@ -61,12 +61,11 @@ class _AuditAddScreen extends State<AuditAddScreen> {
         await hideInputMethod();
         value['AssessmentId'] = DateTime.now().millisecondsSinceEpoch;
         value['AuditTemplateId'] = state.selectedAuditTemplate?.auditTemplateId;
-        value['AuditTemplateName'] =
-            state.selectedAuditTemplate?.auditTemplateName;
+        value['AuditTemplateName'] = state.selectedAuditTemplate?.auditTemplateName;
         value['FarmName'] = state.selectedFarm?.farmName;
         value['FarmId'] = state.selectedFarm?.farmId;
-        value['CompartmentName'] = state.selectedCompartment?.compartmentName;
-        value['CompartmentId'] = state.selectedCompartment?.compartmentId;
+        value['CompartmentName'] = state.selectedCompartment?.managementUnitName;
+        value['CompartmentId'] = state.selectedCompartment?.managementUnitId;
         value['Created'] = DateTime.now().toString();
         final audit = Audit.fromJson(value);
 
@@ -173,24 +172,20 @@ class _AuditAddScreen extends State<AuditAddScreen> {
         BlocSelector<AuditCubit, AuditState, List<Compartment>>(
           selector: (state) => state.compartments,
           builder: (builder, compartments) {
-            return CmoDropdown<int?>(
+            return CmoDropdown<String?>(
               name: 'CompartmentId',
               inputDecoration:
                   _buildInputDecoration(LocaleKeys.compartment.tr()),
               itemsData: compartments
                   .map(
-                    (e) => CmoDropdownItem(
-                      id: e.compartmentId,
-                      name: e.compartmentName ?? '',
+                    (e) => CmoDropdownItem<String?>(
+                      id: e.managementUnitId,
+                      name: e.managementUnitName ?? '',
                     ),
                   )
                   .toList(),
-              onChanged: (int? id) {
-                if (id == -1) {
-                  _formKey.currentState!.fields['compartmentId']?.reset();
-                }
-
-                context.read<AuditCubit>().updateSelectedCompartment(id!);
+              onChanged: (String? id) {
+                context.read<AuditCubit>().updateSelectedCompartment(id);
               },
             );
           },

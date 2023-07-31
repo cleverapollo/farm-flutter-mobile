@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
@@ -18,6 +19,8 @@ import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
+import '../utils/utils.dart';
 
 class CmoPerformApiService {
   final String _apiAuthUrl = Env.performDnnAuthUrl;
@@ -609,6 +612,55 @@ class CmoPerformApiService {
 
     final data = response.data;
     return data?.map((e) => AreaType.fromJson(e as JsonData)).toList();
+  }
+
+  Future<List<Compartment>?> getCompartmentsByRMUId() async {
+    try {
+      final response = await client.get<JsonListData>(
+        '${Env.performForestryUrl}ManagementUnit/GetManagementUnitByRMId?',
+        queryParameters: {
+          'dnnUserId': 0,
+          'isActive': true,
+        },
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data;
+      return data?.map((e) => Compartment.fromJson(e as JsonData)).toList();
+    } catch (e){
+      logger.d('Cannot getCompartmentsByRMId $e');
+    }
+
+    return null;
+  }
+
+  Future<Compartment?> insertUpdatedCompartment(
+      Compartment compartment,
+      ) async {
+    try {
+      log(compartment.toJson().toString());
+      final response = await client.post<JsonData>(
+        '${Env.performForestryUrl}ManagementUnit/InsUpdManagementUnit',
+        data: compartment.toJson(),
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data;
+      return data == null ? null : Compartment.fromJson(data);
+    } catch (e) {
+      logger.d('Cannot insertUpdatedCompartment $e');
+      return null;
+    }
   }
 
   Future<List<GroupScheme>?> getGroupSchemeByGroupSchemeId(int id) async {

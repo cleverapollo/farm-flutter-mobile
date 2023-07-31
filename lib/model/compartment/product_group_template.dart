@@ -1,9 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar/isar.dart';
 
 part 'product_group_template.freezed.dart';
 part 'product_group_template.g.dart';
 
 @freezed
+@Collection(ignore: {'copyWith'})
 class ProductGroupTemplate with _$ProductGroupTemplate {
   const factory ProductGroupTemplate({
     @JsonKey(name: 'AreaTypeId') String? areaTypeId,
@@ -30,6 +32,11 @@ class ProductGroupTemplate with _$ProductGroupTemplate {
     @JsonKey(name: 'UpdateDT') String? updateDT,
   }) = _ProductGroupTemplate;
 
+  const ProductGroupTemplate._();
+
   factory ProductGroupTemplate.fromJson(Map<String, dynamic> json) =>
       _$ProductGroupTemplateFromJson(json);
+
+  @override
+  Id get id => Isar.autoIncrement;
 }

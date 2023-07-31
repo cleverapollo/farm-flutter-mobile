@@ -21,9 +21,9 @@ class AuditCubit extends HydratedCubit<AuditState> {
     await getListCompartments();
   }
 
-  void updateSelectedCompartment(int compartmentId) {
+  void updateSelectedCompartment(String? compartmentId) {
     final compartment = state.compartments.firstWhereOrNull(
-      (element) => element.compartmentId == compartmentId,
+      (element) => element.managementUnitId == compartmentId,
       orElse: null,
     );
     emit(state.copyWith(selectedCompartment: compartment));
@@ -34,6 +34,7 @@ class AuditCubit extends HydratedCubit<AuditState> {
       (element) => element.auditTemplateId == auditTemplateId,
       orElse: null,
     );
+
     emit(state.copyWith(selectedAuditTemplate: auditTemplate));
   }
 
@@ -72,12 +73,12 @@ class AuditCubit extends HydratedCubit<AuditState> {
   }
 
   Future<void> getListCompartments() async {
-    final rmu = await configService.getActiveRegionalManager();
-    final compartments =
-        await cmoDatabaseMasterService.getCompartmentsByRmuIdAndSiteId(
-      rmuId: rmu?.regionalManagerUnitId,
-      siteId: state.selectedFarm?.farmId,
+    final activeGroupScheme = await configService.getActiveGroupScheme();
+    final compartments = await cmoDatabaseMasterService.getCompartmentsByGroupSchemeIdAndFarmId(
+      groupSchemeId: activeGroupScheme?.groupSchemeId,
+      farmId: state.selectedFarm?.farmId,
     );
+
     emit(state.copyWith(compartments: compartments));
   }
 
