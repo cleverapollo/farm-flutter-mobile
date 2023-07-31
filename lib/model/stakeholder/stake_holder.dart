@@ -5,14 +5,27 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'stake_holder.freezed.dart';
-
 part 'stake_holder.g.dart';
 
 @freezed
 @Collection(ignore: {'copyWith'})
 class StakeHolder with _$StakeHolder {
+  const factory StakeHolder({
+    @JsonKey(name: 'StakeholderId') String? stakeHolderId,
+    @JsonKey(name: 'StakeholderName') String? stakeholderName,
+    @JsonKey(name: 'StakeholderTypeId') String? stakeHolderTypeId,
+    @JsonKey(name: 'ContactName') String? contactName,
+    @JsonKey(name: 'Email') String? email,
+    @JsonKey(name: 'Address1') String? address1,
+    @JsonKey(name: 'Address2') String? address2,
+    @JsonKey(name: 'Tel') String? tel,
+    @JsonKey(name: 'Cell') String? cell,
+    @Default(1) @JsonKey(name: 'IsActive') int? isActive,
+    @Default(0) @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
+  }) = _StakeHolder;
 
-  factory StakeHolder.fromStakeholderPayLoad(StakeholderPayLoad stakeholderPayLoad) {
+  factory StakeHolder.fromStakeholderPayLoad(
+      StakeholderPayLoad stakeholderPayLoad) {
     return StakeHolder(
       isMasterDataSynced: stakeholderPayLoad.IsMasterDataSynced?.toInt(),
       isActive: stakeholderPayLoad.IsActive?.toInt(),
@@ -27,20 +40,6 @@ class StakeHolder with _$StakeHolder {
       tel: stakeholderPayLoad.Tel,
     );
   }
-
-  const factory StakeHolder({
-    @JsonKey(name: 'StakeHolderId') String? stakeHolderId,
-    @JsonKey(name: 'StakeholderName') String? stakeholderName,
-    @JsonKey(name: 'StakeholderTypeId') String? stakeHolderTypeId,
-    @JsonKey(name: 'ContactName') String? contactName,
-    @JsonKey(name: 'Email') String? email,
-    @JsonKey(name: 'Address1') String? address1,
-    @JsonKey(name: 'Address2') String? address2,
-    @JsonKey(name: 'Tel') String? tel,
-    @JsonKey(name: 'Cell') String? cell,
-    @Default(1) @JsonKey(name: 'IsActive') int? isActive,
-    @Default(0) @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
-  }) = _StakeHolder;
 
   const StakeHolder._();
 

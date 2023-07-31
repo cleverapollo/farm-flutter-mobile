@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/model/stakeholder/farm_stake_holder.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_upload_summary_mixin.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
@@ -260,7 +261,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         )
         ..add(
           databaseMasterService
-              .getUnsyncedBiologicalControlAgentByFarmId(farmId)
+              .getUnsyncedBiologicalControlAgentRegisterByFarmId(farmId)
               .then((value) => data =
                   data.copyWith(biologicalControlAgentsUnsynced: value.length)),
         )
@@ -404,18 +405,16 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                   data.copyWith(annualBudgetTransactionsTotal: value.length)),
         )
         ..add(
-          databaseMasterService.getUnsyncedCampByFarmId(farmId).then(
-              (value) => data = data.copyWith(campsUnsynced: value.length)),
+          databaseMasterService
+              .getUnsyncedFarmCampByFarmId(farmId)
+              .then((value) {
+            return data = data.copyWith(campsUnsynced: value.length);
+          }),
         )
         ..add(
           databaseMasterService
               .getCamp()
               .then((value) => data = data.copyWith(campsTotal: value.length)),
-        )
-        ..add(
-          databaseMasterService.getBiologicalControlAgentByFarmId(farmId).then(
-              (value) => data =
-                  data.copyWith(biologicalControlAgentsUnsynced: value.length)),
         )
         ..add(
           databaseMasterService.getAnnualBudgetTransactionCategory().then(
@@ -510,17 +509,15 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                   data = data.copyWith(treatmentMethod: value.length)),
         )
         ..add(
-          databaseMasterService
-              .getUnsyncedGroupSchemeStakeholderByGroupSchemeId(groupSchemeId)
-              .then((value) =>
-                  data = data.copyWith(stakeholderUnsynced: value.length)),
+          databaseMasterService.getUnsyncedStakeholder().then((value) =>
+              data = data.copyWith(stakeholderUnsynced: value.length)),
         )
         ..add(
           databaseMasterService.getCustomaryUseRight().then((value) =>
               data = data.copyWith(customaryUseRights: value.length)),
         )
         ..add(
-          databaseMasterService.getFarmerStakeHolderByFarmId(farmId).then(
+          databaseMasterService.getFarmStakeHolderByFarmId(farmId).then(
               (value) => data = data.copyWith(farmStakeHolders: value.length)),
         )
         ..add(
@@ -598,6 +595,26 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                     syncMessage:
                         'Syncing new and updated Stakeholder Types...'));
                 await insertStakeholderType(item);
+              }
+
+              if (topic == 'Cmo.MasterData.SS.Global') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Special Sites...'));
+                await insertSpecialSite(item);
+              }
+
+              if (topic == 'Cmo.MasterData.SU.Global') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Social Upliftment...'));
+                await insertSocialUpliftment(item);
+              }
+
+              if (topic == 'Cmo.MasterData.CUR.Global') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated Customary Use Right...'));
+                await insertCustomaryUseRight(item);
               }
 
               if (topic == 'Cmo.MasterData.AnnFrmBudTransCat.Global') {
@@ -1216,7 +1233,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final worker = FarmerWorker.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheFarmerWorker(worker);
+      return cmoDatabaseMasterService
+          .cacheFarmerWorker(worker.copyWith(isActive: true, isLocal: 0));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1230,7 +1248,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       if (bodyJson == null) return null;
       final rs = PestsAndDiseasesRegisterTreatmentMethod.fromJson(bodyJson);
       return cmoDatabaseMasterService
-          .cachePetsAndDiseaseRegisterTreatmentMethod(rs);
+          .cachePetsAndDiseaseRegisterTreatmentMethod(
+              rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1242,7 +1261,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = SanctionRegister.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheSanctionRegister(rs);
+      return cmoDatabaseMasterService.cacheSanctionRegister(
+          rs.copyWith(isActive: true, isLocal: false, isSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1254,7 +1274,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = AnnualFarmProduction.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheAnnualProduction(rs);
+      return cmoDatabaseMasterService
+          .cacheAnnualProduction(rs.copyWith(isLocal: false, isActive: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1266,7 +1287,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = Camp.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheCamp(rs);
+      return cmoDatabaseMasterService
+          .cacheCampFromFarm(rs.copyWith(isActive: true, isLocal: false));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1278,7 +1300,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = JobDescription.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheJobDescription(rs);
+      return cmoDatabaseMasterService
+          .cacheJobDescription(rs.copyWith(isActive: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1290,7 +1313,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = Country.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheCountry(rs);
+      return cmoDatabaseMasterService.cacheCountry(rs.copyWith(isActive: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1302,7 +1325,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = Gender.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheGender(rs);
+      return cmoDatabaseMasterService.cacheGender(rs.copyWith(isActive: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1314,7 +1337,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = ScheduleActivity.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheScheduleActivity(rs);
+      return cmoDatabaseMasterService
+          .cacheScheduleActivity(rs.copyWith(isActive: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1326,7 +1350,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = GroupScheme.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheGroupScheme(rs);
+      return cmoDatabaseMasterService
+          .cacheGroupScheme(rs.copyWith(isActive: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1338,7 +1363,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = SocialUpliftment.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheSocialUpliftment(rs);
+      return cmoDatabaseMasterService.cacheSocialUpliftment(
+          rs.copyWith(isActive: true, isMasterDataSynced: 1));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1350,7 +1376,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = SpecialSite.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheSpecialSite(rs);
+      return cmoDatabaseMasterService
+          .cacheSpecialSite(rs.copyWith(isActive: true, isMasterDataSynced: 1));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1362,7 +1389,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = CustomaryUseRight.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheCustomaryUseRight(rs);
+      return cmoDatabaseMasterService.cacheCustomaryUseRight(
+          rs.copyWith(isActive: true, isMasterDataSynced: 1));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1374,7 +1402,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = StakeHolderType.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheStakeHolderType(rs);
+      return cmoDatabaseMasterService.cacheStakeHolderType(
+          rs.copyWith(isActive: 1, isMasterDataSynced: 1));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1386,7 +1415,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = StakeHolder.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheStakeHolder(rs);
+      return cmoDatabaseMasterService
+          .cacheStakeHolder(rs.copyWith(isActive: 1, isMasterDataSynced: 1));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1397,8 +1427,9 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
-      final rs = FarmerStakeHolder.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheFarmStakeHolder(rs);
+      final rs = FarmStakeHolder.fromJson(bodyJson);
+      return cmoDatabaseMasterService
+          .cacheFarmStakeHolderFromFarm(rs.copyWith(isMasterDataSynced: 1));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1410,7 +1441,9 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = GroupSchemeStakeholder.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheGroupSchemeStakeholder(rs);
+      return cmoDatabaseMasterService
+          .cacheGroupSchemeStakeholder(rs.copyWith(isMasterDataSynced: 1));
+
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1422,7 +1455,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = CustomaryUseRight.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheCustomaryUseRight(rs);
+      return cmoDatabaseMasterService.cacheCustomaryUseRight(
+          rs.copyWith(isMasterDataSynced: 1, isActive: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1434,7 +1468,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = SocialUpliftment.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheSocialUpliftment(rs);
+      return cmoDatabaseMasterService.cacheSocialUpliftment(
+          rs.copyWith(isActive: true, isMasterDataSynced: 1));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1446,7 +1481,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = FarmerStakeHolder.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheFarmStakeHolder(rs);
+      return cmoDatabaseMasterService.cacheFarmStakeHolder(rs.copyWith(
+          isActive: true, isLocal: false, isMasterDataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1458,8 +1494,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = AnnualBudgetTransactionCategory.fromJson(bodyJson);
-      return cmoDatabaseMasterService
-          .cacheAnnualFarmBudgetTransactionCategory(rs);
+      return cmoDatabaseMasterService.cacheAnnualFarmBudgetTransactionCategory(
+          rs.copyWith(isActive: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1471,7 +1507,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = AnnualBudget.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheAnnualBudgets(rs);
+      return cmoDatabaseMasterService
+          .cacheAnnualBudgets(rs.copyWith(isActive: true, isLocal: 0));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1483,7 +1520,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = AnnualBudgetTransaction.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheAnnualBudgetTransactions(rs);
+      return cmoDatabaseMasterService.cacheAnnualBudgetTransactions(
+          rs.copyWith(isActive: true, isLocal: 0));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1495,7 +1533,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = Schedule.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheSchedule(rs);
+      return cmoDatabaseMasterService
+          .cacheSchedule(rs.copyWith(isActive: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1507,7 +1546,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = AccidentAndIncident.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheAccidentAndIncident(rs);
+      return cmoDatabaseMasterService.cacheAccidentAndIncident(
+          rs.copyWith(isActive: true, isMasterDataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1519,7 +1559,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = BiologicalControlAgent.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheBiologicalControlAgents(rs);
+      return cmoDatabaseMasterService.cacheBiologicalControlAgents(
+          rs.copyWith(isMasterDataSynced: true, isActive: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1531,7 +1572,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = Chemical.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheChemical(rs);
+      return cmoDatabaseMasterService
+          .cacheChemical(rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1543,7 +1585,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = Asi.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheAsi(rs);
+      return cmoDatabaseMasterService
+          .cacheAsi(rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1555,7 +1598,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = FireRegister.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheFireRegister(rs);
+      return cmoDatabaseMasterService.cacheFireRegister(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1567,7 +1611,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = PetsAndDiseaseRegister.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cachePetsAndDisease(rs);
+      return cmoDatabaseMasterService.cachePetsAndDisease(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1579,7 +1624,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = GrievanceRegister.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheGrievanceRegister(rs);
+      return cmoDatabaseMasterService.cacheGrievanceRegister(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1591,7 +1637,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = PetsAndDiseaseRegister.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cachePetsAndDisease(rs);
+      return cmoDatabaseMasterService.cachePetsAndDisease(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1603,7 +1650,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = FarmerWorker.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheFarmerWorker(rs);
+      return cmoDatabaseMasterService
+          .cacheFarmerWorker(rs.copyWith(isActive: true, isLocal: 0));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1615,7 +1663,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = TrainingRegister.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheTraining(rs);
+      return cmoDatabaseMasterService
+          .cacheTraining(rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1627,7 +1676,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = AnimalType.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheAnimalType(rs);
+      return cmoDatabaseMasterService.cacheAnimalType(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1639,7 +1689,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = SpeciesRange.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheSpeciesRange(rs);
+      return cmoDatabaseMasterService.cacheSpeciesRange(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1651,7 +1702,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = MonitoringRequirement.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheMonitoringRequirement(rs);
+      return cmoDatabaseMasterService.cacheMonitoringRequirement(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1663,7 +1715,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = TrainingType.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheTrainingType(rs);
+      return cmoDatabaseMasterService.cacheTrainingType(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1675,7 +1728,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = PestsAndDiseaseType.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cachePestsAndDiseaseType(rs);
+      return cmoDatabaseMasterService.cachePestsAndDiseaseType(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1687,7 +1741,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = GrievanceIssue.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheGrievanceIssue(rs);
+      return cmoDatabaseMasterService.cacheGrievanceIssue(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1699,7 +1754,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = PropertyDamaged.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cachePropertyDamaged(rs);
+      return cmoDatabaseMasterService.cachePropertyDamaged(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1711,7 +1767,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = BiologicalControlAgentType.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheBiologicalControlAgentTypes(rs);
+      return cmoDatabaseMasterService.cacheBiologicalControlAgentTypes(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1723,7 +1780,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = IssueType.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheIssueType(rs);
+      return cmoDatabaseMasterService.cacheIssueType(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1735,7 +1793,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = ChemicalType.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheChemicalTypes(rs);
+      return cmoDatabaseMasterService.cacheChemicalTypes(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1747,7 +1806,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = AsiType.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheAsiTypes(rs);
+      return cmoDatabaseMasterService
+          .cacheAsiTypes(rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1759,7 +1819,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = FireCause.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheFireCause(rs);
+      return cmoDatabaseMasterService.cacheFireCause(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1771,7 +1832,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = NatureOfInjury.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheNatureOfInjury(rs);
+      return cmoDatabaseMasterService.cacheNatureOfInjury(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1783,7 +1845,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = ChemicalApplicationMethod.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheChemicalApplicationMethods(rs);
+      return cmoDatabaseMasterService.cacheChemicalApplicationMethods(
+          rs.copyWith(isMasterdataSynced: true, isActive: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1795,7 +1858,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = TreatmentMethod.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheTreatmentMethod(rs);
+      return cmoDatabaseMasterService.cacheTreatmentMethod(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1807,7 +1871,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = AsiPhoto.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheAsiPhoto(rs);
+      return cmoDatabaseMasterService
+          .cacheAsiPhoto(rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1819,8 +1884,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = AccidentAndIncidentPropertyDamaged.fromJson(bodyJson);
-      return cmoDatabaseMasterService
-          .cacheAccidentAndIncidentPropertyDamaged(rs);
+      return cmoDatabaseMasterService.cacheAccidentAndIncidentPropertyDamaged(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1832,7 +1897,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = PestsAndDiseaseTypeTreatmentMethod.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cachePetsAndDiseaseTreatmentMethod(rs);
+      return cmoDatabaseMasterService.cachePetsAndDiseaseTreatmentMethod(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1844,8 +1910,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = PestsAndDiseaseTypeTreatmentMethod.fromJson(bodyJson);
-      return cmoDatabaseMasterService
-          .cachePetsAndDiseaseTypeTreatmentMethod(rs);
+      return cmoDatabaseMasterService.cachePetsAndDiseaseTypeTreatmentMethod(
+          rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1857,7 +1923,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = RteSpeciesPhotoModel.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheRteSpeciesPhotos(rs);
+      return cmoDatabaseMasterService.cacheRteSpeciesPhotos(rs.copyWith(
+          isActive: true, isMasterdataSynced: true, isLocal: false));
     } catch (e) {
       logger.d('insert error: $e');
     }

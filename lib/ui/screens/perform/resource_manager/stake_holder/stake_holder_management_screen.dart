@@ -6,6 +6,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
+import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_state.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/stake_holder_detail_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/farmer_mode_stake_holder_item.dart';
@@ -50,7 +51,7 @@ class _StakeHolderManagementScreenState
       child: FutureBuilder(
         future: configService.getActiveUserRole(),
         builder: (context, snapshot) {
-          if(!snapshot.hasData) return Container();
+          if (!snapshot.hasData) return Container();
           return Scaffold(
             appBar: _buildCustomAppBar(snapshot.data),
             body: Column(
@@ -65,14 +66,16 @@ class _StakeHolderManagementScreenState
                       _debounceInputTimer?.cancel();
                       _debounceInputTimer = Timer(
                         const Duration(milliseconds: 200),
-                        () => context.read<StakeHolderListCubit>().searching(input),
+                        () => context
+                            .read<StakeHolderListCubit>()
+                            .searching(input),
                       );
                     },
                   ),
                 ),
                 Expanded(
-                  child: BlocSelector<StakeHolderListCubit, StakeHolderListState,
-                      StakeHolderListState>(
+                  child: BlocSelector<StakeHolderListCubit,
+                      StakeHolderListState, StakeHolderListState>(
                     selector: (state) {
                       return state;
                     },
@@ -110,7 +113,8 @@ class _StakeHolderManagementScreenState
                             return _buildItemCard(
                               model: state.filterListStakeHolders[index],
                               haveGreyBackground: index.isEven,
-                              isRM: snapshot.data == UserRoleEnum.regionalManager,
+                              isRM:
+                                  snapshot.data == UserRoleEnum.regionalManager,
                             );
                           },
                         ),
@@ -130,12 +134,14 @@ class _StakeHolderManagementScreenState
     if (data == UserRoleEnum.regionalManager) {
       return PreferredSize(
         preferredSize: const Size.fromHeight(72),
-        child: BlocSelector<StakeHolderListCubit, StakeHolderListState, ResourceManagerUnit?>(
+        child: BlocSelector<StakeHolderListCubit, StakeHolderListState,
+            ResourceManagerUnit?>(
           selector: (state) => state.resourceManagerUnit,
           builder: (context, resourceManagerUnit) {
             return CmoAppBar(
               title: LocaleKeys.stakeholderManagement.tr(),
-              subtitle: '${LocaleKeys.siteName.tr()}: ${resourceManagerUnit?.regionalManagerUnitName}',
+              subtitle:
+                  '${LocaleKeys.siteName.tr()}: ${resourceManagerUnit?.regionalManagerUnitName}',
               leading: Assets.icons.icArrowLeft.svgBlack,
               onTapLeading: Navigator.of(context).pop,
             );
@@ -181,7 +187,8 @@ class _StakeHolderManagementScreenState
 
   Widget _buildItemCard({
     required StakeHolder model,
-    required bool haveGreyBackground, required bool isRM,
+    required bool haveGreyBackground,
+    required bool isRM,
   }) {
     if (isRM) {
       return CmoDismissibleItem(

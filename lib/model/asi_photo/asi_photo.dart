@@ -1,8 +1,8 @@
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/asi_register_photo_payload/asi_register_photo_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'asi_photo.freezed.dart';
-
 part 'asi_photo.g.dart';
 
 @freezed
@@ -14,7 +14,7 @@ class AsiPhoto with _$AsiPhoto {
     @JsonKey(name: 'AsiRegisterId') String? asiRegisterId,
     @JsonKey(name: 'AsiRegisterNo') String? asiRegisterNo,
     @JsonKey(name: 'Photo') String? photo,
-    @JsonKey(name: 'PhotoURL') bool? photoURL,
+    @JsonKey(name: 'PhotoURL') String? photoURL,
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
   }) = _AsiPhoto;
@@ -25,5 +25,20 @@ class AsiPhoto with _$AsiPhoto {
       _$AsiPhotoFromJson(json);
 
   @override
-  Id get id => asiRegisterPhotoId ?? Isar.autoIncrement;
+  Id get id => int.tryParse(asiRegisterPhotoNo ?? '') ?? Isar.autoIncrement;
+}
+
+extension AsiPhotoX on AsiPhoto {
+  AsiRegisterPhotoPayLoad toPayLoad() {
+    return AsiRegisterPhotoPayLoad(
+      AsiRegisterPhotoId: asiRegisterPhotoId,
+      AsiRegisterPhotoNo: asiRegisterPhotoNo,
+      AsiRegisterId: asiRegisterId,
+      AsiRegisterNo: asiRegisterNo,
+      Photo: photo,
+      PhotoURL: photoURL,
+      IsActive: isActive,
+      IsMasterdataSynced: isMasterdataSynced,
+    );
+  }
 }

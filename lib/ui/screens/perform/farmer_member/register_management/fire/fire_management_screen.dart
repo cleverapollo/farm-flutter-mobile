@@ -181,7 +181,7 @@ class _FireManagementItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${LocaleKeys.fireNo.tr()}: ${fireRegister.fireRegisterId?.toString()}',
+            '${LocaleKeys.fireNo.tr()}: ${fireRegister.fireRegisterNo?.toString()}',
             style: context.textStyles.bodyBold.blue,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

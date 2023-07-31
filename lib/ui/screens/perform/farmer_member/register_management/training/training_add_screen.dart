@@ -76,11 +76,14 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
           trainingRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
           farmId: farm?.farmId,
           trainingTypeId: selectTrainingType?.trainingTypeId ?? 0,
+          trainingTypeName: selectTrainingType?.trainingTypeName ?? '',
           date: value['Date'] as DateTime?,
           expiryDate: value['ExpiryDate'] as DateTime?,
           workerId: selectFarmerWorker?.workerId ?? '',
+          trainerName: selectFarmerWorker?.firstName ?? '',
           isActive: true,
           isMasterdataSynced: false,
+          workerName: selectFarmerWorker?.firstName ?? '',
         );
 
         if (carRaised && training.carRaisedDate == null) {

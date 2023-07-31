@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'treament_method.freezed.dart';
-
 part 'treament_method.g.dart';
 
 @freezed
@@ -22,5 +21,5 @@ class TreatmentMethod with _$TreatmentMethod {
       _$TreatmentMethodFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => treatmentMethodId ?? Isar.autoIncrement;
 }

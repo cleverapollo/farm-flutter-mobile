@@ -9,24 +9,24 @@ part 'complaints_and_disputes_register.g.dart';
 @Collection(ignore: {'copyWith'})
 class ComplaintsAndDisputesRegister with _$ComplaintsAndDisputesRegister {
   const factory ComplaintsAndDisputesRegister({
-    @JsonKey(name: 'ComplaintsAndDisputesRegisterNo:')
+    @JsonKey(name: 'ComplaintsAndDisputesRegisterNo')
         String? complaintsAndDisputesRegisterNo,
-    @JsonKey(name: 'FarmId:') String? farmId,
-    @JsonKey(name: 'StakeholderId:') String? stakeholderId,
-    @JsonKey(name: 'ComplaintsAndDisputesRegisterId:')
+    @JsonKey(name: 'FarmId') String? farmId,
+    @JsonKey(name: 'StakeholderId') String? stakeholderId,
+    @JsonKey(name: 'ComplaintsAndDisputesRegisterId')
         String? complaintsAndDisputesRegisterId,
-    @JsonKey(name: 'IssueDescription:') String? issueDescription,
-    @JsonKey(name: 'DateReceived:') DateTime? dateReceived,
-    @JsonKey(name: 'AllocatedToUserId:') int? allocatedToUserId,
-    @JsonKey(name: 'ClosureDetails:') String? closureDetails,
-    @JsonKey(name: 'DateClosed:') DateTime? dateClosed,
-    @JsonKey(name: 'Comment:') String? comment,
-    @JsonKey(name: 'CarRaisedDate:') String? carRaisedDate,
-    @JsonKey(name: 'CarClosedDate:') String? carClosedDate,
-    @JsonKey(name: 'IsActive:') bool? isActive,
-    @JsonKey(name: 'IsMasterdataSynced:') bool? isMasterdataSynced,
-    @JsonKey(name: 'StakeholderName:') String? stakeholderName,
-    @JsonKey(name: 'ComplaintsAndDisputesRegisterName:')
+    @JsonKey(name: 'IssueDescription') String? issueDescription,
+    @JsonKey(name: 'DateReceived') DateTime? dateReceived,
+    @JsonKey(name: 'AllocatedToUserId') int? allocatedToUserId,
+    @JsonKey(name: 'ClosureDetails') String? closureDetails,
+    @JsonKey(name: 'DateClosed') DateTime? dateClosed,
+    @JsonKey(name: 'Comment') String? comment,
+    @JsonKey(name: 'CarRaisedDate') String? carRaisedDate,
+    @JsonKey(name: 'CarClosedDate') String? carClosedDate,
+    @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
+    @JsonKey(name: 'StakeholderName') String? stakeholderName,
+    @JsonKey(name: 'ComplaintsAndDisputesRegisterName')
         String? complaintsAndDisputesRegisterName,
   }) = _ComplaintsAndDisputesRegister;
 
@@ -37,7 +37,7 @@ class ComplaintsAndDisputesRegister with _$ComplaintsAndDisputesRegister {
 
   @override
   Id get id =>
-      int.tryParse(complaintsAndDisputesRegisterId ?? '') ?? Isar.autoIncrement;
+      int.tryParse(complaintsAndDisputesRegisterNo ?? '') ?? Isar.autoIncrement;
 }
 
 extension ComplaintsAndDisputesRegisterX on ComplaintsAndDisputesRegister {

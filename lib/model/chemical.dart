@@ -10,8 +10,8 @@ part 'chemical.g.dart';
 class Chemical with _$Chemical {
   const factory Chemical({
     @JsonKey(name: 'TotalRows') int? totalRows,
-    @JsonKey(name: 'ChemicalNo') String? chemicalNo,
-    @JsonKey(name: 'ChemicalId') String? chemicalId,
+    @JsonKey(name: 'ChemicalRegisterNo') String? chemicalNo,
+    @JsonKey(name: 'ChemicalRegisterId') String? chemicalId,
     @JsonKey(name: 'FarmId', fromJson: JsonConverterUtil.toLong) int? farmId,
     @JsonKey(name: 'ChemicalTypeId') int? chemicalTypeId,
     @JsonKey(name: 'ChemicalApplicationMethodId')
@@ -42,7 +42,7 @@ class Chemical with _$Chemical {
       _$ChemicalFromJson(json);
 
   @override
-  Id get id => int.tryParse(chemicalId ?? '') ?? Isar.autoIncrement;
+  Id get id => int.tryParse(chemicalNo ?? '') ?? Isar.autoIncrement;
 }
 
 extension ChemicalX on Chemical {

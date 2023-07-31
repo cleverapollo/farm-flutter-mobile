@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
@@ -21,7 +22,8 @@ class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
       final service = cmoDatabaseMasterService;
 
       if (state.activeFarm?.farmId == null) return;
-      final data = await service.getFarmerWorkersByFarmId(state.activeFarm!.farmId);
+      final data =
+          await service.getFarmerWorkersByFarmId(state.activeFarm!.farmId);
 
       emit(
         state.copyWith(
@@ -42,6 +44,7 @@ class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
     try {
       final service = cmoDatabaseMasterService;
       final data = await service.getJobDescriptions();
+
       emit(
         state.copyWith(
           listJobDescriptions: data,

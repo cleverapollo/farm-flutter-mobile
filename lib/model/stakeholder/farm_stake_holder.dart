@@ -4,7 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'farm_stake_holder.freezed.dart';
-
 part 'farm_stake_holder.g.dart';
 
 @freezed
@@ -13,7 +12,7 @@ class FarmStakeHolder with _$FarmStakeHolder {
   const factory FarmStakeHolder({
     @JsonKey(name: 'FarmStakeholderId') String? farmStakeHolderId,
     @JsonKey(name: 'StakeholderId') String? stakeHolderId,
-    @JsonKey(name: 'FarmId') int? farmId,
+    @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _FarmStakeHolder;
 

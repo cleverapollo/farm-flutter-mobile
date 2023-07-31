@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'chemical_application_method.freezed.dart';
-
 part 'chemical_application_method.g.dart';
 
 @freezed
@@ -24,5 +23,5 @@ class ChemicalApplicationMethod with _$ChemicalApplicationMethod {
       _$ChemicalApplicationMethodFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => chemicalApplicationMethodId ?? Isar.autoIncrement;
 }

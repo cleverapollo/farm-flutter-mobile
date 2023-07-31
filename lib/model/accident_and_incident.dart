@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'accident_and_incident.freezed.dart';
-
 part 'accident_and_incident.g.dart';
 
 @freezed
@@ -41,7 +40,7 @@ class AccidentAndIncident with _$AccidentAndIncident {
 
   @override
   Id get id =>
-      int.tryParse(accidentAndIncidentRegisterId ?? '') ?? Isar.autoIncrement;
+      int.tryParse(accidentAndIncidentRegisterNo ?? '') ?? Isar.autoIncrement;
 }
 
 extension AccidentAndIncidentX on AccidentAndIncident {

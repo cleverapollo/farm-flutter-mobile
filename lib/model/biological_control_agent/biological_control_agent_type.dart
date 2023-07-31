@@ -30,5 +30,5 @@ class BiologicalControlAgentType with _$BiologicalControlAgentType {
       _$BiologicalControlAgentTypeFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => biologicalControlAgentTypeId ?? Isar.autoIncrement;
 }

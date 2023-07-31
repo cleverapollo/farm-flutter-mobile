@@ -23,5 +23,5 @@ class PestsAndDiseaseType with _$PestsAndDiseaseType {
       _$PestsAndDiseaseTypeFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => pestsAndDiseaseTypeId ?? Isar.autoIncrement;
 }

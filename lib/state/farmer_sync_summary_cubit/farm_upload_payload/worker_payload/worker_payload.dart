@@ -1,4 +1,5 @@
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/job_description_payload/job_description_payload.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/worker_job_description_payload/worker_job_description_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'worker_payload.freezed.dart';
@@ -22,7 +23,7 @@ class FarmWorkerPayload with _$FarmWorkerPayload {
     String? PhotoURL,
     String? NormalisedPhotoURL,
     String? Photo,
-    List<JobDescriptionPayLoad>? JobDescriptions,
+    List<WorkerJobDescriptionPayLoad>? JobDescriptions,
   }) = _FarmWorkerPayload;
   factory FarmWorkerPayload.fromJson(Map<String, dynamic> json) =>
       _$FarmWorkerPayloadFromJson(json);

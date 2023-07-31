@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'species_range.freezed.dart';
-
 part 'species_range.g.dart';
 
 @freezed
@@ -24,5 +23,5 @@ class SpeciesRange with _$SpeciesRange {
       _$SpeciesRangeFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => speciesRangeId ?? Isar.autoIncrement;
 }

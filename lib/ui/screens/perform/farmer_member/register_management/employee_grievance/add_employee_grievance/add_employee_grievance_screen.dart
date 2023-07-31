@@ -14,13 +14,13 @@ class AddEmployeeGrievanceScreen extends StatefulWidget {
   const AddEmployeeGrievanceScreen(
       {super.key, required this.employeeGrievance});
 
-  final EmployeeGrievance? employeeGrievance;
+  final GrievanceRegister? employeeGrievance;
 
   @override
   State<StatefulWidget> createState() => _AddEmployeeGrievanceScreenState();
 
-  static Future<EmployeeGrievance?> push(BuildContext context,
-      {EmployeeGrievance? employeeGrievance}) {
+  static Future<GrievanceRegister?> push(BuildContext context,
+      {GrievanceRegister? employeeGrievance}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
@@ -33,13 +33,20 @@ class AddEmployeeGrievanceScreen extends StatefulWidget {
 
 class _AddEmployeeGrievanceScreenState
     extends State<AddEmployeeGrievanceScreen> {
+  final workers = ValueNotifier<List<FarmerWorker>>([]);
+  final grievanceIssues = ValueNotifier<List<GrievanceIssue>>([]);
+
+  FarmerWorker? selectFarmerWorker;
+  FarmerWorker? selectAllocatedWorker;
+  GrievanceIssue? selectGrievanceIssue;
+
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
-  late EmployeeGrievance employeeGrievance;
+  late GrievanceRegister employeeGrievance;
 
   bool carRaised = false;
   bool carClosed = false;
@@ -48,16 +55,26 @@ class _AddEmployeeGrievanceScreenState
   void initState() {
     super.initState();
     if (widget.employeeGrievance == null) {
-      employeeGrievance = EmployeeGrievance(
+      employeeGrievance = GrievanceRegister(
           grievanceRegisterNo: DateTime.now().toIso8601String(),
           isActive: true,
-          isMasterDataSynced: false);
+          isMasterdataSynced: false);
     } else {
       employeeGrievance =
-          EmployeeGrievance.fromJson(widget.employeeGrievance!.toJson());
+          GrievanceRegister.fromJson(widget.employeeGrievance!.toJson());
     }
     carRaised = employeeGrievance.carRaisedDate != null;
     carClosed = employeeGrievance.carClosedDate != null;
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final farm = await configService.getActiveFarm();
+
+      workers.value = await cmoDatabaseMasterService
+          .getFarmerWorkersByFarmId(farm?.farmId ?? '');
+
+      grievanceIssues.value = await cmoDatabaseMasterService
+          .getGrievanceIssueByGroupSchemeId(farm?.groupSchemeId ?? 0);
+    });
   }
 
   Future<void> onSubmit() async {
@@ -76,12 +93,17 @@ class _AddEmployeeGrievanceScreenState
         await hideInputMethod();
         final farm = await configService.getActiveFarm();
         employeeGrievance = employeeGrievance.copyWith(
+          grievanceRegisterId: null,
+          grievanceRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
           farmId: farm?.farmId,
           dateReceived: value['DateReceived'] as DateTime?,
           dateClosed: value['DateClosed'] as DateTime?,
-          allocatedToUserId: value['AllocatedToId']?.toString(),
-          workerId: value['WorkerId']?.toString(),
-          grievanceIssueId: int.tryParse(value['GrievanceIssueId'].toString()),
+          allocatedToUserId: selectAllocatedWorker?.workerId,
+          workerId: selectFarmerWorker?.workerId,
+          grievanceIssueId: selectGrievanceIssue?.grievanceIssueId,
+          grievanceIssueName: selectGrievanceIssue?.grievanceIssueName,
+          isActive: true,
+          isMasterdataSynced: false,
         );
 
         if (carRaised && employeeGrievance.carRaisedDate == null) {
@@ -102,8 +124,11 @@ class _AddEmployeeGrievanceScreenState
           final databaseService = cmoDatabaseMasterService;
 
           await (await databaseService.db).writeTxn(() async {
-            resultId =
-                await databaseService.cacheEmployeeGrievance(employeeGrievance);
+            resultId = await databaseService
+                .cacheEmployeeGrievance(employeeGrievance.copyWith(
+              isActive: true,
+              isMasterdataSynced: false,
+            ));
           });
         }
 
@@ -242,38 +267,37 @@ class _AddEmployeeGrievanceScreenState
             style: context.textStyles.bodyBold.black,
           ),
         ),
-        CmoDropdown(
-          name: 'WorkerId',
-          hintText: LocaleKeys.worker.tr(),
-          validator: requiredValidator,
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 8,
-              horizontal: 12,
-            ),
-            isDense: true,
-            hintText:
-                '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.colors.grey),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.colors.blue),
-            ),
-          ),
-          onChanged: (int? id) {
-            if (id == -1) {
-              _formKey.currentState!.fields['WorkerId']?.reset();
-            }
+        ValueListenableBuilder(
+          valueListenable: workers,
+          builder: (context, data, __) {
+            return CmoDropdown<FarmerWorker>(
+                name: 'WorkerId',
+                hintText: LocaleKeys.worker.tr(),
+                validator: requiredValidator,
+                inputDecoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 12,
+                  ),
+                  isDense: true,
+                  hintText:
+                      '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
+                  hintStyle: context.textStyles.bodyNormal.grey,
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: context.colors.grey),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: context.colors.blue),
+                  ),
+                ),
+                onChanged: (value) {
+                  selectFarmerWorker = value;
+                  setState(() {});
+                },
+                itemsData: data
+                    .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
+                    .toList());
           },
-          itemsData: [
-            CmoDropdownItem(id: -1, name: LocaleKeys.worker.tr()),
-            CmoDropdownItem(id: 1, name: 'Worker 1'),
-            CmoDropdownItem(id: 2, name: 'Worker 2'),
-            CmoDropdownItem(id: 3, name: 'Worker 3'),
-            CmoDropdownItem(id: 4, name: 'Worker 4'),
-          ],
         ),
       ],
     );
@@ -293,35 +317,37 @@ class _AddEmployeeGrievanceScreenState
             style: context.textStyles.bodyBold.black,
           ),
         ),
-        CmoDropdown(
-          name: 'GrievanceIssueId',
-          hintText: LocaleKeys.grievanceIssue.tr(),
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 8,
-              horizontal: 12,
-            ),
-            isDense: true,
-            hintText:
-                '${LocaleKeys.select.tr()} ${LocaleKeys.grievanceIssue.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.colors.grey),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.colors.blue),
-            ),
-          ),
-          onChanged: (int? id) {
-            if (id == -1) {
-              _formKey.currentState!.fields['GrievanceIssueId']?.reset();
-            }
+        ValueListenableBuilder(
+          valueListenable: grievanceIssues,
+          builder: (context, data, __) {
+            return CmoDropdown<GrievanceIssue>(
+                name: 'GrievanceIssueId',
+                hintText: LocaleKeys.grievanceIssue.tr(),
+                inputDecoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 12,
+                  ),
+                  isDense: true,
+                  hintText:
+                      '${LocaleKeys.select.tr()} ${LocaleKeys.grievanceIssue.tr().toLowerCase()}',
+                  hintStyle: context.textStyles.bodyNormal.grey,
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: context.colors.grey),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: context.colors.blue),
+                  ),
+                ),
+                onChanged: (value) {
+                  selectGrievanceIssue = value;
+                  setState(() {});
+                },
+                itemsData: data
+                    .map((e) => CmoDropdownItem(
+                        id: e, name: e.grievanceIssueName ?? ''))
+                    .toList());
           },
-          itemsData: [
-            CmoDropdownItem(id: -1, name: LocaleKeys.grievanceIssue.tr()),
-            CmoDropdownItem(id: 0, name: 'GrievanceIssue 1'),
-            CmoDropdownItem(id: 1, name: 'GrievanceIssue 2'),
-          ],
         ),
       ],
     );
@@ -341,37 +367,36 @@ class _AddEmployeeGrievanceScreenState
             style: context.textStyles.bodyBold.black,
           ),
         ),
-        CmoDropdown(
-          name: 'AllocatedToId',
-          hintText: LocaleKeys.allocatedTo.tr(),
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 8,
-              horizontal: 12,
-            ),
-            isDense: true,
-            hintText:
-                '${LocaleKeys.select.tr()} ${LocaleKeys.allocatedTo.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyNormal.grey,
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.colors.grey),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.colors.blue),
-            ),
-          ),
-          onChanged: (int? id) {
-            if (id == -1) {
-              _formKey.currentState!.fields['AllocatedToId']?.reset();
-            }
+        ValueListenableBuilder(
+          valueListenable: workers,
+          builder: (context, data, __) {
+            return CmoDropdown<FarmerWorker>(
+                name: 'AllocatedToId',
+                hintText: LocaleKeys.allocatedTo.tr(),
+                inputDecoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 12,
+                  ),
+                  isDense: true,
+                  hintText:
+                      '${LocaleKeys.select.tr()} ${LocaleKeys.allocatedTo.tr().toLowerCase()}',
+                  hintStyle: context.textStyles.bodyNormal.grey,
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: context.colors.grey),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: context.colors.blue),
+                  ),
+                ),
+                onChanged: (value) {
+                  selectAllocatedWorker = value;
+                  setState(() {});
+                },
+                itemsData: data
+                    .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
+                    .toList());
           },
-          itemsData: [
-            CmoDropdownItem(id: -1, name: LocaleKeys.worker.tr()),
-            CmoDropdownItem(id: 1, name: 'Worker 1'),
-            CmoDropdownItem(id: 2, name: 'Worker 2'),
-            CmoDropdownItem(id: 3, name: 'Worker 3'),
-            CmoDropdownItem(id: 4, name: 'Worker 4'),
-          ],
         ),
       ],
     );

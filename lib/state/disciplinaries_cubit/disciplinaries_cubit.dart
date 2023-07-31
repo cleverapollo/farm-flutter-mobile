@@ -72,8 +72,9 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
   }
 
   void onChangeData({
-    int? workerId,
-    int? issueId,
+    FarmerWorker? selectWorker,
+    Camp? selectCamp,
+    IssueType? selectIssue,
     DateTime? dateIssue,
     String? campOrCompartment,
     String? comment,
@@ -112,17 +113,25 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
 
     emit(state.copyWith(
         data: state.data?.copyWith(
-      sanctionRegisterId: DateTime.now().toString(),
-      workerId: (workerId ?? state.data?.workerId).toString(),
-      campOrCompartment: campOrCompartment ?? state.data?.campOrCompartment,
-      comment: comment ?? state.data?.comment,
-      dateReceived: dateIssue ?? state.data?.dateReceived,
-      signatureDate: signatureDate ?? state.data?.signatureDate,
-      signatureImage: signatureImage ?? state.data?.signatureImage,
-      issueTypeId: issueId ?? state.data?.issueTypeId,
-      carRaisedDate: carRaisedDate,
-      carClosedDate: carClosedDate,
-    )));
+            sanctionRegisterId:
+                DateTime.now().millisecondsSinceEpoch.toString(),
+            workerId:
+                (selectWorker?.workerId ?? state.data?.workerId).toString(),
+            campOrCompartment:
+                campOrCompartment ?? state.data?.campOrCompartment,
+            comment: comment ?? state.data?.comment,
+            dateReceived: dateIssue ?? state.data?.dateReceived,
+            signatureDate: signatureDate ?? state.data?.signatureDate,
+            signatureImage: signatureImage ?? state.data?.signatureImage,
+            issueTypeId: selectIssue?.issueTypeId ?? state.data?.issueTypeId,
+            issueTypeName:
+                selectIssue?.issueTypeName ?? state.data?.issueTypeName,
+            campId: selectCamp?.campId ?? state.data?.campId,
+            campName: selectCamp?.campName ?? state.data?.campName,
+            carRaisedDate: carRaisedDate,
+            carClosedDate: carClosedDate,
+            displayWorkerName:
+                '${selectWorker?.firstName} ${selectWorker?.surname}')));
   }
 
   void onClearSignaturePad() {
@@ -143,18 +152,10 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
         .cacheSanctionRegisterFromFarm(state.data!.copyWith(
       isActive: true,
       isSynced: false,
+      isLocal: true,
       farmId: state.farmId,
     ))
         .then((value) {
-      debugPrint(state.data!
-          .copyWith(
-            isActive: true,
-            isSynced: false,
-            farmId: state.farmId,
-          )
-          .toJson()
-          .toString());
-
       if (value != null) {
         showSnackSuccess(msg: 'Save Disciplinaries $value Successfully}');
         Navigator.pop(context);

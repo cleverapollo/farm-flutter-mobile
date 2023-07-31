@@ -1,18 +1,16 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/service/image_picker_service.dart';
+import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_cubit.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
-import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/location_and_photos_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
-import 'package:cmo/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cmo/model/asi_type/asi_type.dart';
 
 class AddingAsiScreen extends StatefulWidget {
   const AddingAsiScreen({super.key});
@@ -77,13 +75,15 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          final result = await _AsiMapScreen.push(context);
+                          final result = await MapAndPhotoScreen.push(context,
+                              title: LocaleKeys.asi.tr());
                           if (result == null) return;
-                          final mapResult = result as _AsiMapResult;
+                          final mapResult = result as LocationResult;
 
                           cubit.onChangeData(
                             lat: mapResult.latitude,
                             lng: mapResult.longitude,
+                            selectAsiPhotoBase64s: mapResult.photoBase64,
                           );
                         },
                         child: AttributeItem(
@@ -185,86 +185,4 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
       },
     );
   }
-}
-
-class _AsiMapScreen extends StatefulWidget {
-  static Future push(BuildContext context) {
-    return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => _AsiMapScreen()));
-  }
-
-  @override
-  State<_AsiMapScreen> createState() => _AsiMapScreenState();
-}
-
-class _AsiMapScreenState extends State<_AsiMapScreen> {
-  final ImagePickerService _imagePickerService = ImagePickerService();
-  final _asiMapResult = _AsiMapResult()
-    ..latitude = Constants.mapCenter.latitude
-    ..longitude = Constants.mapCenter.longitude;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.asi.tr(),
-        showLeading: true,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: CmoMap(
-              onMapMoved: (latitude, longitude) {
-                _asiMapResult.latitude = latitude;
-                _asiMapResult.longitude = longitude;
-              },
-            ),
-          ),
-          const SizedBox(height: 32),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Align(
-                child: CmoFilledButton(
-                  title: LocaleKeys.selectPhoto.tr(),
-                  onTap: () async {
-                    _asiMapResult.imageUri =
-                        (await _imagePickerService.pickImageFromGallery())
-                            ?.path;
-                  },
-                ),
-              ),
-              Align(
-                child: CmoFilledButton(
-                  title: LocaleKeys.takePhoto.tr(),
-                  onTap: () async {
-                    _asiMapResult.imageUri =
-                        (await _imagePickerService.pickImageFromCamera())?.path;
-                  },
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Center(
-            child: CmoFilledButton(
-              title: LocaleKeys.save.tr(),
-              onTap: () => save(),
-            ),
-          ),
-          const SizedBox(height: 24),
-        ],
-      ),
-    );
-  }
-
-  void save() {
-    Navigator.of(context).pop(_asiMapResult);
-  }
-}
-
-class _AsiMapResult {
-  double? latitude;
-  double? longitude;
-  String? imageUri;
 }

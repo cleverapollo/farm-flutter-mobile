@@ -9,6 +9,7 @@ class LabourManagementState {
     this.loading = false,
     this.error,
     this.activeFarm,
+    this.listWorkerJobDescriptions = const <WorkerJobDescription>[],
   });
 
   final Object? error;
@@ -18,6 +19,7 @@ class LabourManagementState {
   final List<JobDescription> listJobDescriptions;
   final List<JobDescription> filterJobDescriptions;
   final Farm? activeFarm;
+  final List<WorkerJobDescription> listWorkerJobDescriptions;
 
   LabourManagementState copyWith({
     bool? loading,
@@ -27,6 +29,7 @@ class LabourManagementState {
     List<JobDescription>? listJobDescriptions,
     List<JobDescription>? filterJobDescriptions,
     Farm? activeFarm,
+    List<WorkerJobDescription>? listWorkerJobDescriptions,
   }) {
     return LabourManagementState(
       loading: loading ?? this.loading,
@@ -34,8 +37,11 @@ class LabourManagementState {
       filterWorkers: filterWorkers ?? this.filterWorkers,
       error: error ?? this.error,
       listJobDescriptions: listJobDescriptions ?? this.listJobDescriptions,
-      filterJobDescriptions: filterJobDescriptions ?? this.filterJobDescriptions,
+      filterJobDescriptions:
+          filterJobDescriptions ?? this.filterJobDescriptions,
       activeFarm: activeFarm ?? this.activeFarm,
+      listWorkerJobDescriptions:
+          listWorkerJobDescriptions ?? this.listWorkerJobDescriptions,
     );
   }
 }

@@ -30,7 +30,9 @@ class PestsAndDiseasesRegisterTreatmentMethod
       _$PestsAndDiseasesRegisterTreatmentMethodFromJson(json);
 
   @override
-  Id get id => pestsAndDiseasesRegisterTreatmentMethodId ?? Isar.autoIncrement;
+  Id get id =>
+      int.tryParse(pestsAndDiseasesRegisterTreatmentMethodNo ?? '') ??
+      Isar.autoIncrement;
 }
 
 extension PestsAndDiseasesRegisterTreatmentMethodX

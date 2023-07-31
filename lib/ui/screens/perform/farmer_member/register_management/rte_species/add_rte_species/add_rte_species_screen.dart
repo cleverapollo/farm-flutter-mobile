@@ -2,7 +2,6 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_photo/select_photos_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_location_widget.dart';
@@ -35,6 +34,8 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
   final animalTypes = ValueNotifier(<AnimalType>[]);
   final speciesRanges = ValueNotifier(<SpeciesRange>[]);
 
+  final rtePhotos = <RteSpeciesPhotoModel>[];
+
   AnimalType? selectAnimalType;
   SpeciesRange? selectSpeciesRange;
 
@@ -46,8 +47,6 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
 
   late RteSpecies rteSpecies;
 
-  late List<RteSpeciesPhotoModel> listPhotos;
-
   bool carRaised = false;
   bool carClosed = false;
 
@@ -56,16 +55,24 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
     super.initState();
     if (widget.rteSpecies == null) {
       rteSpecies = RteSpecies(
-          rteSpeciesRegisterNo: DateTime.now().toIso8601String(),
-          isActive: true,
-          isMasterDataSynced: false);
+        rteSpeciesRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
+        isActive: true,
+        isMasterDataSynced: false,
+      );
     } else {
       rteSpecies = RteSpecies.fromJson(widget.rteSpecies!.toJson());
     }
     carRaised = rteSpecies.carRaisedDate != null;
     carClosed = rteSpecies.carClosedDate != null;
 
-    listPhotos = <RteSpeciesPhotoModel>[];
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final farm = await configService.getActiveFarm();
+
+      animalTypes.value = await cmoDatabaseMasterService
+          .getAnimalTypeByGroupSchemeId(farm?.groupSchemeId ?? 0);
+      speciesRanges.value = await cmoDatabaseMasterService
+          .getSpeciesRangeByGroupSchemeId(farm?.groupSchemeId ?? 0);
+    });
   }
 
   Future<void> onSubmit() async {
@@ -93,6 +100,8 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
           dateSpotted: value['DateSpotted'] as DateTime?,
           animalTypeId: selectAnimalType?.animalTypeId,
           speciesRangeId: selectSpeciesRange?.speciesRangeId,
+          animalTypeName: selectAnimalType?.animalTypeName,
+          speciesRangeName: selectSpeciesRange?.speciesRangeName,
         );
 
         if (carRaised && rteSpecies.carRaisedDate == null) {
@@ -112,13 +121,17 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
         if (mounted) {
           final databaseService = cmoDatabaseMasterService;
 
+          final futures = <Future<void>>[];
+
+          for (final item in rtePhotos) {
+            futures.add(cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(
+                item.copyWith(rteSpeciesNo: rteSpecies.rteSpeciesRegisterNo)));
+          }
+
+          await Future.wait(futures);
+
           await (await databaseService.db).writeTxn(() async {
             resultId = await databaseService.cacheRteSpecies(rteSpecies);
-            if (listPhotos.isNotEmpty) {
-              for (final item in listPhotos) {
-                await databaseService.cacheRteSpeciesPhotoModel(item);
-              }
-            }
           });
         }
 
@@ -141,16 +154,16 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
   }
 
   Future<void> _viewListPhoto() async {
-    final result = await SelectPhotosScreen.push(
-      context,
-      listPhotos: listPhotos,
-    );
-
-    if (result != null && result.isNotEmpty && context.mounted) {
-      setState(() {
-        listPhotos = result;
-      });
-    }
+    // final result = await SelectPhotosScreen.push(
+    //   context,
+    //   listPhotos: listPhotos,
+    // );
+    //
+    // if (result != null && result.isNotEmpty && context.mounted) {
+    //   setState(() {
+    //     listPhotos = result;
+    //   });
+    // }
   }
 
   @override
@@ -249,6 +262,22 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
                   rteSpecies = rteSpecies.copyWith(
                       longitude: locationModel.longitude ?? 0,
                       latitude: locationModel.latitude ?? 0);
+
+                  rtePhotos
+                    ..clear()
+                    ..addAll(locationModel.photoBase64
+                        .map((e) => RteSpeciesPhotoModel(
+                              rteSpeciesId: rteSpecies.rteSpeciesRegisterId,
+                              rteSpeciesNo: rteSpecies.rteSpeciesRegisterNo,
+                              rteSpeciesRegisterPhotoId: null,
+                              rteSpeciesRegisterPhotoNo: DateTime.now()
+                                  .millisecondsSinceEpoch
+                                  .toString(),
+                              photo: e,
+                              isActive: true,
+                              isMasterdataSynced: false,
+                            )));
+                  setState(() {});
                 },
               ),
               AttributeItem(

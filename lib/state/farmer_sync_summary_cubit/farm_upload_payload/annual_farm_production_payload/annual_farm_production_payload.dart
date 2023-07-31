@@ -9,7 +9,7 @@ class AnnualFarmProductionPayload with _$AnnualFarmProductionPayload {
     String? AnnualFarmProductionId,
     num? Year,
     String? FarmId,
-    num? NoOfWorkers,
+    int? NoOfWorkers,
     num? WorkPeriodMonths,
     num? WorkPeriodWeeks,
     num? CycleLength,

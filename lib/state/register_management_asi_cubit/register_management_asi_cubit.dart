@@ -1,4 +1,6 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/model/asi.dart';
+import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
@@ -46,7 +48,15 @@ class RMAsiCubit extends Cubit<RMAsiState> {
     final result = await cmoDatabaseMasterService
         .getAsiTypeByGroupSchemeId(state.groupSchemeId!);
 
-    emit(state.copyWith(asiTypes: result));
+    emit(state.copyWith(
+        asiTypes: result,
+        asiData: Asi(
+          farmId: state.farmId,
+          asiRegisterNo: DateTime.now().microsecondsSinceEpoch.toString(),
+          asiRegisterId: null,
+          isActive: true,
+          isMasterdataSynced: false,
+        )));
   }
 
   Future<void> initListData() async {
@@ -70,6 +80,7 @@ class RMAsiCubit extends Cubit<RMAsiState> {
     bool? carRaised,
     bool? carClosed,
     String? comment,
+    List<String> selectAsiPhotoBase64s = const <String>[],
   }) {
     String? carRaisedDate;
     String? carClosedDate;
@@ -94,18 +105,39 @@ class RMAsiCubit extends Cubit<RMAsiState> {
       carClosedDate = state.asiData.carClosedDate;
     }
 
+    final asiPhotos = <AsiPhoto>[];
+
+    asiPhotos.addAll(state.asiPhotos);
+
+    if (selectAsiPhotoBase64s.isNotEmpty) {
+      asiPhotos.addAll(selectAsiPhotoBase64s
+          .map((e) => AsiPhoto(
+                asiRegisterId: state.asiData.asiRegisterId,
+                asiRegisterNo: state.asiData.asiRegisterNo,
+                asiRegisterPhotoId: null,
+                asiRegisterPhotoNo:
+                    DateTime.now().millisecondsSinceEpoch.toString(),
+                photo: e,
+                isActive: true,
+                isMasterdataSynced: false,
+              ))
+          .toList());
+    }
+
     emit(
       state.copyWith(
-          asiData: state.asiData.copyWith(
-        asiTypeName:
-            asiType != null ? asiType.asiTypeName : state.asiData.asiTypeName,
-        latitude: lat ?? state.asiData.latitude,
-        longitude: lng ?? state.asiData.longitude,
-        date: dateTimeCaptured ?? state.asiData.date,
-        carRaisedDate: carRaisedDate,
-        carClosedDate: carClosedDate,
-        comment: comment ?? state.asiData.comment,
-      )),
+        asiData: state.asiData.copyWith(
+          asiTypeId: asiType?.asiTypeId ?? state.asiData.asiTypeId,
+          asiTypeName: asiType?.asiTypeName ?? state.asiData.asiTypeName,
+          latitude: lat ?? state.asiData.latitude,
+          longitude: lng ?? state.asiData.longitude,
+          date: dateTimeCaptured ?? state.asiData.date,
+          carRaisedDate: carRaisedDate,
+          carClosedDate: carClosedDate,
+          comment: comment ?? state.asiData.comment,
+        ),
+        asiPhotos: asiPhotos,
+      ),
     );
   }
 
@@ -117,15 +149,15 @@ class RMAsiCubit extends Cubit<RMAsiState> {
       return showSnackError(msg: 'Required fields are missing.');
     }
 
-    await cmoDatabaseMasterService
-        .cacheAsi(state.asiData.copyWith(
-      farmId: state.farmId,
-      asiRegisterNo: DateTime.now().microsecondsSinceEpoch.toString(),
-      asiRegisterId: null,
-      isActive: true,
-      isMasterdataSynced: false,
-    ))
-        .then((value) {
+    final futures = <Future<void>>[];
+
+    for (final item in state.asiPhotos) {
+      futures.add(cmoDatabaseMasterService.cacheAsiPhoto(item));
+    }
+
+    await Future.wait(futures);
+
+    await cmoDatabaseMasterService.cacheAsi(state.asiData).then((value) {
       if (value != null) {
         showSnackSuccess(msg: 'Save ASI Successfully}');
         Navigator.pop(context);

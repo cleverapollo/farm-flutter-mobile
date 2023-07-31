@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'grievance_issue.freezed.dart';
-
 part 'grievance_issue.g.dart';
 
 @freezed
@@ -24,5 +23,5 @@ class GrievanceIssue with _$GrievanceIssue {
       _$GrievanceIssueFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => grievanceIssueId ?? Isar.autoIncrement;
 }

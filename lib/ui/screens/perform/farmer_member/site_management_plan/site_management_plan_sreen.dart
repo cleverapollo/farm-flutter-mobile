@@ -27,7 +27,6 @@ class SiteManagementPlanScreen extends StatefulWidget {
 }
 
 class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -42,13 +41,15 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
       appBar: CmoAppBarV2(
         title: LocaleKeys.siteManagementPlan.tr(),
         subtitle: context
-            .watch<SiteManagementPlanCubit>()
-            .state
-            .activeFarm
-            ?.farmName ?? '',
+                .watch<SiteManagementPlanCubit>()
+                .state
+                .activeFarm
+                ?.farmName ??
+            '',
         showLeading: true,
       ),
-      body: BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState, bool>(
+      body:
+          BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState, bool>(
         selector: (state) => state.loading,
         builder: (context, isLoading) {
           if (isLoading) {
@@ -57,7 +58,8 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
             );
           }
           return SizedBox.expand(
-            child: BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState, bool> (
+            child: BlocSelector<SiteManagementPlanCubit,
+                SiteManagementPlanState, bool>(
               selector: (state) => state.isCharcoalFarm,
               builder: (context, isCharcoalFarm) {
                 if (isCharcoalFarm) {
@@ -136,8 +138,10 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
       onTap: () {
         CampManagementScreen.push(context);
       },
-      child: BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState, Tuple2<int, double>>(
-        selector: (state) => Tuple2(state.campCount ?? 0, state.campTonnesOfBiomass ?? 0),
+      child: BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState,
+          Tuple2<int, double>>(
+        selector: (state) =>
+            Tuple2(state.campCount ?? 0, state.campTonnesOfBiomass ?? 0),
         builder: (context, tuple2) {
           return CmoCard(
             padding: const EdgeInsets.symmetric(
@@ -146,8 +150,12 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
             ),
             content: [
               CmoCardHeader(title: LocaleKeys.campManagement.tr()),
-              CmoCardItem(title: '${LocaleKeys.camp.tr()}\s', value: tuple2.item1.toString()),
-              CmoCardItem(title: LocaleKeys.summary_tonnes_biomass.tr(args: [tuple2.item2.toStringAsFixed(2)])),
+              CmoCardItem(
+                  title: '${LocaleKeys.camp.tr()}\s',
+                  value: tuple2.item1.toString()),
+              CmoCardItem(
+                  title: LocaleKeys.summary_tonnes_biomass
+                      .tr(args: [tuple2.item2.toStringAsFixed(2)])),
             ],
           );
         },
@@ -166,8 +174,10 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
         );
         context.read<SiteManagementPlanCubit>().refresh();
       },
-      child: BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState, Tuple2<int, double>>(
-        selector: (state) => Tuple2(state.compartmentCount ?? 0, state.compartmentTotalArea ?? 0),
+      child: BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState,
+          Tuple2<int, double>>(
+        selector: (state) => Tuple2(
+            state.compartmentCount ?? 0, state.compartmentTotalArea ?? 0),
         builder: (context, tuple2) {
           return CmoCard(
             padding: const EdgeInsets.symmetric(
@@ -176,8 +186,12 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
             ),
             content: [
               CmoCardHeader(title: LocaleKeys.compartment_management.tr()),
-              CmoCardItem(title: '${LocaleKeys.compartments.tr()}', value: tuple2.item1.toString()),
-              CmoCardItem(title: '${LocaleKeys.total.tr()}', value: tuple2.item2.toStringAsFixed(2)),
+              CmoCardItem(
+                  title: '${LocaleKeys.compartments.tr()}',
+                  value: tuple2.item1.toString()),
+              CmoCardItem(
+                  title: '${LocaleKeys.total.tr()}',
+                  value: tuple2.item2.toStringAsFixed(2)),
             ],
           );
         },

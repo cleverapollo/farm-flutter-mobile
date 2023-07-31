@@ -1,57 +1,37 @@
-part of 'stake_holder_list_cubit.dart';
+import 'package:cmo/model/customary_use_right/customary_use_right.dart';
+import 'package:cmo/model/data/farm.dart';
+import 'package:cmo/model/farmer_stake_holder/farmer_stake_holder.dart';
+import 'package:cmo/model/resource_manager_unit.dart';
+import 'package:cmo/model/social_upliftment/social_upliftment.dart';
+import 'package:cmo/model/special_site/special_site.dart';
+import 'package:cmo/model/stakeholder/farm_stakeholder_customary_use_right.dart';
+import 'package:cmo/model/stakeholder/farm_stakeholder_social_upliftment.dart';
+import 'package:cmo/model/stakeholder/stake_holder.dart';
+import 'package:cmo/model/stakeholder/stakeholder_type.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class StakeHolderListState {
-  const StakeHolderListState({
-    this.listStakeholderTypes = const <StakeHolderType>[],
-    this.listStakeHolders = const <StakeHolder>[],
-    this.filterListStakeHolders = const <StakeHolder>[],
-    this.loadingList = false,
-    this.error,
-    this.resourceManagerUnit,
-    this.farm,
-    this.listSocialUpliftments,
-    this.listCustomaryUseRights,
-    this.listSpecialSites,
-  });
+import '../../model/stakeholder/farm_stakeholder_special_site.dart';
 
-  final bool loadingList;
-  final Object? error;
-  final List<StakeHolder> listStakeHolders;
-  final List<StakeHolder> filterListStakeHolders;
-  final List<StakeHolderType> listStakeholderTypes;
-  final ResourceManagerUnit? resourceManagerUnit;
-  final Farm? farm;
-  final List<FarmStakeholderSocialUpliftment>? listSocialUpliftments;
-  final List<FarmStakeholderCustomaryUseRight>? listCustomaryUseRights;
-  final List<FarmStakeholderSpecialSite>? listSpecialSites;
+part 'stake_holder_list_state.freezed.dart';
 
-  StakeHolderListState copyWith({
-    bool? loadingList,
+@freezed
+class StakeHolderListState with _$StakeHolderListState {
+  const factory StakeHolderListState({
     Object? error,
-    List<StakeHolderType>? listStakeholderTypes,
-    List<StakeHolder>? listStakeHolders,
-    List<StakeHolder>? filterListStakeHolders,
-    Map<String, dynamic>? cacheCreateData,
     ResourceManagerUnit? resourceManagerUnit,
     Farm? farm,
-    List<FarmStakeholderSocialUpliftment>? listSocialUpliftments,
-    List<FarmStakeholderCustomaryUseRight>? listCustomaryUseRights,
-    List<FarmStakeholderSpecialSite>? listSpecialSites,
-  }) {
-    return StakeHolderListState(
-      loadingList: loadingList ?? this.loadingList,
-      error: error ?? this.error,
-      filterListStakeHolders:
-          filterListStakeHolders ?? this.filterListStakeHolders,
-      listStakeHolders: listStakeHolders ?? this.listStakeHolders,
-      listStakeholderTypes: listStakeholderTypes ?? this.listStakeholderTypes,
-      resourceManagerUnit: resourceManagerUnit ?? this.resourceManagerUnit,
-      farm: farm ?? this.farm,
-      listSocialUpliftments:
-          listSocialUpliftments ?? this.listSocialUpliftments,
-      listCustomaryUseRights:
-          listCustomaryUseRights ?? this.listCustomaryUseRights,
-      listSpecialSites: listSpecialSites ?? this.listSpecialSites,
-    );
-  }
+    @Default(false) bool loadingList,
+    @Default(FarmerStakeHolder()) FarmerStakeHolder farmerStakeHolder,
+    @Default(StakeHolder()) StakeHolder stakeHolder,
+    @Default([]) List<StakeHolder> listStakeHolders,
+    @Default([]) List<StakeHolder> filterListStakeHolders,
+    @Default([]) List<StakeHolderType> listStakeholderTypes,
+    @Default([]) List<FarmStakeholderSocialUpliftment> listSocialUpliftments,
+    @Default([]) List<FarmStakeholderCustomaryUseRight> listCustomaryUseRights,
+    @Default([]) List<FarmStakeholderSpecialSite> listSpecialSites,
+    @Default([]) List<SocialUpliftment> listSocialUpliftment,
+    @Default([]) List<SpecialSite> listSpecialSite,
+    @Default([]) List<CustomaryUseRight> listCustomaryUseRight,
+    StakeHolderType? selectStakeHolderType,
+  }) = _StakeHolderListState;
 }

@@ -95,6 +95,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
           detected: value['DateDetected'] as DateTime?,
           farmId: farm?.farmId,
           fireCauseId: selectFireCause?.fireCauseId ?? 0,
+          fireCauseName: selectFireCause?.fireCauseName,
         );
 
         if (carRaised && fireRegister.carRaisedDate == null) {

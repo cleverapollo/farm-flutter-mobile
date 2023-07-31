@@ -15,8 +15,10 @@ import 'package:cmo/model/hirac_template.dart';
 import 'package:cmo/model/hirac_type.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
+import 'package:cmo/model/stakeholder/farm_stake_holder.dart';
 import 'package:cmo/model/user/user_role.dart';
 import 'package:cmo/model/user_role_portal.dart';
+import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -145,6 +147,8 @@ class CmoDatabaseMasterService {
         HiracSchema,
         HiracTemplateSchema,
         HiracTypeSchema,
+        WorkerJobDescriptionSchema,
+        FarmStakeHolderSchema
       ],
       name: _databaseName,
       directory: dir.path,
@@ -171,6 +175,35 @@ class CmoDatabaseMasterService {
         .findAll();
 
     return farmWorkers;
+  }
+
+  Future<List<WorkerJobDescription>> getWorkerJobDescriptionByWorkerId(
+      String workerId) async {
+    final db = await _db();
+
+    return db.workerJobDescriptions
+        .filter()
+        .workerIdEqualTo(int.tryParse(workerId))
+        .findAll();
+  }
+
+  Future<int?> cacheWorkerJobDescription(WorkerJobDescription item) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.workerJobDescriptions.put(item);
+    });
+  }
+
+  Future<int> getCountWorkerJobDescription() async {
+    final db = await _db();
+
+    final count = await db.workerJobDescriptions
+        .filter()
+        .workerJobDescriptionIdIsNotNull()
+        .findAll();
+
+    return count.length;
   }
 
   Future<List<JobDescription>> getJobDescriptionsByJobDescriptionId(
@@ -302,7 +335,6 @@ class CmoDatabaseMasterService {
     return db.camps
         .filter()
         .farmIdEqualTo(farmId)
-        .tonsOfCharcoalProducedIsNotNull()
         .isLocalEqualTo(true)
         .sortByCampOrder()
         .findAll();
@@ -332,11 +364,15 @@ class CmoDatabaseMasterService {
   Future<List<FarmerStakeHolder>> getFarmStakeholder() async {
     final db = await _db();
 
-    return db.farmerStakeHolders
-        .filter()
-        .farmIdIsNotNull()
-        .farmIdIsNull()
-        .findAll();
+    return db.farmerStakeHolders.filter().farmIdIsNotNull().findAll();
+  }
+
+  Future<int?> cacheFarmerStakeholder(FarmerStakeHolder item) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.farmerStakeHolders.put(item);
+    });
   }
 
   Future<List<FarmStakeholderSocialUpliftment>>
@@ -423,7 +459,7 @@ class CmoDatabaseMasterService {
     return db.sanctionRegisters
         .filter()
         .farmIdEqualTo(farmId)
-        .isLocalEqualTo(true)
+        .isSyncedEqualTo(false)
         .findAll();
   }
 
@@ -454,6 +490,18 @@ class CmoDatabaseMasterService {
     return db.asis
         .filter()
         .farmIdEqualTo(farmId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<AsiPhoto>> getAllAsiPhotoByAsiRegisterNo(
+      String? asiRegisterNo) async {
+    final db = await _db();
+
+    return db.asiPhotos
+        .filter()
+        .isActiveEqualTo(true)
+        .asiRegisterNoEqualTo(asiRegisterNo)
         .isMasterdataSyncedEqualTo(false)
         .findAll();
   }
@@ -520,6 +568,7 @@ class CmoDatabaseMasterService {
     return db.accidentAndIncidentPropertyDamageds
         .filter()
         .accidentAndIncidentRegisterNoEqualTo(accidentAndIncidentRegisterNo)
+        .isMasterdataSyncedEqualTo(false)
         .findAll();
   }
 
@@ -649,6 +698,25 @@ class CmoDatabaseMasterService {
     final db = await _db();
 
     return db.farmerStakeHolders.put(data);
+  }
+
+  Future<int?> cacheFarmStakeHolderFromFarm(FarmStakeHolder data) async {
+    final db = await _db();
+
+    return db.farmStakeHolders.put(data);
+  }
+
+  Future<List<FarmStakeHolder>> getFarmStakeHolderByFarmId(
+      String farmId) async {
+    final db = await _db();
+
+    return db.farmStakeHolders.filter().farmIdEqualTo(farmId).findAll();
+  }
+
+  Future<int?> cacheGroupSchemeStakeholder(GroupSchemeStakeholder data) async {
+    final db = await _db();
+
+    return db.groupSchemeStakeholders.put(data);
   }
 
   Future<int?> cacheAccidentAndIncident(AccidentAndIncident data) async {
@@ -867,10 +935,24 @@ class CmoDatabaseMasterService {
     });
   }
 
+  Future<int?> cacheCampFromFarm(Camp data) async {
+    final db = await _db();
+
+    return db.camps.put(data);
+  }
+
+  Future<int?> cacheCampFromFarmSync(Camp data) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.camps.put(data);
+    });
+  }
+
   Future<int?> cacheCamp(Camp data) async {
     final db = await _db();
     if (data.campOrder == null) {
-      var camps = await db.camps.where().findAll();
+      final camps = await db.camps.where().findAll();
       var maxOrder = 0;
       if (camps.isNotEmpty) {
         maxOrder = camps.map((obj) => (obj.campOrder ?? 0)).reduce(max);
@@ -988,6 +1070,15 @@ class CmoDatabaseMasterService {
     return db.pestsAndDiseaseTypes.put(data);
   }
 
+  Future<int?> cachePestsAndDiseaseTreatmentMethod(
+      PestsAndDiseasesRegisterTreatmentMethod item) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.pestsAndDiseasesRegisterTreatmentMethods.put(item);
+    });
+  }
+
   Future<int?> cacheMonitoringRequirement(MonitoringRequirement data) async {
     final db = await _db();
 
@@ -1040,7 +1131,7 @@ class CmoDatabaseMasterService {
   Future<List<SpecialSite>> getSpecialSite() async {
     final db = await _db();
 
-    return db.specialSites.filter().isActiveEqualTo(1).findAll();
+    return db.specialSites.filter().isActiveEqualTo(true).findAll();
   }
 
   Future<List<BiologicalControlAgentType>>
@@ -1057,7 +1148,7 @@ class CmoDatabaseMasterService {
   Future<List<SocialUpliftment>> getSocialUpliftment() async {
     final db = await _db();
 
-    return db.socialUpliftments.filter().isActiveEqualTo(1).findAll();
+    return db.socialUpliftments.filter().isActiveEqualTo(true).findAll();
   }
 
   Future<List<GroupSchemeStakeholder>> getGroupSchemeStakeholderByGroupSchemeId(
@@ -1094,16 +1185,13 @@ class CmoDatabaseMasterService {
       String farmId) async {
     final db = await _db();
 
-    return db.farmerStakeHolders
-        .filter()
-        .farmIdEqualTo(int.parse(farmId))
-        .findAll();
+    return db.farmerStakeHolders.filter().farmIdEqualTo(farmId).findAll();
   }
 
   Future<List<CustomaryUseRight>> getCustomaryUseRight() async {
     final db = await _db();
 
-    return db.customaryUseRights.filter().isActiveEqualTo(1).findAll();
+    return db.customaryUseRights.filter().isActiveEqualTo(true).findAll();
   }
 
   Future<List<GroupSchemeStakeholder>>
@@ -1332,7 +1420,11 @@ class CmoDatabaseMasterService {
       String farmId) async {
     final db = await _db();
 
-    return db.annualBudgets.filter().farmIdEqualTo(farmId).findAll();
+    return db.annualBudgets
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isLocalEqualTo(1)
+        .findAll();
   }
 
   Future<List<AnnualBudget>> getAnnualBudgetsByFarmId(
@@ -1359,7 +1451,11 @@ class CmoDatabaseMasterService {
       String farmId) async {
     final db = await _db();
 
-    return db.annualFarmProductions.filter().farmIdEqualTo(farmId).findAll();
+    return db.annualFarmProductions
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isLocalEqualTo(true)
+        .findAll();
   }
 
   Future<List<AnnualFarmProduction>> getAnnualFarmProductionByFarmId(
@@ -1462,6 +1558,17 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isMasterDataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<RteSpeciesPhotoModel>>
+      getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
+          String? rteRegisterPhoto) async {
+    final db = await _db();
+
+    return db.rteSpeciesPhotoModels
+        .filter()
+        .rteSpeciesNoEqualTo(rteRegisterPhoto)
         .findAll();
   }
 
@@ -2193,7 +2300,7 @@ class CmoDatabaseMasterService {
 
     return db.jobDescriptions
         .filter()
-        .isActiveEqualTo(true)
+        .isActiveIsNotNull()
         .sortByJobDescriptionName()
         .findAll();
   }
@@ -2640,10 +2747,6 @@ class CmoDatabaseMasterService {
     });
   }
 
-  Future<int> cacheGroupSchemeStakeholder(GroupSchemeStakeholder item) async {
-    final db = await _db();
-    return db.groupSchemeStakeholders.put(item);
-  }
 
   Future<int> cacheStakeHolderType(StakeHolderType item) async {
     final db = await _db();
@@ -2694,22 +2797,6 @@ class CmoDatabaseMasterService {
     });
   }
 
-  Future<int> cacheFarmerStakeHolderComplaint(
-      FarmerStakeHolderComplaint item) async {
-    final db = await _db();
-    return db.farmerStakeHolderComplaints.put(item);
-  }
-
-  Future<List<FarmerStakeHolderComplaint>>
-      getFarmerStakeHolderComplaintsByFarmId(String farmId) async {
-    final db = await _db();
-    return db.farmerStakeHolderComplaints
-        .filter()
-        .farmIdEqualTo(farmId)
-        .isActiveEqualTo(true)
-        .findAll();
-  }
-
   Future<int> cacheBiologicalControlAgents(BiologicalControlAgent item) async {
     final db = await _db();
     return db.biologicalControlAgents.put(item);
@@ -2728,15 +2815,15 @@ class CmoDatabaseMasterService {
     return db.annualBudgets.put(item);
   }
 
-  Future<int> cacheEmployeeGrievance(EmployeeGrievance item) async {
+  Future<int> cacheEmployeeGrievance(GrievanceRegister item) async {
     final db = await _db();
-    return db.employeeGrievances.put(item);
+    return db.grievanceRegisters.put(item);
   }
 
-  Future<List<EmployeeGrievance>> getEmployeeGrievancesByFarmId(
+  Future<List<GrievanceRegister>> getEmployeeGrievancesByFarmId(
       String farmId) async {
     final db = await _db();
-    return db.employeeGrievances
+    return db.grievanceRegisters
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
@@ -2762,7 +2849,9 @@ class CmoDatabaseMasterService {
 
   Future<int> cacheRteSpeciesPhotoModel(RteSpeciesPhotoModel item) async {
     final db = await _db();
-    return db.rteSpeciesPhotoModels.put(item);
+    return db.writeTxn(() async {
+      return db.rteSpeciesPhotoModels.put(item);
+    });
   }
 
   Future<Worker?> getWorkerById(String? id) async {
@@ -2781,6 +2870,15 @@ class CmoDatabaseMasterService {
     return db.stakeHolders.filter().isActiveEqualTo(1).findAll();
   }
 
+  Future<List<StakeHolder>> getStakeHoldersByStakeHolderId(String id) async {
+    final db = await _db();
+    return db.stakeHolders
+        .filter()
+        .stakeHolderIdEqualTo(id)
+        .isActiveEqualTo(1)
+        .findAll();
+  }
+
   Future<bool> removeStakeHolder(int stakeHolderId) async {
     final db = await _db();
     return db.writeTxn(() async {
@@ -2793,7 +2891,7 @@ class CmoDatabaseMasterService {
     return db.stakeHolderTypes.filter().isActiveEqualTo(1).findAll();
   }
 
-  Future<List<FarmerWorker>?> getFarmerWorkersByFarmId(String farmId) async {
+  Future<List<FarmerWorker>> getFarmerWorkersByFarmId(String farmId) async {
     final db = await _db();
     return db.farmerWorkers
         .filter()

@@ -15,9 +15,9 @@ part 'farmer_stake_holder.g.dart';
 @Collection(ignore: {'copyWith'})
 class FarmerStakeHolder with _$FarmerStakeHolder {
   const factory FarmerStakeHolder({
-    @JsonKey(name: 'FarmerStakeHolderId') int? farmerStakeHolderId,
-    @JsonKey(name: 'FarmId') int? farmId,
-    @JsonKey(name: 'StakeholderId') int? stakeholderId,
+    @JsonKey(name: 'FarmerStakeHolderId') String? farmerStakeHolderId,
+    @JsonKey(name: 'FarmId') String? farmId,
+    @JsonKey(name: 'StakeholderId') String? stakeholderId,
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,
     @JsonKey(name: 'JobTitle') String? jobTitle,
@@ -45,7 +45,7 @@ class FarmerStakeHolder with _$FarmerStakeHolder {
       _$FarmerStakeHolderFromJson(json);
 
   @override
-  Id get id => farmerStakeHolderId ?? Isar.autoIncrement;
+  Id get id => int.tryParse(farmerStakeHolderId ?? '') ?? Isar.autoIncrement;
 }
 
 extension FarmerStakeHolderX on FarmerStakeHolder {

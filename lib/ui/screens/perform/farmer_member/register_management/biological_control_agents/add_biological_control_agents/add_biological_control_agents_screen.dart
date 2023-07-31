@@ -35,11 +35,12 @@ class AddBiologicalControlAgentsScreen extends StatefulWidget {
 
 class _AddBiologicalControlAgentsScreenState
     extends State<AddBiologicalControlAgentsScreen> {
+  final isLoading = ValueNotifier(true);
   final monitorings = ValueNotifier(<MonitoringRequirement>[]);
-  final stakeHolders = ValueNotifier(<FarmerStakeHolder>[]);
+  final stakeHolders = ValueNotifier(<StakeHolder>[]);
 
   MonitoringRequirement? selectMonitoringRequirement;
-  FarmerStakeHolder? selectStakeHolder;
+  StakeHolder? selectStakeHolder;
 
   bool loading = false;
 
@@ -72,8 +73,18 @@ class _AddBiologicalControlAgentsScreenState
 
       monitorings.value = await cmoDatabaseMasterService
           .getMonitoringRequirementByGroupSchemeId(farm?.groupSchemeId ?? 0);
-      stakeHolders.value = await cmoDatabaseMasterService
-          .getFarmerStakeHolderByFarmId(farm?.farmId ?? '');
+
+      final result = await cmoDatabaseMasterService
+          .getFarmStakeHolderByFarmId(farm?.farmId ?? '');
+
+      for (final item in result) {
+        final stakeholders = await cmoDatabaseMasterService
+            .getStakeHoldersByStakeHolderId(item.stakeHolderId ?? '');
+
+        stakeHolders.value.addAll(stakeholders);
+      }
+
+      isLoading.value = false;
     });
   }
 
@@ -93,20 +104,17 @@ class _AddBiologicalControlAgentsScreenState
         await hideInputMethod();
         final farm = await configService.getActiveFarm();
 
-        if (agent.monitoringRequirementId == null ||
-            agent.stakeholderId == null ||
-            agent.biologicalControlAgentTypeId == null) {
-          return showSnackError(msg: 'Required fields are missing.');
-        }
-
         agent = agent.copyWith(
           farmId: farm?.farmId,
           biologicalControlAgentRegisterNo:
               DateTime.now().millisecondsSinceEpoch.toString(),
           dateReleased: value['DateReleased'] as DateTime?,
-          stakeholderId: selectStakeHolder?.stakeholderId.toString(),
+          stakeholderId: selectStakeHolder?.stakeHolderId,
+          stakeholderName: selectStakeHolder?.stakeholderName,
           monitoringRequirementId:
               selectMonitoringRequirement?.monitoringRequirementId,
+          monitoringRequirementName:
+              selectMonitoringRequirement?.monitoringRequirementName,
           isActive: true,
           isMasterDataSynced: false,
         );
@@ -166,15 +174,21 @@ class _AddBiologicalControlAgentsScreenState
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildInputArea(),
-              const SizedBox(
-                height: 80,
+        body: ValueListenableBuilder(
+          valueListenable: isLoading,
+          builder: (context, value, __) {
+            if (value) return const Center(child: CircularProgressIndicator());
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildInputArea(),
+                  const SizedBox(
+                    height: 80,
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: CmoFilledButton(
@@ -199,13 +213,16 @@ class _AddBiologicalControlAgentsScreenState
             children: [
               SelectControlAgentWidget(onSelect: (controlAgent) {
                 agent = agent.copyWith(
-                    biologicalControlAgentTypeId:
-                        controlAgent.biologicalControlAgentTypeId,
-                    biologicalControlAgentName:
-                        controlAgent.biologicalControlAgentTypeName,
-                    biologicalControlAgentTypeCountryName:
-                        controlAgent.biologicalControlAgentTypeScientificName,
-                    reasonForBioAgent: controlAgent.reasonForBioAgent);
+                  biologicalControlAgentTypeId:
+                      controlAgent.biologicalControlAgentTypeId,
+                  biologicalControlAgentTypeName:
+                      controlAgent.biologicalControlAgentTypeName,
+                  biologicalControlAgentTypeCountryName:
+                      controlAgent.countryId.toString(),
+                  reasonForBioAgent: controlAgent.reasonForBioAgent,
+                  biologicalControlAgentTypeScientificName:
+                      controlAgent.biologicalControlAgentTypeScientificName,
+                );
               }),
               _buildSelectDateReleased(),
               _buildSelectStakeHolderWidget(),
@@ -269,7 +286,7 @@ class _AddBiologicalControlAgentsScreenState
     return ValueListenableBuilder(
       valueListenable: stakeHolders,
       builder: (_, value, __) {
-        return CmoDropdown<FarmerStakeHolder>(
+        return CmoDropdown<StakeHolder>(
           name: 'StakeHolderId',
           hintText: LocaleKeys.stakeholderName.tr(),
           inputDecoration: InputDecoration(
@@ -287,8 +304,7 @@ class _AddBiologicalControlAgentsScreenState
           },
           initialValue: selectStakeHolder,
           itemsData: value
-              .map((e) =>
-                  CmoDropdownItem(id: e, name: e.farmerStakeHolderName ?? ''))
+              .map((e) => CmoDropdownItem(id: e, name: e.stakeholderName ?? ''))
               .toList(),
         );
       },

@@ -23,5 +23,5 @@ class AnimalType with _$AnimalType {
       _$AnimalTypeFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => animalTypeId ?? Isar.autoIncrement;
 }

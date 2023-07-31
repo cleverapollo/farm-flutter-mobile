@@ -1,3 +1,4 @@
+import 'package:cmo/extensions/bool_estension.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/customary_use_right_payload/customary_use_right_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
@@ -11,7 +12,7 @@ class CustomaryUseRight with _$CustomaryUseRight {
   const factory CustomaryUseRight({
     @JsonKey(name: 'CustomaryUseRightId') String? customaryUseRightId,
     @JsonKey(name: 'CustomaryUseRightName') String? customaryUseRightName,
-    @JsonKey(name: 'IsActive') int? isActive,
+    @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _CustomaryUseRight;
 
@@ -29,7 +30,7 @@ extension CustomaryUseRightX on CustomaryUseRight {
     return CustomaryUseRightPayLoad(
       CustomaryUseRightId: customaryUseRightId,
       CustomaryUseRightName: customaryUseRightName,
-      IsActive: isActive,
+      IsActive: isActive.toInt,
       IsMasterDataSynced: isMasterDataSynced,
     );
   }

@@ -1,3 +1,4 @@
+import 'package:cmo/extensions/bool_estension.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/special_site_payload/special_site_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
@@ -11,7 +12,7 @@ class SpecialSite with _$SpecialSite {
   const factory SpecialSite({
     @JsonKey(name: 'SpecialSiteId') String? specialSiteId,
     @JsonKey(name: 'SpecialSiteName') String? specialSiteName,
-    @JsonKey(name: 'IsActive') int? isActive,
+    @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _SpecialSite;
 
@@ -29,7 +30,7 @@ extension SpecialSiteX on SpecialSite {
     return SpecialSitePayLoad(
       SpecialSiteId: specialSiteId,
       SpecialSiteName: specialSiteName,
-      IsActive: isActive,
+      IsActive: isActive.toInt,
       IsMasterDataSynced: isMasterDataSynced,
     );
   }

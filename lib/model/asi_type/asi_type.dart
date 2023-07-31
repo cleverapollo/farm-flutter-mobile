@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'asi_type.freezed.dart';
-
 part 'asi_type.g.dart';
 
 @freezed
@@ -22,5 +21,5 @@ class AsiType with _$AsiType {
       _$AsiTypeFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => asiTypeId ?? Isar.autoIncrement;
 }

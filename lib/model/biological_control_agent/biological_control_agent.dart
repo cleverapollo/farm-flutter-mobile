@@ -4,7 +4,6 @@ import 'package:isar/isar.dart';
 import '../../state/farmer_sync_summary_cubit/farm_upload_payload/biological_control_agent_register_payload/biological_control_agent_register_payload.dart';
 
 part 'biological_control_agent.freezed.dart';
-
 part 'biological_control_agent.g.dart';
 
 @freezed
@@ -47,7 +46,9 @@ class BiologicalControlAgent with _$BiologicalControlAgent {
       _$BiologicalControlAgentFromJson(json);
 
   @override
-  Id get id => biologicalControlAgentTypeId ?? Isar.autoIncrement;
+  Id get id =>
+      int.tryParse(biologicalControlAgentRegisterNo ?? '') ??
+      Isar.autoIncrement;
 }
 
 extension BiologicalControlAgentX on BiologicalControlAgent {

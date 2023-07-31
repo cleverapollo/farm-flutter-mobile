@@ -31,7 +31,7 @@ class AccidentAndIncidentPropertyDamaged
 
   @override
   Id get id =>
-      accidentAndIncidentRegisterPropertyDamagedId ?? Isar.autoIncrement;
+      int.tryParse(accidentAndIncidentRegisterPropertyDamagedNo ?? '') ?? Isar.autoIncrement;
 }
 
 extension AccidentAndIncidentPropertyDamagedX

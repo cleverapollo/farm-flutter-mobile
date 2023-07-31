@@ -11,6 +11,7 @@ part 'camp.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Camp with _$Camp {
+  factory Camp.fromJson(Map<String, dynamic> json) => _$CampFromJson(json);
   const factory Camp({
     @JsonKey(name: 'CampId') String? campId,
     @JsonKey(name: 'CampName') String? campName,
@@ -52,8 +53,6 @@ class Camp with _$Camp {
 
   @override
   Id get id => int.tryParse(campId ?? '') ?? Isar.autoIncrement;
-
-  factory Camp.fromJson(Map<String, dynamic> json) => _$CampFromJson(json);
 }
 
 extension CampExtension on Camp {
@@ -70,8 +69,8 @@ extension CampExtension on Camp {
       Corridors: corridors,
       RoadAndFireBreaks: roadAndFireBreaks,
       PoachingAlleviationZone: poachingAlleviationZone,
-      ConvertedToGrassland: convertedToGrassland,
-      RangeLand: rangeLand,
+      ConvertedToGrassland: convertedToGrassland ?? 0,
+      RangeLand: rangeLand ?? 0,
       InfestationCategory1: infestationCategory1,
       InfestationCategory2: infestationCategory2,
       InfestationCategory3: infestationCategory3,
@@ -80,7 +79,7 @@ extension CampExtension on Camp {
       CumulativeBiomass: cumulativeBiomass,
       PlannedYearOfHarvest: plannedYearOfHarvest,
       ActualYearOfHarvest: actualYearOfHarvest,
-      TonsOfCharcoalProduced: tonsOfCharcoalProduced,
+      TonsOfCharcoalProduced: tonsOfCharcoalProduced ?? 0,
       TotalArea: totalArea,
       CanDelete: canDelete,
     );

@@ -5,7 +5,7 @@ import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/model.dart';
+import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/add_stake_holder_complaint/add_stake_holder_complaint_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
@@ -33,11 +33,11 @@ class StakeHolderComplaintScreen extends StatefulWidget {
 
 class _StakeHolderComplaintScreenState
     extends State<StakeHolderComplaintScreen> {
-  final List<FarmerStakeHolderComplaint> items = [];
+  final List<ComplaintsAndDisputesRegister> items = [];
   bool isLoading = true;
 
   Timer? _debounceInputTimer;
-  late List<FarmerStakeHolderComplaint> filteredItems;
+  late List<ComplaintsAndDisputesRegister> filteredItems;
   late StatusFilterEnum statusFilter;
   String? inputSearch;
 
@@ -50,7 +50,7 @@ class _StakeHolderComplaintScreenState
   Future<void> _init() async {
     final farm = await configService.getActiveFarm();
     items.addAll(await cmoDatabaseMasterService
-        .getFarmerStakeHolderComplaintsByFarmId(farm!.farmId));
+        .getComplaintsAndDisputesRegisterByFarmId(farm?.farmId ?? ''));
     isLoading = false;
 
     filteredItems = items;
@@ -184,7 +184,7 @@ class _StakeHolderComplaintItem extends StatelessWidget {
     required this.complaint,
   });
 
-  final FarmerStakeHolderComplaint complaint;
+  final ComplaintsAndDisputesRegister complaint;
 
   @override
   Widget build(BuildContext context) {

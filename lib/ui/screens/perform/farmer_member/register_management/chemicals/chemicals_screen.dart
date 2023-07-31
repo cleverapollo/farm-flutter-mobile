@@ -84,8 +84,10 @@ class _ChemicalsScreenState extends State<ChemicalsScreen> {
                         itemCount: state.chemicalsSearch.length,
                         separatorBuilder: (_, index) =>
                             const SizedBox(height: 14),
-                        itemBuilder: (_, index) =>
-                            _ChemicalsItem(state.chemicalsSearch[index]),
+                        itemBuilder: (_, index) => state
+                                .chemicalsSearch[index].chemicalNo.isNullOrEmpty
+                            ? null
+                            : _ChemicalsItem(state.chemicalsSearch[index]),
                       ),
               ),
             ],

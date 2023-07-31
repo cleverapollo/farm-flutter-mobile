@@ -31,11 +31,11 @@ class EmployeeGrievanceScreen extends StatefulWidget {
 }
 
 class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
-  final List<EmployeeGrievance> items = [];
+  final List<GrievanceRegister> items = [];
   bool isLoading = true;
 
   Timer? _debounceInputTimer;
-  late List<EmployeeGrievance> filteredItems;
+  late List<GrievanceRegister> filteredItems;
   late StatusFilterEnum statusFilter;
   String? inputSearch;
 
@@ -181,7 +181,7 @@ class _EmployeeGrievanceItem extends StatelessWidget {
     required this.employeeGrievance,
   });
 
-  final EmployeeGrievance employeeGrievance;
+  final GrievanceRegister employeeGrievance;
 
   @override
   Widget build(BuildContext context) {
@@ -194,9 +194,9 @@ class _EmployeeGrievanceItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${LocaleKeys.grievanceNo.tr()}: ${employeeGrievance.grievanceRegisterId?.toString()}',
+            '${LocaleKeys.grievanceNo.tr()}: ${employeeGrievance.grievanceRegisterNo?.toString()}',
             style: context.textStyles.bodyBold.blue,
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
           Padding(

@@ -1,4 +1,4 @@
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/location_and_photos_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
@@ -15,31 +15,31 @@ class SelectLocationWidget extends StatefulWidget {
   final String latitudeTitle;
   final String longitudeTitle;
   final String appbarTitle;
-  final void Function(LocationModel) onChooseLocation;
+  final void Function(LocationResult) onChooseLocation;
 
   @override
   State<StatefulWidget> createState() => _SelectLocationWidgetState();
 }
 
 class _SelectLocationWidgetState extends State<SelectLocationWidget> {
-  late LocationModel locationModel;
+  late LocationResult locationModel;
 
   @override
   void initState() {
     super.initState();
-    locationModel = LocationModel();
+    locationModel = LocationResult();
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        final result = await SelectLocationScreen.push(
+        final result = await MapAndPhotoScreen.push(
           context,
-          widget.appbarTitle,
+          title: widget.appbarTitle,
         );
         if (result == null) return;
-        final mapResult = result as LocationModel;
+        final mapResult = result as LocationResult;
         locationModel = mapResult;
         setState(() {});
         widget.onChooseLocation(locationModel);

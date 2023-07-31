@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'training_type.freezed.dart';
-
 part 'training_type.g.dart';
 
 @freezed
@@ -24,5 +23,5 @@ class TrainingType with _$TrainingType {
       _$TrainingTypeFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => trainingTypeId ?? Isar.autoIncrement;
 }

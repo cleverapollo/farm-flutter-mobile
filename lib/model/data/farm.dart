@@ -1,11 +1,9 @@
+import 'package:cmo/model/data/farm_member_objective_answer.dart';
+import 'package:cmo/model/data/farm_member_risk_profile_answer.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
-import 'package:cmo/model/data/farm_member_objective_answer.dart';
-import 'package:cmo/model/data/farm_member_risk_profile_answer.dart';
-
 part 'farm.freezed.dart';
-
 part 'farm.g.dart';
 
 @freezed
@@ -26,27 +24,40 @@ class Farm with _$Farm {
     @JsonKey(name: 'MobileNumber') String? mobileNumber,
     @JsonKey(name: 'Email') String? email,
     @Default(false) @JsonKey(name: 'IsProspectMember') bool? isProspectMember,
-    @Default(false) @JsonKey(name: 'IsGroupSchemeMember') bool? isGroupSchemeMember,
-    @Default(0) @JsonKey(name: 'Latitude') double? latitude,
-    @Default(0) @JsonKey(name: 'Longitude') double? longitude,
+    @Default(false)
+    @JsonKey(name: 'IsGroupSchemeMember')
+        bool? isGroupSchemeMember,
+    @JsonKey(name: 'Latitude') String? latitude,
+    @JsonKey(name: 'Longitude') String? longitude,
     @JsonKey(name: 'StreetName') String? streetName,
     @JsonKey(name: 'StreetNumber') int? streetNumber,
     @JsonKey(name: 'Province') String? province,
     @JsonKey(name: 'Town') String? town,
     @JsonKey(name: 'FarmSize') double? farmSize,
     @JsonKey(name: 'InclusionDate') String? inclusionDate,
-    @Default(false) @JsonKey(name: 'IsCommunitiesNeighbouring') bool? isCommunitiesNeighbouring,
-    @Default(false) @JsonKey(name: 'IsIndigenousNeighbouring') bool? isIndigenousNeighbouring,
+    @Default(false)
+    @JsonKey(name: 'IsCommunitiesNeighbouring')
+        bool? isCommunitiesNeighbouring,
+    @Default(false)
+    @JsonKey(name: 'IsIndigenousNeighbouring')
+        bool? isIndigenousNeighbouring,
     @Default(false) @JsonKey(name: 'IsHcvNeighbouring') bool? isHcvNeighbouring,
-    @Default(false) @JsonKey(name: 'IsRiversOrStreamsNeighbouring') bool? isRiversOrStreamsNeighbouring,
+    @Default(false)
+    @JsonKey(name: 'IsRiversOrStreamsNeighbouring')
+        bool? isRiversOrStreamsNeighbouring,
     @Default(false) @JsonKey(name: 'IsChemicalsUsed') bool? isChemicalsUsed,
-    @Default(false) @JsonKey(name: 'IsEcosystemsServicesOffered') bool? isEcosystemsServicesOffered,
-    @JsonKey(name: 'ProduceFscCertifiedCharcoalCostEffectivelyId') int? produceFscCertifiedCharcoalCostEffectivelyId,
+    @Default(false)
+    @JsonKey(name: 'IsEcosystemsServicesOffered')
+        bool? isEcosystemsServicesOffered,
+    @JsonKey(name: 'ProduceFscCertifiedCharcoalCostEffectivelyId')
+        int? produceFscCertifiedCharcoalCostEffectivelyId,
     @JsonKey(name: 'ImproveRangeLandId') int? improveRangeLandId,
     @JsonKey(name: 'ImproveAccessToFarmId') int? improveAccessToFarmId,
     @JsonKey(name: 'RestoreBushveldId') int? restoreBushveldId,
-    @JsonKey(name: 'ProtectedRteDuringOperationId') int? protectedRteDuringOperationId,
-    @JsonKey(name: 'ManageResourcesSustainablyId') int? manageResourcesSustainablyId,
+    @JsonKey(name: 'ProtectedRteDuringOperationId')
+        int? protectedRteDuringOperationId,
+    @JsonKey(name: 'ManageResourcesSustainablyId')
+        int? manageResourcesSustainablyId,
     @JsonKey(name: 'SignaturePoints') String? signaturePoints,
     @JsonKey(name: 'SignatureImage') String? signatureImage,
     @JsonKey(name: 'SignatureDate') String? signatureDate,
@@ -62,5 +73,5 @@ class Farm with _$Farm {
   const Farm._();
 
   @override
-  Id get id => int.parse(farmId);
+  Id get id => int.tryParse(farmId) ?? int.parse(farmId);
 }

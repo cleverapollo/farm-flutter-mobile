@@ -1,8 +1,8 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/accident_and_incident.dart';
-import 'package:cmo/model/labour_management/farmer_worker.dart';
+import 'package:cmo/model/model.dart';
+import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
@@ -30,7 +30,16 @@ class AddingAAIScreen extends StatefulWidget {
 
 class _AddingAAIScreenState extends State<AddingAAIScreen> {
   final workers = ValueNotifier(<FarmerWorker>[]);
+  final jobDescriptions = ValueNotifier(<WorkerJobDescription>[]);
+  final natureOfInjurys = ValueNotifier(<NatureOfInjury>[]);
+  final propertyDamaged = <PropertyDamaged>[];
+
   FarmerWorker? selectWorker;
+  WorkerJobDescription? selectJobDescription;
+  NatureOfInjury? selectNatureOfInjury;
+
+  final selectAccidentAndIncidentPropertyDamageds =
+      <AccidentAndIncidentPropertyDamaged>[];
 
   bool loading = false;
 
@@ -49,7 +58,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     if (widget.aai == null) {
       aai = AccidentAndIncident(
           accidentAndIncidentRegisterNo:
-              DateTime.now().microsecondsSinceEpoch.toString(),
+              DateTime.now().millisecondsSinceEpoch.toString(),
           isActive: true,
           isMasterDataSynced: false);
     } else {
@@ -64,6 +73,12 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
       workers.value = await cmoDatabaseMasterService
               .getFarmerWorkersByFarmId(farm?.farmId ?? '') ??
           [];
+
+      natureOfInjurys.value = await cmoDatabaseMasterService
+          .getNatureOfInjuryByGroupSchemeId(farm?.groupSchemeId ?? 0);
+
+      propertyDamaged.addAll(await cmoDatabaseMasterService
+          .getPropertyDamagedByGroupSchemeId(farm?.groupSchemeId ?? 0));
     });
   }
 
@@ -71,6 +86,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     setState(() {
       autoValidateMode = AutovalidateMode.always;
     });
+
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       var value = _formKey.currentState?.value;
       if (value == null) return;
@@ -83,13 +99,20 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
         await hideInputMethod();
         final farm = await configService.getActiveFarm();
         aai = aai.copyWith(
-            farmId: farm?.farmId,
-            dateRecieved: value['DateReceived'] as DateTime?,
-            dateOfIncident: value['DateIncident'] as DateTime?,
-            dateResumeWork: value['DateResumeWork'] as DateTime?,
-            natureOfInjuryId: value['natureOfInjury'] as int?,
-            jobDescriptionId: value['jobDescription'] as int?,
-            workerId: int.tryParse(selectWorker?.workerId ?? ''));
+          farmId: farm?.farmId,
+          dateRecieved: value['DateReceived'] as DateTime?,
+          dateOfIncident: value['DateIncident'] as DateTime?,
+          dateResumeWork: value['DateResumeWork'] as DateTime?,
+          natureOfInjuryId: selectNatureOfInjury?.natureOfInjuryId,
+          natureOfInjuryName: selectNatureOfInjury?.natureOfInjuryName,
+          workerId: int.tryParse(selectWorker?.workerId ?? ''),
+          workerName: selectWorker?.firstName,
+          accidentAndIncidentRegisterId: null,
+          accidentAndIncidentRegisterNo:
+              DateTime.now().millisecondsSinceEpoch.toString(),
+          isActive: true,
+          isMasterDataSynced: false,
+        );
 
         if (carRaised && aai.carRaisedDate == null) {
           aai = aai.copyWith(
@@ -107,6 +130,17 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
 
         if (mounted) {
           final databaseService = cmoDatabaseMasterService;
+
+          final futures = <Future<void>>[];
+
+          for (final item in selectAccidentAndIncidentPropertyDamageds) {
+            futures.add(cmoDatabaseMasterService
+                .cacheAccidentAndIncidentPropertyDamagedFromFarm(item.copyWith(
+                    accidentAndIncidentRegisterNo:
+                        aai.accidentAndIncidentRegisterNo)));
+          }
+
+          await Future.wait(futures);
 
           await (await databaseService.db).writeTxn(() async {
             resultId = await databaseService.cacheAccidentAndIncident(aai);
@@ -181,6 +215,20 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
               _selectWorker(),
               _selectJobDescription(),
               _selectNatureOfInjury(),
+              InkWell(
+                  onTap: () async {
+                    final result = await _SelectPropertyDamaged.push(
+                        context, propertyDamaged);
+
+                    if (result != null) {
+                      selectAccidentAndIncidentPropertyDamageds.addAll(
+                          result as List<AccidentAndIncidentPropertyDamaged>);
+                    }
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: Text('Select Property Damged'),
+                  )),
               _buildSelectDateIncident(),
               _buildSelectDateReceived(),
               _buildSelectDateResumeWork(),
@@ -227,8 +275,8 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
                 focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: context.colors.blue)),
               ),
-              onChanged: (data) {
-                selectWorker = data!;
+              onChanged: (value) {
+                selectWorker = value;
                 setState(() {});
               },
               initialValue: selectWorker,
@@ -239,58 +287,62 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
   }
 
   Widget _selectJobDescription() {
-    return CmoDropdown(
-      name: 'jobDescription',
-      hintText: LocaleKeys.jobDescription.tr(),
-      inputDecoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(8),
-        isDense: true,
-        hintText:
-            '${LocaleKeys.select.tr()} ${LocaleKeys.jobDescription.tr().toLowerCase()}',
-        hintStyle: context.textStyles.bodyNormal.grey,
-        border: UnderlineInputBorder(
-            borderSide: BorderSide(color: context.colors.grey)),
-        focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: context.colors.blue)),
-      ),
-      onChanged: (int? id) {
-        if (id == -1) {
-          _formKey.currentState!.fields['jobDescription']?.reset();
-        }
+    return ValueListenableBuilder(
+      valueListenable: jobDescriptions,
+      builder: (context, data, __) {
+        return CmoDropdown<WorkerJobDescription>(
+            name: '',
+            hintText: LocaleKeys.jobDescription.tr(),
+            inputDecoration: InputDecoration(
+              contentPadding: const EdgeInsets.all(8),
+              isDense: true,
+              hintText:
+                  '${LocaleKeys.select.tr()} ${LocaleKeys.jobDescription.tr().toLowerCase()}',
+              hintStyle: context.textStyles.bodyNormal.grey,
+              border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: context.colors.grey)),
+              focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: context.colors.blue)),
+            ),
+            onChanged: (value) {
+              selectJobDescription = value;
+              setState(() {});
+            },
+            itemsData: data
+                .map((e) =>
+                    CmoDropdownItem(id: e, name: e.jobDescriptionName ?? ''))
+                .toList());
       },
-      itemsData: [
-        CmoDropdownItem(id: -1, name: LocaleKeys.jobDescription.tr()),
-        CmoDropdownItem(id: 0, name: 'Criminals'),
-        CmoDropdownItem(id: 1, name: 'Primary'),
-      ],
     );
   }
 
   Widget _selectNatureOfInjury() {
-    return CmoDropdown(
-      name: 'natureOfInjury',
-      hintText: LocaleKeys.nature_of_injury.tr(),
-      inputDecoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(8),
-        isDense: true,
-        hintText:
-            '${LocaleKeys.select.tr()} ${LocaleKeys.nature_of_injury.tr().toLowerCase()}',
-        hintStyle: context.textStyles.bodyNormal.grey,
-        border: UnderlineInputBorder(
-            borderSide: BorderSide(color: context.colors.grey)),
-        focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: context.colors.blue)),
-      ),
-      onChanged: (int? id) {
-        if (id == -1) {
-          _formKey.currentState!.fields['natureOfInjury']?.reset();
-        }
+    return ValueListenableBuilder(
+      valueListenable: natureOfInjurys,
+      builder: (context, data, __) {
+        return CmoDropdown<NatureOfInjury>(
+            name: 'natureOfInjury',
+            hintText: LocaleKeys.nature_of_injury.tr(),
+            inputDecoration: InputDecoration(
+              contentPadding: const EdgeInsets.all(8),
+              isDense: true,
+              hintText:
+                  '${LocaleKeys.select.tr()} ${LocaleKeys.nature_of_injury.tr().toLowerCase()}',
+              hintStyle: context.textStyles.bodyNormal.grey,
+              border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: context.colors.grey)),
+              focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: context.colors.blue)),
+            ),
+            onChanged: (value) {
+              selectNatureOfInjury = value;
+              setState(() {});
+            },
+            itemsData: data
+                .map((e) =>
+                    CmoDropdownItem(id: e, name: e.natureOfInjuryName ?? ''))
+                .toList());
       },
-      itemsData: [
-        CmoDropdownItem(id: -1, name: LocaleKeys.nature_of_injury.tr()),
-        CmoDropdownItem(id: 0, name: 'Criminals'),
-        CmoDropdownItem(id: 1, name: 'Primary'),
-      ],
     );
   }
 
@@ -409,6 +461,133 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           labelStyle: context.textStyles.bodyBold.black,
         ),
       ),
+    );
+  }
+}
+
+class _SelectPropertyDamaged extends StatefulWidget {
+  const _SelectPropertyDamaged({
+    required this.propertyDamageds,
+    this.onSave,
+  });
+
+  final List<PropertyDamaged> propertyDamageds;
+  final void Function(List<PropertyDamaged> value)? onSave;
+
+  @override
+  State<StatefulWidget> createState() => _SelectPropertyDamagedState();
+
+  static Future<dynamic> push(
+    BuildContext context,
+    List<PropertyDamaged> propertyDamageds,
+  ) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => _SelectPropertyDamaged(
+          propertyDamageds: propertyDamageds,
+        ),
+      ),
+    );
+  }
+}
+
+class _SelectPropertyDamagedState extends State<_SelectPropertyDamaged> {
+  final List<PropertyDamaged> selectedItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CmoAppBar(
+        title: 'Select Property Damaged',
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
+        trailing: Assets.icons.icClose.svgBlack,
+        onTapTrailing: Navigator.of(context).pop,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.separated(
+              separatorBuilder: (context, index) => const SizedBox(
+                height: 12,
+              ),
+              itemCount: widget.propertyDamageds.length,
+              padding: const EdgeInsets.symmetric(horizontal: 21),
+              itemBuilder: (context, index) =>
+                  _buildItem(widget.propertyDamageds[index]),
+            ),
+          ),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: CmoFilledButton(
+        title: LocaleKeys.save.tr(),
+        onTap: () {
+          Navigator.of(context).pop(selectedItems
+              .map((e) => AccidentAndIncidentPropertyDamaged(
+                    accidentAndIncidentRegisterPropertyDamagedId: null,
+                    accidentAndIncidentRegisterPropertyDamagedNo:
+                        DateTime.now().millisecondsSinceEpoch.toString(),
+                    propertyDamagedId: e.propertyDamagedId,
+                    isActive: true,
+                    isMasterdataSynced: false,
+                  ))
+              .toList());
+        },
+      ),
+    );
+  }
+
+  Widget _buildItem(PropertyDamaged item) {
+    final activeItem = selectedItems.firstWhere(
+        (element) => element.propertyDamagedId == item.propertyDamagedId,
+        orElse: () => const PropertyDamaged());
+
+    return InkWell(
+      onTap: () {
+        setState(() {
+          if (selectedItems.contains(item)) {
+            selectedItems.remove(item);
+          } else {
+            selectedItems.add(item);
+          }
+        });
+      },
+      child: AttributeItem(
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                item.propertyDamagedName ?? '',
+                style: context.textStyles.bodyNormal.black,
+              ),
+            ),
+            if (activeItem != const PropertyDamaged())
+              _buildSelectedIcon()
+            else
+              Assets.icons.icCheckCircle.svg(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectedIcon() {
+    return Stack(
+      children: [
+        Assets.icons.icCheckCircle.svg(),
+        Positioned.fill(
+          child: Align(
+            child: Assets.icons.icCheck.svg(),
+          ),
+        ),
+      ],
     );
   }
 }

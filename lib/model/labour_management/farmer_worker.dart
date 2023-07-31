@@ -1,10 +1,10 @@
 import 'package:cmo/extensions/bool_estension.dart';
+import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/worker_payload/worker_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'farmer_worker.freezed.dart';
-
 part 'farmer_worker.g.dart';
 
 // Gender
@@ -24,17 +24,14 @@ class FarmerWorker with _$FarmerWorker {
     @JsonKey(name: 'PhoneNumber') String? phoneNumber,
     @JsonKey(name: 'DateOfBirth') String? dateOfBirth,
     @JsonKey(name: 'Nationality') String? nationality,
-    @Default(<int>[])
-    @JsonKey(name: 'JobDescriptions')
-        List<int>? jobDescription,
     @JsonKey(name: 'PhotoURL') String? photoURL,
     @JsonKey(name: 'NormalisedPhotoURL') String? normalisedPhotoURL,
     @JsonKey(name: 'Photo') String? photo,
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,
     @JsonKey(name: 'IsLocal') int? isLocal,
-    @Default(1) @JsonKey(name: 'CanDelete') int? canDelete,
-    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'CanDelete') int? canDelete,
+    @JsonKey(name: 'IsActive') bool? isActive,
   }) = _FarmerWorker;
 
   const FarmerWorker._();
@@ -54,10 +51,10 @@ extension FarmerWorkerX on FarmerWorker {
       Surname: surname,
       FarmId: farmId,
       IdNumber: idNumber,
-      GenderId: genderId,
+      GenderId: genderId ?? 0,
       PhoneNumber: phoneNumber,
-      CreateDT: DateTime.parse(createDT ?? ''),
-      UpdateDT: DateTime.parse(updateDT ?? ''),
+      CreateDT: DateTime.tryParse(createDT ?? ''),
+      UpdateDT: DateTime.tryParse(updateDT ?? ''),
       IsLocal: isLocal,
       CanDelete: canDelete,
       IsActive: isActive.toInt,

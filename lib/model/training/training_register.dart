@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'training_register.freezed.dart';
-
 part 'training_register.g.dart';
 
 @freezed
@@ -36,7 +35,7 @@ class TrainingRegister with _$TrainingRegister {
       _$TrainingRegisterFromJson(json);
 
   @override
-  Id get id => int.tryParse(trainingRegisterId ?? '') ?? Isar.autoIncrement;
+  Id get id => int.tryParse(trainingRegisterNo ?? '') ?? Isar.autoIncrement;
 }
 
 extension TrainingRegisterX on TrainingRegister {

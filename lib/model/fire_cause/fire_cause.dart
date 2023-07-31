@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'fire_cause.freezed.dart';
-
 part 'fire_cause.g.dart';
 
 @freezed
@@ -22,5 +21,5 @@ class FireCause with _$FireCause {
       _$FireCauseFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => fireCauseId ?? Isar.autoIncrement;
 }

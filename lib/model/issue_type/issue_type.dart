@@ -23,5 +23,5 @@ class IssueType with _$IssueType {
       _$IssueTypeFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => issueTypeId ?? Isar.autoIncrement;
 }

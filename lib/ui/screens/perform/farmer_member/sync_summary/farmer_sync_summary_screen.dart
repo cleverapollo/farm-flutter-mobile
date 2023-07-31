@@ -67,8 +67,9 @@ class FarmerSyncSummaryScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   children: [
                     SingleChildScrollView(
-                      child:
-                          Column(children: FarmerSyncSummaryEnum.all.getViews),
+                      child: Column(
+                          children: FarmerSyncSummaryEnum.all.getViews
+                            ..add(const SizedBox(height: 80))),
                     ),
                     Positioned(
                         bottom: 30,

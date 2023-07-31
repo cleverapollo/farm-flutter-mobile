@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'nature_of_injury.freezed.dart';
-
 part 'nature_of_injury.g.dart';
 
 @freezed
@@ -22,5 +21,5 @@ class NatureOfInjury with _$NatureOfInjury {
       _$NatureOfInjuryFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => natureOfInjuryId ?? Isar.autoIncrement;
 }

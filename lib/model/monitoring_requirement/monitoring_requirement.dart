@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'monitoring_requirement.freezed.dart';
-
 part 'monitoring_requirement.g.dart';
 
 @freezed
@@ -25,5 +24,5 @@ class MonitoringRequirement with _$MonitoringRequirement {
       _$MonitoringRequirementFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => monitoringRequirementId ?? Isar.autoIncrement;
 }

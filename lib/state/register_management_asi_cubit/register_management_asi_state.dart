@@ -1,4 +1,5 @@
 import 'package:cmo/model/asi.dart';
+import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -13,6 +14,7 @@ class RMAsiState with _$RMAsiState {
     @Default([]) List<AsiType> asiTypes,
     @Default([]) List<Asi> asisData,
     @Default([]) List<Asi> asisDataSearch,
+    @Default([]) List<AsiPhoto> asiPhotos,
     AsiType? selectAsiType,
     String? farmId,
     int? groupSchemeId,

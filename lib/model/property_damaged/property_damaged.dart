@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'property_damaged.freezed.dart';
-
 part 'property_damaged.g.dart';
 
 @freezed
@@ -24,5 +23,5 @@ class PropertyDamaged with _$PropertyDamaged {
       _$PropertyDamagedFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => propertyDamagedId ?? Isar.autoIncrement;
 }

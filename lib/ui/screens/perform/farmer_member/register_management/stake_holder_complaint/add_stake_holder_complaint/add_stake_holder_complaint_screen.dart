@@ -1,7 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/farmer_stake_holder_complaint/farmer_stake_holder_complaint.dart';
+import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
@@ -14,13 +14,13 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 class AddStakeHolderComplaintScreen extends StatefulWidget {
   const AddStakeHolderComplaintScreen({super.key, this.complaint});
 
-  final FarmerStakeHolderComplaint? complaint;
+  final ComplaintsAndDisputesRegister? complaint;
 
   @override
   State<StatefulWidget> createState() => _AddStakeHolderComplaintScreenState();
 
-  static Future<FarmerStakeHolderComplaint?> push(BuildContext context,
-      {FarmerStakeHolderComplaint? complaint}) {
+  static Future<ComplaintsAndDisputesRegister?> push(BuildContext context,
+      {ComplaintsAndDisputesRegister? complaint}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
@@ -32,9 +32,10 @@ class AddStakeHolderComplaintScreen extends StatefulWidget {
 
 class _AddStakeHolderComplaintScreenState
     extends State<AddStakeHolderComplaintScreen> {
-  final complaints = ValueNotifier(<FarmerStakeHolder>[]);
+  final complaints = ValueNotifier(<StakeHolder>[]);
+  final isLoading = ValueNotifier(true);
 
-  FarmerStakeHolder? selectFarmerStakeHolder;
+  StakeHolder? selectStakeHolder;
 
   bool loading = false;
 
@@ -42,7 +43,7 @@ class _AddStakeHolderComplaintScreenState
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
-  late FarmerStakeHolderComplaint complaint;
+  late ComplaintsAndDisputesRegister complaint;
 
   bool carRaised = false;
   bool carClosed = false;
@@ -51,13 +52,13 @@ class _AddStakeHolderComplaintScreenState
   void initState() {
     super.initState();
     if (widget.complaint == null) {
-      complaint = FarmerStakeHolderComplaint(
+      complaint = ComplaintsAndDisputesRegister(
           complaintsAndDisputesRegisterNo: DateTime.now().toIso8601String(),
           isActive: true,
-          isMasterDataSynced: false);
+          isMasterdataSynced: false);
     } else {
       complaint =
-          FarmerStakeHolderComplaint.fromJson(widget.complaint!.toJson());
+          ComplaintsAndDisputesRegister.fromJson(widget.complaint!.toJson());
     }
     carRaised = complaint.carRaisedDate != null;
     carClosed = complaint.carClosedDate != null;
@@ -65,8 +66,16 @@ class _AddStakeHolderComplaintScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final farm = await configService.getActiveFarm();
 
-      complaints.value = await cmoDatabaseMasterService
-          .getFarmerStakeHolderByFarmId(farm?.farmId ?? '');
+      final result = await cmoDatabaseMasterService
+          .getFarmStakeHolderByFarmId(farm?.farmId ?? '');
+
+      for (final item in result) {
+        final stakeholders = await cmoDatabaseMasterService
+            .getStakeHoldersByStakeHolderId(item.stakeHolderId ?? '');
+
+        complaints.value.addAll(stakeholders);
+        isLoading.value = false;
+      }
     });
   }
 
@@ -83,22 +92,24 @@ class _AddStakeHolderComplaintScreenState
         loading = true;
       });
       try {
-        if (selectFarmerStakeHolder == null) {
+        if (selectStakeHolder == null) {
           return showSnackError(msg: 'Required fields are missing.');
         }
 
         await hideInputMethod();
         final farm = await configService.getActiveFarm();
         complaint = complaint.copyWith(
-            isActive: true,
-            isMasterDataSynced: false,
-            complaintsAndDisputesRegisterId: null,
-            complaintsAndDisputesRegisterNo:
-                DateTime.now().millisecondsSinceEpoch.toString(),
-            farmId: farm?.farmId,
-            dateReceived: value['DateReceived'] as DateTime?,
-            dateClosed: value['DateClosed'] as DateTime?,
-            stakeholderId: selectFarmerStakeHolder?.stakeholderId.toString());
+          isActive: true,
+          isMasterdataSynced: false,
+          complaintsAndDisputesRegisterId: null,
+          complaintsAndDisputesRegisterNo:
+              DateTime.now().millisecondsSinceEpoch.toString(),
+          farmId: farm?.farmId,
+          dateReceived: value['DateReceived'] as DateTime?,
+          dateClosed: value['DateClosed'] as DateTime?,
+          stakeholderName: selectStakeHolder?.stakeholderName,
+          stakeholderId: selectStakeHolder?.stakeHolderId,
+        );
 
         if (carRaised && complaint.carRaisedDate == null) {
           complaint = complaint.copyWith(
@@ -117,10 +128,8 @@ class _AddStakeHolderComplaintScreenState
         if (mounted) {
           final databaseService = cmoDatabaseMasterService;
 
-          await (await databaseService.db).writeTxn(() async {
-            resultId = await databaseService
-                .cacheFarmerStakeHolderComplaint(complaint);
-          });
+          resultId = await databaseService
+              .cacheComplaintsAndDisputesRegister(complaint);
         }
 
         if (resultId != null) {
@@ -155,15 +164,22 @@ class _AddStakeHolderComplaintScreenState
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildInputArea(),
-              const SizedBox(
-                height: 80,
+        body: ValueListenableBuilder(
+          valueListenable: isLoading,
+          builder: (context, value, __) {
+            if (value) return const Center(child: CircularProgressIndicator());
+
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildInputArea(),
+                  const SizedBox(
+                    height: 80,
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: CmoFilledButton(
@@ -253,7 +269,7 @@ class _AddStakeHolderComplaintScreenState
         ValueListenableBuilder(
           valueListenable: complaints,
           builder: (_, value, __) {
-            return CmoDropdown<FarmerStakeHolder>(
+            return CmoDropdown<StakeHolder>(
                 name: 'ComplaintId',
                 hintText: LocaleKeys.complaintName.tr(),
                 validator: requiredValidator,
@@ -269,13 +285,13 @@ class _AddStakeHolderComplaintScreenState
                       borderSide: BorderSide(color: context.colors.blue)),
                 ),
                 onChanged: (data) {
-                  selectFarmerStakeHolder = data;
+                  selectStakeHolder = data;
                   setState(() {});
                 },
-                initialValue: selectFarmerStakeHolder,
+                initialValue: selectStakeHolder,
                 itemsData: value
-                    .map((e) => CmoDropdownItem(
-                        id: e, name: e.farmerStakeHolderName ?? ''))
+                    .map((e) =>
+                        CmoDropdownItem(id: e, name: e.stakeholderName ?? ''))
                     .toList());
           },
         ),

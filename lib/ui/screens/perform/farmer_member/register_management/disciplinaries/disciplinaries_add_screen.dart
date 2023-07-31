@@ -2,6 +2,9 @@ import 'dart:ui';
 
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/camp.dart';
+import 'package:cmo/model/issue_type/issue_type.dart';
+import 'package:cmo/model/labour_management/farmer_worker.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_cubit.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
@@ -62,7 +65,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                       style: context.textStyles.bodyBold
                           .copyWith(color: context.colors.black),
                     ),
-                    CmoDropdown(
+                    CmoDropdown<FarmerWorker>(
                       name: 'Workers',
                       style: context.textStyles.bodyBold
                           .copyWith(color: context.colors.black),
@@ -79,11 +82,41 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                         ),
                       ),
                       itemsData: state.workers
-                          .map((e) => CmoDropdownItem(
-                              id: e.workerId, name: e.firstName ?? ''))
+                          .map((e) =>
+                              CmoDropdownItem(id: e, name: e.firstName ?? ''))
                           .toList(),
                       onChanged: (value) {
-                        cubit.onChangeData(workerId: int.tryParse(value ?? ''));
+                        cubit.onChangeData(selectWorker: value);
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      '* Camp',
+                      style: context.textStyles.bodyBold
+                          .copyWith(color: context.colors.black),
+                    ),
+                    CmoDropdown<Camp>(
+                      name: 'Workers',
+                      style: context.textStyles.bodyBold
+                          .copyWith(color: context.colors.black),
+                      inputDecoration: InputDecoration(
+                        contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+                        isDense: true,
+                        hintText: '',
+                        hintStyle: context.textStyles.bodyNormal.grey,
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: context.colors.grey),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: context.colors.blue),
+                        ),
+                      ),
+                      itemsData: state.camps
+                          .map((e) =>
+                              CmoDropdownItem(id: e, name: e.campName ?? ''))
+                          .toList(),
+                      onChanged: (value) {
+                        cubit.onChangeData(selectCamp: value);
                       },
                     ),
                     const SizedBox(height: 12),
@@ -142,7 +175,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                       style: context.textStyles.bodyBold
                           .copyWith(color: context.colors.black),
                     ),
-                    CmoDropdown(
+                    CmoDropdown<IssueType>(
                       name: 'Disciplinaries Issue',
                       style: context.textStyles.bodyBold
                           .copyWith(color: context.colors.black),
@@ -160,10 +193,10 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                       ),
                       itemsData: state.issueTypes
                           .map((e) => CmoDropdownItem(
-                              id: e.issueTypeId, name: e.issueTypeName ?? ''))
+                              id: e, name: e.issueTypeName ?? ''))
                           .toList(),
                       onChanged: (value) {
-                        cubit.onChangeData(issueId: value);
+                        cubit.onChangeData(selectIssue: value);
                       },
                     ),
                     const SizedBox(height: 12),

@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'farmer_stake_holder_complaint.freezed.dart';
-
 part 'farmer_stake_holder_complaint.g.dart';
 
 @freezed
@@ -37,5 +36,5 @@ class FarmerStakeHolderComplaint with _$FarmerStakeHolderComplaint {
 
   @override
   Id get id =>
-      int.tryParse(complaintsAndDisputesRegisterId ?? '') ?? Isar.autoIncrement;
+      int.tryParse(complaintsAndDisputesRegisterNo ?? '') ?? Isar.autoIncrement;
 }

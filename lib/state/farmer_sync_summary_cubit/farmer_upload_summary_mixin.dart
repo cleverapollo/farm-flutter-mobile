@@ -1,20 +1,21 @@
 import 'dart:convert';
 
 import 'package:cmo/di.dart';
-import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/biological_control_agent_register_payload/biological_control_agent_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/camp_payload/camp_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/chemical_register_payload/chemical_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_customary_use_right_payload/farm_stakeholder_customary_use_right_payload.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_payload/farm_stakeholder_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_social_upliftment_payload/farm_stakeholder_social_upliftment_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_special_site_payload/farm_stakeholder_special_site_payload.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/job_description_payload/job_description_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_accident_and_incident_register_payload/main_accident_and_incident_register_payload.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_asi_register_payload/main_asi_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_farm_stakeholder_payload/main_farm_stakeholder_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_pests_and_diseases_register_payload/main_pests_and_diseases_register_payload.dart';
+import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_rte_species_register_payload/main_rte_species_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/properties_payload/properties_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/worker_payload/worker_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
@@ -33,8 +34,8 @@ mixin FarmUploadSummaryMixin {
   int get mGroupSchemeId => _state.groupSchemeId!;
   int get mRmuId => _state.rmuId!;
 
-  final _enableUpdateStatus = false;
-  final _enableTestMode = true;
+  final _enableUpdateStatus = true;
+  final _enableTestMode = false;
 
   String get masterTopic => 'Cmo.MasterData.';
 
@@ -46,26 +47,26 @@ mixin FarmUploadSummaryMixin {
   ]);
 
   Future<void> onUploadingFarmData() async {
-    await _publishWorker();
-    await _publishAnnFarmProduction();
+    await _publishWorker(); //done
+    await _publishAnnFarmProduction(); //done
     await _publishCamp(); //done
-    await _publishCustomaryUseRight();
-    await _publishSocialUpliftments();
-    await _publishSpecialSites();
-    await _publishFarmStakeholders();
-    await _publishAnnualFarmBudgets();
-    await _publishAnnualFarmBudgetTransactions();
-    await _publishSanctionRegisters(); //done implement
-    await _publishChemicalRegister(); //done
-    await _publishTrainingRegisters(); //done implement
-    await _publishAsiRegisters(); //wait for testing
-    await _publishFireRegisters(); //done implement
-    await _publishGrievanceRegisters(); //not find
-    await _publishRteSpeciesRegisters(); //done implement
-    await _publishPestsAndDiseasesRegisters(); //done implement
-    await _publishComplaintsAndDisputesRegisters(); //done implement
-    await _publishAccidentAndIncidentRegisters(); //done
-    await _publishBiologicalControlAgentRegisters(); //done implement
+    await _publishCustomaryUseRight(); //done
+    await _publishSocialUpliftments(); //done
+    await _publishSpecialSites(); //done
+    await _publishFarmStakeholders(); // done
+    await _publishAnnualFarmBudgets(); // done
+    await _publishAnnualFarmBudgetTransactions(); // done
+    await _publishSanctionRegisters(); // done
+    await _publishChemicalRegister(); // done
+    await _publishTrainingRegisters(); // done
+    await _publishAsiRegisters(); // done
+    await _publishFireRegisters(); // done
+    await _publishGrievanceRegisters(); // done
+    await _publishRteSpeciesRegisters(); //done
+    await _publishPestsAndDiseasesRegisters(); //  done
+    await _publishComplaintsAndDisputesRegisters(); // done
+    await _publishAccidentAndIncidentRegisters(); // done
+    await _publishBiologicalControlAgentRegisters(); // done
   }
 
   Future<void> _publishWorker() async {
@@ -82,26 +83,15 @@ mixin FarmUploadSummaryMixin {
       for (final worker in workers) {
         var workerPayLoad = const FarmWorkerPayload();
 
-        final futuresWorker = <Future<JobDescription?>>[];
+        final workerJobDescriptions = await cmoDatabaseMasterService
+            .getWorkerJobDescriptionByWorkerId(worker.workerId ?? '');
 
-        for (final jobDescriptionId in worker.jobDescription ?? <int>[]) {
-          futuresWorker.add(
-              cmoDatabaseMasterService.getJobDescriptionById(jobDescriptionId));
-        }
-
-        final jobDescriptions = await Future.wait(futuresWorker);
-
-        final jobDescriptionPayLoads = <JobDescriptionPayLoad>[];
-
-        for (final jobDescription in jobDescriptions) {
-          if (jobDescription != null) {
-            jobDescriptionPayLoads.add(jobDescription.toPayLoad());
-          }
-        }
+        final workerJobDescriptionPayLoads =
+            workerJobDescriptions.map((e) => e.toPayLoad()).toList();
 
         workerPayLoad = worker
             .toPayLoad()
-            .copyWith(JobDescriptions: jobDescriptionPayLoads);
+            .copyWith(JobDescriptions: workerJobDescriptionPayLoads);
 
         workerPayLoads.add(workerPayLoad);
 
@@ -111,9 +101,7 @@ mixin FarmUploadSummaryMixin {
         }
       }
 
-      final workersPayLoad = workers.map((e) => e.toPayLoad()).toList();
-
-      for (final item in workersPayLoad) {
+      for (final item in workerPayLoads) {
         messages.add(globalMessage.copyWith(body: jsonEncode(item)));
       }
 
@@ -216,7 +204,7 @@ mixin FarmUploadSummaryMixin {
       if (_enableUpdateStatus) {
         for (final item in camps) {
           futures.add(cmoDatabaseMasterService
-              .cacheCamp(item.copyWith(isLocal: false)));
+              .cacheCampFromFarmSync(item.copyWith(isLocal: false)));
         }
       }
 
@@ -348,75 +336,58 @@ mixin FarmUploadSummaryMixin {
       final allFarmsSH = await cmoDatabaseMasterService.getFarmStakeholder();
       final unSyncedStakeholders =
           await cmoDatabaseMasterService.getUnsyncedStakeholder();
-      final unsyncedFSSU = await cmoDatabaseMasterService
+      final unSyncedFSSU = await cmoDatabaseMasterService
           .getUnsycnedFarmStakeholderSocialUpliftments();
-      final unsyncedFSSS = await cmoDatabaseMasterService
+      final unSyncedFSSS = await cmoDatabaseMasterService
           .getUnsycnedFarmStakeholderSpecialSites();
-      final unsyncedFSCUR = await cmoDatabaseMasterService
+      final unSyncedFSCUR = await cmoDatabaseMasterService
           .getUnsycnedFarmStakeholderCustomaryUseRights();
 
-      for (final unsyncedStakeholderItem in unSyncedStakeholders) {
+      for (final unSyncedStakeholderItem in unSyncedStakeholders) {
         const data = MainFarmStakeholderPayLoad();
 
-        final farmStakeholders = allFarmsSH.map((e) {
-          if (e.stakeholderId == unsyncedStakeholderItem.stakeHolderId) {
-            return e.toPayLoad();
-          }
-        }).toList();
+        var farmStakeholderPayLoad = const FarmStakeholderPayLoad();
 
-        final farmStakeholderCustomaryUseRights = unsyncedFSCUR.map((e) {
-          if (e.farmStakeholderId ==
-              farmStakeholders.first?.FarmStakeholderId) {
-            return e.toPayLoad();
+        for (final item in allFarmsSH) {
+          if (int.tryParse(item.stakeholderId ?? '') ==
+              unSyncedStakeholderItem.stakeHolderId) {
+            farmStakeholderPayLoad = item.toPayLoad();
           }
-        }).toList();
+        }
 
         final farmStakeholderCustomaryUseRightsPayLoad =
             <FarmStakeholderCustomaryUseRightPayLoad>[];
 
-        for (final farmStakeholderCURItem
-            in farmStakeholderCustomaryUseRights) {
-          if (farmStakeholderCURItem != null) {
-            farmStakeholderCustomaryUseRightsPayLoad
-                .add(farmStakeholderCURItem);
+        for (final item in unSyncedFSCUR) {
+          if (item.farmStakeholderId ==
+              farmStakeholderPayLoad.FarmStakeholderId) {
+            farmStakeholderCustomaryUseRightsPayLoad.add(item.toPayLoad());
           }
         }
-
-        final farmStakeholderSocialUpliftments = unsyncedFSSU.map((e) {
-          if (e.farmStakeholderId ==
-              farmStakeholders.first?.FarmStakeholderId) {
-            return e.toPayLoad();
-          }
-        }).toList();
 
         final farmStakeholderSocialUpliftmentsPayLoad =
             <FarmStakeholderSocialUpliftmentPayLoad>[];
 
-        for (final farmStakeholderSUItem in farmStakeholderSocialUpliftments) {
-          if (farmStakeholderSUItem != null) {
-            farmStakeholderSocialUpliftmentsPayLoad.add(farmStakeholderSUItem);
+        for (final item in unSyncedFSSU) {
+          if (item.farmStakeholderId ==
+              farmStakeholderPayLoad.FarmStakeholderId) {
+            farmStakeholderSocialUpliftmentsPayLoad.add(item.toPayLoad());
           }
         }
-
-        final farmStakeholderSpecialSites = unsyncedFSSS.map((e) {
-          if (e.farmStakeholderId ==
-              farmStakeholders.first?.FarmStakeholderId) {
-            return e.toPayLoad();
-          }
-        }).toList();
 
         final farmStakeholderSpecialSitesPayLoad =
             <FarmStakeholderSpecialSitePayLoad>[];
 
-        for (final farmStakeholderSSItem in farmStakeholderSpecialSites) {
-          if (farmStakeholderSSItem != null) {
-            farmStakeholderSpecialSitesPayLoad.add(farmStakeholderSSItem);
+        for (final item in unSyncedFSSS) {
+          if (item.farmStakeholderId ==
+              farmStakeholderPayLoad.FarmStakeholderId) {
+            farmStakeholderSpecialSitesPayLoad.add(item.toPayLoad());
           }
         }
 
         farmStakeholdersPayLoad.add(data.copyWith(
-          Stakeholder: unsyncedStakeholderItem.toPayLoad(),
-          FarmStakeholder: farmStakeholders.firstOrNull,
+          Stakeholder: unSyncedStakeholderItem.toPayLoad(),
+          FarmStakeholder: farmStakeholderPayLoad,
           FarmStakeholderCustomaryUseRights:
               farmStakeholderCustomaryUseRightsPayLoad,
           FarmStakeholderSocialUpliftments:
@@ -426,21 +397,21 @@ mixin FarmUploadSummaryMixin {
 
         if (_enableUpdateStatus) {
           futures.add(cmoDatabaseMasterService.cacheStakeHolderFromFarm(
-              unsyncedStakeholderItem.copyWith(isMasterDataSynced: 1)));
+              unSyncedStakeholderItem.copyWith(isMasterDataSynced: 1)));
 
-          for (final item in unsyncedFSCUR) {
+          for (final item in unSyncedFSCUR) {
             futures.add(
                 cmoDatabaseMasterService.cacheFarmStakeholderCustomaryUseRights(
                     item.copyWith(isMasterDataSynced: 1)));
           }
 
-          for (final item in unsyncedFSSS) {
+          for (final item in unSyncedFSSS) {
             futures.add(
                 cmoDatabaseMasterService.cacheFarmStakeholderSpecialSites(
                     item.copyWith(isMasterDataSynced: 1)));
           }
 
-          for (final item in unsyncedFSSU) {
+          for (final item in unSyncedFSSU) {
             futures.add(
                 cmoDatabaseMasterService.cacheFarmStakeholderSocialUpliftments(
                     item.copyWith(isMasterDataSynced: 1)));
@@ -553,8 +524,8 @@ mixin FarmUploadSummaryMixin {
 
       if (_enableUpdateStatus) {
         for (final item in sanctionRegisters) {
-          futures.add(cmoDatabaseMasterService
-              .cacheSanctionRegisterFromFarm(item.copyWith(isSynced: true)));
+          futures.add(cmoDatabaseMasterService.cacheSanctionRegisterFromFarm(
+              item.copyWith(isSynced: true, isLocal: false)));
         }
       }
 
@@ -669,13 +640,36 @@ mixin FarmUploadSummaryMixin {
       final messages = <Message>[];
       final futures = <Future<void>>[];
 
+      final mainAsiRegisterPayLoad = <MainAsiRegisterPayLoad>[];
+
       final asiRegisters =
           await cmoDatabaseMasterService.getUnsyncedAsiRegisters(mFarmId);
 
-      final asiRegistersPayLoad =
-          asiRegisters.map((e) => e.toPayLoad()).toList();
+      for (final item in asiRegisters) {
+        final asiPhotos = await cmoDatabaseMasterService
+            .getAllAsiPhotoByAsiRegisterNo(item.asiRegisterNo);
 
-      for (final item in asiRegistersPayLoad) {
+        final asiPhotosPayLoad = asiPhotos.map((e) {
+          if (e.asiRegisterId == null) {
+            return e
+                .copyWith(asiRegisterId: '00000000-0000-0000-0000-000000000000')
+                .toPayLoad();
+          }
+          return e.toPayLoad();
+        }).toList();
+
+        mainAsiRegisterPayLoad.add(MainAsiRegisterPayLoad(
+          Register: item.toPayLoad(),
+          Photos: asiPhotosPayLoad,
+        ));
+
+        for (final item in asiPhotos) {
+          futures.add(cmoDatabaseMasterService
+              .cacheAsiPhoto(item.copyWith(isMasterdataSynced: true)));
+        }
+      }
+
+      for (final item in mainAsiRegisterPayLoad) {
         messages.add(globalMessage.copyWith(body: jsonEncode(item)));
       }
 
@@ -777,10 +771,33 @@ mixin FarmUploadSummaryMixin {
       final rteSpeciesRegisters =
           await cmoDatabaseMasterService.getUnsyncedRteSpeciesByFarmId(mFarmId);
 
-      final rteSpeciesRegistersPayLoad =
-          rteSpeciesRegisters.map((e) => e.toPayLoad()).toList();
+      final mainRteSpeciesRegisterPayLoad = <MainRteSpeciesRegisterPayLoad>[];
 
-      for (final item in rteSpeciesRegistersPayLoad) {
+      for (final item in rteSpeciesRegisters) {
+        final rteSpeciesPhotos = await cmoDatabaseMasterService
+            .getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
+                item.rteSpeciesRegisterNo ?? '');
+
+        mainRteSpeciesRegisterPayLoad.add(MainRteSpeciesRegisterPayLoad(
+            Register: item.toPayLoad(),
+            Photos: rteSpeciesPhotos.map((e) {
+              if (e.rteSpeciesId == null) {
+                return e
+                    .copyWith(
+                        rteSpeciesId: '00000000-0000-0000-0000-000000000000')
+                    .toPayLoad();
+              }
+
+              return e.toPayLoad();
+            }).toList()));
+
+        for (final photo in rteSpeciesPhotos) {
+          futures.add(cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(
+              photo.copyWith(isMasterdataSynced: true)));
+        }
+      }
+
+      for (final item in mainRteSpeciesRegisterPayLoad) {
         messages.add(globalMessage.copyWith(body: jsonEncode(item)));
       }
 
@@ -860,7 +877,7 @@ mixin FarmUploadSummaryMixin {
 
       futures.add(cmoPerformApiService.public(
         currentClientId: mUserDeviceId.toString(),
-        topic: topicByFarmIdAndUserDeviceId('PestsAndDiseasesRegister'),
+        topic: topicByFarmIdAndUserDeviceId('PndRegister'),
         messages: messages,
       ));
 
@@ -896,7 +913,7 @@ mixin FarmUploadSummaryMixin {
 
       futures.add(cmoPerformApiService.public(
         currentClientId: mUserDeviceId.toString(),
-        topic: topicByFarmIdAndUserDeviceId('ComplaintsAndDisputesRegister'),
+        topic: topicByFarmIdAndUserDeviceId('CndRegister'),
         messages: messages,
       ));
 

@@ -4,7 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'annual_farm_production.freezed.dart';
-
 part 'annual_farm_production.g.dart';
 
 @freezed
@@ -90,7 +89,7 @@ extension AnnualFarmProductionX on AnnualFarmProduction {
       AnnualFarmProductionId: annualFarmProductionId,
       Year: int.tryParse(year ?? ''),
       FarmId: farmId,
-      NoOfWorkers: noOfWorkers,
+      NoOfWorkers: noOfWorkers?.toInt(),
       WorkPeriodMonths: workPeriodMonths,
       WorkPeriodWeeks: workPeriodWeeks,
       CycleLength: cycleLength,
