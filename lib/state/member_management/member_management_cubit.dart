@@ -51,9 +51,13 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
         ? element.isGroupSchemeMember == true
         : element.isGroupSchemeMember != true);
     if (searchText?.isNotEmpty ?? false) {
-      filteringItems = filteringItems.where((element) =>
-          element.farmName?.toLowerCase().contains(searchText!.toLowerCase()) ??
-          false);
+      filteringItems = filteringItems.where((element) {
+        final searchStr = searchText!.toLowerCase();
+        final existFarmName = element.farmName?.toLowerCase().contains(searchStr) ?? false;
+        final existFirstName = element.firstName?.toLowerCase().contains(searchStr) ?? false;
+        final existLastName = element.lastName?.toLowerCase().contains(searchStr) ?? false;
+        return existFarmName || existFirstName || existLastName;
+      });
     }
     emit(state.copyWith(
       filteringFarms: filteringItems.toList(),
