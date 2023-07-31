@@ -98,6 +98,8 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                             title: LocaleKeys.incomplete.tr(),
                             titleStyle: context.textStyles.bodyBold.white
                                 .copyWith(fontSize: 12),
+                            radius: 15,
+                            size: const Size(100, 39),
                           );
                         },
                       ),
@@ -116,6 +118,8 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                             title: LocaleKeys.members.tr(),
                             titleStyle: context.textStyles.bodyBold.white
                                 .copyWith(fontSize: 12),
+                            radius: 15,
+                            size: const Size(100, 39),
                           );
                         },
                       ),
@@ -144,6 +148,7 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                               CmoCardHeader(
                                   title:
                                       '${farm.firstName ?? ''} ${farm.lastName ?? ''}'),
+                              const SizedBox(height: 10,),
                               SizedBox(
                                 width: double.maxFinite,
                                 child: Row(

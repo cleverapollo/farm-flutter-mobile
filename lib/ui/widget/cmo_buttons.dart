@@ -32,6 +32,8 @@ class CmoFilledButton extends StatelessWidget {
     required this.title,
     this.titleStyle,
     this.leading,
+    this.radius,
+    this.size,
   });
 
   final VoidCallback? onTap;
@@ -41,15 +43,17 @@ class CmoFilledButton extends StatelessWidget {
   final bool disable;
   final TextStyle? titleStyle;
   final Widget? leading;
+  final double? radius;
+  final Size? size;
 
   @override
   Widget build(BuildContext context) {
     return FilledButton(
       style: FilledButton.styleFrom(
-        minimumSize: const Size(140, 39),
+        minimumSize: size ?? const Size(140, 39),
         backgroundColor: disable ? context.colors.grey : context.colors.blue,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radius ?? 10),
         ),
         elevation: 4,
         padding: const EdgeInsets.symmetric(horizontal: 8),
