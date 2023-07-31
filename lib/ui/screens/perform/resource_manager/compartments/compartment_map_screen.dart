@@ -68,17 +68,16 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.points != null) {
-      _drawInitialPolygon();
-    }
   }
 
-  Future _drawInitialPolygon() async {
-    for (final item in widget.points!) {
-      _markers.add(await _markerFrom(item));
-    }
-    _isFinished = true;
-    _finishDrawing();
+  void _drawInitialPolygon() {
+    Future.delayed(const Duration(seconds: 1), () async {
+      for (final item in widget.points!) {
+        _markers.add(await _markerFrom(item));
+      }
+      _isFinished = true;
+      _finishDrawing();
+    });
   }
 
   Future<Marker> _markerFrom(map.LatLng position) async {
@@ -117,6 +116,9 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                   polygons: _polygon(),
                   mapType: MapType.satellite,
                   onMapCreated: (GoogleMapController controller) {
+                    if (widget.points != null) {
+                      _drawInitialPolygon();
+                    }
                     _controller = controller;
                     Geolocator.checkPermission().then((permission) async {
                       if (permission == LocationPermission.whileInUse ||
