@@ -349,6 +349,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       siteName: siteName ?? state.addMemberSDetails.siteName,
       town: town ?? state.addMemberSDetails.town,
       province: province ?? state.addMemberSDetails.province,
+      isSiteNameError: siteName?.isBlank ?? state.addMemberSDetails.isSiteNameError,
+      isTownError: town?.isBlank ?? state.addMemberSDetails.isTownError,
+      isProvinceError: province?.isBlank ?? state.addMemberSDetails.isProvinceError,
       addMemberSiteLocations:
           state.addMemberSDetails.addMemberSiteLocations.copyWith(
         lat: siteLocationLat ??

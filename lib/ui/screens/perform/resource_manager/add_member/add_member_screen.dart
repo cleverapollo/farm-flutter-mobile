@@ -212,31 +212,46 @@ class _AddMemberSDetails extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTitle(context, 'Site Name (*)'),
-                CmoTextField(
-                  initialValue: data.siteName,
-                  hintText: LocaleKeys.siteName.tr(),
-                  onChanged: (p0) {
-                    cubit.onDataChangeSiteDetail(siteName: p0);
-                  },
+                AttributeItem(
+                  isShowError: data.isSiteNameError,
+                  errorText: LocaleKeys.siteName.tr(),
+                  child: InputAttributeItem(
+                    initialValue: data.siteName,
+                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                    labelText: LocaleKeys.siteName.tr(),
+                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    onChanged: (value) {
+                      cubit.onDataChangeSiteDetail(siteName: value);
+                    },
+                  ),
                 ),
                 const SizedBox(height: 12),
-                _buildTitle(context, 'Town (*)'),
-                CmoTextField(
-                  initialValue: data.town,
-                  hintText: LocaleKeys.town.tr(),
-                  onChanged: (p0) {
-                    cubit.onDataChangeSiteDetail(town: p0);
-                  },
+                AttributeItem(
+                  isShowError: data.isTownError,
+                  errorText: LocaleKeys.town.tr(),
+                  child: InputAttributeItem(
+                    initialValue: data.town,
+                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                    labelText: LocaleKeys.town.tr(),
+                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    onChanged: (value) {
+                      cubit.onDataChangeSiteDetail(town: value);
+                    },
+                  ),
                 ),
                 const SizedBox(height: 12),
-                _buildTitle(context, 'Province (*)'),
-                CmoTextField(
-                  initialValue: data.province,
-                  hintText: 'Province',
-                  onChanged: (p0) {
-                    cubit.onDataChangeSiteDetail(province: p0);
-                  },
+                AttributeItem(
+                  isShowError: data.isProvinceError,
+                  errorText: LocaleKeys.province.tr(),
+                  child: InputAttributeItem(
+                    initialValue: data.province,
+                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                    labelText: LocaleKeys.province.tr(),
+                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    onChanged: (value) {
+                      cubit.onDataChangeSiteDetail(province: value);
+                    },
+                  ),
                 ),
                 const SizedBox(height: 16),
                 _buildTitle(context, 'Site Location (*)'),
