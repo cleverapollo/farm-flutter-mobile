@@ -69,7 +69,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   var _mapType = MapType.normal;
   final _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
-  bool _hasInternet = false;
+  bool _hasInternet = true;
 
   @override
   void initState() {
@@ -403,6 +403,64 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
           lastPoint.latitude, lastPoint.longitude),
     );
     return distance < 3;
+  }
+
+  Widget _buildMapButton() {
+    if (!_hasInternet) {
+      return const SizedBox(height: 60);
+    }
+    return
+      SizedBox(
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: _removePreviousPoint,
+              padding: EdgeInsets.zero,
+              iconSize: 36,
+              icon: Container(
+                alignment: Alignment.center,
+                color: Colors.white,
+                child: SvgGenImage(Assets.icons.icRefresh.path).svg(
+                  width: 36, height: 36, colorFilter: const ColorFilter.mode(
+                  Colors.blue,
+                  BlendMode.srcIn,
+                ),),
+              ),
+            ),
+            const SizedBox(width: 16),
+            IconButton(
+              onPressed: () async {
+                var center = await getCenter();
+                if (center != null) {
+                  if (_isCompletedPoint(center)) {
+                    _finishDrawing();
+                  } else {
+                    _markers.add(await _markerFrom(center));
+                    if (_isFinished) {
+                      _finishDrawing();
+                    } else {
+                      setState(() {});
+                    }
+                  }
+                }
+              },
+              padding: EdgeInsets.zero,
+              iconSize: 36,
+              icon: Container(
+                alignment: Alignment.center,
+                color: Colors.white,
+                child: SvgGenImage(Assets.icons.icAccept.path).svg(
+                  width: 36, height: 36, colorFilter: const ColorFilter.mode(
+                  Colors.blue,
+                  BlendMode.srcIn,
+                ),),
+              ),
+            ),
+          ],
+        ),
+      );
   }
 
   Widget _buildNoInternet() {
