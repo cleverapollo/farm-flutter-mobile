@@ -2754,17 +2754,12 @@ class CmoDatabaseMasterService {
   }
 
   Future<int?> updateWorkerSyncStatus(
-      int companyId, String workerId, bool isLocal) async {
+      {required Worker worker, bool status = false}) async {
     final db = await _db();
-    final worker = await db.workers
-        .filter()
-        .workerIdEqualTo(workerId)
-        .companyIdEqualTo(companyId)
-        .findFirst();
 
-    if (worker == null) return null;
-
-    return db.workers.put(worker.copyWith(isLocal: isLocal));
+    return db.writeTxn(() async {
+      return db.workers.put(worker.copyWith(isLocal: status));
+    });
   }
 
   Future<int> cacheFarmerWorker(FarmerWorker item) async {

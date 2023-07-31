@@ -212,23 +212,20 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     );
 
     for (final worker in workers) {
-      workerMessages
-        ..clear()
-        ..add(
-          Message(body: jsonEncode(worker.toPayLoad())),
-        );
-      workerFutures
-        ..add(
-          cmoBehaveApiService.public(
-              currentClientId: '$userDeviceId',
-              topic: publicWorkerTopic,
-              messages: workerMessages),
-        )
-        ..add(
-          _databaseMasterService.updateWorkerSyncStatus(
-              worker.companyId!, worker.workerId, false),
-        );
+      workerMessages.add(
+        Message(body: jsonEncode(worker.toPayLoad())),
+      );
+      workerFutures.add(
+        _databaseMasterService.updateWorkerSyncStatus(worker: worker),
+      );
     }
+
+    workerFutures.add(
+      cmoBehaveApiService.public(
+          currentClientId: '$userDeviceId',
+          topic: publicWorkerTopic,
+          messages: workerMessages),
+    );
 
     await Future.wait(workerFutures);
 

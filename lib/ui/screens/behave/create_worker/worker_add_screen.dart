@@ -36,6 +36,8 @@ class WorkerAddScreen extends StatefulWidget {
 class _WorkerAddScreenState extends State<WorkerAddScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
+  String gender = '';
+
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
   bool loading = false;
 
@@ -64,7 +66,9 @@ class _WorkerAddScreenState extends State<WorkerAddScreen> {
           final dob = value['DOB'] as DateTime;
           value['DOB'] = dob.toIso8601String();
         }
-        final worker = Worker.fromJson(value);
+        var worker = Worker.fromJson(value);
+
+        worker = worker.copyWith(gender: gender);
 
         int? resultId;
 
@@ -182,6 +186,19 @@ class _WorkerAddScreenState extends State<WorkerAddScreen> {
               name: 'GenderId',
               validator: requiredValidator,
               hintText: LocaleKeys.gender.tr(),
+              onChanged: (value) {
+                switch (value) {
+                  case 1:
+                    gender = LocaleKeys.male_key.tr();
+                    break;
+                  case 2:
+                    gender = LocaleKeys.female_key.tr();
+                    break;
+                  case 3:
+                    gender = LocaleKeys.unknown.tr();
+                    break;
+                }
+              },
               itemsData: [
                 CmoDropdownItem(id: 1, name: LocaleKeys.male_key.tr()),
                 CmoDropdownItem(id: 2, name: LocaleKeys.female_key.tr()),
