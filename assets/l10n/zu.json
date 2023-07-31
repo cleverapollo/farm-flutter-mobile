@@ -554,5 +554,6 @@
   "default_text": "Default",
   "satellite": "Satellite",
   "terrain": "Terrain",
-  "inclusion_date": "Inclusion Date"
+  "inclusion_date": "Inclusion Date",
+  "no_internet_to_create_boundary": "Internet Required to create Boundary.\nPlease connect to the internet."
 }

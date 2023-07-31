@@ -14,6 +14,7 @@ import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/constants.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geocoding/geocoding.dart';
@@ -25,6 +26,8 @@ import 'package:google_maps_flutter_platform_interface/src/types/location.dart'
 import 'package:map_autocomplete_field/map_autocomplete_field.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:maps_toolkit/src/latlng.dart' as mapToolkitLatlong;
+
+import '../../../../../utils/network_utils.dart';
 
 class CompartmentMapScreen extends StatefulWidget {
   static Future<T?> push<T>(
@@ -64,10 +67,38 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   bool _isFinished = false;
   double? areaSquareMeters;
   var _mapType = MapType.normal;
+  final _connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  bool _hasInternet = false;
 
   @override
   void initState() {
     super.initState();
+    onInternetStateChangeListener();
+  }
+
+  Future<void> onInternetStateChangeListener() async {
+    final hasInternet = await NetworkUtils().hasInternet();
+    if (!hasInternet) {
+      setState(() {
+        _hasInternet = hasInternet;
+      });
+    }
+
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
+      final hasInternet = result != ConnectivityResult.none;
+      if (hasInternet != _hasInternet) {
+        setState(() {
+          _hasInternet = hasInternet;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
   }
 
   void _drawInitialPolygon() {
@@ -156,6 +187,9 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                     child: Icon(Icons.satellite_outlined, color: Colors.black54,),
                   ),
                 ),
+                Center(
+                  child: _buildNoInternet(),
+                )
               ],
             ),
           ),
@@ -369,6 +403,25 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
           lastPoint.latitude, lastPoint.longitude),
     );
     return distance < 3;
+  }
+
+  Widget _buildNoInternet() {
+    if (_hasInternet) {
+      return const SizedBox.shrink();
+    }
+    return Container(
+      height: 174,
+      width: double.infinity,
+      color: context.colors.greyD9D9,
+      alignment: AlignmentDirectional.center,
+      child: Text(
+        LocaleKeys.no_internet_to_create_boundary.tr(),
+        textAlign: TextAlign.center,
+        style: context.textStyles.bodyNormal.copyWith(
+          color: context.colors.blue,
+        ),
+      ),
+    );
   }
 }
 
