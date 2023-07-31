@@ -6,10 +6,12 @@ part 'question_photo_pay_load.g.dart';
 @freezed
 class QuestionPhotoPayLoad with _$QuestionPhotoPayLoad {
   const factory QuestionPhotoPayLoad({
-    required int? PhotoId,
-    required int? AssessmentId,
-    required int? QuestionId,
-    required String? PhotoPath,
+    int? PhotoId,
+    int? AssessmentId,
+    int? QuestionId,
+    String? Photo,
+    String? NormalisedPhotoURL,
+    String? PhotoURL,
   }) = _QuestionPhotoPayLoad;
 
   factory QuestionPhotoPayLoad.fromJson(Map<String, dynamic> json) =>

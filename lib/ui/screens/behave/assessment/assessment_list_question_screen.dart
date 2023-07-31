@@ -201,8 +201,8 @@ class _AssessmentListQuestionScreenState
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 32.0),
-                    child: BlocSelector<AssessmentQuestionCubit, AssessmentQuestionState,
-                        AssessmentQuestionState>(
+                    child: BlocSelector<AssessmentQuestionCubit,
+                        AssessmentQuestionState, AssessmentQuestionState>(
                       selector: (state) => state,
                       builder: (context, state) => Text(
                         '${state.getAnsweredFilteredQuestions().length}/${state.filteredQuestions.length}',
@@ -215,10 +215,10 @@ class _AssessmentListQuestionScreenState
             ),
           ),
           Expanded(
-            child: BlocSelector<AssessmentQuestionCubit, AssessmentQuestionState,
-                AssessmentQuestionState>(
+            child: BlocSelector<AssessmentQuestionCubit,
+                AssessmentQuestionState, AssessmentQuestionState>(
               selector: (state) => state,
-              builder: (context, state) =>ListView.separated(
+              builder: (context, state) => ListView.separated(
                 itemCount: state.filteredQuestions.length,
                 itemBuilder: (context, index) {
                   final question = state.filteredQuestions[index];
@@ -259,8 +259,8 @@ class _AssessmentListQuestionScreenState
                                 children: [
                                   for (final compliance in state.compliances)
                                     CmoTappable(
-                                      onTap: ()  {
-                                         _addAnswer(
+                                      onTap: () {
+                                        _addAnswer(
                                           question,
                                           compliance,
                                         );
@@ -289,7 +289,8 @@ class _AssessmentListQuestionScreenState
                                     selector: (state) => state.questionPhotos
                                         .where(
                                           (e) =>
-                                              e.questionId == question.questionId,
+                                              e.questionId ==
+                                              question.questionId,
                                         )
                                         .isNotBlank,
                                     builder: (context, havePhoto) =>
@@ -315,7 +316,8 @@ class _AssessmentListQuestionScreenState
                                     selector: (state) => state.questionComments
                                         .where(
                                           (e) =>
-                                              e.questionId == question.questionId,
+                                              e.questionId ==
+                                              question.questionId,
                                         )
                                         .isNotBlank,
                                     builder: (context, haveComment) =>

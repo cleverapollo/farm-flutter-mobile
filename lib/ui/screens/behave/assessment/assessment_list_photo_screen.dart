@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cmo/extensions/iterable_extensions.dart';
@@ -45,25 +46,37 @@ class _AssessmentListPhotoScreenState extends State<AssessmentListPhotoScreen> {
 
   Future<void> _selectPhotoFromCamera() async {
     final croppedImage = await _imagePickerService.pickImageFromCamera();
-    if (croppedImage != null) {
-      if (context.mounted) {
-        await context.read<AssessmentQuestionCubit>().addPhoto(
-              questionId: widget.questionId,
-              photoPath: croppedImage.path,
-            );
-      }
+
+    if (croppedImage?.path == null) return;
+
+    final imageFile = File(croppedImage!.path); //convert Path to File
+    final imageBytes = await imageFile.readAsBytes(); //convert to bytes
+    final base64String = base64.encode(imageBytes);
+
+    if (context.mounted) {
+      await context.read<AssessmentQuestionCubit>().addPhoto(
+            questionId: widget.questionId,
+            photoBase64: 'data:image/jpeg;base64,$base64String',
+            photoPath: croppedImage.path,
+          );
     }
   }
 
   Future<void> _selectPhotoFromGallery() async {
     final croppedImage = await _imagePickerService.pickImageFromGallery();
-    if (croppedImage != null) {
-      if (context.mounted) {
-        await context.read<AssessmentQuestionCubit>().addPhoto(
-              questionId: widget.questionId,
-              photoPath: croppedImage.path,
-            );
-      }
+
+    if (croppedImage?.path == null) return;
+
+    final imageFile = File(croppedImage!.path); //convert Path to File
+    final imageBytes = await imageFile.readAsBytes(); //convert to bytes
+    final base64String = base64.encode(imageBytes);
+
+    if (context.mounted) {
+      await context.read<AssessmentQuestionCubit>().addPhoto(
+            questionId: widget.questionId,
+            photoBase64: 'data:image/jpeg;base64,$base64String',
+            photoPath: croppedImage.path,
+          );
     }
   }
 
@@ -104,7 +117,7 @@ class _AssessmentListPhotoScreenState extends State<AssessmentListPhotoScreen> {
                 const SizedBox(height: 6),
                 Expanded(
                   child: Image.file(
-                    File(images[index].photo!),
+                    File(images[index].photoPath!),
                     fit: BoxFit.cover,
                   ),
                 ),

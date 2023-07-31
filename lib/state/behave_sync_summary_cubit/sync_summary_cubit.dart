@@ -239,7 +239,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
     for (final assessment in assessments) {
       var assessmentPayLoad = const AssessmentPayLoad();
       assessmentPayLoad = assessmentPayLoad.copyWith(
-        AssessmentId: DateTime.now().millisecondsSinceEpoch,
+        AssessmentId: assessment.assessmentId,
         CompanyId: assessment.companyId,
         ContractorId: assessment.contractorId,
         JobCategoryId: assessment.jobCategoryId,

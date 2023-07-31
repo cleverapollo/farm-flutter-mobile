@@ -381,8 +381,8 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
           title: LocaleKeys.siteLocation.tr(),
           textEditingController: _locationResultController,
           onTap: () async {
-            final data = await SelectSiteLocationScreen.push<
-                SiteLocationScreenResult>(
+            final data =
+                await SelectSiteLocationScreen.push<SiteLocationScreenResult>(
               context,
             );
             if (data is SiteLocationScreenResult) {

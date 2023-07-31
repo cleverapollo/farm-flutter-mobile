@@ -386,13 +386,15 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
   Future<QuestionPhoto?> addPhoto({
     required int? questionId,
     required String photoPath,
+    required String photoBase64,
   }) async {
     final assessment = state.assessment;
     final photo = QuestionPhoto(
       assessmentId: assessment?.assessmentId,
-      photo: photoPath,
+      photo: photoBase64,
       questionId: questionId,
-      photoId: null,
+      photoId: DateTime.now().millisecondsSinceEpoch,
+      photoPath: photoPath,
     );
     await cmoDatabaseMasterService.cacheQuestionPhoto(photo);
     final photoData =

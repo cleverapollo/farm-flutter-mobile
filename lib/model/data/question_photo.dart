@@ -16,6 +16,7 @@ class QuestionPhoto with _$QuestionPhoto {
     @JsonKey(name: 'PhotoURL') String? photoURL,
     @JsonKey(name: 'NormalisedPhotoURL') String? normalisedPhotoURL,
     @JsonKey(name: 'Photo') required String? photo,
+    @JsonKey(name: 'PhotoPath') String? photoPath,
   }) = _QuestionPhoto;
 
   factory QuestionPhoto.fromJson(Map<String, dynamic> json) =>
@@ -29,10 +30,12 @@ class QuestionPhoto with _$QuestionPhoto {
 extension QuestionPhotoExtension on QuestionPhoto {
   QuestionPhotoPayLoad toPayLoad() {
     return QuestionPhotoPayLoad(
-        PhotoId: photoId,
-        AssessmentId: assessmentId,
-        QuestionId: questionId,
-        PhotoPath: photo,
+      PhotoId: photoId,
+      AssessmentId: assessmentId,
+      QuestionId: questionId,
+      Photo: photo,
+      NormalisedPhotoURL: normalisedPhotoURL,
+      PhotoURL: photoURL,
     );
   }
 

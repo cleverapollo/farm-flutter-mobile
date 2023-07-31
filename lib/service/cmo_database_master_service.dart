@@ -231,7 +231,6 @@ class CmoDatabaseMasterService {
   Future<List<FarmMemberObjective>> getAllFarmMemberObjectiveByGroupSchemeId(
     int? groupSchemeId,
   ) async {
-
     if (groupSchemeId == null) return <FarmMemberObjective>[];
 
     final db = await _db();
@@ -246,7 +245,6 @@ class CmoDatabaseMasterService {
   Future<List<FarmObjectiveOption>> getFarmObjectiveOptionByGroupSchemeId(
     int? groupSchemeId,
   ) async {
-
     if (groupSchemeId == null) return <FarmObjectiveOption>[];
 
     final db = await _db();
@@ -274,8 +272,8 @@ class CmoDatabaseMasterService {
     });
   }
 
-  Future<List<FarmMemberRiskProfileAnswer>> getFarmMemberRiskProfileAnswerByFarmId(String? farmId) async {
-
+  Future<List<FarmMemberRiskProfileAnswer>>
+      getFarmMemberRiskProfileAnswerByFarmId(String? farmId) async {
     if (farmId == null) return <FarmMemberRiskProfileAnswer>[];
 
     final db = await _db();
@@ -286,7 +284,8 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<FarmMemberRiskProfileAnswer>> getFarmMemberRiskProfileAnswerByFarmIdAndIsMasterDataSynced(
+  Future<List<FarmMemberRiskProfileAnswer>>
+      getFarmMemberRiskProfileAnswerByFarmIdAndIsMasterDataSynced(
     String farmId,
   ) async {
     final db = await _db();
@@ -301,7 +300,6 @@ class CmoDatabaseMasterService {
   Future<List<FarmMemberObjectiveAnswer>> getFarmMemberObjectiveAnswerByFarmId(
     String? farmId,
   ) async {
-
     if (farmId == null) return <FarmMemberObjectiveAnswer>[];
 
     final db = await _db();
@@ -312,7 +310,8 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<FarmMemberObjectiveAnswer>> getFarmMemberObjectiveAnswerByFarmIdAndIsMasterDataSynced(
+  Future<List<FarmMemberObjectiveAnswer>>
+      getFarmMemberObjectiveAnswerByFarmIdAndIsMasterDataSynced(
     String farmId,
   ) async {
     final db = await _db();
@@ -1179,7 +1178,8 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<GroupSchemeStakeholder?> getGroupSchemeStakeholderByStakeholderId(String id) async {
+  Future<GroupSchemeStakeholder?> getGroupSchemeStakeholderByStakeholderId(
+      String id) async {
     final db = await _db();
 
     return db.groupSchemeStakeholders
@@ -2478,7 +2478,8 @@ class CmoDatabaseMasterService {
     return db.riskProfileQuestions.put(item);
   }
 
-  Future<List<RiskProfileQuestion>> getRiskProfileQuestionByGroupSchemeId(int? groupSchemeId) async {
+  Future<List<RiskProfileQuestion>> getRiskProfileQuestionByGroupSchemeId(
+      int? groupSchemeId) async {
     final db = await _db();
 
     return db.riskProfileQuestions
@@ -2615,7 +2616,8 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<Farm>?> getUnsyncedFarmsByRegionalManagerUnitId(int? rmuId) async {
+  Future<List<Farm>?> getUnsyncedFarmsByRegionalManagerUnitId(
+      int? rmuId) async {
     if (rmuId == null) return null;
     final db = await _db();
     return db.farms
@@ -2788,7 +2790,6 @@ class CmoDatabaseMasterService {
       return db.stakeHolders.put(item);
     });
   }
-
 
   Future<int> cacheStakeHolderType(StakeHolderType item) async {
     final db = await _db();
@@ -3383,7 +3384,7 @@ class CmoDatabaseMasterService {
   Future<QuestionPhoto?> getQuestionPhotoByPhotoPath(String? photoPath) async {
     if (photoPath == null) return null;
     final db = await _db();
-    return db.questionPhotos.filter().photoEqualTo(photoPath).findFirst();
+    return db.questionPhotos.filter().photoPathEqualTo(photoPath).findFirst();
   }
 
   Future<List<Audit>> getAllAudits() async {
