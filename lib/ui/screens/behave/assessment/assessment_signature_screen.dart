@@ -8,7 +8,6 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/file_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hand_signature/signature.dart';
 
 class AssessmentSignatureScreen extends StatefulWidget {

@@ -393,10 +393,12 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
       photo: photoBase64,
       questionId: questionId,
       photoPath: photoPath,
-      photoURL: photoPath,
-      normalisedPhotoURL: photoPath,
     );
-    await cmoDatabaseMasterService.cacheQuestionPhoto(photo);
+
+    var countPhotos = await cmoDatabaseMasterService.countQuestionPhotos();
+
+    await cmoDatabaseMasterService
+        .cacheQuestionPhoto(photo.copyWith(photoId: countPhotos++));
     final photoData =
         await cmoDatabaseMasterService.getQuestionPhotoByPhotoPath(photoPath);
     if (photoData != null) {

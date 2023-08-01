@@ -7,10 +7,7 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/config/config.dart';
-import 'package:cmo/model/data/question_comment.dart';
-import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/disciplinaries/disciplonaries.dart';
-import 'package:cmo/model/group_scheme_stakeholder/group_scheme_stakeholder.dart';
 import 'package:cmo/model/hirac.dart';
 import 'package:cmo/model/hirac_template.dart';
 import 'package:cmo/model/hirac_type.dart';
@@ -3614,6 +3611,15 @@ class CmoDatabaseMasterService {
         .photoIsNotNull()
         .photoIsNotEmpty()
         .findAll();
+  }
+
+  Future<int> countQuestionPhotos() async {
+    final db = await _db();
+
+    final photos =
+        await db.questionPhotos.filter().photoIdIsNotNull().findAll();
+
+    return photos.length;
   }
 
   Future<QuestionComment?> getQuestionCommentByComment(String? comment) async {
