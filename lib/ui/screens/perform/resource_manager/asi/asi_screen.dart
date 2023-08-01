@@ -63,7 +63,8 @@ class _ASIScreenState extends State<ASIScreen> {
             farmName: widget.farmName,
             campId: context.read<AsiCubit>().state.campId,
           );
-          context.read<AsiCubit>().loadAsis();
+
+          await context.read<AsiCubit>().loadAsis();
         },
       ),
       body: SizedBox.expand(

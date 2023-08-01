@@ -177,6 +177,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       await Future.delayed(const Duration(seconds: 25), () async {
         await publishCompartments();
         await Future.delayed(const Duration(seconds: 5), () async {
+          await publishASIs();
           await publishAudits();
         });
 
@@ -510,6 +511,35 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         }
       } else {
         logger.d('No Compartments to sync');
+      }
+    } catch (error) {
+      logger.e(error);
+    }
+  }
+
+  Future<void> publishASIs() async {
+    emit(
+      state.copyWith(
+        syncMessage: 'Syncing ASI...',
+        isLoading: true,
+      ),
+    );
+
+    try {
+      logger.d('Get unsynced ASI');
+      final listASI = await cmoDatabaseMasterService.getRMAsiRegister();
+      if (listASI.isNotBlank) {
+        logger.d('Unsynced ASI count: ${listASI.length}');
+        for (final asi in listASI) {
+          final syncedAsi = await cmoPerformApiService.insertUpdatedASI(asi);
+          if (syncedAsi != null) {
+            logger.d('Successfully published ASI: ${syncedAsi.asiRegisterId}');
+          } else {
+            logger.e('Failed to publish ASI: ${syncedAsi?.asiRegisterId}');
+          }
+        }
+      } else {
+        logger.d('No ASI to sync');
       }
     } catch (error) {
       logger.e(error);

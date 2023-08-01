@@ -1369,6 +1369,15 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<List<AsiType>> getAsiTypes() async {
+    final db = await _db();
+
+    return db.asiTypes
+        .filter()
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
   Future<List<AnnualBudgetTransactionCategory>>
       getAnnualBudgetTransactionCategory() async {
     final db = await _db();
@@ -1942,6 +1951,16 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<Asi>> getRMAsiRegister() async {
+    final db = await _db();
+
+    return db.asis
+        .filter()
+        .isMasterdataSyncedEqualTo(false)
+        .isActiveEqualTo(true)
         .findAll();
   }
 
@@ -3679,7 +3698,11 @@ class CmoDatabaseMasterService {
 
   Future<List<Compartment>?> getCompartmentByFarmId(String farmId) async {
     final db = await _db();
-    return db.compartments.filter().farmIdEqualTo(farmId).findAll();
+    return db.compartments
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .findAll();
   }
 
   Future<Hirac?> getHiracById(int id) async {

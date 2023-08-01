@@ -25,12 +25,13 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     if (userRole == UserRoleEnum.farmerMember) {
       types = await cmoPerformApiService.fetchFarmerAsiType();
     } else {
-      types = await cmoPerformApiService.fetchRMAsiType();
+      types = await cmoDatabaseMasterService.getAsiTypes();
     }
 
     final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(
       state.asi.farmId ?? '',
     );
+
     emit(
       state.copyWith(
         types: types,

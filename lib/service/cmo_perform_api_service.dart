@@ -684,6 +684,28 @@ class CmoPerformApiService {
     }
   }
 
+  Future<Asi?> insertUpdatedASI(Asi asi) async {
+    try {
+      log(asi.toJson().toString());
+      final response = await client.post<JsonData>(
+        '${Env.apiGroupSchemeUrl}AsiRegister/CreateOrUpdateAsiRegister',
+        data: asi.toJson(),
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data;
+      return data == null ? null : Asi.fromJson(data);
+    } catch (e) {
+      logger.d('Cannot insertUpdatedASI $e');
+      return null;
+    }
+  }
+
   Future<List<GroupScheme>?> getGroupSchemeByGroupSchemeId(int id) async {
     final uri = Uri.https(
       Env.cmoApiUrl,
