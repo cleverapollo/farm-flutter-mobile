@@ -8,14 +8,12 @@ class AsiDetailState {
     this.compartments = const <Compartment>[],
     this.photoName,
     this.locationModel,
-    this.currentDate = '',
   });
 
   final List<AsiType> types;
   final List<Compartment> compartments;
   final LocationModel? locationModel;
   String? photoName;
-  String currentDate;
   Asi asi;
 
   AsiDetailState copyWith({
@@ -24,7 +22,6 @@ class AsiDetailState {
     String? photoName,
     LocationModel? locationModel,
     Asi? asi,
-    String? currentDate,
   }) {
     return AsiDetailState(
       types: types ?? this.types,
@@ -32,7 +29,6 @@ class AsiDetailState {
       photoName: photoName ?? this.photoName,
       asi: asi ?? this.asi,
       locationModel: locationModel ?? this.locationModel,
-      currentDate: currentDate ?? this.currentDate,
     );
   }
 }

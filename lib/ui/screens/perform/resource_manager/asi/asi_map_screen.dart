@@ -5,23 +5,23 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/utils/file_utils.dart';
 import 'package:cmo/utils/logger.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import '../../../../../model/asi.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cmo/model/asi.dart';
 
 class ASIMapScreen extends StatefulWidget {
   final String? farmName;
   final String farmId;
   final String? campId;
+  final Asi? asi;
 
   const ASIMapScreen({
     super.key,
     required this.farmId,
     this.farmName,
     this.campId,
+    this.asi,
   });
 
   static Future<void> push(
@@ -29,6 +29,7 @@ class ASIMapScreen extends StatefulWidget {
     String? farmId,
     String? farmName,
     String? campId,
+    Asi? asi,
   }) {
     return Navigator.push(
       context,
@@ -36,7 +37,8 @@ class ASIMapScreen extends StatefulWidget {
         builder: (_) => ASIMapScreen(
           farmId: farmId ?? '',
           farmName: farmName,
-            campId: campId,
+          campId: campId,
+          asi: asi,
         ),
       ),
     );
@@ -48,7 +50,9 @@ class ASIMapScreen extends StatefulWidget {
 
 class _ASIMapScreenState extends State<ASIMapScreen> {
 
+  late Asi? _asi;
   late LocationModel locationModel;
+  LatLng? initLatLng;
 
   final mapKey = GlobalKey<CmoMapState>();
 
@@ -61,7 +65,17 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
   @override
   void initState() {
     super.initState();
-    locationModel = LocationModel();
+    _asi = widget.asi;
+    if(_asi != null) {
+      locationModel = LocationModel()
+          ..latitude = _asi?.latitude
+          ..longitude = _asi?.longitude;
+      if (locationModel.latitude != null && locationModel.longitude != null) {
+        initLatLng = LatLng(locationModel.latitude!, locationModel.longitude!);
+      }
+    } else {
+      locationModel = LocationModel();
+    }
   }
 
   void onPinned(double latitude, double longitude) {
@@ -164,6 +178,8 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                   onRemoveMarker: onRemoveMarker,
                   takePhotoFromCamera: takePhotoFromCamera,
                   onSelectPhotos: onSelectPhoto,
+                  initialMapCenter: initLatLng,
+                  selectedPoint: initLatLng,
                 ),
               ),
               const SizedBox(height: 32),
@@ -174,16 +190,24 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                     loading: loading,
                     onTap: () {
                       if (isEnableNextButton) {
-                        ASIDetailScreen.push(
-                          context,
-                          farmName: widget.farmName,
-                          locationModel: locationModel,
-                          asi: Asi(
+                        if (_asi != null) {
+                          _asi = _asi!.copyWith(
+                            latitude: locationModel.latitude,
+                            longitude: locationModel.longitude,
+                          );
+                        } else {
+                          _asi = Asi(
                             farmId: widget.farmId,
                             campId: widget.campId,
                             latitude: locationModel.latitude,
                             longitude: locationModel.longitude,
-                          ),
+                          );
+                        }
+                        ASIDetailScreen.push(
+                          context,
+                          farmName: widget.farmName,
+                          locationModel: locationModel,
+                          asi: _asi!
                         );
                       }
                     },

@@ -5,7 +5,6 @@ import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
 
 class AsiDetailCubit extends Cubit<AsiDetailState> {
@@ -43,7 +42,8 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
   Future<void> saveAsi(
     List<String>? listImage,
   ) async {
-    final asiId = DateTime.now().millisecondsSinceEpoch.toString();
+    var asiId = state.asi.asiRegisterId;
+    asiId ??= DateTime.now().millisecondsSinceEpoch.toString();
     state.asi = state.asi.copyWith(
       isActive: true,
       asiRegisterId: asiId,
@@ -111,11 +111,8 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
   }
 
   void onDateChanged({required DateTime? date}) {
-    final format = DateFormat('dd MM yyyy');
-    final currentDate = format.format(date ?? DateTime.now());
     emit(
       state.copyWith(
-        currentDate: currentDate,
         asi: state.asi.copyWith(date: date),
       ),
     );

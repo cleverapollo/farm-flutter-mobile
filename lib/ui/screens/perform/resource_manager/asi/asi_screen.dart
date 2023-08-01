@@ -145,7 +145,18 @@ class _ASIScreenState extends State<ASIScreen> {
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: CmoTappable(
-                                    onTap: () {},
+                                    onTap: () async {
+                                      await ASIMapScreen.push(
+                                        context,
+                                        farmId: context.read<AsiCubit>().state.farmId,
+                                        farmName: widget.farmName,
+                                        campId: context.read<AsiCubit>().state.campId,
+                                        asi: listAsi[index],
+                                      );
+                                      if (context.mounted) {
+                                        await context.read<AsiCubit>().loadAsis();
+                                      }
+                                    },
                                     child: CmoCard(
                                       content: [
                                         CmoCardHeader(

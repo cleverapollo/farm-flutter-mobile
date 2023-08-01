@@ -105,7 +105,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
             padding: const EdgeInsets.symmetric(
               horizontal: 24.0,
             ),
-            child: buildASINoWidget(),
+            child: buildASINoWidget(asiRegisterNo: state.asi.asiRegisterNo),
           ),
           const SizedBox(height: 20),
           Padding(
@@ -133,21 +133,12 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: buildDatePicker(state.currentDate),
+            child: buildDatePicker(datetime: state.asi.date),
           ),
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: CmoTextField(
-              inputDecoration: _buildInputDecoration(
-                context,
-                LocaleKeys.comments.tr(),
-              ),
-              maxLines: 5,
-              onChanged: (value) {
-                _asiDetailCubit.onCommentChanged(comment: value);
-              },
-            ),
+            child: _buildCommentWidget(comment: state.asi.comment),
           ),
           const SizedBox(height: 12),
           if (state.locationModel!.imageUri.isNotBlank)
@@ -175,7 +166,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
     return BlocBuilder<AsiDetailCubit, AsiDetailState>(
       builder: (context, state) {
         final locationModel = state.locationModel;
-        final currentDate = state.currentDate;
+        final currentDate = state.asi.date;
         return CmoFilledButton(
           title: LocaleKeys.save.tr(),
           onTap: () async {
@@ -186,7 +177,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
               showSnackError(msg: LocaleKeys.location_is_required.tr());
               return;
             }
-            if (currentDate.isEmpty) {
+            if (currentDate == null) {
               showSnackError(msg: LocaleKeys.date_is_required.tr());
               return;
             }
@@ -206,7 +197,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
     );
   }
 
-  Widget buildASINoWidget() {
+  Widget buildASINoWidget({required String? asiRegisterNo}) {
     return CmoTextField(
       hintText: LocaleKeys.asi_no.tr(),
       validator: requiredValidator,
@@ -214,8 +205,25 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
         context,
         LocaleKeys.asi_no.tr(),
       ),
+      name: asiRegisterNo ?? '',
+      initialValue: asiRegisterNo,
       onChanged: (value) {
         _asiDetailCubit.onAsiRegisterNoChanged(asiRegisterNo: value);
+      },
+    );
+  }
+
+  Widget _buildCommentWidget({required String? comment}) {
+    return CmoTextField(
+      inputDecoration: _buildInputDecoration(
+        context,
+        LocaleKeys.comments.tr(),
+      ),
+      name: comment ?? '',
+      initialValue: comment,
+      maxLines: 5,
+      onChanged: (value) {
+        _asiDetailCubit.onCommentChanged(comment: value);
       },
     );
   }
@@ -263,7 +271,10 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
     );
   }
 
-  Widget buildSelectASIType({required BuildContext context, required Asi asi, required List<AsiType> types}) {
+  Widget buildSelectASIType(
+      {required BuildContext context,
+      required Asi asi,
+      required List<AsiType> types}) {
     return BottomSheetSelection(
       hintText: LocaleKeys.type.tr(),
       value: asi.asiTypeName,
@@ -335,7 +346,12 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
     );
   }
 
-  Widget buildDatePicker(String currentDate) {
+  Widget buildDatePicker({required DateTime? datetime}) {
+    String? currentDate;
+    if (datetime != null) {
+      final format = DateFormat('dd MM yyyy');
+      currentDate = format.format(datetime);
+    }
     return BottomSheetSelection(
       hintText: LocaleKeys.date.tr(),
       value: currentDate,
@@ -343,7 +359,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
         padding: const EdgeInsets.only(bottom: 4.0),
         child: Row(
           children: [
-            if (currentDate.isNotEmpty) Assets.icons.icTick.widget,
+            if (datetime != null) Assets.icons.icTick.widget,
             const SizedBox(
               width: 8,
             ),
@@ -450,11 +466,11 @@ class _ThumbnailImageState extends State<_ThumbnailImage> {
               showImageViewer(context, imageProvider);
             },
             child: Image.file(
-                File(widget.uri),
-                fit: BoxFit.fitHeight,
-                width: 74,
-                height: 74,
-              ),
+              File(widget.uri),
+              fit: BoxFit.fitHeight,
+              width: 74,
+              height: 74,
+            ),
             // Image.memory(
             //   base64Decode(widget.uri),
             //   fit: BoxFit.fitHeight,
@@ -475,7 +491,8 @@ class _ThumbnailImageState extends State<_ThumbnailImage> {
           const SizedBox(width: 8),
           GestureDetector(
             onTap: () async {
-              var path = (await ImagePickerService().pickImageFromGallery())?.path;
+              var path =
+                  (await ImagePickerService().pickImageFromGallery())?.path;
               if (path != null) {
                 widget.onChanged?.call(path);
               }
@@ -485,7 +502,8 @@ class _ThumbnailImageState extends State<_ThumbnailImage> {
           const SizedBox(width: 8),
           GestureDetector(
             onTap: () async {
-              var path = (await ImagePickerService().pickImageFromCamera())?.path;
+              var path =
+                  (await ImagePickerService().pickImageFromCamera())?.path;
               if (path != null) {
                 widget.onChanged?.call(path);
               }
