@@ -3,10 +3,9 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/utils/file_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hand_signature/signature.dart';
 
@@ -124,13 +123,27 @@ class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
           CmoFilledButton(
             title: LocaleKeys.acceptSignature.tr(),
             onTap: () async {
-              var assessment = await cmoDatabaseMasterService.getCachedAssessment(id: widget.assessmentId);
-              assessment = assessment
-                  ?.copyWith(signatureImage: _signatureController.toSvg());
-              if (assessment != null) {
-                await cmoDatabaseMasterService.cacheAssessment(assessment);
+              try {
+                var assessment = await cmoDatabaseMasterService
+                    .getCachedAssessment(id: widget.assessmentId);
+
+                final image = await _signatureController.toImage();
+
+                final file = await FileUtil.writeToFile(image!);
+                final _base64 = await FileUtil.toBase64(file);
+
+                assessment = assessment?.copyWith(
+                  signatureImage: _base64.stringToBase64SyncServer,
+                  signatureDate: DateTime.now().toIso8601String(),
+                );
+
+                if (assessment != null) {
+                  await cmoDatabaseMasterService.cacheAssessment(assessment);
+                }
+                if (context.mounted) Navigator.of(context).pop();
+              } catch (e) {
+                debugPrint(e.toString());
               }
-              if (context.mounted) Navigator.of(context).pop();
             },
           ),
           const SafeArea(top: false, child: SizedBox(height: 24)),

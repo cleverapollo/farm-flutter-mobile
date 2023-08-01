@@ -2,8 +2,6 @@
 
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
-import 'package:cmo/model/data/question_comment.dart';
-import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:equatable/equatable.dart';
@@ -390,11 +388,13 @@ class AssessmentQuestionCubit extends Cubit<AssessmentQuestionState> {
   }) async {
     final assessment = state.assessment;
     final photo = QuestionPhoto(
+      photoId: null,
       assessmentId: assessment?.assessmentId,
       photo: photoBase64,
       questionId: questionId,
-      photoId: DateTime.now().millisecondsSinceEpoch,
       photoPath: photoPath,
+      photoURL: photoPath,
+      normalisedPhotoURL: photoPath,
     );
     await cmoDatabaseMasterService.cacheQuestionPhoto(photo);
     final photoData =
