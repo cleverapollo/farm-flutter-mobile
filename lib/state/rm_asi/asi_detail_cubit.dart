@@ -1,27 +1,27 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
-import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'asi_detail_state.dart';
+import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/state/rm_asi/asi_detail_state.dart';
 
 class AsiDetailCubit extends Cubit<AsiDetailState> {
-  AsiDetailCubit(
-    String farmId, {
-    LocationModel? locationModel,
-    String? campId,
-  }) : super(AsiDetailState(
-          farmId: farmId,
-          locationModel: locationModel,
-          campId: campId,
-        ));
+  AsiDetailCubit({
+    required Asi asi,
+    required LocationModel? locationModel,
+  }) : super(
+          AsiDetailState(
+            asi: asi,
+            locationModel: locationModel,
+          ),
+        );
 
-  Future fetchData() async {
+  Future<void> fetchData() async {
     final userRole = await configService.getActiveUserRole();
+
     List<AsiType>? types;
     if (userRole == UserRoleEnum.farmerMember) {
       types = await cmoPerformApiService.fetchFarmerAsiType();
@@ -29,7 +29,9 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
       types = await cmoPerformApiService.fetchRMAsiType();
     }
 
-    final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(state.farmId);
+    final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(
+      state.asi.farmId ?? '',
+    );
     emit(
       state.copyWith(
         types: types,
@@ -39,19 +41,14 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
   }
 
   Future<void> saveAsi(
-    Asi asi,
     List<String>? listImage,
   ) async {
     final asiId = DateTime.now().millisecondsSinceEpoch.toString();
-    final savingAsi = asi.copyWith(
-      farmId: state.farmId,
-      campId: state.campId,
-      latitude: state.locationModel?.latitude,
-      longitude: state.locationModel?.longitude,
+    state.asi = state.asi.copyWith(
       isActive: true,
       asiRegisterId: asiId,
     );
-    await cmoDatabaseMasterService.cacheAsi(savingAsi);
+    await cmoDatabaseMasterService.cacheAsi(state.asi);
     await cmoDatabaseMasterService.cacheAsiPhoto(
       AsiPhoto(
         asiRegisterPhotoId: DateTime.now().millisecondsSinceEpoch,
@@ -76,5 +73,75 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
 
   void onPhotoNameChanged(String text) {
     emit(state.copyWith(photoName: text));
+  }
+
+  void onCommentChanged({required String? comment}) {
+    state.asi = state.asi.copyWith(comment: comment);
+  }
+
+  void onAsiRegisterNoChanged({required String? asiRegisterNo}) {
+    state.asi = state.asi.copyWith(asiRegisterNo: asiRegisterNo);
+  }
+
+  void onCompartmentChanged({
+    required int? compartmentId,
+    required String? compartmentName,
+  }) {
+    emit(
+      state.copyWith(
+        asi: state.asi.copyWith(
+          compartmentId: compartmentId,
+          compartmentName: compartmentName,
+        ),
+      ),
+    );
+  }
+
+  void onAsiTypeChanged({
+    required int? asiTypeId,
+    required String? asiTypeName,
+  }) {
+    emit(
+      state.copyWith(
+          asi: state.asi.copyWith(
+        asiTypeId: asiTypeId,
+        asiTypeName: asiTypeName,
+      )),
+    );
+  }
+
+  void onDateChanged({required DateTime? date}) {
+    final format = DateFormat('dd MM yyyy');
+    final currentDate = format.format(date ?? DateTime.now());
+    emit(
+      state.copyWith(
+        currentDate: currentDate,
+        asi: state.asi.copyWith(date: date),
+      ),
+    );
+  }
+
+  void onRemoveLocationImageUri() {
+    final location = state.locationModel;
+    location?.imageUri = null;
+    emit(
+      state.copyWith(locationModel: location),
+    );
+  }
+
+  void onRemoveLocationImage(String image) {
+    final location = state.locationModel;
+    location?.listImage.remove(image);
+    emit(
+      state.copyWith(locationModel: location),
+    );
+  }
+
+  void onUpdateLocationImage(String image) {
+    final location = state.locationModel;
+    location?.imageUri = image;
+    emit(
+      state.copyWith(locationModel: location),
+    );
   }
 }

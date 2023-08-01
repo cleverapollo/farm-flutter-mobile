@@ -10,6 +10,8 @@ import 'package:cmo/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../../model/asi.dart';
+
 class ASIMapScreen extends StatefulWidget {
   final String? farmName;
   final String farmId;
@@ -174,10 +176,14 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                       if (isEnableNextButton) {
                         ASIDetailScreen.push(
                           context,
-                          farmId: widget.farmId,
                           farmName: widget.farmName,
                           locationModel: locationModel,
-                          campId: widget.campId,
+                          asi: Asi(
+                            farmId: widget.farmId,
+                            campId: widget.campId,
+                            latitude: locationModel.latitude,
+                            longitude: locationModel.longitude,
+                          ),
                         );
                       }
                     },

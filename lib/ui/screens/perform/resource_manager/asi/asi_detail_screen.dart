@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:cmo/extensions/iterable_extensions.dart';
@@ -22,17 +21,15 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class ASIDetailScreen extends StatefulWidget {
-  const ASIDetailScreen({super.key, this.locationModel, this.farmName});
+  const ASIDetailScreen({super.key, this.farmName});
 
-  final LocationModel? locationModel;
   final String? farmName;
 
-  static Future push(
+  static Future<void> push(
     BuildContext context, {
-    LocationModel? locationModel,
-    required String farmId,
+    required Asi asi,
+    required LocationModel? locationModel,
     String? farmName,
-    String? campId,
   }) {
     return Navigator.push(
       context,
@@ -40,12 +37,10 @@ class ASIDetailScreen extends StatefulWidget {
         builder: (_) {
           return BlocProvider(
             create: (_) => AsiDetailCubit(
-              farmId ?? '',
               locationModel: locationModel,
-              campId: campId,
+              asi: asi,
             )..fetchData(),
             child: ASIDetailScreen(
-              locationModel: locationModel,
               farmName: farmName,
             ),
           );
@@ -60,8 +55,13 @@ class ASIDetailScreen extends StatefulWidget {
 
 class _ASIDetailScreenState extends State<ASIDetailScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
-  String currentDate = '';
-  Asi _asi = Asi();
+  late final AsiDetailCubit _asiDetailCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _asiDetailCubit = context.read<AsiDetailCubit>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,75 +76,10 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
           Positioned.fill(
             child: FormBuilder(
               key: _formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    CmoHeaderTile(title: LocaleKeys.asiNumber.tr()),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0,
-                      ),
-                      child: buildASINoWidget(),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: buildSelectCompartment(),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: buildSelectASIType(),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: buildLatLngWidget(),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: buildDatePicker(),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: CmoTextField(
-                        inputDecoration: _buildInputDecoration(
-                          context,
-                          LocaleKeys.comments.tr(),
-                        ),
-                        maxLines: 5,
-                        onChanged: (value) {
-                          _asi = _asi.copyWith(comment: value);
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    if (widget.locationModel!.imageUri.isNotBlank)
-                      buildImageItem(
-                        imageUri: widget.locationModel!.imageUri,
-                        onRemove: () {
-                          setState(() {
-                            widget.locationModel!.imageUri = null;
-                          });
-                        },
-                      ),
-                    if (widget.locationModel!.listImage.isNotBlank)
-                      ...widget.locationModel!.listImage.map(
-                            (e) =>
-                            buildImageItem(
-                              imageUri: e,
-                              onRemove: () {
-                                setState(() {
-                                  widget.locationModel!.listImage.remove(e);
-                                });
-                              },
-                            ),
-                      ),
-                  ],
-                ),
+              child: BlocBuilder<AsiDetailCubit, AsiDetailState>(
+                builder: (context, state) {
+                  return _buildBody(context, state);
+                },
               ),
             ),
           ),
@@ -152,35 +87,122 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
             bottom: MediaQuery.of(context).padding.bottom,
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: CmoFilledButton(
-                title: LocaleKeys.save.tr(),
-                onTap: () async {
-                  if (_formKey.currentState?.validate() == false) {
-                    return;
-                  }
-                  if (widget.locationModel?.latitude == null) {
-                    showSnackError(msg: LocaleKeys.location_is_required.tr());
-                    return;
-                  }
-                  if (currentDate.isEmpty) {
-                    showSnackError(msg: LocaleKeys.date_is_required.tr());
-                    return;
-                  }
-                  await context.read<AsiDetailCubit>().saveAsi(
-                        _asi,
-                        widget.locationModel!.listImage.isBlank &&
-                                widget.locationModel!.imageUri.isNotBlank
-                            ? [widget.locationModel!.imageUri!]
-                            : widget.locationModel!.listImage,
-                      );
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                },
-              ),
+              child: _buildButton(),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, AsiDetailState state) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          CmoHeaderTile(title: LocaleKeys.asiNumber.tr()),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+            ),
+            child: buildASINoWidget(),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: buildSelectCompartment(
+              context: context,
+              compartmentName: state.asi.compartmentName ?? '',
+              compartments: state.compartments,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: buildSelectASIType(
+              context: context,
+              asi: state.asi,
+              types: state.types,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: buildLatLngWidget(state.locationModel),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: buildDatePicker(state.currentDate),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: CmoTextField(
+              inputDecoration: _buildInputDecoration(
+                context,
+                LocaleKeys.comments.tr(),
+              ),
+              maxLines: 5,
+              onChanged: (value) {
+                _asiDetailCubit.onCommentChanged(comment: value);
+              },
+            ),
+          ),
+          const SizedBox(height: 12),
+          if (state.locationModel!.imageUri.isNotBlank)
+            buildImageItem(
+              imageUri: state.locationModel!.imageUri!,
+              onRemove: () {
+                _asiDetailCubit.onRemoveLocationImageUri();
+              },
+            ),
+          if (state.locationModel!.listImage.isNotBlank)
+            ...state.locationModel!.listImage.map(
+              (e) => buildImageItem(
+                imageUri: e,
+                onRemove: () {
+                  _asiDetailCubit.onRemoveLocationImage(e);
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildButton() {
+    return BlocBuilder<AsiDetailCubit, AsiDetailState>(
+      builder: (context, state) {
+        final locationModel = state.locationModel;
+        final currentDate = state.currentDate;
+        return CmoFilledButton(
+          title: LocaleKeys.save.tr(),
+          onTap: () async {
+            if (_formKey.currentState?.validate() == false) {
+              return;
+            }
+            if (locationModel?.latitude == null) {
+              showSnackError(msg: LocaleKeys.location_is_required.tr());
+              return;
+            }
+            if (currentDate.isEmpty) {
+              showSnackError(msg: LocaleKeys.date_is_required.tr());
+              return;
+            }
+            await _asiDetailCubit.saveAsi(
+              locationModel!.listImage.isBlank &&
+                      locationModel.imageUri.isNotBlank
+                  ? [locationModel.imageUri!]
+                  : locationModel.listImage,
+            );
+            if (context.mounted) {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            }
+          },
+        );
+      },
     );
   }
 
@@ -193,102 +215,92 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
         LocaleKeys.asi_no.tr(),
       ),
       onChanged: (value) {
-        _asi = _asi.copyWith(asiRegisterNo: value);
+        _asiDetailCubit.onAsiRegisterNoChanged(asiRegisterNo: value);
       },
     );
   }
 
-  Widget buildSelectCompartment() {
-    return BlocSelector<AsiDetailCubit, AsiDetailState, List<Compartment>>(
-      selector: (state) => state.compartments,
-      builder: (context, compartments) {
-        return BottomSheetSelection(
-          hintText: LocaleKeys.compartment.tr(),
-          value: _asi.compartmentName,
-          onTap: () async {
-            FocusScope.of(context).unfocus();
-            if (compartments.isBlank) return;
-            await showCustomBottomSheet<void>(
-              context,
-              content: ListView.builder(
-                itemCount: compartments.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () {
-                      setState(() {
-                        _asi = _asi.copyWith(
-                          compartmentId: int.tryParse(compartments[index].managementUnitId ?? ''),
-                          compartmentName: compartments[index].managementUnitName,
-                        );
-                      });
-
-                      Navigator.pop(context);
-                    },
-                    title: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        compartments[index].managementUnitName ?? '',
-                        style: context.textStyles.bodyBold.copyWith(
-                          color: context.colors.blueDark2,
-                        ),
-                      ),
+  Widget buildSelectCompartment({
+    required BuildContext context,
+    required String compartmentName,
+    required List<Compartment> compartments,
+  }) {
+    return BottomSheetSelection(
+      hintText: LocaleKeys.compartment.tr(),
+      value: compartmentName,
+      onTap: () async {
+        FocusScope.of(context).unfocus();
+        if (compartments.isBlank) return;
+        await showCustomBottomSheet<void>(
+          context,
+          content: ListView.builder(
+            itemCount: compartments.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                onTap: () {
+                  _asiDetailCubit.onCompartmentChanged(
+                    compartmentId: int.tryParse(
+                      compartments[index].managementUnitId ?? '',
                     ),
+                    compartmentName: compartments[index].managementUnitName,
                   );
+                  Navigator.pop(context);
                 },
-              ),
-            );
-          },
+                title: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Text(
+                    compartments[index].managementUnitName ?? '',
+                    style: context.textStyles.bodyBold.copyWith(
+                      color: context.colors.blueDark2,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
         );
       },
     );
   }
 
-  Widget buildSelectASIType() {
-    return BlocSelector<AsiDetailCubit, AsiDetailState, List<AsiType>?>(
-      selector: (state) => state.types,
-      builder: (context, types) {
-        return BottomSheetSelection(
-          hintText: LocaleKeys.type.tr(),
-          value: _asi.asiTypeName,
-          onTap: () async {
-            FocusScope.of(context).unfocus();
-            if (types.isBlank) return;
-            await showCustomBottomSheet<void>(
-              context,
-              content: ListView.builder(
-                itemCount: types!.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () {
-                      setState(() {
-                        _asi = _asi.copyWith(
-                          asiTypeId: types[index].asiTypeId,
-                          asiTypeName: types[index].asiTypeName,
-                        );
-                      });
-
-                      Navigator.pop(context);
-                    },
-                    title: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        types[index].asiTypeName ?? '',
-                        style: context.textStyles.bodyBold.copyWith(
-                          color: context.colors.blueDark2,
-                        ),
-                      ),
-                    ),
+  Widget buildSelectASIType({required BuildContext context, required Asi asi, required List<AsiType> types}) {
+    return BottomSheetSelection(
+      hintText: LocaleKeys.type.tr(),
+      value: asi.asiTypeName,
+      onTap: () async {
+        FocusScope.of(context).unfocus();
+        if (types.isBlank) return;
+        await showCustomBottomSheet<void>(
+          context,
+          content: ListView.builder(
+            itemCount: types.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                onTap: () {
+                  _asiDetailCubit.onAsiTypeChanged(
+                    asiTypeId: types[index].asiTypeId,
+                    asiTypeName: types[index].asiTypeName,
                   );
+                  Navigator.pop(context);
                 },
-              ),
-            );
-          },
+                title: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Text(
+                    types[index].asiTypeName ?? '',
+                    style: context.textStyles.bodyBold.copyWith(
+                      color: context.colors.blueDark2,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
         );
       },
     );
   }
 
-  Widget buildLatLngWidget() {
+  Widget buildLatLngWidget(LocationModel? locationModel) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -307,14 +319,12 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
           ),
           Expanded(
             child: Text(
-              '${widget.locationModel?.latitude?.toStringAsFixed(5)} | ${widget
-                  .locationModel?.longitude?.toStringAsFixed(5)}',
+              '${locationModel?.latitude?.toStringAsFixed(5)} | ${locationModel?.longitude?.toStringAsFixed(5)}',
               style: context.textStyles.bodyNormal.black,
               textAlign: TextAlign.center,
             ),
           ),
-          if (widget.locationModel?.latitude != null)
-            Assets.icons.icTick.widget,
+          if (locationModel?.latitude != null) Assets.icons.icTick.widget,
           Icon(
             Icons.keyboard_arrow_right_rounded,
             color: context.colors.black,
@@ -325,7 +335,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
     );
   }
 
-  Widget buildDatePicker() {
+  Widget buildDatePicker(String currentDate) {
     return BottomSheetSelection(
       hintText: LocaleKeys.date.tr(),
       value: currentDate,
@@ -350,26 +360,20 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
         final result = await DatePicker.showDatePicker(
           context,
           minTime: DateTime(2018, 3, 5),
-          maxTime: DateTime(DateTime
-              .now()
-              .year + 5, 12, 31),
+          maxTime: DateTime(DateTime.now().year + 5, 12, 31),
           onChanged: (date) {},
           onConfirm: (date) {},
           currentTime: DateTime.now(),
         );
-
-        final format = DateFormat('dd MM yyyy');
-        currentDate = format.format(result ?? DateTime.now());
-        _asi = _asi.copyWith(date: result);
-        if (mounted) setState(() {});
+        _asiDetailCubit.onDateChanged(date: result);
       },
     );
   }
 
   InputDecoration _buildInputDecoration(
-      BuildContext context,
-      String hintText,
-      ) {
+    BuildContext context,
+    String hintText,
+  ) {
     return InputDecoration(
       contentPadding: const EdgeInsets.all(8),
       hintText: hintText,
@@ -385,21 +389,15 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
   }
 
   Widget buildImageItem({
-    String? imageUri,
-    VoidCallback? onRemove,
+    required String imageUri,
+    required VoidCallback onRemove,
   }) {
     if (imageUri.isBlank) return const SizedBox.shrink();
     return _ThumbnailImage(
-      widget.locationModel!.imageUri!,
-      onRemoved: () {
-        setState(() {
-          widget.locationModel!.imageUri = null;
-        });
-      },
+      imageUri,
+      onRemoved: onRemove,
       onChanged: (path) {
-        setState(() {
-          widget.locationModel!.imageUri = path;
-        });
+        _asiDetailCubit.onUpdateLocationImage(path);
       },
     );
   }
