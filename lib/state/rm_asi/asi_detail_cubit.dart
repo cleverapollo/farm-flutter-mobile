@@ -103,10 +103,11 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
   }) {
     emit(
       state.copyWith(
-          asi: state.asi.copyWith(
-        asiTypeId: asiTypeId,
-        asiTypeName: asiTypeName,
-      )),
+        asi: state.asi.copyWith(
+          asiTypeId: asiTypeId,
+          asiTypeName: asiTypeName,
+        ),
+      ),
     );
   }
 
