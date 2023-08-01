@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/assessment_pay_load/assessment_pay_load.dart';
 import 'package:cmo/model/assessment_question_answers_pay_load/assessment_question_answers.dart';
 import 'package:cmo/model/model.dart';
@@ -249,7 +250,7 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
         UserDeviceId: userDeviceId,
         UserId: userId,
         SignatureDate: assessment.signatureDate,
-        SignatureImage: assessment.signatureImage,
+        SignatureImage: assessment.signatureImage.stringToBase64SyncServer,
         SignaturePoints: assessment.signaturePoints,
         HasSignature: assessment.hasSignature,
       );

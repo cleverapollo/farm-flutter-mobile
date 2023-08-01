@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
@@ -36,34 +38,41 @@ class AssessmentSignatureScreen extends StatefulWidget {
 }
 
 class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
+  final legacySignature = ValueNotifier<Image?>(null);
+
   final _signatureController = HandSignatureControl(
     velocityRange: 3.0,
   );
-  String? _legacySignature;
+
   UserInfo? userInfo;
 
   void _handleClearButtonPressed() {
+    legacySignature.value = null;
     _signatureController.clear();
-    _legacySignature = null;
     setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-    cmoDatabaseMasterService
-        .getCachedAssessment(id: widget.assessmentId)
-        .then((assessment) {
-      if (assessment?.signatureImage != null) {
-        _legacySignature = assessment?.signatureImage;
-        setState(() {});
-      }
-    });
+    try {
+      cmoDatabaseMasterService
+          .getCachedAssessment(id: widget.assessmentId)
+          .then((assessment) {
+        if (assessment?.signatureImage != null) {
+          legacySignature.value = Image.memory(
+              base64Decode(assessment!.signatureImage!),
+              fit: BoxFit.cover);
+        }
+      });
 
-    Future.microtask(() async {
-      userInfo = await configService.getActiveUser();
-      setState(() {});
-    });
+      Future.microtask(() async {
+        userInfo = await configService.getActiveUser();
+        setState(() {});
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
@@ -95,21 +104,24 @@ class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
           LayoutBuilder(
             builder: (context, BoxConstraints constraints) {
               return Center(
-                child: Container(
-                  width: constraints.maxWidth - 32 * 2,
-                  height: constraints.maxWidth - 32 * 2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: context.colors.grey),
-                  ),
-                  child: _legacySignature == null
-                      ? HandSignature(
-                          control: _signatureController,
-                          color: Colors.blueGrey,
-                          width: 3.0,
-                          maxWidth: 4.0,
-                        )
-                      : SvgPicture.string(_legacySignature!),
+                child: ValueListenableBuilder(
+                  valueListenable: legacySignature,
+                  builder: (context, image, __) {
+                    return Container(
+                        width: constraints.maxWidth - 32 * 2,
+                        height: constraints.maxWidth - 32 * 2,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: context.colors.grey),
+                        ),
+                        child: image ??
+                            HandSignature(
+                              control: _signatureController,
+                              color: Colors.blueGrey,
+                              width: 3.0,
+                              maxWidth: 4.0,
+                            ));
+                  },
                 ),
               );
             },
@@ -130,10 +142,10 @@ class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
                 final image = await _signatureController.toImage();
 
                 final file = await FileUtil.writeToFile(image!);
-                final _base64 = await FileUtil.toBase64(file);
+                final imageBase64 = await FileUtil.toBase64(file);
 
                 assessment = assessment?.copyWith(
-                  signatureImage: _base64.stringToBase64SyncServer,
+                  signatureImage: imageBase64,
                   signatureDate: DateTime.now().toIso8601String(),
                 );
 
