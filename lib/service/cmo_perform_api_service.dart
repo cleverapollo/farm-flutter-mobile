@@ -639,6 +639,27 @@ class CmoPerformApiService {
     return null;
   }
 
+  Future<List<Asi>?> getRMAsiRegisters() async {
+    try {
+      final response = await client.get<JsonListData>(
+        '${Env.apiGroupSchemeUrl}AsiRegister/GetAsiRegisterByRMUser',
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data;
+      return data?.map((e) => Asi.fromJson(e as JsonData)).toList();
+    } catch (e){
+      logger.d('Cannot getRMRegisters $e');
+    }
+
+    return null;
+  }
+
   Future<Compartment?> insertUpdatedCompartment(
       Compartment compartment,
       ) async {

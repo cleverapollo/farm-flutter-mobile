@@ -66,7 +66,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
         value['FarmId'] = state.selectedFarm?.farmId;
         value['CompartmentName'] = state.selectedCompartment?.managementUnitName;
         value['CompartmentId'] = state.selectedCompartment?.managementUnitId;
-        value['Created'] = DateTime.now().toString();
+        value['Created'] = DateTime.now().toIso8601String();
         final audit = Audit.fromJson(value);
 
         if (context.mounted) {
@@ -180,7 +180,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
                   .map(
                     (e) => CmoDropdownItem<String?>(
                       id: e.managementUnitId,
-                      name: e.managementUnitName ?? '',
+                      name: e.unitNumber ?? '',
                     ),
                   )
                   .toList(),

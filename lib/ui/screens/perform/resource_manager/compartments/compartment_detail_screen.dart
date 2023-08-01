@@ -251,12 +251,12 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                 ),
                               ),
                             ),
-                            AttributeItem(
-                              child: InputAttributeItem(
-                                hintText: LocaleKeys.unit.tr(),
-                                onChanged: _compartmentDetailCubit.onCompartmentUnitChanged,
-                              ),
-                            ),
+                            // AttributeItem(
+                            //   child: InputAttributeItem(
+                            //     hintText: LocaleKeys.unit.tr(),
+                            //     onChanged: _compartmentDetailCubit.onCompartmentUnitChanged,
+                            //   ),
+                            // ),
                             AttributeItem(
                               child: InputAttributeItem(
                                 hintText: '${LocaleKeys.effectiveArea.tr()} ha',

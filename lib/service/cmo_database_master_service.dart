@@ -763,11 +763,18 @@ class CmoDatabaseMasterService {
     });
   }
 
-  Future<int?> cacheAsi(Asi data) async {
+  Future<int?> cacheAsi(
+    Asi data, {
+    bool isDirect = false,
+  }) async {
     final db = await _db();
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.asis.put(data);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.asis.put(data);
+      });
+    }
   }
 
   Future<int?> cacheAsiPhoto(AsiPhoto data) async {
@@ -2586,6 +2593,7 @@ class CmoDatabaseMasterService {
         .regionalManagerUnitIdEqualTo(rmuId)
         .isProspectMemberEqualTo(true)
         .isMasterDataSyncedEqualTo(0)
+        .isActiveEqualTo(true)
         .findAll();
   }
 

@@ -63,4 +63,7 @@ abstract class Env {
 
   @EnviedField(varName: 'PERFORM_FORESTRY_URL', obfuscate: true)
   static final performForestryUrl = _Env.performForestryUrl;
+
+  @EnviedField(varName: 'API_GROUP_SCHEME_URL', obfuscate: true)
+  static final apiGroupSchemeUrl = _Env.apiGroupSchemeUrl;
 }

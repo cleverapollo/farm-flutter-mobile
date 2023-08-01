@@ -165,7 +165,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     try {
       logger.d('--RM Sync Summary start--');
       await publishFarm();
-      await publishAudits();
       await publishGroupSchemeStakeholders();
 
       emit(
@@ -175,8 +174,12 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         ),
       );
 
-      await Future.delayed(const Duration(seconds: 15), () async {
+      await Future.delayed(const Duration(seconds: 25), () async {
         await publishCompartments();
+        await Future.delayed(const Duration(seconds: 5), () async {
+          await publishAudits();
+        });
+
         await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
         await subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId();
         await subscribeToRegionalManagerUnitTrickleFeedTopicByRegionalManagerUnitId();
@@ -356,6 +359,10 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
           auditPayload = auditPayload.copyWith(assessmentQuestionAnswers: auditQuestionAnswers);
           logger.d('Assign assessment/audit Payload to message $auditPayload');
+
+          log(jsonEncode(
+            auditPayload.toJson(),
+          ));
 
           final message = Message(
             properties: getMessageProperties(),
@@ -785,29 +792,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     }
   }
 
-  Future<void> insertByCallingAPI({bool isOnlyCompartment = false}) async {
-    final dbCompany = await cmoDatabaseMasterService.db;
-    await dbCompany.writeTxn(() async {
-      if (!isOnlyCompartment) {
-        logger.d('--getProductGroupTemplates start');
-        await insertProductGroupTemplates();
-        logger.d('--getProductGroupTemplates done');
-
-        logger.d('--getSpeciesGroupTemplates start');
-        await insertSpeciesGroupTemplates();
-        logger.d('--getSpeciesGroupTemplates done');
-
-        logger.d('--getAreaTypes start');
-        await insertAreaTypes();
-        logger.d('--getAreaTypes done');
-      }
-
-      logger.d('--insertCompartmentsByRMUId start');
-      await insertCompartmentsByRMUId();
-      logger.d('--getCompartmentsByRMUId done');
-    });
-  }
-
   Future<void> insertAreaTypes() async {
     final areaTypes = await cmoPerformApiService.fetchAreaTypes();
     if (areaTypes.isNotBlank) {
@@ -833,6 +817,58 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         await cmoDatabaseMasterService.cacheSpeciesGroupTemplates(speciesGroupTemplate);
       }
     }
+  }
+
+  Future<void> insertAsiTypes() async {
+    final asiTypes = await cmoPerformApiService.fetchRMAsiType();
+    if (asiTypes.isNotBlank) {
+      for (final asiType in asiTypes!) {
+        await cmoDatabaseMasterService.cacheAsiTypes(asiType);
+      }
+    }
+  }
+
+  Future<void> insertRMAsiRegisters() async {
+    final listAsi = await cmoPerformApiService.getRMAsiRegisters();
+    if (listAsi.isNotBlank) {
+      for (final asi in listAsi!) {
+        await cmoDatabaseMasterService.cacheAsi(
+          asi,
+          isDirect: true,
+        );
+      }
+    }
+  }
+
+  Future<void> insertByCallingAPI({bool isOnlyCompartment = false}) async {
+    final dbCompany = await cmoDatabaseMasterService.db;
+    await dbCompany.writeTxn(() async {
+      if (!isOnlyCompartment) {
+        logger.d('--getProductGroupTemplates start');
+        await insertProductGroupTemplates();
+        logger.d('--getProductGroupTemplates done');
+
+        logger.d('--getSpeciesGroupTemplates start');
+        await insertSpeciesGroupTemplates();
+        logger.d('--getSpeciesGroupTemplates done');
+
+        logger.d('--getAreaTypes start');
+        await insertAreaTypes();
+        logger.d('--getAreaTypes done');
+      }
+
+      logger.d('--insertCompartmentsByRMUId start');
+      await insertCompartmentsByRMUId();
+      logger.d('--getCompartmentsByRMUId done');
+
+      logger.d('--insertAsiTypes start');
+      await insertAsiTypes();
+      logger.d('--insertAsiTypes done');
+
+      logger.d('--insertRMAsiRegisters start');
+      await insertRMAsiRegisters();
+      logger.d('--insertRMAsiRegisters done');
+    });
   }
 
   Future<void> createSubscriptions() async {

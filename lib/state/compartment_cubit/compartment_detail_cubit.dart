@@ -58,7 +58,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   }
 
   void onCompartmentNameChanged(String value) {
-    state.compartment = state.compartment.copyWith(managementUnitName: value);
+    state.compartment = state.compartment.copyWith(unitNumber: value);
   }
 
   void onPolygonAreaChanged(double? value) {
