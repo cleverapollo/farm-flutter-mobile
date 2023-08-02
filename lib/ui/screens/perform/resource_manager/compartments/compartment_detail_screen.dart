@@ -1,5 +1,6 @@
 import 'package:cmo/extensions/date.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/compartment/compartment.dart';
@@ -31,6 +32,7 @@ class CompartmentDetailScreen extends StatefulWidget {
     double? measuredArea,
     List<PolygonItem>? locations,
     required String farmId,
+    Compartment? compartment,
     String? farmName,
     String? campId,
   }) {
@@ -38,7 +40,11 @@ class CompartmentDetailScreen extends StatefulWidget {
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
-            create: (_) => CompartmentDetailCubit(farmId, campId: campId),
+            create: (_) => CompartmentDetailCubit(
+              farmId,
+              campId: campId,
+              compartment: compartment ?? const Compartment(isActive: true),
+            ),
             child: CompartmentDetailScreen(
               measuredArea: measuredArea,
               locations: locations,
@@ -69,6 +75,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final initCompartment = context.read<CompartmentDetailCubit>().state.compartment;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -98,20 +105,35 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
-                            AttributeItem(
-                              child: InputAttributeItem(
-                                hintText: LocaleKeys.compartmentName.tr(),
-                                onChanged: _compartmentDetailCubit.onCompartmentNameChanged,
-                              ),
+                            BlocSelector<CompartmentDetailCubit, CompartmentDetailState, bool>(
+                              selector: (state) => state.isCompartmentNameError,
+                              builder: (context, isCompartmentNameError) {
+                                return AttributeItem(
+                                  isShowError: isCompartmentNameError,
+                                  errorText: LocaleKeys.compartmentName.tr(),
+                                  child: InputAttributeItem(
+                                    labelText: LocaleKeys.compartmentName.tr(),
+                                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                                    initialValue: initCompartment.unitNumber,
+                                    onChanged: _compartmentDetailCubit.onCompartmentNameChanged,
+                                  ),
+                                );
+                              },
                             ),
                             AttributeItem(
                               child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, List<AreaType>?>(
                                 selector: (state) => state.areaTypes,
                                 builder: (context, areaTypes) {
+                                  final state = context
+                                      .read<CompartmentDetailCubit>()
+                                      .state;
+                                  if(!state.isDataReady) {
+                                    return const SizedBox();
+                                  }
                                   return CmoDropdown<AreaType>(
                                     name: LocaleKeys.type.tr(),
-                                    style: context.textStyles.bodyBold
-                                        .copyWith(color: context.colors.black),
+                                    style: context.textStyles.bodyBold.blueDark2,
                                     inputDecoration: InputDecoration(
                                       contentPadding:
                                           const EdgeInsets.symmetric(
@@ -120,8 +142,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                       ),
                                       isDense: true,
                                       hintText: LocaleKeys.type.tr(),
-                                      hintStyle:
-                                          context.textStyles.bodyNormal.grey,
+                                      hintStyle: context.textStyles.bodyBold.blueDark2,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
                                     ),
@@ -159,9 +180,15 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                               child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, List<ProductGroupTemplate>?>(
                                 selector: (state) => state.productGroupTemplates,
                                 builder: (context, productGroupTemplates) {
+                                  final state = context
+                                      .read<CompartmentDetailCubit>()
+                                      .state;
+                                  if(!state.isDataReady) {
+                                    return const SizedBox();
+                                  }
                                   return CmoDropdown<ProductGroupTemplate>(
                                     name: LocaleKeys.productGroup.tr(),
-                                    style: context.textStyles.bodyBold.copyWith(color: context.colors.black),
+                                    style: context.textStyles.bodyBold.blueDark2,
                                     inputDecoration: InputDecoration(
                                       contentPadding: const EdgeInsets.symmetric(
                                         horizontal: 12,
@@ -169,7 +196,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                       ),
                                       isDense: true,
                                       hintText: LocaleKeys.productGroup.tr(),
-                                      hintStyle: context.textStyles.bodyNormal.grey,
+                                      hintStyle: context.textStyles.bodyBold.blueDark2,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
                                     ),
@@ -204,17 +231,32 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                   List<SpeciesGroupTemplate>?>(
                                 selector: (state) => state.speciesGroupTemplates,
                                 builder: (context, speciesGroupTemplates) {
+                                  final state = context
+                                      .read<CompartmentDetailCubit>()
+                                      .state;
+                                  if(!state.isDataReady) {
+                                    return const SizedBox();
+                                  }
                                   return CmoDropdown<SpeciesGroupTemplate>(
                                       name: LocaleKeys.speciesGroup.tr(),
-                                      style: context.textStyles.bodyBold.copyWith(color: context.colors.black),
+                                      style: context.textStyles.bodyBold.blueDark2,
                                       inputDecoration: InputDecoration(
                                         contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                                         isDense: true,
                                         hintText: LocaleKeys.speciesGroup.tr(),
-                                        hintStyle: context.textStyles.bodyNormal.grey,
+                                        hintStyle: context.textStyles.bodyBold.blueDark2,
                                         border: InputBorder.none,
                                         focusedBorder: InputBorder.none,
                                       ),
+                                    initialValue: speciesGroupTemplates.firstWhereOrNull(
+                                          (element) =>
+                                      element.speciesGroupTemplateId ==
+                                          context
+                                              .read<CompartmentDetailCubit>()
+                                              .state
+                                              .compartment
+                                              .speciesGroupTemplateId,
+                                    ),
                                       itemsData: speciesGroupTemplates
                                           ?.map(
                                             (e) => CmoDropdownItem<SpeciesGroupTemplate>(
@@ -260,8 +302,12 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             // ),
                             AttributeItem(
                               child: InputAttributeItem(
+                                labelText: '${LocaleKeys.effectiveArea.tr()} ha',
+                                labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                textStyle: context.textStyles.bodyNormal.blueDark2,
                                 hintText: '${LocaleKeys.effectiveArea.tr()} ha',
                                 keyboardType: TextInputType.number,
+                                initialValue: (initCompartment.effectiveArea ?? '').toString(),
                                 onChanged: (value) =>
                                     _compartmentDetailCubit.onEffectiveAreaChanged(double.tryParse(value)),
                               ),
@@ -279,8 +325,8 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                       ),
                                     ),
                                     EspacementInputWidget(
-                                      widthValue: '',
-                                      lengthValue: '',
+                                      widthValue: initCompartment.espacementWidth ?? '',
+                                      lengthValue: initCompartment.espacementLength ?? '',
                                       onWidthChanged: (value) {
                                         _compartmentDetailCubit.onEspacementWidthChanged(value);
                                       },
@@ -319,7 +365,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                         _compartmentDetailCubit.onPlannedPlantDateChanged(_plannedPlantDate);
                                         setState(() {});
                                       },
-                                      icon: const Icon(Icons.calendar_month),
+                                      icon: Assets.icons.icCalendar.svgBlack
                                     ),
                                   ],
                                 ),
@@ -327,6 +373,10 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             ),
                             AttributeItem(
                               child: InputAttributeItem(
+                                labelText: '${LocaleKeys.survival.tr()} %',
+                                labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                textStyle: context.textStyles.bodyNormal.blueDark2,
+                                initialValue: (initCompartment.survival ?? '').toString(),
                                 hintText: '${LocaleKeys.survival.tr()} %',
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) =>
@@ -335,6 +385,10 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             ),
                             AttributeItem(
                               child: InputAttributeItem(
+                                labelText: LocaleKeys.stocking.tr(),
+                                labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                textStyle: context.textStyles.bodyNormal.blueDark2,
+                                initialValue: (initCompartment.stockingPercentage ?? '').toString(),
                                 hintText: LocaleKeys.stocking.tr(),
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) =>
@@ -343,6 +397,10 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             ),
                             AttributeItem(
                               child: InputAttributeItem(
+                                  labelText: LocaleKeys.rotation.tr(),
+                                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                  textStyle: context.textStyles.bodyNormal.blueDark2,
+                                  initialValue: (initCompartment.rotationNumber ?? '').toString(),
                                   keyboardType: TextInputType.phone,
                                   hintText: LocaleKeys.rotation.tr(),
                                   onChanged: (value) =>
@@ -350,6 +408,10 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             ),
                             AttributeItem(
                               child: InputAttributeItem(
+                                  labelText: LocaleKeys.mai.tr(),
+                                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                  textStyle: context.textStyles.bodyNormal.blueDark2,
+                                  initialValue: (initCompartment.utilMAI ?? '').toString(),
                                   keyboardType: TextInputType.phone,
                                   hintText: LocaleKeys.mai.tr(),
                                   onChanged: (value) => _compartmentDetailCubit.onMAIChanged(int.tryParse(value))),
@@ -362,9 +424,11 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                   CmoFilledButton(
                     title: LocaleKeys.save.tr(),
                     onTap: () async {
-                      await _compartmentDetailCubit.saveCompartment();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
+                      final isCompleted = await _compartmentDetailCubit.saveCompartment();
+                      if (isCompleted && context.mounted) {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      }
                     },
                   ),
                 ],

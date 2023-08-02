@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/compartment/product_group_template.dart';
@@ -13,9 +14,12 @@ import 'package:flutter/widgets.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
-  CompartmentDetailCubit(String farmId, {String? campId}) : super(CompartmentDetailState(farmId: farmId, campId: campId));
+  CompartmentDetailCubit(String farmId,
+      {required Compartment compartment, String? campId})
+      : super(CompartmentDetailState(
+            farmId: farmId, campId: campId, compartment: compartment));
 
-  Future fetchData({required BuildContext context}) async {
+  Future<void> fetchData({required BuildContext context}) async {
     try {
       emit(state.copyWith(loading: true));
       final groupScheme = await configService.getActiveGroupScheme();
@@ -30,31 +34,52 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
         productGroupTemplates: result[1] as List<ProductGroupTemplate>?,
         speciesGroupTemplates: result[2] as List<SpeciesGroupTemplate>?,
         groupScheme: groupScheme,
+        isDataReady: true,
       ));
     } catch (e) {
       showSnackError(msg: e.toString());
     } finally {
-      emit(state.copyWith(loading: false));
+      emit(state.copyWith(loading: false, isDataReady: true));
     }
   }
 
-  Future<void> saveCompartment() async {
+  Future<bool> saveCompartment() async {
     try {
-      emit(state.copyWith(loading: true));
-      await cmoDatabaseMasterService.cacheCompartment(
-        state.compartment.copyWith(
-          createDT: DateTime.now().toString(),
-          groupSchemeId: state.groupScheme?.groupSchemeId,
-          farmId: state.farmId,
-          campId: state.campId,
-        ),
-        isDirect: true,
-      );
+      final compartment = state.compartment;
+      final completed = compartment.unitNumber.isNotBlank &&
+          compartment.productGroupTemplateId.isNotBlank &&
+          compartment.speciesGroupTemplateId.isNotBlank &&
+          compartment.effectiveArea != null &&
+          compartment.plannedPlantDT.isNotBlank;
+      if (completed) {
+        emit(state.copyWith(loading: true));
+        await cmoDatabaseMasterService.cacheCompartment(
+          state.compartment.copyWith(
+            createDT: DateTime.now().toString(),
+            groupSchemeId: state.groupScheme?.groupSchemeId,
+            farmId: state.farmId,
+            campId: state.campId,
+          ),
+          isDirect: true,
+        );
+      } else {
+        emit(
+          state.copyWith(
+            isCompartmentNameError: compartment.unitNumber.isNotBlank,
+            isProductGroupError: compartment.productGroupTemplateId.isNotBlank,
+            isSpeciesGroupError: compartment.speciesGroupTemplateId.isNotBlank,
+            isEffectiveAreaError: compartment.effectiveArea != null,
+            isPlantDateError: compartment.plannedPlantDT.isNotBlank,
+          ),
+        );
+        return false;
+      }
     } catch (e) {
       logger.d('Could not create compartment $e');
     } finally {
       emit(state.copyWith(loading: false));
     }
+    return true;
   }
 
   void onCompartmentNameChanged(String value) {
@@ -111,12 +136,14 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   void onEspacementWidthChanged(String? value) {
     state.compartment = state.compartment.copyWith(espacementWidth: value);
   }
+
   void onEspacementLengthChanged(String? value) {
     state.compartment = state.compartment.copyWith(espacementLength: value);
   }
 
   void onPlannedPlantDateChanged(DateTime? value) {
-    state.compartment = state.compartment.copyWith(plannedPlantDT: value?.toString());
+    state.compartment =
+        state.compartment.copyWith(plannedPlantDT: value?.toString());
   }
 
   void onSurvivalPercentageDateChanged(double? value) {

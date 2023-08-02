@@ -9,23 +9,35 @@ class CompartmentDetailState {
   CompartmentDetailState({
     this.loading = false,
     this.error,
-    this.compartment = const Compartment(isActive: true),
+    required this.compartment,
     this.areaTypes = const [],
     this.productGroupTemplates = const [],
     this.speciesGroupTemplates = const [],
     this.groupScheme,
     this.farmId = '',
     this.campId,
+    this.isDataReady = false,
+    this.isCompartmentNameError = false,
+    this.isProductGroupError = false,
+    this.isSpeciesGroupError = false,
+    this.isEffectiveAreaError = false,
+    this.isPlantDateError = false,
   });
 
   final Object? error;
   final bool loading;
+  final bool isDataReady;
   final List<AreaType> areaTypes;
   final List<ProductGroupTemplate> productGroupTemplates;
   final List<SpeciesGroupTemplate> speciesGroupTemplates;
   final GroupScheme? groupScheme;
   final String farmId;
   final String? campId;
+  final bool isCompartmentNameError;
+  final bool isProductGroupError;
+  final bool isSpeciesGroupError;
+  final bool isEffectiveAreaError;
+  final bool isPlantDateError;
   Compartment compartment;
 
   CompartmentDetailState copyWith({
@@ -38,6 +50,12 @@ class CompartmentDetailState {
     GroupScheme? groupScheme,
     List<ProductGroupTemplate>? productGroupTemplates,
     List<SpeciesGroupTemplate>? speciesGroupTemplates,
+    bool? isDataReady,
+    bool? isCompartmentNameError,
+    bool? isProductGroupError,
+    bool? isSpeciesGroupError,
+    bool? isEffectiveAreaError,
+    bool? isPlantDateError,
   }) {
     return CompartmentDetailState(
       farmId: farmId ?? this.farmId,
@@ -46,11 +64,15 @@ class CompartmentDetailState {
       error: error ?? this.error,
       compartment: compartment ?? this.compartment,
       areaTypes: areaTypes ?? this.areaTypes,
-      productGroupTemplates:
-          productGroupTemplates ?? this.productGroupTemplates,
-      speciesGroupTemplates:
-          speciesGroupTemplates ?? this.speciesGroupTemplates,
+      productGroupTemplates: productGroupTemplates ?? this.productGroupTemplates,
+      speciesGroupTemplates: speciesGroupTemplates ?? this.speciesGroupTemplates,
       groupScheme: groupScheme ?? this.groupScheme,
+      isDataReady: isDataReady ?? this.isDataReady,
+      isCompartmentNameError: isCompartmentNameError ?? this.isCompartmentNameError,
+      isProductGroupError: isProductGroupError ?? this.isProductGroupError,
+      isSpeciesGroupError: isSpeciesGroupError ?? this.isSpeciesGroupError,
+      isEffectiveAreaError: isEffectiveAreaError ?? this.isEffectiveAreaError,
+      isPlantDateError: isPlantDateError ?? this.isPlantDateError,
     );
   }
 }

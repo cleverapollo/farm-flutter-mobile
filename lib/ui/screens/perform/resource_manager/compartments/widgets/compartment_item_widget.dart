@@ -36,7 +36,9 @@ class CompartmentItemWidget extends StatelessWidget {
             farmName: farm?.farmName ?? '',
             points: points
                 .map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0))
-                .toList());
+                .toList(),
+            compartment: model,
+        );
       },
       child: CmoCard(
         containerGradient: const LinearGradient(
