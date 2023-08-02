@@ -48,6 +48,7 @@ class Compartment with _$Compartment {
     @JsonKey(name: 'EspacementWidth') String? espacementWidth,
     @JsonKey(name: 'EspacementLength') String? espacementLength,
     @JsonKey(name: 'StockingPercentage') double? stockingPercentage,
+    @Default(false) @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
   }) = _Compartment;
 
   const Compartment._();

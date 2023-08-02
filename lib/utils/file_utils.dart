@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FileUtil {
@@ -37,5 +38,14 @@ class FileUtil {
 
   static Future<String> toBase64(File file) async {
     return base64Encode(file.readAsBytesSync());
+  }
+
+  static Future<String> croppedFileToBase64(CroppedFile? croppedFile) async {
+    if (croppedFile == null) return '';
+
+    final uint8ListImage = await croppedFile.readAsBytes();
+    final imageFile = await writeToFileWithUint8List(uint8ListImage);
+    final base64 = await toBase64(imageFile);
+    return base64;
   }
 }

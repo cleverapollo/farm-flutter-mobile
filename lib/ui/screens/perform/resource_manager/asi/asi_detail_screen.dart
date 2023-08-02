@@ -11,6 +11,7 @@ import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/thumbnail_image.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
@@ -141,20 +142,12 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
             child: _buildCommentWidget(comment: state.asi.comment),
           ),
           const SizedBox(height: 12),
-          if (state.locationModel!.imageUri.isNotBlank)
-            buildImageItem(
-              imageUri: state.locationModel!.imageUri!,
-              onRemove: () {
-                _asiDetailCubit.onRemoveLocationImageUri();
-              },
-            ),
-          if (state.locationModel!.listImage.isNotBlank)
-            ...state.locationModel!.listImage.map(
-              (e) => buildImageItem(
-                imageUri: e,
-                onRemove: () {
-                  _asiDetailCubit.onRemoveLocationImage(e);
-                },
+          if (state.listAsiPhotos.isNotBlank)
+            ...state.listAsiPhotos.map(
+              (asiPhoto) => ThumbnailImage(
+                asiPhoto: asiPhoto,
+                onRemoved: () => _asiDetailCubit.onRemoveAsiPhoto(asiPhoto),
+                onChanged: _asiDetailCubit.onUpdateAsiPhoto,
               ),
             ),
         ],
@@ -182,12 +175,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
               showSnackError(msg: LocaleKeys.date_is_required.tr());
               return;
             }
-            await _asiDetailCubit.saveAsi(
-              locationModel!.listImage.isBlank &&
-                      locationModel.imageUri.isNotBlank
-                  ? [locationModel.imageUri!]
-                  : locationModel.listImage,
-            );
+            await _asiDetailCubit.saveAsi();
             if (context.mounted) {
               Navigator.of(context).pop();
               Navigator.of(context).pop();
@@ -401,123 +389,5 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
       ),
     );
   }
-
-  Widget buildImageItem({
-    required String imageUri,
-    required VoidCallback onRemove,
-  }) {
-    if (imageUri.isBlank) return const SizedBox.shrink();
-    return _ThumbnailImage(
-      imageUri,
-      onRemoved: onRemove,
-      onChanged: (path) {
-        _asiDetailCubit.onUpdateLocationImage(path);
-      },
-    );
-  }
 }
 
-class _ThumbnailImage extends StatefulWidget {
-  final String uri;
-  final Function()? onRemoved;
-  final Function(String)? onChanged;
-
-  const _ThumbnailImage(
-    this.uri, {
-    this.onRemoved,
-    this.onChanged,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<_ThumbnailImage> createState() => _ThumbnailImageState();
-}
-
-class _ThumbnailImageState extends State<_ThumbnailImage> {
-  final _controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.text = widget.uri;
-    context.read<AsiDetailCubit>().onPhotoNameChanged(_controller.text);
-    _controller.addListener(() {
-      context.read<AsiDetailCubit>().onPhotoNameChanged(_controller.text);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 12,
-      ),
-      decoration: BoxDecoration(
-        color: context.colors.white,
-      ),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {
-              final imageProvider = FileImage(File(widget.uri));
-              showImageViewer(context, imageProvider);
-            },
-            child: Image.file(
-              File(widget.uri),
-              fit: BoxFit.fitHeight,
-              width: 74,
-              height: 74,
-            ),
-            // Image.memory(
-            //   base64Decode(widget.uri),
-            //   fit: BoxFit.fitHeight,
-            //   width: 74,
-            //   height: 74,
-            // ),
-          ),
-          const SizedBox(
-            width: 24,
-          ),
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              maxLines: 1,
-              style: context.textStyles.bodyBold.black,
-            ),
-          ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: () async {
-              var path =
-                  (await ImagePickerService().pickImageFromGallery())?.path;
-              if (path != null) {
-                widget.onChanged?.call(path);
-              }
-            },
-            child: Assets.icons.icSelectPhotoMap.svg(width: 32, height: 32),
-          ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: () async {
-              var path =
-                  (await ImagePickerService().pickImageFromCamera())?.path;
-              if (path != null) {
-                widget.onChanged?.call(path);
-              }
-            },
-            child: Assets.icons.icTakePhotoMap.svg(width: 32, height: 32),
-          ),
-          const SizedBox(width: 8),
-          CmoTappable(
-            onTap: () => widget.onRemoved?.call(),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Assets.icons.icClose.svgBlack,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

@@ -6,6 +6,7 @@ class AsiDetailState {
     required this.asi,
     this.types = const <AsiType>[],
     this.compartments = const <Compartment>[],
+    this.listAsiPhotos = const <AsiPhoto>[],
     this.photoName,
     this.locationModel,
     this.isLoading = false,
@@ -14,6 +15,7 @@ class AsiDetailState {
   final List<AsiType> types;
   final List<Compartment> compartments;
   final LocationModel? locationModel;
+  final List<AsiPhoto> listAsiPhotos;
   String? photoName;
   Asi asi;
   final bool isLoading;
@@ -25,6 +27,7 @@ class AsiDetailState {
     String? photoName,
     LocationModel? locationModel,
     Asi? asi,
+    List<AsiPhoto>? listAsiPhotos,
   }) {
     return AsiDetailState(
       isLoading: isLoading ?? this.isLoading,
@@ -33,6 +36,7 @@ class AsiDetailState {
       photoName: photoName ?? this.photoName,
       asi: asi ?? this.asi,
       locationModel: locationModel ?? this.locationModel,
+      listAsiPhotos: listAsiPhotos ?? this.listAsiPhotos,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/asi_photo/asi_photo.dart';
@@ -37,6 +38,22 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
       state.asi.farmId ?? '',
     );
 
+    var randomId = generatorInt32Id();
+    if (state.locationModel != null && state.locationModel!.listImage.isNotBlank) {
+      final listAsiPhotos = <AsiPhoto>[];
+      for (final imageBase64 in state.locationModel!.listImage) {
+        final asiPhoto = const AsiPhoto().copyWith(
+          photo: imageBase64,
+          photoName: DateTime.now().microsecondsSinceEpoch.toString(),
+          asiRegisterPhotoNo: (randomId++).toString(),
+        );
+
+        listAsiPhotos.add(asiPhoto);
+      }
+
+      emit(state.copyWith(listAsiPhotos: listAsiPhotos));
+    }
+
     emit(
       state.copyWith(
         types: types,
@@ -45,44 +62,32 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     );
   }
 
-  Future<void> saveAsi(
-    List<String>? listImage,
-  ) async {
+  Future<void> saveAsi() async {
     try {
       emit(state.copyWith(isLoading: true));
       var asiId = state.asi.asiRegisterId;
       asiId ??= DateTime.now().millisecondsSinceEpoch.toString();
       state.asi = state.asi.copyWith(
-        isActive: true,
         asiRegisterId: asiId,
       );
 
       await cmoDatabaseMasterService.cacheAsi(state.asi);
-      await cmoDatabaseMasterService.cacheAsiPhoto(
-        AsiPhoto(
-          asiRegisterPhotoId: DateTime.now().millisecondsSinceEpoch,
-          asiRegisterId: asiId,
-          photo: state.locationModel?.imageUri == null ? '' : await FileUtil.toBase64(File(state.locationModel?.imageUri ?? '')),
-          asiRegisterPhotoNo: state.photoName,
-        ),
-      );
+
+      if (state.listAsiPhotos.isNotBlank) {
+        for (final asiPhoto in state.listAsiPhotos) {
+          await cmoDatabaseMasterService.cacheAsiPhoto(
+            asiPhoto.copyWith(
+              asiRegisterNo: state.asi.asiRegisterNo,
+              asiRegisterId: state.asi.asiRegisterId,
+            ),
+          );
+        }
+      }
     } catch (e) {
       logger.e('Cannot saveASI $e');
     } finally {
       emit(state.copyWith(isLoading: false));
     }
-
-    // if (listImage.isNotBlank) {
-    //   for (final image in listImage!) {
-    //     await cmoDatabaseMasterService.cacheAsiPhoto(
-    //       AsiPhoto(
-    //         asiRegisterPhotoId: DateTime.now().millisecondsSinceEpoch,
-    //         asiRegisterId: asiId,
-    //         photo: image,
-    //       ),
-    //     );
-    //   }
-    // }
   }
 
   void onPhotoNameChanged(String text) {
@@ -133,27 +138,16 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     );
   }
 
-  void onRemoveLocationImageUri() {
-    final location = state.locationModel;
-    location?.imageUri = null;
-    emit(
-      state.copyWith(locationModel: location),
-    );
+  void onUpdateAsiPhoto(AsiPhoto asiPhoto) {
+    final listAsiPhotos = state.listAsiPhotos;
+    listAsiPhotos.removeWhere((element) => element.asiRegisterPhotoNo == asiPhoto.asiRegisterPhotoNo);
+    listAsiPhotos.add(asiPhoto);
+    emit(state.copyWith(listAsiPhotos: listAsiPhotos));
   }
 
-  void onRemoveLocationImage(String image) {
-    final location = state.locationModel;
-    location?.listImage.remove(image);
-    emit(
-      state.copyWith(locationModel: location),
-    );
-  }
-
-  void onUpdateLocationImage(String image) {
-    final location = state.locationModel;
-    location?.imageUri = image;
-    emit(
-      state.copyWith(locationModel: location),
-    );
+  void onRemoveAsiPhoto(AsiPhoto asiPhoto) {
+    final listAsiPhotos = state.listAsiPhotos;
+    listAsiPhotos.remove(asiPhoto);
+    emit(state.copyWith(listAsiPhotos: listAsiPhotos));
   }
 }

@@ -14,6 +14,7 @@ class AsiPhoto with _$AsiPhoto {
     @JsonKey(name: 'AsiRegisterId') String? asiRegisterId,
     @JsonKey(name: 'AsiRegisterNo') String? asiRegisterNo,
     @JsonKey(name: 'Photo') String? photo,
+    @JsonKey(name: 'PhotoName') String? photoName,
     @JsonKey(name: 'PhotoURL') String? photoURL,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
     @Default(false) @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,

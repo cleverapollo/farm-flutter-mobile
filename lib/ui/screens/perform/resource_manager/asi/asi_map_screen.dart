@@ -5,6 +5,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:cmo/utils/file_utils.dart';
 import 'package:cmo/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -103,14 +104,10 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
       );
 
       if (croppedImage != null) {
-        /// Comment code for supporting multiple image
-        // final uint8ListImage = await croppedImage.readAsBytes();
-        // final imageFile = await FileUtil.writeToFileWithUint8List(uint8ListImage);
-        // final base64 = await FileUtil.toBase64(imageFile);
+        final base64 = await FileUtil.croppedFileToBase64(croppedImage);
         setState(() {
-
           locationModel.imageUri = croppedImage.path;
-          // locationModel.listImage.add(base64);
+          locationModel.listImage.add(base64);
           showSnackSuccess(msg: 'Take photo successfully!');
         });
       }
@@ -134,14 +131,10 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
       );
 
       if (croppedImage != null) {
-        /// Comment code for supporting multiple image
-        // final uint8ListImage = await croppedImage.readAsBytes();
-        // final imageFile = await FileUtil.writeToFileWithUint8List(uint8ListImage);
-        // final base64 = await FileUtil.toBase64(imageFile);
+        final base64 = await FileUtil.croppedFileToBase64(croppedImage);
         setState(() {
-
           locationModel.imageUri = croppedImage.path;
-          // locationModel.listImage.add(base64);
+          locationModel.listImage.add(base64);
           showSnackSuccess(msg: 'Selected photo successfully!');
         });
       }
@@ -201,6 +194,7 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                             campId: widget.campId,
                             latitude: locationModel.latitude,
                             longitude: locationModel.longitude,
+                            asiRegisterId: DateTime.now().millisecondsSinceEpoch.toString(),
                           );
                         }
                         ASIDetailScreen.push(
