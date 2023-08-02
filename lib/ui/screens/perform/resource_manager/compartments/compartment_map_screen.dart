@@ -27,8 +27,7 @@ import 'package:google_maps_flutter_platform_interface/src/types/location.dart'
 import 'package:map_autocomplete_field/map_autocomplete_field.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:maps_toolkit/src/latlng.dart' as mapToolkitLatlong;
-
-import '../../../../../utils/network_utils.dart';
+import 'package:cmo/utils/network_utils.dart';
 
 class CompartmentMapScreen extends StatefulWidget {
   static Future<T?> push<T>(
@@ -75,9 +74,6 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.points != null) {
-      _drawInitialPolygon();
-    }
     onInternetStateChangeListener();
   }
 
