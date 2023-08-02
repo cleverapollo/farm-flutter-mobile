@@ -17,7 +17,6 @@ import 'package:cmo/utils/utils.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class ASIDetailScreen extends StatefulWidget {
@@ -374,13 +373,11 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
       ),
       onTap: () async {
         FocusScope.of(context).unfocus();
-        final result = await DatePicker.showDatePicker(
-          context,
-          minTime: DateTime(2018, 3, 5),
-          maxTime: DateTime(DateTime.now().year + 5, 12, 31),
-          onChanged: (date) {},
-          onConfirm: (date) {},
-          currentTime: DateTime.now(),
+        final result = await showDatePicker(
+            context: context,
+            initialDate: datetime ?? DateTime.now(),
+            firstDate: DateTime(2018, 3, 5),
+            lastDate: DateTime(DateTime.now().year + 5, 12, 31),
         );
         _asiDetailCubit.onDateChanged(date: result);
       },

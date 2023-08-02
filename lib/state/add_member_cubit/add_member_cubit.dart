@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/date.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/model.dart';
@@ -589,9 +590,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   Future<void> onDataChangeInclusionDate(DateTime? dateTime) async {
     if (dateTime != null) {
       emit(state.copyWith(
-          farm: state.farm?.copyWith(inclusionDate: dateTime.toIso8601String()),
+          farm: state.farm?.copyWith(inclusionDate: dateTime.yMd()),
           addMemberInclusionDate: state.addMemberInclusionDate.copyWith(
-            inclusionDate: dateTime.toIso8601String(),
+            inclusionDate: dateTime.yMd(),
             isComplete: true,
           )));
 

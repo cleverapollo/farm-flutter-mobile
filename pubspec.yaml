@@ -51,7 +51,6 @@ dependencies:
   very_good_analysis: ^4.0.0+1
   hand_signature: ^3.0.1
   maps_toolkit: ^2.0.1
-  flutter_datetime_picker: ^1.5.1
   intl: ^0.17.0
   shared_preferences: ^2.1.1
   geolocator: ^9.0.2
