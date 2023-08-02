@@ -590,9 +590,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   Future<void> onDataChangeInclusionDate(DateTime? dateTime) async {
     if (dateTime != null) {
       emit(state.copyWith(
-          farm: state.farm?.copyWith(inclusionDate: dateTime.yMd()),
+          farm: state.farm?.copyWith(inclusionDate: dateTime.toIso8601String()),
           addMemberInclusionDate: state.addMemberInclusionDate.copyWith(
-            inclusionDate: dateTime.yMd(),
+            inclusionDate: dateTime.toIso8601String(),
             isComplete: true,
           )));
 

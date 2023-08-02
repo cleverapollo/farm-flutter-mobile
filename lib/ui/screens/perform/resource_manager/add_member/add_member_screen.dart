@@ -164,7 +164,7 @@ class _AddMemberInclusionDate extends StatelessWidget {
                           Text(
                             data.inclusionDate != null
                                 ? DateTime.parse(data.inclusionDate!)
-                                    .mmmDdYyyy()
+                                    .yMd()
                                 : LocaleKeys.inclusion_date.tr(),
                             style: context.textStyles.bodyNormal
                                 .copyWith(color: Colors.black),

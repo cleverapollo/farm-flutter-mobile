@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cmo/extensions/date.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
@@ -349,8 +350,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
   Widget buildDatePicker({required DateTime? datetime}) {
     String? currentDate;
     if (datetime != null) {
-      final format = DateFormat('dd MM yyyy');
-      currentDate = format.format(datetime);
+      currentDate = datetime.yMd();
     }
     return BottomSheetSelection(
       hintText: LocaleKeys.date.tr(),

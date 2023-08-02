@@ -1,3 +1,4 @@
+import 'package:cmo/extensions/date.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/compartment/area_type.dart';
@@ -301,7 +302,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                       child: Text(
                                         _plannedPlantDate == null
                                             ? LocaleKeys.plannedPlantDate.tr()
-                                            : DateFormat.yMMMd().format(_plannedPlantDate!),
+                                            : _plannedPlantDate!.yMd(),
                                         style: context.textStyles.bodyBold,
                                       ),
                                     ),
