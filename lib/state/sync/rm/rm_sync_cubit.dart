@@ -178,7 +178,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
         await subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId();
         await subscribeToRegionalManagerUnitTrickleFeedTopicByRegionalManagerUnitId();
-        await Future.delayed(const Duration(seconds: 5), (){});
+        await Future.delayed(const Duration(seconds: 8), (){});
         await publishCompartments();
         await Future.delayed(const Duration(seconds: 5), () async {
           await publishASIs();
