@@ -64,7 +64,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
         value['AuditTemplateName'] = state.selectedAuditTemplate?.auditTemplateName;
         value['FarmName'] = state.selectedFarm?.farmName;
         value['FarmId'] = state.selectedFarm?.farmId;
-        value['CompartmentName'] = state.selectedCompartment?.managementUnitName;
+        value['CompartmentName'] = state.selectedCompartment?.unitNumber;
         value['CompartmentId'] = state.selectedCompartment?.managementUnitId;
         value['Created'] = DateTime.now().toIso8601String();
         final audit = Audit.fromJson(value);

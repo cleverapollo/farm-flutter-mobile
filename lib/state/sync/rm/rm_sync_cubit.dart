@@ -174,16 +174,16 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         ),
       );
 
-      await Future.delayed(const Duration(seconds: 25), () async {
+      await Future.delayed(const Duration(seconds: 15), () async {
+        await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
+        await subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId();
+        await subscribeToRegionalManagerUnitTrickleFeedTopicByRegionalManagerUnitId();
+        await Future.delayed(const Duration(seconds: 5), (){});
         await publishCompartments();
         await Future.delayed(const Duration(seconds: 5), () async {
           await publishASIs();
           await publishAudits();
         });
-
-        await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
-        await subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId();
-        await subscribeToRegionalManagerUnitTrickleFeedTopicByRegionalManagerUnitId();
 
         emit(
           state.copyWith(
@@ -546,6 +546,40 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     }
   }
 
+  Future<void> publishAsiPhotos() async {
+    emit(
+      state.copyWith(
+        syncMessage: 'Syncing ASI Photos...',
+        isLoading: true,
+      ),
+    );
+
+    try {
+      logger.d('Get unsynced ASI Photos');
+      final listAsiPhotos = await cmoDatabaseMasterService.getUnsyncedAsiPhoto();
+      if (listAsiPhotos.isNotBlank) {
+        logger.d('Unsynced ASI Photos count: ${listAsiPhotos.length}');
+        for (final asiPhoto in listAsiPhotos) {
+          final syncedAsiPhoto = await cmoPerformApiService.insertUpdatedAsiPhoto(
+            asiPhoto.copyWith(
+              photo: asiPhoto.photoURL.stringToBase64SyncServer,
+            ),
+          );
+
+          if (syncedAsiPhoto != null) {
+            logger.d('Successfully published ASI: ${syncedAsiPhoto.asiRegisterPhotoId}');
+          } else {
+            logger.e('Failed to publish ASI: ${syncedAsiPhoto?.asiRegisterPhotoId}');
+          }
+        }
+      } else {
+        logger.d('No ASI Photos to sync');
+      }
+    } catch (error) {
+      logger.e(error);
+    }
+  }
+
   Future<int?> insertStakeholder(Message item) async {
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
@@ -814,6 +848,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> insertCompartmentsByRMUId() async {
+    emit(state.copyWith(syncMessage: 'Syncing Compartments...'));
     final compartments = await cmoPerformApiService.getCompartmentsByRMUId();
     if (compartments.isNotBlank) {
       for (final compartment in compartments!) {
@@ -823,6 +858,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> insertAreaTypes() async {
+    emit(state.copyWith(syncMessage: 'Syncing Area Type...'));
     final areaTypes = await cmoPerformApiService.fetchAreaTypes();
     if (areaTypes.isNotBlank) {
       for (final areaType in areaTypes!) {
@@ -832,6 +868,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> insertProductGroupTemplates() async {
+    emit(state.copyWith(syncMessage: 'Syncing Product Group Template...'));
     final productGroupTemplates = await cmoPerformApiService.fetchProductGroupTemplates();
     if (productGroupTemplates.isNotBlank) {
       for (final productGroupTemplate in productGroupTemplates!) {
@@ -841,6 +878,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> insertSpeciesGroupTemplates() async {
+    emit(state.copyWith(syncMessage: 'Syncing Species Group Template...'));
     final speciesGroupTemplates = await cmoPerformApiService.fetchSpeciesGroupTemplates();
     if (speciesGroupTemplates.isNotBlank) {
       for (final speciesGroupTemplate in speciesGroupTemplates!) {
@@ -850,6 +888,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> insertAsiTypes() async {
+    emit(state.copyWith(syncMessage: 'Syncing ASI Types...'));
     final asiTypes = await cmoPerformApiService.fetchRMAsiType();
     if (asiTypes.isNotBlank) {
       for (final asiType in asiTypes!) {
@@ -859,11 +898,26 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> insertRMAsiRegisters() async {
+    emit(state.copyWith(syncMessage: 'Syncing ASI Registers, ASI Photos...'));
     final listAsi = await cmoPerformApiService.getRMAsiRegisters();
     if (listAsi.isNotBlank) {
       for (final asi in listAsi!) {
         await cmoDatabaseMasterService.cacheAsi(
           asi,
+          isDirect: true,
+        );
+
+        final listAsiPhotos = await cmoPerformApiService.getRMAsiRegisterPhotosByAsiRegisterId(asi.asiRegisterId);
+        await insertRMAsiPhotos(listAsiPhotos);
+      }
+    }
+  }
+
+  Future<void> insertRMAsiPhotos(List<AsiPhoto>? listAsi) async {
+    if (listAsi.isNotBlank) {
+      for (final asi in listAsi!) {
+        await cmoDatabaseMasterService.cacheAsiPhoto(
+          asi.copyWith(photo: asi.photo.base64SyncServerToString),
           isDirect: true,
         );
       }

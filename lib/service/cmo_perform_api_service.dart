@@ -660,6 +660,28 @@ class CmoPerformApiService {
     return null;
   }
 
+  Future<List<AsiPhoto>?> getRMAsiRegisterPhotosByAsiRegisterId(String? asiRegisterId) async {
+
+    try {
+      final response = await client.get<JsonListData>(
+        '${Env.apiGroupSchemeUrl}AsiRegisterPhoto/GetAsiRegisterPhotosByAsiRegisterId?asiRegisterId=${asiRegisterId}',
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data;
+      return data?.map((e) => AsiPhoto.fromJson(e as JsonData)).toList();
+    } catch (e){
+      logger.d('Cannot getRMAsiRegisterPhotosByAsiRegisterId $e');
+    }
+
+    return null;
+  }
+
   Future<Compartment?> insertUpdatedCompartment(
       Compartment compartment,
       ) async {
@@ -702,6 +724,28 @@ class CmoPerformApiService {
       return data == null ? null : Asi.fromJson(data);
     } catch (e) {
       logger.d('Cannot insertUpdatedASI $e');
+      return null;
+    }
+  }
+
+  Future<AsiPhoto?> insertUpdatedAsiPhoto(AsiPhoto asiPhoto) async {
+    try {
+      log(asiPhoto.toJson().toString());
+      final response = await client.post<JsonData>(
+        '${Env.apiGroupSchemeUrl}AsiRegisterPhoto/CreateOrUpdateAsiRegisterPhoto',
+        data: asiPhoto.toJson(),
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data;
+      return data == null ? null : AsiPhoto.fromJson(data);
+    } catch (e) {
+      logger.d('Cannot insertUpdatedAsiPhoto $e');
       return null;
     }
   }

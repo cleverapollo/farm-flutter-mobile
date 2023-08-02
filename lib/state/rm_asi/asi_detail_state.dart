@@ -8,6 +8,7 @@ class AsiDetailState {
     this.compartments = const <Compartment>[],
     this.photoName,
     this.locationModel,
+    this.isLoading = false,
   });
 
   final List<AsiType> types;
@@ -15,8 +16,10 @@ class AsiDetailState {
   final LocationModel? locationModel;
   String? photoName;
   Asi asi;
+  final bool isLoading;
 
   AsiDetailState copyWith({
+    bool? isLoading,
     List<AsiType>? types,
     List<Compartment>? compartments,
     String? photoName,
@@ -24,6 +27,7 @@ class AsiDetailState {
     Asi? asi,
   }) {
     return AsiDetailState(
+      isLoading: isLoading ?? this.isLoading,
       types: types ?? this.types,
       compartments: compartments ?? this.compartments,
       photoName: photoName ?? this.photoName,

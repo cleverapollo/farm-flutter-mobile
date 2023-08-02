@@ -15,8 +15,8 @@ class AsiPhoto with _$AsiPhoto {
     @JsonKey(name: 'AsiRegisterNo') String? asiRegisterNo,
     @JsonKey(name: 'Photo') String? photo,
     @JsonKey(name: 'PhotoURL') String? photoURL,
-    @JsonKey(name: 'IsActive') bool? isActive,
-    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
+    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(false) @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
   }) = _AsiPhoto;
 
   const AsiPhoto._();

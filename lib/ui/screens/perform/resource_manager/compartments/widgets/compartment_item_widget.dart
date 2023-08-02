@@ -49,7 +49,7 @@ class CompartmentItemWidget extends StatelessWidget {
         ),
         content: [
           CmoCardHeader(
-            title: '${LocaleKeys.compartment.tr()}: ${model.managementUnitName}',
+            title: '${LocaleKeys.compartment.tr()}: ${model.unitNumber}',
           ),
           CmoCardItem(
             title: model.productGroupTemplateName ?? LocaleKeys.productGroup.tr(),

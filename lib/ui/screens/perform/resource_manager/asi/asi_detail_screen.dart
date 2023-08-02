@@ -169,6 +169,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
         final currentDate = state.asi.date;
         return CmoFilledButton(
           title: LocaleKeys.save.tr(),
+          loading: state.isLoading,
           onTap: () async {
             if (_formKey.currentState?.validate() == false) {
               return;
@@ -250,14 +251,14 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
                     compartmentId: int.tryParse(
                       compartments[index].managementUnitId ?? '',
                     ),
-                    compartmentName: compartments[index].managementUnitName,
+                    compartmentName: compartments[index].unitNumber,
                   );
                   Navigator.pop(context);
                 },
                 title: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Text(
-                    compartments[index].managementUnitName ?? '',
+                    compartments[index].unitNumber ?? '',
                     style: context.textStyles.bodyBold.copyWith(
                       color: context.colors.blueDark2,
                     ),

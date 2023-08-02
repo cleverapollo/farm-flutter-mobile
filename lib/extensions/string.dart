@@ -19,4 +19,14 @@ extension StringNullExtension on String? {
     if (isBlank) return null;
     return 'data:image/jpeg;base64,$this';
   }
+
+  String? get base64SyncServerToString {
+    if (isBlank) return null;
+
+    if (this!.contains('data:image/jpeg;base64,')) {
+      return this!.replaceFirst('data:image/jpeg;base64,', '');
+    }
+
+    return '$this';
+  }
 }

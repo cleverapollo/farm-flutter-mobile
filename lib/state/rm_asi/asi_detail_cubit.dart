@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
+import 'package:cmo/utils/file_utils.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
 
@@ -43,21 +48,29 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
   Future<void> saveAsi(
     List<String>? listImage,
   ) async {
-    var asiId = state.asi.asiRegisterId;
-    asiId ??= DateTime.now().millisecondsSinceEpoch.toString();
-    state.asi = state.asi.copyWith(
-      isActive: true,
-      asiRegisterId: asiId,
-    );
-    await cmoDatabaseMasterService.cacheAsi(state.asi);
-    await cmoDatabaseMasterService.cacheAsiPhoto(
-      AsiPhoto(
-        asiRegisterPhotoId: DateTime.now().millisecondsSinceEpoch,
+    try {
+      emit(state.copyWith(isLoading: true));
+      var asiId = state.asi.asiRegisterId;
+      asiId ??= DateTime.now().millisecondsSinceEpoch.toString();
+      state.asi = state.asi.copyWith(
+        isActive: true,
         asiRegisterId: asiId,
-        photo: state.locationModel?.imageUri,
-        asiRegisterPhotoNo: state.photoName,
-      ),
-    );
+      );
+
+      await cmoDatabaseMasterService.cacheAsi(state.asi);
+      await cmoDatabaseMasterService.cacheAsiPhoto(
+        AsiPhoto(
+          asiRegisterPhotoId: DateTime.now().millisecondsSinceEpoch,
+          asiRegisterId: asiId,
+          photo: state.locationModel?.imageUri == null ? '' : await FileUtil.toBase64(File(state.locationModel?.imageUri ?? '')),
+          asiRegisterPhotoNo: state.photoName,
+        ),
+      );
+    } catch (e) {
+      logger.e('Cannot saveASI $e');
+    } finally {
+      emit(state.copyWith(isLoading: false));
+    }
 
     // if (listImage.isNotBlank) {
     //   for (final image in listImage!) {

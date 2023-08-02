@@ -777,11 +777,18 @@ class CmoDatabaseMasterService {
     }
   }
 
-  Future<int?> cacheAsiPhoto(AsiPhoto data) async {
+  Future<int?> cacheAsiPhoto(AsiPhoto data, {
+    bool isDirect = false,
+  }) async {
     final db = await _db();
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.asiPhotos.put(data);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.asiPhotos.put(data);
+      });
+    }
+
   }
 
   Future<int?> cacheChemical(Chemical data) async {
@@ -1829,7 +1836,11 @@ class CmoDatabaseMasterService {
 
   Future<List<AsiPhoto>> getUnsyncedAsiPhoto() async {
     final db = await _db();
-    return db.asiPhotos.filter().isMasterdataSyncedEqualTo(false).findAll();
+    return db.asiPhotos
+        .filter()
+        .isMasterdataSyncedEqualTo(false)
+        .isActiveEqualTo(true)
+        .findAll();
   }
 
   Future<List<AsiPhoto>> getAsiPhoto() async {
@@ -3424,7 +3435,7 @@ class CmoDatabaseMasterService {
           .filter()
           .isActiveEqualTo(true)
           .groupSchemeIdEqualTo(groupSchemeId)
-          .sortByManagementUnitName()
+          .sortByUnitNumber()
           .findAll();
 
       return compartments;
@@ -3447,7 +3458,7 @@ class CmoDatabaseMasterService {
           .isActiveEqualTo(true)
           .groupSchemeIdEqualTo(groupSchemeId)
           .farmIdEqualTo(farmId)
-          .sortByManagementUnitName()
+          .sortByUnitNumber()
           .findAll();
 
       return compartments;
