@@ -14,6 +14,7 @@ class CmoDropDownLayoutWidget extends StatelessWidget {
     this.trailingWidget,
     this.subTitleAlignment,
     this.subTitleTextStyle,
+    this.isHideBorder = false,
   });
 
   final String label;
@@ -24,6 +25,7 @@ class CmoDropDownLayoutWidget extends StatelessWidget {
   final Widget? trailingWidget;
   final Alignment? subTitleAlignment;
   final TextStyle? subTitleTextStyle;
+  final bool isHideBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +46,8 @@ class CmoDropDownLayoutWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
             decoration: BoxDecoration(
                 color: context.colors.white,
-                border: Border.all(width: 1, color: context.colors.grey),
-                borderRadius: BorderRadius.circular(12)),
+                border: isHideBorder ? null : Border.all(width: 1, color: context.colors.grey),
+                borderRadius: isHideBorder ? null : BorderRadius.circular(12)),
             width: double.infinity,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

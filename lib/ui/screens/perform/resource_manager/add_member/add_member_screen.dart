@@ -8,6 +8,7 @@ import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/ui/components/select_site_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_membership_contract_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/farm_member_objectives_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
@@ -254,88 +255,94 @@ class _AddMemberSDetails extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildTitle(context, 'Site Location (*)'),
-                CmoDropDownLayoutWidget(
-                  onTap: () async {
-                    final siteLocationScreenResult =
-                        await SelectSiteLocationScreen.push<
-                            SiteLocationScreenResult>(
-                      context,
-                      showMarker: true,
-                      showResetAcceptIcons: true,
-                      initAddress: data.addMemberSiteLocations.address ??
-                          data.initAddressForSiteLocation(),
-                          latLng: data.addMemberSiteLocations.lat != null &&
-                              data.addMemberSiteLocations.lng != null
-                          ? LatLng(data.addMemberSiteLocations.lat!,
-                              data.addMemberSiteLocations.lng!)
-                          : null,
-                    );
-
-                    if (siteLocationScreenResult is SiteLocationScreenResult) {
-                      final latLong = siteLocationScreenResult.latLong;
-                      if (latLong?.latitude == null ||
-                          latLong?.longitude == null) {
-                        return;
-                      }
-
-                      final address =
-                          '${siteLocationScreenResult.address}\n${latLong?.latitude.toStringAsFixed(6)}, ${latLong?.longitude.toStringAsFixed(6)}';
-
-                      await cubit.onDataChangeSiteDetail(
-                        siteLocationLat:
-                            siteLocationScreenResult.latLong?.latitude,
-                        siteLocationLng:
-                            siteLocationScreenResult.latLong?.longitude,
-                        siteLocationAddress: address,
+                AttributeItem(
+                  child: CmoDropDownLayoutWidget(
+                    onTap: () async {
+                      final siteLocationScreenResult =
+                          await SelectSiteLocationScreen.push<
+                              SiteLocationScreenResult>(
+                        context,
+                        showMarker: true,
+                        showResetAcceptIcons: true,
+                        initAddress: data.addMemberSiteLocations.address ??
+                            data.initAddressForSiteLocation(),
+                            latLng: data.addMemberSiteLocations.lat != null &&
+                                data.addMemberSiteLocations.lng != null
+                            ? LatLng(data.addMemberSiteLocations.lat!,
+                                data.addMemberSiteLocations.lng!)
+                            : null,
                       );
-                    }
-                  },
-                  title: LocaleKeys.siteLocation.tr(),
-                  showTick: data.isCompleteSiteLocation,
-                ),
-                const SizedBox(height: 12),
-                _buildTitle(context, 'Compartment/s'),
-                BlocSelector<AddMemberCubit, AddMemberState, double?>(
-                  selector: (state) => state.addMemberSDetails.addMemberCompartmentsState.farmSize,
-                  builder: (context, farmSize) {
-                    final farmSizeTitle = farmSize == null ? null : '${farmSize.toStringAsFixed(2)}${LocaleKeys.ha_unit.tr()}';
-                    return CmoDropDownLayoutWidget(
-                      title: LocaleKeys.compartment_s.tr(),
-                      showTick: data.isCompleteCompartments,
-                      subTitle: farmSizeTitle,
-                      subTitleAlignment: Alignment.center,
-                      subTitleTextStyle: context.textStyles.titleBold.copyWith(fontSize: 16),
-                      onTap: () async {
-                        final state = context.read<AddMemberCubit>().state;
-                        final farmName = state.farm?.farmName;
-                        final farmId = state.farm?.farmId;
-                        final result = await CompartmentScreen.push(context,
-                            farmId: farmId, farmName: farmName);
 
-                        if (result != null) {
-                          await cubit.onDataChangeSiteDetail(
-                              addingCompartmentResult: result,
-                          );
+                      if (siteLocationScreenResult is SiteLocationScreenResult) {
+                        final latLong = siteLocationScreenResult.latLong;
+                        if (latLong?.latitude == null ||
+                            latLong?.longitude == null) {
+                          return;
                         }
-                      },
-                    );
-                  },
-                ),
-                const SizedBox(height: 12),
-                _buildTitle(context, 'ASI'),
-                CmoDropDownLayoutWidget(
-                  onTap: () async {
-                    final state = context.read<AddMemberCubit>().state;
-                    final farmName = state.farm?.farmName;
-                    final farmId = state.farm?.farmId;
-                    final result = await ASIScreen.push(context,
-                        farmId: farmId, farmName: farmName);
 
-                    await cubit.onDataChangeSiteDetail(asis: result);
-                  },
-                  title: LocaleKeys.asi.tr(),
-                  showTick: data.isCompleteASI,
+                        final address =
+                            '${siteLocationScreenResult.address}\n${latLong?.latitude.toStringAsFixed(6)}, ${latLong?.longitude.toStringAsFixed(6)}';
+
+                        await cubit.onDataChangeSiteDetail(
+                          siteLocationLat:
+                              siteLocationScreenResult.latLong?.latitude,
+                          siteLocationLng:
+                              siteLocationScreenResult.latLong?.longitude,
+                          siteLocationAddress: address,
+                        );
+                      }
+                    },
+                    title: LocaleKeys.siteLocation.tr(),
+                    showTick: data.isCompleteSiteLocation,
+                    isHideBorder: true,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                AttributeItem(
+                  child: BlocSelector<AddMemberCubit, AddMemberState, double?>(
+                    selector: (state) => state.addMemberSDetails.addMemberCompartmentsState.farmSize,
+                    builder: (context, farmSize) {
+                      final farmSizeTitle = farmSize == null ? null : '${farmSize.toStringAsFixed(2)}${LocaleKeys.ha_unit.tr()}';
+                      return CmoDropDownLayoutWidget(
+                        title: LocaleKeys.compartment_s.tr(),
+                        showTick: data.isCompleteCompartments,
+                        subTitle: farmSizeTitle,
+                        subTitleAlignment: Alignment.center,
+                        subTitleTextStyle: context.textStyles.titleBold.copyWith(fontSize: 16),
+                        isHideBorder: true,
+                        onTap: () async {
+                          final state = context.read<AddMemberCubit>().state;
+                          final farmName = state.farm?.farmName;
+                          final farmId = state.farm?.farmId;
+                          final result = await CompartmentScreen.push(context,
+                              farmId: farmId, farmName: farmName);
+
+                          if (result != null) {
+                            await cubit.onDataChangeSiteDetail(
+                                addingCompartmentResult: result,
+                            );
+                          }
+                        },
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                AttributeItem(
+                  child: CmoDropDownLayoutWidget(
+                    onTap: () async {
+                      final state = context.read<AddMemberCubit>().state;
+                      final farmName = state.farm?.farmName;
+                      final farmId = state.farm?.farmId;
+                      final result = await ASIScreen.push(context,
+                          farmId: farmId, farmName: farmName);
+
+                      await cubit.onDataChangeSiteDetail(asis: result);
+                    },
+                    title: LocaleKeys.asi.tr(),
+                    showTick: data.isCompleteASI,
+                    isHideBorder: true,
+                  ),
                 ),
                 const SizedBox(height: 12),
               ],
