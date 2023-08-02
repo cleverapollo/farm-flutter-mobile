@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
 
+import 'package:app_settings/app_settings.dart';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
@@ -74,6 +75,9 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.points != null) {
+      _drawInitialPolygon();
+    }
     onInternetStateChangeListener();
   }
 
@@ -84,7 +88,6 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
         _hasInternet = hasInternet;
       });
     }
-
     _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
       final hasInternet = result != ConnectivityResult.none;
       if (hasInternet != _hasInternet) {
@@ -208,95 +211,104 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: _removePreviousPoint,
-                padding: EdgeInsets.zero,
-                iconSize: 36,
-                icon: Container(
-                  alignment: Alignment.center,
-                  color: Colors.white,
-                  child: SvgGenImage(Assets.icons.icRefresh.path).svg(
-                    width: 36, height: 36, colorFilter: const ColorFilter.mode(
-                    Colors.blue,
-                    BlendMode.srcIn,
-                  ),),
-                ),
-              ),
-              const SizedBox(width: 16),
-              IconButton(
-                onPressed: () async {
-                  var center = await getCenter();
-                  if (center != null) {
-                    if (_isCompletedPoint(center)) {
-                      _finishDrawing();
-                    } else {
-                      _markers.add(await _markerFrom(center));
-                      if (_isFinished) {
-                        _finishDrawing();
-                      } else {
-                        setState(() {});
-                      }
-                    }
-                  }
-                },
-                padding: EdgeInsets.zero,
-                iconSize: 36,
-                icon: Container(
-                  alignment: Alignment.center,
-                  color: Colors.white,
-                  child: SvgGenImage(Assets.icons.icAccept.path).svg(
-                    width: 36, height: 36, colorFilter: const ColorFilter.mode(
-                    Colors.blue,
-                    BlendMode.srcIn,
-                  ),),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
+          if (_hasInternet)...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  child: CmoFilledButton(
-                    title: LocaleKeys.complete_polygon.tr(),
-                    onTap: _markers.length > 2
-                        ? () => _finishDrawing()
-                        : null,
+                IconButton(
+                  onPressed: _removePreviousPoint,
+                  padding: EdgeInsets.zero,
+                  iconSize: 36,
+                  icon: Container(
+                    alignment: Alignment.center,
+                    color: Colors.white,
+                    child: SvgGenImage(Assets.icons.icRefresh.path).svg(
+                      width: 36, height: 36, colorFilter: const ColorFilter.mode(
+                      Colors.blue,
+                      BlendMode.srcIn,
+                    ),),
                   ),
                 ),
-                const SizedBox(width: 24),
-                Expanded(
-                  child: CmoFilledButton(
-                    title: LocaleKeys.next.tr(),
-                    onTap: _isFinished
-                        ? () {
-                      CompartmentDetailScreen.push(
-                              context,
-                              farmId: widget.farmId,
-                              farmName: widget.farmName,
-                              campId: widget.campId,
-                              measuredArea: (areaSquareMeters ?? 0) / 10000,
-                              locations: _markers
-                                  .map(
-                                    (e) => PolygonItem(
-                                      latitude: e.position.latitude,
-                                      longitude: e.position.longitude,
-                                    ),
-                                  )
-                                  .toList(),
-                            );
-                          }
-                        : null,
+                const SizedBox(width: 16),
+                IconButton(
+                  onPressed: () async {
+                    var center = await getCenter();
+                    if (center != null) {
+                      if (_isCompletedPoint(center)) {
+                        _finishDrawing();
+                      } else {
+                        _markers.add(await _markerFrom(center));
+                        if (_isFinished) {
+                          _finishDrawing();
+                        } else {
+                          setState(() {});
+                        }
+                      }
+                    }
+                  },
+                  padding: EdgeInsets.zero,
+                  iconSize: 36,
+                  icon: Container(
+                    alignment: Alignment.center,
+                    color: Colors.white,
+                    child: SvgGenImage(Assets.icons.icAccept.path).svg(
+                      width: 36, height: 36, colorFilter: const ColorFilter.mode(
+                      Colors.blue,
+                      BlendMode.srcIn,
+                    ),),
                   ),
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CmoFilledButton(
+                      title: LocaleKeys.complete_polygon.tr(),
+                      onTap: _markers.length > 2
+                          ? () => _finishDrawing()
+                          : null,
+                    ),
+                  ),
+                  const SizedBox(width: 24),
+                  Expanded(
+                    child: CmoFilledButton(
+                      title: LocaleKeys.next.tr(),
+                      onTap: _isFinished
+                          ? () {
+                        CompartmentDetailScreen.push(
+                          context,
+                          farmId: widget.farmId,
+                          farmName: widget.farmName,
+                          campId: widget.campId,
+                          measuredArea: (areaSquareMeters ?? 0) / 10000,
+                          locations: _markers
+                              .map(
+                                (e) => PolygonItem(
+                              latitude: e.position.latitude,
+                              longitude: e.position.longitude,
+                            ),
+                          )
+                              .toList(),
+                        );
+                      } : null,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ] else ...[
+            const SizedBox(height: 40,),
+            CmoFilledButton(
+              title: LocaleKeys.connect_to_internet.tr(),
+              onTap: () {
+                AppSettings.openAppSettings(type: AppSettingsType.wifi);
+              },
+            )
+          ],
           const SizedBox(height: 20),
         ],
       ),
@@ -405,63 +417,6 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
     return distance < 3;
   }
 
-  Widget _buildMapButton() {
-    if (!_hasInternet) {
-      return const SizedBox(height: 60);
-    }
-    return
-      SizedBox(
-        height: 60,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              onPressed: _removePreviousPoint,
-              padding: EdgeInsets.zero,
-              iconSize: 36,
-              icon: Container(
-                alignment: Alignment.center,
-                color: Colors.white,
-                child: SvgGenImage(Assets.icons.icRefresh.path).svg(
-                  width: 36, height: 36, colorFilter: const ColorFilter.mode(
-                  Colors.blue,
-                  BlendMode.srcIn,
-                ),),
-              ),
-            ),
-            const SizedBox(width: 16),
-            IconButton(
-              onPressed: () async {
-                var center = await getCenter();
-                if (center != null) {
-                  if (_isCompletedPoint(center)) {
-                    _finishDrawing();
-                  } else {
-                    _markers.add(await _markerFrom(center));
-                    if (_isFinished) {
-                      _finishDrawing();
-                    } else {
-                      setState(() {});
-                    }
-                  }
-                }
-              },
-              padding: EdgeInsets.zero,
-              iconSize: 36,
-              icon: Container(
-                alignment: Alignment.center,
-                color: Colors.white,
-                child: SvgGenImage(Assets.icons.icAccept.path).svg(
-                  width: 36, height: 36, colorFilter: const ColorFilter.mode(
-                  Colors.blue,
-                  BlendMode.srcIn,
-                ),),
-              ),
-            ),
-          ],
-        ),
-      );
-  }
 
   Widget _buildNoInternet() {
     if (_hasInternet) {
