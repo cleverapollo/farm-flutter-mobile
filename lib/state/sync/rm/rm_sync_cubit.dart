@@ -183,7 +183,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         await Future.delayed(const Duration(seconds: 5), () async {
           await publishASIs();
           await publishAudits();
-          // await publishAsiPhotos();
         });
 
         emit(
@@ -362,10 +361,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           auditPayload = auditPayload.copyWith(assessmentQuestionAnswers: auditQuestionAnswers);
           logger.d('Assign assessment/audit Payload to message $auditPayload');
 
-          log(jsonEncode(
-            auditPayload.toJson(),
-          ));
-
           final message = Message(
             properties: getMessageProperties(),
             body: jsonEncode(
@@ -505,10 +500,18 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         for (final compartment in compartments) {
           final syncedCompartment = await cmoPerformApiService.insertUpdatedCompartment(compartment);
           if (syncedCompartment != null) {
-            // await cmoDatabaseMasterService.cacheCompartment(
-            //   syncedCompartment.copyWith(isMasterdataSynced: true),
-            //   isDirect: true,
-            // );
+            await cmoDatabaseMasterService.removeCompartment(compartment.id);
+            await cmoDatabaseMasterService.cacheCompartment(
+              syncedCompartment.copyWith(
+                isMasterdataSynced: true,
+                productGroupTemplateName: compartment.productGroupTemplateName,
+                speciesGroupTemplateName: compartment.speciesGroupTemplateName,
+                espacementWidth: compartment.espacementWidth,
+                espacementLength: compartment.espacementLength,
+                stockingPercentage: compartment.stockingPercentage,
+              ),
+              isDirect: true,
+            );
 
             logger.d('Successfully published compartment: ${syncedCompartment.managementUnitId}');
           } else {
@@ -539,13 +542,19 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         for (final asi in listASI) {
           final syncedAsi = await cmoPerformApiService.insertUpdatedASI(asi);
           if (syncedAsi != null) {
+            await cmoDatabaseMasterService.removeAsiRegister(asi.id);
+            await cmoDatabaseMasterService.cacheAsi(
+              syncedAsi.copyWith(
+                isMasterdataSynced: true,
+              ),
+            );
+
             final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterNo(syncedAsi.asiRegisterNo);
             await publishListAsiPhotos(
               asi: syncedAsi,
               listAsiPhotos: listAsiPhotos,
             );
 
-            // await cmoDatabaseMasterService.cacheAsi(syncedAsi);
             logger.d('Successfully published ASI: ${syncedAsi.asiRegisterId}');
           } else {
             logger.e('Failed to publish ASI: ${syncedAsi?.asiRegisterId}');
@@ -568,12 +577,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       if (listAsiPhotos.isNotBlank) {
         logger.d('Unsynced ASI Photos count: ${listAsiPhotos!.length}');
         for (final asiPhoto in listAsiPhotos) {
-          log(asiPhoto.copyWith(
-            photo: '',
-            asiRegisterId: asi.asiRegisterId,
-            asiRegisterNo: asi.asiRegisterNo,
-          ).toJson().toString());
-
           final syncedAsiPhoto = await cmoPerformApiService.insertUpdatedAsiPhoto(
             asiPhoto.copyWith(
               photo: asiPhoto.photo.stringToBase64SyncServer,
@@ -583,58 +586,13 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           );
 
           if (syncedAsiPhoto != null) {
-            // await cmoDatabaseMasterService.cacheAsiPhoto(
-            //   syncedAsiPhoto.copyWith(
-            //     photo: syncedAsiPhoto.photo?.base64SyncServerToString,
-            //     isMasterdataSynced: true,
-            //   ),
-            // );
-
-            logger.d('Successfully published ASI: ${syncedAsiPhoto.asiRegisterPhotoId}');
-          } else {
-            logger.e('Failed to publish ASI: ${syncedAsiPhoto?.asiRegisterPhotoId}');
-          }
-        }
-      } else {
-        logger.d('No ASI Photos to sync');
-      }
-    } catch (error) {
-      logger.e(error);
-    }
-  }
-
-  Future<void> publishAsiPhotos() async {
-    emit(
-      state.copyWith(
-        syncMessage: 'Syncing ASI Photos...',
-        isLoading: true,
-      ),
-    );
-
-    try {
-      await Future.delayed(const Duration(seconds: 3), (){});
-      logger.d('Get unsynced ASI Photos');
-      final listAsiPhotos = await cmoDatabaseMasterService.getUnsyncedAsiPhoto();
-      if (listAsiPhotos.isNotBlank) {
-        logger.d('Unsynced ASI Photos count: ${listAsiPhotos.length}');
-        for (final asiPhoto in listAsiPhotos) {
-          log(asiPhoto.copyWith(
-            photo: '',
-          ).toJson().toString());
-
-          final syncedAsiPhoto = await cmoPerformApiService.insertUpdatedAsiPhoto(
-            asiPhoto.copyWith(
-              photo: asiPhoto.photo.stringToBase64SyncServer,
-            ),
-          );
-
-          if (syncedAsiPhoto != null) {
-            // await cmoDatabaseMasterService.cacheAsiPhoto(
-            //   syncedAsiPhoto.copyWith(
-            //     photo: syncedAsiPhoto.photo?.base64SyncServerToString,
-            //     isMasterdataSynced: true,
-            //   ),
-            // );
+            await cmoDatabaseMasterService.removeAsiPhoto(asiPhoto.id);
+            await cmoDatabaseMasterService.cacheAsiPhoto(
+              syncedAsiPhoto.copyWith(
+                photo: syncedAsiPhoto.photo?.base64SyncServerToString,
+                isMasterdataSynced: true,
+              ),
+            );
 
             logger.d('Successfully published ASI: ${syncedAsiPhoto.asiRegisterPhotoId}');
           } else {

@@ -494,6 +494,20 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<bool> removeAsiRegister(int id) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.asis.delete(id);
+    });
+  }
+
+  Future<bool> removeAsiPhoto(int id) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.asiPhotos.delete(id);
+    });
+  }
+
   Future<List<AsiPhoto>> getAllAsiPhotoByAsiRegisterNo(
       String? asiRegisterNo) async {
     final db = await _db();
@@ -3416,6 +3430,33 @@ class CmoDatabaseMasterService {
     }
 
     return <Site>[];
+  }
+
+  Future<bool> removeCompartment(int id) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.compartments.delete(id);
+    });
+  }
+
+  Future<Compartment?> getCompartmentsByUnitNumber({
+    String? unitMember,
+  }) async {
+    if (unitMember == null) return null;
+    final db = await _db();
+    try {
+      final compartment = await db.compartments
+          .filter()
+          .isActiveEqualTo(true)
+          .unitNumberEqualTo(unitMember)
+          .findFirst();
+
+      return compartment;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return null;
   }
 
   Future<List<Compartment>> getCompartmentsByGroupSchemeId({
