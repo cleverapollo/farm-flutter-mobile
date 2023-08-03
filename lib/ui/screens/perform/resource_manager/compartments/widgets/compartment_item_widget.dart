@@ -6,7 +6,9 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_map_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cmo/state/compartment_cubit/compartment_cubit.dart';
 
 class CompartmentItemWidget extends StatelessWidget {
   final Compartment model;
@@ -31,7 +33,7 @@ class CompartmentItemWidget extends StatelessWidget {
           return;
         }
         final farm = await cmoDatabaseMasterService.getFarmById(model.farmId ?? '');
-        CompartmentMapScreen.push(context,
+        await CompartmentMapScreen.push(context,
             farmId: model.farmId ?? '',
             farmName: farm?.farmName ?? '',
             points: points
@@ -39,6 +41,7 @@ class CompartmentItemWidget extends StatelessWidget {
                 .toList(),
             compartment: model,
         );
+        context.read<CompartmentCubit>().loadListCompartment();
       },
       child: CmoCard(
         containerGradient: const LinearGradient(

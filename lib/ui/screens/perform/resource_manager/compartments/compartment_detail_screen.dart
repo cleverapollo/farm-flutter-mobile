@@ -1,4 +1,5 @@
 import 'package:cmo/extensions/date.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -43,7 +44,9 @@ class CompartmentDetailScreen extends StatefulWidget {
             create: (_) => CompartmentDetailCubit(
               farmId,
               campId: campId,
-              compartment: compartment ?? const Compartment(isActive: true),
+              compartment: compartment ?? const Compartment(
+                isActive: true,
+              ),
             ),
             child: CompartmentDetailScreen(
               measuredArea: measuredArea,
@@ -300,17 +303,23 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             //     onChanged: _compartmentDetailCubit.onCompartmentUnitChanged,
                             //   ),
                             // ),
-                            AttributeItem(
-                              child: InputAttributeItem(
-                                labelText: '${LocaleKeys.effectiveArea.tr()} ha',
-                                labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                                textStyle: context.textStyles.bodyNormal.blueDark2,
-                                hintText: '${LocaleKeys.effectiveArea.tr()} ha',
-                                keyboardType: TextInputType.number,
-                                initialValue: (initCompartment.effectiveArea ?? '').toString(),
-                                onChanged: (value) =>
-                                    _compartmentDetailCubit.onEffectiveAreaChanged(double.tryParse(value)),
-                              ),
+                            BlocSelector<CompartmentDetailCubit, CompartmentDetailState, bool>(
+                              selector: (state) => state.isEffectiveAreaError,
+                              builder: (context, isEffectiveAreaError) {
+                                return AttributeItem(
+                                  errorText: '${LocaleKeys.effectiveArea.tr()} ha',
+                                  isShowError: isEffectiveAreaError,
+                                  child: InputAttributeItem(
+                                    labelText: '${LocaleKeys.effectiveArea.tr()} ha',
+                                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                                    keyboardType: TextInputType.number,
+                                    initialValue: (initCompartment.effectiveArea ?? '').toString(),
+                                    onChanged: (value) =>
+                                        _compartmentDetailCubit.onEffectiveAreaChanged(double.tryParse(value)),
+                                  ),
+                                );
+                              },
                             ),
                             AttributeItem(
                               child: Padding(
@@ -345,25 +354,29 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
-                                      child: Text(
-                                        _plannedPlantDate == null
+                                      child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, String?>(
+                                          selector: (state) => state.compartment.plannedPlantDT,
+                                          builder: (context, plannedDate) {
+                                            return Text(
+                                              plannedDate == null
                                             ? LocaleKeys.plannedPlantDate.tr()
-                                            : _plannedPlantDate!.yMd(),
-                                        style: context.textStyles.bodyBold,
+                                            : DateTime.parse(plannedDate).yMd(),
+                                              style: context.textStyles.bodyBold,
+                                            );
+                                          },
                                       ),
                                     ),
                                     IconButton(
                                       padding: const EdgeInsets.all(4),
                                       constraints: const BoxConstraints(),
                                       onPressed: () async {
-                                        _plannedPlantDate = await showDatePicker(
+                                        final datetime = await showDatePicker(
                                           context: context,
                                           initialDate: DateTime.now(),
                                           firstDate: DateTime.now().add(Duration(days: -1000000)),
                                           lastDate: DateTime.now().add(Duration(days: 1000000)),
                                         );
-                                        _compartmentDetailCubit.onPlannedPlantDateChanged(_plannedPlantDate);
-                                        setState(() {});
+                                        _compartmentDetailCubit.onPlannedPlantDateChanged(datetime);
                                       },
                                       icon: Assets.icons.icCalendar.svgBlack
                                     ),
@@ -424,8 +437,17 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                   CmoFilledButton(
                     title: LocaleKeys.save.tr(),
                     onTap: () async {
-                      final isCompleted = await _compartmentDetailCubit.saveCompartment();
-                      if (isCompleted && context.mounted) {
+                      final complete = _compartmentDetailCubit.checkCompleteRequiredField();
+                      if (!complete) {
+                        return;
+                      }
+                      final errorMessage = _compartmentDetailCubit.checkCompleteDropDownField();
+                      if (errorMessage.isNotBlank) {
+                        showSnackError(msg: errorMessage!);
+                        return;
+                      }
+                      await _compartmentDetailCubit.saveCompartment();
+                      if (context.mounted) {
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();
                       }

@@ -52,10 +52,7 @@ class CompartmentDetailState {
     List<SpeciesGroupTemplate>? speciesGroupTemplates,
     bool? isDataReady,
     bool? isCompartmentNameError,
-    bool? isProductGroupError,
-    bool? isSpeciesGroupError,
     bool? isEffectiveAreaError,
-    bool? isPlantDateError,
   }) {
     return CompartmentDetailState(
       farmId: farmId ?? this.farmId,
@@ -69,10 +66,7 @@ class CompartmentDetailState {
       groupScheme: groupScheme ?? this.groupScheme,
       isDataReady: isDataReady ?? this.isDataReady,
       isCompartmentNameError: isCompartmentNameError ?? this.isCompartmentNameError,
-      isProductGroupError: isProductGroupError ?? this.isProductGroupError,
-      isSpeciesGroupError: isSpeciesGroupError ?? this.isSpeciesGroupError,
       isEffectiveAreaError: isEffectiveAreaError ?? this.isEffectiveAreaError,
-      isPlantDateError: isPlantDateError ?? this.isPlantDateError,
     );
   }
 }

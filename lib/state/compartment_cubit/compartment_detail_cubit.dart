@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/compartment/product_group_template.dart';
@@ -43,43 +44,47 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     }
   }
 
-  Future<bool> saveCompartment() async {
+  bool checkCompleteRequiredField() {
+    final compartment = state.compartment;
+    emit(
+      state.copyWith(
+        isCompartmentNameError: compartment.unitNumber.isBlank,
+        isEffectiveAreaError: compartment.effectiveArea == null,
+
+      ),
+    );
+    return state.isCompartmentNameError == false && state.isEffectiveAreaError == false;
+  }
+
+  String? checkCompleteDropDownField() {
+    final compartment = state.compartment;
+    if (compartment.productGroupTemplateId.isBlank) {
+      return LocaleKeys.product_group_is_required.tr();
+    } else if (compartment.speciesGroupTemplateId.isBlank) {
+      return LocaleKeys.species_group_is_required.tr();
+    } else if (compartment.plannedPlantDT.isBlank) {
+      return LocaleKeys.planned_plant_date_is_required.tr();
+    }
+    return null;
+  }
+
+  Future<void> saveCompartment() async {
     try {
-      final compartment = state.compartment;
-      final completed = compartment.unitNumber.isNotBlank &&
-          compartment.productGroupTemplateId.isNotBlank &&
-          compartment.speciesGroupTemplateId.isNotBlank &&
-          compartment.effectiveArea != null &&
-          compartment.plannedPlantDT.isNotBlank;
-      if (completed) {
-        emit(state.copyWith(loading: true));
-        await cmoDatabaseMasterService.cacheCompartment(
-          state.compartment.copyWith(
-            createDT: DateTime.now().toString(),
-            groupSchemeId: state.groupScheme?.groupSchemeId,
-            farmId: state.farmId,
-            campId: state.campId,
-          ),
-          isDirect: true,
-        );
-      } else {
-        emit(
-          state.copyWith(
-            isCompartmentNameError: compartment.unitNumber.isNotBlank,
-            isProductGroupError: compartment.productGroupTemplateId.isNotBlank,
-            isSpeciesGroupError: compartment.speciesGroupTemplateId.isNotBlank,
-            isEffectiveAreaError: compartment.effectiveArea != null,
-            isPlantDateError: compartment.plannedPlantDT.isNotBlank,
-          ),
-        );
-        return false;
-      }
+      emit(state.copyWith(loading: true));
+      await cmoDatabaseMasterService.cacheCompartment(
+        state.compartment.copyWith(
+          createDT: state.compartment.createDT ?? DateTime.now().toString(),
+          groupSchemeId: state.groupScheme?.groupSchemeId,
+          farmId: state.farmId,
+          campId: state.campId,
+        ),
+        isDirect: true,
+      );
     } catch (e) {
       logger.d('Could not create compartment $e');
     } finally {
       emit(state.copyWith(loading: false));
     }
-    return true;
   }
 
   void onCompartmentNameChanged(String value) {
@@ -142,8 +147,13 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   }
 
   void onPlannedPlantDateChanged(DateTime? value) {
-    state.compartment =
-        state.compartment.copyWith(plannedPlantDT: value?.toString());
+    emit(
+        state.copyWith(
+            compartment : state.compartment.copyWith(
+                plannedPlantDT: value?.toString(),
+            ),
+        ),
+    );
   }
 
   void onSurvivalPercentageDateChanged(double? value) {

@@ -558,5 +558,8 @@
   "terrain": "Terrain",
   "inclusion_date": "Inclusion Date",
   "no_internet_to_create_boundary": "Internet required to create boundary.\nPlease connect to the internet.",
-  "connect_to_internet": "Connect to Internet"
+  "connect_to_internet": "Connect to Internet",
+  "product_group_is_required": "Product Group is required",
+  "species_group_is_required": "Species Group is required",
+  "planned_plant_date_is_required": "Planned Plant Date is required"
 }

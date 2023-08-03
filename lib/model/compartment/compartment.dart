@@ -57,7 +57,11 @@ class Compartment with _$Compartment {
       _$CompartmentFromJson(json);
 
   @override
-  Id get id => int.tryParse(managementUnitId ?? '') ?? Isar.autoIncrement;
+  Id get id {
+    var compartmentId = int.tryParse(managementUnitId ?? '');
+    compartmentId ??= DateTime.tryParse(createDT ?? '')?.millisecondsSinceEpoch;
+    return compartmentId ?? Isar.autoIncrement;
+  }
 }
 
 @freezed
