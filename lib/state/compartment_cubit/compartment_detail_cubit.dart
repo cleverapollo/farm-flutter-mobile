@@ -15,10 +15,8 @@ import 'package:flutter/widgets.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
-  CompartmentDetailCubit(String farmId,
-      {required Compartment compartment, String? campId})
-      : super(CompartmentDetailState(
-            farmId: farmId, campId: campId, compartment: compartment));
+  CompartmentDetailCubit(String farmId, {required Compartment compartment, String? campId})
+      : super(CompartmentDetailState(farmId: farmId, campId: campId, compartment: compartment));
 
   Future<void> fetchData({required BuildContext context}) async {
     try {
