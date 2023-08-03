@@ -17,9 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_autocomplete_field/map_autocomplete_field.dart';
-
-import '../widget/cmo_text_field.dart';
-import '../widget/common_widgets.dart';
+import 'package:cmo/ui/widget/cmo_text_field.dart';
 
 class SiteLocationScreenResult extends Equatable {
   final LatLng? latLong;
@@ -107,6 +105,7 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
   void initState() {
     super.initState();
     addressTextController = TextEditingController(text: widget.initAddress);
+    _legacyAddress = widget.initAddress ?? '';
     _latLong = widget.initLatLng;
     Future.microtask(() async {
       await initData();
@@ -173,9 +172,7 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
         setState(() {
           _loading = true;
         });
-        if (widget.hasInternet) {
-          await setAddress(latitude, longitude);
-        }
+        await setAddress(latitude, longitude);
       } finally {
         setState(() {
           _loading = false;
@@ -347,12 +344,12 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
     return SizedBox(
       height: 64,
       child: CmoTextField(
+        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         initialValue: initAddress,
         hintStyle: context.textStyles.bodyNormal.grey,
         hintText: LocaleKeys.address.tr(),
           keyboardType: TextInputType.name,
           onChanged: (address) {
-          print(address);
             _legacyAddress = address ?? '';
           },
         ),

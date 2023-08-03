@@ -26,6 +26,7 @@ class CmoTextField extends StatelessWidget {
     this.textAlign,
     this.hintStyle,
     this.initialValue,
+    this.contentPadding,
   });
 
   final Widget? prefixIcon;
@@ -70,6 +71,8 @@ class CmoTextField extends StatelessWidget {
 
   final TextStyle? hintStyle;
 
+  final EdgeInsets? contentPadding;
+
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
@@ -88,7 +91,7 @@ class CmoTextField extends StatelessWidget {
       scrollPadding: const EdgeInsets.only(bottom: 100),
       decoration: inputDecoration ??
           InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
+            contentPadding: contentPadding ?? const EdgeInsets.all(8),
             prefixIconConstraints: BoxConstraints.tight(const Size(56, 38)),
             prefixIcon: prefixIcon != null ? Center(child: prefixIcon) : null,
             suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
