@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:cmo/extensions/date.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
-import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
@@ -16,7 +12,6 @@ import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/utils/utils.dart';
-import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -100,7 +95,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          CmoHeaderTile(title: LocaleKeys.asiNumber.tr()),
+          CmoHeaderTile(title: LocaleKeys.asi.tr()),
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.symmetric(

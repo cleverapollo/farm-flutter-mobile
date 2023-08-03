@@ -194,6 +194,7 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                             campId: widget.campId,
                             latitude: locationModel.latitude,
                             longitude: locationModel.longitude,
+                            date: DateTime.now(),
                             asiRegisterId: DateTime.now().millisecondsSinceEpoch.toString(),
                           );
                         }
@@ -201,7 +202,7 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                           context,
                           farmName: widget.farmName,
                           locationModel: locationModel,
-                          asi: _asi!
+                          asi: _asi!,
                         );
                       }
                     },
