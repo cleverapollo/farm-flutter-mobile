@@ -4,6 +4,7 @@ import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/theme/theme.dart';
+import 'package:cmo/ui/widget/cmo_lat_lng_input.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class CmoMap extends StatefulWidget {
   final VoidCallback? onSelectPhotos;
   final VoidCallback? onRemoveMarker;
   final LatLng? selectedPoint;
+  final bool isAllowManualLatLng;
 
   const CmoMap({
     Key? key,
@@ -33,6 +35,7 @@ class CmoMap extends StatefulWidget {
     this.showMarker = false,
     this.showResetAcceptIcons = false,
     this.showButtonList = false,
+    this.isAllowManualLatLng = false,
     this.takePhotoFromCamera,
     this.onSelectPhotos,
     this.onRemoveMarker,
@@ -44,7 +47,7 @@ class CmoMap extends StatefulWidget {
 }
 
 class CmoMapState extends State<CmoMap> {
-  late GoogleMapController mapController;
+  GoogleMapController? mapController;
   LatLng? _latLong;
   Timer? _debounceOnCameraMove;
 
@@ -76,7 +79,7 @@ class CmoMapState extends State<CmoMap> {
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    await mapController.animateCamera(
+    await mapController?.animateCamera(
       CameraUpdate.newLatLng(
         LatLng(
           position.latitude,
@@ -90,7 +93,7 @@ class CmoMapState extends State<CmoMap> {
     if (widget.selectedPoint != null) {
       return;
     }
-    return mapController.animateCamera(
+    return mapController?.animateCamera(
       CameraUpdate.newLatLng(
         LatLng(
           Constants.mapCenter.latitude,
@@ -132,6 +135,20 @@ class CmoMapState extends State<CmoMap> {
         await _moveMapCameraToDefaultLocation();
       }
     });
+  }
+
+  void onLatLngChanged(String latlng) {
+    final split = latlng.split(',');
+    if(split.length == 2) {
+      final lat = double.tryParse(split[0].trim());
+      final lng = double.tryParse(split[1].trim());
+      if (lat != null && lng != null) {
+        widget.onPinned?.call(
+          lat,
+          lng,
+        );
+      }
+    }
   }
 
   @override
@@ -255,9 +272,15 @@ class CmoMapState extends State<CmoMap> {
   Widget mapLatLongFooterWidget() {
     if (widget.showLatLongFooter) {
       if (widget.showMarker) {
-        return MapLatLongFooter(marker?.position);
+        return MapLatLongFooter(
+            marker?.position,
+            onLatLngChanged: widget.isAllowManualLatLng ? onLatLngChanged : null,
+        );
       } else {
-        return MapLatLongFooter(_latLong);
+        return MapLatLongFooter(
+          _latLong,
+          onLatLngChanged: widget.isAllowManualLatLng ? onLatLngChanged : null,
+        );
       }
     } else {
       return const SizedBox.shrink();
@@ -375,15 +398,16 @@ class CmoMapState extends State<CmoMap> {
 
   @override
   void dispose() {
-    mapController.dispose();
+    mapController?.dispose();
     super.dispose();
   }
 }
 
 class MapLatLongFooter extends StatelessWidget {
   final LatLng? latLong;
+  final ValueChanged<String>? onLatLngChanged;
 
-  const MapLatLongFooter(this.latLong, {Key? key}) : super(key: key);
+  const MapLatLongFooter(this.latLong, {this.onLatLngChanged, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -399,14 +423,20 @@ class MapLatLongFooter extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                Expanded(
-                  child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: GeoLocationText(
+                   Expanded(
+                    child: onLatLngChanged != null ?
+                      CmoLatLngInput(
                         latLong: latLong,
-                      )),
-                ),
+                        onLatLngChanged: onLatLngChanged,
+                      ) :
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: GeoLocationText(
+                          latLong: latLong,
+                        ),
+                      ),
+                  ),
                 Assets.icons.icLocation.widget,
               ],
             ),

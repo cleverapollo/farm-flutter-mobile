@@ -81,7 +81,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   }
 
   Future<void> onInternetStateChangeListener() async {
-    final hasInternet = await NetworkUtils().hasInternet();
+    final hasInternet = await NetworkUtils.hasInternet();
     if (!hasInternet) {
       setState(() {
         _hasInternet = hasInternet;

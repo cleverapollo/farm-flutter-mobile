@@ -11,11 +11,15 @@ import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:cmo/utils/debouncer.dart';
+import 'package:cmo/utils/network_utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_autocomplete_field/map_autocomplete_field.dart';
+
+import '../widget/cmo_text_field.dart';
+import '../widget/common_widgets.dart';
 
 class SiteLocationScreenResult extends Equatable {
   final LatLng? latLong;
@@ -43,13 +47,16 @@ class SelectSiteLocationScreen extends StatefulWidget {
   final bool showResetAcceptIcons;
   final String? initAddress;
   final LatLng? initLatLng;
+  final bool hasInternet;
 
   const SelectSiteLocationScreen(
       {super.key,
       this.initAddress,
       this.showMarker = false,
       this.showResetAcceptIcons = false,
-      this.initLatLng});
+      this.initLatLng,
+      this.hasInternet = true,
+      });
 
   static Future<T?> push<T>(
     BuildContext context, {
@@ -58,6 +65,7 @@ class SelectSiteLocationScreen extends StatefulWidget {
     bool showResetAcceptIcons = false,
     LatLng? latLng,
   }) async {
+    final hasInternet = await NetworkUtils.hasInternet();
     return Navigator.of(context).push<T>(
       MaterialPageRoute(
         builder: (_) => SelectSiteLocationScreen(
@@ -65,6 +73,7 @@ class SelectSiteLocationScreen extends StatefulWidget {
           showResetAcceptIcons: showResetAcceptIcons,
           initAddress: initAddress,
           initLatLng: latLng,
+          hasInternet: hasInternet
         ),
       ),
     );
@@ -155,7 +164,7 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
       _latLong = LatLng(latitude, longitude);
     });
 
-    if (_isMapMovingBySelectingAddress) {
+    if (_isMapMovingBySelectingAddress || !widget.hasInternet) {
       return;
     }
 
@@ -164,8 +173,9 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
         setState(() {
           _loading = true;
         });
-
-        await setAddress(latitude, longitude);
+        if (widget.hasInternet) {
+          await setAddress(latitude, longitude);
+        }
       } finally {
         setState(() {
           _loading = false;
@@ -203,15 +213,16 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
   }
 
   void submit() {
+    FocusScope.of(context).unfocus();
     if (_loading) return;
-    if (addressTextController.text.isEmpty) {
+    if (_legacyAddress.isEmpty) {
       showSnackError(msg: LocaleKeys.please_choose_location.tr());
       return;
     }
 
     Navigator.of(context).pop(
       SiteLocationScreenResult(
-        address: addressTextController.text,
+        address: _legacyAddress,
         latLong: _latLong,
       ),
     );
@@ -225,8 +236,7 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
     final locations = await locationFromAddress(addressTextController.text);
     if (locations.isNotEmpty) {
       _isMapMovingBySelectingAddress = true;
-      await mapKey.currentState?.mapController
-          .animateCamera(
+      await mapKey.currentState?.mapController?.animateCamera(
         CameraUpdate.newLatLng(
           LatLng(
             locations.first.latitude,
@@ -281,19 +291,7 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  SizedBox(
-                    height: 64,
-                    child: MapAutoCompleteField(
-                      googleMapApiKey: Env.googlePlaceApiKey,
-                      controller: addressTextController,
-                      itemBuilder: (BuildContext context, suggestion) {
-                        return ListTile(
-                          title: Text(suggestion.description as String),
-                        );
-                      },
-                      onSuggestionSelected: onSuggestionSelected,
-                    ),
-                  ),
+                  _buildMapAutoCompleteField(),
                 ],
               ),
             ),
@@ -308,6 +306,7 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
                 showMarker: widget.showMarker,
                 initialMapCenter: _latLong,
                 selectedPoint: _latLong,
+                isAllowManualLatLng: !widget.hasInternet,
               ),
             ),
             const SizedBox(height: 32),
@@ -322,6 +321,43 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildMapAutoCompleteField() {
+    if (widget.hasInternet) {
+      return SizedBox(
+        height: 64,
+        child: MapAutoCompleteField(
+          googleMapApiKey: Env.googlePlaceApiKey,
+          controller: addressTextController,
+          itemBuilder: (BuildContext context, suggestion) {
+            return ListTile(
+              title: Text(suggestion.description as String),
+            );
+          },
+          onSuggestionSelected: onSuggestionSelected,
+        ),
+      );
+    }
+    String? initAddress = '';
+    final enterIndex = widget.initAddress?.indexOf('\n') ?? -1;
+    if (enterIndex != -1) {
+      initAddress = widget.initAddress?.substring(0,enterIndex);
+    }
+    return SizedBox(
+      height: 64,
+      child: CmoTextField(
+        initialValue: initAddress,
+        hintStyle: context.textStyles.bodyNormal.grey,
+        hintText: LocaleKeys.address.tr(),
+          keyboardType: TextInputType.name,
+          onChanged: (address) {
+          print(address);
+            _legacyAddress = address ?? '';
+          },
+        ),
+    );
+
   }
 
   @override

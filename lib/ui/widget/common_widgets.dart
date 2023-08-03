@@ -106,6 +106,7 @@ class InputAttributeItem extends StatefulWidget {
   final TextStyle? hintTextStyle;
   final TextStyle? labelTextStyle;
   final TextStyle? textStyle;
+  final bool? isDense;
 
   final EdgeInsetsGeometry contentPadding;
   final FormFieldValidator<String?>? validator;
@@ -123,6 +124,7 @@ class InputAttributeItem extends StatefulWidget {
     this.textStyle,
     this.labelText,
     this.labelTextStyle,
+    this.isDense = false,
     super.key,
   });
 
@@ -167,6 +169,7 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
           fontSize: 16,
           overflow: TextOverflow.ellipsis,
         ),
+        isDense: widget.isDense,
         contentPadding: widget.contentPadding,
         enabledBorder: InputBorder.none,
         focusedBorder: InputBorder.none,
