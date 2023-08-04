@@ -186,7 +186,7 @@ class _AddUpdateAnnualProductionScreenState
               ItemInfoWidget(
                 name: 'WorkPeriodMonths',
                 title: LocaleKeys.workCycleHintText.tr(),
-                title2: LocaleKeys.charcoal.tr(),
+                title2: LocaleKeys.product.tr(),
                 isEditing: widget.isEditing,
                 initialValue: widget.selectedAnnualFarmProduction?.workPeriodMonths.toString(),
                 onChanged: (value) {
@@ -215,7 +215,7 @@ class _AddUpdateAnnualProductionScreenState
               ItemInfoWidget(
                 name: 'ConversionWoodToCharcoal',
                 title: LocaleKeys.conversionWood.tr(),
-                title2: LocaleKeys.woodToCharcoal.tr(),
+                title2: LocaleKeys.woodToProduct.tr(),
                 isEditing: widget.isEditing,
                 initialValue: widget.selectedAnnualFarmProduction?.conversionWoodToCharcoal.toString(),
               ),

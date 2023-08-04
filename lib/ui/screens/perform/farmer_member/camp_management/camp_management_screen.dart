@@ -169,7 +169,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                                         ),
                                         _CampAttributeWidget(
                                           color: context.colors.greyLight1,
-                                          name: LocaleKeys.tons_of_charcoal_produced
+                                          name: LocaleKeys.tons_of_product_produced
                                               .tr(),
                                           value:
                                               '${camp.tonsOfCharcoalProduced != null ? camp.tonsOfCharcoalProduced?.toStringAsFixed(0) : ''}',
