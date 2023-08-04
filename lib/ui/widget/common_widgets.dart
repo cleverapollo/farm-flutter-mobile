@@ -103,6 +103,7 @@ class InputAttributeItem extends StatefulWidget {
   final int maxLines;
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
   final TextStyle? hintTextStyle;
   final TextStyle? labelTextStyle;
   final TextStyle? textStyle;
@@ -117,6 +118,7 @@ class InputAttributeItem extends StatefulWidget {
     this.maxLines = 1,
     this.keyboardType,
     this.onChanged,
+    this.onSubmitted,
     this.hintTextStyle,
     this.validator,
     this.initialValue,
@@ -147,6 +149,7 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
     return TextFormField(
       minLines: 1,
       onChanged: widget.onChanged,
+      onFieldSubmitted: widget.onSubmitted,
       maxLines: _controller.text.isEmpty ? widget.maxLines : 1,
       controller: _controller,
       style: widget.textStyle ?? context.textStyles.bodyBold,

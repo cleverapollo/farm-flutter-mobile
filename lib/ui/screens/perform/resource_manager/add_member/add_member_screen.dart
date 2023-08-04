@@ -113,6 +113,8 @@ class _AddMemberInclusionDate extends StatelessWidget {
       builder: (context, AddMemberInclusionDate data) {
         final cubit = context.read<AddMemberCubit>();
         return CmoCollapseTitle(
+          key: data.sectionKey,
+          initiallyExpanded: !data.isSectionCollapse,
           showTick: data.isComplete,
           title: 'Member Inclusion Date',
           child: ColoredBox(
@@ -201,6 +203,8 @@ class _AddMemberSDetails extends StatelessWidget {
       builder: (context, AddMemberSDetails data) {
         final cubit = context.read<AddMemberCubit>();
         return CmoCollapseTitle(
+          key: data.sectionKey,
+          initiallyExpanded: !data.isSectionCollapse,
           title: LocaleKeys.site_details.tr(),
           showTick: data.isComplete,
           child: Container(
@@ -334,6 +338,8 @@ class _AddMemberSDetails extends StatelessWidget {
                           farmId: farmId, farmName: farmName);
 
                       await cubit.onDataChangeSiteDetail(asis: result);
+                      cubit.onChangeSiteDetailState(isCollapse: true);
+                      cubit.onChangeInclusionDateState(isCollapse: false);
                     },
                     title: LocaleKeys.asi.tr(),
                     showTick: data.isCompleteASI,
@@ -363,6 +369,7 @@ class _AddMemberSDetails extends StatelessWidget {
 class _AddMemberMDetails extends StatelessWidget {
   const _AddMemberMDetails();
 
+
   @override
   Widget build(BuildContext context) {
     return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMDetails>(
@@ -370,6 +377,8 @@ class _AddMemberMDetails extends StatelessWidget {
       builder: (context, AddMemberMDetails data) {
         final cubit = context.read<AddMemberCubit>();
         return CmoCollapseTitle(
+          key: data.sectionKey,
+          initiallyExpanded: !data.isSectionCollapse,
           title: LocaleKeys.memberDetails.tr(),
           showTick: data.isComplete,
           child: Container(
@@ -443,6 +452,10 @@ class _AddMemberMDetails extends StatelessWidget {
                     labelText: '${LocaleKeys.emailAddress.tr()} (${LocaleKeys.optional.tr()})',
                     labelTextStyle: context.textStyles.bodyNormal.blueDark2,
                     keyboardType: TextInputType.emailAddress,
+                    onSubmitted: (text) {
+                      cubit.onChangeMemberDetailState(isCollapse: true);
+                      cubit.onChangeSiteDetailState(isCollapse: false);
+                    },
                     onChanged: (value) {
                       cubit.onDataChangeMemberDetail(emailAddress: value);
                     },

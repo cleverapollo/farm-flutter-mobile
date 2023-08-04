@@ -38,9 +38,6 @@ class SlimfAndMpoSection extends StatefulWidget {
 
 class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
 
-  bool isCollapseSlimfCompliance = false;
-  bool isCollapseMPO = true;
-
   @override
   void initState() {
     super.initState();
@@ -58,16 +55,15 @@ class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
   }
 
   Widget buildSlimfCompliance() {
+    final addMemberCubit = context.read<AddMemberCubit>();
     return BlocSelector<AddMemberCubit, AddMemberState, AddMemberSLIMF>(
       selector: (state) => state.addMemberSLIMF,
       builder: (context, data) {
         return ExpandableItemWidget(
           title: LocaleKeys.slimf_compliance.tr(),
           showTick: data.isComplete,
-          isCollapse: isCollapseSlimfCompliance,
-          onTap: () => setState(() {
-            isCollapseSlimfCompliance = !isCollapseSlimfCompliance;
-          }),
+          isCollapse: data.isSectionCollapse,
+          onTap: addMemberCubit.onChangeSlimfState,
           child: Container(
             padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
             color: Colors.white,
@@ -97,11 +93,7 @@ class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
                 CmoSlimfQuestion(
                   initialValue: data.isSlimfCompliant,
                   onTap: (p0) async {
-                    await context.read<AddMemberCubit>().onTapSlimf(isSlimf: p0!);
-                    setState(() {
-                      isCollapseSlimfCompliance = true;
-                      isCollapseMPO = false;
-                    });
+                    await addMemberCubit.onTapSlimf(isSlimf: p0!);
                   },
                 ),
               ],
@@ -113,16 +105,15 @@ class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
   }
 
   Widget buildMPO() {
+    final addMemberCubit = context.read<AddMemberCubit>();
     return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMPO>(
       selector: (state) => state.addMemberMPO,
       builder: (context, AddMemberMPO data) {
         return ExpandableItemWidget(
           title: LocaleKeys.member_property_ownership.tr(),
           showTick: data.isComplete,
-          isCollapse: isCollapseMPO,
-          onTap: () => setState(() {
-            isCollapseMPO = !isCollapseMPO;
-          }),
+          isCollapse: data.isSectionCollapse,
+          onTap: addMemberCubit.onChangeMPOState,
           child: Container(
             color: Colors.white,
             padding: const EdgeInsets.all(8),

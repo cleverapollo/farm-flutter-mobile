@@ -4,6 +4,7 @@ import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/data/farm_property_ownership_type.dart';
 import 'package:cmo/model/model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'add_member_state.freezed.dart';
@@ -48,6 +49,8 @@ class AddMemberInclusionDate with _$AddMemberInclusionDate {
   const factory AddMemberInclusionDate({
     @Default(false) bool isComplete,
     String? inclusionDate,
+    @Default(true) bool isSectionCollapse,
+    Key? sectionKey,
   }) = _AddMemberInclusionDate;
 }
 
@@ -71,6 +74,7 @@ class AddMemberContract with _$AddMemberContract {
 class AddMemberSLIMF with _$AddMemberSLIMF {
   const factory AddMemberSLIMF({
     @Default(false) bool isComplete,
+    @Default(false) bool isSectionCollapse,
     bool? isSlimfCompliant,
   }) = _AddMemberSLIMF;
 }
@@ -80,6 +84,7 @@ class AddMemberMPO with _$AddMemberMPO {
   const factory AddMemberMPO({
     @Default(false) bool isComplete,
     @Default(false) bool isExpansionOpen,
+    @Default(true) bool isSectionCollapse,
     FarmPropertyOwnershipType? propertyTypeSelected,
     @Default([]) List<FarmPropertyOwnershipType> propertyTypes,
   }) = _AddMemberMPO;
@@ -93,6 +98,8 @@ class AddMemberMDetails with _$AddMemberMDetails {
     @Default(false) bool isLastNameError,
     @Default(false) bool isIdNumberError,
     @Default(false) bool isMobileNumberError,
+    @Default(true) bool isSectionCollapse,
+    Key? sectionKey,
     String? firstName,
     String? lastName,
     String? idNumber,
@@ -112,6 +119,8 @@ class AddMemberSDetails with _$AddMemberSDetails {
     @Default(false) bool isSiteNameError,
     @Default(false) bool isTownError,
     @Default(false) bool isProvinceError,
+    @Default(true) bool isSectionCollapse,
+    Key? sectionKey,
     String? siteName,
     String? town,
     String? province,
@@ -171,6 +180,8 @@ class FarmMemberRiskAssessmentsState with _$FarmMemberRiskAssessmentsState {
   const factory FarmMemberRiskAssessmentsState({
     @Default(<RiskProfileQuestion>[]) List<RiskProfileQuestion> listRiskProfileQuestions,
     @Default(<FarmMemberRiskProfileAnswer>[]) List<FarmMemberRiskProfileAnswer> listFarmMemberRiskProfileAnswers,
+    @Default(true) bool isSectionCollapse,
+    Key? sectionKey,
   }) = _FarmMemberRiskAssessmentsState;
 }
 
@@ -195,6 +206,7 @@ class FarmMemberObjectivesState with _$FarmMemberObjectivesState {
     @Default(<FarmMemberObjective>[]) List<FarmMemberObjective> listFarmMemberObjectives,
     @Default(<FarmObjectiveOption>[]) List<FarmObjectiveOption> listFarmObjectiveOptions,
     @Default(<FarmMemberObjectiveAnswer>[]) List<FarmMemberObjectiveAnswer> listFarmMemberObjectiveAnswers,
+    @Default(true) bool isSectionCollapse,
   }) = _FarmMemberObjectivesState;
 }
 

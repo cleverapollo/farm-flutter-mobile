@@ -276,10 +276,13 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   Future<void> onTapSlimf({required bool isSlimf}) async {
     emit(state.copyWith(
       farm: state.farm?.copyWith(isSlimfCompliant: isSlimf),
-      addMemberSLIMF:
-          AddMemberSLIMF(isSlimfCompliant: isSlimf, isComplete: true),
-    ));
-
+      addMemberSLIMF: AddMemberSLIMF(
+        isSlimfCompliant: isSlimf,
+        isComplete: true,
+        isSectionCollapse: true,
+      ),
+    ),);
+    onChangeMPOState(isCollapse: false);
     checkIsProspectMember();
     if (state.addMemberSLIMF.isComplete) {
       await cacheFarm();
@@ -418,6 +421,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         propertyTypeSelected: propertyTypeSelected,
         isExpansionOpen: false,
         isComplete: true,
+        isSectionCollapse: true,
       ),
     ));
 
@@ -425,6 +429,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     if (state.addMemberMPO.isComplete) {
       await cacheFarm();
     }
+    onChangeMemberDetailState(isCollapse: false);
   }
 
   void checkIsProspectMember() {
@@ -503,6 +508,11 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       futures.add(cacheFarm());
 
       await Future.wait(futures);
+
+      if (question.id == state.farmMemberRiskAssessmentsState.listRiskProfileQuestions.last.id) {
+        onChangeMemberRiskAssessmentState(isCollapse: true);
+        onChangeMemberFarmObjectiveState(isCollapse: false);
+      }
     }
   }
 
@@ -595,7 +605,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
             inclusionDate: dateTime.toIso8601String(),
             isComplete: true,
           )));
-
+      onChangeInclusionDateState(isCollapse: true);
+      onChangeMemberRiskAssessmentState(isCollapse: false);
       await cacheFarm();
     }
   }
@@ -647,6 +658,80 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           isLastNameError: state.addMemberMDetails.lastName.isBlank,
           isIdNumberError: state.addMemberMDetails.idNumber.isBlank,
           isMobileNumberError: state.addMemberMDetails.mobileNumber.isBlank,
+        ),
+      ),
+    );
+  }
+
+  void onChangeSlimfState({bool? isCollapse}) {
+    emit(
+      state.copyWith(
+        addMemberSLIMF: state.addMemberSLIMF.copyWith(
+          isSectionCollapse: isCollapse ?? !state.addMemberSLIMF.isSectionCollapse,
+        ),
+      ),
+    );
+  }
+
+  void onChangeMPOState({bool? isCollapse}) {
+    emit(
+      state.copyWith(
+        addMemberMPO: state.addMemberMPO.copyWith(
+          isSectionCollapse: isCollapse ?? !state.addMemberMPO.isSectionCollapse,
+        ),
+      ),
+    );
+  }
+
+  void onChangeMemberDetailState({bool? isCollapse}) {
+    emit(
+      state.copyWith(
+        addMemberMDetails: state.addMemberMDetails.copyWith(
+          isSectionCollapse: isCollapse ?? !state.addMemberMDetails.isSectionCollapse,
+          sectionKey: UniqueKey(),
+        ),
+      ),
+    );
+  }
+
+  void onChangeSiteDetailState({bool? isCollapse}) {
+    emit(
+      state.copyWith(
+        addMemberSDetails: state.addMemberSDetails.copyWith(
+          isSectionCollapse: isCollapse ?? !state.addMemberSDetails.isSectionCollapse,
+          sectionKey: UniqueKey(),
+        ),
+      ),
+    );
+  }
+
+  void onChangeInclusionDateState({bool? isCollapse}) {
+    emit(
+      state.copyWith(
+        addMemberInclusionDate: state.addMemberInclusionDate.copyWith(
+          isSectionCollapse: isCollapse ?? !state.addMemberInclusionDate.isSectionCollapse,
+          sectionKey: UniqueKey(),
+        ),
+      ),
+    );
+  }
+
+  void onChangeMemberRiskAssessmentState({bool? isCollapse}) {
+    emit(
+      state.copyWith(
+        farmMemberRiskAssessmentsState: state.farmMemberRiskAssessmentsState.copyWith(
+          isSectionCollapse: isCollapse ?? !state.farmMemberRiskAssessmentsState.isSectionCollapse,
+          sectionKey: UniqueKey(),
+        ),
+      ),
+    );
+  }
+
+  void onChangeMemberFarmObjectiveState({bool? isCollapse}) {
+    emit(
+      state.copyWith(
+        farmMemberObjectivesState: state.farmMemberObjectivesState.copyWith(
+          isSectionCollapse: isCollapse ?? !state.farmMemberObjectivesState.isSectionCollapse,
         ),
       ),
     );

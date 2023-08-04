@@ -17,6 +17,8 @@ class FarmMemberRiskAssessmentsWidget extends StatelessWidget {
         selector: (state) => state.farmMemberRiskAssessmentsState,
         builder: (context, FarmMemberRiskAssessmentsState farmMemberRiskAssessmentsState) {
           return CmoCollapseTitle(
+            key: farmMemberRiskAssessmentsState.sectionKey,
+            initiallyExpanded: !farmMemberRiskAssessmentsState.isSectionCollapse,
             title: LocaleKeys.member_risk_assessment.tr(),
             showTick: farmMemberRiskAssessmentsState.isComplete,
             child: Container(

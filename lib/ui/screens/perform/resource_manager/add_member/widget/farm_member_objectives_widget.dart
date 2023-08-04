@@ -18,7 +18,6 @@ class FarmMemberObjectivesWidget extends StatefulWidget {
 
 class _FarmMemberObjectivesWidgetState
     extends State<FarmMemberObjectivesWidget> {
-  bool isCollapse = true;
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +28,8 @@ class _FarmMemberObjectivesWidgetState
         return ExpandableItemWidget(
           showTick: farmMemberObjectivesState.isComplete,
           title: LocaleKeys.member_farm_objectives.tr(),
-          isCollapse: isCollapse,
-          onTap: () => setState(() {
-            isCollapse = !isCollapse;
-          }),
+          isCollapse: farmMemberObjectivesState.isSectionCollapse,
+          onTap: context.read<AddMemberCubit>().onChangeMemberFarmObjectiveState,
           child: Container(
               padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
               color: Colors.white,
