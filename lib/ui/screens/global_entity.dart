@@ -134,7 +134,7 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
     return Column(
       children: [
         _performWidget(),
-        _behaveWidget(),
+        // _behaveWidget(),
       ],
     );
   }

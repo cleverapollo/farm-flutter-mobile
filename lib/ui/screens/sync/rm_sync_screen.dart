@@ -19,7 +19,7 @@ class RMSyncScreen extends StatelessWidget {
         onWillPop: () async => false,
         child: Scaffold(
           appBar: CmoAppBar(
-            title: LocaleKeys.regional_manager.tr(),
+            title: LocaleKeys.resource_manager.tr(),
           ),
           body: SizedBox.expand(
             child: Padding(

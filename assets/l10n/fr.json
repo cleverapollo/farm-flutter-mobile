@@ -543,6 +543,7 @@
   "audit_detail": "Audit Detail",
   "in_progress": "En cours",
   "regional_manager": "Regional Manager",
+  "resource_manager": "Resource manager",
   "you_re_about_to_sync_information_for": "You're about to sync information for",
   "to_be_synced": "A synchroniser",
   "location_is_required": "Location is required",

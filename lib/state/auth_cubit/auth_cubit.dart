@@ -55,7 +55,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     String username,
     String password,
   ) async {
-    final behaveLoginResponse = await cmoBehaveApiService.behaveLogin(username, password);
+    final UserAuth? behaveLoginResponse = null; // await cmoBehaveApiService.behaveLogin(username, password);
     final performLoginResponse = await cmoPerformApiService.performLogin(username, password);
 
     if (performLoginResponse == null && behaveLoginResponse == null) {
@@ -201,51 +201,6 @@ class AuthCubit extends HydratedCubit<AuthState> {
       key: SecureStorageConstant.USER_PASSWORD,
       value: null,
     );
-    // var isDone = false;
-    //
-    // final futures = <Future<dynamic>>[];
-    //
-    // futures
-    //   ..add(
-    //     secureStorage.write(
-    //       key: SecureStorageConstant.BEHAVE_RENEWAL_TOKEN,
-    //       value: null,
-    //     ),
-    //   )
-    //   ..add(
-    //     secureStorage.write(
-    //       key: SecureStorageConstant.BEHAVE_ACCESS_TOKEN,
-    //       value: null,
-    //     ),
-    //   )
-    //   ..add(
-    //     secureStorage.write(
-    //       key: SecureStorageConstant.PERFORM_RENEWAL_TOKEN,
-    //       value: null,
-    //     ),
-    //   )
-    //   ..add(
-    //     secureStorage.write(
-    //       key: SecureStorageConstant.PERFORM_ACCESS_TOKEN,
-    //       value: null,
-    //     ),
-    //   )
-    //   ..add(
-    //     secureStorage.write(
-    //       key: SecureStorageConstant.USER_NAME,
-    //       value: null,
-    //     ),
-    //   )
-    //   ..add(
-    //     secureStorage.write(
-    //       key: SecureStorageConstant.USER_PASSWORD,
-    //       value: null,
-    //     ),
-    //   );
-    //
-    // await Future.wait(futures).then((value) => isDone = true);
-    //
-    // return isDone;
   }
 
   Future<void> checkFirstLaunch() async {
