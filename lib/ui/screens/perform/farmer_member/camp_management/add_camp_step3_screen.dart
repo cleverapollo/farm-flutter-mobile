@@ -97,6 +97,7 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
                           labelText: LocaleKeys.tons_will_be_produced.tr(),
                           labelTextStyle: context.textStyles.bodyBold.blueDark2,
                           textStyle: context.textStyles.bodyNormal.blueDark2,
+                          keyboardType: TextInputType.number,
                           initialValue: (cubit.state.camp?.tonsOfCharcoalProduced ?? '').toString(),
                           onChanged: cubit.onTonsOfProductChanged,
                         ),
