@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/camp.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
@@ -84,36 +85,6 @@ class AddCampCubit extends Cubit<AddCampState> {
     );
   }
 
-  void onCampNameChanged(String value) {
-    emit(state.copyWith(camp: state.camp?.copyWith(campName: value)));
-  }
-
-  void onProtectedAreaChanged(String value) {
-    emit(state.copyWith(
-        camp: state.camp?.copyWith(protectedArea: double.tryParse(value))));
-  }
-
-  void onCattlePostHousingChanged(String value) {
-    emit(state.copyWith(
-        camp: state.camp?.copyWith(cattlePostHousing: double.tryParse(value))));
-  }
-
-  void onCorridorsChanged(String value) {
-    emit(state.copyWith(
-        camp: state.camp?.copyWith(corridors: double.tryParse(value))));
-  }
-
-  void onRoadAndFireBreaksChanged(String value) {
-    emit(state.copyWith(
-        camp: state.camp?.copyWith(roadAndFireBreaks: double.tryParse(value))));
-  }
-
-  void onPoachingAlleviationZoneChanged(String value) {
-    emit(state.copyWith(
-        camp: state.camp
-            ?.copyWith(poachingAlleviationZone: double.tryParse(value))));
-  }
-
   void onLocationChanged({double? latitude, double? longitude}) {
     emit(
       state.copyWith(
@@ -193,5 +164,99 @@ class AddCampCubit extends Cubit<AddCampState> {
 
     await cmoDatabaseMasterService.cacheCamp(state.camp!);
     await context.read<SiteManagementPlanCubit>().refresh();
+  }
+
+  Future<void> onChangeAreaMetricsSection({
+    bool onTapCollapse = false,
+    String? campName,
+    String? protectedArea,
+    String? cattlePostHousing,
+    String? corridors,
+    String? roadAndFireBreaks,
+    String? poachingAlleviationZone,
+    String? rangeLand,
+    String? convertedToGrassland,
+  }) async {
+    if (onTapCollapse) {
+      emit(
+        state.copyWith(
+          addCampAreaMetricsSectionState:
+              state.addCampAreaMetricsSectionState.copyWith(
+            isSectionCollapse:
+                !state.addCampAreaMetricsSectionState.isSectionCollapse,
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    final areaMetricsSectionState = state.addCampAreaMetricsSectionState;
+
+    emit(
+      state.copyWith(
+        addCampAreaMetricsSectionState: areaMetricsSectionState.copyWith(
+          campName: campName ?? areaMetricsSectionState.campName,
+          protectedArea: protectedArea ?? areaMetricsSectionState.protectedArea,
+          cattlePostHousing: cattlePostHousing ?? areaMetricsSectionState.cattlePostHousing,
+          corridors: corridors ?? areaMetricsSectionState.corridors,
+          roadAndFireBreaks: roadAndFireBreaks ?? areaMetricsSectionState.roadAndFireBreaks,
+          poachingAlleviationZone: poachingAlleviationZone ?? areaMetricsSectionState.poachingAlleviationZone,
+          rangeLand: rangeLand ?? areaMetricsSectionState.rangeLand,
+          convertedToGrassland: convertedToGrassland ?? areaMetricsSectionState.convertedToGrassland,
+        ),
+      ),
+    );
+
+    final isComplete =
+        state.addCampAreaMetricsSectionState.campName.isNotBlank &&
+            state.addCampAreaMetricsSectionState.protectedArea.isNotBlank &&
+            state.addCampAreaMetricsSectionState.cattlePostHousing.isNotBlank &&
+            state.addCampAreaMetricsSectionState.corridors.isNotBlank &&
+            state.addCampAreaMetricsSectionState.roadAndFireBreaks.isNotBlank &&
+            state.addCampAreaMetricsSectionState.poachingAlleviationZone.isNotBlank &&
+            state.addCampAreaMetricsSectionState.rangeLand.isNotBlank &&
+            state.addCampAreaMetricsSectionState.convertedToGrassland.isNotBlank;
+
+    emit(
+      state.copyWith(
+        camp: state.camp?.copyWith(
+          campName: state.addCampAreaMetricsSectionState.campName,
+          protectedArea: double.tryParse(state.addCampAreaMetricsSectionState.protectedArea ?? ''),
+          cattlePostHousing: double.tryParse(state.addCampAreaMetricsSectionState.cattlePostHousing ?? ''),
+          corridors: double.tryParse(state.addCampAreaMetricsSectionState.corridors ?? ''),
+          roadAndFireBreaks: double.tryParse(state.addCampAreaMetricsSectionState.roadAndFireBreaks ?? ''),
+          poachingAlleviationZone: double.tryParse(state.addCampAreaMetricsSectionState.poachingAlleviationZone ?? ''),
+          rangeLand: double.tryParse(state.addCampAreaMetricsSectionState.rangeLand ?? ''),
+          convertedToGrassland: double.tryParse(state.addCampAreaMetricsSectionState.convertedToGrassland ?? ''),
+        ),
+
+        addCampAreaMetricsSectionState: state.addCampAreaMetricsSectionState.copyWith(
+          isComplete: isComplete,
+        ),
+      ),
+    );
+
+    if (isComplete) {
+      await cmoDatabaseMasterService.cacheCamp(state.camp!);
+      if (!onTapCollapse) {
+        await Future.delayed(const Duration(milliseconds: 500)).then(
+          (_) {
+            emit(
+              state.copyWith(
+                addCampAreaMetricsSectionState:
+                    state.addCampAreaMetricsSectionState.copyWith(
+                  isSectionCollapse: true,
+                ),
+                addCampInfestationDetailsState:
+                    state.addCampInfestationDetailsState.copyWith(
+                  isSectionCollapse: false,
+                ),
+              ),
+            );
+          },
+        );
+      }
+    }
   }
 }

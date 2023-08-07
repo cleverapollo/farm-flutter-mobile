@@ -323,6 +323,8 @@
   "hectares_are_corridors":"How many hectares are corridors?",
   "hectares_road_fire_breaks":"How many hectares are road & fire breaks?",
   "hectares_poaching_alleviation_zones":"How many hectares are poaching alleviation zones?",
+  "hectares_converted_to_grasslands":"How many hectares have been converted to grasslands?",
+  "hectares_is_range_land":"How many hectares is range land (product area)?",
   "asi": "ASI",
   "accident_incidents": "Accident & Incidents",
   "pending": "pending",

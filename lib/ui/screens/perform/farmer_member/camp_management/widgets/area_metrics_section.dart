@@ -17,23 +17,109 @@ class AreaMetricsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AddCampCubit, AddCampState, AddCampState>(
-      selector: (state) => state,
+    return BlocSelector<AddCampCubit, AddCampState, AddCampAreaMetricsSectionState>(
+      selector: (state) => state.addCampAreaMetricsSectionState,
       builder: (context, state) {
         final cubit = context.read<AddCampCubit>();
         return ExpandableItemWidget(
           title: LocaleKeys.areaMetrics.tr(),
-          showTick: false, //data.isComplete,
-          // isCollapse: data.isSectionCollapse,
-          onTap: () {},
+          showTick: state.isComplete,
+          isCollapse: state.isSectionCollapse,
+          onTap: () => cubit.onChangeAreaMetricsSection(onTapCollapse: true),
           child: Container(
             padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
             color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-                
+            child: Column(
+                children: [
+                  AttributeItem(
+                    child: InputAttributeItem(
+                      labelText: LocaleKeys.campName.tr(),
+                      labelTextStyle: context.textStyles.bodyBold,
+                      initialValue: state.campName,
+                      onChanged: (value) => cubit.onChangeAreaMetricsSection(campName: value),
+                      validator: requiredValidator,
+                    ),
+                  ),
+                  AttributeItem(
+                    child: InputAttributeItem(
+                      labelText: LocaleKeys.hectares_camp_protected.tr(),
+                      labelTextStyle: context.textStyles.bodyNormal.copyWith(fontSize: 14),
+                      initialValue: state.protectedArea,
+                      maxLines: 2,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) => cubit.onChangeAreaMetricsSection(protectedArea: value),
+                      validator: requiredValidator,
+                    ),
+                  ),
+                  AttributeItem(
+                    child: InputAttributeItem(
+                      labelText: LocaleKeys.hectares_camp_cattle_posts_housing.tr(),
+                      labelTextStyle: context.textStyles.bodyNormal.copyWith(fontSize: 14),
+                      initialValue: state.protectedArea,
+                      maxLines: 2,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) => cubit.onChangeAreaMetricsSection(cattlePostHousing: value),
+                      validator: requiredValidator,
+                    ),
+                  ),
+                  AttributeItem(
+                    child: InputAttributeItem(
+                      labelText: LocaleKeys.hectares_are_corridors.tr(),
+                      labelTextStyle: context.textStyles.bodyNormal.copyWith(fontSize: 14),
+                      initialValue: state.corridors,
+                      maxLines: 2,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) => cubit.onChangeAreaMetricsSection(corridors: value),
+                      validator: requiredValidator,
+                    ),
+                  ),
+                  AttributeItem(
+                    child: InputAttributeItem(
+                      labelText: LocaleKeys.hectares_road_fire_breaks.tr(),
+                      labelTextStyle: context.textStyles.bodyNormal.copyWith(fontSize: 14),
+                      initialValue: state.roadAndFireBreaks,
+                      maxLines: 2,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) => cubit.onChangeAreaMetricsSection(roadAndFireBreaks: value),
+                      validator: requiredValidator,
+                    ),
+                  ),
+                  AttributeItem(
+                    child: InputAttributeItem(
+                      labelText: LocaleKeys.hectares_poaching_alleviation_zones.tr(),
+                      labelTextStyle: context.textStyles.bodyNormal.copyWith(fontSize: 14),
+                      initialValue: state.poachingAlleviationZone,
+                      maxLines: 2,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) => cubit.onChangeAreaMetricsSection(poachingAlleviationZone: value),
+                      validator: requiredValidator,
+                    ),
+                  ),
+                  AttributeItem(
+                    child: InputAttributeItem(
+                      labelText: LocaleKeys.hectares_converted_to_grasslands.tr(),
+                      labelTextStyle: context.textStyles.bodyNormal.copyWith(fontSize: 14),
+                      initialValue: state.convertedToGrassland,
+                      maxLines: 2,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) => cubit.onChangeAreaMetricsSection(convertedToGrassland: value),
+                      validator: requiredValidator,
+                    ),
+                  ),
+                  AttributeItem(
+                    child: InputAttributeItem(
+                      labelText: LocaleKeys.hectares_is_range_land.tr(),
+                      labelTextStyle: context.textStyles.bodyNormal.copyWith(fontSize: 14),
+                      initialValue: state.rangeLand,
+                      maxLines: 2,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) => cubit.onChangeAreaMetricsSection(rangeLand: value),
+                      validator: requiredValidator,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
         );
       },
     );

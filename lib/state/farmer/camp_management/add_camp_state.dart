@@ -55,7 +55,14 @@ class AddCampAreaMetricsSectionState with _$AddCampAreaMetricsSectionState {
   const factory AddCampAreaMetricsSectionState({
     @Default(false) bool isComplete,
     @Default(false) bool isSectionCollapse,
-
+    String? campName,
+    String? protectedArea,
+    String? cattlePostHousing,
+    String? corridors,
+    String? roadAndFireBreaks,
+    String? poachingAlleviationZone,
+    String? rangeLand,
+    String? convertedToGrassland,
   }) = _AddCampAreaMetricsSectionState;
 }
 
