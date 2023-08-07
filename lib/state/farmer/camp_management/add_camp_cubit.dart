@@ -21,6 +21,7 @@ class AddCampCubit extends Cubit<AddCampState> {
         );
 
   Future init() async {
+    initDataForAreaMetricsSection();
     final activeFarm = await configService.getActiveFarm();
     var compartments = await cmoDatabaseMasterService
         .getCompartmentByFarmId(activeFarm?.farmId ?? '');
@@ -38,8 +39,6 @@ class AddCampCubit extends Cubit<AddCampState> {
       compartments: compartments,
       asis: asis,
     ));
-
-    initDataForAreaMetricsSection();
   }
 
   void initDataForAreaMetricsSection() {
@@ -183,7 +182,6 @@ class AddCampCubit extends Cubit<AddCampState> {
     ));
 
     await cmoDatabaseMasterService.cacheCamp(state.camp!);
-    await context.read<SiteManagementPlanCubit>().refresh();
   }
 
   Future<void> onChangeAreaMetricsSection({

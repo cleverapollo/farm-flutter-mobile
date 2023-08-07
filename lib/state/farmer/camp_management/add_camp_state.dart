@@ -91,11 +91,7 @@ extension AddCampAreaMetricsSectionStateExtension on AddCampAreaMetricsSectionSt
 @freezed
 class AddCampActualSectionState with _$AddCampActualSectionState {
   const factory AddCampActualSectionState({
-    @Default(false) bool isComplete,
     @Default(true) bool isSectionCollapse,
-    String? signatureImage,
-    String? signaturePoints,
-    String? signatureDate,
   }) = _AddCampActualSectionState;
 }
 

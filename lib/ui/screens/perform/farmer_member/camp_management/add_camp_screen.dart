@@ -6,6 +6,7 @@ import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_cubit.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_step2_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/widgets/infestation_details_section.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
@@ -44,7 +45,6 @@ class AddCampScreen extends StatefulWidget {
 }
 
 class _AddCampScreenState extends State<AddCampScreen> {
-  final _formKey = GlobalKey<FormBuilderState>();
   late AddCampCubit cubit;
 
   @override
@@ -150,7 +150,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
                 // ),
                 Center(
                   child: CmoFilledButton(
-                    title: LocaleKeys.next.tr(),
+                    title: LocaleKeys.save.tr(),
                     onTap: () => _next(cubit.state),
                   ),
                 ),
@@ -164,19 +164,15 @@ class _AddCampScreenState extends State<AddCampScreen> {
   }
 
   Future<void> _next(AddCampState state) async {
-    if (_formKey.currentState?.validate() == false) {
-      return;
-    }
+    final isValid = state.addCampAreaMetricsSectionState.isComplete && state.addCampInfestationDetailsState.isComplete;
 
-    final canNotNext =
-        state.compartments.isEmpty || state.asis.isEmpty || state.farm == null;
-
-    if (canNotNext) {
-      return showSnackError(msg: 'Please select required field');
+    if (!isValid) {
+      return showSnackError(msg: 'Please complete required field');
     }
 
     await cubit.saveCamp(context);
-    AddCampStep2Screen.push(context, cubit);
+    await context.read<SiteManagementPlanCubit>().refresh();
+    Navigator.of(context).pop();
   }
 }
 
