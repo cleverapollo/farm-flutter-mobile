@@ -75,8 +75,6 @@ class AddCampInfestationDetailsState with _$AddCampInfestationDetailsState {
   const factory AddCampInfestationDetailsState({
     @Default(false) bool isComplete,
     @Default(false) bool isSectionCollapse,
-    String? signatureImage,
-    String? signaturePoints,
-    String? signatureDate,
+    @Default(0) double unAllocatePercent
   }) = _AddCampInfestationDetailsState;
 }

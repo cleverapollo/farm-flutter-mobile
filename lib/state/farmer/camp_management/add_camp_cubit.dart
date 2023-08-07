@@ -39,6 +39,51 @@ class AddCampCubit extends Cubit<AddCampState> {
     ));
   }
 
+  void onCheckInfestationDetailComplete({bool isCheckCollapse = false}) {
+    final camp = state.camp;
+    final isComplete = (camp?.infestationCategory1 ?? 0) != 0 &&
+        (camp?.infestationCategory2 ?? 0) != 0 &&
+        (camp?.infestationCategory3 ?? 0) != 0 &&
+        (camp?.infestationCategory4 ?? 0) != 0 &&
+        (camp?.infestationCategory5 ?? 0) != 0;
+    final unAllocatePercent = 100
+        - (camp?.infestationCategory1 ?? 0.0)
+        - (camp?.infestationCategory2 ?? 0.0)
+        - (camp?.infestationCategory3 ?? 0.0)
+        - (camp?.infestationCategory4 ?? 0.0)
+        - (camp?.infestationCategory5 ?? 0.0);
+    emit(state.copyWith(
+      addCampInfestationDetailsState: state.addCampInfestationDetailsState.copyWith(
+        isComplete: isComplete,
+        unAllocatePercent: unAllocatePercent,
+      ),),
+    );
+    if (isCheckCollapse && isComplete && unAllocatePercent <= 0) {
+      onChangeInfestationState(isCollapse: true);
+      onChangeActualState(isCollapse: false);
+    }
+  }
+
+  void onChangeInfestationState({bool? isCollapse}) {
+    emit(
+      state.copyWith(
+        addCampInfestationDetailsState: state.addCampInfestationDetailsState.copyWith(
+          isSectionCollapse: isCollapse ?? !state.addCampInfestationDetailsState.isSectionCollapse,
+        ),
+      ),
+    );
+  }
+
+  void onChangeActualState({bool? isCollapse}) {
+    emit(
+      state.copyWith(
+        addCampActualSectionState: state.addCampActualSectionState.copyWith(
+          isSectionCollapse: isCollapse ?? !state.addCampActualSectionState.isSectionCollapse,
+        ),
+      ),
+    );
+  }
+
   void onCampNameChanged(String value) {
     emit(state.copyWith(camp: state.camp?.copyWith(campName: value)));
   }
@@ -81,30 +126,35 @@ class AddCampCubit extends Cubit<AddCampState> {
     emit(state.copyWith(
         camp: state.camp
             ?.copyWith(infestationCategory1: double.tryParse(value))));
+    onCheckInfestationDetailComplete();
   }
 
   void onInfestationCategory2Changed(String value) {
     emit(state.copyWith(
         camp: state.camp
             ?.copyWith(infestationCategory2: double.tryParse(value))));
+    onCheckInfestationDetailComplete();
   }
 
   void onInfestationCategory3Changed(String value) {
     emit(state.copyWith(
         camp: state.camp
             ?.copyWith(infestationCategory3: double.tryParse(value))));
+    onCheckInfestationDetailComplete();
   }
 
   void onInfestationCategory4Changed(String value) {
     emit(state.copyWith(
         camp: state.camp
             ?.copyWith(infestationCategory4: double.tryParse(value))));
+    onCheckInfestationDetailComplete();
   }
 
   void onInfestationCategory5Changed(String value) {
     emit(state.copyWith(
         camp: state.camp
             ?.copyWith(infestationCategory5: double.tryParse(value))));
+    onCheckInfestationDetailComplete(isCheckCollapse: true);
   }
 
   void onPlannedYearOfHarvestChanged(int? value) {
