@@ -63,7 +63,7 @@ class AddCampAreaMetricsSectionState with _$AddCampAreaMetricsSectionState {
 class AddCampActualSectionState with _$AddCampActualSectionState {
   const factory AddCampActualSectionState({
     @Default(false) bool isComplete,
-    @Default(false) bool isSectionCollapse,
+    @Default(true) bool isSectionCollapse,
     String? signatureImage,
     String? signaturePoints,
     String? signatureDate,
@@ -74,7 +74,7 @@ class AddCampActualSectionState with _$AddCampActualSectionState {
 class AddCampInfestationDetailsState with _$AddCampInfestationDetailsState {
   const factory AddCampInfestationDetailsState({
     @Default(false) bool isComplete,
-    @Default(false) bool isSectionCollapse,
+    @Default(true) bool isSectionCollapse,
     @Default(0) double unAllocatePercent
   }) = _AddCampInfestationDetailsState;
 }
