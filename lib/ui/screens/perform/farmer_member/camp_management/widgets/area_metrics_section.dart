@@ -1,16 +1,12 @@
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_cubit.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AreaMetricsSection extends StatelessWidget {
   const AreaMetricsSection({super.key});
@@ -31,6 +27,13 @@ class AreaMetricsSection extends StatelessWidget {
             color: Colors.white,
             child: Column(
                 children: [
+                  Text(
+                    '${LocaleKeys.areaMetrics.tr()} - ${LocaleKeys.total.tr()} ${state.totalHectares}ha',
+                    style: context.textStyles.bodyBold,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+
                   AttributeItem(
                     child: InputAttributeItem(
                       labelText: LocaleKeys.campName.tr(),

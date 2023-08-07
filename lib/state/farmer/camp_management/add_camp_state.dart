@@ -3,6 +3,7 @@ import 'package:cmo/model/camp.dart';
 import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:cmo/extensions/extensions.dart';
 
 part 'add_camp_state.freezed.dart';
 
@@ -53,7 +54,6 @@ class AddCampState {
 @freezed
 class AddCampAreaMetricsSectionState with _$AddCampAreaMetricsSectionState {
   const factory AddCampAreaMetricsSectionState({
-    @Default(false) bool isComplete,
     @Default(false) bool isSectionCollapse,
     String? campName,
     String? protectedArea,
@@ -64,6 +64,28 @@ class AddCampAreaMetricsSectionState with _$AddCampAreaMetricsSectionState {
     String? rangeLand,
     String? convertedToGrassland,
   }) = _AddCampAreaMetricsSectionState;
+}
+
+extension AddCampAreaMetricsSectionStateExtension on AddCampAreaMetricsSectionState {
+  bool get isComplete {
+    return campName.isNotBlank &&
+        protectedArea.isNotBlank &&
+        cattlePostHousing.isNotBlank &&
+        corridors.isNotBlank &&
+        roadAndFireBreaks.isNotBlank &&
+        poachingAlleviationZone.isNotBlank &&
+        rangeLand.isNotBlank &&
+        convertedToGrassland.isNotBlank;
+  }
+
+  double get totalHectares =>
+      (double.tryParse(protectedArea ?? '') ?? 0) +
+      (double.tryParse(cattlePostHousing ?? '') ?? 0) +
+      (double.tryParse(corridors ?? '') ?? 0) +
+      (double.tryParse(roadAndFireBreaks ?? '') ?? 0) +
+      (double.tryParse(poachingAlleviationZone ?? '') ?? 0) +
+      (double.tryParse(rangeLand ?? '') ?? 0) +
+      (double.tryParse(convertedToGrassland ?? '') ?? 0);
 }
 
 @freezed

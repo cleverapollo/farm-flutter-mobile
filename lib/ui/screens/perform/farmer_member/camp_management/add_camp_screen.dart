@@ -70,10 +70,6 @@ class _AddCampScreenState extends State<AddCampScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 8),
-                // CmoHeaderTile(
-                //   title:
-                //       '${LocaleKeys.areaMetrics.tr()} - ${LocaleKeys.total.tr()} 7ha',
-                // ),
                 const AreaMetricsSection(),
                 const InfestationSection(),
                 const ActualSection(),

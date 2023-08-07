@@ -38,6 +38,26 @@ class AddCampCubit extends Cubit<AddCampState> {
       compartments: compartments,
       asis: asis,
     ));
+
+    initDataForAreaMetricsSection();
+  }
+
+  void initDataForAreaMetricsSection() {
+    emit(
+      state.copyWith(
+        addCampAreaMetricsSectionState: state.addCampAreaMetricsSectionState.copyWith(
+          isSectionCollapse: false,
+          rangeLand: (state.camp?.rangeLand ?? '').toString(),
+          convertedToGrassland: (state.camp?.convertedToGrassland ?? '').toString(),
+          poachingAlleviationZone: (state.camp?.poachingAlleviationZone ?? '').toString(),
+          roadAndFireBreaks: (state.camp?.roadAndFireBreaks ?? '').toString(),
+          corridors: (state.camp?.corridors ?? '').toString(),
+          cattlePostHousing: (state.camp?.cattlePostHousing ?? '').toString(),
+          protectedArea: (state.camp?.protectedArea ?? '').toString(),
+          campName: state.camp?.campName,
+        ),
+      ),
+    );
   }
 
   void onCheckInfestationDetailComplete({bool isCheckCollapse = false}) {
@@ -208,16 +228,6 @@ class AddCampCubit extends Cubit<AddCampState> {
       ),
     );
 
-    final isComplete =
-        state.addCampAreaMetricsSectionState.campName.isNotBlank &&
-            state.addCampAreaMetricsSectionState.protectedArea.isNotBlank &&
-            state.addCampAreaMetricsSectionState.cattlePostHousing.isNotBlank &&
-            state.addCampAreaMetricsSectionState.corridors.isNotBlank &&
-            state.addCampAreaMetricsSectionState.roadAndFireBreaks.isNotBlank &&
-            state.addCampAreaMetricsSectionState.poachingAlleviationZone.isNotBlank &&
-            state.addCampAreaMetricsSectionState.rangeLand.isNotBlank &&
-            state.addCampAreaMetricsSectionState.convertedToGrassland.isNotBlank;
-
     emit(
       state.copyWith(
         camp: state.camp?.copyWith(
@@ -230,18 +240,14 @@ class AddCampCubit extends Cubit<AddCampState> {
           rangeLand: double.tryParse(state.addCampAreaMetricsSectionState.rangeLand ?? ''),
           convertedToGrassland: double.tryParse(state.addCampAreaMetricsSectionState.convertedToGrassland ?? ''),
         ),
-
-        addCampAreaMetricsSectionState: state.addCampAreaMetricsSectionState.copyWith(
-          isComplete: isComplete,
-        ),
       ),
     );
 
-    if (isComplete) {
+    if (state.addCampAreaMetricsSectionState.isComplete) {
       await cmoDatabaseMasterService.cacheCamp(state.camp!);
-      if (!onTapCollapse) {
-        await Future.delayed(const Duration(milliseconds: 500)).then(
-          (_) {
+      if (rangeLand.isNotBlank) {
+        await Future.delayed(const Duration(milliseconds: 800)).then(
+          (value) {
             emit(
               state.copyWith(
                 addCampAreaMetricsSectionState:
