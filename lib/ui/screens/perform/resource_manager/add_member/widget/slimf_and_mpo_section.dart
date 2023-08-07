@@ -7,7 +7,7 @@ import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'expandable_item_widget.dart';
+import '../../../../../widget/expandable_item_widget.dart';
 import 'slimf_compliant_limitation_1_content.dart';
 import 'slimf_compliant_limitation_2.dart';
 import 'slimf_compliant_limitation_2_content.dart';

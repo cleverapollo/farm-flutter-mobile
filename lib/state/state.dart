@@ -24,3 +24,5 @@ export 'farmer/annual_budget/annual_budget_management_cubit.dart';
 export 'farmer/annual_budget/annual_budget_transactions_cubit.dart';
 export 'farmer/site_management_plan/site_management_plan_cubit.dart';
 export 'add_member_cubit/add_member_cubit.dart';
+export 'farmer/camp_management/add_camp_cubit.dart';
+export 'farmer/camp_management/camp_management_cubit.dart';

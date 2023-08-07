@@ -64,7 +64,6 @@ class CompartmentDetailScreen extends StatefulWidget {
 }
 
 class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
-  DateTime? _plannedPlantDate;
   late CompartmentDetailCubit _compartmentDetailCubit;
 
   @override
