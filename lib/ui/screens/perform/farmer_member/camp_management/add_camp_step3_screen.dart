@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../state/farmer/camp_management/add_camp_cubit.dart';
+import '../../../../widget/common_widgets.dart';
 
 class AddCampStep3Screen extends StatefulWidget {
   AddCampStep3Screen({Key? key}) : super(key: key);
@@ -67,23 +68,39 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Text(
                           LocaleKeys.estimated_year_harvest.tr(),
+                          style: context.textStyles.bodyBold.blueDark2,
                         ),
                       ),
-                      _YearDropdown(
-                          initialValue: cubit.state.camp?.plannedYearOfHarvest,
-                          onChanged: (value) =>
-                              cubit.onPlannedYearOfHarvestChanged(value)),
+                      AttributeItem(
+                        child: _YearDropdown(
+                            initialValue: cubit.state.camp?.plannedYearOfHarvest,
+                            onChanged: (value) =>
+                                cubit.onPlannedYearOfHarvestChanged(value)),
+                      ),
                       const SizedBox(height: 24),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Text(
                           LocaleKeys.actual_year_of_harvest.tr(),
+                          style: context.textStyles.bodyBold.blueDark2,
                         ),
                       ),
-                      _YearDropdown(
-                          initialValue: cubit.state.camp?.actualYearOfHarvest,
-                          onChanged: (value) =>
-                              cubit.onActualYearOfHarvestChanged(value)),
+                      AttributeItem(
+                        child: _YearDropdown(
+                            initialValue: cubit.state.camp?.actualYearOfHarvest,
+                            onChanged: (value) =>
+                                cubit.onActualYearOfHarvestChanged(value)),
+                      ),
+                      const SizedBox(height: 24),
+                      AttributeItem(
+                        child: InputAttributeItem(
+                          labelText: LocaleKeys.tons_will_be_produced.tr(),
+                          labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                          textStyle: context.textStyles.bodyNormal.blueDark2,
+                          initialValue: (cubit.state.camp?.tonsOfCharcoalProduced ?? '').toString(),
+                          onChanged: cubit.onTonsOfProductChanged,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -103,13 +120,6 @@ class _AddCampStep3ScreenState extends State<AddCampStep3Screen> {
   }
 
   Future<void> _save(AddCampState state) async {
-    final canNotNext = state.camp?.actualYearOfHarvest == null ||
-        state.camp?.plannedYearOfHarvest == null;
-
-    if (canNotNext) {
-      return showSnackError(msg: 'Please select required field');
-    }
-
     await cubit.saveCamp(context);
 
     if (context.mounted) {
@@ -139,8 +149,7 @@ class _YearDropdown extends StatelessWidget {
         hintText:
             '${LocaleKeys.select.tr()} ${LocaleKeys.year.tr().toLowerCase()}',
         hintStyle: context.textStyles.bodyNormal.grey,
-        border: UnderlineInputBorder(
-            borderSide: BorderSide(color: context.colors.grey)),
+        border: InputBorder.none,
         focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: context.colors.blue)),
       ),

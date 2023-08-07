@@ -317,7 +317,7 @@
   "cumulative_biomass":"Cumulative Biomass",
   "planned_year_of_harvest": "Planned year of Harvest",
   "actual_year_of_harvest":"Actual year of Harvest",
-  "tons_of_product_produced": "Tons of product produced",
+  "tons_of_product_produced": "Tons of the product produced (Tonnes)",
   "hectares_camp_protected":"How many hectares of this camp are protected?",
   "hectares_camp_cattle_posts_housing":"How many hectares of this camp  are for cattle posts and housing?",
   "hectares_are_corridors":"How many hectares are corridors?",
@@ -558,5 +558,6 @@
   "connect_to_internet": "Connect to Internet",
   "product_group_is_required": "Product Group is required",
   "species_group_is_required": "Species Group is required",
-  "planned_plant_date_is_required": "Planned Plant Date is required"
+  "planned_plant_date_is_required": "Planned Plant Date is required",
+  "tons_will_be_produced": "Tons of the product that will be produced at this camp"
 }

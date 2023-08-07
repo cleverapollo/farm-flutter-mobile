@@ -12,7 +12,10 @@ class AddCampCubit extends Cubit<AddCampState> {
       : super(
           AddCampState(
             camp: camp ??
-                Camp(campId: DateTime.now().millisecondsSinceEpoch.toString()),
+                Camp(
+                  campId: DateTime.now().millisecondsSinceEpoch.toString(),
+                  plannedYearOfHarvest: DateTime.now().year,
+                ),
           ),
         );
 
@@ -124,6 +127,14 @@ class AddCampCubit extends Cubit<AddCampState> {
     emit(state.copyWith(asis: asis ?? []));
   }
 
+  void onTonsOfProductChanged(String? value) {
+    emit(
+        state.copyWith(
+            camp: state.camp?.copyWith(tonsOfCharcoalProduced: double.tryParse(value ?? '')),
+        ),
+    );
+  }
+  
   Future<void> saveCamp(BuildContext context) async {
     emit(state.copyWith(
       camp: state.camp

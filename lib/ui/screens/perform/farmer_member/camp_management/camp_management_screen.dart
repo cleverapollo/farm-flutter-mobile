@@ -141,13 +141,13 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                                         _CampAttributeWidget(
                                           name: LocaleKeys.estimated_biomass.tr(),
                                           value:
-                                              '${camp.estimatedBiomass != null ? camp.estimatedBiomass?.toStringAsFixed(0) : ''}',
+                                              '${camp.estimatedBiomass != null ? camp.estimatedBiomass?.toStringAsFixed(2) : ''}',
                                         ),
                                         _CampAttributeWidget(
                                           color: context.colors.greyLight1,
                                           name: LocaleKeys.total_biomass.tr(),
                                           value:
-                                              '${camp.totalBiomass != null ? camp.totalBiomass?.toStringAsFixed(0) : ''}',
+                                              '${camp.totalBiomass != null ? camp.totalBiomass?.toStringAsFixed(2) : ''}',
                                         ),
                                         _CampAttributeWidget(
                                           name: LocaleKeys.cumulative_biomass.tr(),
@@ -172,7 +172,7 @@ class _CampManagementScreenState extends State<CampManagementScreen> {
                                           name: LocaleKeys.tons_of_product_produced
                                               .tr(),
                                           value:
-                                              '${camp.tonsOfCharcoalProduced != null ? camp.tonsOfCharcoalProduced?.toStringAsFixed(0) : ''}',
+                                              '${camp.tonsOfCharcoalProduced != null ? camp.tonsOfCharcoalProduced?.toStringAsFixed(2) : ''}',
                                         ),
                                       ],
                                     ),
