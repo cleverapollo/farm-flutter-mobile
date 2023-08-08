@@ -32,6 +32,5 @@ class StakeHolderListState with _$StakeHolderListState {
     @Default([]) List<SocialUpliftment> listSocialUpliftment,
     @Default([]) List<SpecialSite> listSpecialSite,
     @Default([]) List<CustomaryUseRight> listCustomaryUseRight,
-    StakeHolderType? selectStakeHolderType,
   }) = _StakeHolderListState;
 }

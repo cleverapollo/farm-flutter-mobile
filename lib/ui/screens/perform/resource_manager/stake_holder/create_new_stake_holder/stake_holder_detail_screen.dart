@@ -4,8 +4,8 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
+import 'package:cmo/state/stake_holder_list_cubit/stake_holder_detail_cubit.dart';
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
-import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/widgets/input_text_field_with_title.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
@@ -31,10 +31,14 @@ class StakeHolderDetailScreen extends StatefulWidget {
   }) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => StakeHolderDetailScreen(
-          stakeHolder: stakeHolder,
-          isEditing: isEditing,
-        ),
+        builder: (_) =>
+            BlocProvider(
+              create: (_) => StakeholderDetailCubit(stakeHolder: stakeHolder)..initStakeholderDetailData(stakeHolder),
+              child: StakeHolderDetailScreen(
+                stakeHolder: stakeHolder,
+                isEditing: isEditing,
+              ),
+            )
       ),
     );
   }
@@ -55,15 +59,10 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {
-      await context
-          .read<StakeHolderListCubit>()
-          .initStakeholderDetailData(widget.stakeHolder);
-    });
   }
 
   Future<void> onSubmit(BuildContext context) async {
-    final cubit = context.read<StakeHolderListCubit>();
+    final cubit = context.read<StakeholderDetailCubit>();
     final state = cubit.state;
 
     setState(() {
@@ -79,13 +78,13 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
       });
       try {
         await hideInputMethod();
-        value['StakeHolderId'] = widget.isEditing
+        value['StakeholderId'] = widget.isEditing
             ? widget.stakeHolder?.stakeHolderId
             : DateTime.now().millisecondsSinceEpoch.toString();
         stakeHolder = StakeHolder.fromJson(value);
 
         stakeHolder = stakeHolder.copyWith(
-          stakeHolderTypeId: state.selectStakeHolderType?.stakeHolderTypeId,
+          stakeHolderTypeId: state.stakeHolder?.stakeHolderTypeId,
         );
 
         int? resultId;
@@ -263,9 +262,9 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
   }
 
   Widget _selectTypeDropdown() {
-    return BlocBuilder<StakeHolderListCubit, StakeHolderListState>(
+    return BlocSelector<StakeholderDetailCubit, StakeholderDetailState, StakeholderDetailState>(
+      selector: (state) => state,
       builder: (context, state) {
-        final cubit = context.read<StakeHolderListCubit>();
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,14 +273,13 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
               LocaleKeys.type.tr(),
               style: context.textStyles.bodyBold.black,
             ),
-            CmoDropdown<StakeHolderType>(
-              name: '',
+            CmoDropdown<String?>(
+              name: 'StakeHolderTypeId',
               validator: requiredValidator,
               inputDecoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(8),
                 isDense: true,
-                hintText:
-                    '${LocaleKeys.select.tr()} ${LocaleKeys.type.tr().toLowerCase()}',
+                hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.type.tr().toLowerCase()}',
                 hintStyle: context.textStyles.bodyNormal.grey,
                 border: UnderlineInputBorder(
                   borderSide: BorderSide(color: context.colors.grey),
@@ -290,11 +288,10 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
                   borderSide: BorderSide(color: context.colors.blue),
                 ),
               ),
-              onChanged: (data) => cubit.onSelectStakeholder(data),
-              initialValue: state.selectStakeHolderType,
-              itemsData: state.listStakeholderTypes
-                  .map((e) =>
-                      CmoDropdownItem(id: e, name: e.stakeHolderTypeName ?? ''))
+              onChanged: (data) => context.read<StakeholderDetailCubit>().onSelectStakeholder(data),
+              initialValue: state.stakeHolder?.stakeHolderTypeId,
+              itemsData: state.listStakeholderTypes?.map((e) =>
+                      CmoDropdownItem(id: e.stakeHolderTypeId, name: e.stakeHolderTypeName ?? ''))
                   .toList(),
             ),
           ],
@@ -304,7 +301,7 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
   }
 
   Widget _buildAdditionalInfo() {
-    return BlocBuilder<StakeHolderListCubit, StakeHolderListState>(
+    return BlocBuilder<StakeholderDetailCubit, StakeholderDetailState>(
       builder: (context, state) {
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -322,7 +319,7 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${state.listSocialUpliftments.length} Social Upliftments',
+                  '${state.listSocialUpliftments?.length} Social Upliftments',
                   style: context.textStyles.bodyNormal.black,
                 ),
                 InkWell(
@@ -338,7 +335,7 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${state.listSpecialSites.length} Special Sites',
+                  '${state.listSpecialSites?.length} Special Sites',
                   style: context.textStyles.bodyNormal.black,
                 ),
                 InkWell(
@@ -354,7 +351,7 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${state.listCustomaryUseRights.length} Customary Use Rights',
+                  '${state.listCustomaryUseRights?.length} Customary Use Rights',
                   style: context.textStyles.bodyNormal.black,
                 ),
                 InkWell(
@@ -404,7 +401,7 @@ Future<void> showAdditionalInfoDialog({
             child: Text(LocaleKeys.ok.tr().toUpperCase()),
             onPressed: () {
               context
-                  .read<StakeHolderListCubit>()
+                  .read<StakeholderDetailCubit>()
                   .onCreateAdditionalInfo(type, name ?? '');
               Navigator.of(context).pop();
             },
