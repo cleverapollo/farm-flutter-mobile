@@ -42,8 +42,8 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.labourManagement.tr(),
-        subtitle: context.read<LabourManagementCubit>().state.activeFarm?.farmName,
-        subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
+        subtitle: context.watch<LabourManagementCubit>().state.activeFarm?.farmName,
+        subtitleTextStyle: context.textStyles.bodyBold.blue,
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
