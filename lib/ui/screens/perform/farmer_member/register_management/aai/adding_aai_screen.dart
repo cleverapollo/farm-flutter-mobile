@@ -10,10 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-
-import '../../../../../../state/add_aai_cubit/add_aai_cubit.dart';
-import '../widgets/add_general_comment_widget.dart';
-import '../widgets/select_item_widget.dart';
+import 'package:cmo/state/add_aai_cubit/add_aai_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 
 class AddingAAIScreen extends StatefulWidget {
 
