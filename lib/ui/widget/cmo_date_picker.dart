@@ -15,6 +15,7 @@ class CmoDatePicker extends StatelessWidget {
     this.suffixIcon,
     this.inputDecoration,
     this.initialValue,
+    this.onChanged,
   });
 
   final String name;
@@ -24,6 +25,7 @@ class CmoDatePicker extends StatelessWidget {
   final Widget? suffixIcon;
   final InputDecoration? inputDecoration;
   final DateTime? initialValue;
+  final ValueChanged<DateTime?>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,7 @@ class CmoDatePicker extends StatelessWidget {
       validator: validator,
       format: DateFormat('yyyy-MM-dd'),
       initialValue: initialValue,
+      onChanged: onChanged,
     );
   }
 }

@@ -7,21 +7,34 @@ import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
+import '../../../../../../state/add_aai_cubit/add_aai_cubit.dart';
 import '../widgets/add_general_comment_widget.dart';
 import '../widgets/select_item_widget.dart';
 
 class AddingAAIScreen extends StatefulWidget {
-  final AccidentAndIncident? aai;
 
-  AddingAAIScreen({Key? key, this.aai}) : super(key: key);
+  const AddingAAIScreen({super.key});
 
-  static Future<AccidentAndIncident?> push(BuildContext context,
-      {AccidentAndIncident? aai}) {
+  static Future<AccidentAndIncident?> push(BuildContext context,{AccidentAndIncident? aai}) {
     return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => AddingAAIScreen(aai: aai)));
+      context, MaterialPageRoute(builder: (_) {
+      return BlocProvider(
+        create: (_) => AddAAICubit(accidentAndIncident: aai ?? AccidentAndIncident(
+            accidentAndIncidentRegisterNo:
+            DateTime.now().millisecondsSinceEpoch.toString(),
+            isActive: true,
+            isMasterDataSynced: false,
+        ),
+          isAddNew: aai == null,
+        ),
+        child: const AddingAAIScreen(),
+      );
+    },
+    ),);
   }
 
   @override
@@ -33,6 +46,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
   final jobDescriptions = ValueNotifier(<WorkerJobDescription>[]);
   final natureOfInjurys = ValueNotifier(<NatureOfInjury>[]);
   final propertyDamaged = <PropertyDamaged>[];
+  late final AddAAICubit addAAICubit;
 
   FarmerWorker? selectWorker;
   WorkerJobDescription? selectJobDescription;
@@ -47,32 +61,21 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
-  late AccidentAndIncident aai;
-
   bool carRaised = false;
   bool carClosed = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.aai == null) {
-      aai = AccidentAndIncident(
-          accidentAndIncidentRegisterNo:
-              DateTime.now().millisecondsSinceEpoch.toString(),
-          isActive: true,
-          isMasterDataSynced: false);
-    } else {
-      aai = AccidentAndIncident.fromJson(widget.aai!.toJson());
-    }
+    addAAICubit = context.read<AddAAICubit>();
+    final aai = addAAICubit.state.accidentAndIncident;
     carRaised = aai.carRaisedDate != null;
     carClosed = aai.carClosedDate != null;
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final farm = await configService.getActiveFarm();
-
       workers.value = await cmoDatabaseMasterService
-              .getFarmerWorkersByFarmId(farm?.farmId ?? '') ??
-          [];
+              .getFarmerWorkersByFarmId(farm?.farmId ?? '');
 
       natureOfInjurys.value = await cmoDatabaseMasterService
           .getNatureOfInjuryByGroupSchemeId(farm?.groupSchemeId ?? 0);
@@ -98,11 +101,9 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
       try {
         await hideInputMethod();
         final farm = await configService.getActiveFarm();
+        var aai = addAAICubit.state.accidentAndIncident;
         aai = aai.copyWith(
           farmId: farm?.farmId,
-          dateRecieved: value['DateReceived'] as DateTime?,
-          dateOfIncident: value['DateIncident'] as DateTime?,
-          dateResumeWork: value['DateResumeWork'] as DateTime?,
           natureOfInjuryId: selectNatureOfInjury?.natureOfInjuryId,
           natureOfInjuryName: selectNatureOfInjury?.natureOfInjuryName,
           workerId: int.tryParse(selectWorker?.workerId ?? ''),
@@ -149,9 +150,9 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
 
         if (resultId != null) {
           if (context.mounted) {
+            final isAddNew = addAAICubit.state.isAddNew;
             showSnackSuccess(
-              msg:
-                  '${widget.aai == null ? LocaleKeys.add_aai.tr() : 'Edit AAI'} $resultId',
+              msg: '${isAddNew ? LocaleKeys.add_aai.tr() : 'Edit AAI'} $resultId',
             );
 
             Navigator.of(context).pop(aai);
@@ -171,11 +172,12 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final state = addAAICubit.state;
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
-          title: widget.aai == null ? LocaleKeys.add_aai.tr() : 'Edit AAI',
+          title: state.isAddNew ? LocaleKeys.add_aai.tr() : 'Edit AAI',
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
@@ -202,6 +204,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
   }
 
   Widget _buildInputArea() {
+    final cubit = context.read<AddAAICubit>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: FormBuilder(
@@ -213,7 +216,9 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _selectWorker(),
+              const SizedBox(height: 4,),
               _selectJobDescription(),
+              const SizedBox(height: 4,),
               _selectNatureOfInjury(),
               InkWell(
                   onTap: () async {
@@ -229,14 +234,17 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
                     padding: EdgeInsets.all(12.0),
                     child: Text('Select Property Damged'),
                   )),
+              _buildDateOfBirth(),
               _buildSelectDateIncident(),
               _buildSelectDateReceived(),
               _buildSelectDateResumeWork(),
+              const SizedBox(height: 8,),
+              _buildLostTimeInDay(),
               AttributeItem(
                 child: SelectItemWidget(
                   title: LocaleKeys.worker_disabled.tr(),
                   onSelect: (value) {
-                    aai = aai.copyWith(workerDisabled: value);
+                    cubit.onWorkDisableChanged(workerDisabled: value);
                   },
                 ),
               ),
@@ -244,9 +252,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
                 height: 250,
                 child: GeneralCommentWidget(
                   hintText: LocaleKeys.generalComments.tr(),
-                  onChanged: (value) {
-                    aai = aai.copyWith(comment: value);
-                  },
+                  onChanged: cubit.onCommentChanged,
                 ),
               )
             ],
@@ -256,33 +262,60 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     );
   }
 
+
+  Widget _buildLostTimeInDay() {
+    return BlocSelector<AddAAICubit, AddAAIState, String>(
+        selector: (state) => state.lostTimeInDay,
+        builder: (context, lostTimeInDay) {
+        return Padding(
+          padding:
+          const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                LocaleKeys.lost_time_in_days.tr(),
+                style: context.textStyles.bodyNormal,
+              ),
+              Text(lostTimeInDay,
+                style: context.textStyles.bodyNormal,
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _selectWorker() {
     return ValueListenableBuilder(
         valueListenable: workers,
         builder: (_, value, __) {
-          return CmoDropdown<FarmerWorker>(
-              name: 'WorkerId',
-              hintText: LocaleKeys.worker.tr(),
-              validator: requiredValidator,
-              inputDecoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(8),
-                isDense: true,
-                hintText:
-                    '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
-                hintStyle: context.textStyles.bodyNormal.grey,
-                border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: context.colors.grey)),
-                focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: context.colors.blue)),
-              ),
-              onChanged: (value) {
-                selectWorker = value;
-                setState(() {});
-              },
-              initialValue: selectWorker,
-              itemsData: value
-                  .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
-                  .toList());
+          return AttributeItem(
+            child: CmoDropdown<FarmerWorker>(
+                name: 'WorkerId',
+                hintText: LocaleKeys.worker.tr(),
+                validator: requiredValidator,
+                inputDecoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(8),
+                  isDense: true,
+                  hintText:
+                      '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
+                  hintStyle: context.textStyles.bodyNormal.grey,
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                ),
+                onChanged: (value) async {
+                  selectWorker = value;
+                  jobDescriptions.value = await cmoDatabaseMasterService
+                      .getWorkerJobDescriptionByWorkerId(selectWorker?.workerId ?? '');
+                  setState(() {});
+                },
+                initialValue: selectWorker,
+                itemsData: value
+                    .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
+                    .toList()),
+          );
         });
   }
 
@@ -290,28 +323,28 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     return ValueListenableBuilder(
       valueListenable: jobDescriptions,
       builder: (context, data, __) {
-        return CmoDropdown<WorkerJobDescription>(
-            name: '',
-            hintText: LocaleKeys.jobDescription.tr(),
-            inputDecoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(8),
-              isDense: true,
-              hintText:
-                  '${LocaleKeys.select.tr()} ${LocaleKeys.jobDescription.tr().toLowerCase()}',
-              hintStyle: context.textStyles.bodyNormal.grey,
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: context.colors.grey)),
-              focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: context.colors.blue)),
-            ),
-            onChanged: (value) {
-              selectJobDescription = value;
-              setState(() {});
-            },
-            itemsData: data
-                .map((e) =>
-                    CmoDropdownItem(id: e, name: e.jobDescriptionName ?? ''))
-                .toList());
+        return AttributeItem(
+          child: CmoDropdown<WorkerJobDescription>(
+              name: '',
+              hintText: LocaleKeys.jobDescription.tr(),
+              inputDecoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(8),
+                isDense: true,
+                hintText:
+                    '${LocaleKeys.select.tr()} ${LocaleKeys.jobDescription.tr().toLowerCase()}',
+                hintStyle: context.textStyles.bodyNormal.grey,
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+              ),
+              onChanged: (value) {
+                selectJobDescription = value;
+                setState(() {});
+              },
+              itemsData: data
+                  .map((e) =>
+                      CmoDropdownItem(id: e, name: e.jobDescriptionName ?? ''))
+                  .toList()),
+        );
       },
     );
   }
@@ -320,28 +353,28 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     return ValueListenableBuilder(
       valueListenable: natureOfInjurys,
       builder: (context, data, __) {
-        return CmoDropdown<NatureOfInjury>(
-            name: 'natureOfInjury',
-            hintText: LocaleKeys.nature_of_injury.tr(),
-            inputDecoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(8),
-              isDense: true,
-              hintText:
-                  '${LocaleKeys.select.tr()} ${LocaleKeys.nature_of_injury.tr().toLowerCase()}',
-              hintStyle: context.textStyles.bodyNormal.grey,
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: context.colors.grey)),
-              focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: context.colors.blue)),
-            ),
-            onChanged: (value) {
-              selectNatureOfInjury = value;
-              setState(() {});
-            },
-            itemsData: data
-                .map((e) =>
-                    CmoDropdownItem(id: e, name: e.natureOfInjuryName ?? ''))
-                .toList());
+        return AttributeItem(
+          child: CmoDropdown<NatureOfInjury>(
+              name: 'natureOfInjury',
+              hintText: LocaleKeys.nature_of_injury.tr(),
+              inputDecoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(8),
+                isDense: true,
+                hintText:
+                    '${LocaleKeys.select.tr()} ${LocaleKeys.nature_of_injury.tr().toLowerCase()}',
+                hintStyle: context.textStyles.bodyNormal.grey,
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+              ),
+              onChanged: (value) {
+                selectNatureOfInjury = value;
+                setState(() {});
+              },
+              itemsData: data
+                  .map((e) =>
+                      CmoDropdownItem(id: e, name: e.natureOfInjuryName ?? ''))
+                  .toList()),
+        );
       },
     );
   }
@@ -350,7 +383,8 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     return AttributeItem(
       child: CmoDatePicker(
         name: 'DateReceived',
-        hintText: LocaleKeys.dateReceived.tr(),
+        onChanged: addAAICubit.onDateReceiveChanged,
+        hintText: LocaleKeys.date_reported.tr(),
         validator: FormBuilderValidators.compose([
           FormBuilderValidators.required(),
           (DateTime? value) {
@@ -377,9 +411,43 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
           suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
           isDense: true,
-          hintText: LocaleKeys.dateReceived.tr(),
+          hintText: LocaleKeys.date_reported.tr(),
           hintStyle: context.textStyles.bodyBold.black,
-          labelText: LocaleKeys.dateReceived.tr(),
+          labelText: LocaleKeys.date_reported.tr(),
+          labelStyle: context.textStyles.bodyBold.black,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateOfBirth() {
+    return AttributeItem(
+      child: CmoDatePicker(
+        name: 'DateOfBirth',
+        onChanged: addAAICubit.onDateOfBirthChanged,
+        hintText: LocaleKeys.date_of_birth.tr(),
+        validator: FormBuilderValidators.compose([
+          FormBuilderValidators.required(),
+              (DateTime? value) {
+            if (value!.millisecondsSinceEpoch >
+                DateTime.now().millisecondsSinceEpoch) {
+              return 'Date of birth cannot be in the future';
+            }
+            return null;
+          }
+        ]),
+        inputDecoration: InputDecoration(
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 12,
+          ),
+          suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
+          suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
+          isDense: true,
+          hintText: LocaleKeys.date_of_birth.tr(),
+          hintStyle: context.textStyles.bodyBold.black,
+          labelText: LocaleKeys.date_of_birth.tr(),
           labelStyle: context.textStyles.bodyBold.black,
         ),
       ),
@@ -390,6 +458,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     return AttributeItem(
       child: CmoDatePicker(
         name: 'DateIncident',
+        onChanged: addAAICubit.onDateOfIncidentChanged,
         hintText: LocaleKeys.date_of_incident.tr(),
         validator: FormBuilderValidators.compose([
           FormBuilderValidators.required(),
@@ -417,9 +486,9 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
           suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
           isDense: true,
-          hintText: LocaleKeys.dateClosed.tr(),
+          hintText: LocaleKeys.date_of_incident.tr(),
           hintStyle: context.textStyles.bodyBold.black,
-          labelText: LocaleKeys.dateClosed.tr(),
+          labelText: LocaleKeys.date_of_incident.tr(),
           labelStyle: context.textStyles.bodyBold.black,
         ),
       ),
@@ -430,13 +499,10 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     return AttributeItem(
       child: CmoDatePicker(
         name: 'DateResumeWork',
-        hintText: 'Date of Resume Work',
+        onChanged: addAAICubit.onDateResumeChanged,
+        hintText: LocaleKeys.resumed_work_on.tr(),
         validator: (DateTime? value) {
           if (value == null) return null;
-          if (value!.millisecondsSinceEpoch >
-              DateTime.now().millisecondsSinceEpoch) {
-            return 'Resumed work date cannot be in the future';
-          }
           final incidentValue =
               _formKey.currentState?.value['DateIncident'] as DateTime?;
           if (incidentValue != null &&
@@ -455,9 +521,9 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
           suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
           isDense: true,
-          hintText: LocaleKeys.dateClosed.tr(),
+          hintText: LocaleKeys.resumed_work_on.tr(),
           hintStyle: context.textStyles.bodyBold.black,
-          labelText: LocaleKeys.dateClosed.tr(),
+          labelText: LocaleKeys.resumed_work_on.tr(),
           labelStyle: context.textStyles.bodyBold.black,
         ),
       ),
@@ -468,11 +534,9 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
 class _SelectPropertyDamaged extends StatefulWidget {
   const _SelectPropertyDamaged({
     required this.propertyDamageds,
-    this.onSave,
   });
 
   final List<PropertyDamaged> propertyDamageds;
-  final void Function(List<PropertyDamaged> value)? onSave;
 
   @override
   State<StatefulWidget> createState() => _SelectPropertyDamagedState();

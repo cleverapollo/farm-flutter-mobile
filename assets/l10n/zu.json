@@ -566,5 +566,6 @@
   "species_group_is_required": "Species Group is required",
   "planned_plant_date_is_required": "Planned Plant Date is required",
   "tons_will_be_produced": "Tons of the product that will be produced at this camp",
-  "of_land_unallocated": "of land unallocated"
+  "of_land_unallocated": "of land unallocated",
+  "date_of_birth": "Date Of Birth"
 }

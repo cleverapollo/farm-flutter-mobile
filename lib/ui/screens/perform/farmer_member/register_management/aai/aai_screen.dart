@@ -6,17 +6,25 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/accident_and_incident.dart';
+import 'package:cmo/state/aai_cubit/aai_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/aai/adding_aai_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AAIScreen extends StatefulWidget {
   const AAIScreen({super.key});
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const AAIScreen()));
+        context, MaterialPageRoute(builder: (_){
+      return BlocProvider(
+        create: (_) => AAICubit(),
+        child: const AAIScreen(),
+      );
+      },
+    ),);
   }
 
   @override
@@ -29,7 +37,7 @@ class _AAIScreenState extends State<AAIScreen> {
 
   Timer? _debounceInputTimer;
   late List<AccidentAndIncident> filteredItems;
-  late StatusFilterEnum statusFilter;
+  late StatusFilterEnum statusFilter = StatusFilterEnum.open;
   String? inputSearch;
 
   @override
@@ -39,13 +47,13 @@ class _AAIScreenState extends State<AAIScreen> {
   }
 
   Future<void> _init() async {
+    items.clear();
     final farm = await configService.getActiveFarm();
     items.addAll(await cmoDatabaseMasterService
         .getAccidentAndIncidentRegistersByFarmId(farm!.farmId));
     isLoading = false;
 
     filteredItems = items;
-    statusFilter = StatusFilterEnum.open;
     inputSearch = '';
     applyFilter();
   }
@@ -103,7 +111,10 @@ class _AAIScreenState extends State<AAIScreen> {
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => AddingAAIScreen.push(context),
+        onTapTrailing: () async {
+          await AddingAAIScreen.push(context);
+          await _init();
+        },
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())

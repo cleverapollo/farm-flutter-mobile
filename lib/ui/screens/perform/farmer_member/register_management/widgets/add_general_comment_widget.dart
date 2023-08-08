@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -26,16 +25,8 @@ class GeneralCommentWidget extends StatefulWidget {
 }
 
 class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
-  Timer? _debounceInputTimer;
-  String commentValue = '';
 
   final _controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() => setState(() {}));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,16 +51,8 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
           focusedBorder: InputBorder.none,
         ),
         onChanged: (text) {
-          _debounceInputTimer?.cancel();
-          _debounceInputTimer = Timer(
-            const Duration(milliseconds: 200),
-            () => setState(() {
-              commentValue = text;
-            }),
-          );
-
           if (widget.onChanged != null) {
-            widget.onChanged!.call(commentValue);
+            widget.onChanged!.call(text);
           }
         },
       ),
