@@ -147,7 +147,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
       child: Scaffold(
         appBar: CmoAppBar(
           title: LocaleKeys.addLabour.tr(),
-          subtitle: '${LocaleKeys.rmu_name.tr()}: ${context.read<LabourManagementCubit>().state.activeFarm?.farmName}',
+          subtitle: context.read<LabourManagementCubit>().state.activeFarm?.farmName,
           subtitleTextStyle: context.textStyles.bodyBold.blue,
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
