@@ -1,4 +1,6 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/string.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -13,6 +15,8 @@ import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+
+import '../../camp_management/add_camp_screen.dart';
 
 class FarmerAddWorkerScreen extends StatefulWidget {
   final FarmerWorker? farmerWorker;
@@ -70,9 +74,6 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
       });
       try {
         await hideInputMethod();
-        farmerWorker = farmerWorker.copyWith(
-          dateOfBirth: value['DateOfBirth'].toString(),
-        );
 
         int? resultId;
 
@@ -146,7 +147,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
       child: Scaffold(
         appBar: CmoAppBar(
           title: LocaleKeys.addLabour.tr(),
-          subtitle: '${LocaleKeys.rmu_name.tr()}: Border Timbers',
+          subtitle: '${LocaleKeys.rmu_name.tr()}: ${context.read<LabourManagementCubit>().state.activeFarm?.farmName}',
           subtitleTextStyle: context.textStyles.bodyBold.blue,
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
@@ -275,25 +276,37 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
   }
 
   Widget _buildSelectBirth() {
-    return AttributeItem(
-      child: CmoDatePicker(
-        name: 'DateOfBirth',
-        hintText: LocaleKeys.dateOfBirth.tr(),
-        validator: requiredValidator,
-        initialValue: DateTime.tryParse(farmerWorker.dateOfBirth ?? ''),
-        inputDecoration: InputDecoration(
-          border: InputBorder.none,
+    return InkWell(
+      onTap: () async {
+        final date = await showDatePicker(
+          context: context,
+          initialDate: DateTime.tryParse(farmerWorker.dateOfBirth ?? '') ?? DateTime.now(),
+          firstDate: DateTime.now().add(const Duration(days: -1000000)),
+          lastDate: DateTime.now(),
+        );
+
+        if (date != null) {
+          setState(() {
+            farmerWorker = farmerWorker.copyWith(dateOfBirth: date.toIso8601String());
+          });
+        }
+      },
+      child: AttributeItem(
+        child: SelectorAttributeItem(
+          hintText: '',
+          text: farmerWorker.dateOfBirth.isBlank
+              ? LocaleKeys.yyyy_mm_dd.tr()
+              : DateTime.tryParse(farmerWorker.dateOfBirth!).yMd(),
+          labelText: LocaleKeys.dateOfBirth.tr(),
+          labelStyle: context.textStyles.bodyBold.black,
+          textStyle: farmerWorker.dateOfBirth.isBlank
+              ? context.textStyles.bodyNormal.grey
+              : context.textStyles.bodyBold.black,
           contentPadding: const EdgeInsets.symmetric(
             vertical: 8,
             horizontal: 12,
           ),
-          suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-          suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
-          isDense: true,
-          hintText: LocaleKeys.dateOfBirth.tr(),
-          hintStyle: context.textStyles.bodyBold.black,
-          labelText: LocaleKeys.dateOfBirth.tr(),
-          labelStyle: context.textStyles.bodyBold.black,
+          trailing: Assets.icons.icCalendar.svgBlack,
         ),
       ),
     );

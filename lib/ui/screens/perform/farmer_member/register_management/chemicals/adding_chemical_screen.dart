@@ -140,7 +140,7 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                           child: SelectorAttributeItem(
                               hintText: LocaleKeys.dateIssued.tr(),
                               text: state.chemical.date != null
-                                  ? state.chemical.date.mmmDdYyyy()
+                                  ? state.chemical.date.yMd()
                                   : 'Date Time Captured',
                               contentPadding: const EdgeInsets.all(4),
                               trailing: Assets.icons.icCalendar.svgBlack),

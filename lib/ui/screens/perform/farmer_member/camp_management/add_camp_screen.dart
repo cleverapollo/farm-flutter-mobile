@@ -182,10 +182,16 @@ class SelectorAttributeItem extends StatelessWidget {
   final Widget? textWidget;
   final EdgeInsetsGeometry contentPadding;
   final Widget? trailing;
+  final String? labelText;
+  final TextStyle? labelStyle;
+  final TextStyle? textStyle;
 
   const SelectorAttributeItem({
     required this.hintText,
     this.text,
+    this.labelText,
+    this.labelStyle,
+    this.textStyle,
     this.textWidget,
     this.contentPadding = const EdgeInsets.fromLTRB(14, 4, 14, 4),
     this.trailing,
@@ -201,11 +207,12 @@ class SelectorAttributeItem extends StatelessWidget {
           child: TextField(
             minLines: 1,
             controller: TextEditingController()..text = text ?? '',
-            style: context.textStyles.bodyBold,
+            style: textStyle ?? context.textStyles.bodyBold,
             enabled: false,
             decoration: InputDecoration(
               hintText: hintText,
-              isCollapsed: true,
+              labelText: labelText,
+              labelStyle: labelStyle,
               contentPadding: contentPadding,
               enabledBorder: InputBorder.none,
               disabledBorder: InputBorder.none,

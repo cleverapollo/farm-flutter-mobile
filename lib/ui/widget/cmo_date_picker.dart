@@ -42,7 +42,7 @@ class CmoDatePicker extends StatelessWidget {
       style: context.textStyles.bodyNormal,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       validator: validator,
-      format: DateFormat('dd/MM/yyyy'),
+      format: DateFormat('yyyy-MM-dd'),
       initialValue: initialValue,
     );
   }

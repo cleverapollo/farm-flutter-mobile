@@ -113,7 +113,7 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
                         child: AttributeItem(
                           child: SelectorAttributeItem(
                               hintText: LocaleKeys.date_captured.tr(),
-                              text: state.asiData.date.mmmDdYyyy(),
+                              text: state.asiData.date.yMd(),
                               contentPadding: const EdgeInsets.all(4),
                               trailing: Assets.icons.icCalendar.svgBlack),
                         ),
