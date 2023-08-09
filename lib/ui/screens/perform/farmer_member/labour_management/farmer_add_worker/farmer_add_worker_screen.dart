@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/extensions/input_formatter_extension.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -44,6 +45,8 @@ class FarmerAddWorkerScreen extends StatefulWidget {
 }
 
 class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
+  final isAllValid = ValueNotifier<bool>(false);
+
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
@@ -125,6 +128,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
     super.initState();
     if (widget.isEditing && widget.farmerWorker != null) {
       farmerWorker = widget.farmerWorker!;
+      _validate(isInit: true);
     } else {
       farmerWorker = FarmerWorker(
         farmId: context.read<LabourManagementCubit>().state.activeFarm?.farmId,
@@ -168,19 +172,40 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
               CmoHeaderTile(title: LocaleKeys.details.tr()),
               _buildInputArea(),
               const SizedBox(
-                height: 80,
+                height: 90,
               ),
             ],
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: CmoFilledButton(
-          title: LocaleKeys.save.tr(),
-          onTap: onSubmit,
-          loading: loading,
+        floatingActionButton: ValueListenableBuilder(
+          valueListenable: isAllValid,
+          builder: (context, canSave, __) {
+            return CmoFilledButton(
+              disable: !canSave,
+              title: LocaleKeys.save.tr(),
+              onTap: onSubmit,
+              loading: loading,
+            );
+          },
         ),
       ),
     );
+  }
+
+  void _validate({bool isInit = false}) {
+    if (isInit) {
+      final isValid = !farmerWorker.firstName.isNullOrEmpty &&
+          !farmerWorker.surname.isNullOrEmpty &&
+          !farmerWorker.idNumber.isNullOrEmpty &&
+          !farmerWorker.phoneNumber.isNullOrEmpty &&
+          !farmerWorker.nationality.isNullOrEmpty;
+
+      isAllValid.value = isValid;
+      return;
+    }
+
+    isAllValid.value = _formKey.currentState?.saveAndValidate() ?? false;
   }
 
   Widget _buildInputArea() {
@@ -201,6 +226,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                   initialValue: farmerWorker.firstName,
                   onChanged: (value) {
                     farmerWorker = farmerWorker.copyWith(firstName: value);
+                    _validate();
                   },
                 ),
               ),
@@ -211,6 +237,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                   initialValue: farmerWorker.surname,
                   onChanged: (value) {
                     farmerWorker = farmerWorker.copyWith(surname: value);
+                    _validate();
                   },
                 ),
               ),
@@ -222,11 +249,13 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                     Expanded(
                       child: InputAttributeItem(
                         hintText: LocaleKeys.idNumber.tr(),
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.name,
+                        inputFormatters: [UpperCaseTextFormatter()],
                         hintTextStyle: context.textStyles.bodyBold.black,
                         initialValue: farmerWorker.idNumber,
                         onChanged: (value) {
                           farmerWorker = farmerWorker.copyWith(idNumber: value);
+                          _validate();
                         },
                       ),
                     ),
@@ -240,11 +269,12 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
               AttributeItem(
                 child: InputAttributeItem(
                   hintText: LocaleKeys.phoneNumber.tr(),
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.numberWithOptions(signed: true),
                   initialValue: farmerWorker.phoneNumber,
                   hintTextStyle: context.textStyles.bodyBold.black,
                   onChanged: (value) {
                     farmerWorker = farmerWorker.copyWith(phoneNumber: value);
+                    _validate();
                   },
                 ),
               ),
@@ -255,6 +285,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                   initialValue: farmerWorker.nationality,
                   onChanged: (value) {
                     farmerWorker = farmerWorker.copyWith(nationality: value);
+                    _validate();
                   },
                 ),
               ),

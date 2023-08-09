@@ -1,9 +1,8 @@
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/l10n/locale_keys.g.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AttributeItem extends StatelessWidget {
@@ -46,7 +45,8 @@ class AttributeItem extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 errorText!,
-                style: context.textStyles.bodyNormal.redError.copyWith(fontSize: 12),
+                style: context.textStyles.bodyNormal.redError
+                    .copyWith(fontSize: 12),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -113,6 +113,8 @@ class InputAttributeItem extends StatefulWidget {
   final FormFieldValidator<String?>? validator;
   final String? initialValue;
 
+  final List<TextInputFormatter> inputFormatters;
+
   const InputAttributeItem({
     this.hintText,
     this.maxLines = 1,
@@ -128,6 +130,7 @@ class InputAttributeItem extends StatefulWidget {
     this.labelTextStyle,
     this.isDense = false,
     super.key,
+    this.inputFormatters = const <TextInputFormatter>[],
   });
 
   @override
@@ -154,13 +157,15 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
       controller: _controller,
       style: widget.textStyle ?? context.textStyles.bodyBold,
       keyboardType: widget.keyboardType,
-      validator: widget.validator ?? (value) {
-        if (value.isBlank) {
-          return widget.labelText ?? widget.hintText ?? '';
-        } else {
-          return null;
-        }
-      },
+      inputFormatters: widget.inputFormatters,
+      validator: widget.validator ??
+          (value) {
+            if (value.isBlank) {
+              return widget.labelText ?? widget.hintText ?? '';
+            } else {
+              return null;
+            }
+          },
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: widget.hintTextStyle ??
@@ -168,10 +173,11 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
               color: context.colors.grey,
             ),
         labelText: widget.labelText,
-        labelStyle: widget.labelTextStyle ?? context.textStyles.bodyNormal.copyWith(
-          fontSize: 16,
-          overflow: TextOverflow.ellipsis,
-        ),
+        labelStyle: widget.labelTextStyle ??
+            context.textStyles.bodyNormal.copyWith(
+              fontSize: 16,
+              overflow: TextOverflow.ellipsis,
+            ),
         isDense: widget.isDense,
         contentPadding: widget.contentPadding,
         enabledBorder: InputBorder.none,
