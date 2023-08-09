@@ -108,16 +108,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       logger.d('Create System Event Success --- $systemEventId');
 
-      var totalTime = 30;
-
-      Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (totalTime == 0) return timer.cancel();
-
-        totalTime--;
-        onSyncStatus('Syncing... Please wait...($totalTime s)');
-      });
-
-      await Future.delayed(const Duration(seconds: 30), () {});
+      await Future.delayed(const Duration(seconds: 5), () {});
 
       await createSubscriptions();
 
