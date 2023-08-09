@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/camp.dart';
 import 'package:cmo/model/issue_type/issue_type.dart';
 import 'package:cmo/model/labour_management/farmer_worker.dart';
@@ -44,7 +45,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
         farmId: farm?.farmId, groupSchemeId: farm?.groupSchemeId.toString()));
   }
 
-  Future<void> initAddData() async {
+  Future<void> initAddData({SanctionRegister? data}) async {
     emit(state.copyWith(isLoading: true));
 
     await initConfigData();
@@ -77,9 +78,29 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
         workers: workers,
         issueTypes: issueTypes,
         camps: camps,
-        isLoading: false,
       ));
     });
+
+    if (data != null) {
+      final selectWorker = state.workers
+          .firstWhereOrNull((element) => element.workerId == data.workerId);
+
+      final selectCamp = state.camps
+          .firstWhereOrNull((element) => element.campId == data.campId);
+
+      final selectIssue = state.issueTypes.firstWhereOrNull(
+          (element) => element.issueTypeId == data.issueTypeId);
+
+      emit(state.copyWith(
+        data: data,
+        dataBeforeEdit: data,
+        selectWorker: selectWorker,
+        selectCamp: selectCamp,
+        selectIssue: selectIssue,
+      ));
+    }
+
+    emit(state.copyWith(isLoading: false));
   }
 
   void onChangeData({
@@ -123,26 +144,28 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     }
 
     emit(state.copyWith(
-        data: state.data?.copyWith(
-            sanctionRegisterId:
-                DateTime.now().millisecondsSinceEpoch.toString(),
-            workerId:
-                (selectWorker?.workerId ?? state.data?.workerId).toString(),
-            campOrCompartment:
-                campOrCompartment ?? state.data?.campOrCompartment,
-            comment: comment ?? state.data?.comment,
-            dateReceived: dateIssue ?? state.data?.dateReceived,
-            signatureDate: signatureDate ?? state.data?.signatureDate,
-            signatureImage: signatureImage ?? state.data?.signatureImage,
-            issueTypeId: selectIssue?.issueTypeId ?? state.data?.issueTypeId,
-            issueTypeName:
-                selectIssue?.issueTypeName ?? state.data?.issueTypeName,
-            campId: selectCamp?.campId ?? state.data?.campId,
-            campName: selectCamp?.campName ?? state.data?.campName,
-            carRaisedDate: carRaisedDate,
-            carClosedDate: carClosedDate,
-            displayWorkerName:
-                '${selectWorker?.firstName} ${selectWorker?.surname}')));
+      data: state.data?.copyWith(
+        sanctionRegisterId: state.data?.sanctionRegisterId ??
+            DateTime.now().millisecondsSinceEpoch.toString(),
+        workerId: (selectWorker?.workerId ?? state.data?.workerId).toString(),
+        campOrCompartment: campOrCompartment ?? state.data?.campOrCompartment,
+        comment: comment ?? state.data?.comment,
+        dateReceived: dateIssue ?? state.data?.dateReceived,
+        signatureDate: signatureDate ?? state.data?.signatureDate,
+        signatureImage: signatureImage ?? state.data?.signatureImage,
+        issueTypeId: selectIssue?.issueTypeId ?? state.data?.issueTypeId,
+        issueTypeName: selectIssue?.issueTypeName ?? state.data?.issueTypeName,
+        campId: selectCamp?.campId ?? state.data?.campId,
+        campName: selectCamp?.campName ?? state.data?.campName,
+        carRaisedDate: carRaisedDate,
+        carClosedDate: carClosedDate,
+        displayWorkerName:
+            '${selectWorker?.firstName} ${selectWorker?.surname}',
+      ),
+      selectWorker: selectWorker ?? state.selectWorker,
+      selectCamp: selectCamp ?? state.selectCamp,
+      selectIssue: selectIssue ?? state.selectIssue,
+    ));
   }
 
   void onClearSignaturePad() {
@@ -154,23 +177,34 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     )));
   }
 
-  Future<void> onSave(BuildContext context) async {
-    final canSave = state.data?.dateReceived != null;
+  Future<void> onSave() async {
+    final canSave = state.data?.dateReceived != null ||
+        state.data?.campId != null ||
+        state.data?.workerId != null ||
+        state.data?.issueTypeId != null;
 
     if (!canSave) return showSnackError(msg: 'Required fields are missing');
+
+    var isSynced = false;
+
+    if (state.dataBeforeEdit?.isSynced ?? false) {
+      if (state.dataBeforeEdit != state.data) {
+        isSynced = false;
+      } else {
+        isSynced = true;
+      }
+    }
 
     await cmoDatabaseMasterService
         .cacheSanctionRegisterFromFarm(state.data!.copyWith(
       isActive: true,
-      isSynced: false,
-      isLocal: true,
+      isSynced: isSynced,
+      isLocal: !isSynced,
       farmId: state.farmId,
     ))
         .then((value) {
       if (value != null) {
         showSnackSuccess(msg: 'Save Disciplinaries $value Successfully');
-        Navigator.pop(context);
-        initData();
       } else {
         showSnackError(msg: 'Something was wrong, please try again.');
       }

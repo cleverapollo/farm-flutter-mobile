@@ -34,7 +34,13 @@ class _DisciplinariesScreenState extends State<DisciplinariesScreen> {
               title: LocaleKeys.disciplinary.tr(),
               showLeading: true,
               showAdding: true,
-              onTapAdding: () => DisciplinariesAddScreen.push(context),
+              onTapAdding: () async {
+                final shouldRefresh =
+                    await DisciplinariesAddScreen.push(context);
+                if (shouldRefresh != null && context.mounted) {
+                  await context.read<DisciplinariesCubit>().initData();
+                }
+              },
             ),
             body: isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -77,9 +83,21 @@ class _DisciplinariesScreenState extends State<DisciplinariesScreen> {
                                 separatorBuilder: (_, index) =>
                                     const SizedBox(height: 14),
                                 itemCount: state.sanctionRegisters.length,
-                                itemBuilder: (context, index) =>
-                                    _DisciplinariesItemWidget(
-                                        state.sanctionRegisters[index])),
+                                itemBuilder: (context, index) => InkWell(
+                                      onTap: () async {
+                                        final shouldRefresh =
+                                            await DisciplinariesAddScreen.push(
+                                                context,
+                                                data: state
+                                                    .sanctionRegisters[index]);
+
+                                        if (shouldRefresh != null) {
+                                          await cubit.initData();
+                                        }
+                                      },
+                                      child: _DisciplinariesItemWidget(
+                                          state.sanctionRegisters[index]),
+                                    )),
                           ],
                         ),
                       );

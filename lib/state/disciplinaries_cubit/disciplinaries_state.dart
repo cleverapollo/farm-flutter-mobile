@@ -10,6 +10,7 @@ part 'disciplinaries_state.freezed.dart';
 class DisciplinariesState with _$DisciplinariesState {
   const factory DisciplinariesState({
     SanctionRegister? data,
+    SanctionRegister? dataBeforeEdit,
     @Default(<FarmerWorker>[]) List<FarmerWorker> workers,
     @Default(<IssueType>[]) List<IssueType> issueTypes,
     @Default(<Camp>[]) List<Camp> camps,
@@ -18,5 +19,9 @@ class DisciplinariesState with _$DisciplinariesState {
     String? groupSchemeId,
     @Default(true) bool isOpen,
     @Default(false) bool isLoading,
+    @Default(false) bool isEdit,
+    FarmerWorker? selectWorker,
+    Camp? selectCamp,
+    IssueType? selectIssue,
   }) = _DisciplinariesState;
 }
