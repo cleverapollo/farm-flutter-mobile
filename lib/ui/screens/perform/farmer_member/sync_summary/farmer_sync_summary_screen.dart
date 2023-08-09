@@ -1,5 +1,4 @@
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_cubit.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/sync_summary/farmer_sync_summary_enum.dart';
@@ -48,11 +47,13 @@ class FarmerSyncSummaryScreen extends StatelessWidget {
                       Center(
                           child: Text(
                         state.syncMessage ?? LocaleKeys.sync.tr(),
+                        textAlign: TextAlign.center,
+                        style: context.textStyles.bodyNormal.black,
                       )),
                       Positioned(
                           bottom: 30,
                           child: CmoFilledButton(
-                            title: 'Sync',
+                            title: LocaleKeys.sync.tr(),
                             onTap: () {
                               if (!state.isSyncing) {
                                 context.read<FarmerSyncSummaryCubit>().onSync();

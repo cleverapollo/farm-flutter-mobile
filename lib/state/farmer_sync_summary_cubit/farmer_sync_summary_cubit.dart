@@ -58,6 +58,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final activeFarmId = activeFarm?.farmId;
       final activeGroupSchemeId = activeFarm?.groupSchemeId;
       final activeRmuId = activeFarm?.regionalManagerUnitId;
+      final activeFarmName = activeFarm?.farmName;
 
       if (activeUserId == null ||
           activeFarmId == null ||
@@ -72,6 +73,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
           groupSchemeId: activeGroupSchemeId,
           userDeviceId: activeUserDeviceId,
           rmuId: activeRmuId,
+          farmName: activeFarmName,
         ),
       );
 
@@ -85,7 +87,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     emit(state.copyWith(syncMessage: message));
   }
 
-  Future<void> onSync() async {
+  Future<void> onSync({bool isOnboardingSync = false}) async {
     try {
       emit(state.copyWith(isSyncing: true, syncMessage: 'Syncing...'));
       final canSync = await initDataConfig();
@@ -95,7 +97,9 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         return emit(state.copyWith(isSyncing: true, syncMessage: 'Sync'));
       }
 
-      await onUploadingFarmData();
+      if (!isOnboardingSync) {
+        await onUploadingFarmData();
+      }
 
       final systemEventId = await cmoPerformApiService.createFarmerSystemEvent(
         farmId: farmId,
@@ -127,7 +131,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         ..add(subscribeToTrickleFeedMasterDataTopicByGroupSchemeId());
 
       await Future.wait(futures).then((_) {
-        emit(state.copyWith(syncMessage: 'Sync', isSyncing: false));
+        emit(state.copyWith(
+            syncMessage: 'Sync', isSyncing: false, isDoneSyncing: true));
         initDataSync();
         showSnackSuccess(msg: 'Sync Success');
       });
@@ -137,7 +142,10 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       }
       showSnackError(msg: 'Sync failed. Please try again');
       emit(state.copyWith(
-          isSyncing: false, syncMessage: 'Sync', isLoading: false));
+          isSyncing: false,
+          syncMessage: 'Sync',
+          isLoading: false,
+          isDoneSyncing: true));
     }
   }
 
@@ -1443,7 +1451,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final rs = GroupSchemeStakeholder.fromJson(bodyJson);
       return cmoDatabaseMasterService
           .cacheGroupSchemeStakeholder(rs.copyWith(isMasterDataSynced: 1));
-
     } catch (e) {
       logger.d('insert error: $e');
     }

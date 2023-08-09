@@ -7,12 +7,14 @@ class FarmerSyncSummaryState with _$FarmerSyncSummaryState {
   const factory FarmerSyncSummaryState({
     @Default(false) bool isLoading,
     @Default(false) bool isSyncing,
+    @Default(false) bool isDoneSyncing,
     String? syncMessage,
     FarmerSyncSummaryModel? data,
     int? userId,
     int? userDeviceId,
     int? groupSchemeId,
     String? farmId,
+    String? farmName,
     int? rmuId,
   }) = _FarmerSyncSummaryState;
 }
