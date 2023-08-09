@@ -163,9 +163,9 @@ class _BiologicalControlAgentsScreenState
                           onTap: () async {
                             final result =
                                 await AddBiologicalControlAgentsScreen.push(
-                              context,
-                              agent: item,
-                            );
+                                  context,
+                                  agent: item,
+                                );
                             if (result == null) return;
                             filteredItems[index] = result;
                             setState(() {});
