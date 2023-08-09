@@ -6,12 +6,16 @@ class BottomSheetSelection extends StatelessWidget {
   final String? value;
   final String hintText;
   final Widget? rightIconData;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
 
   const BottomSheetSelection({
     required this.onTap,
     required this.hintText,
     this.value,
     this.rightIconData,
+    this.padding,
+    this.margin,
   });
 
   @override
@@ -19,8 +23,8 @@ class BottomSheetSelection extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        padding: const EdgeInsets.symmetric(horizontal: 6),
+        margin: margin ?? const EdgeInsets.symmetric(horizontal: 16),
+        padding: padding ?? const EdgeInsets.symmetric(horizontal: 6),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(color: context.colors.grey),

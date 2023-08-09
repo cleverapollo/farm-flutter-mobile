@@ -25,8 +25,8 @@ class RteSpecies with _$RteSpecies {
           @JsonKey(name: 'Comment') String? comment,
           @JsonKey(name: 'CarRaisedDate') String? carRaisedDate,
           @JsonKey(name: 'CarClosedDate') String? carClosedDate,
-          @JsonKey(name: 'IsActive') bool? isActive,
-          @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
+          @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
+          @Default(false) @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
           @JsonKey(name: 'CampName') String? campName,
           @JsonKey(name: 'AnimalTypeName') String? animalTypeName,
           @JsonKey(name: 'SpeciesRangeName') String? speciesRangeName}) =
