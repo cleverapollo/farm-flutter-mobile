@@ -8,9 +8,11 @@ class SelectItemWidget extends StatefulWidget {
     super.key,
     required this.title,
     required this.onSelect,
+    this.initValue = false,
   });
 
   final String title;
+  final bool initValue;
   final void Function(bool) onSelect;
 
   @override
@@ -19,6 +21,12 @@ class SelectItemWidget extends StatefulWidget {
 
 class _SelectItemWidgetState extends State<SelectItemWidget> {
   bool isSelected = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isSelected = widget.initValue;
+  }
 
   @override
   Widget build(BuildContext context) {

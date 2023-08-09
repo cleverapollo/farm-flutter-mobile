@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -15,25 +16,30 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 
 class AddingAAIScreen extends StatefulWidget {
-
   const AddingAAIScreen({super.key});
 
-  static Future<AccidentAndIncident?> push(BuildContext context,{AccidentAndIncident? aai}) {
+  static Future<AccidentAndIncident?> push(BuildContext context,
+      {AccidentAndIncident? aai}) {
     return Navigator.push(
-      context, MaterialPageRoute(builder: (_) {
-      return BlocProvider(
-        create: (_) => AddAAICubit(accidentAndIncident: aai ?? AccidentAndIncident(
-            accidentAndIncidentRegisterNo:
-            DateTime.now().millisecondsSinceEpoch.toString(),
-            isActive: true,
-            isMasterDataSynced: false,
-        ),
-          isAddNew: aai == null,
-        ),
-        child: const AddingAAIScreen(),
-      );
-    },
-    ),);
+      context,
+      MaterialPageRoute(
+        builder: (_) {
+          return BlocProvider(
+            create: (_) => AddAAICubit(
+              accidentAndIncident: aai ??
+                  AccidentAndIncident(
+                    accidentAndIncidentRegisterNo:
+                        DateTime.now().millisecondsSinceEpoch.toString(),
+                    isActive: true,
+                    isMasterDataSynced: false,
+                  ),
+              isAddNew: aai == null,
+            ),
+            child: const AddingAAIScreen(),
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -41,15 +47,7 @@ class AddingAAIScreen extends StatefulWidget {
 }
 
 class _AddingAAIScreenState extends State<AddingAAIScreen> {
-  final workers = ValueNotifier(<FarmerWorker>[]);
-  final jobDescriptions = ValueNotifier(<WorkerJobDescription>[]);
-  final natureOfInjurys = ValueNotifier(<NatureOfInjury>[]);
-  final propertyDamaged = <PropertyDamaged>[];
-  late final AddAAICubit addAAICubit;
-
-  FarmerWorker? selectWorker;
-  WorkerJobDescription? selectJobDescription;
-  NatureOfInjury? selectNatureOfInjury;
+  late final AddAAICubit cubit;
 
   final selectAccidentAndIncidentPropertyDamageds =
       <AccidentAndIncidentPropertyDamaged>[];
@@ -66,22 +64,10 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
   @override
   void initState() {
     super.initState();
-    addAAICubit = context.read<AddAAICubit>();
-    final aai = addAAICubit.state.accidentAndIncident;
+    cubit = context.read<AddAAICubit>();
+    final aai = cubit.state.accidentAndIncident;
     carRaised = aai.carRaisedDate != null;
     carClosed = aai.carClosedDate != null;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final farm = await configService.getActiveFarm();
-      workers.value = await cmoDatabaseMasterService
-              .getFarmerWorkersByFarmId(farm?.farmId ?? '');
-
-      natureOfInjurys.value = await cmoDatabaseMasterService
-          .getNatureOfInjuryByGroupSchemeId(farm?.groupSchemeId ?? 0);
-
-      propertyDamaged.addAll(await cmoDatabaseMasterService
-          .getPropertyDamagedByGroupSchemeId(farm?.groupSchemeId ?? 0));
-    });
   }
 
   Future<void> onSubmit() async {
@@ -100,16 +86,10 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
       try {
         await hideInputMethod();
         final farm = await configService.getActiveFarm();
-        var aai = addAAICubit.state.accidentAndIncident;
+        var aai = cubit.state.accidentAndIncident;
         aai = aai.copyWith(
           farmId: farm?.farmId,
-          natureOfInjuryId: selectNatureOfInjury?.natureOfInjuryId,
-          natureOfInjuryName: selectNatureOfInjury?.natureOfInjuryName,
-          workerId: int.tryParse(selectWorker?.workerId ?? ''),
-          workerName: selectWorker?.firstName,
           accidentAndIncidentRegisterId: null,
-          accidentAndIncidentRegisterNo:
-              DateTime.now().millisecondsSinceEpoch.toString(),
           isActive: true,
           isMasterDataSynced: false,
         );
@@ -149,9 +129,10 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
 
         if (resultId != null) {
           if (context.mounted) {
-            final isAddNew = addAAICubit.state.isAddNew;
+            final isAddNew = cubit.state.isAddNew;
             showSnackSuccess(
-              msg: '${isAddNew ? LocaleKeys.add_aai.tr() : 'Edit AAI'} $resultId',
+              msg:
+                  '${isAddNew ? LocaleKeys.add_aai.tr() : 'Edit AAI'} $resultId',
             );
 
             Navigator.of(context).pop(aai);
@@ -171,26 +152,34 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = addAAICubit.state;
+    final initState = cubit.state;
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
-          title: state.isAddNew ? LocaleKeys.add_aai.tr() : 'Edit AAI',
+          title: initState.isAddNew ? LocaleKeys.add_aai.tr() : 'Edit AAI',
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildInputArea(),
-              const SizedBox(
-                height: 80,
+        body: BlocSelector<AddAAICubit, AddAAIState, bool>(
+          selector: (state) => state.isDataReady,
+          builder: (context, isDataReady) {
+            if (!isDataReady) {
+              return const SizedBox.shrink();
+            }
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildInputArea(),
+                  const SizedBox(
+                    height: 80,
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: CmoFilledButton(
@@ -203,7 +192,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
   }
 
   Widget _buildInputArea() {
-    final cubit = context.read<AddAAICubit>();
+    final state = cubit.state;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: FormBuilder(
@@ -214,33 +203,46 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _selectWorker(),
-              const SizedBox(height: 4,),
+              _selectWorker(
+                  state.workers, state.accidentAndIncident.workerId.toString()),
+              const SizedBox(
+                height: 4,
+              ),
               _selectJobDescription(),
-              const SizedBox(height: 4,),
-              _selectNatureOfInjury(),
+              const SizedBox(
+                height: 4,
+              ),
+              _selectNatureOfInjury(state.natureOfInjuries, state.accidentAndIncident.natureOfInjuryId),
               InkWell(
-                  onTap: () async {
-                    final result = await _SelectPropertyDamaged.push(
-                        context, propertyDamaged);
+                onTap: () async {
+                  final result = await _SelectPropertyDamaged.push(
+                    context,
+                    state.propertyDamaged,
+                  );
 
-                    if (result != null) {
-                      selectAccidentAndIncidentPropertyDamageds.addAll(
-                          result as List<AccidentAndIncidentPropertyDamaged>);
-                    }
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: Text('Select Property Damged'),
-                  )),
-              _buildDateOfBirth(),
-              _buildSelectDateIncident(),
-              _buildSelectDateReceived(),
-              _buildSelectDateResumeWork(),
-              const SizedBox(height: 8,),
+                  if (result != null) {
+                    selectAccidentAndIncidentPropertyDamageds.addAll(
+                        result as List<AccidentAndIncidentPropertyDamaged>);
+                  }
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Text('Select Property Damged'),
+                ),
+              ),
+              _buildDateOfBirth(state.accidentAndIncident.dateOfBirth),
+              _buildSelectDateIncident(
+                  state.accidentAndIncident.dateOfIncident),
+              _buildSelectDateReceived(state.accidentAndIncident.dateRecieved),
+              _buildSelectDateResumeWork(
+                  state.accidentAndIncident.dateResumeWork),
+              const SizedBox(
+                height: 8,
+              ),
               _buildLostTimeInDay(),
               AttributeItem(
                 child: SelectItemWidget(
+                  initValue: state.accidentAndIncident.workerDisabled ?? false,
                   title: LocaleKeys.worker_disabled.tr(),
                   onSelect: (value) {
                     cubit.onWorkDisableChanged(workerDisabled: value);
@@ -250,6 +252,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
               SizedBox(
                 height: 250,
                 child: GeneralCommentWidget(
+                  initialValue: state.accidentAndIncident.comment,
                   hintText: LocaleKeys.generalComments.tr(),
                   onChanged: cubit.onCommentChanged,
                 ),
@@ -261,14 +264,12 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     );
   }
 
-
   Widget _buildLostTimeInDay() {
     return BlocSelector<AddAAICubit, AddAAIState, String>(
-        selector: (state) => state.lostTimeInDay,
-        builder: (context, lostTimeInDay) {
+      selector: (state) => state.lostTimeInDay,
+      builder: (context, lostTimeInDay) {
         return Padding(
-          padding:
-          const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -276,7 +277,8 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
                 LocaleKeys.lost_time_in_days.tr(),
                 style: context.textStyles.bodyNormal,
               ),
-              Text(lostTimeInDay,
+              Text(
+                lostTimeInDay,
                 style: context.textStyles.bodyNormal,
               )
             ],
@@ -286,60 +288,60 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     );
   }
 
-  Widget _selectWorker() {
-    return ValueListenableBuilder(
-        valueListenable: workers,
-        builder: (_, value, __) {
-          return AttributeItem(
-            child: CmoDropdown<FarmerWorker>(
-                name: 'WorkerId',
-                hintText: LocaleKeys.worker.tr(),
-                validator: requiredValidator,
-                inputDecoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(8),
-                  isDense: true,
-                  hintText:
-                      '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
-                  hintStyle: context.textStyles.bodyNormal.grey,
-                  border: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                ),
-                onChanged: (value) async {
-                  selectWorker = value;
-                  jobDescriptions.value = await cmoDatabaseMasterService
-                      .getWorkerJobDescriptionByWorkerId(selectWorker?.workerId ?? '');
-                  setState(() {});
-                },
-                initialValue: selectWorker,
-                itemsData: value
-                    .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
-                    .toList()),
-          );
-        });
+  Widget _selectWorker(List<FarmerWorker> workers, String? workerId) {
+    final initWorker = workers.firstWhereOrNull((e) => e.workerId == workerId);
+    return AttributeItem(
+      child: CmoDropdown<FarmerWorker>(
+        name: 'WorkerId',
+        hintText: LocaleKeys.worker.tr(),
+        style: context.textStyles.bodyBold.blueDark2,
+        validator: requiredValidator,
+        inputDecoration: InputDecoration(
+          contentPadding: const EdgeInsets.all(8),
+          isDense: true,
+          hintText:
+              '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
+          hintStyle: context.textStyles.bodyBold.blueDark2,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+        ),
+        onChanged: (value) async {
+          await cubit.onWorkerSelected(value);
+        },
+        initialValue: initWorker,
+        itemsData: workers
+            .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
+            .toList(),
+      ),
+    );
   }
-
+  
   Widget _selectJobDescription() {
-    return ValueListenableBuilder(
-      valueListenable: jobDescriptions,
-      builder: (context, data, __) {
+    return BlocSelector<AddAAICubit, AddAAIState, List<WorkerJobDescription>>(
+      selector: (state) => state.jobDescriptions,
+      builder: (context, jobDescriptions) {
+        final jobId = cubit.state.accidentAndIncident.jobDescriptionId;
+        final initJob = jobDescriptions
+            .firstWhereOrNull((element) => element.jobDescriptionId == jobId);
         return AttributeItem(
           child: CmoDropdown<WorkerJobDescription>(
-              name: '',
+              name: '${initJob?.jobDescriptionName} ${cubit.state.accidentAndIncident.workerId}',
               hintText: LocaleKeys.jobDescription.tr(),
+              style: context.textStyles.bodyBold.blueDark2,
               inputDecoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(8),
                 isDense: true,
                 hintText:
                     '${LocaleKeys.select.tr()} ${LocaleKeys.jobDescription.tr().toLowerCase()}',
-                hintStyle: context.textStyles.bodyNormal.grey,
+                hintStyle: context.textStyles.bodyBold.blueDark2,
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
               ),
               onChanged: (value) {
-                selectJobDescription = value;
-                setState(() {});
+                cubit.onJobDescriptionSelected(value);
               },
-              itemsData: data
+              initialValue: initJob,
+              itemsData: jobDescriptions
                   .map((e) =>
                       CmoDropdownItem(id: e, name: e.jobDescriptionName ?? ''))
                   .toList()),
@@ -348,41 +350,43 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     );
   }
 
-  Widget _selectNatureOfInjury() {
-    return ValueListenableBuilder(
-      valueListenable: natureOfInjurys,
-      builder: (context, data, __) {
-        return AttributeItem(
-          child: CmoDropdown<NatureOfInjury>(
-              name: 'natureOfInjury',
-              hintText: LocaleKeys.nature_of_injury.tr(),
-              inputDecoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(8),
-                isDense: true,
-                hintText:
-                    '${LocaleKeys.select.tr()} ${LocaleKeys.nature_of_injury.tr().toLowerCase()}',
-                hintStyle: context.textStyles.bodyNormal.grey,
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-              ),
-              onChanged: (value) {
-                selectNatureOfInjury = value;
-                setState(() {});
-              },
-              itemsData: data
-                  .map((e) =>
-                      CmoDropdownItem(id: e, name: e.natureOfInjuryName ?? ''))
-                  .toList()),
-        );
-      },
+  Widget _selectNatureOfInjury(
+    List<NatureOfInjury> natureOfInjuries,
+    int? initNatureOfInjuryId,
+  ) {
+    final initNatureOfInjury = natureOfInjuries
+        .firstWhereOrNull((element) => element.natureOfInjuryId == initNatureOfInjuryId);
+    return AttributeItem(
+      child: CmoDropdown<NatureOfInjury>(
+          name: 'natureOfInjury',
+          hintText: LocaleKeys.nature_of_injury.tr(),
+          style: context.textStyles.bodyBold.blueDark2,
+          inputDecoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(8),
+            isDense: true,
+            hintText:
+                '${LocaleKeys.select.tr()} ${LocaleKeys.nature_of_injury.tr().toLowerCase()}',
+            hintStyle: context.textStyles.bodyBold.blueDark2,
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+          ),
+          onChanged: (value) {
+            cubit.onNatureOfInjurySelected(value);
+          },
+          initialValue: initNatureOfInjury,
+          itemsData: natureOfInjuries
+              .map((e) =>
+                  CmoDropdownItem(id: e, name: e.natureOfInjuryName ?? ''))
+              .toList()),
     );
   }
 
-  Widget _buildSelectDateReceived() {
+  Widget _buildSelectDateReceived(DateTime? dateReceived) {
     return AttributeItem(
       child: CmoDatePicker(
         name: 'DateReceived',
-        onChanged: addAAICubit.onDateReceiveChanged,
+        onChanged: cubit.onDateReceiveChanged,
+        initialValue: dateReceived,
         hintText: LocaleKeys.date_reported.tr(),
         validator: FormBuilderValidators.compose([
           FormBuilderValidators.required(),
@@ -419,15 +423,16 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     );
   }
 
-  Widget _buildDateOfBirth() {
+  Widget _buildDateOfBirth(DateTime? birthDate) {
     return AttributeItem(
       child: CmoDatePicker(
         name: 'DateOfBirth',
-        onChanged: addAAICubit.onDateOfBirthChanged,
+        initialValue: birthDate,
+        onChanged: cubit.onDateOfBirthChanged,
         hintText: LocaleKeys.date_of_birth.tr(),
         validator: FormBuilderValidators.compose([
           FormBuilderValidators.required(),
-              (DateTime? value) {
+          (DateTime? value) {
             if (value!.millisecondsSinceEpoch >
                 DateTime.now().millisecondsSinceEpoch) {
               return 'Date of birth cannot be in the future';
@@ -453,11 +458,12 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     );
   }
 
-  Widget _buildSelectDateIncident() {
+  Widget _buildSelectDateIncident(DateTime? dateIncident) {
     return AttributeItem(
       child: CmoDatePicker(
         name: 'DateIncident',
-        onChanged: addAAICubit.onDateOfIncidentChanged,
+        initialValue: dateIncident,
+        onChanged: cubit.onDateOfIncidentChanged,
         hintText: LocaleKeys.date_of_incident.tr(),
         validator: FormBuilderValidators.compose([
           FormBuilderValidators.required(),
@@ -494,11 +500,12 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     );
   }
 
-  Widget _buildSelectDateResumeWork() {
+  Widget _buildSelectDateResumeWork(DateTime? dateResumeWork) {
     return AttributeItem(
       child: CmoDatePicker(
         name: 'DateResumeWork',
-        onChanged: addAAICubit.onDateResumeChanged,
+        initialValue: dateResumeWork,
+        onChanged: cubit.onDateResumeChanged,
         hintText: LocaleKeys.resumed_work_on.tr(),
         validator: (DateTime? value) {
           if (value == null) return null;

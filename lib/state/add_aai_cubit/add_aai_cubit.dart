@@ -1,8 +1,8 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/enum/enum.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 
 part 'add_aai_state.dart';
 
@@ -19,7 +19,41 @@ class AddAAICubit extends Cubit<AddAAIState> {
     onInit();
   }
 
-  Future<void> onInit() async {}
+  Future<void> onInit() async {
+    try {
+      final farm = await configService.getActiveFarm();
+      final workers = await cmoDatabaseMasterService
+          .getFarmerWorkersByFarmId(farm?.farmId ?? '');
+
+      final natureOfInjuries = await cmoDatabaseMasterService
+          .getNatureOfInjuryByGroupSchemeId(farm?.groupSchemeId ?? 0);
+
+      final propertyDamaged = await cmoDatabaseMasterService
+          .getPropertyDamagedByGroupSchemeId(farm?.groupSchemeId ?? 0);
+
+      final jobDescriptions = <WorkerJobDescription>[];
+      final workerId = state.accidentAndIncident.workerId;
+      if(workerId != null) {
+        final jobs = await cmoDatabaseMasterService.getWorkerJobDescriptionByWorkerId(workerId.toString());
+        jobDescriptions.addAll(jobs);
+      }
+
+      emit(
+        state.copyWith(
+          workers: workers,
+          natureOfInjuries: natureOfInjuries,
+          propertyDamaged: propertyDamaged,
+          jobDescriptions: jobDescriptions,
+          lostTimeInDay: _calculateTimeLost(),
+          isDataReady: true,
+        ),
+      );
+    } catch (e) {
+      showSnackError(msg: e.toString());
+    } finally {
+      emit(state.copyWith(isDataReady: true));
+    }
+  }
 
   void onDateReceiveChanged(DateTime? dateTime) {
     emit(
@@ -77,11 +111,45 @@ class AddAAICubit extends Cubit<AddAAIState> {
   }
 
   void onCalculateLostTimeInDay() {
+    emit(state.copyWith(lostTimeInDay: _calculateTimeLost()));
+  }
+
+  Future<void> onWorkerSelected(FarmerWorker? worker) async {
+    final jobDescriptions = await cmoDatabaseMasterService
+        .getWorkerJobDescriptionByWorkerId(worker?.workerId ?? '');
+    emit(
+      state.copyWith(
+        jobDescriptions: jobDescriptions,
+        accidentAndIncident: state.accidentAndIncident.copyWith(
+          workerId: int.tryParse(worker?.workerId ?? ''),
+          workerName: worker?.firstName,
+          jobDescriptionId: null,
+          jobDescriptionName: null,
+        ),
+      ),
+    );
+  }
+
+  void onJobDescriptionSelected(WorkerJobDescription? jobDesc) {
+    state.accidentAndIncident = state.accidentAndIncident.copyWith(
+      jobDescriptionId: jobDesc?.jobDescriptionId,
+      jobDescriptionName: jobDesc?.jobDescriptionName,
+    );
+  }
+
+  String _calculateTimeLost() {
     final aai = state.accidentAndIncident;
-    final lostTimeInDay = aai.dateResumeWork != null &&
-            aai.dateOfIncident != null
+    return aai.dateResumeWork != null &&
+        aai.dateOfIncident != null
         ? aai.dateResumeWork!.difference(aai.dateOfIncident!).inDays.toString()
         : '';
-    emit(state.copyWith(lostTimeInDay: lostTimeInDay));
   }
+
+  void onNatureOfInjurySelected(NatureOfInjury? selectNatureOfInjury) {
+    state.accidentAndIncident = state.accidentAndIncident.copyWith(
+      natureOfInjuryId: selectNatureOfInjury?.natureOfInjuryId,
+      natureOfInjuryName: selectNatureOfInjury?.natureOfInjuryName,
+    );
+  }
+
 }

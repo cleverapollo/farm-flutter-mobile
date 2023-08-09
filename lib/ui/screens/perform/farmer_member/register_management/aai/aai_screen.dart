@@ -244,9 +244,12 @@ class _AAIItem extends StatelessWidget {
                   LocaleKeys.jobDescription.tr(),
                   style: context.textStyles.bodyNormal,
                 ),
-                Text(
-                  aai.jobDescriptionName ?? '',
-                  style: context.textStyles.bodyNormal,
+                Flexible(
+                  child: Text(
+                    aai.jobDescriptionName ?? '',
+                    style: context.textStyles.bodyNormal,
+                    textAlign: TextAlign.end,
+                  ),
                 )
               ],
             ),
