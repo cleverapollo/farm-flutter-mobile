@@ -14,15 +14,23 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
   }
 
   Future<void> onChangeStatus(bool isOpen) async {
+    emit(state.copyWith(isLoading: true));
+
     final result = await cmoDatabaseMasterService
         .getSanctionRegisterByFarmId(state.farmId!, isOpen: isOpen);
 
-    emit(state.copyWith(sanctionRegisters: result, isOpen: isOpen));
+    emit(state.copyWith(
+        sanctionRegisters: result, isOpen: isOpen, isLoading: false));
   }
 
   Future<void> initData() async {
+    emit(state.copyWith(isLoading: true));
+
+    await initConfigData();
+
     final result = await cmoDatabaseMasterService
         .getSanctionRegisterByFarmId(state.farmId!);
+    emit(state.copyWith(isLoading: false));
 
     if (result.isNotEmpty) {
       emit(state.copyWith(sanctionRegisters: result));
@@ -37,6 +45,8 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
   }
 
   Future<void> initAddData() async {
+    emit(state.copyWith(isLoading: true));
+
     await initConfigData();
 
     final futures = <Future<dynamic>>[];
@@ -49,7 +59,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
       ..add(
         cmoDatabaseMasterService
             .getFarmerWorkersByFarmId(state.farmId!)
-            .then((value) => workers = value!),
+            .then((value) => workers = value),
       )
       ..add(
         cmoDatabaseMasterService
@@ -67,6 +77,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
         workers: workers,
         issueTypes: issueTypes,
         camps: camps,
+        isLoading: false,
       ));
     });
   }
@@ -157,8 +168,9 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     ))
         .then((value) {
       if (value != null) {
-        showSnackSuccess(msg: 'Save Disciplinaries $value Successfully}');
+        showSnackSuccess(msg: 'Save Disciplinaries $value Successfully');
         Navigator.pop(context);
+        initData();
       } else {
         showSnackError(msg: 'Something was wrong, please try again.');
       }

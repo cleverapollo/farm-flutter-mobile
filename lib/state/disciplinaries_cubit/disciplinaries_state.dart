@@ -1,9 +1,7 @@
 import 'package:cmo/model/camp.dart';
-import 'package:cmo/model/data/worker.dart';
 import 'package:cmo/model/issue_type/issue_type.dart';
 import 'package:cmo/model/labour_management/farmer_worker.dart';
 import 'package:cmo/model/sanction_register/sanction_register.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_screen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'disciplinaries_state.freezed.dart';
@@ -19,5 +17,6 @@ class DisciplinariesState with _$DisciplinariesState {
     String? farmId,
     String? groupSchemeId,
     @Default(true) bool isOpen,
+    @Default(false) bool isLoading,
   }) = _DisciplinariesState;
 }

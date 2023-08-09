@@ -25,61 +25,68 @@ class _DisciplinariesScreenState extends State<DisciplinariesScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DisciplinariesCubit>(
-      create: (_) => DisciplinariesCubit(),
-      child: Scaffold(
-        appBar: CmoAppBarV2(
-          title: LocaleKeys.disciplinary.tr(),
-          showLeading: true,
-          showAdding: true,
-          onTapAdding: () => DisciplinariesAddScreen.push(context),
-        ),
-        body: BlocBuilder<DisciplinariesCubit, DisciplinariesState>(
-          builder: (context, state) {
-            final cubit = context.read<DisciplinariesCubit>();
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          cubit.onChangeStatus(true);
-                        },
-                        child: _StatusFilterWidget(
-                          text: LocaleKeys.open.tr(),
-                          isSelected: state.isOpen,
+      create: (_) => DisciplinariesCubit()..initData(),
+      child: BlocSelector<DisciplinariesCubit, DisciplinariesState, bool>(
+        selector: (state) => state.isLoading,
+        builder: (context, isLoading) {
+          return Scaffold(
+            appBar: CmoAppBarV2(
+              title: LocaleKeys.disciplinary.tr(),
+              showLeading: true,
+              showAdding: true,
+              onTapAdding: () => DisciplinariesAddScreen.push(context),
+            ),
+            body: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : BlocBuilder<DisciplinariesCubit, DisciplinariesState>(
+                    builder: (context, state) {
+                      final cubit = context.read<DisciplinariesCubit>();
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 12),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    cubit.onChangeStatus(true);
+                                  },
+                                  child: _StatusFilterWidget(
+                                    text: LocaleKeys.open.tr(),
+                                    isSelected: state.isOpen,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                InkWell(
+                                  onTap: () {
+                                    cubit.onChangeStatus(false);
+                                  },
+                                  child: _StatusFilterWidget(
+                                    text: LocaleKeys.close.tr(),
+                                    isSelected: !state.isOpen,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            ListView.separated(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 18),
+                                separatorBuilder: (_, index) =>
+                                    const SizedBox(height: 14),
+                                itemCount: state.sanctionRegisters.length,
+                                itemBuilder: (context, index) =>
+                                    _DisciplinariesItemWidget(
+                                        state.sanctionRegisters[index])),
+                          ],
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      InkWell(
-                        onTap: () {
-                          cubit.onChangeStatus(false);
-                        },
-                        child: _StatusFilterWidget(
-                          text: LocaleKeys.close.tr(),
-                          isSelected: !state.isOpen,
-                        ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
-                  ListView.separated(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 18),
-                      separatorBuilder: (_, index) =>
-                          const SizedBox(height: 14),
-                      itemCount: state.sanctionRegisters.length,
-                      itemBuilder: (context, index) =>
-                          _DisciplinariesItemWidget(
-                              state.sanctionRegisters[index])),
-                ],
-              ),
-            );
-          },
-        ),
+          );
+        },
       ),
     );
   }
@@ -156,26 +163,28 @@ class _DisciplinariesItemWidget extends StatelessWidget {
           ),
           _buildILineItem(
               context, '${LocaleKeys.worker.tr()}: ', data.workerId),
-          _buildILineItem(context, '${LocaleKeys.dateIssued.tr()} :',
-              data.dateReceived.yMd()),
-          _buildILineItem(context, '${LocaleKeys.camp_compartment.tr()} :',
+          _buildILineItem(context, '${LocaleKeys.dateIssued.tr()} : ',
+              data.dateReceived.mmmDdYyyy()),
+          _buildILineItem(context, '${LocaleKeys.camp_compartment.tr()} : ',
               data.campOrCompartment),
-          _buildILineItem(context, '${LocaleKeys.disciplinaries_issue.tr()} :',
+          _buildILineItem(context, '${LocaleKeys.disciplinaries_issue.tr()} : ',
               data.issueTypeName),
           _buildILineItem(
               context,
               '${LocaleKeys.disciplinaries_steps_taken.tr()} : ',
               data.descriptionOfSanction),
+          _buildILineItem(context, '${LocaleKeys.signed.tr()} : ',
+              DateTime.tryParse(data.signatureDate ?? '').mmmDdYyyy()),
           _buildILineItem(
-              context, '${LocaleKeys.signed.tr()} : ', data.signatureDate),
-          _buildILineItem(
-              context, '${LocaleKeys.generalComments.tr()} :', data.comment),
+              context, '${LocaleKeys.generalComments.tr()} : ', data.comment),
         ],
       ),
     );
   }
 
-  Padding _buildILineItem(BuildContext context, String label, String? value) {
+  Widget _buildILineItem(BuildContext context, String label, String? value) {
+    if (value.isNullOrEmpty) return const SizedBox();
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
       child: Row(
@@ -183,7 +192,7 @@ class _DisciplinariesItemWidget extends StatelessWidget {
         children: [
           Text(
             label,
-            style: context.textStyles.bodyNormal,
+            style: context.textStyles.bodyBold,
           ),
           Expanded(
             child: Text(

@@ -130,8 +130,8 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                         final date = await showDatePicker(
                           context: context,
                           initialDate: DateTime.now(),
-                          firstDate: DateTime.now()
-                              .add(const Duration(days: -1000000)),
+                          firstDate:
+                              DateTime.now().add(const Duration(days: -30)),
                           lastDate: DateTime.now(),
                         );
 
