@@ -38,7 +38,7 @@ class _BiologicalControlAgentsScreenState
 
   Timer? _debounceInputTimer;
   late List<BiologicalControlAgent> filteredItems;
-  late StatusFilterEnum statusFilter;
+  late StatusFilterEnum statusFilter = StatusFilterEnum.open;
   String? inputSearch;
 
   @override
@@ -48,13 +48,12 @@ class _BiologicalControlAgentsScreenState
   }
 
   Future<void> _init() async {
+    items.clear();
     final farm = await configService.getActiveFarm();
     items.addAll(await cmoDatabaseMasterService
         .getBiologicalControlAgentByFarmId(farm!.farmId));
     isLoading = false;
-
     filteredItems = items;
-    statusFilter = StatusFilterEnum.open;
     inputSearch = '';
     applyFilter();
   }
@@ -112,7 +111,12 @@ class _BiologicalControlAgentsScreenState
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => AddBiologicalControlAgentsScreen.push(context),
+        onTapTrailing: () async {
+          final result = await AddBiologicalControlAgentsScreen.push(context);
+          if (result != null) {
+            await _init();
+          }
+        },
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -159,8 +163,9 @@ class _BiologicalControlAgentsScreenState
                           onTap: () async {
                             final result =
                                 await AddBiologicalControlAgentsScreen.push(
-                                    context,
-                                    biologicalControlAgent: item);
+                              context,
+                              agent: item,
+                            );
                             if (result == null) return;
                             filteredItems[index] = result;
                             setState(() {});

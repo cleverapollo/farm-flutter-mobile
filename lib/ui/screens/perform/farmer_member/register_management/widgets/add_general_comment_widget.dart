@@ -12,7 +12,7 @@ class GeneralCommentWidget extends StatefulWidget {
     this.initialValue,
     this.elevation = 4,
     super.key,
-});
+  });
 
   final String? initialValue;
   final String hintText;

@@ -1,4 +1,3 @@
-import 'package:cmo/di.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
@@ -10,7 +9,12 @@ class SelectControlAgentWidget extends StatefulWidget {
   const SelectControlAgentWidget({
     super.key,
     required this.onSelect,
+    required this.initAgent,
+    required this.agentTypes,
   });
+
+  final BiologicalControlAgent initAgent;
+  final List<BiologicalControlAgentType> agentTypes;
 
   final void Function(BiologicalControlAgentType) onSelect;
 
@@ -20,18 +24,19 @@ class SelectControlAgentWidget extends StatefulWidget {
 
 class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
   BiologicalControlAgentType? selectedAgent;
-  final types = ValueNotifier(<BiologicalControlAgentType>[]);
+  late final List<BiologicalControlAgentType> agentTypes;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final farm = await configService.getActiveFarm();
-
-      types.value = await cmoDatabaseMasterService
-          .getBiologicalControlAgentTypeByGroupSchemeId(
-              farm?.groupSchemeId ?? 0);
-    });
+    agentTypes = widget.agentTypes;
+    final intAgentTypeId = widget.initAgent.biologicalControlAgentTypeId;
+    final index = agentTypes.indexWhere(
+      (e) => e.biologicalControlAgentTypeId == intAgentTypeId,
+    );
+    if (index != -1) {
+      selectedAgent = agentTypes[index];
+    }
   }
 
   @override
@@ -46,43 +51,40 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
             style: context.textStyles.bodyBold.black,
           ),
         ),
-        ValueListenableBuilder(
-          valueListenable: types,
-          builder: (_, value, __) {
-            return CmoDropdown<BiologicalControlAgentType?>(
-              name: 'ControlAgent',
-              hintText: LocaleKeys.complaintName.tr(),
-              validator: requiredValidator,
-              inputDecoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(8),
-                isDense: true,
-                hintText:
-                    '${LocaleKeys.select.tr()} ${LocaleKeys.complaintName.tr().toLowerCase()}',
-                hintStyle: context.textStyles.bodyNormal.grey,
-                border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: context.colors.grey)),
-                focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: context.colors.blue)),
-              ),
-              onChanged: (item) {
-                setState(() {
-                  selectedAgent = item;
-                });
+        AttributeItem(
+          child: CmoDropdown<BiologicalControlAgentType?>(
+            name: 'ControlAgent',
+            hintText: LocaleKeys.complaintName.tr(),
+            validator: requiredValidator,
+            style: context.textStyles.bodyBold.blueDark2,
+            inputDecoration: InputDecoration(
+              contentPadding: const EdgeInsets.all(8),
+              isDense: true,
+              hintText:
+                  '${LocaleKeys.select.tr()} ${LocaleKeys.complaintName.tr().toLowerCase()}',
+              hintStyle: context.textStyles.bodyBold.blueDark2,
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+            ),
+            initialValue: selectedAgent,
+            onChanged: (item) {
+              setState(() {
+                selectedAgent = item;
+              });
 
-                if (selectedAgent != null) {
-                  widget.onSelect(selectedAgent!);
-                }
-              },
-              itemsData: value
-                  .map(
-                    (e) => CmoDropdownItem<BiologicalControlAgentType>(
-                      id: e,
-                      name: e.biologicalControlAgentTypeName ?? '',
-                    ),
-                  )
-                  .toList(),
-            );
-          },
+              if (selectedAgent != null) {
+                widget.onSelect(selectedAgent!);
+              }
+            },
+            itemsData: agentTypes
+                .map(
+                  (e) => CmoDropdownItem<BiologicalControlAgentType>(
+                    id: e,
+                    name: e.biologicalControlAgentTypeName ?? '',
+                  ),
+                )
+                .toList(),
+          ),
         ),
         AttributeItem(
           child: _buildAutoFillWidget(

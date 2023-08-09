@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/biological_control_cubit/add_biological_control_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/add_biological_control_agents/widgets/select_control_agent_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
@@ -9,6 +10,7 @@ import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddBiologicalControlAgentsScreen extends StatefulWidget {
@@ -22,12 +24,23 @@ class AddBiologicalControlAgentsScreen extends StatefulWidget {
       _AddBiologicalControlAgentsScreenState();
 
   static Future<BiologicalControlAgent?> push(BuildContext context,
-      {BiologicalControlAgent? biologicalControlAgent}) {
+      {BiologicalControlAgent? agent}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => AddBiologicalControlAgentsScreen(
-            biologicalControlAgent: biologicalControlAgent),
+        builder: (_) {
+          return BlocProvider(
+              create: (_) => AddBiologicalControlCubit(
+                    agent: agent ??
+                        BiologicalControlAgent(
+                          biologicalControlAgentRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
+                          isActive: true,
+                          isMasterDataSynced: false,
+                        ),
+                    isAddNew: agent == null,
+                  ),
+              child: AddBiologicalControlAgentsScreen(biologicalControlAgent: agent),);
+        },
       ),
     );
   }
@@ -35,12 +48,7 @@ class AddBiologicalControlAgentsScreen extends StatefulWidget {
 
 class _AddBiologicalControlAgentsScreenState
     extends State<AddBiologicalControlAgentsScreen> {
-  final isLoading = ValueNotifier(true);
-  final monitorings = ValueNotifier(<MonitoringRequirement>[]);
-  final stakeHolders = ValueNotifier(<StakeHolder>[]);
-
-  MonitoringRequirement? selectMonitoringRequirement;
-  StakeHolder? selectStakeHolder;
+  late AddBiologicalControlCubit cubit;
 
   bool loading = false;
 
@@ -48,44 +56,16 @@ class _AddBiologicalControlAgentsScreenState
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
-  late BiologicalControlAgent agent;
-
   bool carRaised = false;
   bool carClosed = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.biologicalControlAgent == null) {
-      agent = BiologicalControlAgent(
-          biologicalControlAgentRegisterNo: DateTime.now().toIso8601String(),
-          isActive: true,
-          isMasterDataSynced: false);
-    } else {
-      agent = BiologicalControlAgent.fromJson(
-          widget.biologicalControlAgent!.toJson());
-    }
+    cubit = context.read<AddBiologicalControlCubit>();
+    final agent = cubit.state.agent;
     carRaised = agent.carRaisedDate != null;
     carClosed = agent.carClosedDate != null;
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final farm = await configService.getActiveFarm();
-
-      monitorings.value = await cmoDatabaseMasterService
-          .getMonitoringRequirementByGroupSchemeId(farm?.groupSchemeId ?? 0);
-
-      final result = await cmoDatabaseMasterService
-          .getFarmStakeHolderByFarmId(farm?.farmId ?? '');
-
-      for (final item in result) {
-        final stakeholders = await cmoDatabaseMasterService
-            .getStakeHoldersByStakeHolderId(item.stakeHolderId ?? '');
-
-        stakeHolders.value.addAll(stakeholders);
-      }
-
-      isLoading.value = false;
-    });
   }
 
   Future<void> onSubmit() async {
@@ -103,18 +83,10 @@ class _AddBiologicalControlAgentsScreenState
       try {
         await hideInputMethod();
         final farm = await configService.getActiveFarm();
+        var agent = cubit.state.agent;
 
         agent = agent.copyWith(
           farmId: farm?.farmId,
-          biologicalControlAgentRegisterNo:
-              DateTime.now().millisecondsSinceEpoch.toString(),
-          dateReleased: value['DateReleased'] as DateTime?,
-          stakeholderId: selectStakeHolder?.stakeHolderId,
-          stakeholderName: selectStakeHolder?.stakeholderName,
-          monitoringRequirementId:
-              selectMonitoringRequirement?.monitoringRequirementId,
-          monitoringRequirementName:
-              selectMonitoringRequirement?.monitoringRequirementName,
           isActive: true,
           isMasterDataSynced: false,
         );
@@ -174,21 +146,68 @@ class _AddBiologicalControlAgentsScreenState
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
-        body: ValueListenableBuilder(
-          valueListenable: isLoading,
-          builder: (context, value, __) {
-            if (value) return const Center(child: CircularProgressIndicator());
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildInputArea(),
-                  const SizedBox(
-                    height: 80,
+        body: SafeArea(
+          child: BlocSelector<AddBiologicalControlCubit,
+              AddBiologicalControlState, bool>(
+            selector: (state) => state.isDataReady,
+            builder: (context, isDataReady) {
+              if (!isDataReady) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final initState = cubit.state;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: FormBuilder(
+                  key: _formKey,
+                  onChanged: () {},
+                  autovalidateMode: autoValidateMode,
+                  child: AutofillGroup(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SelectControlAgentWidget(
+                            agentTypes: initState.agentTypes,
+                            onSelect: cubit.onSelectControlAgent,
+                            initAgent: initState.agent,
+                          ),
+                          _buildSelectDateReleased(initState.agent.dateReleased),
+                          _buildSelectStakeHolderWidget(),
+                          _buildSelectDescriptionWidget(),
+                          AttributeItem(
+                            child: SelectItemWidget(
+                              initValue: carRaised,
+                              title: LocaleKeys.carRaised.tr(),
+                              onSelect: (isSelected) {
+                                carRaised = isSelected;
+                              },
+                            ),
+                          ),
+                          AttributeItem(
+                            child: SelectItemWidget(
+                              initValue: carClosed,
+                              title: LocaleKeys.carClosed.tr(),
+                              onSelect: (isSelected) {
+                                carClosed = isSelected;
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: 250,
+                            child: GeneralCommentWidget(
+                              hintText: LocaleKeys.generalComments.tr(),
+                              initialValue: initState.agent.comment,
+                              onChanged: cubit.onCommentChanged,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ],
-              ),
-            );
-          },
+                ),
+              );
+            },
+          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: CmoFilledButton(
@@ -200,70 +219,13 @@ class _AddBiologicalControlAgentsScreenState
     );
   }
 
-  Widget _buildInputArea() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: FormBuilder(
-        key: _formKey,
-        onChanged: () {},
-        autovalidateMode: autoValidateMode,
-        child: AutofillGroup(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SelectControlAgentWidget(onSelect: (controlAgent) {
-                agent = agent.copyWith(
-                  biologicalControlAgentTypeId:
-                      controlAgent.biologicalControlAgentTypeId,
-                  biologicalControlAgentTypeName:
-                      controlAgent.biologicalControlAgentTypeName,
-                  biologicalControlAgentTypeCountryName:
-                      controlAgent.countryId.toString(),
-                  reasonForBioAgent: controlAgent.reasonForBioAgent,
-                  biologicalControlAgentTypeScientificName:
-                      controlAgent.biologicalControlAgentTypeScientificName,
-                );
-              }),
-              _buildSelectDateReleased(),
-              _buildSelectStakeHolderWidget(),
-              _buildSelectDescriptionWidget(),
-              AttributeItem(
-                child: SelectItemWidget(
-                  title: LocaleKeys.carRaised.tr(),
-                  onSelect: (isSelected) {
-                    carRaised = isSelected;
-                  },
-                ),
-              ),
-              AttributeItem(
-                child: SelectItemWidget(
-                  title: LocaleKeys.carClosed.tr(),
-                  onSelect: (isSelected) {
-                    carClosed = isSelected;
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 250,
-                child: GeneralCommentWidget(
-                  hintText: LocaleKeys.generalComments.tr(),
-                  onChanged: (value) {
-                    agent = agent.copyWith(comment: value);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSelectDateReleased() {
+  Widget _buildSelectDateReleased(DateTime? dateReleased) {
     return AttributeItem(
       child: CmoDatePicker(
         name: 'DateReleased',
+        onChanged: cubit.onDateReleasedChanged,
         hintText: LocaleKeys.dateReleased.tr(),
+        initialValue: dateReleased,
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
@@ -283,60 +245,67 @@ class _AddBiologicalControlAgentsScreenState
   }
 
   Widget _buildSelectStakeHolderWidget() {
-    return ValueListenableBuilder(
-      valueListenable: stakeHolders,
-      builder: (_, value, __) {
-        return CmoDropdown<StakeHolder>(
-          name: 'StakeHolderId',
-          hintText: LocaleKeys.stakeholderName.tr(),
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-            isDense: true,
-            labelText: LocaleKeys.stakeholderName.tr(),
-            labelStyle: context.textStyles.bodyBold.black,
-            border: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.blue)),
+    return BlocSelector<AddBiologicalControlCubit, AddBiologicalControlState,
+        List<StakeHolder>>(
+      selector: (state) => state.stakeHolders,
+      builder: (context, stateHolders) {
+        final stakeHolderId = cubit.state.agent.stakeholderId;
+        final findIndex = stateHolders
+            .indexWhere((element) => element.stakeHolderId == stakeHolderId);
+        final initValue = findIndex != -1 ? stateHolders[findIndex] : null;
+        return AttributeItem(
+          child: CmoDropdown<StakeHolder>(
+            name: 'StakeHolderId',
+            hintText: LocaleKeys.stakeholderName.tr(),
+            inputDecoration: InputDecoration(
+              contentPadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+              isDense: true,
+              labelText: LocaleKeys.stakeholderName.tr(),
+              labelStyle: context.textStyles.bodyBold.black,
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+            ),
+            onChanged: cubit.onStakeHolderChanged,
+            initialValue: initValue,
+            itemsData: stateHolders
+                .map((e) => CmoDropdownItem(id: e, name: e.stakeholderName ?? ''))
+                .toList(),
           ),
-          onChanged: (data) {
-            selectStakeHolder = data;
-          },
-          initialValue: selectStakeHolder,
-          itemsData: value
-              .map((e) => CmoDropdownItem(id: e, name: e.stakeholderName ?? ''))
-              .toList(),
         );
       },
     );
   }
 
   Widget _buildSelectDescriptionWidget() {
-    return ValueListenableBuilder(
-      valueListenable: monitorings,
-      builder: (_, value, __) {
-        return CmoDropdown<MonitoringRequirement>(
-          name: 'DescriptionMonitoringRequirementsId',
-          hintText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-            isDense: true,
-            labelText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
-            labelStyle: context.textStyles.bodyBold.black,
-            border: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.grey)),
-            focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.colors.blue)),
+    return BlocSelector<AddBiologicalControlCubit, AddBiologicalControlState,
+        List<MonitoringRequirement>>(
+      selector: (state) => state.monitorings,
+      builder: (context, monitorings) {
+        final monitoringRequirementId =
+            cubit.state.agent.monitoringRequirementId;
+        final findIndex = monitorings.indexWhere((element) =>
+            element.monitoringRequirementId == monitoringRequirementId);
+        final initValue = findIndex != -1 ? monitorings[findIndex] : null;
+
+        return AttributeItem(
+          child: CmoDropdown<MonitoringRequirement>(
+            name: 'DescriptionMonitoringRequirementsId',
+            hintText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
+            inputDecoration: InputDecoration(
+              contentPadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+              isDense: true,
+              labelText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
+              labelStyle: context.textStyles.bodyBold.black,
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+            ),
+            onChanged: cubit.onMonitoringChanged,
+            initialValue: initValue,
+            itemsData: monitorings
+                .map((e) => CmoDropdownItem(
+                    id: e, name: e.monitoringRequirementName ?? ''))
+                .toList(),
           ),
-          onChanged: (data) {
-            selectMonitoringRequirement = data;
-            setState(() {});
-          },
-          initialValue: selectMonitoringRequirement,
-          itemsData: value
-              .map((e) => CmoDropdownItem(
-                  id: e, name: e.monitoringRequirementName ?? ''))
-              .toList(),
         );
       },
     );
