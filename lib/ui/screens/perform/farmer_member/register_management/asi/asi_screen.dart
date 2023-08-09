@@ -20,7 +20,9 @@ class AsiScreen extends StatefulWidget {
         context,
         MaterialPageRoute(
             builder: (_) => BlocProvider<RMAsiCubit>(
-                  create: (_) => RMAsiCubit()..initListData(),
+                  create: (_) {
+                    return RMAsiCubit()..initListData();
+                  },
                   child: const AsiScreen(),
                 )));
   }
@@ -35,63 +37,62 @@ class _AsiScreenState extends State<AsiScreen> {
     return BlocBuilder<RMAsiCubit, RMAsiState>(
       builder: (context, state) {
         final cubit = context.read<RMAsiCubit>();
-
         return Scaffold(
           appBar: CmoAppBarV2(
-            title: LocaleKeys.accident_incidents.tr(),
+            title: LocaleKeys.asi.tr(),
             showLeading: true,
             showTrailing: true,
             trailing: Assets.icons.icAdd.svgBlack,
-            onTapTrailing: () => AddingAsiScreen.push(context),
+            onTapTrailing: () async {
+              final result = await AddingAsiScreen.push(context);
+              if (result != null && result is int) {
+                await cubit.initListData();
+              }
+            },
           ),
-          body: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-                child: CmoTextField(
-                  onChanged: (p0) {
-                    cubit.onSearch(p0 ?? '');
-                  },
-                  name: LocaleKeys.search.tr(),
-                  prefixIcon: Assets.icons.icSearch.svg(),
-                  hintText: LocaleKeys.search.tr(),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
                 children: [
-                  GestureDetector(
-                    onTap: () => cubit.onChangeStatus(true),
-                    child: _StatusFilterWidget(
-                      text: LocaleKeys.open.tr(),
-                      isSelected: state.isOpen,
+                  CmoTappable(
+                    onTap: () => {},
+                    child: CmoCard(
+                      childAlignment: MainAxisAlignment.center,
+                      content: [
+                        CmoCardHeader(title: LocaleKeys.summary.tr()),
+                        CmoCardHeader(title: LocaleKeys.total.tr(), valueEnd: state.asisData.length.toString(),),
+                      ],
+                      trailing: Assets.icons.icDown.svgWhite,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: () => cubit.onChangeStatus(false),
-                    child: _StatusFilterWidget(
-                      text: LocaleKeys.close.tr(),
-                      isSelected: !state.isOpen,
+                  if (state.isLoading)
+                    const Expanded(
+                        child: Center(child: CircularProgressIndicator()),)
+                  else
+                    Expanded(
+                      child: ListView.separated(
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        itemCount: state.asisData.length,
+                        separatorBuilder: (_, index) => const SizedBox(height: 14),
+                        itemBuilder: (_, index) =>
+                            InkWell(
+                                onTap: () async {
+                                  final result = await AddingAsiScreen.push(
+                                    context,
+                                    asi: state.asisData[index],
+                                  );
+                                  if (result != null && result is int) {
+                                    await cubit.initListData();
+                                  }
+                                },
+                                child: _AsiItem(state.asisData[index]),
+                            ),
+                      ),
                     ),
-                  ),
                 ],
               ),
-              if (state.isLoading)
-                const Expanded(
-                    child: Center(child: CircularProgressIndicator()))
-              else
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 18),
-                    itemCount: state.asisDataSearch.length,
-                    separatorBuilder: (_, index) => const SizedBox(height: 14),
-                    itemBuilder: (_, index) =>
-                        _AsiItem(state.asisDataSearch[index]),
-                  ),
-                ),
-            ],
+            ),
           ),
         );
       },

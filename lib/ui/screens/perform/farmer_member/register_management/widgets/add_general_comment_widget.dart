@@ -10,8 +10,9 @@ class GeneralCommentWidget extends StatefulWidget {
     this.onChanged,
     this.hintTextStyle,
     this.initialValue,
+    this.elevation = 4,
     super.key,
-  });
+});
 
   final String? initialValue;
   final String hintText;
@@ -19,6 +20,7 @@ class GeneralCommentWidget extends StatefulWidget {
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
   final TextStyle? hintTextStyle;
+  final double elevation;
 
   @override
   State<StatefulWidget> createState() => _AddGeneralCommentWidgetState();
@@ -26,26 +28,24 @@ class GeneralCommentWidget extends StatefulWidget {
 
 class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
 
-  final _controller = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Material(
       borderRadius: BorderRadius.circular(10),
-      elevation: 4,
+      elevation: widget.elevation,
       child: TextFormField(
+        textCapitalization: TextCapitalization.sentences,
         keyboardAppearance: Brightness.light,
         textAlign: TextAlign.left,
         style: context.textStyles.bodyBold.black,
         minLines: 1,
         maxLines: 1000,
-        controller: _controller,
         initialValue: widget.initialValue,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(15),
           hintText: widget.hintText,
           hintStyle: context.textStyles.bodyBold.black,
-          labelText: _controller.text.isEmpty ? null : widget.hintText,
+          labelText: widget.initialValue == null ? null : widget.hintText,
           labelStyle: context.textStyles.bodyNormal.copyWith(fontSize: 16, overflow: TextOverflow.ellipsis),
           border: InputBorder.none,
           focusedBorder: InputBorder.none,

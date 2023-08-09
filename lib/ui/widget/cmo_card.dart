@@ -13,6 +13,7 @@ class CmoCard extends StatelessWidget {
     this.containerGradient,
     this.onTap,
     this.backgroundColor,
+    this.childAlignment,
   });
 
   final List<Widget> content;
@@ -23,6 +24,7 @@ class CmoCard extends StatelessWidget {
   final Gradient? containerGradient;
   final void Function()? onTap;
   final Color? backgroundColor;
+  final MainAxisAlignment? childAlignment;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +56,7 @@ class CmoCard extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(6, 0, 0, 6),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: childAlignment ?? MainAxisAlignment.start,
                       children: content,
                     ),
                   ),
@@ -78,12 +81,14 @@ class CmoCardHeader extends StatelessWidget {
     super.key,
     required this.title,
     this.value = '',
+    this.valueEnd = '',
     this.maxLines = 1,
     this.textStyle,
   });
 
   final String title;
   final String value;
+  final String valueEnd;
   final int maxLines;
   final TextStyle? textStyle;
 
@@ -107,9 +112,17 @@ class CmoCardHeader extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: context.textStyles.bodyBold.white,
             ),
+          ),
+        if (valueEnd.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(right: 60),
+            child: Text(
+              valueEnd,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.textStyles.bodyBold.white,
+            ),
           )
-        else
-          const SizedBox(),
       ],
     );
   }

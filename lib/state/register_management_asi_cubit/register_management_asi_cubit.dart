@@ -8,22 +8,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RMAsiCubit extends Cubit<RMAsiState> {
-  RMAsiCubit() : super(const RMAsiState());
-
-  Future<void> onChangeStatus(bool isOpen) async {
-    emit(state.copyWith(isOpen: isOpen, isLoading: true));
-
-    await Future.delayed(const Duration(seconds: 1));
-
-    final result = await cmoDatabaseMasterService
-        .getAsiRegisterByFarmId(state.farmId!, isOpen: isOpen);
-
-    if (result.isNotEmpty) {
-      emit(state.copyWith(asisData: result, asisDataSearch: result));
-    }
-
-    emit(state.copyWith(isLoading: false));
-  }
+  RMAsiCubit({
+    Asi? asiData,
+  }) : super(
+          RMAsiState(
+            asiData: asiData ??
+                Asi(
+                  date: DateTime.now(),
+                  asiRegisterNo:
+                      DateTime.now().microsecondsSinceEpoch.toString(),
+                  asiRegisterId:
+                      DateTime.now().microsecondsSinceEpoch.toString(),
+                ),
+          ),
+        );
 
   Future<bool> initConfig() async {
     try {
@@ -31,8 +29,16 @@ class RMAsiCubit extends Cubit<RMAsiState> {
 
       final farm = await configService.getActiveFarm();
 
-      emit(state.copyWith(
-          farmId: farm?.farmId, groupSchemeId: farm?.groupSchemeId));
+      emit(
+        state.copyWith(
+          farmId: farm?.farmId,
+          groupSchemeId: farm?.groupSchemeId,
+          farmName: farm?.farmName,
+          asiData: state.asiData.copyWith(
+            farmId: farm?.farmId,
+          ),
+        ),
+      );
 
       return true;
     } catch (e) {
@@ -47,16 +53,14 @@ class RMAsiCubit extends Cubit<RMAsiState> {
 
     final result = await cmoDatabaseMasterService
         .getAsiTypeByGroupSchemeId(state.groupSchemeId!);
+    final photos = await cmoDatabaseMasterService
+        .getAllAsiPhotoByAsiRegisterNo(state.asiData.asiRegisterNo);
 
     emit(state.copyWith(
-        asiTypes: result,
-        asiData: Asi(
-          farmId: state.farmId,
-          asiRegisterNo: DateTime.now().microsecondsSinceEpoch.toString(),
-          asiRegisterId: null,
-          isActive: true,
-          isMasterdataSynced: false,
-        )));
+      asiTypes: result,
+      isDataReady: true,
+      asiPhotos: photos,
+    ));
   }
 
   Future<void> initListData() async {
@@ -68,8 +72,17 @@ class RMAsiCubit extends Cubit<RMAsiState> {
         await cmoDatabaseMasterService.getAsiRegisterByFarmId(state.farmId!);
 
     if (result.isNotEmpty) {
-      emit(state.copyWith(asisData: result, asisDataSearch: result));
+      emit(state.copyWith(asisData: result));
     }
+  }
+
+  void onCommentChanged(String comment) {
+    emit(
+      state.copyWith(
+          asiData: state.asiData.copyWith(
+        comment: comment,
+      )),
+    );
   }
 
   void onChangeData({
@@ -114,12 +127,12 @@ class RMAsiCubit extends Cubit<RMAsiState> {
           .map((e) => AsiPhoto(
                 asiRegisterId: state.asiData.asiRegisterId,
                 asiRegisterNo: state.asiData.asiRegisterNo,
-                asiRegisterPhotoId: null,
                 asiRegisterPhotoNo:
                     DateTime.now().millisecondsSinceEpoch.toString(),
                 photo: e,
                 isActive: true,
                 isMasterdataSynced: false,
+                photoName: DateTime.now().microsecondsSinceEpoch.toString(),
               ))
           .toList());
     }
@@ -142,39 +155,35 @@ class RMAsiCubit extends Cubit<RMAsiState> {
   }
 
   Future<void> onSave(BuildContext context) async {
-    if (state.asiData.carRaisedDate == null ||
-        state.asiData.carClosedDate == null ||
-        state.asiData.asiTypeId == null ||
-        state.asiData.latitude == null) {
+    if (state.asiData.asiTypeId == null || state.asiData.latitude == null) {
       return showSnackError(msg: 'Required fields are missing.');
     }
 
-    final futures = <Future<void>>[];
-
     for (final item in state.asiPhotos) {
-      futures.add(cmoDatabaseMasterService.cacheAsiPhoto(item));
+      await cmoDatabaseMasterService.cacheAsiPhoto(item);
     }
-
-    await Future.wait(futures);
 
     await cmoDatabaseMasterService.cacheAsi(state.asiData).then((value) {
       if (value != null) {
         showSnackSuccess(msg: 'Save ASI Successfully}');
-        Navigator.pop(context);
+        Navigator.of(context).pop(value);
       } else {
         showSnackError(msg: 'Something was wrong, please try again.');
       }
     });
   }
 
-  void onSearch(String text) {
-    if (text.isEmpty) {
-      return emit(state.copyWith(asisDataSearch: state.asisData));
-    }
+  void onUpdateAsiPhoto(AsiPhoto asiPhoto) {
+    final listAsiPhotos = [...state.asiPhotos];
+    listAsiPhotos.removeWhere(
+        (element) => element.asiRegisterPhotoNo == asiPhoto.asiRegisterPhotoNo);
+    listAsiPhotos.add(asiPhoto);
+    emit(state.copyWith(asiPhotos: listAsiPhotos));
+  }
 
-    emit(state.copyWith(
-        asisDataSearch: state.asisData
-            .where((element) => element.asiRegisterNo?.contains(text) ?? false)
-            .toList()));
+  void onRemoveAsiPhoto(AsiPhoto asiPhoto) {
+    final listAsiPhotos = [...state.asiPhotos];
+    listAsiPhotos.remove(asiPhoto);
+    emit(state.copyWith(asiPhotos: listAsiPhotos));
   }
 }

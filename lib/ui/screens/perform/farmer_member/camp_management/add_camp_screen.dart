@@ -185,6 +185,7 @@ class SelectorAttributeItem extends StatelessWidget {
   final String? labelText;
   final TextStyle? labelStyle;
   final TextStyle? textStyle;
+  final TextStyle? hintStyle;
 
   const SelectorAttributeItem({
     required this.hintText,
@@ -195,6 +196,7 @@ class SelectorAttributeItem extends StatelessWidget {
     this.textWidget,
     this.contentPadding = const EdgeInsets.fromLTRB(14, 4, 14, 4),
     this.trailing,
+    this.hintStyle,
     super.key,
   });
 
@@ -212,6 +214,7 @@ class SelectorAttributeItem extends StatelessWidget {
             decoration: InputDecoration(
               hintText: hintText,
               labelText: labelText,
+              hintStyle: hintStyle,
               labelStyle: labelStyle,
               contentPadding: contentPadding,
               enabledBorder: InputBorder.none,
