@@ -35,7 +35,6 @@ class AddBiologicalControlAgentsScreen extends StatefulWidget {
                         BiologicalControlAgent(
                           biologicalControlAgentRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
                           isActive: true,
-                          isMasterDataSynced: false,
                         ),
                     isAddNew: agent == null,
                   ),
