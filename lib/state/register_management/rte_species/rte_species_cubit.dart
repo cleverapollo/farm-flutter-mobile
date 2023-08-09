@@ -12,43 +12,25 @@ class RteSpeciesCubit extends HydratedCubit<RteSpeciesState> {
 
   Future<void> init() async {
     final activeFarm = await configService.getActiveFarm();
-    emit(state.copyWith(activeFarm: activeFarm));
-    await loadListWorkers();
+    emit(
+      state.copyWith(
+        activeFarm: activeFarm,
+      ),
+    );
+
+    await loadRteSpecies();
   }
 
-  Future<void> loadListWorkers() async {
+  Future<void> loadRteSpecies() async {
     emit(state.copyWith(loading: true));
     try {
-      final service = cmoDatabaseMasterService;
-
       if (state.activeFarm?.farmId == null) return;
-      final data =
-      await service.getFarmerWorkersByFarmId(state.activeFarm!.farmId);
+      final listRteSpecies = await cmoDatabaseMasterService.getRteSpeciesByFarmId(state.activeFarm!.farmId);
 
       emit(
         state.copyWith(
-          listWorkers: data,
-          filterWorkers: data,
-        ),
-      );
-    } catch (e) {
-      emit(state.copyWith(error: e));
-      showSnackError(msg: e.toString());
-    } finally {
-      emit(state.copyWith(loading: false));
-    }
-  }
-
-  Future<void> loadListJobDescriptions() async {
-    emit(state.copyWith(loading: true));
-    try {
-      final service = cmoDatabaseMasterService;
-      final data = await service.getJobDescriptions();
-
-      emit(
-        state.copyWith(
-          listJobDescriptions: data,
-          filterJobDescriptions: data,
+          listRteSpecies: listRteSpecies,
+          filterRteSpecies: listRteSpecies,
         ),
       );
     } catch (e) {
@@ -65,27 +47,23 @@ class RteSpeciesCubit extends HydratedCubit<RteSpeciesState> {
       if (searchText == null || searchText.isEmpty) {
         emit(
           state.copyWith(
-            filterWorkers: state.listWorkers,
+            filterRteSpecies: state.listRteSpecies,
           ),
         );
       } else {
-        final filteredItems = state.listWorkers
+        final filteredItems = state.listRteSpecies
             .where(
               (element) =>
-          (element.firstName
-              ?.toLowerCase()
-              .contains(searchText.toLowerCase()) ??
-              false) ||
-              (element.surname
-                  ?.toLowerCase()
-                  .contains(searchText.toLowerCase()) ??
-                  false),
-        )
+                  element.commonName
+                      ?.toLowerCase()
+                      .contains(searchText.toLowerCase()) ??
+                  false,
+            )
             .toList();
 
         emit(
           state.copyWith(
-            filterWorkers: filteredItems,
+            filterRteSpecies: filteredItems,
           ),
         );
       }
@@ -95,49 +73,6 @@ class RteSpeciesCubit extends HydratedCubit<RteSpeciesState> {
     } finally {
       emit(state.copyWith(loading: false));
     }
-  }
-
-  void searchJobDescription(String? searchText) {
-    emit(state.copyWith(loading: true));
-    try {
-      if (searchText == null || searchText.isEmpty) {
-        emit(
-          state.copyWith(
-            filterJobDescriptions: state.listJobDescriptions,
-          ),
-        );
-      } else {
-        final filteredItems = state.listJobDescriptions
-            .where(
-              (element) =>
-          element.jobDescriptionName
-              ?.toLowerCase()
-              .contains(searchText.toLowerCase()) ??
-              false,
-        )
-            .toList();
-
-        emit(
-          state.copyWith(
-            filterJobDescriptions: filteredItems,
-          ),
-        );
-      }
-    } catch (e) {
-      emit(state.copyWith(error: e));
-      showSnackError(msg: e.toString());
-    } finally {
-      emit(state.copyWith(loading: false));
-    }
-  }
-
-  Future<void> onRemoveLabour(FarmerWorker worker) async {
-    await cmoDatabaseMasterService.removeFarmerWorker(worker.id);
-    showSnackSuccess(
-      msg: '${LocaleKeys.remove.tr()} ${worker.id}!',
-    );
-
-    await loadListWorkers();
   }
 
   @override

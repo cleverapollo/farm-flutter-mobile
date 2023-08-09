@@ -5,13 +5,13 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
+import 'package:cmo/state/register_management/rte_species/rte_species_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../../di.dart';
 import 'rte_species_detail/rte_species_detail_screen.dart';
 
 class RteSpeciesScreen extends StatefulWidget {
@@ -24,85 +24,68 @@ class RteSpeciesScreen extends StatefulWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const RteSpeciesScreen(),
+        builder: (_) => BlocProvider(
+            create: (_) => RteSpeciesCubit()..init(),
+            child: const RteSpeciesScreen(),
+        ),
       ),
     );
   }
 }
 
 class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
-  final List<RteSpecies> items = [];
-  bool isLoading = true;
-
-  Timer? _debounceInputTimer;
-  late List<RteSpecies> filteredItems;
-  late StatusFilterEnum statusFilter;
-  String? inputSearch;
 
   @override
   void initState() {
     super.initState();
-    _init();
-  }
-
-  Future<void> _init() async {
-    final farm = await configService.getActiveFarm();
-    items.addAll(
-        await cmoDatabaseMasterService.getRteSpeciesByFarmId(farm!.farmId));
-    isLoading = false;
-
-    filteredItems = items;
-    statusFilter = StatusFilterEnum.open;
-    inputSearch = '';
-    applyFilter();
   }
 
   void searching(String? input) {
-    inputSearch = input;
-    if (input == null || input.isEmpty) {
-      applyFilter();
-    } else {
-      filteredItems = items.where((element) {
-        final containName = element.rteSpeciesRegisterId
-            .toString()
-            .toLowerCase()
-            .contains(input.toLowerCase());
-        var isFilter = false;
-        switch (statusFilter) {
-          case StatusFilterEnum.open:
-            isFilter = element.dateSpotted == null;
-            break;
-          case StatusFilterEnum.closed:
-            isFilter = element.dateSpotted != null;
-            break;
-        }
-
-        return containName && isFilter;
-      }).toList();
-      setState(() {});
-    }
+    // inputSearch = input;
+    // if (input == null || input.isEmpty) {
+    //   applyFilter();
+    // } else {
+    //   filteredItems = items.where((element) {
+    //     final containName = element.rteSpeciesRegisterId
+    //         .toString()
+    //         .toLowerCase()
+    //         .contains(input.toLowerCase());
+    //     var isFilter = false;
+    //     switch (statusFilter) {
+    //       case StatusFilterEnum.open:
+    //         isFilter = element.dateSpotted == null;
+    //         break;
+    //       case StatusFilterEnum.closed:
+    //         isFilter = element.dateSpotted != null;
+    //         break;
+    //     }
+    //
+    //     return containName && isFilter;
+    //   }).toList();
+    //   setState(() {});
+    // }
   }
 
   void applyFilter() {
-    if (inputSearch == null || inputSearch!.isEmpty) {
-      switch (statusFilter) {
-        case StatusFilterEnum.open:
-          filteredItems = items
-              .where(
-                (element) => element.dateSpotted == null,
-              )
-              .toList();
-          break;
-        case StatusFilterEnum.closed:
-          filteredItems =
-              items.where((element) => element.dateSpotted != null).toList();
-          break;
-      }
-    } else {
-      searching(inputSearch);
-    }
-
-    setState(() {});
+    // if (inputSearch == null || inputSearch!.isEmpty) {
+    //   switch (statusFilter) {
+    //     case StatusFilterEnum.open:
+    //       filteredItems = items
+    //           .where(
+    //             (element) => element.dateSpotted == null,
+    //           )
+    //           .toList();
+    //       break;
+    //     case StatusFilterEnum.closed:
+    //       filteredItems =
+    //           items.where((element) => element.dateSpotted != null).toList();
+    //       break;
+    //   }
+    // } else {
+    //   searching(inputSearch);
+    // }
+    //
+    // setState(() {});
   }
 
   @override
@@ -110,72 +93,81 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.rteSpecies.tr(),
+        subtitle: context.watch<RteSpeciesCubit>().state.activeFarm?.farmName ?? '',
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
         onTapTrailing: () => RteSpeciesDetailScreen.push(context),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
-                    child: CmoTextField(
-                      name: LocaleKeys.search.tr(),
-                      hintText: LocaleKeys.search.tr(),
-                      suffixIcon: Assets.icons.icSearch.svg(),
-                      onChanged: (input) {
-                        _debounceInputTimer?.cancel();
-                        _debounceInputTimer = Timer(
-                          const Duration(milliseconds: 200),
-                          () => searching(input),
-                        );
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
-                    child: StatusFilterWidget(
-                      onSelectFilter: (statusFilterEnum) {
-                        statusFilter = statusFilterEnum;
-                        applyFilter();
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.separated(
-                      separatorBuilder: (context, index) => const SizedBox(
-                        height: 22,
-                      ),
-                      itemCount: filteredItems.length,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 21,
-                      ),
-                      itemBuilder: (context, index) {
-                        final item = filteredItems[index];
-                        return GestureDetector(
-                          onTap: () async {
-                            final result = await RteSpeciesDetailScreen.push(
-                                context,
-                                rteSpecies: item);
-                            if (result == null) return;
-                            filteredItems[index] = result;
-                            setState(() {});
-                          },
-                          child: _RteSpeciesItem(
-                            rteSpecies: item,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+      body: BlocBuilder<RteSpeciesCubit, RteSpeciesState>(
+        builder: (context, state) {
+          if (state.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).padding.bottom,
+              top: 24,
             ),
+            child: Column(
+              children: [
+                // Padding(
+                //   padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
+                //   child: CmoTextField(
+                //     name: LocaleKeys.search.tr(),
+                //     hintText: LocaleKeys.search.tr(),
+                //     suffixIcon: Assets.icons.icSearch.svg(),
+                //     onChanged: (input) {
+                //       _debounceInputTimer?.cancel();
+                //       _debounceInputTimer = Timer(
+                //         const Duration(milliseconds: 200),
+                //         () => searching(input),
+                //       );
+                //     },
+                //   ),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
+                //   child: StatusFilterWidget(
+                //     onSelectFilter: (statusFilterEnum) {
+                //       statusFilter = statusFilterEnum;
+                //       applyFilter();
+                //     },
+                //   ),
+                // ),
+                Expanded(
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) => const SizedBox(
+                      height: 22,
+                    ),
+                    itemCount: state.filterRteSpecies.length,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 21,
+                    ),
+                    itemBuilder: (context, index) {
+                      final item = state.filterRteSpecies[index];
+                      return GestureDetector(
+                        onTap: () async {
+                          final result = await RteSpeciesDetailScreen.push(
+                              context,
+                              rteSpecies: item);
+                          if (result == null) return;
+                          state.filterRteSpecies[index] = result;
+                          setState(() {});
+                        },
+                        child: _RteSpeciesItem(
+                          rteSpecies: item,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -194,11 +186,12 @@ class _RteSpeciesItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: context.colors.greyD9D9),
       ),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${LocaleKeys.speciesNo.tr()}: ${rteSpecies.rteSpeciesRegisterNo?.toString()}',
+            '${LocaleKeys.rteSpecies.tr()}: ${rteSpecies.rteSpeciesRegisterNo?.toString()}',
             style: context.textStyles.bodyBold.blue,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -213,36 +206,22 @@ class _RteSpeciesItem extends StatelessWidget {
               height: 1,
             ),
           ),
+
+          KeyValueItemWidget(
+            keyLabel: LocaleKeys.speciesType.tr(),
+            valueLabel: rteSpecies.animalTypeName,
+            backgroundColor: context.colors.greyLight1,
+          ),
+
           KeyValueItemWidget(
             keyLabel: LocaleKeys.commonName.tr(),
             valueLabel: rteSpecies.commonName,
           ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.scientificName.tr(),
-            valueLabel: rteSpecies.scientificName,
-          ),
-          // KeyValueItemWidget(
-          //   keyLabel: LocaleKeys.speciesType.tr(),
-          //   valueLabel: rteSpecies.speciesType,
-          // ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.speciesRange.tr(),
-            valueLabel: rteSpecies.speciesRangeName,
-          ),
+
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateSpotted.tr(),
-            valueLabel: rteSpecies.dateSpotted?.ddMMYyyy(),
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.camp.tr(),
-            valueLabel: rteSpecies.location,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.location.tr(),
-            valueLabel: rteSpecies.location,
-          ),
-          GeneralCommentsItem(
-            comment: rteSpecies.comment,
+            valueLabel: rteSpecies.dateSpotted.yMd(),
+            backgroundColor: context.colors.greyLight1,
           ),
         ],
       ),
