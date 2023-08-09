@@ -75,14 +75,34 @@ class ActualSection extends StatelessWidget {
 
 
 class _YearDropdown extends StatelessWidget {
+
+  _YearDropdown({this.onChanged, this.initialValue, super.key});
+
   final ValueChanged<int?>? onChanged;
   final int? initialValue;
+  final data = [
+    CmoDropdownItem(id: DateTime.now().year - 1, name: '${DateTime.now().year - 1}'),
+    CmoDropdownItem(id: DateTime.now().year, name: '${DateTime.now().year}'),
+    CmoDropdownItem(id: DateTime.now().year + 1, name: '${DateTime.now().year + 1}'),
+    CmoDropdownItem(id: DateTime.now().year + 2, name: '${DateTime.now().year + 2}'),
+    CmoDropdownItem(id: DateTime.now().year + 3, name: '${DateTime.now().year + 3}'),
+    CmoDropdownItem(id: DateTime.now().year + 4, name: '${DateTime.now().year + 4}'),
+    CmoDropdownItem(id: DateTime.now().year + 5, name: '${DateTime.now().year + 5}'),
+  ];
 
-  const _YearDropdown({this.onChanged, this.initialValue, Key? key})
-      : super(key: key);
+  void addInitValueIfNotExist() {
+    final index = data.indexWhere((element) => element.id == initialValue);
+    if(index == -1 && initialValue != null) {
+      data.add(
+        CmoDropdownItem(id: initialValue!, name: '$initialValue'),
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    addInitValueIfNotExist();
     return CmoDropdown<int>(
       name: 'Year',
       onChanged: onChanged,
@@ -97,22 +117,7 @@ class _YearDropdown extends StatelessWidget {
         focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: context.colors.blue)),
       ),
-      itemsData: [
-        CmoDropdownItem(
-            id: DateTime.now().year - 1, name: '${DateTime.now().year - 1}'),
-        CmoDropdownItem(
-            id: DateTime.now().year, name: '${DateTime.now().year}'),
-        CmoDropdownItem(
-            id: DateTime.now().year + 1, name: '${DateTime.now().year + 1}'),
-        CmoDropdownItem(
-            id: DateTime.now().year + 2, name: '${DateTime.now().year + 2}'),
-        CmoDropdownItem(
-            id: DateTime.now().year + 3, name: '${DateTime.now().year + 3}'),
-        CmoDropdownItem(
-            id: DateTime.now().year + 4, name: '${DateTime.now().year + 4}'),
-        CmoDropdownItem(
-            id: DateTime.now().year + 5, name: '${DateTime.now().year + 5}'),
-      ],
+      itemsData: data,
     );
   }
 }

@@ -98,8 +98,17 @@ class AddCampActualSectionState with _$AddCampActualSectionState {
 @freezed
 class AddCampInfestationDetailsState with _$AddCampInfestationDetailsState {
   const factory AddCampInfestationDetailsState({
-    @Default(false) bool isComplete,
     @Default(true) bool isSectionCollapse,
     @Default(0) double unAllocatePercent
   }) = _AddCampInfestationDetailsState;
+}
+
+extension AddCampInfestationDetailsStateExtension on AddCampInfestationDetailsState {
+  bool isComplete(Camp camp) {
+    return camp.infestationCategory1 != null &&
+        camp.infestationCategory2 != null &&
+        camp.infestationCategory3 != null &&
+        camp.infestationCategory4 != null &&
+        camp.infestationCategory5 != null;
+  }
 }

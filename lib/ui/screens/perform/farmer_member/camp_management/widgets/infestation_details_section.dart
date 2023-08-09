@@ -13,14 +13,16 @@ class InfestationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<AddCampCubit>();
     return BlocSelector<AddCampCubit, AddCampState, bool>(
       selector: (state) => state.addCampInfestationDetailsState.isSectionCollapse,
       builder: (context, isSectionCollapse) {
-        final initCam = context.read<AddCampCubit>().state.camp;
+        final cubit = context.read<AddCampCubit>();
+        final initCam = cubit.state.camp;
+        final infestationState = cubit.state.addCampInfestationDetailsState;
         return ExpandableItemWidget(
           title: LocaleKeys.infestation.tr(),
           isCollapse: isSectionCollapse,
+          showTick: infestationState.isComplete(initCam!),
           onTap: cubit.onChangeInfestationState,
           child: Container(
             padding: const EdgeInsets.fromLTRB(22, 12, 8, 22),

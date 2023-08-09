@@ -164,7 +164,7 @@ class _AddCampScreenState extends State<AddCampScreen> {
   }
 
   Future<void> _next(AddCampState state) async {
-    final isValid = state.addCampAreaMetricsSectionState.isComplete && state.addCampInfestationDetailsState.isComplete;
+    final isValid = state.addCampAreaMetricsSectionState.isComplete && state.addCampInfestationDetailsState.isComplete(state.camp!);
 
     if (!isValid) {
       return showSnackError(msg: 'Please complete required field');

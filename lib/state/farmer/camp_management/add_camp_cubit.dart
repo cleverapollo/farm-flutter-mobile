@@ -61,11 +61,6 @@ class AddCampCubit extends Cubit<AddCampState> {
 
   void onCheckInfestationDetailComplete({bool isCheckCollapse = false}) {
     final camp = state.camp;
-    final isComplete = (camp?.infestationCategory1 ?? 0) != 0 &&
-        (camp?.infestationCategory2 ?? 0) != 0 &&
-        (camp?.infestationCategory3 ?? 0) != 0 &&
-        (camp?.infestationCategory4 ?? 0) != 0 &&
-        (camp?.infestationCategory5 ?? 0) != 0;
     final unAllocatePercent = 100
         - (camp?.infestationCategory1 ?? 0.0)
         - (camp?.infestationCategory2 ?? 0.0)
@@ -74,11 +69,10 @@ class AddCampCubit extends Cubit<AddCampState> {
         - (camp?.infestationCategory5 ?? 0.0);
     emit(state.copyWith(
       addCampInfestationDetailsState: state.addCampInfestationDetailsState.copyWith(
-        isComplete: isComplete,
         unAllocatePercent: unAllocatePercent,
       ),),
     );
-    if (isCheckCollapse && isComplete && unAllocatePercent <= 0) {
+    if (isCheckCollapse && state.addCampInfestationDetailsState.isComplete(state.camp!) && unAllocatePercent <= 0) {
       onChangeInfestationState(isCollapse: true);
       onChangeActualState(isCollapse: false);
     }
