@@ -17,13 +17,13 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import '../../../../resource_manager/asi/widgets/bottom_sheet_selection.dart';
 
-class AddRteSpeciesScreen extends StatefulWidget {
-  const AddRteSpeciesScreen({super.key, this.rteSpecies});
+class RteSpeciesDetailScreen extends StatefulWidget {
+  const RteSpeciesDetailScreen({super.key, this.rteSpecies});
 
   final RteSpecies? rteSpecies;
 
   @override
-  State<StatefulWidget> createState() => _AddRteSpeciesScreenState();
+  State<StatefulWidget> createState() => _RteSpeciesDetailScreenState();
 
   static Future<RteSpecies?> push(BuildContext context,
       {RteSpecies? rteSpecies}) {
@@ -32,133 +32,97 @@ class AddRteSpeciesScreen extends StatefulWidget {
       MaterialPageRoute(
         builder: (_) => BlocProvider(
             create: (_) => RteSpeciesDetailCubit(rteSpecies: rteSpecies)..init(),
-            child: AddRteSpeciesScreen(rteSpecies: rteSpecies)),
+            child: RteSpeciesDetailScreen(rteSpecies: rteSpecies)),
       ),
     );
   }
 }
 
-class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
-  final animalTypes = ValueNotifier(<AnimalType>[]);
-  final speciesRanges = ValueNotifier(<SpeciesRange>[]);
+class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
 
   final rtePhotos = <RteSpeciesPhotoModel>[];
-
-  AnimalType? selectAnimalType;
-  SpeciesRange? selectSpeciesRange;
-
-  bool loading = false;
-
-  final _formKey = GlobalKey<FormBuilderState>();
-
-  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
-
-  late RteSpecies rteSpecies;
-
-  bool carRaised = false;
-  bool carClosed = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.rteSpecies == null) {
-      rteSpecies = RteSpecies(
-        rteSpeciesRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
-        isActive: true,
-        isMasterDataSynced: false,
-      );
-    } else {
-      rteSpecies = RteSpecies.fromJson(widget.rteSpecies!.toJson());
-    }
-    carRaised = rteSpecies.carRaisedDate != null;
-    carClosed = rteSpecies.carClosedDate != null;
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final farm = await configService.getActiveFarm();
-
-      animalTypes.value = await cmoDatabaseMasterService
-          .getAnimalTypeByGroupSchemeId(farm?.groupSchemeId ?? 0);
-      speciesRanges.value = await cmoDatabaseMasterService
-          .getSpeciesRangeByGroupSchemeId(farm?.groupSchemeId ?? 0);
-    });
   }
 
   Future<void> onSubmit() async {
-    setState(() {
-      autoValidateMode = AutovalidateMode.always;
-    });
-    if (_formKey.currentState?.saveAndValidate() ?? false) {
-      var value = _formKey.currentState?.value;
-      if (value == null) return;
-      value = {...value};
-
-      setState(() {
-        loading = true;
-      });
-      try {
-        await hideInputMethod();
-        final farm = await configService.getActiveFarm();
-        rteSpecies = rteSpecies.copyWith(
-          isActive: true,
-          isMasterDataSynced: false,
-          rteSpeciesRegisterId: null,
-          rteSpeciesRegisterNo:
-              DateTime.now().millisecondsSinceEpoch.toString(),
-          farmId: farm?.farmId,
-          dateSpotted: value['DateSpotted'] as DateTime?,
-          animalTypeId: selectAnimalType?.animalTypeId,
-          speciesRangeId: selectSpeciesRange?.speciesRangeId,
-          animalTypeName: selectAnimalType?.animalTypeName,
-          speciesRangeName: selectSpeciesRange?.speciesRangeName,
-        );
-
-        if (carRaised && rteSpecies.carRaisedDate == null) {
-          rteSpecies = rteSpecies.copyWith(
-            carRaisedDate: DateTime.now().toIso8601String(),
-          );
-        }
-
-        if (carClosed && rteSpecies.carClosedDate == null) {
-          rteSpecies = rteSpecies.copyWith(
-            carClosedDate: DateTime.now().toIso8601String(),
-          );
-        }
-
-        int? resultId;
-
-        if (mounted) {
-          final databaseService = cmoDatabaseMasterService;
-
-          final futures = <Future<void>>[];
-
-          for (final item in rtePhotos) {
-            futures.add(cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(
-                item.copyWith(rteSpeciesNo: rteSpecies.rteSpeciesRegisterNo)));
-          }
-
-          await Future.wait(futures);
-
-          await (await databaseService.db).writeTxn(() async {
-            resultId = await databaseService.cacheRteSpecies(rteSpecies);
-          });
-        }
-
-        if (resultId != null) {
-          if (context.mounted) {
-            showSnackSuccess(
-              msg:
-                  '${widget.rteSpecies == null ? LocaleKeys.addRteSpecies.tr() : 'Edit RTE Species'} $resultId',
-            );
-
-            Navigator.of(context).pop(rteSpecies);
-          }
-        }
-      } finally {
-        setState(() {
-          loading = false;
-        });
-      }
-    }
+    // setState(() {
+    //   autoValidateMode = AutovalidateMode.always;
+    // });
+    // if (_formKey.currentState?.saveAndValidate() ?? false) {
+    //   var value = _formKey.currentState?.value;
+    //   if (value == null) return;
+    //   value = {...value};
+    //
+    //   setState(() {
+    //     loading = true;
+    //   });
+    //   try {
+    //     await hideInputMethod();
+    //     final farm = await configService.getActiveFarm();
+    //     rteSpecies = rteSpecies.copyWith(
+    //       isActive: true,
+    //       isMasterDataSynced: false,
+    //       rteSpeciesRegisterId: null,
+    //       rteSpeciesRegisterNo:
+    //           DateTime.now().millisecondsSinceEpoch.toString(),
+    //       farmId: farm?.farmId,
+    //       dateSpotted: value['DateSpotted'] as DateTime?,
+    //       animalTypeId: selectAnimalType?.animalTypeId,
+    //       speciesRangeId: selectSpeciesRange?.speciesRangeId,
+    //       animalTypeName: selectAnimalType?.animalTypeName,
+    //       speciesRangeName: selectSpeciesRange?.speciesRangeName,
+    //     );
+    //
+    //     if (carRaised && rteSpecies.carRaisedDate == null) {
+    //       rteSpecies = rteSpecies.copyWith(
+    //         carRaisedDate: DateTime.now().toIso8601String(),
+    //       );
+    //     }
+    //
+    //     if (carClosed && rteSpecies.carClosedDate == null) {
+    //       rteSpecies = rteSpecies.copyWith(
+    //         carClosedDate: DateTime.now().toIso8601String(),
+    //       );
+    //     }
+    //
+    //     int? resultId;
+    //
+    //     if (mounted) {
+    //       final databaseService = cmoDatabaseMasterService;
+    //
+    //       final futures = <Future<void>>[];
+    //
+    //       for (final item in rtePhotos) {
+    //         futures.add(cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(
+    //             item.copyWith(rteSpeciesNo: rteSpecies.rteSpeciesRegisterNo)));
+    //       }
+    //
+    //       await Future.wait(futures);
+    //
+    //       await (await databaseService.db).writeTxn(() async {
+    //         resultId = await databaseService.cacheRteSpecies(rteSpecies);
+    //       });
+    //     }
+    //
+    //     if (resultId != null) {
+    //       if (context.mounted) {
+    //         showSnackSuccess(
+    //           msg:
+    //               '${widget.rteSpecies == null ? LocaleKeys.addRteSpecies.tr() : 'Edit RTE Species'} $resultId',
+    //         );
+    //
+    //         Navigator.of(context).pop(rteSpecies);
+    //       }
+    //     }
+    //   } finally {
+    //     setState(() {
+    //       loading = false;
+    //     });
+    //   }
+    // }
   }
 
   Future<void> _viewListPhoto() async {
@@ -196,7 +160,7 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
                   builder: (context, state) {
                     return Column(
                       children: [
-                        _selectSpeciesType(state),
+                        _selectSpeciesType(context, state),
                         AttributeItem(
                           child: InputAttributeItem(
                             hintText: LocaleKeys.commonName.tr(),
@@ -214,7 +178,7 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
                             onChanged: context.read<RteSpeciesDetailCubit>().onChangeScientificName,
                           ),
                         ),
-                        _selectSpeciesRange(state),
+                        _selectSpeciesRange(context, state),
                         _buildSelectDateSpotted(state),
                         AttributeItem(
                           child: SizedBox(
@@ -240,35 +204,18 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
             ),
           ],
         ),
-        // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        // persistentFooterAlignment: AlignmentDirectional.center,
-        // persistentFooterButtons: [
-        //   CmoFilledButton(
-        //     title: LocaleKeys.photos.tr(),
-        //     onTap: _viewListPhoto,
-        //     loading: loading,
-        //   ),
-        //   CmoFilledButton(
-        //     title: LocaleKeys.save.tr(),
-        //     onTap: onSubmit,
-        //     loading: loading,
-        //   ),
-        // ],
       ),
     );
   }
 
   Widget _buildButton() {
-    return BlocBuilder<RteSpeciesDetailCubit, RteSpeciesDetailState>(
-      builder: (context, state) {
+    return BlocSelector<RteSpeciesDetailCubit, RteSpeciesDetailState, bool>(
+      selector: (state) => state.loading,
+      builder: (context, loading) {
         return CmoFilledButton(
           title: LocaleKeys.save.tr(),
-          loading: state.loading,
+          loading: loading,
           onTap: () async {
-            await onSubmit();
-            // if (_formKey.currentState?.validate() == false) {
-            //   return;
-            // }
             // if (locationModel?.latitude == null) {
             //   showSnackError(msg: LocaleKeys.location_is_required.tr());
             //   return;
@@ -277,11 +224,11 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
             //   showSnackError(msg: LocaleKeys.date_is_required.tr());
             //   return;
             // }
-            // await _asiDetailCubit.saveAsi();
-            // if (context.mounted) {
-            //   Navigator.of(context).pop();
-            //   Navigator.of(context).pop();
-            // }
+            await context.read<RteSpeciesDetailCubit>().onSave();
+            if (context.mounted) {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            }
           },
         );
       },
@@ -291,14 +238,14 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
   Widget _buildInputArea() {
     return Padding(
       padding: const EdgeInsets.all(0),
-      child: FormBuilder(
-        key: _formKey,
-        onChanged: () {},
-        autovalidateMode: autoValidateMode,
-        child: AutofillGroup(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+      // child: FormBuilder(
+      //   key: _formKey,
+      //   onChanged: () {},
+      //   autovalidateMode: autoValidateMode,
+      //   child: AutofillGroup(
+      //     child: Column(
+      //       crossAxisAlignment: CrossAxisAlignment.start,
+      //       children: [
               // AttributeItem(
               //   child: InputAttributeItem(
               //     hintText: LocaleKeys.location.tr(),
@@ -336,30 +283,14 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
               //     setState(() {});
               //   },
               // ),
-              // AttributeItem(
-              //   child: SelectItemWidget(
-              //     title: LocaleKeys.carRaised.tr(),
-              //     onSelect: (isSelected) {
-              //       carRaised = isSelected;
-              //     },
-              //   ),
-              // ),
-              // AttributeItem(
-              //   child: SelectItemWidget(
-              //     title: LocaleKeys.carClosed.tr(),
-              //     onSelect: (isSelected) {
-              //       carClosed = isSelected;
-              //     },
-              //   ),
-              // ),
-            ],
-          ),
-        ),
-      ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
   }
 
-  Widget _selectSpeciesType(RteSpeciesDetailState state) {
+  Widget _selectSpeciesType(BuildContext context, RteSpeciesDetailState state) {
     return BottomSheetSelection(
       hintText: LocaleKeys.speciesType.tr(),
       value: state.rteSpecies?.animalTypeName,
@@ -395,62 +326,14 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
         );
       },
     );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
-          ),
-          child: Text(
-            LocaleKeys.speciesType.tr(),
-            style: context.textStyles.bodyBold.black,
-          ),
-        ),
-        ValueListenableBuilder(
-          valueListenable: animalTypes,
-          builder: (_, value, __) {
-            return CmoDropdown<AnimalType>(
-                name: 'SpeciesTypeId',
-                hintText: LocaleKeys.speciesType.tr(),
-                inputDecoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 12,
-                  ),
-                  isDense: true,
-                  hintText:
-                      '${LocaleKeys.select.tr()} ${LocaleKeys.speciesType.tr().toLowerCase()}',
-                  hintStyle: context.textStyles.bodyNormal.grey,
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: context.colors.grey),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: context.colors.blue),
-                  ),
-                ),
-                onChanged: (data) {
-                  selectAnimalType = data;
-                  setState(() {});
-                },
-                initialValue: selectAnimalType,
-                itemsData: value
-                    .map((e) =>
-                        CmoDropdownItem(id: e, name: e.animalTypeName ?? ''))
-                    .toList());
-          },
-        ),
-      ],
-    );
   }
 
-  Widget _selectSpeciesRange(RteSpeciesDetailState state) {
+  Widget _selectSpeciesRange(BuildContext context, RteSpeciesDetailState state) {
     return BottomSheetSelection(
           hintText: LocaleKeys.speciesRange.tr(),
       margin: EdgeInsets.zero,
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-          value: 'compartmentName',
+          value: state.rteSpecies?.speciesRangeName,
           onTap: () async {
             FocusScope.of(context).unfocus();
             if (state.speciesRanges.isBlank) return;
@@ -478,55 +361,6 @@ class _AddRteSpeciesScreenState extends State<AddRteSpeciesScreen> {
               ),
             );
           },
-    );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
-          ),
-          child: Text(
-            LocaleKeys.speciesRange.tr(),
-            style: context.textStyles.bodyBold.black,
-          ),
-        ),
-        ValueListenableBuilder(
-          valueListenable: speciesRanges,
-          builder: (_, value, __) {
-            return CmoDropdown<SpeciesRange>(
-              name: 'SpeciesRangeId',
-              hintText: LocaleKeys.speciesRange.tr(),
-              inputDecoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                isDense: true,
-                hintText:
-                    '${LocaleKeys.select.tr()} ${LocaleKeys.speciesRange.tr().toLowerCase()}',
-                hintStyle: context.textStyles.bodyNormal.grey,
-                border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: context.colors.grey),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: context.colors.blue),
-                ),
-              ),
-              onChanged: (data) {
-                selectSpeciesRange = data;
-                setState(() {});
-              },
-              initialValue: selectSpeciesRange,
-              itemsData: value
-                  .map((e) =>
-                      CmoDropdownItem(id: e, name: e.speciesRangeName ?? ''))
-                  .toList(),
-            );
-          },
-        ),
-      ],
     );
   }
 

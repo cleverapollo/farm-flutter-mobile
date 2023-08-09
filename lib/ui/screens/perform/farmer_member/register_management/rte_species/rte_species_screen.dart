@@ -5,7 +5,6 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/rte_species/add_rte_species/add_rte_species_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
@@ -13,6 +12,7 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../../di.dart';
+import 'rte_species_detail/rte_species_detail_screen.dart';
 
 class RteSpeciesScreen extends StatefulWidget {
   const RteSpeciesScreen({super.key});
@@ -113,7 +113,7 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => AddRteSpeciesScreen.push(context),
+        onTapTrailing: () => RteSpeciesDetailScreen.push(context),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -159,7 +159,7 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
                         final item = filteredItems[index];
                         return GestureDetector(
                           onTap: () async {
-                            final result = await AddRteSpeciesScreen.push(
+                            final result = await RteSpeciesDetailScreen.push(
                                 context,
                                 rteSpecies: item);
                             if (result == null) return;

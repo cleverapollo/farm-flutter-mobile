@@ -3,6 +3,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'rte_species_detail_state.dart';
@@ -31,6 +32,9 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
         activeFarm: activeFarm,
         speciesRanges: speciesRanges,
         animalTypes: animalTypes,
+        rteSpecies: state.rteSpecies?.copyWith(
+          farmId: state.rteSpecies?.farmId ?? activeFarm?.farmId,
+        ),
       ),
     );
   }
@@ -97,128 +101,32 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
     );
   }
 
-  Future<void> loadListWorkers() async {
-    emit(state.copyWith(loading: true));
+  Future<void> onSave() async {
     try {
-      final service = cmoDatabaseMasterService;
+      emit(state.copyWith(loading: true));
+      int? rteSpeciesId;
+      await (await cmoDatabaseMasterService.db).writeTxn(() async {
+        rteSpeciesId = await cmoDatabaseMasterService.cacheRteSpecies(
+          state.rteSpecies!.copyWith(
+            rteSpeciesRegisterNo: state.rteSpecies?.rteSpeciesRegisterNo ??
+                DateTime.now().millisecondsSinceEpoch.toString(),
+          ),
+        );
 
-      if (state.activeFarm?.farmId == null) return;
-      final data =
-      await service.getFarmerWorkersByFarmId(state.activeFarm!.farmId);
+        // for (final item in rtePhotos) {
+        //   futures.add(cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(
+        //       item.copyWith(rteSpeciesNo: rteSpecies.rteSpeciesRegisterNo)));
+        // }
+      });
 
-      emit(
-        state.copyWith(
-          listWorkers: data,
-          filterWorkers: data,
-        ),
+      showSnackSuccess(
+        msg: '${state.rteSpecies == null ? LocaleKeys.addRteSpecies.tr() : 'Edit RTE Species'} $rteSpeciesId',
       );
     } catch (e) {
-      emit(state.copyWith(error: e));
-      showSnackError(msg: e.toString());
+      logger.e('Cannot save RTE species $e');
     } finally {
       emit(state.copyWith(loading: false));
     }
-  }
-
-  Future<void> loadListJobDescriptions() async {
-    emit(state.copyWith(loading: true));
-    try {
-      final service = cmoDatabaseMasterService;
-      final data = await service.getJobDescriptions();
-
-      emit(
-        state.copyWith(
-          listJobDescriptions: data,
-          filterJobDescriptions: data,
-        ),
-      );
-    } catch (e) {
-      emit(state.copyWith(error: e));
-      showSnackError(msg: e.toString());
-    } finally {
-      emit(state.copyWith(loading: false));
-    }
-  }
-
-  void searching(String? searchText) {
-    emit(state.copyWith(loading: true));
-    try {
-      if (searchText == null || searchText.isEmpty) {
-        emit(
-          state.copyWith(
-            filterWorkers: state.listWorkers,
-          ),
-        );
-      } else {
-        final filteredItems = state.listWorkers
-            .where(
-              (element) =>
-          (element.firstName
-              ?.toLowerCase()
-              .contains(searchText.toLowerCase()) ??
-              false) ||
-              (element.surname
-                  ?.toLowerCase()
-                  .contains(searchText.toLowerCase()) ??
-                  false),
-        )
-            .toList();
-
-        emit(
-          state.copyWith(
-            filterWorkers: filteredItems,
-          ),
-        );
-      }
-    } catch (e) {
-      emit(state.copyWith(error: e));
-      showSnackError(msg: e.toString());
-    } finally {
-      emit(state.copyWith(loading: false));
-    }
-  }
-
-  void searchJobDescription(String? searchText) {
-    emit(state.copyWith(loading: true));
-    try {
-      if (searchText == null || searchText.isEmpty) {
-        emit(
-          state.copyWith(
-            filterJobDescriptions: state.listJobDescriptions,
-          ),
-        );
-      } else {
-        final filteredItems = state.listJobDescriptions
-            .where(
-              (element) =>
-          element.jobDescriptionName
-              ?.toLowerCase()
-              .contains(searchText.toLowerCase()) ??
-              false,
-        )
-            .toList();
-
-        emit(
-          state.copyWith(
-            filterJobDescriptions: filteredItems,
-          ),
-        );
-      }
-    } catch (e) {
-      emit(state.copyWith(error: e));
-      showSnackError(msg: e.toString());
-    } finally {
-      emit(state.copyWith(loading: false));
-    }
-  }
-
-  Future<void> onRemoveLabour(FarmerWorker worker) async {
-    await cmoDatabaseMasterService.removeFarmerWorker(worker.id);
-    showSnackSuccess(
-      msg: '${LocaleKeys.remove.tr()} ${worker.id}!',
-    );
-
-    await loadListWorkers();
   }
 
   @override
