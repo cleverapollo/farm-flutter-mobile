@@ -254,19 +254,31 @@ class CmoDatabaseMasterService {
   }
 
   Future<int?> cacheFarmMemberObjectiveAnswer(
-      FarmMemberObjectiveAnswer item) async {
+    FarmMemberObjectiveAnswer item, {
+    bool isDirect = false,
+  }) async {
     final db = await _db();
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.farmMemberObjectiveAnswers.put(item);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.farmMemberObjectiveAnswers.put(item);
+      });
+    }
   }
 
   Future<int?> cacheFarmMemberRiskProfileAnswer(
-      FarmMemberRiskProfileAnswer item) async {
+    FarmMemberRiskProfileAnswer item, {
+    bool isDirect = false,
+  }) async {
     final db = await _db();
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.farmMemberRiskProfileAnswers.put(item);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.farmMemberRiskProfileAnswers.put(item);
+      });
+    }
   }
 
   Future<List<FarmMemberRiskProfileAnswer>>

@@ -865,9 +865,15 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
               (e as Map).map((key, value) => MapEntry(key as String, value))))
           .toList();
 
-      return cmoDatabaseMasterService.cacheFarm(farm.copyWith(
-          objectiveAnswers: objectiveAnswers,
-          riskProfileAnswers: riskProfileAnswers));
+      for (final objectiveAnswer in objectiveAnswers) {
+        await cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(objectiveAnswer, isDirect: true);
+      }
+
+      for (final riskProfileAnswer in riskProfileAnswers) {
+        await cmoDatabaseMasterService.cacheFarmMemberRiskProfileAnswer(riskProfileAnswer, isDirect: true);
+      }
+
+      return cmoDatabaseMasterService.cacheFarm(farm);
     } catch (e) {
       logger.d('insert error: $e');
     }
