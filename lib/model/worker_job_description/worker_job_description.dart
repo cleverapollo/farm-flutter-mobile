@@ -9,7 +9,7 @@ part 'worker_job_description.g.dart';
 @Collection(ignore: {'copyWith'})
 class WorkerJobDescription with _$WorkerJobDescription {
   const factory WorkerJobDescription({
-    @JsonKey(name: "WorkerId") int? workerId,
+    @JsonKey(name: "WorkerId") String? workerId,
     @JsonKey(name: "WorkerJobDescriptionId") int? workerJobDescriptionId,
     @JsonKey(name: "JobDescriptionId") int? jobDescriptionId,
     @JsonKey(name: "JobDescriptionName") String? jobDescriptionName,
@@ -30,7 +30,7 @@ class WorkerJobDescription with _$WorkerJobDescription {
 extension WorkerJobDescriptionX on WorkerJobDescription {
   WorkerJobDescriptionPayLoad toPayLoad() {
     return WorkerJobDescriptionPayLoad(
-      WorkerId: workerId,
+      WorkerId: int.tryParse(workerId ?? ''),
       WorkerJobDescriptionId: workerJobDescriptionId,
       JobDescriptionId: jobDescriptionId,
       JobDescriptionName: jobDescriptionName,

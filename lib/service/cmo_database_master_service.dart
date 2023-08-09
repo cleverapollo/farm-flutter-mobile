@@ -184,7 +184,7 @@ class CmoDatabaseMasterService {
 
     return db.workerJobDescriptions
         .filter()
-        .workerIdEqualTo(int.tryParse(workerId))
+        .workerIdEqualTo(workerId)
         .findAll();
   }
 
@@ -196,6 +196,13 @@ class CmoDatabaseMasterService {
     });
   }
 
+  Future<int?> cacheWorkerJobDescriptionFromFarm(
+      WorkerJobDescription item) async {
+    final db = await _db();
+
+    return db.workerJobDescriptions.put(item);
+  }
+
   Future<int> getCountWorkerJobDescription() async {
     final db = await _db();
 
@@ -205,6 +212,14 @@ class CmoDatabaseMasterService {
         .findAll();
 
     return count.length;
+  }
+
+  Future<void> deletedWorkerJobDescriptionByJobDescriptionId(String? id) async {
+    final db = await _db();
+
+    await db.writeTxn(() async {
+      await db.workerJobDescriptions.filter().workerIdEqualTo(id).deleteAll();
+    });
   }
 
   Future<List<JobDescription>> getJobDescriptionsByJobDescriptionId(
@@ -799,7 +814,8 @@ class CmoDatabaseMasterService {
     }
   }
 
-  Future<int?> cacheAsiPhoto(AsiPhoto data, {
+  Future<int?> cacheAsiPhoto(
+    AsiPhoto data, {
     bool isDirect = false,
   }) async {
     final db = await _db();
@@ -810,7 +826,6 @@ class CmoDatabaseMasterService {
         return db.asiPhotos.put(data);
       });
     }
-
   }
 
   Future<int?> cacheChemical(Chemical data) async {
@@ -1402,10 +1417,7 @@ class CmoDatabaseMasterService {
   Future<List<AsiType>> getAsiTypes() async {
     final db = await _db();
 
-    return db.asiTypes
-        .filter()
-        .isActiveEqualTo(true)
-        .findAll();
+    return db.asiTypes.filter().isActiveEqualTo(true).findAll();
   }
 
   Future<List<AnnualBudgetTransactionCategory>>
@@ -3711,7 +3723,8 @@ class CmoDatabaseMasterService {
     logger.d(error);
   }
 
-  Future<int> cacheCompartment(Compartment item, {bool isDirect = false}) async {
+  Future<int> cacheCompartment(Compartment item,
+      {bool isDirect = false}) async {
     final db = await _db();
     if (isDirect) {
       return db.writeTxn(() => db.compartments.put(item));

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cmo/di.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/stakeholder/farm_stake_holder.dart';
+import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_upload_summary_mixin.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
@@ -1232,6 +1233,24 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
+
+      if (bodyJson['JobDescriptions'] != null) {
+        final futures = <Future<void>>[];
+
+        final workerJobDescriptionJsons =
+            bodyJson['JobDescriptions'] as List<dynamic>;
+
+        for (final workerJobDescriptionJson in workerJobDescriptionJsons) {
+          final workerJobDescription = WorkerJobDescription.fromJson(
+              workerJobDescriptionJson as Map<String, dynamic>);
+
+          futures.add(cmoDatabaseMasterService
+              .cacheWorkerJobDescriptionFromFarm(workerJobDescription));
+        }
+
+        await Future.wait(futures);
+      }
+
       final worker = FarmerWorker.fromJson(bodyJson);
       return cmoDatabaseMasterService
           .cacheFarmerWorker(worker.copyWith(isActive: true, isLocal: 0));

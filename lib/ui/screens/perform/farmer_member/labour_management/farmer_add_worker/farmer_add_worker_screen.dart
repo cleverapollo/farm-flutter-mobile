@@ -1,11 +1,11 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/extensions/string.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/state/labour_management/labour_management_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_worker/job_description/farmer_add_worker_select_job_description.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_worker/widgets/farmer_add_worker_upload_avatar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_worker/widgets/farmer_select_gender_widget.dart';
@@ -16,17 +16,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-import '../../camp_management/add_camp_screen.dart';
-
 class FarmerAddWorkerScreen extends StatefulWidget {
+  const FarmerAddWorkerScreen(
+      {super.key, this.farmerWorker, this.isEditing = false});
+
   final FarmerWorker? farmerWorker;
   final bool isEditing;
-
-  FarmerAddWorkerScreen({
-    super.key,
-    this.farmerWorker,
-    this.isEditing = false,
-  });
 
   @override
   State<StatefulWidget> createState() => _FarmerAddWorkerScreenState();
@@ -57,8 +52,8 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
 
   late FarmerWorker farmerWorker;
 
-  List<WorkerJobDescription> selectedWorkerJobDescriptions =
-      <WorkerJobDescription>[];
+  final selectedWorkerJobDescriptions =
+      ValueNotifier<List<WorkerJobDescription>>([]);
 
   Future<void> onSubmit() async {
     setState(() {
@@ -79,10 +74,14 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
 
         final futures = <Future<int?>>[];
 
+        final needDeleted = await cmoDatabaseMasterService
+            .deletedWorkerJobDescriptionByJobDescriptionId(
+                farmerWorker.workerId);
+
         var count =
             await cmoDatabaseMasterService.getCountWorkerJobDescription();
 
-        for (final item in selectedWorkerJobDescriptions) {
+        for (final item in selectedWorkerJobDescriptions.value) {
           futures.add(cmoDatabaseMasterService.cacheWorkerJobDescription(
               item.copyWith(workerJobDescriptionId: count++)));
         }
@@ -134,8 +133,8 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
       );
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      selectedWorkerJobDescriptions = await cmoDatabaseMasterService
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      selectedWorkerJobDescriptions.value = await cmoDatabaseMasterService
           .getWorkerJobDescriptionByWorkerId(farmerWorker.workerId ?? '');
     });
   }
@@ -147,7 +146,8 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
       child: Scaffold(
         appBar: CmoAppBar(
           title: LocaleKeys.addLabour.tr(),
-          subtitle: context.read<LabourManagementCubit>().state.activeFarm?.farmName,
+          subtitle:
+              context.read<LabourManagementCubit>().state.activeFarm?.farmName,
           subtitleTextStyle: context.textStyles.bodyBold.blue,
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
@@ -280,14 +280,16 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
       onTap: () async {
         final date = await showDatePicker(
           context: context,
-          initialDate: DateTime.tryParse(farmerWorker.dateOfBirth ?? '') ?? DateTime.now(),
+          initialDate: DateTime.tryParse(farmerWorker.dateOfBirth ?? '') ??
+              DateTime.now(),
           firstDate: DateTime.now().add(const Duration(days: -1000000)),
           lastDate: DateTime.now(),
         );
 
         if (date != null) {
           setState(() {
-            farmerWorker = farmerWorker.copyWith(dateOfBirth: date.toIso8601String());
+            farmerWorker =
+                farmerWorker.copyWith(dateOfBirth: date.toIso8601String());
           });
         }
       },
@@ -318,16 +320,15 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
         return InkWell(
           onTap: () {
             FarmerStakeHolderSelectJobDescription.push(
-              context,
-              selectedWorkerJobDescriptions,
-              (listWokerJobsDesc) {
-                setState(() {
-                  selectedWorkerJobDescriptions
-                    ..clear()
-                    ..addAll(listWokerJobsDesc);
-                });
+              context: context,
+              selectedJobDesc: selectedWorkerJobDescriptions.value,
+              onSave: (result) {
+                selectedWorkerJobDescriptions.value =
+                    selectedWorkerJobDescriptions.value
+                      ..clear()
+                      ..addAll(result);
               },
-              int.tryParse(farmerWorker.workerId ?? ''),
+              workerId: int.tryParse(farmerWorker.workerId ?? ''),
             );
           },
           child: AttributeItem(
@@ -347,9 +348,14 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Text(
-                    selectedWorkerJobDescriptions.length.toString() ?? '',
-                    style: context.textStyles.bodyBold.black,
+                  ValueListenableBuilder(
+                    valueListenable: selectedWorkerJobDescriptions,
+                    builder: (context, data, _) {
+                      return Text(
+                        data.length.toString() ?? '',
+                        style: context.textStyles.bodyBold.black,
+                      );
+                    },
                   ),
                   Assets.icons.icArrowRight.svgBlack,
                 ],

@@ -26,12 +26,12 @@ class FarmerStakeHolderSelectJobDescription extends StatefulWidget {
   State<StatefulWidget> createState() =>
       _FarmerStakeHolderSelectJobDescriptionState();
 
-  static Future<void> push(
-    BuildContext context,
+  static Future<void> push({
+    required BuildContext context,
     List<WorkerJobDescription>? selectedJobDesc,
-    void Function(List<WorkerJobDescription>) onSave,
+    required void Function(List<WorkerJobDescription>) onSave,
     int? workerId,
-  ) {
+  }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
@@ -115,23 +115,6 @@ class _FarmerStakeHolderSelectJobDescriptionState
           ),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: CmoFilledButton(
-        title: LocaleKeys.save.tr(),
-        onTap: () {
-          Navigator.of(context).pop();
-          widget.onSave(selectedItems
-              .map((e) => WorkerJobDescription(
-                    workerId: widget.workerId,
-                    jobDescriptionId: e.jobDescriptionId,
-                    jobDescriptionName: e.jobDescriptionName,
-                    createDT: DateTime.now(),
-                    updateDT: DateTime.now(),
-                    isActive: true,
-                  ))
-              .toList());
-        },
-      ),
     );
   }
 
@@ -142,13 +125,30 @@ class _FarmerStakeHolderSelectJobDescriptionState
 
     return InkWell(
       onTap: () {
-        setState(() {
-          if (selectedItems.contains(item)) {
-            selectedItems.remove(item);
-          } else {
-            selectedItems.add(item);
-          }
-        });
+        final includedItem = selectedItems.firstWhere(
+            (e) => e.jobDescriptionId == item.jobDescriptionId,
+            orElse: () => const JobDescription());
+        final itemNotIncluded = includedItem == const JobDescription();
+
+        if (itemNotIncluded) {
+          selectedItems.add(item);
+        } else {
+          selectedItems
+              .removeWhere((e) => e.jobDescriptionId == item.jobDescriptionId);
+        }
+
+        widget.onSave(selectedItems
+            .map((e) => WorkerJobDescription(
+                  workerId: widget.workerId.toString(),
+                  jobDescriptionId: e.jobDescriptionId,
+                  jobDescriptionName: e.jobDescriptionName,
+                  createDT: DateTime.now(),
+                  updateDT: DateTime.now(),
+                  isActive: true,
+                ))
+            .toList());
+
+        if (mounted) setState(() {});
       },
       child: AttributeItem(
         child: Row(
