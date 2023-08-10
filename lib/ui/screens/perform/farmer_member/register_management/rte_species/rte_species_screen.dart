@@ -1,18 +1,16 @@
 import 'dart:async';
 
-import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/register_management/rte_species/rte_species_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'rte_species_detail/rte_species_detail_screen.dart';
+import 'rte_species_detail_screen.dart';
 
 class RteSpeciesScreen extends StatefulWidget {
   const RteSpeciesScreen({super.key});
@@ -24,10 +22,7 @@ class RteSpeciesScreen extends StatefulWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => BlocProvider(
-            create: (_) => RteSpeciesCubit()..init(),
-            child: const RteSpeciesScreen(),
-        ),
+        builder: (_) => const RteSpeciesScreen(),
       ),
     );
   }
@@ -38,54 +33,9 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
   @override
   void initState() {
     super.initState();
-  }
-
-  void searching(String? input) {
-    // inputSearch = input;
-    // if (input == null || input.isEmpty) {
-    //   applyFilter();
-    // } else {
-    //   filteredItems = items.where((element) {
-    //     final containName = element.rteSpeciesRegisterId
-    //         .toString()
-    //         .toLowerCase()
-    //         .contains(input.toLowerCase());
-    //     var isFilter = false;
-    //     switch (statusFilter) {
-    //       case StatusFilterEnum.open:
-    //         isFilter = element.dateSpotted == null;
-    //         break;
-    //       case StatusFilterEnum.closed:
-    //         isFilter = element.dateSpotted != null;
-    //         break;
-    //     }
-    //
-    //     return containName && isFilter;
-    //   }).toList();
-    //   setState(() {});
-    // }
-  }
-
-  void applyFilter() {
-    // if (inputSearch == null || inputSearch!.isEmpty) {
-    //   switch (statusFilter) {
-    //     case StatusFilterEnum.open:
-    //       filteredItems = items
-    //           .where(
-    //             (element) => element.dateSpotted == null,
-    //           )
-    //           .toList();
-    //       break;
-    //     case StatusFilterEnum.closed:
-    //       filteredItems =
-    //           items.where((element) => element.dateSpotted != null).toList();
-    //       break;
-    //   }
-    // } else {
-    //   searching(inputSearch);
-    // }
-    //
-    // setState(() {});
+    Future.microtask(() async {
+      await context.read<RteSpeciesCubit>().init();
+    });
   }
 
   @override
@@ -105,66 +55,31 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          return Padding(
+          return ListView.separated(
+            separatorBuilder: (context, index) => const SizedBox(
+              height: 22,
+            ),
+            itemCount: state.filterRteSpecies.length,
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).padding.bottom,
+              left: 21,
+              right: 21,
               top: 24,
             ),
-            child: Column(
-              children: [
-                // Padding(
-                //   padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
-                //   child: CmoTextField(
-                //     name: LocaleKeys.search.tr(),
-                //     hintText: LocaleKeys.search.tr(),
-                //     suffixIcon: Assets.icons.icSearch.svg(),
-                //     onChanged: (input) {
-                //       _debounceInputTimer?.cancel();
-                //       _debounceInputTimer = Timer(
-                //         const Duration(milliseconds: 200),
-                //         () => searching(input),
-                //       );
-                //     },
-                //   ),
-                // ),
-                // Padding(
-                //   padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
-                //   child: StatusFilterWidget(
-                //     onSelectFilter: (statusFilterEnum) {
-                //       statusFilter = statusFilterEnum;
-                //       applyFilter();
-                //     },
-                //   ),
-                // ),
-                Expanded(
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) => const SizedBox(
-                      height: 22,
-                    ),
-                    itemCount: state.filterRteSpecies.length,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 21,
-                    ),
-                    itemBuilder: (context, index) {
-                      final item = state.filterRteSpecies[index];
-                      return GestureDetector(
-                        onTap: () async {
-                          final result = await RteSpeciesDetailScreen.push(
-                              context,
-                              rteSpecies: item);
-                          if (result == null) return;
-                          state.filterRteSpecies[index] = result;
-                          setState(() {});
-                        },
-                        child: _RteSpeciesItem(
-                          rteSpecies: item,
-                        ),
-                      );
-                    },
-                  ),
+            itemBuilder: (context, index) {
+              final item = state.filterRteSpecies[index];
+              return GestureDetector(
+                onTap: () async {
+                  await RteSpeciesDetailScreen.push(
+                    context,
+                    rteSpecies: item,
+                  );
+                },
+                child: _RteSpeciesItem(
+                  rteSpecies: item,
                 ),
-              ],
-            ),
+              );
+            },
           );
         },
       ),

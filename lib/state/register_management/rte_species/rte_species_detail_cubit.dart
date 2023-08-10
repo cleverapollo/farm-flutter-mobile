@@ -1,10 +1,13 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+
+import '../../../ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 
 part 'rte_species_detail_state.dart';
 
@@ -15,23 +18,29 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
           RteSpeciesDetailState(
             rteSpecies: rteSpecies ??
                 RteSpecies(
-                  rteSpeciesRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
+                  rteSpeciesRegisterNo:
+                      DateTime.now().millisecondsSinceEpoch.toString(),
                   isActive: true,
                   isMasterDataSynced: false,
                 ),
           ),
         );
 
-  Future<void> init() async {
+  Future<void> init({
+    LocationModel? locationModel,
+  }) async {
     final activeFarm = await configService.getActiveFarm();
-    final animalTypes = await cmoDatabaseMasterService.getAnimalTypeByGroupSchemeId(activeFarm?.groupSchemeId ?? 0);
-    final speciesRanges = await cmoDatabaseMasterService.getSpeciesRangeByGroupSchemeId(activeFarm?.groupSchemeId ?? 0);
-
+    final animalTypes = await cmoDatabaseMasterService
+        .getAnimalTypeByGroupSchemeId(activeFarm?.groupSchemeId ?? 0);
+    final speciesRanges = await cmoDatabaseMasterService
+        .getSpeciesRangeByGroupSchemeId(activeFarm?.groupSchemeId ?? 0);
+    final rtePhotos = await cmoDatabaseMasterService.getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(state.rteSpecies?.rteSpeciesRegisterNo);
     emit(
       state.copyWith(
         activeFarm: activeFarm,
         speciesRanges: speciesRanges,
         animalTypes: animalTypes,
+        rtePhotos: rtePhotos,
         rteSpecies: state.rteSpecies?.copyWith(
           farmId: state.rteSpecies?.farmId ?? activeFarm?.farmId,
         ),
@@ -84,9 +93,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
   void onChangeDateSpotted(DateTime? dateSpotted) {
     emit(
       state.copyWith(
-        rteSpecies: state.rteSpecies?.copyWith(
-          dateSpotted: dateSpotted
-        ),
+        rteSpecies: state.rteSpecies?.copyWith(dateSpotted: dateSpotted),
       ),
     );
   }
@@ -101,23 +108,71 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
     );
   }
 
+  void onChangeLocationAndPhoto(LocationModel locationModel) {
+    if (locationModel.latitude != null) {
+      emit(
+        state.copyWith(
+          rteSpecies: state.rteSpecies?.copyWith(
+            longitude: locationModel.longitude,
+            latitude: locationModel.latitude,
+          ),
+        ),
+      );
+    }
+
+    if (locationModel.listImage.isNotBlank) {
+      var randomId = generatorInt32Id();
+      final listPhotos = <RteSpeciesPhotoModel>[];
+      for (final image in locationModel.listImage) {
+        final rtePhoto = RteSpeciesPhotoModel(
+          farmId: state.activeFarm?.farmId,
+          isMasterdataSynced: false,
+          photo: image,
+          rteSpeciesRegisterPhotoNo: DateTime.now().millisecondsSinceEpoch.toString(),
+          rteSpeciesRegisterPhotoId: randomId++,
+          rteSpeciesNo: state.rteSpecies?.rteSpeciesRegisterNo,
+          rteSpeciesId: state.rteSpecies?.rteSpeciesRegisterId,
+          photoName: DateTime.now().millisecondsSinceEpoch.toString(),
+          isActive: true,
+          isLocal: true,
+        );
+
+        listPhotos.add(rtePhoto);
+      }
+
+      emit(state.copyWith(rtePhotos: state.rtePhotos + listPhotos));
+    }
+  }
+
+  void onRemovePhoto(RteSpeciesPhotoModel rteSpeciesPhotoModel) {
+    final rtePhotos = state.rtePhotos;
+    rtePhotos.remove(rteSpeciesPhotoModel);
+    emit(state.copyWith(rtePhotos: rtePhotos));
+  }
+
+  bool onValidate() {
+    if (state.rteSpecies!.commonName.isBlank ||
+        state.rtePhotos.isBlank ||
+        state.rteSpecies?.dateSpotted == null ||
+        state.rteSpecies!.animalTypeName.isBlank) return false;
+    return true;
+  }
+
   Future<void> onSave() async {
     try {
       emit(state.copyWith(loading: true));
       int? rteSpeciesId;
-      await (await cmoDatabaseMasterService.db).writeTxn(() async {
-        rteSpeciesId = await cmoDatabaseMasterService.cacheRteSpecies(
-          state.rteSpecies!.copyWith(
-            rteSpeciesRegisterNo: state.rteSpecies?.rteSpeciesRegisterNo ??
-                DateTime.now().millisecondsSinceEpoch.toString(),
-          ),
-        );
+      rteSpeciesId = await cmoDatabaseMasterService.cacheRteSpecies(
+        isDirect: false,
+        state.rteSpecies!.copyWith(
+          rteSpeciesRegisterNo: state.rteSpecies?.rteSpeciesRegisterNo ??
+              DateTime.now().millisecondsSinceEpoch.toString(),
+        ),
+      );
 
-        // for (final item in rtePhotos) {
-        //   futures.add(cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(
-        //       item.copyWith(rteSpeciesNo: rteSpecies.rteSpeciesRegisterNo)));
-        // }
-      });
+      for (final item in state.rtePhotos) {
+        await cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(item);
+      }
 
       showSnackSuccess(
         msg: '${state.rteSpecies == null ? LocaleKeys.addRteSpecies.tr() : 'Edit RTE Species'} $rteSpeciesId',

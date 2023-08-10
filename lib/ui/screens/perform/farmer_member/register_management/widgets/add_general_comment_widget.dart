@@ -30,10 +30,12 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      borderRadius: BorderRadius.circular(10),
-      elevation: widget.elevation,
-      child: TextFormField(
+    return
+      // Material(
+      // borderRadius: BorderRadius.circular(10),
+      // elevation: widget.elevation,
+      // child:
+      TextFormField(
         textCapitalization: TextCapitalization.sentences,
         keyboardAppearance: Brightness.light,
         textAlign: TextAlign.left,
@@ -55,7 +57,7 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
             widget.onChanged!.call(text);
           }
         },
-      ),
+      // ),
     );
   }
 }

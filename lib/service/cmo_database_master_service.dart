@@ -1639,6 +1639,9 @@ class CmoDatabaseMasterService {
   Future<List<RteSpeciesPhotoModel>>
       getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
           String? rteRegisterPhoto) async {
+
+    if (rteRegisterPhoto.isBlank) return <RteSpeciesPhotoModel>[];
+
     final db = await _db();
 
     return db.rteSpeciesPhotoModels
@@ -1653,6 +1656,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .sortByCommonNameDesc()
         .findAll();
   }
 
@@ -2935,9 +2939,14 @@ class CmoDatabaseMasterService {
     return db.fireManagements.put(item);
   }
 
-  Future<int> cacheRteSpecies(RteSpecies item) async {
+  Future<int> cacheRteSpecies(RteSpecies item, {bool isDirect = true,}) async {
     final db = await _db();
-    return db.rteSpecies.put(item);
+    if (isDirect) {
+      return db.rteSpecies.put(item);
+    } else {
+      return db.writeTxn(() => db.rteSpecies.put(item));
+    }
+
   }
 
   Future<int> cacheRteSpeciesFromFarm(RteSpecies item) async {
