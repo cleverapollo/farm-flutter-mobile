@@ -112,7 +112,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
             );
 
             await context.read<LabourManagementCubit>().loadListWorkers();
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
           }
         }
       } finally {

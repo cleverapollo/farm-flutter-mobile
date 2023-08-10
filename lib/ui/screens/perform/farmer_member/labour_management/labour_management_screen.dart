@@ -16,7 +16,7 @@ class LabourManagementScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _LabourManagementScreenState();
 
-  static Future<void> push(BuildContext context) {
+  static Future<dynamic> push(BuildContext context) {
     return Navigator.push(
       context,
       MaterialPageRoute(
@@ -42,7 +42,8 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.labourManagement.tr(),
-        subtitle: context.watch<LabourManagementCubit>().state.activeFarm?.farmName,
+        subtitle:
+            context.watch<LabourManagementCubit>().state.activeFarm?.farmName,
         subtitleTextStyle: context.textStyles.bodyBold.blue,
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
@@ -67,7 +68,8 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
             ),
           ),
           Expanded(
-            child: BlocSelector<LabourManagementCubit, LabourManagementState, List<FarmerWorker>>(
+            child: BlocSelector<LabourManagementCubit, LabourManagementState,
+                List<FarmerWorker>>(
               selector: (state) {
                 return state.filterWorkers;
               },
@@ -84,7 +86,9 @@ class _LabourManagementScreenState extends State<LabourManagementScreen> {
                       title: LocaleKeys.removeLabour.tr(),
                       subtitle: LocaleKeys.removeLabourAlertContent.tr(),
                       onRemove: () async {
-                        await context.read<LabourManagementCubit>().onRemoveLabour(filterWorkers[index]);
+                        await context
+                            .read<LabourManagementCubit>()
+                            .onRemoveLabour(filterWorkers[index]);
                       },
                       child: LabourManagementItem(
                         farmerWorker: filterWorkers[index],

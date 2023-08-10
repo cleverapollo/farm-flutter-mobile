@@ -10,6 +10,18 @@ part 'dashboard_state.dart';
 class DashboardCubit extends HydratedCubit<DashboardState> {
   DashboardCubit() : super(const DashboardState());
 
+  Future<void> initializeFarmDashBoard() async {
+    try {
+      final farm = await configService.getActiveFarm();
+      final data = await cmoDatabaseMasterService
+          .getFarmerWorkersByFarmId(farm?.farmId ?? '');
+      emit(state.copyWith(
+          farmDashBoardInfo: FarmDashBoardInfo(totalLabour: data.length)));
+    } catch (e) {
+      handleError(e);
+    }
+  }
+
   Future<void> initializeRM() async {
     try {
       await getResourceManagerMembers();

@@ -11,6 +11,7 @@ class DashboardState extends Equatable {
     this.totalCompletedAssessments,
     this.totalUnsyncBehave,
     this.rmDashboardInfo,
+    this.farmDashBoardInfo,
   });
 
   final bool loading;
@@ -22,6 +23,7 @@ class DashboardState extends Equatable {
   final int? totalAssessments;
   final int? totalUnsyncBehave;
   final RMDashboardInfo? rmDashboardInfo;
+  final FarmDashBoardInfo? farmDashBoardInfo;
 
   DashboardState copyWith({
     bool? loading,
@@ -33,6 +35,7 @@ class DashboardState extends Equatable {
     int? totalAssessments,
     int? totalUnsyncBehave,
     RMDashboardInfo? rmDashboardInfo,
+    FarmDashBoardInfo? farmDashBoardInfo,
   }) {
     return DashboardState(
       loading: loading ?? this.loading,
@@ -40,10 +43,13 @@ class DashboardState extends Equatable {
       totalStakeholders: totalStakeholders ?? this.totalStakeholders,
       totalWorkers: totalWorkers ?? this.totalWorkers,
       totalAssessments: totalAssessments ?? this.totalAssessments,
-      totalCompletedAssessments: totalCompletedAssessments ?? this.totalCompletedAssessments,
-      totalIncompleteAssessments: totalIncompleteAssessments ?? this.totalIncompleteAssessments,
+      totalCompletedAssessments:
+          totalCompletedAssessments ?? this.totalCompletedAssessments,
+      totalIncompleteAssessments:
+          totalIncompleteAssessments ?? this.totalIncompleteAssessments,
       totalUnsyncBehave: totalUnsyncBehave ?? this.totalUnsyncBehave,
       rmDashboardInfo: rmDashboardInfo ?? this.rmDashboardInfo,
+      farmDashBoardInfo: farmDashBoardInfo ?? this.farmDashBoardInfo,
     );
   }
 
@@ -76,4 +82,10 @@ class RMDashboardInfo {
     this.memberOutstanding = 0,
     this.unsynced = 0,
   });
+}
+
+class FarmDashBoardInfo {
+  FarmDashBoardInfo({this.totalLabour = 0});
+
+  final int totalLabour;
 }
