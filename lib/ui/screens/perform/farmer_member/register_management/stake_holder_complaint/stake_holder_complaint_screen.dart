@@ -1,17 +1,16 @@
 import 'dart:async';
 
 import 'package:cmo/di.dart';
-import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
+import 'package:cmo/state/stake_holder_complaint/stake_holder_complaint_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/add_stake_holder_complaint/add_stake_holder_complaint_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StakeHolderComplaintScreen extends StatefulWidget {
   const StakeHolderComplaintScreen({
@@ -25,7 +24,12 @@ class StakeHolderComplaintScreen extends StatefulWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const StakeHolderComplaintScreen(),
+        builder: (_) {
+          return BlocProvider(
+            create: (_) => StateHolderComplaintCubit(),
+            child: const StakeHolderComplaintScreen(),
+          );
+        },
       ),
     );
   }
@@ -33,75 +37,42 @@ class StakeHolderComplaintScreen extends StatefulWidget {
 
 class _StakeHolderComplaintScreenState
     extends State<StakeHolderComplaintScreen> {
-  final List<ComplaintsAndDisputesRegister> items = [];
-  bool isLoading = true;
-
-  Timer? _debounceInputTimer;
-  late List<ComplaintsAndDisputesRegister> filteredItems;
-  late StatusFilterEnum statusFilter;
-  String? inputSearch;
+  late final StateHolderComplaintCubit cubit;
 
   @override
   void initState() {
     super.initState();
-    _init();
+    cubit = context.read<StateHolderComplaintCubit>();
   }
 
-  Future<void> _init() async {
+  Future<void> onNavigateToAddGrievance() async {
     final farm = await configService.getActiveFarm();
-    items.addAll(await cmoDatabaseMasterService
-        .getComplaintsAndDisputesRegisterByFarmId(farm?.farmId ?? ''));
-    isLoading = false;
-
-    filteredItems = items;
-    statusFilter = StatusFilterEnum.open;
-    inputSearch = '';
-    applyFilter();
-  }
-
-  void searching(String? input) {
-    inputSearch = input;
-    if (input == null || input.isEmpty) {
-      applyFilter();
-    } else {
-      filteredItems = items.where((element) {
-        final containName = element.complaintsAndDisputesRegisterName
-                ?.toLowerCase()
-                .contains(input.toLowerCase()) ??
-            false;
-        var isFilter = false;
-        switch (statusFilter) {
-          case StatusFilterEnum.open:
-            isFilter = element.dateClosed == null;
-            break;
-          case StatusFilterEnum.closed:
-            isFilter = element.dateClosed != null;
-            break;
-        }
-
-        return containName && isFilter;
-      }).toList();
-      setState(() {});
-    }
-  }
-
-  void applyFilter() {
-    if (inputSearch == null || inputSearch!.isEmpty) {
-      switch (statusFilter) {
-        case StatusFilterEnum.open:
-          filteredItems =
-              items.where((element) => element.dateClosed == null).toList();
-          break;
-        case StatusFilterEnum.closed:
-          filteredItems =
-              items.where((element) => element.dateClosed != null).toList();
-          break;
+    if (farm != null && context.mounted) {
+      final result = await AddStakeHolderComplaintScreen.push(
+        context,
+        farm: farm,
+      );
+      if (result is ComplaintsAndDisputesRegister) {
+        cubit.onInsertNewItem(result);
       }
-    } else {
-      searching(inputSearch);
     }
+  }
 
-    setState(() {});
+  Future<void> onNavigateToEditGrievance(
+    int index,
+    ComplaintsAndDisputesRegister complaint,
+  ) async {
+    final farm = await configService.getActiveFarm();
+    if (farm != null && context.mounted) {
+      final result = await AddStakeHolderComplaintScreen.push(
+        context,
+        farm: farm,
+        complaint: complaint,
+      );
+      if (result is ComplaintsAndDisputesRegister) {
+        cubit.onUpdateItem(index, result);
+      }
+    }
   }
 
   @override
@@ -112,69 +83,63 @@ class _StakeHolderComplaintScreenState
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => AddStakeHolderComplaintScreen.push(context),
+        onTapTrailing: () => onNavigateToAddGrievance(),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
-                    child: CmoTextField(
-                      name: LocaleKeys.search.tr(),
-                      hintText: LocaleKeys.search.tr(),
-                      suffixIcon: Assets.icons.icSearch.svg(),
-                      onChanged: (input) {
-                        _debounceInputTimer?.cancel();
-                        _debounceInputTimer = Timer(
-                            const Duration(milliseconds: 200),
-                            () => searching(input));
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
-                    child: StatusFilterWidget(
-                      onSelectFilter: (statusFilterEnum) {
-                        statusFilter = statusFilterEnum;
-                        applyFilter();
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.separated(
-                      separatorBuilder: (context, index) => const SizedBox(
-                        height: 22,
-                      ),
-                      itemCount: filteredItems.length,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 21,
-                      ),
-                      itemBuilder: (context, index) {
-                        final item = filteredItems[index];
-                        return GestureDetector(
-                          onTap: () async {
-                            final result =
-                                await AddStakeHolderComplaintScreen.push(
-                                    context,
-                                    complaint: item);
-                            if (result == null) return;
-                            filteredItems[index] = result;
-                            setState(() {});
-                          },
-                          child: _StakeHolderComplaintItem(
-                            complaint: filteredItems[index],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: BlocBuilder<StateHolderComplaintCubit,
+              StakeHolderComplaintState>(
+            builder: (context, state) {
+              if (state.isDataReady) {
+                return _buildBody(cubit.state.items);
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody(List<ComplaintsAndDisputesRegister> items) {
+    return Column(
+      children: [
+        CmoTappable(
+          onTap: () => {},
+          child: CmoCard(
+            childAlignment: MainAxisAlignment.center,
+            content: [
+              CmoCardHeader(title: LocaleKeys.summary.tr()),
+              CmoCardHeader(
+                title: LocaleKeys.total.tr(),
+                valueEnd: items.length.toString(),
               ),
+            ],
+            trailing: Assets.icons.icDown.svgWhite,
+          ),
+        ),
+        const SizedBox(height: 24),
+        Expanded(
+          child: ListView.separated(
+            separatorBuilder: (context, index) => const SizedBox(
+              height: 22,
             ),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return GestureDetector(
+                onTap: () {
+                  onNavigateToEditGrievance(index, item);
+                },
+                child: _StakeHolderComplaintItem(
+                  complaint: items[index],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
@@ -229,13 +194,6 @@ class _StakeHolderComplaintItem extends StatelessWidget {
             keyLabel: LocaleKeys.dateClosed.tr(),
             valueLabel: complaint.dateClosed?.ddMMYyyy(),
             backgroundColor: context.colors.greyLight1,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.closureDetails.tr(),
-            valueLabel: complaint.closureDetails,
-          ),
-          GeneralCommentsItem(
-            comment: complaint.comment,
           ),
         ],
       ),

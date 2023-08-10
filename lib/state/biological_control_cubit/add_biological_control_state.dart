@@ -34,6 +34,7 @@ class AddBiologicalControlState {
       stakeHolders: stakeHolders ?? this.stakeHolders,
       monitorings: monitorings ?? this.monitorings,
       agentTypes: agentTypes ?? this.agentTypes,
+      isAddNew: isAddNew,
     );
   }
 }

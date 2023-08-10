@@ -1,14 +1,16 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/stake_holder_complaint/add_stake_holder_complaint_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddStakeHolderComplaintScreen extends StatefulWidget {
@@ -19,12 +21,33 @@ class AddStakeHolderComplaintScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _AddStakeHolderComplaintScreenState();
 
-  static Future<ComplaintsAndDisputesRegister?> push(BuildContext context,
-      {ComplaintsAndDisputesRegister? complaint}) {
+  static Future<ComplaintsAndDisputesRegister?> push(
+    BuildContext context, {
+    required Farm farm,
+    ComplaintsAndDisputesRegister? complaint,
+  }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => AddStakeHolderComplaintScreen(complaint: complaint),
+        builder: (_) {
+          return BlocProvider(
+            create: (_) => AddStakeHolderComplaintCubit(
+              farm: farm,
+              complaint: complaint ??
+                  ComplaintsAndDisputesRegister(
+                    complaintsAndDisputesRegisterId:
+                        DateTime.now().millisecondsSinceEpoch.toString(),
+                    complaintsAndDisputesRegisterNo:
+                        DateTime.now().millisecondsSinceEpoch.toString(),
+                    dateReceived: DateTime.now(),
+                    isActive: true,
+                    isMasterdataSynced: false,
+                  ),
+              isAddNew: complaint == null,
+            ),
+            child: const AddStakeHolderComplaintScreen(),
+          );
+        },
       ),
     );
   }
@@ -32,51 +55,15 @@ class AddStakeHolderComplaintScreen extends StatefulWidget {
 
 class _AddStakeHolderComplaintScreenState
     extends State<AddStakeHolderComplaintScreen> {
-  final complaints = ValueNotifier(<StakeHolder>[]);
-  final isLoading = ValueNotifier(true);
-
-  StakeHolder? selectStakeHolder;
-
-  bool loading = false;
-
+  late final AddStakeHolderComplaintCubit cubit;
   final _formKey = GlobalKey<FormBuilderState>();
-
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
-
-  late ComplaintsAndDisputesRegister complaint;
-
-  bool carRaised = false;
-  bool carClosed = false;
+  bool loading = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.complaint == null) {
-      complaint = ComplaintsAndDisputesRegister(
-          complaintsAndDisputesRegisterNo: DateTime.now().toIso8601String(),
-          isActive: true,
-          isMasterdataSynced: false);
-    } else {
-      complaint =
-          ComplaintsAndDisputesRegister.fromJson(widget.complaint!.toJson());
-    }
-    carRaised = complaint.carRaisedDate != null;
-    carClosed = complaint.carClosedDate != null;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final farm = await configService.getActiveFarm();
-
-      final result = await cmoDatabaseMasterService
-          .getFarmStakeHolderByFarmId(farm?.farmId ?? '');
-
-      for (final item in result) {
-        final stakeholders = await cmoDatabaseMasterService
-            .getStakeHoldersByStakeHolderId(item.stakeHolderId ?? '');
-
-        complaints.value.addAll(stakeholders);
-        isLoading.value = false;
-      }
-    });
+    cubit = context.read<AddStakeHolderComplaintCubit>();
   }
 
   Future<void> onSubmit() async {
@@ -92,36 +79,13 @@ class _AddStakeHolderComplaintScreenState
         loading = true;
       });
       try {
-        if (selectStakeHolder == null) {
-          return showSnackError(msg: 'Required fields are missing.');
-        }
 
         await hideInputMethod();
-        final farm = await configService.getActiveFarm();
+        var complaint = cubit.state.complaint;
         complaint = complaint.copyWith(
           isActive: true,
           isMasterdataSynced: false,
-          complaintsAndDisputesRegisterId: null,
-          complaintsAndDisputesRegisterNo:
-              DateTime.now().millisecondsSinceEpoch.toString(),
-          farmId: farm?.farmId,
-          dateReceived: value['DateReceived'] as DateTime?,
-          dateClosed: value['DateClosed'] as DateTime?,
-          stakeholderName: selectStakeHolder?.stakeholderName,
-          stakeholderId: selectStakeHolder?.stakeHolderId,
         );
-
-        if (carRaised && complaint.carRaisedDate == null) {
-          complaint = complaint.copyWith(
-            carRaisedDate: DateTime.now().toIso8601String(),
-          );
-        }
-
-        if (carClosed && complaint.carClosedDate == null) {
-          complaint = complaint.copyWith(
-            carClosedDate: DateTime.now().toIso8601String(),
-          );
-        }
 
         int? resultId;
 
@@ -164,22 +128,77 @@ class _AddStakeHolderComplaintScreenState
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
-        body: ValueListenableBuilder(
-          valueListenable: isLoading,
-          builder: (context, value, __) {
-            if (value) return const Center(child: CircularProgressIndicator());
-
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildInputArea(),
-                  const SizedBox(
-                    height: 80,
+        body: SafeArea(
+          child: BlocSelector<AddStakeHolderComplaintCubit,
+              AddStakeHolderComplaintState, bool>(
+            selector: (state) => state.isDataReady,
+            builder: (context, isDataReady) {
+              if (!isDataReady) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final state = cubit.state;
+              final complaint = state.complaint;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: FormBuilder(
+                  key: _formKey,
+                  onChanged: () {},
+                  autovalidateMode: autoValidateMode,
+                  child: AutofillGroup(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          _selectComplaintName(
+                            state.complaints,
+                            complaint.stakeholderId,
+                          ),
+                          AttributeItem(
+                            child: InputAttributeItem(
+                              validator: (_)=> null,
+                              initialValue: complaint.issueDescription,
+                              hintText: LocaleKeys.issueRaised.tr(),
+                              hintTextStyle:
+                                  context.textStyles.bodyBold.blueDark2,
+                              onChanged: (value) {
+                                cubit.onIssueDescriptionChanged(value);
+                              },
+                            ),
+                          ),
+                          _buildSelectDateReceived(complaint.dateReceived),
+                          _buildSelectDateClosed(complaint.dateClosed),
+                          AttributeItem(
+                            child: InputAttributeItem(
+                              validator: (_)=> null,
+                              initialValue: complaint.closureDetails,
+                              hintText: LocaleKeys.closureDetails.tr(),
+                              hintTextStyle:
+                                  context.textStyles.bodyBold.blueDark2,
+                              onChanged: cubit.onClosureDetailChanged,
+                            ),
+                          ),
+                          AttributeItem(
+                            child: SizedBox(
+                              height: 250,
+                              child: GeneralCommentWidget(
+                                elevation: 0,
+                                initialValue: complaint.comment,
+                                hintText: LocaleKeys.generalComments.tr(),
+                                onChanged: cubit.onCommentChanged,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ],
-              ),
-            );
-          },
+                ),
+              );
+            },
+          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: CmoFilledButton(
@@ -191,127 +210,44 @@ class _AddStakeHolderComplaintScreenState
     );
   }
 
-  Widget _buildInputArea() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: FormBuilder(
-        key: _formKey,
-        onChanged: () {},
-        autovalidateMode: autoValidateMode,
-        child: AutofillGroup(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _selectComplaintName(),
-              AttributeItem(
-                child: InputAttributeItem(
-                  hintText: LocaleKeys.issueRaised.tr(),
-                  hintTextStyle: context.textStyles.bodyBold.black,
-                  onChanged: (value) {
-                    complaint = complaint.copyWith(issueDescription: value);
-                  },
-                ),
-              ),
-              _buildSelectDateReceived(),
-              _buildSelectDateClosed(),
-              AttributeItem(
-                child: InputAttributeItem(
-                  hintText: LocaleKeys.closureDetails.tr(),
-                  hintTextStyle: context.textStyles.bodyBold.black,
-                  onChanged: (value) {
-                    complaint = complaint.copyWith(closureDetails: value);
-                  },
-                ),
-              ),
-              AttributeItem(
-                child: SelectItemWidget(
-                  title: LocaleKeys.carRaised.tr(),
-                  onSelect: (isSelected) {
-                    carRaised = isSelected;
-                  },
-                ),
-              ),
-              AttributeItem(
-                child: SelectItemWidget(
-                  title: LocaleKeys.carClosed.tr(),
-                  onSelect: (isSelected) {
-                    carClosed = isSelected;
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 250,
-                child: GeneralCommentWidget(
-                  hintText: LocaleKeys.generalComments.tr(),
-                  onChanged: (value) {
-                    complaint = complaint.copyWith(comment: value);
-                  },
-                ),
-              ),
-            ],
-          ),
+  Widget _selectComplaintName(
+    List<StakeHolder> stakeHolders,
+    String? stakeHolderId,
+  ) {
+    final initStakeHolder =
+        stakeHolders.firstWhereOrNull((e) => e.stakeHolderId == stakeHolderId);
+    return AttributeItem(
+      child: CmoDropdown<StakeHolder>(
+        name: LocaleKeys.complaintName.tr(),
+        hintText: LocaleKeys.complaintName.tr(),
+        validator: requiredValidator,
+        inputDecoration: InputDecoration(
+          contentPadding: const EdgeInsets.all(8),
+          isDense: true,
+          hintText: LocaleKeys.complaintName.tr(),
+          hintStyle: context.textStyles.bodyBold.blueDark2,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
         ),
+        onChanged: (data) {
+          cubit.onStateHolderChanged(data);
+        },
+        initialValue: initStakeHolder,
+        itemsData: stakeHolders
+            .map((e) => CmoDropdownItem(id: e, name: e.stakeholderName ?? ''))
+            .toList(),
       ),
     );
   }
 
-  Widget _selectComplaintName() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            LocaleKeys.complaintName.tr(),
-            style: context.textStyles.bodyBold.black,
-          ),
-        ),
-        ValueListenableBuilder(
-          valueListenable: complaints,
-          builder: (_, value, __) {
-            return CmoDropdown<StakeHolder>(
-                name: 'ComplaintId',
-                hintText: LocaleKeys.complaintName.tr(),
-                validator: requiredValidator,
-                inputDecoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(8),
-                  isDense: true,
-                  hintText:
-                      '${LocaleKeys.select.tr()} ${LocaleKeys.complaintName.tr().toLowerCase()}',
-                  hintStyle: context.textStyles.bodyNormal.grey,
-                  border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: context.colors.grey)),
-                  focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: context.colors.blue)),
-                ),
-                onChanged: (data) {
-                  selectStakeHolder = data;
-                  setState(() {});
-                },
-                initialValue: selectStakeHolder,
-                itemsData: value
-                    .map((e) =>
-                        CmoDropdownItem(id: e, name: e.stakeholderName ?? ''))
-                    .toList());
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSelectDateReceived() {
+  Widget _buildSelectDateReceived(DateTime? receiveDate) {
     return AttributeItem(
       child: CmoDatePicker(
         name: 'DateReceived',
         hintText: LocaleKeys.dateReceived.tr(),
-        validator: (DateTime? value) {
-          if (value == null) return null;
-          if (value.millisecondsSinceEpoch >
-              DateTime.now().millisecondsSinceEpoch) {
-            return 'Received date cannot be in the future';
-          }
-          return null;
-        },
+        validator: requiredValidator,
+        initialValue: receiveDate,
+        onChanged: cubit.onDateReceivedChanged,
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
@@ -322,18 +258,18 @@ class _AddStakeHolderComplaintScreenState
           suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
           isDense: true,
           hintText: LocaleKeys.dateReceived.tr(),
-          hintStyle: context.textStyles.bodyBold.black,
+          hintStyle: context.textStyles.bodyBold.blueDark2,
           labelText: LocaleKeys.dateReceived.tr(),
-          labelStyle: context.textStyles.bodyBold.black,
+          labelStyle: context.textStyles.bodyBold.blueDark2,
         ),
       ),
     );
   }
 
-  Widget _buildSelectDateClosed() {
+  Widget _buildSelectDateClosed(DateTime? dateClosed) {
     return AttributeItem(
       child: CmoDatePicker(
-        name: 'DateClosed',
+        name: LocaleKeys.dateClosed.tr(),
         hintText: LocaleKeys.dateClosed.tr(),
         validator: (DateTime? value) {
           if (value == null) return null;
@@ -350,6 +286,8 @@ class _AddStakeHolderComplaintScreenState
           }
           return null;
         },
+        initialValue: dateClosed,
+        onChanged: cubit.onDateClosedChanged,
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
@@ -360,9 +298,9 @@ class _AddStakeHolderComplaintScreenState
           suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
           isDense: true,
           hintText: LocaleKeys.dateClosed.tr(),
-          hintStyle: context.textStyles.bodyBold.black,
+          hintStyle: context.textStyles.bodyBold.blueDark2,
           labelText: LocaleKeys.dateClosed.tr(),
-          labelStyle: context.textStyles.bodyBold.black,
+          labelStyle: context.textStyles.bodyBold.blueDark2,
         ),
       ),
     );
