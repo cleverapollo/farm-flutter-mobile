@@ -193,6 +193,12 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
     );
   }
 
+  String? _validateFirstName = '';
+  String? _validateLastName = '';
+  String? _validateIdNumber = '';
+  String? _validatePhoneNumber = '';
+  String? _validateNationality = '';
+
   void _validate({bool isInit = false}) {
     if (isInit) {
       final isValid = !farmerWorker.firstName.isNullOrEmpty &&
@@ -200,12 +206,17 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
           !farmerWorker.idNumber.isNullOrEmpty &&
           !farmerWorker.phoneNumber.isNullOrEmpty &&
           !farmerWorker.nationality.isNullOrEmpty;
-
       isAllValid.value = isValid;
       return;
     }
 
-    isAllValid.value = _formKey.currentState?.saveAndValidate() ?? false;
+    final validate = _validateFirstName.isNullOrEmpty ||
+        _validateLastName.isNullOrEmpty ||
+        _validateIdNumber.isNullOrEmpty ||
+        _validatePhoneNumber.isNullOrEmpty ||
+        _validateNationality.isNullOrEmpty;
+
+    isAllValid.value = !validate;
   }
 
   Widget _buildInputArea() {
@@ -225,6 +236,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                   hintTextStyle: context.textStyles.bodyBold.black,
                   initialValue: farmerWorker.firstName,
                   onChanged: (value) {
+                    _validateFirstName = value;
                     farmerWorker = farmerWorker.copyWith(firstName: value);
                     _validate();
                   },
@@ -236,6 +248,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                   hintTextStyle: context.textStyles.bodyBold.black,
                   initialValue: farmerWorker.surname,
                   onChanged: (value) {
+                    _validateLastName = value;
                     farmerWorker = farmerWorker.copyWith(surname: value);
                     _validate();
                   },
@@ -254,6 +267,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                         hintTextStyle: context.textStyles.bodyBold.black,
                         initialValue: farmerWorker.idNumber,
                         onChanged: (value) {
+                          _validateIdNumber = value;
                           farmerWorker = farmerWorker.copyWith(idNumber: value);
                           _validate();
                         },
@@ -269,10 +283,11 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
               AttributeItem(
                 child: InputAttributeItem(
                   hintText: LocaleKeys.phoneNumber.tr(),
-                  keyboardType: TextInputType.numberWithOptions(signed: true),
+                  keyboardType: TextInputType.number,
                   initialValue: farmerWorker.phoneNumber,
                   hintTextStyle: context.textStyles.bodyBold.black,
                   onChanged: (value) {
+                    _validatePhoneNumber = value;
                     farmerWorker = farmerWorker.copyWith(phoneNumber: value);
                     _validate();
                   },
@@ -284,6 +299,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                   hintTextStyle: context.textStyles.bodyBold.black,
                   initialValue: farmerWorker.nationality,
                   onChanged: (value) {
+                    _validateNationality = value;
                     farmerWorker = farmerWorker.copyWith(nationality: value);
                     _validate();
                   },
