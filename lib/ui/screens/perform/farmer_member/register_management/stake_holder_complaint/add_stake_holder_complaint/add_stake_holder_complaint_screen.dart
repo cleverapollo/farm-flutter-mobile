@@ -160,9 +160,9 @@ class _AddStakeHolderComplaintScreenState
                             child: InputAttributeItem(
                               validator: (_)=> null,
                               initialValue: complaint.issueDescription,
-                              hintText: LocaleKeys.issueRaised.tr(),
-                              hintTextStyle:
-                                  context.textStyles.bodyBold.blueDark2,
+                              textStyle: context.textStyles.bodyNormal.blueDark2,
+                              labelText: LocaleKeys.issueRaised.tr(),
+                              labelTextStyle: context.textStyles.bodyBold.blueDark2,
                               onChanged: (value) {
                                 cubit.onIssueDescriptionChanged(value);
                               },
@@ -173,10 +173,10 @@ class _AddStakeHolderComplaintScreenState
                           AttributeItem(
                             child: InputAttributeItem(
                               validator: (_)=> null,
+                              textStyle: context.textStyles.bodyNormal.blueDark2,
+                              labelText: LocaleKeys.closureDetails.tr(),
+                              labelTextStyle: context.textStyles.bodyBold.blueDark2,
                               initialValue: complaint.closureDetails,
-                              hintText: LocaleKeys.closureDetails.tr(),
-                              hintTextStyle:
-                                  context.textStyles.bodyBold.blueDark2,
                               onChanged: cubit.onClosureDetailChanged,
                             ),
                           ),
@@ -221,8 +221,12 @@ class _AddStakeHolderComplaintScreenState
         name: LocaleKeys.complaintName.tr(),
         hintText: LocaleKeys.complaintName.tr(),
         validator: requiredValidator,
+        style: context.textStyles.bodyBold.blueDark2,
         inputDecoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(8),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 12,
+          ),
           isDense: true,
           hintText: LocaleKeys.complaintName.tr(),
           hintStyle: context.textStyles.bodyBold.blueDark2,

@@ -16,7 +16,6 @@ class AddStakeHolderComplaintCubit extends Cubit<AddStakeHolderComplaintState> {
       farm: farm,
       complaint: complaint,
             isAddNew: isAddNew,
-            isDataReady: false,
           ),
         ) {
     onInit();
