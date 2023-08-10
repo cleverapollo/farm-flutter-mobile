@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddingChemicalScreen extends StatefulWidget {
-  AddingChemicalScreen({Key? key, this.data}) : super(key: key);
+  const AddingChemicalScreen({super.key, this.data});
 
   final Chemical? data;
 
@@ -264,8 +264,13 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                             Center(
                               child: CmoFilledButton(
                                 title: LocaleKeys.save.tr(),
-                                onTap: () => cubit.onSave(context).then(
-                                    (value) => Navigator.pop(context, true)),
+                                onTap: () async {
+                                  final canNext = await cubit.onSave();
+
+                                  if (canNext && context.mounted) {
+                                    Navigator.pop(context, true);
+                                  }
+                                },
                               ),
                             ),
                           ],

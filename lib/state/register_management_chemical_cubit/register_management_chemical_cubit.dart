@@ -6,7 +6,6 @@ import 'package:cmo/model/chemical_application_method/chemical_application_metho
 import 'package:cmo/model/chemical_type/chemical_type.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RMChemicalCubit extends Cubit<RMChemicalState> {
@@ -140,7 +139,7 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
     )));
   }
 
-  Future<void> onSave(BuildContext context) async {
+  Future<bool> onSave() async {
     final canSave = state.chemical.campId != null &&
         state.chemical.openingStock != null &&
         state.chemical.issued != null &&
@@ -150,7 +149,8 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
         state.chemical.comment != null;
 
     if (!canSave) {
-      return showSnackError(msg: 'Please select required field');
+      showSnackError(msg: 'Please select required field');
+      return false;
     }
 
     var isMasterdataSynced = false;
@@ -163,7 +163,7 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
       }
     }
 
-    await cmoDatabaseMasterService
+    final result = await cmoDatabaseMasterService
         .cacheChemicalFromRM(state.chemical.copyWith(
       farmId: int.parse(state.farmId!),
       chemicalNo: state.chemical.chemicalNo ??
@@ -173,13 +173,13 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
           : state.chemical.chemicalId,
       isActive: true,
       isMasterdataSynced: isMasterdataSynced,
-    ))
-        .then((value) async {
-      if (value != null) {
-        showSnackSuccess(msg: 'Save Chemical $value Successfully');
-      } else {
-        showSnackError(msg: 'Something was wrong, please try again.');
-      }
-    });
+    ));
+    if (result != null) {
+      showSnackSuccess(msg: 'Save Chemical $result Successfully');
+      return true;
+    } else {
+      showSnackError(msg: 'Something was wrong, please try again.');
+      return false;
+    }
   }
 }
