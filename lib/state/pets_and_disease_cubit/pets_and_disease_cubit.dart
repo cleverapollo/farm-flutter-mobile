@@ -1,6 +1,8 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/pest_and_disease_type/pest_and_disease_type.dart';
 import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and_diseases_register_treatment_method.dart';
+import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,7 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
   }
 
   Future<void> initData() async {
+    emit(state.copyWith(isLoading: true));
     final inited = await initConfigData();
 
     if (!inited) return;
@@ -28,9 +31,7 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
     final result = await cmoDatabaseMasterService
         .getPetsAndDiseaseRegisterByFarmId(state.farmId!);
 
-    if (result.isNotEmpty) {
-      emit(state.copyWith(petsAndDiseaseRegisters: result));
-    }
+    emit(state.copyWith(petsAndDiseaseRegisters: result, isLoading: false));
   }
 
   Future<bool> initConfigData() async {
@@ -46,7 +47,9 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
     }
   }
 
-  Future<void> initAddData() async {
+  Future<void> initAddData({PetsAndDiseaseRegister? data}) async {
+    emit(state.copyWith(isLoading: true));
+
     final inited = await initConfigData();
 
     if (!inited) return;
@@ -59,12 +62,36 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
         .getAllPestsAndDiseasesRegisterTreatmentMethod();
 
     emit(state.copyWith(
-        petsAndDiseaseTypes: petsAndDiseasesTypes,
-        pestsAndDiseasesRegisterTreatmentMethods: petsAndDiseaseTreatmentMethod,
-        treatmentMethods: treatmentMethods,
+      petsAndDiseaseTypes: petsAndDiseasesTypes,
+      pestsAndDiseasesRegisterTreatmentMethods: petsAndDiseaseTreatmentMethod,
+      treatmentMethods: treatmentMethods,
+    ));
+
+    if (data != null) {
+      final pestsAndDiseasesTreatmentMethod = await cmoDatabaseMasterService
+          .getPestsAndDiseasesRegisterTreatmentMethodByPestsAndDiseasesRegisterNo(
+              data.pestsAndDiseasesRegisterNo);
+
+      final selectPestsAndDiseasesType = state.petsAndDiseaseTypes
+          .firstWhereOrNull(
+              (e) => e.pestsAndDiseaseTypeId == data.pestsAndDiseaseTypeId);
+
+      emit(state.copyWith(
+        data: data,
+        carClosed: data.carClosedDate != null,
+        carRaised: data.carRaisedDate != null,
+        selectPetsAndDiseaseType: selectPestsAndDiseasesType,
+        selectPestsAndDiseasesRegisterTreatmentMethods:
+            pestsAndDiseasesTreatmentMethod,
+      ));
+    }
+
+    emit(state.copyWith(
         data: state.data.copyWith(
-            pestsAndDiseasesRegisterNo:
-                DateTime.now().millisecondsSinceEpoch.toString())));
+          pestsAndDiseasesRegisterNo: state.data.pestsAndDiseasesRegisterNo ??
+              DateTime.now().millisecondsSinceEpoch.toString(),
+        ),
+        isLoading: false));
   }
 
   void onChangeData({
@@ -78,16 +105,27 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
     List<PestsAndDiseasesRegisterTreatmentMethod>?
         selectPestsAndDiseasesRegisterTreatmentMethods,
   }) {
-    final selectMethods = <PestsAndDiseasesRegisterTreatmentMethod>[];
+    String? carRaisedDate;
+    String? carClosedDate;
 
-    selectMethods.addAll(state.pestsAndDiseasesRegisterTreatmentMethods);
+    if (carRaised == true && state.data.carRaisedDate == null) {
+      carRaisedDate = DateTime.now().toIso8601String();
+    }
+    if (carRaised == false && state.data.carRaisedDate != null) {
+      carRaisedDate = null;
+    }
+    if (carRaised == null) {
+      carRaisedDate = state.data.carRaisedDate;
+    }
 
-    if (selectPestsAndDiseasesRegisterTreatmentMethods != null) {
-      selectMethods.addAll(
-          selectPestsAndDiseasesRegisterTreatmentMethods.map((e) => e.copyWith(
-                pestsAndDiseasesRegisterNo:
-                    state.data.pestsAndDiseasesRegisterNo,
-              )));
+    if (carClosed == true && state.data.carClosedDate == null) {
+      carClosedDate = DateTime.now().toIso8601String();
+    }
+    if (carClosed == false && state.data.carClosedDate != null) {
+      carClosedDate = null;
+    }
+    if (carClosed == null) {
+      carClosedDate = state.data.carClosedDate;
     }
 
     emit(state.copyWith(
@@ -102,23 +140,40 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
         pestsAndDiseaseTypeName:
             selectPetsAndDiseaseType?.pestsAndDiseaseTypeName ??
                 state.selectPetsAndDiseaseType?.pestsAndDiseaseTypeName,
-        carClosedDate:
-            carClosed == true ? DateTime.now().toIso8601String() : null,
-        carRaisedDate:
-            carRaised == true ? DateTime.now().toIso8601String() : null,
+        carRaisedDate: carRaisedDate,
+        carClosedDate: carClosedDate,
       ),
       carClosed: carClosed ?? state.carClosed,
       carRaised: carRaised ?? state.carRaised,
       selectPetsAndDiseaseType:
           selectPetsAndDiseaseType ?? state.selectPetsAndDiseaseType,
-      pestsAndDiseasesRegisterTreatmentMethods: selectMethods,
+      selectPestsAndDiseasesRegisterTreatmentMethods:
+          selectPestsAndDiseasesRegisterTreatmentMethods != null
+              ? selectPestsAndDiseasesRegisterTreatmentMethods
+                  .map((e) => e.copyWith(
+                        pestsAndDiseasesRegisterNo:
+                            state.data.pestsAndDiseasesRegisterNo,
+                      ))
+                  .toList()
+              : state.selectPestsAndDiseasesRegisterTreatmentMethods,
     ));
   }
 
   Future<void> onSave(BuildContext context) async {
+    final canSave = state.selectPetsAndDiseaseType != null &&
+        state.data.numberOfOutbreaks != null &&
+        state.data.areaLost != null &&
+        state.data.underControl != null;
+
+    if (!canSave) return showSnackError(msg: 'Required fields are missing');
+
     final futures = <Future<void>>[];
 
-    for (final item in state.pestsAndDiseasesRegisterTreatmentMethods) {
+    final needDeleted = await cmoDatabaseMasterService
+        .deletedPestsAndDiseaseTreatmentMethodByPestsAndDiseasesRegisterNo(
+            state.data.pestsAndDiseasesRegisterNo);
+
+    for (final item in state.selectPestsAndDiseasesRegisterTreatmentMethods) {
       futures.add(
           cmoDatabaseMasterService.cachePestsAndDiseaseTreatmentMethod(item));
     }
@@ -135,7 +190,6 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
         .then((value) {
       if (value != null) {
         showSnackSuccess(msg: 'Save Pests And Disease $value Successfully');
-        Navigator.pop(context);
       } else {
         showSnackError(msg: 'Something was wrong, please try again.');
       }

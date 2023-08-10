@@ -35,7 +35,7 @@ class PetsAndDiseaseRegister with _$PetsAndDiseaseRegister {
 
   @override
   Id get id =>
-      int.tryParse(pestsAndDiseasesRegisterId ?? '') ?? Isar.autoIncrement;
+      int.tryParse(pestsAndDiseasesRegisterNo ?? '') ?? Isar.autoIncrement;
 }
 
 extension PetsAndDiseaseRegisterX on PetsAndDiseaseRegister {

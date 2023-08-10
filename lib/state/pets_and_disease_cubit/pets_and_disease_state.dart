@@ -9,6 +9,8 @@ part 'pets_and_disease_state.freezed.dart';
 @freezed
 class PetsAndDiseasesState with _$PetsAndDiseasesState {
   const factory PetsAndDiseasesState({
+    @Default(PetsAndDiseaseRegister()) PetsAndDiseaseRegister data,
+    @Default(PetsAndDiseaseRegister()) PetsAndDiseaseRegister dataBeforeEdit,
     @Default([]) List<PestsAndDiseaseType> petsAndDiseaseTypes,
     @Default([])
         List<PestsAndDiseasesRegisterTreatmentMethod>
@@ -18,12 +20,12 @@ class PetsAndDiseasesState with _$PetsAndDiseasesState {
             selectPestsAndDiseasesRegisterTreatmentMethods,
     @Default([]) List<PetsAndDiseaseRegister> petsAndDiseaseRegisters,
     PestsAndDiseaseType? selectPetsAndDiseaseType,
-    @Default(PetsAndDiseaseRegister()) PetsAndDiseaseRegister data,
     @Default([]) List<TreatmentMethod> treatmentMethods,
     int? groupSchemeId,
     String? farmId,
     bool? carRaised,
     bool? carClosed,
     bool? isOpen,
+    @Default(false) bool isLoading,
   }) = _PetsAndDiseasesState;
 }

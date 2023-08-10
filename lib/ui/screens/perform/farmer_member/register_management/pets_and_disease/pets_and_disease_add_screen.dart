@@ -1,7 +1,9 @@
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/pest_and_disease_type/pest_and_disease_type.dart';
 import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and_diseases_register_treatment_method.dart';
+import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
 import 'package:cmo/model/treament_method/treament_method.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_cubit.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
@@ -13,15 +15,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PetsAndDiseaseAddScreen extends StatefulWidget {
-  const PetsAndDiseaseAddScreen({super.key});
+  const PetsAndDiseaseAddScreen({super.key, this.data});
 
-  static Future<void> push(BuildContext context) {
+  final PetsAndDiseaseRegister? data;
+
+  static Future<dynamic> push(BuildContext context,
+      {PetsAndDiseaseRegister? data}) {
     return Navigator.push(
         context,
         MaterialPageRoute(
             builder: (_) => BlocProvider<PetsAndDiseasesCubit>(
-                create: (_) => PetsAndDiseasesCubit()..initAddData(),
-                child: const PetsAndDiseaseAddScreen())));
+                create: (_) => PetsAndDiseasesCubit()..initAddData(data: data),
+                child: PetsAndDiseaseAddScreen(data: data))));
   }
 
   @override
@@ -40,6 +45,11 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
       body: BlocBuilder<PetsAndDiseasesCubit, PetsAndDiseasesState>(
         builder: (context, state) {
           final cubit = context.read<PetsAndDiseasesCubit>();
+
+          if (state.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
           return Padding(
             padding:
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
@@ -86,6 +96,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
+                    initialValue: '${state.data.numberOfOutbreaks ?? ''}',
                     onChanged: (value) {
                       cubit.onChangeData(numberOfOutbreaks: int.parse(value));
                     },
@@ -106,11 +117,11 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
+                    initialValue: '${state.data.areaLost ?? ''}',
                     onChanged: (value) {
                       cubit.onChangeData(areaLost: int.parse(value));
                     },
                     decoration: const InputDecoration(
-                        //labelText: "Phone number",
                         contentPadding: EdgeInsets.all(8),
                         isDense: true,
                         enabledBorder: UnderlineInputBorder(
@@ -118,11 +129,11 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                         ),
                         border: InputBorder.none),
                   ),
-                  const SizedBox(height: 12.0),
+                  const SizedBox(height: 20.0),
                   Row(
                     children: [
                       Text(
-                        '${state.pestsAndDiseasesRegisterTreatmentMethods.length} ${LocaleKeys.treatment_methods.tr()}',
+                        '${state.selectPestsAndDiseasesRegisterTreatmentMethods.length} ${LocaleKeys.treatment_methods.tr()}',
                         style: context.textStyles.bodyBold
                             .copyWith(color: context.colors.black),
                       ),
@@ -130,7 +141,10 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                       InkWell(
                           onTap: () async {
                             final result = await _SelectPropertyDamaged.push(
-                                context, state.treatmentMethods);
+                                context: context,
+                                treatmentMethods: state.treatmentMethods,
+                                selectTreatmentMethod: state
+                                    .selectPestsAndDiseasesRegisterTreatmentMethods);
 
                             if (result != null) {
                               cubit.onChangeData(
@@ -143,7 +157,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                       const SizedBox(width: 8.0),
                     ],
                   ),
-                  const SizedBox(height: 12.0),
+                  const SizedBox(height: 20.0),
                   Text(
                     LocaleKeys.generalComments.tr(),
                     style: context.textStyles.bodyBold
@@ -151,6 +165,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
+                    initialValue: state.data.comment ?? '',
                     onChanged: (value) {
                       cubit.onChangeData(comment: value);
                     },
@@ -225,7 +240,9 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                   Align(
                     child: CmoFilledButton(
                         title: LocaleKeys.save.tr(),
-                        onTap: () => cubit.onSave(context)),
+                        onTap: () => cubit
+                            .onSave(context)
+                            .then((value) => Navigator.pop(context, true))),
                   ),
                   const SizedBox(height: 24),
                 ],
@@ -240,23 +257,28 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
 
 class _SelectPropertyDamaged extends StatefulWidget {
   const _SelectPropertyDamaged({
-    required this.treatmentMethod,
+    required this.treatmentMethods,
+    required this.selectTreatmentMethod,
   });
 
-  final List<TreatmentMethod> treatmentMethod;
+  final List<TreatmentMethod> treatmentMethods;
+  final List<PestsAndDiseasesRegisterTreatmentMethod> selectTreatmentMethod;
 
   @override
   State<StatefulWidget> createState() => _SelectPropertyDamagedState();
 
-  static Future<dynamic> push(
-    BuildContext context,
-    List<TreatmentMethod> treatmentMethod,
-  ) {
+  static Future<dynamic> push({
+    required BuildContext context,
+    required List<TreatmentMethod> treatmentMethods,
+    required List<PestsAndDiseasesRegisterTreatmentMethod>
+        selectTreatmentMethod,
+  }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => _SelectPropertyDamaged(
-          treatmentMethod: treatmentMethod,
+          treatmentMethods: treatmentMethods,
+          selectTreatmentMethod: selectTreatmentMethod,
         ),
       ),
     );
@@ -269,6 +291,9 @@ class _SelectPropertyDamagedState extends State<_SelectPropertyDamaged> {
   @override
   void initState() {
     super.initState();
+    selectedItems.addAll(widget.selectTreatmentMethod
+        .map((e) => TreatmentMethod(treatmentMethodId: e.treatmentMethodId))
+        .toList());
   }
 
   @override
@@ -288,10 +313,10 @@ class _SelectPropertyDamagedState extends State<_SelectPropertyDamaged> {
               separatorBuilder: (context, index) => const SizedBox(
                 height: 12,
               ),
-              itemCount: widget.treatmentMethod.length,
+              itemCount: widget.treatmentMethods.length,
               padding: const EdgeInsets.symmetric(horizontal: 21),
               itemBuilder: (context, index) =>
-                  _buildItem(widget.treatmentMethod[index]),
+                  _buildItem(widget.treatmentMethods[index]),
             ),
           ),
         ],
@@ -323,10 +348,14 @@ class _SelectPropertyDamagedState extends State<_SelectPropertyDamaged> {
     return InkWell(
       onTap: () {
         setState(() {
-          if (selectedItems.contains(item)) {
-            selectedItems.remove(item);
-          } else {
+          final canAdd = selectedItems.firstWhereOrNull(
+                  (e) => e.treatmentMethodId == item.treatmentMethodId) ==
+              null;
+          if (canAdd) {
             selectedItems.add(item);
+          } else {
+            selectedItems.removeWhere(
+                (e) => e.treatmentMethodId == item.treatmentMethodId);
           }
         });
       },

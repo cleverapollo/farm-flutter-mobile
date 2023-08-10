@@ -1134,6 +1134,19 @@ class CmoDatabaseMasterService {
     });
   }
 
+  Future<int?>
+      deletedPestsAndDiseaseTreatmentMethodByPestsAndDiseasesRegisterNo(
+          String? id) async {
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.pestsAndDiseasesRegisterTreatmentMethods
+          .filter()
+          .pestsAndDiseasesRegisterNoEqualTo(id)
+          .deleteAll();
+    });
+  }
+
   Future<int?> cacheMonitoringRequirement(MonitoringRequirement data) async {
     final db = await _db();
 
@@ -1652,9 +1665,23 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<RteSpecies>> getPestsAndDiseasesRegisterTreatmentMethod() async {
+  Future<List<PestsAndDiseasesRegisterTreatmentMethod>>
+      getPestsAndDiseasesRegisterTreatmentMethodByPestsAndDiseasesRegisterNo(
+          String? id) async {
     final db = await _db();
-    return db.rteSpecies.filter().isActiveEqualTo(true).findAll();
+    return db.pestsAndDiseasesRegisterTreatmentMethods
+        .filter()
+        .pestsAndDiseasesRegisterNoEqualTo(id)
+        .findAll();
+  }
+
+  Future<List<PestsAndDiseasesRegisterTreatmentMethod>>
+      getPestsAndDiseasesRegisterTreatmentMethod() async {
+    final db = await _db();
+    return db.pestsAndDiseasesRegisterTreatmentMethods
+        .filter()
+        .isActiveEqualTo(true)
+        .findAll();
   }
 
   Future<List<PetsAndDiseaseRegister>>
@@ -1675,21 +1702,21 @@ class CmoDatabaseMasterService {
       return db.petsAndDiseaseRegisters
           .filter()
           .farmIdEqualTo(farmId)
-          .isActiveEqualTo(false)
+          .isActiveEqualTo(true)
           .findAll();
     }
     if (isUnderControl == true) {
       return db.petsAndDiseaseRegisters
           .filter()
           .farmIdEqualTo(farmId)
-          .isActiveEqualTo(false)
+          .isActiveEqualTo(true)
           .underControlEqualTo(true)
           .findAll();
     }
     return db.petsAndDiseaseRegisters
         .filter()
         .farmIdEqualTo(farmId)
-        .isActiveEqualTo(false)
+        .isActiveEqualTo(true)
         .underControlEqualTo(false)
         .findAll();
   }
