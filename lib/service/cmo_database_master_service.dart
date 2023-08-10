@@ -784,6 +784,16 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<int> getCountAccidentAndIncidentRegistersByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.accidentAndIncidents
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .count();
+  }
+
   Future<int?> cacheAccidentAndIncidentPropertyDamaged(
       AccidentAndIncidentPropertyDamaged data) async {
     final db = await _db();
@@ -1900,6 +1910,16 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<int> getCountBiologicalControlAgentByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.biologicalControlAgents
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .count();
+  }
+
   Future<List<AsiPhoto>> getUnsyncedAsiPhoto() async {
     final db = await _db();
     return db.asiPhotos
@@ -2019,6 +2039,15 @@ class CmoDatabaseMasterService {
         .isActiveEqualTo(true)
         .dateIsNull()
         .findAll();
+  }
+
+  Future<int> getCountAsiRegisterByFarmId(String farmId) async {
+    final db = await _db();
+    return db.asis
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .count();
   }
 
   Future<List<Asi>> getUnsyncedAsiRegister(String farmId) async {
@@ -2932,6 +2961,16 @@ class CmoDatabaseMasterService {
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
         .findAll();
+  }
+
+  Future<int> getCountEmployeeGrievancesByFarmId(
+      String farmId) async {
+    final db = await _db();
+    return db.grievanceRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .count();
   }
 
   Future<int> cacheFireManagement(FireManagement item) async {
