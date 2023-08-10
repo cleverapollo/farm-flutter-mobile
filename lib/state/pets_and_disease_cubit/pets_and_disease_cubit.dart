@@ -5,7 +5,6 @@ import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and
 import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
@@ -159,13 +158,16 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
     ));
   }
 
-  Future<void> onSave(BuildContext context) async {
+  Future<bool> onSave() async {
     final canSave = state.selectPetsAndDiseaseType != null &&
         state.data.numberOfOutbreaks != null &&
         state.data.areaLost != null &&
         state.data.underControl != null;
 
-    if (!canSave) return showSnackError(msg: 'Required fields are missing');
+    if (!canSave) {
+      showSnackError(msg: 'Required fields are missing');
+      return false;
+    }
 
     final futures = <Future<void>>[];
 
@@ -180,19 +182,20 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
 
     await Future.wait(futures);
 
-    await cmoDatabaseMasterService
+    final value = await cmoDatabaseMasterService
         .cachePetsAndDiseaseFromFarm(state.data.copyWith(
       isActive: true,
       isMasterdataSynced: false,
       pestsAndDiseasesRegisterId: null,
       farmId: state.farmId,
-    ))
-        .then((value) {
-      if (value != null) {
-        showSnackSuccess(msg: 'Save Pests And Disease $value Successfully');
-      } else {
-        showSnackError(msg: 'Something was wrong, please try again.');
-      }
-    });
+    ));
+
+    if (value != null) {
+      showSnackSuccess(msg: 'Save Pests And Disease $value Successfully');
+      return true;
+    } else {
+      showSnackError(msg: 'Something was wrong, please try again.');
+      return false;
+    }
   }
 }

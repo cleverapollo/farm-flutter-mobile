@@ -240,9 +240,13 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                   Align(
                     child: CmoFilledButton(
                         title: LocaleKeys.save.tr(),
-                        onTap: () => cubit
-                            .onSave(context)
-                            .then((value) => Navigator.pop(context, true))),
+                        onTap: () async {
+                          final canNext = await cubit.onSave();
+
+                          if (canNext && context.mounted) {
+                            Navigator.pop(context, true);
+                          }
+                        }),
                   ),
                   const SizedBox(height: 24),
                 ],
