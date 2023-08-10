@@ -9,6 +9,8 @@ part 'register_management_chemical_state.freezed.dart';
 @freezed
 class RMChemicalState with _$RMChemicalState {
   const factory RMChemicalState({
+    @Default(Chemical()) Chemical chemical,
+    @Default(Chemical()) Chemical chemicalBeforeEdit,
     String? farmId,
     int? groupSchemeId,
     @Default(false) bool isLoading,
@@ -19,7 +21,6 @@ class RMChemicalState with _$RMChemicalState {
     Camp? campSelect,
     ChemicalType? chemicalTypeSelect,
     ChemicalApplicationMethod? chemicalApplicationMethodSelect,
-    @Default(Chemical()) Chemical chemical,
     @Default(<Chemical>[]) List<Chemical> chemicals,
     @Default(<Chemical>[]) List<Chemical> chemicalsSearch,
   }) = _RMChemicalState;

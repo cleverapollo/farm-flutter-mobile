@@ -1,5 +1,7 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/camp.dart';
+import 'package:cmo/model/chemical.dart';
 import 'package:cmo/model/chemical_application_method/chemical_application_method.dart';
 import 'package:cmo/model/chemical_type/chemical_type.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_state.dart';
@@ -53,19 +55,16 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
   Future<void> onChangeStatus(bool isOpen) async {
     emit(state.copyWith(isLoading: true, isOpen: isOpen));
 
-    await Future.delayed(const Duration(milliseconds: 500));
-
     final result = await cmoDatabaseMasterService
         .getChemicalByFarmId(state.farmId!, isOpen: isOpen);
 
-    if (result.isNotEmpty) {
-      emit(state.copyWith(chemicals: result, chemicalsSearch: result));
-    }
+    emit(state.copyWith(chemicals: result, chemicalsSearch: result));
 
     emit(state.copyWith(isLoading: false));
   }
 
-  Future<void> initAddData() async {
+  Future<void> initAddData({Chemical? data}) async {
+    emit(state.copyWith(isLoading: true));
     final canInit = await initConfig();
 
     if (!canInit) return;
@@ -82,6 +81,27 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
       chemicalApplicationMethods: chemicalApplicationMethods,
       camps: camps,
     ));
+
+    if (data != null) {
+      final selectChemicalType = state.chemicalTypes
+          .firstWhereOrNull((e) => e.chemicalTypeId == data.chemicalTypeId);
+      final selectChemicalApplicationMethod = state.chemicalApplicationMethods
+          .firstWhereOrNull((e) =>
+              e.chemicalApplicationMethodId ==
+              data.chemicalApplicationMethodId);
+      final selectCamp = state.camps.firstWhereOrNull(
+          (element) => element.campId == data.campId.toString());
+
+      emit(state.copyWith(
+        chemical: data,
+        chemicalBeforeEdit: data,
+        campSelect: selectCamp,
+        chemicalTypeSelect: selectChemicalType,
+        chemicalApplicationMethodSelect: selectChemicalApplicationMethod,
+      ));
+    }
+
+    emit(state.copyWith(isLoading: false));
   }
 
   void onChangeData({
@@ -133,19 +153,30 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
       return showSnackError(msg: 'Please select required field');
     }
 
+    var isMasterdataSynced = false;
+
+    if (state.chemicalBeforeEdit.isMasterdataSynced == true) {
+      if (state.chemical != state.chemicalBeforeEdit) {
+        isMasterdataSynced = false;
+      } else {
+        isMasterdataSynced = true;
+      }
+    }
+
     await cmoDatabaseMasterService
         .cacheChemicalFromRM(state.chemical.copyWith(
       farmId: int.parse(state.farmId!),
-      chemicalNo: DateTime.now().microsecondsSinceEpoch.toString(),
-      chemicalId: null,
+      chemicalNo: state.chemical.chemicalNo ??
+          DateTime.now().microsecondsSinceEpoch.toString(),
+      chemicalId: state.chemicalBeforeEdit == const Chemical()
+          ? null
+          : state.chemical.chemicalId,
       isActive: true,
-      isMasterdataSynced: false,
+      isMasterdataSynced: isMasterdataSynced,
     ))
         .then((value) async {
       if (value != null) {
-        showSnackSuccess(msg: 'Save Chemical Id $value Successfully}');
-        Navigator.pop(context);
-        await initListData();
+        showSnackSuccess(msg: 'Save Chemical $value Successfully');
       } else {
         showSnackError(msg: 'Something was wrong, please try again.');
       }

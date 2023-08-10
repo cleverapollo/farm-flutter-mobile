@@ -349,7 +349,7 @@ mixin FarmUploadSummaryMixin {
         var farmStakeholderPayLoad = const FarmStakeholderPayLoad();
 
         for (final item in allFarmsSH) {
-          if (int.tryParse(item.stakeholderId ?? '') ==
+          if ((item.stakeholderId ?? '') ==
               unSyncedStakeholderItem.stakeHolderId) {
             farmStakeholderPayLoad = item.toPayLoad();
           }

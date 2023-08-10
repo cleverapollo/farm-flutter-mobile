@@ -40,7 +40,13 @@ class _ChemicalsScreenState extends State<ChemicalsScreen> {
             showLeading: true,
             showTrailing: true,
             trailing: Assets.icons.icAdd.svgBlack,
-            onTapTrailing: () => AddingChemicalScreen.push(context),
+            onTapTrailing: () async {
+              final shouldRefresh = await AddingChemicalScreen.push(context);
+
+              if (shouldRefresh != null && context.mounted) {
+                await cubit.initListData();
+              }
+            },
           ),
           body: Column(
             children: [
@@ -128,112 +134,122 @@ class _StatusFilterWidget extends StatelessWidget {
 }
 
 class _ChemicalsItem extends StatelessWidget {
-  const _ChemicalsItem(this.chemical, {super.key});
+  const _ChemicalsItem(this.chemical);
   static const double _itemHorizontalPadding = 4;
 
   final Chemical chemical;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 9),
-      decoration: BoxDecoration(
-        border: Border.all(color: context.colors.greyD9D9),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: _itemHorizontalPadding,
+    return InkWell(
+      onTap: () async {
+        final shouldRefresh =
+            await AddingChemicalScreen.push(context, data: chemical);
+
+        if (shouldRefresh != null && context.mounted) {
+          await context.read<RMChemicalCubit>().initListData();
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 9),
+        decoration: BoxDecoration(
+          border: Border.all(color: context.colors.greyD9D9),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: _itemHorizontalPadding,
+              ),
+              child: Text(
+                '${LocaleKeys.chemicals.tr()}: ${chemical.chemicalNo}',
+                style: context.textStyles.bodyBold
+                    .copyWith(color: context.colors.blue),
+              ),
             ),
-            child: Text(
-              '${LocaleKeys.chemicals.tr()}: ${chemical.chemicalNo}',
-              style: context.textStyles.bodyBold
-                  .copyWith(color: context.colors.blue),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: _itemHorizontalPadding * 2,
+                vertical: 6,
+              ),
+              child: Container(
+                height: 1,
+                color: context.colors.black,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: _itemHorizontalPadding * 2,
-              vertical: 6,
+            Container(
+              color: context.colors.greyLight1,
+              child: _ItemRow(
+                title: LocaleKeys.chemicalType.tr(),
+                value: chemical.chemicalType ?? '',
+              ),
             ),
-            child: Container(
-              height: 1,
-              color: context.colors.black,
+            _ItemRow(
+              title: LocaleKeys.chemicalApplicationMethod.tr(),
+              value: chemical.chemicalApplicationMethod ?? '',
             ),
-          ),
-          Container(
-            color: context.colors.greyLight1,
-            child: _ItemRow(
-              title: LocaleKeys.chemicalType.tr(),
-              value: chemical.chemicalType ?? '',
+            Container(
+              color: context.colors.greyLight1,
+              child: _ItemRow(
+                title: LocaleKeys.dateIssued.tr(),
+                value: chemical.date?.ddMMYyyy() ?? '',
+              ),
             ),
-          ),
-          _ItemRow(
-            title: LocaleKeys.chemicalApplicationMethod.tr(),
-            value: chemical.chemicalApplicationMethod ?? '',
-          ),
-          Container(
-            color: context.colors.greyLight1,
-            child: _ItemRow(
-              title: LocaleKeys.dateIssued.tr(),
-              value: chemical.date?.ddMMYyyy() ?? '',
+            _ItemRow(
+              title: LocaleKeys.openingStockAndPurchases.tr(),
+              value: chemical.openingStock?.toString() ?? '',
             ),
-          ),
-          _ItemRow(
-            title: LocaleKeys.openingStockAndPurchases.tr(),
-            value: chemical.openingStock?.toString() ?? '',
-          ),
-          Container(
-            color: context.colors.greyLight1,
-            child: _ItemRow(
-              title: LocaleKeys.issued.tr(),
-              value: chemical.issued?.toString() ?? '',
+            Container(
+              color: context.colors.greyLight1,
+              child: _ItemRow(
+                title: LocaleKeys.issued.tr(),
+                value: chemical.issued?.toString() ?? '',
+              ),
             ),
-          ),
-          _ItemRow(
-            title: LocaleKeys.balance.tr(),
-            value: chemical.balance?.toString() ?? '',
-          ),
-          Container(
-            color: context.colors.greyLight1,
-            child: _ItemRow(
-              title: LocaleKeys.mixture.tr(),
-              value: chemical.mixture ?? '',
+            _ItemRow(
+              title: LocaleKeys.balance.tr(),
+              value: chemical.balance?.toString() ?? '',
             ),
-          ),
-          _ItemRow(
-            title: LocaleKeys.locationUsed.tr(),
-            value: chemical.campName ?? '',
-          ),
-          Container(
-            color: context.colors.greyLight1,
-            child: _ItemRow(
-              title: LocaleKeys.usagePerHa.tr(),
-              value: chemical.usagePerHa?.toString() ?? '',
+            Container(
+              color: context.colors.greyLight1,
+              child: _ItemRow(
+                title: LocaleKeys.mixture.tr(),
+                value: chemical.mixture ?? '',
+              ),
             ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  LocaleKeys.general_comments.tr(),
-                  style: context.textStyles.bodyNormal,
-                ),
-                Text(
-                  chemical.comment ?? '',
-                  style: context.textStyles.bodyNormal,
-                )
-              ],
+            _ItemRow(
+              title: LocaleKeys.locationUsed.tr(),
+              value: chemical.campName ?? '',
             ),
-          ),
-        ],
+            Container(
+              color: context.colors.greyLight1,
+              child: _ItemRow(
+                title: LocaleKeys.usagePerHa.tr(),
+                value: chemical.usagePerHa?.toString() ?? '',
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    LocaleKeys.general_comments.tr(),
+                    style: context.textStyles.bodyNormal,
+                  ),
+                  Text(
+                    chemical.comment ?? '',
+                    style: context.textStyles.bodyNormal,
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -255,13 +271,17 @@ class _ItemRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: context.textStyles.bodyNormal,
+          Expanded(
+            child: Text(
+              title,
+              style: context.textStyles.bodyNormal,
+            ),
           ),
-          Text(
-            value,
-            style: context.textStyles.bodyNormal,
+          Expanded(
+            child: Text(
+              value,
+              style: context.textStyles.bodyNormal,
+            ),
           )
         ],
       ),
