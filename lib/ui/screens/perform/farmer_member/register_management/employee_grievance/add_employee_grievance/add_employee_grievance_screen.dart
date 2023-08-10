@@ -1,31 +1,51 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/add_employee_grievance/add_employee_grievance_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddEmployeeGrievanceScreen extends StatefulWidget {
-  const AddEmployeeGrievanceScreen(
-      {super.key, required this.employeeGrievance});
-
-  final GrievanceRegister? employeeGrievance;
+  const AddEmployeeGrievanceScreen({
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() => _AddEmployeeGrievanceScreenState();
 
-  static Future<GrievanceRegister?> push(BuildContext context,
-      {GrievanceRegister? employeeGrievance}) {
+  static Future<GrievanceRegister?> push(
+    BuildContext context, {
+    required Farm farm,
+    GrievanceRegister? employeeGrievance,
+  }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) =>
-            AddEmployeeGrievanceScreen(employeeGrievance: employeeGrievance),
+        builder: (_) {
+          return BlocProvider(
+            create: (_) => AddEmployeeGrievanceCubit(
+              farm: farm,
+              isAddNew: employeeGrievance == null,
+              employeeGrievance: employeeGrievance ??
+                  GrievanceRegister(
+                    farmId: farm.farmId,
+                    grievanceRegisterId: DateTime.now().millisecondsSinceEpoch.toString(),
+                    grievanceRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
+                    dateReceived: DateTime.now(),
+                    isActive: true,
+                    isMasterdataSynced: false,
+                  ),
+            ),
+            child: const AddEmployeeGrievanceScreen(),
+          );
+        },
       ),
     );
   }
@@ -33,12 +53,7 @@ class AddEmployeeGrievanceScreen extends StatefulWidget {
 
 class _AddEmployeeGrievanceScreenState
     extends State<AddEmployeeGrievanceScreen> {
-  final workers = ValueNotifier<List<FarmerWorker>>([]);
-  final grievanceIssues = ValueNotifier<List<GrievanceIssue>>([]);
-
-  FarmerWorker? selectFarmerWorker;
-  FarmerWorker? selectAllocatedWorker;
-  GrievanceIssue? selectGrievanceIssue;
+  late final AddEmployeeGrievanceCubit cubit;
 
   bool loading = false;
 
@@ -46,35 +61,10 @@ class _AddEmployeeGrievanceScreenState
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
-  late GrievanceRegister employeeGrievance;
-
-  bool carRaised = false;
-  bool carClosed = false;
-
   @override
   void initState() {
     super.initState();
-    if (widget.employeeGrievance == null) {
-      employeeGrievance = GrievanceRegister(
-          grievanceRegisterNo: DateTime.now().toIso8601String(),
-          isActive: true,
-          isMasterdataSynced: false);
-    } else {
-      employeeGrievance =
-          GrievanceRegister.fromJson(widget.employeeGrievance!.toJson());
-    }
-    carRaised = employeeGrievance.carRaisedDate != null;
-    carClosed = employeeGrievance.carClosedDate != null;
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final farm = await configService.getActiveFarm();
-
-      workers.value = await cmoDatabaseMasterService
-          .getFarmerWorkersByFarmId(farm?.farmId ?? '');
-
-      grievanceIssues.value = await cmoDatabaseMasterService
-          .getGrievanceIssueByGroupSchemeId(farm?.groupSchemeId ?? 0);
-    });
+    cubit = context.read<AddEmployeeGrievanceCubit>();
   }
 
   Future<void> onSubmit() async {
@@ -91,32 +81,11 @@ class _AddEmployeeGrievanceScreenState
       });
       try {
         await hideInputMethod();
-        final farm = await configService.getActiveFarm();
+        var employeeGrievance = cubit.state.employeeGrievance;
         employeeGrievance = employeeGrievance.copyWith(
-          grievanceRegisterId: null,
-          grievanceRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
-          farmId: farm?.farmId,
-          dateReceived: value['DateReceived'] as DateTime?,
-          dateClosed: value['DateClosed'] as DateTime?,
-          allocatedToUserId: selectAllocatedWorker?.workerId,
-          workerId: selectFarmerWorker?.workerId,
-          grievanceIssueId: selectGrievanceIssue?.grievanceIssueId,
-          grievanceIssueName: selectGrievanceIssue?.grievanceIssueName,
           isActive: true,
           isMasterdataSynced: false,
         );
-
-        if (carRaised && employeeGrievance.carRaisedDate == null) {
-          employeeGrievance = employeeGrievance.copyWith(
-            carRaisedDate: DateTime.now().toIso8601String(),
-          );
-        }
-
-        if (carClosed && employeeGrievance.carClosedDate == null) {
-          employeeGrievance = employeeGrievance.copyWith(
-            carClosedDate: DateTime.now().toIso8601String(),
-          );
-        }
 
         int? resultId;
 
@@ -124,11 +93,12 @@ class _AddEmployeeGrievanceScreenState
           final databaseService = cmoDatabaseMasterService;
 
           await (await databaseService.db).writeTxn(() async {
-            resultId = await databaseService
-                .cacheEmployeeGrievance(employeeGrievance.copyWith(
-              isActive: true,
-              isMasterdataSynced: false,
-            ));
+            resultId = await databaseService.cacheEmployeeGrievance(
+              employeeGrievance.copyWith(
+                isActive: true,
+                isMasterdataSynced: false,
+              ),
+            );
           });
         }
 
@@ -136,9 +106,8 @@ class _AddEmployeeGrievanceScreenState
           if (context.mounted) {
             showSnackSuccess(
               msg:
-                  '${widget.employeeGrievance == null ? LocaleKeys.addEmployeeGrievance.tr() : 'Edit Employee Grievance'} $resultId',
+                  '${cubit.state.isAddNew ? LocaleKeys.addEmployeeGrievance.tr() : 'Edit Employee Grievance'} $resultId',
             );
-
             Navigator.of(context).pop(employeeGrievance);
           }
         }
@@ -152,26 +121,85 @@ class _AddEmployeeGrievanceScreenState
 
   @override
   Widget build(BuildContext context) {
+    final initState = cubit.state;
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
-          title: widget.employeeGrievance == null
+          title: initState.isAddNew
               ? LocaleKeys.addEmployeeGrievance.tr()
               : 'Edit Employee Grievance',
+          subtitle: initState.farm.farmName,
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildInputArea(),
-              const SizedBox(
-                height: 80,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: FormBuilder(
+              key: _formKey,
+              onChanged: () {},
+              autovalidateMode: autoValidateMode,
+              child: AutofillGroup(
+                child: BlocSelector<AddEmployeeGrievanceCubit,
+                    AddEmployeeGrievanceState, bool>(
+                  selector: (state) => state.isDataReady,
+                  builder: (context, isDataReady) {
+                    if (!isDataReady) {
+                      return const SizedBox.shrink();
+                    }
+                    final employeeGrievance = cubit.state.employeeGrievance;
+                    return SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _selectWorkerName(),
+                          _selectGrievanceIssue(),
+                          _buildSelectDateReceived(
+                            employeeGrievance.dateReceived,
+                          ),
+                          _selectAllocatedTo(),
+                          AttributeItem(
+                            child: InputAttributeItem(
+                              validator: (text) => null,
+                              textCapitalization: TextCapitalization.sentences,
+                              initialValue: employeeGrievance.actionTaken,
+                              hintText: LocaleKeys.actionTaken.tr(),
+                              hintTextStyle: context.textStyles.bodyBold.black,
+                              onChanged: cubit.onActionTakenChanged,
+                            ),
+                          ),
+                          _buildSelectDateClosed(employeeGrievance.dateClosed),
+                          AttributeItem(
+                            child: InputAttributeItem(
+                              validator: (text) => null,
+                              textCapitalization: TextCapitalization.sentences,
+                              initialValue: employeeGrievance.closureDetails,
+                              hintText: LocaleKeys.closureDetails.tr(),
+                              hintTextStyle: context.textStyles.bodyBold.black,
+                              onChanged: cubit.onClosureDetailChanged,
+                            ),
+                          ),
+                          AttributeItem(
+                            child: SizedBox(
+                              height: 97,
+                              child: GeneralCommentWidget(
+                                initialValue: employeeGrievance.comment,
+                                elevation: 0,
+                                hintText: LocaleKeys.generalComments.tr(),
+                                onChanged: cubit.onCommentChanged,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ],
+            ),
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -184,246 +212,134 @@ class _AddEmployeeGrievanceScreenState
     );
   }
 
-  Widget _buildInputArea() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: FormBuilder(
-        key: _formKey,
-        onChanged: () {},
-        autovalidateMode: autoValidateMode,
-        child: AutofillGroup(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _selectWorkerName(),
-              _selectGrievanceIssue(),
-              _buildSelectDateReceived(),
-              _selectAllocatedTo(),
-              AttributeItem(
-                child: InputAttributeItem(
-                  hintText: LocaleKeys.actionTaken.tr(),
-                  hintTextStyle: context.textStyles.bodyBold.black,
-                  onChanged: (value) {
-                    employeeGrievance =
-                        employeeGrievance.copyWith(actionTaken: value);
-                  },
-                ),
-              ),
-              _buildSelectDateClosed(),
-              AttributeItem(
-                child: InputAttributeItem(
-                  hintText: LocaleKeys.closureDetails.tr(),
-                  hintTextStyle: context.textStyles.bodyBold.black,
-                  onChanged: (value) {
-                    employeeGrievance =
-                        employeeGrievance.copyWith(closureDetails: value);
-                  },
-                ),
-              ),
-              AttributeItem(
-                child: SelectItemWidget(
-                  title: LocaleKeys.carRaised.tr(),
-                  onSelect: (isSelected) {
-                    carRaised = isSelected;
-                  },
-                ),
-              ),
-              AttributeItem(
-                child: SelectItemWidget(
-                  title: LocaleKeys.carClosed.tr(),
-                  onSelect: (isSelected) {
-                    carClosed = isSelected;
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 250,
-                child: GeneralCommentWidget(
-                  hintText: LocaleKeys.generalComments.tr(),
-                  onChanged: (value) {
-                    employeeGrievance =
-                        employeeGrievance.copyWith(comment: value);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _selectWorkerName() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
+    return BlocSelector<AddEmployeeGrievanceCubit, AddEmployeeGrievanceState,
+        List<FarmerWorker>>(
+      selector: (state) => state.workers,
+      builder: (context, workers) {
+        final state = cubit.state;
+        final initWorker = workers.firstWhereOrNull(
+          (e) => e.workerId == state.employeeGrievance.workerId,
+        );
+        return AttributeItem(
+          child: CmoDropdown<FarmerWorker>(
+            name: LocaleKeys.worker.tr(),
+            initialValue: initWorker,
+            style: context.textStyles.bodyBold.blueDark2,
+            validator: requiredValidator,
+            inputDecoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 12,
+              ),
+              isDense: true,
+              hintText: LocaleKeys.worker.tr(),
+              hintStyle: context.textStyles.bodyBold.blueDark2,
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+            ),
+            onChanged: (value) {
+              cubit.onFarmWorkerChanged(value);
+            },
+            itemsData: workers
+                .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
+                .toList(),
           ),
-          child: Text(
-            LocaleKeys.worker.tr(),
-            style: context.textStyles.bodyBold.black,
-          ),
-        ),
-        ValueListenableBuilder(
-          valueListenable: workers,
-          builder: (context, data, __) {
-            return CmoDropdown<FarmerWorker>(
-                name: 'WorkerId',
-                hintText: LocaleKeys.worker.tr(),
-                validator: requiredValidator,
-                inputDecoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 12,
-                  ),
-                  isDense: true,
-                  hintText:
-                      '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
-                  hintStyle: context.textStyles.bodyNormal.grey,
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: context.colors.grey),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: context.colors.blue),
-                  ),
-                ),
-                onChanged: (value) {
-                  selectFarmerWorker = value;
-                  setState(() {});
-                },
-                itemsData: data
-                    .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
-                    .toList());
-          },
-        ),
-      ],
+        );
+      },
     );
   }
 
   Widget _selectGrievanceIssue() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
+    return BlocSelector<AddEmployeeGrievanceCubit, AddEmployeeGrievanceState,
+        List<GrievanceIssue>>(
+      selector: (state) => state.grievanceIssues,
+      builder: (context, grievanceIssues) {
+        final state = cubit.state;
+        final initIssue = grievanceIssues.firstWhereOrNull(
+          (e) => e.grievanceIssueId == state.employeeGrievance.grievanceIssueId,
+        );
+        return AttributeItem(
+          child: CmoDropdown<GrievanceIssue>(
+            name: LocaleKeys.grievanceIssue.tr(),
+            initialValue: initIssue,
+            style: context.textStyles.bodyBold.blueDark2,
+            inputDecoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 12,
+              ),
+              isDense: true,
+              hintText: LocaleKeys.grievanceIssue.tr(),
+              hintStyle: context.textStyles.bodyBold.blueDark2,
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+            ),
+            onChanged: (value) {
+              cubit.onGrievanceIssueChanged(value);
+            },
+            itemsData: grievanceIssues
+                .map(
+                  (e) => CmoDropdownItem(
+                    id: e,
+                    name: e.grievanceIssueName ?? '',
+                  ),
+                )
+                .toList(),
           ),
-          child: Text(
-            LocaleKeys.grievanceIssue.tr(),
-            style: context.textStyles.bodyBold.black,
-          ),
-        ),
-        ValueListenableBuilder(
-          valueListenable: grievanceIssues,
-          builder: (context, data, __) {
-            return CmoDropdown<GrievanceIssue>(
-                name: 'GrievanceIssueId',
-                hintText: LocaleKeys.grievanceIssue.tr(),
-                inputDecoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 12,
-                  ),
-                  isDense: true,
-                  hintText:
-                      '${LocaleKeys.select.tr()} ${LocaleKeys.grievanceIssue.tr().toLowerCase()}',
-                  hintStyle: context.textStyles.bodyNormal.grey,
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: context.colors.grey),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: context.colors.blue),
-                  ),
-                ),
-                onChanged: (value) {
-                  selectGrievanceIssue = value;
-                  setState(() {});
-                },
-                itemsData: data
-                    .map((e) => CmoDropdownItem(
-                        id: e, name: e.grievanceIssueName ?? ''))
-                    .toList());
-          },
-        ),
-      ],
+        );
+      },
     );
   }
 
   Widget _selectAllocatedTo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
+    return BlocSelector<AddEmployeeGrievanceCubit, AddEmployeeGrievanceState,
+        List<FarmerWorker>>(
+      selector: (state) => state.workers,
+      builder: (context, workers) {
+        final state = cubit.state;
+        final initAllocated = workers.firstWhereOrNull(
+          (e) => e.workerId == state.employeeGrievance.allocatedToUserId,
+        );
+        return AttributeItem(
+          child: CmoDropdown<FarmerWorker>(
+            name: LocaleKeys.allocatedTo.tr(),
+            initialValue: initAllocated,
+            style: context.textStyles.bodyBold.blueDark2,
+            inputDecoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 12,
+              ),
+              isDense: true,
+              hintText: LocaleKeys.allocatedTo.tr(),
+              hintStyle: context.textStyles.bodyBold.blueDark2,
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+            ),
+            onChanged: (value) {
+              cubit.onAllocatedChanged(value);
+            },
+            itemsData: workers
+                .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
+                .toList(),
           ),
-          child: Text(
-            LocaleKeys.allocatedTo.tr(),
-            style: context.textStyles.bodyBold.black,
-          ),
-        ),
-        ValueListenableBuilder(
-          valueListenable: workers,
-          builder: (context, data, __) {
-            return CmoDropdown<FarmerWorker>(
-                name: 'AllocatedToId',
-                hintText: LocaleKeys.allocatedTo.tr(),
-                inputDecoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 12,
-                  ),
-                  isDense: true,
-                  hintText:
-                      '${LocaleKeys.select.tr()} ${LocaleKeys.allocatedTo.tr().toLowerCase()}',
-                  hintStyle: context.textStyles.bodyNormal.grey,
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: context.colors.grey),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: context.colors.blue),
-                  ),
-                ),
-                onChanged: (value) {
-                  selectAllocatedWorker = value;
-                  setState(() {});
-                },
-                itemsData: data
-                    .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
-                    .toList());
-          },
-        ),
-      ],
+        );
+      },
     );
   }
 
-  Widget _buildSelectDateReceived() {
+  Widget _buildSelectDateReceived(DateTime? dateReceived) {
     return AttributeItem(
       child: CmoDatePicker(
-        name: 'DateReceived',
+        name: LocaleKeys.dateReceived.tr(),
+        initialValue: dateReceived,
         hintText: LocaleKeys.dateReceived.tr(),
-        validator: (DateTime? value) {
-          if (value == null) return null;
-          if (value.millisecondsSinceEpoch >
-              DateTime.now().millisecondsSinceEpoch) {
-            return 'Received date cannot be in the future';
-          }
-          final closedValue =
-              _formKey.currentState?.value['DateClosed'] as DateTime?;
-          if (closedValue != null &&
-              value.millisecondsSinceEpoch <
-                  closedValue.millisecondsSinceEpoch) {
-            return 'Closed date must be after received date';
-          }
-          return null;
-        },
+        validator: requiredValidator,
+        onChanged: (date) => cubit.onDateReceivedChanged(date),
         inputDecoration: InputDecoration(
           border: InputBorder.none,
+          focusedBorder: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
             vertical: 8,
             horizontal: 12,
@@ -440,10 +356,11 @@ class _AddEmployeeGrievanceScreenState
     );
   }
 
-  Widget _buildSelectDateClosed() {
+  Widget _buildSelectDateClosed(DateTime? dateClosed) {
     return AttributeItem(
       child: CmoDatePicker(
         name: 'DateClosed',
+        initialValue: dateClosed,
         hintText: LocaleKeys.dateClosed.tr(),
         validator: (DateTime? value) {
           if (value == null) return null;
@@ -453,6 +370,7 @@ class _AddEmployeeGrievanceScreenState
           }
           return null;
         },
+        onChanged: (date) => cubit.onDateReceivedChanged(date),
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(

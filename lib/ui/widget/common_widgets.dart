@@ -112,6 +112,7 @@ class InputAttributeItem extends StatefulWidget {
   final EdgeInsetsGeometry contentPadding;
   final FormFieldValidator<String?>? validator;
   final String? initialValue;
+  final TextCapitalization? textCapitalization;
 
   final List<TextInputFormatter> inputFormatters;
 
@@ -129,6 +130,7 @@ class InputAttributeItem extends StatefulWidget {
     this.labelText,
     this.labelTextStyle,
     this.isDense = false,
+    this.textCapitalization,
     super.key,
     this.inputFormatters = const <TextInputFormatter>[],
   });
@@ -152,6 +154,7 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
     return TextFormField(
       textCapitalization: TextCapitalization.sentences,
       minLines: 1,
+      textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
       onChanged: widget.onChanged,
       onFieldSubmitted: widget.onSubmitted,
       maxLines: _controller.text.isEmpty ? widget.maxLines : 1,

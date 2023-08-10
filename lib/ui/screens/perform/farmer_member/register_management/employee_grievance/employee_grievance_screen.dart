@@ -1,18 +1,17 @@
 import 'dart:async';
 
-import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/add_employee_grievance/employee_grievance_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/employee_grievance/add_employee_grievance/add_employee_grievance_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../../di.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cmo/di.dart';
 
 class EmployeeGrievanceScreen extends StatefulWidget {
   const EmployeeGrievanceScreen({super.key});
@@ -21,85 +20,55 @@ class EmployeeGrievanceScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _EmployeeGrievanceScreenState();
 
   static Future<void> push(BuildContext context) {
+
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const EmployeeGrievanceScreen(),
+        builder: (_) {
+          return BlocProvider(
+            create: (_) => EmployeeGrievanceCubit(),
+            child: const EmployeeGrievanceScreen(),
+          );
+        },
       ),
     );
   }
 }
 
 class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
-  final List<GrievanceRegister> items = [];
-  bool isLoading = true;
-
-  Timer? _debounceInputTimer;
-  late List<GrievanceRegister> filteredItems;
-  late StatusFilterEnum statusFilter;
-  String? inputSearch;
+  late final EmployeeGrievanceCubit cubit;
 
   @override
   void initState() {
     super.initState();
-    _init();
+    cubit = context.read<EmployeeGrievanceCubit>();
   }
 
-  Future<void> _init() async {
+  Future<void> onNavigateToAddGrievance() async {
     final farm = await configService.getActiveFarm();
-    items.addAll(await cmoDatabaseMasterService
-        .getEmployeeGrievancesByFarmId(farm!.farmId));
-    isLoading = false;
-
-    filteredItems = items;
-    statusFilter = StatusFilterEnum.open;
-    inputSearch = '';
-    applyFilter();
-  }
-
-  void searching(String? input) {
-    inputSearch = input;
-    if (input == null || input.isEmpty) {
-      applyFilter();
-    } else {
-      filteredItems = items.where((element) {
-        final containName = element.grievanceRegisterId
-            .toString()
-            .toLowerCase()
-            .contains(input.toLowerCase());
-        var isFilter = false;
-        switch (statusFilter) {
-          case StatusFilterEnum.open:
-            isFilter = element.dateClosed == null;
-            break;
-          case StatusFilterEnum.closed:
-            isFilter = element.dateClosed != null;
-            break;
-        }
-
-        return containName && isFilter;
-      }).toList();
-      setState(() {});
-    }
-  }
-
-  void applyFilter() {
-    if (inputSearch == null || inputSearch!.isEmpty) {
-      switch (statusFilter) {
-        case StatusFilterEnum.open:
-          filteredItems =
-              items.where((element) => element.dateClosed == null).toList();
-          break;
-        case StatusFilterEnum.closed:
-          filteredItems =
-              items.where((element) => element.dateClosed != null).toList();
-          break;
+    if (farm != null && context.mounted) {
+      final result = await AddEmployeeGrievanceScreen.push(
+        context,
+        farm: farm,
+      );
+      if (result is GrievanceRegister) {
+        cubit.onInsertNewItem(result);
       }
-    } else {
-      searching(inputSearch);
     }
+  }
 
-    setState(() {});
+  Future<void> onNavigateToEditGrievance(int index, GrievanceRegister grievanceRegister) async {
+    final farm = await configService.getActiveFarm();
+    if (farm != null && context.mounted) {
+     final result = await AddEmployeeGrievanceScreen.push(
+        context,
+        farm: farm,
+        employeeGrievance: grievanceRegister,
+      );
+      if (result is GrievanceRegister) {
+        cubit.onUpdateItem(index, result);
+      }
+    }
   }
 
   @override
@@ -110,68 +79,60 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => AddEmployeeGrievanceScreen.push(context),
+        onTapTrailing: () => onNavigateToAddGrievance(),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
-                    child: CmoTextField(
-                      name: LocaleKeys.search.tr(),
-                      hintText: LocaleKeys.search.tr(),
-                      suffixIcon: Assets.icons.icSearch.svg(),
-                      onChanged: (input) {
-                        _debounceInputTimer?.cancel();
-                        _debounceInputTimer = Timer(
-                            const Duration(milliseconds: 200),
-                            () => searching(input));
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
-                    child: StatusFilterWidget(
-                      onSelectFilter: (statusFilterEnum) {
-                        statusFilter = statusFilterEnum;
-                        applyFilter();
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.separated(
-                      separatorBuilder: (context, index) => const SizedBox(
-                        height: 22,
-                      ),
-                      itemCount: filteredItems.length,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 21,
-                      ),
-                      itemBuilder: (context, index) {
-                        final item = filteredItems[index];
-                        return GestureDetector(
-                          onTap: () async {
-                            final result =
-                                await AddEmployeeGrievanceScreen.push(context,
-                                    employeeGrievance: item);
-                            if (result == null) return;
-                            filteredItems[index] = result;
-                            setState(() {});
-                          },
-                          child: _EmployeeGrievanceItem(
-                            employeeGrievance: item,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: BlocBuilder<EmployeeGrievanceCubit, EmployeeGrievanceState> (
+            builder: (context, state) {
+              if (state.isDataReady) {
+                return _buildBody(state);
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody(EmployeeGrievanceState state) {
+    final items = state.items;
+    return Column(
+      children: [
+        CmoTappable(
+          onTap: () => {},
+          child: CmoCard(
+            childAlignment: MainAxisAlignment.center,
+            content: [
+              CmoCardHeader(title: LocaleKeys.summary.tr()),
+              CmoCardHeader(title: LocaleKeys.total.tr(), valueEnd: items.length.toString(),),
+            ],
+            trailing: Assets.icons.icDown.svgWhite,
+          ),
+        ),
+        const SizedBox(height: 24),
+        Expanded(
+          child: ListView.separated(
+            separatorBuilder: (context, index) => const SizedBox(
+              height: 22,
             ),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return GestureDetector(
+                onTap: () {
+                  onNavigateToEditGrievance(index, item);
+                },
+                child: _EmployeeGrievanceItem(
+                  employeeGrievance: item,
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
@@ -219,28 +180,12 @@ class _EmployeeGrievanceItem extends StatelessWidget {
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateReceived.tr(),
-            valueLabel: employeeGrievance.dateReceived?.ddMMYyyy(),
+            valueLabel: employeeGrievance.dateReceived?.yMd(),
             backgroundColor: context.colors.greyLight1,
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.allocatedTo.tr(),
             valueLabel: employeeGrievance.allocatedToName,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.actionTaken.tr(),
-            valueLabel: employeeGrievance.actionTaken,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.dateClosed.tr(),
-            valueLabel: employeeGrievance.dateClosed?.ddMMYyyy(),
-            backgroundColor: context.colors.greyLight1,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.closureDetails.tr(),
-            valueLabel: employeeGrievance.closureDetails,
-          ),
-          GeneralCommentsItem(
-            comment: employeeGrievance.comment,
           ),
         ],
       ),
