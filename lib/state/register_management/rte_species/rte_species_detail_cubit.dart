@@ -147,7 +147,14 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
   void onRemovePhoto(RteSpeciesPhotoModel rteSpeciesPhotoModel) {
     final rtePhotos = state.rtePhotos;
     rtePhotos.remove(rteSpeciesPhotoModel);
-    emit(state.copyWith(rtePhotos: rtePhotos));
+    final removedRtePhotos = <RteSpeciesPhotoModel>[...state.removedRtePhotos];
+    removedRtePhotos.add(rteSpeciesPhotoModel);
+    emit(
+      state.copyWith(
+        rtePhotos: rtePhotos,
+        removedRtePhotos: removedRtePhotos,
+      ),
+    );
   }
 
   bool onValidate() {
@@ -169,6 +176,10 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
               DateTime.now().millisecondsSinceEpoch.toString(),
         ),
       );
+
+      for (final item in state.removedRtePhotos) {
+        await cmoDatabaseMasterService.removeRteSpeciesPhotoModel(item.id);
+      }
 
       for (final item in state.rtePhotos) {
         await cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(item);

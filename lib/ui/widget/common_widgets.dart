@@ -150,6 +150,7 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      textCapitalization: TextCapitalization.sentences,
       minLines: 1,
       onChanged: widget.onChanged,
       onFieldSubmitted: widget.onSubmitted,

@@ -38,7 +38,7 @@ class RteSpecies with _$RteSpecies {
       _$RteSpeciesFromJson(json);
 
   @override
-  Id get id => int.tryParse(rteSpeciesRegisterId ?? '') ?? Isar.autoIncrement;
+  Id get id => int.tryParse(rteSpeciesRegisterNo ?? '') ?? Isar.autoIncrement;
 }
 
 extension RteSpeciesX on RteSpecies {

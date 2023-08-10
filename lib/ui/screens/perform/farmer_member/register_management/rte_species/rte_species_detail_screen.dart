@@ -113,6 +113,8 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
                             height: 150,
                             child: GeneralCommentWidget(
                               hintText: LocaleKeys.generalComments.tr(),
+                              initialValue: state.rteSpecies?.comment,
+                              elevation: 0,
                               onChanged: context
                                   .read<RteSpeciesDetailCubit>()
                                   .onChangeComment,
@@ -316,7 +318,7 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
             ),
             Expanded(
               child: Text(
-                '${state.rteSpecies?.latitude?.toStringAsFixed(5)} | ${state.rteSpecies?.longitude?.toStringAsFixed(5)}',
+                  state.rteSpecies?.latitude == null ? '' : '${state.rteSpecies?.latitude?.toStringAsFixed(5)} | ${state.rteSpecies?.longitude?.toStringAsFixed(5)}',
                 style: context.textStyles.bodyNormal.black,
                 textAlign: TextAlign.center,
               ),

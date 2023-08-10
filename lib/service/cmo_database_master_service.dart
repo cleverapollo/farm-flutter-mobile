@@ -2958,8 +2958,13 @@ class CmoDatabaseMasterService {
 
   Future<int> cacheRteSpeciesPhotoModel(RteSpeciesPhotoModel item) async {
     final db = await _db();
+    return db.writeTxn(() => db.rteSpeciesPhotoModels.put(item));
+  }
+
+  Future<bool> removeRteSpeciesPhotoModel(int id) async {
+    final db = await _db();
     return db.writeTxn(() async {
-      return db.rteSpeciesPhotoModels.put(item);
+      return db.rteSpeciesPhotoModels.delete(id);
     });
   }
 

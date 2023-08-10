@@ -33,7 +33,7 @@ class RteSpeciesPhotoModel with _$RteSpeciesPhotoModel {
       _$RteSpeciesPhotoModelFromJson(json);
 
   @override
-  Id get id => int.tryParse(rteSpeciesNo ?? '') ?? Isar.autoIncrement;
+  Id get id => int.tryParse(rteSpeciesRegisterPhotoNo ?? '') ?? Isar.autoIncrement;
 }
 
 extension RteSpeciesPhotoModelX on RteSpeciesPhotoModel {

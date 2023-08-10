@@ -7,6 +7,7 @@ class RteSpeciesDetailState {
     this.animalTypes = const <AnimalType>[],
     this.speciesRanges = const <SpeciesRange>[],
     this.rtePhotos = const <RteSpeciesPhotoModel>[],
+    this.removedRtePhotos = const <RteSpeciesPhotoModel>[],
     this.loading = false,
     this.error,
   });
@@ -16,6 +17,7 @@ class RteSpeciesDetailState {
   final List<AnimalType> animalTypes;
   final List<SpeciesRange> speciesRanges;
   final List<RteSpeciesPhotoModel> rtePhotos;
+  final List<RteSpeciesPhotoModel> removedRtePhotos;
   final Object? error;
   final bool loading;
 
@@ -25,6 +27,7 @@ class RteSpeciesDetailState {
     List<AnimalType>? animalTypes,
     List<SpeciesRange>? speciesRanges,
     List<RteSpeciesPhotoModel>? rtePhotos,
+    List<RteSpeciesPhotoModel>? removedRtePhotos,
     bool? loading,
     Object? error,
   }) {
@@ -36,6 +39,7 @@ class RteSpeciesDetailState {
       speciesRanges: speciesRanges ?? this.speciesRanges,
       rtePhotos: rtePhotos ?? this.rtePhotos,
       error: error ?? this.error,
+      removedRtePhotos: removedRtePhotos ?? this.removedRtePhotos,
     );
   }
 }
