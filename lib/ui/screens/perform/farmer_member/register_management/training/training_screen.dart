@@ -1,20 +1,30 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/training_cubit/training_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_add_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cmo/gen/assets.gen.dart';
 
 class TrainingScreen extends StatefulWidget {
   const TrainingScreen({super.key});
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const TrainingScreen()));
+      context,
+      MaterialPageRoute(
+        builder: (_) {
+          return BlocProvider(
+            create: (_) => TrainingCubit(),
+            child: const TrainingScreen(),
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -22,41 +32,40 @@ class TrainingScreen extends StatefulWidget {
 }
 
 class _TrainingScreenState extends State<TrainingScreen> {
-  final List<TrainingRegister> items = [];
-  bool isLoading = true;
-
-  late List<TrainingRegister> filteredItems;
-  late StatusFilterEnum statusFilter;
+  late final TrainingCubit cubit;
 
   @override
   void initState() {
     super.initState();
-    _init();
+    cubit = context.read<TrainingCubit>();
   }
 
-  Future<void> _init() async {
+  Future<void> onNavigateToAddTraining() async {
     final farm = await configService.getActiveFarm();
-    items.addAll(
-        await cmoDatabaseMasterService.getTrainingByFarmId(farm!.farmId));
-    isLoading = false;
-
-    filteredItems = items;
-    statusFilter = StatusFilterEnum.open;
-    applyFilter();
+    if (farm != null && context.mounted) {
+      final result = await TrainingAddScreen.push(
+        context,
+        farm: farm,
+      );
+      if (result is TrainingRegister) {
+        await cubit.onLoadData();
+      }
+    }
   }
 
-  void applyFilter() {
-    switch (statusFilter) {
-      case StatusFilterEnum.open:
-        filteredItems =
-            items.where((element) => element.signatureDate == null).toList();
-        break;
-      case StatusFilterEnum.closed:
-        filteredItems =
-            items.where((element) => element.signatureDate != null).toList();
-        break;
+  Future<void> onNavigateToEditTraining(
+      int index, TrainingRegister training) async {
+    final farm = await configService.getActiveFarm();
+    if (farm != null && context.mounted) {
+      final result = await TrainingAddScreen.push(
+        context,
+        farm: farm,
+        training: training,
+      );
+      if (result is TrainingRegister) {
+        await cubit.onLoadData();
+      }
     }
-    setState(() {});
   }
 
   @override
@@ -66,45 +75,60 @@ class _TrainingScreenState extends State<TrainingScreen> {
         title: LocaleKeys.training.tr(),
         showLeading: true,
         showAdding: true,
-        onTapAdding: () {
-          TrainingAddScreen.push(context);
-        },
+        onTapAdding: onNavigateToAddTraining,
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 12),
-                  StatusFilterWidget(
-                    onSelectFilter: (statusFilterEnum) {
-                      statusFilter = statusFilterEnum;
-                      applyFilter();
-                    },
-                  ),
-                  ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 18),
-                    separatorBuilder: (_, index) => const SizedBox(height: 14),
-                    itemCount: filteredItems.length,
-                    itemBuilder: (context, index) {
-                      final item = filteredItems[index];
-                      return GestureDetector(
-                          onTap: () async {
-                            final result = await TrainingAddScreen.push(context,
-                                training: item);
-                            if (result == null) return;
-                            filteredItems[index] = result;
-                            setState(() {});
-                          },
-                          child: _TrainingItemWidget(data: item));
-                    },
-                  )
-                ],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: BlocBuilder<TrainingCubit, TrainingState>(
+            builder: (context, state) {
+              if (state.isDataReady) {
+                return _buildBody(state);
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody(TrainingState state) {
+    final items = state.items;
+    return Column(
+      children: [
+        CmoTappable(
+          onTap: () => {},
+          child: CmoCard(
+            childAlignment: MainAxisAlignment.center,
+            content: [
+              CmoCardHeader(title: LocaleKeys.summary.tr()),
+              CmoCardHeader(
+                title: LocaleKeys.total.tr(),
+                valueEnd: items.length.toString(),
               ),
-            ),
+            ],
+            trailing: Assets.icons.icDown.svgWhite,
+          ),
+        ),
+        const SizedBox(height: 24),
+        Expanded(
+          child: ListView.separated(
+            shrinkWrap: true,
+            separatorBuilder: (_, index) => const SizedBox(height: 14),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return GestureDetector(
+                onTap: () {
+                  onNavigateToEditTraining(index, item);
+                },
+                child: _TrainingItemWidget(data: item),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

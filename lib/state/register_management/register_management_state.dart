@@ -15,10 +15,8 @@ class RegisterManagementState {
     this.stakeholderManagement = 0,
     this.training = 0,
     this.isDataReady = false,
-    this.farmId = '',
   });
 
-  final String farmId;
   final bool isDataReady;
   final int accidentIncidents;
   final int asi;
@@ -47,7 +45,6 @@ class RegisterManagementState {
     int? stakeholderComplaints,
     int? stakeholderManagement,
     int? training,
-    String? farmId,
   }) {
     return RegisterManagementState(
       isDataReady: isDataReady ?? this.isDataReady,
@@ -66,7 +63,6 @@ class RegisterManagementState {
       stakeholderManagement:
       stakeholderManagement ?? this.stakeholderManagement,
       training: training ?? this.training,
-      farmId: farmId ?? this.farmId,
     );
   }
 }

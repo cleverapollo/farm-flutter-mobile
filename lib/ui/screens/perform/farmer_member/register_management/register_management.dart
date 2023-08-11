@@ -90,11 +90,9 @@ class _RegisterManagementState extends State<RegisterManagement> {
         break;
       case ManagementType.asi:
         await AsiScreen.push(context);
-        await cubit.onCountAsi();
         break;
       case ManagementType.biologicalControlAgents:
         await BiologicalControlAgentsScreen.push(context);
-        await cubit.onCountBiologicalControlAgent();
         break;
       case ManagementType.chemicals:
         await ChemicalsScreen.push(context);
@@ -104,7 +102,6 @@ class _RegisterManagementState extends State<RegisterManagement> {
         break;
       case ManagementType.employeeGrievance:
         await EmployeeGrievanceScreen.push(context);
-        await cubit.onCountEmployeeGrievance();
         break;
       case ManagementType.fire:
         await FireManagementScreen.push(context);
@@ -125,6 +122,7 @@ class _RegisterManagementState extends State<RegisterManagement> {
         await TrainingScreen.push(context);
         break;
     }
+    cubit.onRefreshItems(type);
   }
 
   @override

@@ -1617,6 +1617,15 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<int> getCountTrainingByFarmId(String farmId) async {
+    final db = await _db();
+    return db.trainingRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .count();
+  }
+
   Future<List<RteSpeciesPhotoModel>> getUnsyncedRteSpeciesPhotoByFarmId(
       String farmId) async {
     final db = await _db();
