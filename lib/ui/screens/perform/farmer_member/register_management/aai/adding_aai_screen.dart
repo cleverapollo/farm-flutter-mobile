@@ -14,6 +14,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:cmo/state/add_aai_cubit/add_aai_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 
 class AddingAAIScreen extends StatefulWidget {
   const AddingAAIScreen({super.key});
@@ -424,35 +425,33 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
   }
 
   Widget _buildDateOfBirth(DateTime? birthDate) {
-    return AttributeItem(
-      child: CmoDatePicker(
-        name: 'DateOfBirth',
-        initialValue: birthDate,
-        onChanged: cubit.onDateOfBirthChanged,
-        hintText: LocaleKeys.date_of_birth.tr(),
-        validator: FormBuilderValidators.compose([
-          FormBuilderValidators.required(),
-          (DateTime? value) {
-            if (value!.millisecondsSinceEpoch >
-                DateTime.now().millisecondsSinceEpoch) {
-              return 'Date of birth cannot be in the future';
-            }
-            return null;
-          }
-        ]),
-        inputDecoration: InputDecoration(
-          border: InputBorder.none,
+    return InkWell(
+      onTap: () async {
+        final date = await showDatePicker(
+          context: context,
+          initialDate: birthDate ??
+              DateTime.now(),
+          firstDate: DateTime.now().add(const Duration(days: -1000000)),
+          lastDate: DateTime.now(),
+        );
+        cubit.onDateOfBirthChanged(date);
+      },
+      child: AttributeItem(
+        child: SelectorAttributeItem(
+          hintText: '',
+          text: birthDate == null
+              ? LocaleKeys.yyyy_mm_dd.tr()
+              : birthDate.yMd(),
+          labelText: LocaleKeys.dateOfBirth.tr(),
+          labelStyle: context.textStyles.bodyBold.black,
+          textStyle: birthDate == null
+              ? context.textStyles.bodyNormal.grey
+              : context.textStyles.bodyBold.black,
           contentPadding: const EdgeInsets.symmetric(
             vertical: 8,
             horizontal: 12,
           ),
-          suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-          suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
-          isDense: true,
-          hintText: LocaleKeys.date_of_birth.tr(),
-          hintStyle: context.textStyles.bodyBold.black,
-          labelText: LocaleKeys.date_of_birth.tr(),
-          labelStyle: context.textStyles.bodyBold.black,
+          trailing: Assets.icons.icCalendar.svgBlack,
         ),
       ),
     );
