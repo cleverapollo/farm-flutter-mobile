@@ -1,0 +1,134 @@
+import 'package:cmo/di.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/model/fire/fire_register.dart';
+import 'package:cmo/model/fire_cause/fire_cause.dart';
+import 'package:cmo/state/fire_cubit/fire_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class FireCubit extends Cubit<FireState> {
+  FireCubit() : super(const FireState());
+
+  Future<void> initLoadData() async {
+    emit(state.copyWith(isLoading: true));
+    final farm = await configService.getActiveFarm();
+
+    final result = await cmoDatabaseMasterService.getFireRegistersByFarmId(
+        farmId: farm?.farmId);
+
+    emit(state.copyWith(data: result, dataSearch: result, isLoading: false));
+  }
+
+  Future<void> onChangeStatus(bool isOpen) async {
+    final farm = await configService.getActiveFarm();
+
+    final result = await cmoDatabaseMasterService.getFireRegistersByFarmId(
+        farmId: farm?.farmId, isOpen: isOpen);
+
+    emit(state.copyWith(
+        data: result, dataSearch: result, isOpen: isOpen, isLoading: false));
+  }
+
+  Future<void> initAddData({FireRegister? fireRegister}) async {
+    emit(state.copyWith(isLoading: true));
+
+    final farm = await configService.getActiveFarm();
+
+    final fireCauses = await cmoDatabaseMasterService
+        .getFireCauseByGroupSchemeId(farm?.groupSchemeId ?? 0);
+
+    emit(state.copyWith(
+      fireCauses: fireCauses,
+      isLoading: false,
+    ));
+
+    if (fireRegister != null) {
+      final fireCauseSelect = state.fireCauses
+          .firstWhereOrNull((e) => e.fireCauseId == fireRegister.fireCauseId);
+
+      emit(state.copyWith(
+        fireCauseSelect: fireCauseSelect,
+        fireRegister: fireRegister,
+        fireRegisterBeforeEdit: fireRegister,
+      ));
+    }
+  }
+
+  void onDataChange({
+    FireCause? fireCauseSelect,
+    bool? carRaised,
+    bool? carClosed,
+    DateTime? date,
+    DateTime? extinguished,
+    double? areaBurnt,
+    double? commercialAreaLoss,
+    double? lat,
+    double? lng,
+    String? comment,
+  }) {
+    String? carRaisedDate;
+    String? carClosedDate;
+
+    if (carRaised == true && state.fireRegister.carRaisedDate == null) {
+      carRaisedDate = DateTime.now().toIso8601String();
+    }
+    if (carRaised == false && state.fireRegister.carRaisedDate != null) {
+      carRaisedDate = null;
+    }
+    if (carRaised == null) {
+      carRaisedDate = state.fireRegister.carRaisedDate;
+    }
+
+    if (carClosed == true && state.fireRegister.carClosedDate == null) {
+      carClosedDate = DateTime.now().toIso8601String();
+    }
+    if (carClosed == false && state.fireRegister.carClosedDate != null) {
+      carClosedDate = null;
+    }
+    if (carClosed == null) {
+      carClosedDate = state.fireRegister.carClosedDate;
+    }
+
+    emit(state.copyWith(
+      fireRegister: state.fireRegister.copyWith(
+        fireRegisterId: null,
+        carRaisedDate: carRaisedDate,
+        carClosedDate: carClosedDate,
+        date: date ?? state.fireRegister.date,
+        areaBurnt: areaBurnt ?? state.fireRegister.areaBurnt,
+        commercialAreaLoss:
+            commercialAreaLoss ?? state.fireRegister.commercialAreaLoss,
+        latitude: lat ?? state.fireRegister.latitude,
+        longitude: lng ?? state.fireRegister.longitude,
+        comment: comment ?? state.fireRegister.comment,
+        extinguished: extinguished ?? state.fireRegister.extinguished,
+        fireCauseId:
+            fireCauseSelect?.fireCauseId ?? state.fireRegister.fireCauseId,
+        fireCauseName:
+            fireCauseSelect?.fireCauseName ?? state.fireRegister.fireCauseName,
+      ),
+      fireCauseSelect: fireCauseSelect ?? state.fireCauseSelect,
+    ));
+  }
+
+  Future<int?> onSave() async {
+    final farm = await configService.getActiveFarm();
+
+    var isMasterSynced = false;
+
+    if (state.fireRegisterBeforeEdit.isMasterdataSynced == true) {
+      if (state.fireRegisterBeforeEdit != state.fireRegister) {
+        isMasterSynced = false;
+      } else {
+        isMasterSynced = true;
+      }
+    }
+
+    return cmoDatabaseMasterService.cacheFireRegisterFromFarm(state.fireRegister
+        .copyWith(
+            farmId: farm?.farmId,
+            fireRegisterNo: state.fireRegister.fireRegisterNo ??
+                DateTime.now().millisecondsSinceEpoch.toString(),
+            isActive: true,
+            isMasterdataSynced: isMasterSynced));
+  }
+}

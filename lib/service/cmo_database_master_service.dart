@@ -892,9 +892,22 @@ class CmoDatabaseMasterService {
     });
   }
 
-  Future<List<FireRegister>> getFireRegisters() async {
+  Future<List<FireRegister>> getFireRegistersByFarmId(
+      {String? farmId, bool isOpen = true}) async {
     final db = await _db();
-    return db.fireRegisters.where().findAll();
+    if (isOpen) {
+      return db.fireRegisters
+          .filter()
+          .farmIdEqualTo(farmId)
+          .extinguishedIsNull()
+          .findAll();
+    } else {
+      return db.fireRegisters
+          .filter()
+          .farmIdEqualTo(farmId)
+          .extinguishedIsNotNull()
+          .findAll();
+    }
   }
 
   Future<int?> cachePetsAndDisease(PetsAndDiseaseRegister data) async {
@@ -1658,7 +1671,6 @@ class CmoDatabaseMasterService {
   Future<List<RteSpeciesPhotoModel>>
       getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
           String? rteRegisterPhoto) async {
-
     if (rteRegisterPhoto.isBlank) return <RteSpeciesPhotoModel>[];
 
     final db = await _db();
@@ -1919,8 +1931,7 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<int> getCountBiologicalControlAgentByFarmId(
-      String farmId) async {
+  Future<int> getCountBiologicalControlAgentByFarmId(String farmId) async {
     final db = await _db();
     return db.biologicalControlAgents
         .filter()
@@ -2052,11 +2063,7 @@ class CmoDatabaseMasterService {
 
   Future<int> getCountAsiRegisterByFarmId(String farmId) async {
     final db = await _db();
-    return db.asis
-        .filter()
-        .farmIdEqualTo(farmId)
-        .isActiveEqualTo(true)
-        .count();
+    return db.asis.filter().farmIdEqualTo(farmId).isActiveEqualTo(true).count();
   }
 
   Future<List<Asi>> getUnsyncedAsiRegister(String farmId) async {
@@ -2972,8 +2979,7 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<int> getCountEmployeeGrievancesByFarmId(
-      String farmId) async {
+  Future<int> getCountEmployeeGrievancesByFarmId(String farmId) async {
     final db = await _db();
     return db.grievanceRegisters
         .filter()
@@ -2987,14 +2993,16 @@ class CmoDatabaseMasterService {
     return db.fireManagements.put(item);
   }
 
-  Future<int> cacheRteSpecies(RteSpecies item, {bool isDirect = true,}) async {
+  Future<int> cacheRteSpecies(
+    RteSpecies item, {
+    bool isDirect = true,
+  }) async {
     final db = await _db();
     if (isDirect) {
       return db.rteSpecies.put(item);
     } else {
       return db.writeTxn(() => db.rteSpecies.put(item));
     }
-
   }
 
   Future<int> cacheRteSpeciesFromFarm(RteSpecies item) async {

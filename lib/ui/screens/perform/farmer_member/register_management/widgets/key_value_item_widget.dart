@@ -26,9 +26,11 @@ class KeyValueItemWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            keyLabel,
-            style: context.textStyles.bodyNormal.black,
+          Expanded(
+            child: Text(
+              keyLabel,
+              style: context.textStyles.bodyNormal.black,
+            ),
           ),
           Expanded(
             child: Text(

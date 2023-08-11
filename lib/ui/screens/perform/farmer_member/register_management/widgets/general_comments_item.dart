@@ -3,9 +3,11 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/cupertino.dart';
 
 class GeneralCommentsItem extends StatelessWidget {
+  const GeneralCommentsItem({
+    super.key,
+    required this.comment,
+  });
   final String? comment;
-
-  const GeneralCommentsItem({super.key, required this.comment,});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +17,7 @@ class GeneralCommentsItem extends StatelessWidget {
         vertical: 7,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(

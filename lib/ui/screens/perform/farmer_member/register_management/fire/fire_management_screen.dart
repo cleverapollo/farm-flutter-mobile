@@ -1,18 +1,18 @@
 import 'dart:async';
 
-import 'package:cmo/di.dart';
-import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/fire_cubit/fire_cubit.dart';
+import 'package:cmo/state/fire_cubit/fire_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/fire/add_fire_management/add_fire_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FireManagementScreen extends StatefulWidget {
   const FireManagementScreen({super.key});
@@ -31,134 +31,105 @@ class FireManagementScreen extends StatefulWidget {
 }
 
 class _FireManagementScreenState extends State<FireManagementScreen> {
-  final List<FireRegister> items = [];
-  bool isLoading = true;
-
-  Timer? _debounceInputTimer;
-  late List<FireRegister> filteredItems;
-  late StatusFilterEnum statusFilter;
-  String? inputSearch;
-
-  @override
-  void initState() {
-    super.initState();
-    _init();
-  }
-
-  Future<void> _init() async {
-    items.addAll(await cmoDatabaseMasterService.getFireRegisters());
-    isLoading = false;
-
-    filteredItems = items;
-    statusFilter = StatusFilterEnum.open;
-    inputSearch = '';
-    applyFilter();
-  }
-
-  void searching(String? input) {
-    inputSearch = input;
-    if (input == null || input.isEmpty) {
-      applyFilter();
-    } else {
-      filteredItems = items.where((element) {
-        final containName = element.fireRegisterId
-            .toString()
-            .toLowerCase()
-            .contains(input.toLowerCase());
-        var isFilter = false;
-        switch (statusFilter) {
-          case StatusFilterEnum.open:
-            isFilter = element.extinguished == null;
-            break;
-          case StatusFilterEnum.closed:
-            isFilter = element.extinguished != null;
-            break;
-        }
-
-        return containName && isFilter;
-      }).toList();
-      setState(() {});
-    }
-  }
-
-  void applyFilter() {
-    if (inputSearch == null || inputSearch!.isEmpty) {
-      switch (statusFilter) {
-        case StatusFilterEnum.open:
-          filteredItems =
-              items.where((element) => element.extinguished == null).toList();
-          break;
-        case StatusFilterEnum.closed:
-          filteredItems =
-              items.where((element) => element.extinguished != null).toList();
-          break;
-      }
-    } else {
-      searching(inputSearch);
-    }
-
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBar(
-        title: LocaleKeys.fire.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => AddFireManagementScreen.push(context),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
-                    child: CmoTextField(
-                      name: LocaleKeys.search.tr(),
-                      hintText: LocaleKeys.search.tr(),
-                      suffixIcon: Assets.icons.icSearch.svg(),
-                      onChanged: (input) {
-                        _debounceInputTimer?.cancel();
-                        _debounceInputTimer = Timer(
-                            const Duration(milliseconds: 200),
-                            () => searching(input));
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
-                    child: StatusFilterWidget(
-                      onSelectFilter: (statusFilterEnum) {
-                        statusFilter = statusFilterEnum;
-                        applyFilter();
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.separated(
-                      separatorBuilder: (context, index) => const SizedBox(
-                        height: 22,
-                      ),
-                      itemCount: filteredItems.length,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 21,
-                      ),
-                      itemBuilder: (context, index) {
-                        return _FireManagementItem(
-                          fireRegister: filteredItems[index],
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+    return BlocProvider<FireCubit>(
+      create: (_) => FireCubit()..initLoadData(),
+      child: BlocBuilder<FireCubit, FireState>(
+        builder: (context, state) {
+          final cubit = context.read<FireCubit>();
+          return Scaffold(
+            appBar: CmoAppBar(
+              title: LocaleKeys.fire.tr(),
+              leading: Assets.icons.icArrowLeft.svgBlack,
+              onTapLeading: Navigator.of(context).pop,
+              trailing: Assets.icons.icAdd.svgBlack,
+              onTapTrailing: () async {
+                final shouldRefresh =
+                    await AddFireManagementScreen.push(context);
+
+                if (shouldRefresh != null) {
+                  await cubit.initLoadData();
+                }
+              },
             ),
+            body: state.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Padding(
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).padding.bottom),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(21, 16, 21, 24),
+                          child: CmoTextField(
+                            name: LocaleKeys.search.tr(),
+                            hintText: LocaleKeys.search.tr(),
+                            suffixIcon: Assets.icons.icSearch.svg(),
+                            onChanged: (input) {},
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                cubit.onChangeStatus(true);
+                              },
+                              child: _StatusFilterWidget(
+                                text: LocaleKeys.open.tr(),
+                                isSelected: state.isOpen,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            InkWell(
+                              onTap: () {
+                                cubit.onChangeStatus(false);
+                              },
+                              child: _StatusFilterWidget(
+                                text: LocaleKeys.close.tr(),
+                                isSelected: !state.isOpen,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Expanded(
+                          child: ListView.separated(
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(
+                              height: 22,
+                            ),
+                            itemCount: state.data.length,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 21,
+                            ),
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () async {
+                                  final shouldRefresh =
+                                      await AddFireManagementScreen.push(
+                                          context,
+                                          fireRegister: state.data[index]);
+
+                                  if (shouldRefresh != null) {
+                                    await cubit.initLoadData();
+                                  }
+                                },
+                                child: _FireManagementItem(
+                                  fireRegister: state.data[index],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+          );
+        },
+      ),
     );
   }
 }
@@ -173,6 +144,7 @@ class _FireManagementItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: context.colors.greyD9D9),
@@ -202,7 +174,7 @@ class _FireManagementItem extends StatelessWidget {
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateDetected.tr(),
-            valueLabel: fireRegister.detected?.ddMMYyyy(),
+            valueLabel: fireRegister.date?.ddMMYyyy(),
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateExtinguished.tr(),
@@ -224,6 +196,37 @@ class _FireManagementItem extends StatelessWidget {
             comment: fireRegister.comment,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _StatusFilterWidget extends StatelessWidget {
+  const _StatusFilterWidget({
+    required this.text,
+    this.isSelected = false,
+    super.key,
+  });
+
+  final bool isSelected;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: isSelected ? context.colors.blue : context.colors.white,
+        border: isSelected ? null : Border.all(color: context.colors.black),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 35),
+      alignment: Alignment.center,
+      child: Text(
+        text,
+        style: context.textStyles.bodyNormal.copyWith(
+          fontSize: 12,
+          color: isSelected ? context.colors.white : context.colors.black,
+        ),
       ),
     );
   }

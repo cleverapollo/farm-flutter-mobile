@@ -10,11 +10,15 @@ class SelectLocationWidget extends StatefulWidget {
     required this.longitudeTitle,
     required this.latitudeTitle,
     required this.onChooseLocation,
+    this.lng = '',
+    this.lat = '',
   });
 
   final String latitudeTitle;
   final String longitudeTitle;
   final String appbarTitle;
+  final String lng;
+  final String lat;
   final void Function(LocationResult) onChooseLocation;
 
   @override
@@ -50,13 +54,13 @@ class _SelectLocationWidgetState extends State<SelectLocationWidget> {
           AttributeItem(
             child: _buildAutoFillWidget(
               widget.latitudeTitle,
-              locationModel.latitude?.toString(),
+              '${locationModel.latitude ?? widget.lat}',
             ),
           ),
           AttributeItem(
             child: _buildAutoFillWidget(
               widget.longitudeTitle,
-              locationModel.longitude?.toString(),
+              '${locationModel.longitude ?? widget.lng}',
             ),
           ),
         ],
