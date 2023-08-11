@@ -66,7 +66,7 @@ class _FireManagementScreenState extends State<FireManagementScreen> {
                             name: LocaleKeys.search.tr(),
                             hintText: LocaleKeys.search.tr(),
                             suffixIcon: Assets.icons.icSearch.svg(),
-                            onChanged: (input) {},
+                            onChanged: cubit.onSearch,
                           ),
                         ),
                         const SizedBox(height: 12),

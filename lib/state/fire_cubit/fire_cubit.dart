@@ -1,8 +1,10 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/fire_cause/fire_cause.dart';
 import 'package:cmo/state/fire_cubit/fire_state.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FireCubit extends Cubit<FireState> {
@@ -16,6 +18,20 @@ class FireCubit extends Cubit<FireState> {
         farmId: farm?.farmId);
 
     emit(state.copyWith(data: result, dataSearch: result, isLoading: false));
+  }
+
+  void onSearch(String? input) {
+    final listSearch = <FireRegister>[];
+
+    if (input.isNullOrEmpty) {
+      return emit(state.copyWith(data: state.dataSearch));
+    }
+    for (final item in state.data) {
+      if (item.fireRegisterNo?.contains(input!) == true) {
+        listSearch.add(item);
+      }
+    }
+    emit(state.copyWith(data: listSearch));
   }
 
   Future<void> onChangeStatus(bool isOpen) async {
