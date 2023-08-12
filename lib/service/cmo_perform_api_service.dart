@@ -848,4 +848,40 @@ class CmoPerformApiService {
         ?.map((e) => HiracTemplate.fromJson(e as JsonData))
         .toList();
   }
+
+  Future<List<Farm>?> getFarmSearch({String? filterString}) async {
+    final response = await client.post<JsonData>(
+      '${Env.apiGroupSchemeUrl}Farm/SearchFarms?',
+      data: {
+        'FarmName': filterString,
+        'IsRegionalManager': true,
+        "Skip": 0,
+        "Take": 10,
+      },
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data!['Data'] as JsonListData?;
+    return data?.map((e) => Farm.fromJson(e as JsonData)).toList();
+  }
+
+  Future<List<Farm>?> getRMFarmSearch({String? filterString}) async {
+    final response = await client.get<JsonListData>(
+      '${Env.apiGroupSchemeUrl}Farm/GetRMFarmSearch?filterString=$filterString',
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data?.map((e) => Farm.fromJson(e as JsonData)).toList();
+  }
 }
