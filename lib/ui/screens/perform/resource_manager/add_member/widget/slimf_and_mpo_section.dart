@@ -78,18 +78,18 @@ class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text(
-                  LocaleKeys.slimf_compliant_limitation_1.tr().toUpperCase(),
-                  style: context.textStyles.titleBold.copyWith(
-                    color: context.colors.black,
-                    fontSize: 16,
-                  ),
-                ),
-                const SlimfCompliantLimitation1Content(),
-                const SizedBox(height: 18),
-                const SlimfCompliantLimitation2(),
-                const SlimfCompliantLimitation2Content(),
-                const SizedBox(height: 12),
+                // Text(
+                //   LocaleKeys.slimf_compliant_limitation_1.tr().toUpperCase(),
+                //   style: context.textStyles.titleBold.copyWith(
+                //     color: context.colors.black,
+                //     fontSize: 16,
+                //   ),
+                // ),
+                // const SlimfCompliantLimitation1Content(),
+                // const SizedBox(height: 18),
+                // const SlimfCompliantLimitation2(),
+                // const SlimfCompliantLimitation2Content(),
+                // const SizedBox(height: 12),
                 CmoSlimfQuestion(
                   initialValue: data.isSlimfCompliant,
                   onTap: (p0) async {
