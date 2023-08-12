@@ -16,7 +16,7 @@ class CmoLogo extends StatelessWidget {
         Assets.images.logo.image(fit: BoxFit.scaleDown),
         const SizedBox(height: 19),
         Text(
-          LocaleKeys.empower.tr(),
+          'Empower',
           style: context.textStyles.headlineBold,
           textAlign: TextAlign.center,
         ),
