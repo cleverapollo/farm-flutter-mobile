@@ -384,8 +384,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         currentData.town != null &&
         currentData.province != null &&
         isCompleteSiteLocation &&
-        isCompleteCompartments &&
-        isCompleteAsi;
+        isCompleteCompartments;
+    // && isCompleteAsi;
 
     emit(state.copyWith(
         farm: state.farm?.copyWith(
