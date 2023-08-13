@@ -499,7 +499,7 @@ class CmoPerformApiService {
   Future<List<ProductGroupTemplate>?> fetchProductGroupTemplates() async {
     final uri = Uri.https(
       Env.cmoApiUrl,
-      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/ProductGroupTemplate/GetProductGroupTemplateByIds',
+      '/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/ProductGroupTemplate/GetProductGroupTemplateByIds',
       {
         "groupSchemeId": "undefined",
         "areaTypeId": "undefined",
@@ -527,7 +527,7 @@ class CmoPerformApiService {
   Future<List<AsiType>?> fetchRMAsiType() async {
     final uri = Uri.https(
       Env.cmoApiUrl,
-      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/AsiType/GetRMAsiType',
+      '/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS/API/AsiType/GetRMAsiType',
     );
     final response = await client.getUri<JsonListData>(
       uri,
@@ -546,7 +546,7 @@ class CmoPerformApiService {
   Future<List<AsiType>?> fetchFarmerAsiType() async {
     final uri = Uri.https(
       Env.cmoApiUrl,
-      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/AsiType/GetFarmersAsiType',
+      '/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS/API/AsiType/GetFarmersAsiType',
     );
     final response = await client.getUri<JsonListData>(
       uri,
@@ -565,7 +565,7 @@ class CmoPerformApiService {
   Future<List<SpeciesGroupTemplate>?> fetchSpeciesGroupTemplates() async {
     final uri = Uri.https(
       Env.cmoApiUrl,
-      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/SpeciesGroupTemplate/GetSpeciesGroupTemplateByIds',
+      '/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/SpeciesGroupTemplate/GetSpeciesGroupTemplateByIds',
       {
         "groupSchemeId": "undefined",
         "areaTypeId": "undefined",
@@ -593,7 +593,7 @@ class CmoPerformApiService {
   Future<List<AreaType>?> fetchAreaTypes() async {
     final uri = Uri.https(
       Env.cmoApiUrl,
-      '/cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/AreaType/GetAreaTypeByUserIdAndRole',
+      '/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/AreaType/GetAreaTypeByUserIdAndRole',
       {
         "userId": "0",
         "isRegionalManager": "false",
@@ -753,7 +753,7 @@ class CmoPerformApiService {
   Future<List<GroupScheme>?> getGroupSchemeByGroupSchemeId(int id) async {
     final uri = Uri.https(
       Env.cmoApiUrl,
-      'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS.Main/API/GroupSchemeMain/GetGroupSchemeById',
+      'groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS.Main/API/GroupSchemeMain/GetGroupSchemeById',
       {
         'GroupSchemeId': '$id',
         "isActive": "true",
@@ -777,7 +777,7 @@ class CmoPerformApiService {
   Future<List<Hirac>?> getHiracSearch({String? filterString}) async {
     final uri = Uri.https(
       Env.cmoApiUrl,
-      'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracSearch',
+      'groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracSearch',
       {
         'filterString': filterString ?? '',
         "isActive": "true",
@@ -802,7 +802,7 @@ class CmoPerformApiService {
   Future<List<HiracType>?> getHiracTypeSearch({String? filterString}) async {
     final uri = Uri.https(
       Env.cmoApiUrl,
-      'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracTypeSearch',
+      'groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracTypeSearch',
       {
         'filterString': filterString ?? '',
         "isActive": "true",
@@ -827,7 +827,7 @@ class CmoPerformApiService {
   Future<List<HiracTemplate>?> getHiracTemplateSearch({String? filterString}) async {
     final uri = Uri.https(
       Env.cmoApiUrl,
-      'cmo/gs/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracTemplateSearch',
+      'groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracTemplateSearch',
       {
         'filterString': filterString ?? '',
         "isActive": "true",
