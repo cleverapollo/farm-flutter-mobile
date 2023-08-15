@@ -22,6 +22,7 @@ class CompartmentDetailState {
     this.isSpeciesGroupError = false,
     this.isEffectiveAreaError = false,
     this.isPlantDateError = false,
+    this.compartmentBeforeEdit = const Compartment(),
   });
 
   final Object? error;
@@ -39,6 +40,7 @@ class CompartmentDetailState {
   final bool isEffectiveAreaError;
   final bool isPlantDateError;
   Compartment compartment;
+  Compartment compartmentBeforeEdit;
 
   CompartmentDetailState copyWith({
     bool? loading,
@@ -46,6 +48,7 @@ class CompartmentDetailState {
     String? campId,
     Object? error,
     Compartment? compartment,
+    Compartment? compartmentBeforeEdit,
     List<AreaType>? areaTypes,
     GroupScheme? groupScheme,
     List<ProductGroupTemplate>? productGroupTemplates,
@@ -60,12 +63,17 @@ class CompartmentDetailState {
       loading: loading ?? this.loading,
       error: error ?? this.error,
       compartment: compartment ?? this.compartment,
+      compartmentBeforeEdit:
+          compartmentBeforeEdit ?? this.compartmentBeforeEdit,
       areaTypes: areaTypes ?? this.areaTypes,
-      productGroupTemplates: productGroupTemplates ?? this.productGroupTemplates,
-      speciesGroupTemplates: speciesGroupTemplates ?? this.speciesGroupTemplates,
+      productGroupTemplates:
+          productGroupTemplates ?? this.productGroupTemplates,
+      speciesGroupTemplates:
+          speciesGroupTemplates ?? this.speciesGroupTemplates,
       groupScheme: groupScheme ?? this.groupScheme,
       isDataReady: isDataReady ?? this.isDataReady,
-      isCompartmentNameError: isCompartmentNameError ?? this.isCompartmentNameError,
+      isCompartmentNameError:
+          isCompartmentNameError ?? this.isCompartmentNameError,
       isEffectiveAreaError: isEffectiveAreaError ?? this.isEffectiveAreaError,
     );
   }

@@ -18,7 +18,10 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   CompartmentDetailCubit(String farmId,
       {required Compartment compartment, String? campId})
       : super(CompartmentDetailState(
-            farmId: farmId, campId: campId, compartment: compartment));
+            farmId: farmId,
+            campId: campId,
+            compartment: compartment,
+            compartmentBeforeEdit: compartment));
 
   Future<void> fetchData({required BuildContext context}) async {
     try {
@@ -73,12 +76,25 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   Future<void> saveCompartment() async {
     try {
       emit(state.copyWith(loading: true));
+
+      var isMastersynced = false;
+
+      if (state.compartmentBeforeEdit.isMasterdataSynced == true) {
+        if (state.compartment != state.compartmentBeforeEdit) {
+          isMastersynced = false;
+        } else {
+          isMastersynced = true;
+        }
+      }
+
       await cmoDatabaseMasterService.cacheCompartment(
         state.compartment.copyWith(
           createDT: state.compartment.createDT ?? DateTime.now().toString(),
           groupSchemeId: state.groupScheme?.groupSchemeId,
           farmId: state.farmId,
           campId: state.campId,
+          isActive: true,
+          isMasterdataSynced: isMastersynced,
         ),
         isDirect: true,
       );

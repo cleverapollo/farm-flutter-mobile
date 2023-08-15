@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
@@ -67,6 +68,48 @@ mixin FarmUploadSummaryMixin {
     await _publishComplaintsAndDisputesRegisters(); // done
     await _publishAccidentAndIncidentRegisters(); // done
     await _publishBiologicalControlAgentRegisters(); // done
+    await _publishCompartment();
+  }
+
+  Future<void> _publishCompartment() async {
+    onStatus('Sync Compartments...');
+
+    try {
+      logger.d('Get unsynced compartment');
+      final compartments =
+          await cmoDatabaseMasterService.getUnsyncedCompartmentsFarm();
+      if (compartments.isNotBlank) {
+        logger.d('Unsynced compartments count: ${compartments.length}');
+        for (final compartment in compartments) {
+          final syncedCompartment =
+              await cmoPerformApiService.insertUpdatedCompartment(compartment);
+          if (syncedCompartment != null) {
+            await cmoDatabaseMasterService.removeCompartment(compartment.id);
+            await cmoDatabaseMasterService.cacheCompartment(
+              syncedCompartment.copyWith(
+                isMasterdataSynced: true,
+                productGroupTemplateName: compartment.productGroupTemplateName,
+                speciesGroupTemplateName: compartment.speciesGroupTemplateName,
+                espacementWidth: compartment.espacementWidth,
+                espacementLength: compartment.espacementLength,
+                stockingPercentage: compartment.stockingPercentage,
+              ),
+              isDirect: true,
+            );
+
+            logger.d(
+                'Successfully published compartment: ${syncedCompartment.managementUnitId}');
+          } else {
+            logger.e(
+                'Failed to publish compartment: ${compartment.managementUnitId}');
+          }
+        }
+      } else {
+        logger.d('No Compartments to sync');
+      }
+    } catch (error) {
+      logger.e(error);
+    }
   }
 
   Future<void> _publishWorker() async {

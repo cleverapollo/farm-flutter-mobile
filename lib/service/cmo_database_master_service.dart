@@ -3601,6 +3601,23 @@ class CmoDatabaseMasterService {
     return <Compartment>[];
   }
 
+  Future<List<Compartment>> getUnsyncedCompartmentsFarm() async {
+    final db = await _db();
+    try {
+      final compartments = await db.compartments
+          .filter()
+          .isActiveEqualTo(true)
+          .isMasterdataSyncedEqualTo(false)
+          .findAll();
+
+      return compartments;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Compartment>[];
+  }
+
   Future<List<Compartment>> getCompartmentsByGroupSchemeIdAndFarmId({
     int? groupSchemeId,
     String? farmId,
