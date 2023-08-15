@@ -8,7 +8,7 @@ part 'compartment.g.dart';
 @Collection(ignore: {'copyWith'})
 class Compartment with _$Compartment {
   const factory Compartment({
-    @ignore int? compartmentId,
+    @JsonKey(name: 'CompartmentId') int? compartmentId,
     @JsonKey(name: 'ManagementUnitName') String? managementUnitName,
     @JsonKey(name: 'ManagementUnitId') String? managementUnitId,
     @JsonKey(name: 'ParentManagementUnitId') String? parentManagementUnitId,

@@ -15,8 +15,10 @@ import 'package:flutter/widgets.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
-  CompartmentDetailCubit(String farmId, {required Compartment compartment, String? campId})
-      : super(CompartmentDetailState(farmId: farmId, campId: campId, compartment: compartment));
+  CompartmentDetailCubit(String farmId,
+      {required Compartment compartment, String? campId})
+      : super(CompartmentDetailState(
+            farmId: farmId, campId: campId, compartment: compartment));
 
   Future<void> fetchData({required BuildContext context}) async {
     try {
@@ -50,10 +52,10 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
       state.copyWith(
         isCompartmentNameError: compartment.unitNumber.isBlank,
         isEffectiveAreaError: compartment.effectiveArea == null,
-
       ),
     );
-    return state.isCompartmentNameError == false && state.isEffectiveAreaError == false;
+    return state.isCompartmentNameError == false &&
+        state.isEffectiveAreaError == false;
   }
 
   String? checkCompleteDropDownField() {
@@ -164,11 +166,11 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
 
   void onPlannedPlantDateChanged(DateTime? value) {
     emit(
-        state.copyWith(
-            compartment : state.compartment.copyWith(
-                plannedPlantDT: value?.toString(),
-            ),
+      state.copyWith(
+        compartment: state.compartment.copyWith(
+          plannedPlantDT: value?.toString(),
         ),
+      ),
     );
   }
 
