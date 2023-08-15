@@ -35,6 +35,8 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
         groupScheme: groupScheme,
         isDataReady: true,
       ));
+
+      onUpdateStocking();
     } catch (e) {
       showSnackError(msg: e.toString());
     } finally {
@@ -138,10 +140,26 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
 
   void onEspacementWidthChanged(String? value) {
     state.compartment = state.compartment.copyWith(espacementWidth: value);
+    onUpdateStocking();
   }
 
   void onEspacementLengthChanged(String? value) {
     state.compartment = state.compartment.copyWith(espacementLength: value);
+    onUpdateStocking();
+  }
+
+  void onUpdateStocking() {
+    emit(
+      state.copyWith(
+        compartment: state.compartment.copyWith(
+          stockingPercentage: (state.compartment.polygonArea ?? 0) /
+              ((double.tryParse(state.compartment.espacementLength ?? '') ??
+                      1) *
+                  (double.tryParse(state.compartment.espacementWidth ?? '') ??
+                      1)),
+        ),
+      ),
+    );
   }
 
   void onPlannedPlantDateChanged(DateTime? value) {
@@ -156,10 +174,6 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
 
   void onSurvivalPercentageDateChanged(double? value) {
     state.compartment = state.compartment.copyWith(survival: value);
-  }
-
-  void onStockingPercentageDateChanged(double? value) {
-    state.compartment = state.compartment.copyWith(stockingPercentage: value);
   }
 
   void onRotationChanged(int? value) {

@@ -395,18 +395,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                     _compartmentDetailCubit.onSurvivalPercentageDateChanged(double.tryParse(value)),
                               ),
                             ),
-                            AttributeItem(
-                              child: InputAttributeItem(
-                                labelText: LocaleKeys.stocking.tr(),
-                                labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                                textStyle: context.textStyles.bodyNormal.blueDark2,
-                                initialValue: (initCompartment.stockingPercentage ?? '').toString(),
-                                hintText: LocaleKeys.stocking.tr(),
-                                keyboardType: TextInputType.number,
-                                onChanged: (value) =>
-                                    _compartmentDetailCubit.onStockingPercentageDateChanged(double.tryParse(value)),
-                              ),
-                            ),
+                            buildingStockWidget(),
                             AttributeItem(
                               child: InputAttributeItem(
                                   labelText: LocaleKeys.rotation.tr(),
@@ -467,6 +456,35 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildingStockWidget() {
+    return BlocBuilder<CompartmentDetailCubit, CompartmentDetailState>(
+      builder: (context, state) {
+        return AttributeItem(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      LocaleKeys.stocking.tr(),
+                      style: context.textStyles.bodyBold.blueDark2,
+                    ),
+                  ],
+                ),
+                Text(
+                  state.compartment.stockingPercentage != null ? state.compartment.stockingPercentage!.toStringAsFixed(2) : '',
+                  style: context.textStyles.bodyNormal.blueDark2,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
