@@ -53,7 +53,11 @@ extension StringNullExtension on String? {
       }
     }
 
-    return (num.tryParse(ids.join()) ?? 0) ~/ 10 ^ 12;
+    final num1 = num.tryParse(ids.join()) ?? 0;
+
+    final num2 = num1 ~/ _num_10_28;
+
+    return num2;
   }
 }
 
@@ -85,3 +89,34 @@ Map<String, int> _mapStringAlphabet = {
   'y': 24,
   'z': 25,
 };
+
+num _num_10_28 = 10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10 *
+    10;
