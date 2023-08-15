@@ -591,7 +591,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
               ? state.addMemberMDetails.isIdNumberError
               : (idNumber.isBlank || idNumber.length < 8),
           isMobileNumberError: mobileNumber == null
-              ? state.addMemberMDetails.isIdNumberError
+              ? state.addMemberMDetails.isMobileNumberError
               : (mobileNumber.isBlank || mobileNumber.length < 8),
         ),
       ),
