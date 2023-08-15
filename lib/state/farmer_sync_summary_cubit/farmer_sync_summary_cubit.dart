@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/stakeholder/farm_stake_holder.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
@@ -119,6 +120,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final futures = <Future<dynamic>>[];
 
       futures
+        ..add(subscribeToCompartmentsByFarmId())
         ..add(subscribeToTrickleFeedMasterDataTopic())
         ..add(subscribeToTrickleFeedMasterDataTopicByFarmId())
         ..add(subscribeToTrickleFeedMasterDataTopicByGroupSchemeId());
@@ -539,6 +541,18 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
     await Future.wait(futures)
         .then((_) => emit(state.copyWith(data: data, isLoading: false)));
+  }
+
+  Future<void> subscribeToCompartmentsByFarmId() async {
+    onSyncStatus('Sync Compartments...');
+    final result =
+        await cmoPerformApiService.getCompartmentsByFarmId(state.farmId ?? '');
+
+    for (final item in result!) {
+      debugPrint(item.managementUnitId?.toIdIsarFromUuid.toString());
+    }
+
+    await insertCompartments(result);
   }
 
   Future<void> subscribeToTrickleFeedMasterDataTopic() async {
@@ -1227,6 +1241,23 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         });
       }
     } catch (e) {}
+  }
+
+  Future<void> insertCompartments(List<Compartment>? data) async {
+    final futures = <Future<void>>[];
+
+    if (data == null || data.isEmpty) return;
+
+    for (final item in data) {
+      futures.add(cmoDatabaseMasterService.cacheCompartment(
+          item.copyWith(
+              compartmentId: item.managementUnitId.toIdIsarFromUuid,
+              isActive: true,
+              isMasterdataSynced: true),
+          isDirect: true));
+    }
+
+    await Future.wait(futures);
   }
 
   Future<int?> insertWorker(Message item) async {

@@ -3876,7 +3876,7 @@ class CmoDatabaseMasterService {
     final db = await _db();
     return db.compartments
         .filter()
-        .farmIdEqualTo(farmId)
+        // .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
         .findAll();
   }

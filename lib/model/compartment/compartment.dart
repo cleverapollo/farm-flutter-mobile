@@ -2,13 +2,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'compartment.freezed.dart';
-
 part 'compartment.g.dart';
 
 @freezed
 @Collection(ignore: {'copyWith'})
 class Compartment with _$Compartment {
   const factory Compartment({
+    @ignore int? compartmentId,
     @JsonKey(name: 'ManagementUnitName') String? managementUnitName,
     @JsonKey(name: 'ManagementUnitId') String? managementUnitId,
     @JsonKey(name: 'ParentManagementUnitId') String? parentManagementUnitId,
@@ -28,18 +28,21 @@ class Compartment with _$Compartment {
     @JsonKey(name: 'SpeciesGroupTemplateId') String? speciesGroupTemplateId,
     @JsonKey(name: 'ProductGroupTemplateId') String? productGroupTemplateId,
     @JsonKey(name: 'WorkingCircleTemplateId') String? workingCircleTemplateId,
-    @JsonKey(name: 'NextWorkingCircleTemplateId') String? nextWorkingCircleTemplateId,
+    @JsonKey(name: 'NextWorkingCircleTemplateId')
+        String? nextWorkingCircleTemplateId,
     @JsonKey(name: 'SphaAge') double? sphaAge,
     @JsonKey(name: 'SphaSurvival') double? sphaSurvival,
     @JsonKey(name: 'GeologyClassMasterDataId') String? geologyClassMasterDataId,
-    @JsonKey(name: 'OwnershipClassMasterDataId') String? ownershipClassMasterDataId,
+    @JsonKey(name: 'OwnershipClassMasterDataId')
+        String? ownershipClassMasterDataId,
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'UpdateDT') String? updateDT,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'Polygon') String? polygon,
     @ignore
     @Default(<PolygonItem>[])
-    @JsonKey(name: 'PolygonItems') List<PolygonItem>? polygonItems,
+    @JsonKey(name: 'PolygonItems')
+        List<PolygonItem>? polygonItems,
 
     // New key value fields
     @JsonKey(name: 'CampId') String? campId,
@@ -48,7 +51,9 @@ class Compartment with _$Compartment {
     @JsonKey(name: 'EspacementWidth') String? espacementWidth,
     @JsonKey(name: 'EspacementLength') String? espacementLength,
     @JsonKey(name: 'StockingPercentage') double? stockingPercentage,
-    @Default(false) @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
+    @Default(false)
+    @JsonKey(name: 'IsMasterdataSynced')
+        bool? isMasterdataSynced,
   }) = _Compartment;
 
   const Compartment._();
@@ -58,9 +63,10 @@ class Compartment with _$Compartment {
 
   @override
   Id get id {
-    var compartmentId = int.tryParse(managementUnitId ?? '');
-    compartmentId ??= DateTime.tryParse(createDT ?? '')?.millisecondsSinceEpoch;
-    return compartmentId ?? Isar.autoIncrement;
+    final id = int.tryParse(managementUnitId ?? '') ??
+        DateTime.now().millisecondsSinceEpoch;
+
+    return compartmentId ?? id;
   }
 }
 
@@ -74,4 +80,3 @@ class PolygonItem with _$PolygonItem {
   factory PolygonItem.fromJson(Map<String, dynamic> json) =>
       _$PolygonItemFromJson(json);
 }
-

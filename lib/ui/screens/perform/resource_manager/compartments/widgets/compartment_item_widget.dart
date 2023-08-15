@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:cmo/di.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/compartment_cubit/compartment_cubit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_map_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:cmo/state/compartment_cubit/compartment_cubit.dart';
 
 class CompartmentItemWidget extends StatelessWidget {
   final Compartment model;
@@ -32,14 +32,16 @@ class CompartmentItemWidget extends StatelessWidget {
         if (points == null) {
           return;
         }
-        final farm = await cmoDatabaseMasterService.getFarmById(model.farmId ?? '');
-        await CompartmentMapScreen.push(context,
-            farmId: model.farmId ?? '',
-            farmName: farm?.farmName ?? '',
-            points: points
-                .map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0))
-                .toList(),
-            compartment: model,
+        final farm =
+            await cmoDatabaseMasterService.getFarmById(model.farmId ?? '');
+        await CompartmentMapScreen.push(
+          context,
+          farmId: model.farmId ?? '',
+          farmName: farm?.farmName ?? '',
+          points: points
+              .map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0))
+              .toList(),
+          compartment: model,
         );
         context.read<CompartmentCubit>().loadListCompartment();
       },
@@ -54,15 +56,17 @@ class CompartmentItemWidget extends StatelessWidget {
         ),
         content: [
           CmoCardHeader(
-            title: '${LocaleKeys.compartment.tr()}: ${model.unitNumber}',
+            title: '${LocaleKeys.compartment.tr()}: ${model.unitNumber ?? ''}',
           ),
           CmoCardItem(
-            title: model.productGroupTemplateName ?? LocaleKeys.productGroup.tr(),
+            title:
+                model.productGroupTemplateName ?? LocaleKeys.productGroup.tr(),
             value: '${model.polygonArea?.toStringAsFixed(2)} ha',
             ratioTitleSpace: 3,
           ),
           CmoCardItem(
-            title: model.speciesGroupTemplateName ?? LocaleKeys.speciesGroup.tr(),
+            title:
+                model.speciesGroupTemplateName ?? LocaleKeys.speciesGroup.tr(),
             value: '',
             ratioTitleSpace: 3,
           ),

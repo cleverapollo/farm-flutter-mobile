@@ -10,8 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompartmentScreen extends StatefulWidget {
-  final String? farmName;
   const CompartmentScreen({super.key, this.farmName});
+  final String? farmName;
 
   static Future<AddingCompartmentResult?> push(
     BuildContext context, {
@@ -24,7 +24,9 @@ class CompartmentScreen extends StatefulWidget {
         builder: (_) {
           return BlocProvider(
             create: (_) => CompartmentCubit(farmId ?? '', campId: campId),
-            child: CompartmentScreen(farmName: farmName,),
+            child: CompartmentScreen(
+              farmName: farmName,
+            ),
           );
         },
       ),
@@ -39,7 +41,9 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<CompartmentCubit>().loadListCompartment();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await context.read<CompartmentCubit>().loadListCompartment();
+    });
   }
 
   void onBack(
@@ -59,10 +63,14 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
       onWillPop: () async {
         return false;
       },
-      child: BlocSelector<CompartmentCubit, CompartmentState, List<Compartment>>(
-          selector: (state) => state.listCompartment,
+      child:
+          BlocSelector<CompartmentCubit, CompartmentState, List<Compartment>>(
+        selector: (state) => state.listCompartment,
         builder: (context, listCompartment) {
-          final total = listCompartment.fold(0.0, (previousValue, element) => previousValue + (element.polygonArea ?? 0));
+          final total = listCompartment.fold(
+              0.0,
+              (previousValue, element) =>
+                  previousValue + (element.polygonArea ?? 0));
           return Scaffold(
             appBar: CmoAppBarV2(
               title: LocaleKeys.compartment.tr(),

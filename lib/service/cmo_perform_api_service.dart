@@ -6,8 +6,6 @@ import 'package:cmo/enum/enum.dart';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/compartment/area_type.dart';
-import 'package:cmo/model/compartment/product_group_template.dart';
-import 'package:cmo/model/compartment/species_group_template.dart';
 import 'package:cmo/model/hirac.dart';
 import 'package:cmo/model/hirac_template.dart';
 import 'package:cmo/model/hirac_type.dart';
@@ -632,8 +630,32 @@ class CmoPerformApiService {
 
       final data = response.data;
       return data?.map((e) => Compartment.fromJson(e as JsonData)).toList();
-    } catch (e){
+    } catch (e) {
       logger.d('Cannot getCompartmentsByRMId $e');
+    }
+
+    return null;
+  }
+
+  Future<List<Compartment>?> getCompartmentsByFarmId(String farmId) async {
+    try {
+      final response = await client.get<List<dynamic>>(
+        '${Env.performForestryUrl}ManagementUnit/GetManagementUnitByFarmerId?',
+        queryParameters: {'dnnUserId': 0, 'isActive': true, 'farmId': farmId},
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknown error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data;
+      return data
+          ?.map((e) => Compartment.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      logger.d('Cannot getCompartmentsByFarmId $e');
     }
 
     return null;
@@ -653,15 +675,15 @@ class CmoPerformApiService {
 
       final data = response.data;
       return data?.map((e) => Asi.fromJson(e as JsonData)).toList();
-    } catch (e){
+    } catch (e) {
       logger.d('Cannot getRMRegisters $e');
     }
 
     return null;
   }
 
-  Future<List<AsiPhoto>?> getRMAsiRegisterPhotosByAsiRegisterId(String? asiRegisterId) async {
-
+  Future<List<AsiPhoto>?> getRMAsiRegisterPhotosByAsiRegisterId(
+      String? asiRegisterId) async {
     try {
       final response = await client.get<JsonListData>(
         '${Env.apiGroupSchemeUrl}AsiRegisterPhoto/GetAsiRegisterPhotosByAsiRegisterId?asiRegisterId=${asiRegisterId}',
@@ -675,7 +697,7 @@ class CmoPerformApiService {
 
       final data = response.data;
       return data?.map((e) => AsiPhoto.fromJson(e as JsonData)).toList();
-    } catch (e){
+    } catch (e) {
       logger.d('Cannot getRMAsiRegisterPhotosByAsiRegisterId $e');
     }
 
@@ -683,8 +705,8 @@ class CmoPerformApiService {
   }
 
   Future<Compartment?> insertUpdatedCompartment(
-      Compartment compartment,
-      ) async {
+    Compartment compartment,
+  ) async {
     try {
       log(compartment.toJson().toString());
       final response = await client.post<JsonData>(
@@ -794,9 +816,7 @@ class CmoPerformApiService {
     }
 
     final data = response.data;
-    return data
-        ?.map((e) => Hirac.fromJson(e as JsonData))
-        .toList();
+    return data?.map((e) => Hirac.fromJson(e as JsonData)).toList();
   }
 
   Future<List<HiracType>?> getHiracTypeSearch({String? filterString}) async {
@@ -819,12 +839,11 @@ class CmoPerformApiService {
     }
 
     final data = response.data;
-    return data
-        ?.map((e) => HiracType.fromJson(e as JsonData))
-        .toList();
+    return data?.map((e) => HiracType.fromJson(e as JsonData)).toList();
   }
 
-  Future<List<HiracTemplate>?> getHiracTemplateSearch({String? filterString}) async {
+  Future<List<HiracTemplate>?> getHiracTemplateSearch(
+      {String? filterString}) async {
     final uri = Uri.https(
       Env.cmoApiUrl,
       'groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracTemplateSearch',
@@ -844,9 +863,7 @@ class CmoPerformApiService {
     }
 
     final data = response.data;
-    return data
-        ?.map((e) => HiracTemplate.fromJson(e as JsonData))
-        .toList();
+    return data?.map((e) => HiracTemplate.fromJson(e as JsonData)).toList();
   }
 
   Future<List<Farm>?> getFarmSearch({String? filterString}) async {
