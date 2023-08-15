@@ -571,7 +571,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     final isComplete = !state.addMemberMDetails.firstName.isNullOrEmpty &&
         !state.addMemberMDetails.lastName.isNullOrEmpty &&
         !state.addMemberMDetails.idNumber.isNullOrEmpty &&
-        !state.addMemberMDetails.mobileNumber.isNullOrEmpty;
+        !(state.addMemberMDetails.idNumber!.length < 8) &&
+        !state.addMemberMDetails.mobileNumber.isNullOrEmpty &&
+        !(state.addMemberMDetails.mobileNumber!.length < 8);
 
     emit(state.copyWith(
         farm: state.farm?.copyWith(
@@ -585,8 +587,12 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           isComplete: isComplete,
           isFirstNameError: firstName?.isBlank ?? state.addMemberMDetails.isFirstNameError,
           isLastNameError: lastName?.isBlank ?? state.addMemberMDetails.isLastNameError,
-          isIdNumberError: idNumber?.isBlank ?? state.addMemberMDetails.isIdNumberError,
-          isMobileNumberError: mobileNumber?.isBlank ?? state.addMemberMDetails.isMobileNumberError,
+          isIdNumberError: idNumber == null
+              ? state.addMemberMDetails.isIdNumberError
+              : (idNumber.isBlank || idNumber.length < 8),
+          isMobileNumberError: mobileNumber == null
+              ? state.addMemberMDetails.isIdNumberError
+              : (mobileNumber.isBlank || mobileNumber.length < 8),
         ),
       ),
     );
@@ -656,8 +662,10 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         addMemberMDetails: state.addMemberMDetails.copyWith(
           isFirstNameError: state.addMemberMDetails.firstName.isBlank,
           isLastNameError: state.addMemberMDetails.lastName.isBlank,
-          isIdNumberError: state.addMemberMDetails.idNumber.isBlank,
-          isMobileNumberError: state.addMemberMDetails.mobileNumber.isBlank,
+          isIdNumberError: state.addMemberMDetails.idNumber.isBlank ||
+              state.addMemberMDetails.idNumber!.length < 8,
+          isMobileNumberError: state.addMemberMDetails.mobileNumber.isBlank ||
+              state.addMemberMDetails.mobileNumber!.length < 8,
         ),
       ),
     );
