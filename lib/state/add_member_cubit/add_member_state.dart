@@ -18,8 +18,6 @@ class AddMemberState with _$AddMemberState {
     @Default(AddMemberMPO()) AddMemberMPO addMemberMPO,
     @Default(AddMemberMDetails()) AddMemberMDetails addMemberMDetails,
     @Default(AddMemberSDetails()) AddMemberSDetails addMemberSDetails,
-    @Default(AddMemberInclusionDate())
-        AddMemberInclusionDate addMemberInclusionDate,
     @Default(FarmMemberObjectivesState()) FarmMemberObjectivesState farmMemberObjectivesState,
     @Default(AddMemberContract()) AddMemberContract addMemberContract,
     @Default(AddMemberSAF()) AddMemberSAF addMemberSAF,
@@ -42,16 +40,6 @@ class AddMemberSAF with _$AddMemberSAF {
     String? signaturePoints,
     String? signatureDate,
   }) = _AddMemberSAF;
-}
-
-@freezed
-class AddMemberInclusionDate with _$AddMemberInclusionDate {
-  const factory AddMemberInclusionDate({
-    @Default(false) bool isComplete,
-    String? inclusionDate,
-    @Default(true) bool isSectionCollapse,
-    Key? sectionKey,
-  }) = _AddMemberInclusionDate;
 }
 
 @freezed

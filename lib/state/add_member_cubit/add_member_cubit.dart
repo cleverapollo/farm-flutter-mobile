@@ -101,14 +101,10 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       );
 
       final addMemberInclusionDateIsComplete = farm.inclusionDate != null;
-      final addMemberInclusionDate = AddMemberInclusionDate(
-          isComplete: addMemberInclusionDateIsComplete,
-          inclusionDate: farm.inclusionDate);
       emit(state.copyWith(
         addMemberMPO: addMemberMPO,
         addMemberMDetails: addMemberMDetail,
         addMemberSDetails: addMemberSDetail,
-        addMemberInclusionDate: addMemberInclusionDate,
       ));
 
       debugPrint('Done loading farm data');
@@ -229,10 +225,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     }
 
     if (state.addMemberSDetails.isComplete) {
-      stepCount++;
-    }
-
-    if (state.addMemberInclusionDate.isComplete) {
       stepCount++;
     }
 
@@ -452,7 +444,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
               state.addMemberMPO.isComplete &&
               state.addMemberMDetails.isComplete &&
               state.addMemberSDetails.isComplete &&
-              state.addMemberInclusionDate.isComplete &&
               state.farmMemberRiskAssessmentsState.isComplete &&
               state.farmMemberObjectivesState.isComplete &&
               state.addMemberContract.isComplete &&
@@ -603,20 +594,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     }
   }
 
-  Future<void> onDataChangeInclusionDate(DateTime? dateTime) async {
-    if (dateTime != null) {
-      emit(state.copyWith(
-          farm: state.farm?.copyWith(inclusionDate: dateTime.toIso8601String()),
-          addMemberInclusionDate: state.addMemberInclusionDate.copyWith(
-            inclusionDate: dateTime.toIso8601String(),
-            isComplete: true,
-          )));
-      onChangeInclusionDateState(isCollapse: true);
-      onChangeMemberRiskAssessmentState(isCollapse: false);
-      await cacheFarm();
-    }
-  }
-
   Future<void> onDataChangeMemberContract() async {
     emit(state.copyWith(
         farm: state.farm?.copyWith(isMasterDataSynced: 0),
@@ -707,17 +684,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       state.copyWith(
         addMemberSDetails: state.addMemberSDetails.copyWith(
           isSectionCollapse: isCollapse ?? !state.addMemberSDetails.isSectionCollapse,
-          sectionKey: UniqueKey(),
-        ),
-      ),
-    );
-  }
-
-  void onChangeInclusionDateState({bool? isCollapse}) {
-    emit(
-      state.copyWith(
-        addMemberInclusionDate: state.addMemberInclusionDate.copyWith(
-          isSectionCollapse: isCollapse ?? !state.addMemberInclusionDate.isSectionCollapse,
           sectionKey: UniqueKey(),
         ),
       ),

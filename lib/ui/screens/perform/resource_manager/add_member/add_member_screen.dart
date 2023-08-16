@@ -1,5 +1,3 @@
-import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
@@ -88,8 +86,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                 SizedBox(height: 12),
                 _AddMemberSDetails(),
                 SizedBox(height: 12),
-                _AddMemberInclusionDate(),
-                SizedBox(height: 12),
                 FarmMemberRiskAssessmentsWidget(),
                 SizedBox(height: 12),
                 FarmMemberObjectivesWidget(),
@@ -99,96 +95,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           );
         },
       ),
-    );
-  }
-}
-
-class _AddMemberInclusionDate extends StatelessWidget {
-  const _AddMemberInclusionDate();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberInclusionDate>(
-      selector: (state) => state.addMemberInclusionDate,
-      builder: (context, AddMemberInclusionDate data) {
-        final cubit = context.read<AddMemberCubit>();
-        return CmoCollapseTitle(
-          key: data.sectionKey,
-          initiallyExpanded: !data.isSectionCollapse,
-          showTick: data.isComplete,
-          title: 'Member Inclusion Date',
-          child: ColoredBox(
-            color: Colors.white,
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(width: 1, color: Colors.grey)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Member Inclusion Date',
-                    style: context.textStyles.bodyBold
-                        .copyWith(color: const Color(0xff2072B9)),
-                  ),
-                  _buildDivider(),
-                  Text(
-                    'The date when the member will be included into Group Scheme',
-                    style: context.textStyles.bodyNormal
-                        .copyWith(color: Colors.black),
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      final result = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.parse(data.inclusionDate ??
-                              DateTime.now().toIso8601String()),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(2200));
-
-                      await cubit.onDataChangeInclusionDate(result);
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 10, left: 6, right: 6, top: 4),
-                      padding:
-                          const EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 12),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            data.inclusionDate != null
-                                ? DateTime.parse(data.inclusionDate!)
-                                    .yMd()
-                                : LocaleKeys.inclusion_date.tr(),
-                            style: context.textStyles.bodyNormal
-                                .copyWith(color: Colors.black),
-                          ),
-                          Assets.icons.icCalendar.svgBlack
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildDivider() {
-    return Column(
-      children: const [
-        SizedBox(height: 8),
-        Divider(thickness: 1),
-        SizedBox(height: 8),
-      ],
     );
   }
 }
@@ -339,7 +245,7 @@ class _AddMemberSDetails extends StatelessWidget {
 
                       await cubit.onDataChangeSiteDetail(asis: result);
                       cubit.onChangeSiteDetailState(isCollapse: true);
-                      cubit.onChangeInclusionDateState(isCollapse: false);
+                      cubit.onChangeMemberRiskAssessmentState(isCollapse: false);
                     },
                     title: LocaleKeys.asi.tr(),
                     showTick: data.isCompleteASI,
