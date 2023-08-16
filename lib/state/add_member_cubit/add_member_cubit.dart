@@ -84,7 +84,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         isComplete: addMemberSDetailIsComplete,
         isCompleteSiteLocation: isCompleteSiteLocation,
         isCompleteCompartments: isCompleteCompartments,
-        isCompleteASI: isCompleteASI,
         siteName: farm.farmName,
         town: farm.town,
         province: farm.province,
@@ -370,14 +369,11 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         currentData.addMemberCompartmentsState.compartments.isNotEmpty &&
             currentData.addMemberCompartmentsState.farmSize != null;
 
-    final isCompleteAsi = currentData.addMemberAsisState.asis.isNotEmpty;
-
     final isComplete = currentData.siteName != null &&
         currentData.town != null &&
         currentData.province != null &&
         isCompleteSiteLocation &&
         isCompleteCompartments;
-    // && isCompleteAsi;
 
     emit(state.copyWith(
         farm: state.farm?.copyWith(
@@ -393,7 +389,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           isComplete: isComplete,
           isCompleteSiteLocation: isCompleteSiteLocation,
           isCompleteCompartments: isCompleteCompartments,
-          isCompleteASI: isCompleteAsi,
         )));
 
     if (isComplete) {

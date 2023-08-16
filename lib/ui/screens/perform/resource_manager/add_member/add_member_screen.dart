@@ -227,6 +227,8 @@ class _AddMemberSDetails extends StatelessWidget {
                             await cubit.onDataChangeSiteDetail(
                                 addingCompartmentResult: result,
                             );
+                            cubit.onChangeSiteDetailState(isCollapse: true);
+                            cubit.onChangeMemberRiskAssessmentState(isCollapse: false);
                           }
                         },
                       );
@@ -244,11 +246,8 @@ class _AddMemberSDetails extends StatelessWidget {
                           farmId: farmId, farmName: farmName);
 
                       await cubit.onDataChangeSiteDetail(asis: result);
-                      cubit.onChangeSiteDetailState(isCollapse: true);
-                      cubit.onChangeMemberRiskAssessmentState(isCollapse: false);
                     },
                     title: LocaleKeys.asi.tr(),
-                    showTick: data.isCompleteASI,
                     isHideBorder: true,
                   ),
                 ),
