@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cmo/di.dart';
@@ -708,9 +709,13 @@ class CmoPerformApiService {
     Compartment compartment,
   ) async {
     try {
-      log(compartment.toJson().toString());
-      final response = await client.post<JsonData>(
-        '${Env.performForestryUrl}ManagementUnit/InsUpdManagementUnit',
+      final uri = Uri.https(
+        Env.cmoApiUrl,
+        '/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/ManagementUnit/InsUpdManagementUnit',
+      );
+
+      final response = await client.postUri<JsonData?>(
+        uri,
         data: compartment.toJson(),
         options: Options(headers: {'accessToken': 'true'}),
       );
@@ -867,24 +872,29 @@ class CmoPerformApiService {
   }
 
   Future<List<Farm>?> getFarmSearch({String? filterString}) async {
-    final response = await client.post<JsonData>(
-      '${Env.apiGroupSchemeUrl}Farm/SearchFarms?',
-      data: {
-        'FarmName': filterString,
-        'IsRegionalManager': true,
-        "Skip": 0,
-        "Take": 10,
-      },
-      options: Options(headers: {'accessToken': 'true'}),
-    );
+    try {
+      final response = await client.post<JsonData>(
+        '${Env.apiGroupSchemeUrl}Farm/SearchFarms?',
+        data: {
+          'FarmName': filterString,
+          'IsRegionalManager': true,
+          "Skip": 0,
+          "Take": 10,
+        },
+        options: Options(headers: {'accessToken': 'true'}),
+      );
 
-    if (response.statusCode != 200) {
-      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data!['Data'] as JsonListData?;
+      return data?.map((e) => Farm.fromJson(e as JsonData)).toList();
+    } catch (e) {
+      logger.d('getFarmSearch $e');
       return null;
     }
-
-    final data = response.data!['Data'] as JsonListData?;
-    return data?.map((e) => Farm.fromJson(e as JsonData)).toList();
   }
 
   Future<List<Farm>?> getRMFarmSearch({String? filterString}) async {
