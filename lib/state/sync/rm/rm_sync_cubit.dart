@@ -979,7 +979,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     if (compartments.isNotBlank) {
       for (final compartment in compartments!) {
         await cmoDatabaseMasterService.cacheCompartment(compartment.copyWith(
-            compartmentId: compartment.managementUnitId.toIdIsarFromUuid));
+            localCompartmentId: compartment.managementUnitId.toIdIsarFromUuid));
       }
     }
   }

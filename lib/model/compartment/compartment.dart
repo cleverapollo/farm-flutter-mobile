@@ -8,7 +8,7 @@ part 'compartment.g.dart';
 @Collection(ignore: {'copyWith'})
 class Compartment with _$Compartment {
   const factory Compartment({
-    @JsonKey(name: 'CompartmentId') int? compartmentId,
+    @JsonKey(name: 'CompartmentId') int? localCompartmentId,
     @JsonKey(name: 'ManagementUnitName') String? managementUnitName,
     @JsonKey(name: 'ManagementUnitId') String? managementUnitId,
     @JsonKey(name: 'ParentManagementUnitId') String? parentManagementUnitId,
@@ -66,7 +66,7 @@ class Compartment with _$Compartment {
     final id = int.tryParse(managementUnitId ?? '') ??
         DateTime.now().millisecondsSinceEpoch;
 
-    return compartmentId ?? id;
+    return localCompartmentId ?? id;
   }
 }
 

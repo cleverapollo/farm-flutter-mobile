@@ -1251,7 +1251,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     for (final item in data) {
       futures.add(cmoDatabaseMasterService.cacheCompartment(
           item.copyWith(
-              compartmentId: item.managementUnitId.toIdIsarFromUuid,
+              localCompartmentId: item.managementUnitId.toIdIsarFromUuid,
               isActive: true,
               isMasterdataSynced: true),
           isDirect: true));
