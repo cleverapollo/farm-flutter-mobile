@@ -488,19 +488,14 @@ class CmoPerformApiService {
   }
 
   Future<List<ProductGroupTemplate>?> fetchProductGroupTemplates() async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/ProductGroupTemplate/GetProductGroupTemplateByIds',
-      {
+    final response = await client.get<JsonListData>(
+      '${Env.performForestryUrl}ProductGroupTemplate/GetProductGroupTemplateByIds?',
+      queryParameters: {
         "groupSchemeId": "undefined",
         "areaTypeId": "undefined",
         "sortDirection": "ASC",
         "isActive": '',
       },
-    );
-
-    final response = await client.getUri<JsonListData>(
-      uri,
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -516,12 +511,8 @@ class CmoPerformApiService {
   }
 
   Future<List<AsiType>?> fetchRMAsiType() async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS/API/AsiType/GetRMAsiType',
-    );
-    final response = await client.getUri<JsonListData>(
-      uri,
+    final response = await client.get<JsonListData>(
+      '${Env.apiGroupSchemeUrl}AsiType/GetRMAsiType',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -535,12 +526,8 @@ class CmoPerformApiService {
   }
 
   Future<List<AsiType>?> fetchFarmerAsiType() async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS/API/AsiType/GetFarmersAsiType',
-    );
-    final response = await client.getUri<JsonListData>(
-      uri,
+    final response = await client.get<JsonListData>(
+      '${Env.apiGroupSchemeUrl}AsiType/GetFarmersAsiType',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -554,19 +541,14 @@ class CmoPerformApiService {
   }
 
   Future<List<SpeciesGroupTemplate>?> fetchSpeciesGroupTemplates() async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/SpeciesGroupTemplate/GetSpeciesGroupTemplateByIds',
-      {
+    final response = await client.get<JsonListData>(
+      '${Env.performForestryUrl}SpeciesGroupTemplate/GetSpeciesGroupTemplateByIds?',
+      queryParameters: {
         "groupSchemeId": "undefined",
         "areaTypeId": "undefined",
         "sortDirection": "ASC",
         "isActive": '',
       },
-    );
-
-    final response = await client.getUri<JsonListData>(
-      uri,
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -582,17 +564,12 @@ class CmoPerformApiService {
   }
 
   Future<List<AreaType>?> fetchAreaTypes() async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      '/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/AreaType/GetAreaTypeByUserIdAndRole',
-      {
+    final response = await client.get<JsonListData>(
+      '${Env.performForestryUrl}AreaType/GetAreaTypeByUserIdAndRole?',
+      queryParameters: {
         "userId": "0",
         "isRegionalManager": "false",
       },
-    );
-
-    final response = await client.getUri<JsonListData>(
-      uri,
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -701,13 +678,8 @@ class CmoPerformApiService {
     Compartment compartment,
   ) async {
     try {
-      final uri = Uri.https(
-        Env.cmoApiUrl,
-        '/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.FMP/API/ManagementUnit/InsUpdManagementUnit',
-      );
-
-      final response = await client.postUri<JsonData?>(
-        uri,
+      final response = await client.post<JsonData?>(
+        '${Env.performForestryUrl}ManagementUnit/InsUpdManagementUnit',
         data: compartment.toJson(),
         options: Options(headers: {'accessToken': 'true'}),
       );
@@ -770,17 +742,12 @@ class CmoPerformApiService {
   }
 
   Future<List<GroupScheme>?> getGroupSchemeByGroupSchemeId(int id) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      'groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS.Main/API/GroupSchemeMain/GetGroupSchemeById',
-      {
+    final response = await client.get<JsonListData>(
+      '${Env.apiGroupSchemeMainUrl}GroupSchemeMain/GetGroupSchemeById',
+      queryParameters: {
         'GroupSchemeId': '$id',
         "isActive": "true",
       },
-    );
-
-    final response = await client.getUri<JsonListData>(
-      uri,
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -794,19 +761,15 @@ class CmoPerformApiService {
   }
 
   Future<List<Hirac>?> getHiracSearch({String? filterString}) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      'groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracSearch',
-      {
+    final response = await client.get<JsonListData>(
+      '${Env.apiGroupSchemeUrl}Hirac/GetHiracSearch',
+      queryParameters: {
         'filterString': filterString ?? '',
         "isActive": "true",
       },
-    );
-
-    final response = await client.getUri<JsonListData>(
-      uri,
       options: Options(headers: {'accessToken': 'true'}),
     );
+
     if (response.statusCode != 200) {
       showSnackError(msg: 'Unknow error: ${response.statusCode}');
       return null;
@@ -817,19 +780,15 @@ class CmoPerformApiService {
   }
 
   Future<List<HiracType>?> getHiracTypeSearch({String? filterString}) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      'groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracTypeSearch',
-      {
+    final response = await client.get<JsonListData?>(
+      '${Env.apiGroupSchemeUrl}Hirac/GetHiracTypeSearch',
+      queryParameters: {
         'filterString': filterString ?? '',
         "isActive": "true",
       },
-    );
-
-    final response = await client.getUri<JsonListData>(
-      uri,
       options: Options(headers: {'accessToken': 'true'}),
     );
+
     if (response.statusCode != 200) {
       showSnackError(msg: 'Unknow error: ${response.statusCode}');
       return null;
@@ -841,17 +800,12 @@ class CmoPerformApiService {
 
   Future<List<HiracTemplate>?> getHiracTemplateSearch(
       {String? filterString}) async {
-    final uri = Uri.https(
-      Env.cmoApiUrl,
-      'groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS/API/Hirac/GetHiracTemplateSearch',
-      {
+    final response = await client.get<JsonListData>(
+      '${Env.apiGroupSchemeUrl}Hirac/GetHiracTemplateSearch',
+      queryParameters: {
         'filterString': filterString ?? '',
         "isActive": "true",
       },
-    );
-
-    final response = await client.getUri<JsonListData>(
-      uri,
       options: Options(headers: {'accessToken': 'true'}),
     );
     if (response.statusCode != 200) {
@@ -866,7 +820,7 @@ class CmoPerformApiService {
   Future<List<Farm>?> getFarmSearch({String? filterString}) async {
     try {
       final response = await client.post<JsonData>(
-        '${Env.apiGroupSchemeUrl}Farm/SearchFarms?',
+        '${Env.apiGroupSchemeUrl}Farm/SearchFarms',
         data: {
           'FarmName': filterString,
           'IsRegionalManager': true,

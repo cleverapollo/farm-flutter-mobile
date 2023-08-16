@@ -66,4 +66,7 @@ abstract class Env {
 
   @EnviedField(varName: 'API_GROUP_SCHEME_URL', obfuscate: true)
   static final apiGroupSchemeUrl = _Env.apiGroupSchemeUrl;
+
+  @EnviedField(varName: 'API_GROUP_SCHEME_MAIN_URL', obfuscate: true)
+  static final apiGroupSchemeMainUrl = _Env.apiGroupSchemeUrl;
 }
