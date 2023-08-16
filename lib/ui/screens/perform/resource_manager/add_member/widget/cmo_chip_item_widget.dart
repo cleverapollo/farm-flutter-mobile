@@ -48,7 +48,8 @@ class _CmoSlimfQuestionState extends State<CmoSlimfQuestion> {
                   color: buildColor(context, value, true),
                   border: Border.all(width: 2),
                 ),
-                child: Text('C',
+                child: Text(
+                    LocaleKeys.yes.tr(),
                     style: context.textStyles.bodyNormal.copyWith(
                         color: (value ?? false) ? Colors.white : Colors.black)),
               ),
@@ -69,7 +70,8 @@ class _CmoSlimfQuestionState extends State<CmoSlimfQuestion> {
                   color: buildColor(context, value, false),
                   border: Border.all(width: 2),
                 ),
-                child: Text('NC',
+                child: Text(
+                    LocaleKeys.no.tr(),
                     style: context.textStyles.bodyNormal.copyWith(
                         color: !(value ?? true) ? Colors.white : Colors.black)),
               ),
