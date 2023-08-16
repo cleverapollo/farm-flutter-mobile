@@ -22,14 +22,6 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../utils/utils.dart';
 
 class CmoPerformApiService {
-  final String _apiAuthUrl = Env.performDnnAuthUrl;
-
-  final String _apiUrl = Env.performDnnApiUrl;
-
-  final String _mqApiUrl = Env.apstoryMqApiUrl;
-
-  final String _pubsubApiKey = Env.performApstoryMqKey;
-
   Dio client = Dio(
     BaseOptions(
       validateStatus: (status) =>
@@ -68,7 +60,7 @@ class CmoPerformApiService {
       };
 
       final response = await client.post<JsonData>(
-        '${_apiAuthUrl}login',
+        '${Env.performDnnAuthUrl}login',
         data: body,
       );
 
@@ -91,7 +83,7 @@ class CmoPerformApiService {
       'rToken': renewalToken,
     };
     final response = await client.post<JsonData>(
-      '${_apiAuthUrl}extendtoken',
+      '${Env.performDnnAuthUrl}extendtoken',
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -109,7 +101,7 @@ class CmoPerformApiService {
     Response<Map<String, dynamic>>? response;
 
     response = await client.get<JsonData>(
-      '${_apiUrl}GetUser',
+      '${Env.performDnnApiUrl}GetUser',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -131,9 +123,9 @@ class CmoPerformApiService {
       final token = await secureStorage.read(
           key: UserRoleConfig.performRole.getAccessTokenKey);
       final result = await client.post<dynamic>(
-        '${_mqApiUrl}message',
+        '${Env.apstoryMqApiUrl}message',
         queryParameters: {
-          'key': _pubsubApiKey,
+          'key': Env.performApstoryMqKey,
           'client': currentClientId,
           'topic': topic,
         },
@@ -168,7 +160,7 @@ class CmoPerformApiService {
     };
 
     final response = await client.post<JsonData>(
-      '${_apiUrl}CreateUserDevice',
+      '${Env.performDnnApiUrl}CreateUserDevice',
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -186,7 +178,7 @@ class CmoPerformApiService {
     required int userId,
   }) async {
     final response = await client.get<JsonListData>(
-      '${_apiUrl}GetCompanyByUserId',
+      '${Env.performDnnApiUrl}GetCompanyByUserId',
       queryParameters: {'userId': userId.toString()},
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -202,7 +194,7 @@ class CmoPerformApiService {
 
   Future<List<Farm>?> fetchFarms() async {
     final response = await client.get<JsonListData>(
-      '${_apiUrl}GetFarms',
+      '${Env.performDnnApiUrl}GetFarms',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -217,7 +209,7 @@ class CmoPerformApiService {
 
   Future<List<GroupScheme>?> fetchGroupSchemes() async {
     final response = await client.get<JsonListData>(
-      '${_apiUrl}GetGroupschemes',
+      '${Env.performDnnApiUrl}GetGroupschemes',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -233,7 +225,7 @@ class CmoPerformApiService {
   Future<List<ResourceManagerUnit>?> fetchResourceManagerUnits(
       int groupSchemeId) async {
     final response = await client.get<JsonListData>(
-      '${_apiUrl}GetRegionalManagerUnits',
+      '${Env.performDnnApiUrl}GetRegionalManagerUnits',
       queryParameters: {'groupSchemeId': groupSchemeId.toString()},
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -261,7 +253,7 @@ class CmoPerformApiService {
     };
 
     final response = await client.post<dynamic>(
-      '${_apiUrl}CreateSystemEvent',
+      '${Env.performDnnApiUrl}CreateSystemEvent',
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -276,9 +268,9 @@ class CmoPerformApiService {
   Future<bool> createSubscription(
       {required String topic, required int currentClientId}) async {
     try {
-      await client.get<dynamic>('${_mqApiUrl}message',
+      await client.get<dynamic>('${Env.apstoryMqApiUrl}message',
           queryParameters: {
-            'key': _pubsubApiKey,
+            'key': Env.performApstoryMqKey,
             'client': '$currentClientId',
             'topic': topic,
             'pageSize': '1',
@@ -304,7 +296,7 @@ class CmoPerformApiService {
     };
 
     final response = await client.post<dynamic>(
-      '${_apiUrl}CreateSystemEvent',
+      '${Env.performDnnApiUrl}CreateSystemEvent',
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -322,7 +314,7 @@ class CmoPerformApiService {
   Future<void> checkRMSystemEventExist({required int systemEventId}) async {
     try {
       await client.get<dynamic>(
-        '${_apiUrl}SystemEventExists',
+        '${Env.performDnnApiUrl}SystemEventExists',
         queryParameters: {'systemEventId': systemEventId},
         options: Options(headers: {'accessToken': 'true'}),
       );
@@ -340,7 +332,7 @@ class CmoPerformApiService {
     };
 
     final response = await client.post<dynamic>(
-      '${_apiUrl}CreateSystemEvent',
+      '${Env.performDnnApiUrl}CreateSystemEvent',
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -359,7 +351,7 @@ class CmoPerformApiService {
   Future<bool> checkFarmSystemEventExist({required int systemEventId}) async {
     try {
       final result = await client.get<dynamic>(
-        '${_apiUrl}SystemEventExists',
+        '${Env.performDnnApiUrl}SystemEventExists',
         queryParameters: {'systemEventId': systemEventId},
         options: Options(headers: {'accessToken': 'true'}),
       );
@@ -379,9 +371,9 @@ class CmoPerformApiService {
   }) async {
     final accessToken = await _readAccessToken();
     final response = await client.get<JsonData>(
-      '${_mqApiUrl}message',
+      '${Env.apstoryMqApiUrl}message',
       queryParameters: {
-        'key': _pubsubApiKey,
+        'key': Env.performApstoryMqKey,
         'client': currentClientId,
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
@@ -404,9 +396,9 @@ class CmoPerformApiService {
     int pageSize = 200,
   }) async {
     final response = await client.get<JsonData>(
-      '${_mqApiUrl}message',
+      '${Env.apstoryMqApiUrl}message',
       queryParameters: {
-        'key': _pubsubApiKey,
+        'key': Env.performApstoryMqKey,
         'client': '$currentClientId',
         'topic': '$topicAssessment.$currentClientId',
         'pageSize': '$pageSize',
@@ -429,9 +421,9 @@ class CmoPerformApiService {
     int pageSize = 200,
   }) async {
     final response = await client.get<JsonData>(
-      '${_mqApiUrl}message',
+      '${Env.apstoryMqApiUrl}message',
       queryParameters: {
-        'key': _pubsubApiKey,
+        'key': Env.performApstoryMqKey,
         'client': '$currentClientId',
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
@@ -456,10 +448,10 @@ class CmoPerformApiService {
     final body = messages.map((e) => e.toJson()).toList();
 
     final response = await client.delete<dynamic>(
-      '${_mqApiUrl}message',
+      '${Env.apstoryMqApiUrl}message',
       data: body,
       queryParameters: {
-        'key': _pubsubApiKey,
+        'key': Env.performApstoryMqKey,
         'client': '$currentClientId',
         'topic': '$topicMasterDataSync*.$currentClientId'
       },
@@ -479,9 +471,9 @@ class CmoPerformApiService {
     final body = messages.map((e) => e.toJson()).toList();
 
     final response = await client.delete<dynamic>(
-      '${_mqApiUrl}message',
+      '${Env.apstoryMqApiUrl}message',
       queryParameters: {
-        'key': _pubsubApiKey,
+        'key': Env.performApstoryMqKey,
         'client': '$currentClientId',
         'topic': 'Cmo.MasterDataDeviceSync.*.$currentClientId',
       },
