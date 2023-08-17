@@ -1,5 +1,4 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/extensions/date.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/model.dart';
@@ -124,7 +123,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   Future<void> initDataRiskProfileQuestion() async {
     final activeGroupScheme = await configService.getActiveGroupScheme();
 
-    final riskProfileQuestions = await cmoDatabaseMasterService.getRiskProfileQuestionByGroupSchemeId(
+    final riskProfileQuestions =
+        await cmoDatabaseMasterService.getRiskProfileQuestionByGroupSchemeId(
       activeGroupScheme?.groupSchemeId,
     );
 
@@ -168,22 +168,27 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   Future<void> initDataFarmMemberObjectives() async {
     final activeGroupScheme = await configService.getActiveGroupScheme();
 
-    final farmMemberObjective = await cmoDatabaseMasterService.getAllFarmMemberObjectiveByGroupSchemeId(
+    final farmMemberObjective =
+        await cmoDatabaseMasterService.getAllFarmMemberObjectiveByGroupSchemeId(
       activeGroupScheme?.groupSchemeId,
     );
 
-    final farmObjectiveOption = await cmoDatabaseMasterService.getFarmObjectiveOptionByGroupSchemeId(
+    final farmObjectiveOption =
+        await cmoDatabaseMasterService.getFarmObjectiveOptionByGroupSchemeId(
       activeGroupScheme?.groupSchemeId,
     );
 
-    final farmMemberObjectiveAnswer = await cmoDatabaseMasterService.getFarmMemberObjectiveAnswerByFarmId(state.farm?.farmId);
+    final farmMemberObjectiveAnswer = await cmoDatabaseMasterService
+        .getFarmMemberObjectiveAnswerByFarmId(state.farm?.farmId);
 
     final listAnswer = <FarmMemberObjectiveAnswer>[];
 
     var now = DateTime.now().millisecondsSinceEpoch;
 
     for (final question in farmMemberObjective) {
-      final currentAnswer = farmMemberObjectiveAnswer.firstWhereOrNull((element) => element.farmMemberObjectiveId == question.farmMemberObjectiveId);
+      final currentAnswer = farmMemberObjectiveAnswer.firstWhereOrNull(
+          (element) =>
+              element.farmMemberObjectiveId == question.farmMemberObjectiveId);
       if (currentAnswer != null) {
         listAnswer.add(currentAnswer);
       } else {
@@ -247,12 +252,13 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       stepCount++;
     }
 
-    debugPrint(stepCount.toString());
     if (state.farm?.isGroupSchemeMember == false ||
         state.farm?.isGroupSchemeMember == null) {
+      final isGroupSchemeMember = stepCount == 9;
+
       emit(state.copyWith(
         farm: state.farm?.copyWith(
-            stepCount: stepCount, isGroupSchemeMember: stepCount == 10),
+            stepCount: stepCount, isGroupSchemeMember: isGroupSchemeMember),
       ));
     }
     if (stepCount != 0) {
@@ -265,14 +271,16 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   }
 
   Future<void> onTapSlimf({required bool isSlimf}) async {
-    emit(state.copyWith(
-      farm: state.farm?.copyWith(isSlimfCompliant: isSlimf),
-      addMemberSLIMF: AddMemberSLIMF(
-        isSlimfCompliant: isSlimf,
-        isComplete: true,
-        isSectionCollapse: true,
+    emit(
+      state.copyWith(
+        farm: state.farm?.copyWith(isSlimfCompliant: isSlimf),
+        addMemberSLIMF: AddMemberSLIMF(
+          isSlimfCompliant: isSlimf,
+          isComplete: true,
+          isSectionCollapse: true,
+        ),
       ),
-    ),);
+    );
     onChangeMPOState(isCollapse: false);
     checkIsProspectMember();
     if (state.addMemberSLIMF.isComplete) {
@@ -344,9 +352,11 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       siteName: siteName ?? state.addMemberSDetails.siteName,
       town: town ?? state.addMemberSDetails.town,
       province: province ?? state.addMemberSDetails.province,
-      isSiteNameError: siteName?.isBlank ?? state.addMemberSDetails.isSiteNameError,
+      isSiteNameError:
+          siteName?.isBlank ?? state.addMemberSDetails.isSiteNameError,
       isTownError: town?.isBlank ?? state.addMemberSDetails.isTownError,
-      isProvinceError: province?.isBlank ?? state.addMemberSDetails.isProvinceError,
+      isProvinceError:
+          province?.isBlank ?? state.addMemberSDetails.isProvinceError,
       addMemberSiteLocations:
           state.addMemberSDetails.addMemberSiteLocations.copyWith(
         lat: siteLocationLat ??
@@ -463,10 +473,11 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   }) async {
     final farmMemberRiskAssessmentsState = state.farmMemberRiskAssessmentsState;
     final listFarmMemberRiskProfileAnswers = <FarmMemberRiskProfileAnswer>[];
-    listFarmMemberRiskProfileAnswers.addAll(farmMemberRiskAssessmentsState.listFarmMemberRiskProfileAnswers);
+    listFarmMemberRiskProfileAnswers.addAll(
+        farmMemberRiskAssessmentsState.listFarmMemberRiskProfileAnswers);
     var currentAnswer = listFarmMemberRiskProfileAnswers.firstWhereOrNull(
-        (element) =>
-            element.riskProfileQuestionId == question.riskProfileQuestionId,
+      (element) =>
+          element.riskProfileQuestionId == question.riskProfileQuestionId,
     );
 
     if (currentAnswer != null) {
@@ -495,7 +506,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
 
       await Future.wait(futures);
 
-      if (question.id == state.farmMemberRiskAssessmentsState.listRiskProfileQuestions.last.id) {
+      if (question.id ==
+          state.farmMemberRiskAssessmentsState.listRiskProfileQuestions.last
+              .id) {
         onChangeMemberRiskAssessmentState(isCollapse: true);
         onChangeMemberFarmObjectiveState(isCollapse: false);
       }
@@ -508,15 +521,19 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   }) async {
     final farmMemberObjectivesState = state.farmMemberObjectivesState;
     final listFarmMemberObjectiveAnswers = <FarmMemberObjectiveAnswer>[];
-    listFarmMemberObjectiveAnswers.addAll(farmMemberObjectivesState.listFarmMemberObjectiveAnswers);
-    var currentAnswer = listFarmMemberObjectiveAnswers.firstWhereOrNull((element) => element.farmMemberObjectiveId == question.farmMemberObjectiveId);
+    listFarmMemberObjectiveAnswers
+        .addAll(farmMemberObjectivesState.listFarmMemberObjectiveAnswers);
+    var currentAnswer = listFarmMemberObjectiveAnswers.firstWhereOrNull(
+        (element) =>
+            element.farmMemberObjectiveId == question.farmMemberObjectiveId);
     if (currentAnswer != null) {
       listFarmMemberObjectiveAnswers.remove(currentAnswer);
       currentAnswer = currentAnswer.copyWith(farmObjectiveOptionId: option.id);
       listFarmMemberObjectiveAnswers.add(currentAnswer);
       emit(
         state.copyWith(
-          farm: state.farm?.copyWith(objectiveAnswers: listFarmMemberObjectiveAnswers),
+          farm: state.farm
+              ?.copyWith(objectiveAnswers: listFarmMemberObjectiveAnswers),
           farmMemberObjectivesState: state.farmMemberObjectivesState.copyWith(
             listFarmMemberObjectiveAnswers: listFarmMemberObjectiveAnswers,
           ),
@@ -526,7 +543,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       final futures = <Future<dynamic>>[];
 
       for (final item in listFarmMemberObjectiveAnswers) {
-        futures.add(cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(item));
+        futures
+            .add(cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(item));
       }
 
       futures.add(cacheFarm());
@@ -561,7 +579,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         !state.addMemberMDetails.mobileNumber.isNullOrEmpty &&
         !(state.addMemberMDetails.mobileNumber!.length < 8);
 
-    emit(state.copyWith(
+    emit(
+      state.copyWith(
         farm: state.farm?.copyWith(
           firstName: state.addMemberMDetails.firstName,
           lastName: state.addMemberMDetails.lastName,
@@ -571,8 +590,10 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         ),
         addMemberMDetails: state.addMemberMDetails.copyWith(
           isComplete: isComplete,
-          isFirstNameError: firstName?.isBlank ?? state.addMemberMDetails.isFirstNameError,
-          isLastNameError: lastName?.isBlank ?? state.addMemberMDetails.isLastNameError,
+          isFirstNameError:
+              firstName?.isBlank ?? state.addMemberMDetails.isFirstNameError,
+          isLastNameError:
+              lastName?.isBlank ?? state.addMemberMDetails.isLastNameError,
           isIdNumberError: idNumber == null
               ? state.addMemberMDetails.isIdNumberError
               : (idNumber.isBlank || idNumber.length < 8),
@@ -608,11 +629,11 @@ class AddMemberCubit extends Cubit<AddMemberState> {
             signaturePoints: points,
           ),
           addMemberSAF: state.addMemberSAF.copyWith(
-        signatureImage: image,
-        signatureDate: date,
-        signaturePoints: points,
-        isComplete: true,
-      )));
+            signatureImage: image,
+            signatureDate: date,
+            signaturePoints: points,
+            isComplete: true,
+          )));
 
       checkIsGroupSchemeMember();
       await cacheFarm();
@@ -647,7 +668,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     emit(
       state.copyWith(
         addMemberSLIMF: state.addMemberSLIMF.copyWith(
-          isSectionCollapse: isCollapse ?? !state.addMemberSLIMF.isSectionCollapse,
+          isSectionCollapse:
+              isCollapse ?? !state.addMemberSLIMF.isSectionCollapse,
         ),
       ),
     );
@@ -657,7 +679,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     emit(
       state.copyWith(
         addMemberMPO: state.addMemberMPO.copyWith(
-          isSectionCollapse: isCollapse ?? !state.addMemberMPO.isSectionCollapse,
+          isSectionCollapse:
+              isCollapse ?? !state.addMemberMPO.isSectionCollapse,
         ),
       ),
     );
@@ -667,7 +690,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     emit(
       state.copyWith(
         addMemberMDetails: state.addMemberMDetails.copyWith(
-          isSectionCollapse: isCollapse ?? !state.addMemberMDetails.isSectionCollapse,
+          isSectionCollapse:
+              isCollapse ?? !state.addMemberMDetails.isSectionCollapse,
           sectionKey: UniqueKey(),
         ),
       ),
@@ -678,7 +702,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     emit(
       state.copyWith(
         addMemberSDetails: state.addMemberSDetails.copyWith(
-          isSectionCollapse: isCollapse ?? !state.addMemberSDetails.isSectionCollapse,
+          isSectionCollapse:
+              isCollapse ?? !state.addMemberSDetails.isSectionCollapse,
           sectionKey: UniqueKey(),
         ),
       ),
@@ -688,8 +713,10 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   void onChangeMemberRiskAssessmentState({bool? isCollapse}) {
     emit(
       state.copyWith(
-        farmMemberRiskAssessmentsState: state.farmMemberRiskAssessmentsState.copyWith(
-          isSectionCollapse: isCollapse ?? !state.farmMemberRiskAssessmentsState.isSectionCollapse,
+        farmMemberRiskAssessmentsState:
+            state.farmMemberRiskAssessmentsState.copyWith(
+          isSectionCollapse: isCollapse ??
+              !state.farmMemberRiskAssessmentsState.isSectionCollapse,
           sectionKey: UniqueKey(),
         ),
       ),
@@ -700,7 +727,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     emit(
       state.copyWith(
         farmMemberObjectivesState: state.farmMemberObjectivesState.copyWith(
-          isSectionCollapse: isCollapse ?? !state.farmMemberObjectivesState.isSectionCollapse,
+          isSectionCollapse:
+              isCollapse ?? !state.farmMemberObjectivesState.isSectionCollapse,
         ),
       ),
     );
