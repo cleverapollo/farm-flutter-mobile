@@ -11,7 +11,7 @@ class SiteManagementPlanState extends Equatable {
     this.campTonnesOfBiomass,
     this.compartmentCount,
     this.compartmentTotalArea,
-    this.isCharcoalFarm = true,
+    this.charcoalPlantationRoleEnum = CharcoalPlantationRoleEnum.none,
   });
 
   final bool loading;
@@ -23,7 +23,7 @@ class SiteManagementPlanState extends Equatable {
   final double? campTonnesOfBiomass;
   final int? compartmentCount;
   final double? compartmentTotalArea;
-  final bool isCharcoalFarm;
+  final CharcoalPlantationRoleEnum charcoalPlantationRoleEnum;
 
   SiteManagementPlanState copyWith({
     bool? loading,
@@ -35,7 +35,7 @@ class SiteManagementPlanState extends Equatable {
     double? campTonnesOfBiomass,
     int? compartmentCount,
     double? compartmentTotalArea,
-    bool? isCharcoalFarm,
+    CharcoalPlantationRoleEnum? charcoalPlantationRoleEnum,
   }) {
     return SiteManagementPlanState(
       loading: loading ?? this.loading,
@@ -48,7 +48,8 @@ class SiteManagementPlanState extends Equatable {
       campTonnesOfBiomass: campTonnesOfBiomass ?? this.campTonnesOfBiomass,
       compartmentCount: compartmentCount ?? this.compartmentCount,
       compartmentTotalArea: compartmentTotalArea ?? this.compartmentTotalArea,
-      isCharcoalFarm: isCharcoalFarm ?? this.isCharcoalFarm,
+      charcoalPlantationRoleEnum:
+          charcoalPlantationRoleEnum ?? this.charcoalPlantationRoleEnum,
     );
   }
 
@@ -63,6 +64,6 @@ class SiteManagementPlanState extends Equatable {
         campTonnesOfBiomass,
         compartmentCount,
         compartmentTotalArea,
-    isCharcoalFarm
+        charcoalPlantationRoleEnum
       ];
 }

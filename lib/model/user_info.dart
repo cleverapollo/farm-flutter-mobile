@@ -1,5 +1,6 @@
 // ignore_for_file: invalid_annotation_target, override_on_non_overriding_member
 import 'package:cmo/env/env.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -44,6 +45,22 @@ extension UserInfoX on UserInfo {
 
     return 'https://${Env.cmoApiUrl}$profileImage';
   }
+
+  CharcoalPlantationRoleEnum get getCharcoalPlantationRole {
+    final isCharcoal =
+        listRoles.firstWhereOrNull((e) => e.roleName == 'Management Plan');
+    final isPlantation = listRoles
+        .firstWhereOrNull((e) => e.roleName == 'Compartment Management Plan');
+
+    if (isCharcoal != null) {
+      return CharcoalPlantationRoleEnum.isCharcoal;
+    }
+
+    if (isPlantation != null) {
+      return CharcoalPlantationRoleEnum.isPlantation;
+    }
+    return CharcoalPlantationRoleEnum.none;
+  }
 }
 
 @freezed
@@ -55,4 +72,10 @@ class Role with _$Role {
   }) = _Role;
 
   factory Role.fromJson(Map<String, dynamic> json) => _$RoleFromJson(json);
+}
+
+enum CharcoalPlantationRoleEnum {
+  isCharcoal,
+  isPlantation,
+  none,
 }

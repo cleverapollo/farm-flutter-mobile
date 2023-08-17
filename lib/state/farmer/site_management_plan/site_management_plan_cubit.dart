@@ -18,10 +18,12 @@ class SiteManagementPlanCubit extends HydratedCubit<SiteManagementPlanState> {
     try {
       emit(state.copyWith(loading: true));
       final activeFarm = await configService.getActiveFarm();
+      final userInfo = await configService.getActiveUser();
       emit(state.copyWith(activeFarm: activeFarm));
-      if (activeFarm?.groupSchemeId != null) {
-        final isCharcoal = await isCharcoalFarm(activeFarm!.groupSchemeId!);
-        emit(state.copyWith(isCharcoalFarm: isCharcoal));
+      if (activeFarm?.groupSchemeId != null && userInfo != null) {
+        final getCharcoalPlantationRole = userInfo.getCharcoalPlantationRole;
+        emit(state.copyWith(
+            charcoalPlantationRoleEnum: getCharcoalPlantationRole));
       }
       await refresh();
     } catch (error) {
@@ -30,49 +32,6 @@ class SiteManagementPlanCubit extends HydratedCubit<SiteManagementPlanState> {
       emit(state.copyWith(loading: false));
     }
   }
-
-  Future<bool> isCharcoalFarm(int groupSchemeId) async {
-    final result = await Future.wait(
-      [
-        cmoPerformApiService.getGroupSchemeByGroupSchemeId(groupSchemeId),
-        cmoPerformApiService.getHiracSearch(),
-        cmoPerformApiService.getHiracTemplateSearch(),
-        cmoPerformApiService.getHiracTypeSearch()
-      ],
-    );
-    final groupSchemes = result[0] as List<GroupScheme>?;
-    final hiracs = result[1] as List<Hirac>?;
-    final hiracTemplates = result[2] as List<HiracTemplate>?;
-    final hiracTypes = result[3] as List<HiracType>?;
-    if (groupSchemes?.isEmpty ?? false) {
-      return true;
-    }
-    if (hiracs?.isEmpty ?? false) {
-      return true;
-    }
-    if (hiracTemplates?.isEmpty ?? false) {
-      return true;
-    }
-    if (hiracTypes?.isEmpty ?? false) {
-      return true;
-    }
-    final hiracId = groupSchemes!.first.hiracId ?? 0;
-    final hirac = hiracs.firstWhereOrNull((e) => e.id == hiracId);
-    if (hirac == null) {
-      return true;
-    }
-    final hiracTemplate = hiracTemplates.firstWhereOrNull((element) => element.hiracTemplateId == hirac.hiracTemplateId);
-    if (hiracTemplate == null) {
-      return true;
-    }
-    final hiracType = hiracTypes.firstWhereOrNull((element) => element.hiracTypeId == hiracTemplate.hiracTypeId);
-    if (hiracType?.hiracTypeName?.toLowerCase() == 'plantation') {
-      return false;
-    }
-    return true;
-  }
-
-
 
   Future<void> getTotalAnnualProductions() async {
     try {
@@ -119,7 +78,10 @@ class SiteManagementPlanCubit extends HydratedCubit<SiteManagementPlanState> {
   Future<void> getTotalCamp() async {
     final camps = await cmoDatabaseMasterService
         .getCampByFarmId(int.tryParse(state.activeFarm?.farmId ?? '') ?? 0);
-    final total = camps.fold(0.0, (previousValue, element) => previousValue + (element.totalBiomass ?? 0.0));
+    final total = camps.fold(
+        0.0,
+        (previousValue, element) =>
+            previousValue + (element.totalBiomass ?? 0.0));
     emit(state.copyWith(campCount: camps.length, campTonnesOfBiomass: total));
   }
 
@@ -131,9 +93,14 @@ class SiteManagementPlanCubit extends HydratedCubit<SiteManagementPlanState> {
   }
 
   Future getCompartments() async {
-    final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(state.activeFarm?.farmId ?? '');
-    final total = compartments?.fold(0.0, (previousValue, element) => previousValue + (element.polygonArea ?? 0.0));
-    emit(state.copyWith(compartmentCount: compartments?.length, compartmentTotalArea: total));
+    final compartments = await cmoDatabaseMasterService
+        .getCompartmentByFarmId(state.activeFarm?.farmId ?? '');
+    final total = compartments?.fold(
+        0.0,
+        (previousValue, element) =>
+            previousValue + (element.polygonArea ?? 0.0));
+    emit(state.copyWith(
+        compartmentCount: compartments?.length, compartmentTotalArea: total));
   }
 
   void handleError(Object error) {

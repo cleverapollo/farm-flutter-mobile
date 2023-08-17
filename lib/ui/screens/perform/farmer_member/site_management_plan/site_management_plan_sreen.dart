@@ -1,4 +1,5 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/user_info.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/annual_budget_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_production_management_screen.dart';
@@ -53,19 +54,23 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
         selector: (state) => state.loading,
         builder: (context, isLoading) {
           if (isLoading) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
           return SizedBox.expand(
             child: BlocSelector<SiteManagementPlanCubit,
-                SiteManagementPlanState, bool>(
-              selector: (state) => state.isCharcoalFarm,
-              builder: (context, isCharcoalFarm) {
-                if (isCharcoalFarm) {
-                  return _buildCharcoalManagementPlan();
+                SiteManagementPlanState, CharcoalPlantationRoleEnum>(
+              selector: (state) => state.charcoalPlantationRoleEnum,
+              builder: (context, charcoalPlantationRoleEnum) {
+                switch (charcoalPlantationRoleEnum) {
+                  case CharcoalPlantationRoleEnum.isCharcoal:
+                    return _buildCharcoalManagementPlan();
+                  case CharcoalPlantationRoleEnum.isPlantation:
+                    return _buildPlantationFMP();
+                  case CharcoalPlantationRoleEnum.none:
+                    return Container();
                 }
-                return _buildPlantationFMP();
               },
             ),
           );
