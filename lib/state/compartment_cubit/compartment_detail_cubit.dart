@@ -20,7 +20,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
       : super(CompartmentDetailState(
             farmId: farmId,
             campId: campId,
-            compartment: compartment,
+            compartment: compartment.copyWith(effectiveArea: compartment.effectiveArea ?? 90),
             compartmentBeforeEdit: compartment));
 
   Future<void> fetchData({required BuildContext context}) async {
@@ -170,7 +170,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     emit(
       state.copyWith(
         compartment: state.compartment.copyWith(
-          stockingPercentage: (state.compartment.polygonArea ?? 0) /
+          stockingPercentage: 10000 /
               ((double.tryParse(state.compartment.espacementLength ?? '') ??
                       1) *
                   (double.tryParse(state.compartment.espacementWidth ?? '') ??

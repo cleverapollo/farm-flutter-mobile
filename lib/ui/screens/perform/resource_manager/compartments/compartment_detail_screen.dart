@@ -306,10 +306,10 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                               selector: (state) => state.isEffectiveAreaError,
                               builder: (context, isEffectiveAreaError) {
                                 return AttributeItem(
-                                  errorText: '${LocaleKeys.effectiveArea.tr()} ha',
+                                  errorText: '${LocaleKeys.effectiveArea.tr()} (%)',
                                   isShowError: isEffectiveAreaError,
                                   child: InputAttributeItem(
-                                    labelText: '${LocaleKeys.effectiveArea.tr()} ha',
+                                    labelText: '${LocaleKeys.effectiveArea.tr()} (%)',
                                     labelTextStyle: context.textStyles.bodyBold.blueDark2,
                                     textStyle: context.textStyles.bodyNormal.blueDark2,
                                     keyboardType: TextInputType.number,
@@ -385,7 +385,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             ),
                             AttributeItem(
                               child: InputAttributeItem(
-                                labelText: '${LocaleKeys.survival.tr()} %',
+                                labelText: '${LocaleKeys.survival.tr()} (%)',
                                 labelTextStyle: context.textStyles.bodyBold.blueDark2,
                                 textStyle: context.textStyles.bodyNormal.blueDark2,
                                 initialValue: (initCompartment.survival ?? '').toString(),
@@ -398,7 +398,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             buildingStockWidget(),
                             AttributeItem(
                               child: InputAttributeItem(
-                                  labelText: LocaleKeys.rotation.tr(),
+                                  labelText: '${LocaleKeys.rotation.tr()} (Years)',
                                   labelTextStyle: context.textStyles.bodyBold.blueDark2,
                                   textStyle: context.textStyles.bodyNormal.blueDark2,
                                   initialValue: (initCompartment.rotationNumber ?? '').toString(),
@@ -409,7 +409,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             ),
                             AttributeItem(
                               child: InputAttributeItem(
-                                  labelText: LocaleKeys.mai.tr(),
+                                  labelText: '${LocaleKeys.mai.tr()} m3/ha/pa',
                                   labelTextStyle: context.textStyles.bodyBold.blueDark2,
                                   textStyle: context.textStyles.bodyNormal.blueDark2,
                                   initialValue: (initCompartment.utilMAI ?? '').toString(),
@@ -471,7 +471,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                 Row(
                   children: [
                     Text(
-                      LocaleKeys.stocking.tr(),
+                      '${LocaleKeys.stocking.tr()} (SHPa)',
                       style: context.textStyles.bodyBold.blueDark2,
                     ),
                   ],
