@@ -41,17 +41,23 @@ class CompartmentMapScreen extends StatefulWidget {
     return Navigator.of(context).push<T>(
       MaterialPageRoute(
         builder: (_) => CompartmentMapScreen(
-          points: points,
-          farmId: farmId,
-          farmName: farmName,
-          campId: campId,
-          compartment: compartment
-        ),
+            points: points,
+            farmId: farmId,
+            farmName: farmName,
+            campId: campId,
+            compartment: compartment),
       ),
     );
   }
 
-  CompartmentMapScreen({this.points, required this.farmId, this.farmName, this.campId, this.compartment, Key? key}) : super(key: key);
+  CompartmentMapScreen(
+      {this.points,
+      required this.farmId,
+      this.farmName,
+      this.campId,
+      this.compartment,
+      Key? key})
+      : super(key: key);
 
   final List<map.LatLng>? points;
   final String farmId;
@@ -74,10 +80,13 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _hasInternet = true;
 
+  late map.LatLng centerMapPoint;
+
   @override
   void initState() {
     super.initState();
     onInternetStateChangeListener();
+    _calculateCenterPoint();
   }
 
   Future<void> onInternetStateChangeListener() async {
@@ -87,7 +96,8 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
         _hasInternet = hasInternet;
       });
     }
-    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen((result) {
       final hasInternet = result != ConnectivityResult.none;
       if (hasInternet != _hasInternet) {
         setState(() {
@@ -115,13 +125,31 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
 
   Future<Marker> _markerFrom(map.LatLng position) async {
     return Marker(
-        markerId: MarkerId(
-            'place_name_${position.latitude}_${position.longitude}'),
+        markerId:
+            MarkerId('place_name_${position.latitude}_${position.longitude}'),
         position: position,
         icon: await BitmapDescriptorHelper.getBitmapDescriptorFromSvgAsset(
           Assets.icons.mapPolygonPoint.path,
           Size(8, 8),
         ));
+  }
+
+  void _calculateCenterPoint() {
+    if (widget.points == null) {
+      centerMapPoint = Constants.mapCenter;
+      return;
+    }
+
+    double centerLat = 0;
+    double centerLng = 0;
+
+    for (final item in widget.points!) {
+      centerLat += item.latitude;
+      centerLng += item.longitude;
+    }
+
+    centerMapPoint = map.LatLng(
+        centerLat / widget.points!.length, centerLng / widget.points!.length);
   }
 
   @override
@@ -132,9 +160,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
         showLeading: true,
         subtitle: widget.farmName ?? '',
         leading: Assets.icons.icArrowLeft.svgBlack,
-        onTapLeading: Navigator
-            .of(context)
-            .pop,
+        onTapLeading: Navigator.of(context).pop,
       ),
       body: Column(
         children: [
@@ -143,8 +169,8 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
             child: Stack(
               children: [
                 GoogleMap(
-                  initialCameraPosition: const CameraPosition(
-                      target: Constants.mapCenter, zoom: 14),
+                  initialCameraPosition:
+                      CameraPosition(target: centerMapPoint, zoom: 14),
                   polylines: _polylines(),
                   polygons: _polygon(),
                   mapType: MapType.satellite,
@@ -156,12 +182,16 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                     Geolocator.checkPermission().then((permission) async {
                       if (permission == LocationPermission.whileInUse ||
                           permission == LocationPermission.always) {
-                        _moveMapCameraCurrentLocation();
+                        if (widget.points == null) {
+                          await _moveMapCameraCurrentLocation();
+                        }
                       } else if (permission == LocationPermission.denied) {
                         permission = await Geolocator.requestPermission();
                         if (permission == LocationPermission.whileInUse ||
                             permission == LocationPermission.always) {
-                          _moveMapCameraCurrentLocation();
+                          if (widget.points == null) {
+                            await _moveMapCameraCurrentLocation();
+                          }
                         }
                       }
                     });
@@ -186,7 +216,10 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                     },
                     mini: true,
                     backgroundColor: Colors.white,
-                    child: Icon(Icons.satellite_outlined, color: Colors.black54,),
+                    child: Icon(
+                      Icons.satellite_outlined,
+                      color: Colors.black54,
+                    ),
                   ),
                 ),
                 Center(
@@ -210,7 +243,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          if (_hasInternet)...[
+          if (_hasInternet) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -222,10 +255,13 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                     alignment: Alignment.center,
                     color: Colors.white,
                     child: SvgGenImage(Assets.icons.icRefresh.path).svg(
-                      width: 36, height: 36, colorFilter: const ColorFilter.mode(
-                      Colors.blue,
-                      BlendMode.srcIn,
-                    ),),
+                      width: 36,
+                      height: 36,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.blue,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -251,10 +287,13 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                     alignment: Alignment.center,
                     color: Colors.white,
                     child: SvgGenImage(Assets.icons.icAccept.path).svg(
-                      width: 36, height: 36, colorFilter: const ColorFilter.mode(
-                      Colors.blue,
-                      BlendMode.srcIn,
-                    ),),
+                      width: 36,
+                      height: 36,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.blue,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -267,9 +306,8 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                   Expanded(
                     child: CmoFilledButton(
                       title: LocaleKeys.complete_polygon.tr(),
-                      onTap: _markers.length > 2
-                          ? () => _finishDrawing()
-                          : null,
+                      onTap:
+                          _markers.length > 2 ? () => _finishDrawing() : null,
                     ),
                   ),
                   const SizedBox(width: 24),
@@ -278,30 +316,33 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                       title: LocaleKeys.next.tr(),
                       onTap: _isFinished
                           ? () {
-                        CompartmentDetailScreen.push(
-                          context,
-                          farmId: widget.farmId,
-                          farmName: widget.farmName,
-                          campId: widget.campId,
-                          measuredArea: (areaSquareMeters ?? 0) / 10000,
-                          compartment: widget.compartment,
-                          locations: _markers
-                              .map(
-                                (e) => PolygonItem(
-                              latitude: e.position.latitude,
-                              longitude: e.position.longitude,
-                            ),
-                          )
-                              .toList(),
-                        );
-                      } : null,
+                              CompartmentDetailScreen.push(
+                                context,
+                                farmId: widget.farmId,
+                                farmName: widget.farmName,
+                                campId: widget.campId,
+                                measuredArea: (areaSquareMeters ?? 0) / 10000,
+                                compartment: widget.compartment,
+                                locations: _markers
+                                    .map(
+                                      (e) => PolygonItem(
+                                        latitude: e.position.latitude,
+                                        longitude: e.position.longitude,
+                                      ),
+                                    )
+                                    .toList(),
+                              );
+                            }
+                          : null,
                     ),
                   ),
                 ],
               ),
             ),
           ] else ...[
-            const SizedBox(height: 40,),
+            const SizedBox(
+              height: 40,
+            ),
             CmoFilledButton(
               title: LocaleKeys.connect_to_internet.tr(),
               onTap: () {
@@ -341,7 +382,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
       return polylines;
     }
     final color =
-    widget.points == null ? context.colors.yellow : context.colors.red;
+        widget.points == null ? context.colors.yellow : context.colors.red;
     for (var i = 1; i < _markers.length; i++) {
       polylines.add(
         Polyline(
@@ -390,18 +431,16 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   void _finishDrawing() {
     _isFinished = true;
     areaSquareMeters = SphericalUtil.computeArea(_markers
-        .map((e) =>
-        mapToolkitLatlong.LatLng(
-            e.position.latitude, e.position.longitude))
-        .toList())
+            .map((e) => mapToolkitLatlong.LatLng(
+                e.position.latitude, e.position.longitude))
+            .toList())
         .toDouble();
     setState(() {});
   }
 
   String _presentAreaSquare() {
     if (areaSquareMeters == null) return '0 ${LocaleKeys.measured.tr()}';
-      return '${(areaSquareMeters! / haSquareMeters).toStringAsFixed(
-          2)} ha ${LocaleKeys.measured.tr()}';
+    return '${(areaSquareMeters! / haSquareMeters).toStringAsFixed(2)} ha ${LocaleKeys.measured.tr()}';
   }
 
   bool _isCompletedPoint(map.LatLng lastPoint) {
@@ -411,12 +450,10 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
     var distance = SphericalUtil.computeDistanceBetween(
       mapToolkitLatlong.LatLng(
           _markers.first.position.latitude, _markers.first.position.longitude),
-      mapToolkitLatlong.LatLng(
-          lastPoint.latitude, lastPoint.longitude),
+      mapToolkitLatlong.LatLng(lastPoint.latitude, lastPoint.longitude),
     );
     return distance < 3;
   }
-
 
   Widget _buildNoInternet() {
     if (_hasInternet) {
@@ -511,13 +548,11 @@ class _MapTypeSelector extends StatelessWidget {
   }
 }
 
-
 class BitmapDescriptorHelper {
-
   static Future<BitmapDescriptor> getBitmapDescriptorFromSvgAsset(
-      String assetName, [
-        Size size = const Size(48, 48),
-      ]) async {
+    String assetName, [
+    Size size = const Size(48, 48),
+  ]) async {
     final pictureInfo = await vg.loadPicture(SvgAssetLoader(assetName), null);
 
     double devicePixelRatio = ui.window.devicePixelRatio;
