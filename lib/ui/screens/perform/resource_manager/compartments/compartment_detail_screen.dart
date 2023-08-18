@@ -358,7 +358,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
           hintText: LocaleKeys.productGroup.tr(),
           margin: EdgeInsets.zero,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-          value: state.filterProductGroupTemplates
+          value: state.productGroupTemplates
               .firstWhereOrNull(
                 (element) =>
                     element.productGroupTemplateId ==
@@ -367,19 +367,19 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
               ?.productGroupTemplateName,
           onTap: () async {
             FocusScope.of(context).unfocus();
-            if (state.filterProductGroupTemplates.isBlank) return;
+            if (state.productGroupTemplates.isBlank) return;
             await showCustomBottomSheet<void>(
               context,
               content: ListView.builder(
-                itemCount: state.filterProductGroupTemplates.length,
+                itemCount: state.productGroupTemplates.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () {
                       _compartmentDetailCubit.onProductGroupChanged(
-                        productGroupId: state.filterProductGroupTemplates[index]
+                        productGroupId: state.productGroupTemplates[index]
                             .productGroupTemplateId,
                         productGroupName: state
-                            .filterProductGroupTemplates[index]
+                            .productGroupTemplates[index]
                             .productGroupTemplateName,
                       );
 
@@ -388,7 +388,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                     title: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       child: Text(
-                        state.filterProductGroupTemplates[index]
+                        state.productGroupTemplates[index]
                                 .productGroupTemplateName ??
                             '',
                         style: context.textStyles.bodyBold.blueDark2,
@@ -415,7 +415,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
           hintText: LocaleKeys.speciesGroup.tr(),
           margin: EdgeInsets.zero,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-          value: state.filterSpeciesGroupTemplates
+          value: state.speciesGroupTemplates
               .firstWhereOrNull(
                 (element) =>
                     element.speciesGroupTemplateId ==
@@ -424,19 +424,19 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
               ?.speciesGroupTemplateName,
           onTap: () async {
             FocusScope.of(context).unfocus();
-            if (state.filterSpeciesGroupTemplates.isBlank) return;
+            if (state.speciesGroupTemplates.isBlank) return;
             await showCustomBottomSheet<void>(
               context,
               content: ListView.builder(
-                itemCount: state.filterSpeciesGroupTemplates.length,
+                itemCount: state.speciesGroupTemplates.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () {
                       _compartmentDetailCubit.onSpeciesGroupChanged(
-                        speciesGroupId: state.filterSpeciesGroupTemplates[index]
+                        speciesGroupId: state.speciesGroupTemplates[index]
                             .speciesGroupTemplateId,
                         speciesGroupName: state
-                            .filterSpeciesGroupTemplates[index]
+                            .speciesGroupTemplates[index]
                             .speciesGroupTemplateName,
                       );
 
@@ -445,7 +445,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                     title: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       child: Text(
-                        state.filterSpeciesGroupTemplates[index]
+                        state.speciesGroupTemplates[index]
                                 .speciesGroupTemplateName ??
                             '',
                         style: context.textStyles.bodyBold.blueDark2,

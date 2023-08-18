@@ -13,8 +13,6 @@ class CompartmentDetailState {
     this.areaTypes = const [],
     this.productGroupTemplates = const [],
     this.speciesGroupTemplates = const [],
-    this.filterProductGroupTemplates = const <ProductGroupTemplate>[],
-    this.filterSpeciesGroupTemplates = const <SpeciesGroupTemplate>[],
     this.groupScheme,
     this.farmId = '',
     this.campId,
@@ -34,8 +32,6 @@ class CompartmentDetailState {
   final List<AreaType> areaTypes;
   final List<ProductGroupTemplate> productGroupTemplates;
   final List<SpeciesGroupTemplate> speciesGroupTemplates;
-  final List<ProductGroupTemplate> filterProductGroupTemplates;
-  final List<SpeciesGroupTemplate> filterSpeciesGroupTemplates;
   final GroupScheme? groupScheme;
   final String farmId;
   final String? campId;
@@ -59,8 +55,6 @@ class CompartmentDetailState {
     GroupScheme? groupScheme,
     List<ProductGroupTemplate>? productGroupTemplates,
     List<SpeciesGroupTemplate>? speciesGroupTemplates,
-    List<ProductGroupTemplate>? filterProductGroupTemplates,
-    List<SpeciesGroupTemplate>? filterSpeciesGroupTemplates,
     bool? isDataReady,
     bool? isCompartmentNameError,
     bool? isAreaTypeError,
@@ -80,8 +74,6 @@ class CompartmentDetailState {
       areaTypes: areaTypes ?? this.areaTypes,
       productGroupTemplates: productGroupTemplates ?? this.productGroupTemplates,
       speciesGroupTemplates: speciesGroupTemplates ?? this.speciesGroupTemplates,
-      filterSpeciesGroupTemplates: filterSpeciesGroupTemplates ?? this.filterSpeciesGroupTemplates,
-      filterProductGroupTemplates: filterProductGroupTemplates ?? this.filterProductGroupTemplates,
       groupScheme: groupScheme ?? this.groupScheme,
       isDataReady: isDataReady ?? this.isDataReady,
       isCompartmentNameError: isCompartmentNameError ?? this.isCompartmentNameError,

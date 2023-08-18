@@ -3887,19 +3887,25 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<ProductGroupTemplate>?> getProductGroupTemplates() async {
+  Future<List<ProductGroupTemplate>?> getProductGroupTemplates(int? groupSchemeId) async {
+    if (groupSchemeId == null) return <ProductGroupTemplate>[];
+
     final db = await _db();
     return db.productGroupTemplates
         .filter()
+        .groupSchemeIdEqualTo(groupSchemeId)
         .isActiveEqualTo(true)
         .sortByProductGroupTemplateNameDesc()
         .findAll();
   }
 
-  Future<List<SpeciesGroupTemplate>?> getSpeciesGroupTemplates() async {
+  Future<List<SpeciesGroupTemplate>?> getSpeciesGroupTemplates(int? groupSchemeId) async {
+    if (groupSchemeId == null) return <SpeciesGroupTemplate>[];
+
     final db = await _db();
     return db.speciesGroupTemplates
         .filter()
+        .groupSchemeIdEqualTo(groupSchemeId)
         .isActiveEqualTo(true)
         .sortBySpeciesGroupTemplateNameDesc()
         .findAll();
