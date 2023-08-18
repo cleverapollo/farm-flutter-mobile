@@ -1,14 +1,10 @@
-import 'package:cmo/extensions/date.dart';
 import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_cubit.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_state.dart';
-import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/espacement_input_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -16,7 +12,6 @@ import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import '../asi/widgets/bottom_sheet_selection.dart';
 
@@ -102,7 +97,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                     color: context.colors.blueDark1,
                     child: Text(
                       LocaleKeys.details.tr(),
-                      style: context.textStyles.bodyBold.copyWith(color: context.colors.white),
+                      style: context.textStyles.bodyBold.white,
                     ),
                   ),
                   Expanded(
@@ -138,12 +133,12 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                     const SizedBox(width: 12),
                                     Text(
                                       LocaleKeys.polygonArea.tr(),
-                                      style: context.textStyles.bodyBold,
+                                      style: context.textStyles.bodyBold.blueDark2,
                                     ),
                                     const SizedBox(width: 36),
                                     Text(
                                       '${widget.measuredArea?.toStringAsFixed(2)}ha ${LocaleKeys.measured.tr()}',
-                                      style: context.textStyles.bodyNormal,
+                                      style: context.textStyles.bodyNormal.blueDark2,
                                     ),
                                   ],
                                 ),
@@ -176,7 +171,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                     Expanded(
                                       child: Text(
                                         LocaleKeys.espacement.tr(),
-                                        style: context.textStyles.bodyBold,
+                                        style: context.textStyles.bodyBold.blueDark2,
                                       ),
                                     ),
                                     EspacementInputWidget(
@@ -207,7 +202,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                               plannedDate == null
                                             ? LocaleKeys.plannedPlantDate.tr()
                                             : DateTime.parse(plannedDate).yMd(),
-                                              style: context.textStyles.bodyBold,
+                                              style: context.textStyles.bodyBold.blueDark2,
                                             );
                                           },
                                       ),
@@ -224,7 +219,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                         );
                                         _compartmentDetailCubit.onPlannedPlantDateChanged(datetime);
                                       },
-                                      icon: Assets.icons.icCalendar.svgBlack
+                                      icon: Assets.icons.icCalendar.svgBlack,
                                     ),
                                   ],
                                 ),
@@ -272,11 +267,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                   CmoFilledButton(
                     title: LocaleKeys.save.tr(),
                     onTap: () async {
-                      final complete = _compartmentDetailCubit.checkCompleteRequiredField();
-                      if (!complete) {
-                        return;
-                      }
-                      final errorMessage = _compartmentDetailCubit.checkCompleteDropDownField();
+                      final errorMessage = _compartmentDetailCubit.checkCompleteRequiredField();
                       if (errorMessage.isNotBlank) {
                         showSnackError(msg: errorMessage!);
                         return;
@@ -296,9 +287,10 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                     if (!loading) return Container();
                     return Container(
                       alignment: Alignment.center,
-                      child: CircularProgressIndicator(),
+                      child: const CircularProgressIndicator(),
                     );
-                  }),
+                  },
+              ),
             ],
           ),
         ),
@@ -342,9 +334,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       child: Text(
                         state.areaTypes[index].areaTypeName ?? '',
-                        style: context.textStyles.bodyBold.copyWith(
-                          color: context.colors.blueDark2,
-                        ),
+                        style: context.textStyles.bodyBold.blueDark2,
                       ),
                     ),
                   );
@@ -401,9 +391,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                         state.filterProductGroupTemplates[index]
                                 .productGroupTemplateName ??
                             '',
-                        style: context.textStyles.bodyBold.copyWith(
-                          color: context.colors.blueDark2,
-                        ),
+                        style: context.textStyles.bodyBold.blueDark2,
                       ),
                     ),
                   );
@@ -460,9 +448,7 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                         state.filterSpeciesGroupTemplates[index]
                                 .speciesGroupTemplateName ??
                             '',
-                        style: context.textStyles.bodyBold.copyWith(
-                          color: context.colors.blueDark2,
-                        ),
+                        style: context.textStyles.bodyBold.blueDark2,
                       ),
                     ),
                   );

@@ -19,6 +19,7 @@ class CompartmentDetailState {
     this.farmId = '',
     this.campId,
     this.isDataReady = false,
+    this.isAreaTypeError = false,
     this.isCompartmentNameError = false,
     this.isProductGroupError = false,
     this.isSpeciesGroupError = false,
@@ -39,6 +40,7 @@ class CompartmentDetailState {
   final String farmId;
   final String? campId;
   final bool isCompartmentNameError;
+  final bool isAreaTypeError;
   final bool isProductGroupError;
   final bool isSpeciesGroupError;
   final bool isEffectiveAreaError;
@@ -61,7 +63,11 @@ class CompartmentDetailState {
     List<SpeciesGroupTemplate>? filterSpeciesGroupTemplates,
     bool? isDataReady,
     bool? isCompartmentNameError,
+    bool? isAreaTypeError,
+    bool? isProductGroupError,
+    bool? isSpeciesGroupError,
     bool? isEffectiveAreaError,
+    bool? isPlantDateError,
   }) {
     return CompartmentDetailState(
       farmId: farmId ?? this.farmId,
@@ -78,9 +84,12 @@ class CompartmentDetailState {
       filterProductGroupTemplates: filterProductGroupTemplates ?? this.filterProductGroupTemplates,
       groupScheme: groupScheme ?? this.groupScheme,
       isDataReady: isDataReady ?? this.isDataReady,
-      isCompartmentNameError:
-          isCompartmentNameError ?? this.isCompartmentNameError,
+      isCompartmentNameError: isCompartmentNameError ?? this.isCompartmentNameError,
+      isAreaTypeError: isAreaTypeError ?? this.isAreaTypeError,
+      isProductGroupError: isProductGroupError ?? this.isProductGroupError,
+      isSpeciesGroupError: isSpeciesGroupError ?? this.isSpeciesGroupError,
       isEffectiveAreaError: isEffectiveAreaError ?? this.isEffectiveAreaError,
+      isPlantDateError: isPlantDateError ?? this.isPlantDateError,
     );
   }
 }

@@ -34,14 +34,14 @@ class BottomSheetSelection extends StatelessWidget {
           children: [
             Text(
               hintText,
-              style: context.textStyles.bodyBold.black,
+              style: context.textStyles.bodyBold.blueDark2,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
             Expanded(
               child: Text(
                 value ?? '',
-                style: context.textStyles.bodyNormal.black,
+                style: context.textStyles.bodyNormal.blueDark2,
                 textAlign: TextAlign.center,
               ),
             ),

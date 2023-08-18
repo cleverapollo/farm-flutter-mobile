@@ -52,26 +52,20 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     }
   }
 
-  bool checkCompleteRequiredField() {
+  String? checkCompleteRequiredField() {
     final compartment = state.compartment;
-    emit(
-      state.copyWith(
-        isCompartmentNameError: compartment.unitNumber.isBlank,
-        isEffectiveAreaError: compartment.effectiveArea == null,
-      ),
-    );
-    return state.isCompartmentNameError == false &&
-        state.isEffectiveAreaError == false;
-  }
-
-  String? checkCompleteDropDownField() {
-    final compartment = state.compartment;
-    if (compartment.productGroupTemplateId.isBlank) {
+    if (compartment.unitNumber.isBlank) {
+      return LocaleKeys.compartment_name_is_required.tr();
+    } if (compartment.areaTypeId.isBlank) {
+      return LocaleKeys.area_type_is_required.tr();
+    } if (compartment.productGroupTemplateId.isBlank) {
       return LocaleKeys.product_group_is_required.tr();
     } else if (compartment.speciesGroupTemplateId.isBlank) {
       return LocaleKeys.species_group_is_required.tr();
     } else if (compartment.plannedPlantDT.isBlank) {
       return LocaleKeys.planned_plant_date_is_required.tr();
+    } else if (compartment.effectiveArea != null) {
+      return LocaleKeys.effective_area_is_required.tr();
     }
     return null;
   }
