@@ -248,6 +248,7 @@ class _AddMemberSDetails extends StatelessWidget {
                       await cubit.onDataChangeSiteDetail(asis: result);
                     },
                     title: LocaleKeys.asi.tr(),
+                    showTick: data.isCompleteASI,
                     isHideBorder: true,
                   ),
                 ),
