@@ -20,7 +20,8 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
       : super(CompartmentDetailState(
             farmId: farmId,
             campId: campId,
-            compartment: compartment.copyWith(effectiveArea: compartment.effectiveArea ?? 90),
+            compartment: compartment.copyWith(
+                effectiveArea: compartment.effectiveArea ?? 90),
             compartmentBeforeEdit: compartment));
 
   Future<void> fetchData({required BuildContext context}) async {
@@ -89,6 +90,8 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
 
       await cmoDatabaseMasterService.cacheCompartment(
         state.compartment.copyWith(
+          localCompartmentId: state.compartmentBeforeEdit.localCompartmentId ??
+              DateTime.now().millisecondsSinceEpoch,
           createDT: state.compartment.createDT ?? DateTime.now().toString(),
           groupSchemeId: state.groupScheme?.groupSchemeId,
           farmId: state.farmId,
