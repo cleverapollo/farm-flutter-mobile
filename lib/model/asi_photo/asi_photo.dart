@@ -9,6 +9,7 @@ part 'asi_photo.g.dart';
 @Collection(ignore: {'copyWith'})
 class AsiPhoto with _$AsiPhoto {
   const factory AsiPhoto({
+    @JsonKey(name: 'AsiRegisterLocalId') int? asiRegisterLocalId,
     @JsonKey(name: 'AsiRegisterPhotoId') int? asiRegisterPhotoId,
     @JsonKey(name: 'AsiRegisterPhotoNo') String? asiRegisterPhotoNo,
     @JsonKey(name: 'AsiRegisterId') String? asiRegisterId,

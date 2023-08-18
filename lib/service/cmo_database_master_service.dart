@@ -547,6 +547,19 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<List<AsiPhoto>> getAllAsiPhotoByAsiRegisterLocalId(
+    int? asiRegisterLocalId,
+  ) async {
+    final db = await _db();
+
+    return db.asiPhotos
+        .filter()
+        .isActiveEqualTo(true)
+        .asiRegisterLocalIdEqualTo(asiRegisterLocalId)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
   Future<List<FireRegister>> getUnsyncedFireRegisters(String farmId) async {
     final db = await _db();
 

@@ -98,13 +98,6 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
           CmoHeaderTile(title: LocaleKeys.asi.tr()),
           const SizedBox(height: 12),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-            ),
-            child: buildASINoWidget(asiRegisterNo: state.asi.asiRegisterNo),
-          ),
-          const SizedBox(height: 20),
-          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: buildSelectCompartment(
               context: context,
@@ -177,22 +170,6 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
             }
           },
         );
-      },
-    );
-  }
-
-  Widget buildASINoWidget({required String? asiRegisterNo}) {
-    return CmoTextField(
-      hintText: LocaleKeys.asi_no.tr(),
-      validator: requiredValidator,
-      inputDecoration: _buildInputDecoration(
-        context,
-        LocaleKeys.asi_no.tr(),
-      ),
-      name: asiRegisterNo ?? '',
-      initialValue: asiRegisterNo,
-      onChanged: (value) {
-        _asiDetailCubit.onAsiRegisterNoChanged(asiRegisterNo: value);
       },
     );
   }

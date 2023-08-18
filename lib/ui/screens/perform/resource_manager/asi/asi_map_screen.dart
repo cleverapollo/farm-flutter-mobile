@@ -195,7 +195,7 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                             latitude: locationModel.latitude,
                             longitude: locationModel.longitude,
                             date: DateTime.now(),
-                            asiRegisterId: DateTime.now().millisecondsSinceEpoch.toString(),
+                            localId: DateTime.now().millisecondsSinceEpoch,
                           );
                         }
                         ASIDetailScreen.push(

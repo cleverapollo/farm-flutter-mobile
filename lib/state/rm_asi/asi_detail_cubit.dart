@@ -61,18 +61,12 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
   Future<void> saveAsi() async {
     try {
       emit(state.copyWith(isLoading: true));
-      var asiId = state.asi.asiRegisterId;
-      asiId ??= DateTime.now().millisecondsSinceEpoch.toString();
-      state.asi = state.asi.copyWith(
-        asiRegisterId: asiId,
-      );
-
       await cmoDatabaseMasterService.cacheAsi(state.asi);
-
       if (state.listAsiPhotos.isNotBlank) {
         for (final asiPhoto in state.listAsiPhotos) {
           await cmoDatabaseMasterService.cacheAsiPhoto(
             asiPhoto.copyWith(
+              asiRegisterLocalId: state.asi.localId,
               asiRegisterNo: state.asi.asiRegisterNo,
               asiRegisterId: state.asi.asiRegisterId,
             ),
@@ -92,10 +86,6 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
 
   void onCommentChanged({required String? comment}) {
     state.asi = state.asi.copyWith(comment: comment);
-  }
-
-  void onAsiRegisterNoChanged({required String? asiRegisterNo}) {
-    state.asi = state.asi.copyWith(asiRegisterNo: asiRegisterNo);
   }
 
   void onCompartmentChanged({
