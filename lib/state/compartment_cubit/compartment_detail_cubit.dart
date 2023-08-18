@@ -64,7 +64,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
       return LocaleKeys.species_group_is_required.tr();
     } else if (compartment.plannedPlantDT.isBlank) {
       return LocaleKeys.planned_plant_date_is_required.tr();
-    } else if (compartment.effectiveArea != null) {
+    } else if (compartment.effectiveArea == null) {
       return LocaleKeys.effective_area_is_required.tr();
     }
     return null;
@@ -166,11 +166,19 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   }
 
   void onCompartmentUnitChanged(String value) {
-    state.compartment = state.compartment.copyWith(unitNumber: value);
+    emit(
+      state.copyWith(
+        compartment: state.compartment.copyWith(unitNumber: value),
+      ),
+    );
   }
 
   void onEffectiveAreaChanged(double? value) {
-    state.compartment = state.compartment.copyWith(effectiveArea: value);
+    emit(
+      state.copyWith(
+        compartment: state.compartment.copyWith(effectiveArea: value),
+      ),
+    );
   }
 
   void onEspacementWidthChanged(String? value) {

@@ -3868,6 +3868,7 @@ class CmoDatabaseMasterService {
     final db = await _db();
     return db.areaTypes
         .filter()
+        .groupSchemeIdEqualTo(groupSchemeId)
         .isActiveEqualTo(true)
         .sortByAreaTypeNameDesc()
         .findAll();
