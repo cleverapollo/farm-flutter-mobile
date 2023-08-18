@@ -178,7 +178,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
         await subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId();
         await subscribeToRegionalManagerUnitTrickleFeedTopicByRegionalManagerUnitId();
-        await Future.delayed(const Duration(seconds: 8), (){});
         await publishCompartments();
         await Future.delayed(const Duration(seconds: 5), () async {
           await publishASIs();
@@ -266,6 +265,18 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           );
 
           if (isPublicFarm) {
+            var isSyncedSuccess = false;
+            while (!isSyncedSuccess) {
+              await Future.delayed(const Duration(milliseconds: 800));
+              final farms = await cmoPerformApiService.getFarmSearch(
+                  filterString: farm.farmName);
+              final isExist = farms
+                  .firstWhereOrNull((element) => element.farmId == farm.farmId);
+              if (isExist != null) {
+                isSyncedSuccess = true;
+              }
+            }
+
             await cmoDatabaseMasterService.cacheFarmAddMember(
               farm.copyWith(
                 isMasterDataSynced: 1,
@@ -865,9 +876,18 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
               (e as Map).map((key, value) => MapEntry(key as String, value))))
           .toList();
 
-      return cmoDatabaseMasterService.cacheFarm(farm.copyWith(
-          objectiveAnswers: objectiveAnswers,
-          riskProfileAnswers: riskProfileAnswers));
+      for (final objectiveAnswer in objectiveAnswers) {
+        await cmoDatabaseMasterService
+            .cacheFarmMemberObjectiveAnswer(objectiveAnswer, isDirect: true);
+      }
+
+      for (final riskProfileAnswer in riskProfileAnswers) {
+        await cmoDatabaseMasterService.cacheFarmMemberRiskProfileAnswer(
+            riskProfileAnswer,
+            isDirect: true);
+      }
+
+      return cmoDatabaseMasterService.cacheFarm(farm);
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -879,7 +899,8 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     final compartments = await cmoPerformApiService.getCompartmentsByRMUId();
     if (compartments.isNotBlank) {
       for (final compartment in compartments!) {
-        await cmoDatabaseMasterService.cacheCompartment(compartment);
+        await cmoDatabaseMasterService.cacheCompartment(compartment.copyWith(
+            localCompartmentId: compartment.managementUnitId.toIdIsarFromUuid));
       }
     }
   }
