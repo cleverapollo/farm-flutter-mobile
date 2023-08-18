@@ -12,9 +12,13 @@ import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/espacement_input_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+
+import '../asi/widgets/bottom_sheet_selection.dart';
 
 class CompartmentDetailScreen extends StatefulWidget {
   final double? measuredArea;
@@ -123,160 +127,9 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                 );
                               },
                             ),
-                            AttributeItem(
-                              child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, List<AreaType>?>(
-                                selector: (state) => state.areaTypes,
-                                builder: (context, areaTypes) {
-                                  final state = context
-                                      .read<CompartmentDetailCubit>()
-                                      .state;
-                                  if(!state.isDataReady) {
-                                    return const SizedBox();
-                                  }
-                                  return CmoDropdown<AreaType>(
-                                    name: LocaleKeys.type.tr(),
-                                    style: context.textStyles.bodyBold.blueDark2,
-                                    inputDecoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 8,
-                                      ),
-                                      isDense: true,
-                                      hintText: LocaleKeys.type.tr(),
-                                      hintStyle: context.textStyles.bodyBold.blueDark2,
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                    ),
-                                    initialValue: areaTypes.firstWhereOrNull(
-                                      (element) =>
-                                          element.areaTypeId ==
-                                          context
-                                              .read<CompartmentDetailCubit>()
-                                              .state
-                                              .compartment
-                                              .areaTypeId,
-                                    ),
-                                    itemsData: areaTypes
-                                        ?.map(
-                                          (e) => CmoDropdownItem<AreaType>(
-                                            id: e,
-                                            name: e.areaTypeName ?? '',
-                                          ),
-                                        )
-                                        .toList(),
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        _compartmentDetailCubit
-                                            .onAreaTypeChanged(
-                                          value.areaTypeId!,
-                                        );
-                                      }
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-
-                            AttributeItem(
-                              child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, List<ProductGroupTemplate>?>(
-                                selector: (state) => state.productGroupTemplates,
-                                builder: (context, productGroupTemplates) {
-                                  final state = context
-                                      .read<CompartmentDetailCubit>()
-                                      .state;
-                                  if(!state.isDataReady) {
-                                    return const SizedBox();
-                                  }
-                                  return CmoDropdown<ProductGroupTemplate>(
-                                    name: LocaleKeys.productGroup.tr(),
-                                    style: context.textStyles.bodyBold.blueDark2,
-                                    inputDecoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 8,
-                                      ),
-                                      isDense: true,
-                                      hintText: LocaleKeys.productGroup.tr(),
-                                      hintStyle: context.textStyles.bodyBold.blueDark2,
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                    ),
-                                    initialValue: productGroupTemplates.firstWhereOrNull(
-                                      (element) =>
-                                          element.productGroupTemplateId ==
-                                          context
-                                              .read<CompartmentDetailCubit>()
-                                              .state
-                                              .compartment
-                                              .productGroupTemplateId,
-                                    ),
-                                    itemsData: productGroupTemplates?.map(
-                                          (e) => CmoDropdownItem<ProductGroupTemplate>(
-                                            id: e,
-                                            name: e.productGroupTemplateName ?? '',
-                                          ),
-                                        )
-                                        .toList(),
-                                    onChanged: (value) {
-                                      _compartmentDetailCubit.onProductGroupChanged(
-                                        productGroupId: value?.productGroupTemplateId,
-                                        productGroupName: value?.productGroupTemplateName,
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-                            AttributeItem(
-                              child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState,
-                                  List<SpeciesGroupTemplate>?>(
-                                selector: (state) => state.speciesGroupTemplates,
-                                builder: (context, speciesGroupTemplates) {
-                                  final state = context
-                                      .read<CompartmentDetailCubit>()
-                                      .state;
-                                  if(!state.isDataReady) {
-                                    return const SizedBox();
-                                  }
-                                  return CmoDropdown<SpeciesGroupTemplate>(
-                                      name: LocaleKeys.speciesGroup.tr(),
-                                      style: context.textStyles.bodyBold.blueDark2,
-                                      inputDecoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                                        isDense: true,
-                                        hintText: LocaleKeys.speciesGroup.tr(),
-                                        hintStyle: context.textStyles.bodyBold.blueDark2,
-                                        border: InputBorder.none,
-                                        focusedBorder: InputBorder.none,
-                                      ),
-                                    initialValue: speciesGroupTemplates.firstWhereOrNull(
-                                          (element) =>
-                                      element.speciesGroupTemplateId ==
-                                          context
-                                              .read<CompartmentDetailCubit>()
-                                              .state
-                                              .compartment
-                                              .speciesGroupTemplateId,
-                                    ),
-                                      itemsData: speciesGroupTemplates
-                                          ?.map(
-                                            (e) => CmoDropdownItem<SpeciesGroupTemplate>(
-                                              id: e,
-                                              name: e.speciesGroupTemplateName ?? '',
-                                            ),
-                                          )
-                                          .toList(),
-                                      onChanged: (value) {
-                                        _compartmentDetailCubit.onSpeciesGroupChanged(
-                                          speciesGroupId: value?.speciesGroupTemplateId,
-                                          speciesGroupName: value?.speciesGroupTemplateName,
-                                        );
-                                      },
-                                  );
-                                },
-                              ),
-                            ),
+                            buildSelectAreaType(),
+                            buildSelectProductGroupTemplate(),
+                            buildSelectSpecies(),
                             AttributeItem(
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -296,12 +149,6 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                 ),
                               ),
                             ),
-                            // AttributeItem(
-                            //   child: InputAttributeItem(
-                            //     hintText: LocaleKeys.unit.tr(),
-                            //     onChanged: _compartmentDetailCubit.onCompartmentUnitChanged,
-                            //   ),
-                            // ),
                             BlocSelector<CompartmentDetailCubit, CompartmentDetailState, bool>(
                               selector: (state) => state.isEffectiveAreaError,
                               builder: (context, isEffectiveAreaError) {
@@ -456,6 +303,175 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildSelectAreaType() {
+    return BlocBuilder<CompartmentDetailCubit, CompartmentDetailState>(
+      builder: (context, state) {
+        if (!state.isDataReady) {
+          return const SizedBox();
+        }
+
+        return BottomSheetSelection(
+          hintText: LocaleKeys.type.tr(),
+          margin: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          value: state.areaTypes
+              .firstWhereOrNull(
+                (element) => element.areaTypeId == state.compartment.areaTypeId,
+              )
+              ?.areaTypeName,
+          onTap: () async {
+            FocusScope.of(context).unfocus();
+            if (state.areaTypes.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: ListView.builder(
+                itemCount: state.areaTypes.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      _compartmentDetailCubit.onAreaTypeChanged(
+                        state.areaTypes[index].areaTypeId!,
+                      );
+
+                      Navigator.pop(context);
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        state.areaTypes[index].areaTypeName ?? '',
+                        style: context.textStyles.bodyBold.copyWith(
+                          color: context.colors.blueDark2,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildSelectProductGroupTemplate() {
+    return BlocBuilder<CompartmentDetailCubit, CompartmentDetailState>(
+      builder: (context, state) {
+        if (!state.isDataReady) {
+          return const SizedBox();
+        }
+
+        return BottomSheetSelection(
+          hintText: LocaleKeys.productGroup.tr(),
+          margin: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          value: state.filterProductGroupTemplates
+              .firstWhereOrNull(
+                (element) =>
+                    element.productGroupTemplateId ==
+                    state.compartment.productGroupTemplateId,
+              )
+              ?.productGroupTemplateName,
+          onTap: () async {
+            FocusScope.of(context).unfocus();
+            if (state.filterProductGroupTemplates.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: ListView.builder(
+                itemCount: state.filterProductGroupTemplates.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      _compartmentDetailCubit.onProductGroupChanged(
+                        productGroupId: state.filterProductGroupTemplates[index]
+                            .productGroupTemplateId,
+                        productGroupName: state
+                            .filterProductGroupTemplates[index]
+                            .productGroupTemplateName,
+                      );
+
+                      Navigator.pop(context);
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        state.filterProductGroupTemplates[index]
+                                .productGroupTemplateName ??
+                            '',
+                        style: context.textStyles.bodyBold.copyWith(
+                          color: context.colors.blueDark2,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildSelectSpecies() {
+    return BlocBuilder<CompartmentDetailCubit, CompartmentDetailState>(
+      builder: (context, state) {
+        if (!state.isDataReady) {
+          return const SizedBox();
+        }
+
+        return BottomSheetSelection(
+          hintText: LocaleKeys.speciesGroup.tr(),
+          margin: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          value: state.filterSpeciesGroupTemplates
+              .firstWhereOrNull(
+                (element) =>
+                    element.speciesGroupTemplateId ==
+                    state.compartment.speciesGroupTemplateId,
+              )
+              ?.speciesGroupTemplateName,
+          onTap: () async {
+            FocusScope.of(context).unfocus();
+            if (state.filterSpeciesGroupTemplates.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: ListView.builder(
+                itemCount: state.filterSpeciesGroupTemplates.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      _compartmentDetailCubit.onSpeciesGroupChanged(
+                        speciesGroupId: state.filterSpeciesGroupTemplates[index]
+                            .speciesGroupTemplateId,
+                        speciesGroupName: state
+                            .filterSpeciesGroupTemplates[index]
+                            .speciesGroupTemplateName,
+                      );
+
+                      Navigator.pop(context);
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        state.filterSpeciesGroupTemplates[index]
+                                .speciesGroupTemplateName ??
+                            '',
+                        style: context.textStyles.bodyBold.copyWith(
+                          color: context.colors.blueDark2,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

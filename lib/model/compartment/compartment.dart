@@ -70,6 +70,46 @@ class Compartment with _$Compartment {
   }
 }
 
+extension CompartmentExtension on Compartment {
+  Compartment clearSpeciesGroupTemplateAndProductGroupTemplate() {
+    return const Compartment().copyWith(
+      stockingPercentage: stockingPercentage,
+      isMasterdataSynced: isMasterdataSynced,
+      farmId: farmId,
+      areaTypeId: areaTypeId,
+      groupSchemeId: groupSchemeId,
+      polygon: polygon,
+      polygonItems: polygonItems,
+      isActive: isActive,
+      createDT: createDT,
+      status: status,
+      campId: campId,
+      effectiveArea: effectiveArea,
+      espacementLength: espacementLength,
+      espacementWidth: espacementWidth,
+      geologyClassMasterDataId: geologyClassMasterDataId,
+      localCompartmentId: localCompartmentId,
+      managementUnitId: managementUnitId,
+      managementUnitName: managementUnitName,
+      nextWorkingCircleTemplateId: nextWorkingCircleTemplateId,
+      ownershipClassMasterDataId: ownershipClassMasterDataId,
+      parentManagementUnitId: parentManagementUnitId,
+      plannedFellDT: plannedFellDT,
+      plannedPlantDT: plannedPlantDT,
+      plantDT: plantDT,
+      polygonArea: polygonArea,
+      rotationNumber: rotationNumber,
+      sphaAge: sphaAge,
+      sphaSurvival: sphaSurvival,
+      survival: survival,
+      updateDT: updateDT,
+      unitNumber: unitNumber,
+      utilMAI: utilMAI,
+      workingCircleTemplateId: workingCircleTemplateId,
+    );
+  }
+}
+
 @freezed
 class PolygonItem with _$PolygonItem {
   const factory PolygonItem({

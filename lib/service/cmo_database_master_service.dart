@@ -3862,7 +3862,9 @@ class CmoDatabaseMasterService {
     return db.speciesGroupTemplates.put(item);
   }
 
-  Future<List<AreaType>?> getAreaTypes() async {
+  Future<List<AreaType>?> getAreaTypesByGroupSchemeId(int? groupSchemeId) async {
+    if (groupSchemeId == null) return <AreaType>[];
+
     final db = await _db();
     return db.areaTypes
         .filter()
