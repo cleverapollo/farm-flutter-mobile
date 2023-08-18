@@ -8,8 +8,7 @@ class AsiCubit extends Cubit<AsiState> {
 
   Future<void> loadAsis() async {
     try {
-      var data =
-          await cmoDatabaseMasterService.getAsiRegisterByFarmId(state.farmId);
+      var data = await cmoDatabaseMasterService.getAsiRegisterByFarmId(state.farmId);
       if (state.campId != null) {
         data = data.where((element) => element.campId == state.campId).toList();
       }
@@ -40,7 +39,7 @@ class AsiCubit extends Cubit<AsiState> {
           filterAsi: state.listAsi
               .where(
                 (element) =>
-                    element.asiRegisterNo
+                    element.compartmentName
                         ?.toString()
                         .toLowerCase()
                         .contains(input.toLowerCase()) ??
