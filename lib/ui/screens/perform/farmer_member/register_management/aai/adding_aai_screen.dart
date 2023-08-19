@@ -231,7 +231,6 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
                   child: Text('Select Property Damged'),
                 ),
               ),
-              _buildDateOfBirth(state.accidentAndIncident.dateOfBirth),
               _buildSelectDateIncident(
                   state.accidentAndIncident.dateOfIncident),
               _buildSelectDateReceived(state.accidentAndIncident.dateRecieved),
@@ -419,39 +418,6 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           hintStyle: context.textStyles.bodyBold.black,
           labelText: LocaleKeys.date_reported.tr(),
           labelStyle: context.textStyles.bodyBold.black,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDateOfBirth(DateTime? birthDate) {
-    return InkWell(
-      onTap: () async {
-        final date = await showDatePicker(
-          context: context,
-          initialDate: birthDate ??
-              DateTime.now(),
-          firstDate: DateTime.now().add(const Duration(days: -1000000)),
-          lastDate: DateTime.now(),
-        );
-        cubit.onDateOfBirthChanged(date);
-      },
-      child: AttributeItem(
-        child: SelectorAttributeItem(
-          hintText: '',
-          text: birthDate == null
-              ? LocaleKeys.yyyy_mm_dd.tr()
-              : birthDate.yMd(),
-          labelText: LocaleKeys.dateOfBirth.tr(),
-          labelStyle: context.textStyles.bodyBold.black,
-          textStyle: birthDate == null
-              ? context.textStyles.bodyNormal.grey
-              : context.textStyles.bodyBold.black,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
-          ),
-          trailing: Assets.icons.icCalendar.svgBlack,
         ),
       ),
     );
