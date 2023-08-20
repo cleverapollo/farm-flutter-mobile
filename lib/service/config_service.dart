@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:cmo/enum/user_role_enum.dart';
-import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +9,7 @@ class ConfigService {
   Future<void> logout() async {
     await setRMSynced(isSynced: false);
     await setIsAuthorized(isAuthorized: false);
+    await clearPerformConfig();
   }
 
   Future<bool> isFirstLaunch() async {
@@ -61,7 +61,7 @@ class ConfigService {
   Future<ResourceManagerUnit?> getActiveRegionalManager() async {
     final sp = await SharedPreferences.getInstance();
     final rawJson = sp.getString('ActiveRegionalManager');
-    if (rawJson == null) return null;
+    if (rawJson == null || rawJson.isEmpty) return null;
     return ResourceManagerUnit.fromJson(
         jsonDecode(rawJson) as Map<String, dynamic>);
   }
@@ -74,7 +74,7 @@ class ConfigService {
   Future<GroupScheme?> getActiveGroupScheme() async {
     final sp = await SharedPreferences.getInstance();
     final rawJson = sp.getString('ActiveGroupScheme');
-    if (rawJson == null) return null;
+    if (rawJson == null || rawJson.isEmpty) return null;
     return GroupScheme.fromJson(jsonDecode(rawJson) as Map<String, dynamic>);
   }
 
@@ -124,7 +124,28 @@ class ConfigService {
   Future<Farm?> getActiveFarm() async {
     final sp = await SharedPreferences.getInstance();
     final rawJson = sp.getString('ActiveFarm');
-    if (rawJson == null) return null;
+    if (rawJson == null || rawJson.isEmpty) return null;
     return Farm.fromJson(jsonDecode(rawJson) as Map<String, dynamic>);
+  }
+
+  Future<void> clearPerformConfig() async {
+    await clearActiveGroupScheme();
+    await clearActiveFarm();
+    await clearActiveRegionalManager();
+  }
+
+  Future<bool> clearActiveGroupScheme() async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setString('ActiveGroupScheme', '');
+  }
+
+  Future<bool> clearActiveFarm() async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setString('ActiveFarm', '');
+  }
+
+  Future<bool> clearActiveRegionalManager() async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setString('ActiveRegionalManager', '');
   }
 }

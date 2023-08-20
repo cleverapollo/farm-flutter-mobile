@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/string.dart';
+import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/stakeholder/farm_stake_holder.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
@@ -115,6 +116,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       await createSubscriptions();
 
+      await onSyncDataForCompartments();
+
       await summaryFarmerSync();
 
       final futures = <Future<dynamic>>[];
@@ -142,6 +145,46 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
           isLoading: false,
           isDoneSyncing: true));
     }
+  }
+
+  Future<void> onSyncDataForCompartments() async {
+    final dbCompany = await cmoDatabaseMasterService.db;
+    await dbCompany.writeTxn(() async {
+      emit(state.copyWith(syncMessage: 'Syncing Product Group Templates...'));
+      final productTemplateFutures = <Future<void>>[];
+
+      final productTemplates =
+          await cmoPerformApiService.fetchProductGroupTemplates();
+
+      if (true == productTemplates?.isNotEmpty) {
+        for (final item in productTemplates!) {
+          productTemplateFutures.add(insertProductGroupTemplate(item));
+        }
+      }
+      await Future.wait(productTemplateFutures);
+
+      emit(state.copyWith(syncMessage: 'Syncing Species Group Templates...'));
+      final speciesTemplateFutures = <Future<void>>[];
+      final speciesTemplates =
+          await cmoPerformApiService.fetchSpeciesGroupTemplates();
+
+      if (true == speciesTemplates?.isNotEmpty) {
+        for (final item in speciesTemplates!) {
+          speciesTemplateFutures.add(insertSpeciesGroupTemplate(item));
+        }
+      }
+      await Future.wait(speciesTemplateFutures);
+
+      emit(state.copyWith(syncMessage: 'Syncing Area Types...'));
+      final areaTypeFutures = <Future<void>>[];
+      final areaTypes = await cmoPerformApiService.fetchAreaTypes();
+      if (true == areaTypes?.isNotEmpty) {
+        for (final item in areaTypes!) {
+          areaTypeFutures.add(insertAreaType(item));
+        }
+      }
+      await Future.wait(areaTypeFutures);
+    });
   }
 
   Future<void> initDataSync() async {
@@ -1241,6 +1284,18 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         });
       }
     } catch (e) {}
+  }
+
+  Future<void> insertAreaType(AreaType data) async {
+    await cmoDatabaseMasterService.cacheAreaTypes(data);
+  }
+
+  Future<void> insertProductGroupTemplate(ProductGroupTemplate data) async {
+    await cmoDatabaseMasterService.cacheProductGroupTemplates(data);
+  }
+
+  Future<void> insertSpeciesGroupTemplate(SpeciesGroupTemplate data) async {
+    await cmoDatabaseMasterService.cacheSpeciesGroupTemplates(data);
   }
 
   Future<void> insertCompartments(List<Compartment>? data) async {

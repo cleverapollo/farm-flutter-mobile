@@ -28,10 +28,14 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     try {
       emit(state.copyWith(loading: true));
       final groupScheme = await configService.getActiveGroupScheme();
+      final farm = await configService.getActiveFarm();
+
+      final groupSchemeId = groupScheme?.groupSchemeId ?? farm?.groupSchemeId;
+
       final result = await Future.wait([
-        cmoDatabaseMasterService.getAreaTypesByGroupSchemeId(groupScheme?.groupSchemeId),
-        cmoDatabaseMasterService.getProductGroupTemplates(groupScheme?.groupSchemeId),
-        cmoDatabaseMasterService.getSpeciesGroupTemplates(groupScheme?.groupSchemeId),
+        cmoDatabaseMasterService.getAreaTypesByGroupSchemeId(groupSchemeId),
+        cmoDatabaseMasterService.getProductGroupTemplates(groupSchemeId),
+        cmoDatabaseMasterService.getSpeciesGroupTemplates(groupSchemeId),
       ]);
 
       emit(state.copyWith(
@@ -54,9 +58,11 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     final compartment = state.compartment;
     if (compartment.unitNumber.isBlank) {
       return LocaleKeys.compartment_name_is_required.tr();
-    } if (compartment.areaTypeId.isBlank) {
+    }
+    if (compartment.areaTypeId.isBlank) {
       return LocaleKeys.area_type_is_required.tr();
-    } if (compartment.productGroupTemplateId.isBlank) {
+    }
+    if (compartment.productGroupTemplateId.isBlank) {
       return LocaleKeys.product_group_is_required.tr();
     } else if (compartment.speciesGroupTemplateId.isBlank) {
       return LocaleKeys.species_group_is_required.tr();
