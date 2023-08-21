@@ -6,7 +6,6 @@ import 'package:cmo/env/env.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/audit/audit_payload.dart';
-import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/group_scheme_stakeholder_payload/group_scheme_stakeholder_payload.dart';
@@ -163,6 +162,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
       logger.d('--RM Sync Data start');
       logger.d('--createSubscriptions');
+      await Future.delayed(const Duration(seconds: 2));
       await createSubscriptions();
       logger.d('--createSubscriptions done');
       logger.d('--createRMSystemEvent');

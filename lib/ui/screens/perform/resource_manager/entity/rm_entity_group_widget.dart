@@ -91,11 +91,11 @@ class _RMEntityGroupWidgetState extends State<RMEntityGroupWidget> {
       return;
     }
 
+    await context.read<UserDeviceCubit>().createPerformUserDevice();
     await configService.setActiveRegionalManager(unit: selectedResourceManagerUnit!);
     await configService.setActiveGroupScheme(groupScheme: selectedGroupScheme!);
     await configService.setActiveUserRole(userRole: UserRoleEnum.regionalManager);
     await context.read<UserInfoCubit>().setActiveUserInfo(isBehave: false);
-    await context.read<UserDeviceCubit>().createPerformUserDevice();
     if (mounted) {
       await Navigator.of(context).pushReplacement(
         MaterialPageRoute(
