@@ -27,7 +27,7 @@ class FarmerAddWorkerScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _FarmerAddWorkerScreenState();
 
-  static Future<void> push(
+  static Future<bool?> push(
     BuildContext context, {
     FarmerWorker? farmerWorker,
     bool isEditing = false,

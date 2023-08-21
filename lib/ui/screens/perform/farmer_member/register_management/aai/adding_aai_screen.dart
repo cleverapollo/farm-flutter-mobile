@@ -14,6 +14,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
+import '../../labour_management/farmer_add_worker/farmer_add_worker_screen.dart';
+
 class AddingAAIScreen extends StatefulWidget {
   const AddingAAIScreen({super.key});
 
@@ -219,8 +221,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _selectWorker(
-                  state.workers, state.accidentAndIncident.workerId.toString()),
+              _selectWorker(state.accidentAndIncident.workerId.toString()),
               const SizedBox(height: 4),
               _selectJobDescription(),
               const SizedBox(height: 4),
@@ -324,34 +325,49 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     );
   }
 
-  Widget _selectWorker(List<FarmerWorker> workers, String? workerId) {
-    final initWorker = workers.firstWhereOrNull((e) => e.workerId == workerId);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-      child: AttributeItem(
-        child: CmoDropdown<FarmerWorker>(
-          name: 'WorkerId',
-          hintText: LocaleKeys.worker.tr(),
-          style: context.textStyles.bodyBold.blueDark2,
-          validator: requiredValidator,
-          inputDecoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            isDense: true,
-            hintText:
-                '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
-            hintStyle: context.textStyles.bodyBold.blueDark2,
-            border: InputBorder.none,
-            focusedBorder: InputBorder.none,
-          ),
-          onChanged: (value) async {
-            await cubit.onWorkerSelected(value);
+  Widget _selectWorker(String? workerId) {
+    return BlocSelector<AddAAICubit, AddAAIState, List<FarmerWorker>>(
+      selector: (state) => state.workers,
+      builder: (context, workers) {
+        final initWorker = workers.firstWhereOrNull((e) => e.workerId == workerId);
+        return InkWell(
+          onTap: () async {
+            if (workers.isEmpty) {
+              final result = await FarmerAddWorkerScreen.push(context);
+              if (result != null && result) {
+                await cubit.onInit();
+              }
+            }
           },
-          initialValue: initWorker,
-          itemsData: workers
-              .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
-              .toList(),
-        ),
-      ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+            child: AttributeItem(
+              child: CmoDropdown<FarmerWorker>(
+                name: 'WorkerId',
+                hintText: LocaleKeys.worker.tr(),
+                style: context.textStyles.bodyBold.blueDark2,
+                validator: requiredValidator,
+                inputDecoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(8),
+                  isDense: true,
+                  hintText:
+                      '${LocaleKeys.select.tr()} ${LocaleKeys.worker.tr().toLowerCase()}',
+                  hintStyle: context.textStyles.bodyBold.blueDark2,
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                ),
+                onChanged: (value) async {
+                  await cubit.onWorkerSelected(value);
+                },
+                initialValue: initWorker,
+                itemsData: workers
+                    .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
+                    .toList(),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
