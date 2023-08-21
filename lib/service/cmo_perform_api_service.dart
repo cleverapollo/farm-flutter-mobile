@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cmo/di.dart';
@@ -7,9 +6,6 @@ import 'package:cmo/enum/enum.dart';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/main.dart';
 import 'package:cmo/model/compartment/area_type.dart';
-import 'package:cmo/model/hirac.dart';
-import 'package:cmo/model/hirac_template.dart';
-import 'package:cmo/model/hirac_type.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/user_role_config/user_role_config.dart';
@@ -381,7 +377,7 @@ class CmoPerformApiService {
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
       },
-      options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      // options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
     );
 
     if (response.statusCode != 200) {
@@ -421,7 +417,7 @@ class CmoPerformApiService {
   Future<MasterDataMessage?> pullMessage({
     required String topicMasterDataSync,
     required int currentClientId,
-    int pageSize = 200,
+    int pageSize = 1000,
   }) async {
     final response = await client.get<JsonData>(
       '${Env.apstoryMqApiUrl}message',
@@ -431,7 +427,7 @@ class CmoPerformApiService {
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
       },
-      options: Options(headers: {'accessToken': 'true'}),
+      // options: Options(headers: {'accessToken': 'true'}),
     );
 
     if (response.statusCode != 200) {
