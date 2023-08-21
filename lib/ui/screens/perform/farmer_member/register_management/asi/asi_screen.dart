@@ -61,33 +61,37 @@ class _AsiScreenState extends State<AsiScreen> {
                       childAlignment: MainAxisAlignment.center,
                       content: [
                         CmoCardHeader(title: LocaleKeys.summary.tr()),
-                        CmoCardHeader(title: LocaleKeys.total.tr(), valueEnd: state.asisData.length.toString(),),
+                        CmoCardHeader(
+                          title: LocaleKeys.total.tr(),
+                          valueEnd: state.asisData.length.toString(),
+                        ),
                       ],
                       trailing: Assets.icons.icDown.svgWhite,
                     ),
                   ),
                   if (state.isLoading)
                     const Expanded(
-                        child: Center(child: CircularProgressIndicator()),)
+                      child: Center(child: CircularProgressIndicator()),
+                    )
                   else
                     Expanded(
                       child: ListView.separated(
                         padding: const EdgeInsets.symmetric(vertical: 18),
                         itemCount: state.asisData.length,
-                        separatorBuilder: (_, index) => const SizedBox(height: 14),
-                        itemBuilder: (_, index) =>
-                            InkWell(
-                                onTap: () async {
-                                  final result = await AddingAsiScreen.push(
-                                    context,
-                                    asi: state.asisData[index],
-                                  );
-                                  if (result != null && result is int) {
-                                    await cubit.initListData();
-                                  }
-                                },
-                                child: _AsiItem(state.asisData[index]),
-                            ),
+                        separatorBuilder: (_, index) =>
+                            const SizedBox(height: 14),
+                        itemBuilder: (_, index) => InkWell(
+                          onTap: () async {
+                            final result = await AddingAsiScreen.push(
+                              context,
+                              asi: state.asisData[index],
+                            );
+                            if (result != null && result is int) {
+                              await cubit.initListData();
+                            }
+                          },
+                          child: _AsiItem(state.asisData[index]),
+                        ),
                       ),
                     ),
                 ],
@@ -175,13 +179,17 @@ class _AsiItem extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  LocaleKeys.asiType.tr(),
-                  style: context.textStyles.bodyNormal,
+                Expanded(
+                  child: Text(
+                    LocaleKeys.asiType.tr(),
+                    style: context.textStyles.bodyNormal,
+                  ),
                 ),
-                Text(
-                  asi.asiTypeName ?? '',
-                  style: context.textStyles.bodyNormal,
+                Expanded(
+                  child: Text(
+                    asi.asiTypeName ?? '',
+                    style: context.textStyles.bodyNormal,
+                  ),
                 )
               ],
             ),

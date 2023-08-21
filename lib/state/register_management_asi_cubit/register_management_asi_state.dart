@@ -12,6 +12,7 @@ class RMAsiState with _$RMAsiState {
     @Default(false) bool isDataReady,
     @Default(true) bool isOpen,
     @Default(Asi()) Asi asiData,
+    @Default(Asi()) Asi asiDataBeforeEdit,
     @Default([]) List<AsiType> asiTypes,
     @Default([]) List<Asi> asisData,
     @Default([]) List<AsiPhoto> asiPhotos,

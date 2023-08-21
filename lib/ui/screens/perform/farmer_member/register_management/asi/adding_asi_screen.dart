@@ -2,20 +2,19 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/asi.dart';
+import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_cubit.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/thumbnail_image.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cmo/model/asi_photo/asi_photo.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/thumbnail_image.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 
 class AddingAsiScreen extends StatefulWidget {
   const AddingAsiScreen({super.key});
@@ -25,7 +24,7 @@ class AddingAsiScreen extends StatefulWidget {
       context,
       MaterialPageRoute(
         builder: (_) => BlocProvider(
-          create: (_) => RMAsiCubit(asiData: asi)..initAddData(),
+          create: (_) => RMAsiCubit()..initAddData(initData: asi),
           child: const AddingAsiScreen(),
         ),
       ),
@@ -37,17 +36,24 @@ class AddingAsiScreen extends StatefulWidget {
 }
 
 class _AddingAsiScreenState extends State<AddingAsiScreen> {
+  final _commentController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<RMAsiCubit, RMAsiState, String?>(
-      selector: (state) => state.farmName,
-      builder: (context, farmName) {
+    return BlocConsumer<RMAsiCubit, RMAsiState>(
+      listenWhen: (previous, current) =>
+          previous.asiData.comment != current.asiData.comment,
+      listener: (_, state) {
+        if (_commentController.text.isEmpty) {
+          _commentController.text = state.asiData.comment ?? '';
+        }
+      },
+      builder: (context, state) {
         final cubit = context.read<RMAsiCubit>();
-        final state = cubit.state;
         return Scaffold(
           appBar: CmoAppBarV2(
             title: LocaleKeys.asi.tr(),
-            subtitle: farmName,
+            subtitle: state.farmName,
             showLeading: true,
           ),
           body: CustomScrollView(
@@ -58,22 +64,25 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAsiType(),
                       _buildLatLng(),
                       _buildAsiDate(),
                       const SizedBox(height: 24),
-                      AttributeItem(
-                        child: SizedBox(
-                          height: 143,
-                          child: GeneralCommentWidget(
-                            elevation: 0,
-                            initialValue: state.asiData.comment,
-                            hintText: LocaleKeys.generalComments.tr(),
-                            onChanged: (value) {
-                              cubit.onCommentChanged(value);
-                            },
-                          ),
+                      Text(
+                        LocaleKeys.general_comments.tr(),
+                        style: context.textStyles.bodyBold,
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _commentController,
+                        minLines: 10,
+                        maxLines: 100,
+                        onChanged: (value) =>
+                            cubit.onChangeData(comment: value),
+                        decoration: InputDecoration(
+                          hintText: LocaleKeys.comments.tr(),
                         ),
                       ),
                       const SizedBox(height: 12),

@@ -8,20 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RMAsiCubit extends Cubit<RMAsiState> {
-  RMAsiCubit({
-    Asi? asiData,
-  }) : super(
-          RMAsiState(
-            asiData: asiData ??
-                Asi(
-                  date: DateTime.now(),
-                  asiRegisterNo:
-                      DateTime.now().microsecondsSinceEpoch.toString(),
-                  asiRegisterId:
-                      DateTime.now().microsecondsSinceEpoch.toString(),
-                ),
-          ),
-        );
+  RMAsiCubit() : super(const RMAsiState());
 
   Future<bool> initConfig() async {
     try {
@@ -34,9 +21,6 @@ class RMAsiCubit extends Cubit<RMAsiState> {
           farmId: farm?.farmId,
           groupSchemeId: farm?.groupSchemeId,
           farmName: farm?.farmName,
-          asiData: state.asiData.copyWith(
-            farmId: farm?.farmId,
-          ),
         ),
       );
 
@@ -46,10 +30,26 @@ class RMAsiCubit extends Cubit<RMAsiState> {
     }
   }
 
-  Future<void> initAddData() async {
+  Future<void> initAddData({Asi? initData}) async {
     final initResult = await initConfig();
 
     if (!initResult) return;
+
+    if (initData != null) {
+      emit(state.copyWith(
+        asiData: initData,
+        asiDataBeforeEdit: initData,
+      ));
+    } else {
+      emit(state.copyWith(
+        asiData: Asi(
+          localId: DateTime.now().millisecondsSinceEpoch,
+          asiRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
+          date: DateTime.now(),
+          farmId: state.farmId,
+        ),
+      ));
+    }
 
     final result = await cmoDatabaseMasterService
         .getAsiTypeByGroupSchemeId(state.groupSchemeId!);
@@ -127,8 +127,7 @@ class RMAsiCubit extends Cubit<RMAsiState> {
           .map((e) => AsiPhoto(
                 asiRegisterId: state.asiData.asiRegisterId,
                 asiRegisterNo: state.asiData.asiRegisterNo,
-                asiRegisterPhotoNo:
-                    DateTime.now().millisecondsSinceEpoch.toString(),
+                asiRegisterPhotoNo: state.asiData.asiRegisterNo,
                 photo: e,
                 isActive: true,
                 isMasterdataSynced: false,
@@ -163,9 +162,24 @@ class RMAsiCubit extends Cubit<RMAsiState> {
       await cmoDatabaseMasterService.cacheAsiPhoto(item);
     }
 
-    await cmoDatabaseMasterService.cacheAsi(state.asiData).then((value) {
+    var isMasterDataSynced = false;
+
+    if (state.asiDataBeforeEdit.isMasterdataSynced ?? false) {
+      if (state.asiData != state.asiDataBeforeEdit) {
+        isMasterDataSynced = false;
+      } else {
+        isMasterDataSynced = true;
+      }
+    }
+
+    await cmoDatabaseMasterService
+        .cacheAsi(state.asiData.copyWith(
+      isMasterdataSynced: isMasterDataSynced,
+      isActive: true,
+    ))
+        .then((value) {
       if (value != null) {
-        showSnackSuccess(msg: 'Save ASI Successfully}');
+        showSnackSuccess(msg: 'Save ASI $value Successfully');
         Navigator.of(context).pop(value);
       } else {
         showSnackError(msg: 'Something was wrong, please try again.');
