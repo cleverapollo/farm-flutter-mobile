@@ -521,7 +521,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
 
   Future<void> onAnswerFarmMemberObjective({
     required FarmMemberObjective question,
-    required FarmObjectiveOption option,
+    required int farmObjectiveOptionId,
   }) async {
     final farmMemberObjectivesState = state.farmMemberObjectivesState;
     final listFarmMemberObjectiveAnswers = <FarmMemberObjectiveAnswer>[];
@@ -532,7 +532,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
             element.farmMemberObjectiveId == question.farmMemberObjectiveId);
     if (currentAnswer != null) {
       listFarmMemberObjectiveAnswers.remove(currentAnswer);
-      currentAnswer = currentAnswer.copyWith(farmObjectiveOptionId: option.id);
+      currentAnswer = currentAnswer.copyWith(farmObjectiveOptionId: farmObjectiveOptionId);
       listFarmMemberObjectiveAnswers.add(currentAnswer);
       emit(
         state.copyWith(

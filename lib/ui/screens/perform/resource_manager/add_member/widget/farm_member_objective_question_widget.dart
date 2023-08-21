@@ -6,6 +6,8 @@ import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'farm_member_objective_options.dart';
+
 class FarmMemberObjectiveQuestionWidget extends StatefulWidget {
   final FarmMemberObjective farmMemberObjective;
   final List<FarmObjectiveOption> listFarmObjectiveOptions;
@@ -42,7 +44,14 @@ class _FarmMemberObjectiveQuestionWidgetState
             ),
           ),
         ),
+        const SizedBox(height: 12,),
         selectOption(),
+        const SizedBox(height: 10,),
+        Divider(
+          height: 1,
+          thickness: 1,
+          color: context.colors.blueDark2,
+        ),
       ],
     );
   }
@@ -53,69 +62,19 @@ class _FarmMemberObjectiveQuestionWidgetState
         return state.farmMemberObjectivesState;
       },
       builder: (context, farmMemberObjectivesState) {
-        return InkWell(
-          onTap: () async {
-            await showCustomBottomSheet(
-              context,
-              content: ListView.builder(
-                itemCount:
-                farmMemberObjectivesState.listFarmObjectiveOptions.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () async {
-                      await context
-                          .read<AddMemberCubit>()
-                          .onAnswerFarmMemberObjective(
-                        question: widget.farmMemberObjective,
-                        option: farmMemberObjectivesState
-                            .listFarmObjectiveOptions[index],
-                      );
-
-                      Navigator.pop(context);
-                    },
-                    title: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        farmMemberObjectivesState
-                            .listFarmObjectiveOptions[index]
-                            .farmObjectiveOptionName ??
-                            '',
-                        style: context.textStyles.bodyBold.copyWith(
-                          color: context.colors.blueDark2,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            );
+        return FarmMemberObjectiveOptions(
+          farmObjectiveOption: farmMemberObjectivesState.listFarmObjectiveOptions,
+          initFarmMemberObjectiveOptionId: farmMemberObjectivesState
+              .getFarmMemberObjectiveAnswer(
+                widget.farmMemberObjective.farmMemberObjectiveId,
+              )
+              ?.farmObjectiveOptionId,
+          onTap: (farmObjectiveOptionId) async {
+            await context.read<AddMemberCubit>().onAnswerFarmMemberObjective(
+                  question: widget.farmMemberObjective,
+                  farmObjectiveOptionId: farmObjectiveOptionId,
+                );
           },
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: context.colors.grey),
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    farmMemberObjectivesState.getFarmMemberObjectiveAnswerTitle(
-                      widget.farmMemberObjective.farmMemberObjectiveId,
-                    ),
-                    style: context.textStyles.bodyNormal.black,
-                  ),
-                ),
-                Icon(
-                  Icons.keyboard_arrow_down_sharp,
-                  color: context.colors.black,
-                  size: 40,
-                )
-              ],
-            ),
-          ),
         );
       },
     );
