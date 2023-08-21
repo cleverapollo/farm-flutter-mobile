@@ -655,7 +655,7 @@ class CmoDatabaseMasterService {
   Future<int?> cacheCountry(Country data) async {
     final db = await _db();
 
-    return await db.countrys.put(data);
+    return db.countrys.put(data);
   }
 
   Future<int?> cacheGender(Gender data) async {
@@ -1426,10 +1426,10 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<ChemicalType>> getCountry() async {
+  Future<List<Country>> getCountry() async {
     final db = await _db();
 
-    return db.chemicalTypes.filter().isActiveEqualTo(true).findAll();
+    return db.countrys.filter().isActiveEqualTo(true).findAll();
   }
 
   Future<List<ChemicalType>> getChemicalTypeByFarmId(String farmId) async {
@@ -3875,7 +3875,8 @@ class CmoDatabaseMasterService {
     return db.speciesGroupTemplates.put(item);
   }
 
-  Future<List<AreaType>?> getAreaTypesByGroupSchemeId(int? groupSchemeId) async {
+  Future<List<AreaType>?> getAreaTypesByGroupSchemeId(
+      int? groupSchemeId) async {
     if (groupSchemeId == null) return <AreaType>[];
 
     final db = await _db();
@@ -3887,7 +3888,8 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<ProductGroupTemplate>?> getProductGroupTemplates(int? groupSchemeId) async {
+  Future<List<ProductGroupTemplate>?> getProductGroupTemplates(
+      int? groupSchemeId) async {
     if (groupSchemeId == null) return <ProductGroupTemplate>[];
 
     final db = await _db();
@@ -3899,7 +3901,8 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<SpeciesGroupTemplate>?> getSpeciesGroupTemplates(int? groupSchemeId) async {
+  Future<List<SpeciesGroupTemplate>?> getSpeciesGroupTemplates(
+      int? groupSchemeId) async {
     if (groupSchemeId == null) return <SpeciesGroupTemplate>[];
 
     final db = await _db();

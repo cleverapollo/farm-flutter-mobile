@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'country.freezed.dart';
-
 part 'country.g.dart';
 
 @freezed
@@ -20,5 +19,5 @@ class Country with _$Country {
       _$CountryFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => countryId ?? Isar.autoIncrement;
 }
