@@ -159,7 +159,7 @@ class _CmoYesNoQuestionState extends State<CmoYesNoQuestion> {
                   ),
                 ),
                 child: Text('Yes',
-                    style: context.textStyles.bodyBold.copyWith(
+                    style: context.textStyles.bodyNormal.copyWith(
                         color: (value ?? false) ? Colors.white : Colors.black)),
               ),
             ),
@@ -182,7 +182,7 @@ class _CmoYesNoQuestionState extends State<CmoYesNoQuestion> {
                   ) : null,
                 ),
                 child: Text('No',
-                    style: context.textStyles.bodyBold.copyWith(
+                    style: context.textStyles.bodyNormal.copyWith(
                         color: !(value ?? true) ? Colors.white : Colors.black)),
               ),
             ),

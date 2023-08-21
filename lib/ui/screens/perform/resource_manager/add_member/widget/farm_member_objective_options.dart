@@ -94,7 +94,7 @@ class FarmMemberObjectiveOption extends StatelessWidget {
           option.farmObjectiveOptionName ?? '',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: context.textStyles.bodyBold.copyWith(
+          style: context.textStyles.bodyNormal.copyWith(
             color: (isSelected ?? false) ? Colors.white : Colors.black,
           ),
         ),

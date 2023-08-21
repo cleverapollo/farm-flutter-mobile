@@ -38,7 +38,7 @@ class _FarmMemberObjectiveQuestionWidgetState
           padding: const EdgeInsets.only(left: 8.0, top: 12),
           child: Text(
             widget.farmMemberObjective.farmMemberObjectiveName ?? '',
-            style: context.textStyles.bodyBold.copyWith(
+            style: context.textStyles.bodyNormal.copyWith(
               color: context.colors.black,
               fontSize: 16,
             ),
