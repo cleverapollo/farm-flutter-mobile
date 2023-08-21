@@ -79,7 +79,6 @@ class FarmMemberObjectiveOption extends StatelessWidget {
         width: width,
         padding: const EdgeInsets.symmetric(
           vertical: 12,
-          horizontal: 16,
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -93,6 +92,8 @@ class FarmMemberObjectiveOption extends StatelessWidget {
         ),
         child: Text(
           option.farmObjectiveOptionName ?? '',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: context.textStyles.bodyBold.copyWith(
             color: (isSelected ?? false) ? Colors.white : Colors.black,
           ),
