@@ -1210,13 +1210,13 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                     syncMessage: 'Syncing new and updated stakeholder...'));
                 await insertStakeholder(item);
               } else if (topic ==
-                  'is.topicTrickleFeedFarmerMasterDataByFarmIdAnnFrmBud.$farmId') {
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}AnnFrmBud.$farmId') {
                 emit(state.copyWith(
                     syncMessage:
                         'Syncing new and updated annual farm budgets...'));
                 await insertAnnualFarmBudget(item);
               } else if (topic ==
-                  'is.topicTrickleFeedFarmerMasterDataByFarmIdAnnFrmBudTrans.$farmId') {
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}AnnFrmBudTrans.$farmId') {
                 emit(state.copyWith(
                     syncMessage:
                         'Syncing new and updated annual farm budget transactions...'));
@@ -1998,7 +1998,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       if (bodyJson == null) return null;
       final rs = Asi.fromJson(bodyJson);
       return cmoDatabaseMasterService
-          .cacheAsi(rs.copyWith(isActive: true, isMasterdataSynced: true), isDirect: true);
+          .cacheAsi(rs.copyWith(isActive: true, isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
