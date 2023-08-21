@@ -42,6 +42,8 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
         areaTypes: result[0] as List<AreaType>?,
         productGroupTemplates: result[1] as List<ProductGroupTemplate>?,
         speciesGroupTemplates: result[2] as List<SpeciesGroupTemplate>?,
+        filterProductGroupTemplates: result[1] as List<ProductGroupTemplate>?,
+        filterSpeciesGroupTemplates: result[2] as List<SpeciesGroupTemplate>?,
         groupScheme: groupScheme,
         isDataReady: true,
       ));
@@ -126,9 +128,17 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   void onAreaTypeChanged(String areaTypeId) {
     emit(
       state.copyWith(
-        compartment: state.compartment.copyWith(
+        compartment: state.compartment
+            .clearSpeciesGroupTemplateAndProductGroupTemplate()
+            .copyWith(
           areaTypeId: areaTypeId,
         ),
+        filterSpeciesGroupTemplates: state.speciesGroupTemplates
+            .where((element) => element.areaTypeId == areaTypeId)
+            .toList(),
+        filterProductGroupTemplates: state.productGroupTemplates
+            .where((element) => element.areaTypeId == areaTypeId)
+            .toList(),
       ),
     );
   }
