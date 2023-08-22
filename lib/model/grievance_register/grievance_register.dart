@@ -35,7 +35,7 @@ class GrievanceRegister with _$GrievanceRegister {
       _$GrievanceRegisterFromJson(json);
 
   @override
-  Id get id => int.tryParse(grievanceRegisterId ?? '') ?? Isar.autoIncrement;
+  Id get id => int.tryParse(grievanceRegisterNo ?? '') ?? Isar.autoIncrement;
 }
 
 extension GrievanceRegisterX on GrievanceRegister {

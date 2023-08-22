@@ -36,8 +36,8 @@ class AddEmployeeGrievanceScreen extends StatefulWidget {
               employeeGrievance: employeeGrievance ??
                   GrievanceRegister(
                     farmId: farm.farmId,
-                    grievanceRegisterId: DateTime.now().millisecondsSinceEpoch.toString(),
-                    grievanceRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
+                    grievanceRegisterNo:
+                        DateTime.now().millisecondsSinceEpoch.toString(),
                     dateReceived: DateTime.now(),
                     isActive: true,
                     isMasterdataSynced: false,
@@ -166,9 +166,11 @@ class _AddEmployeeGrievanceScreenState
                               validator: (text) => null,
                               textCapitalization: TextCapitalization.sentences,
                               initialValue: employeeGrievance.actionTaken,
-                              textStyle: context.textStyles.bodyNormal.blueDark2,
+                              textStyle:
+                                  context.textStyles.bodyNormal.blueDark2,
                               labelText: LocaleKeys.actionTaken.tr(),
-                              labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                              labelTextStyle:
+                                  context.textStyles.bodyBold.blueDark2,
                               onChanged: cubit.onActionTakenChanged,
                             ),
                           ),
@@ -178,9 +180,11 @@ class _AddEmployeeGrievanceScreenState
                               validator: (text) => null,
                               textCapitalization: TextCapitalization.sentences,
                               initialValue: employeeGrievance.closureDetails,
-                              textStyle: context.textStyles.bodyNormal.blueDark2,
+                              textStyle:
+                                  context.textStyles.bodyNormal.blueDark2,
                               labelText: LocaleKeys.closureDetails.tr(),
-                              labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                              labelTextStyle:
+                                  context.textStyles.bodyBold.blueDark2,
                               onChanged: cubit.onClosureDetailChanged,
                             ),
                           ),
