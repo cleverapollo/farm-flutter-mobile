@@ -27,5 +27,5 @@ class PestsAndDiseaseTypeTreatmentMethod
       _$PestsAndDiseaseTypeTreatmentMethodFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => treatmentMethodId ?? Isar.autoIncrement;
 }
