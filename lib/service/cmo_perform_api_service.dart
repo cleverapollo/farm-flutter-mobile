@@ -427,7 +427,33 @@ class CmoPerformApiService {
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
       },
-      // options: Options(headers: {'accessToken': 'true'}),
+      //    options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data == null ? null : MasterDataMessage.fromJson(data);
+  }
+
+  Future<MasterDataMessage?> pullFarmMessage({
+    required String topicMasterDataSync,
+    required String? topic,
+    required String? clientId,
+    int pageSize = 200,
+  }) async {
+    final response = await client.get<JsonData>(
+      '${Env.apstoryMqApiUrl}message',
+      queryParameters: {
+        'key': Env.performApstoryMqKey,
+        'client': clientId,
+        'topic': '$topicMasterDataSync*.$topic',
+        'pageSize': '$pageSize',
+      },
+      //    options: Options(headers: {'accessToken': 'true'}),
     );
 
     if (response.statusCode != 200) {

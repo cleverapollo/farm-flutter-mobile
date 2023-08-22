@@ -187,7 +187,7 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
             count: data?.trainingUnsynced ?? 0,
           ),
           SyncItemWidget(
-            label: LocaleKeys.total.tr(),
+            label: 'Total Training',
             count: data?.trainingTotal ?? 0,
           ),
         ],

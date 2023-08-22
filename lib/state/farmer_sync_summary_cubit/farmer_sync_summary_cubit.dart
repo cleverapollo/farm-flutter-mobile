@@ -177,20 +177,20 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       await summaryFarmerSync();
 
-      final futures = <Future<dynamic>>[];
+      await subscribeToCompartmentsByFarmId();
 
-      futures
-        ..add(subscribeToCompartmentsByFarmId())
-        ..add(subscribeToTrickleFeedMasterDataTopic())
-        ..add(subscribeToTrickleFeedMasterDataTopicByFarmId())
-        ..add(subscribeToTrickleFeedMasterDataTopicByGroupSchemeId());
+      await subscribeToTrickleFeedMasterDataTopic();
 
-      await Future.wait(futures).then((_) {
-        emit(state.copyWith(
-            syncMessage: 'Sync', isSyncing: false, isDoneSyncing: true));
-        initDataSync();
-        showSnackSuccess(msg: 'Sync Success');
-      });
+      await subscribeToTrickleFeedMasterDataTopicByFarmId();
+
+      await subscribeToTrickleFeedMasterDataTopicByGroupSchemeId();
+
+      await subscribeToUserDeviceClientIdFilterByFarmIdTopic();
+
+      emit(state.copyWith(
+          syncMessage: 'Sync', isSyncing: false, isDoneSyncing: true));
+      await initDataSync();
+      showSnackSuccess(msg: 'Sync Success');
     } catch (e) {
       if (kDebugMode) {
         throw FlutterError(e.toString());
@@ -698,9 +698,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                   data.copyWith(stakeholderComplaintsUnsynced: value.length)),
         )
         ..add(
-          databaseMasterService
-              .getPestsAndDiseasesRegisterTreatmentMethod()
-              .then((value) => data = data.copyWith(
+          databaseMasterService.getPestsAndDiseaseTypeTreatmentMethod().then(
+              (value) => data = data.copyWith(
                   petsAndDiseaseTreatmentMethodsTotal: value.length)),
         )
         ..add(
@@ -989,6 +988,101 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                         'Syncing new and updated Annual Farm Budget Transaction Category...'));
                 await insertAnnualFarmBudgetTransactionCategory(item);
               }
+              if (topic == 'Cmo.MasterData.RM.RejectReason.Global') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing new and updated Reject Reason...'));
+                await insertRejectReason(item);
+              }
+            } finally {
+              isSync = false;
+            }
+          }
+        });
+      }
+    } catch (e) {
+      isSync = false;
+    }
+  }
+
+  Future<void> subscribeToUserDeviceClientIdFilterByFarmIdTopic() async {
+    var isSync = true;
+
+    try {
+      while (isSync) {
+        onSyncStatus('Sync Feed Master Data Topic By Farm Id...');
+        MasterDataMessage? resPull;
+
+        resPull = await cmoPerformApiService.pullFarmMessage(
+            topicMasterDataSync: topicTrickleFeedFarmerMasterDataByFarmId,
+            clientId: userDeviceId.toString(),
+            topic: farmId);
+
+        final messages = resPull?.message;
+        if (messages == null || messages.isEmpty) {
+          isSync = false;
+          break;
+        }
+
+        final dbCompany = await cmoDatabaseMasterService.db;
+        await dbCompany.writeTxn(() async {
+          for (var i = 0; i < messages.length; i++) {
+            final item = messages[i];
+
+            try {
+              final topic = item.header?.originalTopic;
+              if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}ChemicalType.$farmId') {
+                onSyncStatus('Sync Chemical Types...');
+
+                await insertChemicalType(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}AnnFrmBud.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing new and updated annual farm budgets...'));
+                await insertAnnualFarmBudget(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}AaiRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Accident and Incident Registers...'));
+                await insertAccidentAndIncidentRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}AaiRegPropertyDamaged.$farmId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Accident and Incident Property Damaged...'));
+                await insertAccidentAndIncidentPropertyDamaged(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}SanctionRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Sanction Registers...'));
+                await insertDisciplinaryRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}GrievanceRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Grievance Registers...'));
+                await insertGrievanceRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}FireRegister.$farmId') {
+                emit(state.copyWith(syncMessage: 'Syncing Fire Registers...'));
+                await insertFireRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}PndRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Pests and Diseases Registers...'));
+                await insertPestsAndDiseasesRegister(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFgsMasterDataByGroupSchemeId}PndTypeTreatmentMethod.$groupSchemeId') {
+                emit(state.copyWith(
+                    syncMessage:
+                        'Syncing Pests and Disease Type Treatment Method...'));
+                await insertPestsAndDiseaseTypeTreatmentMethod(item);
+              } else if (topic ==
+                  '${topicTrickleFeedFarmerMasterDataByFarmId}TrainingRegister.$farmId') {
+                emit(state.copyWith(
+                    syncMessage: 'Syncing Training Register...'));
+                await insertTrainingRegister(item);
+              }
             } finally {
               isSync = false;
             }
@@ -1108,6 +1202,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                     syncMessage:
                         'Syncing new and updated Treatment Methods...'));
                 await insertTreatmentMethod(item);
+                await insertPestsAndDiseaseTypeTreatmentMethod(item);
               } else if (topic ==
                   '${topicTrickleFeedFgsMasterDataByGroupSchemeId}IssueType.$groupSchemeId') {
                 emit(state.copyWith(
@@ -1592,6 +1687,19 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         });
       }
     } catch (e) {}
+  }
+
+  Future<int?> insertRejectReason(Message item) async {
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final rs = RejectReason.fromJson(bodyJson);
+      return cmoDatabaseMasterService
+          .cacheRejectReason(rs.copyWith(isActive: true));
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
   }
 
   Future<void> insertAreaType(AreaType data) async {

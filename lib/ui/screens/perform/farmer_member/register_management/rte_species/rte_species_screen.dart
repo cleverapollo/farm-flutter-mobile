@@ -29,7 +29,6 @@ class RteSpeciesScreen extends StatefulWidget {
 }
 
 class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -43,7 +42,8 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.rteSpecies.tr(),
-        subtitle: context.watch<RteSpeciesCubit>().state.activeFarm?.farmName ?? '',
+        subtitle:
+            context.watch<RteSpeciesCubit>().state.activeFarm?.farmName ?? '',
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
@@ -121,18 +121,15 @@ class _RteSpeciesItem extends StatelessWidget {
               height: 1,
             ),
           ),
-
           KeyValueItemWidget(
             keyLabel: LocaleKeys.speciesType.tr(),
             valueLabel: rteSpecies.animalTypeName,
             backgroundColor: context.colors.greyLight1,
           ),
-
           KeyValueItemWidget(
             keyLabel: LocaleKeys.commonName.tr(),
             valueLabel: rteSpecies.commonName,
           ),
-
           KeyValueItemWidget(
             keyLabel: LocaleKeys.dateSpotted.tr(),
             valueLabel: rteSpecies.dateSpotted.yMd(),

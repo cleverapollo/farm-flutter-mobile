@@ -1786,7 +1786,7 @@ class CmoDatabaseMasterService {
     return db.fireRegisters
         .filter()
         .farmIdEqualTo(farmId)
-        .isActiveEqualTo(false)
+        .isActiveEqualTo(true)
         .findAll();
   }
 

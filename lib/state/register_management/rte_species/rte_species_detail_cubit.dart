@@ -2,7 +2,6 @@ import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -34,7 +33,9 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
         .getAnimalTypeByGroupSchemeId(activeFarm?.groupSchemeId ?? 0);
     final speciesRanges = await cmoDatabaseMasterService
         .getSpeciesRangeByGroupSchemeId(activeFarm?.groupSchemeId ?? 0);
-    final rtePhotos = await cmoDatabaseMasterService.getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(state.rteSpecies?.rteSpeciesRegisterNo);
+    final rtePhotos = await cmoDatabaseMasterService
+        .getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
+            state.rteSpecies?.rteSpeciesRegisterNo);
     emit(
       state.copyWith(
         activeFarm: activeFarm,
@@ -128,7 +129,8 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
           farmId: state.activeFarm?.farmId,
           isMasterdataSynced: false,
           photo: image,
-          rteSpeciesRegisterPhotoNo: DateTime.now().millisecondsSinceEpoch.toString(),
+          rteSpeciesRegisterPhotoNo:
+              DateTime.now().millisecondsSinceEpoch.toString(),
           rteSpeciesRegisterPhotoId: randomId++,
           rteSpeciesNo: state.rteSpecies?.rteSpeciesRegisterNo,
           rteSpeciesId: state.rteSpecies?.rteSpeciesRegisterId,
@@ -158,11 +160,12 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
   }
 
   bool onValidate() {
-    if (state.rteSpecies!.commonName.isBlank ||
+    final isNotValid = state.rteSpecies!.commonName.isBlank ||
         state.rtePhotos.isBlank ||
         state.rteSpecies?.dateSpotted == null ||
-        state.rteSpecies!.animalTypeName.isBlank) return false;
-    return true;
+        state.rteSpecies!.animalTypeName.isBlank;
+
+    return !isNotValid;
   }
 
   Future<void> onSave() async {
@@ -186,7 +189,8 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
       }
 
       showSnackSuccess(
-        msg: '${state.rteSpecies == null ? LocaleKeys.addRteSpecies.tr() : 'Edit RTE Species'} $rteSpeciesId',
+        msg:
+            '${state.rteSpecies == null ? LocaleKeys.addRteSpecies.tr() : 'Edit RTE Species'} $rteSpeciesId',
       );
     } catch (e) {
       logger.e('Cannot save RTE species $e');
