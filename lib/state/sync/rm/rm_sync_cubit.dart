@@ -161,8 +161,9 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       );
 
       logger.d('--RM Sync Data start');
+      await cmoDatabaseMasterService.deleteAll();
+      await Future.delayed(const Duration(seconds: 5));
       logger.d('--createSubscriptions');
-      await Future.delayed(const Duration(seconds: 2));
       await createSubscriptions();
       logger.d('--createSubscriptions done');
       logger.d('--createRMSystemEvent');
@@ -171,7 +172,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         userDeviceId: userDeviceId,
       );
       logger.d('--createRMSystemEvent done');
-      await Future.delayed(const Duration(seconds: 3), () {});
+      await Future.delayed(const Duration(seconds: 5), () {});
       logger.d('--syncRegionalManagerMasterData');
       await syncRegionalManagerMasterData();
       logger.d('--syncRegionalManagerMasterData done');

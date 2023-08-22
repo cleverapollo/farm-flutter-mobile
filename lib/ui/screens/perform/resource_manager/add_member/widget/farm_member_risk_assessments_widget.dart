@@ -53,6 +53,7 @@ class FarmMemberRiskAssessmentsWidget extends StatelessWidget {
     bool? answer,
   }) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           question.riskProfileQuestionName ?? '',
