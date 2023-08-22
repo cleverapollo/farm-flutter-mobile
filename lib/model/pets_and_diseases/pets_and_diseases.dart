@@ -16,7 +16,7 @@ class PetsAndDiseaseRegister with _$PetsAndDiseaseRegister {
     @JsonKey(name: 'PestsAndDiseasesRegisterId')
         String? pestsAndDiseasesRegisterId,
     @JsonKey(name: 'NumberOfOutbreaks') int? numberOfOutbreaks,
-    @JsonKey(name: 'AreaLost') int? areaLost,
+    @JsonKey(name: 'AreaLost') double? areaLost,
     @JsonKey(name: 'UnderControl') bool? underControl,
     @JsonKey(name: 'Comment') String? comment,
     @JsonKey(name: 'CarRaisedDate') String? carRaisedDate,

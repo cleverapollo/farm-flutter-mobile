@@ -119,7 +119,7 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                   TextFormField(
                     initialValue: '${state.data.areaLost ?? ''}',
                     onChanged: (value) {
-                      cubit.onChangeData(areaLost: int.parse(value));
+                      cubit.onChangeData(areaLost: double.tryParse(value));
                     },
                     decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(8),

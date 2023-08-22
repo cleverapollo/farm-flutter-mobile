@@ -96,7 +96,7 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
   void onChangeData({
     String? comment,
     int? numberOfOutbreaks,
-    int? areaLost,
+    double? areaLost,
     bool? underControl,
     bool? carRaised,
     bool? carClosed,
