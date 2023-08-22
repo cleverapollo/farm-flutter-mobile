@@ -14,7 +14,7 @@ class AccidentAndIncident with _$AccidentAndIncident {
     @JsonKey(name: 'AccidentAndIncidentRegisterNo')
         String? accidentAndIncidentRegisterNo,
     @JsonKey(name: 'FarmId') String? farmId,
-    @JsonKey(name: 'WorkerId') int? workerId,
+    @JsonKey(name: 'WorkerId') String? workerId,
     @JsonKey(name: 'NatureOfInjuryId') int? natureOfInjuryId,
     @JsonKey(name: 'DateRecieved') DateTime? dateRecieved,
     @JsonKey(name: 'DateOfIncident') DateTime? dateOfIncident,

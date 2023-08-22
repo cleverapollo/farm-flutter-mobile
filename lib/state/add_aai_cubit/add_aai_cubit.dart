@@ -1,8 +1,8 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 
 part 'add_aai_state.dart';
 
@@ -33,8 +33,9 @@ class AddAAICubit extends Cubit<AddAAIState> {
 
       final jobDescriptions = <WorkerJobDescription>[];
       final workerId = state.accidentAndIncident.workerId;
-      if(workerId != null) {
-        final jobs = await cmoDatabaseMasterService.getWorkerJobDescriptionByWorkerId(workerId.toString());
+      if (workerId != null) {
+        final jobs = await cmoDatabaseMasterService
+            .getWorkerJobDescriptionByWorkerId(workerId.toString());
         jobDescriptions.addAll(jobs);
       }
 
@@ -121,7 +122,7 @@ class AddAAICubit extends Cubit<AddAAIState> {
       state.copyWith(
         jobDescriptions: jobDescriptions,
         accidentAndIncident: state.accidentAndIncident.copyWith(
-          workerId: int.tryParse(worker?.workerId ?? ''),
+          workerId: worker?.workerId,
           workerName: worker?.firstName,
           jobDescriptionId: null,
           jobDescriptionName: null,
@@ -139,8 +140,7 @@ class AddAAICubit extends Cubit<AddAAIState> {
 
   String _calculateTimeLost() {
     final aai = state.accidentAndIncident;
-    return aai.dateResumeWork != null &&
-        aai.dateOfIncident != null
+    return aai.dateResumeWork != null && aai.dateOfIncident != null
         ? aai.dateResumeWork!.difference(aai.dateOfIncident!).inDays.toString()
         : '';
   }
@@ -151,5 +151,4 @@ class AddAAICubit extends Cubit<AddAAIState> {
       natureOfInjuryName: selectNatureOfInjury?.natureOfInjuryName,
     );
   }
-
 }
