@@ -35,8 +35,6 @@ class AddStakeHolderComplaintScreen extends StatefulWidget {
               farm: farm,
               complaint: complaint ??
                   ComplaintsAndDisputesRegister(
-                    complaintsAndDisputesRegisterId:
-                        DateTime.now().millisecondsSinceEpoch.toString(),
                     complaintsAndDisputesRegisterNo:
                         DateTime.now().millisecondsSinceEpoch.toString(),
                     dateReceived: DateTime.now(),
@@ -79,7 +77,6 @@ class _AddStakeHolderComplaintScreenState
         loading = true;
       });
       try {
-
         await hideInputMethod();
         var complaint = cubit.state.complaint;
         complaint = complaint.copyWith(
@@ -158,11 +155,13 @@ class _AddStakeHolderComplaintScreenState
                           ),
                           AttributeItem(
                             child: InputAttributeItem(
-                              validator: (_)=> null,
+                              validator: (_) => null,
                               initialValue: complaint.issueDescription,
-                              textStyle: context.textStyles.bodyNormal.blueDark2,
+                              textStyle:
+                                  context.textStyles.bodyNormal.blueDark2,
                               labelText: LocaleKeys.issueRaised.tr(),
-                              labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                              labelTextStyle:
+                                  context.textStyles.bodyBold.blueDark2,
                               onChanged: (value) {
                                 cubit.onIssueDescriptionChanged(value);
                               },
@@ -172,10 +171,12 @@ class _AddStakeHolderComplaintScreenState
                           _buildSelectDateClosed(complaint.dateClosed),
                           AttributeItem(
                             child: InputAttributeItem(
-                              validator: (_)=> null,
-                              textStyle: context.textStyles.bodyNormal.blueDark2,
+                              validator: (_) => null,
+                              textStyle:
+                                  context.textStyles.bodyNormal.blueDark2,
                               labelText: LocaleKeys.closureDetails.tr(),
-                              labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                              labelTextStyle:
+                                  context.textStyles.bodyBold.blueDark2,
                               initialValue: complaint.closureDetails,
                               onChanged: cubit.onClosureDetailChanged,
                             ),
