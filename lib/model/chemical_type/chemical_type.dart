@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'chemical_type.freezed.dart';
-
 part 'chemical_type.g.dart';
 
 @freezed
@@ -22,5 +21,5 @@ class ChemicalType with _$ChemicalType {
       _$ChemicalTypeFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => chemicalTypeId ?? Isar.autoIncrement;
 }
