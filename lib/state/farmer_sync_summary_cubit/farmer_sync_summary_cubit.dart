@@ -100,8 +100,9 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       );
 
       logger.d('--Farmer Sync Data start');
+      await cmoDatabaseMasterService.deleteAll();
+      await Future.delayed(const Duration(seconds: 5));
       logger.d('--createSubscriptions');
-      await Future.delayed(const Duration(seconds: 3));
       await createSubscriptions();
       logger.d('--createSubscriptions done');
       logger.d('--createFarmerSystemEvent');
@@ -110,7 +111,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         userDeviceId: userDeviceId,
       );
       logger.d('--createFarmerSystemEvent done');
-      await Future.delayed(const Duration(seconds: 3), () {});
+      await Future.delayed(const Duration(seconds: 5), () {});
       logger.d('--syncFarmerMasterData');
       await subscribeToSyncAllFarmerMasterData();
       logger.d('--syncFarmerMasterData done');
