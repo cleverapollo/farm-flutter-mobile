@@ -70,9 +70,14 @@ class _FarmSyncOnboardingSyncButtonWidget extends StatelessWidget {
           child: CmoFilledButton(
             title: LocaleKeys.sync.tr(),
             loading: isSyncing,
-            onTap: () async => context
-                .read<FarmerSyncSummaryCubit>()
-                .onSync(isOnboardingSync: true),
+            onTap: () async =>
+                context.read<FarmerSyncSummaryCubit>().syncOnboarding(
+              onCompleted: () {
+                if (context.mounted) {
+                  CmoDashboardBase.push(context);
+                }
+              },
+            ),
           ),
         );
       },

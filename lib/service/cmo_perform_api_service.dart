@@ -337,8 +337,11 @@ class CmoPerformApiService {
       options: Options(headers: {'accessToken': 'true'}),
     );
 
-    await checkFarmSystemEventExist(
-        systemEventId: response.data['SystemEventId'] as int);
+    var isReady = false;
+    while(!isReady) {
+      await Future.delayed(const Duration(milliseconds: 800));
+      isReady = await checkFarmSystemEventExist(systemEventId: response.data['SystemEventId'] as int);
+    }
 
     if (response.statusCode != 200) {
       showSnackError(msg: 'Unknow error: ${response.statusCode}');
