@@ -48,8 +48,8 @@ class Compartment with _$Compartment {
     @JsonKey(name: 'CampId') String? campId,
     @JsonKey(name: 'ProductGroupTemplateName') String? productGroupTemplateName,
     @JsonKey(name: 'SpeciesGroupTemplateName') String? speciesGroupTemplateName,
-    @JsonKey(name: 'EspacementWidth') String? espacementWidth,
-    @JsonKey(name: 'EspacementLength') String? espacementLength,
+    @JsonKey(name: 'EspacementWidth') double? espacementWidth,
+    @JsonKey(name: 'EspacementLength') double? espacementLength,
     @JsonKey(name: 'StockingPercentage') double? stockingPercentage,
     @Default(false)
     @JsonKey(name: 'IsMasterdataSynced')

@@ -175,8 +175,8 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                       ),
                                     ),
                                     EspacementInputWidget(
-                                      widthValue: initCompartment.espacementWidth ?? '',
-                                      lengthValue: initCompartment.espacementLength ?? '',
+                                      widthValue: (initCompartment.espacementWidth ?? '').toString(),
+                                      lengthValue: (initCompartment.espacementLength ?? '').toString(),
                                       onWidthChanged: (value) {
                                         _compartmentDetailCubit.onEspacementWidthChanged(value);
                                       },

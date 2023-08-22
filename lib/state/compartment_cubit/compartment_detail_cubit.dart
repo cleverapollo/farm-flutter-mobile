@@ -188,12 +188,12 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   }
 
   void onEspacementWidthChanged(String? value) {
-    state.compartment = state.compartment.copyWith(espacementWidth: value);
+    state.compartment = state.compartment.copyWith(espacementWidth: double.tryParse(value ?? ''));
     onUpdateStocking();
   }
 
   void onEspacementLengthChanged(String? value) {
-    state.compartment = state.compartment.copyWith(espacementLength: value);
+    state.compartment = state.compartment.copyWith(espacementLength: double.tryParse(value ?? ''));
     onUpdateStocking();
   }
 
@@ -201,11 +201,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     emit(
       state.copyWith(
         compartment: state.compartment.copyWith(
-          stockingPercentage: 10000 /
-              ((double.tryParse(state.compartment.espacementLength ?? '') ??
-                      1) *
-                  (double.tryParse(state.compartment.espacementWidth ?? '') ??
-                      1)),
+          stockingPercentage: 10000 / (state.compartment.espacementLength ?? 1) * (state.compartment.espacementWidth ?? 1),
         ),
       ),
     );
