@@ -87,6 +87,7 @@ mixin FarmUploadSummaryMixin {
             await cmoDatabaseMasterService.removeCompartment(compartment.id);
             await cmoDatabaseMasterService.cacheCompartment(
               syncedCompartment.copyWith(
+                localCompartmentId: DateTime.now().millisecondsSinceEpoch,
                 isMasterdataSynced: true,
                 productGroupTemplateName: compartment.productGroupTemplateName,
                 speciesGroupTemplateName: compartment.speciesGroupTemplateName,
@@ -95,12 +96,6 @@ mixin FarmUploadSummaryMixin {
               ),
               isDirect: true,
             );
-
-            logger.d(
-                'Successfully published compartment: ${syncedCompartment.managementUnitId}');
-          } else {
-            logger.e(
-                'Failed to publish compartment: ${compartment.managementUnitId}');
           }
         }
       } else {

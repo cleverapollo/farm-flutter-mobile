@@ -88,13 +88,26 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
         }
       }
 
+      String? farmId;
+      int? groupSchemeId;
+
+      final farm = await configService.getActiveFarm();
+
+      if (farm != null) {
+        farmId = farm.farmId;
+        groupSchemeId = farm.groupSchemeId;
+      } else {
+        farmId = state.farmId;
+        groupSchemeId = state.groupScheme?.groupSchemeId;
+      }
+
       await cmoDatabaseMasterService.cacheCompartment(
         state.compartment.copyWith(
           localCompartmentId: state.compartmentBeforeEdit.localCompartmentId ??
               DateTime.now().millisecondsSinceEpoch,
           createDT: state.compartment.createDT ?? DateTime.now().toString(),
-          groupSchemeId: state.groupScheme?.groupSchemeId,
-          farmId: state.farmId,
+          groupSchemeId: groupSchemeId,
+          farmId: farmId,
           campId: state.campId,
           isActive: true,
           isMasterdataSynced: isMastersynced,

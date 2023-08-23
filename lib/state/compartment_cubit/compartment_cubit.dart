@@ -7,7 +7,8 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 part 'compartment_state.dart';
 
 class CompartmentCubit extends HydratedCubit<CompartmentState> {
-  CompartmentCubit(String farmId, {String? campId}) : super(CompartmentState(farmId: farmId, campId: campId));
+  CompartmentCubit(String farmId, {String? campId})
+      : super(CompartmentState(farmId: farmId, campId: campId));
 
   Future<void> loadListCompartment() async {
     emit(state.copyWith(loading: true));
@@ -15,15 +16,21 @@ class CompartmentCubit extends HydratedCubit<CompartmentState> {
       final userRole = await configService.getActiveUserRole();
       switch (userRole) {
         case UserRoleEnum.farmerMember:
-          var data = await cmoDatabaseMasterService.getCompartmentByFarmId(state.farmId);
+          final farm = await configService.getActiveFarm();
+
+          var data = await cmoDatabaseMasterService
+              .getCompartmentByFarmId(farm?.farmId ?? '');
           if (data != null && state.campId != null) {
-            data = data.where((element) => element.campId == state.campId).toList();
+            data = data
+                .where((element) => element.campId == state.campId)
+                .toList();
           }
           emit(state.copyWith(listCompartment: data));
           break;
         case UserRoleEnum.regionalManager:
           final activeGroupScheme = await configService.getActiveGroupScheme();
-          final data = await cmoDatabaseMasterService.getCompartmentsByGroupSchemeIdAndFarmId(
+          final data = await cmoDatabaseMasterService
+              .getCompartmentsByGroupSchemeIdAndFarmId(
             groupSchemeId: activeGroupScheme?.groupSchemeId,
             farmId: state.farmId,
           );
