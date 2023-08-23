@@ -166,7 +166,26 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                                       ),
                                     ),
                                     Flexible(
-                                      child: Align(child: buildBottom(farm)),
+                                      child: Align(
+                                        child: farm.isGroupSchemeMember == true
+                                            ? Assets.icons.icTick.widget
+                                            : BlocBuilder<MemberManagementCubit,
+                                                MemberManagementState>(
+                                                builder: (context, state) {
+                                                  return Text(
+                                                    '${farm.numberStepComplete(
+                                                      compartments: state.allCompartments,
+                                                      allFarmMemberObjectiveAnswers: state.allFarmMemberObjectiveAnswers,
+                                                      allFarmMemberObjectives: state.allFarmMemberObjectives,
+                                                      allFarmMemberRiskProfileAnswers: state.allFarmMemberRiskProfileAnswers,
+                                                      allRiskProfileQuestions: state.allRiskProfileQuestions,
+                                                    )}/9',
+                                                    style: context.textStyles
+                                                        .bodyNormal.white,
+                                                  );
+                                                },
+                                              ),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -184,14 +203,5 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
         ),
       ),
     );
-  }
-
-  Widget buildBottom(Farm farm) {
-    return farm.isGroupSchemeMember == true
-        ? Assets.icons.icTick.widget
-        : Text(
-            '${farm.numberStepComplete() ?? 0}/9',
-            style: context.textStyles.bodyNormal.white,
-          );
   }
 }

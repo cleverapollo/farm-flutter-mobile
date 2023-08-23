@@ -16,18 +16,25 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
       return;
     }
 
-    final compartments = await cmoDatabaseMasterService.getAllCompartments();
-
     emit(state.copyWith(
       groupScheme: groupScheme,
       resourceManagerUnit: rmUnit,
       allFarms: data,
-      allCompartments: compartments,
     ));
     _applySearch(isInCompleteSelected: true);
 
+    await initDataCompartments();
     await initDataRiskProfileQuestion();
     await initDataFarmMemberObjectives();
+  }
+
+  Future<void> initDataCompartments() async {
+    final compartments = await cmoDatabaseMasterService.getAllCompartments();
+    emit(
+      state.copyWith(
+        allCompartments: compartments,
+      ),
+    );
   }
 
   Future<void> initDataRiskProfileQuestion() async {
@@ -37,8 +44,7 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
       activeGroupScheme?.groupSchemeId,
     );
 
-    final farmMemberRiskProfileAnswer =
-        await cmoDatabaseMasterService.getAllFarmMemberRiskProfileAnswers();
+    final farmMemberRiskProfileAnswer = await cmoDatabaseMasterService.getAllFarmMemberRiskProfileAnswers();
 
     emit(
       state.copyWith(
@@ -75,6 +81,7 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     var data = await cmoDatabaseMasterService.getFarmsByRMUnit(rmUnit!.id);
     emit(state.copyWith(allFarms: data));
     _applySearch(isInCompleteSelected: state.isInCompleteSelected);
+    await initDataCompartments();
     await initDataRiskProfileQuestion();
     await initDataFarmMemberObjectives();
   }

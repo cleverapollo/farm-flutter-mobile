@@ -82,8 +82,10 @@ class Farm with _$Farm {
 extension FarmExtension on Farm {
   int numberStepComplete({
     List<Compartment>? compartments,
-    // List<Compartment>? compartments,
-    // List<FarmMemberObjective>? listFarmMemberObjectives,
+    List<RiskProfileQuestion>? allRiskProfileQuestions,
+    List<FarmMemberRiskProfileAnswer>? allFarmMemberRiskProfileAnswers,
+    List<FarmMemberObjective>? allFarmMemberObjectives,
+    List<FarmMemberObjectiveAnswer>? allFarmMemberObjectiveAnswers,
   }) {
     var stepCount = 0;
 
@@ -114,13 +116,21 @@ extension FarmExtension on Farm {
       stepCount++;
     }
 
-    // if (state.farmMemberRiskAssessmentsState.isComplete) {
-    //   stepCount++;
-    // }
-    //
-    // if (listFarmMemberObjectives) {
-    //   stepCount++;
-    // }
+    final riskProfileAnswers = allFarmMemberRiskProfileAnswers?.where(
+      (element) => element.farmId == farmId,
+    );
+
+    if (riskProfileAnswers.isNotBlank && riskProfileAnswers!.length == allRiskProfileQuestions?.length) {
+      stepCount++;
+    }
+
+    final objectiveAnswers = allFarmMemberObjectiveAnswers?.where(
+      (element) => element.farmId == farmId,
+    );
+
+    if (objectiveAnswers.isNotBlank && objectiveAnswers!.length == allFarmMemberObjectives?.length) {
+      stepCount++;
+    }
 
     if (signatureImage.isNotBlank) {
       stepCount++;
