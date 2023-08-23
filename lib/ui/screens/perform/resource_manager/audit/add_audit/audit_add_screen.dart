@@ -1,13 +1,14 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
+
+import '../../asi/widgets/bottom_sheet_selection.dart';
 
 class AuditAddScreen extends StatefulWidget {
   const AuditAddScreen({super.key});
@@ -26,9 +27,7 @@ class AuditAddScreen extends StatefulWidget {
 }
 
 class _AuditAddScreen extends State<AuditAddScreen> {
-  final _formKey = GlobalKey<FormBuilderState>();
 
-  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
   bool loading = false;
 
   @override
@@ -47,42 +46,24 @@ class _AuditAddScreen extends State<AuditAddScreen> {
   }
 
   Future<void> onSubmit() async {
-    if (_formKey.currentState?.saveAndValidate() ?? false) {
-      var value = _formKey.currentState?.value;
-      final state = context.read<AuditCubit>().state;
-
-      if (value == null) return;
-      value = {...value};
-
-      setState(() {
-        loading = true;
-      });
-      try {
-        await hideInputMethod();
-        value['AssessmentId'] = DateTime.now().millisecondsSinceEpoch;
-        value['AuditTemplateId'] = state.selectedAuditTemplate?.auditTemplateId;
-        value['AuditTemplateName'] = state.selectedAuditTemplate?.auditTemplateName;
-        value['FarmName'] = state.selectedFarm?.farmName;
-        value['FarmId'] = state.selectedFarm?.farmId;
-        value['CompartmentName'] = state.selectedCompartment?.unitNumber;
-        value['CompartmentId'] = state.selectedCompartment?.managementUnitId;
-        value['Created'] = DateTime.now().toIso8601String();
-        final audit = Audit.fromJson(value);
-
-        if (context.mounted) {
-          final success = await context.read<AuditCubit>().submit(audit);
-          if (success && context.mounted) {
-            Navigator.of(context).pop();
-          }
+    setState(() {
+      loading = true;
+    });
+    try {
+      await hideInputMethod();
+      if (context.mounted) {
+        final success = await context.read<AuditCubit>().submit();
+        if (success && context.mounted) {
+          Navigator.of(context).pop();
         }
-      } finally {
-        setState(() {
-          loading = false;
-        });
       }
-
-      await refresh();
+    } finally {
+      setState(() {
+        loading = false;
+      });
     }
+
+    await refresh();
   }
 
   @override
@@ -95,24 +76,41 @@ class _AuditAddScreen extends State<AuditAddScreen> {
           leading: Assets.icons.icArrowLeft.svgBlack,
           onTapLeading: Navigator.of(context).pop,
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 30,
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    _buildDividerWidget(),
+                    buildSelectAuditTemplate(),
+                    buildSelectSite(),
+                    buildSelectCompartment(),
+                  ],
+                ),
               ),
-              _buildDividerWidget(),
-              _buildInputArea(),
-            ],
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: CmoFilledButton(
-          title: LocaleKeys.save.tr(),
-          onTap: onSubmit,
-          loading: loading,
+            ),
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CmoFilledButton(
+                    title: LocaleKeys.save.tr(),
+                    onTap: onSubmit,
+                    loading: loading,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -126,159 +124,118 @@ class _AuditAddScreen extends State<AuditAddScreen> {
     );
   }
 
-  Widget _buildInputArea() {
-    return FormBuilder(
-      key: _formKey,
-      onChanged: () {},
-      autovalidateMode: autoValidateMode,
-      child: AutofillGroup(
-        child: Column(
-          children: [
-            _selectAuditTemplateDropdown(),
-            _selectSiteDropdown(),
-            _selectCompartmentDropdown(),
-          ].withSpaceBetween(height: 10),
-        ),
-      ),
-    );
-  }
-
-  InputDecoration _buildInputDecoration(String hintText) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.all(8),
-      isDense: true,
-      hintText: '${LocaleKeys.select.tr()} ${hintText.toLowerCase()}',
-      hintStyle: context.textStyles.bodyNormal.grey,
-      border: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.grey),
-      ),
-      focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.blue),
-      ),
-    );
-  }
-
-  Widget _selectCompartmentDropdown() {
-    final selectedFarm = context.watch<AuditCubit>().state.selectedFarm;
-    if (selectedFarm == null) return const SizedBox.shrink();
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          LocaleKeys.compartment.tr(),
-          style: context.textStyles.bodyBold.black,
-        ),
-        BlocSelector<AuditCubit, AuditState, List<Compartment>>(
-          selector: (state) => state.compartments,
-          builder: (builder, compartments) {
-            return CmoDropdown<String?>(
-              name: 'CompartmentId',
-              inputDecoration:
-                  _buildInputDecoration(LocaleKeys.compartment.tr()),
-              itemsData: compartments
-                  .map(
-                    (e) => CmoDropdownItem<String?>(
-                      id: e.managementUnitId,
-                      name: e.unitNumber ?? '',
+  Widget buildSelectAuditTemplate() {
+    return BlocBuilder<AuditCubit, AuditState>(
+      builder: (context, state) {
+        return BottomSheetSelection(
+          hintText: LocaleKeys.auditTemplate.tr(),
+          margin: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          value: state.selectedAuditTemplate?.auditTemplateName,
+          onTap: () async {
+            FocusScope.of(context).unfocus();
+            if (state.auditTemplates.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: ListView.builder(
+                itemCount: state.auditTemplates.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      context.read<AuditCubit>().updateSelectedAuditTemplate(state.auditTemplates[index]);
+                      Navigator.pop(context);
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        state.auditTemplates[index].auditTemplateName ?? '',
+                        style: context.textStyles.bodyBold.blueDark2,
+                      ),
                     ),
-                  )
-                  .toList(),
-              onChanged: (String? id) {
-                context.read<AuditCubit>().updateSelectedCompartment(id);
-              },
+                  );
+                },
+              ),
             );
           },
-        )
-      ],
+        );
+      },
     );
   }
 
-  Widget _selectSiteDropdown() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          LocaleKeys.site.tr(),
-          style: context.textStyles.bodyBold.black,
-        ),
-        BlocSelector<AuditCubit, AuditState, List<Farm>>(
-          selector: (state) {
-            return state.farms;
-          },
-          builder: (builder, sites) {
-            return CmoDropdown<String?>(
-              name: 'SiteId',
-              validator: requiredValidator,
-              inputDecoration: _buildInputDecoration(LocaleKeys.site.tr()),
-              itemsData: sites
-                  .map(
-                    (e) => CmoDropdownItem(
-                      id: e.farmId,
-                      name: e.farmName ?? '',
+  Widget buildSelectSite() {
+    return BlocBuilder<AuditCubit, AuditState>(
+      builder: (context, state) {
+        return BottomSheetSelection(
+          hintText: LocaleKeys.site.tr(),
+          margin: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          value: state.selectedFarm?.farmName,
+          onTap: () async {
+            FocusScope.of(context).unfocus();
+            if (state.farms.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: ListView.builder(
+                itemCount: state.farms.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () async {
+                      await context.read<AuditCubit>().updateSelectedFarm(state.farms[index]);
+                      Navigator.pop(context);
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        state.farms[index].farmName ?? '',
+                        style: context.textStyles.bodyBold.blueDark2,
+                      ),
                     ),
-                  )
-                  .toList()
-                ..insert(
-                  0,
-                  CmoDropdownItem(
-                    id: '-1',
-                    name: LocaleKeys.site.tr(),
-                  ),
-                ),
-              onChanged: (String? id) async {
-                if (id == '-1') {
-                  _formKey.currentState!.fields['siteId']?.reset();
-                }
-
-                await context.read<AuditCubit>().updateSelectedFarm(id!);
-              },
+                  );
+                },
+              ),
             );
           },
-        ),
-      ],
+        );
+      },
     );
   }
 
-  Widget _selectAuditTemplateDropdown() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          LocaleKeys.auditTemplate.tr(),
-          style: context.textStyles.bodyBold.black,
-        ),
-        BlocSelector<AuditCubit, AuditState, List<AuditTemplate>>(
-          selector: (state) {
-            return state.auditTemplates;
-          },
-          builder: (builder, auditTemplates) {
-            return CmoDropdown(
-              name: 'AuditTemplateId',
-              validator: requiredValidator,
-              inputDecoration:
-                  _buildInputDecoration(LocaleKeys.auditTemplate.tr()),
-              itemsData: auditTemplates
-                  .map(
-                    (e) => CmoDropdownItem(
-                      id: e.auditTemplateId,
-                      name: e.auditTemplateName ?? '',
+  Widget buildSelectCompartment() {
+    return BlocBuilder<AuditCubit, AuditState>(
+      builder: (context, state) {
+        if (state.selectedFarm == null) return const SizedBox.shrink();
+        return BottomSheetSelection(
+          hintText: LocaleKeys.compartment.tr(),
+          margin: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          value: state.selectedCompartment?.unitNumber,
+          onTap: () async {
+            FocusScope.of(context).unfocus();
+            if (state.compartments.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: ListView.builder(
+                itemCount: state.compartments.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () async {
+                      context.read<AuditCubit>().updateSelectedCompartment(state.compartments[index]);
+                      Navigator.pop(context);
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        state.compartments[index].unitNumber ?? '',
+                        style: context.textStyles.bodyBold.blueDark2,
+                      ),
                     ),
-                  )
-                  .toList(),
-              onChanged: (int? id) {
-                if (id == -1) {
-                  _formKey.currentState!.fields['auditTemplateId']?.reset();
-                }
-
-                context.read<AuditCubit>().updateSelectedAuditTemplate(id!);
-              },
+                  );
+                },
+              ),
             );
           },
-        ),
-      ],
+        );
+      },
     );
   }
 }

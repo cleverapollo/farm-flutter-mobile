@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
@@ -15,37 +16,52 @@ class AuditCubit extends HydratedCubit<AuditState> {
     emit(const AuditState());
   }
 
-  Future<void> updateSelectedFarm(String siteId) async {
-    final farm = state.farms.firstWhereOrNull((element) => element.farmId == siteId, orElse: null);
+  Future<void> updateSelectedFarm(Farm farm) async {
     emit(state.copyWith(selectedFarm: farm));
     await getListCompartments();
   }
 
-  void updateSelectedCompartment(String? compartmentId) {
-    final compartment = state.compartments.firstWhereOrNull(
-      (element) => element.managementUnitId == compartmentId,
-      orElse: null,
-    );
+  void updateSelectedCompartment(Compartment? compartment) {
     emit(state.copyWith(selectedCompartment: compartment));
   }
 
-  void updateSelectedAuditTemplate(int auditTemplateId) {
-    final auditTemplate = state.auditTemplates.firstWhereOrNull(
-      (element) => element.auditTemplateId == auditTemplateId,
-      orElse: null,
-    );
-
+  void updateSelectedAuditTemplate(AuditTemplate auditTemplate) {
     emit(state.copyWith(selectedAuditTemplate: auditTemplate));
   }
 
-  Future<bool> submit(
-    Audit value,
-  ) async {
+  String? checkCompleteRequiredField() {
+    if (state.selectedAuditTemplate == null) {
+      return LocaleKeys.audit_template_is_required.tr();
+    } else if (state.selectedFarm == null) {
+      return LocaleKeys.site_is_required.tr();
+    }
+
+    return null;
+  }
+
+  Future<bool> submit() async {
     try {
+      final errorMessage = checkCompleteRequiredField();
+      if (errorMessage.isNotBlank) {
+        showSnackError(msg: errorMessage!);
+        return false;
+      }
+
       emit(state.copyWith(loading: true));
+      final audit = Audit(
+        assessmentId: DateTime.now().millisecondsSinceEpoch,
+        auditTemplateId: state.selectedAuditTemplate?.auditTemplateId,
+        auditTemplateName: state.selectedAuditTemplate?.auditTemplateName,
+        farmName: state.selectedFarm?.farmName,
+        farmId: state.selectedFarm?.farmId,
+        compartmentId: state.selectedCompartment?.managementUnitId,
+        compartmentName: state.selectedCompartment?.unitNumber,
+        created: DateTime.now().toIso8601String(),
+      );
+
       final service = cmoDatabaseMasterService;
       int? newId;
-      newId = await service.cacheAudit(value);
+      newId = await service.cacheAudit(audit);
       showSnackSuccess(msg: 'Save audit success with id: $newId');
     } catch (e) {
       showSnackError(msg: e.toString());

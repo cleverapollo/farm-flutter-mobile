@@ -570,6 +570,8 @@
   "area_type_is_required": "Area Type is required",
   "effective_area_is_required": "Effective Area is required",
   "compartment_name_is_required": "Compartment name is required",
+  "audit_template_is_required": "Audit template is required",
+  "site_is_required": "Site is required",
   "tons_will_be_produced": "Tons of the product that will be produced at this camp",
   "of_land_unallocated": "of land unallocated",
   "date_of_birth": "Date Of Birth",
