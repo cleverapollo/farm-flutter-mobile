@@ -47,8 +47,6 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
         groupScheme: groupScheme,
         isDataReady: true,
       ));
-
-      onUpdateStocking();
     } catch (e) {
       showSnackError(msg: e.toString());
     } finally {
@@ -188,20 +186,20 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   }
 
   void onEspacementWidthChanged(String? value) {
-    state.compartment = state.compartment.copyWith(espacementWidth: double.tryParse(value ?? ''));
-    onUpdateStocking();
-  }
-
-  void onEspacementLengthChanged(String? value) {
-    state.compartment = state.compartment.copyWith(espacementLength: double.tryParse(value ?? ''));
-    onUpdateStocking();
-  }
-
-  void onUpdateStocking() {
     emit(
       state.copyWith(
         compartment: state.compartment.copyWith(
-          stockingPercentage: 10000 / (state.compartment.espacementLength ?? 1) * (state.compartment.espacementWidth ?? 1),
+          espacementWidth: double.tryParse(value ?? ''),
+        ),
+      ),
+    );
+  }
+
+  void onEspacementLengthChanged(String? value) {
+    emit(
+      state.copyWith(
+        compartment: state.compartment.copyWith(
+          espacementLength: double.tryParse(value ?? ''),
         ),
       ),
     );

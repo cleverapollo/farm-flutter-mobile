@@ -50,7 +50,6 @@ class Compartment with _$Compartment {
     @JsonKey(name: 'SpeciesGroupTemplateName') String? speciesGroupTemplateName,
     @JsonKey(name: 'EspacementWidth') double? espacementWidth,
     @JsonKey(name: 'EspacementLength') double? espacementLength,
-    @JsonKey(name: 'StockingPercentage') double? stockingPercentage,
     @Default(false)
     @JsonKey(name: 'IsMasterdataSynced')
         bool? isMasterdataSynced,
@@ -71,9 +70,11 @@ class Compartment with _$Compartment {
 }
 
 extension CompartmentExtension on Compartment {
+
+  double? get stockingPercentage => 10000 / ((espacementLength ?? 1) * (espacementWidth ?? 1));
+
   Compartment clearSpeciesGroupTemplateAndProductGroupTemplate() {
     return const Compartment().copyWith(
-      stockingPercentage: stockingPercentage,
       isMasterdataSynced: isMasterdataSynced,
       farmId: farmId,
       areaTypeId: areaTypeId,

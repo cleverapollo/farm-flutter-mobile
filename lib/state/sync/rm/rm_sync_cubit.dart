@@ -561,7 +561,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
                 speciesGroupTemplateName: compartment.speciesGroupTemplateName,
                 espacementWidth: compartment.espacementWidth,
                 espacementLength: compartment.espacementLength,
-                stockingPercentage: compartment.stockingPercentage,
               ),
               isDirect: true,
             );
