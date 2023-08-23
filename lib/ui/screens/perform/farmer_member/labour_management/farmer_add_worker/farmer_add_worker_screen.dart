@@ -97,6 +97,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
           await (await databaseService.db).writeTxn(() async {
             resultId =
                 await databaseService.cacheFarmerWorker(farmerWorker.copyWith(
+              genderId: farmerWorker.genderId ?? 1,
               isLocal: 1,
               isActive: true,
               createDT: DateTime.now().toIso8601String(),

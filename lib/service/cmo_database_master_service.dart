@@ -2465,7 +2465,7 @@ class CmoDatabaseMasterService {
 
     return db.jobDescriptions
         .filter()
-        .isActiveIsNotNull()
+        .isActiveEqualTo(true)
         .sortByJobDescriptionName()
         .findAll();
   }
