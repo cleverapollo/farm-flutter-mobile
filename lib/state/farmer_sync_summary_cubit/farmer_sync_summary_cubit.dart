@@ -2101,8 +2101,11 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = Asi.fromJson(bodyJson);
-      return cmoDatabaseMasterService
-          .cacheAsi(rs.copyWith(isActive: true, isMasterdataSynced: true));
+
+      final resultSync =
+          await cmoDatabaseMasterService.cacheAsi(rs, isDirect: true);
+
+      return resultSync;
     } catch (e) {
       logger.d('insert error: $e');
     }
