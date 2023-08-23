@@ -417,7 +417,7 @@ class CmoPerformApiService {
   Future<MasterDataMessage?> pullMessage({
     required String topicMasterDataSync,
     required int currentClientId,
-    int pageSize = 1000,
+    int pageSize = 200,
   }) async {
     final response = await client.get<JsonData>(
       '${Env.apstoryMqApiUrl}message',

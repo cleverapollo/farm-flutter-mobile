@@ -53,6 +53,7 @@ class FarmerSyncSummaryScreen extends StatelessWidget {
                       Positioned(
                           bottom: 30,
                           child: CmoFilledButton(
+                            loading: isSyncing,
                             title: LocaleKeys.sync.tr(),
                             onTap: () {
                               if (!state.isSyncing) {
