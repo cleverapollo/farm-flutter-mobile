@@ -168,6 +168,7 @@ class CmoMapState extends State<CmoMap> {
                     checkPermission();
                   },
                   onCameraMove: _onCameraMove,
+                  myLocationEnabled: true,
                   initialCameraPosition: CameraPosition(
                     target: widget.initialMapCenter ?? Constants.mapCenter,
                     zoom: 16.0,

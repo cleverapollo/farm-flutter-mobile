@@ -104,6 +104,7 @@ class CmoMapWidgetState extends State<CmoMapWidget> {
                 initialCameraPosition:
                     const CameraPosition(target: Constants.mapCenter, zoom: 14),
                 mapType: MapType.satellite,
+                myLocationEnabled: true,
                 onMapCreated: (GoogleMapController controller) {
                   _controller = controller;
                   Geolocator.checkPermission().then((permission) async {

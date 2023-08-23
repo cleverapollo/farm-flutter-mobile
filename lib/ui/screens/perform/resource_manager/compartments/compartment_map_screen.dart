@@ -174,6 +174,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                   polylines: _polylines(),
                   polygons: _polygon(),
                   mapType: MapType.satellite,
+                  myLocationEnabled: true,
                   onMapCreated: (GoogleMapController controller) {
                     if (widget.points != null) {
                       _drawInitialPolygon();
