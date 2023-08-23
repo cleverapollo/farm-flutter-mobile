@@ -1105,12 +1105,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                 emit(state.copyWith(syncMessage: 'Syncing Asi Registers...'));
                 await insertAsiRegister(item);
               }
-              // else if (topic ==
-              //     '${topicTrickleFeedFarmerMasterDataByFarmId}AsiRegisterPhoto.$farmId') {
-              //   emit(state.copyWith(
-              //       syncMessage: 'Syncing Asi Register Photos...'));
-              //   await insertAsiRegisterPhoto(item);
-              // }
             } finally {
               isSync = false;
             }
