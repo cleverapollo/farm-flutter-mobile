@@ -308,6 +308,15 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<List<FarmMemberRiskProfileAnswer>?> getAllFarmMemberRiskProfileAnswers() async {
+
+    final db = await _db();
+    return db.farmMemberRiskProfileAnswers
+        .filter()
+        .isActiveEqualTo(true)
+        .findAll();
+  }
+
   Future<List<FarmMemberRiskProfileAnswer>>
       getFarmMemberRiskProfileAnswerByFarmIdAndIsMasterDataSynced(
     String farmId,
@@ -318,6 +327,14 @@ class CmoDatabaseMasterService {
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
         .isMasterDataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<List<FarmMemberObjectiveAnswer>?> getAllFarmMemberObjectiveAnswer() async {
+    final db = await _db();
+    return db.farmMemberObjectiveAnswers
+        .filter()
+        .isActiveEqualTo(true)
         .findAll();
   }
 
@@ -3571,6 +3588,24 @@ class CmoDatabaseMasterService {
     return db.writeTxn(() async {
       return db.compartments.delete(id);
     });
+  }
+
+  Future<List<Compartment>?> getAllCompartments() async {
+    final db = await _db();
+    try {
+      final compartments = await db.compartments
+          .filter()
+          .isActiveEqualTo(true)
+          .sortByUnitNumber()
+          .findAll();
+
+      return compartments;
+    } catch (error) {
+      handleError(error);
+      return <Compartment>[];
+    }
+
+    return <Compartment>[];
   }
 
   Future<Compartment?> getCompartmentsByUnitNumber({

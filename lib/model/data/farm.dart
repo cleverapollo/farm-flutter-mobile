@@ -1,7 +1,10 @@
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/data/farm_member_objective_answer.dart';
 import 'package:cmo/model/data/farm_member_risk_profile_answer.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
+
+import '../model.dart';
 
 part 'farm.freezed.dart';
 part 'farm.g.dart';
@@ -74,4 +77,57 @@ class Farm with _$Farm {
 
   @override
   Id get id => int.tryParse(farmId) ?? int.parse(farmId);
+}
+
+extension FarmExtension on Farm {
+  int numberStepComplete({
+    List<Compartment>? compartments,
+    // List<Compartment>? compartments,
+    // List<FarmMemberObjective>? listFarmMemberObjectives,
+  }) {
+    var stepCount = 0;
+
+    if (isSlimfCompliant != null) {
+      stepCount++;
+    }
+
+    if (propertyOwnershipTypeId != null) {
+      stepCount++;
+    }
+
+    if (firstName.isNotBlank &&
+        lastName.isNotBlank &&
+        idNumber.isNotBlank &&
+        idNumber!.length >= 8 &&
+        mobileNumber.isNotBlank &&
+        mobileNumber!.length >= 8) {
+      stepCount++;
+    }
+
+    if (farmName.isNotBlank &&
+        town.isNotBlank &&
+        province.isNotBlank &&
+        latitude.isNotBlank &&
+        longitude.isNotBlank &&
+        streetName.isNotBlank &&
+        compartments.isNotBlank) {
+      stepCount++;
+    }
+
+    // if (state.farmMemberRiskAssessmentsState.isComplete) {
+    //   stepCount++;
+    // }
+    //
+    // if (listFarmMemberObjectives) {
+    //   stepCount++;
+    // }
+
+    if (signatureImage.isNotBlank) {
+      stepCount++;
+      stepCount++;
+      stepCount++;
+    }
+
+    return stepCount;
+  }
 }

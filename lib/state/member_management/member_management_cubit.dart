@@ -15,12 +15,54 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     if (data == null) {
       return;
     }
+
+    final compartments = await cmoDatabaseMasterService.getAllCompartments();
+
     emit(state.copyWith(
       groupScheme: groupScheme,
       resourceManagerUnit: rmUnit,
       allFarms: data,
+      allCompartments: compartments,
     ));
     _applySearch(isInCompleteSelected: true);
+
+    await initDataRiskProfileQuestion();
+    await initDataFarmMemberObjectives();
+  }
+
+  Future<void> initDataRiskProfileQuestion() async {
+    final activeGroupScheme = await configService.getActiveGroupScheme();
+
+    final riskProfileQuestions = await cmoDatabaseMasterService.getRiskProfileQuestionByGroupSchemeId(
+      activeGroupScheme?.groupSchemeId,
+    );
+
+    final farmMemberRiskProfileAnswer =
+        await cmoDatabaseMasterService.getAllFarmMemberRiskProfileAnswers();
+
+    emit(
+      state.copyWith(
+        allRiskProfileQuestions: riskProfileQuestions,
+        allFarmMemberRiskProfileAnswers: farmMemberRiskProfileAnswer,
+      ),
+    );
+  }
+
+  Future<void> initDataFarmMemberObjectives() async {
+    final activeGroupScheme = await configService.getActiveGroupScheme();
+
+    final farmMemberObjective = await cmoDatabaseMasterService.getAllFarmMemberObjectiveByGroupSchemeId(
+      activeGroupScheme?.groupSchemeId,
+    );
+
+    final farmMemberObjectiveAnswers = await cmoDatabaseMasterService.getAllFarmMemberObjectiveAnswer();
+
+    emit(
+      state.copyWith(
+        allFarmMemberObjectives: farmMemberObjective,
+        allFarmMemberObjectiveAnswers: farmMemberObjectiveAnswers,
+      ),
+    );
   }
 
   Future reload() async {
@@ -33,6 +75,8 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     var data = await cmoDatabaseMasterService.getFarmsByRMUnit(rmUnit!.id);
     emit(state.copyWith(allFarms: data));
     _applySearch(isInCompleteSelected: state.isInCompleteSelected);
+    await initDataRiskProfileQuestion();
+    await initDataFarmMemberObjectives();
   }
 
   void onSearchTextChanged(String? value) {
