@@ -84,18 +84,8 @@ mixin FarmUploadSummaryMixin {
           final syncedCompartment =
               await cmoPerformApiService.insertUpdatedCompartment(compartment);
           if (syncedCompartment != null) {
-            await cmoDatabaseMasterService.removeCompartment(compartment.id);
-            await cmoDatabaseMasterService.cacheCompartment(
-              syncedCompartment.copyWith(
-                localCompartmentId: DateTime.now().millisecondsSinceEpoch,
-                isMasterdataSynced: true,
-                productGroupTemplateName: compartment.productGroupTemplateName,
-                speciesGroupTemplateName: compartment.speciesGroupTemplateName,
-                espacementWidth: compartment.espacementWidth,
-                espacementLength: compartment.espacementLength,
-              ),
-              isDirect: true,
-            );
+            final isDeleted = await cmoDatabaseMasterService
+                .removeCompartment(compartment.id);
           }
         }
       } else {

@@ -142,8 +142,8 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
         compartment: state.compartment
             .clearSpeciesGroupTemplateAndProductGroupTemplate()
             .copyWith(
-          areaTypeId: areaTypeId,
-        ),
+              areaTypeId: areaTypeId,
+            ),
         filterSpeciesGroupTemplates: state.speciesGroupTemplates
             .where((element) => element.areaTypeId == areaTypeId)
             .toList(),

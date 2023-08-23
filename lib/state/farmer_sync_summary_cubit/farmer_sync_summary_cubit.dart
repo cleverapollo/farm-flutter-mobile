@@ -477,7 +477,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       if (true == productTemplates?.isNotEmpty) {
         for (final item in productTemplates!) {
-          productTemplateFutures.add(insertProductGroupTemplate(item));
+          productTemplateFutures.add(insertProductGroupTemplate(item.copyWith(
+              localId: item.productGroupTemplateId.toIdIsarFromUuid)));
         }
       }
       await Future.wait(productTemplateFutures);
@@ -489,7 +490,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       if (true == speciesTemplates?.isNotEmpty) {
         for (final item in speciesTemplates!) {
-          speciesTemplateFutures.add(insertSpeciesGroupTemplate(item));
+          speciesTemplateFutures.add(insertSpeciesGroupTemplate(item.copyWith(
+              localId: item.speciesGroupTemplateId.toIdIsarFromUuid)));
         }
       }
       await Future.wait(speciesTemplateFutures);
@@ -499,7 +501,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final areaTypes = await cmoPerformApiService.fetchAreaTypes();
       if (true == areaTypes?.isNotEmpty) {
         for (final item in areaTypes!) {
-          areaTypeFutures.add(insertAreaType(item));
+          areaTypeFutures.add(insertAreaType(
+              item.copyWith(localId: item.areaTypeId.toIdIsarFromUuid)));
         }
       }
       await Future.wait(areaTypeFutures);

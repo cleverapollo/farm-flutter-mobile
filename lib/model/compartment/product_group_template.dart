@@ -8,6 +8,7 @@ part 'product_group_template.g.dart';
 @Collection(ignore: {'copyWith'})
 class ProductGroupTemplate with _$ProductGroupTemplate {
   const factory ProductGroupTemplate({
+    @JsonKey(name: 'LocalId') int? localId,
     @JsonKey(name: 'AreaTypeId') String? areaTypeId,
     @JsonKey(name: 'Column1') String? column1,
     @JsonKey(name: 'Column2') String? column2,
@@ -38,5 +39,5 @@ class ProductGroupTemplate with _$ProductGroupTemplate {
       _$ProductGroupTemplateFromJson(json);
 
   @override
-  Id get id => Isar.autoIncrement;
+  Id get id => localId ??  Isar.autoIncrement;
 }
