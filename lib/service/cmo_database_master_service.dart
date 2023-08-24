@@ -3895,6 +3895,16 @@ class CmoDatabaseMasterService {
     return db.compartments.put(item);
   }
 
+  Future<bool> removeCompartmentByManagementUnitId(String? id,
+    ) async {
+    if(id == null) return false;
+
+    final db = await _db();
+      return db.writeTxn(() async => db.compartments.filter().managementUnitIdEqualTo(id).deleteFirst());
+
+  }
+
+
   Future<int> cacheAreaTypes(AreaType item) async {
     final db = await _db();
     return db.areaTypes.put(item);

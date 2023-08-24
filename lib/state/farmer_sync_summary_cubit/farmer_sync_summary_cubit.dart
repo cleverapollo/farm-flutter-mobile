@@ -1741,6 +1741,9 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     if (data == null || data.isEmpty) return;
 
     for (final item in data) {
+      final isExist = await cmoDatabaseMasterService
+          .removeCompartmentByManagementUnitId(item.managementUnitId);
+
       futures.add(cmoDatabaseMasterService.cacheCompartment(
           item.copyWith(
               localCompartmentId: item.managementUnitId.toIdIsarFromUuid,
