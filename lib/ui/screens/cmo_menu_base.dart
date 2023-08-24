@@ -27,6 +27,8 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'perform/farmer_member/annual_production/annual_budget/annual_budget_management_screen.dart';
+
 class CmoMenuBase extends StatefulWidget {
   factory CmoMenuBase.behave({required VoidCallback onTapClose}) {
     return CmoMenuBase._(
@@ -80,16 +82,12 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
   Widget _buildFarmerMemberMenu() {
     return Column(
       children: [
-        buildHeader(context, title: LocaleKeys.managementPlan.tr()),
+        buildHeader(context, title: LocaleKeys.siteManagementPlan.tr()),
         buildOption(
           context,
           title: LocaleKeys.labourManagement.tr(),
         ),
-        buildOption(
-          context,
-          title: LocaleKeys.campManagement.tr(),
-          onTap: () => CampManagementScreen.push(context),
-        ),
+        CampCompartmentInfoItem(),
         buildOption(
           context,
           title: LocaleKeys.annualProduction.tr(),
@@ -98,9 +96,13 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
             AnnualProductionManagementScreen.push(context);
           },
         ),
-        GestureDetector(
-          onTap: () => CompartmentScreen.push(context),
-          child: buildHeader(context, title: LocaleKeys.compartments.tr()),
+        buildOption(
+          context,
+          title: LocaleKeys.annualBudgets.tr(),
+          onTap: () {
+            if (context.mounted) Navigator.of(context).pop();
+            AnnualBudgetManagementScreen.push(context);
+          },
         ),
         const SizedBox(height: 7),
         const _Divider(),
@@ -209,8 +211,23 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
               children: [
                 _UserRowInformation(onTapClose: widget.onTapClose),
                 buildHeader(context, title: LocaleKeys.entity.tr()),
-                buildEntity(context),
+                EntityInformation(widget.userRole),
+                const _Divider(),
                 const SizedBox(height: 7),
+                InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 6),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        LocaleKeys.dashboard.tr(),
+                        textAlign: TextAlign.start,
+                        style: context.textStyles.bodyBold.white,
+                      ),
+                    ),
+                  ),
+                ),
                 const _Divider(),
                 _menuContent,
                 const SizedBox(height: 7),
@@ -250,40 +267,6 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
     );
   }
 
-  Widget buildEntity(BuildContext context) {
-    return CmoTappable(
-      onTap: () {
-        GlobalEntityScreen.pushReplacement(context);
-      },
-      child: SizedBox(
-        height: 34,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: BlocSelector<EntityCubit, EntityState, String?>(
-                    selector: (state) => state.entity?.name,
-                    builder: (context, name) {
-                      return Text(
-                        name ?? '--',
-                        style: context.textStyles.bodyNormal.white,
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Assets.icons.icArrowRight.svgWhite,
-              const SizedBox(width: 16),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget buildHeader(BuildContext context, {required String title}) {
     return SizedBox(
       height: 43,
@@ -316,6 +299,130 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
               title,
               style: context.textStyles.bodyNormal.white,
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CampCompartmentInfoItem extends StatefulWidget {
+
+  CampCompartmentInfoItem();
+
+  @override
+  State<StatefulWidget> createState() => _CampCompartmentInfoItemState();
+}
+
+class _CampCompartmentInfoItemState extends State<CampCompartmentInfoItem> {
+
+  CharcoalPlantationRoleEnum? charcoalPlantationRoleEnum;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      final userInfo = await configService.getActiveUser();
+      final getCharcoalPlantationRole = userInfo?.getCharcoalPlantationRole;
+      charcoalPlantationRoleEnum = getCharcoalPlantationRole;
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        if (charcoalPlantationRoleEnum == null) return;
+        switch (charcoalPlantationRoleEnum) {
+          case CharcoalPlantationRoleEnum.isCharcoal:
+            CampManagementScreen.push(context);
+            break;
+          case CharcoalPlantationRoleEnum.isPlantation:
+            CompartmentScreen.push(context);
+            break;
+          default:
+            break;
+        }
+      },
+      child: SizedBox(
+        height: 34,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Text(
+              LocaleKeys.camp_compartment_management.tr(),
+              style: context.textStyles.bodyNormal.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class EntityInformation extends StatefulWidget {
+
+  final UserRoleEnum userRole;
+
+  EntityInformation(this.userRole);
+
+  @override
+  State<StatefulWidget> createState() => _EntityInformationState();
+}
+
+class _EntityInformationState extends State<EntityInformation> {
+
+  String? entityName;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      switch (widget.userRole) {
+        case UserRoleEnum.behave:
+          final company = await configService.getActiveCompany();
+          entityName = company?.companyName;
+          break;
+        case UserRoleEnum.regionalManager:
+          final resourceManager = await configService.getActiveRegionalManager();
+          entityName = resourceManager?.regionalManagerUnitName;
+          break;
+        case UserRoleEnum.farmerMember:
+          final farm = await configService.getActiveFarm();
+          entityName = farm?.farmName;
+          break;
+      }
+
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CmoTappable(
+      onTap: () {
+        GlobalEntityScreen.pushReplacement(context);
+      },
+      child: SizedBox(
+        height: 34,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: Text(
+                    entityName ?? '--',
+                    style: context.textStyles.bodyNormal.white,
+                  ),
+                ),
+              ),
+              Assets.icons.icArrowRight.svgWhite,
+              const SizedBox(width: 16),
+            ],
           ),
         ),
       ),
