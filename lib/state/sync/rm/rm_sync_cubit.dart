@@ -161,7 +161,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       );
 
       logger.d('--RM Sync Data start');
-      await cmoDatabaseMasterService.deleteAll();
       await Future.delayed(const Duration(seconds: 5));
       logger.d('--createSubscriptions');
       await createSubscriptions();
@@ -1084,6 +1083,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
   Future<void> syncRegionalManagerMasterData() async {
     var sync = true;
+    var hasData = false;
     while (sync) {
       MasterDataMessage? resPull;
 
@@ -1094,104 +1094,117 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
       final messages = resPull?.message;
       if (messages == null || messages.isEmpty) {
-        sync = false;
-        break;
-      }
-
-      final dbCompany = await cmoDatabaseMasterService.db;
-      await dbCompany.writeTxn(() async {
-        for (var i = 0; i < messages.length; i++) {
-          final item = messages[i];
-
-          final topic = item.header?.originalTopic;
-
-          if (topic ==
-              '${topicRegionalManagerMasterDataSync}SH.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Stakeholders...'));
-            await insertStakeholder(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}GSS.$userDeviceId') {
-            emit(state.copyWith(
-                syncMessage: 'Syncing Group Scheme Stakeholders...'));
-            await insertGroupSchemeStakeholder(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}SHT.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Stakeholder Types...'));
-            await insertStakeholderType(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}PropOwnerType.$userDeviceId') {
-            emit(state.copyWith(
-                syncMessage: 'Syncing Property Ownership Type...'));
-            await insertFarmPropertyOwnershipType(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}ScheduleActivity.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Schedule Activity...'));
-            await insertScheduleActivity(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}Schedule.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
-            await insertSchedule(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}AuditTemplate.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Audit Template...'));
-            await insertAuditTemplate(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}RejectReason.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Reject Reason...'));
-            await insertRejectReason(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}Criteria.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Criteria...'));
-            await insertCriteria(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}Principle.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Principle...'));
-            await insertPrinciple(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}Indicator.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Indicator...'));
-            await insertIndicator(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}ImpactOn.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Impact On...'));
-            await insertImpactOn(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}ImpactCaused.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Impact Caused...'));
-            await insertImpactCaused(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}Severity.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Severity...'));
-            await insertSeverity(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}RMU.$userDeviceId') {
-            emit(state.copyWith(
-                syncMessage: 'Syncing Regional Manager Unit...'));
-            await insertRegionalManagerUnit(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}RiskProQuestion.$userDeviceId') {
-            emit(state.copyWith(
-                syncMessage: 'Syncing Risk Profile Question...'));
-            await insertRiskProfileQuestion(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}FrmMemObj.$userDeviceId') {
-            emit(state.copyWith(
-                syncMessage: 'Syncing Farm Member Objective...'));
-            await insertFarmMemberObjective(item);
-          } else if (topic ==
-              '${topicRegionalManagerMasterDataSync}FrmObjOpt.$userDeviceId') {
-            emit(state.copyWith(
-                syncMessage: 'Syncing Farm Objective Option...'));
-            await insertFarmObjectiveOption(item);
-          }
+        if (hasData) {
+          sync = false;
+        } else {
+          await Future.delayed(const Duration(milliseconds: 800));
+          await syncRegionalManagerMasterData();
         }
-      });
-      await cmoPerformApiService.commitMessageList(
-        currentClientId: userDeviceId,
-        messages: messages,
-        topicMasterDataSync: topicRegionalManagerMasterDataSync,
-      );
+
+        break;
+      } else {
+        hasData = true;
+        await insertRegionalManagerMasterDataToLocal(messages);
+        await cmoPerformApiService.commitMessageList(
+          currentClientId: userDeviceId,
+          messages: messages,
+          topicMasterDataSync: topicRegionalManagerMasterDataSync,
+        );
+
+        await Future.delayed(const Duration(milliseconds: 800));
+      }
     }
+  }
+
+  Future<void> insertRegionalManagerMasterDataToLocal(List<Message> messages) async {
+    final dbCompany = await cmoDatabaseMasterService.db;
+    await dbCompany.writeTxn(() async {
+      for (var i = 0; i < messages.length; i++) {
+        final item = messages[i];
+
+        final topic = item.header?.originalTopic;
+
+        if (topic ==
+            '${topicRegionalManagerMasterDataSync}SH.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Stakeholders...'));
+          await insertStakeholder(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}GSS.$userDeviceId') {
+          emit(state.copyWith(
+              syncMessage: 'Syncing Group Scheme Stakeholders...'));
+          await insertGroupSchemeStakeholder(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}SHT.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Stakeholder Types...'));
+          await insertStakeholderType(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}PropOwnerType.$userDeviceId') {
+          emit(state.copyWith(
+              syncMessage: 'Syncing Property Ownership Type...'));
+          await insertFarmPropertyOwnershipType(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}ScheduleActivity.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Schedule Activity...'));
+          await insertScheduleActivity(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}Schedule.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
+          await insertSchedule(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}AuditTemplate.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Audit Template...'));
+          await insertAuditTemplate(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}RejectReason.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Reject Reason...'));
+          await insertRejectReason(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}Criteria.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Criteria...'));
+          await insertCriteria(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}Principle.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Principle...'));
+          await insertPrinciple(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}Indicator.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Indicator...'));
+          await insertIndicator(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}ImpactOn.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Impact On...'));
+          await insertImpactOn(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}ImpactCaused.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Impact Caused...'));
+          await insertImpactCaused(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}Severity.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Severity...'));
+          await insertSeverity(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}RMU.$userDeviceId') {
+          emit(state.copyWith(
+              syncMessage: 'Syncing Regional Manager Unit...'));
+          await insertRegionalManagerUnit(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}RiskProQuestion.$userDeviceId') {
+          emit(state.copyWith(
+              syncMessage: 'Syncing Risk Profile Question...'));
+          await insertRiskProfileQuestion(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}FrmMemObj.$userDeviceId') {
+          emit(state.copyWith(
+              syncMessage: 'Syncing Farm Member Objective...'));
+          await insertFarmMemberObjective(item);
+        } else if (topic ==
+            '${topicRegionalManagerMasterDataSync}FrmObjOpt.$userDeviceId') {
+          emit(state.copyWith(
+              syncMessage: 'Syncing Farm Objective Option...'));
+          await insertFarmObjectiveOption(item);
+        }
+      }
+    });
   }
 
   Future<void> syncRegionalManagerUnitMasterData() async {
