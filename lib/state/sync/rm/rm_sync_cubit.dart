@@ -1094,13 +1094,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
       final messages = resPull?.message;
       if (messages == null || messages.isEmpty) {
-        if (hasData) {
-          sync = false;
-        } else {
-          await Future.delayed(const Duration(milliseconds: 800));
-          await syncRegionalManagerMasterData();
-        }
-
+        sync = false;
         break;
       } else {
         hasData = true;
@@ -1110,9 +1104,12 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           messages: messages,
           topicMasterDataSync: topicRegionalManagerMasterDataSync,
         );
-
-        await Future.delayed(const Duration(milliseconds: 800));
       }
+    }
+
+    if (hasData == false) {
+      await Future.delayed(const Duration(milliseconds: 800));
+      await syncRegionalManagerMasterData();
     }
   }
 
