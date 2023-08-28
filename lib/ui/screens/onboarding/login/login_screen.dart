@@ -89,7 +89,12 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SafeArea(
               child: Column(
                 children: [
-                  const CmoLogo(),
+                  const CmoLogo(
+                    shouldShowCompanyName: true,
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(18),
                     child: DecoratedBox(

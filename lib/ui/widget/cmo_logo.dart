@@ -5,7 +5,12 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/theme/theme.dart';
 
 class CmoLogo extends StatelessWidget {
-  const CmoLogo({super.key});
+  final bool shouldShowCompanyName;
+
+  const CmoLogo({
+    super.key,
+    this.shouldShowCompanyName = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +20,12 @@ class CmoLogo extends StatelessWidget {
         const SizedBox(height: 16),
         Assets.images.logo.image(fit: BoxFit.scaleDown),
         const SizedBox(height: 19),
-        Text(
-          'Empower',
-          style: context.textStyles.headlineBold,
-          textAlign: TextAlign.center,
-        ),
+        if (shouldShowCompanyName)
+          Text(
+            'Empower',
+            style: context.textStyles.headlineBold,
+            textAlign: TextAlign.center,
+          ),
       ],
     );
   }

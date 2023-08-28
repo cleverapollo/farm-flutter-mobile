@@ -2,8 +2,6 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
-import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
-import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screens/cmo_dashboard_base.dart';
 import 'package:cmo/ui/screens/cmo_screen_base.dart';
 import 'package:cmo/ui/screens/onboarding/login/login_screen.dart';
@@ -33,6 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ConnectivityResult.none;
 
         final isAuthorized = await configService.isAuthorized();
+        await Future.delayed(const Duration(seconds: 3));
         if (isAuthorized) {
           return pushDashboard();
         } else {
@@ -77,7 +76,7 @@ class _SplashScreenState extends State<SplashScreen> {
             const CmoLogo(),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 64),
                 child: Assets.images.splashBg.image(fit: BoxFit.contain),
               ),
             ),
