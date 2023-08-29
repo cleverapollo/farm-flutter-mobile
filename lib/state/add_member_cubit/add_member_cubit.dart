@@ -70,6 +70,14 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         emailAddress: farm.email,
       );
 
+      final addMemberSAFIsComplete = farm.signatureImage != null;
+      final addMemberSAF = AddMemberSAF(
+        signatureDate: farm.signatureDate,
+        signatureImage: farm.signatureImage,
+        signaturePoints: farm.signaturePoints,
+        isComplete: addMemberSAFIsComplete,
+      );
+
       final isCompleteSiteLocation = farm.latitude != null &&
           farm.longitude != null &&
           farm.streetName != null;
@@ -104,6 +112,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         addMemberMPO: addMemberMPO,
         addMemberMDetails: addMemberMDetail,
         addMemberSDetails: addMemberSDetail,
+        addMemberSAF: addMemberSAF,
       ));
 
       debugPrint('Done loading farm data');
@@ -532,7 +541,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
             element.farmMemberObjectiveId == question.farmMemberObjectiveId);
     if (currentAnswer != null) {
       listFarmMemberObjectiveAnswers.remove(currentAnswer);
-      currentAnswer = currentAnswer.copyWith(farmObjectiveOptionId: farmObjectiveOptionId);
+      currentAnswer =
+          currentAnswer.copyWith(farmObjectiveOptionId: farmObjectiveOptionId);
       listFarmMemberObjectiveAnswers.add(currentAnswer);
       emit(
         state.copyWith(
@@ -642,6 +652,17 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       checkIsGroupSchemeMember();
       await cacheFarm();
     }
+  }
+
+  void onClearSignature() {
+    emit(state.copyWith(
+        farm: state.farm?.copyWith(
+          signatureImage: null,
+          signatureDate: null,
+          signaturePoints: null,
+          isGroupSchemeMember: false
+        ),
+        addMemberSAF: const AddMemberSAF()));
   }
 
   Future<void> onDataChangeClose() async {

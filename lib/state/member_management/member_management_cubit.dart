@@ -72,6 +72,7 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
   }
 
   Future reload() async {
+    emit(state.copyWith(isLoading: true));
     final rmUnit = await configService.getActiveRegionalManager();
     if (rmUnit?.id == null) {
       return;
@@ -84,6 +85,7 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     await initDataCompartments();
     await initDataRiskProfileQuestion();
     await initDataFarmMemberObjectives();
+    emit(state.copyWith(isLoading: false));
   }
 
   void onSearchTextChanged(String? value) {

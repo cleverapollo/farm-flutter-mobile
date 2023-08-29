@@ -927,7 +927,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             isDirect: true);
       }
 
-      return cmoDatabaseMasterService.cacheFarm(farm);
+      return cmoDatabaseMasterService.cacheFarm(farm.copyWith(isMasterDataSynced: 1));
     } catch (e) {
       logger.d('insert error: $e');
     }

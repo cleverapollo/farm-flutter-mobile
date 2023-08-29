@@ -9,12 +9,14 @@ class CmoCollapseTitle extends StatefulWidget {
     required this.child,
     this.initiallyExpanded = false,
     this.showTick = false,
+    this.onExpansionChanged,
   });
 
   final String title;
   final Widget child;
   final bool? showTick;
   final bool initiallyExpanded;
+  final void Function(bool)? onExpansionChanged;
 
   @override
   State<CmoCollapseTitle> createState() => _CmoCollapseTitleState();
@@ -28,6 +30,7 @@ class _CmoCollapseTitleState extends State<CmoCollapseTitle> {
     return ExpansionTile(
       onExpansionChanged: (value) {
         isCollapse = !isCollapse;
+        widget.onExpansionChanged?.call(isCollapse);
         if (mounted) setState(() {});
       },
       backgroundColor: context.colors.blueDark1,

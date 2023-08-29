@@ -4,6 +4,7 @@ import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/ui/components/select_site_location_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_sign_contract_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/farm_member_objectives_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
@@ -24,8 +25,10 @@ class AddMemberScreen extends StatefulWidget {
   final Farm? farm;
 
   static Future<bool?> push(BuildContext context, {Farm? farm}) {
-    return Navigator.push(context,
-        MaterialPageRoute(builder: (_) => AddMemberScreen(farm: farm),
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AddMemberScreen(farm: farm),
       ),
     );
   }
@@ -37,6 +40,8 @@ class AddMemberScreen extends StatefulWidget {
 class _AddMemberScreenState extends State<AddMemberScreen> {
   late final AddMemberCubit cubit;
   late final DashboardCubit dashboardCubit;
+
+  final _scrollController = ScrollController();
 
   @override
   void dispose() {
@@ -77,19 +82,32 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
             );
           }
           return SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
-              children: const [
-                SizedBox(height: 8),
-                SlimfAndMpoSection(),
-                SizedBox(height: 12),
-                _AddMemberMDetails(),
-                SizedBox(height: 12),
-                _AddMemberSDetails(),
-                SizedBox(height: 12),
-                FarmMemberRiskAssessmentsWidget(),
-                SizedBox(height: 12),
-                FarmMemberObjectivesWidget(),
-                SizedBox(height: 12),
+              children: [
+                const SizedBox(height: 8),
+                const SlimfAndMpoSection(),
+                const SizedBox(height: 12),
+                const _AddMemberMDetails(),
+                const SizedBox(height: 12),
+                const _AddMemberSDetails(),
+                const SizedBox(height: 12),
+                const FarmMemberRiskAssessmentsWidget(),
+                const SizedBox(height: 12),
+                const FarmMemberObjectivesWidget(),
+                const SizedBox(height: 12),
+                AddMemberSignContractWidget(
+                  shouldScrollBottom: (p0) async {
+                    if(p0) return;
+
+                    await Future.delayed(const Duration(milliseconds: 500), () {});
+
+                    _scrollController
+                        .jumpTo(_scrollController.position.maxScrollExtent);
+                  },
+                  farm: widget.farm,
+                ),
+                const SizedBox(height: 12),
               ],
             ),
           );
@@ -172,14 +190,15 @@ class _AddMemberSDetails extends StatelessWidget {
                         showResetAcceptIcons: true,
                         initAddress: data.addMemberSiteLocations.address ??
                             data.initAddressForSiteLocation(),
-                            latLng: data.addMemberSiteLocations.lat != null &&
+                        latLng: data.addMemberSiteLocations.lat != null &&
                                 data.addMemberSiteLocations.lng != null
                             ? LatLng(data.addMemberSiteLocations.lat!,
                                 data.addMemberSiteLocations.lng!)
                             : null,
                       );
 
-                      if (siteLocationScreenResult is SiteLocationScreenResult) {
+                      if (siteLocationScreenResult
+                          is SiteLocationScreenResult) {
                         final latLong = siteLocationScreenResult.latLong;
                         if (latLong?.latitude == null ||
                             latLong?.longitude == null) {
@@ -206,15 +225,19 @@ class _AddMemberSDetails extends StatelessWidget {
                 const SizedBox(height: 16),
                 AttributeItem(
                   child: BlocSelector<AddMemberCubit, AddMemberState, double?>(
-                    selector: (state) => state.addMemberSDetails.addMemberCompartmentsState.farmSize,
+                    selector: (state) => state
+                        .addMemberSDetails.addMemberCompartmentsState.farmSize,
                     builder: (context, farmSize) {
-                      final farmSizeTitle = farmSize == null ? null : '${farmSize.toStringAsFixed(2)}${LocaleKeys.ha_unit.tr()}';
+                      final farmSizeTitle = farmSize == null
+                          ? null
+                          : '${farmSize.toStringAsFixed(2)}${LocaleKeys.ha_unit.tr()}';
                       return CmoDropDownLayoutWidget(
                         title: LocaleKeys.compartment_s.tr(),
                         showTick: data.isCompleteCompartments,
                         subTitle: farmSizeTitle,
                         subTitleAlignment: Alignment.center,
-                        subTitleTextStyle: context.textStyles.titleBold.copyWith(fontSize: 16),
+                        subTitleTextStyle:
+                            context.textStyles.titleBold.copyWith(fontSize: 16),
                         isHideBorder: true,
                         onTap: () async {
                           final state = context.read<AddMemberCubit>().state;
@@ -225,10 +248,11 @@ class _AddMemberSDetails extends StatelessWidget {
 
                           if (result != null) {
                             await cubit.onDataChangeSiteDetail(
-                                addingCompartmentResult: result,
+                              addingCompartmentResult: result,
                             );
                             cubit.onChangeSiteDetailState(isCollapse: true);
-                            cubit.onChangeMemberRiskAssessmentState(isCollapse: false);
+                            cubit.onChangeMemberRiskAssessmentState(
+                                isCollapse: false);
                           }
                         },
                       );
@@ -274,7 +298,6 @@ class _AddMemberSDetails extends StatelessWidget {
 
 class _AddMemberMDetails extends StatelessWidget {
   const _AddMemberMDetails();
-
 
   @override
   Widget build(BuildContext context) {
@@ -355,7 +378,8 @@ class _AddMemberMDetails extends StatelessWidget {
                   child: InputAttributeItem(
                     initialValue: data.emailAddress,
                     textStyle: context.textStyles.bodyNormal.black,
-                    labelText: '${LocaleKeys.emailAddress.tr()} (${LocaleKeys.optional.tr()})',
+                    labelText:
+                        '${LocaleKeys.emailAddress.tr()} (${LocaleKeys.optional.tr()})',
                     labelTextStyle: context.textStyles.bodyNormal.blueDark2,
                     keyboardType: TextInputType.emailAddress,
                     onSubmitted: (text) {

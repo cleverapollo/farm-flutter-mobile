@@ -17,8 +17,10 @@ class MemberManagementState {
     this.groupScheme,
     this.filteringText,
     this.isInCompleteSelected = true,
+    this.isLoading = false,
   });
 
+  final bool isLoading;
   final List<Farm> allFarms;
   final List<Compartment> allCompartments;
   final List<RiskProfileQuestion> allRiskProfileQuestions;
@@ -43,8 +45,10 @@ class MemberManagementState {
     List<Farm>? filteringFarms,
     String? filteringText,
     bool? isInCompleteSelected,
+    bool? isLoading,
   }) {
     return MemberManagementState(
+      isLoading: isLoading ?? this.isLoading,
       allFarms: allFarms ?? this.allFarms,
       allCompartments: allCompartments ?? this.allCompartments,
       allRiskProfileQuestions: allRiskProfileQuestions ?? this.allRiskProfileQuestions,

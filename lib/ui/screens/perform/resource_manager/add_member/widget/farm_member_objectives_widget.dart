@@ -42,44 +42,7 @@ class _FarmMemberObjectivesWidgetState
                           farmMemberObjectivesState.listFarmObjectiveOptions,
                     ),
                   ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      CmoFilledButton(
-                        title: LocaleKeys.finalise_later.tr(),
-                        onTap: () {
-                          Navigator.pop(context, true);
-                        },
-                      ),
-                      BlocSelector<AddMemberCubit, AddMemberState,
-                          AddMemberState>(
-                        selector: (state) => state,
-                        builder: (context, state) {
-                          return CmoFilledButton(
-                            title: LocaleKeys.next.tr(),
-                            onTap: () {
-                              if (state.addMemberMDetails.isComplete) {
-                                AddMemberMembershipContractScreen.push(
-                                  context,
-                                  farm:
-                                      context.read<AddMemberCubit>().state.farm,
-                                );
-                              } else {
-                                context
-                                    .read<AddMemberCubit>()
-                                    .checkErrorAllSteps();
-                                showSnackError(
-                                    msg: 'Should complete all steps.');
-                              }
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  )
+
                 ],
               ),
           ),
@@ -88,4 +51,3 @@ class _FarmMemberObjectivesWidgetState
     );
   }
 }
-

@@ -1,6 +1,7 @@
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_done_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_sign_contract_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +67,7 @@ class AddMemberMembershipContractScreen extends StatelessWidget {
                         context
                             .read<AddMemberCubit>()
                             .onDataChangeMemberContract();
-                        AddMemberSignContractScreen.push(context, farm: farm);
+                       AddMemberDone.push(context, farm: farm);
                       })),
               const SizedBox(height: 20),
             ],
