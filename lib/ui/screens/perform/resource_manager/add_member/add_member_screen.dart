@@ -97,14 +97,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                 const FarmMemberObjectivesWidget(),
                 const SizedBox(height: 12),
                 AddMemberSignContractWidget(
-                  shouldScrollBottom: (p0) async {
-                    if(p0) return;
-
-                    await Future.delayed(const Duration(milliseconds: 500), () {});
-
-                    _scrollController
-                        .jumpTo(_scrollController.position.maxScrollExtent);
-                  },
+                  shouldScrollBottom: _handleScrollBottom,
                   farm: widget.farm,
                 ),
                 const SizedBox(height: 12),
@@ -114,6 +107,14 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         },
       ),
     );
+  }
+
+  Future<void> _handleScrollBottom(bool p0) async {
+    if (p0) return;
+
+    await Future.delayed(const Duration(milliseconds: 500), () {});
+
+    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
   }
 }
 

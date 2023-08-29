@@ -14,6 +14,7 @@ class AddMemberState with _$AddMemberState {
   const factory AddMemberState({
     @Default(false) bool isLoading,
     Farm? farm,
+    Farm? farmBeforeEdit,
     @Default(AddMemberSLIMF()) AddMemberSLIMF addMemberSLIMF,
     @Default(AddMemberMPO()) AddMemberMPO addMemberMPO,
     @Default(AddMemberMDetails()) AddMemberMDetails addMemberMDetails,

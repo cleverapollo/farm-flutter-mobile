@@ -24,7 +24,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     if (!loadedFarmPropertyOwnerShipType) return;
 
     if (farm != null) {
-      emit(state.copyWith(farm: farm));
+      emit(state.copyWith(farm: farm, farmBeforeEdit: farm));
       final compartments =
           await cmoDatabaseMasterService.getCompartmentByFarmId(farm.farmId);
       final asis =
@@ -266,9 +266,22 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         state.farm?.isGroupSchemeMember == null) {
       final isGroupSchemeMember = stepCount == 9;
 
+      var isSynced = state.farmBeforeEdit?.isMasterDataSynced;
+
+      if (1 == isSynced) {
+        if (state.farm != state.farmBeforeEdit) {
+          isSynced = 0;
+        } else {
+          isSynced = 1;
+        }
+      }
+
       emit(state.copyWith(
         farm: state.farm?.copyWith(
-            stepCount: stepCount, isGroupSchemeMember: isGroupSchemeMember),
+          stepCount: stepCount,
+          isGroupSchemeMember: isGroupSchemeMember,
+          isMasterDataSynced: isSynced ?? 0,
+        ),
       ));
     }
     if (stepCount != 0) {
@@ -657,11 +670,10 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   void onClearSignature() {
     emit(state.copyWith(
         farm: state.farm?.copyWith(
-          signatureImage: null,
-          signatureDate: null,
-          signaturePoints: null,
-          isGroupSchemeMember: false
-        ),
+            signatureImage: null,
+            signatureDate: null,
+            signaturePoints: null,
+            isGroupSchemeMember: false),
         addMemberSAF: const AddMemberSAF()));
   }
 

@@ -49,43 +49,45 @@ class _AddMemberSignContractWidgetState
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    if (true == widget.farm?.hasSignature) {
-      return CmoCollapseTitle(
-          title: 'Signed Contract',
-          onExpansionChanged: widget.shouldScrollBottom,
-          showTick: true,
-          child: const Center(child: Text('Contract has been signed')));
-    }
+    if (0 == widget.farm?.isLocal) {
+      if (true == widget.farm?.hasSignature) {
+        return CmoCollapseTitle(
+            title: 'Signed Contract',
+            onExpansionChanged: widget.shouldScrollBottom,
+            showTick: true,
+            child: const ColoredBox(
+                color: Colors.white,
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Center(child: Text('Contract has been signed')),
+                )));
+      } else {
+        return CmoCollapseTitle(
+            title: 'Signed Contract',
+            onExpansionChanged: widget.shouldScrollBottom,
+            child: ColoredBox(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                    child: CmoFilledButton(
+                        title: 'Finalise Now',
+                        onTap: () async {
+                          final state = context.read<AddMemberCubit>().state;
 
-    if (false == widget.farm?.hasSignature) {
-      return CmoCollapseTitle(
-          title: 'Signed Contract',
-          onExpansionChanged: widget.shouldScrollBottom,
-          child: ColoredBox(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                  child: CmoFilledButton(
-                      title: 'Finalise Now',
-                      onTap: () async {
-                        final state = context.read<AddMemberCubit>().state;
-                        final goNextStep =
-                            state.addMemberSAF.signatureImage != null;
-
-                        if (state.addMemberMDetails.isComplete) {
-                          if (goNextStep && context.mounted) {
+                          if (state.addMemberMDetails.isComplete &&
+                              context.mounted) {
                             await AddMemberMembershipContractScreen.push(
                                 context,
                                 farm: widget.farm);
+                          } else {
+                            context.read<AddMemberCubit>().checkErrorAllSteps();
+                            showSnackError(msg: 'Should complete all steps.');
                           }
-                        } else {
-                          context.read<AddMemberCubit>().checkErrorAllSteps();
-                          showSnackError(msg: 'Should complete all steps.');
-                        }
-                      })),
-            ),
-          ));
+                        })),
+              ),
+            ));
+      }
     }
 
     return BlocSelector<AddMemberCubit, AddMemberState, AddMemberSAF>(
