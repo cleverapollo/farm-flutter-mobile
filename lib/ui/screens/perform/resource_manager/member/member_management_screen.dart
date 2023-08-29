@@ -53,7 +53,7 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
             trailing: Assets.icons.icAdd.svgBlack,
             onTapTrailing: () async {
               await AddMemberScreen.push(context);
-              context.read<MemberManagementCubit>().reload();
+              await context.read<MemberManagementCubit>().reload();
             },
           ),
           body: BlocSelector<MemberManagementCubit,MemberManagementState, bool >(
@@ -182,7 +182,7 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                                                     MemberManagementState>(
                                                     builder: (context, state) {
                                                       return Text(
-                                                        '${farm.numberStepComplete(
+                                                        '${farm.stepCount ?? farm.numberStepComplete(
                                                           compartments: state.allCompartments,
                                                           allFarmMemberObjectiveAnswers: state.allFarmMemberObjectiveAnswers,
                                                           allFarmMemberObjectives: state.allFarmMemberObjectives,
