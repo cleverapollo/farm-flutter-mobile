@@ -600,11 +600,11 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
               ),
             );
 
-            final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
-            await publishListAsiPhotos(
-              asi: syncedAsi.copyWith(localId: asi.localId),
-              listAsiPhotos: listAsiPhotos,
-            );
+            // final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
+            // await publishListAsiPhotos(
+            //   asi: syncedAsi.copyWith(localId: asi.localId),
+            //   listAsiPhotos: listAsiPhotos,
+            // );
 
             logger.d('Successfully published ASI: ${syncedAsi.asiRegisterId}');
           } else {
