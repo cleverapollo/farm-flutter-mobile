@@ -4,6 +4,7 @@ import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,15 +89,13 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     state.asi = state.asi.copyWith(comment: comment);
   }
 
-  void onCompartmentChanged({
-    required int? compartmentId,
-    required String? compartmentName,
-  }) {
+  void onCompartmentChanged(Compartment? compartment) {
     emit(
       state.copyWith(
         asi: state.asi.copyWith(
-          compartmentId: compartmentId,
-          compartmentName: compartmentName,
+          managementUnitId: compartment?.managementUnitId,
+          compartmentName: compartment?.unitNumber,
+          localCompartmentId: compartment?.localCompartmentId,
         ),
       ),
     );

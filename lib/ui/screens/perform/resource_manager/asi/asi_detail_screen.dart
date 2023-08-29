@@ -207,12 +207,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
             itemBuilder: (context, index) {
               return ListTile(
                 onTap: () {
-                  _asiDetailCubit.onCompartmentChanged(
-                    compartmentId: int.tryParse(
-                      compartments[index].managementUnitId ?? '',
-                    ),
-                    compartmentName: compartments[index].unitNumber,
-                  );
+                  _asiDetailCubit.onCompartmentChanged(compartments[index]);
                   Navigator.pop(context);
                 },
                 title: Padding(
