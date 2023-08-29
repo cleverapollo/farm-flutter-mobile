@@ -366,10 +366,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
           polylineId: PolylineId("${i - 1}_$i"),
           points: [_markers[i - 1].position, _markers[i].position],
           color: color,
-          width: 4,
-          patterns: [PatternItem.dash(60), PatternItem.gap(20)],
-          startCap: Cap.roundCap,
-          endCap: Cap.roundCap,
+          width: 5,
         ),
       );
     }
@@ -381,11 +378,8 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
             _markers[_markers.length - 1].position,
             _markers[0].position,
           ],
-          patterns: [PatternItem.dash(60), PatternItem.gap(20)],
-          startCap: Cap.roundCap,
-          endCap: Cap.roundCap,
           color: color,
-          width: 4,
+          width: 5,
         ),
       );
     }
