@@ -144,6 +144,6 @@ extension FarmExtension on Farm {
   bool? get hasSignature {
     if (isMasterDataSynced == null || isMasterDataSynced == 0) return null;
 
-    return signatureImage != null;
+    return signatureDate != null;
   }
 }

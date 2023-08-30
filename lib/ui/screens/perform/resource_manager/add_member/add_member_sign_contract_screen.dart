@@ -55,11 +55,14 @@ class _AddMemberSignContractWidgetState
             title: 'Signed Contract',
             onExpansionChanged: widget.shouldScrollBottom,
             showTick: true,
-            child: const ColoredBox(
+            child: ColoredBox(
                 color: Colors.white,
                 child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Center(child: Text('Contract has been signed')),
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                      child: Text('Contract has been signed',
+                          style: context.textStyles.bodyNormal
+                              .copyWith(color: context.colors.black))),
                 )));
       } else {
         return CmoCollapseTitle(
