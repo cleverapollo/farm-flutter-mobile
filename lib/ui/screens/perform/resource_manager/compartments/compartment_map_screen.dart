@@ -75,7 +75,6 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   List<Marker> _markers = [];
   bool _isFinished = false;
   double? areaSquareMeters;
-  var _mapType = MapType.normal;
   final _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _hasInternet = true;
@@ -200,29 +199,6 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                   markers: _markers.toSet(),
                 ),
                 MapCenterIcon(),
-                Positioned(
-                  right: 6,
-                  top: 6,
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      var mapType = await showCustomModalBottomSheet(
-                        context,
-                        content: const _MapTypeSelector(),
-                      );
-                      if (mapType != null) {
-                        setState(() {
-                          _mapType = mapType as MapType;
-                        });
-                      }
-                    },
-                    mini: true,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.satellite_outlined,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
                 Center(
                   child: _buildNoInternet(),
                 )
