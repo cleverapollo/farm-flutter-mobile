@@ -1,30 +1,26 @@
 import 'dart:async';
-import 'dart:math';
-import 'dart:ui' as ui;
 
 import 'package:app_settings/app_settings.dart';
-import 'package:cmo/env/env.dart';
-import 'package:cmo/extensions/string.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/compartment/compartment.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_detail_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as google_map;
 import 'package:google_maps_flutter_platform_interface/src/types/location.dart'
     as map;
-import 'package:map_autocomplete_field/map_autocomplete_field.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:maps_toolkit/src/latlng.dart' as mapToolkitLatlong;
 import 'package:cmo/utils/network_utils.dart';
@@ -40,12 +36,16 @@ class CompartmentMapScreen extends StatefulWidget {
   }) async {
     return Navigator.of(context).push<T>(
       MaterialPageRoute(
-        builder: (_) => CompartmentMapScreen(
+        builder: (_) => BlocProvider(
+          create: (_) => CompartmentMapCubit(points: points),
+          child: CompartmentMapScreen(
             points: points,
             farmId: farmId,
             farmName: farmName,
             campId: campId,
-            compartment: compartment),
+            compartment: compartment,
+          ),
+        ),
       ),
     );
   }
@@ -72,7 +72,6 @@ class CompartmentMapScreen extends StatefulWidget {
 class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   static const haSquareMeters = 10000;
   GoogleMapController? _controller;
-  List<Marker> _markers = [];
   bool _isFinished = false;
   double? areaSquareMeters;
   final _connectivity = Connectivity();
@@ -114,23 +113,13 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
 
   void _drawInitialPolygon() {
     Future.delayed(const Duration(seconds: 1), () async {
-      for (final item in widget.points!) {
-        _markers.add(await _markerFrom(item));
-      }
+      setState(() {
       _isFinished = true;
+      });
+
+      await context.read<CompartmentMapCubit>().initMapData();
       _finishDrawing();
     });
-  }
-
-  Future<Marker> _markerFrom(map.LatLng position) async {
-    return Marker(
-        markerId:
-            MarkerId('place_name_${position.latitude}_${position.longitude}'),
-        position: position,
-        icon: await BitmapDescriptorHelper.getBitmapDescriptorFromSvgAsset(
-          Assets.icons.mapPolygonPoint.path,
-          Size(8, 8),
-        ));
   }
 
   void _calculateCenterPoint() {
@@ -167,36 +156,42 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
           Expanded(
             child: Stack(
               children: [
-                GoogleMap(
-                  initialCameraPosition:
+                BlocBuilder<CompartmentMapCubit, CompartmentMapState>(
+                  builder: (context, state) {
+                    return GoogleMap(
+                      initialCameraPosition:
                       CameraPosition(target: centerMapPoint, zoom: 14),
-                  polylines: _polylines(),
-                  polygons: _polygon(),
-                  mapType: MapType.satellite,
-                  myLocationEnabled: true,
-                  onMapCreated: (GoogleMapController controller) {
-                    if (widget.points != null) {
-                      _drawInitialPolygon();
-                    }
-                    _controller = controller;
-                    Geolocator.checkPermission().then((permission) async {
-                      if (permission == LocationPermission.whileInUse ||
-                          permission == LocationPermission.always) {
-                        if (widget.points == null) {
-                          await _moveMapCameraCurrentLocation();
+                      polylines: _polylines(state.tempMarkers),
+                      polygons: _polygon(state.markers),
+                      mapType: MapType.satellite,
+                      myLocationEnabled: true,
+                      onCameraMove: (position) => context.read<CompartmentMapCubit>().onCameraMove(position, _isFinished),
+                      onMapCreated: (GoogleMapController controller) {
+                        if (widget.points != null) {
+                          _drawInitialPolygon();
                         }
-                      } else if (permission == LocationPermission.denied) {
-                        permission = await Geolocator.requestPermission();
-                        if (permission == LocationPermission.whileInUse ||
-                            permission == LocationPermission.always) {
-                          if (widget.points == null) {
-                            await _moveMapCameraCurrentLocation();
+
+                        _controller = controller;
+                        Geolocator.checkPermission().then((permission) async {
+                          if (permission == LocationPermission.whileInUse ||
+                              permission == LocationPermission.always) {
+                            if (widget.points == null) {
+                              await _moveMapCameraCurrentLocation();
+                            }
+                          } else if (permission == LocationPermission.denied) {
+                            permission = await Geolocator.requestPermission();
+                            if (permission == LocationPermission.whileInUse ||
+                                permission == LocationPermission.always) {
+                              if (widget.points == null) {
+                                await _moveMapCameraCurrentLocation();
+                              }
+                            }
                           }
-                        }
-                      }
-                    });
+                        });
+                      },
+                      markers: state.markers.toSet(),
+                    );
                   },
-                  markers: _markers.toSet(),
                 ),
                 MapCenterIcon(),
                 Center(
@@ -249,7 +244,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                       if (_isCompletedPoint(center)) {
                         _finishDrawing();
                       } else {
-                        _markers.add(await _markerFrom(center));
+                        await context.read<CompartmentMapCubit>().creatNewMarker(center);
                         if (_isFinished) {
                           _finishDrawing();
                         } else {
@@ -283,8 +278,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                   Expanded(
                     child: CmoFilledButton(
                       title: LocaleKeys.complete_polygon.tr(),
-                      onTap:
-                          _markers.length > 2 ? () => _finishDrawing() : null,
+                      onTap: _finishDrawing,
                     ),
                   ),
                   const SizedBox(width: 24),
@@ -300,7 +294,10 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                                 campId: widget.campId,
                                 measuredArea: (areaSquareMeters ?? 0) / 10000,
                                 compartment: widget.compartment,
-                                locations: _markers
+                                locations: context
+                                    .read<CompartmentMapCubit>()
+                                    .state
+                                    .markers
                                     .map(
                                       (e) => PolygonItem(
                                         latitude: e.position.latitude,
@@ -353,44 +350,50 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
         google_map.LatLng(position.latitude, position.longitude)));
   }
 
-  Set<Polyline> _polylines() {
+  Set<Polyline> _polylines(List<Marker> markers) {
     var polylines = <Polyline>{};
-    if (_markers.length < 2) {
+    if (markers.length < 2) {
       return polylines;
     }
     final color =
         widget.points == null ? context.colors.yellow : context.colors.red;
-    for (var i = 1; i < _markers.length; i++) {
+    for (var i = 1; i < markers.length; i++) {
       polylines.add(
         Polyline(
           polylineId: PolylineId("${i - 1}_$i"),
-          points: [_markers[i - 1].position, _markers[i].position],
+          points: [markers[i - 1].position, markers[i].position],
           color: color,
           width: 5,
+          patterns: i != markers.length - 1 ? [] : [PatternItem.dash(60), PatternItem.gap(20)],
+          startCap: Cap.roundCap,
+          endCap: Cap.roundCap,
         ),
       );
     }
+
     if (_isFinished) {
+      polylines.last.copyWith(patternsParam: []);
       polylines.add(
         Polyline(
-          polylineId: PolylineId('${_markers.length - 1}_0'),
+          polylineId: PolylineId('${markers.length - 1}_0'),
           points: [
-            _markers[_markers.length - 1].position,
-            _markers[0].position,
+            markers[markers.length - 1].position,
+            markers[0].position,
           ],
           color: color,
           width: 5,
         ),
       );
     }
+
     return polylines;
   }
 
-  Set<Polygon> _polygon() {
+  Set<Polygon> _polygon(List<Marker> markers) {
     if (!_isFinished) return Set();
     final polygon = Polygon(
       polygonId: PolygonId('Polygon'),
-      points: _markers.map((e) => e.position).toList(),
+      points: markers.map((e) => e.position).toList(),
       fillColor: context.colors.blueDark1.withOpacity(0.4),
       strokeColor: Colors.transparent,
     );
@@ -399,15 +402,16 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
 
   void _removePreviousPoint() {
     areaSquareMeters = null;
-    if (_markers.isEmpty) return;
-    _markers.removeLast();
+    context.read<CompartmentMapCubit>().removePreviousMarker();
     _isFinished = false;
     setState(() {});
   }
 
   void _finishDrawing() {
+    final markers = context.read<CompartmentMapCubit>().state.markers;
+    if (markers.isEmpty) return;
     _isFinished = true;
-    areaSquareMeters = SphericalUtil.computeArea(_markers
+    areaSquareMeters = SphericalUtil.computeArea(markers
             .map((e) => mapToolkitLatlong.LatLng(
                 e.position.latitude, e.position.longitude))
             .toList())
@@ -421,14 +425,16 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   }
 
   bool _isCompletedPoint(map.LatLng lastPoint) {
-    if (_markers.length < 3) {
+    final markers = context.read<CompartmentMapCubit>().state.markers;
+    if (markers.length < 3) {
       return false;
     }
+
     var distance = SphericalUtil.computeDistanceBetween(
-      mapToolkitLatlong.LatLng(
-          _markers.first.position.latitude, _markers.first.position.longitude),
+      mapToolkitLatlong.LatLng(markers.first.position.latitude, markers.first.position.longitude),
       mapToolkitLatlong.LatLng(lastPoint.latitude, lastPoint.longitude),
     );
+
     return distance < 3;
   }
 
@@ -449,109 +455,5 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
         ),
       ),
     );
-  }
-}
-
-class _MapTypeSelector extends StatelessWidget {
-  const _MapTypeSelector({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.topLeft,
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 8),
-          Text(
-            LocaleKeys.map_type.tr(),
-            style: context.textStyles.bodyNormal.copyWith(
-              fontWeight: FontWeight.w600,
-              color: context.colors.blueDark2,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _item(
-                  context,
-                  icon: Icons.map_outlined,
-                  text: LocaleKeys.default_text.tr(),
-                  onTapped: () => Navigator.of(context).pop(MapType.normal),
-                ),
-                _item(
-                  context,
-                  icon: Icons.satellite_outlined,
-                  text: LocaleKeys.satellite.tr(),
-                  onTapped: () => Navigator.of(context).pop(MapType.satellite),
-                ),
-                _item(
-                  context,
-                  icon: Icons.terrain_outlined,
-                  text: LocaleKeys.terrain.tr(),
-                  onTapped: () => Navigator.of(context).pop(MapType.terrain),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _item(
-    BuildContext context, {
-    required IconData icon,
-    required String text,
-    required Function() onTapped,
-  }) {
-    return InkWell(
-      onTap: onTapped,
-      child: Column(
-        children: [
-          Icon(
-            icon,
-            size: 84,
-            color: context.colors.blue,
-          ),
-          Text(text),
-        ],
-      ),
-    );
-  }
-}
-
-class BitmapDescriptorHelper {
-  static Future<BitmapDescriptor> getBitmapDescriptorFromSvgAsset(
-    String assetName, [
-    Size size = const Size(48, 48),
-  ]) async {
-    final pictureInfo = await vg.loadPicture(SvgAssetLoader(assetName), null);
-
-    double devicePixelRatio = ui.window.devicePixelRatio;
-    int width = (size.width * devicePixelRatio).toInt();
-    int height = (size.height * devicePixelRatio).toInt();
-
-    final scaleFactor = min(
-      width / pictureInfo.size.width,
-      height / pictureInfo.size.height,
-    );
-
-    final recorder = ui.PictureRecorder();
-
-    ui.Canvas(recorder)
-      ..scale(scaleFactor)
-      ..drawPicture(pictureInfo.picture);
-
-    final rasterPicture = recorder.endRecording();
-
-    final image = rasterPicture.toImageSync(width, height);
-    final bytes = (await image.toByteData(format: ui.ImageByteFormat.png))!;
-
-    return BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
   }
 }
