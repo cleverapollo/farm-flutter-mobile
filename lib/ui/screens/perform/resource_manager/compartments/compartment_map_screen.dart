@@ -364,7 +364,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
           points: [markers[i - 1].position, markers[i].position],
           color: color,
           width: 5,
-          patterns: i != markers.length - 1 ? [] : [PatternItem.dash(60), PatternItem.gap(20)],
+          patterns: (i != markers.length - 1 || widget.points?.length == markers.length) ? [] : [PatternItem.dash(60), PatternItem.gap(20)],
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
         ),
