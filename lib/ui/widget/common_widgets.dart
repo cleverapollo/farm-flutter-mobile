@@ -115,6 +115,8 @@ class InputAttributeItem extends StatefulWidget {
   final TextCapitalization? textCapitalization;
 
   final List<TextInputFormatter> inputFormatters;
+  final TextEditingController? controller;
+  final ScrollController? scrollController;
 
   const InputAttributeItem({
     this.hintText,
@@ -133,6 +135,8 @@ class InputAttributeItem extends StatefulWidget {
     this.textCapitalization,
     super.key,
     this.inputFormatters = const <TextInputFormatter>[],
+    this.controller,
+    this.scrollController,
   });
 
   @override
@@ -145,13 +149,15 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.initialValue);
+    _controller =
+        widget.controller ?? TextEditingController(text: widget.initialValue);
     _controller.addListener(() => setState(() {}));
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      scrollController: widget.scrollController,
       minLines: 1,
       textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
       onChanged: widget.onChanged,

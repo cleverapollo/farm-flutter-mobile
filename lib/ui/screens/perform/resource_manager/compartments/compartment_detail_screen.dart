@@ -9,6 +9,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/esp
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
+import 'package:cmo/ui/widget/cmo_percentage_input_attribute_widget.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -150,11 +151,10 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                 return AttributeItem(
                                   errorText: '${LocaleKeys.effectiveArea.tr()} (%)',
                                   isShowError: isEffectiveAreaError,
-                                  child: InputAttributeItem(
+                                  child: PercentageInputAttributeItem(
                                     labelText: '${LocaleKeys.effectiveArea.tr()} (%)',
                                     labelTextStyle: context.textStyles.bodyBold.blueDark2,
                                     textStyle: context.textStyles.bodyNormal.blueDark2,
-                                    keyboardType: TextInputType.number,
                                     initialValue: (initCompartment.effectiveArea ?? '').toString(),
                                     onChanged: (value) =>
                                         _compartmentDetailCubit.onEffectiveAreaChanged(double.tryParse(value)),
@@ -226,13 +226,12 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                               ),
                             ),
                             AttributeItem(
-                              child: InputAttributeItem(
+                              child: PercentageInputAttributeItem(
                                 labelText: '${LocaleKeys.survival.tr()} (%)',
                                 labelTextStyle: context.textStyles.bodyBold.blueDark2,
                                 textStyle: context.textStyles.bodyNormal.blueDark2,
                                 initialValue: (initCompartment.survival ?? '').toString(),
                                 hintText: '${LocaleKeys.survival.tr()} %',
-                                keyboardType: TextInputType.number,
                                 onChanged: (value) =>
                                     _compartmentDetailCubit.onSurvivalPercentageDateChanged(double.tryParse(value)),
                               ),
