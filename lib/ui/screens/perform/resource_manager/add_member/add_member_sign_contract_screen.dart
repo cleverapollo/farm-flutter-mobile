@@ -82,7 +82,7 @@ class _AddMemberSignContractWidgetState
                               context.mounted) {
                             await AddMemberMembershipContractScreen.push(
                                 context,
-                                farm: widget.farm);
+                                farm: state.farm);
                           } else {
                             context.read<AddMemberCubit>().checkErrorAllSteps();
                             showSnackError(msg: 'Should complete all steps.');

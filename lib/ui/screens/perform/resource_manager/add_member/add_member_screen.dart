@@ -244,8 +244,11 @@ class _AddMemberSDetails extends StatelessWidget {
                           final state = context.read<AddMemberCubit>().state;
                           final farmName = state.farm?.farmName;
                           final farmId = state.farm?.farmId;
-                          final result = await CompartmentScreen.push(context,
-                              farmId: farmId, farmName: farmName);
+                          final result = await CompartmentScreen.push(
+                            context,
+                            farmId: farmId,
+                            farmName: farmName,
+                          );
 
                           if (result != null) {
                             await cubit.onDataChangeSiteDetail(

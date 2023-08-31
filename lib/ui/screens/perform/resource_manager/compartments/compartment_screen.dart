@@ -51,9 +51,10 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
     double total,
   ) {
     Navigator.of(context).pop(
-      AddingCompartmentResult()
-        ..compartments = listCompartment
-        ..totalAreaHa = total,
+      AddingCompartmentResult(
+        compartments: listCompartment,
+        totalAreaHa: total,
+      ),
     );
   }
 
@@ -148,4 +149,6 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
 class AddingCompartmentResult {
   List<Compartment>? compartments;
   double totalAreaHa = 0;
+
+  AddingCompartmentResult({this.compartments, this.totalAreaHa = 0});
 }
