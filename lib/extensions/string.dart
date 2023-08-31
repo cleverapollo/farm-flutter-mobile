@@ -1,6 +1,13 @@
 import 'package:isar/isar.dart';
 
 extension StringNullExtension on String? {
+  bool get validEmail {
+    final emailValid = RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(this ?? '');
+    return emailValid;
+  }
+
   String get emptyIfNull {
     return this ?? '';
   }

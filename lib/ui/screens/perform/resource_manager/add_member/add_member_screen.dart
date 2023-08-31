@@ -1,3 +1,4 @@
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
@@ -387,8 +388,13 @@ class _AddMemberMDetails extends StatelessWidget {
                     labelTextStyle: context.textStyles.bodyNormal.blueDark2,
                     keyboardType: TextInputType.emailAddress,
                     onSubmitted: (text) {
-                      cubit.onChangeMemberDetailState(isCollapse: true);
-                      cubit.onChangeSiteDetailState(isCollapse: false);
+                      if (text.validEmail) {
+                        cubit.onChangeMemberDetailState(isCollapse: true);
+                        cubit.onChangeSiteDetailState(isCollapse: false);
+                      } else {
+                        showSnackError(
+                            msg: 'Please enter a valid email format');
+                      }
                     },
                     onChanged: (value) {
                       cubit.onDataChangeMemberDetail(emailAddress: value);
