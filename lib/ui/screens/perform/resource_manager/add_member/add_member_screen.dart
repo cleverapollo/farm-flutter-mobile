@@ -388,13 +388,13 @@ class _AddMemberMDetails extends StatelessWidget {
                     labelTextStyle: context.textStyles.bodyNormal.blueDark2,
                     keyboardType: TextInputType.emailAddress,
                     onSubmitted: (text) {
-                      if (text.validEmail) {
-                        cubit.onChangeMemberDetailState(isCollapse: true);
-                        cubit.onChangeSiteDetailState(isCollapse: false);
-                      } else {
-                        showSnackError(
+                      if (!text.validEmail) {
+                        return showSnackError(
                             msg: 'Please enter a valid email format');
                       }
+
+                      cubit.onChangeMemberDetailState(isCollapse: true);
+                      cubit.onChangeSiteDetailState(isCollapse: false);
                     },
                     onChanged: (value) {
                       cubit.onDataChangeMemberDetail(emailAddress: value);
