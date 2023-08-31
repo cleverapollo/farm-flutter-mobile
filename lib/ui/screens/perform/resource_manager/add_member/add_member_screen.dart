@@ -329,6 +329,12 @@ class _AddMemberMDetails extends StatelessWidget {
                     textStyle: context.textStyles.bodyNormal.blueDark2,
                     labelText: LocaleKeys.firstName.tr(),
                     labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    onSubmitted: (p0) {
+                      if (data.isComplete) {
+                        cubit.onChangeMemberDetailState(isCollapse: true);
+                        cubit.onChangeSiteDetailState(isCollapse: false);
+                      }
+                    },
                     onChanged: (value) {
                       cubit.onDataChangeMemberDetail(firstName: value);
                     },
@@ -343,6 +349,12 @@ class _AddMemberMDetails extends StatelessWidget {
                     textStyle: context.textStyles.bodyNormal.blueDark2,
                     labelText: LocaleKeys.lastName.tr(),
                     labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    onSubmitted: (p0) {
+                      if (data.isComplete) {
+                        cubit.onChangeMemberDetailState(isCollapse: true);
+                        cubit.onChangeSiteDetailState(isCollapse: false);
+                      }
+                    },
                     onChanged: (value) {
                       cubit.onDataChangeMemberDetail(lastName: value);
                     },
@@ -358,6 +370,12 @@ class _AddMemberMDetails extends StatelessWidget {
                     labelText: LocaleKeys.idPassportNumber.tr(),
                     labelTextStyle: context.textStyles.bodyBold.blueDark2,
                     keyboardType: TextInputType.emailAddress,
+                    onSubmitted: (p0) {
+                      if (data.isComplete) {
+                        cubit.onChangeMemberDetailState(isCollapse: true);
+                        cubit.onChangeSiteDetailState(isCollapse: false);
+                      }
+                    },
                     onChanged: (value) {
                       cubit.onDataChangeMemberDetail(idNumber: value);
                     },
@@ -373,6 +391,12 @@ class _AddMemberMDetails extends StatelessWidget {
                     labelText: LocaleKeys.mobileNumber.tr(),
                     labelTextStyle: context.textStyles.bodyBold.blueDark2,
                     keyboardType: TextInputType.phone,
+                    onSubmitted: (p0){
+                      if (data.isComplete) {
+                        cubit.onChangeMemberDetailState(isCollapse: true);
+                        cubit.onChangeSiteDetailState(isCollapse: false);
+                      }
+                    },
                     onChanged: (value) {
                       cubit.onDataChangeMemberDetail(mobileNumber: value);
                     },
@@ -393,8 +417,10 @@ class _AddMemberMDetails extends StatelessWidget {
                             msg: 'Please enter a valid email format');
                       }
 
-                      cubit.onChangeMemberDetailState(isCollapse: true);
-                      cubit.onChangeSiteDetailState(isCollapse: false);
+                      if (data.isComplete) {
+                        cubit.onChangeMemberDetailState(isCollapse: true);
+                        cubit.onChangeSiteDetailState(isCollapse: false);
+                      }
                     },
                     onChanged: (value) {
                       cubit.onDataChangeMemberDetail(emailAddress: value);
