@@ -307,42 +307,48 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
           if (isPublicFarm) {
             var isSyncedSuccess = false;
-            while (!isSyncedSuccess) {
+            var stopwatch = Stopwatch()..start();
+            while (!isSyncedSuccess && stopwatch.elapsedMilliseconds < 120000) {
               await Future.delayed(const Duration(milliseconds: 800));
-              final farms = await cmoPerformApiService.getFarmSearch(
-                  filterString: farm.farmName);
-              final isExist = farms
-                  .firstWhereOrNull((element) => element.farmId == farm.farmId);
+              final farms = await cmoPerformApiService.getFarmSearch(filterString: farm.farmName);
+              final isExist = farms.firstWhereOrNull((element) => element.farmId == farm.farmId);
               if (isExist != null) {
                 isSyncedSuccess = true;
               }
             }
 
-            await cmoDatabaseMasterService.cacheFarmAddMember(
-              farm.copyWith(
-                isMasterDataSynced: 1,
-                canDelete: 0,
-              ),
-            );
-
-            for (final objectiveAnswer in objectiveAnswers) {
-              await cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(
-                objectiveAnswer.copyWith(
-                  isMasterDataSynced: true,
+            stopwatch.stop();
+            if (isSyncedSuccess) {
+              await cmoDatabaseMasterService.cacheFarmAddMember(
+                farm.copyWith(
+                  isMasterDataSynced: 1,
+                  canDelete: 0,
                 ),
               );
-            }
 
-            for (final riskProfileAnswer in riskProfileAnswers) {
-              await cmoDatabaseMasterService.cacheFarmMemberRiskProfileAnswer(
-                riskProfileAnswer.copyWith(
-                  isMasterDataSynced: true,
-                ),
-              );
-            }
+              for (final objectiveAnswer in objectiveAnswers) {
+                await cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(
+                  objectiveAnswer.copyWith(
+                    isMasterDataSynced: true,
+                  ),
+                );
+              }
 
-            logger.d('Successfully published farmId: ${farm.farmId}');
+              for (final riskProfileAnswer in riskProfileAnswers) {
+                await cmoDatabaseMasterService.cacheFarmMemberRiskProfileAnswer(
+                  riskProfileAnswer.copyWith(
+                    isMasterDataSynced: true,
+                  ),
+                );
+              }
+
+              logger.d('Successfully published farmId: ${farm.farmId}');
+            } else {
+              showSnackError(msg: 'Publish Farm error: ${farm.farmName}');
+              logger.e('Failed to publish farmId: ${farm.farmId}');
+            }
           } else {
+            showSnackError(msg: 'Publish Farm error: ${farm.farmName}');
             logger.e('Failed to publish farmId: ${farm.farmId}');
           }
         }
