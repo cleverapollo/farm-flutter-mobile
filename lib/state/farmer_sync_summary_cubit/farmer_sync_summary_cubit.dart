@@ -27,29 +27,21 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
   void Function(FarmerSyncSummaryState state)? get mEmit => emit;
 
   String get topicMasterDataSync => 'Cmo.MasterDataDeviceSync.';
-
   String get topicTrickleFeedFarmerMasterDataByFarmId => 'Cmo.MasterData.';
-
   String get topicTrickleFeedFgsMasterDataByGroupSchemeId =>
       'Cmo.MasterData.FGS.';
 
   int get userId => state.userId!;
-
   int get userDeviceId => state.userDeviceId!;
-
   int get groupSchemeId => state.groupSchemeId!;
-
   String get farmId => state.farmId!;
 
   String get getSyncGroupSchemeAllMasterDataTopic =>
       '$topicMasterDataSync*.$userDeviceId';
-
   String get getFarmerTrickleFeedMasterDataTopicByFarmId =>
       '$topicTrickleFeedFarmerMasterDataByFarmId*.$farmId';
-
   String get getTrickleFeedMasterDataTopic =>
       '$topicTrickleFeedFarmerMasterDataByFarmId*.Global';
-
   String get getTrickleFeedMasterDataTopicByGroupSchemeId =>
       '$topicTrickleFeedFgsMasterDataByGroupSchemeId*.$groupSchemeId';
 
@@ -2136,7 +2128,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final resultSync = await cmoDatabaseMasterService.cacheAsi(
           rs.copyWith(
             isMasterdataSynced: true,
-            localId: DateTime.now().millisecondsSinceEpoch,
+            localId: int.tryParse(rs.asiRegisterNo ?? ''),
           ),
           isDirect: true);
 
