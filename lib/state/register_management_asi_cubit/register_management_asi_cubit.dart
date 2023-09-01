@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
+import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:flutter/material.dart';
@@ -55,11 +56,14 @@ class RMAsiCubit extends Cubit<RMAsiState> {
         .getAsiTypeByGroupSchemeId(state.groupSchemeId!);
     final photos = await cmoDatabaseMasterService
         .getAllAsiPhotoByAsiRegisterNo(state.asiData.asiRegisterNo);
+    final compartments = await cmoDatabaseMasterService
+        .getCompartmentByFarmId(state.farmId ?? '');
 
     emit(state.copyWith(
       asiTypes: result,
       isDataReady: true,
       asiPhotos: photos,
+      asiCompartments: compartments ?? [],
     ));
   }
 
@@ -86,6 +90,7 @@ class RMAsiCubit extends Cubit<RMAsiState> {
   }
 
   void onChangeData({
+    Compartment? asiCompartment,
     AsiType? asiType,
     double? lat,
     double? lng,
@@ -147,6 +152,12 @@ class RMAsiCubit extends Cubit<RMAsiState> {
           carRaisedDate: carRaisedDate,
           carClosedDate: carClosedDate,
           comment: comment ?? state.asiData.comment,
+          localCompartmentId: asiCompartment?.localCompartmentId ??
+              state.asiData.localCompartmentId,
+          compartmentName:
+              asiCompartment?.unitNumber ?? state.asiData.compartmentName,
+          managementUnitId: asiCompartment?.managementUnitId ??
+              state.asiData.managementUnitId,
         ),
         asiPhotos: asiPhotos,
       ),
@@ -154,7 +165,9 @@ class RMAsiCubit extends Cubit<RMAsiState> {
   }
 
   Future<void> onSave(BuildContext context) async {
-    if (state.asiData.asiTypeId == null || state.asiData.latitude == null) {
+    if (state.asiData.asiTypeId == null ||
+        state.asiData.latitude == null ||
+        state.asiData.localCompartmentId == null) {
       return showSnackError(msg: 'Required fields are missing.');
     }
 

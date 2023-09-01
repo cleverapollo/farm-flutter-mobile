@@ -4,14 +4,17 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
+import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_cubit.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/thumbnail_image.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -64,6 +67,7 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      _buildCompartment(),
                       _buildAsiType(),
                       _buildLatLng(),
                       _buildAsiDate(),
@@ -102,64 +106,132 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
                                 .toList(),
                           );
                         },
-                      )
+                      ),
+                      Center(
+                        child: CmoFilledButton(
+                          title: LocaleKeys.save.tr(),
+                          onTap: () {
+                            cubit.onSave(context);
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
               )
             ],
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: CmoFilledButton(
-            title: LocaleKeys.save.tr(),
-            onTap: () {
-              cubit.onSave(context);
-            },
-          ),
+          // floatingActionButtonLocation:
+          //     FloatingActionButtonLocation.centerFloat,
+          // floatingActionButton: CmoFilledButton(
+          //   title: LocaleKeys.save.tr(),
+          //   onTap: () {
+          //     cubit.onSave(context);
+          //   },
+          // ),
         );
       },
     );
   }
 
-  Widget _buildAsiType() {
-    return AttributeItem(
-      child: BlocSelector<RMAsiCubit, RMAsiState, List<AsiType>>(
-          selector: (state) => state.asiTypes,
-          builder: (context, asiTypes) {
-            final cubit = context.read<RMAsiCubit>();
-            final state = cubit.state;
-            if (!state.isDataReady) {
-              return const SizedBox.shrink();
-            }
-            final initValue = asiTypes.firstWhereOrNull(
-              (element) => element.asiTypeId == state.asiData.asiTypeId,
-            );
-            return CmoDropdown<AsiType>(
-              name: 'asiType',
-              style: context.textStyles.bodyBold.blueDark2,
-              inputDecoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
+  Widget _buildCompartment() {
+    return BlocSelector<RMAsiCubit, RMAsiState, List<Compartment>>(
+        selector: (state) => state.asiCompartments,
+        builder: (context, asiCompartments) {
+          final cubit = context.read<RMAsiCubit>();
+          final state = cubit.state;
+          if (!state.isDataReady) {
+            return const SizedBox.shrink();
+          }
+          final initValue = asiCompartments.firstWhereOrNull(
+            (element) =>
+                element.localCompartmentId == state.asiData.localCompartmentId,
+          );
+
+          return BottomSheetSelection(
+            hintText: LocaleKeys.compartment.tr(),
+            value: initValue?.unitNumber ?? '',
+            margin: EdgeInsets.zero,
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+            onTap: () async {
+              FocusScope.of(context).unfocus();
+              if (asiCompartments.isBlank) return;
+              await showCustomBottomSheet<void>(
+                context,
+                content: ListView.builder(
+                  itemCount: asiCompartments.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      onTap: () {
+                        cubit.onChangeData(
+                            asiCompartment: asiCompartments[index]);
+                        Navigator.pop(context);
+                      },
+                      title: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Text(
+                          asiCompartments[index].unitNumber ?? '',
+                          style: context.textStyles.bodyBold.copyWith(
+                            color: context.colors.blueDark2,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                isDense: true,
-                hintText: LocaleKeys.type.tr(),
-                hintStyle: context.textStyles.bodyBold.blueDark2,
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-              ),
-              initialValue: initValue,
-              itemsData: asiTypes
-                  .map((e) => CmoDropdownItem<AsiType>(
-                      id: e, name: e.asiTypeName ?? ''))
-                  .toList(),
-              onChanged: (value) {
-                cubit.onChangeData(asiType: value);
-              },
-            );
-          }),
-    );
+              );
+            },
+          );
+        });
+  }
+
+  Widget _buildAsiType() {
+    return BlocSelector<RMAsiCubit, RMAsiState, List<AsiType>>(
+        selector: (state) => state.asiTypes,
+        builder: (context, asiTypes) {
+          final cubit = context.read<RMAsiCubit>();
+          final state = cubit.state;
+          if (!state.isDataReady) {
+            return const SizedBox.shrink();
+          }
+          final initValue = asiTypes.firstWhereOrNull(
+            (element) => element.asiTypeId == state.asiData.asiTypeId,
+          );
+
+          return BottomSheetSelection(
+            hintText: LocaleKeys.type.tr(),
+            value: initValue?.asiTypeName ?? '',
+            margin: EdgeInsets.zero,
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+            onTap: () async {
+              FocusScope.of(context).unfocus();
+              if (asiTypes.isBlank) return;
+              await showCustomBottomSheet<void>(
+                context,
+                content: ListView.builder(
+                  itemCount: asiTypes.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      onTap: () {
+                        cubit.onChangeData(asiType: asiTypes[index]);
+                        Navigator.pop(context);
+                      },
+                      title: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Text(
+                          asiTypes[index].asiTypeName ?? '',
+                          style: context.textStyles.bodyBold.copyWith(
+                            color: context.colors.blueDark2,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          );
+        });
   }
 
   Widget _buildLatLng() {

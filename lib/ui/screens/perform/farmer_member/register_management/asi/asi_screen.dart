@@ -172,6 +172,28 @@ class _AsiItem extends StatelessWidget {
           ),
           Padding(
             padding:
+            const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    LocaleKeys.compartment.tr(),
+                    style: context.textStyles.bodyNormal,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    asi.compartmentName ?? '',
+                    style: context.textStyles.bodyNormal,
+                  ),
+                )
+              ],
+            ),
+          ),
+
+          Padding(
+            padding:
                 const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
