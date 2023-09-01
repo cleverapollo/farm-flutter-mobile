@@ -329,7 +329,8 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     return BlocSelector<AddAAICubit, AddAAIState, List<FarmerWorker>>(
       selector: (state) => state.workers,
       builder: (context, workers) {
-        final initWorker = workers.firstWhereOrNull((e) => e.workerId == workerId);
+        final initWorker =
+            workers.firstWhereOrNull((e) => e.workerId == workerId);
         return InkWell(
           onTap: () async {
             if (workers.isEmpty) {
@@ -343,6 +344,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
             child: AttributeItem(
               child: CmoDropdown<FarmerWorker>(
+                shouldBorderItem: true,
                 name: 'WorkerId',
                 hintText: LocaleKeys.worker.tr(),
                 style: context.textStyles.bodyBold.blueDark2,
@@ -382,6 +384,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
           child: AttributeItem(
             child: CmoDropdown<WorkerJobDescription>(
+                shouldBorderItem: true,
                 name:
                     '${initJob?.jobDescriptionName} ${cubit.state.accidentAndIncident.workerId}',
                 hintText: LocaleKeys.jobDescription.tr(),
@@ -419,6 +422,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       child: AttributeItem(
         child: CmoDropdown<NatureOfInjury>(
+            shouldBorderItem: true,
             name: 'natureOfInjury',
             hintText: LocaleKeys.nature_of_injury.tr(),
             style: context.textStyles.bodyBold.blueDark2,
