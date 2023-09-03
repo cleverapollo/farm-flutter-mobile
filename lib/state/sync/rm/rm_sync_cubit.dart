@@ -914,23 +914,40 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       final riskProfileAnswersJson = bodyJson['RiskProfileAnswers'] as List;
 
       final objectiveAnswers = objectiveAnswersJson
-          .map((e) => FarmMemberObjectiveAnswer.fromJson(
-              (e as Map).map((key, value) => MapEntry(key as String, value))))
+          .map(
+            (e) => FarmMemberObjectiveAnswer.fromJson(
+              (e as Map).map(
+                (key, value) => MapEntry(key as String, value),
+              ),
+            ).copyWith(
+              isMasterDataSynced: true,
+            ),
+          )
           .toList();
       final riskProfileAnswers = riskProfileAnswersJson
-          .map((e) => FarmMemberRiskProfileAnswer.fromJson(
-              (e as Map).map((key, value) => MapEntry(key as String, value))))
+          .map(
+            (e) => FarmMemberRiskProfileAnswer.fromJson(
+              (e as Map).map(
+                (key, value) => MapEntry(key as String, value),
+              ),
+            ).copyWith(
+              isMasterDataSynced: true,
+            ),
+          )
           .toList();
 
       for (final objectiveAnswer in objectiveAnswers) {
-        await cmoDatabaseMasterService
-            .cacheFarmMemberObjectiveAnswer(objectiveAnswer, isDirect: true);
+        await cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(
+          objectiveAnswer,
+          isDirect: true,
+        );
       }
 
       for (final riskProfileAnswer in riskProfileAnswers) {
         await cmoDatabaseMasterService.cacheFarmMemberRiskProfileAnswer(
             riskProfileAnswer,
-            isDirect: true);
+            isDirect: true,
+        );
       }
 
       return cmoDatabaseMasterService.cacheFarm(farm.copyWith(isMasterDataSynced: 1, isLocal: 0));
@@ -945,8 +962,11 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     final compartments = await cmoPerformApiService.getCompartmentsByRMUId();
     if (compartments.isNotBlank) {
       for (final compartment in compartments!) {
-        await cmoDatabaseMasterService.cacheCompartment(compartment.copyWith(
-            localCompartmentId: compartment.managementUnitId.toIdIsarFromUuid));
+        await cmoDatabaseMasterService.cacheCompartment(
+          compartment.copyWith(
+            localCompartmentId: compartment.managementUnitId.toIdIsarFromUuid,
+          ),
+        );
       }
     }
   }
@@ -999,7 +1019,9 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       for (final asi in listAsi!) {
         final localId = now++;
         await cmoDatabaseMasterService.cacheAsi(
-          asi.copyWith(localId: localId),
+          asi.copyWith(
+            localId: localId,
+          ),
           isDirect: true,
         );
 

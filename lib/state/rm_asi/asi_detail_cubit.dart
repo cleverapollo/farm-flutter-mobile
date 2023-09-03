@@ -62,7 +62,12 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
   Future<void> saveAsi() async {
     try {
       emit(state.copyWith(isLoading: true));
-      await cmoDatabaseMasterService.cacheAsi(state.asi);
+      await cmoDatabaseMasterService.cacheAsi(
+        state.asi.copyWith(
+          isMasterdataSynced: false,
+        ),
+      );
+
       if (state.listAsiPhotos.isNotBlank) {
         for (final asiPhoto in state.listAsiPhotos) {
           await cmoDatabaseMasterService.cacheAsiPhoto(
@@ -70,6 +75,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
               asiRegisterLocalId: state.asi.localId,
               asiRegisterNo: state.asi.asiRegisterNo,
               asiRegisterId: state.asi.asiRegisterId,
+              isMasterdataSynced: false,
             ),
           );
         }

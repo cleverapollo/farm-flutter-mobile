@@ -285,12 +285,20 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       ));
     }
     if (stepCount != 0) {
-      await cacheFarm();
+      await cacheFarm(
+        haveChanged: false,
+      );
     }
   }
 
-  Future<void> cacheFarm() async {
-    await cmoDatabaseMasterService.cacheFarmAddMember(state.farm!);
+  Future<void> cacheFarm({
+    bool haveChanged = true,
+  }) async {
+    await cmoDatabaseMasterService.cacheFarmAddMember(
+      state.farm!.copyWith(
+        isMasterDataSynced: haveChanged ? 0 : state.farm?.isMasterDataSynced,
+      ),
+    );
   }
 
   Future<void> onTapSlimf({required bool isSlimf}) async {
@@ -509,7 +517,11 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     if (currentAnswer != null) {
       listFarmMemberRiskProfileAnswers.remove(currentAnswer);
       currentAnswer = currentAnswer.copyWith(answer: answer);
-      listFarmMemberRiskProfileAnswers.add(currentAnswer);
+      listFarmMemberRiskProfileAnswers.add(
+        currentAnswer.copyWith(
+          isMasterDataSynced: false,
+        ),
+      );
       emit(
         state.copyWith(
           farm: state.farm
@@ -554,13 +566,14 @@ class AddMemberCubit extends Cubit<AddMemberState> {
             element.farmMemberObjectiveId == question.farmMemberObjectiveId);
     if (currentAnswer != null) {
       listFarmMemberObjectiveAnswers.remove(currentAnswer);
-      currentAnswer =
-          currentAnswer.copyWith(farmObjectiveOptionId: farmObjectiveOptionId);
+      currentAnswer = currentAnswer.copyWith(
+        farmObjectiveOptionId: farmObjectiveOptionId,
+        isMasterDataSynced: false,
+      );
       listFarmMemberObjectiveAnswers.add(currentAnswer);
       emit(
         state.copyWith(
-          farm: state.farm
-              ?.copyWith(objectiveAnswers: listFarmMemberObjectiveAnswers),
+          farm: state.farm?.copyWith(objectiveAnswers: listFarmMemberObjectiveAnswers),
           farmMemberObjectivesState: state.farmMemberObjectivesState.copyWith(
             listFarmMemberObjectiveAnswers: listFarmMemberObjectiveAnswers,
           ),
@@ -570,8 +583,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       final futures = <Future<dynamic>>[];
 
       for (final item in listFarmMemberObjectiveAnswers) {
-        futures
-            .add(cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(item));
+        futures.add(cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(item));
       }
 
       futures.add(cacheFarm());
