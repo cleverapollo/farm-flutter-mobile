@@ -67,7 +67,7 @@ class CompartmentMapCubit extends Cubit<CompartmentMapState> {
   }
 
   void removePreviousMarker() {
-    final _markers = state.markers;
+    final _markers = state.tempMarkers;
     if (_markers.isEmpty) return;
     _markers.removeLast();
     emit(
