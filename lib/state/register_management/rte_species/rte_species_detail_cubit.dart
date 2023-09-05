@@ -161,7 +161,6 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
 
   bool onValidate() {
     final isNotValid = state.rteSpecies!.commonName.isBlank ||
-        state.rtePhotos.isBlank ||
         state.rteSpecies?.dateSpotted == null ||
         state.rteSpecies!.animalTypeName.isBlank;
 
