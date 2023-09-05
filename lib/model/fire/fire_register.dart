@@ -1,3 +1,4 @@
+import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/fire_register_payload/fire_register_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
@@ -26,6 +27,7 @@ class FireRegister with _$FireRegister {
     @JsonKey(name: 'FireCauseName') String? fireCauseName,
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
+    @JsonKey(name: 'AsiPhotos') List<String>? asiPhotos,
   }) = _FireRegister;
 
   const FireRegister._();

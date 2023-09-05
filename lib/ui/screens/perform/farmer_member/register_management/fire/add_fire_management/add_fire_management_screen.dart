@@ -1,12 +1,16 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/fire_cause/fire_cause.dart';
 import 'package:cmo/state/fire_cubit/fire_cubit.dart';
 import 'package:cmo/state/fire_cubit/fire_state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_location_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/thumbnail_image.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
@@ -145,40 +149,9 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
                       },
                     ),
                   ),
-                  SelectLocationWidget(
-                    latitudeTitle: LocaleKeys.latitudeOriginDecimal.tr(),
-                    longitudeTitle: LocaleKeys.longitudeOriginDecimal.tr(),
-                    appbarTitle: LocaleKeys.location.tr(),
-                    lat: '${state.fireRegister.latitude ?? ''}',
-                    lng: '${state.fireRegister.longitude ?? ''}',
-                    onChooseLocation: (locationModel) {
-                      context.read<FireCubit>().onDataChange(
-                          lat: locationModel.latitude ?? 0,
-                          lng: locationModel.longitude ?? 0);
-                    },
-                  ),
-                  AttributeItem(
-                    child: SelectItemWidget(
-                      initValue: state.fireRegister.carRaisedDate != null,
-                      title: LocaleKeys.carRaised.tr(),
-                      onSelect: (isSelected) {
-                        context
-                            .read<FireCubit>()
-                            .onDataChange(carRaised: isSelected);
-                      },
-                    ),
-                  ),
-                  AttributeItem(
-                    child: SelectItemWidget(
-                      initValue: state.fireRegister.carClosedDate != null,
-                      title: LocaleKeys.carClosed.tr(),
-                      onSelect: (isSelected) {
-                        context
-                            .read<FireCubit>()
-                            .onDataChange(carClosed: isSelected);
-                      },
-                    ),
-                  ),
+                  _buildLatLng(),
+                  const SizedBox(height: 12),
+                  _buildShowPhoto(),
                   SizedBox(
                     height: 250,
                     child: GeneralCommentWidget(
@@ -195,6 +168,69 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildShowPhoto() {
+    return BlocSelector<FireCubit, FireState, List<AsiPhoto>>(
+      selector: (state) => state.asiPhotos,
+      builder: (context, asiPhotos) {
+        final cubit = context.read<FireCubit>();
+        return Column(
+          children: asiPhotos
+              .map(
+                (asiPhoto) => ThumbnailImage(
+                  isAllowUpdateName: false,
+                  asiPhoto: asiPhoto,
+                  isAllowUploadNewPhoto: false,
+                  onRemoved: () => cubit.onRemoveAsiPhoto(asiPhoto),
+                  onChanged: cubit.onUpdateAsiPhoto,
+                ),
+              )
+              .toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildLatLng() {
+    return AttributeItem(
+      child: BlocBuilder<FireCubit, FireState>(
+        buildWhen: (previous, current) =>
+            previous.fireRegister.latitude != current.fireRegister.latitude ||
+            previous.fireRegister.longitude != current.fireRegister.longitude,
+        builder: (context, position) {
+          final cubit = context.read<FireCubit>();
+          final state = cubit.state;
+          return CmoDropDownLayoutWidget(
+            title: LocaleKeys.lat_long.tr(),
+            subTitle: state.fireRegister.latitude == null
+                ? ''
+                : '${state.fireRegister.latitude?.toStringAsFixed(5)} | ${state.fireRegister.longitude?.toStringAsFixed(5)}',
+            subTitleAlignment: Alignment.center,
+            subTitleTextStyle: context.textStyles.bodyNormal.blueDark2,
+            isHideBorder: true,
+            onTap: () async {
+              final locationModel = LocationModel()
+                ..latitude = state.fireRegister.latitude
+                ..longitude = state.fireRegister.longitude;
+              final result = await SelectLocationScreen.push(
+                context,
+                title: LocaleKeys.asi.tr(),
+                locationModel: locationModel,
+              );
+              if (result == null) return;
+              final mapResult = result as LocationModel;
+
+              cubit.onDataChange(
+                lat: mapResult.latitude,
+                lng: mapResult.longitude,
+                selectAsiPhotoBase64s: mapResult.listImage,
+              );
+            },
+          );
+        },
+      ),
     );
   }
 

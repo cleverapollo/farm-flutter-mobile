@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
+import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/fire_cause/fire_cause.dart';
 import 'package:cmo/state/fire_cubit/fire_state.dart';
@@ -65,6 +66,18 @@ class FireCubit extends Cubit<FireState> {
         fireCauseSelect: fireCauseSelect,
         fireRegister: fireRegister,
         fireRegisterBeforeEdit: fireRegister,
+        asiPhotos: fireRegister.asiPhotos
+            ?.map((e) => AsiPhoto(
+                  asiRegisterNo:
+                      DateTime.now().millisecondsSinceEpoch.toString(),
+                  asiRegisterPhotoNo:
+                      DateTime.now().millisecondsSinceEpoch.toString(),
+                  photo: e,
+                  isActive: true,
+                  isMasterdataSynced: false,
+                  photoName: DateTime.now().microsecondsSinceEpoch.toString(),
+                ))
+            .toList() ?? [],
       ));
     }
   }
@@ -80,6 +93,7 @@ class FireCubit extends Cubit<FireState> {
     double? lat,
     double? lng,
     String? comment,
+    List<String>? selectAsiPhotoBase64s,
   }) {
     String? carRaisedDate;
     String? carClosedDate;
@@ -104,6 +118,24 @@ class FireCubit extends Cubit<FireState> {
       carClosedDate = state.fireRegister.carClosedDate;
     }
 
+    final asiPhotos = <AsiPhoto>[];
+
+    asiPhotos.addAll(state.asiPhotos);
+
+    if (true == selectAsiPhotoBase64s?.isNotEmpty) {
+      asiPhotos.addAll(selectAsiPhotoBase64s!
+          .map((e) => AsiPhoto(
+                asiRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
+                asiRegisterPhotoNo:
+                    DateTime.now().millisecondsSinceEpoch.toString(),
+                photo: e,
+                isActive: true,
+                isMasterdataSynced: false,
+                photoName: DateTime.now().microsecondsSinceEpoch.toString(),
+              ))
+          .toList());
+    }
+
     emit(state.copyWith(
       fireRegister: state.fireRegister.copyWith(
         fireRegisterId: null,
@@ -121,8 +153,10 @@ class FireCubit extends Cubit<FireState> {
             fireCauseSelect?.fireCauseId ?? state.fireRegister.fireCauseId,
         fireCauseName:
             fireCauseSelect?.fireCauseName ?? state.fireRegister.fireCauseName,
+        asiPhotos: selectAsiPhotoBase64s ?? state.fireRegister.asiPhotos,
       ),
       fireCauseSelect: fireCauseSelect ?? state.fireCauseSelect,
+      asiPhotos: asiPhotos,
     ));
   }
 
@@ -146,5 +180,19 @@ class FireCubit extends Cubit<FireState> {
                 DateTime.now().millisecondsSinceEpoch.toString(),
             isActive: true,
             isMasterdataSynced: isMasterSynced));
+  }
+
+  void onUpdateAsiPhoto(AsiPhoto asiPhoto) {
+    final listAsiPhotos = [...state.asiPhotos];
+    listAsiPhotos.removeWhere(
+        (element) => element.asiRegisterPhotoNo == asiPhoto.asiRegisterPhotoNo);
+    listAsiPhotos.add(asiPhoto);
+    emit(state.copyWith(asiPhotos: listAsiPhotos));
+  }
+
+  void onRemoveAsiPhoto(AsiPhoto asiPhoto) {
+    final listAsiPhotos = [...state.asiPhotos];
+    listAsiPhotos.remove(asiPhoto);
+    emit(state.copyWith(asiPhotos: listAsiPhotos));
   }
 }
