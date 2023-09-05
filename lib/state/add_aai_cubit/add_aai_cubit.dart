@@ -21,6 +21,7 @@ class AddAAICubit extends Cubit<AddAAIState> {
 
   Future<void> onInit() async {
     try {
+      emit(state.copyWith(isDataReady: false));
       final farm = await configService.getActiveFarm();
       final workers = await cmoDatabaseMasterService
           .getFarmerWorkersByFarmId(farm?.farmId ?? '');
@@ -120,6 +121,32 @@ class AddAAICubit extends Cubit<AddAAIState> {
         .getWorkerJobDescriptionByWorkerId(worker?.workerId ?? '');
     emit(
       state.copyWith(
+        jobDescriptions: jobDescriptions,
+        accidentAndIncident: state.accidentAndIncident.copyWith(
+          workerId: worker?.workerId,
+          workerName: worker?.firstName,
+          jobDescriptionId: null,
+          jobDescriptionName: null,
+        ),
+      ),
+    );
+  }
+
+  Future<void> onWorkerSelectedByAddNew(FarmerWorker? worker) async {
+    emit(state.copyWith(isDataReady: false));
+    await Future.delayed(const Duration(milliseconds: 1000), () {});
+    final farm = await configService.getActiveFarm();
+    final workers = await cmoDatabaseMasterService
+        .getFarmerWorkersByFarmId(farm?.farmId ?? '');
+
+    emit(state.copyWith(workers: workers));
+
+    final jobDescriptions = await cmoDatabaseMasterService
+        .getWorkerJobDescriptionByWorkerId(worker?.workerId ?? '');
+
+    emit(
+      state.copyWith(
+        isDataReady: true,
         jobDescriptions: jobDescriptions,
         accidentAndIncident: state.accidentAndIncident.copyWith(
           workerId: worker?.workerId,

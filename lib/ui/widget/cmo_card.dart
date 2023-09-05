@@ -56,7 +56,8 @@ class CmoCard extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(6, 0, 0, 6),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: childAlignment ?? MainAxisAlignment.start,
+                      mainAxisAlignment:
+                          childAlignment ?? MainAxisAlignment.start,
                       children: content,
                     ),
                   ),
@@ -130,13 +131,19 @@ class CmoCardHeader extends StatelessWidget {
 
 class CmoCardItem extends StatelessWidget {
   const CmoCardItem(
-      {super.key, required this.title, this.value, this.ratioTitleSpace = 1});
+      {super.key,
+      required this.title,
+      this.value,
+      this.ratioTitleSpace = 1,
+      this.isLoading = false});
 
   final String title;
 
   final String? value;
 
   final int ratioTitleSpace;
+
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -151,10 +158,12 @@ class CmoCardItem extends StatelessWidget {
         ),
         if (value != null && value!.isNotEmpty)
           Expanded(
-            child: Text(
-              value ?? '',
-              style: context.textStyles.bodyNormal.white,
-            ),
+            child: isLoading
+                ? const SizedBox.shrink()
+                : Text(
+                    value ?? '',
+                    style: context.textStyles.bodyNormal.white,
+                  ),
           )
         else
           const SizedBox(),
@@ -186,13 +195,15 @@ class CmoCardItemHighlighted extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 19),
                 child: Text(
                   title,
-                  style: context.textStyles.bodyNormal.copyWith(color: context.colors.yellow),
+                  style: context.textStyles.bodyNormal
+                      .copyWith(color: context.colors.yellow),
                 ),
               ),
             ),
             Text(
               value,
-              style: context.textStyles.bodyNormal.copyWith(color: context.colors.yellow),
+              style: context.textStyles.bodyNormal
+                  .copyWith(color: context.colors.yellow),
             ),
           ],
         );

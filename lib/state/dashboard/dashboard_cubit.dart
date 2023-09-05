@@ -12,11 +12,15 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
 
   Future<void> initializeFarmDashBoard() async {
     try {
+      emit(state.copyWith(loading: true));
       final farm = await configService.getActiveFarm();
       final data = await cmoDatabaseMasterService
           .getFarmerWorkersByFarmId(farm?.farmId ?? '');
       emit(state.copyWith(
-          farmDashBoardInfo: FarmDashBoardInfo(totalLabour: data.length)));
+          farmDashBoardInfo: FarmDashBoardInfo(
+            totalLabour: data.length,
+          ),
+          loading: false));
     } catch (e) {
       handleError(e);
     }

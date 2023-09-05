@@ -70,9 +70,15 @@ class _FarmerMemberDashboardScreenState
               child: CmoCard(
                 content: [
                   CmoCardHeader(title: LocaleKeys.labourManagement.tr()),
-                  CmoCardItem(
-                    title: LocaleKeys.workers.tr(),
-                    value: '${data.farmDashBoardInfo?.totalLabour ?? ''}',
+                  BlocSelector<DashboardCubit, DashboardState, bool>(
+                    selector: (state) => state.loading,
+                    builder: (context, isLoading) {
+                      return CmoCardItem(
+                        isLoading: isLoading,
+                        title: LocaleKeys.workers.tr(),
+                        value: '${data.farmDashBoardInfo?.totalLabour ?? ''}',
+                      );
+                    },
                   ),
                 ],
               ),

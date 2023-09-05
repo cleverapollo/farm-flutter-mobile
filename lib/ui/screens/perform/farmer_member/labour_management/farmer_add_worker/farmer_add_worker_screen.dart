@@ -27,7 +27,7 @@ class FarmerAddWorkerScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _FarmerAddWorkerScreenState();
 
-  static Future<bool?> push(
+  static Future<dynamic> push(
     BuildContext context, {
     FarmerWorker? farmerWorker,
     bool isEditing = false,
@@ -94,26 +94,25 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
         if (mounted) {
           final databaseService = cmoDatabaseMasterService;
 
-          await (await databaseService.db).writeTxn(() async {
-            resultId =
-                await databaseService.cacheFarmerWorker(farmerWorker.copyWith(
-              genderId: farmerWorker.genderId ?? 1,
-              isLocal: 1,
-              isActive: true,
-              createDT: DateTime.now().toIso8601String(),
-              updateDT: DateTime.now().toIso8601String(),
-            ));
-          });
-        }
+          resultId =
+              await databaseService.cacheWorkerFromFarm(farmerWorker.copyWith(
+            genderId: farmerWorker.genderId ?? 1,
+            isLocal: 1,
+            isActive: true,
+            createDT: DateTime.now().toIso8601String(),
+            updateDT: DateTime.now().toIso8601String(),
+          ));
 
-        if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
               msg: '${LocaleKeys.createWorker.tr()} $resultId',
             );
 
             await context.read<LabourManagementCubit>().loadListWorkers();
-            Navigator.of(context).pop(true);
+          }
+
+          if(context.mounted){
+            return Navigator.of(context).pop(farmerWorker);
           }
         }
       } finally {

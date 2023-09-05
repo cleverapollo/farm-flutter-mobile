@@ -26,7 +26,7 @@ class FarmerStakeHolderSelectJobDescription extends StatefulWidget {
   State<StatefulWidget> createState() =>
       _FarmerStakeHolderSelectJobDescriptionState();
 
-  static Future<void> push({
+  static Future<dynamic> push({
     required BuildContext context,
     List<WorkerJobDescription>? selectedJobDesc,
     required void Function(List<WorkerJobDescription>) onSave,

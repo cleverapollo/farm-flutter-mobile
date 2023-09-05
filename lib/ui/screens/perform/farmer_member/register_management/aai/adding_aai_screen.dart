@@ -183,7 +183,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
             selector: (state) => state.isDataReady,
             builder: (context, isDataReady) {
               if (!isDataReady) {
-                return const SizedBox.shrink();
+                return const Center(child: CircularProgressIndicator());
               }
               return SingleChildScrollView(
                 child: Column(
@@ -335,8 +335,8 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           onTap: () async {
             if (workers.isEmpty) {
               final result = await FarmerAddWorkerScreen.push(context);
-              if (result != null && result) {
-                await cubit.onInit();
+              if (result != null) {
+                await cubit.onWorkerSelectedByAddNew(result as FarmerWorker);
               }
             }
           },
@@ -374,38 +374,44 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
   }
 
   Widget _selectJobDescription() {
-    return BlocSelector<AddAAICubit, AddAAIState, List<WorkerJobDescription>>(
-      selector: (state) => state.jobDescriptions,
-      builder: (context, jobDescriptions) {
+    return BlocBuilder<AddAAICubit, AddAAIState>(
+      builder: (context, state) {
         final jobId = cubit.state.accidentAndIncident.jobDescriptionId;
-        final initJob = jobDescriptions
+        final initJob = state.jobDescriptions
             .firstWhereOrNull((element) => element.jobDescriptionId == jobId);
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-          child: AttributeItem(
-            child: CmoDropdown<WorkerJobDescription>(
-                shouldBorderItem: true,
-                name:
-                    '${initJob?.jobDescriptionName} ${cubit.state.accidentAndIncident.workerId}',
-                hintText: LocaleKeys.jobDescription.tr(),
-                style: context.textStyles.bodyBold.blueDark2,
-                inputDecoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(8),
-                  isDense: true,
-                  hintText:
-                      '${LocaleKeys.select.tr()} ${LocaleKeys.jobDescription.tr().toLowerCase()}',
-                  hintStyle: context.textStyles.bodyBold.blueDark2,
-                  border: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                ),
-                onChanged: (value) {
-                  cubit.onJobDescriptionSelected(value);
-                },
-                initialValue: initJob,
-                itemsData: jobDescriptions
-                    .map((e) => CmoDropdownItem(
-                        id: e, name: e.jobDescriptionName ?? ''))
-                    .toList()),
+        return InkWell(
+          onTap: () {
+            if(state.accidentAndIncident.workerId == null){
+              showSnackError(msg: 'Add a worker first to make a selection');
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+            child: AttributeItem(
+              child: CmoDropdown<WorkerJobDescription>(
+                  shouldBorderItem: true,
+                  name:
+                      '${initJob?.jobDescriptionName} ${cubit.state.accidentAndIncident.workerId}',
+                  hintText: LocaleKeys.jobDescription.tr(),
+                  style: context.textStyles.bodyBold.blueDark2,
+                  inputDecoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(8),
+                    isDense: true,
+                    hintText:
+                        '${LocaleKeys.select.tr()} ${LocaleKeys.jobDescription.tr().toLowerCase()}',
+                    hintStyle: context.textStyles.bodyBold.blueDark2,
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                  ),
+                  onChanged: (value) {
+                    cubit.onJobDescriptionSelected(value);
+                  },
+                  initialValue: initJob,
+                  itemsData: state.jobDescriptions
+                      .map((e) => CmoDropdownItem(
+                          id: e, name: e.jobDescriptionName ?? ''))
+                      .toList()),
+            ),
           ),
         );
       },
