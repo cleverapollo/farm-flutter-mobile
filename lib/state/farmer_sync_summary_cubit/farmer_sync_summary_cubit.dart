@@ -173,8 +173,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       logger.d('Create System Event Success --- $systemEventId');
       emit(state.copyWith(syncMessage: 'Syncing...'));
 
-      await cmoDatabaseMasterService.deleteAll();
-      await Future.delayed(const Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 5), () {});
 
       await createSubscriptions();
 

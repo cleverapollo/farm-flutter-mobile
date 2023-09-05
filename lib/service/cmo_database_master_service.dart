@@ -922,6 +922,14 @@ class CmoDatabaseMasterService {
     });
   }
 
+  Future<int> countFireRegistersByFarmId(String? farmId) async {
+    final db = await _db();
+
+    final result = await db.fireRegisters.filter().farmIdEqualTo(farmId).findAll();
+
+    return result.length;
+  }
+
   Future<List<FireRegister>> getFireRegistersByFarmId(
       {String? farmId, bool isOpen = true}) async {
     final db = await _db();
