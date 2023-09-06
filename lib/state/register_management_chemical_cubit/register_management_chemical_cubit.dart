@@ -140,13 +140,11 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
   }
 
   Future<bool> onSave() async {
-    final canSave = state.chemical.campId != null &&
-        state.chemical.openingStock != null &&
+    final canSave = state.chemical.openingStock != null &&
         state.chemical.issued != null &&
         state.chemical.balance != null &&
         state.chemical.mixture != null &&
-        state.chemical.usagePerHa != null &&
-        state.chemical.comment != null;
+        state.chemical.usagePerHa != null;
 
     if (!canSave) {
       showSnackError(msg: 'Please select required field');
