@@ -254,6 +254,7 @@ class _AddBiologicalControlAgentsScreenState
         final initValue = findIndex != -1 ? stateHolders[findIndex] : null;
         return AttributeItem(
           child: CmoDropdown<StakeHolder>(
+            shouldBorderItem: true,
             name: 'StakeHolderId',
             hintText: LocaleKeys.stakeholderName.tr(),
             inputDecoration: InputDecoration(
@@ -288,6 +289,7 @@ class _AddBiologicalControlAgentsScreenState
 
         return AttributeItem(
           child: CmoDropdown<MonitoringRequirement>(
+            shouldBorderItem: true,
             name: 'DescriptionMonitoringRequirementsId',
             hintText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
             inputDecoration: InputDecoration(

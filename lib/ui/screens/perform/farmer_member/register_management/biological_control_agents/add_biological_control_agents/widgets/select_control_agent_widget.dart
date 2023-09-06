@@ -53,6 +53,7 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
         ),
         AttributeItem(
           child: CmoDropdown<BiologicalControlAgentType?>(
+            shouldBorderItem: true,
             name: 'ControlAgent',
             hintText: LocaleKeys.complaintName.tr(),
             validator: requiredValidator,
@@ -60,9 +61,8 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
             inputDecoration: InputDecoration(
               contentPadding: const EdgeInsets.all(8),
               isDense: true,
-              hintText:
-                  '${LocaleKeys.select.tr()} ${LocaleKeys.complaintName.tr().toLowerCase()}',
-              hintStyle: context.textStyles.bodyBold.blueDark2,
+              hintText: LocaleKeys.nameOfControlAgent.tr(),
+              hintStyle: context.textStyles.bodyNormal.copyWith(color: Colors.grey),
               border: InputBorder.none,
               focusedBorder: InputBorder.none,
             ),

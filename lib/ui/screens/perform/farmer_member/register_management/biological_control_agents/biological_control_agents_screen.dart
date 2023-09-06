@@ -41,10 +41,36 @@ class _BiologicalControlAgentsScreenState
   late StatusFilterEnum statusFilter = StatusFilterEnum.open;
   String? inputSearch;
 
+  var stakeHolders = <StakeHolder>[];
+  var monitorings = <MonitoringRequirement>[];
+  var agentTypes = <BiologicalControlAgentType>[];
+
   @override
   void initState() {
     super.initState();
     _init();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final farm = await configService.getActiveFarm();
+
+      monitorings = await cmoDatabaseMasterService
+          .getMonitoringRequirementByGroupSchemeId(farm?.groupSchemeId ?? 0);
+
+      agentTypes = await cmoDatabaseMasterService
+          .getBiologicalControlAgentTypeByGroupSchemeId(
+        farm?.groupSchemeId ?? 0,
+      );
+
+      final farmStakeHolders = await cmoDatabaseMasterService
+          .getFarmStakeHolderByFarmId(farm?.farmId ?? '');
+
+      for (final item in farmStakeHolders) {
+        final stakeholders = await cmoDatabaseMasterService
+            .getStakeHoldersByStakeHolderId(item.stakeHolderId ?? '');
+        stakeHolders.addAll(stakeholders);
+      }
+
+      if (context.mounted) setState(() {});
+    });
   }
 
   Future<void> _init() async {
@@ -159,19 +185,47 @@ class _BiologicalControlAgentsScreenState
                       ),
                       itemBuilder: (context, index) {
                         final item = filteredItems[index];
+
+                        final agentType = agentTypes.firstWhereOrNull((e) =>
+                            e.biologicalControlAgentTypeId ==
+                            filteredItems[index].biologicalControlAgentTypeId);
+                        final monitoringName = monitorings
+                            .firstWhereOrNull((e) =>
+                                e.monitoringRequirementId ==
+                                item.monitoringRequirementId)
+                            ?.monitoringRequirementName;
+                        final stakeholderName = stakeHolders
+                            .firstWhereOrNull(
+                                (e) => e.stakeHolderId == item.stakeholderId)
+                            ?.stakeholderName;
+
+                        final itemMapping = item.copyWith(
+                          biologicalControlAgentTypeId:
+                              agentType?.biologicalControlAgentTypeId,
+                          biologicalControlAgentTypeName:
+                              agentType?.biologicalControlAgentTypeName,
+                          biologicalControlAgentTypeCountryName:
+                              agentType?.countryId.toString(),
+                          reasonForBioAgent: agentType?.reasonForBioAgent,
+                          biologicalControlAgentTypeScientificName: agentType
+                              ?.biologicalControlAgentTypeScientificName,
+                          monitoringRequirementName: monitoringName,
+                          stakeholderName: stakeholderName,
+                        );
+
                         return GestureDetector(
                           onTap: () async {
                             final result =
                                 await AddBiologicalControlAgentsScreen.push(
-                                  context,
-                                  agent: item,
-                                );
+                              context,
+                              agent: itemMapping,
+                            );
                             if (result == null) return;
                             filteredItems[index] = result;
                             setState(() {});
                           },
                           child: _BiologicalControlAgentItem(
-                            agent: item,
+                            agent: itemMapping,
                           ),
                         );
                       },
@@ -194,6 +248,7 @@ class _BiologicalControlAgentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: context.colors.greyD9D9),
@@ -219,7 +274,7 @@ class _BiologicalControlAgentItem extends StatelessWidget {
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.nameOfControlAgent.tr(),
-            valueLabel: agent.biologicalControlAgentName,
+            valueLabel: agent.biologicalControlAgentTypeName,
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.scientificName.tr(),
@@ -244,7 +299,7 @@ class _BiologicalControlAgentItem extends StatelessWidget {
           ),
           KeyValueItemWidget(
             keyLabel: LocaleKeys.description.tr(),
-            valueLabel: agent.issueDescription,
+            valueLabel: agent.monitoringRequirementName,
           ),
           GeneralCommentsItem(
             comment: agent.comment,
