@@ -61,32 +61,35 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBarV2(
-        title: LocaleKeys.addASI.tr(),
-        subtitle: widget.farmName ?? '',
-        showTrailing: true,
-      ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: FormBuilder(
-              key: _formKey,
-              child: BlocBuilder<AsiDetailCubit, AsiDetailState>(
-                builder: (context, state) {
-                  return _buildBody(context, state);
-                },
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: CmoAppBarV2(
+          title: LocaleKeys.addASI.tr(),
+          subtitle: widget.farmName ?? '',
+          showTrailing: true,
+        ),
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: FormBuilder(
+                key: _formKey,
+                child: BlocBuilder<AsiDetailCubit, AsiDetailState>(
+                  builder: (context, state) {
+                    return _buildBody(context, state);
+                  },
+                ),
               ),
             ),
-          ),
-          Positioned.fill(
-            bottom: MediaQuery.of(context).padding.bottom,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: _buildButton(),
+            Positioned.fill(
+              bottom: MediaQuery.of(context).padding.bottom,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: _buildButton(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

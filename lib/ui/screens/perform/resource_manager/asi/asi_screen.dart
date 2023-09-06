@@ -164,7 +164,7 @@ class _ASIScreenState extends State<ASIScreen> {
                                           title: listAsi[index].asiTypeName ?? LocaleKeys.asiType.tr(),
                                         ),
                                         CmoCardItem(
-                                          title: listAsi[index].asiRegisterNo ?? '',
+                                          title: listAsi[index].compartmentName ?? '',
                                         ),
                                       ],
                                     ),

@@ -285,26 +285,21 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       ));
     }
     if (stepCount != 0) {
-      await cacheFarm(
-        haveChanged: false,
-      );
+      await cacheFarm();
     }
   }
 
-  Future<void> cacheFarm({
-    bool haveChanged = true,
-  }) async {
-    await cmoDatabaseMasterService.cacheFarmAddMember(
-      state.farm!.copyWith(
-        isMasterDataSynced: haveChanged ? 0 : state.farm?.isMasterDataSynced,
-      ),
-    );
+  Future<void> cacheFarm() async {
+    await cmoDatabaseMasterService.cacheFarmAddMember(state.farm!);
   }
 
   Future<void> onTapSlimf({required bool isSlimf}) async {
     emit(
       state.copyWith(
-        farm: state.farm?.copyWith(isSlimfCompliant: isSlimf),
+        farm: state.farm?.copyWith(
+          isSlimfCompliant: isSlimf,
+          isMasterDataSynced: 0,
+        ),
         addMemberSLIMF: AddMemberSLIMF(
           isSlimfCompliant: isSlimf,
           isComplete: true,
@@ -427,6 +422,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           streetName: currentData.addMemberSiteLocations.address,
           province: currentData.province,
           farmSize: currentData.addMemberCompartmentsState.farmSize,
+          isMasterDataSynced: 0,
         ),
         addMemberSDetails: currentData.copyWith(
           isComplete: isComplete,
@@ -446,8 +442,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
 
     emit(state.copyWith(
       farm: state.farm?.copyWith(
-          propertyOwnershipTypeId:
-              propertyTypeSelected?.farmPropertyOwnershipTypeId),
+          propertyOwnershipTypeId: propertyTypeSelected?.farmPropertyOwnershipTypeId,
+        isMasterDataSynced: 0,
+      ),
       addMemberMPO: addMemberMPO.copyWith(
         propertyTypeSelected: propertyTypeSelected,
         isExpansionOpen: false,
@@ -573,7 +570,10 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       listFarmMemberObjectiveAnswers.add(currentAnswer);
       emit(
         state.copyWith(
-          farm: state.farm?.copyWith(objectiveAnswers: listFarmMemberObjectiveAnswers),
+          farm: state.farm?.copyWith(
+            objectiveAnswers: listFarmMemberObjectiveAnswers,
+            isMasterDataSynced: 0,
+          ),
           farmMemberObjectivesState: state.farmMemberObjectivesState.copyWith(
             listFarmMemberObjectiveAnswers: listFarmMemberObjectiveAnswers,
           ),
@@ -626,6 +626,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           idNumber: state.addMemberMDetails.idNumber,
           mobileNumber: state.addMemberMDetails.mobileNumber,
           email: state.addMemberMDetails.emailAddress,
+          isMasterDataSynced: 0,
         ),
         addMemberMDetails: state.addMemberMDetails.copyWith(
           isComplete: isComplete,
@@ -666,6 +667,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
             signatureImage: image,
             signatureDate: date,
             signaturePoints: points,
+            isMasterDataSynced: 0,
           ),
           addMemberSAF: state.addMemberSAF.copyWith(
             signatureImage: image,
@@ -685,7 +687,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
             signatureImage: null,
             signatureDate: null,
             signaturePoints: null,
-            isGroupSchemeMember: false),
+            isGroupSchemeMember: false,
+            isMasterDataSynced: 0,
+        ),
         addMemberSAF: const AddMemberSAF()));
   }
 

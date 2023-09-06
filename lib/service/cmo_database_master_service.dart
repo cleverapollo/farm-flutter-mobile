@@ -1478,7 +1478,8 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<AsiType>> getAsiTypeByGroupSchemeId(int groupSchemeId) async {
+  Future<List<AsiType>> getAsiTypeByGroupSchemeId(int? groupSchemeId) async {
+    if (groupSchemeId == null) return <AsiType>[];
     final db = await _db();
 
     return db.asiTypes
