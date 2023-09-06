@@ -28,6 +28,7 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
       final trainingCount = await _onCountTraining(isRefreshUI: false);
       final fireCount = await _onCountFire(isRefreshUI: false);
       final rteCount = await _onCountRte();
+      final chemicalCount = await _onCountChemical();
 
       emit(
         state.copyWith(
@@ -39,6 +40,7 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
           training: trainingCount,
           fire: fireCount,
           rteSpecies: rteCount,
+          chemicals: chemicalCount,
         ),
       );
     } catch (e) {
@@ -60,6 +62,7 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
         _onCountBiologicalControlAgent();
         break;
       case ManagementType.chemicals:
+        _onCountChemical();
         break;
       case ManagementType.disciplinaries:
         break;
@@ -167,4 +170,17 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
     }
     return total.length;
   }
+
+  Future<int> _onCountChemical({bool isRefreshUI = true}) async {
+    final total = await masterService.countChemicalRegisterByFarmId(int.tryParse(farmId));
+    if (isRefreshUI) {
+      emit(
+        state.copyWith(
+          training: total,
+        ),
+      );
+    }
+    return total;
+  }
+
 }

@@ -1730,6 +1730,15 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<int> countChemicalRegisterByFarmId(int? farmId) async {
+    final db = await _db();
+
+    final result = await db.chemicals.filter().farmIdEqualTo(farmId).isActiveEqualTo(true).findAll();
+
+    return result.length;
+
+  }
+
   Future<List<PetsAndDiseaseRegister>>
       getUnsyncedPestsAndDiseasesRegisterTreatmentMethod() async {
     final db = await _db();
