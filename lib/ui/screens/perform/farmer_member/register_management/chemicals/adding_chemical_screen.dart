@@ -68,6 +68,7 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                               selector: (state) => state.chemicalTypeSelect,
                               builder: (context, chemicalTypeSelect) {
                                 return CmoDropdown<ChemicalType>(
+                                  shouldBorderItem: true,
                                   name: 'chemicalType',
                                   style: context.textStyles.bodyBold
                                       .copyWith(color: context.colors.black),
@@ -104,6 +105,7 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                               builder:
                                   (context, chemicalApplicationMethodSelect) {
                                 return CmoDropdown<ChemicalApplicationMethod>(
+                                  shouldBorderItem: true,
                                   name: 'applicationMethod',
                                   style: context.textStyles.bodyBold
                                       .copyWith(color: context.colors.black),
@@ -144,6 +146,7 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                               selector: (state) => state.campSelect,
                               builder: (context, campSelect) {
                                 return CmoDropdown<Camp>(
+                                  shouldBorderItem: true,
                                   name: 'campId',
                                   style: context.textStyles.bodyBold
                                       .copyWith(color: context.colors.black),
