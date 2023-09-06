@@ -19,10 +19,12 @@ class AddMemberState with _$AddMemberState {
     @Default(AddMemberMPO()) AddMemberMPO addMemberMPO,
     @Default(AddMemberMDetails()) AddMemberMDetails addMemberMDetails,
     @Default(AddMemberSDetails()) AddMemberSDetails addMemberSDetails,
-    @Default(FarmMemberObjectivesState()) FarmMemberObjectivesState farmMemberObjectivesState,
+    @Default(FarmMemberObjectivesState())
+        FarmMemberObjectivesState farmMemberObjectivesState,
     @Default(AddMemberContract()) AddMemberContract addMemberContract,
     @Default(AddMemberSAF()) AddMemberSAF addMemberSAF,
-    @Default(FarmMemberRiskAssessmentsState()) FarmMemberRiskAssessmentsState farmMemberRiskAssessmentsState,
+    @Default(FarmMemberRiskAssessmentsState())
+        FarmMemberRiskAssessmentsState farmMemberRiskAssessmentsState,
     @Default(AddMemberClose()) AddMemberClose addMemberClose,
   }) = _AddMemberState;
 }
@@ -30,6 +32,18 @@ class AddMemberState with _$AddMemberState {
 extension AddMemberStateExtension on AddMemberState {
   AddMemberState cleanCache() {
     return const AddMemberState();
+  }
+
+  bool get isAllCompleted {
+    final isCompleted = addMemberSLIMF.isComplete &&
+        addMemberMPO.isComplete &&
+        addMemberMDetails.isComplete &&
+        addMemberSDetails.isComplete &&
+        farmMemberObjectivesState.isComplete &&
+        addMemberSAF.isComplete &&
+        farmMemberRiskAssessmentsState.isComplete;
+
+    return isCompleted;
   }
 }
 
@@ -167,8 +181,10 @@ class AddMemberAsisState with _$AddMemberAsisState {
 @freezed
 class FarmMemberRiskAssessmentsState with _$FarmMemberRiskAssessmentsState {
   const factory FarmMemberRiskAssessmentsState({
-    @Default(<RiskProfileQuestion>[]) List<RiskProfileQuestion> listRiskProfileQuestions,
-    @Default(<FarmMemberRiskProfileAnswer>[]) List<FarmMemberRiskProfileAnswer> listFarmMemberRiskProfileAnswers,
+    @Default(<RiskProfileQuestion>[])
+        List<RiskProfileQuestion> listRiskProfileQuestions,
+    @Default(<FarmMemberRiskProfileAnswer>[])
+        List<FarmMemberRiskProfileAnswer> listFarmMemberRiskProfileAnswers,
     @Default(true) bool isSectionCollapse,
     Key? sectionKey,
   }) = _FarmMemberRiskAssessmentsState;
@@ -176,7 +192,10 @@ class FarmMemberRiskAssessmentsState with _$FarmMemberRiskAssessmentsState {
 
 extension FarmMemberRiskAssessmentsStateExtension
     on FarmMemberRiskAssessmentsState {
-  bool get isComplete => listFarmMemberRiskProfileAnswers.firstWhereOrNull((element) => element.answer == null) == null;
+  bool get isComplete =>
+      listFarmMemberRiskProfileAnswers
+          .firstWhereOrNull((element) => element.answer == null) ==
+      null;
 
   FarmMemberRiskProfileAnswer? getFarmMemberRiskProfileAnswer(
     int riskProfileQuestionId,
@@ -192,21 +211,29 @@ extension FarmMemberRiskAssessmentsStateExtension
 @freezed
 class FarmMemberObjectivesState with _$FarmMemberObjectivesState {
   const factory FarmMemberObjectivesState({
-    @Default(<FarmMemberObjective>[]) List<FarmMemberObjective> listFarmMemberObjectives,
-    @Default(<FarmObjectiveOption>[]) List<FarmObjectiveOption> listFarmObjectiveOptions,
-    @Default(<FarmMemberObjectiveAnswer>[]) List<FarmMemberObjectiveAnswer> listFarmMemberObjectiveAnswers,
+    @Default(<FarmMemberObjective>[])
+        List<FarmMemberObjective> listFarmMemberObjectives,
+    @Default(<FarmObjectiveOption>[])
+        List<FarmObjectiveOption> listFarmObjectiveOptions,
+    @Default(<FarmMemberObjectiveAnswer>[])
+        List<FarmMemberObjectiveAnswer> listFarmMemberObjectiveAnswers,
     @Default(true) bool isSectionCollapse,
   }) = _FarmMemberObjectivesState;
 }
 
 extension FarmMemberObjectivesStateExtension on FarmMemberObjectivesState {
-  bool get isComplete => listFarmMemberObjectiveAnswers.firstWhereOrNull((element) => element.farmObjectiveOptionId == null) == null;
+  bool get isComplete =>
+      listFarmMemberObjectiveAnswers.firstWhereOrNull(
+          (element) => element.farmObjectiveOptionId == null) ==
+      null;
 
   String getFarmMemberObjectiveAnswerTitle(int farmMemberObjectiveId) {
-    final answer = listFarmMemberObjectiveAnswers.firstWhereOrNull((element) => element.farmMemberObjectiveId == farmMemberObjectiveId);
+    final answer = listFarmMemberObjectiveAnswers.firstWhereOrNull(
+        (element) => element.farmMemberObjectiveId == farmMemberObjectiveId);
     if (answer != null) {
       final answerTitle = listFarmObjectiveOptions.firstWhereOrNull(
-        (element) => element.farmObjectiveOptionId == answer.farmObjectiveOptionId,
+        (element) =>
+            element.farmObjectiveOptionId == answer.farmObjectiveOptionId,
       );
 
       if (answerTitle == null) return '';
@@ -216,8 +243,10 @@ extension FarmMemberObjectivesStateExtension on FarmMemberObjectivesState {
     return '';
   }
 
-  FarmMemberObjectiveAnswer? getFarmMemberObjectiveAnswer(int farmMemberObjectiveId) {
-    final answer = listFarmMemberObjectiveAnswers.firstWhereOrNull((element) => element.farmMemberObjectiveId == farmMemberObjectiveId);
+  FarmMemberObjectiveAnswer? getFarmMemberObjectiveAnswer(
+      int farmMemberObjectiveId) {
+    final answer = listFarmMemberObjectiveAnswers.firstWhereOrNull(
+        (element) => element.farmMemberObjectiveId == farmMemberObjectiveId);
     return answer;
   }
 }

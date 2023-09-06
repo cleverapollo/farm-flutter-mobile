@@ -187,7 +187,7 @@ class _AddMemberSignContractWidgetState
                               final state =
                                   context.read<AddMemberCubit>().state;
 
-                              if (state.addMemberMDetails.isComplete) {
+                              if (state.isAllCompleted) {
                                 if (context.mounted) {
                                   await AddMemberMembershipContractScreen.push(
                                       context,
