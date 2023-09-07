@@ -27,8 +27,8 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
       final employeeGrievanceCount = await _onCountEmployeeGrievance(isRefreshUI: false);
       final trainingCount = await _onCountTraining(isRefreshUI: false);
       final fireCount = await _onCountFire(isRefreshUI: false);
-      final rteCount = await _onCountRte();
-      final chemicalCount = await _onCountChemical();
+      final rteCount = await _onCountRte(isRefreshUI: false);
+      final chemicalCount = await _onCountChemical(isRefreshUI: false);
 
       emit(
         state.copyWith(
@@ -164,7 +164,7 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
     if (isRefreshUI) {
       emit(
         state.copyWith(
-          training: total.length,
+          rteSpecies: total.length,
         ),
       );
     }
@@ -176,7 +176,7 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
     if (isRefreshUI) {
       emit(
         state.copyWith(
-          training: total,
+          chemicals: total,
         ),
       );
     }
