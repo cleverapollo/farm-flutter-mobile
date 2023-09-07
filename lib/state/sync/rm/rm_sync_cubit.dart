@@ -558,10 +558,10 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         for (final compartment in compartments) {
           final syncedCompartment = await cmoPerformApiService.insertUpdatedCompartment(compartment);
           if (syncedCompartment != null) {
+            await cmoDatabaseMasterService.removeCompartment(compartment.id);
             await cmoDatabaseMasterService.cacheCompartment(
               syncedCompartment.copyWith(
                 isMasterdataSynced: true,
-                localCompartmentId: compartment.localCompartmentId,
                 productGroupTemplateName: compartment.productGroupTemplateName,
                 speciesGroupTemplateName: compartment.speciesGroupTemplateName,
                 espacementWidth: compartment.espacementWidth,
@@ -594,29 +594,16 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     try {
       logger.d('Get unsynced ASI');
       final listASI = await cmoDatabaseMasterService.getRMAsiRegister();
-      final compartments = await cmoDatabaseMasterService.getAllCompartments();
-
       if (listASI.isNotBlank) {
         logger.d('Unsynced ASI count: ${listASI.length}');
         for (final asi in listASI) {
-          final managementUnitId = compartments
-              .firstWhereOrNull((element) => element.localCompartmentId == asi.localCompartmentId)
-              ?.managementUnitId;
-          final syncedAsi = await cmoPerformApiService.insertUpdatedASI(
-            asi.copyWith(
-              managementUnitId: asi.managementUnitId ?? managementUnitId,
-            ),
-          );
+          final syncedAsi = await cmoPerformApiService.insertUpdatedASI(asi);
           if (syncedAsi != null) {
             await cmoDatabaseMasterService.cacheAsi(
               syncedAsi.copyWith(
                 localId: asi.localId,
-                localCompartmentId: asi.localCompartmentId,
-                compartmentName: asi.compartmentName,
-                managementUnitId: asi.managementUnitId ?? managementUnitId,
                 isMasterdataSynced: true,
               ),
-              isDirect: true,
             );
 
             // final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
@@ -1027,17 +1014,13 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   Future<void> insertRMAsiRegisters() async {
     emit(state.copyWith(syncMessage: 'Syncing ASI Registers, ASI Photos...'));
     final listAsi = await cmoPerformApiService.getRMAsiRegisters();
-    final listCompartments = await cmoDatabaseMasterService.getAllCompartments();
     if (listAsi.isNotBlank) {
       var now = DateTime.now().microsecondsSinceEpoch;
       for (final asi in listAsi!) {
         final localId = now++;
-        final compartment = listCompartments.firstWhereOrNull((element) => element.managementUnitId == asi.managementUnitId);
         await cmoDatabaseMasterService.cacheAsi(
           asi.copyWith(
             localId: localId,
-            compartmentName: compartment?.unitNumber,
-            localCompartmentId: compartment?.localCompartmentId,
           ),
           isDirect: true,
         );

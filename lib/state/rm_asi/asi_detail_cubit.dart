@@ -23,13 +23,12 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
 
   Future<void> fetchData() async {
     final userRole = await configService.getActiveUserRole();
-    final activeGroupScheme = await configService.getActiveGroupScheme();
 
     List<AsiType>? types;
     if (userRole == UserRoleEnum.farmerMember) {
       types = await cmoPerformApiService.fetchFarmerAsiType();
     } else {
-      types = await cmoDatabaseMasterService.getAsiTypeByGroupSchemeId(activeGroupScheme?.groupSchemeId);
+      types = await cmoDatabaseMasterService.getAsiTypes();
     }
 
     final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(
