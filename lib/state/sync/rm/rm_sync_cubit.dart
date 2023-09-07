@@ -977,11 +977,17 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   Future<void> insertCompartmentsByRMUId() async {
     emit(state.copyWith(syncMessage: 'Syncing Compartments...'));
     final compartments = await cmoPerformApiService.getCompartmentsByRMUId();
+    final productGroupTemplates = await cmoDatabaseMasterService.getProductGroupTemplates(groupSchemeId);
+    final speciesGroupTemplates = await cmoDatabaseMasterService.getSpeciesGroupTemplates(groupSchemeId);
     if (compartments.isNotBlank) {
       for (final compartment in compartments!) {
+        final productGroupTemplate = productGroupTemplates.firstWhereOrNull((element) => element.productGroupTemplateId == compartment.productGroupTemplateId);
+        final speciesGroupTemplate = speciesGroupTemplates.firstWhereOrNull((element) => element.speciesGroupTemplateId == compartment.speciesGroupTemplateId);
         await cmoDatabaseMasterService.cacheCompartment(
           compartment.copyWith(
             localCompartmentId: compartment.managementUnitId.toIdIsarFromUuid,
+            productGroupTemplateName: productGroupTemplate?.productGroupTemplateName,
+            speciesGroupTemplateName: speciesGroupTemplate?.speciesGroupTemplateName,
           ),
         );
       }
