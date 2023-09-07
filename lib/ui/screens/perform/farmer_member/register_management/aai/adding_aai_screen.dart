@@ -329,14 +329,14 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     return BlocSelector<AddAAICubit, AddAAIState, List<FarmerWorker>>(
       selector: (state) => state.workers,
       builder: (context, workers) {
-        final initWorker =
-            workers.firstWhereOrNull((e) => e.workerId == workerId);
+        var initWorker = workers.firstWhereOrNull((e) => e.workerId == workerId);
         return InkWell(
           onTap: () async {
             if (workers.isEmpty) {
               final result = await FarmerAddWorkerScreen.push(context);
               if (result != null) {
                 await cubit.onWorkerSelectedByAddNew(result as FarmerWorker);
+                initWorker = workers.firstWhereOrNull((e) => e.workerId == workerId);
               }
             }
           },

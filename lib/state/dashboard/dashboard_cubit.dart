@@ -183,6 +183,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
         await initializeRM();
         break;
       case UserRoleEnum.farmerMember:
+        await initializeFarmDashBoard();
         break;
     }
   }
