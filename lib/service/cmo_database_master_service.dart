@@ -1669,6 +1669,14 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<int> getCountStakeholder() async {
+    final db = await _db();
+    return db.stakeHolders
+        .filter()
+        .isActiveEqualTo(1)
+        .count();
+  }
+
   Future<int> getCountTrainingByFarmId(String farmId) async {
     final db = await _db();
     return db.trainingRegisters

@@ -44,6 +44,13 @@ class _StakeHolderManagementScreenState
     });
   }
 
+  Future<void> onNavigateToAddStakeholder() async {
+    if (context.mounted) {
+      StakeHolderDetailScreen.push(context);
+      await context.read<StakeHolderListCubit>().refresh();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CmoTappable(
@@ -149,38 +156,12 @@ class _StakeHolderManagementScreenState
         ),
       );
     } else {
-      return AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leadingWidth: 0,
-        title: Row(
-          children: [
-            Container(
-              width: 45,
-              height: 45,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22.5),
-                border: Border.all(color: context.colors.blueDark2),
-              ),
-              child: Text(
-                LocaleKeys.stake_holder_lc.tr(),
-                style: context.textStyles.bodyNormal.blueDark2,
-              ),
-            ),
-            Expanded(
-              child: Text(
-                LocaleKeys.stakeholderManagement.tr(),
-                maxLines: 1,
-                textAlign: TextAlign.center,
-                style: context.textStyles.bodyBold.blue,
-              ),
-            ),
-            const SizedBox(
-              width: 45,
-            ),
-          ],
-        ),
+      return CmoAppBar(
+        title: LocaleKeys.stakeholderManagement.tr(),
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
+        trailing: Assets.icons.icAdd.svgBlack,
+        onTapTrailing: () => onNavigateToAddStakeholder(),
       );
     }
   }
