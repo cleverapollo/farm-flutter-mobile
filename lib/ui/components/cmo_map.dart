@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/theme/theme.dart';
@@ -8,7 +7,6 @@ import 'package:cmo/ui/widget/cmo_lat_lng_input.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -25,6 +23,7 @@ class CmoMap extends StatefulWidget {
   final VoidCallback? onRemoveMarker;
   final LatLng? selectedPoint;
   final bool isAllowManualLatLng;
+  final bool shouldShowPhotoButton;
 
   const CmoMap({
     Key? key,
@@ -40,6 +39,7 @@ class CmoMap extends StatefulWidget {
     this.onSelectPhotos,
     this.onRemoveMarker,
     this.selectedPoint,
+    this.shouldShowPhotoButton = true,
   }) : super(key: key);
 
   @override
@@ -139,7 +139,7 @@ class CmoMapState extends State<CmoMap> {
 
   void onLatLngChanged(String latlng) {
     final split = latlng.split(',');
-    if(split.length == 2) {
+    if (split.length == 2) {
       final lat = double.tryParse(split[0].trim());
       final lng = double.tryParse(split[1].trim());
       if (lat != null && lng != null) {
@@ -274,8 +274,8 @@ class CmoMapState extends State<CmoMap> {
     if (widget.showLatLongFooter) {
       if (widget.showMarker) {
         return MapLatLongFooter(
-            marker?.position,
-            onLatLngChanged: widget.isAllowManualLatLng ? onLatLngChanged : null,
+          marker?.position,
+          onLatLngChanged: widget.isAllowManualLatLng ? onLatLngChanged : null,
         );
       } else {
         return MapLatLongFooter(
@@ -298,14 +298,21 @@ class CmoMapState extends State<CmoMap> {
           width: 15,
         ),
         acceptOutsideIcon(),
-        const SizedBox(
-          width: 15,
-        ),
-        selectPhotoIcon(),
-        const SizedBox(
-          width: 15,
-        ),
-        takePhotoIcon(),
+        Visibility(
+          visible: widget.shouldShowPhotoButton,
+          child: Row(
+            children: [
+              const SizedBox(
+                width: 15,
+              ),
+              selectPhotoIcon(),
+              const SizedBox(
+                width: 15,
+              ),
+              takePhotoIcon(),
+            ],
+          ),
+        )
       ],
     );
   }
@@ -408,7 +415,8 @@ class MapLatLongFooter extends StatelessWidget {
   final LatLng? latLong;
   final ValueChanged<String>? onLatLngChanged;
 
-  const MapLatLongFooter(this.latLong, {this.onLatLngChanged, Key? key}) : super(key: key);
+  const MapLatLongFooter(this.latLong, {this.onLatLngChanged, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -424,20 +432,20 @@ class MapLatLongFooter extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                   Expanded(
-                    child: onLatLngChanged != null ?
-                      CmoLatLngInput(
-                        latLong: latLong,
-                        onLatLngChanged: onLatLngChanged,
-                      ) :
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: GeoLocationText(
+                Expanded(
+                  child: onLatLngChanged != null
+                      ? CmoLatLngInput(
                           latLong: latLong,
+                          onLatLngChanged: onLatLngChanged,
+                        )
+                      : FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: GeoLocationText(
+                            latLong: latLong,
+                          ),
                         ),
-                      ),
-                  ),
+                ),
                 Assets.icons.icLocation.widget,
               ],
             ),

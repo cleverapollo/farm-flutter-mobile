@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ASIScreen extends StatefulWidget {
-
   final String? farmName;
   const ASIScreen({this.farmName, super.key});
 
@@ -36,8 +35,8 @@ class ASIScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ASIScreenState();
 }
-class _ASIScreenState extends State<ASIScreen> {
 
+class _ASIScreenState extends State<ASIScreen> {
   bool isCollapse = false;
 
   Timer? _debounceInputTimer;
@@ -57,12 +56,11 @@ class _ASIScreenState extends State<ASIScreen> {
         showLeading: true,
         trailing: Assets.icons.icAdd.svgBlack,
         onTapTrailing: () async {
-          await ASIMapScreen.push(
-            context,
-            farmId: context.read<AsiCubit>().state.farmId,
-            farmName: widget.farmName,
-            campId: context.read<AsiCubit>().state.campId,
-          );
+          await ASIMapScreen.push(context,
+              farmId: context.read<AsiCubit>().state.farmId,
+              farmName: widget.farmName,
+              campId: context.read<AsiCubit>().state.campId,
+              shouldShowPhotoButton: false);
 
           await context.read<AsiCubit>().loadAsis();
         },
@@ -110,7 +108,9 @@ class _ASIScreenState extends State<ASIScreen> {
                             child: CmoCard(
                               backgroundColor: context.colors.blueDark2,
                               trailing: Icon(
-                                isCollapse ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                                isCollapse
+                                    ? Icons.arrow_drop_up
+                                    : Icons.arrow_drop_down,
                                 color: context.colors.white,
                                 size: 40,
                               ),
@@ -123,12 +123,14 @@ class _ASIScreenState extends State<ASIScreen> {
                                     Expanded(
                                       child: Text(
                                         LocaleKeys.total.tr(),
-                                        style: context.textStyles.bodyBold.white,
+                                        style:
+                                            context.textStyles.bodyBold.white,
                                       ),
                                     ),
                                     Text(
                                       listAsi.length.toString(),
-                                      style: context.textStyles.bodyNormal.white,
+                                      style:
+                                          context.textStyles.bodyNormal.white,
                                     ),
                                     const SizedBox(width: 50),
                                   ],
@@ -149,22 +151,33 @@ class _ASIScreenState extends State<ASIScreen> {
                                     onTap: () async {
                                       await ASIMapScreen.push(
                                         context,
-                                        farmId: context.read<AsiCubit>().state.farmId,
+                                        farmId: context
+                                            .read<AsiCubit>()
+                                            .state
+                                            .farmId,
                                         farmName: widget.farmName,
-                                        campId: context.read<AsiCubit>().state.campId,
+                                        campId: context
+                                            .read<AsiCubit>()
+                                            .state
+                                            .campId,
                                         asi: listAsi[index],
                                       );
                                       if (context.mounted) {
-                                        await context.read<AsiCubit>().loadAsis();
+                                        await context
+                                            .read<AsiCubit>()
+                                            .loadAsis();
                                       }
                                     },
                                     child: CmoCard(
                                       content: [
                                         CmoCardHeader(
-                                          title: listAsi[index].asiTypeName ?? LocaleKeys.asiType.tr(),
+                                          title: listAsi[index].asiTypeName ??
+                                              LocaleKeys.asiType.tr(),
                                         ),
                                         CmoCardItem(
-                                          title: listAsi[index].compartmentName ?? '',
+                                          title:
+                                              listAsi[index].compartmentName ??
+                                                  '',
                                         ),
                                       ],
                                     ),

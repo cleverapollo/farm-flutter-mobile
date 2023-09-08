@@ -1,4 +1,5 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/asi.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
@@ -9,20 +10,20 @@ import 'package:cmo/utils/file_utils.dart';
 import 'package:cmo/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:cmo/model/asi.dart';
 
 class ASIMapScreen extends StatefulWidget {
   final String? farmName;
   final String farmId;
   final String? campId;
   final Asi? asi;
-
+  final bool shouldShowPhotoButton;
   const ASIMapScreen({
     super.key,
     required this.farmId,
     this.farmName,
     this.campId,
     this.asi,
+    this.shouldShowPhotoButton = true,
   });
 
   static Future<void> push(
@@ -31,6 +32,7 @@ class ASIMapScreen extends StatefulWidget {
     String? farmName,
     String? campId,
     Asi? asi,
+    bool shouldShowPhotoButton = true,
   }) {
     return Navigator.push(
       context,
@@ -40,6 +42,7 @@ class ASIMapScreen extends StatefulWidget {
           farmName: farmName,
           campId: campId,
           asi: asi,
+          shouldShowPhotoButton: shouldShowPhotoButton,
         ),
       ),
     );
@@ -50,7 +53,6 @@ class ASIMapScreen extends StatefulWidget {
 }
 
 class _ASIMapScreenState extends State<ASIMapScreen> {
-
   late Asi? _asi;
   late LocationModel locationModel;
   LatLng? initLatLng;
@@ -59,7 +61,8 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
 
   final ImagePickerService imagePickerService = ImagePickerService();
 
-  bool get isEnableNextButton => locationModel.latitude != null && locationModel.longitude != null;
+  bool get isEnableNextButton =>
+      locationModel.latitude != null && locationModel.longitude != null;
 
   bool loading = false;
 
@@ -67,10 +70,10 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
   void initState() {
     super.initState();
     _asi = widget.asi;
-    if(_asi != null) {
+    if (_asi != null) {
       locationModel = LocationModel()
-          ..latitude = _asi?.latitude
-          ..longitude = _asi?.longitude;
+        ..latitude = _asi?.latitude
+        ..longitude = _asi?.longitude;
       if (locationModel.latitude != null && locationModel.longitude != null) {
         initLatLng = LatLng(locationModel.latitude!, locationModel.longitude!);
       }
@@ -173,40 +176,42 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                   onSelectPhotos: onSelectPhoto,
                   initialMapCenter: initLatLng,
                   selectedPoint: initLatLng,
+                  shouldShowPhotoButton: widget.shouldShowPhotoButton,
                 ),
               ),
               const SizedBox(height: 32),
               Align(
                 child: CmoFilledButton(
-                    title: LocaleKeys.next.tr(),
-                    disable: !isEnableNextButton,
-                    loading: loading,
-                    onTap: () {
-                      if (isEnableNextButton) {
-                        if (_asi != null) {
-                          _asi = _asi!.copyWith(
-                            latitude: locationModel.latitude,
-                            longitude: locationModel.longitude,
-                          );
-                        } else {
-                          _asi = Asi(
-                            farmId: widget.farmId,
-                            campId: widget.campId,
-                            latitude: locationModel.latitude,
-                            longitude: locationModel.longitude,
-                            date: DateTime.now(),
-                            localId: DateTime.now().millisecondsSinceEpoch,
-                            asiRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
-                          );
-                        }
-                        ASIDetailScreen.push(
-                          context,
-                          farmName: widget.farmName,
-                          locationModel: locationModel,
-                          asi: _asi!,
+                  title: LocaleKeys.next.tr(),
+                  disable: !isEnableNextButton,
+                  loading: loading,
+                  onTap: () {
+                    if (isEnableNextButton) {
+                      if (_asi != null) {
+                        _asi = _asi!.copyWith(
+                          latitude: locationModel.latitude,
+                          longitude: locationModel.longitude,
+                        );
+                      } else {
+                        _asi = Asi(
+                          farmId: widget.farmId,
+                          campId: widget.campId,
+                          latitude: locationModel.latitude,
+                          longitude: locationModel.longitude,
+                          date: DateTime.now(),
+                          localId: DateTime.now().millisecondsSinceEpoch,
+                          asiRegisterNo:
+                              DateTime.now().millisecondsSinceEpoch.toString(),
                         );
                       }
-                    },
+                      ASIDetailScreen.push(
+                        context,
+                        farmName: widget.farmName,
+                        locationModel: locationModel,
+                        asi: _asi!,
+                      );
+                    }
+                  },
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).padding.bottom),
