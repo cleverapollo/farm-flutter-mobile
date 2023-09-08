@@ -123,7 +123,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   }
 
   void _calculateCenterPoint() {
-    if (widget.points == null) {
+    if (widget.points.isBlank) {
       centerMapPoint = Constants.mapCenter;
       return;
     }
@@ -167,7 +167,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                       myLocationEnabled: true,
                       onCameraMove: (position) => context.read<CompartmentMapCubit>().onCameraMove(position, _isFinished),
                       onMapCreated: (GoogleMapController controller) {
-                        if (widget.points != null) {
+                        if (widget.points.isNotBlank) {
                           _drawInitialPolygon();
                         }
 
@@ -175,14 +175,14 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                         Geolocator.checkPermission().then((permission) async {
                           if (permission == LocationPermission.whileInUse ||
                               permission == LocationPermission.always) {
-                            if (widget.points == null) {
+                            if (widget.points.isBlank) {
                               await _moveMapCameraCurrentLocation();
                             }
                           } else if (permission == LocationPermission.denied) {
                             permission = await Geolocator.requestPermission();
                             if (permission == LocationPermission.whileInUse ||
                                 permission == LocationPermission.always) {
-                              if (widget.points == null) {
+                              if (widget.points.isBlank) {
                                 await _moveMapCameraCurrentLocation();
                               }
                             }
@@ -355,8 +355,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
     if (markers.length < 2) {
       return polylines;
     }
-    final color =
-        widget.points == null ? context.colors.yellow : context.colors.red;
+    final color = widget.points.isBlank ? context.colors.yellow : context.colors.red;
     for (var i = 1; i < markers.length; i++) {
       polylines.add(
         Polyline(

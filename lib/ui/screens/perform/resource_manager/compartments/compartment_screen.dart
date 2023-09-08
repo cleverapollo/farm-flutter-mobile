@@ -122,7 +122,6 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CompartmentItemWidget(
                             model: listCompartment[index],
-                            onTap: () {},
                           ),
                         );
                       },
