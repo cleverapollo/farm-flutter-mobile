@@ -10,8 +10,10 @@ import 'package:cmo/model/sanction_register/sanction_register.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_cubit.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/file_utils.dart';
 import 'package:flutter/material.dart';
@@ -78,81 +80,94 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '* Workers',
-                          style: context.textStyles.bodyBold
-                              .copyWith(color: context.colors.black),
-                        ),
                         BlocSelector<DisciplinariesCubit, DisciplinariesState,
                             FarmerWorker?>(
                           selector: (state) => state.selectWorker,
                           builder: (context, selectWorker) {
-                            return CmoDropdown<FarmerWorker>(
-                              name: 'Workers',
-                              style: context.textStyles.bodyBold
-                                  .copyWith(color: context.colors.black),
-                              inputDecoration: InputDecoration(
-                                contentPadding:
-                                    const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                                isDense: true,
-                                hintText: '',
-                                hintStyle: context.textStyles.bodyNormal.grey,
-                                border: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: context.colors.grey),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: context.colors.blue),
-                                ),
-                              ),
-                              itemsData: state.workers
-                                  .map((e) => CmoDropdownItem(
-                                      id: e, name: e.firstName ?? ''))
-                                  .toList(),
-                              initialValue: selectWorker,
-                              onChanged: (value) {
-                                cubit.onChangeData(selectWorker: value);
+                            return BottomSheetSelection(
+                              hintText: LocaleKeys.workers.tr(),
+                              value: selectWorker?.firstName ??
+                                  state.data?.displayWorkerName ??
+                                  '',
+                              margin: EdgeInsets.zero,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 14),
+                              onTap: () async {
+                                FocusScope.of(context).unfocus();
+                                if (state.workers.isBlank) return;
+                                await showCustomBottomSheet<void>(
+                                  context,
+                                  content: ListView.builder(
+                                    itemCount: state.workers.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        onTap: () {
+                                          cubit.onChangeData(
+                                              selectWorker:
+                                                  state.workers[index]);
+                                          Navigator.pop(context);
+                                        },
+                                        title: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 24.0),
+                                          child: Text(
+                                            state.workers[index].firstName ??
+                                                '',
+                                            style: context.textStyles.bodyBold
+                                                .copyWith(
+                                              color: context.colors.blueDark2,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
                               },
                             );
                           },
                         ),
                         const SizedBox(height: 12),
-                        Text(
-                          '* Camp',
-                          style: context.textStyles.bodyBold
-                              .copyWith(color: context.colors.black),
-                        ),
                         BlocSelector<DisciplinariesCubit, DisciplinariesState,
                             Camp?>(
                           selector: (state) => state.selectCamp,
                           builder: (context, selectCamp) {
-                            return CmoDropdown<Camp>(
-                              name: 'Workers',
-                              style: context.textStyles.bodyBold
-                                  .copyWith(color: context.colors.black),
-                              inputDecoration: InputDecoration(
-                                contentPadding:
-                                    const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                                isDense: true,
-                                hintText: '',
-                                hintStyle: context.textStyles.bodyNormal.grey,
-                                border: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: context.colors.grey),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: context.colors.blue),
-                                ),
-                              ),
-                              itemsData: state.camps
-                                  .map((e) => CmoDropdownItem(
-                                      id: e, name: e.campName ?? ''))
-                                  .toList(),
-                              initialValue: selectCamp,
-                              onChanged: (value) {
-                                cubit.onChangeData(selectCamp: value);
+                            return BottomSheetSelection(
+                              hintText: LocaleKeys.camp.tr(),
+                              value:
+                                  selectCamp?.campName ?? state.data?.campName,
+                              margin: EdgeInsets.zero,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 14),
+                              onTap: () async {
+                                FocusScope.of(context).unfocus();
+                                if (state.camps.isBlank) return;
+                                await showCustomBottomSheet<void>(
+                                  context,
+                                  content: ListView.builder(
+                                    itemCount: state.camps.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        onTap: () {
+                                          cubit.onChangeData(
+                                              selectCamp: state.camps[index]);
+                                          Navigator.pop(context);
+                                        },
+                                        title: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 24.0),
+                                          child: Text(
+                                            state.camps[index].campName ?? '',
+                                            style: context.textStyles.bodyBold
+                                                .copyWith(
+                                              color: context.colors.blueDark2,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
                               },
                             );
                           },
@@ -215,41 +230,49 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                           },
                         ),
                         const SizedBox(height: 12),
-                        Text(
-                          '* Disciplinaries Issue',
-                          style: context.textStyles.bodyBold
-                              .copyWith(color: context.colors.black),
-                        ),
                         BlocSelector<DisciplinariesCubit, DisciplinariesState,
                             IssueType?>(
                           selector: (state) => state.selectIssue,
                           builder: (context, selectIssue) {
-                            return CmoDropdown<IssueType>(
-                              name: 'Disciplinaries Issue',
-                              style: context.textStyles.bodyBold
-                                  .copyWith(color: context.colors.black),
-                              inputDecoration: InputDecoration(
-                                contentPadding:
-                                    const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                                isDense: true,
-                                hintText: '',
-                                hintStyle: context.textStyles.bodyNormal.grey,
-                                border: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: context.colors.grey),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: context.colors.blue),
-                                ),
-                              ),
-                              itemsData: state.issueTypes
-                                  .map((e) => CmoDropdownItem(
-                                      id: e, name: e.issueTypeName ?? ''))
-                                  .toList(),
-                              initialValue: selectIssue,
-                              onChanged: (value) {
-                                cubit.onChangeData(selectIssue: value);
+                            return BottomSheetSelection(
+                              hintText: LocaleKeys.disciplinaries_issue.tr(),
+                              value: selectIssue?.issueTypeName ??
+                                  state.data?.issueTypeName,
+                              margin: EdgeInsets.zero,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 14),
+                              onTap: () async {
+                                FocusScope.of(context).unfocus();
+                                if (state.issueTypes.isBlank) return;
+                                await showCustomBottomSheet<void>(
+                                  context,
+                                  content: ListView.builder(
+                                    itemCount: state.issueTypes.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        onTap: () {
+                                          cubit.onChangeData(
+                                              selectIssue:
+                                                  state.issueTypes[index]);
+                                          Navigator.pop(context);
+                                        },
+                                        title: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 24.0),
+                                          child: Text(
+                                            state.issueTypes[index]
+                                                    .issueTypeName ??
+                                                '',
+                                            style: context.textStyles.bodyBold
+                                                .copyWith(
+                                              color: context.colors.blueDark2,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
                               },
                             );
                           },
@@ -381,10 +404,12 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                         Align(
                           child: CmoFilledButton(
                               title: 'Save',
-                              onTap: () {
-                                cubit
-                                    .onSave()
-                                    .then((_) => Navigator.pop(context, true));
+                              onTap: () async {
+                                final canNext = await cubit.onSave();
+
+                                if (canNext && context.mounted) {
+                                  Navigator.pop(context, true);
+                                }
                               }),
                         ),
                         const SizedBox(height: 24),

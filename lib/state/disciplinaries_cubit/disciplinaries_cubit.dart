@@ -6,7 +6,6 @@ import 'package:cmo/model/labour_management/farmer_worker.dart';
 import 'package:cmo/model/sanction_register/sanction_register.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DisciplinariesCubit extends Cubit<DisciplinariesState> {
@@ -160,7 +159,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
         carRaisedDate: carRaisedDate,
         carClosedDate: carClosedDate,
         displayWorkerName:
-            '${selectWorker?.firstName} ${selectWorker?.surname}',
+            '${selectWorker?.firstName ?? ''} ${selectWorker?.surname ?? ''}',
       ),
       selectWorker: selectWorker ?? state.selectWorker,
       selectCamp: selectCamp ?? state.selectCamp,
@@ -177,37 +176,45 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     )));
   }
 
-  Future<void> onSave() async {
-    final canSave = state.data?.dateReceived != null ||
-        state.data?.campId != null ||
-        state.data?.workerId != null ||
-        state.data?.issueTypeId != null;
+  Future<bool> onSave() async {
+    try {
+      final canSave = state.data?.dateReceived != null ||
+          state.data?.workerId != null ||
+          state.data?.issueTypeId != null;
 
-    if (!canSave) return showSnackError(msg: 'Required fields are missing');
-
-    var isSynced = false;
-
-    if (state.dataBeforeEdit?.isSynced ?? false) {
-      if (state.dataBeforeEdit != state.data) {
-        isSynced = false;
-      } else {
-        isSynced = true;
+      if (!canSave) {
+        showSnackError(msg: 'Required fields are missing');
+        return false;
       }
-    }
 
-    await cmoDatabaseMasterService
-        .cacheSanctionRegisterFromFarm(state.data!.copyWith(
-      isActive: true,
-      isSynced: isSynced,
-      isLocal: !isSynced,
-      farmId: state.farmId,
-    ))
-        .then((value) {
-      if (value != null) {
-        showSnackSuccess(msg: 'Save Disciplinaries $value Successfully');
+      var isSynced = false;
+
+      if (state.dataBeforeEdit?.isSynced ?? false) {
+        if (state.dataBeforeEdit != state.data) {
+          isSynced = false;
+        } else {
+          isSynced = true;
+        }
+      }
+
+      final result = await cmoDatabaseMasterService
+          .cacheSanctionRegisterFromFarm(state.data!.copyWith(
+        isActive: true,
+        isSynced: isSynced,
+        isLocal: !isSynced,
+        farmId: state.farmId,
+      ));
+
+      if (result != null) {
+        showSnackSuccess(msg: 'Save Disciplinaries $result Successfully');
       } else {
         showSnackError(msg: 'Something was wrong, please try again.');
       }
-    });
+
+      return result != null;
+    } catch (e) {
+      showSnackError(msg: 'Something was wrong, please try again.');
+      return false;
+    }
   }
 }
