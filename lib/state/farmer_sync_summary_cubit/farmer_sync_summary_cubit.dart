@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/model.dart';
@@ -1739,13 +1740,21 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
     if (data == null || data.isEmpty) return;
 
+    final productGroupTemplates = await cmoDatabaseMasterService.getProductGroupTemplates(groupSchemeId);
+    final speciesGroupTemplates = await cmoDatabaseMasterService.getSpeciesGroupTemplates(groupSchemeId);
+
     for (final item in data) {
       final isExist = await cmoDatabaseMasterService
           .removeCompartmentByManagementUnitId(item.managementUnitId);
 
+      final productGroupTemplate = productGroupTemplates.firstWhereOrNull((element) => element.productGroupTemplateId == item.productGroupTemplateId);
+      final speciesGroupTemplate = speciesGroupTemplates.firstWhereOrNull((element) => element.speciesGroupTemplateId == item.speciesGroupTemplateId);
+
       futures.add(cmoDatabaseMasterService.cacheCompartment(
           item.copyWith(
               localCompartmentId: item.managementUnitId.toIdIsarFromUuid,
+              productGroupTemplateName: productGroupTemplate?.productGroupTemplateName,
+              speciesGroupTemplateName: speciesGroupTemplate?.speciesGroupTemplateName,
               isMasterdataSynced: true),
           isDirect: true));
     }
