@@ -1,8 +1,10 @@
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
-import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
 
 class SelectControlAgentWidget extends StatefulWidget {
@@ -51,40 +53,44 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
             style: context.textStyles.bodyBold.black,
           ),
         ),
-        AttributeItem(
-          child: CmoDropdown<BiologicalControlAgentType?>(
-            shouldBorderItem: true,
-            name: 'ControlAgent',
-            hintText: LocaleKeys.complaintName.tr(),
-            validator: requiredValidator,
-            style: context.textStyles.bodyBold.blueDark2,
-            inputDecoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(8),
-              isDense: true,
-              hintText: LocaleKeys.nameOfControlAgent.tr(),
-              hintStyle: context.textStyles.bodyNormal.copyWith(color: Colors.grey),
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-            ),
-            initialValue: selectedAgent,
-            onChanged: (item) {
-              setState(() {
-                selectedAgent = item;
-              });
+        BottomSheetSelection(
+          hintText: LocaleKeys.complaintName.tr(),
+          value: selectedAgent?.biologicalControlAgentTypeName,
+          margin: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          onTap: () async {
+            FocusScope.of(context).unfocus();
+            if (agentTypes.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: ListView.builder(
+                itemCount: agentTypes.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      setState(() {
+                        selectedAgent = agentTypes[index];
+                      });
 
-              if (selectedAgent != null) {
-                widget.onSelect(selectedAgent!);
-              }
-            },
-            itemsData: agentTypes
-                .map(
-                  (e) => CmoDropdownItem<BiologicalControlAgentType>(
-                    id: e,
-                    name: e.biologicalControlAgentTypeName ?? '',
-                  ),
-                )
-                .toList(),
-          ),
+                      if (selectedAgent != null) {
+                        widget.onSelect(selectedAgent!);
+                      }
+                      Navigator.pop(context);
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        agentTypes[index].biologicalControlAgentTypeName ?? '',
+                        style: context.textStyles.bodyBold.copyWith(
+                          color: context.colors.blueDark2,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
         ),
         AttributeItem(
           child: _buildAutoFillWidget(
