@@ -442,7 +442,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
 
     emit(state.copyWith(
       farm: state.farm?.copyWith(
-        propertyOwnershipTypeId: propertyTypeSelected?.farmPropertyOwnershipTypeId,
+        propertyOwnershipTypeId:
+            propertyTypeSelected?.farmPropertyOwnershipTypeId,
         isMasterDataSynced: 0,
       ),
       addMemberMPO: addMemberMPO.copyWith(
@@ -583,7 +584,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       final futures = <Future<dynamic>>[];
 
       for (final item in listFarmMemberObjectiveAnswers) {
-        futures.add(cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(item));
+        futures
+            .add(cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(item));
       }
 
       futures.add(cacheFarm());
@@ -616,7 +618,10 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         !state.addMemberMDetails.idNumber.isNullOrEmpty &&
         !(state.addMemberMDetails.idNumber!.length < 8) &&
         !state.addMemberMDetails.mobileNumber.isNullOrEmpty &&
-        !(state.addMemberMDetails.mobileNumber!.length < 8);
+        !(state.addMemberMDetails.mobileNumber!.length < 8) &&
+        !(state.addMemberMDetails.emailAddress.isNullOrEmpty
+            ? false
+            : !state.addMemberMDetails.emailAddress.validEmail);
 
     emit(
       state.copyWith(
@@ -640,6 +645,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           isMobileNumberError: mobileNumber == null
               ? state.addMemberMDetails.isMobileNumberError
               : (mobileNumber.isBlank || mobileNumber.length < 8),
+          isEmailError: state.addMemberMDetails.emailAddress.isNullOrEmpty
+              ? false
+              : !state.addMemberMDetails.emailAddress.validEmail,
         ),
       ),
     );
@@ -684,11 +692,11 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   void onClearSignature() {
     emit(state.copyWith(
         farm: state.farm?.copyWith(
-            signatureImage: null,
-            signatureDate: null,
-            signaturePoints: null,
-            isGroupSchemeMember: false,
-            isMasterDataSynced: 0,
+          signatureImage: null,
+          signatureDate: null,
+          signaturePoints: null,
+          isGroupSchemeMember: false,
+          isMasterDataSynced: 0,
         ),
         addMemberSAF: const AddMemberSAF()));
   }

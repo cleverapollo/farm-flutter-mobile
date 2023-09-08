@@ -1,8 +1,4 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
-import 'package:cmo/model/asi.dart';
-import 'package:cmo/model/compartment/compartment.dart';
-import 'package:cmo/model/data/farm.dart';
-import 'package:cmo/model/data/farm_property_ownership_type.dart';
 import 'package:cmo/model/model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -101,6 +97,7 @@ class AddMemberMDetails with _$AddMemberMDetails {
     @Default(false) bool isLastNameError,
     @Default(false) bool isIdNumberError,
     @Default(false) bool isMobileNumberError,
+    @Default(false) bool isEmailError,
     @Default(true) bool isSectionCollapse,
     Key? sectionKey,
     String? firstName,

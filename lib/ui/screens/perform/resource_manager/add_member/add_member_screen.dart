@@ -1,4 +1,3 @@
-import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
@@ -6,9 +5,9 @@ import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/ui/components/select_site_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_sign_contract_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/farm_member_objectives_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/farm_member_objectives_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/farm_member_risk_assessments_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/slimf_and_mpo_section.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
@@ -391,7 +390,7 @@ class _AddMemberMDetails extends StatelessWidget {
                     labelText: LocaleKeys.mobileNumber.tr(),
                     labelTextStyle: context.textStyles.bodyBold.blueDark2,
                     keyboardType: TextInputType.phone,
-                    onSubmitted: (p0){
+                    onSubmitted: (p0) {
                       if (data.isComplete) {
                         cubit.onChangeMemberDetailState(isCollapse: true);
                         cubit.onChangeSiteDetailState(isCollapse: false);
@@ -404,6 +403,8 @@ class _AddMemberMDetails extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 AttributeItem(
+                  errorText: 'Please enter a valid email format',
+                  isShowError: data.isEmailError,
                   child: InputAttributeItem(
                     initialValue: data.emailAddress,
                     textStyle: context.textStyles.bodyNormal.black,
@@ -412,11 +413,6 @@ class _AddMemberMDetails extends StatelessWidget {
                     labelTextStyle: context.textStyles.bodyNormal.blueDark2,
                     keyboardType: TextInputType.emailAddress,
                     onSubmitted: (text) {
-                      if (!text.validEmail) {
-                        return showSnackError(
-                            msg: 'Please enter a valid email format');
-                      }
-
                       if (data.isComplete) {
                         cubit.onChangeMemberDetailState(isCollapse: true);
                         cubit.onChangeSiteDetailState(isCollapse: false);
