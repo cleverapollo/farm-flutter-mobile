@@ -6,7 +6,9 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/state/add_aai_cubit/add_aai_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -172,6 +174,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           _lostTimeInDaysController.text = state.lostTimeInDay ?? '';
         },
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: CmoAppBar(
             title: initState.isAddNew ? LocaleKeys.add_aai.tr() : 'Edit AAI',
             leading: Assets.icons.icArrowLeft.svgBlack,
@@ -329,14 +332,49 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
     return BlocSelector<AddAAICubit, AddAAIState, List<FarmerWorker>>(
       selector: (state) => state.workers,
       builder: (context, workers) {
-        var initWorker = workers.firstWhereOrNull((e) => e.workerId == workerId);
+        var initWorker =
+            workers.firstWhereOrNull((e) => e.workerId == workerId);
+        return BottomSheetSelection(
+          hintText: LocaleKeys.worker.tr(),
+          margin: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          value: initWorker?.firstName,
+          onTap: () async {
+            FocusScope.of(context).unfocus();
+            if (workers.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: ListView.builder(
+                itemCount: workers.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () async {
+                      await cubit.onWorkerSelected(workers[index]);
+                      Navigator.pop(context);
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        workers[index].firstName ?? '',
+                        style: context.textStyles.bodyBold.copyWith(
+                          color: context.colors.blueDark2,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        );
         return InkWell(
           onTap: () async {
             if (workers.isEmpty) {
               final result = await FarmerAddWorkerScreen.push(context);
               if (result != null) {
                 await cubit.onWorkerSelectedByAddNew(result as FarmerWorker);
-                initWorker = workers.firstWhereOrNull((e) => e.workerId == workerId);
+                initWorker =
+                    workers.firstWhereOrNull((e) => e.workerId == workerId);
               }
             }
           },
@@ -381,7 +419,7 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
             .firstWhereOrNull((element) => element.jobDescriptionId == jobId);
         return InkWell(
           onTap: () {
-            if(state.accidentAndIncident.workerId == null){
+            if (state.accidentAndIncident.workerId == null) {
               showSnackError(msg: 'Add a worker first to make a selection');
             }
           },
