@@ -4,12 +4,13 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/camp.dart';
 import 'package:cmo/model/chemical.dart';
 import 'package:cmo/model/chemical_application_method/chemical_application_method.dart';
-import 'package:cmo/model/chemical_type/chemical_type.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_cubit.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,37 +64,51 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                             horizontal: 24, vertical: 20),
                         child: Column(
                           children: [
-                            BlocSelector<RMChemicalCubit, RMChemicalState,
-                                ChemicalType?>(
-                              selector: (state) => state.chemicalTypeSelect,
-                              builder: (context, chemicalTypeSelect) {
-                                return CmoDropdown<ChemicalType>(
-                                  shouldBorderItem: true,
-                                  name: 'chemicalType',
-                                  style: context.textStyles.bodyBold
-                                      .copyWith(color: context.colors.black),
-                                  inputDecoration: InputDecoration(
-                                    contentPadding:
-                                        const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                                    isDense: true,
-                                    hintText: LocaleKeys.chemicalType.tr(),
-                                    hintStyle:
-                                        context.textStyles.bodyNormal.grey,
-                                    border: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: context.colors.grey)),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: context.colors.blue)),
-                                  ),
-                                  itemsData: state.chemicalTypes
-                                      .map((e) => CmoDropdownItem<ChemicalType>(
-                                          id: e,
-                                          name: e.chemicalTypeName ?? ''))
-                                      .toList(),
-                                  initialValue: chemicalTypeSelect,
-                                  onChanged: (value) {
-                                    cubit.onChangeData(chemicalType: value);
+                            BlocBuilder<RMChemicalCubit, RMChemicalState>(
+                              builder: (context, state) {
+                                return BottomSheetSelection(
+                                  hintText: LocaleKeys.chemicalType.tr(),
+                                  value: state.chemicalTypeSelect
+                                          ?.chemicalTypeName ??
+                                      state.chemical.chemicalType,
+                                  margin: EdgeInsets.zero,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 14),
+                                  onTap: () async {
+                                    FocusScope.of(context).unfocus();
+                                    if (state.chemicalTypes.isBlank) return;
+                                    await showCustomBottomSheet<void>(
+                                      context,
+                                      content: ListView.builder(
+                                        itemCount: state.chemicalTypes.length,
+                                        itemBuilder: (context, index) {
+                                          return ListTile(
+                                            onTap: () {
+                                              cubit.onChangeData(
+                                                  chemicalType: state
+                                                      .chemicalTypes[index]);
+                                              Navigator.pop(context);
+                                            },
+                                            title: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 24.0),
+                                              child: Text(
+                                                state.chemicalTypes[index]
+                                                        .chemicalTypeName ??
+                                                    '',
+                                                style: context
+                                                    .textStyles.bodyBold
+                                                    .copyWith(
+                                                  color:
+                                                      context.colors.blueDark2,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
                                   },
                                 );
                               },
@@ -104,39 +119,55 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                                   state.chemicalApplicationMethodSelect,
                               builder:
                                   (context, chemicalApplicationMethodSelect) {
-                                return CmoDropdown<ChemicalApplicationMethod>(
-                                  shouldBorderItem: true,
-                                  name: 'applicationMethod',
-                                  style: context.textStyles.bodyBold
-                                      .copyWith(color: context.colors.black),
-                                  inputDecoration: InputDecoration(
-                                    contentPadding:
-                                        const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                                    isDense: true,
-                                    hintText: LocaleKeys
-                                        .chemicalApplicationMethod
-                                        .tr(),
-                                    hintStyle:
-                                        context.textStyles.bodyNormal.grey,
-                                    border: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: context.colors.grey)),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: context.colors.blue)),
-                                  ),
-                                  itemsData: state.chemicalApplicationMethods
-                                      .map((e) => CmoDropdownItem<
-                                              ChemicalApplicationMethod>(
-                                          id: e,
-                                          name:
-                                              e.hemicalApplicationMethodName ??
-                                                  ''))
-                                      .toList(),
-                                  initialValue: chemicalApplicationMethodSelect,
-                                  onChanged: (value) {
-                                    cubit.onChangeData(
-                                        chemicalApplicationMethod: value);
+                                return BottomSheetSelection(
+                                  hintText:
+                                      LocaleKeys.chemicalApplicationMethod.tr(),
+                                  value: chemicalApplicationMethodSelect
+                                          ?.hemicalApplicationMethodName ??
+                                      state.chemical.chemicalApplicationMethod,
+                                  margin: EdgeInsets.zero,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 14),
+                                  onTap: () async {
+                                    FocusScope.of(context).unfocus();
+                                    if (state.chemicalApplicationMethods
+                                        .isBlank) return;
+                                    await showCustomBottomSheet<void>(
+                                      context,
+                                      content: ListView.builder(
+                                        itemCount: state
+                                            .chemicalApplicationMethods.length,
+                                        itemBuilder: (context, index) {
+                                          return ListTile(
+                                            onTap: () {
+                                              cubit.onChangeData(
+                                                  chemicalApplicationMethod:
+                                                      state.chemicalApplicationMethods[
+                                                          index]);
+                                              Navigator.pop(context);
+                                            },
+                                            title: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 24.0),
+                                              child: Text(
+                                                state
+                                                        .chemicalApplicationMethods[
+                                                            index]
+                                                        .hemicalApplicationMethodName ??
+                                                    '',
+                                                style: context
+                                                    .textStyles.bodyBold
+                                                    .copyWith(
+                                                  color:
+                                                      context.colors.blueDark2,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
                                   },
                                 );
                               },
@@ -145,33 +176,47 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                                 Camp?>(
                               selector: (state) => state.campSelect,
                               builder: (context, campSelect) {
-                                return CmoDropdown<Camp>(
-                                  shouldBorderItem: true,
-                                  name: 'campId',
-                                  style: context.textStyles.bodyBold
-                                      .copyWith(color: context.colors.black),
-                                  inputDecoration: InputDecoration(
-                                    contentPadding:
-                                        const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                                    isDense: true,
-                                    hintText:
-                                        '${LocaleKeys.compartmentName.tr()} / ${LocaleKeys.campName.tr()}',
-                                    hintStyle:
-                                        context.textStyles.bodyNormal.grey,
-                                    border: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: context.colors.grey)),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: context.colors.blue)),
-                                  ),
-                                  itemsData: state.camps
-                                      .map((e) => CmoDropdownItem<Camp>(
-                                          id: e, name: e.campName ?? ''))
-                                      .toList(),
-                                  initialValue: campSelect,
-                                  onChanged: (value) {
-                                    cubit.onChangeData(camp: value);
+                                return BottomSheetSelection(
+                                  hintText:
+                                      '${LocaleKeys.compartmentName.tr()} / ${LocaleKeys.campName.tr()}',
+                                  value: campSelect?.campName ??
+                                      state.chemical.campName,
+                                  margin: EdgeInsets.zero,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 14),
+                                  onTap: () async {
+                                    FocusScope.of(context).unfocus();
+                                    if (state.camps.isBlank) return;
+                                    await showCustomBottomSheet<void>(
+                                      context,
+                                      content: ListView.builder(
+                                        itemCount: state.camps.length,
+                                        itemBuilder: (context, index) {
+                                          return ListTile(
+                                            onTap: () {
+                                              cubit.onChangeData(
+                                                  camp: state.camps[index]);
+                                              Navigator.pop(context);
+                                            },
+                                            title: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 24.0),
+                                              child: Text(
+                                                state.camps[index].campName ??
+                                                    '',
+                                                style: context
+                                                    .textStyles.bodyBold
+                                                    .copyWith(
+                                                  color:
+                                                      context.colors.blueDark2,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
                                   },
                                 );
                               },
