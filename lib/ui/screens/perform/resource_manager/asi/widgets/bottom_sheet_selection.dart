@@ -32,24 +32,28 @@ class BottomSheetSelection extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text(
-              hintText,
-              style: context.textStyles.bodyBold.blueDark2,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            Expanded(
+              child: Text(
+                hintText,
+                maxLines: 3,
+                style: context.textStyles.bodyBold.blueDark2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             Expanded(
               child: Text(
                 value ?? '',
+                maxLines: 3,
                 style: context.textStyles.bodyNormal.blueDark2,
                 textAlign: TextAlign.center,
               ),
             ),
-            rightIconData ?? Icon(
-              Icons.keyboard_arrow_down_sharp,
-              color: context.colors.black,
-              size: 32,
-            ),
+            rightIconData ??
+                Icon(
+                  Icons.keyboard_arrow_down_sharp,
+                  color: context.colors.black,
+                  size: 32,
+                ),
           ],
         ),
       ),

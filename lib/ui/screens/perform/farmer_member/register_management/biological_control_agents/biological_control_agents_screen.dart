@@ -257,7 +257,7 @@ class _BiologicalControlAgentItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${LocaleKeys.complaintNo.tr()}: ${agent.biologicalControlAgentTypeId?.toString()}',
+            '${LocaleKeys.complaintNo.tr()}: ${agent.biologicalControlAgentRegisterNo?.toString()}',
             style: context.textStyles.bodyBold.blue,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

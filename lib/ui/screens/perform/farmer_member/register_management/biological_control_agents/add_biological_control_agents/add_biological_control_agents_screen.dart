@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -6,7 +7,9 @@ import 'package:cmo/state/biological_control_cubit/add_biological_control_cubit.
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/add_biological_control_agents/widgets/select_control_agent_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -30,15 +33,18 @@ class AddBiologicalControlAgentsScreen extends StatefulWidget {
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
-              create: (_) => AddBiologicalControlCubit(
-                    agent: agent ??
-                        BiologicalControlAgent(
-                          biologicalControlAgentRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
-                          isActive: true,
-                        ),
-                    isAddNew: agent == null,
+            create: (_) => AddBiologicalControlCubit(
+              agent: agent ??
+                  BiologicalControlAgent(
+                    biologicalControlAgentRegisterNo:
+                        DateTime.now().millisecondsSinceEpoch.toString(),
+                    isActive: true,
                   ),
-              child: AddBiologicalControlAgentsScreen(biologicalControlAgent: agent),);
+              isAddNew: agent == null,
+            ),
+            child:
+                AddBiologicalControlAgentsScreen(biologicalControlAgent: agent),
+          );
         },
       ),
     );
@@ -71,6 +77,15 @@ class _AddBiologicalControlAgentsScreenState
     setState(() {
       autoValidateMode = AutovalidateMode.always;
     });
+    final notValidate =
+        cubit.state.agent.biologicalControlAgentTypeName == null ||
+            cubit.state.agent.monitoringRequirementId == null ||
+            cubit.state.agent.dateReleased == null;
+
+    if (notValidate) {
+      return showSnackError(msg: 'Required fields are missing');
+    }
+
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       var value = _formKey.currentState?.value;
       if (value == null) return;
@@ -170,7 +185,8 @@ class _AddBiologicalControlAgentsScreenState
                             onSelect: cubit.onSelectControlAgent,
                             initAgent: initState.agent,
                           ),
-                          _buildSelectDateReleased(initState.agent.dateReleased),
+                          _buildSelectDateReleased(
+                              initState.agent.dateReleased),
                           _buildSelectStakeHolderWidget(),
                           _buildSelectDescriptionWidget(),
                           AttributeItem(
@@ -268,7 +284,8 @@ class _AddBiologicalControlAgentsScreenState
             onChanged: cubit.onStakeHolderChanged,
             initialValue: initValue,
             itemsData: stateHolders
-                .map((e) => CmoDropdownItem(id: e, name: e.stakeholderName ?? ''))
+                .map((e) =>
+                    CmoDropdownItem(id: e, name: e.stakeholderName ?? ''))
                 .toList(),
           ),
         );
@@ -286,27 +303,38 @@ class _AddBiologicalControlAgentsScreenState
         final findIndex = monitorings.indexWhere((element) =>
             element.monitoringRequirementId == monitoringRequirementId);
         final initValue = findIndex != -1 ? monitorings[findIndex] : null;
-
-        return AttributeItem(
-          child: CmoDropdown<MonitoringRequirement>(
-            shouldBorderItem: true,
-            name: 'DescriptionMonitoringRequirementsId',
-            hintText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
-            inputDecoration: InputDecoration(
-              contentPadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-              isDense: true,
-              labelText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
-              labelStyle: context.textStyles.bodyBold.black,
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-            ),
-            onChanged: cubit.onMonitoringChanged,
-            initialValue: initValue,
-            itemsData: monitorings
-                .map((e) => CmoDropdownItem(
-                    id: e, name: e.monitoringRequirementName ?? ''))
-                .toList(),
-          ),
+        return BottomSheetSelection(
+          hintText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
+          value: initValue?.monitoringRequirementName,
+          margin: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          onTap: () async {
+            FocusScope.of(context).unfocus();
+            if (monitorings.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: ListView.builder(
+                itemCount: monitorings.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      cubit.onMonitoringChanged.call(monitorings[index]);
+                      Navigator.pop(context);
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        monitorings[index].monitoringRequirementName ?? '',
+                        style: context.textStyles.bodyBold.copyWith(
+                          color: context.colors.blueDark2,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
         );
       },
     );
