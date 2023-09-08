@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:cmo/l10n/l10n.dart';
@@ -10,11 +9,11 @@ import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_me
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/ui/theme/app_theme.dart';
+import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/file_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
-import 'package:cmo/ui/widget/cmo_buttons.dart';
 
 class AddMemberSignContractWidget extends StatefulWidget {
   const AddMemberSignContractWidget(
@@ -93,13 +92,15 @@ class _AddMemberSignContractWidgetState
       }
     }
 
-    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberSAF>(
-      selector: (state) => state.addMemberSAF,
-      builder: (context, addMemberSAF) {
+    return BlocBuilder<AddMemberCubit, AddMemberState>(
+      buildWhen: (previous, current) =>
+          previous.farm != current.farm ||
+          previous.addMemberSAF != current.addMemberSAF,
+      builder: (context, state) {
         return CmoCollapseTitle(
           title: 'Signed Contract',
           onExpansionChanged: widget.shouldScrollBottom,
-          showTick: addMemberSAF.isComplete,
+          showTick: state.addMemberSAF.isComplete,
           child: Container(
             padding: const EdgeInsets.all(8),
             color: Colors.white,
@@ -119,7 +120,8 @@ class _AddMemberSignContractWidgetState
                           LocaleKeys
                               .agree_to_the_conditions_laid_out_in_this_legally_binding_document
                               .tr(args: [
-                            '${widget.farm?.firstName ?? ''} ${widget.farm?.lastName ?? ''}'
+                            '${state.farm?.firstName ?? widget.farm?.firstName ?? ''} ${state.farm?.lastName ?? widget.farm?.lastName ?? ''}'
+                                .trimLeft()
                           ]),
                           style: context.textStyles.bodyNormal
                               .copyWith(color: context.colors.black)),
