@@ -174,7 +174,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          '* Date Issued',
+                          '* ${LocaleKeys.dateIssued.tr()}',
                           style: context.textStyles.bodyBold
                               .copyWith(color: context.colors.black),
                         ),
@@ -204,7 +204,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'Camp/Compartment',
+                          LocaleKeys.camp_compartment.tr(),
                           style: context.textStyles.bodyBold
                               .copyWith(color: context.colors.black),
                         ),
@@ -317,7 +317,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'General Comments',
+                          LocaleKeys.general_comments.tr(),
                           style: context.textStyles.bodyBold
                               .copyWith(color: context.colors.black),
                         ),
@@ -346,7 +346,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                         const SizedBox(height: 12),
                         Align(
                           child: Text(
-                            'Worker Signature',
+                            LocaleKeys.worker_signature.tr(),
                             style: context.textStyles.bodyBold
                                 .copyWith(color: context.colors.black),
                           ),
@@ -393,7 +393,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                         const SizedBox(height: 12),
                         Align(
                           child: CmoFilledButton(
-                              title: 'Clear Signature',
+                              title: LocaleKeys.clear_signature.tr(),
                               onTap: () {
                                 legacySignature.value = null;
                                 signatureKey.currentState?.clear();
@@ -403,7 +403,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                         const SizedBox(height: 12),
                         Align(
                           child: CmoFilledButton(
-                              title: 'Save',
+                              title: LocaleKeys.save.tr(),
                               onTap: () async {
                                 final canNext = await cubit.onSave();
 
