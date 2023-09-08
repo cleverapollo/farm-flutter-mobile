@@ -10,14 +10,20 @@ class AddAAIState {
     this.natureOfInjuries = const [],
     this.propertyDamaged = const [],
     this.lostTimeInDay = '',
+    this.workerSelect,
+    this.jobDescriptionSelect,
+    this.natureOfInjurySelect,
   });
 
   final bool isAddNew;
   final bool isDataReady;
   final String lostTimeInDay;
   final List<FarmerWorker> workers;
+  final FarmerWorker? workerSelect;
   final List<WorkerJobDescription> jobDescriptions;
+  final WorkerJobDescription? jobDescriptionSelect;
   final List<NatureOfInjury> natureOfInjuries;
+  final NatureOfInjury? natureOfInjurySelect;
   final List<PropertyDamaged> propertyDamaged;
   AccidentAndIncident accidentAndIncident;
 
@@ -28,6 +34,9 @@ class AddAAIState {
     List<WorkerJobDescription>? jobDescriptions,
     List<NatureOfInjury>? natureOfInjuries,
     List<PropertyDamaged>? propertyDamaged,
+    FarmerWorker? workerSelect,
+    WorkerJobDescription? jobDescriptionSelect,
+    NatureOfInjury? natureOfInjurySelect,
     bool? isDataReady,
   }) {
     return AddAAIState(
@@ -39,6 +48,9 @@ class AddAAIState {
       isAddNew: isAddNew,
       lostTimeInDay: lostTimeInDay ?? this.lostTimeInDay,
       isDataReady: isDataReady ?? this.isDataReady,
+      workerSelect: workerSelect ?? this.workerSelect,
+      jobDescriptionSelect: jobDescriptionSelect ?? this.jobDescriptionSelect,
+      natureOfInjurySelect: natureOfInjurySelect ?? this.natureOfInjurySelect,
     );
   }
 }

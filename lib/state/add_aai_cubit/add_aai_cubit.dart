@@ -121,6 +121,7 @@ class AddAAICubit extends Cubit<AddAAIState> {
         .getWorkerJobDescriptionByWorkerId(worker?.workerId ?? '');
     emit(
       state.copyWith(
+        workerSelect: worker,
         jobDescriptions: jobDescriptions,
         accidentAndIncident: state.accidentAndIncident.copyWith(
           workerId: worker?.workerId,
@@ -163,6 +164,7 @@ class AddAAICubit extends Cubit<AddAAIState> {
       jobDescriptionId: jobDesc?.jobDescriptionId,
       jobDescriptionName: jobDesc?.jobDescriptionName,
     );
+    emit(state.copyWith(jobDescriptionSelect: jobDesc));
   }
 
   String _calculateTimeLost() {
@@ -177,5 +179,7 @@ class AddAAICubit extends Cubit<AddAAIState> {
       natureOfInjuryId: selectNatureOfInjury?.natureOfInjuryId,
       natureOfInjuryName: selectNatureOfInjury?.natureOfInjuryName,
     );
+
+    emit(state.copyWith(natureOfInjurySelect: selectNatureOfInjury));
   }
 }
