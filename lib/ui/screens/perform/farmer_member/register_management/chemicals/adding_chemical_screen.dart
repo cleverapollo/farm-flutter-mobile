@@ -154,7 +154,8 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(4, 8, 4, 8),
                                     isDense: true,
-                                    hintText: LocaleKeys.locationUsed.tr(),
+                                    hintText:
+                                        '${LocaleKeys.compartmentName.tr()} / ${LocaleKeys.campName.tr()}',
                                     hintStyle:
                                         context.textStyles.bodyNormal.grey,
                                     border: UnderlineInputBorder(
