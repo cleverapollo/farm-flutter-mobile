@@ -56,11 +56,12 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
               await context.read<MemberManagementCubit>().reload();
             },
           ),
-          body: BlocSelector<MemberManagementCubit,MemberManagementState, bool >(
+          body:
+              BlocSelector<MemberManagementCubit, MemberManagementState, bool>(
             selector: (state) => state.isLoading,
             builder: (context, isLoading) {
-
-              if(isLoading) return const Center(child: CircularProgressIndicator());
+              if (isLoading)
+                return const Center(child: CircularProgressIndicator());
 
               return BlocSelector<MemberManagementCubit, MemberManagementState,
                   List<Farm>>(
@@ -90,8 +91,8 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                       Row(
                         children: [
                           const Spacer(),
-                          BlocSelector<MemberManagementCubit, MemberManagementState,
-                              bool>(
+                          BlocSelector<MemberManagementCubit,
+                              MemberManagementState, bool>(
                             selector: (state) => state.isInCompleteSelected,
                             builder: (context, isInCompleteSelected) {
                               return CmoFilledButton(
@@ -110,8 +111,8 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                             },
                           ),
                           const SizedBox(width: 12),
-                          BlocSelector<MemberManagementCubit, MemberManagementState,
-                              bool>(
+                          BlocSelector<MemberManagementCubit,
+                              MemberManagementState, bool>(
                             selector: (state) => state.isInCompleteSelected,
                             builder: (context, isInCompleteSelected) {
                               return CmoFilledButton(
@@ -136,13 +137,15 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                       Expanded(
                         child: ListView.separated(
                           itemCount: filteringFarms.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: 20),
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 20),
                           itemBuilder: (_, index) {
                             final farm = filteringFarms[index];
                             return InkWell(
                               onTap: () async {
-                                final result =
-                                    await AddMemberScreen.push(context, farm: farm);
+                                final result = await AddMemberScreen.push(
+                                    context,
+                                    farm: farm);
 
                                 if (true == result && context.mounted) {
                                   await context
@@ -151,13 +154,16 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                                 }
                               },
                               child: CmoCard(
-                                margin: const EdgeInsets.symmetric(horizontal: 23),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 23),
                                 content: [
                                   CmoCardHeader(title: farm.farmName ?? ''),
                                   CmoCardHeader(
                                       title:
                                           '${farm.firstName ?? ''} ${farm.lastName ?? ''}'),
-                                  const SizedBox(height: 10,),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
                                   SizedBox(
                                     width: double.maxFinite,
                                     child: Row(
@@ -168,29 +174,42 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                                                 ? LocaleKeys.onboarded.tr()
                                                 : LocaleKeys.incomplete.tr(),
                                             textAlign: TextAlign.start,
-                                            style:
-                                                context.textStyles.bodyNormal.white,
+                                            style: context
+                                                .textStyles.bodyNormal.white,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
                                         Flexible(
                                           child: Align(
-                                            child: farm.isGroupSchemeMember == true
+                                            child: farm.isGroupSchemeMember ==
+                                                    true
                                                 ? Assets.icons.icTick.widget
-                                                : BlocBuilder<MemberManagementCubit,
+                                                : BlocBuilder<
+                                                    MemberManagementCubit,
                                                     MemberManagementState>(
                                                     builder: (context, state) {
                                                       return Text(
                                                         '${farm.stepCount ?? farm.numberStepComplete(
-                                                          compartments: state.allCompartments,
-                                                          allFarmMemberObjectiveAnswers: state.allFarmMemberObjectiveAnswers,
-                                                          allFarmMemberObjectives: state.allFarmMemberObjectives,
-                                                          allFarmMemberRiskProfileAnswers: state.allFarmMemberRiskProfileAnswers,
-                                                          allRiskProfileQuestions: state.allRiskProfileQuestions,
-                                                        )}/9',
-                                                        style: context.textStyles
-                                                            .bodyNormal.white,
+                                                              compartments: state
+                                                                  .allCompartments,
+                                                              allFarmMemberObjectiveAnswers:
+                                                                  state
+                                                                      .allFarmMemberObjectiveAnswers,
+                                                              allFarmMemberObjectives:
+                                                                  state
+                                                                      .allFarmMemberObjectives,
+                                                              allFarmMemberRiskProfileAnswers:
+                                                                  state
+                                                                      .allFarmMemberRiskProfileAnswers,
+                                                              allRiskProfileQuestions:
+                                                                  state
+                                                                      .allRiskProfileQuestions,
+                                                            )}/8',
+                                                        style: context
+                                                            .textStyles
+                                                            .bodyNormal
+                                                            .white,
                                                       );
                                                     },
                                                   ),

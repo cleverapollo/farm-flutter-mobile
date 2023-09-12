@@ -264,7 +264,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
 
     if (state.farm?.isGroupSchemeMember == false ||
         state.farm?.isGroupSchemeMember == null) {
-      final isGroupSchemeMember = stepCount == 9;
+      final isGroupSchemeMember = stepCount == 8;
 
       var isSynced = state.farmBeforeEdit?.isMasterDataSynced;
 
