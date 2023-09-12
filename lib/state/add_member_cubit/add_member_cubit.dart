@@ -667,6 +667,11 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     await cacheFarm();
   }
 
+  void onExpandedSAF(bool p0) {
+    emit(state.copyWith(
+        addMemberSAF: state.addMemberSAF.copyWith(isExpanded: p0)));
+  }
+
   Future<void> onDataChangeMemberSignContract(
       String? image, String? points, String? date) async {
     if (image != null && points != null && date != null) {

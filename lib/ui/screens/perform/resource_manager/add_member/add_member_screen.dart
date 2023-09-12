@@ -15,6 +15,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -41,7 +42,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   late final AddMemberCubit cubit;
   late final DashboardCubit dashboardCubit;
 
-  final _scrollController = ScrollController();
+  final onScrollDownButtonValue = ValueNotifier(true);
+
+  late final ScrollController _scrollController;
 
   @override
   void dispose() {
@@ -53,6 +56,11 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        onScrollDownButtonValue.value = !(_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent);
+      });
     dashboardCubit = context.read<DashboardCubit>();
     Future.microtask(() async {
       await context.read<AddMemberCubit>().initAddMember(farm: widget.farm);
@@ -106,15 +114,61 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           );
         },
       ),
+      floatingActionButton:
+          BlocSelector<AddMemberCubit, AddMemberState, AddMemberSAF>(
+        selector: (state) {
+          return state.addMemberSAF;
+        },
+        builder: (context, addMemberSAF) {
+          return Visibility(
+            visible: addMemberSAF.isExpanded,
+            child: ValueListenableBuilder(
+              valueListenable: onScrollDownButtonValue,
+              builder: (context, data, __) {
+                return _bindScrollDownButton(data);
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 
-  Future<void> _handleScrollBottom(bool p0) async {
-    if (p0) return;
+  Widget _bindScrollDownButton(bool shouldShowDown) {
+    if (shouldShowDown) {
+      return CupertinoButton(
+        onPressed: () {
+          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+        },
+        child: Icon(
+          CupertinoIcons.arrow_down_circle_fill,
+          size: 40,
+          color: context.colors.blueDark1,
+        ),
+      );
+    } else {
+      return CupertinoButton(
+        onPressed: () {
+          _scrollController.jumpTo(0);
+        },
+        child: Icon(
+          CupertinoIcons.arrow_up_circle_fill,
+          size: 40,
+          color: context.colors.blueDark1,
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleScrollBottom(bool isExpanded, bool isCompleted) async {
+    cubit.onExpandedSAF(!isExpanded);
+    if (isExpanded) return;
 
     await Future.delayed(const Duration(milliseconds: 500), () {});
 
-    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    if (isCompleted) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    }
   }
 }
 

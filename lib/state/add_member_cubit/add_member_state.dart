@@ -47,6 +47,7 @@ extension AddMemberStateExtension on AddMemberState {
 class AddMemberSAF with _$AddMemberSAF {
   const factory AddMemberSAF({
     @Default(false) bool isComplete,
+    @Default(false) bool isExpanded,
     String? signatureImage,
     String? signaturePoints,
     String? signatureDate,
