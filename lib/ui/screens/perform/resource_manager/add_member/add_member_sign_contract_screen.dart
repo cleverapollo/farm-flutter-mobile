@@ -43,6 +43,8 @@ class _AddMemberSignContractWidgetState
   final legacySignature = ValueNotifier<Image?>(null);
   final signValue = ValueNotifier(AddMemberContractEnum.newSign);
 
+  bool shouldExpandedNewSign = false;
+
   @override
   void initState() {
     super.initState();
@@ -95,16 +97,19 @@ class _AddMemberSignContractWidgetState
                 child: CmoFilledButton(
                     title: 'Finalise Now',
                     onTap: () async {
-                      final state = context.read<AddMemberCubit>().state;
+                      signValue.value = AddMemberContractEnum.newSign;
+                      shouldExpandedNewSign = true;
 
-                      if (state.addMemberMDetails.isComplete &&
-                          context.mounted) {
-                        await AddMemberMembershipContractScreen.push(context,
-                            farm: state.farm);
-                      } else {
-                        context.read<AddMemberCubit>().checkErrorAllSteps();
-                        showSnackError(msg: 'Should complete all steps.');
-                      }
+                      // final state = context.read<AddMemberCubit>().state;
+                      //
+                      // if (state.addMemberMDetails.isComplete &&
+                      //     context.mounted) {
+                      //   await AddMemberMembershipContractScreen.push(context,
+                      //       farm: state.farm);
+                      // } else {
+                      //   context.read<AddMemberCubit>().checkErrorAllSteps();
+                      //   showSnackError(msg: 'Should complete all steps.');
+                      // }
                     })),
           ),
         ));
@@ -136,6 +141,7 @@ class _AddMemberSignContractWidgetState
       builder: (context, state) {
         return CmoCollapseTitle(
           title: 'Signed Contract',
+          initiallyExpanded: shouldExpandedNewSign,
           onExpansionChanged: (p0) {
             widget.shouldScrollBottom.call(p0, state.addMemberSAF.isComplete);
           },
