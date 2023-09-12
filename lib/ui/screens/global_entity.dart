@@ -1,3 +1,6 @@
+import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
@@ -8,12 +11,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GlobalEntityScreen extends StatefulWidget {
-  const GlobalEntityScreen({super.key});
+  final bool canNavigateBack;
 
-  static dynamic push(BuildContext context) {
-    return Navigator.of(context).push(
+  const GlobalEntityScreen({
+    super.key,
+    this.canNavigateBack = false,
+  });
+
+  static dynamic push(
+    BuildContext context, {
+    bool canNavigateBack = false,
+  }) {
+    Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const GlobalEntityScreen(),
+        builder: (_) => GlobalEntityScreen(
+          canNavigateBack: canNavigateBack,
+        ),
       ),
     );
   }
@@ -31,33 +44,64 @@ class GlobalEntityScreen extends StatefulWidget {
 }
 
 class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
-  dynamic selectedResourceManagerUnit;
+
   bool isCheckingUserRole = true;
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() async {
-      final state = context.read<AuthCubit>().state;
-      final haveBehave = state.haveBehaveRole;
-      final havePerform = state.havePerformRole;
+      final userRole = await configService.getActiveUserRole();
+      if (userRole == null) {
 
-      await context.read<UserInfoCubit>().getUserInfoWithRole(
-            haveBehave: haveBehave,
-            havePerform: havePerform,
+        final state = context.read<AuthCubit>().state;
+        final haveBehave = state.haveBehaveRole;
+        final havePerform = state.havePerformRole;
+
+        await context.read<UserInfoCubit>().getUserInfoWithRole(
+          haveBehave: haveBehave,
+          havePerform: havePerform,
+        );
+        final userInfoState = context.read<UserInfoCubit>().state;
+        if (userInfoState.isFarmer) {
+          await Navigator.of(context).pushReplacement(
+            SelectEntityFarmerScreen.pageRoute(),
           );
-      final userInfoState = context.read<UserInfoCubit>().state;
-      if (userInfoState.isFarmer) {
-        await Navigator.of(context).pushReplacement(
-          SelectEntityFarmerScreen.pageRoute(),
-        );
-        return;
-      }
-      if (!userInfoState.isRM) {
-        EntityBehaveScreen.push(
-          context,
-        );
-        return;
+          return;
+        }
+        if (!userInfoState.isRM) {
+          EntityBehaveScreen.push(
+            context,
+          );
+          return;
+        }
+      } else {
+        switch (userRole) {
+          case UserRoleEnum.farmerMember:
+          case UserRoleEnum.regionalManager:
+            await context.read<UserInfoCubit>().getUserInfoWithRole(
+              haveBehave: false,
+              havePerform: true,
+            );
+
+            if (userRole == UserRoleEnum.farmerMember) {
+              await Navigator.of(context).pushReplacement(
+                SelectEntityFarmerScreen.pageRoute(),
+              );
+              return;
+            }
+
+            break;
+          case UserRoleEnum.behave:
+            await context.read<UserInfoCubit>().getUserInfoWithRole(
+              haveBehave: true,
+              havePerform: false,
+            );
+            EntityBehaveScreen.push(
+              context,
+            );
+            return;
+        }
       }
       setState(() {
         isCheckingUserRole = false;
@@ -67,9 +111,9 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    late Widget widget;
+    late Widget child;
     if (isCheckingUserRole) {
-      widget = const Center(
+      child = const Center(
         child: CircularProgressIndicator(
           strokeWidth: 2,
         ),
@@ -79,19 +123,22 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
 
       if (state.isRM) {
         if (state.isBehave) {
-          widget = _buildPerformAndBehaveWidget();
+          child = _buildPerformAndBehaveWidget();
         } else {
-          widget = _performWidget();
+          child = _performWidget();
         }
       } else {
-        widget = Container();
+        child = Container();
       }
     }
+
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.entity.tr(),
+        leading: widget.canNavigateBack ? Assets.icons.icArrowLeft.svgBlack : null,
+        onTapLeading: Navigator.of(context).pop,
       ),
-      body: SafeArea(child: widget),
+      body: SafeArea(child: child),
     );
   }
 

@@ -39,6 +39,8 @@ class CompartmentCubit extends HydratedCubit<CompartmentState> {
           break;
         case UserRoleEnum.behave:
           break;
+        default:
+          break;
       }
     } catch (e) {
       emit(state.copyWith(error: e));

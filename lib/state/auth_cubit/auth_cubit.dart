@@ -95,7 +95,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     final userRole = await configService.getActiveUserRole();
     final renewalToken = await _readRenewalToken();
 
-    if (renewalToken == null) {
+    if (renewalToken == null || userRole == null) {
       return;
     }
 
@@ -115,6 +115,8 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
   Future<String?> _readRenewalToken() async {
     final userRole = await configService.getActiveUserRole();
+
+    if (userRole == null) return null;
 
     if (userRole.isBehave) {
       return secureStorage.read(

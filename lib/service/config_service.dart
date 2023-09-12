@@ -107,13 +107,13 @@ class ConfigService {
     return sp.setInt('ActiveUserRole', userRole.value);
   }
 
-  Future<UserRoleEnum> getActiveUserRole() async {
+  Future<UserRoleEnum?> getActiveUserRole() async {
     final sp = await SharedPreferences.getInstance();
-    int selectedValue = sp.getInt("ActiveUserRole") ?? 0;
+    final selectedValue = sp.getInt("ActiveUserRole");
     for (var element in UserRoleEnum.values) {
       if (element.value == selectedValue) return element;
     }
-    return UserRoleEnum.behave;
+    return null;
   }
 
   Future<bool> setActiveFarm({required Farm farm}) async {

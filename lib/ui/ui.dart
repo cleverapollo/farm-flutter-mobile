@@ -8,7 +8,6 @@ export 'screens/onboarding/login/language_picker.dart';
 export 'screens/onboarding/login/login_screen.dart';
 export 'screens/onboarding/splash/splash_screen.dart';
 export 'screens/perform/farmer_member/entity/select_entity_farmer_screen.dart';
-export 'screens/perform/resource_manager/entity/entity_resource_manager_screen.dart';
 export 'screens/setting/settings_screen.dart';
 export 'snack/snack_helper.dart';
 export 'theme/app_theme.dart';

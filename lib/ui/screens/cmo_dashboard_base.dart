@@ -1,7 +1,7 @@
+import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/state/dashboard/dashboard_cubit.dart';
-import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/ui/screens/behave/dashboard/behave_dashboard_screen.dart';
 import 'package:cmo/ui/screens/cmo_menu_base.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/dashboard/farmer_member_dashboard_screen.dart';
@@ -9,7 +9,6 @@ import 'package:cmo/ui/screens/perform/resource_manager/dashboard/resource_manag
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_mode_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CmoDashboardBase extends StatefulWidget {
   const CmoDashboardBase({super.key});
@@ -27,16 +26,34 @@ class CmoDashboardBase extends StatefulWidget {
 class _CmoDashboardBaseState extends State<CmoDashboardBase> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  String? entityName;
   @override
   void initState() {
     super.initState();
+    Future.microtask(() async {
+      final userRole = await configService.getActiveUserRole();
+      if (userRole == null) return;
+      switch (userRole) {
+        case UserRoleEnum.behave:
+          final company = await configService.getActiveCompany();
+          entityName = company?.companyName;
+          break;
+        case UserRoleEnum.regionalManager:
+          final resourceManager = await configService.getActiveRegionalManager();
+          entityName = resourceManager?.regionalManagerUnitName;
+          break;
+        case UserRoleEnum.farmerMember:
+          final farm = await configService.getActiveFarm();
+          entityName = farm?.farmName;
+          break;
+      }
+
+      setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final entityName = context
-        .select<EntityCubit, String?>((cubit) => cubit.state.entity?.name);
-
     return WillPopScope(
       onWillPop: () async {
         return false;

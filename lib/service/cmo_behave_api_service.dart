@@ -44,6 +44,7 @@ class CmoBehaveApiService {
   Future<String?> _readAccessToken() async {
     final userRole = await configService.getActiveUserRole();
 
+    if (userRole == null) return null;
     if (userRole.isBehave) {
       return secureStorage.read(
           key: UserRoleConfig.behaveRole.getAccessTokenKey);

@@ -403,7 +403,10 @@ class _EntityInformationState extends State<EntityInformation> {
   Widget build(BuildContext context) {
     return CmoTappable(
       onTap: () {
-        GlobalEntityScreen.pushReplacement(context);
+        GlobalEntityScreen.push(
+          context,
+          canNavigateBack: true,
+        );
       },
       child: SizedBox(
         height: 34,
