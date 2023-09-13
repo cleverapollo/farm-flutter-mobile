@@ -10,6 +10,7 @@ class ConfigService {
     await setRMSynced(isSynced: false);
     await setIsAuthorized(isAuthorized: false);
     await clearPerformConfig();
+    await clearUserConfig();
   }
 
   Future<bool> isFirstLaunch() async {
@@ -98,7 +99,7 @@ class ConfigService {
   Future<UserInfo?> getActiveUser() async {
     final sp = await SharedPreferences.getInstance();
     final rawJson = sp.getString('ActiveUser');
-    if (rawJson == null) return null;
+    if (rawJson == null || rawJson.isEmpty) return null;
     return UserInfo.fromJson(jsonDecode(rawJson) as Map<String, dynamic>);
   }
 
@@ -109,8 +110,12 @@ class ConfigService {
 
   Future<UserRoleEnum?> getActiveUserRole() async {
     final sp = await SharedPreferences.getInstance();
-    final selectedValue = sp.getInt("ActiveUserRole");
-    for (var element in UserRoleEnum.values) {
+    final selectedValue = sp.getInt('ActiveUserRole');
+
+    if (selectedValue == 3) {
+      return null;
+    }
+    for (final element in UserRoleEnum.values) {
       if (element.value == selectedValue) return element;
     }
     return null;
@@ -126,6 +131,21 @@ class ConfigService {
     final rawJson = sp.getString('ActiveFarm');
     if (rawJson == null || rawJson.isEmpty) return null;
     return Farm.fromJson(jsonDecode(rawJson) as Map<String, dynamic>);
+  }
+
+  Future<void> clearUserConfig() async {
+    await clearActiveUserInfo();
+    await clearActiveUserRole();
+  }
+
+  Future<bool> clearActiveUserInfo() async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setString('ActiveUser', '');
+  }
+
+  Future<bool> clearActiveUserRole() async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setInt('ActiveUserRole', 3);
   }
 
   Future<void> clearPerformConfig() async {
