@@ -54,7 +54,7 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
           ),
         ),
         BottomSheetSelection(
-          hintText: LocaleKeys.complaintName.tr(),
+          hintText: LocaleKeys.nameOfControlAgent.tr(),
           value: selectedAgent?.biologicalControlAgentTypeName,
           margin: EdgeInsets.zero,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),

@@ -160,75 +160,83 @@ class _AddBiologicalControlAgentsScreenState
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
-        body: SafeArea(
-          child: BlocSelector<AddBiologicalControlCubit,
-              AddBiologicalControlState, bool>(
-            selector: (state) => state.isDataReady,
-            builder: (context, isDataReady) {
-              if (!isDataReady) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              final initState = cubit.state;
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: FormBuilder(
-                  key: _formKey,
-                  onChanged: () {},
-                  autovalidateMode: autoValidateMode,
-                  child: AutofillGroup(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SelectControlAgentWidget(
-                            agentTypes: initState.agentTypes,
-                            onSelect: cubit.onSelectControlAgent,
-                            initAgent: initState.agent,
+        body: Stack(
+          children: [
+            SafeArea(
+              child: BlocSelector<AddBiologicalControlCubit, AddBiologicalControlState, bool>(
+                selector: (state) => state.isDataReady,
+                builder: (context, isDataReady) {
+                  if (!isDataReady) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final initState = cubit.state;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: FormBuilder(
+                      key: _formKey,
+                      onChanged: () {},
+                      autovalidateMode: autoValidateMode,
+                      child: AutofillGroup(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SelectControlAgentWidget(
+                                agentTypes: initState.agentTypes,
+                                onSelect: cubit.onSelectControlAgent,
+                                initAgent: initState.agent,
+                              ),
+                              _buildSelectDateReleased(initState.agent.dateReleased),
+                              _buildSelectStakeHolderWidget(),
+                              _buildSelectDescriptionWidget(),
+                              AttributeItem(
+                                child: SelectItemWidget(
+                                  initValue: carRaised,
+                                  title: LocaleKeys.carRaised.tr(),
+                                  onSelect: (isSelected) {
+                                    carRaised = isSelected;
+                                  },
+                                ),
+                              ),
+                              AttributeItem(
+                                child: SelectItemWidget(
+                                  initValue: carClosed,
+                                  title: LocaleKeys.carClosed.tr(),
+                                  onSelect: (isSelected) {
+                                    carClosed = isSelected;
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                height: 250,
+                                child: GeneralCommentWidget(
+                                  hintText: LocaleKeys.generalComments.tr(),
+                                  initialValue: initState.agent.comment,
+                                  onChanged: cubit.onCommentChanged,
+                                ),
+                              ),
+                            ],
                           ),
-                          _buildSelectDateReleased(
-                              initState.agent.dateReleased),
-                          _buildSelectStakeHolderWidget(),
-                          _buildSelectDescriptionWidget(),
-                          AttributeItem(
-                            child: SelectItemWidget(
-                              initValue: carRaised,
-                              title: LocaleKeys.carRaised.tr(),
-                              onSelect: (isSelected) {
-                                carRaised = isSelected;
-                              },
-                            ),
-                          ),
-                          AttributeItem(
-                            child: SelectItemWidget(
-                              initValue: carClosed,
-                              title: LocaleKeys.carClosed.tr(),
-                              onSelect: (isSelected) {
-                                carClosed = isSelected;
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            height: 250,
-                            child: GeneralCommentWidget(
-                              hintText: LocaleKeys.generalComments.tr(),
-                              initialValue: initState.agent.comment,
-                              onChanged: cubit.onCommentChanged,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                  );
+                },
+              ),
+            ),
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: CmoFilledButton(
+                  title: LocaleKeys.save.tr(),
+                  onTap: onSubmit,
+                  loading: loading,
                 ),
-              );
-            },
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: CmoFilledButton(
-          title: LocaleKeys.save.tr(),
-          onTap: onSubmit,
-          loading: loading,
+              ),
+            ),
+          ],
         ),
       ),
     );
