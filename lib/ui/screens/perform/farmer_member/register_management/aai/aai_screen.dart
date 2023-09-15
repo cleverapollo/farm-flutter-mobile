@@ -7,6 +7,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/accident_and_incident.dart';
 import 'package:cmo/state/aai_cubit/aai_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/aai/adding_aai_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
@@ -18,13 +19,16 @@ class AAIScreen extends StatefulWidget {
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
-        context, MaterialPageRoute(builder: (_){
-      return BlocProvider(
-        create: (_) => AAICubit(),
-        child: const AAIScreen(),
-      );
-      },
-    ),);
+      context,
+      MaterialPageRoute(
+        builder: (_) {
+          return BlocProvider(
+            create: (_) => AAICubit(),
+            child: const AAIScreen(),
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -106,12 +110,13 @@ class _AAIScreenState extends State<AAIScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBar(
+      appBar: CmoFarmAppBar(
         title: LocaleKeys.accident_incidents.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        showFarmName: true,
+        showLeading: true,
+        showAdding: true,
         onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () async {
+        onTapAdding: () async {
           await AddingAAIScreen.push(context);
           await _init();
         },
