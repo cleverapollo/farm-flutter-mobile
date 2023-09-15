@@ -4,15 +4,15 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/training_cubit/add_training_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/helpers.dart';
 import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 
 class TrainingAddScreen extends StatefulWidget {
   const TrainingAddScreen({super.key});
@@ -31,12 +31,12 @@ class TrainingAddScreen extends StatefulWidget {
               farm: farm,
               training: training ??
                   TrainingRegister(
-                    trainingRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
-                    date: DateTime.now(),
-                    isActive: true,
-                    isMasterdataSynced: false,
-                    farmId: farm.farmId
-                  ),
+                      trainingRegisterNo:
+                          DateTime.now().millisecondsSinceEpoch.toString(),
+                      date: DateTime.now(),
+                      isActive: true,
+                      isMasterdataSynced: false,
+                      farmId: farm.farmId),
               isAddNew: training == null,
             ),
             child: const TrainingAddScreen(),
@@ -129,11 +129,10 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoAppBarV2(
+        appBar: CmoFarmAppBar.showTrailingAndFarmName(
           title: initState.isAddNew
               ? LocaleKeys.add_training.tr()
               : 'Edit Training',
-          showLeading: true,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
@@ -158,7 +157,8 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
                       _buildSelectDate(training.date),
                       _buildSelectExpiryDate(training.expiryDate),
                       const SizedBox(height: 12.0),
-                      _selectTrainingType(state.trainingTypes, training.trainingTypeId),
+                      _selectTrainingType(
+                          state.trainingTypes, training.trainingTypeId),
                       const SizedBox(height: 12.0),
                       AttributeItem(
                         child: InputAttributeItem(
@@ -225,7 +225,8 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
           },
           initialValue: initType,
           itemsData: trainingTypes
-              .map((e) => CmoDropdownItem(id: e, name: e.trainingTypeName ?? ''))
+              .map(
+                  (e) => CmoDropdownItem(id: e, name: e.trainingTypeName ?? ''))
               .toList()),
     );
   }
@@ -286,7 +287,8 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
   }
 
   Widget _selectWorkerName(List<FarmerWorker> workers, String? workerId) {
-    final initWorker = workers.firstWhereOrNull((element) => element.workerId == workerId);
+    final initWorker =
+        workers.firstWhereOrNull((element) => element.workerId == workerId);
     return AttributeItem(
       child: CmoDropdown<FarmerWorker>(
         name: LocaleKeys.worker_name.tr(),

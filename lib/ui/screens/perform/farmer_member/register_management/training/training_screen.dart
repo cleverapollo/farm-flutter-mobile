@@ -1,14 +1,14 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/training_cubit/training_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_add_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cmo/gen/assets.gen.dart';
 
 class TrainingScreen extends StatefulWidget {
   const TrainingScreen({super.key});
@@ -71,10 +71,8 @@ class _TrainingScreenState extends State<TrainingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoFarmAppBar.showAddingAndFarmName(
         title: LocaleKeys.training.tr(),
-        showLeading: true,
-        showAdding: true,
         onTapAdding: onNavigateToAddTraining,
       ),
       body: SafeArea(
