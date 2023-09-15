@@ -51,11 +51,8 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
       builder: (context, state) {
         final cubit = context.read<RMAsiCubit>();
         return Scaffold(
-          appBar: CmoFarmAppBar(
-            showFarmName: true,
+          appBar: CmoFarmAppBar.addingRegisterWithFarmName(
             title: LocaleKeys.asi.tr(),
-            showLeading: true,
-            showTrailing: true,
           ),
           body: CustomScrollView(
             slivers: [

@@ -38,11 +38,8 @@ class _AsiScreenState extends State<AsiScreen> {
       builder: (context, state) {
         final cubit = context.read<RMAsiCubit>();
         return Scaffold(
-          appBar: CmoFarmAppBar(
-            showFarmName: true,
+          appBar: CmoFarmAppBar.listRegisterWithFarmName(
             title: LocaleKeys.asi.tr(),
-            showLeading: true,
-            showAdding: true,
             onTapAdding: () async {
               final result = await AddingAsiScreen.push(context);
               if (result != null && result is int) {
