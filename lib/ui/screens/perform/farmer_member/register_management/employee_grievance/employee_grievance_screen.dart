@@ -1,17 +1,17 @@
 import 'dart:async';
 
+import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_employee_grievance/employee_grievance_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/employee_grievance/add_employee_grievance/add_employee_grievance_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cmo/di.dart';
 
 class EmployeeGrievanceScreen extends StatefulWidget {
   const EmployeeGrievanceScreen({super.key});
@@ -20,7 +20,6 @@ class EmployeeGrievanceScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _EmployeeGrievanceScreenState();
 
   static Future<void> push(BuildContext context) {
-
     return Navigator.push(
       context,
       MaterialPageRoute(
@@ -57,10 +56,11 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
     }
   }
 
-  Future<void> onNavigateToEditGrievance(int index, GrievanceRegister grievanceRegister) async {
+  Future<void> onNavigateToEditGrievance(
+      int index, GrievanceRegister grievanceRegister) async {
     final farm = await configService.getActiveFarm();
     if (farm != null && context.mounted) {
-     final result = await AddEmployeeGrievanceScreen.push(
+      final result = await AddEmployeeGrievanceScreen.push(
         context,
         farm: farm,
         employeeGrievance: grievanceRegister,
@@ -74,17 +74,13 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBar(
+      appBar: CmoFarmAppBar.showAddingAndFarmName(
         title: LocaleKeys.employee_grievance.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => onNavigateToAddGrievance(),
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: BlocBuilder<EmployeeGrievanceCubit, EmployeeGrievanceState> (
+          child: BlocBuilder<EmployeeGrievanceCubit, EmployeeGrievanceState>(
             builder: (context, state) {
               if (state.isDataReady) {
                 return _buildBody(state);
@@ -107,7 +103,10 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
             childAlignment: MainAxisAlignment.center,
             content: [
               CmoCardHeader(title: LocaleKeys.summary.tr()),
-              CmoCardHeader(title: LocaleKeys.total.tr(), valueEnd: items.length.toString(),),
+              CmoCardHeader(
+                title: LocaleKeys.total.tr(),
+                valueEnd: items.length.toString(),
+              ),
             ],
             trailing: Assets.icons.icDown.svgWhite,
           ),

@@ -4,6 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_employee_grievance/add_employee_grievance_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
@@ -125,15 +126,10 @@ class _AddEmployeeGrievanceScreenState
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoAppBar(
+        appBar: CmoFarmAppBar.showTrailingAndFarmName(
           title: initState.isAddNew
               ? LocaleKeys.addEmployeeGrievance.tr()
               : 'Edit Employee Grievance',
-          subtitle: initState.farm.farmName,
-          leading: Assets.icons.icArrowLeft.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
-          trailing: Assets.icons.icClose.svgBlack,
-          onTapTrailing: Navigator.of(context).pop,
         ),
         body: SafeArea(
           child: Padding(
