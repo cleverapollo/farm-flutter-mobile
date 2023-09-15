@@ -8,8 +8,8 @@ import 'package:cmo/model/treament_method/treament_method.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_cubit.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,9 +38,8 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoFarmAppBar.showTrailingAndFarmName(
         title: LocaleKeys.add_pets_and_disease.tr(),
-        showLeading: true,
       ),
       body: BlocBuilder<PetsAndDiseasesCubit, PetsAndDiseasesState>(
         builder: (context, state) {

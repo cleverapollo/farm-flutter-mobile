@@ -2,9 +2,9 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_cubit.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/pets_and_disease_add_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,10 +28,8 @@ class _PetsAndDiseaseScreenState extends State<PetsAndDiseaseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CmoAppBarV2(
+        appBar: CmoFarmAppBar.showAddingAndFarmName(
           title: LocaleKeys.pets_and_disease.tr(),
-          showLeading: true,
-          showAdding: true,
           onTapAdding: () async {
             final shouldRefresh = await PetsAndDiseaseAddScreen.push(context);
 
