@@ -4,6 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_aai_cubit/add_aai_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
@@ -187,12 +188,11 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           _lostTimeInDaysController.text = state.lostTimeInDay ?? '';
         },
         child: Scaffold(
-          appBar: CmoAppBar(
+          appBar: CmoFarmAppBar(
+            showFarmName: true,
             title: initState.isAddNew ? LocaleKeys.add_aai.tr() : 'Edit AAI',
-            leading: Assets.icons.icArrowLeft.svgBlack,
-            onTapLeading: Navigator.of(context).pop,
-            trailing: Assets.icons.icClose.svgBlack,
-            onTapTrailing: Navigator.of(context).pop,
+            showLeading: true,
+            showTrailing: true,
           ),
           body: BlocSelector<AddAAICubit, AddAAIState, bool>(
             selector: (state) => state.isDataReady,
