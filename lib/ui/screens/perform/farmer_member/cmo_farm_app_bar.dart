@@ -24,7 +24,7 @@ class CmoFarmAppBar extends StatefulWidget implements PreferredSizeWidget {
     this.showFarmName = false,
   });
 
-  factory CmoFarmAppBar.addingRegisterWithFarmName({required String title}) {
+  factory CmoFarmAppBar.showTrailingAndFarmName({required String title}) {
     return CmoFarmAppBar(
       title: title,
       showFarmName: true,
@@ -33,7 +33,7 @@ class CmoFarmAppBar extends StatefulWidget implements PreferredSizeWidget {
     );
   }
 
-  factory CmoFarmAppBar.listRegisterWithFarmName(
+  factory CmoFarmAppBar.showAddingAndFarmName(
       {required String title, void Function()? onTapAdding}) {
     return CmoFarmAppBar(
       title: title,

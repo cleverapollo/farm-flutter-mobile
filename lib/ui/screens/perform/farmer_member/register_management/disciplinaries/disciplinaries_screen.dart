@@ -3,9 +3,9 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/sanction_register/sanction_register.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_cubit.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_add_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,10 +30,8 @@ class _DisciplinariesScreenState extends State<DisciplinariesScreen> {
         selector: (state) => state.isLoading,
         builder: (context, isLoading) {
           return Scaffold(
-            appBar: CmoAppBarV2(
+            appBar: CmoFarmAppBar.showAddingAndFarmName(
               title: LocaleKeys.disciplinary.tr(),
-              showLeading: true,
-              showAdding: true,
               onTapAdding: () async {
                 final shouldRefresh =
                     await DisciplinariesAddScreen.push(context);

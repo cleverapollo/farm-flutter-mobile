@@ -35,7 +35,7 @@ class _ChemicalsScreenState extends State<ChemicalsScreen> {
       builder: (context, state) {
         final cubit = context.read<RMChemicalCubit>();
         return Scaffold(
-          appBar: CmoFarmAppBar.listRegisterWithFarmName(
+          appBar: CmoFarmAppBar.showAddingAndFarmName(
             title: LocaleKeys.chemicals.tr(),
             onTapAdding: () async {
               final shouldRefresh = await AddingChemicalScreen.push(context);

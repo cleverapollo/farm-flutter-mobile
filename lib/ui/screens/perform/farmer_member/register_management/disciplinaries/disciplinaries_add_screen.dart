@@ -10,9 +10,9 @@ import 'package:cmo/model/sanction_register/sanction_register.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_cubit.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/file_utils.dart';
@@ -58,9 +58,8 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
     return BlocProvider<DisciplinariesCubit>(
       create: (_) => DisciplinariesCubit()..initAddData(data: widget.data),
       child: Scaffold(
-        appBar: const CmoAppBarV2(
+        appBar: CmoFarmAppBar.showTrailingAndFarmName(
           title: 'Add Disciplinary',
-          showLeading: true,
         ),
         body: BlocSelector<DisciplinariesCubit, DisciplinariesState, bool>(
           selector: (state) => state.isLoading,

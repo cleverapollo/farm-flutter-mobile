@@ -152,7 +152,7 @@ class _AddBiologicalControlAgentsScreenState
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoFarmAppBar.addingRegisterWithFarmName(
+        appBar: CmoFarmAppBar.showTrailingAndFarmName(
           title: widget.biologicalControlAgent == null
               ? LocaleKeys.addBCA.tr()
               : 'Edit BCA',

@@ -110,7 +110,7 @@ class _AAIScreenState extends State<AAIScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoFarmAppBar.listRegisterWithFarmName(
+      appBar: CmoFarmAppBar.showAddingAndFarmName(
         title: LocaleKeys.accident_incidents.tr(),
         onTapAdding: () async {
           await AddingAAIScreen.push(context);
