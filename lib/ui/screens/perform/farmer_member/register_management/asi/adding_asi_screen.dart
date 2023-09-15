@@ -7,11 +7,11 @@ import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_cubit.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/thumbnail_image.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,10 +51,11 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
       builder: (context, state) {
         final cubit = context.read<RMAsiCubit>();
         return Scaffold(
-          appBar: CmoAppBarV2(
+          appBar: CmoFarmAppBar(
+            showFarmName: true,
             title: LocaleKeys.asi.tr(),
-            subtitle: state.farmName,
             showLeading: true,
+            showTrailing: true,
           ),
           body: CustomScrollView(
             slivers: [
