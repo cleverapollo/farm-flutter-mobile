@@ -49,11 +49,8 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
         final cubit = context.read<RMChemicalCubit>();
 
         return Scaffold(
-          appBar: CmoFarmAppBar(
+          appBar: CmoFarmAppBar.addingRegisterWithFarmName(
             title: LocaleKeys.add_chemical.tr(),
-            showLeading: true,
-            showTrailing: true,
-            showFarmName: true,
           ),
           body: state.isLoading
               ? const Center(child: CircularProgressIndicator())
