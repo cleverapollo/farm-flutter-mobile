@@ -1,6 +1,4 @@
 import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/model/data/farm_member_objective_answer.dart';
-import 'package:cmo/model/data/farm_member_risk_profile_answer.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -120,7 +118,8 @@ extension FarmExtension on Farm {
       (element) => element.farmId == farmId,
     );
 
-    if (riskProfileAnswers.isNotBlank && riskProfileAnswers!.length == allRiskProfileQuestions?.length) {
+    if (riskProfileAnswers.isNotBlank &&
+        riskProfileAnswers!.length == allRiskProfileQuestions?.length) {
       stepCount++;
     }
 
@@ -128,15 +127,17 @@ extension FarmExtension on Farm {
       (element) => element.farmId == farmId,
     );
 
-    if (objectiveAnswers.isNotBlank && objectiveAnswers!.length == allFarmMemberObjectives?.length) {
+    if (objectiveAnswers.isNotBlank &&
+        objectiveAnswers!.length == allFarmMemberObjectives?.length) {
       stepCount++;
     }
 
-    if (signatureImage.isNotBlank) {
-      stepCount++;
-      stepCount++;
+    if (!signatureDate.isNullOrEmpty) {
       stepCount++;
     }
+
+    //handle for done screen
+    if (stepCount == 7) stepCount++;
 
     return stepCount;
   }

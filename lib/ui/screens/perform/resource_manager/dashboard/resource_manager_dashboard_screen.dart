@@ -22,6 +22,9 @@ class _ResourceManagerDashboardScreenState
   void initState() {
     super.initState();
     Future.microtask(() async {
+      await context
+          .read<DashboardCubit>()
+          .handleMemberStepCountFromService(context);
       await context.read<DashboardCubit>().initializeRM();
     });
   }
@@ -71,12 +74,14 @@ class _ResourceManagerDashboardScreenState
                         CmoCardHeader(title: LocaleKeys.member_s.tr()),
                         CmoCardItem(
                             title: LocaleKeys.onboarded.tr(),
-                            value:
-                                '${dashboardInfo?.onboardedMembers}/${dashboardInfo?.totalMembers}'),
+                            value: dashboardInfo?.onboardedMembers != null
+                                ? '${dashboardInfo?.onboardedMembers}/${dashboardInfo?.totalMembers}'
+                                : ''),
                         CmoCardItem(
                             title: LocaleKeys.incomplete.tr(),
-                            value:
-                                '${dashboardInfo?.incompletedMembers}/${dashboardInfo?.totalMembers}'),
+                            value: dashboardInfo?.onboardedMembers != null
+                                ? '${dashboardInfo?.incompletedMembers}/${dashboardInfo?.totalMembers}'
+                                : ''),
                       ],
                     );
                   },

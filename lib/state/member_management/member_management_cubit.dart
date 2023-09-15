@@ -1,25 +1,42 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/model/data/farm.dart';
+import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MemberManagementCubit extends Cubit<MemberManagementState> {
   MemberManagementCubit() : super(const MemberManagementState());
 
-  Future init() async {
+  Future<void> init(BuildContext context) async {
     final groupScheme = await configService.getActiveGroupScheme();
     final rmUnit = await configService.getActiveRegionalManager();
     if (rmUnit?.id == null) {
       return;
     }
-    var data = await cmoDatabaseMasterService.getFarmsByRMUnit(rmUnit!.id);
+    final data = await cmoDatabaseMasterService.getFarmsByRMUnit(rmUnit!.id);
     if (data == null) {
       return;
+    }
+
+    final allFarms = <Farm>[];
+
+    final addMemberCubit = context.read<AddMemberCubit>();
+
+    for (final farm in data) {
+      await addMemberCubit.initAddMember(farm: farm);
+      await addMemberCubit.stepCount();
+
+      allFarms.add(farm.copyWith(
+        stepCount: addMemberCubit.state.farm?.stepCount,
+        isGroupSchemeMember: addMemberCubit.state.farm?.isGroupSchemeMember,
+      ));
     }
 
     emit(state.copyWith(
       groupScheme: groupScheme,
       resourceManagerUnit: rmUnit,
-      allFarms: data,
+      allFarms: allFarms,
     ));
     _applySearch(isInCompleteSelected: true);
 
@@ -40,11 +57,13 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
   Future<void> initDataRiskProfileQuestion() async {
     final activeGroupScheme = await configService.getActiveGroupScheme();
 
-    final riskProfileQuestions = await cmoDatabaseMasterService.getRiskProfileQuestionByGroupSchemeId(
+    final riskProfileQuestions =
+        await cmoDatabaseMasterService.getRiskProfileQuestionByGroupSchemeId(
       activeGroupScheme?.groupSchemeId,
     );
 
-    final farmMemberRiskProfileAnswer = await cmoDatabaseMasterService.getAllFarmMemberRiskProfileAnswers();
+    final farmMemberRiskProfileAnswer =
+        await cmoDatabaseMasterService.getAllFarmMemberRiskProfileAnswers();
 
     emit(
       state.copyWith(
@@ -57,11 +76,13 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
   Future<void> initDataFarmMemberObjectives() async {
     final activeGroupScheme = await configService.getActiveGroupScheme();
 
-    final farmMemberObjective = await cmoDatabaseMasterService.getAllFarmMemberObjectiveByGroupSchemeId(
+    final farmMemberObjective =
+        await cmoDatabaseMasterService.getAllFarmMemberObjectiveByGroupSchemeId(
       activeGroupScheme?.groupSchemeId,
     );
 
-    final farmMemberObjectiveAnswers = await cmoDatabaseMasterService.getAllFarmMemberObjectiveAnswer();
+    final farmMemberObjectiveAnswers =
+        await cmoDatabaseMasterService.getAllFarmMemberObjectiveAnswer();
 
     emit(
       state.copyWith(
@@ -106,9 +127,12 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     if (searchText?.isNotEmpty ?? false) {
       filteringItems = filteringItems.where((element) {
         final searchStr = searchText!.toLowerCase();
-        final existFarmName = element.farmName?.toLowerCase().contains(searchStr) ?? false;
-        final existFirstName = element.firstName?.toLowerCase().contains(searchStr) ?? false;
-        final existLastName = element.lastName?.toLowerCase().contains(searchStr) ?? false;
+        final existFarmName =
+            element.farmName?.toLowerCase().contains(searchStr) ?? false;
+        final existFirstName =
+            element.firstName?.toLowerCase().contains(searchStr) ?? false;
+        final existLastName =
+            element.lastName?.toLowerCase().contains(searchStr) ?? false;
         return existFarmName || existFirstName || existLastName;
       });
     }

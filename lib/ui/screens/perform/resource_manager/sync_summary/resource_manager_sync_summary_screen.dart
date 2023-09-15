@@ -195,10 +195,7 @@ class _ResourceManagerSyncSummaryScreenState
                         count: summaryInformation.stakeholderTypes,
                       ),
                       SizedBox(
-                        height: MediaQuery
-                            .of(context)
-                            .padding
-                            .bottom + 50,
+                        height: MediaQuery.of(context).padding.bottom + 50,
                       ),
                     ],
                   ),
@@ -209,10 +206,7 @@ class _ResourceManagerSyncSummaryScreenState
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: EdgeInsets.only(
-                  bottom: MediaQuery
-                      .of(context)
-                      .padding
-                      .bottom,
+                  bottom: MediaQuery.of(context).padding.bottom,
                 ),
                 child: BlocSelector<RMSyncCubit, RMSyncState, bool>(
                   selector: (state) => state.isLoading,
@@ -223,7 +217,8 @@ class _ResourceManagerSyncSummaryScreenState
                       onTap: () async {
                         await context.read<RMSyncCubit>().syncSummary(
                           onSuccess: () async {
-                            showSnackSuccess(msg: 'The summary sync was successful!');
+                            showSnackSuccess(
+                                msg: 'The summary sync was successful!');
                             await context.read<DashboardCubit>().initializeRM();
                           },
                         );

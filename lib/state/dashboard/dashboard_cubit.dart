@@ -1,8 +1,11 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'dashboard_state.dart';
@@ -135,8 +138,38 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     );
   }
 
+  Future<void> handleMemberStepCountFromService(BuildContext context) async {
+    final service = cmoDatabaseMasterService;
+    final resourceManagerUnit = await configService.getActiveRegionalManager();
+    if (resourceManagerUnit == null) {
+      return;
+    }
+    final farms = await service.getFarmsByRMUnit(resourceManagerUnit.id);
+    final allFarms = <Farm>[];
+
+    final addMemberCubit = context.read<AddMemberCubit>();
+
+    for (final farm in farms ?? <Farm>[]) {
+      await addMemberCubit.initAddMember(farm: farm);
+      await addMemberCubit.stepCount();
+
+      allFarms.add(farm.copyWith(
+        stepCount: addMemberCubit.state.farm?.stepCount,
+        isGroupSchemeMember: addMemberCubit.state.farm?.isGroupSchemeMember,
+      ));
+    }
+
+    final db = cmoDatabaseMasterService;
+
+    final dbCompany = await cmoDatabaseMasterService.db;
+    await dbCompany.writeTxn(() async {
+      for (final item in allFarms) {
+        await cmoDatabaseMasterService.cacheFarm(item);
+      }
+    });
+  }
+
   Future<void> getResourceManagerMembers() async {
-    emit(state.copyWith(loading: true));
     final service = cmoDatabaseMasterService;
     final resourceManagerUnit = await configService.getActiveRegionalManager();
     if (resourceManagerUnit == null) {
@@ -144,6 +177,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     }
     final farms = await service.getFarmsByRMUnit(resourceManagerUnit.id);
     final info = state.rmDashboardInfo ?? RMDashboardInfo();
+
     info.incompletedMembers = 0;
     info.onboardedMembers = 0;
     if (farms != null) {

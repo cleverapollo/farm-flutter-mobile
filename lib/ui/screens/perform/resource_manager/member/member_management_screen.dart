@@ -21,7 +21,8 @@ class MemberManagementScreen extends StatefulWidget {
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
-            create: (BuildContext context) => MemberManagementCubit()..init(),
+            create: (BuildContext context) =>
+                MemberManagementCubit()..init(context),
             child: const MemberManagementScreen(),
           );
         },
@@ -166,56 +167,64 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                                   ),
                                   SizedBox(
                                     width: double.maxFinite,
-                                    child: Row(
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            farm.isGroupSchemeMember == true
-                                                ? LocaleKeys.onboarded.tr()
-                                                : LocaleKeys.incomplete.tr(),
-                                            textAlign: TextAlign.start,
-                                            style: context
-                                                .textStyles.bodyNormal.white,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                        Flexible(
-                                          child: Align(
-                                            child: farm.isGroupSchemeMember ==
-                                                    true
-                                                ? Assets.icons.icTick.widget
-                                                : BlocBuilder<
-                                                    MemberManagementCubit,
-                                                    MemberManagementState>(
-                                                    builder: (context, state) {
-                                                      return Text(
-                                                        '${farm.stepCount ?? farm.numberStepComplete(
-                                                              compartments: state
-                                                                  .allCompartments,
-                                                              allFarmMemberObjectiveAnswers:
-                                                                  state
-                                                                      .allFarmMemberObjectiveAnswers,
-                                                              allFarmMemberObjectives:
-                                                                  state
-                                                                      .allFarmMemberObjectives,
-                                                              allFarmMemberRiskProfileAnswers:
-                                                                  state
-                                                                      .allFarmMemberRiskProfileAnswers,
-                                                              allRiskProfileQuestions:
-                                                                  state
-                                                                      .allRiskProfileQuestions,
-                                                            )}/8',
-                                                        style: context
-                                                            .textStyles
-                                                            .bodyNormal
-                                                            .white,
-                                                      );
-                                                    },
-                                                  ),
-                                          ),
-                                        ),
-                                      ],
+                                    child: BlocBuilder<MemberManagementCubit,
+                                        MemberManagementState>(
+                                      builder: (context, state) {
+                                        final stepCount = farm.stepCount ??
+                                            farm.numberStepComplete(
+                                              compartments:
+                                                  state.allCompartments,
+                                              allFarmMemberObjectiveAnswers: state
+                                                  .allFarmMemberObjectiveAnswers,
+                                              allFarmMemberObjectives:
+                                                  state.allFarmMemberObjectives,
+                                              allFarmMemberRiskProfileAnswers: state
+                                                  .allFarmMemberRiskProfileAnswers,
+                                              allRiskProfileQuestions:
+                                                  state.allRiskProfileQuestions,
+                                            );
+
+                                        final isOnboarded = stepCount == 8 ||
+                                            true == farm.isGroupSchemeMember;
+
+                                        return Row(
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                isOnboarded
+                                                    ? LocaleKeys.onboarded.tr()
+                                                    : LocaleKeys.incomplete
+                                                        .tr(),
+                                                textAlign: TextAlign.start,
+                                                style: context.textStyles
+                                                    .bodyNormal.white,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            Flexible(
+                                              child: Align(
+                                                child: isOnboarded
+                                                    ? Assets.icons.icTick.widget
+                                                    : BlocBuilder<
+                                                        MemberManagementCubit,
+                                                        MemberManagementState>(
+                                                        builder:
+                                                            (context, state) {
+                                                          return Text(
+                                                            '$stepCount/8',
+                                                            style: context
+                                                                .textStyles
+                                                                .bodyNormal
+                                                                .white,
+                                                          );
+                                                        },
+                                                      ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],

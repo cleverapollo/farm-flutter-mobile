@@ -70,7 +70,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         emailAddress: farm.email,
       );
 
-      final addMemberSAFIsComplete = farm.signatureImage != null;
+      final addMemberSAFIsComplete = farm.signatureDate != null;
       final addMemberSAF = AddMemberSAF(
         signatureDate: farm.signatureDate,
         signatureImage: farm.signatureImage,
@@ -250,10 +250,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       stepCount++;
     }
 
-    if (state.addMemberContract.isComplete) {
-      stepCount++;
-    }
-
     if (state.addMemberSAF.isComplete) {
       stepCount++;
     }
@@ -261,6 +257,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     if (state.addMemberClose.isComplete) {
       stepCount++;
     }
+
+    if (stepCount == 7) stepCount++;
 
     if (state.farm?.isGroupSchemeMember == false ||
         state.farm?.isGroupSchemeMember == null) {
