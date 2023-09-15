@@ -16,11 +16,13 @@ class FarmerStakeHolderSelectJobDescription extends StatefulWidget {
     this.selectedJobDesc,
     required this.onSave,
     this.workerId,
+    this.workerName,
   });
 
   final List<WorkerJobDescription>? selectedJobDesc;
   final void Function(List<WorkerJobDescription>) onSave;
   final int? workerId;
+  final String? workerName;
 
   @override
   State<StatefulWidget> createState() =>
@@ -31,6 +33,7 @@ class FarmerStakeHolderSelectJobDescription extends StatefulWidget {
     List<WorkerJobDescription>? selectedJobDesc,
     required void Function(List<WorkerJobDescription>) onSave,
     int? workerId,
+    String? workerName,
   }) {
     return Navigator.push(
       context,
@@ -39,6 +42,7 @@ class FarmerStakeHolderSelectJobDescription extends StatefulWidget {
           selectedJobDesc: selectedJobDesc,
           onSave: onSave,
           workerId: workerId,
+          workerName: workerName,
         ),
       ),
     );
@@ -72,6 +76,7 @@ class _FarmerStakeHolderSelectJobDescriptionState
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.jobDescription.tr(),
+        subtitle: widget.workerName,
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),

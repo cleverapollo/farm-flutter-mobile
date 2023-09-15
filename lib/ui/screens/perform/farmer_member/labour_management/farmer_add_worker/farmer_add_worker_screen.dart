@@ -357,6 +357,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
                       ..addAll(result);
               },
               workerId: int.tryParse(farmerWorker.workerId ?? ''),
+              workerName: farmerWorker.fullName,
             );
           },
           child: AttributeItem(

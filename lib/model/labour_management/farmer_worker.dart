@@ -63,4 +63,8 @@ extension FarmerWorkerX on FarmerWorker {
       Photo: photo,
     );
   }
+
+  String get fullName {
+    return '${firstName ?? ''} ${surname ?? ''}';
+  }
 }
