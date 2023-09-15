@@ -7,6 +7,7 @@ import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/fire_cubit/fire_cubit.dart';
 import 'package:cmo/state/fire_cubit/fire_state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/fire/add_fire_management/add_fire_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
@@ -39,12 +40,9 @@ class _FireManagementScreenState extends State<FireManagementScreen> {
         builder: (context, state) {
           final cubit = context.read<FireCubit>();
           return Scaffold(
-            appBar: CmoAppBar(
+            appBar: CmoFarmAppBar.showAddingAndFarmName(
               title: LocaleKeys.fire.tr(),
-              leading: Assets.icons.icArrowLeft.svgBlack,
-              onTapLeading: Navigator.of(context).pop,
-              trailing: Assets.icons.icAdd.svgBlack,
-              onTapTrailing: () async {
+              onTapAdding: () async {
                 final shouldRefresh =
                     await AddFireManagementScreen.push(context);
 

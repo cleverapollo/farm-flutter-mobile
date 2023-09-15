@@ -133,7 +133,7 @@ class _BiologicalControlAgentsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoFarmAppBar.listRegisterWithFarmName(
+      appBar: CmoFarmAppBar.showAddingAndFarmName(
         title: LocaleKeys.biological_control_agents.tr(),
         onTapAdding: () async {
           final result = await AddBiologicalControlAgentsScreen.push(context);

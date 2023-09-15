@@ -5,10 +5,9 @@ import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/fire_cause/fire_cause.dart';
 import 'package:cmo/state/fire_cubit/fire_cubit.dart';
 import 'package:cmo/state/fire_cubit/fire_state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_location_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/thumbnail_image.dart';
 import 'package:cmo/ui/ui.dart';
@@ -50,14 +49,10 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
       child: GestureDetector(
         onTap: FocusScope.of(context).unfocus,
         child: Scaffold(
-          appBar: CmoAppBar(
+          appBar: CmoFarmAppBar.showTrailingAndFarmName(
             title: widget.fireRegister == null
                 ? LocaleKeys.addFire.tr()
                 : 'Edit Fire',
-            leading: Assets.icons.icArrowLeft.svgBlack,
-            onTapLeading: Navigator.of(context).pop,
-            trailing: Assets.icons.icClose.svgBlack,
-            onTapTrailing: Navigator.of(context).pop,
           ),
           body: BlocSelector<FireCubit, FireState, bool>(
             selector: (state) => state.isLoading,
