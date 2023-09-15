@@ -1,20 +1,20 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/register_management/register_management_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/aai/aai_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/biological_control_agents_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/chemicals/chemicals_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/pets_and_disease_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/employee_grievance/employee_grievance_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/fire/fire_management_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/pets_and_disease_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/rte_species/rte_species_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/stake_holder_complaint_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -47,6 +47,7 @@ class RegisterManagement extends StatefulWidget {
       ),
     );
   }
+
   @override
   State<RegisterManagement> createState() => _RegisterManagementState();
 }
@@ -134,9 +135,11 @@ class _RegisterManagementState extends State<RegisterManagement> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoFarmAppBar(
         title: LocaleKeys.register_management.tr(),
         showLeading: true,
+        showFarmName: true,
+        showTrailing: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -276,9 +279,12 @@ class _ItemWidget extends StatelessWidget {
             ),
             Text(
               value ?? '',
-              style: context.textStyles.bodyNormal.copyWith(color: context.colors.white),
+              style: context.textStyles.bodyNormal
+                  .copyWith(color: context.colors.white),
             ),
-            const SizedBox(width: 32,),
+            const SizedBox(
+              width: 32,
+            ),
             Assets.icons.icArrowRight.svgWhite,
           ],
         ),
