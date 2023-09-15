@@ -6,6 +6,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/state/stake_holder_complaint/stake_holder_complaint_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/add_stake_holder_complaint/add_stake_holder_complaint_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
@@ -78,18 +79,15 @@ class _StakeHolderComplaintScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBar(
+      appBar: CmoFarmAppBar.showAddingAndFarmName(
         title: LocaleKeys.stakeholder_complaints.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => onNavigateToAddGrievance(),
+        onTapAdding: () => onNavigateToAddGrievance(),
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: BlocBuilder<StateHolderComplaintCubit,
-              StakeHolderComplaintState>(
+          child:
+              BlocBuilder<StateHolderComplaintCubit, StakeHolderComplaintState>(
             builder: (context, state) {
               if (state.isDataReady) {
                 return _buildBody(cubit.state.items);

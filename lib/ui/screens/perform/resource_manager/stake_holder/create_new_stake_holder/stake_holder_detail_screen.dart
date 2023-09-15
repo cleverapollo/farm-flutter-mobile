@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/user_role_enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -6,6 +7,7 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_detail_cubit.dart';
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/widgets/input_text_field_with_title.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
@@ -31,15 +33,14 @@ class StakeHolderDetailScreen extends StatefulWidget {
   }) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) =>
-            BlocProvider(
-              create: (_) => StakeholderDetailCubit(stakeHolder: stakeHolder)..initStakeholderDetailData(stakeHolder),
-              child: StakeHolderDetailScreen(
-                stakeHolder: stakeHolder,
-                isEditing: isEditing,
-              ),
-            )
-      ),
+          builder: (_) => BlocProvider(
+                create: (_) => StakeholderDetailCubit(stakeHolder: stakeHolder)
+                  ..initStakeholderDetailData(stakeHolder),
+                child: StakeHolderDetailScreen(
+                  stakeHolder: stakeHolder,
+                  isEditing: isEditing,
+                ),
+              )),
     );
   }
 
@@ -159,13 +160,7 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: CmoAppBar(
-          title: widget.isEditing
-              ? LocaleKeys.edit_stakeholder.tr()
-              : LocaleKeys.add_stakeholder.tr(),
-          leading: Assets.icons.icArrowLeft.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
-        ),
+        appBar: _buildCmoAppBar(context),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
@@ -197,6 +192,32 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
           onTap: () async => onSubmit(context),
           loading: loading,
         ),
+      ),
+    );
+  }
+
+  PreferredSize _buildCmoAppBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(72),
+      child: FutureBuilder(
+        future: configService.getActiveUserRole(),
+        builder: (context, value) {
+          if (value.data == UserRoleEnum.farmerMember) {
+            return CmoFarmAppBar.showTrailingAndFarmName(
+              title: widget.isEditing
+                  ? LocaleKeys.edit_stakeholder.tr()
+                  : LocaleKeys.add_stakeholder.tr(),
+            );
+          }
+
+          return CmoAppBar(
+            title: widget.isEditing
+                ? LocaleKeys.edit_stakeholder.tr()
+                : LocaleKeys.add_stakeholder.tr(),
+            leading: Assets.icons.icArrowLeft.svgBlack,
+            onTapLeading: Navigator.of(context).pop,
+          );
+        },
       ),
     );
   }
@@ -262,7 +283,8 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
   }
 
   Widget _selectTypeDropdown() {
-    return BlocSelector<StakeholderDetailCubit, StakeholderDetailState, StakeholderDetailState>(
+    return BlocSelector<StakeholderDetailCubit, StakeholderDetailState,
+        StakeholderDetailState>(
       selector: (state) => state,
       builder: (context, state) {
         return Column(
@@ -279,7 +301,8 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
               inputDecoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(8),
                 isDense: true,
-                hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.type.tr().toLowerCase()}',
+                hintText:
+                    '${LocaleKeys.select.tr()} ${LocaleKeys.type.tr().toLowerCase()}',
                 hintStyle: context.textStyles.bodyNormal.grey,
                 border: UnderlineInputBorder(
                   borderSide: BorderSide(color: context.colors.grey),
@@ -288,10 +311,14 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
                   borderSide: BorderSide(color: context.colors.blue),
                 ),
               ),
-              onChanged: (data) => context.read<StakeholderDetailCubit>().onSelectStakeholder(data),
+              onChanged: (data) => context
+                  .read<StakeholderDetailCubit>()
+                  .onSelectStakeholder(data),
               initialValue: state.stakeHolder?.stakeHolderTypeId,
-              itemsData: state.listStakeholderTypes?.map((e) =>
-                      CmoDropdownItem(id: e.stakeHolderTypeId, name: e.stakeHolderTypeName ?? ''))
+              itemsData: state.listStakeholderTypes
+                  ?.map((e) => CmoDropdownItem(
+                      id: e.stakeHolderTypeId,
+                      name: e.stakeHolderTypeName ?? ''))
                   .toList(),
             ),
           ],

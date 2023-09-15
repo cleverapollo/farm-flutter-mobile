@@ -5,6 +5,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/stake_holder_complaint/add_stake_holder_complaint_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
@@ -116,14 +117,10 @@ class _AddStakeHolderComplaintScreenState
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoAppBar(
+        appBar: CmoFarmAppBar.showTrailingAndFarmName(
           title: widget.complaint == null
               ? LocaleKeys.addStakeHolderComplaint.tr()
               : 'Edit Complaint',
-          leading: Assets.icons.icArrowLeft.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
-          trailing: Assets.icons.icClose.svgBlack,
-          onTapTrailing: Navigator.of(context).pop,
         ),
         body: SafeArea(
           child: BlocSelector<AddStakeHolderComplaintCubit,
