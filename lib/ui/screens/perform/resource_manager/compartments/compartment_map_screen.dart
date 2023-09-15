@@ -77,7 +77,6 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   final _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _hasInternet = true;
-  bool _shouldShowNoInternetWidget = false;
 
   late map.LatLng centerMapPoint;
 
@@ -93,7 +92,6 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
     if (!hasInternet) {
       setState(() {
         _hasInternet = hasInternet;
-        _shouldShowNoInternetWidget = !hasInternet;
       });
     }
     _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
@@ -101,15 +99,15 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
       if (hasInternet != _hasInternet) {
         setState(() {
           _hasInternet = hasInternet;
-          _shouldShowNoInternetWidget = !hasInternet;
         });
       }
 
-      if (_shouldShowNoInternetWidget) {
+      if (!_hasInternet) {
         Future.microtask(() async {
-          await Future.delayed(const Duration(seconds: 5));
-          setState(() {
-            _shouldShowNoInternetWidget = false;
+          await Future.delayed(const Duration(seconds: 5)).then((_) {
+            setState(() {
+              _hasInternet = true;
+            });
           });
         });
       }
@@ -449,7 +447,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   }
 
   Widget _buildNoInternet() {
-    if (_hasInternet || !_shouldShowNoInternetWidget) {
+    if (_hasInternet) {
       return const SizedBox.shrink();
     }
 
