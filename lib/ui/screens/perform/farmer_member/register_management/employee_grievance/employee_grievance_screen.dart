@@ -76,6 +76,7 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
     return Scaffold(
       appBar: CmoFarmAppBar.showAddingAndFarmName(
         title: LocaleKeys.employee_grievance.tr(),
+        onTapAdding: onNavigateToAddGrievance,
       ),
       body: SafeArea(
         child: Padding(
