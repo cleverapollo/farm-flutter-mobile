@@ -3,6 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/rte_species/rte_species_map_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
@@ -61,25 +62,19 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoAppBar(
-          title: widget.rteSpecies == null ? LocaleKeys.addRteSpecies.tr() : 'Edit RTE Species',
-          subtitle: context
-                  .watch<RteSpeciesDetailCubit>()
-                  .state
-                  .activeFarm
-                  ?.farmName ??
-              '',
-          leading: Assets.icons.icArrowLeft.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
-          trailing: Assets.icons.icClose.svgBlack,
-          onTapTrailing: Navigator.of(context).pop,
+        appBar: CmoFarmAppBar.showTrailingAndFarmName(
+          title: widget.rteSpecies == null
+              ? LocaleKeys.addRteSpecies.tr()
+              : 'Edit RTE Species',
         ),
         body: Stack(
           children: [
             Positioned.fill(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 21, vertical: 20),
-                child: BlocBuilder<RteSpeciesDetailCubit, RteSpeciesDetailState>(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 21, vertical: 20),
+                child:
+                    BlocBuilder<RteSpeciesDetailCubit, RteSpeciesDetailState>(
                   builder: (context, state) {
                     return Column(
                       children: [
@@ -121,7 +116,6 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
                             ),
                           ),
                         ),
-
                         if (state.rtePhotos.isNotBlank)
                           ...state.rtePhotos.map(
                             (rteSpeciesPhotoModel) => RteSpeciesPhoto(
@@ -131,8 +125,9 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
                                   .onRemovePhoto(rteSpeciesPhotoModel),
                             ),
                           ),
-
-                        const SizedBox(height: 80,),
+                        const SizedBox(
+                          height: 80,
+                        ),
                       ],
                     );
                   },
@@ -298,7 +293,9 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
         ) as LocationModel?;
 
         if (locationModel != null) {
-          context.read<RteSpeciesDetailCubit>().onChangeLocationAndPhoto(locationModel);
+          context
+              .read<RteSpeciesDetailCubit>()
+              .onChangeLocationAndPhoto(locationModel);
         }
       },
       child: Container(
@@ -318,7 +315,9 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
             ),
             Expanded(
               child: Text(
-                  state.rteSpecies?.latitude == null ? '' : '${state.rteSpecies?.latitude?.toStringAsFixed(5)} | ${state.rteSpecies?.longitude?.toStringAsFixed(5)}',
+                state.rteSpecies?.latitude == null
+                    ? ''
+                    : '${state.rteSpecies?.latitude?.toStringAsFixed(5)} | ${state.rteSpecies?.longitude?.toStringAsFixed(5)}',
                 style: context.textStyles.bodyNormal.black,
                 textAlign: TextAlign.center,
               ),

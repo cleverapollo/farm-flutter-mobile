@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/register_management/rte_species/rte_species_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -40,14 +40,9 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBar(
+      appBar: CmoFarmAppBar.showAddingAndFarmName(
         title: LocaleKeys.rteSpecies.tr(),
-        subtitle:
-            context.watch<RteSpeciesCubit>().state.activeFarm?.farmName ?? '',
-        leading: Assets.icons.icArrowLeft.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () => RteSpeciesDetailScreen.push(context),
+        onTapAdding: () => RteSpeciesDetailScreen.push(context),
       ),
       body: BlocBuilder<RteSpeciesCubit, RteSpeciesState>(
         builder: (context, state) {
