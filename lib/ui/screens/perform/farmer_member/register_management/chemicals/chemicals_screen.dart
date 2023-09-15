@@ -6,9 +6,9 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/chemical.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_cubit.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/chemicals/adding_chemical_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,12 +35,12 @@ class _ChemicalsScreenState extends State<ChemicalsScreen> {
       builder: (context, state) {
         final cubit = context.read<RMChemicalCubit>();
         return Scaffold(
-          appBar: CmoAppBarV2(
+          appBar: CmoFarmAppBar(
             title: LocaleKeys.chemicals.tr(),
             showLeading: true,
-            showTrailing: true,
-            trailing: Assets.icons.icAdd.svgBlack,
-            onTapTrailing: () async {
+            showAdding: true,
+            showFarmName: true,
+            onTapAdding: () async {
               final shouldRefresh = await AddingChemicalScreen.push(context);
 
               if (shouldRefresh != null && context.mounted) {

@@ -7,9 +7,9 @@ import 'package:cmo/model/chemical_application_method/chemical_application_metho
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_cubit.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
@@ -49,9 +49,11 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
         final cubit = context.read<RMChemicalCubit>();
 
         return Scaffold(
-          appBar: CmoAppBarV2(
+          appBar: CmoFarmAppBar(
             title: LocaleKeys.add_chemical.tr(),
             showLeading: true,
+            showTrailing: true,
+            showFarmName: true,
           ),
           body: state.isLoading
               ? const Center(child: CircularProgressIndicator())
