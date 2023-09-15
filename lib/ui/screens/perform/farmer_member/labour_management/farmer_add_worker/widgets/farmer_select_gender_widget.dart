@@ -28,17 +28,10 @@ class _FarmerSelectGenderWidgetState extends State<FarmerSelectGenderWidget> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final result = await cmoDatabaseMasterService.getGender();
-      if (result.isNotEmpty) {
-        listGender.value = result
-            .map((e) => CmoDropdownItem(id: e.id, name: e.genderName ?? ''))
-            .toList();
-      } else {
-        listGender.value = [
-          CmoDropdownItem(id: 1, name: LocaleKeys.male_key.tr()),
-          CmoDropdownItem(id: 2, name: LocaleKeys.female_key.tr()),
-        ];
-      }
+      listGender.value = [
+        CmoDropdownItem(id: 1, name: LocaleKeys.male_key.tr()),
+        CmoDropdownItem(id: 2, name: LocaleKeys.female_key.tr()),
+      ];
 
       selectedGender = listGender.value.firstWhereOrNull(
               (element) => element.id == widget.initialValue) ??

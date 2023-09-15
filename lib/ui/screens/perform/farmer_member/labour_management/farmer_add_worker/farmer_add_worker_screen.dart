@@ -199,15 +199,13 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
   String? _validateLastName = '';
   String? _validateIdNumber = '';
   String? _validatePhoneNumber = '';
-  String? _validateNationality = '';
 
   void _validate({bool isInit = false}) {
     if (isInit) {
       final isValid = !farmerWorker.firstName.isNullOrEmpty &&
           !farmerWorker.surname.isNullOrEmpty &&
           !farmerWorker.idNumber.isNullOrEmpty &&
-          !farmerWorker.phoneNumber.isNullOrEmpty &&
-          !farmerWorker.nationality.isNullOrEmpty;
+          !farmerWorker.phoneNumber.isNullOrEmpty;
       isAllValid.value = isValid;
       return;
     }
@@ -215,8 +213,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
     final validate = _validateFirstName.isNullOrEmpty ||
         _validateLastName.isNullOrEmpty ||
         _validateIdNumber.isNullOrEmpty ||
-        _validatePhoneNumber.isNullOrEmpty ||
-        _validateNationality.isNullOrEmpty;
+        _validatePhoneNumber.isNullOrEmpty;
 
     isAllValid.value = !validate;
   }
@@ -234,8 +231,9 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
             children: [
               AttributeItem(
                 child: InputAttributeItem(
-                  hintText: LocaleKeys.firstName.tr(),
-                  hintTextStyle: context.textStyles.bodyBold.black,
+                  labelText: LocaleKeys.firstName.tr(),
+                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                  textStyle: context.textStyles.bodyNormal.blueDark2,
                   initialValue: farmerWorker.firstName,
                   onChanged: (value) {
                     _validateFirstName = value;
@@ -246,8 +244,9 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
               ),
               AttributeItem(
                 child: InputAttributeItem(
-                  hintText: LocaleKeys.lastName.tr(),
-                  hintTextStyle: context.textStyles.bodyBold.black,
+                  labelText: LocaleKeys.lastName.tr(),
+                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                  textStyle: context.textStyles.bodyNormal.blueDark2,
                   initialValue: farmerWorker.surname,
                   onChanged: (value) {
                     _validateLastName = value;
@@ -259,50 +258,30 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
               _buildSelectBirth(),
               _buildJobDescription(),
               AttributeItem(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: InputAttributeItem(
-                        hintText: LocaleKeys.idNumber.tr(),
-                        keyboardType: TextInputType.name,
-                        inputFormatters: [UpperCaseTextFormatter()],
-                        hintTextStyle: context.textStyles.bodyBold.black,
-                        initialValue: farmerWorker.idNumber,
-                        onChanged: (value) {
-                          _validateIdNumber = value;
-                          farmerWorker = farmerWorker.copyWith(idNumber: value);
-                          _validate();
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Assets.icons.icBarcode.svgBlack,
-                    ),
-                  ],
-                ),
-              ),
-              AttributeItem(
                 child: InputAttributeItem(
-                  hintText: LocaleKeys.phoneNumber.tr(),
-                  keyboardType: TextInputType.number,
-                  initialValue: farmerWorker.phoneNumber,
-                  hintTextStyle: context.textStyles.bodyBold.black,
+                  keyboardType: TextInputType.name,
+                  inputFormatters: [UpperCaseTextFormatter()],
+                  labelText: LocaleKeys.idNumber.tr(),
+                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                  textStyle: context.textStyles.bodyNormal.blueDark2,
+                  initialValue: farmerWorker.idNumber,
                   onChanged: (value) {
-                    _validatePhoneNumber = value;
-                    farmerWorker = farmerWorker.copyWith(phoneNumber: value);
+                    _validateIdNumber = value;
+                    farmerWorker = farmerWorker.copyWith(idNumber: value);
                     _validate();
                   },
                 ),
               ),
               AttributeItem(
                 child: InputAttributeItem(
-                  hintText: LocaleKeys.nationality.tr(),
-                  hintTextStyle: context.textStyles.bodyBold.black,
-                  initialValue: farmerWorker.nationality,
+                  keyboardType: TextInputType.number,
+                  initialValue: farmerWorker.phoneNumber,
+                  labelText: LocaleKeys.phoneNumber.tr(),
+                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                  textStyle: context.textStyles.bodyNormal.blueDark2,
                   onChanged: (value) {
-                    _validateNationality = value;
-                    farmerWorker = farmerWorker.copyWith(nationality: value);
+                    _validatePhoneNumber = value;
+                    farmerWorker = farmerWorker.copyWith(phoneNumber: value);
                     _validate();
                   },
                 ),
@@ -349,10 +328,10 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
               ? LocaleKeys.yyyy_mm_dd.tr()
               : DateTime.tryParse(farmerWorker.dateOfBirth!).yMd(),
           labelText: LocaleKeys.dateOfBirth.tr(),
-          labelStyle: context.textStyles.bodyBold.black,
+          labelStyle: context.textStyles.bodyBold.blueDark2,
           textStyle: farmerWorker.dateOfBirth.isBlank
               ? context.textStyles.bodyNormal.grey
-              : context.textStyles.bodyBold.black,
+              : context.textStyles.bodyNormal.blueDark2,
           contentPadding: const EdgeInsets.symmetric(
             vertical: 8,
             horizontal: 12,
