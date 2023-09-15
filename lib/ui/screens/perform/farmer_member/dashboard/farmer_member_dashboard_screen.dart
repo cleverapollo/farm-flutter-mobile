@@ -4,6 +4,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_ma
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/register_management.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/site_management_plan/site_management_plan_sreen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/sync_summary/farmer_sync_summary_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,21 +45,6 @@ class _FarmerMemberDashboardScreenState
               ],
             ),
             const SizedBox(height: 20),
-            CmoCard(
-              onTap: () => RegisterManagement.push(context),
-              content: [
-                CmoCardHeader(title: LocaleKeys.registerCaseManagement.tr()),
-              ],
-            ),
-            const SizedBox(height: 20),
-            CmoCard(
-              content: [
-                CmoCardHeader(title: LocaleKeys.cars.tr()),
-                CmoCardItem(title: LocaleKeys.opened.tr(), value: '1'),
-                CmoCardItem(title: LocaleKeys.closed.tr(), value: '1'),
-              ],
-            ),
-            const SizedBox(height: 20),
             CmoTappable(
               onTap: () async {
                 await LabourManagementScreen.push(context).then((_) async {
@@ -82,6 +68,46 @@ class _FarmerMemberDashboardScreenState
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: 20),
+            CmoCard(
+              onTap: () => RegisterManagement.push(context),
+              content: [
+                CmoCardHeader(title: LocaleKeys.registerCaseManagement.tr()),
+              ],
+            ),
+            const SizedBox(height: 20),
+            CmoTappable(
+              onTap: () async {
+                await StakeHolderManagementScreen.push(context).then((_) async {
+                  await context
+                      .read<DashboardCubit>()
+                      .initializeFarmDashBoard();
+                });
+              },
+              child: BlocSelector<DashboardCubit, DashboardState, bool?>(
+                selector: (state) => state.loading,
+                builder: (context, dashboardInfo) {
+                  return CmoCard(
+                    content: [
+                      CmoCardHeader(title: LocaleKeys.stakeholder_management.tr()),
+                      CmoCardItem(
+                        title: LocaleKeys.national.tr(),
+                        value: '${data.farmDashBoardInfo?.totalStakeholder}',
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
+            CmoCard(
+              backgroundColor: context.colors.grey,
+              content: [
+                CmoCardHeader(title: LocaleKeys.cars.tr()),
+                CmoCardItem(title: LocaleKeys.opened.tr(), value: '1'),
+                CmoCardItem(title: LocaleKeys.closed.tr(), value: '1'),
+              ],
             ),
             const SizedBox(height: 20),
             CmoTappable(

@@ -85,7 +85,11 @@ class RMDashboardInfo {
 }
 
 class FarmDashBoardInfo {
-  FarmDashBoardInfo({this.totalLabour = 0});
+  FarmDashBoardInfo({
+    this.totalLabour = 0,
+    this.totalStakeholder = 0,
+  });
 
   final int totalLabour;
+  final int totalStakeholder;
 }

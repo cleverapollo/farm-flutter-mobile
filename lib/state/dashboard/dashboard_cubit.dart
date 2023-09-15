@@ -16,9 +16,11 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
       final farm = await configService.getActiveFarm();
       final data = await cmoDatabaseMasterService
           .getFarmerWorkersByFarmId(farm?.farmId ?? '');
+      final totalStakeholder = await cmoDatabaseMasterService.getCountStakeholder();
       emit(state.copyWith(
           farmDashBoardInfo: FarmDashBoardInfo(
             totalLabour: data.length,
+            totalStakeholder: totalStakeholder,
           ),
           loading: false));
     } catch (e) {
@@ -184,6 +186,8 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
         break;
       case UserRoleEnum.farmerMember:
         await initializeFarmDashBoard();
+        break;
+      default:
         break;
     }
   }
