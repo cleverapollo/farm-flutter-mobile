@@ -4,6 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/biological_control_cubit/add_biological_control_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/add_biological_control_agents/widgets/select_control_agent_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
@@ -151,19 +152,19 @@ class _AddBiologicalControlAgentsScreenState
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoAppBar(
+        appBar: CmoFarmAppBar(
           title: widget.biologicalControlAgent == null
               ? LocaleKeys.addBCA.tr()
               : 'Edit BCA',
-          leading: Assets.icons.icArrowLeft.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
-          trailing: Assets.icons.icClose.svgBlack,
-          onTapTrailing: Navigator.of(context).pop,
+          showLeading: true,
+          showTrailing: true,
+          showFarmName: true,
         ),
         body: Stack(
           children: [
             SafeArea(
-              child: BlocSelector<AddBiologicalControlCubit, AddBiologicalControlState, bool>(
+              child: BlocSelector<AddBiologicalControlCubit,
+                  AddBiologicalControlState, bool>(
                 selector: (state) => state.isDataReady,
                 builder: (context, isDataReady) {
                   if (!isDataReady) {
@@ -186,7 +187,8 @@ class _AddBiologicalControlAgentsScreenState
                                 onSelect: cubit.onSelectControlAgent,
                                 initAgent: initState.agent,
                               ),
-                              _buildSelectDateReleased(initState.agent.dateReleased),
+                              _buildSelectDateReleased(
+                                  initState.agent.dateReleased),
                               _buildSelectStakeHolderWidget(),
                               _buildSelectDescriptionWidget(),
                               AttributeItem(

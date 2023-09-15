@@ -6,6 +6,7 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/add_biological_control_agents/add_biological_control_agents_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
@@ -132,12 +133,12 @@ class _BiologicalControlAgentsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBar(
+      appBar: CmoFarmAppBar(
         title: LocaleKeys.biological_control_agents.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () async {
+        showFarmName: true,
+        showAdding: true,
+        showLeading: true,
+        onTapAdding: () async {
           final result = await AddBiologicalControlAgentsScreen.push(context);
           if (result != null) {
             await _init();
