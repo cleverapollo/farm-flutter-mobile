@@ -188,11 +188,8 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           _lostTimeInDaysController.text = state.lostTimeInDay ?? '';
         },
         child: Scaffold(
-          appBar: CmoFarmAppBar(
-            showFarmName: true,
+          appBar: CmoFarmAppBar.addingRegisterWithFarmName(
             title: initState.isAddNew ? LocaleKeys.add_aai.tr() : 'Edit AAI',
-            showLeading: true,
-            showTrailing: true,
           ),
           body: BlocSelector<AddAAICubit, AddAAIState, bool>(
             selector: (state) => state.isDataReady,
