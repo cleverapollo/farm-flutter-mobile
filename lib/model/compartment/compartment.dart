@@ -1,5 +1,7 @@
+import 'package:cmo/extensions/extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
+import 'package:maps_toolkit/maps_toolkit.dart';
 
 part 'compartment.freezed.dart';
 part 'compartment.g.dart';
@@ -41,18 +43,16 @@ class Compartment with _$Compartment {
     @JsonKey(name: 'Polygon') String? polygon,
     @ignore
     @Default(<PolygonItem>[])
-    @JsonKey(name: 'PolygonItems')
-        List<PolygonItem>? polygonItems,
+    @JsonKey(name: 'PolygonItems') List<PolygonItem>? polygonItems,
+    @JsonKey(name: 'EspacementWidth') double? espacementWidth,
+    @JsonKey(name: 'EspacementLength') double? espacementLength,
+    @Default(false)
+    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
 
     // New key value fields
     @JsonKey(name: 'CampId') String? campId,
     @JsonKey(name: 'ProductGroupTemplateName') String? productGroupTemplateName,
     @JsonKey(name: 'SpeciesGroupTemplateName') String? speciesGroupTemplateName,
-    @JsonKey(name: 'EspacementWidth') double? espacementWidth,
-    @JsonKey(name: 'EspacementLength') double? espacementLength,
-    @Default(false)
-    @JsonKey(name: 'IsMasterdataSynced')
-        bool? isMasterdataSynced,
   }) = _Compartment;
 
   const Compartment._();
@@ -72,6 +72,24 @@ class Compartment with _$Compartment {
 extension CompartmentExtension on Compartment {
 
   double? get stockingPercentage => 10000 / ((espacementLength ?? 1) * (espacementWidth ?? 1));
+
+  List<LatLng> getPolygonLatLng() {
+    final polygonLatLng = <LatLng>[];
+    if ((polygonItems ?? []).isBlank) {
+      return polygonLatLng;
+    }
+
+    for (final polygonItem in polygonItems!) {
+      final latLng = polygonItem.toLatLng();
+      if (latLng == null) {
+        return [];
+      }
+
+      polygonLatLng.add(latLng);
+    }
+
+    return polygonLatLng;
+  }
 
   Compartment clearSpeciesGroupTemplateAndProductGroupTemplate() {
     return const Compartment().copyWith(
@@ -120,4 +138,11 @@ class PolygonItem with _$PolygonItem {
 
   factory PolygonItem.fromJson(Map<String, dynamic> json) =>
       _$PolygonItemFromJson(json);
+}
+
+extension PolygonItemExtension on PolygonItem {
+  LatLng? toLatLng() {
+    if (latitude == null || longitude == null) return null;
+    return LatLng(latitude!, longitude!);
+  }
 }

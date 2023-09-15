@@ -9,6 +9,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
+import 'package:maps_toolkit/maps_toolkit.dart';
 
 class AsiDetailCubit extends Cubit<AsiDetailState> {
   AsiDetailCubit({
@@ -35,6 +36,24 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(
       state.asi.farmId ?? '',
     );
+
+    if (state.locationModel != null &&
+        state.locationModel?.latitude != null &&
+        state.locationModel?.longitude != null &&
+        compartments.isNotBlank) {
+      final initCompartment = compartments.firstWhereOrNull((compartment) {
+        final latLng = LatLng(
+          state.locationModel!.latitude!,
+          state.locationModel!.longitude!,
+        );
+        return PolygonUtil.containsLocation(
+            latLng, compartment.getPolygonLatLng(), false);
+      });
+
+      if (initCompartment != null) {
+        onCompartmentChanged(initCompartment);
+      }
+    }
 
     var randomId = generatorInt32Id();
     if (state.locationModel != null && state.locationModel!.listImage.isNotBlank) {
