@@ -74,8 +74,6 @@ class _FarmerStakeHolderSelectJobDescriptionState
         title: LocaleKeys.jobDescription.tr(),
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icClose.svgBlack,
-        onTapTrailing: Navigator.of(context).pop,
       ),
       body: Column(
         children: [
@@ -101,19 +99,44 @@ class _FarmerStakeHolderSelectJobDescriptionState
                 List<JobDescription>>(
               selector: (state) => state.filterJobDescriptions,
               builder: (context, filterJobDescriptions) {
-                return ListView.separated(
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: 12,
+                return Padding(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 80),
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) => const SizedBox(
+                      height: 12,
+                    ),
+                    itemCount: filterJobDescriptions.length,
+                    padding: const EdgeInsets.symmetric(horizontal: 21),
+                    itemBuilder: (context, index) =>
+                        _buildItem(filterJobDescriptions[index]),
                   ),
-                  itemCount: filterJobDescriptions.length,
-                  padding: const EdgeInsets.symmetric(horizontal: 21),
-                  itemBuilder: (context, index) =>
-                      _buildItem(filterJobDescriptions[index]),
                 );
               },
             ),
           ),
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: CmoFilledButton(
+        title: LocaleKeys.save.tr(),
+        onTap: () {
+          widget.onSave(
+            selectedItems
+                .map(
+                  (e) => WorkerJobDescription(
+                    workerId: widget.workerId.toString(),
+                    jobDescriptionId: e.jobDescriptionId,
+                    jobDescriptionName: e.jobDescriptionName,
+                    createDT: DateTime.now(),
+                    updateDT: DateTime.now(),
+                    isActive: true,
+                  ),
+                )
+                .toList(),
+          );
+
+          Navigator.of(context).pop();
+        },
       ),
     );
   }
@@ -136,17 +159,6 @@ class _FarmerStakeHolderSelectJobDescriptionState
           selectedItems
               .removeWhere((e) => e.jobDescriptionId == item.jobDescriptionId);
         }
-
-        widget.onSave(selectedItems
-            .map((e) => WorkerJobDescription(
-                  workerId: widget.workerId.toString(),
-                  jobDescriptionId: e.jobDescriptionId,
-                  jobDescriptionName: e.jobDescriptionName,
-                  createDT: DateTime.now(),
-                  updateDT: DateTime.now(),
-                  isActive: true,
-                ))
-            .toList());
 
         if (mounted) setState(() {});
       },
