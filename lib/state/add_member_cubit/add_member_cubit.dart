@@ -677,6 +677,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           farm: state.farm?.copyWith(
             signatureImage: image,
             signatureDate: date,
+            inclusionDate: date,
             signaturePoints: points,
             isMasterDataSynced: 0,
           ),

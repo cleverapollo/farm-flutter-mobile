@@ -103,6 +103,7 @@ class _FarmerMemberDashboardScreenState
             const SizedBox(height: 20),
             CmoCard(
               backgroundColor: context.colors.grey,
+              trailing: const SizedBox.shrink(),
               content: [
                 CmoCardHeader(title: LocaleKeys.cars.tr()),
                 CmoCardItem(title: LocaleKeys.opened.tr(), value: '1'),
