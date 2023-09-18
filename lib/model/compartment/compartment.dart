@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cmo/extensions/extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
@@ -75,11 +77,14 @@ extension CompartmentExtension on Compartment {
 
   List<LatLng> getPolygonLatLng() {
     final polygonLatLng = <LatLng>[];
-    if ((polygonItems ?? []).isBlank) {
+    if (polygon.isBlank) {
       return polygonLatLng;
     }
 
-    for (final polygonItem in polygonItems!) {
+    final jsonArray = json.decode(polygon!) as List?;
+    final listPolygons = jsonArray?.map((model) => PolygonItem.fromJson(model as Map<String, dynamic>)).toList();
+
+    for (final polygonItem in listPolygons!) {
       final latLng = polygonItem.toLatLng();
       if (latLng == null) {
         return [];

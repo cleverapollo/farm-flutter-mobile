@@ -46,8 +46,13 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
           state.locationModel!.latitude!,
           state.locationModel!.longitude!,
         );
+
+        final polygons = compartment.getPolygonLatLng();
         return PolygonUtil.containsLocation(
-            latLng, compartment.getPolygonLatLng(), false);
+          latLng,
+          polygons,
+          false,
+        );
       });
 
       if (initCompartment != null) {
