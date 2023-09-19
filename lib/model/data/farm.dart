@@ -145,6 +145,6 @@ extension FarmExtension on Farm {
   bool? get hasSignature {
     if (isMasterDataSynced == null || isMasterDataSynced == 0) return null;
 
-    return signatureDate != null;
+    return signatureDate != null || true == isGroupSchemeMember;
   }
 }

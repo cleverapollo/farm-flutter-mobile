@@ -53,7 +53,7 @@ class _AddMemberSignContractWidgetState
           fit: BoxFit.cover);
     }
 
-    if (0 == widget.farm?.isLocal) {
+    if (1 == widget.farm?.isMasterDataSynced) {
       if (true == widget.farm?.hasSignature) {
         signValue.value = AddMemberContractEnum.signed;
       } else {

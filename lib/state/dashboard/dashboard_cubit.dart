@@ -19,7 +19,8 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
       final farm = await configService.getActiveFarm();
       final data = await cmoDatabaseMasterService
           .getFarmerWorkersByFarmId(farm?.farmId ?? '');
-      final totalStakeholder = await cmoDatabaseMasterService.getCountStakeholder();
+      final totalStakeholder =
+          await cmoDatabaseMasterService.getCountStakeholder();
       emit(state.copyWith(
           farmDashBoardInfo: FarmDashBoardInfo(
             totalLabour: data.length,
@@ -170,6 +171,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
   }
 
   Future<void> getResourceManagerMembers() async {
+    emit(state.copyWith(loading: true));
     final service = cmoDatabaseMasterService;
     final resourceManagerUnit = await configService.getActiveRegionalManager();
     if (resourceManagerUnit == null) {

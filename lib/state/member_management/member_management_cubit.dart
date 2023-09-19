@@ -9,6 +9,7 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
   MemberManagementCubit() : super(const MemberManagementState());
 
   Future<void> init(BuildContext context) async {
+    emit(state.copyWith(isLoading: true));
     final groupScheme = await configService.getActiveGroupScheme();
     final rmUnit = await configService.getActiveRegionalManager();
     if (rmUnit?.id == null) {
@@ -43,6 +44,7 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     await initDataCompartments();
     await initDataRiskProfileQuestion();
     await initDataFarmMemberObjectives();
+    emit(state.copyWith(isLoading: false));
   }
 
   Future<void> initDataCompartments() async {
@@ -98,8 +100,6 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     if (rmUnit?.id == null) {
       return;
     }
-    // it hack to show updated member management since member on-boarding step is updating.
-    await Future.delayed(Duration(seconds: 1));
     var data = await cmoDatabaseMasterService.getFarmsByRMUnit(rmUnit!.id);
     emit(state.copyWith(allFarms: data));
     _applySearch(isInCompleteSelected: state.isInCompleteSelected);

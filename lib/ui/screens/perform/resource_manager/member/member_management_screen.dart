@@ -57,86 +57,88 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
               await context.read<MemberManagementCubit>().reload();
             },
           ),
-          body:
-              BlocSelector<MemberManagementCubit, MemberManagementState, bool>(
-            selector: (state) => state.isLoading,
-            builder: (context, isLoading) {
-              if (isLoading)
-                return const Center(child: CircularProgressIndicator());
-
-              return BlocSelector<MemberManagementCubit, MemberManagementState,
-                  List<Farm>>(
-                selector: (state) => state.filteringFarms,
-                builder: (context, filteringFarms) {
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-                        child: CmoTextField(
-                          name: LocaleKeys.search.tr(),
-                          prefixIcon: Assets.icons.icSearch.svg(),
-                          hintText: LocaleKeys.search.tr(),
-                          onChanged: (searchText) {
-                            _searchDebounce?.cancel();
-                            _searchDebounce = Timer(
-                              const Duration(milliseconds: 300),
-                              () {
-                                context
-                                    .read<MemberManagementCubit>()
-                                    .onSearchTextChanged(searchText);
-                              },
-                            );
+          body: BlocSelector<MemberManagementCubit, MemberManagementState,
+              List<Farm>>(
+            selector: (state) => state.filteringFarms,
+            builder: (context, filteringFarms) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+                    child: CmoTextField(
+                      name: LocaleKeys.search.tr(),
+                      prefixIcon: Assets.icons.icSearch.svg(),
+                      hintText: LocaleKeys.search.tr(),
+                      onChanged: (searchText) {
+                        _searchDebounce?.cancel();
+                        _searchDebounce = Timer(
+                          const Duration(milliseconds: 300),
+                          () {
+                            context
+                                .read<MemberManagementCubit>()
+                                .onSearchTextChanged(searchText);
                           },
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          const Spacer(),
-                          BlocSelector<MemberManagementCubit,
-                              MemberManagementState, bool>(
-                            selector: (state) => state.isInCompleteSelected,
-                            builder: (context, isInCompleteSelected) {
-                              return CmoFilledButton(
-                                onTap: () {
-                                  context
-                                      .read<MemberManagementCubit>()
-                                      .onFilterGroupChanged(true);
-                                },
-                                disable: !isInCompleteSelected,
-                                title: LocaleKeys.incomplete.tr(),
-                                titleStyle: context.textStyles.bodyBold.white
-                                    .copyWith(fontSize: 12),
-                                radius: 15,
-                                size: const Size(100, 39),
-                              );
+                        );
+                      },
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      const Spacer(),
+                      BlocSelector<MemberManagementCubit, MemberManagementState,
+                          bool>(
+                        selector: (state) => state.isInCompleteSelected,
+                        builder: (context, isInCompleteSelected) {
+                          return CmoFilledButton(
+                            onTap: () {
+                              context
+                                  .read<MemberManagementCubit>()
+                                  .onFilterGroupChanged(true);
                             },
-                          ),
-                          const SizedBox(width: 12),
-                          BlocSelector<MemberManagementCubit,
-                              MemberManagementState, bool>(
-                            selector: (state) => state.isInCompleteSelected,
-                            builder: (context, isInCompleteSelected) {
-                              return CmoFilledButton(
-                                onTap: () {
-                                  context
-                                      .read<MemberManagementCubit>()
-                                      .onFilterGroupChanged(false);
-                                },
-                                disable: isInCompleteSelected,
-                                title: LocaleKeys.members.tr(),
-                                titleStyle: context.textStyles.bodyBold.white
-                                    .copyWith(fontSize: 12),
-                                radius: 15,
-                                size: const Size(100, 39),
-                              );
-                            },
-                          ),
-                          const Spacer(),
-                        ],
+                            disable: !isInCompleteSelected,
+                            title: LocaleKeys.incomplete.tr(),
+                            titleStyle: context.textStyles.bodyBold.white
+                                .copyWith(fontSize: 12),
+                            radius: 15,
+                            size: const Size(100, 39),
+                          );
+                        },
                       ),
-                      const SizedBox(height: 20),
-                      Expanded(
-                        child: ListView.separated(
+                      const SizedBox(width: 12),
+                      BlocSelector<MemberManagementCubit, MemberManagementState,
+                          bool>(
+                        selector: (state) => state.isInCompleteSelected,
+                        builder: (context, isInCompleteSelected) {
+                          return CmoFilledButton(
+                            onTap: () {
+                              context
+                                  .read<MemberManagementCubit>()
+                                  .onFilterGroupChanged(false);
+                            },
+                            disable: isInCompleteSelected,
+                            title: LocaleKeys.members.tr(),
+                            titleStyle: context.textStyles.bodyBold.white
+                                .copyWith(fontSize: 12),
+                            radius: 15,
+                            size: const Size(100, 39),
+                          );
+                        },
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: BlocSelector<MemberManagementCubit,
+                        MemberManagementState, bool>(
+                      selector: (state) => state.isLoading,
+                      builder: (context, isLoading) {
+                        if (isLoading) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        return ListView.separated(
                           itemCount: filteringFarms.length,
                           separatorBuilder: (_, __) =>
                               const SizedBox(height: 20),
@@ -231,11 +233,11 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                               ),
                             );
                           },
-                        ),
-                      ),
-                    ],
-                  );
-                },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               );
             },
           ),
