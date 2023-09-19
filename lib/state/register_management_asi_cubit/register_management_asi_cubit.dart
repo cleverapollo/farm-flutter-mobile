@@ -11,6 +11,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class RMAsiCubit extends Cubit<RMAsiState> {
   RMAsiCubit() : super(const RMAsiState());
 
+  void onSearch(String? p0) {
+    if ((p0 ?? '').isEmpty) {
+      return emit(state.copyWith(asisDataSearch: state.asisData));
+    }
+
+    emit(state.copyWith(
+        asisDataSearch: state.asisData
+            .where((element) => element.asiRegisterNo?.contains(p0!) ?? false)
+            .toList()));
+  }
+
+  Future<void> onChangeStatus(bool isOpen) async {
+    emit(state.copyWith(isLoading: true, isOpen: isOpen));
+
+    final result = await cmoDatabaseMasterService
+        .getAsiRegisterByFarmId(state.farmId!, isOpen: isOpen);
+
+    emit(state.copyWith(asisData: result, asisDataSearch: result));
+
+    emit(state.copyWith(isLoading: false));
+  }
+
   Future<bool> initConfig() async {
     try {
       if (state.farmId != null && state.groupSchemeId != null) return true;
@@ -75,8 +97,19 @@ class RMAsiCubit extends Cubit<RMAsiState> {
     final result =
         await cmoDatabaseMasterService.getAsiRegisterByFarmId(state.farmId!);
 
+    final asiTypes = await cmoDatabaseMasterService
+        .getAsiTypeByGroupSchemeId(state.groupSchemeId!);
+    final compartments = await cmoDatabaseMasterService
+        .getCompartmentByFarmId(state.farmId ?? '');
+
+    emit(state.copyWith(
+      asiTypes: asiTypes,
+      isDataReady: true,
+      asiCompartments: compartments ?? [],
+    ));
+
     if (result.isNotEmpty) {
-      emit(state.copyWith(asisData: result));
+      emit(state.copyWith(asisData: result, asisDataSearch: result));
     }
   }
 

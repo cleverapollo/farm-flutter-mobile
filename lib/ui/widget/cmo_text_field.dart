@@ -27,6 +27,7 @@ class CmoTextField extends StatelessWidget {
     this.hintStyle,
     this.initialValue,
     this.contentPadding,
+    this.controller,
   });
 
   final Widget? prefixIcon;
@@ -73,9 +74,12 @@ class CmoTextField extends StatelessWidget {
 
   final EdgeInsets? contentPadding;
 
+  final TextEditingController? controller;
+
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
+      controller: controller,
       name: name,
       textAlign: textAlign ?? TextAlign.start,
       validator: validator,
@@ -91,15 +95,14 @@ class CmoTextField extends StatelessWidget {
       scrollPadding: const EdgeInsets.only(bottom: 100),
       decoration: inputDecoration ??
           InputDecoration(
-            contentPadding: contentPadding ?? const EdgeInsets.all(8),
-            prefixIconConstraints: BoxConstraints.tight(const Size(56, 38)),
-            prefixIcon: prefixIcon != null ? Center(child: prefixIcon) : null,
-            suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-            suffixIcon: suffixIcon != null ? Center(child: suffixIcon) : null,
-            isDense: true,
-            hintText: hintText,
-            hintStyle: hintStyle
-          ),
+              contentPadding: contentPadding ?? const EdgeInsets.all(8),
+              prefixIconConstraints: BoxConstraints.tight(const Size(56, 38)),
+              prefixIcon: prefixIcon != null ? Center(child: prefixIcon) : null,
+              suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
+              suffixIcon: suffixIcon != null ? Center(child: suffixIcon) : null,
+              isDense: true,
+              hintText: hintText,
+              hintStyle: hintStyle),
       maxLines: maxLines,
       autofocus: autofocus,
       focusNode: focusNode,

@@ -32,6 +32,9 @@ class AsiScreen extends StatefulWidget {
 }
 
 class _AsiScreenState extends State<AsiScreen> {
+  final _searchFocusNode = FocusNode();
+  final _searchEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RMAsiCubit, RMAsiState>(
@@ -52,19 +55,44 @@ class _AsiScreenState extends State<AsiScreen> {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  CmoTappable(
-                    onTap: () => {},
-                    child: CmoCard(
-                      childAlignment: MainAxisAlignment.center,
-                      content: [
-                        CmoCardHeader(title: LocaleKeys.summary.tr()),
-                        CmoCardHeader(
-                          title: LocaleKeys.total.tr(),
-                          valueEnd: state.asisData.length.toString(),
-                        ),
-                      ],
-                      trailing: Assets.icons.icDown.svgWhite,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+                    child: CmoTextField(
+                      controller: _searchEditingController,
+                      focusNode: _searchFocusNode,
+                      onChanged: cubit.onSearch,
+                      name: LocaleKeys.search.tr(),
+                      prefixIcon: Assets.icons.icSearch.svg(),
+                      hintText: LocaleKeys.search.tr(),
                     ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          _searchFocusNode.unfocus();
+                          _searchEditingController.clear();
+                          cubit.onChangeStatus(true);
+                        },
+                        child: _StatusFilterWidget(
+                          text: LocaleKeys.open.tr(),
+                          isSelected: state.isOpen,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () {
+                          _searchFocusNode.unfocus();
+                          _searchEditingController.clear();
+                          cubit.onChangeStatus(false);
+                        },
+                        child: _StatusFilterWidget(
+                          text: LocaleKeys.close.tr(),
+                          isSelected: !state.isOpen,
+                        ),
+                      ),
+                    ],
                   ),
                   if (state.isLoading)
                     const Expanded(
@@ -74,20 +102,20 @@ class _AsiScreenState extends State<AsiScreen> {
                     Expanded(
                       child: ListView.separated(
                         padding: const EdgeInsets.symmetric(vertical: 18),
-                        itemCount: state.asisData.length,
+                        itemCount: state.asisDataSearch.length,
                         separatorBuilder: (_, index) =>
                             const SizedBox(height: 14),
                         itemBuilder: (_, index) => InkWell(
                           onTap: () async {
                             final result = await AddingAsiScreen.push(
                               context,
-                              asi: state.asisData[index],
+                              asi: state.asisDataSearch[index],
                             );
                             if (result != null && result is int) {
                               await cubit.initListData();
                             }
                           },
-                          child: _AsiItem(state.asisData[index]),
+                          child: _AsiItem(state.asisDataSearch[index]),
                         ),
                       ),
                     ),
@@ -102,14 +130,13 @@ class _AsiScreenState extends State<AsiScreen> {
 }
 
 class _StatusFilterWidget extends StatelessWidget {
-  final bool isSelected;
-  final String text;
-
   const _StatusFilterWidget({
     required this.text,
     this.isSelected = false,
-    Key? key,
-  }) : super(key: key);
+  });
+
+  final bool isSelected;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -132,12 +159,47 @@ class _StatusFilterWidget extends StatelessWidget {
   }
 }
 
-class _AsiItem extends StatelessWidget {
+class _AsiItem extends StatefulWidget {
+  const _AsiItem(this.asi);
   static const double _itemHorizontalPadding = 4;
 
   final Asi asi;
 
-  const _AsiItem(this.asi, {Key? key}) : super(key: key);
+  @override
+  State<_AsiItem> createState() => _AsiItemState();
+}
+
+class _AsiItemState extends State<_AsiItem> {
+  final _compartmentName = ValueNotifier('');
+  final _asiTypeName = ValueNotifier('');
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final state = context.read<RMAsiCubit>().state;
+      _compartmentName.value =
+          state.asiCompartments.firstWhereOrNull((element) {
+                if (element.managementUnitId != null) {
+                  return element.managementUnitId ==
+                      widget.asi.managementUnitId;
+                }
+
+                if (element.localCompartmentId != null) {
+                  return element.localCompartmentId ==
+                      widget.asi.localCompartmentId;
+                }
+
+                return false;
+              })?.unitNumber ??
+              '';
+      _asiTypeName.value = state.asiTypes
+              .firstWhereOrNull(
+                  (element) => element.asiTypeId == widget.asi.asiTypeId)
+              ?.asiTypeName ??
+          '';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,17 +214,17 @@ class _AsiItem extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: _itemHorizontalPadding,
+              horizontal: _AsiItem._itemHorizontalPadding,
             ),
             child: Text(
-              '${LocaleKeys.asi_no.tr()}: ${asi.asiRegisterNo}',
+              '${LocaleKeys.asi_no.tr()}: ${widget.asi.asiRegisterNo}',
               style: context.textStyles.bodyBold
                   .copyWith(color: context.colors.blue),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: _itemHorizontalPadding * 2,
+              horizontal: _AsiItem._itemHorizontalPadding * 2,
               vertical: 6,
             ),
             child: Container(
@@ -171,8 +233,8 @@ class _AsiItem extends StatelessWidget {
             ),
           ),
           Padding(
-            padding:
-            const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+            padding: const EdgeInsets.fromLTRB(
+                _AsiItem._itemHorizontalPadding, 8, 11, 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -182,19 +244,23 @@ class _AsiItem extends StatelessWidget {
                     style: context.textStyles.bodyNormal,
                   ),
                 ),
-                Expanded(
-                  child: Text(
-                    asi.compartmentName ?? '',
-                    style: context.textStyles.bodyNormal,
-                  ),
+                ValueListenableBuilder(
+                  valueListenable: _compartmentName,
+                  builder: (context, compartmentName, __) {
+                    return Expanded(
+                      child: Text(
+                        compartmentName,
+                        style: context.textStyles.bodyNormal,
+                      ),
+                    );
+                  },
                 )
               ],
             ),
           ),
-
           Padding(
-            padding:
-                const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+            padding: const EdgeInsets.fromLTRB(
+                _AsiItem._itemHorizontalPadding, 8, 11, 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -204,20 +270,25 @@ class _AsiItem extends StatelessWidget {
                     style: context.textStyles.bodyNormal,
                   ),
                 ),
-                Expanded(
-                  child: Text(
-                    asi.asiTypeName ?? '',
-                    style: context.textStyles.bodyNormal,
-                  ),
+                ValueListenableBuilder(
+                  valueListenable: _asiTypeName,
+                  builder: (context, asiTypeName, __) {
+                    return Expanded(
+                      child: Text(
+                        asiTypeName,
+                        style: context.textStyles.bodyNormal,
+                      ),
+                    );
+                  },
                 )
               ],
             ),
           ),
-          Container(
+          ColoredBox(
             color: context.colors.greyLight1,
             child: Padding(
-              padding:
-                  const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+              padding: const EdgeInsets.fromLTRB(
+                  _AsiItem._itemHorizontalPadding, 8, 11, 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -226,7 +297,7 @@ class _AsiItem extends StatelessWidget {
                     style: context.textStyles.bodyNormal,
                   ),
                   Text(
-                    asi.date?.ddMMYyyy() ?? '',
+                    widget.asi.date?.ddMMYyyy() ?? '',
                     style: context.textStyles.bodyNormal,
                   )
                 ],
@@ -234,8 +305,8 @@ class _AsiItem extends StatelessWidget {
             ),
           ),
           Padding(
-            padding:
-                const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
+            padding: const EdgeInsets.fromLTRB(
+                _AsiItem._itemHorizontalPadding, 8, 11, 8),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -245,7 +316,7 @@ class _AsiItem extends StatelessWidget {
                   style: context.textStyles.bodyNormal,
                 ),
                 Text(
-                  asi.comment ?? '',
+                  widget.asi.comment ?? '',
                   style: context.textStyles.bodyNormal,
                 )
               ],

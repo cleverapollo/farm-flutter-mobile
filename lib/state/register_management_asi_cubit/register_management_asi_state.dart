@@ -17,6 +17,7 @@ class RMAsiState with _$RMAsiState {
     @Default([]) List<AsiType> asiTypes,
     @Default([]) List<Compartment> asiCompartments,
     @Default([]) List<Asi> asisData,
+    @Default([]) List<Asi> asisDataSearch,
     @Default([]) List<AsiPhoto> asiPhotos,
     AsiType? selectAsiType,
     Compartment? selectAsiCompartment,

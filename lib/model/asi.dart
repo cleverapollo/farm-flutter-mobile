@@ -22,7 +22,9 @@ class Asi with _$Asi {
     @JsonKey(name: 'CarRaisedDate') String? carRaisedDate,
     @JsonKey(name: 'CarClosedDate') String? carClosedDate,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
-    @Default(false) @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
+    @Default(false)
+    @JsonKey(name: 'IsMasterdataSynced')
+        bool? isMasterdataSynced,
     @JsonKey(name: 'AsiTypeName') String? asiTypeName,
     @JsonKey(name: 'CompartmentName') String? compartmentName,
     @JsonKey(name: 'LocalCompartmentId') int? localCompartmentId,
@@ -53,6 +55,7 @@ extension AsiX on Asi {
       IsActive: isActive,
       IsMasterdataSynced: isMasterdataSynced,
       AsiTypeName: asiTypeName,
+      ManagementUnitId: managementUnitId,
     );
   }
 }

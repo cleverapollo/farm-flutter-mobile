@@ -19,6 +19,7 @@ class AsiRegisterPayLoad with _$AsiRegisterPayLoad {
     bool? IsActive,
     bool? IsMasterdataSynced,
     String? AsiTypeName,
+    String? ManagementUnitId,
   }) = _AsiRegisterPayLoad;
   factory AsiRegisterPayLoad.fromJson(Map<String, dynamic> json) =>
       _$AsiRegisterPayLoadFromJson(json);
