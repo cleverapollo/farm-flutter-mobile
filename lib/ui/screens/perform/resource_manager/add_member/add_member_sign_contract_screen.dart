@@ -53,8 +53,8 @@ class _AddMemberSignContractWidgetState
           fit: BoxFit.cover);
     }
 
-    if (1 == widget.farm?.isMasterDataSynced) {
-      if (true == widget.farm?.hasSignature) {
+    if (widget.farm?.isMasterDataSynced == 1) {
+      if (widget.farm?.hasSignature == true) {
         signValue.value = AddMemberContractEnum.signed;
       } else {
         signValue.value = AddMemberContractEnum.unsigned;
@@ -98,17 +98,6 @@ class _AddMemberSignContractWidgetState
                     onTap: () async {
                       signValue.value = AddMemberContractEnum.newSign;
                       shouldExpandedNewSign = true;
-
-                      // final state = context.read<AddMemberCubit>().state;
-                      //
-                      // if (state.addMemberMDetails.isComplete &&
-                      //     context.mounted) {
-                      //   await AddMemberMembershipContractScreen.push(context,
-                      //       farm: state.farm);
-                      // } else {
-                      //   context.read<AddMemberCubit>().checkErrorAllSteps();
-                      //   showSnackError(msg: 'Should complete all steps.');
-                      // }
                     })),
           ),
         ));
@@ -154,15 +143,15 @@ class _AddMemberSignContractWidgetState
               children: [
                 Html(
                   data: html
-                      .replaceAll("{{farm.FirstName}}",
+                      .replaceAll('{{farm.FirstName}}',
                           state.farm?.firstName ?? widget.farm?.firstName ?? '')
-                      .replaceAll("{{farm.LastName}}",
+                      .replaceAll('{{farm.LastName}}',
                           state.farm?.lastName ?? widget.farm?.lastName ?? '')
                       .replaceAll(
-                          "{{hectares}}",
+                          '{{hectares}}',
                           (state.farm?.farmSize ?? widget.farm?.farmSize ?? 0)
                               .toStringAsFixed(2))
-                      .replaceAll("{{farm.SiteName}}",
+                      .replaceAll('{{farm.SiteName}}',
                           state.farm?.farmName ?? widget.farm?.farmName ?? ''),
                 ),
                 const Divider(thickness: 5),
