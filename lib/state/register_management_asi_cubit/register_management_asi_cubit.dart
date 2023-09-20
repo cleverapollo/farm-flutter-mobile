@@ -11,14 +11,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class RMAsiCubit extends Cubit<RMAsiState> {
   RMAsiCubit() : super(const RMAsiState());
 
-  void onSearch(String? p0) {
-    if ((p0 ?? '').isEmpty) {
+  void onSearch(String? searchText) {
+    if ((searchText ?? '').isEmpty) {
       return emit(state.copyWith(asisDataSearch: state.asisData));
     }
 
     emit(state.copyWith(
         asisDataSearch: state.asisData
-            .where((element) => element.asiRegisterNo?.contains(p0!) ?? false)
+            .where((element) =>
+                element.asiRegisterNo?.contains(searchText!) ?? false)
             .toList()));
   }
 
@@ -198,9 +199,7 @@ class RMAsiCubit extends Cubit<RMAsiState> {
   }
 
   Future<void> onSave(BuildContext context) async {
-    if (state.asiData.asiTypeId == null ||
-        state.asiData.latitude == null ||
-        state.asiData.localCompartmentId == null) {
+    if (state.asiData.asiTypeId == null || state.asiData.latitude == null) {
       return showSnackError(msg: 'Required fields are missing.');
     }
 

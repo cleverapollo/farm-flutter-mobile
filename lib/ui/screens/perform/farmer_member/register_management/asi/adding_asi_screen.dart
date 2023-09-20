@@ -110,9 +110,7 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
                       Center(
                         child: CmoFilledButton(
                           title: LocaleKeys.save.tr(),
-                          onTap: () {
-                            cubit.onSave(context);
-                          },
+                          onTap: () => cubit.onSave(context),
                         ),
                       ),
                     ],
@@ -121,14 +119,6 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
               )
             ],
           ),
-          // floatingActionButtonLocation:
-          //     FloatingActionButtonLocation.centerFloat,
-          // floatingActionButton: CmoFilledButton(
-          //   title: LocaleKeys.save.tr(),
-          //   onTap: () {
-          //     cubit.onSave(context);
-          //   },
-          // ),
         );
       },
     );
