@@ -214,8 +214,8 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                                         final datetime = await showDatePicker(
                                           context: context,
                                           initialDate: DateTime.now(),
-                                          firstDate: DateTime.now().add(Duration(days: -1000000)),
-                                          lastDate: DateTime.now().add(Duration(days: 1000000)),
+                                          firstDate: DateTime.now().add(const Duration(days: -1000000)),
+                                          lastDate: DateTime.now(),
                                         );
                                         _compartmentDetailCubit.onPlannedPlantDateChanged(datetime);
                                       },
