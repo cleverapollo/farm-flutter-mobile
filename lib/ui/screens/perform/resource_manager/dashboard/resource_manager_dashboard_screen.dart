@@ -101,16 +101,19 @@ class _ResourceManagerDashboardScreenState
                         CmoCardHeader(title: LocaleKeys.audit_s.tr()),
                         CmoCardItem(
                             title: LocaleKeys.onboarded.tr(),
-                            value:
-                                '${state.totalCompletedAssessments}/${state.totalAssessments}'),
+                            value: state.totalCompletedAssessments != null
+                                ? '${state.totalCompletedAssessments}/${state.totalAssessments}'
+                                : ''),
                         CmoCardItem(
                             title: LocaleKeys.incomplete.tr(),
-                            value:
-                                '${state.totalIncompleteAssessments}/${state.totalAssessments}'),
+                            value: state.totalIncompleteAssessments != null
+                                ? '${state.totalIncompleteAssessments}/${state.totalAssessments}'
+                                : ''),
                         CmoCardItemHighlighted(
                             title: LocaleKeys.membersOutstanding.tr(),
-                            value:
-                                '${state.totalAssessments}/${state.rmDashboardInfo?.totalMembers}'),
+                            value: state.totalAssessments != null
+                                ? '${state.totalAssessments}/${state.rmDashboardInfo?.totalMembers}'
+                                : ''),
                       ],
                     );
                   },

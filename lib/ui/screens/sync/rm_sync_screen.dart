@@ -24,13 +24,15 @@ class RMSyncScreen extends StatelessWidget {
             elevation: 0,
             title: BlocBuilder<RMSyncCubit, RMSyncState>(
               builder: (context, state) {
-                return FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    state.userInfo?.lastName ?? '',
-                    maxLines: 1,
-                    textAlign: TextAlign.center,
-                    style: context.textStyles.titleBold,
+                return Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      '${state.userInfo?.firstName ?? ''} ${state.userInfo?.lastName ?? ''}' ?? '',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: context.textStyles.titleBold,
+                    ),
                   ),
                 );
               },
