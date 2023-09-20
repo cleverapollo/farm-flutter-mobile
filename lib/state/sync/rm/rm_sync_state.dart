@@ -8,11 +8,13 @@ class RMSyncState extends BaseSyncState {
     super.isLoading,
     super.isLoaded,
     this.rmSyncSummaryInformation,
+    this.userInfo,
   });
 
   GroupScheme? groupScheme;
   ResourceManagerUnit? rmUnit;
   RmSyncSummaryInformation? rmSyncSummaryInformation;
+  UserInfo? userInfo;
 
   RMSyncState copyWith({
     String? syncMessage,
@@ -21,6 +23,7 @@ class RMSyncState extends BaseSyncState {
     GroupScheme? groupScheme,
     ResourceManagerUnit? rmUnit,
     RmSyncSummaryInformation? rmSyncSummaryInformation,
+    UserInfo? userInfo,
   }) {
     return RMSyncState(
       syncMessage: syncMessage ?? this.syncMessage,
@@ -28,6 +31,7 @@ class RMSyncState extends BaseSyncState {
       isLoaded: isLoaded ?? this.isLoaded,
       groupScheme: groupScheme ?? this.groupScheme,
       rmUnit: rmUnit ?? this.rmUnit,
+      userInfo: userInfo ?? this.userInfo,
       rmSyncSummaryInformation:
           rmSyncSummaryInformation ?? this.rmSyncSummaryInformation,
     );

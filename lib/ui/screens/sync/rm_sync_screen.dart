@@ -1,3 +1,4 @@
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/state/state.dart';
@@ -18,8 +19,29 @@ class RMSyncScreen extends StatelessWidget {
       child: WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
-          appBar: CmoAppBar(
-            title: LocaleKeys.resource_manager.tr(),
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            title: BlocBuilder<RMSyncCubit, RMSyncState>(
+              builder: (context, state) {
+                return FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    state.userInfo?.lastName ?? '',
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    style: context.textStyles.titleBold,
+                  ),
+                );
+              },
+            ),
+            leading: CmoTappable(
+              onTap: () => Navigator.of(context).pop(),
+              child: SizedBox.square(
+                dimension: 45,
+                child: Center(child: Assets.icons.icArrowLeft.svg()),
+              ),
+            ),
           ),
           body: SizedBox.expand(
             child: Padding(

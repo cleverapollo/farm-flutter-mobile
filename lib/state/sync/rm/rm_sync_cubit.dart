@@ -48,7 +48,14 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   Future<void> init() async {
     final groupScheme = await configService.getActiveGroupScheme();
     final rmUnit = await configService.getActiveRegionalManager();
-    emit(state.copyWith(groupScheme: groupScheme, rmUnit: rmUnit));
+    final userInfo = await configService.getActiveUser();
+    emit(
+      state.copyWith(
+        groupScheme: groupScheme,
+        rmUnit: rmUnit,
+        userInfo: userInfo,
+      ),
+    );
   }
 
   Future<void> getSummaryInformation() async {

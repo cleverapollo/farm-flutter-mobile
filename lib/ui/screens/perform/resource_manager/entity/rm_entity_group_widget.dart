@@ -98,7 +98,7 @@ class _RMEntityGroupWidgetState extends State<RMEntityGroupWidget> {
     await configService.setActiveUserRole(userRole: UserRoleEnum.regionalManager);
     await context.read<UserInfoCubit>().setActiveUserInfo(isBehave: false);
     if (mounted) {
-      await Navigator.of(context).pushReplacement(
+      await Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => RMSyncScreen(),
         ),
