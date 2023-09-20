@@ -83,7 +83,9 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   @override
   void initState() {
     super.initState();
-    onInternetStateChangeListener();
+    Future.microtask(() async {
+      await onInternetStateChangeListener();
+    });
     _calculateCenterPoint();
   }
 
@@ -93,7 +95,10 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
       setState(() {
         _hasInternet = hasInternet;
       });
+
+      dismissNoInternetWidget();
     }
+
     _connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) {
       final hasInternet = result != ConnectivityResult.none;
       if (hasInternet != _hasInternet) {
@@ -102,16 +107,20 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
         });
       }
 
-      if (!_hasInternet) {
-        Future.microtask(() async {
-          await Future.delayed(const Duration(seconds: 5)).then((_) {
-            setState(() {
-              _hasInternet = true;
-            });
+      dismissNoInternetWidget();
+    });
+  }
+
+  void dismissNoInternetWidget() {
+    if (!_hasInternet) {
+      Future.microtask(() async {
+        await Future.delayed(const Duration(seconds: 5)).then((_) {
+          setState(() {
+            _hasInternet = true;
           });
         });
-      }
-    });
+      });
+    }
   }
 
   @override
