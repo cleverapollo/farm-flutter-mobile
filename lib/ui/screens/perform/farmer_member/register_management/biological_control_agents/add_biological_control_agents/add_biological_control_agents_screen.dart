@@ -11,6 +11,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
+import 'package:cmo/ui/widget/cmo_text_field_widget.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -206,14 +207,17 @@ class _AddBiologicalControlAgentsScreenState
                                   },
                                 ),
                               ),
-                              SizedBox(
-                                height: 250,
-                                child: GeneralCommentWidget(
-                                  hintText: LocaleKeys.generalComments.tr(),
-                                  initialValue: initState.agent.comment,
-                                  onChanged: cubit.onCommentChanged,
-                                ),
+                              const SizedBox(height: 12),
+                              CmoTextFieldV2(
+                                maxLines: 10,
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 12),
+                                labelText: LocaleKeys.generalComments.tr(),
+                                initialValue:
+                                    initState.agent.comment ?? '\n\n\n\n',
+                                onChanged: cubit.onCommentChanged,
                               ),
+                              const SizedBox(height: 60),
                             ],
                           ),
                         ),

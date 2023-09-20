@@ -4,6 +4,7 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
+import 'package:cmo/ui/widget/cmo_text_field_widget.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -46,13 +47,6 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            LocaleKeys.nameOfControlAgent.tr(),
-            style: context.textStyles.bodyBold.black,
-          ),
-        ),
         BottomSheetSelection(
           hintText: LocaleKeys.nameOfControlAgent.tr(),
           value: selectedAgent?.biologicalControlAgentTypeName,
@@ -92,23 +86,18 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
             );
           },
         ),
-        AttributeItem(
-          child: _buildAutoFillWidget(
-            LocaleKeys.scientificName.tr(),
-            selectedAgent?.biologicalControlAgentTypeScientificName,
-          ),
+        const SizedBox(height: 8),
+        _buildAutoFillWidget(
+          LocaleKeys.scientificName.tr(),
+          selectedAgent?.biologicalControlAgentTypeScientificName,
         ),
-        AttributeItem(
-          child: _buildAutoFillWidget(
-            LocaleKeys.countryOfOrigin.tr(),
-            selectedAgent?.biologicalControlAgentTypeName,
-          ),
+        _buildAutoFillWidget(
+          LocaleKeys.countryOfOrigin.tr(),
+          selectedAgent?.biologicalControlAgentTypeName,
         ),
-        AttributeItem(
-          child: _buildAutoFillWidget(
-            LocaleKeys.reasonForBioAgent.tr(),
-            selectedAgent?.reasonForBioAgent,
-          ),
+        _buildAutoFillWidget(
+          LocaleKeys.reasonForBioAgent.tr(),
+          selectedAgent?.reasonForBioAgent,
         ),
       ],
     );
@@ -120,25 +109,12 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 8.0,
-        vertical: 4,
+        vertical: 8.0,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            key,
-            style: context.textStyles.bodyBold.black,
-          ),
-          Row(
-            children: [
-              Text(
-                value ?? '',
-                style: context.textStyles.bodyNormal.black,
-              ),
-            ],
-          )
-        ],
+      child: CmoTextFieldV2(
+        readOnly: true,
+        labelText: key,
+        initialValue: value,
       ),
     );
   }
