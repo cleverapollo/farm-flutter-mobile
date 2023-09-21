@@ -213,8 +213,7 @@ class _AddBiologicalControlAgentsScreenState
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 12, horizontal: 12),
                                 labelText: LocaleKeys.generalComments.tr(),
-                                initialValue:
-                                    initState.agent.comment ?? '\n\n\n\n',
+                                initialValue: initState.agent.comment,
                                 onChanged: cubit.onCommentChanged,
                               ),
                               const SizedBox(height: 60),
@@ -305,15 +304,13 @@ class _AddBiologicalControlAgentsScreenState
   }
 
   Widget _buildSelectDescriptionWidget() {
-    return BlocSelector<AddBiologicalControlCubit, AddBiologicalControlState,
-        List<MonitoringRequirement>>(
-      selector: (state) => state.monitorings,
-      builder: (context, monitorings) {
+    return BlocBuilder<AddBiologicalControlCubit, AddBiologicalControlState>(
+      builder: (context, state) {
         final monitoringRequirementId =
             cubit.state.agent.monitoringRequirementId;
-        final findIndex = monitorings.indexWhere((element) =>
+        final findIndex = state.monitorings.indexWhere((element) =>
             element.monitoringRequirementId == monitoringRequirementId);
-        final initValue = findIndex != -1 ? monitorings[findIndex] : null;
+        final initValue = findIndex != -1 ? state.monitorings[findIndex] : null;
         return BottomSheetSelection(
           hintText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
           value: initValue?.monitoringRequirementName,
@@ -321,21 +318,22 @@ class _AddBiologicalControlAgentsScreenState
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           onTap: () async {
             FocusScope.of(context).unfocus();
-            if (monitorings.isBlank) return;
+            if (state.monitorings.isBlank) return;
             await showCustomBottomSheet<void>(
               context,
               content: ListView.builder(
-                itemCount: monitorings.length,
+                itemCount: state.monitorings.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () {
-                      cubit.onMonitoringChanged.call(monitorings[index]);
+                      cubit.onMonitoringChanged.call(state.monitorings[index]);
                       Navigator.pop(context);
                     },
                     title: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       child: Text(
-                        monitorings[index].monitoringRequirementName ?? '',
+                        state.monitorings[index].monitoringRequirementName ??
+                            '',
                         style: context.textStyles.bodyBold.copyWith(
                           color: context.colors.blueDark2,
                         ),

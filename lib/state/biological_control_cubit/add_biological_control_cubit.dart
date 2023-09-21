@@ -89,6 +89,14 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
       monitoringRequirementId: monitoring?.monitoringRequirementId,
       monitoringRequirementName: monitoring?.monitoringRequirementName,
     );
+
+    emit(state.copyWith(
+        agent: state.agent.copyWith(
+          monitoringRequirementId: monitoring?.monitoringRequirementId,
+          monitoringRequirementName: monitoring?.monitoringRequirementName,
+        )
+    ));
+
   }
 
   void onCommentChanged(String? comment) {

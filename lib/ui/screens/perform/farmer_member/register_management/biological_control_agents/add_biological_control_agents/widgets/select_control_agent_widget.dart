@@ -113,6 +113,8 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
       ),
       child: CmoTextFieldV2(
         readOnly: true,
+        enable: false,
+        shouldValidate: true,
         labelText: key,
         initialValue: value,
       ),

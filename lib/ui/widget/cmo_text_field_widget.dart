@@ -26,6 +26,8 @@ class CmoTextFieldV2 extends StatefulWidget {
     this.scrollController,
     this.border,
     this.readOnly = false,
+    this.enable = true,
+    this.shouldValidate = false,
   });
 
   final String? hintText;
@@ -47,12 +49,16 @@ class CmoTextFieldV2 extends StatefulWidget {
   final ScrollController? scrollController;
   final InputBorder? border;
   final bool readOnly;
+  final bool enable;
+  final bool shouldValidate;
 
   @override
   State<CmoTextFieldV2> createState() => _CmoTextFieldV2State();
 }
 
 class _CmoTextFieldV2State extends State<CmoTextFieldV2> {
+  final _shouldValidateNotifier = ValueNotifier(false);
+
   late TextEditingController _controller;
 
   @override
@@ -66,6 +72,8 @@ class _CmoTextFieldV2State extends State<CmoTextFieldV2> {
     }
 
     _controller.text = widget.initialValue ?? '';
+
+    _shouldValidateNotifier.value = widget.shouldValidate;
   }
 
   @override
@@ -78,58 +86,81 @@ class _CmoTextFieldV2State extends State<CmoTextFieldV2> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      readOnly: widget.readOnly,
-      scrollController: widget.scrollController,
-      textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
-      onChanged: widget.onChanged,
-      onFieldSubmitted: widget.onSubmitted,
-      minLines: 1,
-      maxLines: widget.maxLines,
-      controller: _controller,
-      style: widget.textStyle ?? context.textStyles.bodyNormal.blueDark2,
-      keyboardType: widget.keyboardType,
-      inputFormatters: widget.inputFormatters,
-      validator: widget.validator ??
-          (value) {
-            if (value.isBlank) {
-              return widget.labelText ?? widget.hintText ?? '';
-            } else {
-              return null;
-            }
-          },
-      decoration: InputDecoration(
-        border: widget.border ??
-            const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey)),
-        hintText: widget.hintText,
-        hintStyle: widget.hintTextStyle ??
-            context.textStyles.bodyNormal.copyWith(
-              color: context.colors.grey,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+          color:
+              widget.enable ? Colors.transparent : Colors.grey.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(4)),
+      child: ValueListenableBuilder(
+        valueListenable: _shouldValidateNotifier,
+        builder: (context, shouldValidate, _) {
+          return TextFormField(
+            readOnly: widget.readOnly,
+            scrollController: widget.scrollController,
+            textCapitalization:
+                widget.textCapitalization ?? TextCapitalization.none,
+            onChanged: (p0) {
+              if(p0.isNotEmpty) {
+                _shouldValidateNotifier.value = false;
+              };
+              widget.onChanged?.call(p0);
+            },
+            onFieldSubmitted: widget.onSubmitted,
+            minLines: 1,
+            maxLines: widget.maxLines,
+            controller: _controller,
+            style: widget.textStyle ?? context.textStyles.bodyNormal.blueDark2,
+            keyboardType: widget.keyboardType,
+            inputFormatters: widget.inputFormatters,
+            validator: shouldValidate
+                ? widget.validator ??
+                    (value) {
+                      if (value.isBlank) {
+                        return widget.labelText ?? widget.hintText ?? '';
+                      } else {
+                        return null;
+                      }
+                    }
+                : (_) => null,
+            decoration: InputDecoration(
+              border: widget.border ??
+                  const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey)),
+              hintText: widget.hintText,
+              hintStyle: widget.hintTextStyle ??
+                  context.textStyles.bodyNormal.copyWith(
+                    color: context.colors.grey,
+                  ),
+              labelText: widget.labelText,
+              labelStyle: widget.labelTextStyle ??
+                  context.textStyles.bodyBold.blueDark2,
+              isDense: widget.isDense,
+              contentPadding: widget.contentPadding,
+              fillColor: Colors.white,
+              focusedBorder: _bindFocusOutline(),
+              errorBorder:
+                  shouldValidate ? _bindErrorOutline() : _bindFocusOutline(),
+              focusedErrorBorder:
+                  shouldValidate ? _bindErrorOutline() : _bindFocusOutline(),
             ),
-        labelText: widget.labelText,
-        labelStyle:
-            widget.labelTextStyle ?? context.textStyles.bodyBold.blueDark2,
-        isDense: widget.isDense,
-        contentPadding: widget.contentPadding,
-        fillColor: Colors.white,
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.grey,
-          ),
-        ),
-        errorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.red,
-            width: 2.0,
-          ),
-        ),
-        focusedErrorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.red,
-            width: 2.0,
-          ),
-        ),
+          );
+        },
+      ),
+    );
+  }
+
+  OutlineInputBorder  _bindFocusOutline() {
+    return const OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Colors.grey,
+      ),
+    );
+  }
+
+  OutlineInputBorder  _bindErrorOutline() {
+    return const OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Colors.red,
       ),
     );
   }

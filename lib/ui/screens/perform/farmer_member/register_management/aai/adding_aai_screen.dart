@@ -9,6 +9,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
+import 'package:cmo/ui/widget/cmo_text_field_widget.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -318,24 +319,13 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
       builder: (context, lostTimeInDay) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                LocaleKeys.lost_time_in_days.tr(),
-                style: context.textStyles.bodyBold.black,
-              ),
-              const SizedBox(height: 24),
-              TextField(
-                controller: _lostTimeInDaysController,
-                minLines: 1,
-                readOnly: true,
-                onChanged: cubit.onCommentChanged,
-                decoration: InputDecoration(
-                  hintText: LocaleKeys.lost_time_in_days.tr(),
-                ),
-              ),
-            ],
+          child: CmoTextFieldV2(
+            controller: _lostTimeInDaysController,
+            readOnly: true,
+            enable: false,
+            onChanged: cubit.onCommentChanged,
+            labelText: LocaleKeys.lost_time_in_days.tr(),
+            initialValue: lostTimeInDay,
           ),
         );
       },
