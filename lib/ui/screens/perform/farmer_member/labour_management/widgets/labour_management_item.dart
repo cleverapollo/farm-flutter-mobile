@@ -1,6 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class LabourManagementItem extends StatelessWidget {
@@ -54,11 +55,21 @@ class LabourManagementItem extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Assets.icons.icSmsBlue.svg(),
+                    CmoTappable(
+                      onTap: () async {
+                        await CommonFunctions.sendSms(farmerWorker.phoneNumber);
+                      },
+                      child: Assets.icons.icSmsBlue.svg(),
+                    ),
                     const SizedBox(
                       width: 40,
                     ),
-                    Assets.icons.icCallBlue.svg(),
+                    CmoTappable(
+                      onTap: () async {
+                        await CommonFunctions.makePhoneCall(farmerWorker.phoneNumber);
+                      },
+                      child: Assets.icons.icCallBlue.svg(),
+                    ),
                     const SizedBox(
                       width: 40,
                     ),
