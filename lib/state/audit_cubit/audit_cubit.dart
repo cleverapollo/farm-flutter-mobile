@@ -95,7 +95,7 @@ class AuditCubit extends HydratedCubit<AuditState> {
       farmId: state.selectedFarm?.farmId,
     );
 
-    emit(state.copyWith(compartments: compartments));
+    emit(state.copyWith(compartments: [const Compartment(unitNumber: 'None'),...compartments]));
   }
 
   Future<void> initialize() async {
