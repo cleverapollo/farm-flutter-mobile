@@ -35,15 +35,15 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>This app requires access to your camera to fill avatar input</string>
+	<string>CMO Empower allows you to attach photos in assign photos as labour avatar and audits.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>CMO Empower allows you to attach photos in assign photos as labour avatar and audits.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs access to location when in the background.</string>
+	<string>CMO Empower needs permission to draw polygons for compartment based on your location.</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>This app needs access to location when in the background.</string>
+    <string>CMO Empower needs permission to draw polygons for compartment based on your location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires access to your library to fill input</string>
+	<string>CMO Empower needs permission to draw polygons for compartment based on your location.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
