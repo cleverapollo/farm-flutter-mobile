@@ -66,3 +66,15 @@ class AuditState extends Equatable {
         Json.tryEncode(cacheCreateData),
       ];
 }
+
+extension AuditStateX on AuditState {
+  bool get canSave {
+    return selectedAuditTemplate != null && selectedFarm != null;
+  }
+
+  String get getSubTitleAudit {
+    if(selectedCompartment != null) return selectedCompartment?.unitNumber ?? '';
+
+    return selectedFarm?.farmName ?? '';
+  }
+}

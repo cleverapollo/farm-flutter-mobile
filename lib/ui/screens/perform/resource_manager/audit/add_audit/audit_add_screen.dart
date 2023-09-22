@@ -70,48 +70,60 @@ class _AuditAddScreen extends State<AuditAddScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: CmoAppBar(
-          title: LocaleKeys.newAudit.tr(),
-          leading: Assets.icons.icArrowLeft.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
-        ),
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 30,
+      child: BlocSelector<AuditCubit, AuditState, String>(
+        selector: (state) => state.getSubTitleAudit,
+        builder: (context, subTitle) {
+          return Scaffold(
+            appBar: CmoAppBar(
+              title: LocaleKeys.newAudit.tr(),
+              leading: Assets.icons.icArrowLeft.svgBlack,
+              onTapLeading: Navigator.of(context).pop,
+              subtitle: subTitle,
+            ),
+            body: Stack(
+              children: [
+                Positioned.fill(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        _buildDividerWidget(),
+                        buildSelectAuditTemplate(),
+                        buildSelectSite(),
+                        buildSelectCompartment(),
+                      ],
                     ),
-                    _buildDividerWidget(),
-                    buildSelectAuditTemplate(),
-                    buildSelectSite(),
-                    buildSelectCompartment(),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: MediaQuery.of(context).padding.bottom,
-              left: 0,
-              right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CmoFilledButton(
-                    title: LocaleKeys.save.tr(),
-                    onTap: onSubmit,
-                    loading: loading,
                   ),
-                ],
-              ),
+                ),
+                Positioned(
+                  bottom: MediaQuery.of(context).padding.bottom,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      BlocSelector<AuditCubit, AuditState, bool>(
+                        selector: (state) => state.canSave,
+                        builder: (context, canSave) {
+                          return CmoFilledButton(
+                            disable: !canSave,
+                            title: LocaleKeys.save.tr(),
+                            onTap: onSubmit,
+                            loading: loading,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
