@@ -56,7 +56,8 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     AuditListCommentScreen.push(
       context,
       auditQuestion: farmQuestion,
-      auditId: context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+      auditId:
+          context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
     );
   }
 
@@ -66,7 +67,8 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     final result = await AuditQuestionAddCommentScreen.push(
       context,
       auditQuestion: farmQuestion,
-      auditId: context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+      auditId:
+          context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
     );
 
     if (result != null) {
@@ -80,7 +82,8 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     final result = await AuditListPhotoScreen.push(
       context,
       auditQuestion: auditQuestion,
-      auditId: context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+      auditId:
+          context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
     );
 
     if (result != null) {
@@ -112,7 +115,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     if (context.mounted) {
       await context
           .read<AuditListQuestionsCubit>()
-          .checkAllAuditQuestionCompleted();
+          .onSave();
       await context.read<AuditListCubit>().refresh();
       Navigator.of(context).pop(true);
     }
@@ -190,11 +193,10 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                       ),
                     ],
                   ),
-
                   Padding(
                     padding: const EdgeInsets.only(left: 40.0),
-                    child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState,
-                        AuditListQuestionsState>(
+                    child: BlocSelector<AuditListQuestionsCubit,
+                        AuditListQuestionsState, AuditListQuestionsState>(
                       selector: (state) => state,
                       builder: (context, state) => Text(
                         '${state.getAnsweredFilteredQuestions().length}/${state.filteredQuestions.length}',
@@ -253,11 +255,20 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
       ),
       persistentFooterAlignment: AlignmentDirectional.center,
       persistentFooterButtons: [
-        // CmoFilledButton(
-        //   onTap: _saveQuestionAnswer,
-        //   title: LocaleKeys.save.tr(),
-        //   loading: loading,
-        // ),
+        BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState,
+            List<QuestionAnswer>>(
+          selector: (state) => state.answers,
+          builder: (context, answers) {
+            return CmoFilledButton(
+              disable: !(answers.firstWhereOrNull(
+                      (element) => element.isQuestionComplete == 1) !=
+                  null),
+              onTap: _saveQuestionAnswer,
+              title: LocaleKeys.save.tr(),
+              loading: loading,
+            );
+          },
+        ),
       ],
     );
   }

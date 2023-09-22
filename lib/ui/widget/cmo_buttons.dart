@@ -59,7 +59,7 @@ class CmoFilledButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         disabledBackgroundColor: context.colors.grey,
       ),
-      onPressed: onTap,
+      onPressed: disable ? null : onTap,
       child: Padding(
         padding: const EdgeInsets.all(4),
         child: Row(

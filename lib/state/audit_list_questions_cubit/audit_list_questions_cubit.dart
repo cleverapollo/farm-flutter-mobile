@@ -54,17 +54,24 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     var filterList = state.questions;
 
     if (state.principleFilterId > -1) {
-      filterList = filterList.where((s) => s.principleId == state.principleFilterId).toList();
+      filterList = filterList
+          .where((s) => s.principleId == state.principleFilterId)
+          .toList();
     }
     if (state.criteriaFilterId > -1) {
-      filterList = filterList.where((s) => s.criteriaId == state.criteriaFilterId).toList();
+      filterList = filterList
+          .where((s) => s.criteriaId == state.criteriaFilterId)
+          .toList();
     }
     if (state.carFilterId > -1) {
-      filterList = filterList.where((s) => s.severityId == state.carFilterId).toList();
+      filterList =
+          filterList.where((s) => s.severityId == state.carFilterId).toList();
     }
 
     if (state.indicatorFilterId > -1) {
-      filterList = filterList.where((s) => s.indicatorId == state.indicatorFilterId).toList();
+      filterList = filterList
+          .where((s) => s.indicatorId == state.indicatorFilterId)
+          .toList();
     }
 
     if (state.incompleteFilter == 1) {
@@ -121,7 +128,8 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
 
   Future<void> getListCompliances() async {
     final rmu = await configService.getActiveRegionalManager();
-    final compliances = await cmoDatabaseMasterService.getCompliancesByRmuId(rmuId: rmu?.regionalManagerUnitId);
+    final compliances = await cmoDatabaseMasterService.getCompliancesByRmuId(
+        rmuId: rmu?.regionalManagerUnitId);
     emit(state.copyWith(compliances: compliances));
   }
 
@@ -141,7 +149,6 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       handleError(error);
     }
   }
-
 
   Future<void> getListAuditQuestion() async {
     final rmu = await configService.getActiveRegionalManager();
@@ -207,8 +214,8 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   }
 
   Future<void> markQuestionAnswerIsCompleted(
-      FarmQuestion question,
-      ) async {
+    FarmQuestion question,
+  ) async {
     final answer = state.answers.firstWhereOrNull(
       (e) => e.questionId == question.questionId,
     );
@@ -230,21 +237,27 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     Compliance compliance, {
     void Function()? onCallback,
   }) async {
-    var answer = state.answers
+    final answer = state.answers
         .firstWhereOrNull((e) => e.questionId == question.questionId);
-    if(answer == null) return;
+    if (answer == null) return;
 
-    answer = answer.copyWith(
-      complianceId: compliance.complianceId,
-      questionAnswerId: DateTime.now().millisecondsSinceEpoch,
-      isQuestionComplete: 1,
-      rejectReasonId: null,
-      rejectComment: null,
-    );
+    final answerAfterSelect = state.answers.map((e) {
+      if (e.questionId != question.questionId) return e;
 
-    await cmoDatabaseMasterService.cacheQuestionAnswer(answer);
-    await getListQuestionAnswers();
-    await markQuestionAnswerIsCompleted(question);
+      return e.copyWith(
+        complianceId: compliance.complianceId,
+        questionAnswerId: DateTime.now().millisecondsSinceEpoch,
+        isQuestionComplete: 1,
+        rejectReasonId: null,
+        rejectComment: null,
+      );
+    }).toList();
+
+    emit(state.copyWith(answers: answerAfterSelect));
+
+    // await cmoDatabaseMasterService.cacheQuestionAnswer(answer);
+    // await getListQuestionAnswers();
+    // await markQuestionAnswerIsCompleted(question);
     onCallback?.call();
   }
 
@@ -257,7 +270,8 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   }
 
   Future<void> checkAllAuditQuestionCompleted() async {
-    final answered = state.answers.where((x) => x.isQuestionComplete == 1).toList();
+    final answered =
+        state.answers.where((x) => x.isQuestionComplete == 1).toList();
     final questionCount = state.questions.length;
     if (answered.length == questionCount) {
       if (state.audit?.completed != true) {
@@ -293,5 +307,28 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
 
   void handleError(Object error) {
     logger.d(error);
+  }
+
+  Future<void> onSave() async {
+    final answeredQuestion =
+        state.answers.where((element) => element.questionAnswerId != null);
+
+    for (final answer in answeredQuestion) {
+      await cmoDatabaseMasterService.cacheQuestionAnswer(answer);
+    }
+
+    final completedQuestions = state.filteredQuestions.map((e) {
+      if (answeredQuestion.firstWhereOrNull(
+              (element) => element.questionId == e.questionId) !=
+          null) {
+        return e;
+      }
+    }).toList();
+
+    for (final question in completedQuestions) {
+      if (question == null) return;
+
+      await markQuestionAnswerIsCompleted(question);
+    }
   }
 }
