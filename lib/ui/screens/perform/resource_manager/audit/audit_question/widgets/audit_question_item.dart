@@ -28,6 +28,12 @@ class AuditQuestionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ncCompliance = compliances.firstWhereOrNull(
+      (element) =>
+          element.complianceName.isNotBlank &&
+          element.complianceName!.contains('NC'),
+    );
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -64,10 +70,8 @@ class AuditQuestionItem extends StatelessWidget {
                         onTap: () => addAnswer(compliance),
                         child: CmoCircelButton(
                           title: '${compliance.complianceName}',
-                          color: answer != null &&
-                                  answer?.complianceId ==
-                                      compliance.complianceId
-                              ? context.colors.yellow
+                          color: answer != null && answer?.complianceId == compliance.complianceId
+                              ? getAnswerColor(context, compliance)
                               : context.colors.white,
                         ),
                       ),
@@ -75,53 +79,74 @@ class AuditQuestionItem extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              Row(
-                children: [
-                  CmoTappable(
-                    onTap: viewListPhoto,
-                    child: BlocSelector<AuditListQuestionsCubit,
-                        AuditListQuestionsState, AuditListQuestionsState>(
-                      selector: (state) => state,
-                      builder: (context, state) {
-                        return CmoCircelIconButton(
-                          color: state.getListPhotoFilteredQuestions(question.questionId).isNotBlank
-                              ? context.colors.green
-                              : Colors.transparent,
-                          icon: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: Assets.icons.icCamera.svgBlack,
-                          ),
-                        );
-                      },
+              Visibility(
+                visible: ncCompliance != null &&
+                    answer != null &&
+                    ncCompliance.complianceId == answer!.complianceId,
+                child: Row(
+                  children: [
+                    CmoTappable(
+                      onTap: viewListPhoto,
+                      child: BlocSelector<AuditListQuestionsCubit,
+                          AuditListQuestionsState, AuditListQuestionsState>(
+                        selector: (state) => state,
+                        builder: (context, state) {
+                          return CmoCircelIconButton(
+                            color: state.getListPhotoFilteredQuestions(question.questionId).isNotBlank
+                                ? context.colors.green
+                                : Colors.transparent,
+                            icon: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: Assets.icons.icCamera.svgBlack,
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  CmoTappable(
-                    onTap: viewComment,
-                    child: BlocSelector<AuditListQuestionsCubit,
-                        AuditListQuestionsState, AuditListQuestionsState>(
-                      selector: (state) => state,
-                      builder: (context, state) {
-                        return CmoCircelIconButton(
-                          color: state.getListCommentsFilteredQuestions(question.questionId).isNotBlank
-                              ? context.colors.green
-                              : Colors.transparent,
-                          icon: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: Assets.icons.icComment.svgBlack,
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                ],
+                    const SizedBox(width: 16),
+                    CmoTappable(
+                      onTap: viewComment,
+                      child: BlocSelector<AuditListQuestionsCubit,
+                          AuditListQuestionsState, AuditListQuestionsState>(
+                        selector: (state) => state,
+                        builder: (context, state) {
+                          return CmoCircelIconButton(
+                            color: state.getListCommentsFilteredQuestions(question.questionId).isNotBlank
+                                ? context.colors.green
+                                : Colors.transparent,
+                            icon: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: Assets.icons.icComment.svgBlack,
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  ],
+                ),
               ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  Color getAnswerColor(
+    BuildContext context,
+    Compliance compliance,
+  ) {
+    if (compliance.complianceName.isBlank) return context.colors.white;
+    if (compliance.complianceName!.contains('N/A')) {
+      return context.colors.greyCCCC;
+    } else if (compliance.complianceName!.contains('NC')) {
+      return context.colors.yellow;
+    } else if (compliance.complianceName!.contains('C')) {
+      return context.colors.greenC600;
+    }
+
+    return context.colors.white;
   }
 }

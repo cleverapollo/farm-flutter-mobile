@@ -7,6 +7,8 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/gen/fonts.gen.dart';
 
 abstract class _AppColor {
+  static const greyCCCC = Color(0xFFCCCCCC);
+  static const greenC600 = Color(0xFF00C600);
   static const white = Color(0xFFFFFFFF);
   static const greyLight1 = Color(0xFFF0F0F0);
   static const grey = Color(0xFF8A8A8A);
@@ -81,6 +83,8 @@ class ColorThemeExt extends ThemeExtension<ColorThemeExt> {
   final yellow = _AppColor.yellow;
   final shadow = _AppColor.shadow;
   final greyD9D9 = _AppColor.greyD9D9;
+  final greyCCCC = _AppColor.greyCCCC;
+  final greenC600 = _AppColor.greenC600;
 
   @override
   ThemeExtension<ColorThemeExt> copyWith() => this;
