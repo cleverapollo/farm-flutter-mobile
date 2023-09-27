@@ -44,8 +44,15 @@ class CarFilter extends StatelessWidget {
             ..insert(
               0,
               CmoDropdownItem(
+                id: -2,
+                name: LocaleKeys.no_cars.tr(),
+              ),
+            )
+            ..insert(
+              0,
+              CmoDropdownItem(
                 id: -1,
-                name: LocaleKeys.car.tr(),
+                name: LocaleKeys.no_filter.tr(),
               ),
             ),
         );

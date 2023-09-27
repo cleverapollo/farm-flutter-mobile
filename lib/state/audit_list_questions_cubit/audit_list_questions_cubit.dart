@@ -64,8 +64,9 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
           .toList();
     }
     if (state.carFilterId > -1) {
-      filterList =
-          filterList.where((s) => s.severityId == state.carFilterId).toList();
+      filterList = filterList.where((s) => s.severityId == state.carFilterId).toList();
+    } else if (state.carFilterId == -2) {
+      filterList = filterList.where((s) => s.severityId == null).toList();
     }
 
     if (state.indicatorFilterId > -1) {
