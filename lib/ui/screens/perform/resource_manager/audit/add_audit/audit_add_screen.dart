@@ -183,6 +183,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
           margin: EdgeInsets.zero,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           value: state.selectedFarm?.farmName,
+          displayHorizontal: false,
           onTap: () async {
             FocusScope.of(context).unfocus();
             if (state.farms.isBlank) return;
@@ -222,6 +223,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
           margin: EdgeInsets.zero,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           value: state.selectedCompartment?.unitNumber,
+          displayHorizontal: false,
           onTap: () async {
             FocusScope.of(context).unfocus();
             if (state.compartments.isBlank) return;
