@@ -144,6 +144,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
           margin: EdgeInsets.zero,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           value: state.selectedAuditTemplate?.auditTemplateName,
+          displayHorizontal: false,
           onTap: () async {
             FocusScope.of(context).unfocus();
             if (state.auditTemplates.isBlank) return;
