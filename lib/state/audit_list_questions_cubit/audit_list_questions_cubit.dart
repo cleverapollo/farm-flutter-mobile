@@ -55,7 +55,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
         break;
     }
 
-    if (state.selectedComplianceFilter?.complianceId != -1) {
+    if (state.selectedComplianceFilter != null && state.selectedComplianceFilter?.complianceId != -1) {
       filterList = filterList.where((question) {
         final answer = state.answers.firstWhereOrNull(
           (answer) =>
