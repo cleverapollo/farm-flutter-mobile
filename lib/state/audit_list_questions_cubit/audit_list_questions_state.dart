@@ -12,7 +12,7 @@ class AuditListQuestionsState extends Equatable {
     this.compliances = const <Compliance>[],
     this.principles = const <Principle>[],
     this.indicators = const <Indicator>[],
-    this.cars = const <Severity>[],
+    this.carFilterEnums = const <CarFilterEnum>[],
     this.criterias = const <Criteria>[],
     this.impactOns = const <ImpactOn>[],
     this.impactOnFilterId = -1,
@@ -23,6 +23,7 @@ class AuditListQuestionsState extends Equatable {
     this.incompleteFilter = 0,
     this.totalComments = 0,
     this.totalPhotos = 0,
+    this.selectedCARFilter,
   });
 
   final Audit? audit;
@@ -35,9 +36,10 @@ class AuditListQuestionsState extends Equatable {
   final List<RejectReason> rejectReasons;
   final List<Principle> principles;
   final List<Criteria> criterias;
-  final List<Severity> cars;
   final List<Indicator> indicators;
   final List<ImpactOn> impactOns;
+  final List<CarFilterEnum> carFilterEnums;
+  final CarFilterEnum? selectedCARFilter;
   final int impactOnFilterId;
   final int incompleteFilter;
   final int principleFilterId;
@@ -49,6 +51,8 @@ class AuditListQuestionsState extends Equatable {
 
   AuditListQuestionsState copyWith({
     Audit? audit,
+    CarFilterEnum? selectedCARFilter,
+    List<CarFilterEnum>? carFilterEnums,
     List<FarmQuestion>? questions,
     List<FarmQuestion>? filteredQuestions,
     List<QuestionAnswer>? answers,
@@ -57,7 +61,6 @@ class AuditListQuestionsState extends Equatable {
     List<RejectReason>? rejectReasons,
     List<Compliance>? compliances,
     List<Principle>? principles,
-    List<Severity>? cars,
     List<Indicator>? indicators,
     List<Criteria>? criterias,
     List<ImpactOn>? impactOns,
@@ -72,6 +75,8 @@ class AuditListQuestionsState extends Equatable {
   }) {
     return AuditListQuestionsState(
       questions: questions ?? this.questions,
+      selectedCARFilter: selectedCARFilter ?? this.selectedCARFilter,
+      carFilterEnums: carFilterEnums ?? this.carFilterEnums,
       filteredQuestions: filteredQuestions ?? this.filteredQuestions,
       answers: answers ?? this.answers,
       questionComments: questionComments ?? this.questionComments,
@@ -82,7 +87,6 @@ class AuditListQuestionsState extends Equatable {
       incompleteFilter: incompleteFilter ?? this.incompleteFilter,
       compliances: compliances ?? this.compliances,
       audit: audit ?? this.audit,
-      cars: cars ?? this.cars,
       criterias: criterias ?? this.criterias,
       indicators: indicators ?? this.indicators,
       principles: principles ?? this.principles,
@@ -108,7 +112,8 @@ class AuditListQuestionsState extends Equatable {
     audit,
     questions,
     filteredQuestions,
-    cars,
+    selectedCARFilter,
+    carFilterEnums,
     principles,
     criterias,
     indicators,

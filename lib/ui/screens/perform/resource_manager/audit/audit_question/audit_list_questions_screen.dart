@@ -277,34 +277,19 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     return FormBuilder(
       key: _formKey,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 32),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildFilterRow(
-              firstChild: PrincipleFilter(formKey: _formKey),
-              secondChild: CriteriaFilter(formKey: _formKey),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            _buildFilterRow(
-              firstChild: CarFilter(formKey: _formKey),
-              secondChild: IndicatorFilter(formKey: _formKey),
-            ),
+            Row(
+              children: [
+                const Expanded(child: CarFilter()),
+                Expanded(child: IndicatorFilter(formKey: _formKey)),
+              ].withSpaceBetween(width: 20),
+            )
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildFilterRow(
-      {required Widget firstChild, required Widget secondChild}) {
-    return Row(
-      children: [
-        Expanded(child: firstChild),
-        Expanded(child: secondChild),
-      ].withSpaceBetween(width: 12),
     );
   }
 }

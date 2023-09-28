@@ -30,8 +30,8 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     applyFilter();
   }
 
-  void setCarFilter(int? id) {
-    emit(state.copyWith(carFilterId: id));
+  void setCarFilter(CarFilterEnum? filterEnum) {
+    emit(state.copyWith(selectedCARFilter: filterEnum));
     applyFilter();
   }
 
@@ -63,10 +63,19 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
           .where((s) => s.criteriaId == state.criteriaFilterId)
           .toList();
     }
-    if (state.carFilterId > -1) {
-      filterList = filterList.where((s) => s.severityId == state.carFilterId).toList();
-    } else if (state.carFilterId == -2) {
-      filterList = filterList.where((s) => s.severityId == null).toList();
+
+    switch (state.selectedCARFilter) {
+      case CarFilterEnum.allCARs:
+        filterList = filterList;
+        break;
+      case CarFilterEnum.minorCARs:
+        filterList = filterList.where((s) => s.xBone == null || s.xBone == false).toList();
+        break;
+      case CarFilterEnum.majorCARs:
+        filterList = filterList.where((s) => s.xBone != null && s.xBone!).toList();
+        break;
+      default:
+        break;
     }
 
     if (state.indicatorFilterId > -1) {
@@ -103,18 +112,8 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     emit(state.copyWith(criterias: criterias));
   }
 
-  Future<void> getCars() async {
-    final cars = await cmoDatabaseMasterService.getSeverities();
-
-    // Only get minor and major item
-    emit(
-      state.copyWith(
-        cars: [
-          cars.first,
-          cars.last,
-        ],
-      ),
-    );
+  void getCarFilters() {
+    emit(state.copyWith(carFilterEnums: CarFilterEnum.values));
   }
 
   Future<void> getIndicators() async {
@@ -139,9 +138,9 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       logger.d('Initialise auditId: ${audit.assessmentId}');
       emit(state.copyWith(audit: audit));
 
+      getCarFilters();
       await getPrinciples();
       await getCriterias();
-      await getCars();
       await getIndicators();
       await getRejectReasons();
       await getListCompliances();
