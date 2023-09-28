@@ -4,6 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/audit_list_questions_cubit/audit_list_questions_cubit.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_icon_with_number_widget.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,7 +71,9 @@ class AuditQuestionItem extends StatelessWidget {
                         onTap: () => addAnswer(compliance),
                         child: CmoCircelButton(
                           title: '${compliance.complianceName}',
-                          color: answer != null && answer?.complianceId == compliance.complianceId
+                          color: answer != null &&
+                                  answer?.complianceId ==
+                                      compliance.complianceId
                               ? getAnswerColor(context, compliance)
                               : context.colors.white,
                         ),
@@ -85,45 +88,46 @@ class AuditQuestionItem extends StatelessWidget {
                     ncCompliance.complianceId == answer!.complianceId,
                 child: Row(
                   children: [
-                    CmoTappable(
-                      onTap: viewListPhoto,
-                      child: BlocSelector<AuditListQuestionsCubit,
-                          AuditListQuestionsState, AuditListQuestionsState>(
-                        selector: (state) => state,
-                        builder: (context, state) {
-                          return CmoCircelIconButton(
-                            color: state.getListPhotoFilteredQuestions(question.questionId).isNotBlank
-                                ? context.colors.green
-                                : Colors.transparent,
-                            icon: SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: Assets.icons.icCamera.svgBlack,
-                            ),
-                          );
-                        },
-                      ),
+                    CmoNumberIconWidget.byEnum(
+                      iconType: AuditQuestionIconEnum.location,
                     ),
-                    const SizedBox(width: 16),
-                    CmoTappable(
-                      onTap: viewComment,
-                      child: BlocSelector<AuditListQuestionsCubit,
-                          AuditListQuestionsState, AuditListQuestionsState>(
-                        selector: (state) => state,
-                        builder: (context, state) {
-                          return CmoCircelIconButton(
-                            color: state.getListCommentsFilteredQuestions(question.questionId).isNotBlank
-                                ? context.colors.green
-                                : Colors.transparent,
-                            icon: SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: Assets.icons.icComment.svgBlack,
-                            ),
-                          );
-                        },
-                      ),
-                    )
+                    BlocSelector<AuditListQuestionsCubit,
+                        AuditListQuestionsState, AuditListQuestionsState>(
+                      selector: (state) => state,
+                      builder: (context, state) {
+                        return CmoNumberIconWidget.byEnum(
+                          onTap: viewListPhoto,
+                          number: state.questionPhotos
+                              .where((element) =>
+                                  element.questionId == question.questionId)
+                              .length,
+                          enable: state
+                              .getListPhotoFilteredQuestions(
+                                  question.questionId)
+                              .isNotBlank,
+                          iconType: AuditQuestionIconEnum.camera,
+                        );
+                      },
+                    ),
+                    BlocSelector<AuditListQuestionsCubit,
+                        AuditListQuestionsState, AuditListQuestionsState>(
+                      selector: (state) => state,
+                      builder: (context, state) {
+                        return CmoNumberIconWidget.byEnum(
+                          onTap: viewComment,
+                          number: state.questionComments
+                              .where((element) =>
+                                  element.questionId == question.questionId)
+                              .length,
+                          enable: state
+                              .getListCommentsFilteredQuestions(
+                                  question.questionId)
+                              .isNotBlank,
+                          iconType: AuditQuestionIconEnum.comment,
+                        );
+                      },
+                    ),
+
                   ],
                 ),
               ),

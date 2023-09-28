@@ -53,13 +53,7 @@ class _AuditManagementScreenState extends State<AuditManagementScreen> {
             subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
             leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
-            trailing: Center(
-              child: Transform(
-                alignment: FractionalOffset.center,
-                transform: Matrix4.identity()..rotateZ(45 * pi / 180),
-                child: Assets.icons.icUpdatedCloseButton.svgBlack,
-              ),
-            ),
+            trailing: Assets.icons.icUpdatedAddButton.svgBlack,
             onTapTrailing: () => AuditAddScreen.push(context),
           ),
           body: Column(
