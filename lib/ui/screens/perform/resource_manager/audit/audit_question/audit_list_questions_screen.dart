@@ -8,9 +8,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/aud
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_question_add_comment/audit_question_add_comment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/audit_question_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/car_filter.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/criteria_filter.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/indicator_filter.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/principle_filter.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/compliance_filter.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -284,7 +282,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
             Row(
               children: [
                 const Expanded(child: CarFilter()),
-                Expanded(child: IndicatorFilter(formKey: _formKey)),
+                const Expanded(child: ComplianceFilter()),
               ].withSpaceBetween(width: 20),
             )
           ],

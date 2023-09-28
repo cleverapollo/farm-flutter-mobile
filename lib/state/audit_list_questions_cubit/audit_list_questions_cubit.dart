@@ -25,23 +25,13 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     applyFilter();
   }
 
-  void setPrincipleFilter(int? id) {
-    emit(state.copyWith(principleFilterId: id));
-    applyFilter();
-  }
-
   void setCarFilter(CarFilterEnum? filterEnum) {
     emit(state.copyWith(selectedCARFilter: filterEnum));
     applyFilter();
   }
 
-  void setIndicatorFilter(int? id) {
-    emit(state.copyWith(indicatorFilterId: id));
-    applyFilter();
-  }
-
-  void setCriteriaFilter(int? id) {
-    emit(state.copyWith(criteriaFilterId: id));
+  void setComplianceFilter(Compliance? compliance) {
+    emit(state.copyWith(selectedComplianceFilter: compliance));
     applyFilter();
   }
 
@@ -53,35 +43,27 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   Future<void> applyFilter() async {
     var filterList = state.questions;
 
-    if (state.principleFilterId > -1) {
-      filterList = filterList
-          .where((s) => s.principleId == state.principleFilterId)
-          .toList();
-    }
-    if (state.criteriaFilterId > -1) {
-      filterList = filterList
-          .where((s) => s.criteriaId == state.criteriaFilterId)
-          .toList();
-    }
-
     switch (state.selectedCARFilter) {
-      case CarFilterEnum.allCARs:
-        filterList = filterList;
-        break;
       case CarFilterEnum.minorCARs:
-        filterList = filterList.where((s) => s.xBone == null || s.xBone == false).toList();
+        filterList = filterList.where((question) => question.xBone == null || question.xBone == false).toList();
         break;
       case CarFilterEnum.majorCARs:
-        filterList = filterList.where((s) => s.xBone != null && s.xBone!).toList();
+        filterList = filterList.where((question) => question.xBone != null && question.xBone!).toList();
         break;
+      case CarFilterEnum.allCARs:
       default:
         break;
     }
 
-    if (state.indicatorFilterId > -1) {
-      filterList = filterList
-          .where((s) => s.indicatorId == state.indicatorFilterId)
-          .toList();
+    if (state.selectedComplianceFilter?.complianceId != -1) {
+      filterList = filterList.where((question) {
+        final answer = state.answers.firstWhereOrNull(
+          (answer) =>
+              answer.questionId == question.questionId &&
+              answer.complianceId == state.selectedComplianceFilter?.complianceId,
+        );
+        return answer != null;
+      }).toList();
     }
 
     if (state.incompleteFilter == 1) {
@@ -102,23 +84,8 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     emit(state.copyWith(filteredQuestions: filterList));
   }
 
-  Future<void> getPrinciples() async {
-    final principles = await cmoDatabaseMasterService.getPrinciples();
-    emit(state.copyWith(principles: principles));
-  }
-
-  Future<void> getCriterias() async {
-    final criterias = await cmoDatabaseMasterService.getCriterias();
-    emit(state.copyWith(criterias: criterias));
-  }
-
   void getCarFilters() {
     emit(state.copyWith(carFilterEnums: CarFilterEnum.values));
-  }
-
-  Future<void> getIndicators() async {
-    final indicators = await cmoDatabaseMasterService.getIndicators();
-    emit(state.copyWith(indicators: indicators));
   }
 
   Future<void> getRejectReasons() async {
@@ -139,9 +106,6 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       emit(state.copyWith(audit: audit));
 
       getCarFilters();
-      await getPrinciples();
-      await getCriterias();
-      await getIndicators();
       await getRejectReasons();
       await getListCompliances();
       await refresh();
