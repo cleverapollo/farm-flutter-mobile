@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+import 'widgets/audit_progress_indicator.dart';
+
 class AuditListQuestionsScreen extends StatefulWidget {
   const AuditListQuestionsScreen({
     super.key,
@@ -132,80 +134,9 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
       ),
       body: Column(
         children: [
-          _buildFilterSection(),
-          BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
-            selector: (state) => state.incompleteFilter == 1,
-            builder: (context, incompleteFilter) => CmoHeaderTile(
-              title: LocaleKeys.incomplete.tr(),
-              child: Row(
-                children: [
-                  CmoTappable(
-                    onTap: () {
-                      context
-                          .read<AuditListQuestionsCubit>()
-                          .setIncompleteFilter(incompleteFilter ? 0 : 1);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 6.0),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: incompleteFilter ? Colors.green : Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: incompleteFilter
-                            ? Assets.icons.icTick.svgWhite
-                            : Assets.icons.icTick.svg(),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Assets.icons.icCamera.svgWhite,
-                        Padding(
-                          padding: const EdgeInsets.only(left: 6.0),
-                          child: BlocSelector<AuditListQuestionsCubit,
-                              AuditListQuestionsState, int>(
-                            selector: (state) => state.totalPhotos,
-                            builder: (context, lengthPhoto) => Text(
-                              '$lengthPhoto',
-                              style: context.textStyles.bodyBold.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Assets.icons.icComment.svgWhite,
-                      const SizedBox(width: 6),
-                      BlocSelector<AuditListQuestionsCubit,
-                          AuditListQuestionsState, int>(
-                        selector: (state) => state.totalComments,
-                        builder: (context, questionCommentsLength) => Text(
-                          '$questionCommentsLength',
-                          style: context.textStyles.bodyBold.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 40.0),
-                    child: BlocSelector<AuditListQuestionsCubit,
-                        AuditListQuestionsState, AuditListQuestionsState>(
-                      selector: (state) => state,
-                      builder: (context, state) => Text(
-                        '${state.getAnsweredFilteredQuestions().length}/${state.filteredQuestions.length}',
-                        style: context.textStyles.bodyBold.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          buildFilterSection(),
+          buildInformationWidget(),
+          const AuditProgressIndicator(),
           Expanded(
             child:
                 BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
@@ -271,7 +202,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     );
   }
 
-  Widget _buildFilterSection() {
+  Widget buildFilterSection() {
     return FormBuilder(
       key: _formKey,
       child: Padding(
@@ -285,6 +216,81 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                 const Expanded(child: ComplianceFilter()),
               ].withSpaceBetween(width: 20),
             )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildInformationWidget() {
+    return BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, bool>(
+      selector: (state) => state.incompleteFilter == 1,
+      builder: (context, incompleteFilter) => Container(
+        color: context.colors.blueDark2,
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState,
+                  AuditListQuestionsState>(
+                selector: (state) => state,
+                builder: (context, state) => Text(
+                  '${state.getAnsweredQuestions().length}/${state.questions.length} ${LocaleKeys.questions.tr()}',
+                  style: context.textStyles.bodyBold.white,
+                ),
+              ),
+            ),
+            // CmoTappable(
+            //   onTap: () {
+            //     context
+            //         .read<AuditListQuestionsCubit>()
+            //         .setIncompleteFilter(incompleteFilter ? 0 : 1);
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.only(left: 6.0),
+            //     child: DecoratedBox(
+            //       decoration: BoxDecoration(
+            //         color: incompleteFilter ? Colors.green : Colors.white,
+            //         shape: BoxShape.circle,
+            //       ),
+            //       child: incompleteFilter
+            //           ? Assets.icons.icTick.svgWhite
+            //           : Assets.icons.icTick.svg(),
+            //     ),
+            //   ),
+            // ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Assets.icons.icCamera.svgWhite,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 6.0),
+                    child: BlocSelector<AuditListQuestionsCubit,
+                        AuditListQuestionsState, int>(
+                      selector: (state) => state.totalPhotos,
+                      builder: (context, lengthPhoto) => Text(
+                        '$lengthPhoto',
+                        style: context.textStyles.bodyBold.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            const SizedBox(width: 20,),
+            Row(
+              children: [
+                Assets.icons.icComment.svgWhite,
+                const SizedBox(width: 6),
+                BlocSelector<AuditListQuestionsCubit,
+                    AuditListQuestionsState, int>(
+                  selector: (state) => state.totalComments,
+                  builder: (context, questionCommentsLength) => Text(
+                    '$questionCommentsLength',
+                    style: context.textStyles.bodyBold.white,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

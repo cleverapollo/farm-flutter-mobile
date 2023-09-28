@@ -396,6 +396,7 @@
   "scheduler": "Penjadual",
   "master_data": "Data induk",
   "question": "Soalan",
+  "questions": "Questions",
   "unsync_worker": "Nyahsegerak pekerja",
   "reject_reason": "Tolak alasan",
   "job_category": "Kategori Kerja",

@@ -398,6 +398,7 @@
   "scheduler": "Scheduler",
   "master_data": "Master Data",
   "question": "Question",
+  "questions": "Questions",
   "unsync_worker": "Unsync Worker",
   "reject_reason": "Reject Reason",
   "job_category": "Job Category",

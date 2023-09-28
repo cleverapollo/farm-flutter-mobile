@@ -114,6 +114,19 @@ class AuditListQuestionsState extends Equatable {
     totalComments,
   ];
 
+  List<QuestionAnswer> getAnsweredQuestions() {
+    return answers
+        .where(
+          (answer) =>
+              answer.isQuestionComplete == 1 &&
+              questions.firstWhereOrNull(
+                    (question) => question.questionId == answer.questionId,
+                  ) !=
+                  null,
+        )
+        .toList();
+  }
+
   List<QuestionAnswer> getAnsweredFilteredQuestions() {
     return answers
         .where(

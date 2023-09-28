@@ -395,6 +395,7 @@
   "scheduler": "กำหนดการ",
   "master_data": "ข้อมูลหลัก",
   "question": "คำถาม",
+  "questions": "Questions",
   "unsync_worker": "พนักงานลาออก",
   "reject_reason": "เหตุผลที่ปฏิเสธ",
   "job_category": "ลักษณะงาน/ประเภทงาน",

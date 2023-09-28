@@ -394,6 +394,7 @@
   "scheduler": "Calendrier",
   "master_data": "Données de base",
   "question": "La question",
+  "questions": "Questions",
   "unsync_worker": "Travailleur désynchronisé",
   "reject_reason": "Rejeter la raison",
   "job_category": "Catégorie d'emploi",
