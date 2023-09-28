@@ -84,7 +84,7 @@ class _AuditListCommentScreenState extends State<AuditListCommentScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.comments.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: BlocBuilder<AuditQuestionCommentCubit, AuditQuestionCommentState>(

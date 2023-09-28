@@ -127,9 +127,9 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
       appBar: CmoAppBar(
         title: LocaleKeys.audit.tr(),
         subtitle: widget.audit.compartmentName,
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icClose.svgBlack,
+        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
         onTapTrailing: Navigator.of(context).pop,
       ),
       body: Column(

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
@@ -50,9 +51,15 @@ class _AuditManagementScreenState extends State<AuditManagementScreen> {
             subtitle:
                 '${LocaleKeys.rmu_name.tr()}: ${resourceManagerUnit?.regionalManagerUnitName}',
             subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
-            leading: Assets.icons.icArrowLeft.svgBlack,
+            leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
-            trailing: Assets.icons.icAdd.svgBlack,
+            trailing: Center(
+              child: Transform(
+                alignment: FractionalOffset.center,
+                transform: Matrix4.identity()..rotateZ(45 * pi / 180),
+                child: Assets.icons.icUpdatedCloseButton.svgBlack,
+              ),
+            ),
             onTapTrailing: () => AuditAddScreen.push(context),
           ),
           body: Column(

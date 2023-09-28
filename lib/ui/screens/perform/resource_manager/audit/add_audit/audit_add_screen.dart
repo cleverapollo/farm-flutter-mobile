@@ -76,7 +76,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
           return Scaffold(
             appBar: CmoAppBar(
               title: LocaleKeys.newAudit.tr(),
-              leading: Assets.icons.icArrowLeft.svgBlack,
+              leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: Navigator.of(context).pop,
               subtitle: subTitle,
             ),

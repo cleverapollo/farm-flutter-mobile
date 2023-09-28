@@ -128,9 +128,9 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
         return Scaffold(
           appBar: CmoAppBar(
             title: LocaleKeys.pictures.tr(),
-            leading: Assets.icons.icArrowLeft.svgBlack,
+            leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
-            trailing: Assets.icons.icClose.svgBlack,
+            trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
             onTapTrailing: Navigator.of(context).pop,
           ),
           body: ListView.separated(
