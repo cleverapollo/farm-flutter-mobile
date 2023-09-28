@@ -103,7 +103,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   Future<void> initialize(Audit audit) async {
     try {
       logger.d('Initialise auditId: ${audit.assessmentId}');
-      emit(state.copyWith(audit: audit));
+      emit(AuditListQuestionsState(audit: audit));
 
       getCarFilters();
       await getRejectReasons();

@@ -16,7 +16,7 @@ class AuditProgressIndicator extends StatelessWidget {
           height: 8,
           color: context.colors.white,
           alignment: Alignment.centerLeft,
-          child: totalQuestions != 0 && answeredQuestion != 0
+          child: totalQuestions == 0 || answeredQuestion == 0
               ? const SizedBox.shrink()
               : Container(
                   width: MediaQuery.of(context).size.width * answeredQuestion / totalQuestions,
