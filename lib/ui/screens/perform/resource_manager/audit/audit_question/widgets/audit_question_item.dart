@@ -43,9 +43,23 @@ class AuditQuestionItem extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  '${question.questionValue}',
-                  style: context.textStyles.bodyNormal,
+                child: BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
+                  builder: (context, state) {
+                    return RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: '${state.getIndicatorNameWithIndicatorId(question.indicatorId)?.indicatorName ?? ''} ',
+                            style: context.textStyles.bodyBold.black,
+                          ),
+                          TextSpan(
+                            text: '${question.questionValue}',
+                            style: context.textStyles.bodyNormal,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
               if (question.xBone ?? false)
@@ -91,8 +105,7 @@ class AuditQuestionItem extends StatelessWidget {
                     CmoNumberIconWidget.byEnum(
                       iconType: AuditQuestionIconEnum.location,
                     ),
-                    BlocSelector<AuditListQuestionsCubit,
-                        AuditListQuestionsState, AuditListQuestionsState>(
+                    BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, AuditListQuestionsState>(
                       selector: (state) => state,
                       builder: (context, state) {
                         return CmoNumberIconWidget.byEnum(

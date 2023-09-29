@@ -93,7 +93,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
             (question) =>
                 (question.questionValue ?? '').contains(state.searchText!) ||
                 (question.complianceName ?? '').contains(state.searchText!) ||
-                (question.indicatorName ?? '').contains(state.searchText!),
+                (state.getIndicatorNameWithIndicatorId(question.indicatorId)?.indicatorName ?? '').contains(state.searchText!),
           )
           .toList();
     }
@@ -103,6 +103,11 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
 
   void getCarFilters() {
     emit(state.copyWith(carFilterEnums: CarFilterEnum.values));
+  }
+
+  Future<void> getIndicators() async {
+    final indicators = await cmoDatabaseMasterService.getIndicators();
+    emit(state.copyWith(indicators: indicators));
   }
 
   Future<void> getRejectReasons() async {
@@ -123,6 +128,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       emit(AuditListQuestionsState(audit: audit));
 
       getCarFilters();
+      await getIndicators();
       await getRejectReasons();
       await getListCompliances();
       await refresh();
