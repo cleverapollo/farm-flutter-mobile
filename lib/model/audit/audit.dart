@@ -32,6 +32,7 @@ class Audit with _$Audit {
     @Default(false) @JsonKey(name: 'Synced') bool synced,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
     @Default(true) @JsonKey(name: 'IsLocal') bool? isLocal,
+    @JsonKey(name: 'Note') String? note,
   }) = _Audit;
 
   const Audit._();

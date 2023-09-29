@@ -1,4 +1,5 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -10,10 +11,11 @@ import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/wid
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/car_filter.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/compliance_filter.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-
+import 'package:share_plus/share_plus.dart';
 import 'widgets/audit_progress_indicator.dart';
 import 'widgets/audit_search_field.dart';
 import 'widgets/imcomplete_filter.dart';
@@ -128,7 +130,8 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.audit.tr(),
-        subtitle: widget.audit.compartmentName,
+        subtitle: widget.audit.compartmentName ?? widget.audit.farmName,
+        subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
         leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
@@ -181,6 +184,34 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                   },
                 );
               },
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12),
+            child: AttributeItem(
+              child: InputAttributeItem(
+                initialValue: widget.audit.note,
+                textStyle: context.textStyles.bodyNormal.blueDark2,
+                labelText: LocaleKeys.notes.tr(),
+                labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                suffixIcon: BlocSelector<AuditListQuestionsCubit,
+                    AuditListQuestionsState, String?>(
+                  selector: (state) => state.audit?.note,
+                  builder: (context, note) {
+                    return InkWell(
+                      onTap: () {
+                        final shareNote = note ?? widget.audit.note ?? '';
+
+                        if (shareNote.isNullOrEmpty) return;
+
+                        Share.share(shareNote);
+                      },
+                      child: Assets.icons.icShareButton.svgBlack,
+                    );
+                  },
+                ),
+                onChanged: context.read<AuditListQuestionsCubit>().onChangeNote,
+              ),
             ),
           ),
         ],

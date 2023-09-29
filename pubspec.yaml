@@ -59,6 +59,7 @@ dependencies:
   tuple: ^2.0.2
   easy_image_viewer: ^1.2.1
   app_settings: ^5.0.0
+  share_plus: ^7.1.0
 
 #dependency_overrides:
 #  flutter_svg: ^2.0.1

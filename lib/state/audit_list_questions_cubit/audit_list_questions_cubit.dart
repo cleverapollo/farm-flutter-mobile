@@ -297,6 +297,10 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   }
 
   Future<void> onSave() async {
+    if(state.audit != null && state.audit?.note.isNullOrEmpty == false) {
+      await cmoDatabaseMasterService.cacheAudit(state.audit!);
+    }
+
     final answeredQuestion =
         state.answers.where((element) => element.questionAnswerId != null);
 
@@ -317,5 +321,11 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
 
       await markQuestionAnswerIsCompleted(question);
     }
+
+
+  }
+
+  void onChangeNote(String? value) {
+    emit(state.copyWith(audit: state.audit?.copyWith(note: value)));
   }
 }

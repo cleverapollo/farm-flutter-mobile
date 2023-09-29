@@ -108,6 +108,7 @@ class InputAttributeItem extends StatefulWidget {
   final TextStyle? labelTextStyle;
   final TextStyle? textStyle;
   final bool? isDense;
+  final Widget? suffixIcon;
 
   final EdgeInsetsGeometry contentPadding;
   final FormFieldValidator<String?>? validator;
@@ -137,6 +138,7 @@ class InputAttributeItem extends StatefulWidget {
     this.inputFormatters = const <TextInputFormatter>[],
     this.controller,
     this.scrollController,
+    this.suffixIcon,
   });
 
   @override
@@ -193,6 +195,9 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
         focusedBorder: InputBorder.none,
         errorBorder: InputBorder.none,
         focusedErrorBorder: InputBorder.none,
+        suffixIcon: widget.suffixIcon,
+        suffixIconConstraints:
+            const BoxConstraints(maxWidth: 30, maxHeight: 30),
       ),
     );
   }
