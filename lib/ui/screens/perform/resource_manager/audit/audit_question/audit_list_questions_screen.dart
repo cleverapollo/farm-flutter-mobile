@@ -15,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'widgets/audit_progress_indicator.dart';
+import 'widgets/imcomplete_filter.dart';
 
 class AuditListQuestionsScreen extends StatefulWidget {
   const AuditListQuestionsScreen({
@@ -137,6 +138,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
           buildFilterSection(),
           buildInformationWidget(),
           const AuditProgressIndicator(),
+          const IncompleteFilter(),
           Expanded(
             child:
                 BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
@@ -240,25 +242,6 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                 ),
               ),
             ),
-            // CmoTappable(
-            //   onTap: () {
-            //     context
-            //         .read<AuditListQuestionsCubit>()
-            //         .setIncompleteFilter(incompleteFilter ? 0 : 1);
-            //   },
-            //   child: Padding(
-            //     padding: const EdgeInsets.only(left: 6.0),
-            //     child: DecoratedBox(
-            //       decoration: BoxDecoration(
-            //         color: incompleteFilter ? Colors.green : Colors.white,
-            //         shape: BoxShape.circle,
-            //       ),
-            //       child: incompleteFilter
-            //           ? Assets.icons.icTick.svgWhite
-            //           : Assets.icons.icTick.svg(),
-            //     ),
-            //   ),
-            // ),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

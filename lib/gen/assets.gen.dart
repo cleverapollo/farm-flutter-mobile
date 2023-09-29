@@ -35,6 +35,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_avatar.svg
   SvgGenImage get icAvatar => const SvgGenImage('assets/icons/ic_avatar.svg');
 
+  /// File path: assets/icons/ic_back_button.svg
+  SvgGenImage get icBackButton =>
+      const SvgGenImage('assets/icons/ic_back_button.svg');
+
   /// File path: assets/icons/ic_barcode.svg
   SvgGenImage get icBarcode => const SvgGenImage('assets/icons/ic_barcode.svg');
 
@@ -49,12 +53,32 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_camera.svg
   SvgGenImage get icCamera => const SvgGenImage('assets/icons/ic_camera.svg');
 
+  /// File path: assets/icons/ic_camera_audit.svg
+  SvgGenImage get icCameraAudit =>
+      const SvgGenImage('assets/icons/ic_camera_audit.svg');
+
+  /// File path: assets/icons/ic_camera_audit_fill_background.svg
+  SvgGenImage get icCameraAuditFillBackground =>
+      const SvgGenImage('assets/icons/ic_camera_audit_fill_background.svg');
+
+  /// File path: assets/icons/ic_chat_audit.svg
+  SvgGenImage get icChatAudit =>
+      const SvgGenImage('assets/icons/ic_chat_audit.svg');
+
+  /// File path: assets/icons/ic_chat_audit_fill_background.svg
+  SvgGenImage get icChatAuditFillBackground =>
+      const SvgGenImage('assets/icons/ic_chat_audit_fill_background.svg');
+
   /// File path: assets/icons/ic_check.svg
   SvgGenImage get icCheck => const SvgGenImage('assets/icons/ic_check.svg');
 
   /// File path: assets/icons/ic_check_circle.svg
   SvgGenImage get icCheckCircle =>
       const SvgGenImage('assets/icons/ic_check_circle.svg');
+
+  /// File path: assets/icons/ic_circle_fill_background.svg
+  SvgGenImage get icCircleFillBackground =>
+      const SvgGenImage('assets/icons/ic_circle_fill_background.svg');
 
   /// File path: assets/icons/ic_close.svg
   SvgGenImage get icClose => const SvgGenImage('assets/icons/ic_close.svg');
@@ -80,6 +104,14 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_location.svg
   SvgGenImage get icLocation =>
       const SvgGenImage('assets/icons/ic_location.svg');
+
+  /// File path: assets/icons/ic_location_audit.svg
+  SvgGenImage get icLocationAudit =>
+      const SvgGenImage('assets/icons/ic_location_audit.svg');
+
+  /// File path: assets/icons/ic_location_audit_fill_background.svg
+  SvgGenImage get icLocationAuditFillBackground =>
+      const SvgGenImage('assets/icons/ic_location_audit_fill_background.svg');
 
   /// File path: assets/icons/ic_mail.svg
   SvgGenImage get icMail => const SvgGenImage('assets/icons/ic_mail.svg');
@@ -119,6 +151,14 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_tick.svg
   SvgGenImage get icTick => const SvgGenImage('assets/icons/ic_tick.svg');
 
+  /// File path: assets/icons/ic_updated_add_button.svg
+  SvgGenImage get icUpdatedAddButton =>
+      const SvgGenImage('assets/icons/ic_updated_add_button.svg');
+
+  /// File path: assets/icons/ic_updated_close_button.svg
+  SvgGenImage get icUpdatedCloseButton =>
+      const SvgGenImage('assets/icons/ic_updated_close_button.svg');
+
   /// File path: assets/icons/ic_user.svg
   SvgGenImage get icUser => const SvgGenImage('assets/icons/ic_user.svg');
 
@@ -141,12 +181,18 @@ class $AssetsIconsGen {
         icArrowLeft,
         icArrowRight,
         icAvatar,
+        icBackButton,
         icBarcode,
         icCalendar,
         icCallBlue,
         icCamera,
+        icCameraAudit,
+        icCameraAuditFillBackground,
+        icChatAudit,
+        icChatAuditFillBackground,
         icCheck,
         icCheckCircle,
+        icCircleFillBackground,
         icClose,
         icComment,
         icDown,
@@ -155,6 +201,8 @@ class $AssetsIconsGen {
         icHome,
         icLang,
         icLocation,
+        icLocationAudit,
+        icLocationAuditFillBackground,
         icMail,
         icPan,
         icPassword,
@@ -166,6 +214,8 @@ class $AssetsIconsGen {
         icSmsBlue,
         icTakePhotoMap,
         icTick,
+        icUpdatedAddButton,
+        icUpdatedCloseButton,
         icUser,
         icUsername,
         icVisible,

@@ -14,9 +14,7 @@ class AuditListQuestionsState extends Equatable {
     this.carFilterEnums = const <CarFilterEnum>[],
     this.impactOns = const <ImpactOn>[],
     this.impactOnFilterId = -1,
-    this.indicatorFilterId = -1,
-    this.carFilterId = -1,
-    this.incompleteFilter = 0,
+    this.incompleteFilter = -1,
     this.totalComments = 0,
     this.totalPhotos = 0,
     this.selectedCARFilter,
@@ -38,8 +36,6 @@ class AuditListQuestionsState extends Equatable {
   final Compliance? selectedComplianceFilter;
   final int impactOnFilterId;
   final int incompleteFilter;
-  final int carFilterId;
-  final int indicatorFilterId;
   final int totalComments;
   final int totalPhotos;
 
@@ -61,10 +57,6 @@ class AuditListQuestionsState extends Equatable {
     List<ImpactOn>? impactOns,
     int? impactOnFilterId,
     int? incompleteFilter,
-    int? principleFilterId,
-    int? carFilterId,
-    int? criteriaFilterId,
-    int? indicatorFilterId,
     int? totalComments,
     int? totalPhotos,
   }) {
@@ -84,8 +76,6 @@ class AuditListQuestionsState extends Equatable {
       compliances: compliances ?? this.compliances,
       audit: audit ?? this.audit,
       indicators: indicators ?? this.indicators,
-      carFilterId: carFilterId ?? this.carFilterId,
-      indicatorFilterId: indicatorFilterId ?? this.indicatorFilterId,
       totalComments: totalComments ?? this.totalComments,
       totalPhotos: totalPhotos ?? this.totalPhotos,
     );
@@ -108,8 +98,6 @@ class AuditListQuestionsState extends Equatable {
     carFilterEnums,
     selectedComplianceFilter,
     indicators,
-    carFilterId,
-    indicatorFilterId,
     totalPhotos,
     totalComments,
   ];
