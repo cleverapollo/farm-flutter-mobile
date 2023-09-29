@@ -19,6 +19,7 @@ class AuditListQuestionsState extends Equatable {
     this.totalPhotos = 0,
     this.selectedCARFilter,
     this.selectedComplianceFilter,
+    this.searchText,
   });
 
   final Audit? audit;
@@ -38,7 +39,7 @@ class AuditListQuestionsState extends Equatable {
   final int incompleteFilter;
   final int totalComments;
   final int totalPhotos;
-
+  final String? searchText;
   AuditListQuestionsState copyWith({
     Audit? audit,
     CarFilterEnum? selectedCARFilter,
@@ -59,6 +60,7 @@ class AuditListQuestionsState extends Equatable {
     int? incompleteFilter,
     int? totalComments,
     int? totalPhotos,
+    String? searchText,
   }) {
     return AuditListQuestionsState(
       questions: questions ?? this.questions,
@@ -78,12 +80,14 @@ class AuditListQuestionsState extends Equatable {
       indicators: indicators ?? this.indicators,
       totalComments: totalComments ?? this.totalComments,
       totalPhotos: totalPhotos ?? this.totalPhotos,
+      searchText: searchText ?? this.searchText,
     );
   }
 
   @override
   List<Object?> get props => [
     compliances,
+    searchText,
     questionPhotos,
     questionComments,
     rejectReasons,

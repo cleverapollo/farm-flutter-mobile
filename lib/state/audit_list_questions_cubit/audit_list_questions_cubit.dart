@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/model.dart';
@@ -37,6 +38,11 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
 
   void setIncompleteFilter(int? status) {
     emit(state.copyWith(incompleteFilter: status));
+    applyFilter();
+  }
+
+  void searching(String? searchText) {
+    emit(state.copyWith(searchText: searchText));
     applyFilter();
   }
 
@@ -78,6 +84,17 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     if (state.impactOnFilterId > -1) {
       filterList = filterList
           .where((s) => s.impactOnId == state.impactOnFilterId)
+          .toList();
+    }
+
+    if (state.searchText.isNotBlank) {
+      filterList = filterList
+          .where(
+            (question) =>
+                (question.questionValue ?? '').contains(state.searchText!) ||
+                (question.complianceName ?? '').contains(state.searchText!) ||
+                (question.indicatorName ?? '').contains(state.searchText!),
+          )
           .toList();
     }
 

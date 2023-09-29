@@ -15,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'widgets/audit_progress_indicator.dart';
+import 'widgets/audit_search_field.dart';
 import 'widgets/imcomplete_filter.dart';
 
 class AuditListQuestionsScreen extends StatefulWidget {
@@ -205,21 +206,19 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   }
 
   Widget buildFilterSection() {
-    return FormBuilder(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                const Expanded(child: CarFilter()),
-                const Expanded(child: ComplianceFilter()),
-              ].withSpaceBetween(width: 20),
-            )
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              const Expanded(child: CarFilter()),
+              const Expanded(child: ComplianceFilter()),
+            ].withSpaceBetween(width: 20),
+          ),
+          AuditSearchField(),
+        ],
       ),
     );
   }

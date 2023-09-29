@@ -136,6 +136,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_search.svg
   SvgGenImage get icSearch => const SvgGenImage('assets/icons/ic_search.svg');
 
+  /// File path: assets/icons/ic_search_outline.svg
+  SvgGenImage get icSearchOutline =>
+      const SvgGenImage('assets/icons/ic_search_outline.svg');
+
   /// File path: assets/icons/ic_select_photo_map.svg
   SvgGenImage get icSelectPhotoMap =>
       const SvgGenImage('assets/icons/ic_select_photo_map.svg');
@@ -210,6 +214,7 @@ class $AssetsIconsGen {
         icRefresh,
         icRefreshMap,
         icSearch,
+        icSearchOutline,
         icSelectPhotoMap,
         icSmsBlue,
         icTakePhotoMap,
