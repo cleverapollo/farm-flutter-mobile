@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
@@ -14,7 +15,6 @@ import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:share_plus/share_plus.dart';
 import 'widgets/audit_progress_indicator.dart';
 import 'widgets/audit_search_field.dart';
@@ -24,14 +24,23 @@ class AuditListQuestionsScreen extends StatefulWidget {
   const AuditListQuestionsScreen({
     super.key,
     required this.audit,
+    required this.auditComeFrom,
   });
 
   final Audit audit;
+  final AuditComeFromEnum auditComeFrom;
 
-  static Future<bool?> push(BuildContext context, Audit audit) {
+  static Future<bool?> push(
+    BuildContext context,
+    Audit audit,
+    AuditComeFromEnum auditComeFrom,
+  ) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => AuditListQuestionsScreen(audit: audit),
+        builder: (_) => AuditListQuestionsScreen(
+          audit: audit,
+          auditComeFrom: auditComeFrom,
+        ),
       ),
     );
   }
@@ -42,8 +51,6 @@ class AuditListQuestionsScreen extends StatefulWidget {
 }
 
 class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
-  final _formKey = GlobalKey<FormBuilderState>();
-
   bool loading = false;
 
   @override
@@ -132,10 +139,19 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
         title: LocaleKeys.audit.tr(),
         subtitle: widget.audit.compartmentName ?? widget.audit.farmName,
         subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
-        leading: Assets.icons.icBackButton.svgBlack,
+        leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-        onTapTrailing: Navigator.of(context).pop,
+        trailing: Assets.icons.icClose.svgBlack,
+        onTapTrailing: () {
+          switch (widget.auditComeFrom) {
+            case AuditComeFromEnum.dashboard:
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              break;
+            case AuditComeFromEnum.menu:
+              Navigator.of(context).pop();
+          }
+        },
       ),
       body: Column(
         children: [

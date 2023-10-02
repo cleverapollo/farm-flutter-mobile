@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -12,16 +13,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../asi/widgets/bottom_sheet_selection.dart';
 
 class AuditAddScreen extends StatefulWidget {
-  const AuditAddScreen({super.key});
+  const AuditAddScreen({
+    super.key,
+    required this.auditComeFrom,
+  });
+
+  final AuditComeFromEnum auditComeFrom;
 
   @override
   State<AuditAddScreen> createState() => _AuditAddScreen();
 
-  static Future<void> push(BuildContext context) {
+  static Future<void> push(
+    BuildContext context,
+    AuditComeFromEnum auditComeFrom,
+  ) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const AuditAddScreen(),
+        builder: (_) => AuditAddScreen(
+          auditComeFrom: auditComeFrom,
+        ),
       ),
     );
   }
@@ -60,6 +71,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
           final result = await AuditListQuestionsScreen.push(
             context,
             audit,
+            widget.auditComeFrom,
           );
           if (result != null && result && context.mounted) {
             await context.read<AuditListCubit>().refresh();

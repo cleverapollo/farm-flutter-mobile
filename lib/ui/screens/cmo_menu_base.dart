@@ -142,7 +142,10 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
           title: LocaleKeys.createNew.tr(),
           onTap: () {
             if (context.mounted) Navigator.of(context).pop();
-            AuditAddScreen.push(context);
+            AuditAddScreen.push(
+              context,
+              AuditComeFromEnum.menu,
+            );
           },
         ),
         const SizedBox(height: 7),

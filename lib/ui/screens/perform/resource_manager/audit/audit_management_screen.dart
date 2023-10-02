@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -54,7 +55,10 @@ class _AuditManagementScreenState extends State<AuditManagementScreen> {
             leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
             trailing: Assets.icons.icUpdatedAddButton.svgBlack,
-            onTapTrailing: () => AuditAddScreen.push(context),
+            onTapTrailing: () => AuditAddScreen.push(
+              context,
+              AuditComeFromEnum.dashboard,
+            ),
           ),
           body: Column(
             children: [
@@ -124,6 +128,7 @@ class _AuditManagementScreenState extends State<AuditManagementScreen> {
     final result = await AuditListQuestionsScreen.push(
       context,
       audit,
+      AuditComeFromEnum.dashboard,
     );
     if (result != null && result && context.mounted) {
       await context.read<AuditListCubit>().refresh();
