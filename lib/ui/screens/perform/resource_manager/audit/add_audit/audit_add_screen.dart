@@ -2,6 +2,7 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_questions_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/utils/utils.dart';
@@ -52,9 +53,17 @@ class _AuditAddScreen extends State<AuditAddScreen> {
     try {
       await hideInputMethod();
       if (context.mounted) {
-        final success = await context.read<AuditCubit>().submit();
-        if (success && context.mounted) {
+        final audit = await context.read<AuditCubit>().submit();
+        if (audit != null && context.mounted) {
+          await refresh();
           Navigator.of(context).pop();
+          final result = await AuditListQuestionsScreen.push(
+            context,
+            audit,
+          );
+          if (result != null && result && context.mounted) {
+            await context.read<AuditListCubit>().refresh();
+          }
         }
       }
     } finally {
@@ -62,8 +71,6 @@ class _AuditAddScreen extends State<AuditAddScreen> {
         loading = false;
       });
     }
-
-    await refresh();
   }
 
   @override
@@ -111,7 +118,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
                         builder: (context, canSave) {
                           return CmoFilledButton(
                             disable: !canSave,
-                            title: LocaleKeys.save.tr(),
+                            title: LocaleKeys.start_audit.tr(),
                             onTap: onSubmit,
                             loading: loading,
                           );

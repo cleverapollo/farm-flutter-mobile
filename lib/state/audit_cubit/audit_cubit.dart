@@ -39,16 +39,17 @@ class AuditCubit extends HydratedCubit<AuditState> {
     return null;
   }
 
-  Future<bool> submit() async {
+  Future<Audit?> submit() async {
+    Audit? audit;
     try {
       final errorMessage = checkCompleteRequiredField();
       if (errorMessage.isNotBlank) {
         showSnackError(msg: errorMessage!);
-        return false;
+        return null;
       }
 
       emit(state.copyWith(loading: true));
-      final audit = Audit(
+      audit = Audit(
         assessmentId: DateTime.now().millisecondsSinceEpoch,
         auditTemplateId: state.selectedAuditTemplate?.auditTemplateId,
         auditTemplateName: state.selectedAuditTemplate?.auditTemplateName,
@@ -65,12 +66,12 @@ class AuditCubit extends HydratedCubit<AuditState> {
       showSnackSuccess(msg: 'Save audit success with id: $newId');
     } catch (e) {
       showSnackError(msg: e.toString());
-      return false;
+      return null;
     } finally {
       emit(state.copyWith(loading: false));
     }
 
-    return true;
+    return audit;
   }
 
   Future<void> getListAuditTemplates() async {
