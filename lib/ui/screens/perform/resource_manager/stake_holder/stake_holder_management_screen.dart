@@ -148,10 +148,13 @@ class _StakeHolderManagementScreenState
           builder: (context, resourceManagerUnit) {
             return CmoAppBar(
               title: LocaleKeys.stakeholderManagement.tr(),
-              subtitle:
-                  '${LocaleKeys.siteName.tr()}: ${resourceManagerUnit?.regionalManagerUnitName}',
+              subtitle: '${LocaleKeys.siteName.tr()}: ${resourceManagerUnit?.regionalManagerUnitName}',
               leading: Assets.icons.icArrowLeft.svgBlack,
               onTapLeading: Navigator.of(context).pop,
+              trailing: Assets.icons.icAdd.svgBlack,
+              onTapTrailing: () {
+                StakeHolderDetailScreen.push(context);
+              },
             );
           },
         ),

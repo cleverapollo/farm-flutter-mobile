@@ -144,6 +144,10 @@ class $AssetsIconsGen {
   SvgGenImage get icSelectPhotoMap =>
       const SvgGenImage('assets/icons/ic_select_photo_map.svg');
 
+  /// File path: assets/icons/ic_share_button.svg
+  SvgGenImage get icShareButton =>
+      const SvgGenImage('assets/icons/ic_share_button.svg');
+
   /// File path: assets/icons/ic_sms_blue.svg
   SvgGenImage get icSmsBlue =>
       const SvgGenImage('assets/icons/ic_sms_blue.svg');
@@ -216,6 +220,7 @@ class $AssetsIconsGen {
         icSearch,
         icSearchOutline,
         icSelectPhotoMap,
+        icShareButton,
         icSmsBlue,
         icTakePhotoMap,
         icTick,
