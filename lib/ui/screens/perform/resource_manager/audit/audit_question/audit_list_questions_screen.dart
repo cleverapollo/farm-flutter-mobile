@@ -113,7 +113,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
       ..latitude = answer?.latitude;
     final result = await SelectLocationScreen.push(
       context,
-      title: '${LocaleKeys.question} ${state.getIndicatorNameWithIndicatorId(auditQuestion.indicatorId)?.indicatorName ?? ''}',
+      title: '${LocaleKeys.question.tr().capitalize()} ${state.getIndicatorNameWithIndicatorId(auditQuestion.indicatorId)?.indicatorName ?? ''}',
       locationModel: locationModel,
       shouldShowPhotoButton: false,
       shouldShowDangerIcon: auditQuestion.xBone ?? false,

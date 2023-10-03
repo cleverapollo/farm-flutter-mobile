@@ -1,6 +1,11 @@
 import 'package:isar/isar.dart';
 
 extension StringNullExtension on String? {
+  String? capitalize() {
+    if (this.isBlank) return this;
+    return '${this![0].toUpperCase()}${this?.substring(1).toLowerCase()}';
+  }
+
   bool get validEmail {
     final emailValid = RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
