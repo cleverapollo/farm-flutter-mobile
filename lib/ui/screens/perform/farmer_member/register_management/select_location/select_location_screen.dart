@@ -1,3 +1,4 @@
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
@@ -5,6 +6,7 @@ import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/utils/file_utils.dart';
 import 'package:cmo/utils/logger.dart';
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -21,17 +23,26 @@ class SelectLocationScreen extends StatefulWidget {
     required this.title,
     required this.locationModel,
     this.farmName,
+    this.shouldShowPhotoButton = true,
+    this.shouldShowDangerIcon = false,
+    this.shouldShowBackIcon = false,
   });
 
   final LocationModel locationModel;
   final String? farmName;
   final String title;
+  final bool shouldShowPhotoButton;
+  final bool shouldShowDangerIcon;
+  final bool shouldShowBackIcon;
 
   static Future<dynamic> push(
     BuildContext context, {
     required String title,
     LocationModel? locationModel,
     String? farmName,
+    bool shouldShowPhotoButton = true,
+    bool shouldShowDangerIcon = false,
+    bool shouldShowBackIcon = false,
   }) {
     return Navigator.push(
       context,
@@ -40,6 +51,9 @@ class SelectLocationScreen extends StatefulWidget {
           title: title,
           farmName: farmName,
           locationModel: locationModel ?? LocationModel(),
+          shouldShowPhotoButton: shouldShowPhotoButton,
+          shouldShowDangerIcon: shouldShowDangerIcon,
+          shouldShowBackIcon: shouldShowBackIcon,
         ),
       ),
     );
@@ -146,12 +160,21 @@ class _SelectLocationState extends State<SelectLocationScreen> {
         title: widget.title,
         subtitle: widget.farmName ?? '',
         showTrailing: true,
+        showLeading: widget.shouldShowBackIcon,
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
       ),
       body: SizedBox.expand(
         child: ColoredBox(
           color: context.colors.white,
           child: Column(
             children: [
+              if (widget.shouldShowDangerIcon)
+                Icon(
+                  IconsaxOutline.danger,
+                  size: 30.0,
+                  color: context.colors.red,
+                ),
               Expanded(
                 flex: 6,
                 child: CmoMap(
@@ -160,6 +183,7 @@ class _SelectLocationState extends State<SelectLocationScreen> {
                   showButtonList: true,
                   onMapMoved: (_, __) {},
                   onPinned: onPinned,
+                  shouldShowPhotoButton: widget.shouldShowPhotoButton,
                   onRemoveMarker: onRemoveMarker,
                   takePhotoFromCamera: takePhotoFromCamera,
                   onSelectPhotos: onSelectPhoto,

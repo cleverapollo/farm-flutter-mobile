@@ -200,6 +200,32 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     }
   }
 
+  Future<void> updateLocationQuestionAnswer({
+    required int? questionId,
+    required double? lat,
+    required double? lng,
+  }) async {
+    emit(state.copyWith(loading: true));
+    if (questionId == null || lng == null || lat == null) return;
+    var answer = state.answers.firstWhereOrNull((element) => element.questionId == questionId);
+    if (answer != null) {
+      answer = answer.copyWith(
+        latitude: lat,
+        longitude: lng,
+      );
+
+      final answers = state.answers;
+      answers.removeWhere((element) => element.questionAnswerId == answer?.questionAnswerId);
+      answers.add(answer);
+      emit(
+        state.copyWith(
+          answers: state.answers,
+          loading: false,
+        ),
+      );
+    }
+  }
+
   Future<void> markQuestionAnswerIsCompleted(
     FarmQuestion question,
   ) async {
@@ -233,7 +259,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
 
       return e.copyWith(
         complianceId: compliance.complianceId,
-        questionAnswerId: DateTime.now().millisecondsSinceEpoch,
+        questionAnswerId: e.questionAnswerId ?? DateTime.now().millisecondsSinceEpoch,
         isQuestionComplete: 1,
         rejectReasonId: null,
         rejectComment: null,
@@ -241,10 +267,6 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     }).toList();
 
     emit(state.copyWith(answers: answerAfterSelect));
-
-    // await cmoDatabaseMasterService.cacheQuestionAnswer(answer);
-    // await getListQuestionAnswers();
-    // await markQuestionAnswerIsCompleted(question);
     onCallback?.call();
   }
 

@@ -16,6 +16,8 @@ class QuestionAnswer with _$QuestionAnswer {
     @JsonKey(name: 'RejectReasonId') required int? rejectReasonId,
     @JsonKey(name: 'RejectComment') required String? rejectComment,
     @JsonKey(name: 'IsQuestionComplete') required int? isQuestionComplete,
+    @JsonKey(name: 'Latitude') double? latitude,
+    @JsonKey(name: 'Longitude') double? longitude,
   }) = _QuestionAnswer;
 
   factory QuestionAnswer.fromJson(Map<String, dynamic> json) =>

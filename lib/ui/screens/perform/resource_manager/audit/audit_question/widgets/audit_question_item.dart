@@ -3,6 +3,7 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/audit_list_questions_cubit/audit_list_questions_cubit.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_icon_with_number_widget.dart';
 import 'package:ficonsax/ficonsax.dart';
@@ -17,6 +18,7 @@ class AuditQuestionItem extends StatelessWidget {
     required this.viewListPhoto,
     required this.viewComment,
     required this.addAnswer,
+    required this.onTapLocation,
     this.answer,
   });
 
@@ -25,6 +27,7 @@ class AuditQuestionItem extends StatelessWidget {
   final List<Compliance> compliances;
   final VoidCallback viewListPhoto;
   final VoidCallback viewComment;
+  final VoidCallback onTapLocation;
   final void Function(Compliance) addAnswer;
 
   @override
@@ -104,6 +107,12 @@ class AuditQuestionItem extends StatelessWidget {
                   children: [
                     CmoNumberIconWidget.byEnum(
                       iconType: AuditQuestionIconEnum.location,
+                      onTap: onTapLocation,
+                      number: answer?.latitude != null && answer?.longitude != null
+                              ? 1
+                              : null,
+                      enable:
+                          answer?.latitude != null && answer?.longitude != null,
                     ),
                     BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, AuditListQuestionsState>(
                       selector: (state) => state,

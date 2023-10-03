@@ -3475,11 +3475,13 @@ class CmoDatabaseMasterService {
         final questionAnswer = QuestionAnswer(
           assessmentId: assessmentId,
           questionId: question.questionId,
-          complianceId: qA?.complianceId ?? 0,
+          complianceId: qA?.complianceId,
           isQuestionComplete: qA?.isQuestionComplete,
           questionAnswerId: qA?.questionAnswerId,
           rejectReasonId: qA?.rejectReasonId,
           rejectComment: qA?.rejectComment,
+          latitude: qA?.latitude,
+          longitude: qA?.longitude,
         );
 
         questionAnswers.add(questionAnswer);

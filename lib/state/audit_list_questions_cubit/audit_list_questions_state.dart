@@ -20,8 +20,10 @@ class AuditListQuestionsState extends Equatable {
     this.selectedCARFilter,
     this.selectedComplianceFilter,
     this.searchText,
+    this.loading = false,
   });
 
+  final bool loading;
   final Audit? audit;
   final List<FarmQuestion> questions;
   final List<FarmQuestion> filteredQuestions;
@@ -42,6 +44,7 @@ class AuditListQuestionsState extends Equatable {
   final String? searchText;
   AuditListQuestionsState copyWith({
     Audit? audit,
+    bool? loading,
     CarFilterEnum? selectedCARFilter,
     Compliance? selectedComplianceFilter,
     List<CarFilterEnum>? carFilterEnums,
@@ -63,6 +66,7 @@ class AuditListQuestionsState extends Equatable {
     String? searchText,
   }) {
     return AuditListQuestionsState(
+      loading: loading ?? this.loading,
       questions: questions ?? this.questions,
       selectedCARFilter: selectedCARFilter ?? this.selectedCARFilter,
       carFilterEnums: carFilterEnums ?? this.carFilterEnums,
@@ -85,26 +89,28 @@ class AuditListQuestionsState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-    compliances,
-    searchText,
-    questionPhotos,
-    questionComments,
-    rejectReasons,
-    answers,
-    impactOns,
-    impactOnFilterId,
-    incompleteFilter,
-    audit,
-    questions,
-    filteredQuestions,
-    selectedCARFilter,
-    carFilterEnums,
-    selectedComplianceFilter,
-    indicators,
-    totalPhotos,
-    totalComments,
-  ];
+  List<Object?> get props =>
+      [
+        loading,
+        audit,
+        questions,
+        filteredQuestions,
+        answers,
+        questionComments,
+        questionPhotos,
+        compliances,
+        rejectReasons,
+        searchText,
+        indicators,
+        impactOns,
+        carFilterEnums,
+        selectedCARFilter,
+        selectedComplianceFilter,
+        impactOnFilterId,
+        incompleteFilter,
+        totalPhotos,
+        totalComments,
+      ];
 
   List<QuestionAnswer> getAnsweredQuestions() {
     return answers

@@ -5,6 +5,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_comment/audit_list_comment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_list_photo_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_question_add_comment/audit_question_add_comment_screen.dart';
@@ -62,22 +63,22 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   }
 
   Future<void> _viewComment({
-    required FarmQuestion farmQuestion,
+    required FarmQuestion auditQuestion,
   }) async {
     AuditListCommentScreen.push(
       context,
-      auditQuestion: farmQuestion,
+      auditQuestion: auditQuestion,
       auditId:
           context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
     );
   }
 
   Future<void> addNewComment({
-    required FarmQuestion farmQuestion,
+    required FarmQuestion auditQuestion,
   }) async {
     final result = await AuditQuestionAddCommentScreen.push(
       context,
-      auditQuestion: farmQuestion,
+      auditQuestion: auditQuestion,
       auditId:
           context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
     );
@@ -102,6 +103,32 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     }
   }
 
+  Future<void> _onTapLocation({
+    required FarmQuestion auditQuestion,
+  }) async {
+    final state = context.read<AuditListQuestionsCubit>().state;
+    var answer = state.answers.firstWhereOrNull((element) => element.questionId == auditQuestion.questionId);
+    final locationModel = LocationModel()
+      ..longitude = answer?.longitude
+      ..latitude = answer?.latitude;
+    final result = await SelectLocationScreen.push(
+      context,
+      title: '${LocaleKeys.question} ${state.getIndicatorNameWithIndicatorId(auditQuestion.indicatorId)?.indicatorName ?? ''}',
+      locationModel: locationModel,
+      shouldShowPhotoButton: false,
+      shouldShowDangerIcon: auditQuestion.xBone ?? false,
+      shouldShowBackIcon: true,
+    );
+
+    if (result == null) return;
+    final mapResult = result as LocationModel;
+    await context.read<AuditListQuestionsCubit>().updateLocationQuestionAnswer(
+      questionId: auditQuestion.questionId,
+      lat: mapResult.latitude,
+      lng: mapResult.longitude,
+    );
+  }
+
   Future<void> _addAnswer(
     FarmQuestion question,
     Compliance compliance,
@@ -116,7 +143,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
         }
 
         if (compliance.hasRejectReason != null && compliance.hasRejectReason!) {
-          await addNewComment(farmQuestion: question);
+          await addNewComment(auditQuestion: question);
         }
       },
     );
@@ -160,8 +187,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
           const AuditProgressIndicator(),
           const IncompleteFilter(),
           Expanded(
-            child:
-                BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
+            child: BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
               builder: (context, snapshot) {
                 final filterQuestions = snapshot.filteredQuestions;
                 return ListView.separated(
@@ -175,6 +201,9 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                       question: question,
                       answer: answer,
                       compliances: snapshot.compliances,
+                      onTapLocation: () async {
+                        await _onTapLocation(auditQuestion: question);
+                      },
                       addAnswer: (compliance) {
                         _addAnswer(
                           question,
@@ -188,7 +217,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                       },
                       viewComment: () {
                         _viewComment(
-                          farmQuestion: question,
+                          auditQuestion: question,
                         );
                       },
                     );
