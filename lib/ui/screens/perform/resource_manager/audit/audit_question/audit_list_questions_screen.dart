@@ -231,34 +231,34 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
               },
             ),
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12),
-            child: AttributeItem(
-              child: InputAttributeItem(
-                initialValue: widget.audit.note,
-                textStyle: context.textStyles.bodyNormal.blueDark2,
-                labelText: LocaleKeys.notes.tr(),
-                labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                suffixIcon: BlocSelector<AuditListQuestionsCubit,
-                    AuditListQuestionsState, String?>(
-                  selector: (state) => state.audit?.note,
-                  builder: (context, note) {
-                    return InkWell(
-                      onTap: () {
-                        final shareNote = note ?? widget.audit.note ?? '';
-
-                        if (shareNote.isNullOrEmpty) return;
-
-                        Share.share(shareNote);
-                      },
-                      child: Assets.icons.icShareButton.svgBlack,
-                    );
-                  },
-                ),
-                onChanged: context.read<AuditListQuestionsCubit>().onChangeNote,
-              ),
-            ),
-          ),
+          // Container(
+          //   margin: const EdgeInsets.symmetric(horizontal: 12),
+          //   child: AttributeItem(
+          //     child: InputAttributeItem(
+          //       initialValue: widget.audit.note,
+          //       textStyle: context.textStyles.bodyNormal.blueDark2,
+          //       labelText: LocaleKeys.notes.tr(),
+          //       labelTextStyle: context.textStyles.bodyBold.blueDark2,
+          //       suffixIcon: BlocSelector<AuditListQuestionsCubit,
+          //           AuditListQuestionsState, String?>(
+          //         selector: (state) => state.audit?.note,
+          //         builder: (context, note) {
+          //           return InkWell(
+          //             onTap: () {
+          //               final shareNote = note ?? widget.audit.note ?? '';
+          //
+          //               if (shareNote.isNullOrEmpty) return;
+          //
+          //               Share.share(shareNote);
+          //             },
+          //             child: Assets.icons.icShareButton.svgBlack,
+          //           );
+          //         },
+          //       ),
+          //       onChanged: context.read<AuditListQuestionsCubit>().onChangeNote,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
       persistentFooterAlignment: AlignmentDirectional.center,
