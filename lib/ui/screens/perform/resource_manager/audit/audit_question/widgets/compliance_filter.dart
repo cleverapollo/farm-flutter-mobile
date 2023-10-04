@@ -12,27 +12,32 @@ class ComplianceFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
       builder: (context, state) {
-        return CmoDropdown<Compliance?>(
-          name: 'compliance',
-          hintText: LocaleKeys.all_compliances.tr(),
-          onChanged: (Compliance? compliance) {
-            context.read<AuditListQuestionsCubit>().setComplianceFilter(compliance);
-          },
-          itemsData: state.compliances
+        return CmoCustomDropdown<Compliance?>(
+          actionKey: 'compliance_filter',
+          listItems: state.compliances
               .map(
-                (e) => CmoDropdownItem<Compliance>(
-                  id: e,
-                  name: e.complianceName ?? '',
+                (item) => OptionItem<Compliance?>(
+                  id: item,
+                  title: item.complianceName ?? '',
                 ),
               )
               .toList()
             ..insert(
               0,
-              CmoDropdownItem<Compliance>(
+              OptionItem<Compliance?>(
                 id: const Compliance(complianceId: -1),
-                name: LocaleKeys.all_compliances.tr(),
+                title: LocaleKeys.compliance.tr(),
               ),
             ),
+          hintText: LocaleKeys.compliance.tr(),
+          itemSelected: state.selectedComplianceFilter == null || state.selectedComplianceFilter?.complianceId == -1
+              ? null
+              : OptionItem<Compliance?>(
+                  id: state.selectedComplianceFilter,
+                  title: state.selectedComplianceFilter!.complianceName ?? '',
+                ),
+          onSelected:
+              context.read<AuditListQuestionsCubit>().setComplianceFilter,
         );
       },
     );

@@ -14,20 +14,19 @@ class CarFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
       builder: (context, state) {
-        return CmoDropdown<CarFilterEnum>(
-          name: 'car',
-          hintText: LocaleKeys.all_cars.tr(),
-          onChanged: (CarFilterEnum? filterEnum) {
-            context.read<AuditListQuestionsCubit>().setCarFilter(filterEnum);
-          },
-          itemsData: state.carFilterEnums
-              .map(
-                (e) => CmoDropdownItem<CarFilterEnum>(
-                  id: e,
-                  name: e.valueName,
-                ),
-              )
+        return CmoCustomDropdown<CarFilterEnum>(
+          actionKey: 'car_filter',
+          listItems: state.carFilterEnums
+              .map((item) => OptionItem<CarFilterEnum>(id: item, title: item.valueName))
               .toList(),
+          hintText: LocaleKeys.all_cars.tr(),
+          itemSelected: state.selectedCARFilter == null
+              ? null
+              : OptionItem<CarFilterEnum>(
+                  id: state.selectedCARFilter!,
+                  title: state.selectedCARFilter!.valueName,
+                ),
+          onSelected: context.read<AuditListQuestionsCubit>().setCarFilter,
         );
       },
     );

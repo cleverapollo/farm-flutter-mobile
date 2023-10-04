@@ -90,13 +90,13 @@ flutter:
     - assets/l10n/
 
   fonts:
-    - family: Montserrat
+    - family: NotoSans
       fonts:
-        - asset: fonts/Montserrat-Regular.ttf
+        - asset: fonts/NotoSans-Regular.ttf
           weight: 400
-        - asset: fonts/Montserrat-Bold.ttf
+        - asset: fonts/NotoSans-Bold.ttf
           weight: 700
-        - asset: fonts/Montserrat-Italic.ttf
+        - asset: fonts/NotoSans-Italic.ttf
           style: italic
 
 flutter_gen:

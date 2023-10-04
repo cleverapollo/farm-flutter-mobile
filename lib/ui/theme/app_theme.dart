@@ -35,7 +35,7 @@ abstract class AppTheme {
   static ThemeData create() {
     const textStyleExt = TextThemeExt();
     return ThemeData(
-      fontFamily: FontFamily.montserrat,
+      fontFamily: FontFamily.notoSans,
       scaffoldBackgroundColor: _AppColor.white,
       canvasColor: _AppColor.white,
       primaryColor: _AppColor.blue,

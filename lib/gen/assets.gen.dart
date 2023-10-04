@@ -24,6 +24,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_add.svg
   SvgGenImage get icAdd => const SvgGenImage('assets/icons/ic_add.svg');
 
+  /// File path: assets/icons/ic_arrow_down.svg
+  SvgGenImage get icArrowDown =>
+      const SvgGenImage('assets/icons/ic_arrow_down.svg');
+
   /// File path: assets/icons/ic_arrow_left.svg
   SvgGenImage get icArrowLeft =>
       const SvgGenImage('assets/icons/ic_arrow_left.svg');
@@ -31,6 +35,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_arrow_right.svg
   SvgGenImage get icArrowRight =>
       const SvgGenImage('assets/icons/ic_arrow_right.svg');
+
+  /// File path: assets/icons/ic_arrow_up.svg
+  SvgGenImage get icArrowUp =>
+      const SvgGenImage('assets/icons/ic_arrow_up.svg');
 
   /// File path: assets/icons/ic_avatar.svg
   SvgGenImage get icAvatar => const SvgGenImage('assets/icons/ic_avatar.svg');
@@ -186,8 +194,10 @@ class $AssetsIconsGen {
         icAccept,
         icAcceptMap,
         icAdd,
+        icArrowDown,
         icArrowLeft,
         icArrowRight,
+        icArrowUp,
         icAvatar,
         icBackButton,
         icBarcode,
