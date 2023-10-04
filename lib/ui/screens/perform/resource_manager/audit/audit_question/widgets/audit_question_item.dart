@@ -52,7 +52,7 @@ class AuditQuestionItem extends StatelessWidget {
                       text: TextSpan(
                         children: <TextSpan>[
                           TextSpan(
-                            text: '${state.getIndicatorNameWithIndicatorId(question.indicatorId)?.indicatorName ?? ''} ',
+                            text: '${question.indicatorName ?? ''} ',
                             style: context.textStyles.bodyBold.black,
                           ),
                           TextSpan(

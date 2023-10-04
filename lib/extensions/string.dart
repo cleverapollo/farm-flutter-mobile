@@ -2,8 +2,19 @@ import 'package:isar/isar.dart';
 
 extension StringNullExtension on String? {
   String? capitalize() {
-    if (this.isBlank) return this;
+    if (isBlank) return this;
     return '${this![0].toUpperCase()}${this?.substring(1).toLowerCase()}';
+  }
+
+  String? removeDot() {
+    if (isBlank) return this;
+    return this?.replaceAll('.', '');
+  }
+
+  int? getExtendedVersionNumber() {
+    if (isBlank) return 0;
+    final versionCells = this!.split('.').map((i) => int.parse(i)).toList();
+    return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
   }
 
   bool get validEmail {

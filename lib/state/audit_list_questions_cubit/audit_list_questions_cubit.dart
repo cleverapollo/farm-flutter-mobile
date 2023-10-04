@@ -93,7 +93,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
             (question) =>
                 (question.questionValue ?? '').contains(state.searchText!) ||
                 (question.complianceName ?? '').contains(state.searchText!) ||
-                (state.getIndicatorNameWithIndicatorId(question.indicatorId)?.indicatorName ?? '').contains(state.searchText!),
+                (question.indicatorName ?? '').contains(state.searchText!),
           )
           .toList();
     }
@@ -139,10 +139,23 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
 
   Future<void> getListAuditQuestion() async {
     final rmu = await configService.getActiveRegionalManager();
-    final questions = await cmoDatabaseMasterService.getFarmQuestions(
+    var questions = await cmoDatabaseMasterService.getFarmQuestions(
       auditTemplateId: state.audit?.auditTemplateId,
       rmuId: rmu?.regionalManagerUnitId,
     );
+
+    questions = questions?.map((question) {
+      final indicator = state.indicators.firstWhereOrNull((indicator) => indicator.indicatorId == question.indicatorId);
+      return question.copyWith(
+        indicatorName: indicator?.indicatorName,
+      );
+    }).toList();
+
+    questions?.sort((first, second) {
+      final firstIndicatorNumber = first.indicatorName.getExtendedVersionNumber();
+      final secondIndicatorNumber = second.indicatorName.getExtendedVersionNumber();
+      return firstIndicatorNumber!.compareTo(secondIndicatorNumber!);
+    });
 
     emit(state.copyWith(questions: questions));
   }

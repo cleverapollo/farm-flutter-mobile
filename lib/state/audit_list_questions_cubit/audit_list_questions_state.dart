@@ -163,8 +163,4 @@ class AuditListQuestionsState extends Equatable {
         )
         .toList();
   }
-
-  Indicator? getIndicatorNameWithIndicatorId(int? indicatorId) {
-    return indicators.firstWhereOrNull((indicator) => indicator.indicatorId == indicatorId);
-  }
 }
