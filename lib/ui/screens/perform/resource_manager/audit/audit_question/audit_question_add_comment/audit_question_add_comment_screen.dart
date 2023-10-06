@@ -139,9 +139,10 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
                 if (widget.question.xBone ?? false)
                   Icon(
                     IconsaxOutline.danger,
-                    size: 24.0,
+                    size: 30.0,
                     color: context.colors.red,
                   ),
+                const SizedBox(height: 16,),
                 _buildQuestionValue(),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -185,10 +186,20 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
   }
 
   Widget _buildQuestionValue() {
-    return Text(
-      widget.question.questionValue ?? '',
-      maxLines: 2,
-      style: context.textStyles.bodyBold.black,
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        children: <TextSpan>[
+          TextSpan(
+            text: '${widget.question.indicatorName ?? ''} ',
+            style: context.textStyles.bodyBold.black,
+          ),
+          TextSpan(
+            text: '${widget.question.questionValue}',
+            style: context.textStyles.bodyNormal,
+          ),
+        ],
+      ),
     );
   }
 
