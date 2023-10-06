@@ -26,14 +26,18 @@ class SelectLocationScreen extends StatefulWidget {
     this.shouldShowPhotoButton = true,
     this.shouldShowDangerIcon = false,
     this.shouldShowBackIcon = false,
+    this.alwaysEnableSaveButton,
+    this.saveTitle,
   });
 
   final LocationModel locationModel;
   final String? farmName;
   final String title;
+  final String? saveTitle;
   final bool shouldShowPhotoButton;
   final bool shouldShowDangerIcon;
   final bool shouldShowBackIcon;
+  final bool? alwaysEnableSaveButton;
 
   static Future<dynamic> push(
     BuildContext context, {
@@ -43,6 +47,8 @@ class SelectLocationScreen extends StatefulWidget {
     bool shouldShowPhotoButton = true,
     bool shouldShowDangerIcon = false,
     bool shouldShowBackIcon = false,
+    bool? alwaysEnableSaveButton,
+    String? saveTitle,
   }) {
     return Navigator.push(
       context,
@@ -54,6 +60,8 @@ class SelectLocationScreen extends StatefulWidget {
           shouldShowPhotoButton: shouldShowPhotoButton,
           shouldShowDangerIcon: shouldShowDangerIcon,
           shouldShowBackIcon: shouldShowBackIcon,
+          alwaysEnableSaveButton: alwaysEnableSaveButton,
+          saveTitle: saveTitle,
         ),
       ),
     );
@@ -72,7 +80,8 @@ class _SelectLocationState extends State<SelectLocationScreen> {
   final ImagePickerService imagePickerService = ImagePickerService();
 
   bool get isEnableNextButton =>
-      locationModel.latitude != null && locationModel.longitude != null;
+      widget.alwaysEnableSaveButton ??
+      (locationModel.latitude != null && locationModel.longitude != null);
 
   bool loading = false;
 
@@ -194,7 +203,7 @@ class _SelectLocationState extends State<SelectLocationScreen> {
               const SizedBox(height: 32),
               Align(
                 child: CmoFilledButton(
-                  title: LocaleKeys.next.tr(),
+                  title: widget.saveTitle ?? LocaleKeys.next.tr(),
                   disable: !isEnableNextButton,
                   loading: loading,
                   onTap: () {

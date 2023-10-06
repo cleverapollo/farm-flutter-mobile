@@ -219,7 +219,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     required double? lng,
   }) async {
     emit(state.copyWith(loading: true));
-    if (questionId == null || lng == null || lat == null) return;
+    if (questionId == null) return;
     var answer = state.answers.firstWhereOrNull((element) => element.questionId == questionId);
     if (answer != null) {
       answer = answer.copyWith(

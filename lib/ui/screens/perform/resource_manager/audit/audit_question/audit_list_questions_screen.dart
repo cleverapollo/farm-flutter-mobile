@@ -118,6 +118,8 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
       shouldShowPhotoButton: false,
       shouldShowDangerIcon: auditQuestion.xBone ?? false,
       shouldShowBackIcon: true,
+      saveTitle: LocaleKeys.save.tr(),
+      alwaysEnableSaveButton: true,
     );
 
     if (result == null) return;
