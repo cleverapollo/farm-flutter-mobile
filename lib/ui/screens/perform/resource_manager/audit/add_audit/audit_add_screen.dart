@@ -117,7 +117,7 @@ class _AuditAddScreen extends State<AuditAddScreen> {
                         _buildDividerWidget(),
                         buildSelectAuditTemplate(),
                         buildSelectSite(),
-                        buildSelectCompartment(),
+                        // buildSelectCompartment(),
                       ],
                     ),
                   ),
