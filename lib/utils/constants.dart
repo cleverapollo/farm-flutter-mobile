@@ -3,7 +3,7 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Constants {
-  //Image picker
+  static const int MAX_UPLOADED_PHOTOS_AUDIT = 10;
   static const int IMAGE_QUALITY = 30;
   static const double IMAGE_MAXHEIGHT = 1024.0;
   static const double IMAGE_MAXWIDTH = 1024.0;

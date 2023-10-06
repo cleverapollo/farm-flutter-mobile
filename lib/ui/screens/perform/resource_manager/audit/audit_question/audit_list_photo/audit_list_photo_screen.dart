@@ -1,17 +1,14 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/service/image_picker_service.dart';
-import 'package:cmo/state/assessment_question_cubit/assessment_question_cubit.dart';
-import 'package:cmo/state/audit_list_questions_cubit/audit_list_questions_cubit.dart';
 import 'package:cmo/state/audit_question_photo/audit_question_photo_cubit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_question_photo_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/file_utils.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,18 +17,21 @@ class AuditListPhotoScreen extends StatefulWidget {
     super.key,
     required this.auditQuestion,
     required this.auditId,
+    required this.totalAuditPhotos,
   });
 
   static Future<bool?> push(
     BuildContext context, {
     required FarmQuestion auditQuestion,
     required int? auditId,
+    required int totalAuditPhotos,
   }) async {
     return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => AuditListPhotoScreen(
           auditQuestion: auditQuestion,
           auditId: auditId,
+          totalAuditPhotos: totalAuditPhotos,
         ),
       ),
     );
@@ -41,6 +41,8 @@ class AuditListPhotoScreen extends StatefulWidget {
 
   final int? auditId;
 
+  final int totalAuditPhotos;
+  
   @override
   State<AuditListPhotoScreen> createState() => _AuditListPhotoScreenState();
 }
@@ -61,10 +63,23 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
     });
   }
 
+  bool verifyMaximumAuditPhotos() {
+    final canUpload = widget.totalAuditPhotos < Constants.MAX_UPLOADED_PHOTOS_AUDIT;
+    if (!canUpload) {
+      showSnackError(msg: LocaleKeys.react_maximum_audit_photos.tr());
+    }
+
+    return canUpload;
+  }
+
   Future<void> _selectPhotoFromCamera() async {
+    final canUpload = verifyMaximumAuditPhotos();
+    if (!canUpload) return;
+
     final croppedImage = await _imagePickerService.pickImageFromCamera(
       title: DateTime.now().toString(),
     );
+
     if (croppedImage != null) {
       if (context.mounted) {
         setState(() {
@@ -84,6 +99,9 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
   }
 
   Future<void> _selectPhotoFromGallery() async {
+    final canUpload = verifyMaximumAuditPhotos();
+    if (!canUpload) return;
+
     final croppedImage = await _imagePickerService.pickImageFromGallery(
       title: DateTime.now().toString(),
     );

@@ -14,6 +14,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/wid
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/compliance_filter.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
@@ -94,12 +95,12 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     final result = await AuditListPhotoScreen.push(
       context,
       auditQuestion: auditQuestion,
-      auditId:
-          context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+      auditId: context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+      totalAuditPhotos: context.read<AuditListQuestionsCubit>().state.totalPhotos,
     );
 
     if (result != null) {
-      await context.read<AuditListQuestionsCubit>().refresh();
+      await context.read<AuditListQuestionsCubit>().refreshAfterUploadPhoto();
     }
   }
 
@@ -329,7 +330,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                         AuditListQuestionsState, int>(
                       selector: (state) => state.totalPhotos,
                       builder: (context, lengthPhoto) => Text(
-                        '$lengthPhoto',
+                        '$lengthPhoto/${Constants.MAX_UPLOADED_PHOTOS_AUDIT.toString()}',
                         style: context.textStyles.bodyBold.white,
                       ),
                     ),

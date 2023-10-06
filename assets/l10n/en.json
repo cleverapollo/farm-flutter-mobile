@@ -225,6 +225,7 @@
   "phoneNumber": "Phone Number",
   "yyyy_mm_dd": "YYYY-MM-DD",
   "pictures": "Pictures",
+  "react_maximum_audit_photos": "You have reached the maximum upload photos for this audit.",
   "plannedPlantDate": "Planned Plant Date",
   "plantation": "Plantation",
   "plantationManagement": "Plantation Management",

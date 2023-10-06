@@ -227,6 +227,7 @@
   "phoneNumber": "Nombor telefon",
   "yyyy_mm_dd": "YYYY-MM-DD",
   "pictures": "Gambar",
+  "react_maximum_audit_photos": "You have reached the maximum upload photos for this audit.",
   "plannedPlantDate": "Tarikh penanaman yang dirancang ",
   "plantation": "Perladangan",
   "plantationManagement": "Pengurusan Perladangan",

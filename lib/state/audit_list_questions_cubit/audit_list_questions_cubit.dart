@@ -291,6 +291,11 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     await applyFilter();
   }
 
+  Future<void> refreshAfterUploadPhoto() async {
+    await getListQuestionPhoto();
+    await applyFilter();
+  }
+
   Future<void> checkAllAuditQuestionCompleted() async {
     final answered =
         state.answers.where((x) => x.isQuestionComplete == 1).toList();

@@ -226,6 +226,7 @@
   "phoneNumber": "Phone Number",
   "yyyy_mm_dd": "YYYY-MM-DD",
   "pictures": "izithombe",
+  "react_maximum_audit_photos": "You have reached the maximum upload photos for this audit.",
   "plannedPlantDate": "usuku oluhluliwe",
   "plantation": "ipulazi ",
   "plantationManagement": "ukuphathwa kweplazi",
