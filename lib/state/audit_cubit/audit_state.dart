@@ -9,6 +9,7 @@ class AuditState extends Equatable {
     this.auditTemplates = const <AuditTemplate>[],
     this.compartments = const <Compartment>[],
     this.farms = const <Farm>[],
+    this.filterFarms = const <Farm>[],
     this.selectedAuditTemplate,
     this.selectedFarm,
     this.selectedCompartment,
@@ -21,6 +22,7 @@ class AuditState extends Equatable {
   final List<AuditTemplate> auditTemplates;
   final List<Compartment> compartments;
   final List<Farm> farms;
+  final List<Farm> filterFarms;
   final Farm? selectedFarm;
   final AuditTemplate? selectedAuditTemplate;
   final Compartment? selectedCompartment;
@@ -33,6 +35,7 @@ class AuditState extends Equatable {
     List<AuditTemplate>? auditTemplates,
     List<Compartment>? compartments,
     List<Farm>? farms,
+    List<Farm>? filterFarms,
     Farm? selectedFarm,
     AuditTemplate? selectedAuditTemplate,
     Compartment? selectedCompartment,
@@ -45,6 +48,7 @@ class AuditState extends Equatable {
       auditTemplates: auditTemplates ?? this.auditTemplates,
       compartments: compartments ?? this.compartments,
       farms: farms ?? this.farms,
+      filterFarms: filterFarms ?? this.filterFarms,
       selectedAuditTemplate: selectedAuditTemplate ?? this.selectedAuditTemplate,
       selectedCompartment: selectedCompartment ?? this.selectedCompartment,
       selectedFarm: selectedFarm ?? this.selectedFarm,
@@ -58,6 +62,7 @@ class AuditState extends Equatable {
         data,
         cacheCreateData,
         farms,
+        filterFarms,
         compartments,
         auditTemplates,
         selectedFarm,

@@ -17,7 +17,13 @@ class AuditCubit extends HydratedCubit<AuditState> {
   }
 
   Future<void> updateSelectedFarm(Farm farm) async {
-    emit(state.copyWith(selectedFarm: farm));
+    emit(
+      state.copyWith(
+        selectedFarm: farm,
+        filterFarms: state.farms,
+      ),
+    );
+
     await getListCompartments();
   }
 
@@ -86,7 +92,10 @@ class AuditCubit extends HydratedCubit<AuditState> {
     final rmu = await configService.getActiveRegionalManager();
     final service = cmoDatabaseMasterService;
     final sites = await service.getFarmByRmuId(rmu?.regionalManagerUnitId);
-    emit(state.copyWith(farms: sites));
+    emit(state.copyWith(
+      farms: sites,
+      filterFarms: sites,
+    ));
   }
 
   Future<void> getListCompartments() async {
@@ -111,6 +120,40 @@ class AuditCubit extends HydratedCubit<AuditState> {
 
   void handleError(Object error) {
     logger.d(error);
+  }
+
+  void searchSites(String? searchText) {
+    emit(state.copyWith(loading: true));
+    try {
+      if (searchText == null || searchText.isEmpty) {
+        emit(
+          state.copyWith(
+            filterFarms: state.farms,
+          ),
+        );
+      } else {
+        final filteredItems = state.farms
+            .where(
+              (element) =>
+                  element.farmName
+                      ?.toLowerCase()
+                      .contains(searchText.toLowerCase()) ??
+                  false,
+            )
+            .toList();
+
+        emit(
+          state.copyWith(
+            filterFarms: filteredItems,
+          ),
+        );
+      }
+    } catch (e) {
+      emit(state.copyWith(error: e));
+      showSnackError(msg: e.toString());
+    } finally {
+      emit(state.copyWith(loading: false));
+    }
   }
 
   @override

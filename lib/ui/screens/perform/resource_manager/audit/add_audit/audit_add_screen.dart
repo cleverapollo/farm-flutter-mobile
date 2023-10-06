@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_questions_screen.dart';
 import 'package:cmo/ui/ui.dart';
@@ -39,8 +42,9 @@ class AuditAddScreen extends StatefulWidget {
 }
 
 class _AuditAddScreen extends State<AuditAddScreen> {
-
   bool loading = false;
+
+  Timer? debounceInputTimer;
 
   @override
   void initState() {
@@ -174,7 +178,8 @@ class _AuditAddScreen extends State<AuditAddScreen> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () {
-                      context.read<AuditCubit>().updateSelectedAuditTemplate(state.auditTemplates[index]);
+                      context.read<AuditCubit>().updateSelectedAuditTemplate(
+                          state.auditTemplates[index]);
                       Navigator.pop(context);
                     },
                     title: Padding(
@@ -205,26 +210,52 @@ class _AuditAddScreen extends State<AuditAddScreen> {
           displayHorizontal: false,
           onTap: () async {
             FocusScope.of(context).unfocus();
-            if (state.farms.isBlank) return;
+            if (state.filterFarms.isBlank) return;
             await showCustomBottomSheet<void>(
               context,
-              content: ListView.builder(
-                itemCount: state.farms.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () async {
-                      await context.read<AuditCubit>().updateSelectedFarm(state.farms[index]);
-                      Navigator.pop(context);
-                    },
-                    title: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        state.farms[index].farmName ?? '',
-                        style: context.textStyles.bodyBold.blueDark2,
-                      ),
+              content: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: CmoTextField(
+                      name: LocaleKeys.search_site.tr(),
+                      hintText: LocaleKeys.search_site.tr(),
+                      prefixIcon: Assets.icons.icSearch.svg(),
+                      onChanged: (input) {
+                        debounceInputTimer?.cancel();
+                        debounceInputTimer = Timer(
+                          const Duration(milliseconds: 200),
+                          () => context.read<AuditCubit>().searchSites(input),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                  Expanded(
+                    child: BlocSelector<AuditCubit, AuditState, List<Farm>>(
+                      selector: (state) => state.filterFarms,
+                      builder: (context, filterFarms) {
+                        return ListView.builder(
+                          itemCount: filterFarms.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              onTap: () async {
+                                await context
+                                    .read<AuditCubit>()
+                                    .updateSelectedFarm(filterFarms[index]);
+                                Navigator.pop(context);
+                              },
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+                              title: Text(
+                                filterFarms[index].farmName ?? '',
+                                style: context.textStyles.bodyBold.blueDark2,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             );
           },
@@ -253,7 +284,9 @@ class _AuditAddScreen extends State<AuditAddScreen> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () async {
-                      context.read<AuditCubit>().updateSelectedCompartment(state.compartments[index]);
+                      context
+                          .read<AuditCubit>()
+                          .updateSelectedCompartment(state.compartments[index]);
                       Navigator.pop(context);
                     },
                     title: Padding(
@@ -271,5 +304,11 @@ class _AuditAddScreen extends State<AuditAddScreen> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    debounceInputTimer?.cancel();
+    super.dispose();
   }
 }
