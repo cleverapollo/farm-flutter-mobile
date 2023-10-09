@@ -29,6 +29,7 @@ class CmoFilledButton extends StatelessWidget {
     this.onTap,
     this.loading = false,
     this.disable = false,
+    this.canChangeDisableStatus = false,
     required this.title,
     this.titleStyle,
     this.leading,
@@ -41,6 +42,7 @@ class CmoFilledButton extends StatelessWidget {
   final String title;
   final bool loading;
   final bool disable;
+  final bool canChangeDisableStatus;
   final TextStyle? titleStyle;
   final Widget? leading;
   final double? radius;
@@ -59,7 +61,13 @@ class CmoFilledButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         disabledBackgroundColor: context.colors.grey,
       ),
-      onPressed: disable ? null : onTap,
+      onPressed: disable
+          ? () {
+              if (canChangeDisableStatus) {
+                onTap?.call();
+              }
+            }
+          : onTap,
       child: Padding(
         padding: const EdgeInsets.all(4),
         child: Row(

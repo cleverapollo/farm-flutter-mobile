@@ -96,6 +96,7 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                                   .onFilterGroupChanged(true);
                             },
                             disable: !isInCompleteSelected,
+                            canChangeDisableStatus: true,
                             title: LocaleKeys.incomplete.tr(),
                             titleStyle: context.textStyles.bodyBold.white
                                 .copyWith(fontSize: 12),
@@ -116,6 +117,7 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                                   .onFilterGroupChanged(false);
                             },
                             disable: isInCompleteSelected,
+                            canChangeDisableStatus: true,
                             title: LocaleKeys.members.tr(),
                             titleStyle: context.textStyles.bodyBold.white
                                 .copyWith(fontSize: 12),
