@@ -42,6 +42,7 @@ class AuditListQuestionsState extends Equatable {
   final int totalComments;
   final int totalPhotos;
   final String? searchText;
+
   AuditListQuestionsState copyWith({
     Audit? audit,
     bool? loading,

@@ -302,6 +302,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     }).toList();
 
     emit(state.copyWith(answers: answerAfterSelect));
+    await applyFilter();
     onCallback?.call();
   }
 
