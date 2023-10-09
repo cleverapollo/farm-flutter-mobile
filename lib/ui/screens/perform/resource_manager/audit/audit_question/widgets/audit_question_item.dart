@@ -33,9 +33,7 @@ class AuditQuestionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ncCompliance = compliances.firstWhereOrNull(
-      (element) =>
-          element.complianceName.isNotBlank &&
-          element.complianceName!.contains('NC'),
+      (element) => element.isNC,
     );
 
     return Padding(
@@ -167,7 +165,7 @@ class AuditQuestionItem extends StatelessWidget {
     if (compliance.complianceName.isBlank) return context.colors.white;
     if (compliance.complianceName!.contains('N/A')) {
       return context.colors.greyCCCC;
-    } else if (compliance.complianceName!.contains('NC')) {
+    } else if (compliance.isNC) {
       return context.colors.yellow;
     } else if (compliance.complianceName!.contains('C')) {
       return context.colors.greenC600;

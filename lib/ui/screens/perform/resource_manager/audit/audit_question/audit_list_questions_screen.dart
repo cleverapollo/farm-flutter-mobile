@@ -145,7 +145,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
           await context.read<DashboardCubit>().initializeRM();
         }
 
-        if (compliance.hasRejectReason != null && compliance.hasRejectReason!) {
+        if (compliance.isNC) {
           await addNewComment(auditQuestion: question);
         }
       },

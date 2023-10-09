@@ -1,5 +1,6 @@
 // ignore_for_file: invalid_annotation_target, override_on_non_overriding_member
 
+import 'package:cmo/extensions/extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -27,4 +28,8 @@ class Compliance with _$Compliance {
 
   @override
   Id get id => complianceId;
+}
+
+extension ComplianceExtension on Compliance {
+  bool get isNC => complianceName.isNotBlank && complianceName!.contains('NC');
 }
