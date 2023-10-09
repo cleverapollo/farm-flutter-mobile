@@ -49,12 +49,34 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   Future<void> applyFilter() async {
     var filterList = state.questions;
 
+    final ncComplianceId = state.compliances.firstWhereOrNull((element) => element.isNC)?.complianceId;
+    final answerWithNCCompliance = state.answers.where((answer) => answer.complianceId == ncComplianceId).toList();
     switch (state.selectedCARFilter) {
       case CarFilterEnum.minorCARs:
-        filterList = filterList.where((question) => question.xBone == null || question.xBone == false).toList();
+        filterList = filterList
+            .where(
+              (question) =>
+                  (question.xBone == null || question.xBone == false) &&
+                  answerWithNCCompliance.firstWhereOrNull(
+                        (element) =>
+                            element.complianceId == ncComplianceId &&
+                            question.questionId == element.questionId,
+                      ) != null,
+            )
+            .toList();
         break;
       case CarFilterEnum.majorCARs:
-        filterList = filterList.where((question) => question.xBone != null && question.xBone!).toList();
+        filterList = filterList
+            .where(
+              (question) =>
+                  (question.xBone != null && question.xBone!) &&
+                  answerWithNCCompliance.firstWhereOrNull(
+                        (element) =>
+                            element.complianceId == ncComplianceId &&
+                            question.questionId == element.questionId,
+                      ) != null,
+            )
+            .toList();
         break;
       case CarFilterEnum.allCARs:
       default:
