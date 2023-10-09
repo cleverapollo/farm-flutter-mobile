@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'dart:math';
 
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
@@ -17,9 +18,16 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
   Future<void> initialize({
     required FarmQuestion question,
     int? auditId,
+    QuestionAnswer? questionAnswer,
   }) async {
     try {
+      emit(const AuditQuestionCommentState());
       final rejectReasons = await cmoDatabaseMasterService.getRejectReasons();
+      if (questionAnswer != null) {
+        final selectedRejectReason = rejectReasons.firstWhereOrNull((element) => element.rejectReasonId == questionAnswer.rejectReasonId,);
+        emit(state.copyWith(selectedRejectReason: selectedRejectReason));
+      }
+
       emit(
         state.copyWith(
           question: question,
@@ -42,6 +50,14 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
     );
 
     emit(state.copyWith(listComments: listComments));
+  }
+
+  void setSelectedRejectReason(RejectReason rejectReason) {
+    if (rejectReason.rejectReasonId == -1) {
+      emit(state.clearSelectedRejectReason());
+    } else {
+      emit(state.copyWith(selectedRejectReason: rejectReason));
+    }
   }
 
   Future<bool> addComment({

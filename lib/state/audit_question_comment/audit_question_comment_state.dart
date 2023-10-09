@@ -8,6 +8,7 @@ class AuditQuestionCommentState extends Equatable {
     this.rejectReasons = const <RejectReason>[],
     this.listComments = const <QuestionComment>[],
     this.auditId,
+    this.selectedRejectReason,
   });
 
   final FarmQuestion? question;
@@ -16,6 +17,7 @@ class AuditQuestionCommentState extends Equatable {
   final int? auditId;
   final bool loading;
   final List<RejectReason> rejectReasons;
+  final RejectReason? selectedRejectReason;
 
   AuditQuestionCommentState copyWith({
     Audit? audit,
@@ -25,6 +27,7 @@ class AuditQuestionCommentState extends Equatable {
     List<RejectReason>? rejectReasons,
     int? auditId,
     List<QuestionComment>? listComments,
+    RejectReason? selectedRejectReason,
   }) {
     return AuditQuestionCommentState(
       question: question ?? this.question,
@@ -33,6 +36,18 @@ class AuditQuestionCommentState extends Equatable {
       rejectReasons: rejectReasons ?? this.rejectReasons,
       auditId: auditId ?? this.auditId,
       listComments: listComments ?? this.listComments,
+      selectedRejectReason: selectedRejectReason ?? this.selectedRejectReason,
+    );
+  }
+
+  AuditQuestionCommentState clearSelectedRejectReason() {
+    return AuditQuestionCommentState(
+      question: question,
+      questionComment: questionComment,
+      loading: loading,
+      rejectReasons: rejectReasons,
+      auditId: auditId,
+      listComments: listComments,
     );
   }
 
@@ -44,5 +59,6 @@ class AuditQuestionCommentState extends Equatable {
         rejectReasons,
         auditId,
         listComments,
+        selectedRejectReason
       ];
 }

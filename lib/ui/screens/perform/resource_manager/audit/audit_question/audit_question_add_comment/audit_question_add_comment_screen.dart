@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
@@ -64,6 +63,7 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
       await context.read<AuditQuestionCommentCubit>().initialize(
             question: widget.question,
             auditId: widget.auditId,
+            questionAnswer: widget.answer,
           );
     });
   }
@@ -85,7 +85,6 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
       try {
         await hideInputMethod();
         if (context.mounted) {
-          final rejectReasonId = value['rejectId'] as int? ?? widget.answer?.rejectReasonId;
           final comment = value['Comment']?.toString() ?? '';
           var success = false;
           if (widget.comment == null) {
@@ -103,7 +102,7 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
 
           await context.read<AuditListQuestionsCubit>().updateQuestionAnswer(
                 questionId: widget.question.questionId,
-                rejectReasonId: rejectReasonId,
+                rejectReasonId: context.read<AuditQuestionCommentCubit>().state.selectedRejectReason?.rejectReasonId,
               );
 
           if (success && context.mounted) {
@@ -173,10 +172,15 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
         ),
         persistentFooterAlignment: AlignmentDirectional.center,
         persistentFooterButtons: [
-          CmoFilledButton(
-            onTap: save,
-            title: LocaleKeys.save.tr(),
-            loading: loading,
+          BlocBuilder<AuditQuestionCommentCubit, AuditQuestionCommentState>(
+            builder: (context, state) {
+              return CmoFilledButton(
+                disable: state.selectedRejectReason == null,
+                onTap: save,
+                title: LocaleKeys.save.tr(),
+                loading: loading,
+              );
+            },
           ),
         ],
       ),
@@ -210,47 +214,30 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
           LocaleKeys.reason.tr(),
           style: context.textStyles.bodyBold.black,
         ),
-        BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, List<RejectReason>>(
-          selector: (state) {
-            return state.rejectReasons;
-          },
-          builder: (context, rejectReasons) {
-            return CmoDropdown(
-              name: 'rejectId',
-              hintText: LocaleKeys.reason.tr(),
-              validator: requiredValidator,
-              inputDecoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(8),
-                isDense: true,
-                hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.reason.tr().toLowerCase()}',
-                hintStyle: context.textStyles.bodyNormal.grey,
-                border: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.grey)),
-                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: context.colors.blue)),
+        BlocBuilder<AuditQuestionCommentCubit, AuditQuestionCommentState>(
+          builder: (context, state) {
+            return CmoCustomDropdown<RejectReason>(
+              actionKey: 'reject_reason',
+              listItems: state.rejectReasons
+                  .map((item) => OptionItem<RejectReason>(id: item, title: item.rejectReasonName ?? ''))
+                  .toList()..insert(
+                0,
+                OptionItem<RejectReason>(
+                  id: const RejectReason(rejectReasonId: -1),
+                  title: '${LocaleKeys.select.tr()} ${LocaleKeys.reason.tr().toLowerCase()}',
+                ),
               ),
-              initialValue: widget.answer?.rejectReasonId,
-              onChanged: (int? id) {
-                if (id == -1) {
-                  _formKey.currentState!.fields['rejectId']?.reset();
-                }
-              },
-              itemsData: rejectReasons
-                  .map(
-                    (e) => CmoDropdownItem(
-                  id: e.rejectReasonId,
-                  name: e.rejectReasonName ?? '',
-                ),
-              )
-                  .toList()
-                ..insert(
-                  0,
-                  CmoDropdownItem(
-                    id: -1,
-                    name: LocaleKeys.reason.tr(),
-                  ),
-                ),
+              hintText: '${LocaleKeys.select.tr()} ${LocaleKeys.reason.tr().toLowerCase()}',
+              itemSelected: state.selectedRejectReason == null
+                  ? null
+                  : OptionItem<RejectReason>(
+                id: state.selectedRejectReason!,
+                title: state.selectedRejectReason!.rejectReasonName ?? '',
+              ),
+              onSelected: context.read<AuditQuestionCommentCubit>().setSelectedRejectReason,
             );
           },
-        )
+        ),
       ],
     );
   }
