@@ -164,8 +164,6 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
                     validator: requiredValidator,
                     hintText: LocaleKeys.addComment.tr(),
                     maxLines: 999,
-                    autocorrect: true,
-                    enableSuggestions: true,
                     initialValue: widget.comment?.comment,
                   ),
                 ),

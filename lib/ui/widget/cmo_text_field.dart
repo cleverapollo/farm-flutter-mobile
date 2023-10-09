@@ -82,6 +82,7 @@ class CmoTextField extends StatelessWidget {
       controller: controller,
       name: name,
       textAlign: textAlign ?? TextAlign.start,
+      textCapitalization: TextCapitalization.sentences,
       validator: validator,
       enabled: enabled,
       style: context.textStyles.bodyNormal,
