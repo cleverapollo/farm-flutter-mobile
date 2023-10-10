@@ -176,7 +176,11 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     questions?.sort((first, second) {
       final firstIndicatorNumber = first.indicatorName.getExtendedVersionNumber();
       final secondIndicatorNumber = second.indicatorName.getExtendedVersionNumber();
-      return firstIndicatorNumber!.compareTo(secondIndicatorNumber!);
+      if (firstIndicatorNumber != null && secondIndicatorNumber != null) {
+        return firstIndicatorNumber.compareTo(secondIndicatorNumber);
+      }
+
+      return (first.indicatorName ?? '').compareTo(second.indicatorName ?? '');
     });
 
     emit(state.copyWith(questions: questions));

@@ -12,9 +12,14 @@ extension StringNullExtension on String? {
   }
 
   int? getExtendedVersionNumber() {
-    if (isBlank) return 0;
-    final versionCells = this!.split('.').map((i) => int.parse(i)).toList();
-    return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
+    if (isBlank) return null;
+    final versionString = this?.replaceAll('.', '');
+    if (int.tryParse(versionString ?? '') != null) {
+      final versionCells = this!.split('.').map((i) => int.parse(i)).toList();
+      return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
+    }
+
+    return null;
   }
 
   bool get validEmail {
