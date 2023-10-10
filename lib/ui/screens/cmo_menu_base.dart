@@ -27,7 +27,7 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'perform/farmer_member/annual_production/annual_budget/annual_budget_management_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/annual_budget_management_screen.dart';
 
 class CmoMenuBase extends StatefulWidget {
   factory CmoMenuBase.behave({required VoidCallback onTapClose}) {
