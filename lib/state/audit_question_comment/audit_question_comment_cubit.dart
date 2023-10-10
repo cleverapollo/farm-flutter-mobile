@@ -1,5 +1,6 @@
 import 'dart:ffi';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
@@ -22,6 +23,7 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
     QuestionComment? comment,
   }) async {
     try {
+      emit(state.copyWith(loading: true));
       final rejectReasons = await cmoDatabaseMasterService.getRejectReasons();
       final selectedRejectReason = rejectReasons.firstWhereOrNull(
         (element) => element.rejectReasonId == questionAnswer?.rejectReasonId,
@@ -30,21 +32,22 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
       emit(
         state.copyWith(
           question: question,
-          auditId: auditId,
           rejectReasons: rejectReasons,
           selectedRejectReason: selectedRejectReason,
           isEditing: comment == null,
           questionComment: comment ??
               QuestionComment(
-                questionId: state.question?.questionId,
+                questionId: question.questionId,
                 commentId: generatorInt32Id(),
-                assessmentId: state.auditId,
+                assessmentId: auditId,
                 comment: null,
               ),
         ),
       );
     } catch (error) {
       handleError(error);
+    } finally {
+      emit(state.copyWith(loading: false));
     }
   }
 

@@ -129,20 +129,13 @@ class AuditQuestionItem extends StatelessWidget {
                         );
                       },
                     ),
-                    BlocSelector<AuditListQuestionsCubit,
-                        AuditListQuestionsState, AuditListQuestionsState>(
-                      selector: (state) => state,
+                    BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
                       builder: (context, state) {
+                        final enable = state.getQuestionCommentsWithQuestionId(question.questionId) != null;
                         return CmoNumberIconWidget.byEnum(
                           onTap: viewComment,
-                          number: state.questionComments
-                              .where((element) =>
-                                  element.questionId == question.questionId)
-                              .length,
-                          enable: state
-                              .getListCommentsFilteredQuestions(
-                                  question.questionId)
-                              .isNotBlank,
+                          number: enable ? 1 : null,
+                          enable: enable,
                           iconType: AuditQuestionIconEnum.comment,
                         );
                       },

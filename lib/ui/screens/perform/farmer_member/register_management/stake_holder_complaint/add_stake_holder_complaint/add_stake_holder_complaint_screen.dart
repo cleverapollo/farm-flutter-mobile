@@ -6,7 +6,7 @@ import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disput
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/stake_holder_complaint/add_stake_holder_complaint_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
@@ -182,7 +182,6 @@ class _AddStakeHolderComplaintScreenState
                             child: SizedBox(
                               height: 250,
                               child: GeneralCommentWidget(
-                                elevation: 0,
                                 initialValue: complaint.comment,
                                 hintText: LocaleKeys.generalComments.tr(),
                                 onChanged: cubit.onCommentChanged,

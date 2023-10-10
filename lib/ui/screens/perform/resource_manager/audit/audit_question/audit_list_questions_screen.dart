@@ -6,18 +6,15 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_comment/audit_list_comment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_list_photo_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_question_comment/audit_question_comment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/audit_question_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/car_filter.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/compliance_filter.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:share_plus/share_plus.dart';
 import 'widgets/audit_progress_indicator.dart';
 import 'widgets/audit_search_field.dart';
 import 'widgets/imcomplete_filter.dart';
@@ -48,8 +45,7 @@ class AuditListQuestionsScreen extends StatefulWidget {
   }
 
   @override
-  State<AuditListQuestionsScreen> createState() =>
-      _AuditListQuestionsScreenState();
+  State<AuditListQuestionsScreen> createState() => _AuditListQuestionsScreenState();
 }
 
 class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {

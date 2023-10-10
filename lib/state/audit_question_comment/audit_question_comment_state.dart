@@ -7,13 +7,11 @@ class AuditQuestionCommentState extends Equatable {
     this.loading = false,
     this.isEditing = false,
     this.rejectReasons = const <RejectReason>[],
-    this.auditId,
     this.selectedRejectReason,
   });
 
   final FarmQuestion? question;
   final QuestionComment? questionComment;
-  final int? auditId;
   final bool loading;
   final bool isEditing;
   final List<RejectReason> rejectReasons;
@@ -26,7 +24,6 @@ class AuditQuestionCommentState extends Equatable {
     bool? loading,
     bool? isEditing,
     List<RejectReason>? rejectReasons,
-    int? auditId,
     RejectReason? selectedRejectReason,
   }) {
     return AuditQuestionCommentState(
@@ -35,7 +32,6 @@ class AuditQuestionCommentState extends Equatable {
       loading: loading ?? this.loading,
       isEditing: isEditing ?? this.isEditing,
       rejectReasons: rejectReasons ?? this.rejectReasons,
-      auditId: auditId ?? this.auditId,
       selectedRejectReason: selectedRejectReason ?? this.selectedRejectReason,
     );
   }
@@ -46,7 +42,6 @@ class AuditQuestionCommentState extends Equatable {
       questionComment: questionComment,
       loading: loading,
       rejectReasons: rejectReasons,
-      auditId: auditId,
       isEditing: isEditing,
     );
   }
@@ -57,7 +52,6 @@ class AuditQuestionCommentState extends Equatable {
         questionComment,
         loading,
         rejectReasons,
-        auditId,
         selectedRejectReason,
         isEditing,
       ];

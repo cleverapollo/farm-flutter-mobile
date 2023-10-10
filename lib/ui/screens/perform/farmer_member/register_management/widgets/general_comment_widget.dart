@@ -9,18 +9,20 @@ class GeneralCommentWidget extends StatefulWidget {
     this.keyboardType,
     this.onChanged,
     this.hintTextStyle,
+    this.textStyle,
     this.initialValue,
-    this.elevation = 4,
     super.key,
+    this.enabled = true,
 });
 
   final String? initialValue;
   final String hintText;
-  final int maxLines;
+  final int? maxLines;
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
   final TextStyle? hintTextStyle;
-  final double elevation;
+  final TextStyle? textStyle;
+  final bool enabled;
 
   @override
   State<StatefulWidget> createState() => _AddGeneralCommentWidgetState();
@@ -34,16 +36,15 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
         textCapitalization: TextCapitalization.sentences,
         keyboardAppearance: Brightness.light,
         textAlign: TextAlign.left,
-        style: context.textStyles.bodyBold.black,
+        style: widget.textStyle ?? context.textStyles.bodyBold.black,
+        enabled: widget.enabled,
         minLines: 1,
-        maxLines: 1000,
         initialValue: widget.initialValue,
+        maxLines: widget.maxLines ?? 1000,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(15),
           hintText: widget.hintText,
-          hintStyle: context.textStyles.bodyBold.black,
-          labelText: widget.initialValue == null ? null : widget.hintText,
-          labelStyle: context.textStyles.bodyNormal.copyWith(fontSize: 16, overflow: TextOverflow.ellipsis),
+          hintStyle: widget.hintTextStyle ?? context.textStyles.bodyNormal.blueDark2,
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
         ),

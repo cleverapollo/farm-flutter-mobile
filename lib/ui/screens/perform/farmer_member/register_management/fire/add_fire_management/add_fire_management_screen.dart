@@ -7,7 +7,7 @@ import 'package:cmo/state/fire_cubit/fire_cubit.dart';
 import 'package:cmo/state/fire_cubit/fire_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/thumbnail_image.dart';
 import 'package:cmo/ui/ui.dart';

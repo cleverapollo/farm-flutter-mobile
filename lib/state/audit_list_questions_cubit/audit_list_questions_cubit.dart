@@ -229,8 +229,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     required int? rejectReasonId,
   }) async {
     if (questionId == null || rejectReasonId == null) return;
-    var answer = state.answers
-        .firstWhereOrNull((element) => element.questionId == questionId);
+    var answer = state.answers.firstWhereOrNull((element) => element.questionId == questionId);
     if (answer != null) {
       answer = answer.copyWith(rejectReasonId: rejectReasonId);
       await cmoDatabaseMasterService.cacheQuestionAnswer(answer);

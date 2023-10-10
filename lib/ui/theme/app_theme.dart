@@ -102,6 +102,15 @@ class ColorThemeExt extends ThemeExtension<ColorThemeExt> {
 class TextThemeExt extends ThemeExtension<TextThemeExt> {
   const TextThemeExt();
 
+  TextStyle get bodyNormalItalic => const TextStyle(
+    color: _AppColor.black,
+    fontStyle: FontStyle.italic,
+    fontWeight: FontWeight.w300,
+    fontSize: 16,
+    height: 24 / 16,
+    leadingDistribution: TextLeadingDistribution.even,
+  );
+
   TextStyle get bodyNormal => const TextStyle(
         color: _AppColor.black,
         fontWeight: FontWeight.normal,

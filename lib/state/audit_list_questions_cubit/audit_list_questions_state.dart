@@ -139,17 +139,8 @@ class AuditListQuestionsState extends Equatable {
         .toList();
   }
 
-  List<QuestionComment> getListCommentsFilteredQuestions(int? questionId) {
-    return questionComments
-        .where(
-          (comment) =>
-              comment.questionId == questionId &&
-              filteredQuestions.firstWhereOrNull(
-                    (question) => question.questionId == questionId,
-                  ) !=
-                  null,
-        )
-        .toList();
+  QuestionComment? getQuestionCommentsWithQuestionId(int? questionId) {
+    return questionComments.firstWhereOrNull((comment) => comment.questionId == questionId);
   }
 
   List<QuestionPhoto> getListPhotoFilteredQuestions(int? questionId) {

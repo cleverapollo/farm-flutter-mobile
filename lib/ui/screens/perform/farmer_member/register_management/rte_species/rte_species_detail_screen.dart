@@ -5,7 +5,7 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/rte_species/rte_species_map_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
@@ -109,7 +109,6 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
                             child: GeneralCommentWidget(
                               hintText: LocaleKeys.generalComments.tr(),
                               initialValue: state.rteSpecies?.comment,
-                              elevation: 0,
                               onChanged: context
                                   .read<RteSpeciesDetailCubit>()
                                   .onChangeComment,

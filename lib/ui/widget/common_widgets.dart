@@ -118,10 +118,12 @@ class InputAttributeItem extends StatefulWidget {
   final List<TextInputFormatter> inputFormatters;
   final TextEditingController? controller;
   final ScrollController? scrollController;
+  final bool enabled;
 
   const InputAttributeItem({
     this.hintText,
     this.maxLines = 1,
+    this.enabled = true,
     this.keyboardType,
     this.onChanged,
     this.onSubmitted,
@@ -163,6 +165,7 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
       minLines: 1,
       textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
       onChanged: widget.onChanged,
+      enabled: widget.enabled,
       onFieldSubmitted: widget.onSubmitted,
       maxLines: _controller.text.isEmpty ? widget.maxLines : 1,
       controller: _controller,

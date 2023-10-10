@@ -1,27 +1,27 @@
 import 'dart:async';
 
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AuditQuestionCommentScreen extends StatefulWidget {
   const AuditQuestionCommentScreen({
     super.key,
     required this.question,
-    this.auditId,
     this.comment,
     this.answer,
   });
 
   final FarmQuestion question;
-  final int? auditId;
   final QuestionComment? comment;
   final QuestionAnswer? answer;
 
@@ -43,7 +43,6 @@ class AuditQuestionCommentScreen extends StatefulWidget {
           ),
           child: AuditQuestionCommentScreen(
             question: auditQuestion,
-            auditId: auditId,
             comment: comment,
             answer: answer,
           ),
@@ -57,11 +56,6 @@ class AuditQuestionCommentScreen extends StatefulWidget {
 }
 
 class _AuditQuestionCommentScreenState extends State<AuditQuestionCommentScreen> {
-  final _formKey = GlobalKey<FormBuilderState>();
-
-  bool loading = false;
-
-  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
   @override
   void initState() {
@@ -69,53 +63,21 @@ class _AuditQuestionCommentScreenState extends State<AuditQuestionCommentScreen>
   }
 
   Future<void> save() async {
-    setState(() {
-      autoValidateMode = AutovalidateMode.always;
-    });
+    await hideInputMethod();
+    if (context.mounted) {
+      await context.read<AuditListQuestionsCubit>().updateQuestionAnswer(
+        questionId: widget.question.questionId,
+        rejectReasonId: context
+            .read<AuditQuestionCommentCubit>()
+            .state
+            .selectedRejectReason
+            ?.rejectReasonId,
+      );
 
-    if (_formKey.currentState?.saveAndValidate() ?? false) {
-      var value = _formKey.currentState?.value;
+      await context.read<AuditQuestionCommentCubit>().saveQuestionComment();
 
-      if (value == null) return;
-      setState(() {
-        loading = true;
-      });
-
-      try {
-        await hideInputMethod();
-        if (context.mounted) {
-          final comment = value['Comment']?.toString() ?? '';
-          var success = false;
-          if (widget.comment == null) {
-            // success =
-            //     await context.read<AuditQuestionCommentCubit>().saveQuestionComment(
-            //           commentValue: comment,
-            //         );
-          } else {
-            // success =
-            //     await context.read<AuditQuestionCommentCubit>().updateComment(
-            //           commentValue: comment,
-            //           comment: widget.comment!,
-            //         );
-          }
-
-          await context.read<AuditListQuestionsCubit>().updateQuestionAnswer(
-                questionId: widget.question.questionId,
-                rejectReasonId: context
-                    .read<AuditQuestionCommentCubit>()
-                    .state
-                    .selectedRejectReason
-                    ?.rejectReasonId,
-              );
-
-          if (success && context.mounted) {
-            Navigator.of(context).pop(true);
-          }
-        }
-      } finally {
-        setState(() {
-          loading = false;
-        });
+      if (context.mounted) {
+        Navigator.of(context).pop(true);
       }
     }
   }
@@ -134,41 +96,38 @@ class _AuditQuestionCommentScreenState extends State<AuditQuestionCommentScreen>
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: FormBuilder(
-            key: _formKey,
-            child: Column(
-              children: [
-                if (widget.question.xBone ?? false)
-                  Icon(
-                    IconsaxOutline.danger,
-                    size: 30.0,
-                    color: context.colors.red,
-                  ),
-                const SizedBox(
-                  height: 16,
+          child: Column(
+            children: [
+              if (widget.question.xBone ?? false)
+                Icon(
+                  IconsaxOutline.danger,
+                  size: 30.0,
+                  color: context.colors.red,
                 ),
-                _buildQuestionValue(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: Divider(
-                    height: 2,
-                    thickness: 1,
-                    indent: 0,
-                    endIndent: 0,
-                    color: context.colors.black,
-                  ),
+              const SizedBox(
+                height: 16,
+              ),
+              _buildQuestionValue(),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                child: Divider(
+                  height: 2,
+                  thickness: 1,
+                  indent: 0,
+                  endIndent: 0,
+                  color: context.colors.black,
                 ),
-                _selectReasonDropdown(context),
-                const SizedBox(
-                  height: 15,
-                ),
-                Expanded(
-                  child: buildCommentTextField(),
-                ),
+              ),
+              _selectReasonDropdown(context),
+              const SizedBox(
+                height: 15,
+              ),
+              Expanded(
+                child: buildCommentTextField(),
+              ),
 
-                editIcon(),
-              ],
-            ),
+              editIcon(),
+            ],
           ),
         ),
         persistentFooterAlignment: AlignmentDirectional.center,
@@ -176,10 +135,10 @@ class _AuditQuestionCommentScreenState extends State<AuditQuestionCommentScreen>
           BlocBuilder<AuditQuestionCommentCubit, AuditQuestionCommentState>(
             builder: (context, state) {
               return CmoFilledButton(
-                disable: state.selectedRejectReason == null,
+                disable: state.selectedRejectReason == null || state.questionComment!.comment.isBlank,
                 onTap: save,
                 title: LocaleKeys.save.tr(),
-                loading: loading,
+                loading: state.loading,
               );
             },
           ),
@@ -247,13 +206,20 @@ class _AuditQuestionCommentScreenState extends State<AuditQuestionCommentScreen>
   Widget buildCommentTextField() {
     return BlocBuilder<AuditQuestionCommentCubit, AuditQuestionCommentState>(
       builder: (context, state) {
-        return CmoTextField(
-          name: 'Comment',
-          hintText: LocaleKeys.addComment.tr(),
-          maxLines: 999,
-          enabled: state.isEditing,
-          initialValue: state.questionComment?.comment,
-          onChanged: context.read<AuditQuestionCommentCubit>().updateComment,
+        return Container(
+          height: double.infinity,
+          decoration: BoxDecoration(
+            border: Border.all(color: context.colors.blueDark2,),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: GeneralCommentWidget(
+            hintText: LocaleKeys.addComment.tr(),
+            enabled: state.isEditing,
+            initialValue: widget.comment?.comment,
+            textStyle: context.textStyles.bodyNormal.black,
+            hintTextStyle: context.textStyles.bodyNormalItalic.grey,
+            onChanged: context.read<AuditQuestionCommentCubit>().updateComment,
+          ),
         );
       },
     );

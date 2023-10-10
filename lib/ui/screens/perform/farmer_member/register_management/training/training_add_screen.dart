@@ -5,7 +5,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/training_cubit/add_training_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/add_general_comment_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/helpers.dart';
@@ -176,7 +176,6 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
                           height: 97,
                           child: GeneralCommentWidget(
                             initialValue: training.comment,
-                            elevation: 0,
                             hintText: LocaleKeys.generalComments.tr(),
                             onChanged: cubit.onCommentChanged,
                           ),
