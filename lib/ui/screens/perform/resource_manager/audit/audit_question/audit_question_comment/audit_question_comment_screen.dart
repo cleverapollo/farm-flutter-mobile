@@ -11,8 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class AuditQuestionAddCommentScreen extends StatefulWidget {
-  const AuditQuestionAddCommentScreen({
+class AuditQuestionCommentScreen extends StatefulWidget {
+  const AuditQuestionCommentScreen({
     super.key,
     required this.question,
     this.auditId,
@@ -34,22 +34,29 @@ class AuditQuestionAddCommentScreen extends StatefulWidget {
   }) async {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => AuditQuestionAddCommentScreen(
-          question: auditQuestion,
-          auditId: auditId,
-          comment: comment,
-          answer: answer,
+        builder: (_) => BlocProvider(
+          create: (_) => AuditQuestionCommentCubit()..initialize(
+            question: auditQuestion,
+            auditId: auditId,
+            questionAnswer: answer,
+            comment: comment,
+          ),
+          child: AuditQuestionCommentScreen(
+            question: auditQuestion,
+            auditId: auditId,
+            comment: comment,
+            answer: answer,
+          ),
         ),
       ),
     );
   }
 
   @override
-  State<AuditQuestionAddCommentScreen> createState() => _AuditQuestionAddCommentScreenState();
+  State<AuditQuestionCommentScreen> createState() => _AuditQuestionCommentScreenState();
 }
 
-class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentScreen> {
-
+class _AuditQuestionCommentScreenState extends State<AuditQuestionCommentScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   bool loading = false;
@@ -59,17 +66,9 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {
-      await context.read<AuditQuestionCommentCubit>().initialize(
-            question: widget.question,
-            auditId: widget.auditId,
-            questionAnswer: widget.answer,
-          );
-    });
   }
 
   Future<void> save() async {
-
     setState(() {
       autoValidateMode = AutovalidateMode.always;
     });
@@ -88,21 +87,25 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
           final comment = value['Comment']?.toString() ?? '';
           var success = false;
           if (widget.comment == null) {
-            success =
-                await context.read<AuditQuestionCommentCubit>().addComment(
-                      commentValue: comment,
-                    );
+            // success =
+            //     await context.read<AuditQuestionCommentCubit>().saveQuestionComment(
+            //           commentValue: comment,
+            //         );
           } else {
-            success =
-                await context.read<AuditQuestionCommentCubit>().updateComment(
-                      commentValue: comment,
-                      comment: widget.comment!,
-                    );
+            // success =
+            //     await context.read<AuditQuestionCommentCubit>().updateComment(
+            //           commentValue: comment,
+            //           comment: widget.comment!,
+            //         );
           }
 
           await context.read<AuditListQuestionsCubit>().updateQuestionAnswer(
                 questionId: widget.question.questionId,
-                rejectReasonId: context.read<AuditQuestionCommentCubit>().state.selectedRejectReason?.rejectReasonId,
+                rejectReasonId: context
+                    .read<AuditQuestionCommentCubit>()
+                    .state
+                    .selectedRejectReason
+                    ?.rejectReasonId,
               );
 
           if (success && context.mounted) {
@@ -131,7 +134,7 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child:  FormBuilder(
+          child: FormBuilder(
             key: _formKey,
             child: Column(
               children: [
@@ -141,7 +144,9 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
                     size: 30.0,
                     color: context.colors.red,
                   ),
-                const SizedBox(height: 16,),
+                const SizedBox(
+                  height: 16,
+                ),
                 _buildQuestionValue(),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -158,14 +163,10 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
                   height: 15,
                 ),
                 Expanded(
-                  child: CmoTextField(
-                    name: 'Comment',
-                    validator: requiredValidator,
-                    hintText: LocaleKeys.addComment.tr(),
-                    maxLines: 999,
-                    initialValue: widget.comment?.comment,
-                  ),
+                  child: buildCommentTextField(),
                 ),
+
+                editIcon(),
               ],
             ),
           ),
@@ -218,6 +219,7 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
           builder: (context, state) {
             return CmoCustomDropdown<RejectReason>(
               actionKey: 'reject_reason',
+              enable: state.isEditing,
               listItems: state.rejectReasons
                   .map((item) => OptionItem<RejectReason>(id: item, title: item.rejectReasonName ?? ''))
                   .toList()..insert(
@@ -239,6 +241,45 @@ class _AuditQuestionAddCommentScreenState extends State<AuditQuestionAddCommentS
           },
         ),
       ],
+    );
+  }
+
+  Widget buildCommentTextField() {
+    return BlocBuilder<AuditQuestionCommentCubit, AuditQuestionCommentState>(
+      builder: (context, state) {
+        return CmoTextField(
+          name: 'Comment',
+          hintText: LocaleKeys.addComment.tr(),
+          maxLines: 999,
+          enabled: state.isEditing,
+          initialValue: state.questionComment?.comment,
+          onChanged: context.read<AuditQuestionCommentCubit>().updateComment,
+        );
+      },
+    );
+  }
+
+  Widget editIcon() {
+    return BlocSelector<AuditQuestionCommentCubit, AuditQuestionCommentState, bool>(
+      selector: (state) => state.isEditing,
+      builder: (context, isEditing) {
+        if (isEditing) return const SizedBox.shrink();
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 22.0),
+          child: InkWell(
+            onTap: () => context
+                .read<AuditQuestionCommentCubit>()
+                .setIsEditing(isEditing: true),
+            child: Container(
+              alignment: Alignment.center,
+              child: SvgGenImage(Assets.icons.icEditBlueCircle.path).svg(
+                height: 60,
+                width: 60,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

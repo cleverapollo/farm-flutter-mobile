@@ -32,6 +32,7 @@ class CmoCustomDropdown<T> extends StatefulWidget {
   final List<OptionItem<T>> listItems;
   final String hintText;
   final void Function(T) onSelected;
+  final bool enable;
 
   const CmoCustomDropdown({
     required this.actionKey,
@@ -39,6 +40,7 @@ class CmoCustomDropdown<T> extends StatefulWidget {
     required this.onSelected,
     this.hintText = '',
     this.itemSelected,
+    this.enable = true,
   }) : super();
 
   @override
@@ -118,17 +120,19 @@ class _CmoCustomDropdownState<T> extends State<CmoCustomDropdown<T>> {
     return GestureDetector(
       key: actionKey,
       onTap: () {
-        setState(() {
-          if (isDropdownOpened) {
-            floatingDropdown.remove();
-          } else {
-            findDropdownData();
-            floatingDropdown = _createFloatingDropdown();
-            Overlay.of(context).insert(floatingDropdown);
-          }
+        if (widget.enable) {
+          setState(() {
+            if (isDropdownOpened) {
+              floatingDropdown.remove();
+            } else {
+              findDropdownData();
+              floatingDropdown = _createFloatingDropdown();
+              Overlay.of(context).insert(floatingDropdown);
+            }
 
-          isDropdownOpened = !isDropdownOpened;
-        });
+            isDropdownOpened = !isDropdownOpened;
+          });
+        }
       },
       child: Container(
         decoration: BoxDecoration(

@@ -19,37 +19,47 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
     required FarmQuestion question,
     int? auditId,
     QuestionAnswer? questionAnswer,
+    QuestionComment? comment,
   }) async {
     try {
-      emit(const AuditQuestionCommentState());
       final rejectReasons = await cmoDatabaseMasterService.getRejectReasons();
-      if (questionAnswer != null) {
-        final selectedRejectReason = rejectReasons.firstWhereOrNull((element) => element.rejectReasonId == questionAnswer.rejectReasonId,);
-        emit(state.copyWith(selectedRejectReason: selectedRejectReason));
-      }
+      final selectedRejectReason = rejectReasons.firstWhereOrNull(
+        (element) => element.rejectReasonId == questionAnswer?.rejectReasonId,
+      );
 
       emit(
         state.copyWith(
           question: question,
           auditId: auditId,
           rejectReasons: rejectReasons,
+          selectedRejectReason: selectedRejectReason,
+          isEditing: comment == null,
+          questionComment: comment ??
+              QuestionComment(
+                questionId: state.question?.questionId,
+                commentId: generatorInt32Id(),
+                assessmentId: state.auditId,
+                comment: null,
+              ),
         ),
       );
-
-      await getListQuestionComment();
     } catch (error) {
       handleError(error);
     }
   }
 
-  Future<void> getListQuestionComment() async {
-    if (state.auditId == null || state.question?.questionId == null) return;
-    final listComments = await cmoDatabaseMasterService.getQuestionComments(
-      state.auditId!,
-      state.question!.questionId,
+  void updateComment(String? comment) {
+    emit(
+      state.copyWith(
+        questionComment: state.questionComment?.copyWith(
+          comment: comment,
+        ),
+      ),
     );
+  }
 
-    emit(state.copyWith(listComments: listComments));
+  void setIsEditing({required bool isEditing}) {
+    emit(state.copyWith(isEditing: isEditing));
   }
 
   void setSelectedRejectReason(RejectReason rejectReason) {
@@ -60,21 +70,12 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
     }
   }
 
-  Future<bool> addComment({
-    required String commentValue,
-  }) async {
+  Future<bool> saveQuestionComment() async {
     try {
       emit(state.copyWith(loading: true));
-      final comment = QuestionComment(
-        questionId: state.question?.questionId,
-        commentId: generatorInt32Id(),
-        assessmentId: state.auditId,
-        comment: commentValue,
-      );
-
-      await cmoDatabaseMasterService.cacheQuestionComment(comment);
+      await cmoDatabaseMasterService.cacheQuestionComment(state.questionComment);
       showSnackSuccess(
-        msg: 'Save comment success with id: ${comment.commentId}',
+        msg: 'Save comment success with id: ${state.questionComment?.commentId}',
       );
     } catch (e) {
       showSnackError(msg: e.toString());
@@ -84,34 +85,6 @@ class AuditQuestionCommentCubit extends Cubit<AuditQuestionCommentState> {
     }
 
     return true;
-  }
-
-  Future<bool> updateComment({
-    required String commentValue,
-    required QuestionComment comment,
-  }) async {
-    try {
-      emit(state.copyWith(loading: true));
-      await cmoDatabaseMasterService.cacheQuestionComment(comment.copyWith(comment: commentValue));
-      await getListQuestionComment();
-      showSnackSuccess(
-        msg: 'Update comment success with id: ${comment.commentId}',
-      );
-    } catch (e) {
-      showSnackError(msg: e.toString());
-      return false;
-    } finally {
-      emit(state.copyWith(loading: false));
-    }
-
-    return true;
-  }
-
-  Future<void> removeComment({
-    required QuestionComment comment,
-  }) async {
-    await cmoDatabaseMasterService.removeQuestionComment(comment);
-    await getListQuestionComment();
   }
 
   void handleError(Object error) {

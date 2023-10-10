@@ -198,8 +198,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   }
 
   Future<void> getListQuestionComment() async {
-    final questionComments =
-        await cmoDatabaseMasterService.getQuestionCommentsByAssessmentId(
+    final questionComments = await cmoDatabaseMasterService.getQuestionCommentsByAssessmentId(
       state.audit?.assessmentId,
     );
 

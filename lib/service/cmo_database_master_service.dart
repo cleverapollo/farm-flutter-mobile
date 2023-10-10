@@ -3505,8 +3505,9 @@ class CmoDatabaseMasterService {
   }
 
   Future<int> cacheQuestionComment(
-    QuestionComment item,
+    QuestionComment? item,
   ) async {
+    if (item == null) return -1;
     final db = await _db();
     return db.writeTxn(() => db.questionComments.put(item));
   }

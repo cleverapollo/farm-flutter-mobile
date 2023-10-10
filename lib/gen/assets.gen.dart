@@ -103,6 +103,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_edit.svg
   SvgGenImage get icEdit => const SvgGenImage('assets/icons/ic_edit.svg');
 
+  /// File path: assets/icons/ic_edit_blue_circle.svg
+  SvgGenImage get icEditBlueCircle =>
+      const SvgGenImage('assets/icons/ic_edit_blue_circle.svg');
+
   /// File path: assets/icons/ic_home.svg
   SvgGenImage get icHome => const SvgGenImage('assets/icons/ic_home.svg');
 
@@ -216,6 +220,7 @@ class $AssetsIconsGen {
         icDown,
         icDrawer,
         icEdit,
+        icEditBlueCircle,
         icHome,
         icLang,
         icLocation,

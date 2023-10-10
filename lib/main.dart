@@ -66,7 +66,6 @@ class CmoApp extends StatelessWidget {
         BlocProvider(create: (_) => AuditCubit()),
         BlocProvider(create: (_) => AuditListCubit()),
         BlocProvider(create: (_) => AuditListQuestionsCubit()),
-        BlocProvider(create: (_) => AuditQuestionCommentCubit()),
         BlocProvider(create: (_) => AuditQuestionPhotoCubit()),
         BlocProvider(create: (_) => StakeHolderListCubit()),
         BlocProvider(create: (_) => DashboardCubit()),

@@ -8,7 +8,7 @@ import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_comment/audit_list_comment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_list_photo_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_question_add_comment/audit_question_add_comment_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_question_comment/audit_question_comment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/audit_question_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/car_filter.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/compliance_filter.dart';
@@ -66,22 +66,42 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   Future<void> _viewComment({
     required FarmQuestion auditQuestion,
   }) async {
-    AuditListCommentScreen.push(
+    final comment = context
+        .read<AuditListQuestionsCubit>()
+        .state
+        .questionComments
+        .firstWhereOrNull(
+          (element) => element.questionId == auditQuestion.questionId,
+        );
+
+    final answer = context
+        .read<AuditListQuestionsCubit>()
+        .state
+        .answers
+        .firstWhereOrNull(
+          (element) => element.questionId == auditQuestion.questionId,
+        );
+
+    final result = await AuditQuestionCommentScreen.push(
       context,
       auditQuestion: auditQuestion,
-      auditId:
-          context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+      auditId: context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+      comment: comment,
+      answer: answer,
     );
+
+    if (result != null) {
+      await context.read<AuditListQuestionsCubit>().refresh();
+    }
   }
 
   Future<void> addNewComment({
     required FarmQuestion auditQuestion,
   }) async {
-    final result = await AuditQuestionAddCommentScreen.push(
+    final result = await AuditQuestionCommentScreen.push(
       context,
       auditQuestion: auditQuestion,
-      auditId:
-          context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
+      auditId: context.read<AuditListQuestionsCubit>().state.audit?.assessmentId,
     );
 
     if (result != null) {
