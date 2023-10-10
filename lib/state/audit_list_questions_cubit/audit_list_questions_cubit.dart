@@ -113,9 +113,9 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       filterList = filterList
           .where(
             (question) =>
-                (question.questionValue ?? '').contains(state.searchText!) ||
-                (question.complianceName ?? '').contains(state.searchText!) ||
-                (question.indicatorName ?? '').contains(state.searchText!),
+                '${question.indicatorName?.toLowerCase() ?? ''} ${question.questionValue?.toLowerCase() ?? ''}'
+                    .contains(state.searchText!.toLowerCase()) ||
+                (question.complianceName?.toLowerCase() ?? '').contains(state.searchText!.toLowerCase()),
           )
           .toList();
     }
