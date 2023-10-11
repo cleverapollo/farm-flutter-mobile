@@ -136,6 +136,7 @@
   "descriptionOfMonitoringRequirements": "คำบรรยายเกี่ยวกับความต้องการในการติดตามตรวจสอบผลการดำเนินงาน",
   "description": "คำอธิบาย",
   "addBCA": "การเพิ่มเติม BCA",
+  "edit_bca": "Edit BCA",
   "grievanceNo": "ข้อร้องเรียนหมายเลขที่",
   "grievanceIssue": "ปัญหาข้อร้องเรียน",
   "allocatedTo": "จัดสรรให้",

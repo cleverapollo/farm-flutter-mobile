@@ -61,6 +61,44 @@ class AttributeItem extends StatelessWidget {
   }
 }
 
+class AutofillWidget extends StatelessWidget {
+
+  final String title;
+  final String? value;
+
+  const AutofillWidget({
+    super.key,
+    required this.title,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AttributeItem(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  title,
+                  style: context.textStyles.bodyNormal.blueDark2,
+                ),
+              ],
+            ),
+            Text(
+              value ?? '',
+              style: context.textStyles.bodyNormal.blueDark2,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class GeoLocationText extends StatelessWidget {
   final LatLng? latLong;
 
@@ -195,6 +233,7 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
         isDense: widget.isDense,
         contentPadding: widget.contentPadding,
         enabledBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
         focusedBorder: InputBorder.none,
         errorBorder: InputBorder.none,
         focusedErrorBorder: InputBorder.none,

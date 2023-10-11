@@ -67,6 +67,34 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
     );
   }
 
+  void onCarRaisedDateChanged(bool isSelected) {
+    if (isSelected) {
+      emit(
+        state.copyWith(
+          agent: state.agent.copyWith(
+            carRaisedDate: DateTime.now().toIso8601String(),
+          ),
+        ),
+      );
+    } else {
+      emit(state.copyWith(agent: state.agent.clearCARData(carRaised: true)));
+    }
+  }
+
+  void onCarClosedDateChanged(bool isSelected) {
+    if (isSelected) {
+      emit(
+        state.copyWith(
+          agent: state.agent.copyWith(
+            carClosedDate: DateTime.now().toIso8601String(),
+          ),
+        ),
+      );
+    } else {
+      emit(state.copyWith(agent: state.agent.clearCARData(carClosed: true)));
+    }
+  }
+
   void onDateReleasedChanged(DateTime? dateTime) {
     emit(
       state.copyWith(
@@ -103,5 +131,19 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
     state.agent = state.agent.copyWith(
       comment: comment,
     );
+  }
+
+  Future<void> onSave() async {
+    final farm = await configService.getActiveFarm();
+    var agent = state.agent;
+
+    agent = agent.copyWith(
+      farmId: farm?.farmId,
+      isActive: true,
+      isMasterDataSynced: false,
+    );
+
+    emit(state.copyWith(agent: agent));
+    await cmoDatabaseMasterService.cacheBiologicalControlAgentsFromFarm(agent);
   }
 }

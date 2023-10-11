@@ -11,7 +11,6 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
-import 'package:cmo/ui/widget/cmo_text_field_widget.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +37,9 @@ class AddBiologicalControlAgentsScreen extends StatefulWidget {
             create: (_) => AddBiologicalControlCubit(
               agent: agent ??
                   BiologicalControlAgent(
-                    biologicalControlAgentRegisterNo:
-                        DateTime.now().millisecondsSinceEpoch.toString(),
+                    biologicalControlAgentRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
+                    carClosedDate: DateTime.now().toIso8601String(),
+                    carRaisedDate: DateTime.now().toIso8601String(),
                     isActive: true,
                   ),
               isAddNew: agent == null,
@@ -59,93 +59,33 @@ class _AddBiologicalControlAgentsScreenState
 
   bool loading = false;
 
-  final _formKey = GlobalKey<FormBuilderState>();
-
-  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
-
-  bool carRaised = false;
-  bool carClosed = false;
-
   @override
   void initState() {
     super.initState();
     cubit = context.read<AddBiologicalControlCubit>();
-    final agent = cubit.state.agent;
-    carRaised = agent.carRaisedDate != null;
-    carClosed = agent.carClosedDate != null;
   }
 
   Future<void> onSubmit() async {
-    setState(() {
-      autoValidateMode = AutovalidateMode.always;
-    });
-    final notValidate =
-        cubit.state.agent.biologicalControlAgentTypeName == null ||
-            cubit.state.agent.monitoringRequirementId == null ||
-            cubit.state.agent.dateReleased == null;
+    final notValidate = cubit.state.agent.biologicalControlAgentTypeName == null;
 
     if (notValidate) {
       return showSnackError(msg: 'Required fields are missing');
     }
-
-    if (_formKey.currentState?.saveAndValidate() ?? false) {
-      var value = _formKey.currentState?.value;
-      if (value == null) return;
-      value = {...value};
-
-      setState(() {
-        loading = true;
-      });
-      try {
-        await hideInputMethod();
-        final farm = await configService.getActiveFarm();
-        var agent = cubit.state.agent;
-
-        agent = agent.copyWith(
-          farmId: farm?.farmId,
-          isActive: true,
-          isMasterDataSynced: false,
-        );
-
-        if (carRaised && agent.carRaisedDate == null) {
-          agent = agent.copyWith(
-            carRaisedDate: DateTime.now().toIso8601String(),
-          );
-        }
-
-        if (carClosed && agent.carClosedDate == null) {
-          agent = agent.copyWith(
-            carClosedDate: DateTime.now().toIso8601String(),
-          );
-        }
-
-        int? resultId;
-
-        if (mounted) {
-          final databaseService = cmoDatabaseMasterService;
-
-          await (await databaseService.db).writeTxn(() async {
-            resultId =
-                await databaseService.cacheBiologicalControlAgents(agent);
-          });
-        }
-
-        if (resultId != null) {
-          if (context.mounted) {
-            showSnackSuccess(
-              msg:
-                  '${widget.biologicalControlAgent == null ? LocaleKeys.addBCA.tr() : 'Edit BCA'} $resultId',
-            );
-
-            Navigator.of(context).pop(agent);
-          }
-        }
-      } finally {
-        setState(() {
-          loading = false;
-        });
-      }
+    setState(() {
+      loading = true;
+    });
+    await hideInputMethod();
+    await cubit.onSave();
+    if (context.mounted) {
+      showSnackSuccess(
+          msg:
+              '${widget.biologicalControlAgent == null ? LocaleKeys.addBCA.tr() : 'Edit BCA'} ${cubit.state.agent.biologicalControlAgentRegisterId}');
+      Navigator.of(context).pop(cubit.state.agent);
     }
+
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -156,7 +96,7 @@ class _AddBiologicalControlAgentsScreenState
         appBar: CmoFarmAppBar.showTrailingAndFarmName(
           title: widget.biologicalControlAgent == null
               ? LocaleKeys.addBCA.tr()
-              : 'Edit BCA',
+              : LocaleKeys.edit_bca.tr(),
         ),
         body: Stack(
           children: [
@@ -171,55 +111,74 @@ class _AddBiologicalControlAgentsScreenState
                   final initState = cubit.state;
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: FormBuilder(
-                      key: _formKey,
-                      onChanged: () {},
-                      autovalidateMode: autoValidateMode,
-                      child: AutofillGroup(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SelectControlAgentWidget(
-                                agentTypes: initState.agentTypes,
-                                onSelect: cubit.onSelectControlAgent,
-                                initAgent: initState.agent,
-                              ),
-                              _buildSelectDateReleased(
-                                  initState.agent.dateReleased),
-                              _buildSelectStakeHolderWidget(),
-                              _buildSelectDescriptionWidget(),
-                              AttributeItem(
-                                child: SelectItemWidget(
-                                  initValue: carRaised,
-                                  title: LocaleKeys.carRaised.tr(),
-                                  onSelect: (isSelected) {
-                                    carRaised = isSelected;
-                                  },
-                                ),
-                              ),
-                              AttributeItem(
-                                child: SelectItemWidget(
-                                  initValue: carClosed,
-                                  title: LocaleKeys.carClosed.tr(),
-                                  onSelect: (isSelected) {
-                                    carClosed = isSelected;
-                                  },
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              CmoTextFieldV2(
-                                maxLines: 10,
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 12),
-                                labelText: LocaleKeys.generalComments.tr(),
-                                initialValue: initState.agent.comment,
-                                onChanged: cubit.onCommentChanged,
-                              ),
-                              const SizedBox(height: 60),
-                            ],
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SelectControlAgentWidget(
+                            agentTypes: initState.agentTypes,
+                            onSelect: cubit.onSelectControlAgent,
+                            initAgent: initState.agent,
                           ),
-                        ),
+                          _buildSelectDateReleased(
+                              initState.agent.dateReleased),
+                          _buildSelectStakeHolderWidget(),
+                          _buildSelectDescriptionWidget(),
+                          BlocBuilder<AddBiologicalControlCubit, AddBiologicalControlState>(
+                            builder: (context, state) {
+                              return AttributeItem(
+                                child: SelectItemWidget(
+                                  initValue: state.agent.carRaisedDate != null,
+                                  title: LocaleKeys.carRaised.tr(),
+                                  onSelect: cubit.onCarRaisedDateChanged,
+                                ),
+                              );
+                            },
+                          ),
+                          BlocBuilder<AddBiologicalControlCubit, AddBiologicalControlState>(
+                            builder: (context, state) {
+                              return AttributeItem(
+                                child: SelectItemWidget(
+                                  initValue: state.agent.carClosedDate != null,
+                                  title: LocaleKeys.carClosed.tr(),
+                                  onSelect: cubit.onCarClosedDateChanged,
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          Container(
+                            height: 250,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: context.colors.black,
+                                ),
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      LocaleKeys.generalComments.tr(),
+                                      style: context.textStyles.bodyNormal.blueDark2,
+                                    ),
+                                  ),
+                                ),
+                                GeneralCommentWidget(
+                                  hintText: '',
+                                  initialValue: initState.agent.comment,
+                                  textStyle: context.textStyles.bodyNormal.black,
+                                  onChanged: cubit.onCommentChanged,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 60),
+                        ],
                       ),
                     ),
                   );
@@ -249,21 +208,18 @@ class _AddBiologicalControlAgentsScreenState
       child: CmoDatePicker(
         name: 'DateReleased',
         onChanged: cubit.onDateReleasedChanged,
-        hintText: LocaleKeys.dateReleased.tr(),
         initialValue: dateReleased,
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
-            vertical: 8,
+            vertical: 4,
             horizontal: 12,
           ),
           suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
           suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
           isDense: true,
-          hintText: LocaleKeys.dateReleased.tr(),
-          hintStyle: context.textStyles.bodyBold.black,
           labelText: LocaleKeys.dateReleased.tr(),
-          labelStyle: context.textStyles.bodyBold.black,
+          labelStyle: context.textStyles.bodyNormal.blueDark2,
         ),
       ),
     );
@@ -275,29 +231,42 @@ class _AddBiologicalControlAgentsScreenState
       selector: (state) => state.stakeHolders,
       builder: (context, stateHolders) {
         final stakeHolderId = cubit.state.agent.stakeholderId;
-        final findIndex = stateHolders
-            .indexWhere((element) => element.stakeHolderId == stakeHolderId);
+        final findIndex = stateHolders.indexWhere((element) => element.stakeHolderId == stakeHolderId);
         final initValue = findIndex != -1 ? stateHolders[findIndex] : null;
-        return AttributeItem(
-          child: CmoDropdown<StakeHolder>(
-            shouldBorderItem: true,
-            name: 'StakeHolderId',
-            hintText: LocaleKeys.stakeholderName.tr(),
-            inputDecoration: InputDecoration(
-              contentPadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-              isDense: true,
-              labelText: LocaleKeys.stakeholderName.tr(),
-              labelStyle: context.textStyles.bodyBold.black,
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-            ),
-            onChanged: cubit.onStakeHolderChanged,
-            initialValue: initValue,
-            itemsData: stateHolders
-                .map((e) =>
-                    CmoDropdownItem(id: e, name: e.stakeholderName ?? ''))
-                .toList(),
-          ),
+        return BottomSheetSelection(
+          hintText: LocaleKeys.stakeholderName.tr(),
+          hintTextStyle: context.textStyles.bodyNormal.blueDark2,
+          value: initValue?.stakeholderName,
+          margin: EdgeInsets.zero,
+          displayHorizontal: false,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+          onTap: () async {
+            FocusScope.of(context).unfocus();
+            if (stateHolders.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: ListView.builder(
+                itemCount: stateHolders.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      cubit.onStakeHolderChanged(stateHolders[index]);
+                      Navigator.pop(context);
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        stateHolders[index].stakeholderName ?? '',
+                        style: context.textStyles.bodyBold.copyWith(
+                          color: context.colors.blueDark2,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
         );
       },
     );
@@ -313,9 +282,11 @@ class _AddBiologicalControlAgentsScreenState
         final initValue = findIndex != -1 ? state.monitorings[findIndex] : null;
         return BottomSheetSelection(
           hintText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
+          hintTextStyle: context.textStyles.bodyNormal.blueDark2,
           value: initValue?.monitoringRequirementName,
           margin: EdgeInsets.zero,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          displayHorizontal: false,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
           onTap: () async {
             FocusScope.of(context).unfocus();
             if (state.monitorings.isBlank) return;

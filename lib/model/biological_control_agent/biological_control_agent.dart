@@ -52,6 +52,35 @@ class BiologicalControlAgent with _$BiologicalControlAgent {
 }
 
 extension BiologicalControlAgentX on BiologicalControlAgent {
+
+  BiologicalControlAgent clearCARData({
+    bool carRaised = false,
+    bool carClosed = false,
+  }) {
+    return BiologicalControlAgent(
+      biologicalControlAgentRegisterNo: biologicalControlAgentRegisterNo,
+      farmId: farmId,
+      biologicalControlAgentTypeId: biologicalControlAgentTypeId,
+      biologicalControlAgentName: biologicalControlAgentName,
+      biologicalControlAgentRegisterId: biologicalControlAgentRegisterId,
+      biologicalControlAgentTypeName: biologicalControlAgentTypeName,
+      biologicalControlAgentTypeScientificName: biologicalControlAgentTypeScientificName,
+      biologicalControlAgentTypeCountryName: biologicalControlAgentTypeCountryName,
+      issueDescription: issueDescription,
+      dateReleased: dateReleased,
+      stakeholderId: stakeholderId,
+      monitoringRequirementId: monitoringRequirementId,
+      comment: comment,
+      isActive: isActive,
+      isMasterDataSynced: isMasterDataSynced,
+      stakeholderName: stakeholderName,
+      reasonForBioAgent: reasonForBioAgent,
+      monitoringRequirementName: monitoringRequirementName,
+      carRaisedDate: carRaised ? null : carRaisedDate,
+      carClosedDate: carClosed ? null : carClosedDate,
+    );
+  }
+
   BiologicalControlAgentRegisterPayLoad toPayLoad() {
     return BiologicalControlAgentRegisterPayLoad(
       BiologicalControlAgentRegisterNo: biologicalControlAgentRegisterNo,

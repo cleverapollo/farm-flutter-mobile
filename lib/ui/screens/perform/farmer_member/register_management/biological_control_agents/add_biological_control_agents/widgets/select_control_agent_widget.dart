@@ -49,9 +49,12 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
       children: [
         BottomSheetSelection(
           hintText: LocaleKeys.nameOfControlAgent.tr(),
+          hintTextStyle: context.textStyles.bodyNormal.blueDark2,
           value: selectedAgent?.biologicalControlAgentTypeName,
+          isRequiredField: true,
           margin: EdgeInsets.zero,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          displayHorizontal: false,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
           onTap: () async {
             FocusScope.of(context).unfocus();
             if (agentTypes.isBlank) return;
@@ -87,37 +90,19 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
           },
         ),
         const SizedBox(height: 8),
-        _buildAutoFillWidget(
-          LocaleKeys.scientificName.tr(),
-          selectedAgent?.biologicalControlAgentTypeScientificName,
+        AutofillWidget(
+          title: LocaleKeys.scientificName.tr(),
+          value: selectedAgent?.biologicalControlAgentTypeScientificName,
         ),
-        _buildAutoFillWidget(
-          LocaleKeys.countryOfOrigin.tr(),
-          selectedAgent?.biologicalControlAgentTypeName,
+        AutofillWidget(
+          title: LocaleKeys.countryOfOrigin.tr(),
+          value: selectedAgent?.biologicalControlAgentTypeName,
         ),
-        _buildAutoFillWidget(
-          LocaleKeys.reasonForBioAgent.tr(),
-          selectedAgent?.reasonForBioAgent,
+        AutofillWidget(
+          title: LocaleKeys.reasonForBioAgent.tr(),
+          value: selectedAgent?.reasonForBioAgent,
         ),
       ],
-    );
-  }
-
-  Widget _buildAutoFillWidget(
-    String key,
-    String? value,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8.0,
-      ),
-      child: CmoTextFieldV2(
-        readOnly: true,
-        enable: false,
-        shouldValidate: true,
-        labelText: key,
-        initialValue: value,
-      ),
     );
   }
 }

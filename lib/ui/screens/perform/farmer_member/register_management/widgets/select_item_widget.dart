@@ -1,4 +1,5 @@
 import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +9,11 @@ class SelectItemWidget extends StatefulWidget {
     super.key,
     required this.title,
     required this.onSelect,
-    this.initValue = false,
+    this.initValue,
   });
 
   final String title;
-  final bool initValue;
+  final bool? initValue;
   final void Function(bool) onSelect;
 
   @override
@@ -20,51 +21,87 @@ class SelectItemWidget extends StatefulWidget {
 }
 
 class _SelectItemWidgetState extends State<SelectItemWidget> {
-  bool isSelected = false;
+  bool? isYesCompliance;
 
   @override
   void initState() {
     super.initState();
-    isSelected = widget.initValue;
+    isYesCompliance = widget.initValue;
   }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          isSelected = !isSelected;
-        });
-
-        widget.onSelect(isSelected);
-      },
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                widget.title,
-                style: context.textStyles.bodyBold.black,
-              ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 2, 5, 2),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              widget.title,
+              style: context.textStyles.bodyNormal.blueDark2,
             ),
-            if (isSelected) _buildSelectedIcon() else Assets.icons.icCheckCircle.svg(),
-          ],
-        ),
+          ),
+          InkWell(
+            onTap: () {
+              setState(() {
+                isYesCompliance = true;
+              });
+
+              widget.onSelect(isYesCompliance!);
+            },
+            child: buildComplianceWidget(
+              title: 'Yes',
+              isSelected: isYesCompliance,
+            ),
+          ),
+          const SizedBox(width: 20,),
+          InkWell(
+              onTap: () {
+                setState(() {
+                  isYesCompliance = false;
+                });
+
+                widget.onSelect(isYesCompliance!);
+              },
+              child: buildComplianceWidget(
+                title: 'No',
+                isSelected: !isYesCompliance!,
+              ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildSelectedIcon() {
-    return Stack(
-      children: [
-        Assets.icons.icCheckCircle.svg(),
-        Positioned.fill(
-          child: Align(
-            child: Assets.icons.icCheck.svg(),
-          ),
+  Widget buildComplianceWidget({
+    required String title,
+    required bool? isSelected,
+  }) {
+    final backgroundColor = isSelected == null
+        ? context.colors.white
+        : (isSelected ? context.colors.blue : context.colors.white);
+
+    final textColor = isSelected == null
+        ? context.colors.black
+        : (isSelected ? context.colors.white : context.colors.black);
+    
+    return Container(
+      width: 46,
+      height: 46,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(23),
+        border: Border.all(color: context.colors.grey),
+        color: backgroundColor,
+      ),
+
+      child: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: context.textStyles.bodyNormal.copyWith(
+          color: textColor,
         ),
-      ],
+      ),
     );
   }
 }

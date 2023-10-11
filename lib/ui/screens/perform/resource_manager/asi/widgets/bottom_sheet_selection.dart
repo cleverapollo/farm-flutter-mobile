@@ -10,6 +10,8 @@ class BottomSheetSelection extends StatelessWidget {
   final EdgeInsets? padding;
   final EdgeInsets? margin;
   final bool displayHorizontal;
+  final TextStyle? hintTextStyle;
+  final bool isRequiredField;
 
   const BottomSheetSelection({
     required this.onTap,
@@ -18,7 +20,9 @@ class BottomSheetSelection extends StatelessWidget {
     this.rightIconData,
     this.padding,
     this.margin,
+    this.hintTextStyle,
     this.displayHorizontal = true,
+    this.isRequiredField = false,
   });
 
   @override
@@ -27,14 +31,7 @@ class BottomSheetSelection extends StatelessWidget {
     if (displayHorizontal) {
       child = Row(
         children: [
-          Expanded(
-            child: Text(
-              hintText,
-              maxLines: 3,
-              style: context.textStyles.bodyBold.blueDark2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+          buildTitleWidget(context),
           Expanded(
             child: Text(
               value ?? '',
@@ -58,12 +55,7 @@ class BottomSheetSelection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  hintText,
-                  maxLines: 3,
-                  style: context.textStyles.bodyBold.blueDark2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                buildTitleWidget(context),
                 if (value.isNotBlank)
                   Text(
                     value!,
@@ -95,6 +87,27 @@ class BottomSheetSelection extends StatelessWidget {
           ),
         ),
         child: child,
+      ),
+    );
+  }
+
+  Widget buildTitleWidget(BuildContext context) {
+    return RichText(
+      textAlign: TextAlign.center,
+      overflow: TextOverflow.ellipsis,
+      maxLines: 3,
+      text: TextSpan(
+        children: <TextSpan>[
+          if (isRequiredField)
+            TextSpan(
+            text: '*',
+            style: context.textStyles.bodyNormal.red,
+          ),
+          TextSpan(
+            text: hintText,
+            style: hintTextStyle ?? context.textStyles.bodyBold.blueDark2,
+          ),
+        ],
       ),
     );
   }

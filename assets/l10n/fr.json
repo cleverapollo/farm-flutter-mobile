@@ -136,6 +136,7 @@
   "descriptionOfMonitoringRequirements": "Description of Monitoring Requirements",
   "description": "Description",
   "addBCA": "Add BCA",
+  "edit_bca": "Edit BCA",
   "grievanceNo": "Grievance No",
   "grievanceIssue": "Grievance Issue",
   "allocatedTo": "Allocated To",
