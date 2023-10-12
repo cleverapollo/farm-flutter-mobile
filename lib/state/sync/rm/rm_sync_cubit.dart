@@ -37,7 +37,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
   final String trickleFeedMasterDataTopic = 'Cmo.MasterData.RM.*.Global';
 
-  int get userId => 1; //userInfoCubit.data!.userId!;
+  int get userId => state.userInfo!.userId!;
 
   int get userDeviceId => userDeviceCubit.data!.userDeviceId!;
 
