@@ -16,6 +16,7 @@ class CmoDatePicker extends StatelessWidget {
     this.inputDecoration,
     this.initialValue,
     this.onChanged,
+    this.lastDate,
   });
 
   final String name;
@@ -26,12 +27,14 @@ class CmoDatePicker extends StatelessWidget {
   final InputDecoration? inputDecoration;
   final DateTime? initialValue;
   final ValueChanged<DateTime?>? onChanged;
+  final DateTime? lastDate;
 
   @override
   Widget build(BuildContext context) {
     return FormBuilderDateTimePicker(
       name: name,
       inputType: InputType.date,
+      lastDate: lastDate,
       decoration: inputDecoration ?? InputDecoration(
         contentPadding: const EdgeInsets.all(8),
         prefixIconConstraints: BoxConstraints.tight(const Size(56, 38)),

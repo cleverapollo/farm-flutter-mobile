@@ -145,6 +145,7 @@
   "male_key": "Male",
   "female_key": "Female",
   "addFire": "Add Fire",
+  "edit_fire": "Edit Fire",
   "fireNo": "Fire No",
   "fireCause": "Fire Cause",
   "dateDetected": "Date Detected",

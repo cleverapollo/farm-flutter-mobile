@@ -5,7 +5,8 @@ import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/fire_cause/fire_cause.dart';
 import 'package:cmo/state/fire_cubit/fire_state.dart';
-import 'package:flutter/material.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FireCubit extends Cubit<FireState> {
@@ -18,7 +19,14 @@ class FireCubit extends Cubit<FireState> {
     final result = await cmoDatabaseMasterService.getFireRegistersByFarmId(
         farmId: farm?.farmId);
 
-    emit(state.copyWith(data: result, dataSearch: result, isLoading: false));
+    emit(
+      state.copyWith(
+        data: result,
+        dataSearch: result,
+        isLoading: false,
+        activeFarm: farm,
+      ),
+    );
   }
 
   void onSearch(String? input) {
@@ -45,7 +53,10 @@ class FireCubit extends Cubit<FireState> {
         data: result, dataSearch: result, isOpen: isOpen, isLoading: false));
   }
 
-  Future<void> initAddData({FireRegister? fireRegister}) async {
+  Future<void> initAddData({
+    FireRegister? fireRegister,
+    required LocationModel locationModel,
+  }) async {
     emit(state.copyWith(isLoading: true));
 
     final farm = await configService.getActiveFarm();
@@ -56,6 +67,7 @@ class FireCubit extends Cubit<FireState> {
     emit(state.copyWith(
       fireCauses: fireCauses,
       isLoading: false,
+      activeFarm: farm,
     ));
 
     if (fireRegister != null) {
@@ -80,12 +92,15 @@ class FireCubit extends Cubit<FireState> {
             .toList() ?? [],
       ));
     }
+
+    onDataChange(
+      lng: locationModel.longitude,
+      lat: locationModel.latitude,
+    );
   }
 
   void onDataChange({
     FireCause? fireCauseSelect,
-    bool? carRaised,
-    bool? carClosed,
     DateTime? date,
     DateTime? extinguished,
     double? areaBurnt,
@@ -95,27 +110,20 @@ class FireCubit extends Cubit<FireState> {
     String? comment,
     List<String>? selectAsiPhotoBase64s,
   }) {
-    String? carRaisedDate;
-    String? carClosedDate;
-
-    if (carRaised == true && state.fireRegister.carRaisedDate == null) {
-      carRaisedDate = DateTime.now().toIso8601String();
-    }
-    if (carRaised == false && state.fireRegister.carRaisedDate != null) {
-      carRaisedDate = null;
-    }
-    if (carRaised == null) {
-      carRaisedDate = state.fireRegister.carRaisedDate;
+    if (date != null &&
+        state.fireRegister.extinguished != null &&
+        date.isAfter(state.fireRegister.extinguished!)) {
+      showSnackError(msg: 'Extinguished date must be after detected date');
+      emit(state.copyWith(fireRegister: state.fireRegister.cleanDateData(isDetected: true)));
+      return;
     }
 
-    if (carClosed == true && state.fireRegister.carClosedDate == null) {
-      carClosedDate = DateTime.now().toIso8601String();
-    }
-    if (carClosed == false && state.fireRegister.carClosedDate != null) {
-      carClosedDate = null;
-    }
-    if (carClosed == null) {
-      carClosedDate = state.fireRegister.carClosedDate;
+    if (extinguished != null &&
+        state.fireRegister.date != null &&
+        extinguished.isBefore(state.fireRegister.date!)) {
+      showSnackError(msg: 'Extinguished date must be after detected date');
+      emit(state.copyWith(fireRegister: state.fireRegister.cleanDateData(isExtinguished: true)));
+      return;
     }
 
     final asiPhotos = <AsiPhoto>[];
@@ -139,8 +147,6 @@ class FireCubit extends Cubit<FireState> {
     emit(state.copyWith(
       fireRegister: state.fireRegister.copyWith(
         fireRegisterId: null,
-        carRaisedDate: carRaisedDate,
-        carClosedDate: carClosedDate,
         date: date ?? state.fireRegister.date,
         areaBurnt: areaBurnt ?? state.fireRegister.areaBurnt,
         commercialAreaLoss:
@@ -160,7 +166,7 @@ class FireCubit extends Cubit<FireState> {
     ));
   }
 
-  Future<int?> onSave() async {
+  Future<void> onSave() async {
     final farm = await configService.getActiveFarm();
 
     var isMasterSynced = false;
@@ -173,13 +179,14 @@ class FireCubit extends Cubit<FireState> {
       }
     }
 
-    return cmoDatabaseMasterService.cacheFireRegisterFromFarm(state.fireRegister
+    await cmoDatabaseMasterService.cacheFireRegisterFromFarm(state.fireRegister
         .copyWith(
             farmId: farm?.farmId,
             fireRegisterNo: state.fireRegister.fireRegisterNo ??
                 DateTime.now().millisecondsSinceEpoch.toString(),
             isActive: true,
             isMasterdataSynced: isMasterSynced));
+    await initLoadData();
   }
 
   void onUpdateAsiPhoto(AsiPhoto asiPhoto) {

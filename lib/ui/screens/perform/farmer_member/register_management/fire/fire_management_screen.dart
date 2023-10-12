@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -9,6 +10,7 @@ import 'package:cmo/state/fire_cubit/fire_cubit.dart';
 import 'package:cmo/state/fire_cubit/fire_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/fire/add_fire_management/add_fire_management_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
@@ -32,6 +34,31 @@ class FireManagementScreen extends StatefulWidget {
 }
 
 class _FireManagementScreenState extends State<FireManagementScreen> {
+  Future<void> navigateToDetailFire({FireRegister? fireRegister}) async {
+    final locationModel = LocationModel()
+      ..latitude = fireRegister?.latitude
+      ..longitude = fireRegister?.longitude;
+    final activeFarm = await configService.getActiveFarm();
+    await SelectLocationScreen.push(
+      context,
+      title: LocaleKeys.fire.tr(),
+      farmName: activeFarm?.farmName,
+      locationModel: locationModel,
+      shouldShowPhotoButton: false,
+      shouldShowBackIcon: true,
+      onSave: (model) async {
+        final shouldRefresh = await AddFireManagementScreen.push(
+          context,
+          fireRegister: fireRegister,
+          locationModel: locationModel,
+        );
+        // if (shouldRefresh != null) {
+        //   await context.read<FireCubit>().initLoadData();
+        // }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FireCubit>(
@@ -42,14 +69,7 @@ class _FireManagementScreenState extends State<FireManagementScreen> {
           return Scaffold(
             appBar: CmoFarmAppBar.showAddingAndFarmName(
               title: LocaleKeys.fire.tr(),
-              onTapAdding: () async {
-                final shouldRefresh =
-                    await AddFireManagementScreen.push(context);
-
-                if (shouldRefresh != null) {
-                  await cubit.initLoadData();
-                }
-              },
+              onTapAdding: () => navigateToDetailFire(),
             ),
             body: state.isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -105,16 +125,7 @@ class _FireManagementScreenState extends State<FireManagementScreen> {
                             ),
                             itemBuilder: (context, index) {
                               return InkWell(
-                                onTap: () async {
-                                  final shouldRefresh =
-                                      await AddFireManagementScreen.push(
-                                          context,
-                                          fireRegister: state.data[index]);
-
-                                  if (shouldRefresh != null) {
-                                    await cubit.initLoadData();
-                                  }
-                                },
+                                onTap: () => navigateToDetailFire(fireRegister: state.data[index]),
                                 child: _FireManagementItem(
                                   fireRegister: state.data[index],
                                 ),

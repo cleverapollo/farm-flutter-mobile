@@ -1,6 +1,7 @@
 import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/fire_cause/fire_cause.dart';
+import 'package:cmo/model/model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'fire_state.freezed.dart';
@@ -17,5 +18,6 @@ class FireState with _$FireState {
     @Default([]) List<FireRegister> dataSearch,
     @Default(true) bool isOpen,
     @Default([]) List<AsiPhoto> asiPhotos,
+    Farm? activeFarm,
   }) = _FireState;
 }

@@ -28,6 +28,7 @@ class SelectLocationScreen extends StatefulWidget {
     this.shouldShowBackIcon = false,
     this.alwaysEnableSaveButton,
     this.saveTitle,
+    this.onSave,
   });
 
   final LocationModel locationModel;
@@ -38,6 +39,7 @@ class SelectLocationScreen extends StatefulWidget {
   final bool shouldShowDangerIcon;
   final bool shouldShowBackIcon;
   final bool? alwaysEnableSaveButton;
+  final void Function(LocationModel)? onSave;
 
   static Future<dynamic> push(
     BuildContext context, {
@@ -49,6 +51,7 @@ class SelectLocationScreen extends StatefulWidget {
     bool shouldShowBackIcon = false,
     bool? alwaysEnableSaveButton,
     String? saveTitle,
+    void Function(LocationModel)? onSave,
   }) {
     return Navigator.push(
       context,
@@ -62,6 +65,7 @@ class SelectLocationScreen extends StatefulWidget {
           shouldShowBackIcon: shouldShowBackIcon,
           alwaysEnableSaveButton: alwaysEnableSaveButton,
           saveTitle: saveTitle,
+          onSave: onSave,
         ),
       ),
     );
@@ -208,7 +212,11 @@ class _SelectLocationState extends State<SelectLocationScreen> {
                   loading: loading,
                   onTap: () {
                     if (isEnableNextButton) {
-                      Navigator.of(context).pop(locationModel);
+                      if (widget.onSave == null) {
+                        Navigator.of(context).pop(locationModel);
+                      } else {
+                        widget.onSave!(locationModel);
+                      }
                     }
                   },
                 ),

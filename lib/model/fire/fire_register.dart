@@ -40,6 +40,31 @@ class FireRegister with _$FireRegister {
 }
 
 extension FireRegisterX on FireRegister {
+  FireRegister cleanDateData({
+    bool isExtinguished = false,
+    bool isDetected = false,
+  }) {
+    return FireRegister(
+      fireRegisterNo: fireRegisterNo,
+      farmId: farmId,
+      fireRegisterId: fireRegisterId,
+      date: date,
+      detected: isDetected ? null : detected,
+      extinguished: isExtinguished ? null : extinguished,
+      fireCauseId: fireCauseId,
+      areaBurnt: areaBurnt,
+      commercialAreaLoss: commercialAreaLoss,
+      latitude: latitude,
+      longitude: longitude,
+      comment: comment,
+      carRaisedDate: carRaisedDate,
+      carClosedDate: carClosedDate,
+      isActive: isActive,
+      isMasterdataSynced: isMasterdataSynced,
+      fireCauseName: fireCauseName,
+    );
+  }
+
   FireRegisterPayLoad toPayLoad() {
     return FireRegisterPayLoad(
       FireRegisterNo: fireRegisterNo,
