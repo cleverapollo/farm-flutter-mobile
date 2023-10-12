@@ -15,8 +15,8 @@ extension StringNullExtension on String? {
     if (isBlank) return null;
     final versionString = this?.replaceAll('.', '');
     if (int.tryParse(versionString ?? '') != null) {
-      final versionCells = this!.split('.').map((i) => int.parse(i)).toList();
-      return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
+      final versionCells = this!.split('.').map((i) => int.tryParse(i)).toList();
+      return (versionCells[0] ?? 0) * 100000 + (versionCells[1] ?? 0) * 1000 + (versionCells[2] ?? 0);
     }
 
     return null;
