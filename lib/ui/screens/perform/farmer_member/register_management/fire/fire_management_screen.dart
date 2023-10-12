@@ -27,7 +27,10 @@ class FireManagementScreen extends StatefulWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const FireManagementScreen(),
+        builder: (_) => BlocProvider<FireCubit>(
+          create: (_) => FireCubit()..initLoadData(),
+          child: const FireManagementScreen(),
+        ),
       ),
     );
   }
@@ -52,18 +55,16 @@ class _FireManagementScreenState extends State<FireManagementScreen> {
           fireRegister: fireRegister,
           locationModel: locationModel,
         );
-        // if (shouldRefresh != null) {
-        //   await context.read<FireCubit>().initLoadData();
-        // }
+        if (shouldRefresh != null) {
+          await context.read<FireCubit>().initLoadData();
+        }
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<FireCubit>(
-      create: (_) => FireCubit()..initLoadData(),
-      child: BlocBuilder<FireCubit, FireState>(
+    return BlocBuilder<FireCubit, FireState>(
         builder: (context, state) {
           final cubit = context.read<FireCubit>();
           return Scaffold(
@@ -138,7 +139,6 @@ class _FireManagementScreenState extends State<FireManagementScreen> {
                   ),
           );
         },
-      ),
     );
   }
 }

@@ -29,3 +29,4 @@ export 'user_info_cubit/user_info_cubit.dart';
 export 'register_management/rte_species/rte_species_cubit.dart';
 export 'register_management/rte_species/rte_species_detail_cubit.dart';
 export 'compartment_cubit/compartment_map_cubit.dart';
+export 'fire_cubit/fire_register_detail_cubit.dart';
