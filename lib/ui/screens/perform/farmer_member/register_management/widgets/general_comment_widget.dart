@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class GeneralCommentWidget extends StatefulWidget {
   const GeneralCommentWidget({
     required this.hintText,
-    this.maxLines = 1,
+    this.maxLines,
     this.keyboardType,
     this.onChanged,
     this.hintTextStyle,
