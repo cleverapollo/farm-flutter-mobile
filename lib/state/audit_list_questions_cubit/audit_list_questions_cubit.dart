@@ -46,6 +46,16 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     applyFilter();
   }
 
+  String getTotalQuestionsValue() {
+    if ((state.selectedCARFilter != null && state.selectedCARFilter != CarFilterEnum.allCARs) ||
+        (state.selectedComplianceFilter != null && state.selectedComplianceFilter?.complianceId != -1) ||
+        (state.incompleteFilter == 1)) {
+      return state.filteredQuestions.length.toString();
+    }
+
+    return state.getAnsweredQuestions().length.toString();
+  }
+
   Future<void> applyFilter() async {
     var filterList = state.questions;
 

@@ -331,7 +331,7 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                   AuditListQuestionsState>(
                 selector: (state) => state,
                 builder: (context, state) => Text(
-                  '${state.getAnsweredQuestions().length}/${state.questions.length} ${LocaleKeys.questions.tr()}',
+                  '${context.read<AuditListQuestionsCubit>().getTotalQuestionsValue()}/${state.questions.length} ${LocaleKeys.questions.tr()}',
                   style: context.textStyles.bodyBold.white,
                 ),
               ),
