@@ -155,6 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             CmoTextField(
               name: emailFieldName,
+              textCapitalization: TextCapitalization.none,
               validator: requiredValidator,
               prefixIcon: Center(child: Assets.icons.icUsername.svg()),
               hintText: LocaleKeys.username.tr(),
@@ -165,6 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
             CmoTextField(
               name: passwordFieldName,
               validator: requiredValidator,
+              textCapitalization: TextCapitalization.none,
               prefixIcon: Center(child: Assets.icons.icPassword.svg()),
               suffixIcon: CmoTappable(
                 onTap: toggleShowPassword,

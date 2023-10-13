@@ -28,6 +28,7 @@ class CmoTextField extends StatelessWidget {
     this.initialValue,
     this.contentPadding,
     this.controller,
+    this.textCapitalization,
   });
 
   final Widget? prefixIcon;
@@ -76,13 +77,15 @@ class CmoTextField extends StatelessWidget {
 
   final TextEditingController? controller;
 
+  final TextCapitalization? textCapitalization;
+
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
       controller: controller,
       name: name,
       textAlign: textAlign ?? TextAlign.start,
-      textCapitalization: TextCapitalization.sentences,
+      textCapitalization: textCapitalization ?? TextCapitalization.sentences,
       validator: validator,
       enabled: enabled,
       style: context.textStyles.bodyNormal,

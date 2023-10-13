@@ -97,8 +97,7 @@ class _CmoTextFieldV2State extends State<CmoTextFieldV2> {
           return TextFormField(
             readOnly: widget.readOnly,
             scrollController: widget.scrollController,
-            textCapitalization:
-                widget.textCapitalization ?? TextCapitalization.none,
+            textCapitalization: widget.textCapitalization ?? TextCapitalization.sentences,
             onChanged: (p0) {
               if(p0.isNotEmpty) {
                 _shouldValidateNotifier.value = false;
