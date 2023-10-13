@@ -201,7 +201,7 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
     return TextFormField(
       scrollController: widget.scrollController,
       minLines: 1,
-      textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
+      textCapitalization: widget.textCapitalization ?? TextCapitalization.sentences,
       onChanged: widget.onChanged,
       enabled: widget.enabled,
       onFieldSubmitted: widget.onSubmitted,

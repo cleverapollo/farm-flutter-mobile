@@ -2,15 +2,15 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/camp.dart';
 import 'package:cmo/model/issue_type/issue_type.dart';
 import 'package:cmo/model/labour_management/farmer_worker.dart';
 import 'package:cmo/model/sanction_register/sanction_register.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_cubit.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
@@ -59,7 +59,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
       create: (_) => DisciplinariesCubit()..initAddData(data: widget.data),
       child: Scaffold(
         appBar: CmoFarmAppBar.showTrailingAndFarmName(
-          title: 'Add Disciplinary',
+          title: LocaleKeys.add_disciplinary.tr(),
         ),
         body: BlocSelector<DisciplinariesCubit, DisciplinariesState, bool>(
           selector: (state) => state.isLoading,
@@ -85,6 +85,8 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                           builder: (context, selectWorker) {
                             return BottomSheetSelection(
                               hintText: LocaleKeys.workers.tr(),
+                              hintTextStyle: context.textStyles.bodyNormal.blueDark2,
+                              displayHorizontal: false,
                               value: selectWorker?.firstName ??
                                   state.data?.displayWorkerName ??
                                   '',
@@ -127,104 +129,22 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                           },
                         ),
                         const SizedBox(height: 12),
-                        BlocSelector<DisciplinariesCubit, DisciplinariesState,
-                            Camp?>(
-                          selector: (state) => state.selectCamp,
-                          builder: (context, selectCamp) {
-                            return BottomSheetSelection(
-                              hintText: LocaleKeys.camp.tr(),
-                              value:
-                                  selectCamp?.campName ?? state.data?.campName,
-                              margin: EdgeInsets.zero,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 14),
-                              onTap: () async {
-                                FocusScope.of(context).unfocus();
-                                if (state.camps.isBlank) return;
-                                await showCustomBottomSheet<void>(
-                                  context,
-                                  content: ListView.builder(
-                                    itemCount: state.camps.length,
-                                    itemBuilder: (context, index) {
-                                      return ListTile(
-                                        onTap: () {
-                                          cubit.onChangeData(
-                                              selectCamp: state.camps[index]);
-                                          Navigator.pop(context);
-                                        },
-                                        title: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 24.0),
-                                          child: Text(
-                                            state.camps[index].campName ?? '',
-                                            style: context.textStyles.bodyBold
-                                                .copyWith(
-                                              color: context.colors.blueDark2,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
+                        buildSelectDateIssued(),
                         const SizedBox(height: 12),
-                        Text(
-                          '* ${LocaleKeys.dateIssued.tr()}',
-                          style: context.textStyles.bodyBold
-                              .copyWith(color: context.colors.black),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            final date = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime.now()
-                                  .add(const Duration(days: -10000)),
-                              lastDate: DateTime.now(),
-                            );
-
-                            if (date != null) {
-                              cubit.onChangeData(dateIssue: date);
-                            }
-                          },
-                          child: AttributeItem(
-                            child: SelectorAttributeItem(
-                              hintText: '',
-                              text: state.data?.dateReceived != null
-                                  ? state.data?.dateReceived?.mmmDdYyyy()
-                                  : '',
-                              contentPadding: const EdgeInsets.all(4),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          LocaleKeys.camp_compartment.tr(),
-                          style: context.textStyles.bodyBold
-                              .copyWith(color: context.colors.black),
-                        ),
-                        const SizedBox(height: 8),
                         BlocSelector<DisciplinariesCubit, DisciplinariesState,
                             String?>(
                           selector: (state) => state.data?.campOrCompartment,
                           builder: (context, campOrCompartment) {
-                            return TextFormField(
-                              initialValue: campOrCompartment,
-                              onChanged: (value) {
-                                cubit.onChangeData(campOrCompartment: value);
-                              },
-                              decoration: const InputDecoration(
-                                  //labelText: "Phone number",
-                                  contentPadding: EdgeInsets.all(8),
-                                  isDense: true,
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                  border: InputBorder.none),
+                            return AttributeItem(
+                              child: InputAttributeItem(
+                                initialValue: campOrCompartment,
+                                textStyle: context.textStyles.bodyNormal.blueDark2,
+                                labelText: LocaleKeys.camp_compartment.tr(),
+                                labelTextStyle: context.textStyles.bodyNormal.black,
+                                onChanged: (value) {
+                                  cubit.onChangeData(campOrCompartment: value);
+                                },
+                              ),
                             );
                           },
                         ),
@@ -235,6 +155,8 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                           builder: (context, selectIssue) {
                             return BottomSheetSelection(
                               hintText: LocaleKeys.disciplinaries_issue.tr(),
+                              hintTextStyle: context.textStyles.bodyNormal.blueDark2,
+                              displayHorizontal: false,
                               value: selectIssue?.issueTypeName ??
                                   state.data?.issueTypeName,
                               margin: EdgeInsets.zero,
@@ -277,70 +199,43 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                           },
                         ),
                         const SizedBox(height: 12),
-                        AttributeItem(
-                          child: SelectorAttributeItem(
-                            hintText: LocaleKeys.car_raised.tr(),
-                            text: LocaleKeys.car_raised.tr(),
-                            contentPadding: const EdgeInsets.all(4),
-                            trailing: SizedBox(
-                              width: 24,
-                              child: Switch(
-                                value: state.data?.carRaisedDate != null,
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                onChanged: (bool value) {
-                                  cubit.onChangeData(carRaised: value);
-                                },
+                        Container(
+                          height: 150,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                color: context.colors.black,
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        AttributeItem(
-                          child: SelectorAttributeItem(
-                            hintText: LocaleKeys.car_closed.tr(),
-                            text: LocaleKeys.car_closed.tr(),
-                            contentPadding: const EdgeInsets.all(4),
-                            trailing: SizedBox(
-                              width: 24,
-                              child: Switch(
-                                value: state.data?.carClosedDate != null,
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                onChanged: (bool value) {
-                                  cubit.onChangeData(carClosed: value);
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          LocaleKeys.general_comments.tr(),
-                          style: context.textStyles.bodyBold
-                              .copyWith(color: context.colors.black),
-                        ),
-                        const SizedBox(height: 8),
-                        BlocSelector<DisciplinariesCubit, DisciplinariesState,
-                            String?>(
-                          selector: (state) => state.data?.comment,
-                          builder: (context, comment) {
-                            return TextFormField(
-                              initialValue: comment,
-                              onChanged: (value) {
-                                cubit.onChangeData(comment: value);
-                              },
-                              decoration: const InputDecoration(
-                                  //labelText: "Phone number",
-                                  contentPadding: EdgeInsets.all(
-                                      8), //  <- you can it to 0.0 for no space
-                                  isDense: true,
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    LocaleKeys.generalComments.tr(),
+                                    style: context.textStyles.bodyNormal.blueDark2,
                                   ),
-                                  border: InputBorder.none),
-                            );
-                          },
+                                ),
+                              ),
+                              BlocSelector<DisciplinariesCubit, DisciplinariesState,
+                                  String?>(
+                                selector: (state) => state.data?.comment,
+                                builder: (context, comment) {
+                                  return GeneralCommentWidget(
+                                    hintText: '',
+                                    initialValue: comment,
+                                    textStyle: context.textStyles.bodyNormal.black,
+                                    onChanged: (value) {
+                                      cubit.onChangeData(comment: value);
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 12),
                         Align(
@@ -400,16 +295,24 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                               }),
                         ),
                         const SizedBox(height: 12),
-                        Align(
-                          child: CmoFilledButton(
-                              title: LocaleKeys.save.tr(),
-                              onTap: () async {
-                                final canNext = await cubit.onSave();
+                        BlocBuilder<DisciplinariesCubit, DisciplinariesState>(
+                          builder: (context, state) {
+                            return Align(
+                              child: CmoFilledButton(
+                                  title: LocaleKeys.save.tr(),
+                                  disable: state.data?.workerId == null ||
+                                      state.data!.workerId!.isBlank ||
+                                      state.data?.signatureImage == null,
+                                  onTap: () async {
+                                    final canNext = await cubit.onSave();
 
-                                if (canNext && context.mounted) {
-                                  Navigator.pop(context, true);
-                                }
-                              }),
+                                    if (canNext && context.mounted) {
+                                      Navigator.pop(context, true);
+                                    }
+                                  },
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(height: 24),
                       ],
@@ -421,6 +324,33 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
           },
         ),
       ),
+    );
+  }
+
+  Widget buildSelectDateIssued() {
+    return BlocBuilder<DisciplinariesCubit, DisciplinariesState>(
+      builder: (context, state) {
+        return AttributeItem(
+          child: CmoDatePicker(
+            name: 'DateIssued',
+            onChanged: (date) => context.read<DisciplinariesCubit>().onChangeData(dateIssue: date),
+            initialValue: state.data?.dateReceived,
+            lastDate: DateTime.now(),
+            inputDecoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 4,
+                horizontal: 12,
+              ),
+              suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
+              suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
+              isDense: true,
+              labelText: LocaleKeys.dateIssued.tr(),
+              labelStyle: context.textStyles.bodyNormal.blueDark2,
+            ),
+          ),
+        );
+      },
     );
   }
 }

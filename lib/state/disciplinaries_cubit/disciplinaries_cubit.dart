@@ -104,7 +104,6 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
 
   void onChangeData({
     FarmerWorker? selectWorker,
-    Camp? selectCamp,
     IssueType? selectIssue,
     DateTime? dateIssue,
     String? campOrCompartment,
@@ -112,41 +111,16 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     String? signatureImage,
     String? signatureDate,
     String? signaturePoint,
-    bool? carRaised,
-    bool? carClosed,
   }) {
     if (state.data == null) {
       emit(state.copyWith(data: const SanctionRegister()));
-    }
-
-    String? carRaisedDate;
-    String? carClosedDate;
-
-    if (carRaised == true && state.data?.carRaisedDate == null) {
-      carRaisedDate = DateTime.now().toIso8601String();
-    }
-    if (carRaised == false && state.data?.carRaisedDate != null) {
-      carRaisedDate = null;
-    }
-    if (carRaised == null) {
-      carRaisedDate = state.data?.carRaisedDate;
-    }
-
-    if (carClosed == true && state.data?.carClosedDate == null) {
-      carClosedDate = DateTime.now().toIso8601String();
-    }
-    if (carClosed == false && state.data?.carClosedDate != null) {
-      carClosedDate = null;
-    }
-    if (carClosed == null) {
-      carClosedDate = state.data?.carClosedDate;
     }
 
     emit(state.copyWith(
       data: state.data?.copyWith(
         sanctionRegisterId: state.data?.sanctionRegisterId ??
             DateTime.now().millisecondsSinceEpoch.toString(),
-        workerId: (selectWorker?.workerId ?? state.data?.workerId).toString(),
+        workerId: (selectWorker?.workerId ?? state.data?.workerId ?? '').toString(),
         campOrCompartment: campOrCompartment ?? state.data?.campOrCompartment,
         comment: comment ?? state.data?.comment,
         dateReceived: dateIssue ?? state.data?.dateReceived,
@@ -154,15 +128,10 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
         signatureImage: signatureImage ?? state.data?.signatureImage,
         issueTypeId: selectIssue?.issueTypeId ?? state.data?.issueTypeId,
         issueTypeName: selectIssue?.issueTypeName ?? state.data?.issueTypeName,
-        campId: selectCamp?.campId ?? state.data?.campId,
-        campName: selectCamp?.campName ?? state.data?.campName,
-        carRaisedDate: carRaisedDate,
-        carClosedDate: carClosedDate,
         displayWorkerName:
             '${selectWorker?.firstName ?? ''} ${selectWorker?.surname ?? ''}',
       ),
       selectWorker: selectWorker ?? state.selectWorker,
-      selectCamp: selectCamp ?? state.selectCamp,
       selectIssue: selectIssue ?? state.selectIssue,
     ));
   }
