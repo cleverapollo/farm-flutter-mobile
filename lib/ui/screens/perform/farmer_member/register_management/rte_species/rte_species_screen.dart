@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/register_management/rte_species/rte_species_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -37,12 +39,33 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
     });
   }
 
+  Future<void> navigateToDetail({RteSpecies? rteSpecies}) async {
+    final locationModel = LocationModel()
+      ..latitude = rteSpecies?.latitude
+      ..longitude = rteSpecies?.longitude;
+    final activeFarm = await configService.getActiveFarm();
+    await SelectLocationScreen.push(
+      context,
+      title: LocaleKeys.rteSpecies.tr(),
+      farmName: activeFarm?.farmName,
+      locationModel: locationModel,
+      shouldShowBackIcon: true,
+      onSave: (model) async {
+        await RteSpeciesDetailScreen.push(
+          context,
+          rteSpecies: rteSpecies,
+          locationModel: locationModel,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoFarmAppBar.showAddingAndFarmName(
         title: LocaleKeys.rteSpecies.tr(),
-        onTapAdding: () => RteSpeciesDetailScreen.push(context),
+        onTapAdding: navigateToDetail,
       ),
       body: BlocBuilder<RteSpeciesCubit, RteSpeciesState>(
         builder: (context, state) {
@@ -65,10 +88,7 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
               final item = state.filterRteSpecies[index];
               return GestureDetector(
                 onTap: () async {
-                  await RteSpeciesDetailScreen.push(
-                    context,
-                    rteSpecies: item,
-                  );
+                  await navigateToDetail(rteSpecies: item);
                 },
                 child: _RteSpeciesItem(
                   rteSpecies: item,

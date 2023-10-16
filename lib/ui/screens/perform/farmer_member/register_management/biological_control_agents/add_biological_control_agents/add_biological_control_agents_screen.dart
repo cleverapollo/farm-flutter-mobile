@@ -147,35 +147,12 @@ class _AddBiologicalControlAgentsScreenState
                             },
                           ),
                           const SizedBox(height: 12),
-                          Container(
-                            height: 250,
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: context.colors.black,
-                                ),
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      LocaleKeys.generalComments.tr(),
-                                      style: context.textStyles.bodyNormal.blueDark2,
-                                    ),
-                                  ),
-                                ),
-                                GeneralCommentWidget(
-                                  hintText: '',
-                                  initialValue: initState.agent.comment,
-                                  textStyle: context.textStyles.bodyNormal.black,
-                                  onChanged: cubit.onCommentChanged,
-                                ),
-                              ],
-                            ),
+                          GeneralCommentWidget(
+                            hintText: '',
+                            shouldShowTitle: true,
+                            initialValue: initState.agent.comment,
+                            textStyle: context.textStyles.bodyNormal.black,
+                            onChanged: cubit.onCommentChanged,
                           ),
                           const SizedBox(height: 60),
                         ],

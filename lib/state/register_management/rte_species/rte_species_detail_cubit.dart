@@ -47,6 +47,10 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
         ),
       ),
     );
+
+    if (locationModel != null) {
+      onChangeLocationAndPhoto(locationModel);
+    }
   }
 
   void onChangeSpeciesType(AnimalType animalType) {
@@ -146,6 +150,13 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
     }
   }
 
+  void onUpdatePhoto(RteSpeciesPhotoModel rteSpeciesPhotoModel) {
+    final rtePhotos = state.rtePhotos;
+    rtePhotos.removeWhere((element) => element.rteSpeciesRegisterPhotoNo == rteSpeciesPhotoModel.rteSpeciesRegisterPhotoNo);
+    rtePhotos.add(rteSpeciesPhotoModel);
+    emit(state.copyWith(rtePhotos: rtePhotos));
+  }
+
   void onRemovePhoto(RteSpeciesPhotoModel rteSpeciesPhotoModel) {
     final rtePhotos = state.rtePhotos;
     rtePhotos.remove(rteSpeciesPhotoModel);
@@ -189,7 +200,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
 
       showSnackSuccess(
         msg:
-            '${state.rteSpecies == null ? LocaleKeys.addRteSpecies.tr() : 'Edit RTE Species'} $rteSpeciesId',
+            '${state.rteSpecies == null ? LocaleKeys.addRteSpecies.tr() : LocaleKeys.edit_rte_species.tr()} $rteSpeciesId',
       );
     } catch (e) {
       logger.e('Cannot save RTE species $e');

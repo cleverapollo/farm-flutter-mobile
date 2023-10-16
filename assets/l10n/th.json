@@ -157,6 +157,7 @@
   "speciesNo": "จำนวนชนืดพันธ์",
   "rteSpecies": "RTE Species",
   "addRteSpecies": "เพิ่มเติมชนิดพันธ์ RTE (หายาก,ถูกคุกคาม,ใกล้สูญพันธ์)",
+  "edit_rte_species": "Edit RTE Species",
   "speciesType": "ประเภทของชนิดพันธ์",
   "commonName": "ชื่อที่ใช้ทั่วไป",
   "speciesRange": "ช่วงของชนิดพันธ์",

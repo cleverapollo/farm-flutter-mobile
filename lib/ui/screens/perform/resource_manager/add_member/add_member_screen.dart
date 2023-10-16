@@ -342,16 +342,6 @@ class _AddMemberSDetails extends StatelessWidget {
       },
     );
   }
-
-  Padding _buildTitle(BuildContext context, String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Text(
-        text,
-        style: context.textStyles.bodyBold,
-      ),
-    );
-  }
 }
 
 class _AddMemberMDetails extends StatelessWidget {
