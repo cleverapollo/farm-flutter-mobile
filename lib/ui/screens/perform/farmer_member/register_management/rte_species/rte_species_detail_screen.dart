@@ -15,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import '../select_location/select_location_screen.dart';
+import '../widgets/information_text_widget.dart';
 import 'widgets/rte_species_photo.dart';
 
 class RteSpeciesDetailScreen extends StatefulWidget {
@@ -70,17 +71,21 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
               : LocaleKeys.edit_rte_species.tr(),
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 21, vertical: 20),
+          padding: const EdgeInsets.symmetric(vertical: 20),
           child: BlocBuilder<RteSpeciesDetailCubit, RteSpeciesDetailState>(
             builder: (context, state) {
               return Column(
                 children: [
-                  selectSpeciesType(context, state),
+                  CmoHeaderTile(
+                    title: LocaleKeys.species.tr(),
+                    backgroundColor: context.colors.blueDark2,
+                  ),
                   AttributeItem(
+                    margin: const EdgeInsets.symmetric(horizontal: 21),
                     child: InputAttributeItem(
                       labelText: LocaleKeys.commonName.tr(),
-                      textStyle: context.textStyles.bodyNormal.blueDark2,
-                      labelTextStyle: context.textStyles.bodyNormal.blueDark2,
+                      textStyle: context.textStyles.bodyNormal.blueDark3,
+                      labelTextStyle: context.textStyles.bodyBold.blueDark3,
                       validator: requiredValidator,
                       hintTextStyle: context.textStyles.bodyBold.black,
                       initialValue: state.rteSpecies?.commonName,
@@ -89,7 +94,14 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
                           .onChangeCommonName,
                     ),
                   ),
+                  InformationText(),
+                  CmoHeaderTile(
+                    title: LocaleKeys.additional_details_optional.tr(),
+                    backgroundColor: context.colors.blueDark2,
+                  ),
+                  selectSpeciesType(context, state),
                   AttributeItem(
+                    margin: const EdgeInsets.symmetric(horizontal: 21),
                     child: InputAttributeItem(
                       textStyle: context.textStyles.bodyNormal.blueDark2,
                       labelTextStyle: context.textStyles.bodyNormal.blueDark2,
@@ -104,13 +116,16 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
                   buildSelectDateSpotted(state),
                   buildLatLngWidget(state),
                   const SizedBox(height: 12),
-                  GeneralCommentWidget(
-                    textStyle: context.textStyles.bodyNormal.blueDark2,
-                    shouldShowTitle: true,
-                    hintText: '',
-                    initialValue: state.rteSpecies?.comment,
-                    onChanged:
-                        context.read<RteSpeciesDetailCubit>().onChangeComment,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 21),
+                    child: GeneralCommentWidget(
+                      height: 100,
+                      textStyle: context.textStyles.bodyNormal.blueDark2,
+                      shouldShowTitle: true,
+                      hintText: '',
+                      initialValue: state.rteSpecies?.comment,
+                      onChanged: context.read<RteSpeciesDetailCubit>().onChangeComment,
+                    ),
                   ),
                   if (state.rtePhotos.isNotBlank)
                     ...state.rtePhotos.map(
@@ -166,7 +181,7 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
       hintText: LocaleKeys.speciesType.tr(),
       hintTextStyle: context.textStyles.bodyNormal.blueDark2,
       value: state.rteSpecies?.animalTypeName,
-      margin: EdgeInsets.zero,
+      margin: const EdgeInsets.symmetric(horizontal: 21),
       displayHorizontal: false,
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       onTap: () async {
@@ -206,7 +221,7 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
       hintText: LocaleKeys.speciesRange.tr(),
       hintTextStyle: context.textStyles.bodyNormal.blueDark2,
       displayHorizontal: false,
-      margin: EdgeInsets.zero,
+      margin: const EdgeInsets.symmetric(horizontal: 21),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       value: state.rteSpecies?.speciesRangeName,
       onTap: () async {
@@ -243,6 +258,7 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
 
   Widget buildSelectDateSpotted(RteSpeciesDetailState state) {
     return AttributeItem(
+      margin: const EdgeInsets.symmetric(horizontal: 21),
       child: CmoDatePicker(
         name: 'DateSpotted',
         hintText: LocaleKeys.dateSpotted.tr(),
@@ -295,9 +311,13 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        margin: const EdgeInsets.symmetric(horizontal: 21),
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide(color: context.colors.grey),
+            bottom: BorderSide(
+              color: context.colors.blueDark2,
+              width: 2,
+            ),
           ),
         ),
         child: Row(

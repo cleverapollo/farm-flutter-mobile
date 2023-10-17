@@ -20,6 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
+import '../widgets/information_text_widget.dart';
+
 class DisciplinariesAddScreen extends StatefulWidget {
   const DisciplinariesAddScreen({super.key, required this.data});
 
@@ -78,7 +80,10 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CmoHeaderTile(title: LocaleKeys.details.tr()),
+                        CmoHeaderTile(
+                          title: LocaleKeys.details.tr(),
+                          backgroundColor: context.colors.blueDark2,
+                        ),
                         BlocSelector<DisciplinariesCubit, DisciplinariesState,
                             FarmerWorker?>(
                           selector: (state) => state.selectWorker,
@@ -179,8 +184,11 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                             );
                           },
                         ),
-                        informationText(),
-                        CmoHeaderTile(title: LocaleKeys.additional_details_optional.tr()),
+                        InformationText(),
+                        CmoHeaderTile(
+                          title: LocaleKeys.additional_details_optional.tr(),
+                          backgroundColor: context.colors.blueDark2,
+                        ),
                         BlocSelector<DisciplinariesCubit, DisciplinariesState,
                             String?>(
                           selector: (state) => state.data?.campOrCompartment,
@@ -210,7 +218,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                                 hintText: '',
                                 initialValue: comment,
                                 shouldShowTitle: true,
-                                height: 160,
+                                height: 100,
                                 textStyle: context.textStyles.bodyNormal.black,
                                 onChanged: (value) {
                                   cubit.onChangeData(comment: value);
@@ -305,17 +313,6 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
             );
           },
         ),
-      ),
-    );
-  }
-
-  Widget informationText() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(22, 25, 22, 6),
-      child: Text(
-        LocaleKeys.disciplinary_detail_text_information.tr(),
-        style: context.textStyles.bodyNormal.blueDark3,
-        maxLines: 2,
       ),
     );
   }

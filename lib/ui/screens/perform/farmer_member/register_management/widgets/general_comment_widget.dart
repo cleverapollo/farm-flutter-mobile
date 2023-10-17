@@ -18,6 +18,7 @@ class GeneralCommentWidget extends StatefulWidget {
     this.enabled = true,
     this.shouldShowTitle = false,
     this.height = 250,
+    this.isTextField = false,
 });
 
   final String? initialValue;
@@ -30,6 +31,7 @@ class GeneralCommentWidget extends StatefulWidget {
   final bool enabled;
   final bool shouldShowTitle;
   final double height;
+  final bool isTextField;
 
   @override
   State<StatefulWidget> createState() => _AddGeneralCommentWidgetState();
@@ -38,10 +40,16 @@ class GeneralCommentWidget extends StatefulWidget {
 class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
 
   Timer? _debounceInputTimer;
+  TextEditingController? textEditingController;
+  @override
+  void initState() {
+    super.initState();
+    textEditingController = TextEditingController(text: widget.initialValue);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final textField = TextFormField(
+    final textFormField = TextFormField(
       textCapitalization: TextCapitalization.sentences,
       keyboardAppearance: Brightness.light,
       textAlign: TextAlign.left,
@@ -68,6 +76,35 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
       },
     );
 
+    final textField = TextField(
+      maxLines: 2,
+      controller: textEditingController,
+      textCapitalization: TextCapitalization.sentences,
+      keyboardAppearance: Brightness.light,
+      textAlign: TextAlign.left,
+      style: widget.textStyle ?? context.textStyles.bodyBold.black,
+      enabled: widget.enabled,
+      minLines: 1,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.all(15),
+        hintText: widget.hintText,
+        hintStyle: widget.hintTextStyle ?? context.textStyles.bodyNormal.blueDark2,
+        border: InputBorder.none,
+        focusedBorder: InputBorder.none,
+      ),
+      onChanged: (text) {
+        if (widget.onChanged != null) {
+          _debounceInputTimer?.cancel();
+          _debounceInputTimer = Timer(
+            const Duration(milliseconds: 200),
+                () => widget.onChanged!.call(text),
+          );
+        }
+      },
+    );
+
+    final childWidget = widget.isTextField ? textField : textFormField;
+
     if (widget.shouldShowTitle) {
       return Container(
         height: widget.height,
@@ -91,12 +128,12 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
                 ),
               ),
             ),
-            Expanded(child: textField),
+            Expanded(child: childWidget),
           ],
         ),
       );
     }
 
-    return textField;
+    return childWidget;
   }
 }

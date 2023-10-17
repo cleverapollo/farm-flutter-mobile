@@ -3,15 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:cmo/ui/theme/theme.dart';
 
 class CmoHeaderTile extends StatelessWidget {
-  CmoHeaderTile({super.key, required this.title, this.child});
+  CmoHeaderTile({
+    super.key,
+    required this.title,
+    this.child,
+    this.backgroundColor,
+  });
 
   final String title;
   final Widget? child;
-
+  final Color? backgroundColor;
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: context.colors.blueDark1,
+      color: backgroundColor ?? context.colors.blueDark1,
       child: SizedBox(
         height: 35,
         child: Align(

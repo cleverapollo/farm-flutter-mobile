@@ -158,6 +158,7 @@
   "latitudeOriginDecimal": "Latitude - Origin (Decimal)",
   "longitudeOriginDecimal": "Longitude - Origin (Decimal)",
   "speciesNo": "No Spesis",
+  "species": "Species",
   "rteSpecies": "Spesis RTE",
   "addRteSpecies": "Add RTE Species",
   "edit_rte_species": "Edit RTE Species",

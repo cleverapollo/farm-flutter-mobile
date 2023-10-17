@@ -156,6 +156,7 @@
   "latitudeOriginDecimal": "เส้นรุ้ง - จุดเริ่มต้น (ทศนิยม)",
   "longitudeOriginDecimal": "เส้นแวง - จุดเริ่มต้น (ทศนิยม)",
   "speciesNo": "จำนวนชนืดพันธ์",
+  "species": "Species",
   "rteSpecies": "RTE Species",
   "addRteSpecies": "เพิ่มเติมชนิดพันธ์ RTE (หายาก,ถูกคุกคาม,ใกล้สูญพันธ์)",
   "edit_rte_species": "Edit RTE Species",
