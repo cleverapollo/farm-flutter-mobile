@@ -67,23 +67,35 @@ class AddEmployeeGrievanceCubit extends Cubit<AddEmployeeGrievanceState> {
   }
 
   void onGrievanceIssueChanged(GrievanceIssue? issue) {
-    state.employeeGrievance = state.employeeGrievance.copyWith(
-      grievanceIssueId: issue?.grievanceIssueId,
-      grievanceIssueName: issue?.grievanceIssueName,
+    emit(
+      state.copyWith(
+        employeeGrievance: state.employeeGrievance.copyWith(
+          grievanceIssueId: issue?.grievanceIssueId,
+          grievanceIssueName: issue?.grievanceIssueName,
+        ),
+      ),
     );
   }
 
   void onFarmWorkerChanged(FarmerWorker? worker) {
-    state.employeeGrievance = state.employeeGrievance.copyWith(
-      workerId: worker?.workerId,
-      workerName: worker?.firstName,
+    emit(
+      state.copyWith(
+        employeeGrievance: state.employeeGrievance.copyWith(
+          workerId: worker?.workerId,
+          workerName: worker?.firstName,
+        ),
+      ),
     );
   }
 
   void onAllocatedChanged(FarmerWorker? worker) {
-    state.employeeGrievance = state.employeeGrievance.copyWith(
-      allocatedToUserId: worker?.workerId,
-      allocatedToName: worker?.firstName,
+    emit(
+      state.copyWith(
+        employeeGrievance: state.employeeGrievance.copyWith(
+          allocatedToUserId: worker?.workerId,
+          allocatedToName: worker?.firstName,
+        ),
+      ),
     );
   }
 

@@ -19,6 +19,7 @@ class GeneralCommentWidget extends StatefulWidget {
     this.shouldShowTitle = false,
     this.height = 250,
     this.isTextField = false,
+    this.title,
 });
 
   final String? initialValue;
@@ -32,6 +33,7 @@ class GeneralCommentWidget extends StatefulWidget {
   final bool shouldShowTitle;
   final double height;
   final bool isTextField;
+  final String? title;
 
   @override
   State<StatefulWidget> createState() => _AddGeneralCommentWidgetState();
@@ -123,7 +125,7 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  LocaleKeys.generalComments.tr(),
+                  widget.title ?? LocaleKeys.generalComments.tr(),
                   style: context.textStyles.bodyNormal.blueDark2,
                 ),
               ),

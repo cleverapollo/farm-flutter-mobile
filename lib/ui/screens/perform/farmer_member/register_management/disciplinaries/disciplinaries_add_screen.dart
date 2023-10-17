@@ -207,6 +207,23 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                             );
                           },
                         ),
+                        BlocSelector<DisciplinariesCubit, DisciplinariesState, String?>(
+                          selector: (state) => state.data?.descriptionOfSanction,
+                          builder: (context, descriptionOfSanction) {
+                            return AttributeItem(
+                              margin: const EdgeInsets.symmetric(horizontal: 24),
+                              child: InputAttributeItem(
+                                initialValue: descriptionOfSanction,
+                                textStyle: context.textStyles.bodyNormal.blueDark2,
+                                labelText: LocaleKeys.disciplinaries_steps_taken.tr(),
+                                labelTextStyle: context.textStyles.bodyNormal.black,
+                                onChanged: (value) {
+                                  cubit.onChangeData(descriptionOfSanction: value);
+                                },
+                              ),
+                            );
+                          },
+                        ),
                         const SizedBox(height: 12),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24.0),
