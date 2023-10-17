@@ -69,8 +69,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
             }
 
             return Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: SingleChildScrollView(
                 child: BlocBuilder<DisciplinariesCubit, DisciplinariesState>(
                   builder: (context, state) {
@@ -79,18 +78,19 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        CmoHeaderTile(title: LocaleKeys.details.tr()),
                         BlocSelector<DisciplinariesCubit, DisciplinariesState,
                             FarmerWorker?>(
                           selector: (state) => state.selectWorker,
                           builder: (context, selectWorker) {
                             return BottomSheetSelection(
                               hintText: LocaleKeys.workers.tr(),
-                              hintTextStyle: context.textStyles.bodyNormal.blueDark2,
+                              hintTextStyle: context.textStyles.bodyBold.blueDark3,
                               displayHorizontal: false,
                               value: selectWorker?.firstName ??
                                   state.data?.displayWorkerName ??
                                   '',
-                              margin: EdgeInsets.zero,
+                              margin: const EdgeInsets.symmetric(horizontal: 24),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 12, horizontal: 14),
                               onTap: () async {
@@ -130,36 +130,17 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                         ),
                         const SizedBox(height: 12),
                         buildSelectDateIssued(),
-                        const SizedBox(height: 12),
-                        BlocSelector<DisciplinariesCubit, DisciplinariesState,
-                            String?>(
-                          selector: (state) => state.data?.campOrCompartment,
-                          builder: (context, campOrCompartment) {
-                            return AttributeItem(
-                              child: InputAttributeItem(
-                                initialValue: campOrCompartment,
-                                textStyle: context.textStyles.bodyNormal.blueDark2,
-                                labelText: LocaleKeys.camp_compartment.tr(),
-                                labelTextStyle: context.textStyles.bodyNormal.black,
-                                onChanged: (value) {
-                                  cubit.onChangeData(campOrCompartment: value);
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 12),
                         BlocSelector<DisciplinariesCubit, DisciplinariesState,
                             IssueType?>(
                           selector: (state) => state.selectIssue,
                           builder: (context, selectIssue) {
                             return BottomSheetSelection(
                               hintText: LocaleKeys.disciplinaries_issue.tr(),
-                              hintTextStyle: context.textStyles.bodyNormal.blueDark2,
+                              hintTextStyle: context.textStyles.bodyBold.blueDark3,
                               displayHorizontal: false,
                               value: selectIssue?.issueTypeName ??
                                   state.data?.issueTypeName,
-                              margin: EdgeInsets.zero,
+                              margin: const EdgeInsets.symmetric(horizontal: 24),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 12, horizontal: 14),
                               onTap: () async {
@@ -174,7 +155,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                                         onTap: () {
                                           cubit.onChangeData(
                                               selectIssue:
-                                                  state.issueTypes[index]);
+                                              state.issueTypes[index]);
                                           Navigator.pop(context);
                                         },
                                         title: Padding(
@@ -182,7 +163,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                                               horizontal: 24.0),
                                           child: Text(
                                             state.issueTypes[index]
-                                                    .issueTypeName ??
+                                                .issueTypeName ??
                                                 '',
                                             style: context.textStyles.bodyBold
                                                 .copyWith(
@@ -198,43 +179,44 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                             );
                           },
                         ),
-                        const SizedBox(height: 12),
-                        Container(
-                          height: 150,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: context.colors.black,
-                              ),
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    LocaleKeys.generalComments.tr(),
-                                    style: context.textStyles.bodyNormal.blueDark2,
-                                  ),
-                                ),
-                              ),
-                              BlocSelector<DisciplinariesCubit, DisciplinariesState,
-                                  String?>(
-                                selector: (state) => state.data?.comment,
-                                builder: (context, comment) {
-                                  return GeneralCommentWidget(
-                                    hintText: '',
-                                    initialValue: comment,
-                                    textStyle: context.textStyles.bodyNormal.black,
-                                    onChanged: (value) {
-                                      cubit.onChangeData(comment: value);
-                                    },
-                                  );
+                        informationText(),
+                        CmoHeaderTile(title: LocaleKeys.additional_details_optional.tr()),
+                        BlocSelector<DisciplinariesCubit, DisciplinariesState,
+                            String?>(
+                          selector: (state) => state.data?.campOrCompartment,
+                          builder: (context, campOrCompartment) {
+                            return AttributeItem(
+                              margin: const EdgeInsets.symmetric(horizontal: 24),
+                              child: InputAttributeItem(
+                                initialValue: campOrCompartment,
+                                textStyle: context.textStyles.bodyNormal.blueDark2,
+                                labelText: LocaleKeys.camp_compartment.tr(),
+                                labelTextStyle: context.textStyles.bodyNormal.black,
+                                onChanged: (value) {
+                                  cubit.onChangeData(campOrCompartment: value);
                                 },
                               ),
-                            ],
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                          child: BlocSelector<DisciplinariesCubit, DisciplinariesState,
+                              String?>(
+                            selector: (state) => state.data?.comment,
+                            builder: (context, comment) {
+                              return GeneralCommentWidget(
+                                hintText: '',
+                                initialValue: comment,
+                                shouldShowTitle: true,
+                                height: 160,
+                                textStyle: context.textStyles.bodyNormal.black,
+                                onChanged: (value) {
+                                  cubit.onChangeData(comment: value);
+                                },
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -299,7 +281,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                           builder: (context, state) {
                             return Align(
                               child: CmoFilledButton(
-                                  title: LocaleKeys.save.tr(),
+                                  title: LocaleKeys.accept_signature_and_finalise_save.tr(),
                                   disable: state.data?.workerId == null ||
                                       state.data!.workerId!.isBlank ||
                                       state.data?.signatureImage == null,
@@ -327,10 +309,22 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
     );
   }
 
+  Widget informationText() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(22, 25, 22, 6),
+      child: Text(
+        LocaleKeys.disciplinary_detail_text_information.tr(),
+        style: context.textStyles.bodyNormal.blueDark3,
+        maxLines: 2,
+      ),
+    );
+  }
+
   Widget buildSelectDateIssued() {
     return BlocBuilder<DisciplinariesCubit, DisciplinariesState>(
       builder: (context, state) {
         return AttributeItem(
+          margin: const EdgeInsets.symmetric(horizontal: 24),
           child: CmoDatePicker(
             name: 'DateIssued',
             onChanged: (date) => context.read<DisciplinariesCubit>().onChangeData(dateIssue: date),
@@ -346,7 +340,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
               suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
               isDense: true,
               labelText: LocaleKeys.dateIssued.tr(),
-              labelStyle: context.textStyles.bodyNormal.blueDark2,
+              labelStyle: context.textStyles.bodyBold.blueDark3,
             ),
           ),
         );

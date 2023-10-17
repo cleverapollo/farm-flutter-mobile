@@ -7,13 +7,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AttributeItem extends StatelessWidget {
   final Widget child;
-  final EdgeInsetsGeometry padding;
+  final EdgeInsets padding;
+  final EdgeInsets margin;
   final bool isShowError;
   final String? errorText;
 
   const AttributeItem({
     required this.child,
     this.padding = const EdgeInsets.symmetric(vertical: 6),
+    this.margin = EdgeInsets.zero,
     this.isShowError = false,
     this.errorText,
     super.key,
@@ -26,12 +28,14 @@ class AttributeItem extends StatelessWidget {
       children: [
         Container(
           padding: padding,
+          margin: margin,
           decoration: BoxDecoration(
             border: isShowError
                 ? errorBorder(context)
                 : Border(
                     bottom: BorderSide(
                       color: context.colors.blueDark2,
+                      width: 2,
                     ),
                   ),
             borderRadius: isShowError ? BorderRadius.circular(4) : null,
@@ -57,7 +61,10 @@ class AttributeItem extends StatelessWidget {
   }
 
   Border errorBorder(BuildContext context) {
-    return Border.all(color: context.colors.redError);
+    return Border.all(
+      color: context.colors.redError,
+      width: 2,
+    );
   }
 }
 

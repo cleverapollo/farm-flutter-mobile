@@ -83,7 +83,10 @@ class BottomSheetSelection extends StatelessWidget {
         padding: padding ?? const EdgeInsets.symmetric(horizontal: 6),
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide(color: context.colors.grey),
+            bottom: BorderSide(
+              color: context.colors.blueDark2,
+              width: 2,
+            ),
           ),
         ),
         child: child,

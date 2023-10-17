@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ class GeneralCommentWidget extends StatefulWidget {
     super.key,
     this.enabled = true,
     this.shouldShowTitle = false,
+    this.height = 250,
 });
 
   final String? initialValue;
@@ -26,12 +29,15 @@ class GeneralCommentWidget extends StatefulWidget {
   final TextStyle? textStyle;
   final bool enabled;
   final bool shouldShowTitle;
+  final double height;
 
   @override
   State<StatefulWidget> createState() => _AddGeneralCommentWidgetState();
 }
 
 class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
+
+  Timer? _debounceInputTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -53,18 +59,23 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
       ),
       onChanged: (text) {
         if (widget.onChanged != null) {
-          widget.onChanged!.call(text);
+          _debounceInputTimer?.cancel();
+          _debounceInputTimer = Timer(
+            const Duration(milliseconds: 200),
+            () => widget.onChanged!.call(text),
+          );
         }
       },
     );
 
     if (widget.shouldShowTitle) {
       return Container(
-        height: 250,
+        height: widget.height,
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: context.colors.black,
+              color: context.colors.blueDark2,
+              width: 2,
             ),
           ),
         ),
@@ -80,7 +91,7 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
                 ),
               ),
             ),
-            textField,
+            Expanded(child: textField),
           ],
         ),
       );

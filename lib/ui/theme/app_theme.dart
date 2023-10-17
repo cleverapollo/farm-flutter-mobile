@@ -16,6 +16,7 @@ abstract class _AppColor {
   static const blue = Color(0xFF2072B9);
   static const blueDark1 = Color(0xF11C3760);
   static const blueDark2 = Color(0xFF1B294A);
+  static const blueDark3 = Color(0xFF283554);
   static const red = Color(0xFFFF0000);
   static const green = Color(0xFF04C504);
   static const yellow = Color(0xFFFFC122);
@@ -78,6 +79,7 @@ class ColorThemeExt extends ThemeExtension<ColorThemeExt> {
   final blue = _AppColor.blue;
   final blueDark1 = _AppColor.blueDark1;
   final blueDark2 = _AppColor.blueDark2;
+  final blueDark3 = _AppColor.blueDark3;
   final red = _AppColor.red;
   final redError = _AppColor.redError;
   final green = _AppColor.green;
@@ -154,6 +156,7 @@ extension TextStyleExt on TextStyle {
   TextStyle get greyLight1 => copyWith(color: _AppColor.greyLight1);
   TextStyle get grey => copyWith(color: _AppColor.grey);
   TextStyle get blueDark2 => copyWith(color: _AppColor.blueDark2);
+  TextStyle get blueDark3 => copyWith(color: _AppColor.blueDark3);
   TextStyle get blue => copyWith(color: _AppColor.blue);
   TextStyle get red => copyWith(color: _AppColor.red);
   TextStyle get redError => copyWith(color: _AppColor.redError);
