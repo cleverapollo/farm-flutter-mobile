@@ -197,44 +197,6 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12.0),
-                  AttributeItem(
-                    child: SelectorAttributeItem(
-                      hintText: '',
-                      text: LocaleKeys.carRaised.tr(),
-                      contentPadding: const EdgeInsets.all(4),
-                      trailing: SizedBox(
-                        width: 24,
-                        child: Switch(
-                          value: state.carRaised ?? false,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          onChanged: (bool value) {
-                            cubit.onChangeData(carRaised: value);
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12.0),
-                  AttributeItem(
-                    child: SelectorAttributeItem(
-                      hintText: '',
-                      text: LocaleKeys.carClosed.tr(),
-                      contentPadding: const EdgeInsets.all(4),
-                      trailing: SizedBox(
-                        width: 24,
-                        child: Switch(
-                          value: state.carClosed ?? false,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          onChanged: (bool value) {
-                            cubit.onChangeData(carClosed: value);
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
                   const SizedBox(height: 40),
                   Align(
                     child: CmoFilledButton(

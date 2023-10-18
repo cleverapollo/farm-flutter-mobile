@@ -1,6 +1,7 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
@@ -47,13 +48,17 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        CmoHeaderTile(
+          title: LocaleKeys.nameOfControlAgent.tr(),
+          backgroundColor: context.colors.blueDark2,
+        ),
         BottomSheetSelection(
-          hintText: LocaleKeys.nameOfControlAgent.tr(),
-          hintTextStyle: context.textStyles.bodyNormal.blueDark2,
+          hintText: LocaleKeys.select_name_of_control_agent.tr(),
+          hintTextStyle: context.textStyles.bodyBold.blueDark3,
           value: selectedAgent?.biologicalControlAgentTypeName,
           isRequiredField: true,
-          margin: EdgeInsets.zero,
           displayHorizontal: false,
+          margin: const EdgeInsets.symmetric(horizontal: 24.0),
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
           onTap: () async {
             FocusScope.of(context).unfocus();
@@ -89,16 +94,25 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
             );
           },
         ),
+        const SizedBox(height: 24,),
+        InformationText(),
+        CmoHeaderTile(
+          title: LocaleKeys.additional_details_optional.tr(),
+          backgroundColor: context.colors.blueDark2,
+        ),
         const SizedBox(height: 8),
         AutofillWidget(
+          margin: const EdgeInsets.symmetric(horizontal: 24.0),
           title: LocaleKeys.scientificName.tr(),
           value: selectedAgent?.biologicalControlAgentTypeScientificName,
         ),
         AutofillWidget(
+          margin: const EdgeInsets.symmetric(horizontal: 24.0),
           title: LocaleKeys.countryOfOrigin.tr(),
           value: selectedAgent?.biologicalControlAgentTypeName,
         ),
         AutofillWidget(
+          margin: const EdgeInsets.symmetric(horizontal: 24.0),
           title: LocaleKeys.reasonForBioAgent.tr(),
           value: selectedAgent?.reasonForBioAgent,
         ),

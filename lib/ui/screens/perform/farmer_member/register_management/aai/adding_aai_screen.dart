@@ -63,9 +63,6 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
-  bool carRaised = false;
-  bool carClosed = false;
-
   @override
   void initState() {
     super.initState();
@@ -79,8 +76,6 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
       selectAccidentAndIncidentPropertyDamageds.value.addAll(result);
     });
 
-    carRaised = aai.carRaisedDate != null;
-    carClosed = aai.carClosedDate != null;
     _commentController.text = cubit.state.accidentAndIncident.comment ?? '';
   }
 
@@ -116,18 +111,6 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           isActive: true,
           isMasterDataSynced: false,
         );
-
-        if (carRaised && aai.carRaisedDate == null) {
-          aai = aai.copyWith(
-            carRaisedDate: DateTime.now().toIso8601String(),
-          );
-        }
-
-        if (carClosed && aai.carClosedDate == null) {
-          aai = aai.copyWith(
-            carClosedDate: DateTime.now().toIso8601String(),
-          );
-        }
 
         int? resultId;
 

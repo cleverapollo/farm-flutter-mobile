@@ -15,7 +15,6 @@ import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddBiologicalControlAgentsScreen extends StatefulWidget {
   const AddBiologicalControlAgentsScreen(
@@ -69,7 +68,7 @@ class _AddBiologicalControlAgentsScreenState
     final notValidate = cubit.state.agent.biologicalControlAgentTypeName == null;
 
     if (notValidate) {
-      return showSnackError(msg: 'Required fields are missing');
+      return showSnackError(msg: 'Name of Control Agent Required!');
     }
     setState(() {
       loading = true;
@@ -79,7 +78,7 @@ class _AddBiologicalControlAgentsScreenState
     if (context.mounted) {
       showSnackSuccess(
           msg:
-              '${widget.biologicalControlAgent == null ? LocaleKeys.addBCA.tr() : 'Edit BCA'} ${cubit.state.agent.biologicalControlAgentRegisterId}');
+              '${widget.biologicalControlAgent == null ? LocaleKeys.addBCA.tr() : LocaleKeys.edit_bca.tr()} ${cubit.state.agent.biologicalControlAgentRegisterId}');
       Navigator.of(context).pop(cubit.state.agent);
     }
 
@@ -98,90 +97,59 @@ class _AddBiologicalControlAgentsScreenState
               ? LocaleKeys.addBCA.tr()
               : LocaleKeys.edit_bca.tr(),
         ),
-        body: Stack(
-          children: [
-            SafeArea(
-              child: BlocSelector<AddBiologicalControlCubit,
-                  AddBiologicalControlState, bool>(
-                selector: (state) => state.isDataReady,
-                builder: (context, isDataReady) {
-                  if (!isDataReady) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  final initState = cubit.state;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SelectControlAgentWidget(
-                            agentTypes: initState.agentTypes,
-                            onSelect: cubit.onSelectControlAgent,
-                            initAgent: initState.agent,
-                          ),
-                          _buildSelectDateReleased(
-                              initState.agent.dateReleased),
-                          _buildSelectStakeHolderWidget(),
-                          _buildSelectDescriptionWidget(),
-                          BlocBuilder<AddBiologicalControlCubit, AddBiologicalControlState>(
-                            builder: (context, state) {
-                              return AttributeItem(
-                                child: SelectItemWidget(
-                                  initValue: state.agent.carRaisedDate != null,
-                                  title: LocaleKeys.carRaised.tr(),
-                                  onSelect: cubit.onCarRaisedDateChanged,
-                                ),
-                              );
-                            },
-                          ),
-                          BlocBuilder<AddBiologicalControlCubit, AddBiologicalControlState>(
-                            builder: (context, state) {
-                              return AttributeItem(
-                                child: SelectItemWidget(
-                                  initValue: state.agent.carClosedDate != null,
-                                  title: LocaleKeys.carClosed.tr(),
-                                  onSelect: cubit.onCarClosedDateChanged,
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 12),
-                          GeneralCommentWidget(
-                            hintText: '',
-                            shouldShowTitle: true,
-                            initialValue: initState.agent.comment,
-                            textStyle: context.textStyles.bodyNormal.black,
-                            onChanged: cubit.onCommentChanged,
-                          ),
-                          const SizedBox(height: 60),
-                        ],
-                      ),
+        body: BlocSelector<AddBiologicalControlCubit, AddBiologicalControlState,
+            bool>(
+          selector: (state) => state.isDataReady,
+          builder: (context, isDataReady) {
+            if (!isDataReady) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final initState = cubit.state;
+            return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SelectControlAgentWidget(
+                      agentTypes: initState.agentTypes,
+                      onSelect: cubit.onSelectControlAgent,
+                      initAgent: initState.agent,
                     ),
-                  );
-                },
-              ),
-            ),
-            Positioned(
-              bottom: MediaQuery.of(context).padding.bottom,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: CmoFilledButton(
-                  title: LocaleKeys.save.tr(),
-                  onTap: onSubmit,
-                  loading: loading,
+                    _buildSelectDateReleased(initState.agent.dateReleased),
+                    _buildSelectStakeHolderWidget(),
+                    _buildSelectDescriptionWidget(),
+                    // const SizedBox(height: 12),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    //   child: GeneralCommentWidget(
+                    //     hintText: '',
+                    //     shouldShowTitle: true,
+                    //     height: 120,
+                    //     initialValue: initState.agent.comment,
+                    //     textStyle: context.textStyles.bodyNormal.black,
+                    //     onChanged: cubit.onCommentChanged,
+                    //   ),
+                    // ),
+                    const SizedBox(height: 60),
+                  ],
                 ),
-              ),
-            ),
-          ],
+            );
+          },
         ),
+        persistentFooterAlignment: AlignmentDirectional.center,
+        persistentFooterButtons: [
+          CmoFilledButton(
+            title: LocaleKeys.save.tr(),
+            onTap: onSubmit,
+            loading: loading,
+          )
+        ],
       ),
     );
   }
 
   Widget _buildSelectDateReleased(DateTime? dateReleased) {
     return AttributeItem(
+      margin: const EdgeInsets.symmetric(horizontal: 24.0),
       child: CmoDatePicker(
         name: 'DateReleased',
         onChanged: cubit.onDateReleasedChanged,
@@ -196,7 +164,7 @@ class _AddBiologicalControlAgentsScreenState
           suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
           isDense: true,
           labelText: LocaleKeys.dateReleased.tr(),
-          labelStyle: context.textStyles.bodyNormal.blueDark2,
+          labelStyle: context.textStyles.bodyBold.blueDark3,
         ),
       ),
     );
@@ -212,9 +180,9 @@ class _AddBiologicalControlAgentsScreenState
         final initValue = findIndex != -1 ? stateHolders[findIndex] : null;
         return BottomSheetSelection(
           hintText: LocaleKeys.stakeholderName.tr(),
-          hintTextStyle: context.textStyles.bodyNormal.blueDark2,
+          hintTextStyle: context.textStyles.bodyBold.blueDark3,
           value: initValue?.stakeholderName,
-          margin: EdgeInsets.zero,
+          margin: const EdgeInsets.symmetric(horizontal: 24.0),
           displayHorizontal: false,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
           onTap: () async {
@@ -258,10 +226,10 @@ class _AddBiologicalControlAgentsScreenState
             element.monitoringRequirementId == monitoringRequirementId);
         final initValue = findIndex != -1 ? state.monitorings[findIndex] : null;
         return BottomSheetSelection(
-          hintText: LocaleKeys.descriptionOfMonitoringRequirements.tr(),
-          hintTextStyle: context.textStyles.bodyNormal.blueDark2,
+          hintText: LocaleKeys.description_of_monitoring.tr(),
+          hintTextStyle: context.textStyles.bodyBold.blueDark3,
           value: initValue?.monitoringRequirementName,
-          margin: EdgeInsets.zero,
+          margin: const EdgeInsets.symmetric(horizontal: 24.0),
           displayHorizontal: false,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
           onTap: () async {

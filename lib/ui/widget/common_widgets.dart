@@ -72,18 +72,23 @@ class AutofillWidget extends StatelessWidget {
 
   final String title;
   final String? value;
+  final EdgeInsets padding;
+  final EdgeInsets margin;
 
   const AutofillWidget({
     super.key,
     required this.title,
     required this.value,
+    this.padding = const EdgeInsets.fromLTRB(10, 4, 10, 4),
+    this.margin = EdgeInsets.zero,
   });
 
   @override
   Widget build(BuildContext context) {
     return AttributeItem(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
+      margin: margin,
+      child: Container(
+        padding: padding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -91,13 +96,13 @@ class AutofillWidget extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: context.textStyles.bodyNormal.blueDark2,
+                  style: context.textStyles.bodyBold.blueDark3,
                 ),
               ],
             ),
             Text(
               value ?? '',
-              style: context.textStyles.bodyNormal.blueDark2,
+              style: context.textStyles.bodyNormal.blueDark3,
             ),
           ],
         ),
