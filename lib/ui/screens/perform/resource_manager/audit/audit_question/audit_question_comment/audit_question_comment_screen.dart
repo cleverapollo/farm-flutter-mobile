@@ -94,40 +94,39 @@ class _AuditQuestionCommentScreenState extends State<AuditQuestionCommentScreen>
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              if (widget.question.xBone ?? false)
-                Icon(
-                  IconsaxOutline.danger,
-                  size: 30.0,
-                  color: context.colors.red,
+        body: Scrollbar(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                if (widget.question.xBone ?? false)
+                  Icon(
+                    IconsaxOutline.danger,
+                    size: 30.0,
+                    color: context.colors.red,
+                  ),
+                const SizedBox(
+                  height: 16,
                 ),
-              const SizedBox(
-                height: 16,
-              ),
-              _buildQuestionValue(),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: Divider(
-                  height: 2,
-                  thickness: 1,
-                  indent: 0,
-                  endIndent: 0,
-                  color: context.colors.black,
+                _buildQuestionValue(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Divider(
+                    height: 2,
+                    thickness: 1,
+                    indent: 0,
+                    endIndent: 0,
+                    color: context.colors.black,
+                  ),
                 ),
-              ),
-              _selectReasonDropdown(context),
-              const SizedBox(
-                height: 15,
-              ),
-              Expanded(
-                child: buildCommentTextField(),
-              ),
-
-              editIcon(),
-            ],
+                _selectReasonDropdown(context),
+                const SizedBox(
+                  height: 15,
+                ),
+                buildCommentTextField(),
+                editIcon(),
+              ],
+            ),
           ),
         ),
         persistentFooterAlignment: AlignmentDirectional.center,
@@ -207,7 +206,7 @@ class _AuditQuestionCommentScreenState extends State<AuditQuestionCommentScreen>
     return BlocBuilder<AuditQuestionCommentCubit, AuditQuestionCommentState>(
       builder: (context, state) {
         return Container(
-          height: double.infinity,
+          height: 250,
           decoration: BoxDecoration(
             border: Border.all(color: context.colors.blueDark2,),
             borderRadius: BorderRadius.circular(10),
