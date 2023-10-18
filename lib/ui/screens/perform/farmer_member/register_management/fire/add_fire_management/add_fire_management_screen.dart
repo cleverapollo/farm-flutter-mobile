@@ -74,9 +74,13 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
               return const Center(child: CircularProgressIndicator());
             }
             return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 children: [
+                  const SizedBox(height: 35),
+                  CmoHeaderTile(
+                    title: LocaleKeys.additional_details_optional.tr(),
+                    backgroundColor: context.colors.blueDark2,
+                  ),
                   _selectFireCause(),
                   _buildSelectDateDetected(),
                   _buildSelectDateExtinguished(),
@@ -93,10 +97,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
           builder: (context, state) {
             return CmoFilledButton(
               title: LocaleKeys.save.tr(),
-              disable: state.fireRegister?.fireCauseId == null ||
-                  state.fireRegister?.date == null ||
-                  state.fireRegister?.areaBurnt == null ||
-                  state.fireRegister?.commercialAreaLoss == null,
+              disable: state.fireRegister?.latitude == null,
               onTap: () async {
                 await context.read<FireRegisterDetailCubit>().onSave(
                   onSuccess: () async {
@@ -127,6 +128,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AttributeItem(
+                    margin: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: InputAttributeItem(
                       initialValue: '${state.fireRegister?.areaBurnt ?? ''}',
                       textStyle: context.textStyles.bodyNormal.blueDark2,
@@ -141,6 +143,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
                     ),
                   ),
                   AttributeItem(
+                    margin: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: InputAttributeItem(
                       initialValue: '${state.fireRegister?.commercialAreaLoss ?? ''}',
                       textStyle: context.textStyles.bodyNormal.blueDark2,
@@ -156,36 +159,17 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
                   ),
                   _buildLatLng(),
                   const SizedBox(height: 12),
-                  Container(
-                    height: 250,
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: context.colors.black,
-                        ),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              LocaleKeys.generalComments.tr(),
-                              style: context.textStyles.bodyNormal.blueDark2,
-                            ),
-                          ),
-                        ),
-                        GeneralCommentWidget(
-                          hintText: '',
-                          initialValue: state.fireRegister?.comment,
-                          textStyle: context.textStyles.bodyNormal.black,
-                          onChanged: (value) {
-                            context.read<FireRegisterDetailCubit>().onDataChange(comment: value);
-                          },
-                        ),
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: GeneralCommentWidget(
+                      hintText: '',
+                      height: 120,
+                      shouldShowTitle: true,
+                      initialValue: state.fireRegister?.comment,
+                      textStyle: context.textStyles.bodyNormal.black,
+                      onChanged: (value) {
+                        context.read<FireRegisterDetailCubit>().onDataChange(comment: value);
+                      },
                     ),
                   ),
                 ],
@@ -198,6 +182,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
 
   Widget _buildLatLng() {
     return AttributeItem(
+      margin: const EdgeInsets.symmetric(horizontal: 24.0),
       child: BlocBuilder<FireRegisterDetailCubit, FireRegisterDetailState>(
         buildWhen: (previous, current) =>
             previous.fireRegister?.latitude != current.fireRegister?.latitude ||
@@ -249,7 +234,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
           hintText: LocaleKeys.fireCause.tr(),
           hintTextStyle: context.textStyles.bodyNormal.blueDark2,
           value: initValue?.fireCauseName,
-          margin: EdgeInsets.zero,
+          margin: const EdgeInsets.symmetric(horizontal: 24.0),
           displayHorizontal: false,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
           onTap: () async {
@@ -289,6 +274,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
     return BlocBuilder<FireRegisterDetailCubit, FireRegisterDetailState>(
       builder: (context, state) {
         return AttributeItem(
+          margin: const EdgeInsets.symmetric(horizontal: 24.0),
           child: CmoDatePicker(
             name: 'DateDetected',
             onChanged: (date) => context.read<FireRegisterDetailCubit>().onDataChange(date: date),
@@ -316,6 +302,7 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
     return BlocBuilder<FireRegisterDetailCubit, FireRegisterDetailState>(
       builder: (context, state) {
         return AttributeItem(
+          margin: const EdgeInsets.symmetric(horizontal: 24.0),
           child: CmoDatePicker(
             name: 'DateExtinguished',
             onChanged: (date) => context.read<FireRegisterDetailCubit>().onDataChange(extinguished: date),
