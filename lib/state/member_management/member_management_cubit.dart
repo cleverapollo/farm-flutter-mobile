@@ -1,7 +1,9 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -141,5 +143,14 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
       filteringText: searchText ?? '',
       isInCompleteSelected: isInCompleteSelected,
     ));
+  }
+
+  Future<void> onRemoveFarm(Farm farm) async {
+    await cmoDatabaseMasterService.cacheFarmAddMember(farm.copyWith(isActive: false));
+    showSnackSuccess(
+      msg: '${LocaleKeys.remove.tr()} ${farm.id}!',
+    );
+
+    await reload();
   }
 }

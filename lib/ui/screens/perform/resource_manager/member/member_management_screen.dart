@@ -12,6 +12,8 @@ import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'widgets/member_item.dart';
+
 class MemberManagementScreen extends StatefulWidget {
   const MemberManagementScreen({super.key});
 
@@ -131,11 +133,9 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                   ),
                   const SizedBox(height: 20),
                   Expanded(
-                    child: BlocSelector<MemberManagementCubit,
-                        MemberManagementState, bool>(
-                      selector: (state) => state.isLoading,
-                      builder: (context, isLoading) {
-                        if (isLoading) {
+                    child: BlocBuilder<MemberManagementCubit, MemberManagementState>(
+                      builder: (context, state) {
+                        if (state.isLoading) {
                           return const Center(
                               child: CircularProgressIndicator());
                         }
@@ -158,80 +158,12 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                                       .reload();
                                 }
                               },
-                              child: CmoCard(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 23),
-                                content: [
-                                  CmoCardHeader(title: farm.farmName ?? ''),
-                                  CmoCardHeader(
-                                      title:
-                                          '${farm.firstName ?? ''} ${farm.lastName ?? ''}'),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  SizedBox(
-                                    width: double.maxFinite,
-                                    child: BlocBuilder<MemberManagementCubit,
-                                        MemberManagementState>(
-                                      builder: (context, state) {
-                                        final stepCount = farm.stepCount ??
-                                            farm.numberStepComplete(
-                                              compartments:
-                                                  state.allCompartments,
-                                              allFarmMemberObjectiveAnswers: state
-                                                  .allFarmMemberObjectiveAnswers,
-                                              allFarmMemberObjectives:
-                                                  state.allFarmMemberObjectives,
-                                              allFarmMemberRiskProfileAnswers: state
-                                                  .allFarmMemberRiskProfileAnswers,
-                                              allRiskProfileQuestions:
-                                                  state.allRiskProfileQuestions,
-                                            );
-
-                                        final isOnboarded = stepCount == 8 ||
-                                            true == farm.isGroupSchemeMember;
-
-                                        return Row(
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                isOnboarded
-                                                    ? LocaleKeys.onboarded.tr()
-                                                    : LocaleKeys.incomplete
-                                                        .tr(),
-                                                textAlign: TextAlign.start,
-                                                style: context.textStyles
-                                                    .bodyNormal.white,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            Flexible(
-                                              child: Align(
-                                                child: isOnboarded
-                                                    ? Assets.icons.icTick.widget
-                                                    : BlocBuilder<
-                                                        MemberManagementCubit,
-                                                        MemberManagementState>(
-                                                        builder:
-                                                            (context, state) {
-                                                          return Text(
-                                                            '$stepCount/8',
-                                                            style: context
-                                                                .textStyles
-                                                                .bodyNormal
-                                                                .white,
-                                                          );
-                                                        },
-                                                      ),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
+                              child: MemberItem(
+                                farm: farm,
+                                canDelete: state.isInCompleteSelected,
+                                onDelete: () async => context
+                                    .read<MemberManagementCubit>()
+                                    .onRemoveFarm(farm),
                               ),
                             );
                           },
