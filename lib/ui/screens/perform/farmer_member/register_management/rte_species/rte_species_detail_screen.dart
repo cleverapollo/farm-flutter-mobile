@@ -82,6 +82,9 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
                   ),
                   AttributeItem(
                     margin: const EdgeInsets.symmetric(horizontal: 21),
+                    isUnderErrorBorder: true,
+                    errorText: LocaleKeys.required.tr(),
+                    isShowError: state.isCommonNameError,
                     child: InputAttributeItem(
                       labelText: LocaleKeys.commonName.tr(),
                       textStyle: context.textStyles.bodyNormal.blueDark3,
@@ -159,17 +162,15 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
           title: LocaleKeys.save.tr(),
           loading: loading,
           onTap: () async {
-            final isValid = context.read<RteSpeciesDetailCubit>().onValidate();
-            if (isValid) {
-              await context.read<RteSpeciesDetailCubit>().onSave();
-              await context.read<RteSpeciesCubit>().loadRteSpecies();
-              if (context.mounted) {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              }
-            } else {
-              return showSnackError(msg: 'Required fields are missing.');
-            }
+            await context.read<RteSpeciesDetailCubit>().onSave(
+              onSuccess: () async {
+                await context.read<RteSpeciesCubit>().loadRteSpecies();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                }
+              },
+            );
           },
         );
       },
@@ -295,19 +296,19 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
   Widget buildLatLngWidget(RteSpeciesDetailState state) {
     return InkWell(
       onTap: () async {
-        // final locationModel = await RteSpeciesMapScreen.push(
-        //   context,
-        //   activeFarm: state.activeFarm,
-        //   locationModel: LocationModel()
-        //     ..longitude = state.rteSpecies?.longitude
-        //     ..latitude = state.rteSpecies?.latitude,
-        // ) as LocationModel?;
-        //
-        // if (locationModel != null) {
-        //   context
-        //       .read<RteSpeciesDetailCubit>()
-        //       .onChangeLocationAndPhoto(locationModel);
-        // }
+        final locationModel = await RteSpeciesMapScreen.push(
+          context,
+          activeFarm: state.activeFarm,
+          locationModel: LocationModel()
+            ..longitude = state.rteSpecies?.longitude
+            ..latitude = state.rteSpecies?.latitude,
+        ) as LocationModel?;
+
+        if (locationModel != null) {
+          context
+              .read<RteSpeciesDetailCubit>()
+              .onChangeLocationAndPhoto(locationModel);
+        }
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),

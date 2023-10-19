@@ -4,6 +4,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/utils.dart';
+import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 import '../../../ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
@@ -67,6 +68,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
   void onChangeCommonName(String? commonName) {
     emit(
       state.copyWith(
+        isCommonNameError: false,
         rteSpecies: state.rteSpecies?.copyWith(
           commonName: commonName,
         ),
@@ -170,16 +172,23 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
     );
   }
 
-  bool onValidate() {
-    final isNotValid = state.rteSpecies!.commonName.isBlank ||
-        state.rteSpecies?.dateSpotted == null ||
-        state.rteSpecies!.animalTypeName.isBlank;
+  bool onValidateRequiredField() {
+    if (state.rteSpecies?.commonName == null || state.rteSpecies!.commonName.isBlank) {
+      emit(state.copyWith(isCommonNameError: true));
+      return false;
+    }
 
-    return !isNotValid;
+    return true;
   }
 
-  Future<void> onSave() async {
+  Future<void> onSave({
+    required VoidCallback onSuccess,
+  }) async {
     try {
+      if(!onValidateRequiredField()) {
+        return;
+      }
+
       emit(state.copyWith(loading: true));
       int? rteSpeciesId;
       rteSpeciesId = await cmoDatabaseMasterService.cacheRteSpecies(
@@ -202,6 +211,8 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
         msg:
             '${state.rteSpecies == null ? LocaleKeys.addRteSpecies.tr() : LocaleKeys.edit_rte_species.tr()} $rteSpeciesId',
       );
+
+      onSuccess();
     } catch (e) {
       logger.e('Cannot save RTE species $e');
     } finally {

@@ -9,6 +9,7 @@ class RteSpeciesDetailState {
     this.rtePhotos = const <RteSpeciesPhotoModel>[],
     this.removedRtePhotos = const <RteSpeciesPhotoModel>[],
     this.loading = false,
+    this.isCommonNameError = false,
     this.error,
   });
 
@@ -20,6 +21,7 @@ class RteSpeciesDetailState {
   final List<RteSpeciesPhotoModel> removedRtePhotos;
   final Object? error;
   final bool loading;
+  final bool isCommonNameError;
 
   RteSpeciesDetailState copyWith({
     RteSpecies? rteSpecies,
@@ -30,6 +32,7 @@ class RteSpeciesDetailState {
     List<RteSpeciesPhotoModel>? removedRtePhotos,
     bool? loading,
     Object? error,
+    bool? isCommonNameError,
   }) {
     return RteSpeciesDetailState(
       loading: loading ?? this.loading,
@@ -40,6 +43,7 @@ class RteSpeciesDetailState {
       rtePhotos: rtePhotos ?? this.rtePhotos,
       error: error ?? this.error,
       removedRtePhotos: removedRtePhotos ?? this.removedRtePhotos,
+      isCommonNameError: isCommonNameError ?? this.isCommonNameError,
     );
   }
 }
