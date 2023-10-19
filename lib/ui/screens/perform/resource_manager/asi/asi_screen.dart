@@ -161,6 +161,7 @@ class _ASIScreenState extends State<ASIScreen> {
                                             .state
                                             .campId,
                                         asi: listAsi[index],
+                                        isEditing: true,
                                       );
                                       if (context.mounted) {
                                         await context

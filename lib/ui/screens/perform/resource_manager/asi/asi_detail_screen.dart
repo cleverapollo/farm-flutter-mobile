@@ -17,15 +17,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class ASIDetailScreen extends StatefulWidget {
-  const ASIDetailScreen({super.key, this.farmName});
+  const ASIDetailScreen({
+    super.key,
+    this.farmName,
+    this.isEditing = false,
+  });
 
   final String? farmName;
+  final bool isEditing;
 
   static Future<void> push(
     BuildContext context, {
     required Asi asi,
     required LocationModel? locationModel,
     String? farmName,
+    bool isEditing = false,
   }) {
     return Navigator.push(
       context,
@@ -38,6 +44,7 @@ class ASIDetailScreen extends StatefulWidget {
             )..fetchData(),
             child: ASIDetailScreen(
               farmName: farmName,
+              isEditing: isEditing,
             ),
           );
         },
@@ -63,7 +70,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBarV2(
-        title: LocaleKeys.addASI.tr(),
+        title: widget.isEditing ? LocaleKeys.asi_detail.tr() : LocaleKeys.addASI.tr(),
         subtitle: widget.farmName ?? '',
         showTrailing: true,
       ),

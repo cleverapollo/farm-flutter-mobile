@@ -17,6 +17,8 @@ class ASIMapScreen extends StatefulWidget {
   final String? campId;
   final Asi? asi;
   final bool shouldShowPhotoButton;
+  final bool isEditing;
+
   const ASIMapScreen({
     super.key,
     required this.farmId,
@@ -24,6 +26,7 @@ class ASIMapScreen extends StatefulWidget {
     this.campId,
     this.asi,
     this.shouldShowPhotoButton = true,
+    this.isEditing = false,
   });
 
   static Future<void> push(
@@ -33,6 +36,7 @@ class ASIMapScreen extends StatefulWidget {
     String? campId,
     Asi? asi,
     bool shouldShowPhotoButton = true,
+    bool isEditing = false,
   }) {
     return Navigator.push(
       context,
@@ -43,6 +47,7 @@ class ASIMapScreen extends StatefulWidget {
           campId: campId,
           asi: asi,
           shouldShowPhotoButton: shouldShowPhotoButton,
+          isEditing: isEditing,
         ),
       ),
     );
@@ -209,6 +214,7 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                         farmName: widget.farmName,
                         locationModel: locationModel,
                         asi: _asi!,
+                        isEditing: widget.isEditing,
                       );
                     }
                   },

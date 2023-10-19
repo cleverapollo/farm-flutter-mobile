@@ -72,7 +72,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBarV2(
-        title: LocaleKeys.addMember.tr(),
+        title: widget.farm == null ? LocaleKeys.addMember.tr() : LocaleKeys.member_detail.tr(),
         showTrailing: true,
         onTapTrailing: () {
           Navigator.pop(context, true);
