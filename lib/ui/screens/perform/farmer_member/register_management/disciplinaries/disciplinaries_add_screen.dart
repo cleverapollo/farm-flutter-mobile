@@ -89,6 +89,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                           selector: (state) => state.selectWorker,
                           builder: (context, selectWorker) {
                             return BottomSheetSelection(
+                              isShowError: state.isSelectWorkerError,
                               hintText: LocaleKeys.workers.tr(),
                               hintTextStyle: context.textStyles.bodyBold.blueDark3,
                               displayHorizontal: false,
@@ -108,9 +109,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                                     itemBuilder: (context, index) {
                                       return ListTile(
                                         onTap: () {
-                                          cubit.onChangeData(
-                                              selectWorker:
-                                                  state.workers[index]);
+                                          cubit.onSelectWorker(state.workers[index]);
                                           Navigator.pop(context);
                                         },
                                         title: Padding(
@@ -140,6 +139,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                           selector: (state) => state.selectIssue,
                           builder: (context, selectIssue) {
                             return BottomSheetSelection(
+                              isShowError: state.isDisciplinariesIssueError,
                               hintText: LocaleKeys.disciplinaries_issue.tr(),
                               hintTextStyle: context.textStyles.bodyBold.blueDark3,
                               displayHorizontal: false,
@@ -158,9 +158,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                                     itemBuilder: (context, index) {
                                       return ListTile(
                                         onTap: () {
-                                          cubit.onChangeData(
-                                              selectIssue:
-                                              state.issueTypes[index]);
+                                          cubit.onSelectIssue(state.issueTypes[index]);
                                           Navigator.pop(context);
                                         },
                                         title: Padding(
@@ -306,11 +304,11 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
                           builder: (context, state) {
                             return Align(
                               child: CmoFilledButton(
-                                  title: LocaleKeys.accept_signature_and_finalise_save.tr(),
-                                  disable: state.data?.workerId == null ||
-                                      state.data!.workerId!.isBlank ||
-                                      state.data?.signatureImage == null,
-                                  onTap: () async {
+                                  title: LocaleKeys.accept_signature_and_save.tr(),
+                                disable: state.data?.workerId == null &&
+                                    state.data?.dateReceived == null &&
+                                    state.data?.issueTypeId == null,
+                                onTap: () async {
                                     final canNext = await cubit.onSave();
 
                                     if (canNext && context.mounted) {
@@ -338,10 +336,13 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
     return BlocBuilder<DisciplinariesCubit, DisciplinariesState>(
       builder: (context, state) {
         return AttributeItem(
+          isShowError: state.isDateIssuedError,
+          errorText: LocaleKeys.required.tr(),
+          isUnderErrorBorder: true,
           margin: const EdgeInsets.symmetric(horizontal: 24),
           child: CmoDatePicker(
             name: 'DateIssued',
-            onChanged: (date) => context.read<DisciplinariesCubit>().onChangeData(dateIssue: date),
+            onChanged: context.read<DisciplinariesCubit>().onSelectDateIssued,
             initialValue: state.data?.dateReceived,
             lastDate: DateTime.now(),
             inputDecoration: InputDecoration(

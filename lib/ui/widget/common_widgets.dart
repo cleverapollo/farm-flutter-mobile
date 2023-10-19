@@ -11,13 +11,15 @@ class AttributeItem extends StatelessWidget {
   final EdgeInsets margin;
   final bool isShowError;
   final String? errorText;
+  final bool isUnderErrorBorder;
 
   const AttributeItem({
     required this.child,
     this.padding = const EdgeInsets.symmetric(vertical: 6),
     this.margin = EdgeInsets.zero,
-    this.isShowError = false,
     this.errorText,
+    this.isShowError = false,
+    this.isUnderErrorBorder = false,
     super.key,
   });
 
@@ -38,22 +40,19 @@ class AttributeItem extends StatelessWidget {
                       width: 2,
                     ),
                   ),
-            borderRadius: isShowError ? BorderRadius.circular(4) : null,
+            borderRadius: isShowError && !isUnderErrorBorder ? BorderRadius.circular(4) : null,
           ),
           child: child,
         ),
         if (errorText.isNotBlank && isShowError)
-          Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                errorText!,
-                style: context.textStyles.bodyNormal.redError
-                    .copyWith(fontSize: 12),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+          Container(
+            margin: margin,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              errorText!,
+              style: context.textStyles.bodyNormal.redError.copyWith(fontSize: 12),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
       ],
@@ -61,6 +60,14 @@ class AttributeItem extends StatelessWidget {
   }
 
   Border errorBorder(BuildContext context) {
+    if (isUnderErrorBorder) {
+      return Border(
+        bottom: BorderSide(
+          color: context.colors.redError,
+          width: 2,
+        ),
+      );
+    }
     return Border.all(
       color: context.colors.redError,
       width: 2,

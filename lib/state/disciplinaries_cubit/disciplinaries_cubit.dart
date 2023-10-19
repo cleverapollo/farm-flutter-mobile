@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/camp.dart';
 import 'package:cmo/model/issue_type/issue_type.dart';
 import 'package:cmo/model/labour_management/farmer_worker.dart';
@@ -97,15 +98,51 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
         selectCamp: selectCamp,
         selectIssue: selectIssue,
       ));
+    } else {
+      emit(state.copyWith(data: const SanctionRegister()));
     }
 
     emit(state.copyWith(isLoading: false));
   }
 
+  void onSelectWorker(FarmerWorker selectWorker) {
+    emit(
+      state.copyWith(
+        isSelectWorkerError: false,
+        selectWorker: selectWorker,
+        data: state.data?.copyWith(
+          workerId: selectWorker.workerId.toString(),
+          displayWorkerName: '${selectWorker.firstName ?? ''} ${selectWorker.surname ?? ''}',
+        ),
+      ),
+    );
+  }
+
+  void onSelectIssue(IssueType selectIssue) {
+    emit(
+      state.copyWith(
+        isDisciplinariesIssueError: false,
+        selectIssue: selectIssue,
+        data: state.data?.copyWith(
+          issueTypeId: selectIssue.issueTypeId,
+          issueTypeName: selectIssue.issueTypeName,
+        ),
+      ),
+    );
+  }
+
+  void onSelectDateIssued(DateTime? dateIssue) {
+    emit(
+      state.copyWith(
+        isDateIssuedError: false,
+        data: state.data?.copyWith(
+          dateReceived: dateIssue ?? state.data?.dateReceived,
+        ),
+      ),
+    );
+  }
+
   void onChangeData({
-    FarmerWorker? selectWorker,
-    IssueType? selectIssue,
-    DateTime? dateIssue,
     String? campOrCompartment,
     String? descriptionOfSanction,
     String? comment,
@@ -113,28 +150,16 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     String? signatureDate,
     String? signaturePoint,
   }) {
-    if (state.data == null) {
-      emit(state.copyWith(data: const SanctionRegister()));
-    }
-
     emit(state.copyWith(
       data: state.data?.copyWith(
         sanctionRegisterId: state.data?.sanctionRegisterId ??
             DateTime.now().millisecondsSinceEpoch.toString(),
-        workerId: (selectWorker?.workerId ?? state.data?.workerId ?? '').toString(),
         campOrCompartment: campOrCompartment ?? state.data?.campOrCompartment,
         descriptionOfSanction: descriptionOfSanction ?? state.data?.descriptionOfSanction,
         comment: comment ?? state.data?.comment,
-        dateReceived: dateIssue ?? state.data?.dateReceived,
         signatureDate: signatureDate ?? state.data?.signatureDate,
         signatureImage: signatureImage ?? state.data?.signatureImage,
-        issueTypeId: selectIssue?.issueTypeId ?? state.data?.issueTypeId,
-        issueTypeName: selectIssue?.issueTypeName ?? state.data?.issueTypeName,
-        displayWorkerName:
-            '${selectWorker?.firstName ?? ''} ${selectWorker?.surname ?? ''}',
       ),
-      selectWorker: selectWorker ?? state.selectWorker,
-      selectIssue: selectIssue ?? state.selectIssue,
     ));
   }
 
@@ -147,14 +172,24 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     )));
   }
 
+  void validateRequiredField() {
+    emit(
+      state.copyWith(
+        isDateIssuedError: state.data?.dateReceived == null,
+        isSelectWorkerError: state.data?.workerId == null || state.data!.workerId.isBlank,
+        isDisciplinariesIssueError: state.data?.issueTypeId == null,
+      ),
+    );
+  }
+
   Future<bool> onSave() async {
     try {
-      final canSave = state.data?.dateReceived != null ||
-          state.data?.workerId != null ||
-          state.data?.issueTypeId != null;
+      validateRequiredField();
+      final haveError = state.isDateIssuedError ||
+          state.isSelectWorkerError ||
+          state.isDisciplinariesIssueError;
 
-      if (!canSave) {
-        showSnackError(msg: 'Required fields are missing');
+      if (haveError) {
         return false;
       }
 
