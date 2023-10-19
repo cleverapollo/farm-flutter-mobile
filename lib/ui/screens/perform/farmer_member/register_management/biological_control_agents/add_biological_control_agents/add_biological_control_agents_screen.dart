@@ -65,17 +65,12 @@ class _AddBiologicalControlAgentsScreenState
   }
 
   Future<void> onSubmit() async {
-    final notValidate = cubit.state.agent.biologicalControlAgentTypeName == null;
-
-    if (notValidate) {
-      return showSnackError(msg: 'Name of Control Agent Required!');
-    }
     setState(() {
       loading = true;
     });
     await hideInputMethod();
-    await cubit.onSave();
-    if (context.mounted) {
+    final isSuccess = await cubit.onSave();
+    if (context.mounted && isSuccess) {
       showSnackSuccess(
           msg:
               '${widget.biologicalControlAgent == null ? LocaleKeys.addBCA.tr() : LocaleKeys.edit_bca.tr()} ${cubit.state.agent.biologicalControlAgentRegisterId}');
@@ -109,12 +104,17 @@ class _AddBiologicalControlAgentsScreenState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SelectControlAgentWidget(
-                      agentTypes: initState.agentTypes,
-                      onSelect: cubit.onSelectControlAgent,
-                      initAgent: initState.agent,
-                    ),
-                    _buildSelectDateReleased(initState.agent.dateReleased),
+                  BlocBuilder<AddBiologicalControlCubit, AddBiologicalControlState>(
+                    builder: (context, state) {
+                      return SelectControlAgentWidget(
+                        agentTypes: initState.agentTypes,
+                        onSelect: cubit.onSelectControlAgent,
+                        initAgent: initState.agent,
+                        isShowError: state.isSelectControlAgentError,
+                      );
+                    },
+                  ),
+                  _buildSelectDateReleased(initState.agent.dateReleased),
                     _buildSelectStakeHolderWidget(),
                     _buildSelectDescriptionWidget(),
                     // const SizedBox(height: 12),

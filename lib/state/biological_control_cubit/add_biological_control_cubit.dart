@@ -57,13 +57,17 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
   }
 
   void onSelectControlAgent(BiologicalControlAgentType agentType) {
-    state.agent = state.agent.copyWith(
-      biologicalControlAgentTypeId: agentType.biologicalControlAgentTypeId,
-      biologicalControlAgentTypeName: agentType.biologicalControlAgentTypeName,
-      biologicalControlAgentTypeCountryName: agentType.countryId.toString(),
-      reasonForBioAgent: agentType.reasonForBioAgent,
-      biologicalControlAgentTypeScientificName:
-          agentType.biologicalControlAgentTypeScientificName,
+    emit(
+      state.copyWith(
+        isSelectControlAgentError: false,
+        agent: state.agent.copyWith(
+          biologicalControlAgentTypeId: agentType.biologicalControlAgentTypeId,
+          biologicalControlAgentTypeName: agentType.biologicalControlAgentTypeName,
+          biologicalControlAgentTypeCountryName: agentType.countryId.toString(),
+          reasonForBioAgent: agentType.reasonForBioAgent,
+          biologicalControlAgentTypeScientificName: agentType.biologicalControlAgentTypeScientificName,
+        ),
+      ),
     );
   }
 
@@ -133,7 +137,20 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
     );
   }
 
-  Future<void> onSave() async {
+  bool onValidateRequiredField() {
+    if (state.agent.biologicalControlAgentTypeId == null) {
+      emit(state.copyWith(isSelectControlAgentError: true));
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> onSave() async {
+    if (!onValidateRequiredField()) {
+      return false;
+    }
+
     final farm = await configService.getActiveFarm();
     var agent = state.agent;
 
@@ -145,5 +162,6 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
 
     emit(state.copyWith(agent: agent));
     await cmoDatabaseMasterService.cacheBiologicalControlAgentsFromFarm(agent);
+    return true;
   }
 }

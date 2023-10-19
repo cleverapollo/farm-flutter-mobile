@@ -388,6 +388,7 @@ class _AddEmployeeGrievanceScreenState
         initialValue: dateReceived,
         hintText: LocaleKeys.dateReceived.tr(),
         validator: requiredValidator,
+        lastDate: DateTime.now(),
         onChanged: (date) => cubit.onDateReceivedChanged(date),
         inputDecoration: InputDecoration(
           border: InputBorder.none,

@@ -15,11 +15,12 @@ class SelectControlAgentWidget extends StatefulWidget {
     required this.onSelect,
     required this.initAgent,
     required this.agentTypes,
+    this.isShowError = false,
   });
 
   final BiologicalControlAgent initAgent;
   final List<BiologicalControlAgentType> agentTypes;
-
+  final bool isShowError;
   final void Function(BiologicalControlAgentType) onSelect;
 
   @override
@@ -53,6 +54,7 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
           backgroundColor: context.colors.blueDark2,
         ),
         BottomSheetSelection(
+          isShowError: widget.isShowError,
           hintText: LocaleKeys.select_name_of_control_agent.tr(),
           hintTextStyle: context.textStyles.bodyBold.blueDark3,
           value: selectedAgent?.biologicalControlAgentTypeName,
@@ -94,7 +96,6 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
             );
           },
         ),
-        const SizedBox(height: 24,),
         InformationText(),
         CmoHeaderTile(
           title: LocaleKeys.additional_details_optional.tr(),
