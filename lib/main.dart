@@ -1,6 +1,6 @@
+import 'package:camera/camera.dart';
 import 'package:cmo/di.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
@@ -14,9 +14,10 @@ import 'package:path_provider/path_provider.dart';
 
 late FlutterSecureStorage secureStorage;
 final snackbarKey = GlobalKey<ScaffoldMessengerState>();
-
+late List<CameraDescription> cameras;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
   SystemChrome.setSystemUIOverlayStyle(AppTheme.uiOverlayStyle);
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await hideInputMethod();

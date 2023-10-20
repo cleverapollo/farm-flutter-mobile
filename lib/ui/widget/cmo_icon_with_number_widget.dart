@@ -2,6 +2,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
 enum AuditQuestionIconEnum {
+  gallery,
   location,
   camera,
   comment;
@@ -10,6 +11,8 @@ enum AuditQuestionIconEnum {
 
   SvgGenImage get icon {
     switch (this) {
+      case AuditQuestionIconEnum.gallery:
+        return Assets.icons.icGalleryAudit;
       case AuditQuestionIconEnum.location:
         return Assets.icons.icLocationAudit;
       case AuditQuestionIconEnum.camera:
@@ -21,6 +24,8 @@ enum AuditQuestionIconEnum {
 
   SvgGenImage get iconFilledBackground {
     switch (this) {
+      case AuditQuestionIconEnum.gallery:
+        return Assets.icons.icGalleryAuditFillBackground;
       case AuditQuestionIconEnum.location:
         return Assets.icons.icLocationAuditFillBackground;
       case AuditQuestionIconEnum.camera:
@@ -55,8 +60,6 @@ class CmoNumberIconWidget extends StatefulWidget {
     this.number,
     this.enable = false,
     required this.byEnum,
-    this.image,
-    this.imageFilledColor,
     this.iconType,
     this.onTap,
   });
@@ -64,8 +67,6 @@ class CmoNumberIconWidget extends StatefulWidget {
   final int? number;
   final bool enable;
   final bool byEnum;
-  final Widget? image;
-  final Widget? imageFilledColor;
   final AuditQuestionIconEnum? iconType;
   final void Function()? onTap;
 

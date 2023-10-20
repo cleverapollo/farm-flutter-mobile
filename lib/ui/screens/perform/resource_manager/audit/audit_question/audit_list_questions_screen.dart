@@ -5,6 +5,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/components/custom_camera_component/custom_camera_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_list_photo_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_question_comment/audit_question_comment_screen.dart';
@@ -120,6 +121,18 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
     }
   }
 
+  Future<void> onTapCamera({
+    required FarmQuestion auditQuestion,
+  }) async {
+    final result = await CustomCameraScreen.push(
+      context,
+    );
+
+    // if (result != null) {
+    //   await context.read<AuditListQuestionsCubit>().refreshAfterUploadPhoto();
+    // }
+  }
+
   Future<void> _onTapLocation({
     required FarmQuestion auditQuestion,
   }) async {
@@ -222,6 +235,9 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
                       compliances: snapshot.compliances,
                       onTapLocation: () async {
                         await _onTapLocation(auditQuestion: question);
+                      },
+                      onTapCamera: () async {
+                        await onTapCamera(auditQuestion: question);
                       },
                       addAnswer: (compliance) {
                         _addAnswer(

@@ -107,6 +107,14 @@ class $AssetsIconsGen {
   SvgGenImage get icEditBlueCircle =>
       const SvgGenImage('assets/icons/ic_edit_blue_circle.svg');
 
+  /// File path: assets/icons/ic_gallery_audit.svg
+  SvgGenImage get icGalleryAudit =>
+      const SvgGenImage('assets/icons/ic_gallery_audit.svg');
+
+  /// File path: assets/icons/ic_gallery_audit_fill_background.svg
+  SvgGenImage get icGalleryAuditFillBackground =>
+      const SvgGenImage('assets/icons/ic_gallery_audit_fill_background.svg');
+
   /// File path: assets/icons/ic_home.svg
   SvgGenImage get icHome => const SvgGenImage('assets/icons/ic_home.svg');
 
@@ -224,6 +232,8 @@ class $AssetsIconsGen {
         icDrawer,
         icEdit,
         icEditBlueCircle,
+        icGalleryAudit,
+        icGalleryAuditFillBackground,
         icHome,
         icLang,
         icLocation,
