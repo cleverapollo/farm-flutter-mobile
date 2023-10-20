@@ -9,10 +9,16 @@ import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_cubit.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/select_property_damaged.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../widgets/general_comment_widget.dart';
 
 class PetsAndDiseaseAddScreen extends StatefulWidget {
   const PetsAndDiseaseAddScreen({super.key, this.data});
@@ -37,152 +43,115 @@ class PetsAndDiseaseAddScreen extends StatefulWidget {
 class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoFarmAppBar.showTrailingAndFarmName(
-        title: LocaleKeys.add_pets_and_disease.tr(),
-      ),
-      body: BlocBuilder<PetsAndDiseasesCubit, PetsAndDiseasesState>(
-        builder: (context, state) {
-          final cubit = context.read<PetsAndDiseasesCubit>();
+    return GestureDetector(
+      onTap: FocusScope.of(context).unfocus,
+      child: Scaffold(
+        appBar: CmoFarmAppBar.showTrailingAndFarmName(
+          title: widget.data == null
+              ? LocaleKeys.add_pets_and_disease.tr()
+              : LocaleKeys.pets_and_disease_detail.tr(),
+        ),
+        body: BlocBuilder<PetsAndDiseasesCubit, PetsAndDiseasesState>(
+          builder: (context, state) {
+            final cubit = context.read<PetsAndDiseasesCubit>();
 
-          if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+            if (state.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          return Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-            child: SingleChildScrollView(
+            return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 12.0),
-                  Text(
-                    '* ${LocaleKeys.name_pet_disease.tr()}',
-                    style: context.textStyles.bodyBold
-                        .copyWith(color: context.colors.black),
+                  CmoHeaderTile(
+                    title: LocaleKeys.details.tr(),
+                    backgroundColor: context.colors.blueDark2,
                   ),
-                  CmoDropdown<PestsAndDiseaseType>(
-                    name: '',
-                    style: context.textStyles.bodyBold
-                        .copyWith(color: context.colors.black),
-                    inputDecoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                      isDense: true,
-                      hintText: '',
-                      hintStyle: context.textStyles.bodyNormal.grey,
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.grey),
+                  buildSelectPetName(state),
+                  InformationText(),
+                  CmoHeaderTile(
+                    title: LocaleKeys.additional_details_optional.tr(),
+                    backgroundColor: context.colors.blueDark2,
+                  ),
+                  AttributeItem(
+                    margin: const EdgeInsets.symmetric(horizontal: 24),
+                    child: InputAttributeItem(
+                      initialValue:
+                          (state.data.numberOfOutbreaks ?? '').toString(),
+                      textStyle: context.textStyles.bodyNormal.blueDark2,
+                      labelText: LocaleKeys.numbers_of_outbreaks.tr(),
+                      labelTextStyle: context.textStyles.bodyNormal.black,
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        cubit.onChangeData(numberOfOutbreaks: int.parse(value));
+                      },
+                    ),
+                  ),
+                  AttributeItem(
+                    margin: const EdgeInsets.symmetric(horizontal: 24),
+                    child: InputAttributeItem(
+                      initialValue: (state.data.areaLost ?? '').toString(),
+                      textStyle: context.textStyles.bodyNormal.blueDark2,
+                      labelText: LocaleKeys.area_lost.tr(),
+                      labelTextStyle: context.textStyles.bodyNormal.black,
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
                       ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.blue),
+                      onChanged: (value) {
+                        cubit.onChangeData(areaLost: double.parse(value));
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  AttributeItem(
+                    margin: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
+                    child: InkWell(
+                      onTap: () async {
+                        if (state.treatmentMethods.isBlank) {
+                          return;
+                        }
+
+                        final result = await SelectPropertyDamaged.push(
+                            context: context,
+                            treatmentMethods: state.treatmentMethods,
+                            selectTreatmentMethod: state
+                                .selectPestsAndDiseasesRegisterTreatmentMethods);
+
+                        if (result != null) {
+                          cubit.onChangeData(
+                              selectPestsAndDiseasesRegisterTreatmentMethods:
+                              result as List<
+                                  PestsAndDiseasesRegisterTreatmentMethod>);
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Text(
+                                '${state.selectPestsAndDiseasesRegisterTreatmentMethods.length} ${LocaleKeys.treatment_methods.tr()}',
+                                style: context.textStyles.bodyNormal.blueDark3,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                          Assets.icons.icAdd.svgBlack,
+                        ],
                       ),
                     ),
-                    itemsData: state.petsAndDiseaseTypes
-                        .map((e) => CmoDropdownItem(
-                            id: e, name: e.pestsAndDiseaseTypeName ?? ''))
-                        .toList(),
-                    onChanged: (data) {
-                      cubit.onChangeData(selectPetsAndDiseaseType: data);
-                    },
-                    initialValue: state.selectPetsAndDiseaseType,
                   ),
-                  const SizedBox(height: 12.0),
-                  Text(
-                    LocaleKeys.numbers_of_outbreaks.tr(),
-                    style: context.textStyles.bodyBold
-                        .copyWith(color: context.colors.black),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    initialValue: '${state.data.numberOfOutbreaks ?? ''}',
-                    onChanged: (value) {
-                      cubit.onChangeData(numberOfOutbreaks: int.parse(value));
-                    },
-                    decoration: const InputDecoration(
-                        //labelText: "Phone number",
-                        contentPadding: EdgeInsets.all(8),
-                        isDense: true,
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        border: InputBorder.none),
-                  ),
-                  const SizedBox(height: 12.0),
-                  Text(
-                    LocaleKeys.area_lost.tr(),
-                    style: context.textStyles.bodyBold
-                        .copyWith(color: context.colors.black),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    initialValue: '${state.data.areaLost ?? ''}',
-                    onChanged: (value) {
-                      cubit.onChangeData(areaLost: double.tryParse(value));
-                    },
-                    decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(8),
-                        isDense: true,
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        border: InputBorder.none),
-                  ),
-                  const SizedBox(height: 20.0),
-                  Row(
-                    children: [
-                      Text(
-                        '${state.selectPestsAndDiseasesRegisterTreatmentMethods.length} ${LocaleKeys.treatment_methods.tr()}',
-                        style: context.textStyles.bodyBold
-                            .copyWith(color: context.colors.black),
-                      ),
-                      const Spacer(),
-                      InkWell(
-                          onTap: () async {
-                            final result = await _SelectPropertyDamaged.push(
-                                context: context,
-                                treatmentMethods: state.treatmentMethods,
-                                selectTreatmentMethod: state
-                                    .selectPestsAndDiseasesRegisterTreatmentMethods);
-
-                            if (result != null) {
-                              cubit.onChangeData(
-                                  selectPestsAndDiseasesRegisterTreatmentMethods:
-                                      result as List<
-                                          PestsAndDiseasesRegisterTreatmentMethod>);
-                            }
-                          },
-                          child: Assets.icons.icAdd.svgBlack),
-                      const SizedBox(width: 8.0),
-                    ],
-                  ),
-                  const SizedBox(height: 20.0),
-                  Text(
-                    LocaleKeys.generalComments.tr(),
-                    style: context.textStyles.bodyBold
-                        .copyWith(color: context.colors.black),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    initialValue: state.data.comment ?? '',
-                    onChanged: (value) {
-                      cubit.onChangeData(comment: value);
-                    },
-                    decoration: const InputDecoration(
-                        //labelText: "Phone number",
-                        contentPadding: EdgeInsets.all(
-                            8), //  <- you can it to 0.0 for no space
-                        isDense: true,
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        border: InputBorder.none),
-                  ),
-                  const SizedBox(height: 12.0),
+                  const SizedBox(height: 12),
                   AttributeItem(
+                    margin: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
                     child: SelectorAttributeItem(
                       hintText: '',
                       text: LocaleKeys.under_control.tr(),
+                      textStyle: context.textStyles.bodyNormal.blueDark3,
                       contentPadding: const EdgeInsets.all(4),
                       trailing: SizedBox(
                         width: 24,
@@ -197,162 +166,79 @@ class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 40),
-                  Align(
-                    child: CmoFilledButton(
-                        title: LocaleKeys.save.tr(),
-                        onTap: () async {
-                          final canNext = await cubit.onSave();
-
-                          if (canNext && context.mounted) {
-                            Navigator.pop(context, true);
-                          }
-                        }),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: GeneralCommentWidget(
+                      hintText: '',
+                      initialValue: state.data.comment,
+                      shouldShowTitle: true,
+                      height: 100,
+                      textStyle: context.textStyles.bodyNormal.black,
+                      onChanged: (value) {
+                        cubit.onChangeData(comment: value);
+                      },
+                    ),
                   ),
-                  const SizedBox(height: 24),
                 ],
               ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _SelectPropertyDamaged extends StatefulWidget {
-  const _SelectPropertyDamaged({
-    required this.treatmentMethods,
-    required this.selectTreatmentMethod,
-  });
-
-  final List<TreatmentMethod> treatmentMethods;
-  final List<PestsAndDiseasesRegisterTreatmentMethod> selectTreatmentMethod;
-
-  @override
-  State<StatefulWidget> createState() => _SelectPropertyDamagedState();
-
-  static Future<dynamic> push({
-    required BuildContext context,
-    required List<TreatmentMethod> treatmentMethods,
-    required List<PestsAndDiseasesRegisterTreatmentMethod>
-        selectTreatmentMethod,
-  }) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => _SelectPropertyDamaged(
-          treatmentMethods: treatmentMethods,
-          selectTreatmentMethod: selectTreatmentMethod,
+            );
+          },
         ),
-      ),
-    );
-  }
-}
-
-class _SelectPropertyDamagedState extends State<_SelectPropertyDamaged> {
-  final List<TreatmentMethod> selectedItems = [];
-
-  @override
-  void initState() {
-    super.initState();
-    selectedItems.addAll(widget.selectTreatmentMethod
-        .map((e) => TreatmentMethod(treatmentMethodId: e.treatmentMethodId))
-        .toList());
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBar(
-        title: 'Select Property Damaged',
-        leading: Assets.icons.icArrowLeft.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icClose.svgBlack,
-        onTapTrailing: Navigator.of(context).pop,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.separated(
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 12,
-              ),
-              itemCount: widget.treatmentMethods.length,
-              padding: const EdgeInsets.symmetric(horizontal: 21),
-              itemBuilder: (context, index) =>
-                  _buildItem(widget.treatmentMethods[index]),
-            ),
+        persistentFooterAlignment: AlignmentDirectional.center,
+        persistentFooterButtons: [
+          CmoFilledButton(
+            title: LocaleKeys.save.tr(),
+            onTap: () async {
+              final canNext =
+                  await context.read<PetsAndDiseasesCubit>().onSave();
+              if (canNext && context.mounted) {
+                Navigator.pop(context, true);
+              }
+            },
           ),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: CmoFilledButton(
-        title: LocaleKeys.save.tr(),
-        onTap: () {
-          Navigator.of(context).pop(selectedItems
-              .map((e) => PestsAndDiseasesRegisterTreatmentMethod(
-                    pestsAndDiseasesRegisterTreatmentMethodId: null,
-                    pestsAndDiseasesRegisterTreatmentMethodNo:
-                        DateTime.now().millisecondsSinceEpoch.toString(),
-                    treatmentMethodId: e.treatmentMethodId,
-                    isActive: true,
-                    isMasterdataSynced: false,
-                  ))
-              .toList());
-        },
-      ),
     );
   }
 
-  Widget _buildItem(TreatmentMethod item) {
-    final activeItem = selectedItems.firstWhere(
-        (element) => element.treatmentMethodId == item.treatmentMethodId,
-        orElse: () => const TreatmentMethod());
-
-    return InkWell(
-      onTap: () {
-        setState(() {
-          final canAdd = selectedItems.firstWhereOrNull(
-                  (e) => e.treatmentMethodId == item.treatmentMethodId) ==
-              null;
-          if (canAdd) {
-            selectedItems.add(item);
-          } else {
-            selectedItems.removeWhere(
-                (e) => e.treatmentMethodId == item.treatmentMethodId);
-          }
-        });
-      },
-      child: AttributeItem(
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                item.treatmentMethodName ?? '',
-                style: context.textStyles.bodyNormal.black,
-              ),
-            ),
-            if (activeItem != const TreatmentMethod())
-              _buildSelectedIcon()
-            else
-              Assets.icons.icCheckCircle.svg(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSelectedIcon() {
-    return Stack(
-      children: [
-        Assets.icons.icCheckCircle.svg(),
-        Positioned.fill(
-          child: Align(
-            child: Assets.icons.icCheck.svg(),
+  Widget buildSelectPetName(PetsAndDiseasesState state) {
+    return BottomSheetSelection(
+      isShowError: state.isSelectPetTypeError,
+      hintText: LocaleKeys.name_pet_disease.tr(),
+      hintTextStyle: context.textStyles.bodyBold.blueDark3,
+      displayHorizontal: false,
+      value: state.selectPetsAndDiseaseType?.pestsAndDiseaseTypeName,
+    margin: const EdgeInsets.symmetric(horizontal: 24),
+    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+      onTap: () async {
+        FocusScope.of(context).unfocus();
+        if (state.petsAndDiseaseTypes.isBlank) return;
+        await showCustomBottomSheet<void>(
+          context,
+          content: ListView.builder(
+            itemCount: state.petsAndDiseaseTypes.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                onTap: () {
+                  context.read<PetsAndDiseasesCubit>().onChangeData(selectPetsAndDiseaseType: state.petsAndDiseaseTypes[index]);
+                  Navigator.pop(context);
+                },
+                title: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Text(
+                    state.petsAndDiseaseTypes[index].pestsAndDiseaseTypeName ?? '',
+                    style: context.textStyles.bodyBold
+                        .copyWith(
+                      color: context.colors.blueDark2,
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 }

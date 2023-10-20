@@ -93,39 +93,32 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
         isLoading: false));
   }
 
+  void onSelectPetsAndDiseaseType(PestsAndDiseaseType selectPetsAndDiseaseType) {
+    emit(
+      state.copyWith(
+        selectPetsAndDiseaseType: selectPetsAndDiseaseType,
+        isSelectPetTypeError: false,
+        data: state.data.copyWith(
+          pestsAndDiseaseTypeId:
+              selectPetsAndDiseaseType.pestsAndDiseaseTypeId ??
+                  state.selectPetsAndDiseaseType?.pestsAndDiseaseTypeId,
+          pestsAndDiseaseTypeName:
+              selectPetsAndDiseaseType.pestsAndDiseaseTypeName ??
+                  state.selectPetsAndDiseaseType?.pestsAndDiseaseTypeName,
+        ),
+      ),
+    );
+  }
+
   void onChangeData({
     String? comment,
     int? numberOfOutbreaks,
     double? areaLost,
     bool? underControl,
-    bool? carRaised,
-    bool? carClosed,
     PestsAndDiseaseType? selectPetsAndDiseaseType,
     List<PestsAndDiseasesRegisterTreatmentMethod>?
         selectPestsAndDiseasesRegisterTreatmentMethods,
   }) {
-    String? carRaisedDate;
-    String? carClosedDate;
-
-    if (carRaised == true && state.data.carRaisedDate == null) {
-      carRaisedDate = DateTime.now().toIso8601String();
-    }
-    if (carRaised == false && state.data.carRaisedDate != null) {
-      carRaisedDate = null;
-    }
-    if (carRaised == null) {
-      carRaisedDate = state.data.carRaisedDate;
-    }
-
-    if (carClosed == true && state.data.carClosedDate == null) {
-      carClosedDate = DateTime.now().toIso8601String();
-    }
-    if (carClosed == false && state.data.carClosedDate != null) {
-      carClosedDate = null;
-    }
-    if (carClosed == null) {
-      carClosedDate = state.data.carClosedDate;
-    }
 
     emit(state.copyWith(
       data: state.data.copyWith(
@@ -133,19 +126,7 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
         numberOfOutbreaks: numberOfOutbreaks ?? state.data.numberOfOutbreaks,
         areaLost: areaLost ?? state.data.areaLost,
         underControl: underControl ?? state.data.underControl,
-        pestsAndDiseaseTypeId:
-            selectPetsAndDiseaseType?.pestsAndDiseaseTypeId ??
-                state.selectPetsAndDiseaseType?.pestsAndDiseaseTypeId,
-        pestsAndDiseaseTypeName:
-            selectPetsAndDiseaseType?.pestsAndDiseaseTypeName ??
-                state.selectPetsAndDiseaseType?.pestsAndDiseaseTypeName,
-        carRaisedDate: carRaisedDate,
-        carClosedDate: carClosedDate,
       ),
-      carClosed: carClosed ?? state.carClosed,
-      carRaised: carRaised ?? state.carRaised,
-      selectPetsAndDiseaseType:
-          selectPetsAndDiseaseType ?? state.selectPetsAndDiseaseType,
       selectPestsAndDiseasesRegisterTreatmentMethods:
           selectPestsAndDiseasesRegisterTreatmentMethods != null
               ? selectPestsAndDiseasesRegisterTreatmentMethods
@@ -158,14 +139,22 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
     ));
   }
 
-  Future<bool> onSave() async {
-    final canSave = state.selectPetsAndDiseaseType != null &&
-        state.data.numberOfOutbreaks != null &&
-        state.data.areaLost != null &&
-        state.data.underControl != null;
+  bool onValidateRequiredField() {
+    if (state.selectPetsAndDiseaseType == null) {
+      emit(
+        state.copyWith(
+          isSelectPetTypeError: true,
+        ),
+      );
 
-    if (!canSave) {
-      showSnackError(msg: 'Required fields are missing');
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> onSave() async {
+    if (!onValidateRequiredField()) {
       return false;
     }
 

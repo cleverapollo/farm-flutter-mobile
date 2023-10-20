@@ -21,6 +21,7 @@ class PetsAndDiseasesState with _$PetsAndDiseasesState {
     @Default([]) List<PetsAndDiseaseRegister> petsAndDiseaseRegisters,
     PestsAndDiseaseType? selectPetsAndDiseaseType,
     @Default([]) List<TreatmentMethod> treatmentMethods,
+    @Default(false) bool isSelectPetTypeError,
     int? groupSchemeId,
     String? farmId,
     bool? carRaised,
