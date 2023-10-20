@@ -212,15 +212,14 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }) async {
     try {
       logger.d('--RM Sync Summary start--');
-      await publishFarm();
-      await publishGroupSchemeStakeholders();
-
       emit(
         state.copyWith(
-          syncMessage: 'Syncing...',
+          syncMessage: 'RM Summary Syncing...',
           isLoading: true,
         ),
       );
+      await publishFarm();
+      await publishGroupSchemeStakeholders();
 
       await Future.delayed(const Duration(seconds: 15), () async {
         await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
@@ -1323,7 +1322,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   Future<void> subscribeToRegionalManagerTrickleFeedMasterDataTopic() async {
     emit(
       state.copyWith(
-        syncMessage: 'Syncing RM updated master data...',
+        syncMessage: 'Syncing RM Updated Master Data...',
         isLoading: true,
       ),
     );
@@ -1393,7 +1392,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   Future<void> subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId() async {
     emit(
       state.copyWith(
-        syncMessage: 'Syncing updated rm master data...',
+        syncMessage: 'Syncing Updated RM Master Data...',
         isLoading: true,
       ),
     );
@@ -1428,7 +1427,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             final topic = item.header?.originalTopic;
 
             if (topic == 'Cmo.MasterData.RM.RiskProQuestion.$groupSchemeId') {
-              emit(state.copyWith(syncMessage: 'Syncing new and updated risk profile questions...'));
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Risk Profile Questions...'));
               await insertRiskProfileQuestion(item);
             } else if (topic == 'Cmo.MasterData.RM.FrmMemObj.$groupSchemeId') {
               emit(state.copyWith(syncMessage: 'Syncing new and updated Farm Member Objectives...'));
@@ -1437,10 +1436,10 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
               emit(state.copyWith(syncMessage: 'Syncing new and updated Farm Objective Options...'));
               await insertFarmObjectiveOption(item);
             } else if (topic == 'Cmo.MasterData.RM.SH.$groupSchemeId') {
-              emit(state.copyWith(syncMessage: 'Syncing new and updated stakeholder...'));
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Stakeholder...'));
               await insertStakeholder(item);
             } else if (topic == 'Cmo.MasterData.RM.GSS.$groupSchemeId') {
-              emit(state.copyWith(syncMessage: 'Syncing new and updated groupscheme stakeholder...'));
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Groupscheme Stakeholder...'));
               await insertGroupSchemeStakeholder(item);
             } else if (topic == 'Cmo.MasterData.RM.Principle.$groupSchemeId') {
               emit(state.copyWith(syncMessage: 'Syncing new and updated Principle...'));
@@ -1471,7 +1470,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   Future<void> subscribeToRegionalManagerUnitTrickleFeedTopicByRegionalManagerUnitId() async {
     emit(
       state.copyWith(
-        syncMessage: 'Syncing updated rmu master data...',
+        syncMessage: 'Syncing updated RMU Master Data...',
         isLoading: true,
       ),
     );
@@ -1506,13 +1505,13 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             final topic = item.header?.originalTopic;
 
             if (topic == 'Cmo.MasterData.RMU.Farm.$rmuId') {
-              emit(state.copyWith(syncMessage: 'Syncing new and updated farm...'));
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Farm...'));
               await insertFarm(item);
             } else if (topic == 'Cmo.MasterData.RMU.Compliance.$rmuId') {
-              emit(state.copyWith(syncMessage: 'Syncing new and updated compliance...'));
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Compliance...'));
               await insertCompliance(item);
             } else if (topic == 'Cmo.MasterData.RMU.Question.$rmuId') {
-              emit(state.copyWith(syncMessage: 'Syncing new and updated question...'));
+              emit(state.copyWith(syncMessage: 'Syncing new and updated Question...'));
               await insertQuestion(item);
             } else {
               logger.e('Error - Could not process topic: ${item.header?.originalTopic}');

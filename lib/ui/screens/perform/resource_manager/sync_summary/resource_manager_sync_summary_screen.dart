@@ -1,7 +1,9 @@
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/state/sync/rm/rm_sync_cubit.dart';
 import 'package:cmo/ui/components/sync_summary_component/sync_item_widget.dart';
+import 'package:cmo/ui/screens/sync/rm_sync_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
@@ -43,9 +45,10 @@ class _ResourceManagerSyncSummaryScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoAppBar(
         title: LocaleKeys.syncSummary.tr(),
-        showLeading: true,
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
       ),
       body: RefreshIndicator(
         onRefresh: () async {},
@@ -215,13 +218,21 @@ class _ResourceManagerSyncSummaryScreenState
                       loading: isLoading,
                       title: LocaleKeys.sync.tr(),
                       onTap: () async {
-                        await context.read<RMSyncCubit>().syncSummary(
-                          onSuccess: () async {
-                            showSnackSuccess(
-                                msg: 'The summary sync was successful!');
+                        if (mounted) {
+                          final isSuccess = await Navigator.of(context).push<bool?>(
+                            MaterialPageRoute(
+                              builder: (_) => const RMSyncScreen(
+                                isSyncSummary: true,
+                              ),
+                            ),
+                          );
+
+                          if (isSuccess != null && isSuccess) {
+                            showSnackSuccess(msg: 'The summary sync was successful!');
                             await context.read<DashboardCubit>().initializeRM();
-                          },
-                        );
+                          }
+                        }
+
                       },
                     );
                   },
