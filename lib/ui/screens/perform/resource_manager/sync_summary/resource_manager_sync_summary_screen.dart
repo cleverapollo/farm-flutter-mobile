@@ -45,9 +45,10 @@ class _ResourceManagerSyncSummaryScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoAppBar(
         title: LocaleKeys.syncSummary.tr(),
-        showLeading: true,
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
       ),
       body: RefreshIndicator(
         onRefresh: () async {},
