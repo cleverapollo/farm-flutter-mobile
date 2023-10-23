@@ -6,6 +6,7 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/state/audit_question_photo/audit_question_photo_cubit.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_question_photo_detail_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/editable_photo_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/file_utils.dart';
 import 'package:cmo/utils/utils.dart';
@@ -164,7 +165,10 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
                     savePhoto: _replacePhoto,
                   );
                 },
-                child: Container(
+                child: EditablePhotoItem(
+                  photoDetail: PhotoDetail(),
+                ),
+                Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
                     color: context.colors.greyD9D9,
