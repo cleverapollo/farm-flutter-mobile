@@ -57,6 +57,10 @@ extension StringNullExtension on String? {
       return this!.replaceFirst('data:image/jpeg;base64,', '');
     }
 
+    if (this!.contains('data:image/png;base64,')) {
+      return this!.replaceFirst('data:image/png;base64,', '');
+    }
+
     return '$this';
   }
 

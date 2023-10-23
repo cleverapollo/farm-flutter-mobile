@@ -973,7 +973,13 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         );
       }
 
-      return cmoDatabaseMasterService.cacheFarm(farm.copyWith(isMasterDataSynced: 1, isLocal: 0));
+      return cmoDatabaseMasterService.cacheFarm(
+        farm.copyWith(
+          isMasterDataSynced: 1,
+          isLocal: 0,
+          signatureImage: farm.signatureImage.base64SyncServerToString,
+        ),
+      );
     } catch (e) {
       logger.d('insert error: $e');
     }

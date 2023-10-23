@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
@@ -49,7 +50,7 @@ class _AddMemberSignContractWidgetState
     super.initState();
     if (widget.farm?.signatureImage != null) {
       legacySignature.value = Image.memory(
-          base64Decode(widget.farm!.signatureImage!),
+          base64Decode(widget.farm!.signatureImage!.base64SyncServerToString!),
           fit: BoxFit.cover);
     }
 
