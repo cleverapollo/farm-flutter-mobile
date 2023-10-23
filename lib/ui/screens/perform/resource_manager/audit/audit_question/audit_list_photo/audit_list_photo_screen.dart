@@ -166,35 +166,35 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
                   );
                 },
                 child: EditablePhotoItem(
-                  photoDetail: PhotoDetail(),
+                  photoDetail: PhotoDetail.fromQuestionPhoto(snapshot.photos[index]),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: context.colors.greyD9D9,
-                  ),
-                  child: Row(
-                    children: [
-                      Image.memory(
-                        const Base64Decoder().convert(snapshot.photos[index].photo!),
-                        fit: BoxFit.fitHeight,
-                        width: 74,
-                        height: 74,
-                      ),
-                      const SizedBox(
-                        width: 24,
-                      ),
-                      Expanded(
-                        child: Text(
-                          snapshot.photos[index].photo!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: context.textStyles.bodyBold.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Container(
+                //   padding: const EdgeInsets.symmetric(horizontal: 8),
+                //   decoration: BoxDecoration(
+                //     color: context.colors.greyD9D9,
+                //   ),
+                //   child: Row(
+                //     children: [
+                //       Image.memory(
+                //         const Base64Decoder().convert(snapshot.photos[index].photo!),
+                //         fit: BoxFit.fitHeight,
+                //         width: 74,
+                //         height: 74,
+                //       ),
+                //       const SizedBox(
+                //         width: 24,
+                //       ),
+                //       Expanded(
+                //         child: Text(
+                //           snapshot.photos[index].photo!,
+                //           maxLines: 1,
+                //           overflow: TextOverflow.ellipsis,
+                //           style: context.textStyles.bodyBold.black,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               );
             },
             separatorBuilder: (BuildContext context, int index) {

@@ -19,8 +19,11 @@ class PhotoDetail {
     required this.photoName,
   });
 
-  factory PhotoDetail.fromQuestionPhoto(QuestionPhoto questionPhoto) => PhotoDetail(photoBase64: questionPhoto.photo, photoName: questionPhoto.)
-
+  factory PhotoDetail.fromQuestionPhoto(QuestionPhoto questionPhoto) =>
+      PhotoDetail(
+        photoBase64: questionPhoto.photo ?? '',
+        photoName: questionPhoto.photoURL ?? '',
+      );
 }
 
 class EditablePhotoItem extends StatefulWidget {
@@ -34,8 +37,8 @@ class EditablePhotoItem extends StatefulWidget {
     required this.photoDetail,
     this.onRemoved,
     this.onChanged,
-    this.isAllowUploadNewPhoto = true,
-    this.isAllowUpdateName = true,
+    this.isAllowUploadNewPhoto = false,
+    this.isAllowUpdateName = false,
     Key? key,
   }) : super(key: key);
 
