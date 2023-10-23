@@ -5,6 +5,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/state/audit_question_photo/audit_question_photo_cubit.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_question_photo_detail_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/editable_photo_item.dart';
 import 'package:cmo/ui/ui.dart';
@@ -90,6 +91,7 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
         final base64 = await FileUtil.toBase64(await FileUtil.writeToFileWithUint8List(await croppedImage.readAsBytes()));
         await context.read<AuditQuestionPhotoCubit>().addPhoto(
               photoPath: base64,
+              auditQuestion: widget.auditQuestion,
             );
 
         setState(() {
@@ -116,8 +118,24 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
       if (context.mounted) {
         await context.read<AuditQuestionPhotoCubit>().addPhoto(
               photoPath: base64,
+              auditQuestion: widget.auditQuestion,
             );
       }
+
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  Future<void> removePhoto(QuestionPhoto photo) async {
+    if (context.mounted) {
+      setState(() {
+        loading = true;
+      });
+
+      await context.read<AuditQuestionPhotoCubit>().removePhoto(photo: photo);
+      await context.read<AuditListQuestionsCubit>().refreshAfterUploadPhoto();
 
       setState(() {
         loading = false;
@@ -147,14 +165,14 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
         return Scaffold(
           appBar: CmoAppBar(
             title: LocaleKeys.pictures.tr(),
-            leading: Assets.icons.icBackButton.svgBlack,
+            leading: Assets.icons.icArrowLeft.svgBlack,
             onTapLeading: Navigator.of(context).pop,
-            trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
+            trailing: Assets.icons.icClose.svgBlack,
             onTapTrailing: Navigator.of(context).pop,
           ),
           body: ListView.separated(
             itemCount: snapshot.photos.length,
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
             itemBuilder: (BuildContext context, int index) {
               if (snapshot.photos[index].photo == null) return const SizedBox();
               return InkWell(
@@ -167,35 +185,25 @@ class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
                 },
                 child: EditablePhotoItem(
                   photoDetail: PhotoDetail.fromQuestionPhoto(snapshot.photos[index]),
+                  onRemoved: () async {
+                    await removePhoto(snapshot.photos[index]);
+                  },
                 ),
               );
             },
             separatorBuilder: (BuildContext context, int index) {
-              return const SizedBox(height: 12);
+              return const SizedBox(height: 8);
             },
           ),
           persistentFooterAlignment: AlignmentDirectional.center,
           persistentFooterButtons: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CmoFilledButton(
-                  onTap: _selectPhotoFromCamera,
-                  title: LocaleKeys.takePhoto.tr(),
-                ),
-                CmoFilledButton(
-                  onTap: _selectPhotoFromGallery,
-                  title: LocaleKeys.selectPhoto.tr(),
-                ),
-              ],
-            ),
             Container(
               alignment: Alignment.topCenter,
               padding: const EdgeInsets.only(top: 12),
               child: CmoFilledButton(
                 onTap: () =>
                     Navigator.of(context).pop(snapshot.photos.isNotEmpty),
-                title: LocaleKeys.done.tr(),
+                title: LocaleKeys.save.tr(),
                 loading: loading,
               ),
             ),

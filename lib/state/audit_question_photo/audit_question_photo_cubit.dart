@@ -37,13 +37,15 @@ class AuditQuestionPhotoCubit extends Cubit<AuditQuestionPhotoState> {
 
   Future<void> addPhoto({
     required String photoPath,
+    required FarmQuestion auditQuestion,
   }) async {
     final photo = QuestionPhoto(
       photo: photoPath,
       assessmentId: state.auditId,
-      questionId: state.question?.questionId,
+      questionId: auditQuestion.questionId,
       photoId: generatorInt32Id(),
     );
+
     await cmoDatabaseMasterService.cacheQuestionPhoto(photo);
     await getListQuestionPhotos();
   }
@@ -52,6 +54,13 @@ class AuditQuestionPhotoCubit extends Cubit<AuditQuestionPhotoState> {
     required QuestionPhoto photo,
   }) async {
     await cmoDatabaseMasterService.cacheQuestionPhoto(photo);
+    await getListQuestionPhotos();
+  }
+
+  Future<void> removePhoto({
+    required QuestionPhoto photo,
+  }) async {
+    await cmoDatabaseMasterService.removeAuditQuestionPhoto(photo);
     await getListQuestionPhotos();
   }
 

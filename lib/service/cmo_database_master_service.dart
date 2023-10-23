@@ -3573,6 +3573,12 @@ class CmoDatabaseMasterService {
     return db.questionPhotos.filter().photoPathEqualTo(photoPath).findFirst();
   }
 
+  Future<QuestionPhoto?> getQuestionPhotoByPhotoData(String? photoData) async {
+    if (photoData == null) return null;
+    final db = await _db();
+    return db.questionPhotos.filter().photoEqualTo(photoData).findFirst();
+  }
+
   Future<List<Audit>> getAllAudits() async {
     final db = await _db();
     return db.audits.filter().isActiveEqualTo(true).sortByCreated().findAll();
@@ -3827,6 +3833,20 @@ class CmoDatabaseMasterService {
     } catch (error) {
       handleError(error);
     }
+  }
+
+  Future<bool?> removeAuditQuestionPhoto(QuestionPhoto photo) async {
+    final db = await _db();
+    try {
+      return db.writeTxn(() async {
+        return db.questionPhotos.delete(photo.photoId ?? -1);
+      });
+
+    } catch (error) {
+      handleError(error);
+    }
+
+    return null;
   }
 
   Future<List<QuestionPhoto>> getQuestionPhotos() async {

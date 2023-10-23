@@ -129,7 +129,9 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
       onDone: (base64Image) async {
         await context.read<AuditQuestionPhotoCubit>().addPhoto(
               photoPath: base64Image,
+              auditQuestion: auditQuestion,
             );
+
         await context.read<AuditListQuestionsCubit>().refreshAfterUploadPhoto();
       },
     );
