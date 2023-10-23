@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cmo/extensions/string.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:path_provider/path_provider.dart';
@@ -45,6 +46,15 @@ class FileUtil {
 
     final uint8ListImage = await croppedFile.readAsBytes();
     final imageFile = await writeToFileWithUint8List(uint8ListImage);
+    final base64 = await toBase64(imageFile);
+    return base64;
+  }
+
+  static Future<String> imagePathToBase64(String? imagePath) async {
+    if (imagePath.isBlank) return '';
+
+    final file = await File(imagePath!).readAsBytes();
+    final imageFile = await writeToFileWithUint8List(file);
     final base64 = await toBase64(imageFile);
     return base64;
   }

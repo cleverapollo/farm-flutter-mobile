@@ -124,13 +124,15 @@ class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
   Future<void> onTapCamera({
     required FarmQuestion auditQuestion,
   }) async {
-    final result = await CustomCameraScreen.push(
+    await CustomCameraScreen.push(
       context,
+      onDone: (base64Image) async {
+        await context.read<AuditQuestionPhotoCubit>().addPhoto(
+              photoPath: base64Image,
+            );
+        await context.read<AuditListQuestionsCubit>().refreshAfterUploadPhoto();
+      },
     );
-
-    // if (result != null) {
-    //   await context.read<AuditListQuestionsCubit>().refreshAfterUploadPhoto();
-    // }
   }
 
   Future<void> _onTapLocation({
