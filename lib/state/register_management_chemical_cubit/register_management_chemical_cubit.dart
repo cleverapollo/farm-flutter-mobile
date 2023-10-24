@@ -92,7 +92,7 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
           (element) => element.campId == data.campId.toString());
 
       emit(state.copyWith(
-        chemical: data,
+        chemical: data.copyWith(createDT: data.createDT ?? DateTime.now()),
         chemicalBeforeEdit: data,
         campSelect: selectCamp,
         chemicalTypeSelect: selectChemicalType,
@@ -173,6 +173,8 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
           : state.chemical.chemicalId,
       isActive: true,
       isMasterdataSynced: isMasterdataSynced,
+      createDT: state.chemical.createDT ?? DateTime.now(),
+      updateDT: DateTime.now(),
     ));
     if (result != null) {
       showSnackSuccess(msg: 'Save Chemical $result Successfully');

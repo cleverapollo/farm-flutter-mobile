@@ -38,6 +38,8 @@ class FireRegisterDetailCubit extends Cubit<FireRegisterDetailState> {
           fireRegister: fireRegister.copyWith(
             longitude: locationModel.longitude,
             latitude: locationModel.latitude,
+            createDT: fireRegister.createDT ?? DateTime.now(),
+            updateDT: DateTime.now(),
           ),
         ),
       );
@@ -50,6 +52,8 @@ class FireRegisterDetailCubit extends Cubit<FireRegisterDetailState> {
           fireRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
           isActive: true,
           isMasterdataSynced: false,
+          createDT: DateTime.now(),
+          updateDT: DateTime.now(),
         ),
       ),);
     }

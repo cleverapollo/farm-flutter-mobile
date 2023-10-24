@@ -158,6 +158,8 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
       farmId: farm?.farmId,
       isActive: true,
       isMasterDataSynced: false,
+      createDT: agent.createDT ?? DateTime.now(),
+      updateDT: DateTime.now(),
     );
 
     emit(state.copyWith(agent: agent));

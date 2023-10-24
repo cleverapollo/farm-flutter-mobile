@@ -26,6 +26,8 @@ class AccidentAndIncidentRegisterPayLoad
     String? NatureOfInjuryName,
     String? LostTimeInDays,
     String? PropertyDamaged,
+    DateTime? CreateDT,
+    DateTime? UpdateDT,
   }) = _AccidentAndIncidentRegisterPayLoad;
   factory AccidentAndIncidentRegisterPayLoad.fromJson(
           Map<String, dynamic> json) =>

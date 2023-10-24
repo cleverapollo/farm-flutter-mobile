@@ -34,6 +34,8 @@ class AddingAAIScreen extends StatefulWidget {
                         DateTime.now().millisecondsSinceEpoch.toString(),
                     isActive: true,
                     isMasterDataSynced: false,
+                    createDT: DateTime.now(),
+                    updateDT: DateTime.now(),
                   ),
               isAddNew: aai == null,
             ),
@@ -110,6 +112,8 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           accidentAndIncidentRegisterId: null,
           isActive: true,
           isMasterDataSynced: false,
+          updateDT: DateTime.now(),
+          createDT: aai.createDT ?? DateTime.now(),
         );
 
         int? resultId;

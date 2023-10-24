@@ -27,6 +27,8 @@ class GrievanceRegister with _$GrievanceRegister {
     @JsonKey(name: 'WorkerName') String? workerName,
     @JsonKey(name: 'AllocatedToName') String? allocatedToName,
     @JsonKey(name: 'GrievanceIssueName') String? grievanceIssueName,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
   }) = _GrievanceRegister;
 
   const GrievanceRegister._();
@@ -59,6 +61,8 @@ extension GrievanceRegisterX on GrievanceRegister {
       WorkerName: workerName,
       AllocatedToName: allocatedToName,
       GrievanceIssueName: grievanceIssueName,
+      UpdateDT: updateDT,
+      CreateDT: createDT,
     );
   }
 }

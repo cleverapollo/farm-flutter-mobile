@@ -71,6 +71,8 @@ class RMAsiCubit extends Cubit<RMAsiState> {
           asiRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
           date: DateTime.now(),
           farmId: state.farmId,
+          createDT: DateTime.now(),
+          updateDT: DateTime.now(),
         ),
       ));
     }

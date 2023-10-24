@@ -23,6 +23,8 @@ class FireRegisterPayLoad with _$FireRegisterPayLoad {
     bool? IsActive,
     bool? IsMasterdataSynced,
     String? FireCauseName,
+    DateTime? CreateDT,
+    DateTime? UpdateDT,
   }) = _FireRegisterPayLoad;
   factory FireRegisterPayLoad.fromJson(Map<String, dynamic> json) =>
       _$FireRegisterPayLoadFromJson(json);

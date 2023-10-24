@@ -29,6 +29,8 @@ class RteSpecies with _$RteSpecies {
           @Default(false) @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
           @JsonKey(name: 'CampName') String? campName,
           @JsonKey(name: 'AnimalTypeName') String? animalTypeName,
+            @JsonKey(name: 'CreateDT') DateTime? createDT,
+            @JsonKey(name: 'UpdateDT') DateTime? updateDT,
           @JsonKey(name: 'SpeciesRangeName') String? speciesRangeName}) =
       _RteSpecies;
 
@@ -64,6 +66,8 @@ extension RteSpeciesX on RteSpecies {
       CampName: campName,
       AnimalTypeName: animalTypeName,
       SpeciesRangeName: speciesRangeName,
+      CreateDT: createDT,
+      UpdateDT: updateDT,
     );
   }
 }

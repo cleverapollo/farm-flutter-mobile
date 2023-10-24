@@ -86,6 +86,8 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
 
         stakeHolder = stakeHolder.copyWith(
           stakeHolderTypeId: state.stakeHolder?.stakeHolderTypeId,
+          createDT: widget.isEditing ? (state.stakeHolder?.createDT ?? DateTime.now()) : DateTime.now(),
+          updateDT: DateTime.now(),
         );
 
         int? resultId;

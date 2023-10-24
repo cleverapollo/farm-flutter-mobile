@@ -105,7 +105,8 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
         state.compartment.copyWith(
           localCompartmentId: state.compartmentBeforeEdit.localCompartmentId ??
               DateTime.now().millisecondsSinceEpoch,
-          createDT: state.compartment.createDT ?? DateTime.now().toString(),
+          createDT: state.compartment.createDT ?? DateTime.now(),
+          updateDT: DateTime.now(),
           groupSchemeId: groupSchemeId,
           farmId: farmId,
           campId: state.campId,

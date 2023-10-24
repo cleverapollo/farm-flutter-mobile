@@ -23,6 +23,8 @@ class TrainingRegisterPayLoad with _$TrainingRegisterPayLoad {
     bool? IsMasterdataSynced,
     String? WorkerName,
     String? TrainingTypeName,
+    DateTime? UpdateDT,
+    DateTime? CreateDT,
   }) = _TrainingRegisterPayLoad;
   factory TrainingRegisterPayLoad.fromJson(Map<String, dynamic> json) =>
       _$TrainingRegisterPayLoadFromJson(json);

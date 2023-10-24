@@ -39,8 +39,8 @@ class Compartment with _$Compartment {
     @JsonKey(name: 'GeologyClassMasterDataId') String? geologyClassMasterDataId,
     @JsonKey(name: 'OwnershipClassMasterDataId')
         String? ownershipClassMasterDataId,
-    @JsonKey(name: 'CreateDT') String? createDT,
-    @JsonKey(name: 'UpdateDT') String? updateDT,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'Polygon') String? polygon,
     @ignore

@@ -134,7 +134,7 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
     } else {
       farmerWorker = FarmerWorker(
         farmId: context.read<LabourManagementCubit>().state.activeFarm?.farmId,
-        createDT: DateTime.now().millisecondsSinceEpoch.toString(),
+        createDT: widget.farmerWorker?.createDT ?? DateTime.now().millisecondsSinceEpoch.toString(),
         workerId: DateTime.now().millisecondsSinceEpoch.toString(),
       );
     }

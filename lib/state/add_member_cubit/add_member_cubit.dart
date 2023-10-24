@@ -288,7 +288,12 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   }
 
   Future<void> cacheFarm() async {
-    await cmoDatabaseMasterService.cacheFarmAddMember(state.farm!);
+    await cmoDatabaseMasterService.cacheFarmAddMember(
+      state.farm!.copyWith(
+        createDT: state.farm?.createDT ?? DateTime.now(),
+        updateDT: DateTime.now(),
+      ),
+    );
   }
 
   Future<void> onTapSlimf({required bool isSlimf}) async {

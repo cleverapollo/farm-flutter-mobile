@@ -27,6 +27,8 @@ class BiologicalControlAgentRegisterPayLoad
     String? BiologicalControlAgentTypeCountryName,
     String? ReasonForBioAgent,
     String? MonitoringRequirementName,
+    DateTime? CreateDT,
+    DateTime? UpdateDT,
   }) = _BiologicalControlAgentRegisterPayLoad;
   factory BiologicalControlAgentRegisterPayLoad.fromJson(
           Map<String, dynamic> json) =>

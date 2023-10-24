@@ -29,6 +29,8 @@ class Asi with _$Asi {
     @JsonKey(name: 'CompartmentName') String? compartmentName,
     @JsonKey(name: 'LocalCompartmentId') int? localCompartmentId,
     @JsonKey(name: 'ManagementUnitId') String? managementUnitId,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
   }) = _Asi;
 
   const Asi._();

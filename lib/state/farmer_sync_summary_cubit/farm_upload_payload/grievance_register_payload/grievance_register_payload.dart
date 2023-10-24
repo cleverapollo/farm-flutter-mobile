@@ -24,6 +24,8 @@ class GrievanceRegisterPayLoad with _$GrievanceRegisterPayLoad {
     String? WorkerName,
     String? AllocatedToName,
     String? GrievanceIssueName,
+    DateTime? CreateDT,
+    DateTime? UpdateDT,
   }) = _GrievanceRegisterPayLoad;
   factory GrievanceRegisterPayLoad.fromJson(Map<String, dynamic> json) =>
       _$GrievanceRegisterPayLoadFromJson(json);

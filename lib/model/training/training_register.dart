@@ -27,6 +27,8 @@ class TrainingRegister with _$TrainingRegister {
     @JsonKey(name: 'TrainingTypeName') String? trainingTypeName,
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
   }) = _TrainingRegister;
 
   const TrainingRegister._();
@@ -59,6 +61,8 @@ extension TrainingRegisterX on TrainingRegister {
       IsMasterdataSynced: isMasterdataSynced,
       WorkerName: workerName,
       TrainingTypeName: trainingTypeName,
+      UpdateDT: updateDT,
+      CreateDT: createDT,
     );
   }
 }

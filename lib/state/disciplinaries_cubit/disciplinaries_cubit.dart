@@ -92,14 +92,21 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
           (element) => element.issueTypeId == data.issueTypeId);
 
       emit(state.copyWith(
-        data: data,
+        data: data.copyWith(createDT: data.createDT ?? DateTime.now()),
         dataBeforeEdit: data,
         selectWorker: selectWorker,
         selectCamp: selectCamp,
         selectIssue: selectIssue,
       ));
     } else {
-      emit(state.copyWith(data: const SanctionRegister()));
+      emit(
+        state.copyWith(
+          data: SanctionRegister(
+            createDT: DateTime.now(),
+            updateDT: DateTime.now(),
+          ),
+        ),
+      );
     }
 
     emit(state.copyWith(isLoading: false));
@@ -209,6 +216,8 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
         isSynced: isSynced,
         isLocal: !isSynced,
         farmId: state.farmId,
+        createDT: state.data?.createDT ?? DateTime.now(),
+        updateDT: DateTime.now(),
       ));
 
       if (result != null) {

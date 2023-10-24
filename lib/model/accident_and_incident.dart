@@ -32,6 +32,8 @@ class AccidentAndIncident with _$AccidentAndIncident {
     @JsonKey(name: 'NatureOfInjuryName') String? natureOfInjuryName,
     @JsonKey(name: 'LostTimeInDays') String? lostTimeInDays,
     @JsonKey(name: 'PropertyDamaged') String? propertyDamaged,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
   }) = _AccidentAndIncident;
 
   const AccidentAndIncident._();
@@ -67,6 +69,8 @@ extension AccidentAndIncidentX on AccidentAndIncident {
       NatureOfInjuryName: natureOfInjuryName,
       LostTimeInDays: lostTimeInDays,
       PropertyDamaged: propertyDamaged,
+      CreateDT: createDT,
+      UpdateDT: updateDT,
     );
   }
 }

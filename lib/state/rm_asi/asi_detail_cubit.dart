@@ -90,6 +90,8 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
       await cmoDatabaseMasterService.cacheAsi(
         state.asi.copyWith(
           isMasterdataSynced: false,
+          createDT: state.asi.createDT ?? DateTime.now(),
+          updateDT: DateTime.now(),
         ),
       );
 

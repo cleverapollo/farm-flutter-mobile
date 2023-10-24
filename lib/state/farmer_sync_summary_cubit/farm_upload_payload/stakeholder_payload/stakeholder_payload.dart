@@ -18,6 +18,8 @@ class StakeholderPayLoad with _$StakeholderPayLoad {
     String? Cell,
     num? IsActive,
     num? IsMasterDataSynced,
+    DateTime? CreateDT,
+    DateTime? UpdateDT,
   }) = _StakeholderPayLoad;
   factory StakeholderPayLoad.fromJson(Map<String, dynamic> json) =>
       _$StakeholderPayLoadFromJson(json);
@@ -35,6 +37,8 @@ class StakeholderPayLoad with _$StakeholderPayLoad {
       StakeholderId: stakeholder.stakeHolderId?.toString(),
       StakeholderName: stakeholder.stakeholderName,
       StakeholderTypeId: stakeholder.stakeHolderTypeId,
+      CreateDT: stakeholder.createDT,
+      UpdateDT: stakeholder.updateDT,
     );
   }
 }

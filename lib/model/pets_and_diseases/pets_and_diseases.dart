@@ -23,6 +23,8 @@ class PetsAndDiseaseRegister with _$PetsAndDiseaseRegister {
     @JsonKey(name: 'CarClosedDate') String? carClosedDate,
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @JsonKey(name: 'PestsAndDiseaseTypeName') String? pestsAndDiseaseTypeName,
     @JsonKey(name: 'PestsAndDiseaseTreatmentMethods')
         String? pestsAndDiseaseTreatmentMethods,
@@ -55,6 +57,8 @@ extension PetsAndDiseaseRegisterX on PetsAndDiseaseRegister {
       IsMasterdataSynced: isMasterdataSynced,
       PestsAndDiseaseTypeName: pestsAndDiseaseTypeName,
       PestsAndDiseaseTreatmentMethods: pestsAndDiseaseTreatmentMethods,
+      CreateDT: createDT,
+      UpdateDT: updateDT,
     );
   }
 }

@@ -76,7 +76,10 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
               (e) => e.pestsAndDiseaseTypeId == data.pestsAndDiseaseTypeId);
 
       emit(state.copyWith(
-        data: data,
+        data: data.copyWith(
+          createDT: data.createDT ?? DateTime.now(),
+          updateDT: DateTime.now(),
+        ),
         carClosed: data.carClosedDate != null,
         carRaised: data.carRaisedDate != null,
         selectPetsAndDiseaseType: selectPestsAndDiseasesType,
@@ -177,6 +180,8 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
       isMasterdataSynced: false,
       pestsAndDiseasesRegisterId: null,
       farmId: state.farmId,
+      updateDT: DateTime.now(),
+      createDT: state.data.createDT ?? DateTime.now(),
     ));
 
     if (value != null) {

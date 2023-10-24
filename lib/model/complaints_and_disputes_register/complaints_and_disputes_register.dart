@@ -26,6 +26,8 @@ class ComplaintsAndDisputesRegister with _$ComplaintsAndDisputesRegister {
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
     @JsonKey(name: 'StakeholderName') String? stakeholderName,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @JsonKey(name: 'ComplaintsAndDisputesRegisterName')
         String? complaintsAndDisputesRegisterName,
   }) = _ComplaintsAndDisputesRegister;
@@ -59,6 +61,8 @@ extension ComplaintsAndDisputesRegisterX on ComplaintsAndDisputesRegister {
       IsMasterdataSynced: isMasterdataSynced,
       StakeholderName: stakeholderName,
       ComplaintsAndDisputesRegisterName: complaintsAndDisputesRegisterName,
+      CreateDT: createDT,
+      UpdateDT: updateDT,
     );
   }
 }

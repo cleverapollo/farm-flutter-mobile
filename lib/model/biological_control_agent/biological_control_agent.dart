@@ -38,6 +38,8 @@ class BiologicalControlAgent with _$BiologicalControlAgent {
     @JsonKey(name: 'ReasonForBioAgent') String? reasonForBioAgent,
     @JsonKey(name: 'MonitoringRequirementName')
         String? monitoringRequirementName,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
   }) = _BiologicalControlAgent;
 
   const BiologicalControlAgent._();
@@ -78,6 +80,8 @@ extension BiologicalControlAgentX on BiologicalControlAgent {
       monitoringRequirementName: monitoringRequirementName,
       carRaisedDate: carRaised ? null : carRaisedDate,
       carClosedDate: carClosed ? null : carClosedDate,
+      createDT: createDT,
+      updateDT: updateDT,
     );
   }
 
@@ -105,6 +109,8 @@ extension BiologicalControlAgentX on BiologicalControlAgent {
           biologicalControlAgentTypeCountryName,
       ReasonForBioAgent: reasonForBioAgent,
       MonitoringRequirementName: monitoringRequirementName,
+      CreateDT: createDT,
+      UpdateDT: updateDT,
     );
   }
 }

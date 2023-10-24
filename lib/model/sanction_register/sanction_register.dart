@@ -29,6 +29,8 @@ class SanctionRegister with _$SanctionRegister {
     @JsonKey(name: 'DisplayWorkerName') String? displayWorkerName,
     @JsonKey(name: 'CampName') String? campName,
     @JsonKey(name: 'IssueTypeName') String? issueTypeName,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
   }) = _SanctionRegister;
 
   const SanctionRegister._();
@@ -63,6 +65,8 @@ extension SanctionRegisterX on SanctionRegister {
       DisplayWorkerName: displayWorkerName,
       CampName: campName,
       IssueTypeName: issueTypeName,
+      UpdateDT: updateDT,
+      CreateDT: createDT,
     );
   }
 }

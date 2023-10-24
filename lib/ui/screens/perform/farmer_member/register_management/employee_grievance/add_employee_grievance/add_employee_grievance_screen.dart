@@ -46,6 +46,8 @@ class AddEmployeeGrievanceScreen extends StatefulWidget {
                     dateReceived: DateTime.now(),
                     isActive: true,
                     isMasterdataSynced: false,
+                    createDT: DateTime.now(),
+                    updateDT: DateTime.now(),
                   ),
             ),
             child: const AddEmployeeGrievanceScreen(),
@@ -78,6 +80,8 @@ class _AddEmployeeGrievanceScreenState
       employeeGrievance = employeeGrievance.copyWith(
         isActive: true,
         isMasterdataSynced: false,
+        createDT: employeeGrievance.createDT ?? DateTime.now(),
+        updateDT: DateTime.now(),
       );
 
       int? resultId;
@@ -86,12 +90,7 @@ class _AddEmployeeGrievanceScreenState
         final databaseService = cmoDatabaseMasterService;
 
         await (await databaseService.db).writeTxn(() async {
-          resultId = await databaseService.cacheEmployeeGrievance(
-            employeeGrievance.copyWith(
-              isActive: true,
-              isMasterdataSynced: false,
-            ),
-          );
+          resultId = await databaseService.cacheEmployeeGrievance(employeeGrievance);
         });
       }
 

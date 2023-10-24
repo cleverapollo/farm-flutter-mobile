@@ -23,6 +23,8 @@ class ComplainsAndDisputesRegisterPayLoad
     bool? IsMasterdataSynced,
     String? StakeholderName,
     String? ComplaintsAndDisputesRegisterName,
+    DateTime? UpdateDT,
+    DateTime? CreateDT,
   }) = _ComplainsAndDisputesRegisterPayLoad;
   factory ComplainsAndDisputesRegisterPayLoad.fromJson(
           Map<String, dynamic> json) =>

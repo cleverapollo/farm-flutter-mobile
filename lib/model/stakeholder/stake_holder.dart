@@ -20,6 +20,8 @@ class StakeHolder with _$StakeHolder {
     @JsonKey(name: 'Address2') String? address2,
     @JsonKey(name: 'Tel') String? tel,
     @JsonKey(name: 'Cell') String? cell,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @Default(1) @JsonKey(name: 'IsActive') int? isActive,
     @Default(0) @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _StakeHolder;
@@ -38,6 +40,8 @@ class StakeHolder with _$StakeHolder {
       stakeholderName: stakeholderPayLoad.StakeholderName,
       stakeHolderTypeId: stakeholderPayLoad.StakeholderTypeId,
       tel: stakeholderPayLoad.Tel,
+      createDT: stakeholderPayLoad.CreateDT,
+      updateDT: stakeholderPayLoad.UpdateDT,
     );
   }
 
@@ -64,6 +68,8 @@ extension StakeHolderX on StakeHolder {
       Cell: cell,
       IsActive: isActive,
       IsMasterDataSynced: isMasterDataSynced,
+      CreateDT: createDT,
+      UpdateDT: updateDT,
     );
   }
 }

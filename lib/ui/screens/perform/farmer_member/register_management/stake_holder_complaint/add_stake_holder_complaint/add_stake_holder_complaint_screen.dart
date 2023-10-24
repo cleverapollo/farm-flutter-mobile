@@ -39,6 +39,8 @@ class AddStakeHolderComplaintScreen extends StatefulWidget {
                     complaintsAndDisputesRegisterNo:
                         DateTime.now().millisecondsSinceEpoch.toString(),
                     dateReceived: DateTime.now(),
+                    createDT: DateTime.now(),
+                    updateDT: DateTime.now(),
                     isActive: true,
                     isMasterdataSynced: false,
                   ),
@@ -90,8 +92,12 @@ class _AddStakeHolderComplaintScreenState
         if (mounted) {
           final databaseService = cmoDatabaseMasterService;
 
-          resultId = await databaseService
-              .cacheComplaintsAndDisputesRegister(complaint);
+          resultId = await databaseService.cacheComplaintsAndDisputesRegister(
+            complaint.copyWith(
+              createDT: complaint.createDT ?? DateTime.now(),
+              updateDT: DateTime.now(),
+            ),
+          );
         }
 
         if (resultId != null) {

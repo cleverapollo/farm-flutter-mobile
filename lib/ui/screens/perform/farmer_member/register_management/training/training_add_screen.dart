@@ -36,6 +36,8 @@ class TrainingAddScreen extends StatefulWidget {
                       date: DateTime.now(),
                       isActive: true,
                       isMasterdataSynced: false,
+                      createDT: DateTime.now(),
+                      updateDT: DateTime.now(),
                       farmId: farm.farmId),
               isAddNew: training == null,
             ),
@@ -75,20 +77,9 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
         training = training.copyWith(
           isActive: true,
           isMasterdataSynced: false,
+          updateDT: DateTime.now(),
+          createDT: training.createDT ?? DateTime.now(),
         );
-
-        // if (hasDrawn) {
-        //   training = training.copyWith(
-        //     signatureDate: DateTime.now(),
-        //   );
-        //   final image = await signatureKey.currentState?.toImage();
-        //   final byteData = await image?.toByteData();
-        //   final file = await FileUtil.writeToFile(byteData!);
-        //   final base64 = await FileUtil.toBase64(file);
-        //   training = training.copyWith(
-        //     signatureImage: base64,
-        //   );
-        // }
 
         int? resultId;
 

@@ -25,6 +25,8 @@ class RteSpeciesRegisterPayLoad with _$RteSpeciesRegisterPayLoad {
     String? CampName,
     String? AnimalTypeName,
     String? SpeciesRangeName,
+    DateTime? CreateDT,
+    DateTime? UpdateDT,
   }) = _RteSpeciesRegisterPayLoad;
   factory RteSpeciesRegisterPayLoad.fromJson(Map<String, dynamic> json) =>
       _$RteSpeciesRegisterPayLoadFromJson(json);

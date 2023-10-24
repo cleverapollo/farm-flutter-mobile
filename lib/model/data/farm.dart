@@ -67,6 +67,8 @@ class Farm with _$Farm {
     @ignore List<FarmMemberObjectiveAnswer>? objectiveAnswers,
     @ignore List<FarmMemberRiskProfileAnswer>? riskProfileAnswers,
     @JsonKey(name: 'StepCount') int? stepCount,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
   }) = _Farm;
 
   factory Farm.fromJson(Map<String, dynamic> json) => _$FarmFromJson(json);

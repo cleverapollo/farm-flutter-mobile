@@ -45,6 +45,8 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
         rtePhotos: rtePhotos,
         rteSpecies: state.rteSpecies?.copyWith(
           farmId: state.rteSpecies?.farmId ?? activeFarm?.farmId,
+          createDT: state.rteSpecies?.createDT ?? DateTime.now(),
+          updateDT: DateTime.now(),
         ),
       ),
     );
@@ -196,6 +198,8 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
         state.rteSpecies!.copyWith(
           rteSpeciesRegisterNo: state.rteSpecies?.rteSpeciesRegisterNo ??
               DateTime.now().millisecondsSinceEpoch.toString(),
+          updateDT: DateTime.now(),
+          createDT: state.rteSpecies?.createDT ?? DateTime.now(),
         ),
       );
 

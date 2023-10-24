@@ -49,7 +49,7 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
 
     if (widget.data?.signatureImage != null) {
       legacySignature.value = Image.memory(
-          base64Decode(widget.data!.signatureImage!),
+          base64Decode(widget.data!.signatureImage.base64SyncServerToString!),
           fit: BoxFit.cover);
     }
   }

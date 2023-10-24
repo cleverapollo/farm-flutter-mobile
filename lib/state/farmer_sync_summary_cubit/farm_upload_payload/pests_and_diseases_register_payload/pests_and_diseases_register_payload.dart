@@ -20,6 +20,8 @@ class PestsAndDiseasesRegisterPayLoad with _$PestsAndDiseasesRegisterPayLoad {
     bool? IsMasterdataSynced,
     String? PestsAndDiseaseTypeName,
     String? PestsAndDiseaseTreatmentMethods,
+    DateTime? CreateDT,
+    DateTime? UpdateDT,
   }) = _PestsAndDiseasesRegisterPayLoad;
   factory PestsAndDiseasesRegisterPayLoad.fromJson(Map<String, dynamic> json) =>
       _$PestsAndDiseasesRegisterPayLoadFromJson(json);

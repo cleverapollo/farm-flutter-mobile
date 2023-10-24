@@ -26,6 +26,8 @@ class SanctionRegisterPayLoad with _$SanctionRegisterPayLoad {
     String? DisplayWorkerName,
     String? CampName,
     String? IssueTypeName,
+    DateTime? CreateDT,
+    DateTime? UpdateDT,
   }) = _SanctionRegisterPayLoad;
   factory SanctionRegisterPayLoad.fromJson(Map<String, dynamic> json) =>
       _$SanctionRegisterPayLoadFromJson(json);

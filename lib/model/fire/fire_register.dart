@@ -28,6 +28,8 @@ class FireRegister with _$FireRegister {
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
     @JsonKey(name: 'AsiPhotos') List<String>? asiPhotos,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
   }) = _FireRegister;
 
   const FireRegister._();
@@ -62,6 +64,8 @@ extension FireRegisterX on FireRegister {
       isActive: isActive,
       isMasterdataSynced: isMasterdataSynced,
       fireCauseName: fireCauseName,
+      createDT: createDT,
+      updateDT: updateDT,
     );
   }
 
@@ -84,6 +88,8 @@ extension FireRegisterX on FireRegister {
       IsActive: isActive,
       IsMasterdataSynced: isMasterdataSynced,
       FireCauseName: fireCauseName,
+      UpdateDT: updateDT,
+      CreateDT: createDT,
     );
   }
 }

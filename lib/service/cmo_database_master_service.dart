@@ -811,6 +811,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
         .findAll();
   }
 
@@ -938,12 +939,14 @@ class CmoDatabaseMasterService {
           .filter()
           .farmIdEqualTo(farmId)
           .extinguishedIsNull()
+          .sortByCreateDTDesc()
           .findAll();
     } else {
       return db.fireRegisters
           .filter()
           .farmIdEqualTo(farmId)
           .extinguishedIsNotNull()
+          .sortByCreateDTDesc()
           .findAll();
     }
   }
@@ -1666,6 +1669,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
         .findAll();
   }
 
@@ -1734,7 +1738,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
-        .sortByCommonNameDesc()
+        .sortByCreateDTDesc()
         .findAll();
   }
 
@@ -1794,6 +1798,7 @@ class CmoDatabaseMasterService {
           .filter()
           .farmIdEqualTo(farmId)
           .isActiveEqualTo(true)
+          .sortByCreateDTDesc()
           .findAll();
     }
     if (isUnderControl == true) {
@@ -1802,6 +1807,7 @@ class CmoDatabaseMasterService {
           .farmIdEqualTo(farmId)
           .isActiveEqualTo(true)
           .underControlEqualTo(true)
+          .sortByCreateDTDesc()
           .findAll();
     }
     return db.petsAndDiseaseRegisters
@@ -1809,6 +1815,7 @@ class CmoDatabaseMasterService {
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
         .underControlEqualTo(false)
+        .sortByCreateDTDesc()
         .findAll();
   }
 
@@ -1881,6 +1888,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
         .findAll();
   }
 
@@ -1912,6 +1920,7 @@ class CmoDatabaseMasterService {
           .filter()
           .farmIdEqualTo(farmId)
           .isActiveEqualTo(true)
+          .sortByCreateDTDesc()
           .findAll();
     }
 
@@ -1921,6 +1930,7 @@ class CmoDatabaseMasterService {
           .farmIdEqualTo(farmId)
           .isActiveEqualTo(true)
           .dateReceivedIsNull()
+          .sortByCreateDTDesc()
           .findAll();
     } else {
       return db.sanctionRegisters
@@ -1928,6 +1938,7 @@ class CmoDatabaseMasterService {
           .farmIdEqualTo(farmId)
           .isActiveEqualTo(true)
           .dateReceivedIsNotNull()
+          .sortByCreateDTDesc()
           .findAll();
     }
   }
@@ -1949,6 +1960,7 @@ class CmoDatabaseMasterService {
           .filter()
           .farmIdEqualTo(int.parse(farmId))
           .isActiveEqualTo(true)
+          .sortByCreateDTDesc()
           .findAll();
     }
     if (isOpen == true) {
@@ -1957,6 +1969,7 @@ class CmoDatabaseMasterService {
           .farmIdEqualTo(int.parse(farmId))
           .dateIsNotNull()
           .isActiveEqualTo(true)
+          .sortByCreateDTDesc()
           .findAll();
     }
     return db.chemicals
@@ -1964,6 +1977,7 @@ class CmoDatabaseMasterService {
         .farmIdEqualTo(int.parse(farmId))
         .dateIsNull()
         .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
         .findAll();
   }
 
@@ -1984,6 +1998,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
         .findAll();
   }
 
@@ -2098,6 +2113,7 @@ class CmoDatabaseMasterService {
           .filter()
           .farmIdEqualTo(farmId)
           .isActiveEqualTo(true)
+          .sortByCreateDTDesc()
           .findAll();
     }
     if (isOpen == true) {
@@ -2106,6 +2122,7 @@ class CmoDatabaseMasterService {
           .farmIdEqualTo(farmId)
           .isActiveEqualTo(true)
           .dateIsNotNull()
+          .sortByCreateDTDesc()
           .findAll();
     }
 
@@ -2114,6 +2131,7 @@ class CmoDatabaseMasterService {
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
         .dateIsNull()
+        .sortByCreateDTDesc()
         .findAll();
   }
 
@@ -3032,6 +3050,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
         .findAll();
   }
 
@@ -3093,7 +3112,11 @@ class CmoDatabaseMasterService {
 
   Future<List<StakeHolder>> getStakeHolders() async {
     final db = await _db();
-    return db.stakeHolders.filter().isActiveEqualTo(1).findAll();
+    return db.stakeHolders
+        .filter()
+        .isActiveEqualTo(1)
+        .sortByCreateDTDesc()
+        .findAll();
   }
 
   Future<List<StakeHolder>> getStakeHoldersByStakeHolderId(String id) async {
@@ -3102,6 +3125,7 @@ class CmoDatabaseMasterService {
         .filter()
         .stakeHolderIdEqualTo(id)
         .isActiveEqualTo(1)
+        .sortByCreateDTDesc()
         .findAll();
   }
 
@@ -3123,7 +3147,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
-        .sortByFirstName()
+        .sortByCreateDTDesc()
         .findAll();
   }
 
@@ -3140,6 +3164,7 @@ class CmoDatabaseMasterService {
         .filter()
         .regionalManagerUnitIdEqualTo(resourceManagerUnit)
         .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
         .findAll();
   }
 
@@ -3581,7 +3606,11 @@ class CmoDatabaseMasterService {
 
   Future<List<Audit>> getAllAudits() async {
     final db = await _db();
-    return db.audits.filter().isActiveEqualTo(true).sortByCreated().findAll();
+    return db.audits
+        .filter()
+        .isActiveEqualTo(true)
+        .sortByCreatedDesc()
+        .findAll();
   }
 
   Future<int> cacheAudit(Audit item) async {
@@ -3631,7 +3660,7 @@ class CmoDatabaseMasterService {
       final compartments = await db.compartments
           .filter()
           .isActiveEqualTo(true)
-          .sortByUnitNumber()
+          .sortByCreateDTDesc()
           .findAll();
 
       return compartments;
@@ -3713,7 +3742,7 @@ class CmoDatabaseMasterService {
           .isActiveEqualTo(true)
           .groupSchemeIdEqualTo(groupSchemeId)
           .farmIdEqualTo(farmId)
-          .sortByUnitNumber()
+          .sortByCreateDTDesc()
           .findAll();
 
       return compartments;
@@ -4014,6 +4043,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
         .findAll();
   }
 
