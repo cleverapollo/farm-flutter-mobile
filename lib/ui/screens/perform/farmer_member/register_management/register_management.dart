@@ -136,7 +136,7 @@ class _RegisterManagementState extends State<RegisterManagement> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoFarmAppBar(
-        title: LocaleKeys.register_management.tr(),
+        title: LocaleKeys.monitoring.tr(),
         showLeading: true,
         showFarmName: true,
         showTrailing: true,

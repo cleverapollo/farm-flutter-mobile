@@ -73,7 +73,7 @@ class _FarmerMemberDashboardScreenState
             CmoCard(
               onTap: () => RegisterManagement.push(context),
               content: [
-                CmoCardHeader(title: LocaleKeys.registerCaseManagement.tr()),
+                CmoCardHeader(title: LocaleKeys.monitoring.tr()),
               ],
             ),
             const SizedBox(height: 20),
