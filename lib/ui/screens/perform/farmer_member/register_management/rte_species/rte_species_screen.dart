@@ -43,20 +43,10 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
     final locationModel = LocationModel()
       ..latitude = rteSpecies?.latitude
       ..longitude = rteSpecies?.longitude;
-    final activeFarm = await configService.getActiveFarm();
-    await SelectLocationScreen.push(
+    await RteSpeciesDetailScreen.push(
       context,
-      title: LocaleKeys.rteSpecies.tr(),
-      farmName: activeFarm?.farmName,
+      rteSpecies: rteSpecies,
       locationModel: locationModel,
-      shouldShowBackIcon: true,
-      onSave: (model) async {
-        await RteSpeciesDetailScreen.push(
-          context,
-          rteSpecies: rteSpecies,
-          locationModel: locationModel,
-        );
-      },
     );
   }
 

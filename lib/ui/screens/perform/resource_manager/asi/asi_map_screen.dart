@@ -191,32 +191,32 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
                   disable: !isEnableNextButton,
                   loading: loading,
                   onTap: () {
-                    if (isEnableNextButton) {
-                      if (_asi != null) {
-                        _asi = _asi!.copyWith(
-                          latitude: locationModel.latitude,
-                          longitude: locationModel.longitude,
-                        );
-                      } else {
-                        _asi = Asi(
-                          farmId: widget.farmId,
-                          campId: widget.campId,
-                          latitude: locationModel.latitude,
-                          longitude: locationModel.longitude,
-                          date: DateTime.now(),
-                          localId: DateTime.now().millisecondsSinceEpoch,
-                          asiRegisterNo:
-                              DateTime.now().millisecondsSinceEpoch.toString(),
-                        );
-                      }
-                      ASIDetailScreen.push(
-                        context,
-                        farmName: widget.farmName,
-                        locationModel: locationModel,
-                        asi: _asi!,
-                        isEditing: widget.isEditing,
-                      );
-                    }
+                    // if (isEnableNextButton) {
+                    //   if (_asi != null) {
+                    //     _asi = _asi!.copyWith(
+                    //       latitude: locationModel.latitude,
+                    //       longitude: locationModel.longitude,
+                    //     );
+                    //   } else {
+                    //     _asi = Asi(
+                    //       farmId: widget.farmId,
+                    //       campId: widget.campId,
+                    //       latitude: locationModel.latitude,
+                    //       longitude: locationModel.longitude,
+                    //       date: DateTime.now(),
+                    //       localId: DateTime.now().millisecondsSinceEpoch,
+                    //       asiRegisterNo:
+                    //           DateTime.now().millisecondsSinceEpoch.toString(),
+                    //     );
+                    //   }
+                    //   ASIDetailScreen.push(
+                    //     context,
+                    //     farmName: widget.farmName,
+                    //     locationModel: locationModel,
+                    //     asi: _asi!,
+                    //     isEditing: widget.isEditing,
+                    //   );
+                    // }
                   },
                 ),
               ),

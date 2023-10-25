@@ -1,3 +1,4 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -161,12 +162,12 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
         return CmoFilledButton(
           title: LocaleKeys.save.tr(),
           loading: loading,
+          disable: context.read<RteSpeciesDetailCubit>().state.rteSpecies?.latitude == null,
           onTap: () async {
             await context.read<RteSpeciesDetailCubit>().onSave(
               onSuccess: () async {
                 await context.read<RteSpeciesCubit>().loadRteSpecies();
                 if (context.mounted) {
-                  Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 }
               },

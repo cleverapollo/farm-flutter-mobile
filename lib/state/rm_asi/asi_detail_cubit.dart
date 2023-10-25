@@ -13,12 +13,18 @@ import 'package:maps_toolkit/maps_toolkit.dart';
 
 class AsiDetailCubit extends Cubit<AsiDetailState> {
   AsiDetailCubit({
-    required Asi asi,
-    required LocationModel? locationModel,
+    Asi? asi,
+    String? farmId,
+    String? campId,
   }) : super(
           AsiDetailState(
-            asi: asi,
-            locationModel: locationModel,
+            asi: asi ?? Asi(
+              farmId: farmId,
+              campId: campId,
+              date: DateTime.now(),
+              localId: DateTime.now().millisecondsSinceEpoch,
+              asiRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
+            ),
           ),
         );
 
@@ -37,14 +43,13 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
       state.asi.farmId ?? '',
     );
 
-    if (state.locationModel != null &&
-        state.locationModel?.latitude != null &&
-        state.locationModel?.longitude != null &&
+    if (state.asi.latitude != null &&
+        state.asi.longitude != null &&
         compartments.isNotBlank) {
       final initCompartment = compartments.firstWhereOrNull((compartment) {
         final latLng = LatLng(
-          state.locationModel!.latitude!,
-          state.locationModel!.longitude!,
+          state.asi.latitude!,
+          state.asi.longitude!,
         );
 
         final polygons = compartment.getPolygonLatLng();
@@ -60,26 +65,13 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
       }
     }
 
-    var randomId = generatorInt32Id();
-    if (state.locationModel != null && state.locationModel!.listImage.isNotBlank) {
-      final listAsiPhotos = <AsiPhoto>[];
-      for (final imageBase64 in state.locationModel!.listImage) {
-        final asiPhoto = const AsiPhoto().copyWith(
-          photo: imageBase64,
-          photoName: DateTime.now().microsecondsSinceEpoch.toString(),
-          asiRegisterPhotoNo: (randomId++).toString(),
-        );
-
-        listAsiPhotos.add(asiPhoto);
-      }
-
-      emit(state.copyWith(listAsiPhotos: listAsiPhotos));
-    }
+    final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(state.asi.localId);
 
     emit(
       state.copyWith(
         types: types,
         compartments: compartments,
+        listAsiPhotos: listAsiPhotos,
       ),
     );
   }
@@ -167,5 +159,37 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     final listAsiPhotos = state.listAsiPhotos;
     listAsiPhotos.remove(asiPhoto);
     emit(state.copyWith(listAsiPhotos: listAsiPhotos));
+  }
+
+  void onSelectLocation(LocationModel locationModel) {
+    emit(
+      state.copyWith(
+        asi: state.asi.copyWith(
+          latitude: locationModel.latitude,
+          longitude: locationModel.longitude,
+        ),
+      ),
+    );
+
+    if (locationModel.listImage.isNotBlank) {
+      var randomId = generatorInt32Id();
+
+      final listAsiPhotos = <AsiPhoto>[];
+      for (final imageBase64 in locationModel.listImage) {
+        final asiPhoto = const AsiPhoto().copyWith(
+          photo: imageBase64,
+          photoName: DateTime.now().microsecondsSinceEpoch.toString(),
+          asiRegisterPhotoNo: (randomId++).toString(),
+        );
+
+        listAsiPhotos.add(asiPhoto);
+      }
+
+      emit(
+        state.copyWith(
+          listAsiPhotos: state.listAsiPhotos + listAsiPhotos,
+        ),
+      );
+    }
   }
 }

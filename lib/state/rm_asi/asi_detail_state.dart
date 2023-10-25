@@ -8,13 +8,11 @@ class AsiDetailState {
     this.compartments = const <Compartment>[],
     this.listAsiPhotos = const <AsiPhoto>[],
     this.photoName,
-    this.locationModel,
     this.isLoading = false,
   });
 
   final List<AsiType> types;
   final List<Compartment> compartments;
-  final LocationModel? locationModel;
   final List<AsiPhoto> listAsiPhotos;
   String? photoName;
   Asi asi;
@@ -25,7 +23,6 @@ class AsiDetailState {
     List<AsiType>? types,
     List<Compartment>? compartments,
     String? photoName,
-    LocationModel? locationModel,
     Asi? asi,
     List<AsiPhoto>? listAsiPhotos,
   }) {
@@ -35,7 +32,6 @@ class AsiDetailState {
       compartments: compartments ?? this.compartments,
       photoName: photoName ?? this.photoName,
       asi: asi ?? this.asi,
-      locationModel: locationModel ?? this.locationModel,
       listAsiPhotos: listAsiPhotos ?? this.listAsiPhotos,
     );
   }

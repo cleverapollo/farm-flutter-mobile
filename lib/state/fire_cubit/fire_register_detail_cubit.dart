@@ -22,11 +22,13 @@ class FireRegisterDetailCubit extends Cubit<FireRegisterDetailState> {
     final fireCauses = await cmoDatabaseMasterService
         .getFireCauseByGroupSchemeId(farm?.groupSchemeId ?? 0);
 
-    emit(state.copyWith(
-      fireCauses: fireCauses,
-      loading: false,
-      activeFarm: farm,
-    ));
+    emit(
+      state.copyWith(
+        fireCauses: fireCauses,
+        loading: false,
+        activeFarm: farm,
+      ),
+    );
 
     if (fireRegister != null) {
       final fireCauseSelect = state.fireCauses

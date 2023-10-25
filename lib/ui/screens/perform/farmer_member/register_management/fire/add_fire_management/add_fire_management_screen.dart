@@ -103,7 +103,6 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
                   onSuccess: () async {
                     showSnackSuccess(msg: 'Save Fire ${state.fireRegister?.fireRegisterNo} Successfully');
                     Navigator.pop(context, true);
-                    Navigator.pop(context, true);
                   },
                 );
               },

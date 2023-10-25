@@ -14,7 +14,6 @@ import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class ASIDetailScreen extends StatefulWidget {
   const ASIDetailScreen({
@@ -26,12 +25,11 @@ class ASIDetailScreen extends StatefulWidget {
   final String? farmName;
   final bool isEditing;
 
-  static Future<void> push(
-    BuildContext context, {
-    required Asi asi,
-    required LocationModel? locationModel,
+  static Future<void> push(BuildContext context, {
+    required Asi? asi,
+    String? campId,
+    String? farmId,
     String? farmName,
-    bool isEditing = false,
   }) {
     return Navigator.push(
       context,
@@ -39,12 +37,13 @@ class ASIDetailScreen extends StatefulWidget {
         builder: (_) {
           return BlocProvider(
             create: (_) => AsiDetailCubit(
-              locationModel: locationModel,
               asi: asi,
+              campId: campId,
+              farmId: farmId,
             )..fetchData(),
             child: ASIDetailScreen(
               farmName: farmName,
-              isEditing: isEditing,
+              isEditing: asi != null,
             ),
           );
         },
@@ -57,7 +56,6 @@ class ASIDetailScreen extends StatefulWidget {
 }
 
 class _ASIDetailScreenState extends State<ASIDetailScreen> {
-  final _formKey = GlobalKey<FormBuilderState>();
   late final AsiDetailCubit _asiDetailCubit;
 
   @override
@@ -77,13 +75,10 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: FormBuilder(
-              key: _formKey,
-              child: BlocBuilder<AsiDetailCubit, AsiDetailState>(
-                builder: (context, state) {
-                  return _buildBody(context, state);
-                },
-              ),
+            child: BlocBuilder<AsiDetailCubit, AsiDetailState>(
+              builder: (context, state) {
+                return _buildBody(context, state);
+              },
             ),
           ),
           Positioned.fill(
@@ -124,7 +119,7 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: buildLatLngWidget(state.locationModel),
+            child: buildLatLngWidget(),
           ),
           const SizedBox(height: 20),
           Padding(
@@ -153,26 +148,23 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
   Widget _buildButton() {
     return BlocBuilder<AsiDetailCubit, AsiDetailState>(
       builder: (context, state) {
-        final locationModel = state.locationModel;
         final currentDate = state.asi.date;
         return CmoFilledButton(
           title: LocaleKeys.save.tr(),
           loading: state.isLoading,
           onTap: () async {
-            if (_formKey.currentState?.validate() == false) {
-              return;
-            }
-            if (locationModel?.latitude == null) {
+            if (state.asi.latitude == null) {
               showSnackError(msg: LocaleKeys.location_is_required.tr());
               return;
             }
+
             if (currentDate == null) {
               showSnackError(msg: LocaleKeys.date_is_required.tr());
               return;
             }
+
             await _asiDetailCubit.saveAsi();
             if (context.mounted) {
-              Navigator.of(context).pop();
               Navigator.of(context).pop();
             }
           },
@@ -274,38 +266,62 @@ class _ASIDetailScreenState extends State<ASIDetailScreen> {
     );
   }
 
-  Widget buildLatLngWidget(LocationModel? locationModel) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.symmetric(horizontal: 6),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: context.colors.grey),
-        ),
-      ),
-      child: Row(
-        children: [
-          Text(
-            LocaleKeys.lat_long.tr(),
-            style: context.textStyles.bodyBold.black,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Expanded(
-            child: Text(
-              '${locationModel?.latitude?.toStringAsFixed(5)} | ${locationModel?.longitude?.toStringAsFixed(5)}',
-              style: context.textStyles.bodyNormal.black,
-              textAlign: TextAlign.center,
+  Widget buildLatLngWidget() {
+    return BlocBuilder<AsiDetailCubit, AsiDetailState>(
+      builder: (context, state) {
+        return InkWell(
+          onTap: () async {
+            final locationModel = LocationModel()
+              ..latitude = state.asi.latitude
+              ..longitude = state.asi.longitude;
+            final result = await SelectLocationScreen.push(
+              context,
+              title: LocaleKeys.asi_detail.tr(),
+              farmName: widget.farmName,
+              locationModel: locationModel,
+              shouldShowPhotoButton: false,
+            );
+
+            if (result == null) return;
+            final mapResult = result as LocationModel;
+            context.read<AsiDetailCubit>().onSelectLocation(mapResult);
+          },
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: context.colors.grey),
+              ),
+            ),
+            child: Row(
+              children: [
+                Text(
+                  LocaleKeys.lat_long.tr(),
+                  style: context.textStyles.bodyBold.black,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Expanded(
+                  child: Text(
+                    state.asi.latitude == null || state.asi.longitude == null
+                        ? ''
+                        : '${state.asi.latitude!.toStringAsFixed(5)} | ${state.asi.longitude?.toStringAsFixed(5)}',
+                    style: context.textStyles.bodyNormal.black,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                if (state.asi.latitude != null) Assets.icons.icTick.widget,
+                Icon(
+                  Icons.keyboard_arrow_right_rounded,
+                  color: context.colors.black,
+                  size: 32,
+                ),
+              ],
             ),
           ),
-          if (locationModel?.latitude != null) Assets.icons.icTick.widget,
-          Icon(
-            Icons.keyboard_arrow_right_rounded,
-            color: context.colors.black,
-            size: 32,
-          )
-        ],
-      ),
+        );
+      },
     );
   }
 

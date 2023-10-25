@@ -5,6 +5,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/state/rm_asi/asi_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_state.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_detail_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_map_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
@@ -46,6 +47,20 @@ class _ASIScreenState extends State<ASIScreen> {
     super.initState();
   }
 
+  Future<void> navigateToASIDetail({Asi? asi}) async {
+    await ASIDetailScreen.push(
+      context,
+      farmName: widget.farmName,
+      farmId: context.read<AsiCubit>().state.farmId,
+      campId: context.read<AsiCubit>().state.campId,
+      asi: asi,
+    );
+
+    if (context.mounted) {
+      await context.read<AsiCubit>().loadAsis();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,15 +70,7 @@ class _ASIScreenState extends State<ASIScreen> {
         showTrailing: true,
         showLeading: true,
         trailing: Assets.icons.icAdd.svgBlack,
-        onTapTrailing: () async {
-          await ASIMapScreen.push(context,
-              farmId: context.read<AsiCubit>().state.farmId,
-              farmName: widget.farmName,
-              campId: context.read<AsiCubit>().state.campId,
-              shouldShowPhotoButton: false);
-
-          await context.read<AsiCubit>().loadAsis();
-        },
+        onTapTrailing: navigateToASIDetail,
       ),
       body: SizedBox.expand(
         child: ColoredBox(
@@ -148,27 +155,7 @@ class _ASIScreenState extends State<ASIScreen> {
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: CmoTappable(
-                                    onTap: () async {
-                                      await ASIMapScreen.push(
-                                        context,
-                                        farmId: context
-                                            .read<AsiCubit>()
-                                            .state
-                                            .farmId,
-                                        farmName: widget.farmName,
-                                        campId: context
-                                            .read<AsiCubit>()
-                                            .state
-                                            .campId,
-                                        asi: listAsi[index],
-                                        isEditing: true,
-                                      );
-                                      if (context.mounted) {
-                                        await context
-                                            .read<AsiCubit>()
-                                            .loadAsis();
-                                      }
-                                    },
+                                    onTap: () => navigateToASIDetail(asi: listAsi[index]),
                                     child: CmoCard(
                                       content: [
                                         CmoCardHeader(

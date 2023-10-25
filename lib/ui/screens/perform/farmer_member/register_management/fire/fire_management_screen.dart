@@ -41,25 +41,15 @@ class _FireManagementScreenState extends State<FireManagementScreen> {
     final locationModel = LocationModel()
       ..latitude = fireRegister?.latitude
       ..longitude = fireRegister?.longitude;
-    final activeFarm = await configService.getActiveFarm();
-    await SelectLocationScreen.push(
+    final shouldRefresh = await AddFireManagementScreen.push(
       context,
-      title: LocaleKeys.fire.tr(),
-      farmName: activeFarm?.farmName,
+      fireRegister: fireRegister,
       locationModel: locationModel,
-      shouldShowPhotoButton: false,
-      shouldShowBackIcon: true,
-      onSave: (model) async {
-        final shouldRefresh = await AddFireManagementScreen.push(
-          context,
-          fireRegister: fireRegister,
-          locationModel: locationModel,
-        );
-        if (shouldRefresh != null) {
-          await context.read<FireCubit>().initLoadData();
-        }
-      },
     );
+
+    if (shouldRefresh != null) {
+      await context.read<FireCubit>().initLoadData();
+    }
   }
 
   @override
