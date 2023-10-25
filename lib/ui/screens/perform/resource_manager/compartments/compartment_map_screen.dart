@@ -68,8 +68,6 @@ class CompartmentMapScreen extends StatefulWidget {
   final String? campId;
   final Compartment? compartment;
   final void Function(double?, List<PolygonItem>?) onSave;
-  // final double? measuredArea;
-  // final List<PolygonItem>? locations;
   @override
   _CompartmentMapScreenState createState() => _CompartmentMapScreenState();
 }
