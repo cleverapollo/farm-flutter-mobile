@@ -7,8 +7,7 @@ import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-import '../../../ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
-
+import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 part 'rte_species_detail_state.dart';
 
 class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {

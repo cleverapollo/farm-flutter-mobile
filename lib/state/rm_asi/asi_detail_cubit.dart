@@ -5,7 +5,7 @@ import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/asi_photo/asi_photo.dart';
 import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
+import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';

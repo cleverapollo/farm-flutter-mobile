@@ -2,7 +2,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
+import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';

@@ -9,7 +9,7 @@ import 'package:cmo/state/register_management_asi_cubit/register_management_asi_
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
+import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/thumbnail_image.dart';

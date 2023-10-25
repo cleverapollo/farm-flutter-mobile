@@ -1,6 +1,5 @@
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/select_location/select_location_screen.dart';
-
+import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 class AsiDetailState {
   AsiDetailState({
     required this.asi,

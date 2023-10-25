@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../resource_manager/asi/widgets/bottom_sheet_selection.dart';
-import '../select_location/select_location_screen.dart';
+import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import '../widgets/information_text_widget.dart';
 import 'widgets/rte_species_photo.dart';
 
