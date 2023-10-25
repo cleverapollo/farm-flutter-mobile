@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -13,25 +15,21 @@ import 'package:cmo/ui/widget/cmo_percentage_input_attribute_widget.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../asi/widgets/bottom_sheet_selection.dart';
+import 'compartment_map_screen.dart';
 
 class CompartmentDetailScreen extends StatefulWidget {
-  final double? measuredArea;
-  final List<PolygonItem>? locations;
   final String? farmName;
 
   const CompartmentDetailScreen({
     Key? key,
-    this.measuredArea,
-    this.locations,
     this.farmName,
   }) : super(key: key);
 
   static dynamic push(
     BuildContext context, {
-    double? measuredArea,
-    List<PolygonItem>? locations,
     required String farmId,
     Compartment? compartment,
     String? farmName,
@@ -49,8 +47,6 @@ class CompartmentDetailScreen extends StatefulWidget {
               ),
             ),
             child: CompartmentDetailScreen(
-              measuredArea: measuredArea,
-              locations: locations,
               farmName: farmName,
             ),
           );
@@ -70,9 +66,31 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
   void initState() {
     super.initState();
     _compartmentDetailCubit = context.read<CompartmentDetailCubit>();
-    _compartmentDetailCubit.onPolygonAreaChanged(widget.measuredArea);
-    _compartmentDetailCubit.onLocationsChanged(widget.locations);
-    _compartmentDetailCubit.fetchData(context: context);
+    _compartmentDetailCubit.fetchData();
+  }
+
+  Future<void> navigateToMap() async {
+    List<PolygonItem>? points = <PolygonItem>[];
+    final compartment = context.read<CompartmentDetailCubit>().state.compartment;
+
+    if (compartment.polygon.isNotBlank) {
+      final jsonArray = json.decode(compartment.polygon ?? '') as List?;
+      points = jsonArray
+          ?.map((model) => PolygonItem.fromJson(model as Map<String, dynamic>))
+          .toList();
+    }
+
+    await CompartmentMapScreen.push(
+      context,
+      farmId: context.read<CompartmentDetailCubit>().state.farmId,
+      farmName: widget.farmName,
+      campId: context.read<CompartmentDetailCubit>().state.campId,
+      compartment: compartment,
+      points: points
+          ?.map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0))
+          .toList(),
+      onSave: _compartmentDetailCubit.onChangeLocation,
+    );
   }
 
   @override
@@ -126,24 +144,34 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                             buildSelectAreaType(),
                             buildSelectProductGroupTemplate(),
                             buildSelectSpecies(),
-                            AttributeItem(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 12),
-                                    Text(
-                                      LocaleKeys.polygonArea.tr(),
-                                      style: context.textStyles.bodyBold.blueDark2,
+                            BlocSelector<CompartmentDetailCubit, CompartmentDetailState, Compartment>(
+                              selector: (state) => state.compartment,
+                              builder: (context, compartment) {
+                                return AttributeItem(
+                                  child: InkWell(
+                                    onTap: navigateToMap,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      child: Row(
+                                        children: [
+                                          const SizedBox(width: 12),
+                                          Text(
+                                            LocaleKeys.polygonArea.tr(),
+                                            style: context.textStyles.bodyBold.blueDark2,
+                                          ),
+                                          const SizedBox(width: 36),
+                                          Text(
+                                            compartment.polygonArea == null
+                                                ? ''
+                                                : '${compartment.polygonArea?.toStringAsFixed(2)}ha ${LocaleKeys.measured.tr()}',
+                                            style: context.textStyles.bodyNormal.blueDark2,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(width: 36),
-                                    Text(
-                                      '${widget.measuredArea?.toStringAsFixed(2)}ha ${LocaleKeys.measured.tr()}',
-                                      style: context.textStyles.bodyNormal.blueDark2,
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                  ),
+                                );
+                              },
                             ),
                             BlocSelector<CompartmentDetailCubit, CompartmentDetailState, bool>(
                               selector: (state) => state.isEffectiveAreaError,
@@ -273,7 +301,6 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                       }
                       await _compartmentDetailCubit.saveCompartment();
                       if (context.mounted) {
-                        Navigator.of(context).pop();
                         Navigator.of(context).pop();
                       }
                     },

@@ -589,6 +589,7 @@
   "planned_plant_date_is_required": "Planned Plant Date is required",
   "area_type_is_required": "Area Type is required",
   "effective_area_is_required": "Effective Area is required",
+  "polygon_area_is_required": "Polygon Area is required",
   "compartment_name_is_required": "Compartment name is required",
   "audit_template_is_required": "Audit template is required",
   "site_is_required": "Site is required",

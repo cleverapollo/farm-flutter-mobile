@@ -2,12 +2,13 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_map_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/compartment_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'compartment_detail_screen.dart';
 
 class CompartmentScreen extends StatefulWidget {
   const CompartmentScreen({super.key, this.farmName});
@@ -58,6 +59,19 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
     );
   }
 
+  Future<void> navigateToDetail({Compartment? compartment}) async {
+    final state = context.read<CompartmentCubit>().state;
+    await CompartmentDetailScreen.push(
+      context,
+      farmId: state.farmId,
+      farmName: widget.farmName,
+      campId: state.campId,
+      compartment: compartment,
+    );
+
+    await context.read<CompartmentCubit>().loadListCompartment();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -80,15 +94,7 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
               showTrailing: true,
               trailing: Assets.icons.icAdd.svgBlack,
               onTapLeading: () => onBack(listCompartment, total),
-              onTapTrailing: () async {
-                await CompartmentMapScreen.push(
-                  context,
-                  farmId: context.read<CompartmentCubit>().state.farmId,
-                  farmName: widget.farmName,
-                  campId: context.read<CompartmentCubit>().state.campId,
-                );
-                context.read<CompartmentCubit>().loadListCompartment();
-              },
+              onTapTrailing: navigateToDetail,
             ),
             body: Padding(
               padding: const EdgeInsets.all(20),
@@ -122,6 +128,7 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CompartmentItemWidget(
                             model: listCompartment[index],
+                            onTap: () => navigateToDetail(compartment: listCompartment[index]),
                           ),
                         );
                       },

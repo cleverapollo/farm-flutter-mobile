@@ -30,6 +30,7 @@ class CompartmentMapScreen extends StatefulWidget {
     BuildContext context, {
     List<map.LatLng>? points,
     required String farmId,
+    required void Function(double?, List<PolygonItem>?) onSave,
     String? campId,
     String? farmName,
     Compartment? compartment,
@@ -44,27 +45,31 @@ class CompartmentMapScreen extends StatefulWidget {
             farmName: farmName,
             campId: campId,
             compartment: compartment,
+            onSave: onSave,
           ),
         ),
       ),
     );
   }
 
-  CompartmentMapScreen(
-      {this.points,
-      required this.farmId,
-      this.farmName,
-      this.campId,
-      this.compartment,
-      Key? key})
-      : super(key: key);
+  CompartmentMapScreen({
+    required this.onSave,
+    required this.farmId,
+    this.points,
+    this.farmName,
+    this.campId,
+    this.compartment,
+    Key? key,
+  }) : super(key: key);
 
   final List<map.LatLng>? points;
   final String farmId;
   final String? farmName;
   final String? campId;
   final Compartment? compartment;
-
+  final void Function(double?, List<PolygonItem>?) onSave;
+  // final double? measuredArea;
+  // final List<PolygonItem>? locations;
   @override
   _CompartmentMapScreenState createState() => _CompartmentMapScreenState();
 }
@@ -305,14 +310,9 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                       title: LocaleKeys.next.tr(),
                       onTap: _isFinished
                           ? () {
-                              CompartmentDetailScreen.push(
-                                context,
-                                farmId: widget.farmId,
-                                farmName: widget.farmName,
-                                campId: widget.campId,
-                                measuredArea: (areaSquareMeters ?? 0) / 10000,
-                                compartment: widget.compartment,
-                                locations: context
+                              widget.onSave(
+                                (areaSquareMeters ?? 0) / 10000,
+                                context
                                     .read<CompartmentMapCubit>()
                                     .state
                                     .markers
@@ -324,6 +324,8 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
                                     )
                                     .toList(),
                               );
+
+                              Navigator.of(context).pop();
                             }
                           : null,
                     ),

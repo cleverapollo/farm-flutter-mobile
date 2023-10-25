@@ -24,7 +24,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
                 effectiveArea: compartment.effectiveArea ?? 90),
             compartmentBeforeEdit: compartment));
 
-  Future<void> fetchData({required BuildContext context}) async {
+  Future<void> fetchData() async {
     try {
       emit(state.copyWith(loading: true));
       final groupScheme = await configService.getActiveGroupScheme();
@@ -56,6 +56,9 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
 
   String? checkCompleteRequiredField() {
     final compartment = state.compartment;
+    if (compartment.polygonArea == null) {
+      return LocaleKeys.polygon_area_is_required.tr();
+    }
     if (compartment.unitNumber.isBlank) {
       return LocaleKeys.compartment_name_is_required.tr();
     }
@@ -126,14 +129,18 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     state.compartment = state.compartment.copyWith(unitNumber: value);
   }
 
-  void onPolygonAreaChanged(double? value) {
-    state.compartment = state.compartment.copyWith(polygonArea: value);
-  }
-
-  void onLocationsChanged(List<PolygonItem>? locations) {
-    state.compartment = state.compartment.copyWith(
-      polygonItems: locations,
-      polygon: json.encode(locations),
+  void onChangeLocation(
+    double? polygonArea,
+    List<PolygonItem>? locations,
+  ) {
+    emit(
+      state.copyWith(
+        compartment: state.compartment.copyWith(
+          polygonArea: polygonArea,
+          polygonItems: locations,
+          polygon: json.encode(locations),
+        ),
+      ),
     );
   }
 
