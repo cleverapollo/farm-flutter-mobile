@@ -289,7 +289,7 @@ class _AddMemberSDetails extends StatelessWidget {
                           siteLocationAddress: address,
                         );
 
-                        if (data.isComplete) {
+                        if (context.read<AddMemberCubit>().state.addMemberSDetails.isComplete) {
                           cubit.onChangeSiteDetailState(isCollapse: true);
                           cubit.onChangeMemberRiskAssessmentState(isCollapse: false);
                         }
