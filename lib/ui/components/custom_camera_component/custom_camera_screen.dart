@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:cmo/gen/assets.gen.dart';
-import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/main.dart';
-import 'package:cmo/ui/ui.dart';
+import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -51,6 +48,15 @@ class _CustomCameraScreenState extends State<CustomCameraScreen> {
     _initializeControllerFuture = _controller.initialize();
   }
 
+  Future<void> onNavigateToDetail(String imagePath) async {
+    if (!mounted) return;
+    await DisplayPictureScreen.push(
+      context,
+      imagePath: imagePath,
+      onDone: widget.onDone,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,25 +80,35 @@ class _CustomCameraScreenState extends State<CustomCameraScreen> {
             bottom: MediaQuery.of(context).padding.bottom + 24,
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: InkWell(
-                onTap: () async {
-                  try {
-                    await _initializeControllerFuture;
-                    final image = await _controller.takePicture();
-                    if (!mounted) return;
-                    await DisplayPictureScreen.push(
-                      context,
-                      imagePath: image.path,
-                      onDone: widget.onDone,
-                    );
-                  } catch (e) {
-                    logger.e(e);
-                  }
-                },
-                child: SvgGenImage(Assets.icons.icTakePhotoMap.path).svg(
-                  height: 60,
-                  width: 60,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: () async {
+                      final croppedFile = await ImagePickerService().pickImageFromGallery();
+                      if (croppedFile != null) {
+                        await onNavigateToDetail(croppedFile.path);
+                      }
+                    },
+                    child: Assets.icons.icSelectPhotoMap.svg(),
+                  ),
+                  const SizedBox(width: 32,),
+                  InkWell(
+                    onTap: () async {
+                      try {
+                        await _initializeControllerFuture;
+                        final image = await _controller.takePicture();
+                        await onNavigateToDetail(image.path);
+                      } catch (e) {
+                        logger.e(e);
+                      }
+                    },
+                    child: SvgGenImage(Assets.icons.icTakePhotoMap.path).svg(
+                      height: 60,
+                      width: 60,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

@@ -69,45 +69,61 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
           const SizedBox(
             height: 12,
           ),
-          InkWell(
-            onTap: () async {
-              final croppedFile = await ImagePickerService().pickImageFromGallery();
-              if (croppedFile != null) {
-                setState(() {
-                  selectedFile = croppedFile;
-                  imagePath = croppedFile.path;
-                });
-              }
-            },
-            child: Assets.icons.icSelectPhotoMap.svg(),
-          ),
-          const SizedBox(
-            height: 32,
-          ),
-          CmoFilledButton(
-            loading: loading,
-            title: LocaleKeys.done.tr(),
-            onTap: () async {
-              setState(() {
-                loading = true;
-              });
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                onTap: Navigator.of(context).pop,
+                child: Assets.icons.icRefreshMap.svg(),
+              ),
+              const SizedBox(
+                width: 24,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: InkWell(
+                  onTap: () async {
+                    final croppedFile = await ImagePickerService().pickImageFromGallery();
+                    if (croppedFile != null) {
+                      setState(() {
+                        selectedFile = croppedFile;
+                        imagePath = croppedFile.path;
+                      });
+                    }
+                  },
+                  child: Assets.icons.icSelectPhotoMap.svg(),
+                ),
+              ),
+              const SizedBox(
+                width: 24,
+              ),
+              InkWell(
+                onTap: () async {
+                  setState(() {
+                    loading = true;
+                  });
 
-              String base64;
-              if (selectedFile != null) {
-                base64 = await FileUtil.croppedFileToBase64(selectedFile);
-              } else {
-                base64 = await FileUtil.imagePathToBase64(imagePath);
-              }
+                  String base64;
+                  if (selectedFile != null) {
+                    base64 = await FileUtil.croppedFileToBase64(selectedFile);
+                  } else {
+                    base64 = await FileUtil.imagePathToBase64(imagePath);
+                  }
 
-              setState(() {
-                widget.onDone(base64);
-                loading = false;
-              });
+                  setState(() {
+                    widget.onDone(base64);
+                    loading = false;
+                  });
 
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
-            },
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+                child: Assets.icons.icAcceptMap.svg(),
+              ),
+            ],
           ),
+
+          const SizedBox(height: 32,),
         ],
       ),
     );
