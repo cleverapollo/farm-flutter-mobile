@@ -114,7 +114,7 @@ class AddMemberSDetails with _$AddMemberSDetails {
   const factory AddMemberSDetails({
     @Default(false) bool isComplete,
     @Default(false) bool isCompleteSiteLocation,
-    @Default(false) bool isCompleteCompartments,
+    @Default(false) bool haveCompartments,
     @Default(false) bool isCompleteASI,
     @Default(false) bool isExpansionOpen,
     @Default(false) bool isSiteNameError,

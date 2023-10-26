@@ -90,7 +90,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       final addMemberSDetail = AddMemberSDetails(
         isComplete: addMemberSDetailIsComplete,
         isCompleteSiteLocation: isCompleteSiteLocation,
-        isCompleteCompartments: isCompleteCompartments,
+        haveCompartments: isCompleteCompartments,
         isCompleteASI: isCompleteASI,
         siteName: farm.farmName,
         town: farm.town,
@@ -335,7 +335,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     String? siteName,
     String? town,
     String? province,
-    Province? provinceSelected,
     bool? isExpansionOpen,
     double? siteLocationLat,
     double? siteLocationLng,
@@ -348,11 +347,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     if (isExpansionOpen != null) {
       emit(state.copyWith(
           addMemberSDetails: data.copyWith(isExpansionOpen: true)));
-    }
-
-    if (provinceSelected == null) {
-      emit(state.copyWith(
-          addMemberSDetails: data.copyWith(isExpansionOpen: false)));
     }
 
     if (addingCompartmentResult != null) {
@@ -404,7 +398,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
             currentData.addMemberSiteLocations.lng != null &&
             currentData.addMemberSiteLocations.address != null;
 
-    final isCompleteCompartments =
+    final haveCompartments =
         currentData.addMemberCompartmentsState.compartments.isNotEmpty &&
             currentData.addMemberCompartmentsState.farmSize != null;
 
@@ -413,8 +407,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     final isComplete = currentData.siteName != null &&
         currentData.town != null &&
         currentData.province != null &&
-        isCompleteSiteLocation &&
-        isCompleteCompartments;
+        isCompleteSiteLocation;
 
     emit(state.copyWith(
         farm: state.farm?.copyWith(
@@ -430,7 +423,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         addMemberSDetails: currentData.copyWith(
           isComplete: isComplete,
           isCompleteSiteLocation: isCompleteSiteLocation,
-          isCompleteCompartments: isCompleteCompartments,
+          haveCompartments: haveCompartments,
           isCompleteASI: isCompleteAsi,
         )));
 

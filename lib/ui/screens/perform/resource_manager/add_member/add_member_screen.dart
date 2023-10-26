@@ -203,6 +203,12 @@ class _AddMemberSDetails extends StatelessWidget {
                     onChanged: (value) {
                       cubit.onDataChangeSiteDetail(siteName: value);
                     },
+                    onSubmitted: (_) {
+                      if (data.isComplete) {
+                        cubit.onChangeSiteDetailState(isCollapse: true);
+                        cubit.onChangeMemberRiskAssessmentState(isCollapse: false);
+                      }
+                    },
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -217,6 +223,12 @@ class _AddMemberSDetails extends StatelessWidget {
                     onChanged: (value) {
                       cubit.onDataChangeSiteDetail(town: value);
                     },
+                    onSubmitted: (_) {
+                      if (data.isComplete) {
+                        cubit.onChangeSiteDetailState(isCollapse: true);
+                        cubit.onChangeMemberRiskAssessmentState(isCollapse: false);
+                      }
+                    },
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -230,6 +242,12 @@ class _AddMemberSDetails extends StatelessWidget {
                     labelTextStyle: context.textStyles.bodyBold.blueDark2,
                     onChanged: (value) {
                       cubit.onDataChangeSiteDetail(province: value);
+                    },
+                    onSubmitted: (_) {
+                      if (data.isComplete) {
+                        cubit.onChangeSiteDetailState(isCollapse: true);
+                        cubit.onChangeMemberRiskAssessmentState(isCollapse: false);
+                      }
                     },
                   ),
                 ),
@@ -270,6 +288,11 @@ class _AddMemberSDetails extends StatelessWidget {
                               siteLocationScreenResult.latLong?.longitude,
                           siteLocationAddress: address,
                         );
+
+                        if (data.isComplete) {
+                          cubit.onChangeSiteDetailState(isCollapse: true);
+                          cubit.onChangeMemberRiskAssessmentState(isCollapse: false);
+                        }
                       }
                     },
                     title: LocaleKeys.siteLocation.tr(),
@@ -288,7 +311,7 @@ class _AddMemberSDetails extends StatelessWidget {
                           : '${farmSize.toStringAsFixed(2)}${LocaleKeys.ha_unit.tr()}';
                       return CmoDropDownLayoutWidget(
                         title: LocaleKeys.compartment_s.tr(),
-                        showTick: data.isCompleteCompartments,
+                        showTick: data.haveCompartments,
                         subTitle: farmSizeTitle,
                         subTitleAlignment: Alignment.center,
                         subTitleTextStyle:
@@ -308,9 +331,6 @@ class _AddMemberSDetails extends StatelessWidget {
                             await cubit.onDataChangeSiteDetail(
                               addingCompartmentResult: result,
                             );
-                            cubit.onChangeSiteDetailState(isCollapse: true);
-                            cubit.onChangeMemberRiskAssessmentState(
-                                isCollapse: false);
                           }
                         },
                       );

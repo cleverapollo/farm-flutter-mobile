@@ -291,18 +291,23 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
                       ),
                     ),
                   ),
-                  CmoFilledButton(
-                    title: LocaleKeys.save.tr(),
-                    onTap: () async {
-                      final errorMessage = _compartmentDetailCubit.checkCompleteRequiredField();
-                      if (errorMessage.isNotBlank) {
-                        showSnackError(msg: errorMessage!);
-                        return;
-                      }
-                      await _compartmentDetailCubit.saveCompartment();
-                      if (context.mounted) {
-                        Navigator.of(context).pop();
-                      }
+                  BlocBuilder<CompartmentDetailCubit, CompartmentDetailState>(
+                    builder: (context, state) {
+                      return CmoFilledButton(
+                        title: LocaleKeys.save.tr(),
+                        onTap: () async {
+                          final errorMessage = _compartmentDetailCubit
+                              .checkCompleteRequiredField();
+                          if (errorMessage.isNotBlank) {
+                            showSnackError(msg: errorMessage!);
+                            return;
+                          }
+                          await _compartmentDetailCubit.saveCompartment();
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        },
+                      );
                     },
                   ),
                 ],

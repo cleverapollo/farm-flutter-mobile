@@ -56,9 +56,6 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
 
   String? checkCompleteRequiredField() {
     final compartment = state.compartment;
-    if (compartment.polygonArea == null) {
-      return LocaleKeys.polygon_area_is_required.tr();
-    }
     if (compartment.unitNumber.isBlank) {
       return LocaleKeys.compartment_name_is_required.tr();
     }
