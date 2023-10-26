@@ -58,24 +58,48 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     );
   }
 
-  Future<void> getSummaryInformation() async {
+  void onUpdateAuditSummaryInformation() {
+    final summaryInformation = state.rmSyncSummaryInformation!;
+    summaryInformation.unsyncedAudit--;
+    if (summaryInformation.unsyncedAudit < 0) {
+      summaryInformation.unsyncedAudit = 0;
+    }
 
-    final summaryInformation = RmSyncSummaryInformation();
+    emit(state.copyWith(rmSyncSummaryInformation: summaryInformation));
+  }
+
+  Future<RmSyncSummaryInformation> getAuditSummaryInformation(RmSyncSummaryInformation info) async {
+    final summaryInformation = info;
     await cmoDatabaseMasterService.getAllAudits().then((audits) {
       summaryInformation.unsyncedAudit = audits
           .where(
             (element) => element.completed == true && element.synced == false,
-          )
+      )
           .toList()
           .length;
       summaryInformation.inProgressAudit = audits
           .where(
             (element) => element.completed == false && element.synced == false,
-          )
+      )
           .toList()
           .length;
     });
 
+    return summaryInformation;
+  }
+
+  Future<void> onUpdateFarmSummaryInformation() async {
+    final summaryInformation = state.rmSyncSummaryInformation!;
+    summaryInformation.unsyncedFarm--;
+    if (summaryInformation.unsyncedFarm < 0) {
+      summaryInformation.unsyncedFarm = 0;
+    }
+
+    emit(state.copyWith(rmSyncSummaryInformation: summaryInformation));
+  }
+
+  Future<RmSyncSummaryInformation> getFarmSummaryInformation(RmSyncSummaryInformation info) async {
+    final summaryInformation = info;
     await cmoDatabaseMasterService
         .getUnsyncedFarmsByRegionalManagerUnitId(rmuId)
         .then((value) => summaryInformation.unsyncedFarm = value?.length ?? 0);
@@ -83,6 +107,35 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     await cmoDatabaseMasterService
         .getFarmByRmuId(rmuId)
         .then((value) => summaryInformation.totalFarms = value?.length ?? 0);
+
+    return summaryInformation;
+  }
+
+  Future<void> onUpdateUnsyncedStakeholderSummaryInformation() async {
+    final summaryInformation = state.rmSyncSummaryInformation!;
+    summaryInformation.unsyncedStakeholders--;
+    if (summaryInformation.unsyncedStakeholders < 0) {
+      summaryInformation.unsyncedStakeholders = 0;
+    }
+
+    emit(state.copyWith(rmSyncSummaryInformation: summaryInformation));
+  }
+
+  Future<RmSyncSummaryInformation> getUnsyncedStakeholderSummaryInformation(RmSyncSummaryInformation info) async {
+    final summaryInformation = info;
+    await cmoDatabaseMasterService.getUnsycnedStakeholders().then(
+          (value) => summaryInformation.unsyncedStakeholders = value.length,
+        );
+
+    return summaryInformation;
+  }
+
+  Future<void> getSummaryInformation() async {
+
+    var summaryInformation = RmSyncSummaryInformation();
+    summaryInformation = await getAuditSummaryInformation(summaryInformation);
+    summaryInformation = await getFarmSummaryInformation(summaryInformation);
+    summaryInformation = await getUnsyncedStakeholderSummaryInformation(summaryInformation);
 
     await cmoDatabaseMasterService
         .getAuditTemplatesByRMU(rmuId)
@@ -149,9 +202,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     await cmoDatabaseMasterService
         .getSeverities()
         .then((value) => summaryInformation.severity = value.length);
-
-    await cmoDatabaseMasterService.getUnsycnedStakeholders().then(
-        (value) => summaryInformation.unsyncedStakeholders = value.length);
 
     await cmoDatabaseMasterService
         .getStakeHolderTypes()
@@ -238,6 +288,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             isLoading: false,
           ),
         );
+
         await Future.delayed(const Duration(seconds: 2), () async {
           await getSummaryInformation();
           onSuccess.call();
@@ -349,6 +400,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
               }
 
               logger.d('Successfully published farmId: ${farm.farmId}');
+              await onUpdateFarmSummaryInformation();
             } else {
               showSnackError(msg: 'Publish Farm error: ${farm.farmName}');
               logger.e('Failed to publish farmId: ${farm.farmId}');
@@ -448,6 +500,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             );
 
             logger.d('Successfully published assessments/audits: ${audit.id}');
+            onUpdateAuditSummaryInformation();
           } else {
             logger.e('Failed to publish assessments/audits: ${audit.id}');
           }
@@ -535,6 +588,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
               }
 
               logger.d('Successfully published groupSchemeStakeholderId: ${groupSchemeStakeholderPayload.GroupSchemeStakeholder?.GroupSchemeStakeholderId}');
+              await onUpdateUnsyncedStakeholderSummaryInformation();
             });
           } else {
             logger.e('Failed to publish groupSchemeStakeholderId: ${groupSchemeStakeholderPayload.GroupSchemeStakeholder?.GroupSchemeStakeholderId}');

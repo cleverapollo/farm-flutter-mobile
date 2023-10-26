@@ -6,7 +6,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
-import 'package:cmo/state/audit_list_cubit/audit_list_cubit.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/add_audit/audit_add_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_questions_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/audit_list_item.dart';
@@ -124,13 +124,10 @@ class _AuditManagementScreenState extends State<AuditManagementScreen> {
   }
 
   Future<void> onTapAudit(BuildContext context, Audit audit) async {
-    final result = await AuditListQuestionsScreen.push(
+    await AuditListQuestionsScreen.push(
       context,
       audit,
       AuditComeFromEnum.dashboard,
     );
-    if (result != null && result && context.mounted) {
-      await context.read<AuditListCubit>().refresh();
-    }
   }
 }

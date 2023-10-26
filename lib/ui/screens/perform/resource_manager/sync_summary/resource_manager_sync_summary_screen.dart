@@ -53,9 +53,9 @@ class _ResourceManagerSyncSummaryScreenState
         onRefresh: () async {},
         child: Stack(
           children: [
-            BlocSelector<RMSyncCubit, RMSyncState, RmSyncSummaryInformation?>(
-              selector: (state) => state.rmSyncSummaryInformation,
-              builder: (context, summaryInformation) {
+            BlocBuilder<RMSyncCubit, RMSyncState>(
+              builder: (context, state) {
+                final summaryInformation = state.rmSyncSummaryInformation;
                 if (summaryInformation == null) return const SizedBox.shrink();
                 return SingleChildScrollView(
                   child: Column(
@@ -218,21 +218,13 @@ class _ResourceManagerSyncSummaryScreenState
                       title: LocaleKeys.sync.tr(),
                       onTap: () async {
                         if (mounted) {
-                          final isSuccess = await Navigator.of(context).push<bool?>(
-                            MaterialPageRoute(
-                              builder: (_) => const RMSyncScreen(
-                                isSyncSummary: true,
-                              ),
-                            ),
+                          await context.read<RMSyncCubit>().syncSummary(
+                            onSuccess: () async {
+                              showSnackSuccess(msg: 'The summary sync was successful!');
+                              await context.read<DashboardCubit>().initializeRM();
+                            },
                           );
-
-                          if (isSuccess != null && isSuccess) {
-                            showSnackSuccess(msg: 'The summary sync was successful!');
-                            await context.read<RMSyncCubit>().getSummaryInformation();
-                            await context.read<DashboardCubit>().initializeRM();
-                          }
                         }
-
                       },
                     );
                   },

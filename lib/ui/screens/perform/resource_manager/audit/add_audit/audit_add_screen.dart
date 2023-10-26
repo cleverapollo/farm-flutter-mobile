@@ -54,13 +54,6 @@ class _AuditAddScreen extends State<AuditAddScreen> {
     });
   }
 
-  Future<void> refresh() async {
-    if (context.mounted) {
-      await context.read<AuditListCubit>().refresh();
-      await context.read<DashboardCubit>().refresh();
-    }
-  }
-
   Future<void> onSubmit() async {
     setState(() {
       loading = true;
@@ -70,16 +63,12 @@ class _AuditAddScreen extends State<AuditAddScreen> {
       if (context.mounted) {
         final audit = await context.read<AuditCubit>().submit();
         if (audit != null && context.mounted) {
-          await refresh();
           Navigator.of(context).pop();
-          final result = await AuditListQuestionsScreen.push(
+          await AuditListQuestionsScreen.push(
             context,
             audit,
             widget.auditComeFrom,
           );
-          if (result != null && result && context.mounted) {
-            await context.read<AuditListCubit>().refresh();
-          }
         }
       }
     } finally {
