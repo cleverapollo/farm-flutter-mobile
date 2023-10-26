@@ -3701,6 +3701,7 @@ class CmoDatabaseMasterService {
       final compartments = await db.compartments
           .filter()
           .isActiveEqualTo(true)
+          .isMasterdataSyncedEqualTo(false)
           .groupSchemeIdEqualTo(groupSchemeId)
           .sortByUnitNumber()
           .findAll();

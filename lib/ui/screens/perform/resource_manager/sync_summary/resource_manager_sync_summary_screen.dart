@@ -228,6 +228,7 @@ class _ResourceManagerSyncSummaryScreenState
 
                           if (isSuccess != null && isSuccess) {
                             showSnackSuccess(msg: 'The summary sync was successful!');
+                            await context.read<RMSyncCubit>().getSummaryInformation();
                             await context.read<DashboardCubit>().initializeRM();
                           }
                         }

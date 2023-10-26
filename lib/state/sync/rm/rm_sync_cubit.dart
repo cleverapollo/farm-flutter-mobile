@@ -629,11 +629,11 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
               isDirect: true,
             );
 
-            // final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
-            // await publishListAsiPhotos(
-            //   asi: syncedAsi.copyWith(localId: asi.localId),
-            //   listAsiPhotos: listAsiPhotos,
-            // );
+            final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
+            await publishListAsiPhotos(
+              asi: syncedAsi.copyWith(localId: asi.localId),
+              listAsiPhotos: listAsiPhotos,
+            );
 
             logger.d('Successfully published ASI: ${syncedAsi.asiRegisterId}');
           } else {
@@ -1047,7 +1047,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> insertRMAsiRegisters() async {
-    emit(state.copyWith(syncMessage: 'Syncing ASI Registers, ASI Photos...'));
+    emit(state.copyWith(syncMessage: 'Syncing ASI Registers...'));
     final listAsi = await cmoPerformApiService.getRMAsiRegisters();
     final listCompartments = await cmoDatabaseMasterService.getAllCompartments();
     final asiTypes = await cmoDatabaseMasterService.getAsiTypes();
@@ -1068,8 +1068,8 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           isDirect: true,
         );
 
-        final listAsiPhotos = await cmoPerformApiService.getRMAsiRegisterPhotosByAsiRegisterId(asi.asiRegisterId);
-        await insertRMAsiPhotos(localId, listAsiPhotos);
+        // final listAsiPhotos = await cmoPerformApiService.getRMAsiRegisterPhotosByAsiRegisterId(asi.asiRegisterId);
+        // await insertRMAsiPhotos(localId, listAsiPhotos);
       }
     }
   }
