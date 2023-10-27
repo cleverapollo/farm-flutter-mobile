@@ -41,7 +41,7 @@ class RMSyncState extends BaseSyncState {
 class RmSyncSummaryInformation {
   RmSyncSummaryInformation({
     this.unsyncedAudit = 0,
-    this.inProgressAudit = 0,
+    this.totalAudits = 0,
     this.unsyncedFarm = 0,
     this.totalFarms = 0,
     this.auditTemplates = 0,
@@ -62,10 +62,13 @@ class RmSyncSummaryInformation {
     this.severity = 0,
     this.unsyncedStakeholders = 0,
     this.stakeholderTypes = 0,
+    this.totalStakeholders = 0,
+    this.totalUnsynced = 0,
+    this.totalSynced = 0,
   });
 
   int unsyncedAudit = 0;
-  int inProgressAudit = 0;
+  int totalAudits = 0;
   int unsyncedFarm = 0;
   int totalFarms = 0;
   int auditTemplates = 0;
@@ -84,6 +87,9 @@ class RmSyncSummaryInformation {
   int rejectReasons = 0;
   int riskProfileQuestions = 0;
   int severity = 0;
+  int totalStakeholders = 0;
   int unsyncedStakeholders = 0;
   int stakeholderTypes = 0;
+  int totalUnsynced = 0;
+  int totalSynced = 0;
 }

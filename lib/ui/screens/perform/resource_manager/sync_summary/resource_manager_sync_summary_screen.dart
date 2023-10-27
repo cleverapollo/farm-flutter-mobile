@@ -9,6 +9,8 @@ import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'widgets/rm_sync_summary_indicator.dart';
+
 class ResourceManagerSyncSummaryScreen extends StatefulWidget {
   const ResourceManagerSyncSummaryScreen({super.key});
 
@@ -37,9 +39,7 @@ class _ResourceManagerSyncSummaryScreenState
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {
-      await context.read<RMSyncCubit>().getSummaryInformation();
-    });
+    context.read<RMSyncCubit>().initSummaryInformation();
   }
 
   @override
@@ -50,9 +50,14 @@ class _ResourceManagerSyncSummaryScreenState
         showLeading: true,
       ),
       body: RefreshIndicator(
-        onRefresh: () async {},
+        onRefresh: context.read<RMSyncCubit>().getSummaryInformation,
         child: Stack(
           children: [
+            const Positioned(
+              top: 0,
+              left: 0,
+              child: RMSyncSummaryProgressIndicator(),
+            ),
             BlocBuilder<RMSyncCubit, RMSyncState>(
               builder: (context, state) {
                 final summaryInformation = state.rmSyncSummaryInformation;
@@ -70,13 +75,13 @@ class _ResourceManagerSyncSummaryScreenState
                         height: 16,
                       ),
                       SyncItemWidget(
-                        label: LocaleKeys.unsynced.tr(),
-                        count: summaryInformation.unsyncedAudit,
+                        label: LocaleKeys.total_audits.tr(),
+                        count: summaryInformation.totalAudits,
                       ),
-                      SyncItemWidget(
-                        label: LocaleKeys.in_progress.tr(),
-                        count: summaryInformation.inProgressAudit,
-                      ),
+                      // SyncItemWidget(
+                      //   label: LocaleKeys.in_progress.tr(),
+                      //   count: summaryInformation.totalAudits,
+                      // ),
                       const SizedBox(
                         height: 16,
                       ),
@@ -87,10 +92,10 @@ class _ResourceManagerSyncSummaryScreenState
                       const SizedBox(
                         height: 16,
                       ),
-                      SyncItemWidget(
-                        label: LocaleKeys.unsynced.tr(),
-                        count: summaryInformation.unsyncedFarm,
-                      ),
+                      // SyncItemWidget(
+                      //   label: LocaleKeys.unsynced.tr(),
+                      //   count: summaryInformation.unsyncedFarm,
+                      // ),
                       SyncItemWidget(
                         label: LocaleKeys.totalFarm.tr(),
                         count: summaryInformation.totalFarms,
@@ -180,15 +185,16 @@ class _ResourceManagerSyncSummaryScreenState
                         height: 16,
                       ),
                       SyncItemWidget(
-                        label: LocaleKeys.unsynced.tr(),
-                        count: summaryInformation.unsyncedStakeholders,
+                        label: LocaleKeys.total_stakeholders.tr(),
+                        count: summaryInformation.totalStakeholders,
                       ),
                       const SizedBox(
                         height: 16,
                       ),
                       SyncItemWidget(
                           label: LocaleKeys.group_scheme_stakeholders.tr(),
-                          isTitle: true),
+                          isTitle: true,
+                      ),
                       const SizedBox(
                         height: 16,
                       ),

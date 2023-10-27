@@ -114,8 +114,6 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         addMemberSDetails: addMemberSDetail,
         addMemberSAF: addMemberSAF,
       ));
-
-      debugPrint('Done loading farm data');
     } else {
       emit(state.copyWith(
           farm: Farm(
