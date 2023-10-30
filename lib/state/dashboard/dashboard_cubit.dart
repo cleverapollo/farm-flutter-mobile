@@ -160,8 +160,6 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
       ));
     }
 
-    final db = cmoDatabaseMasterService;
-
     final dbCompany = await cmoDatabaseMasterService.db;
     await dbCompany.writeTxn(() async {
       for (final item in allFarms) {

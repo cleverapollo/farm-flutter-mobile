@@ -12,6 +12,7 @@ import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:cmo/utils/debouncer.dart';
 import 'package:cmo/utils/network_utils.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -22,10 +23,11 @@ import 'package:cmo/ui/widget/cmo_text_field.dart';
 class SiteLocationScreenResult extends Equatable {
   final LatLng? latLong;
   final String address;
-
+  final Placemark? placeMark;
   const SiteLocationScreenResult({
-    this.latLong,
     required this.address,
+    this.latLong,
+    this.placeMark,
   });
 
   @override
@@ -47,14 +49,14 @@ class SelectSiteLocationScreen extends StatefulWidget {
   final LatLng? initLatLng;
   final bool hasInternet;
 
-  const SelectSiteLocationScreen(
-      {super.key,
-      this.initAddress,
-      this.showMarker = false,
-      this.showResetAcceptIcons = false,
-      this.initLatLng,
-      this.hasInternet = true,
-      });
+  const SelectSiteLocationScreen({
+    super.key,
+    this.initAddress,
+    this.showMarker = false,
+    this.showResetAcceptIcons = false,
+    this.initLatLng,
+    this.hasInternet = true,
+  });
 
   static Future<T?> push<T>(
     BuildContext context, {
@@ -193,10 +195,11 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
         final subLocality = placeMark.subLocality ?? '';
         final locality = placeMark.locality ?? '';
         final administrativeArea = placeMark.administrativeArea ?? '';
+        final subAdministrativeArea = placeMark.subAdministrativeArea ?? '';
         final postalCode = placeMark.postalCode ?? '';
         final country = placeMark.country ?? '';
         final address =
-            '$name, $subLocality, $locality, $administrativeArea $postalCode, $country';
+            '$name, $subLocality, $locality, $subAdministrativeArea, $administrativeArea $postalCode, $country';
         if (context.mounted) {
           setState(() {
             addressTextController.removeListener(addressChangedListener);
@@ -209,7 +212,7 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
     });
   }
 
-  void submit() {
+  Future<void> submit() async {
     FocusScope.of(context).unfocus();
     if (_loading) return;
     if (_legacyAddress.isEmpty) {
@@ -217,10 +220,17 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
       return;
     }
 
+    final placemarks = await placemarkFromCoordinates(
+      _latLong!.latitude,
+      _latLong!.longitude,
+      localeIdentifier: 'en_US',
+    );
+
     Navigator.of(context).pop(
       SiteLocationScreenResult(
         address: _legacyAddress,
         latLong: _latLong,
+        placeMark: placemarks.first,
       ),
     );
   }
@@ -230,21 +240,26 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
     addressTextController.text = suggestion is String ? suggestion : suggestion.description as String;
     _legacyAddress = addressTextController.text;
     addressTextController.addListener(addressChangedListener);
-    final locations = await locationFromAddress(addressTextController.text);
-    if (locations.isNotEmpty) {
-      _isMapMovingBySelectingAddress = true;
-      await mapKey.currentState?.mapController?.animateCamera(
-        CameraUpdate.newLatLng(
-          LatLng(
-            locations.first.latitude,
-            locations.first.longitude,
+    try {
+      final locations = await locationFromAddress(addressTextController.text);
+      if (locations.isNotEmpty) {
+        _isMapMovingBySelectingAddress = true;
+        await mapKey.currentState?.mapController?.animateCamera(
+          CameraUpdate.newLatLng(
+            LatLng(
+              locations.first.latitude,
+              locations.first.longitude,
+            ),
           ),
-        ),
-      );
+        );
 
-      Future.delayed(const Duration(seconds: 3), () {
-        _isMapMovingBySelectingAddress = false;
-      });
+        Future.delayed(const Duration(seconds: 3), () {
+          _isMapMovingBySelectingAddress = false;
+        });
+      }
+    } catch (error) {
+      logger.e(error);
+      showSnackError(msg: 'Cannot find your location on Map.');
     }
   }
 

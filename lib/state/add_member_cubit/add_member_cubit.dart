@@ -10,8 +10,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AddMemberCubit extends Cubit<AddMemberState> {
   AddMemberCubit() : super(const AddMemberState());
 
-  Future<void> initAddMember({Farm? farm}) async {
+  void cleanCache() {
     emit(state.cleanCache().copyWith(isLoading: true));
+  }
+
+  Future<void> initAddMember({Farm? farm}) async {
+    cleanCache();
     await initDataFarm(farm);
     emit(state.copyWith(isLoading: false));
   }

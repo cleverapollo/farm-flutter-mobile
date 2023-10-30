@@ -50,6 +50,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   void dispose() {
     cubit.stepCount();
     dashboardCubit.getResourceManagerMembers();
+    cubit.cleanCache();
     super.dispose();
   }
 
@@ -98,7 +99,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                 const SizedBox(height: 12),
                 const _AddMemberMDetails(),
                 const SizedBox(height: 12),
-                const _AddMemberSDetails(),
+                _AddMemberSDetails(),
                 const SizedBox(height: 12),
                 const FarmMemberRiskAssessmentsWidget(),
                 const SizedBox(height: 12),
@@ -172,15 +173,30 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   }
 }
 
-class _AddMemberSDetails extends StatelessWidget {
-  const _AddMemberSDetails();
+class _AddMemberSDetails extends StatefulWidget {
+
+  @override
+  State<StatefulWidget> createState() => _AddMemberSDetailsState();
+}
+
+class _AddMemberSDetailsState extends State<_AddMemberSDetails> {
+
+  final townTextController = TextEditingController();
+  final provinceTextController = TextEditingController();
+  late AddMemberCubit cubit;
+  @override
+  void initState() {
+    super.initState();
+    cubit = context.read<AddMemberCubit>();
+    townTextController.text = cubit.state.addMemberSDetails.town ?? '';
+    provinceTextController.text = cubit.state.addMemberSDetails.province ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocSelector<AddMemberCubit, AddMemberState, AddMemberSDetails>(
       selector: (state) => state.addMemberSDetails,
       builder: (context, AddMemberSDetails data) {
-        final cubit = context.read<AddMemberCubit>();
         return CmoCollapseTitle(
           key: data.sectionKey,
           initiallyExpanded: !data.isSectionCollapse,
@@ -216,7 +232,7 @@ class _AddMemberSDetails extends StatelessWidget {
                   isShowError: data.isTownError,
                   errorText: LocaleKeys.town.tr(),
                   child: InputAttributeItem(
-                    initialValue: data.town,
+                    controller: townTextController,
                     textStyle: context.textStyles.bodyNormal.blueDark2,
                     labelText: LocaleKeys.town.tr(),
                     labelTextStyle: context.textStyles.bodyBold.blueDark2,
@@ -236,7 +252,7 @@ class _AddMemberSDetails extends StatelessWidget {
                   isShowError: data.isProvinceError,
                   errorText: LocaleKeys.province.tr(),
                   child: InputAttributeItem(
-                    initialValue: data.province,
+                    controller: provinceTextController,
                     textStyle: context.textStyles.bodyNormal.blueDark2,
                     labelText: LocaleKeys.province.tr(),
                     labelTextStyle: context.textStyles.bodyBold.blueDark2,
@@ -287,8 +303,12 @@ class _AddMemberSDetails extends StatelessWidget {
                           siteLocationLng:
                               siteLocationScreenResult.latLong?.longitude,
                           siteLocationAddress: address,
+                          province: siteLocationScreenResult.placeMark?.administrativeArea,
+                          town: siteLocationScreenResult.placeMark?.subAdministrativeArea,
                         );
 
+                        townTextController.text = siteLocationScreenResult.placeMark?.subAdministrativeArea ?? townTextController.text;
+                        provinceTextController.text = siteLocationScreenResult.placeMark?.administrativeArea ?? provinceTextController.text;
                         if (context.read<AddMemberCubit>().state.addMemberSDetails.isComplete) {
                           cubit.onChangeSiteDetailState(isCollapse: true);
                           cubit.onChangeMemberRiskAssessmentState(isCollapse: false);
@@ -361,6 +381,13 @@ class _AddMemberSDetails extends StatelessWidget {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    townTextController.dispose();
+    provinceTextController.dispose();
+    super.dispose();
   }
 }
 
