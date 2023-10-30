@@ -56,22 +56,39 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
 
   String? checkCompleteRequiredField() {
     final compartment = state.compartment;
-    if (compartment.unitNumber.isBlank) {
-      return LocaleKeys.compartment_name_is_required.tr();
+    final conservationAreaType = state.areaTypes.firstWhereOrNull(
+      (element) =>
+          element.areaTypeName.isNotBlank &&
+          element.areaTypeName!.toLowerCase().contains(
+                'Conservation Area'.toLowerCase(),
+              ),
+    );
+
+    if (compartment.areaTypeId != null && compartment.areaTypeId == conservationAreaType?.areaTypeId) {
+      if (compartment.polygonArea == null) {
+        return LocaleKeys.polygon_area_is_required.tr();
+      }
+
+      return null;
+    } else {
+      if (compartment.unitNumber.isBlank) {
+        return LocaleKeys.compartment_name_is_required.tr();
+      }
+      if (compartment.areaTypeId.isBlank) {
+        return LocaleKeys.area_type_is_required.tr();
+      }
+      if (compartment.productGroupTemplateId.isBlank) {
+        return LocaleKeys.product_group_is_required.tr();
+      } else if (compartment.speciesGroupTemplateId.isBlank) {
+        return LocaleKeys.species_group_is_required.tr();
+      } else if (compartment.plannedPlantDT.isBlank) {
+        return LocaleKeys.planned_plant_date_is_required.tr();
+      } else if (compartment.effectiveArea == null) {
+        return LocaleKeys.effective_area_is_required.tr();
+      }
+
+      return null;
     }
-    if (compartment.areaTypeId.isBlank) {
-      return LocaleKeys.area_type_is_required.tr();
-    }
-    if (compartment.productGroupTemplateId.isBlank) {
-      return LocaleKeys.product_group_is_required.tr();
-    } else if (compartment.speciesGroupTemplateId.isBlank) {
-      return LocaleKeys.species_group_is_required.tr();
-    } else if (compartment.plannedPlantDT.isBlank) {
-      return LocaleKeys.planned_plant_date_is_required.tr();
-    } else if (compartment.effectiveArea == null) {
-      return LocaleKeys.effective_area_is_required.tr();
-    }
-    return null;
   }
 
   Future<void> saveCompartment() async {
