@@ -65,6 +65,19 @@ class _AddMemberSignContractWidgetState
     }
   }
 
+  Future<void> onSaveSignature() async {
+    final points = signatureKey.currentState?.toString();
+    final image = await signatureKey.currentState?.toImage();
+    final byteData = await image?.toByteData(format: ImageByteFormat.png);
+    final file = await FileUtil.writeToFile(byteData!);
+    final base64 = await FileUtil.toBase64(file);
+    await context.read<AddMemberCubit>().onDataChangeMemberSignContract(
+          base64,
+          points,
+          DateTime.now().toIso8601String(),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -190,31 +203,7 @@ class _AddMemberSignContractWidgetState
                                   key: signatureKey,
                                   maximumStrokeWidth: 1,
                                   minimumStrokeWidth: 1,
-                                  onDrawEnd: () async {
-                                    final points =
-                                        signatureKey.currentState?.toString();
-                                    final image = await signatureKey
-                                        .currentState
-                                        ?.toImage();
-                                    final byteData = await image?.toByteData(
-                                        format: ImageByteFormat.png);
-                                    final file =
-                                        await FileUtil.writeToFile(byteData!);
-                                    final base64 =
-                                        await FileUtil.toBase64(file);
-
-                                    await context
-                                        .read<AddMemberCubit>()
-                                        .onDataChangeMemberSignContract(
-                                          base64,
-                                          points,
-                                          DateTime.now().toIso8601String(),
-                                        );
-
-                                    legacySignature.value = Image.memory(
-                                        base64Decode(base64),
-                                        fit: BoxFit.cover);
-                                  },
+                                  onDrawEnd: onSaveSignature,
                                 );
                           },
                         ),
