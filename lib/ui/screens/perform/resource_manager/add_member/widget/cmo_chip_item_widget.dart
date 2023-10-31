@@ -116,10 +116,12 @@ class CmoYesNoQuestion extends StatefulWidget {
     super.key,
     this.onTap,
     this.initialValue,
+    this.alignCenter = false,
   });
 
   final bool? initialValue;
   final Function(bool)? onTap;
+  final bool alignCenter;
 
   @override
   State<CmoYesNoQuestion> createState() => _CmoYesNoQuestionState();
@@ -140,6 +142,7 @@ class _CmoYesNoQuestionState extends State<CmoYesNoQuestion> {
       valueListenable: isSelect,
       builder: (_, value, __) {
         return Row(
+          mainAxisAlignment: widget.alignCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
           children: [
             InkWell(
               onTap: () {
@@ -186,7 +189,6 @@ class _CmoYesNoQuestionState extends State<CmoYesNoQuestion> {
                         color: !(value ?? true) ? Colors.white : Colors.black)),
               ),
             ),
-            const Spacer(),
           ],
         );
       },

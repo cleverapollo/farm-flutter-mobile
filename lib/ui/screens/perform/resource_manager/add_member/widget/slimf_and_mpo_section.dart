@@ -72,7 +72,7 @@ class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
               children: [
                 Text(
                   LocaleKeys.is_the_farmer_slimf_compliant.tr(),
-                  style: context.textStyles.titleBold.copyWith(
+                  style: context.textStyles.bodyNormal.copyWith(
                     color: context.colors.black,
                     fontSize: 16,
                   ),
@@ -90,10 +90,11 @@ class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
                 // const SlimfCompliantLimitation2(),
                 // const SlimfCompliantLimitation2Content(),
                 // const SizedBox(height: 12),
-                CmoSlimfQuestion(
+                CmoYesNoQuestion(
                   initialValue: data.isSlimfCompliant,
-                  onTap: (p0) async {
-                    await addMemberCubit.onTapSlimf(isSlimf: p0!);
+                  alignCenter: true,
+                  onTap: (value) async {
+                    await addMemberCubit.onTapSlimf(isSlimf: value);
                   },
                 ),
               ],
