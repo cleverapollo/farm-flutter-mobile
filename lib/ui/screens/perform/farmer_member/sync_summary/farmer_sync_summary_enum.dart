@@ -9,7 +9,7 @@ enum FarmerSyncSummaryEnum {
   annualBudgets,
   annualBudgetTransactions,
   camps,
-  scheduler,
+  // scheduler,
   masterData,
   stakeHolder,
   all;
@@ -35,9 +35,9 @@ enum FarmerSyncSummaryEnum {
             type: FarmerSyncSummaryEnum.annualBudgetTransactions);
       case FarmerSyncSummaryEnum.camps:
         return const FarmerSyncSummaryWidget(type: FarmerSyncSummaryEnum.camps);
-      case FarmerSyncSummaryEnum.scheduler:
-        return const FarmerSyncSummaryWidget(
-            type: FarmerSyncSummaryEnum.scheduler);
+      // case FarmerSyncSummaryEnum.scheduler:
+      //   return const FarmerSyncSummaryWidget(
+      //       type: FarmerSyncSummaryEnum.scheduler);
       case FarmerSyncSummaryEnum.masterData:
         return const FarmerSyncSummaryWidget(
             type: FarmerSyncSummaryEnum.masterData);
@@ -58,7 +58,7 @@ enum FarmerSyncSummaryEnum {
         annualBudgets.getView,
         annualBudgetTransactions.getView,
         camps.getView,
-        scheduler.getView,
+        // scheduler.getView,
         masterData.getView,
         stakeHolder.getView,
       ];
@@ -80,8 +80,8 @@ enum FarmerSyncSummaryEnum {
         return LocaleKeys.annual_budget_transactions.tr();
       case FarmerSyncSummaryEnum.camps:
         return LocaleKeys.camps.tr();
-      case FarmerSyncSummaryEnum.scheduler:
-        return LocaleKeys.scheduler.tr();
+      // case FarmerSyncSummaryEnum.scheduler:
+      //   return LocaleKeys.scheduler.tr();
       case FarmerSyncSummaryEnum.masterData:
         return LocaleKeys.master_data.tr();
       case FarmerSyncSummaryEnum.stakeHolder:

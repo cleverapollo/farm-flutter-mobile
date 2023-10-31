@@ -54,7 +54,7 @@ class EntityCubit extends HydratedCubit<EntityState> {
       state.copyWith(
         isLoadingSync: true,
         syncMessage: '',
-        countSchedules: 0,
+        // countSchedules: 0,
         countWorkers: 0,
         countQuestion: 0,
       ),
@@ -191,26 +191,26 @@ class EntityCubit extends HydratedCubit<EntityState> {
               await insertCourse(item);
             }
 
-            if (topic == '${topicMasterDataSync}Schedule.$userDeviceId') {
-              emit(
-                state.copyWith(
-                  countSchedules: state.countSchedules + 1,
-                  syncMessage:
-                  'Syncing Schedule...${state.countSchedules + 1}',
-                ),
-              );
-              await insertSchedule(item);
-            }
+            // if (topic == '${topicMasterDataSync}Schedule.$userDeviceId') {
+            //   emit(
+            //     state.copyWith(
+            //       countSchedules: state.countSchedules + 1,
+            //       syncMessage:
+            //       'Syncing Schedule...${state.countSchedules + 1}',
+            //     ),
+            //   );
+            //   await insertSchedule(item);
+            // }
 
-            if (topic ==
-                '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
-              emit(
-                state.copyWith(
-                  syncMessage: 'Syncing Schedule Activity...',
-                ),
-              );
-              await insertScheduleActivity(item);
-            }
+            // if (topic ==
+            //     '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
+            //   emit(
+            //     state.copyWith(
+            //       syncMessage: 'Syncing Schedule Activity...',
+            //     ),
+            //   );
+            //   await insertScheduleActivity(item);
+            // }
 
             if (topic == '${topicMasterDataSync}Worker.$userDeviceId') {
               emit(

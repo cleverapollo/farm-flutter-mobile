@@ -8,7 +8,7 @@ class EntityState {
     this.isLoading = false,
     this.isLoadingSync = false,
     this.syncMessage,
-    this.countSchedules = 0,
+    // this.countSchedules = 0,
     this.countWorkers = 0,
     this.countQuestion = 0,
   });
@@ -20,7 +20,7 @@ class EntityState {
   final bool isLoading;
   final bool isLoadingSync;
   final String? syncMessage;
-  final int countSchedules;
+  // final int countSchedules;
   final int countWorkers;
   final int countQuestion;
 
@@ -31,7 +31,7 @@ class EntityState {
     bool? isLoading,
     bool? isLoadingSync,
     String? syncMessage,
-    int? countSchedules,
+    // int? countSchedules,
     int? countWorkers,
     int? countQuestion,
   }) {
@@ -42,7 +42,7 @@ class EntityState {
       isLoading: isLoading ?? this.isLoading,
       isLoadingSync: isLoadingSync ?? this.isLoadingSync,
       syncMessage: syncMessage ?? this.syncMessage,
-      countSchedules: countSchedules ?? this.countSchedules,
+      // countSchedules: countSchedules ?? this.countSchedules,
       countWorkers: countWorkers ?? this.countWorkers,
       countQuestion: countQuestion ?? this.countQuestion,
     );

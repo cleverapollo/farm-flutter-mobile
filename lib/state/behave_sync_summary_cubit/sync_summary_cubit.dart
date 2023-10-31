@@ -105,13 +105,13 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
           ..add(_databaseMasterService
               .getCourses()
               .then((value) => data = data.copyWith(mdCourse: value.length)))
-          ..add(_databaseMasterService.getSchedules().then((value) =>
-              data = data.copyWith(schedulerUpcommingEvent: value.length)))
+          // ..add(_databaseMasterService.getSchedules().then((value) =>
+          //     data = data.copyWith(schedulerUpcommingEvent: value.length)))
           ..add(_databaseMasterService
               .getSeverities()
               .then((value) => data = data.copyWith(mdSeverity: value.length)))
-          ..add(_databaseMasterService.getScheduleActivitys().then((value) =>
-              data = data.copyWith(mdScheduleActivity: value.length)))
+          // ..add(_databaseMasterService.getScheduleActivitys().then((value) =>
+          //     data = data.copyWith(mdScheduleActivity: value.length)))
           ..add(_databaseMasterService
               .getWorkers()
               .then((value) => data = data.copyWith(mdWoker: value.length)))
@@ -442,24 +442,24 @@ class SyncSummaryCubit extends Cubit<SyncSummaryState> {
               await insertCourse(item);
             }
 
-            if (topic ==
-                '${_topicMasterDataSync}ScheduleActivity.$userDeviceId') {
-              emit(
-                state.copyWith(
-                  syncMessage: 'Syncing Schedule Activity...',
-                ),
-              );
-              await insertScheduleActivity(item);
-            }
+            // if (topic ==
+            //     '${_topicMasterDataSync}ScheduleActivity.$userDeviceId') {
+              // emit(
+              //   state.copyWith(
+              //     syncMessage: 'Syncing Schedule Activity...',
+              //   ),
+              // );
+              // await insertScheduleActivity(item);
+            // }
 
-            if (topic == '${_topicMasterDataSync}Schedule.$userDeviceId') {
-              emit(
-                state.copyWith(
-                  syncMessage: 'Syncing Schedule...',
-                ),
-              );
-              await insertSchedule(item);
-            }
+            // if (topic == '${_topicMasterDataSync}Schedule.$userDeviceId') {
+            //   emit(
+            //     state.copyWith(
+            //       syncMessage: 'Syncing Schedule...',
+            //     ),
+            //   );
+            //   await insertSchedule(item);
+            // }
 
             if (topic == '${_topicMasterDataSync}Worker.$userDeviceId') {
               emit(

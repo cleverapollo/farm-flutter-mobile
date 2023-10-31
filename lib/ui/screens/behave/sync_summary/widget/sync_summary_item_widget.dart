@@ -54,7 +54,7 @@ class _BehaveSyncSummaryItemWidgetState
         SyncPairItemModel(LocaleKeys.unit.tr(), count: state.data?.mdUnit),
         SyncPairItemModel(LocaleKeys.province.tr(), count: state.data?.mdProvince),
         SyncPairItemModel(LocaleKeys.municipality.tr(), count: state.data?.mdMunicipality),
-        SyncPairItemModel(LocaleKeys.schedule_activity.tr(), count: state.data?.mdScheduleActivity),
+        // SyncPairItemModel(LocaleKeys.schedule_activity.tr(), count: state.data?.mdScheduleActivity),
         SyncPairItemModel(LocaleKeys.training_provider.tr(), count: state.data?.mdTrainingProvider),
         SyncPairItemModel(LocaleKeys.course.tr(), count: state.data?.mdCourse),
       ];
@@ -70,8 +70,8 @@ class _BehaveSyncSummaryItemWidgetState
     switch (widget.syncSummaryEnum) {
       case BehaveSyncSummaryEnum.assessmentDetails:
         return _buildAssessmentDetails();
-      case BehaveSyncSummaryEnum.scheduler:
-        return _buildScheduler();
+      // case BehaveSyncSummaryEnum.scheduler:
+      //   return _buildScheduler();
       case BehaveSyncSummaryEnum.masterData:
         return _buildMasterData();
       case BehaveSyncSummaryEnum.all:

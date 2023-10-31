@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 enum BehaveSyncSummaryEnum {
   assessmentDetails,
-  scheduler,
+  // scheduler,
   masterData,
   all;
 
@@ -14,8 +14,8 @@ enum BehaveSyncSummaryEnum {
     switch (this) {
       case BehaveSyncSummaryEnum.assessmentDetails:
         return LocaleKeys.assessment_details.tr();
-      case BehaveSyncSummaryEnum.scheduler:
-        return LocaleKeys.scheduler.tr();
+      // case BehaveSyncSummaryEnum.scheduler:
+      //   return LocaleKeys.scheduler.tr();
       case BehaveSyncSummaryEnum.masterData:
         return LocaleKeys.master_data.tr();
       case BehaveSyncSummaryEnum.all:
@@ -27,7 +27,7 @@ enum BehaveSyncSummaryEnum {
     if (isAll) {
       return <Widget>[
         assessmentDetails.getView,
-        scheduler.getView,
+        // scheduler.getView,
         masterData.getView,
       ];
     }

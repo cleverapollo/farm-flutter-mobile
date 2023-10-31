@@ -40,8 +40,8 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
             return _buildAnnualBudgetTransactions(data);
           case FarmerSyncSummaryEnum.camps:
             return _buildCamps(data);
-          case FarmerSyncSummaryEnum.scheduler:
-            return _buildScheduler(data);
+          // case FarmerSyncSummaryEnum.scheduler:
+          //   return _buildScheduler(data);
           case FarmerSyncSummaryEnum.masterData:
             return _buildMasterData(data);
           case FarmerSyncSummaryEnum.stakeHolder:
@@ -332,10 +332,10 @@ class _FarmerSyncSummaryWidgetState extends State<FarmerSyncSummaryWidget> {
             label: LocaleKeys.reject_reasons.tr(),
             count: data?.rejectReasons ?? 0,
           ),
-          SyncItemWidget(
-            label: LocaleKeys.schedule_activity.tr(),
-            count: data?.scheduleActivity ?? 0,
-          ),
+          // SyncItemWidget(
+          //   label: LocaleKeys.schedule_activity.tr(),
+          //   count: data?.scheduleActivity ?? 0,
+          // ),
           SyncItemWidget(
             label: LocaleKeys.species_range.tr(),
             count: data?.speciesRange ?? 0,
