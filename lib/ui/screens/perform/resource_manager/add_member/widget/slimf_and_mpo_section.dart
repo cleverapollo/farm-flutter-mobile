@@ -93,6 +93,7 @@ class _SlimfAndMpoSectionState extends State<SlimfAndMpoSection> {
                 CmoYesNoQuestion(
                   initialValue: data.isSlimfCompliant,
                   alignCenter: true,
+                  textStyle: context.textStyles.bodyBold,
                   onTap: (value) async {
                     await addMemberCubit.onTapSlimf(isSlimf: value);
                   },

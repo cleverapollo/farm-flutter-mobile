@@ -117,11 +117,13 @@ class CmoYesNoQuestion extends StatefulWidget {
     this.onTap,
     this.initialValue,
     this.alignCenter = false,
+    this.textStyle,
   });
 
   final bool? initialValue;
   final Function(bool)? onTap;
   final bool alignCenter;
+  final TextStyle? textStyle;
 
   @override
   State<CmoYesNoQuestion> createState() => _CmoYesNoQuestionState();
@@ -152,18 +154,22 @@ class _CmoYesNoQuestionState extends State<CmoYesNoQuestion> {
               child: Container(
                 alignment: Alignment.center,
                 width: 110,
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: buildColor(value, true),
-                  border: (value ?? false) ? null : Border.all(
+                  border: Border.all(
                     width: 2,
-                    color: context.colors.blueDark2,
+                    color: (value ?? false) ? Colors.transparent : context.colors.blueDark2,
                   ),
                 ),
-                child: Text('Yes',
-                    style: context.textStyles.bodyNormal.copyWith(
-                        color: (value ?? false) ? Colors.white : Colors.black)),
+                child: Text(
+                  LocaleKeys.yes.tr(),
+                  style: (widget.textStyle ?? context.textStyles.bodyNormal)
+                      .copyWith(
+                    color: (value ?? false) ? Colors.white : Colors.black,
+                  ),
+                ),
               ),
             ),
             const SizedBox(width: 12),
@@ -175,18 +181,22 @@ class _CmoYesNoQuestionState extends State<CmoYesNoQuestion> {
               child: Container(
                 alignment: Alignment.center,
                 width: 110,
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: buildColor(value, false),
-                  border: (value ?? true) ? Border.all(
+                  border: Border.all(
                     width: 2,
-                    color: context.colors.blueDark2,
-                  ) : null,
+                    color: (value ?? true) ? context.colors.blueDark2 : Colors.transparent,
+                  ),
                 ),
-                child: Text('No',
-                    style: context.textStyles.bodyNormal.copyWith(
-                        color: !(value ?? true) ? Colors.white : Colors.black)),
+                child: Text(
+                  LocaleKeys.no.tr(),
+                  style: (widget.textStyle ?? context.textStyles.bodyNormal)
+                      .copyWith(
+                    color: !(value ?? true) ? Colors.white : Colors.black,
+                  ),
+                ),
               ),
             ),
           ],
