@@ -16,12 +16,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
-class StakeHolderDetailScreen extends StatefulWidget {
-  const StakeHolderDetailScreen({
+class StakeHolderDetailScreen extends BaseStatefulWidget {
+  StakeHolderDetailScreen({
     super.key,
     this.stakeHolder,
     this.isEditing = false,
-  });
+  }) : super(
+          screenName: isEditing
+              ? LocaleKeys.edit_stakeholder.tr()
+              : LocaleKeys.add_stakeholder.tr(),
+        );
 
   final StakeHolder? stakeHolder;
   final bool isEditing;
@@ -49,7 +53,7 @@ class StakeHolderDetailScreen extends StatefulWidget {
       _StakeHolderDetailScreenState();
 }
 
-class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
+class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderDetailScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;

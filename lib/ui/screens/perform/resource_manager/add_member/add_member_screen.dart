@@ -20,8 +20,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class AddMemberScreen extends StatefulWidget {
-  const AddMemberScreen({super.key, this.farm});
+class AddMemberScreen extends BaseStatefulWidget {
+  AddMemberScreen({super.key, this.farm})
+      : super(
+          screenName: farm == null
+              ? LocaleKeys.addMember.tr()
+              : LocaleKeys.member_detail.tr(),
+        );
 
   final Farm? farm;
 
@@ -38,7 +43,7 @@ class AddMemberScreen extends StatefulWidget {
   State<AddMemberScreen> createState() => _AddMemberScreenState();
 }
 
-class _AddMemberScreenState extends State<AddMemberScreen> {
+class _AddMemberScreenState extends BaseStatefulWidgetState<AddMemberScreen> {
   late final AddMemberCubit cubit;
   late final DashboardCubit dashboardCubit;
 

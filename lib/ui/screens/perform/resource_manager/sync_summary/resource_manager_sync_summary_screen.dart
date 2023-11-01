@@ -9,8 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'widgets/rm_sync_summary_indicator.dart';
 
-class ResourceManagerSyncSummaryScreen extends StatefulWidget {
-  const ResourceManagerSyncSummaryScreen({super.key});
+class ResourceManagerSyncSummaryScreen extends BaseStatefulWidget {
+  ResourceManagerSyncSummaryScreen({super.key}) : super(screenName: LocaleKeys.syncSummary.tr());
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
@@ -21,19 +21,17 @@ class ResourceManagerSyncSummaryScreen extends StatefulWidget {
             userInfoCubit: context.read<UserInfoCubit>(),
             userDeviceCubit: context.read<UserDeviceCubit>(),
           ),
-          child: const ResourceManagerSyncSummaryScreen(),
+          child: ResourceManagerSyncSummaryScreen(),
         ),
       ),
     );
   }
 
   @override
-  State<StatefulWidget> createState() =>
-      _ResourceManagerSyncSummaryScreenState();
+  State<StatefulWidget> createState() => _ResourceManagerSyncSummaryScreenState();
 }
 
-class _ResourceManagerSyncSummaryScreenState
-    extends State<ResourceManagerSyncSummaryScreen> {
+class _ResourceManagerSyncSummaryScreenState extends BaseStatefulWidgetState<ResourceManagerSyncSummaryScreen> {
   @override
   void initState() {
     super.initState();

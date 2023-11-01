@@ -20,12 +20,12 @@ import 'widgets/audit_progress_indicator.dart';
 import 'widgets/audit_search_field.dart';
 import 'widgets/imcomplete_filter.dart';
 
-class AuditListQuestionsScreen extends StatefulWidget {
-  const AuditListQuestionsScreen({
+class AuditListQuestionsScreen extends BaseStatefulWidget {
+  AuditListQuestionsScreen({
     super.key,
     required this.audit,
     required this.auditComeFrom,
-  });
+  }) : super(screenName: LocaleKeys.audit_detail.tr());
 
   final Audit audit;
   final AuditComeFromEnum auditComeFrom;
@@ -49,7 +49,7 @@ class AuditListQuestionsScreen extends StatefulWidget {
   State<AuditListQuestionsScreen> createState() => _AuditListQuestionsScreenState();
 }
 
-class _AuditListQuestionsScreenState extends State<AuditListQuestionsScreen> {
+class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQuestionsScreen> {
   bool loading = false;
 
   @override

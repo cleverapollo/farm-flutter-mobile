@@ -13,8 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'widgets/member_item.dart';
 
-class MemberManagementScreen extends StatefulWidget {
-  const MemberManagementScreen({super.key});
+class MemberManagementScreen extends BaseStatefulWidget {
+  MemberManagementScreen({super.key}) : super(screenName: LocaleKeys.memberManagement.tr());
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
@@ -24,7 +24,7 @@ class MemberManagementScreen extends StatefulWidget {
           return BlocProvider(
             create: (BuildContext context) =>
                 MemberManagementCubit()..init(context),
-            child: const MemberManagementScreen(),
+            child: MemberManagementScreen(),
           );
         },
       ),
@@ -35,7 +35,7 @@ class MemberManagementScreen extends StatefulWidget {
   State<MemberManagementScreen> createState() => _MemberManagementScreenState();
 }
 
-class _MemberManagementScreenState extends State<MemberManagementScreen> {
+class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagementScreen> {
   Timer? _searchDebounce;
 
   @override

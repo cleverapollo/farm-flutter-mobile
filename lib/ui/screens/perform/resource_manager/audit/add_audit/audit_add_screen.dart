@@ -15,11 +15,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../asi/widgets/bottom_sheet_selection.dart';
 
-class AuditAddScreen extends StatefulWidget {
-  const AuditAddScreen({
+class AuditAddScreen extends BaseStatefulWidget {
+  AuditAddScreen({
     super.key,
     required this.auditComeFrom,
-  });
+  }) : super(screenName: LocaleKeys.newAudit.tr());
 
   final AuditComeFromEnum auditComeFrom;
 
@@ -41,7 +41,7 @@ class AuditAddScreen extends StatefulWidget {
   }
 }
 
-class _AuditAddScreen extends State<AuditAddScreen> {
+class _AuditAddScreen extends BaseStatefulWidgetState<AuditAddScreen> {
   bool loading = false;
 
   Timer? debounceInputTimer;

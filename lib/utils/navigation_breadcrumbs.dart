@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/string.dart';
+import 'package:flutter/widgets.dart';
 
 class NavigationBreadcrumbs {
 
@@ -9,8 +10,7 @@ class NavigationBreadcrumbs {
   }
 
   String? farmName;
-  List<String?> previousSectionName = <String>[];
-  String? currentSectionName;
+  final previousSectionName = ValueNotifier<List<String>>(<String>[]);
 
   Future<void> initNavigationBreadcrumbs() async {
     final currentRole = await configService.getActiveUserRole();
@@ -20,11 +20,11 @@ class NavigationBreadcrumbs {
         final activeRmu = await configService.getActiveRegionalManager();
 
         if (activeGS?.groupSchemeName != null && activeGS!.groupSchemeName!.isNotBlank) {
-          previousSectionName.add(activeGS.groupSchemeName);
+          previousSectionName.value.add(activeGS.groupSchemeName!);
         }
 
         if (activeRmu?.regionalManagerUnitName != null && activeRmu!.regionalManagerUnitName.isNotBlank) {
-          previousSectionName.add(activeRmu.regionalManagerUnitName);
+          previousSectionName.value.add(activeRmu.regionalManagerUnitName!);
         }
 
         break;
@@ -37,11 +37,13 @@ class NavigationBreadcrumbs {
 
   void updateCurrentSectionName(String? sectionName) {
     if (sectionName.isNotBlank) {
-      previousSectionName.add(currentSectionName);
-      currentSectionName = sectionName;
+      previousSectionName.value = List.from(previousSectionName.value)..add(sectionName!);
     } else {
-      currentSectionName = previousSectionName.last;
-      previousSectionName.removeLast();
+      if (sectionName == null) {
+        previousSectionName.value = List.from(previousSectionName.value)..removeLast();
+      } else {
+        return;
+      }
     }
   }
 }

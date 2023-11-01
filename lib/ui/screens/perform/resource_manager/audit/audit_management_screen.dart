@@ -15,13 +15,15 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AuditManagementScreen extends StatefulWidget {
-  const AuditManagementScreen({super.key});
+class AuditManagementScreen extends BaseStatefulWidget {
+  AuditManagementScreen({super.key})
+      : super(screenName: LocaleKeys.audits.tr());
+
   static Future<void> push(BuildContext context) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const AuditManagementScreen(),
+        builder: (_) => AuditManagementScreen(),
       ),
     );
   }
@@ -30,7 +32,7 @@ class AuditManagementScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _AuditManagementScreenState();
 }
 
-class _AuditManagementScreenState extends State<AuditManagementScreen> {
+class _AuditManagementScreenState extends BaseStatefulWidgetState<AuditManagementScreen> {
 
   @override
   void initState() {

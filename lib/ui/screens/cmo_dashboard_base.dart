@@ -6,16 +6,15 @@ import 'package:cmo/ui/screens/behave/dashboard/behave_dashboard_screen.dart';
 import 'package:cmo/ui/screens/cmo_menu_base.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/dashboard/farmer_member_dashboard_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/dashboard/resource_manager_dashboard_screen.dart';
-import 'package:cmo/ui/widget/cmo_app_bar.dart';
-import 'package:cmo/ui/widget/cmo_mode_builder.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-class CmoDashboardBase extends StatefulWidget {
-  const CmoDashboardBase({super.key});
+class CmoDashboardBase extends BaseStatefulWidget {
+  CmoDashboardBase({super.key}) : super(screenName: '');
 
   static void push(BuildContext context) {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const CmoDashboardBase()),
+      MaterialPageRoute(builder: (_) => CmoDashboardBase()),
     );
   }
 
@@ -23,7 +22,7 @@ class CmoDashboardBase extends StatefulWidget {
   State<CmoDashboardBase> createState() => _CmoDashboardBaseState();
 }
 
-class _CmoDashboardBaseState extends State<CmoDashboardBase> {
+class _CmoDashboardBaseState extends BaseStatefulWidgetState<CmoDashboardBase> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   String? entityName;

@@ -17,24 +17,24 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class StakeHolderManagementScreen extends StatefulWidget {
+class StakeHolderManagementScreen extends BaseStatefulWidget {
+
+  StakeHolderManagementScreen({super.key}) : super(screenName: LocaleKeys.stakeholderManagement.tr());
+
   static Future<void> push(BuildContext context) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const StakeHolderManagementScreen(),
+        builder: (_) => StakeHolderManagementScreen(),
       ),
     );
   }
-
-  const StakeHolderManagementScreen({super.key});
 
   @override
   State<StatefulWidget> createState() => _StakeHolderManagementScreenState();
 }
 
-class _StakeHolderManagementScreenState
-    extends State<StakeHolderManagementScreen> {
+class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHolderManagementScreen> {
   Timer? _debounceInputTimer;
 
   @override

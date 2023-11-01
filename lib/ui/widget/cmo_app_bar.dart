@@ -131,29 +131,38 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
           bottom: 4,
         ),
         scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (navigationBreadcrumbs.previousSectionName.isNotBlank)
-              ...navigationBreadcrumbs.previousSectionName.map((e) {
-                return InkWell(
-                  onTap: () {
-                    navigationBreadcrumbs.updateCurrentSectionName(null);
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    '$e > ',
-                    style: context.textStyles.bodyNormal.grey,
-                  ),
-                );
-              }),
-            if (navigationBreadcrumbs.currentSectionName.isNotBlank)
-              Text(
-                navigationBreadcrumbs.currentSectionName ?? '',
-                style: context.textStyles.bodyNormal.blueDark2,
-              ),
-          ],
+        child: ValueListenableBuilder(
+          valueListenable: navigationBreadcrumbs.previousSectionName,
+          builder: (context, previousSectionName, _) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (previousSectionName.isNotBlank)
+                  ...previousSectionName.map((e) {
+                    if (e.isBlank) {
+                      return const SizedBox.shrink();
+                    }
+
+                    if (previousSectionName.last.toLowerCase() ==
+                        e.toLowerCase()) {
+                      return Text(
+                        e,
+                        style: context.textStyles.bodyNormal.blueDark2,
+                      );
+                    }
+
+                    return InkWell(
+                      onTap: Navigator.of(context).pop,
+                      child: Text(
+                        '$e > ',
+                        style: context.textStyles.bodyNormal.grey,
+                      ),
+                    );
+                  }),
+              ],
+            );
+          },
         ),
       ),
     );
