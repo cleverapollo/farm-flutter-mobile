@@ -7,10 +7,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_detail_screen.dart';
-import 'package:cmo/ui/theme/theme.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/ui/widget/cmo_buttons.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -164,9 +161,8 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoAppBar(
         title: LocaleKeys.compartments.tr(),
-        showLeading: true,
         subtitle: widget.farmName ?? '',
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,

@@ -1,10 +1,10 @@
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/utils/file_utils.dart';
 import 'package:cmo/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -137,10 +137,11 @@ class _RteSpeciesMapScreenState extends State<RteSpeciesMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoAppBar(
         title: LocaleKeys.rteSpecies.tr(),
         subtitle: widget.activeFarm?.farmName ?? '',
-        showTrailing: true,
+        trailing: Assets.icons.icClose.svgBlack,
+        onTapTrailing: Navigator.of(context).pop,
       ),
       body: SizedBox.expand(
         child: ColoredBox(

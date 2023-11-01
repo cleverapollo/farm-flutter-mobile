@@ -4,7 +4,6 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/compartment_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -87,11 +86,10 @@ class _CompartmentScreenState extends State<CompartmentScreen> {
               (previousValue, element) =>
                   previousValue + (element.polygonArea ?? 0));
           return Scaffold(
-            appBar: CmoAppBarV2(
+            appBar: CmoAppBar(
               title: LocaleKeys.compartment.tr(),
               subtitle: widget.farmName ?? '',
-              showLeading: true,
-              showTrailing: true,
+              leading: Assets.icons.icArrowLeft.svgBlack,
               trailing: Assets.icons.icAdd.svgBlack,
               onTapLeading: () => onBack(listCompartment, total),
               onTapTrailing: navigateToDetail,

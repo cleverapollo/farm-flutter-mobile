@@ -5,7 +5,6 @@ import 'package:cmo/state/farmer/camp_management/add_camp_cubit.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_step3_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,12 +43,13 @@ class _AddCampStep2ScreenState extends State<AddCampStep2Screen> {
       selector: (state) => state.farm,
       builder: (context, farm) {
         return Scaffold(
-          appBar: CmoAppBarV2(
+          appBar: CmoAppBar(
             title: LocaleKeys.add_camp.tr(),
             subtitle: farm?.farmName ?? '',
-            showLeading: true,
-            showTrailing: true,
+            leading: Assets.icons.icArrowLeft.svgBlack,
+            onTapLeading: Navigator.of(context).pop,
             trailing: Assets.icons.icClose.svgBlack,
+            onTapTrailing: Navigator.of(context).pop,
           ),
           body: Column(
             children: [

@@ -54,7 +54,7 @@ class _StakeHolderManagementScreenState
 
   @override
   Widget build(BuildContext context) {
-    return CmoTappable(
+    return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: FutureBuilder(
         future: configService.getActiveUserRole(),
@@ -141,7 +141,7 @@ class _StakeHolderManagementScreenState
   PreferredSizeWidget? _buildCustomAppBar([UserRoleEnum? data]) {
     if (data == UserRoleEnum.regionalManager) {
       return PreferredSize(
-        preferredSize: const Size.fromHeight(72),
+        preferredSize: const Size.fromHeight(90),
         child: BlocSelector<StakeHolderListCubit, StakeHolderListState,
             ResourceManagerUnit?>(
           selector: (state) => state.resourceManagerUnit,

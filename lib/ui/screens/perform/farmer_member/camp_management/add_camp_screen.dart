@@ -1,25 +1,14 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/camp.dart';
-import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_cubit.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_step2_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/widgets/infestation_details_section.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/member/member_detail/site_location_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/ui/widget/common_widgets.dart';
-import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'widgets/actuals_section.dart';
 import 'widgets/area_metrics_section.dart';
@@ -59,12 +48,13 @@ class _AddCampScreenState extends State<AddCampScreen> {
       selector: (state) => state.farm,
       builder: (context, farm) {
         return Scaffold(
-          appBar: CmoAppBarV2(
+          appBar: CmoAppBar(
             title: LocaleKeys.add_camp.tr(),
             subtitle: farm?.farmName ?? '',
-            showLeading: true,
-            showTrailing: true,
+            leading: Assets.icons.icArrowLeft.svgBlack,
+            onTapLeading: Navigator.of(context).pop,
             trailing: Assets.icons.icClose.svgBlack,
+            onTapTrailing: Navigator.of(context).pop,
           ),
           body: SingleChildScrollView(
             child: Column(

@@ -3,9 +3,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/state/sync/rm/rm_sync_cubit.dart';
 import 'package:cmo/ui/components/sync_summary_component/sync_item_widget.dart';
-import 'package:cmo/ui/screens/sync/rm_sync_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,9 +43,10 @@ class _ResourceManagerSyncSummaryScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoAppBar(
         title: LocaleKeys.syncSummary.tr(),
-        showLeading: true,
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
       ),
       body: RefreshIndicator(
         onRefresh: context.read<RMSyncCubit>().getSummaryInformation,

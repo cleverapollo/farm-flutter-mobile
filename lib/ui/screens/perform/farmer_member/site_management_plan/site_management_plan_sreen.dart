@@ -1,3 +1,4 @@
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/user_info.dart';
 import 'package:cmo/state/state.dart';
@@ -6,7 +7,6 @@ import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_pr
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/camp_management_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tuple/tuple.dart';
@@ -39,7 +39,7 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoAppBar(
         title: LocaleKeys.siteManagementPlan.tr(),
         subtitle: context
                 .watch<SiteManagementPlanCubit>()
@@ -47,7 +47,8 @@ class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
                 .activeFarm
                 ?.farmName ??
             '',
-        showLeading: true,
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
       ),
       body:
           BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState, bool>(

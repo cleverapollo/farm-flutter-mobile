@@ -6,9 +6,7 @@ import 'package:cmo/model/asi.dart';
 import 'package:cmo/state/rm_asi/asi_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_detail_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_map_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -64,11 +62,11 @@ class _ASIScreenState extends State<ASIScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoAppBar(
         title: LocaleKeys.asi.tr(),
         subtitle: widget.farmName ?? '',
-        showTrailing: true,
-        showLeading: true,
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icAdd.svgBlack,
         onTapTrailing: navigateToASIDetail,
       ),

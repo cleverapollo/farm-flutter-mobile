@@ -3,10 +3,7 @@ import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
-import 'package:cmo/ui/screens/cmo_dashboard_base.dart';
-import 'package:cmo/ui/theme/app_theme.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/ui/widget/cmo_buttons.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,7 +23,7 @@ class AddMemberDone extends StatelessWidget {
       selector: (state) => state.farm,
       builder: (context, farmState) {
         return Scaffold(
-            appBar: CmoAppBarV2(
+            appBar: CmoAppBar(
               title: LocaleKeys.addMember.tr(),
               subtitle: farmState?.farmName ?? '',
             ),

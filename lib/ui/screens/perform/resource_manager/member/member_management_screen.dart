@@ -8,7 +8,6 @@ import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -47,12 +46,12 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
           ResourceManagerUnit?>(
         selector: (state) => state.resourceManagerUnit,
         builder: (context, resourceManagerUnit) => Scaffold(
-          appBar: CmoAppBarV2(
+          appBar: CmoAppBar(
             title: LocaleKeys.memberManagement.tr(),
             subtitle:
                 '${LocaleKeys.rmu_name.tr()}: ${resourceManagerUnit?.regionalManagerUnitName}',
-            showLeading: true,
-            showTrailing: true,
+            leading: Assets.icons.icArrowLeft.svgBlack,
+            onTapLeading: Navigator.of(context).pop,
             trailing: Assets.icons.icAdd.svgBlack,
             onTapTrailing: () async {
               await AddMemberScreen.push(context);

@@ -3,7 +3,6 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/utils/file_utils.dart';
 import 'package:cmo/utils/logger.dart';
 import 'package:ficonsax/ficonsax.dart';
@@ -169,12 +168,12 @@ class _SelectLocationState extends State<SelectLocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoAppBar(
         title: widget.title,
         subtitle: widget.farmName ?? '',
-        showTrailing: true,
-        showLeading: widget.shouldShowBackIcon,
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        trailing: Assets.icons.icClose.svgBlack,
+        onTapTrailing: Navigator.of(context).pop,
+        leading: widget.shouldShowBackIcon ? Assets.icons.icArrowLeft.svgBlack : null,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: SizedBox.expand(

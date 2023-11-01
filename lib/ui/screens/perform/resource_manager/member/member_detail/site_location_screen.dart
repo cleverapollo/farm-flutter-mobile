@@ -2,10 +2,8 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/theme/theme.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
-import 'package:cmo/ui/widget/cmo_buttons.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cmo/utils/utils.dart';
 
@@ -30,9 +28,8 @@ class _SiteLocationScreenState extends State<SiteLocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoAppBar(
         title: LocaleKeys.siteLocation.tr(),
-        showLeading: true,
         subtitle: LocaleKeys.siteName.tr(),
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,

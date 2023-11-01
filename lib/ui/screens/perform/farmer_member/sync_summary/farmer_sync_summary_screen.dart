@@ -1,9 +1,9 @@
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/sync_summary/farmer_sync_summary_enum.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,9 +26,9 @@ class FarmerSyncSummaryScreen extends StatelessWidget {
         selector: (state) => state.isSyncing,
         builder: (context, isSyncing) {
           return Scaffold(
-            appBar: CmoAppBarV2(
+            appBar: CmoAppBar(
               title: LocaleKeys.syncSummary.tr(),
-              showLeading: true,
+              leading: Assets.icons.icArrowLeft.svgBlack,
               onTapLeading: () {
                 if (isSyncing) return;
                 Navigator.pop(context);

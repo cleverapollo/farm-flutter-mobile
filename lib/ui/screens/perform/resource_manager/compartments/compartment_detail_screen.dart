@@ -9,7 +9,6 @@ import 'package:cmo/state/compartment_cubit/compartment_detail_cubit.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/espacement_input_widget.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/cmo_percentage_input_attribute_widget.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
@@ -99,10 +98,11 @@ class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: CmoAppBarV2(
+        appBar: CmoAppBar(
           title: LocaleKeys.compartment.tr(),
           subtitle: widget.farmName ?? '',
-          showLeading: true,
+          leading: Assets.icons.icArrowLeft.svgBlack,
+          onTapLeading: Navigator.of(context).pop,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),

@@ -169,7 +169,7 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
-                height: 90,
+                height: 60,
               ),
               Text(
                 LocaleKeys.details.tr(),
@@ -200,7 +200,7 @@ class _StakeHolderDetailScreenState extends State<StakeHolderDetailScreen> {
 
   PreferredSize _buildCmoAppBar(BuildContext context) {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(72),
+      preferredSize: const Size.fromHeight(90),
       child: FutureBuilder(
         future: configService.getActiveUserRole(),
         builder: (context, value) {

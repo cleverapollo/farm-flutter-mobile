@@ -1,3 +1,4 @@
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
@@ -13,7 +14,6 @@ import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/slimf_
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_app_bar_v2.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -72,9 +72,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoAppBarV2(
+      appBar: CmoAppBar(
         title: widget.farm == null ? LocaleKeys.addMember.tr() : LocaleKeys.member_detail.tr(),
-        showTrailing: true,
+        trailing: Assets.icons.icClose.svgBlack,
         onTapTrailing: () {
           Navigator.pop(context, true);
         },

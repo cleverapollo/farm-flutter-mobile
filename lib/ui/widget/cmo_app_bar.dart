@@ -1,5 +1,4 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
@@ -7,16 +6,6 @@ import 'package:flutter/material.dart';
 
 const _h1 = 60.0;
 const _h2 = 90.0;
-
-class NavigationBreadcrumbsModel {
-  final String? groupSchemeName;
-  final String? rmuName;
-
-  NavigationBreadcrumbsModel({
-    this.groupSchemeName,
-    this.rmuName,
-  });
-}
 
 class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CmoAppBar({
@@ -48,7 +37,7 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? sectionName;
 
   @override
-  Size get preferredSize => Size.fromHeight(subtitle != null ? _h2 : _h1);
+  Size get preferredSize => const Size.fromHeight(_h2);
 
   @override
   Widget build(BuildContext context) {
