@@ -8,6 +8,8 @@ import 'package:cmo/service/cmo_database_master_service.dart';
 import 'package:cmo/service/device_info_service.dart';
 import 'package:cmo/service/entity_service.dart';
 
+import 'utils/navigation_breadcrumbs.dart';
+
 final _get = GetIt.instance;
 
 DeviceInfoService get deviceInfoService => _get<DeviceInfoService>();
@@ -24,6 +26,7 @@ CmoDatabaseMasterService get cmoDatabaseMasterService =>
     _get<CmoDatabaseMasterService>();
 
 ConfigService get configService => _get<ConfigService>();
+NavigationBreadcrumbs get navigationBreadcrumbs => _get<NavigationBreadcrumbs>();
 
 Future<void> registerGetIt() async {
   _get.registerLazySingleton(() => DeviceInfoService());
@@ -33,6 +36,6 @@ Future<void> registerGetIt() async {
   _get.registerLazySingleton(() => CmoPerformApiService());
   _get.registerLazySingleton(() => CmoDatabaseMasterService());
   _get.registerLazySingleton(() => ConfigService());
-
+  _get.registerLazySingleton(() => NavigationBreadcrumbs());
   await _get.allReady();
 }
