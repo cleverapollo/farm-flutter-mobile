@@ -10,7 +10,9 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
 class CmoDashboardBase extends BaseStatefulWidget {
-  CmoDashboardBase({super.key}) : super(screenName: '');
+  CmoDashboardBase({super.key}) : super(screenName: '') {
+    navigationBreadcrumbs.initNavigationBreadcrumbs();
+  }
 
   static void push(BuildContext context) {
     Navigator.of(context).pushReplacement(

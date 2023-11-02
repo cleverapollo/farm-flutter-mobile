@@ -616,6 +616,7 @@ class __LogoutButtonState extends State<_LogoutButton> {
           });
           await cmoDatabaseMasterService.deleteAll();
           if (context.mounted) {
+            navigationBreadcrumbs.logout();
             await context.read<AuthCubit>().logOut();
             await context.read<EntityCubit>().clear();
             await context.read<UserDeviceCubit>().clear();

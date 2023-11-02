@@ -7,7 +7,6 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_detail_cubit.dart';
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/widgets/input_text_field_with_title.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
@@ -209,10 +208,21 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
         future: configService.getActiveUserRole(),
         builder: (context, value) {
           if (value.data == UserRoleEnum.farmerMember) {
-            return CmoFarmAppBar.showTrailingAndFarmName(
-              title: widget.isEditing
-                  ? LocaleKeys.edit_stakeholder.tr()
-                  : LocaleKeys.add_stakeholder.tr(),
+            return PreferredSize(
+              preferredSize: const Size.fromHeight(90),
+              child: FutureBuilder(
+                future: configService.getActiveFarm(),
+                builder: (context, snapshot) {
+                  return CmoAppBar(
+                    title: widget.isEditing
+                        ? LocaleKeys.edit_stakeholder.tr()
+                        : LocaleKeys.add_stakeholder.tr(),
+                    subtitle: snapshot.data?.farmName ?? '',
+                    leading: Assets.icons.icArrowLeft.svgBlack,
+                    onTapLeading: Navigator.of(context).pop,
+                  );
+                },
+              ),
             );
           }
 

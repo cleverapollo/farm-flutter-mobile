@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
@@ -51,20 +52,46 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
 
-    if (subtitle != null) {
       text = Column(
         children: [
           text,
-          Text(
-            subtitle!,
-            maxLines: 1,
-            textAlign: TextAlign.center,
-            style: subtitleTextStyle ?? context.textStyles.bodyBold
-                .copyWith(color: context.colors.blue),
+          FutureBuilder(
+            future: configService.getActiveUserRole(),
+            builder: (context, userRole) {
+              switch (userRole.data) {
+                case UserRoleEnum.farmerMember:
+                  return FutureBuilder(
+                    future: configService.getActiveFarm(),
+                    builder: (context, farm) {
+                      return Text(
+                        farm.data?.farmName ?? '',
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        style: context.textStyles.bodyBold
+                            .copyWith(color: context.colors.blue),
+                      );
+                    },
+                  );
+                case UserRoleEnum.regionalManager:
+                case UserRoleEnum.behave:
+                case null:
+                  if (subtitle != null) {
+                    return Text(
+                      subtitle!,
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: subtitleTextStyle ??
+                          context.textStyles.bodyBold
+                              .copyWith(color: context.colors.blue),
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+              }
+            },
           )
         ],
       );
-    }
 
     var leading = this.leading != null
         ? CmoTappable(

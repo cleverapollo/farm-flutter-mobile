@@ -10,8 +10,8 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LabourManagementScreen extends StatefulWidget {
-  const LabourManagementScreen({super.key});
+class LabourManagementScreen extends BaseStatefulWidget {
+  LabourManagementScreen({super.key}) : super(screenName: LocaleKeys.labourManagement.tr());
 
   @override
   State<StatefulWidget> createState() => _LabourManagementScreenState();
@@ -20,13 +20,13 @@ class LabourManagementScreen extends StatefulWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const LabourManagementScreen(),
+        builder: (_) => LabourManagementScreen(),
       ),
     );
   }
 }
 
-class _LabourManagementScreenState extends State<LabourManagementScreen> {
+class _LabourManagementScreenState extends BaseStatefulWidgetState<LabourManagementScreen> {
   Timer? _debounceInputTimer;
 
   @override

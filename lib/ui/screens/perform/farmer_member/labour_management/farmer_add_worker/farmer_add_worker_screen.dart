@@ -18,9 +18,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class FarmerAddWorkerScreen extends StatefulWidget {
-  const FarmerAddWorkerScreen(
-      {super.key, this.farmerWorker, this.isEditing = false});
+class FarmerAddWorkerScreen extends BaseStatefulWidget {
+  FarmerAddWorkerScreen({super.key, this.farmerWorker, this.isEditing = false})
+      : super(
+          screenName: isEditing
+              ? LocaleKeys.labour_detail.tr()
+              : LocaleKeys.addLabour.tr(),
+        );
 
   final FarmerWorker? farmerWorker;
   final bool isEditing;
@@ -45,7 +49,7 @@ class FarmerAddWorkerScreen extends StatefulWidget {
   }
 }
 
-class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
+class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorkerScreen> {
   final isAllValid = ValueNotifier<bool>(false);
 
   bool loading = false;
@@ -151,7 +155,9 @@ class _FarmerAddWorkerScreenState extends State<FarmerAddWorkerScreen> {
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
-          title: LocaleKeys.addLabour.tr(),
+          title: widget.isEditing
+              ? LocaleKeys.labour_detail.tr()
+              : LocaleKeys.addLabour.tr(),
           subtitle:
               context.read<LabourManagementCubit>().state.activeFarm?.farmName,
           subtitleTextStyle: context.textStyles.bodyBold.blue,

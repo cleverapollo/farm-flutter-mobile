@@ -351,6 +351,7 @@ class _AddMemberSDetailsState extends State<_AddMemberSDetails> {
                             context,
                             farmId: farmId,
                             farmName: farmName,
+                            shouldDisplayFarmNameOnBreadcrumbs: true,
                           );
 
                           if (result != null) {
