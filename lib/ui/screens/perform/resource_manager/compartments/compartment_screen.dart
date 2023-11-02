@@ -9,8 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'compartment_detail_screen.dart';
 
-class CompartmentScreen extends StatefulWidget {
-  const CompartmentScreen({super.key, this.farmName});
+class CompartmentScreen extends BaseStatefulWidget {
+  CompartmentScreen({super.key, this.farmName}) : super(screenName: farmName ?? '');
   final String? farmName;
 
   static Future<AddingCompartmentResult?> push(
@@ -37,7 +37,7 @@ class CompartmentScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _CompartmentScreenState();
 }
 
-class _CompartmentScreenState extends State<CompartmentScreen> {
+class _CompartmentScreenState extends BaseStatefulWidgetState<CompartmentScreen> {
   @override
   void initState() {
     super.initState();

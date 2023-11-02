@@ -7,19 +7,18 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AuditQuestionCommentScreen extends StatefulWidget {
-  const AuditQuestionCommentScreen({
+class AuditQuestionCommentScreen extends BaseStatefulWidget {
+  AuditQuestionCommentScreen({
     super.key,
     required this.question,
     this.comment,
     this.answer,
-  });
+  }) : super(screenName: LocaleKeys.comments.tr());
 
   final FarmQuestion question;
   final QuestionComment? comment;
@@ -55,7 +54,7 @@ class AuditQuestionCommentScreen extends StatefulWidget {
   State<AuditQuestionCommentScreen> createState() => _AuditQuestionCommentScreenState();
 }
 
-class _AuditQuestionCommentScreenState extends State<AuditQuestionCommentScreen> {
+class _AuditQuestionCommentScreenState extends BaseStatefulWidgetState<AuditQuestionCommentScreen> {
 
   @override
   void initState() {

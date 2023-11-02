@@ -25,7 +25,7 @@ class AuditListQuestionsScreen extends BaseStatefulWidget {
     super.key,
     required this.audit,
     required this.auditComeFrom,
-  }) : super(screenName: LocaleKeys.audit_detail.tr());
+  }) : super(screenName: audit.farmName ?? '');
 
   final Audit audit;
   final AuditComeFromEnum auditComeFrom;

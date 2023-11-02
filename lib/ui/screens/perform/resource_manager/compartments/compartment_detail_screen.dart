@@ -19,13 +19,16 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../asi/widgets/bottom_sheet_selection.dart';
 import 'compartment_map_screen.dart';
 
-class CompartmentDetailScreen extends StatefulWidget {
+class CompartmentDetailScreen extends BaseStatefulWidget {
   final String? farmName;
 
-  const CompartmentDetailScreen({
+  CompartmentDetailScreen({
     Key? key,
     this.farmName,
-  }) : super(key: key);
+  }) : super(
+          key: key,
+          screenName: LocaleKeys.compartment.tr(),
+        );
 
   static dynamic push(
     BuildContext context, {
@@ -58,7 +61,7 @@ class CompartmentDetailScreen extends StatefulWidget {
   State<CompartmentDetailScreen> createState() => _CompartmentDetailScreenState();
 }
 
-class _CompartmentDetailScreenState extends State<CompartmentDetailScreen> {
+class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentDetailScreen> {
   late CompartmentDetailCubit _compartmentDetailCubit;
 
   @override

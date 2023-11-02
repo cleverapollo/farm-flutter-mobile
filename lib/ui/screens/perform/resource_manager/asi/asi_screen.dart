@@ -10,9 +10,9 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ASIScreen extends StatefulWidget {
+class ASIScreen extends BaseStatefulWidget {
   final String? farmName;
-  const ASIScreen({this.farmName, super.key});
+  ASIScreen({this.farmName, super.key}) : super(screenName: farmName ?? '');
 
   static Future<List<Asi>?> push(BuildContext context,
       {String? farmId, String? farmName, String? campId}) {
@@ -35,7 +35,7 @@ class ASIScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _ASIScreenState();
 }
 
-class _ASIScreenState extends State<ASIScreen> {
+class _ASIScreenState extends BaseStatefulWidgetState<ASIScreen> {
   bool isCollapse = false;
 
   Timer? _debounceInputTimer;

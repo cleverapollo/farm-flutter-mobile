@@ -127,12 +127,16 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
           title: LocaleKeys.memberManagement.tr(),
         ),
         buildOption(context, title: LocaleKeys.createNew.tr(), onTap: () {
+          if (context.mounted) Navigator.of(context).pop();
           AddMemberScreen.push(context);
         }),
         buildOption(
           context,
           title: LocaleKeys.compartments.tr(),
-          onTap: () => CompartmentScreen.push(context),
+          onTap: () {
+            if (context.mounted) Navigator.of(context).pop();
+            CompartmentScreen.push(context);
+          },
         ),
         const SizedBox(height: 7),
         const _Divider(),

@@ -14,13 +14,13 @@ import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AuditListPhotoScreen extends StatefulWidget {
-  const AuditListPhotoScreen({
+class AuditListPhotoScreen extends BaseStatefulWidget {
+  AuditListPhotoScreen({
     super.key,
     required this.auditQuestion,
     required this.auditId,
     required this.totalAuditPhotos,
-  });
+  }) : super(screenName: LocaleKeys.pictures.tr());
 
   static Future<bool?> push(
     BuildContext context, {
@@ -49,7 +49,7 @@ class AuditListPhotoScreen extends StatefulWidget {
   State<AuditListPhotoScreen> createState() => _AuditListPhotoScreenState();
 }
 
-class _AuditListPhotoScreenState extends State<AuditListPhotoScreen> {
+class _AuditListPhotoScreenState extends BaseStatefulWidgetState<AuditListPhotoScreen> {
   final ImagePickerService _imagePickerService = ImagePickerService();
 
   bool loading = false;

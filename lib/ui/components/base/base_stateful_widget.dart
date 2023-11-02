@@ -23,7 +23,9 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
   @override
   void dispose() {
     Future.delayed(Duration(microseconds: 500)).then((_) {
-      navigationBreadcrumbs.updateCurrentSectionName(null);
+      if (widget.screenName.isNotEmpty) {
+        navigationBreadcrumbs.updateCurrentSectionName(null);
+      }
     });
 
     super.dispose();

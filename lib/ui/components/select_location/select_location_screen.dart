@@ -16,8 +16,8 @@ class LocationModel {
   List<String> listImage = <String>[];
 }
 
-class SelectLocationScreen extends StatefulWidget {
-  const SelectLocationScreen({
+class SelectLocationScreen extends BaseStatefulWidget {
+  SelectLocationScreen({
     super.key,
     required this.title,
     required this.locationModel,
@@ -28,7 +28,7 @@ class SelectLocationScreen extends StatefulWidget {
     this.alwaysEnableSaveButton,
     this.saveTitle,
     this.onSave,
-  });
+  }) : super(screenName: title);
 
   final LocationModel locationModel;
   final String? farmName;
@@ -74,7 +74,7 @@ class SelectLocationScreen extends StatefulWidget {
   State<SelectLocationScreen> createState() => _SelectLocationState();
 }
 
-class _SelectLocationState extends State<SelectLocationScreen> {
+class _SelectLocationState extends BaseStatefulWidgetState<SelectLocationScreen> {
   LatLng? initLatLng;
   late LocationModel locationModel;
 

@@ -144,11 +144,17 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
                       return const SizedBox.shrink();
                     }
 
-                    if (previousSectionName.last.toLowerCase() ==
-                        e.toLowerCase()) {
+                    if (previousSectionName.last.toLowerCase() == e.toLowerCase()) {
                       return Text(
                         e,
                         style: context.textStyles.bodyNormal.blueDark2,
+                      );
+                    }
+
+                    if (previousSectionName.first.toLowerCase() == e.toLowerCase()) {
+                      return Text(
+                        '$e > ',
+                        style: context.textStyles.bodyNormal.grey,
                       );
                     }
 

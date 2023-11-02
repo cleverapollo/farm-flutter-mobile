@@ -13,12 +13,15 @@ import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ASIDetailScreen extends StatefulWidget {
-  const ASIDetailScreen({
+class ASIDetailScreen extends BaseStatefulWidget {
+  ASIDetailScreen({
     super.key,
     this.farmName,
     this.isEditing = false,
-  });
+  }) : super(
+          screenName:
+              isEditing ? LocaleKeys.asi_detail.tr() : LocaleKeys.addASI.tr(),
+        );
 
   final String? farmName;
   final bool isEditing;
@@ -53,7 +56,7 @@ class ASIDetailScreen extends StatefulWidget {
   State<ASIDetailScreen> createState() => _ASIDetailScreenState();
 }
 
-class _ASIDetailScreenState extends State<ASIDetailScreen> {
+class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
   late final AsiDetailCubit _asiDetailCubit;
 
   @override
