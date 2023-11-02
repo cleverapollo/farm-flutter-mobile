@@ -2,11 +2,12 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/risk_profile_question.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'cmo_chip_item_widget.dart';
+import 'cmo_collapse_title_widget.dart';
 
 class FarmMemberRiskAssessmentsWidget extends StatelessWidget {
   const FarmMemberRiskAssessmentsWidget();

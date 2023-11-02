@@ -5,8 +5,7 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../widget/expandable_item_widget.dart';
-import 'farm_member_objective_question_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/widget/farm_member_objective_question_widget.dart';
 
 class FarmMemberObjectivesWidget extends StatefulWidget {
   const FarmMemberObjectivesWidget();

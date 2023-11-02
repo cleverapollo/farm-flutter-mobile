@@ -6,7 +6,7 @@ import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/add_member_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,13 +1,12 @@
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_chip_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../widget/expandable_item_widget.dart';
+import 'cmo_chip_item_widget.dart';
 import 'slimf_compliant_limitation_1_content.dart';
 import 'slimf_compliant_limitation_2.dart';
 import 'slimf_compliant_limitation_2_content.dart';

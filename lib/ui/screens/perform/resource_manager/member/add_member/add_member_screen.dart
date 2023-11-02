@@ -5,12 +5,6 @@ import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/ui/components/select_site_location_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/add_member_sign_contract_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_collapse_title_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/cmo_drop_down_layout_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/farm_member_objectives_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/farm_member_risk_assessments_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/add_member/widget/slimf_and_mpo_section.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/ui.dart';
@@ -19,6 +13,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'add_member_sign_contract_widget.dart';
+import 'widget/cmo_collapse_title_widget.dart';
+import 'widget/cmo_drop_down_layout_widget.dart';
+import 'widget/farm_member_objectives_widget.dart';
+import 'widget/farm_member_risk_assessments_widget.dart';
+import 'widget/slimf_and_mpo_section.dart';
 
 class AddMemberScreen extends BaseStatefulWidget {
   AddMemberScreen({super.key, this.farm})
