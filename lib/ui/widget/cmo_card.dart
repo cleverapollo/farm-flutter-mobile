@@ -7,8 +7,8 @@ class CmoCard extends StatelessWidget {
     super.key,
     this.content = const [],
     this.shouldShowArrowRight = true,
-    this.margin = const EdgeInsets.all(0),
-    this.padding = EdgeInsets.zero,
+    this.margin = EdgeInsets.zero,
+    this.padding,
     this.trailing,
     this.containerGradient,
     this.onTap,
@@ -19,7 +19,7 @@ class CmoCard extends StatelessWidget {
   final List<Widget> content;
   final bool shouldShowArrowRight;
   final EdgeInsetsGeometry margin;
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
   final Widget? trailing;
   final Gradient? containerGradient;
   final void Function()? onTap;
@@ -33,7 +33,6 @@ class CmoCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: margin,
-        padding: padding,
         child: DecoratedBox(
           decoration: BoxDecoration(
             gradient: containerGradient,
@@ -53,7 +52,7 @@ class CmoCard extends StatelessWidget {
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 76),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(6, 0, 0, 6),
+                    padding: padding ?? const EdgeInsets.fromLTRB(6, 0, 0, 6),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisAlignment:
@@ -68,7 +67,6 @@ class CmoCard extends StatelessWidget {
                 trailing ?? Assets.icons.icArrowRight.svgWhite,
                 const SizedBox(width: 6),
               ],
-              const SizedBox(width: 6),
             ],
           ),
         ),
@@ -168,46 +166,6 @@ class CmoCardItem extends StatelessWidget {
         else
           const SizedBox(),
       ],
-    );
-  }
-}
-
-class CmoCardItemHighlighted extends StatelessWidget {
-  const CmoCardItemHighlighted({
-    super.key,
-    required this.title,
-    required this.value,
-  });
-
-  final String title;
-
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Row(
-          children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(minWidth: constraints.minWidth / 2),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 19),
-                child: Text(
-                  title,
-                  style: context.textStyles.bodyNormal
-                      .copyWith(color: context.colors.yellow),
-                ),
-              ),
-            ),
-            Text(
-              value,
-              style: context.textStyles.bodyNormal
-                  .copyWith(color: context.colors.yellow),
-            ),
-          ],
-        );
-      },
     );
   }
 }

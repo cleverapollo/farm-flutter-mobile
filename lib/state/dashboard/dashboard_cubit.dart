@@ -180,17 +180,25 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
 
     info.incompletedMembers = 0;
     info.onboardedMembers = 0;
+    info.incompleteMembersArea = 0;
+    info.onboardedMembersArea = 0;
+
     if (farms != null) {
-      for (var farm in farms) {
+      for (final farm in farms) {
         if (farm.isGroupSchemeMember == null ||
             farm.isGroupSchemeMember == false) {
-          info.incompletedMembers = info.incompletedMembers! + 1;
+          info.incompletedMembers = info.incompletedMembers + 1;
+          info.incompleteMembersArea = info.incompleteMembersArea + (farm.farmSize ?? 0);
         } else {
-          info.onboardedMembers = info.onboardedMembers! + 1;
+          info.onboardedMembers = info.onboardedMembers + 1;
+          info.onboardedMembersArea = info.onboardedMembersArea + (farm.farmSize ?? 0);
         }
       }
+
       info.totalMembers = info.onboardedMembers + info.incompletedMembers;
+      info.totalMembersArea = info.onboardedMembersArea + info.incompleteMembersArea;
     }
+
     emit(state.copyWith(rmDashboardInfo: info, loading: false));
   }
 

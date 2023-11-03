@@ -70,6 +70,9 @@ class RMDashboardInfo {
   int onboardedMembers;
   int incompletedMembers;
   int totalMembers;
+  double onboardedMembersArea;
+  double incompleteMembersArea;
+  double totalMembersArea;
   int stakeHolders;
   int memberOutstanding;
   int unsynced;
@@ -81,6 +84,9 @@ class RMDashboardInfo {
     this.stakeHolders = 0,
     this.memberOutstanding = 0,
     this.unsynced = 0,
+    this.onboardedMembersArea = 0.0,
+    this.incompleteMembersArea = 0.0,
+    this.totalMembersArea = 0.0,
   });
 }
 

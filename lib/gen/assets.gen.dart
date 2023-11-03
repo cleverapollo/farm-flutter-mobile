@@ -94,6 +94,22 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_comment.svg
   SvgGenImage get icComment => const SvgGenImage('assets/icons/ic_comment.svg');
 
+  /// File path: assets/icons/ic_dashboard_audit.svg
+  SvgGenImage get icDashboardAudit =>
+      const SvgGenImage('assets/icons/ic_dashboard_audit.svg');
+
+  /// File path: assets/icons/ic_dashboard_member.svg
+  SvgGenImage get icDashboardMember =>
+      const SvgGenImage('assets/icons/ic_dashboard_member.svg');
+
+  /// File path: assets/icons/ic_dashboard_stakeholder.svg
+  SvgGenImage get icDashboardStakeholder =>
+      const SvgGenImage('assets/icons/ic_dashboard_stakeholder.svg');
+
+  /// File path: assets/icons/ic_dashboard_sync.svg
+  SvgGenImage get icDashboardSync =>
+      const SvgGenImage('assets/icons/ic_dashboard_sync.svg');
+
   /// File path: assets/icons/ic_down.svg
   SvgGenImage get icDown => const SvgGenImage('assets/icons/ic_down.svg');
 
@@ -228,6 +244,10 @@ class $AssetsIconsGen {
         icCircleFillBackground,
         icClose,
         icComment,
+        icDashboardAudit,
+        icDashboardMember,
+        icDashboardStakeholder,
+        icDashboardSync,
         icDown,
         icDrawer,
         icEdit,
