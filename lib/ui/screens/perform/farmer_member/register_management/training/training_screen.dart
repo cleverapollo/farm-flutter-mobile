@@ -4,14 +4,14 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/training_cubit/training_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_add_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class TrainingScreen extends StatefulWidget {
-  const TrainingScreen({super.key});
+class TrainingScreen extends BaseStatefulWidget {
+  TrainingScreen({super.key}) : super(screenName: LocaleKeys.training.tr());
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
@@ -20,7 +20,7 @@ class TrainingScreen extends StatefulWidget {
         builder: (_) {
           return BlocProvider(
             create: (_) => TrainingCubit(),
-            child: const TrainingScreen(),
+            child: TrainingScreen(),
           );
         },
       ),
@@ -71,9 +71,12 @@ class _TrainingScreenState extends State<TrainingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoFarmAppBar.showAddingAndFarmName(
+      appBar: CmoAppBar(
         title: LocaleKeys.training.tr(),
-        onTapAdding: onNavigateToAddTraining,
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
+        trailing: Assets.icons.icAdd.svgBlack,
+        onTapTrailing: onNavigateToAddTraining,
       ),
       body: SafeArea(
         child: Padding(

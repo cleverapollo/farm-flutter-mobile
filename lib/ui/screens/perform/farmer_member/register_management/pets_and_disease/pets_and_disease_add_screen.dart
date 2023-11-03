@@ -8,7 +8,7 @@ import 'package:cmo/model/treament_method/treament_method.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_cubit.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/select_property_damaged.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
@@ -20,8 +20,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../widgets/general_comment_widget.dart';
 
-class PetsAndDiseaseAddScreen extends StatefulWidget {
-  const PetsAndDiseaseAddScreen({super.key, this.data});
+class PetsAndDiseaseAddScreen extends BaseStatefulWidget {
+  PetsAndDiseaseAddScreen({
+    super.key,
+    this.data,
+  }) : super(
+          screenName: data == null
+              ? LocaleKeys.add_pets_and_disease.tr()
+              : LocaleKeys.pets_and_disease_detail.tr(),
+        );
 
   final PetsAndDiseaseRegister? data;
 
@@ -40,16 +47,20 @@ class PetsAndDiseaseAddScreen extends StatefulWidget {
       _PetsAndDiseaseAddScreenState();
 }
 
-class _PetsAndDiseaseAddScreenState extends State<PetsAndDiseaseAddScreen> {
+class _PetsAndDiseaseAddScreenState extends BaseStatefulWidgetState<PetsAndDiseaseAddScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoFarmAppBar.showTrailingAndFarmName(
+        appBar: CmoAppBar(
           title: widget.data == null
               ? LocaleKeys.add_pets_and_disease.tr()
               : LocaleKeys.pets_and_disease_detail.tr(),
+          leading: Assets.icons.icArrowLeft.svgBlack,
+          onTapLeading: Navigator.of(context).pop,
+          trailing: Assets.icons.icClose.svgBlack,
+          onTapTrailing: Navigator.of(context).pop,
         ),
         body: BlocBuilder<PetsAndDiseasesCubit, PetsAndDiseasesState>(
           builder: (context, state) {

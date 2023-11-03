@@ -1,36 +1,43 @@
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_cubit.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/pets_and_disease_add_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PetsAndDiseaseScreen extends StatefulWidget {
-  const PetsAndDiseaseScreen({super.key});
+class PetsAndDiseaseScreen extends BaseStatefulWidget {
+  PetsAndDiseaseScreen({super.key}) : super(screenName: LocaleKeys.pets_and_disease.tr());
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (_) => BlocProvider<PetsAndDiseasesCubit>(
-                create: (_) => PetsAndDiseasesCubit()..initData(),
-                child: const PetsAndDiseaseScreen())));
+      context,
+      MaterialPageRoute(
+        builder: (_) => BlocProvider<PetsAndDiseasesCubit>(
+          create: (_) => PetsAndDiseasesCubit()..initData(),
+          child: PetsAndDiseaseScreen(),
+        ),
+      ),
+    );
   }
 
   @override
   State<PetsAndDiseaseScreen> createState() => _PetsAndDiseaseScreenState();
 }
 
-class _PetsAndDiseaseScreenState extends State<PetsAndDiseaseScreen> {
+class _PetsAndDiseaseScreenState extends BaseStatefulWidgetState<PetsAndDiseaseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CmoFarmAppBar.showAddingAndFarmName(
+        appBar: CmoAppBar(
           title: LocaleKeys.pets_and_disease.tr(),
-          onTapAdding: () async {
+          leading: Assets.icons.icArrowLeft.svgBlack,
+          onTapLeading: Navigator.of(context).pop,
+          trailing: Assets.icons.icAdd.svgBlack,
+          onTapTrailing: () async {
             final shouldRefresh = await PetsAndDiseaseAddScreen.push(context);
 
             if (shouldRefresh != null && context.mounted) {

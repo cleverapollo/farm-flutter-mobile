@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -8,7 +7,6 @@ import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/fire_cubit/fire_cubit.dart';
 import 'package:cmo/state/fire_cubit/fire_state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/fire/add_fire_management/add_fire_management_screen.dart';
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
@@ -17,8 +15,8 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FireManagementScreen extends StatefulWidget {
-  const FireManagementScreen({super.key});
+class FireManagementScreen extends BaseStatefulWidget {
+  FireManagementScreen({super.key}) : super(screenName: LocaleKeys.fire.tr());
 
   @override
   State<StatefulWidget> createState() => _FireManagementScreenState();
@@ -29,14 +27,14 @@ class FireManagementScreen extends StatefulWidget {
       MaterialPageRoute(
         builder: (_) => BlocProvider<FireCubit>(
           create: (_) => FireCubit()..initLoadData(),
-          child: const FireManagementScreen(),
+          child: FireManagementScreen(),
         ),
       ),
     );
   }
 }
 
-class _FireManagementScreenState extends State<FireManagementScreen> {
+class _FireManagementScreenState extends BaseStatefulWidgetState<FireManagementScreen> {
   Future<void> navigateToDetailFire({FireRegister? fireRegister}) async {
     final locationModel = LocationModel()
       ..latitude = fireRegister?.latitude
@@ -58,9 +56,12 @@ class _FireManagementScreenState extends State<FireManagementScreen> {
         builder: (context, state) {
           final cubit = context.read<FireCubit>();
           return Scaffold(
-            appBar: CmoFarmAppBar.showAddingAndFarmName(
+            appBar: CmoAppBar(
               title: LocaleKeys.fire.tr(),
-              onTapAdding: () => navigateToDetailFire(),
+              leading: Assets.icons.icArrowLeft.svgBlack,
+              onTapLeading: Navigator.of(context).pop,
+              trailing: Assets.icons.icAdd.svgBlack,
+              onTapTrailing: navigateToDetailFire,
             ),
             body: state.isLoading
                 ? const Center(child: CircularProgressIndicator())

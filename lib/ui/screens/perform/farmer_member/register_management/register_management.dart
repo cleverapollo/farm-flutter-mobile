@@ -1,7 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/register_management/register_management_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/aai/aai_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/biological_control_agents_screen.dart';
@@ -15,6 +15,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_h
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/theme/theme.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,8 +34,8 @@ enum ManagementType {
   training,
 }
 
-class RegisterManagement extends StatefulWidget {
-  const RegisterManagement({super.key});
+class RegisterManagement extends BaseStatefulWidget {
+  RegisterManagement({super.key}) : super(screenName: LocaleKeys.monitoring.tr());
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
@@ -42,7 +43,7 @@ class RegisterManagement extends StatefulWidget {
       MaterialPageRoute(
         builder: (_) => BlocProvider(
           create: (_) => RegisterManagementCubit(),
-          child: const RegisterManagement(),
+          child: RegisterManagement(),
         ),
       ),
     );
@@ -52,7 +53,7 @@ class RegisterManagement extends StatefulWidget {
   State<RegisterManagement> createState() => _RegisterManagementState();
 }
 
-class _RegisterManagementState extends State<RegisterManagement> {
+class _RegisterManagementState extends BaseStatefulWidgetState<RegisterManagement> {
   late final RegisterManagementCubit cubit;
 
   int _blocSelector(ManagementType type, RegisterManagementState state) {
@@ -135,11 +136,12 @@ class _RegisterManagementState extends State<RegisterManagement> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoFarmAppBar(
+      appBar: CmoAppBar(
         title: LocaleKeys.monitoring.tr(),
-        showLeading: true,
-        showFarmName: true,
-        showTrailing: true,
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
+        trailing: Assets.icons.icClose.svgBlack,
+        onTapTrailing: Navigator.of(context).pop,
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),

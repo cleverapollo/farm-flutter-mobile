@@ -10,14 +10,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'compartment_detail_screen.dart';
 
 class CompartmentScreen extends BaseStatefulWidget {
-  CompartmentScreen({super.key, this.farmName}) : super(screenName: farmName ?? '');
+  CompartmentScreen({
+    super.key,
+    this.farmName,
+    required this.shouldDisplayFarmNameOnBreadcrumbs,
+  }) : super(
+          screenName: shouldDisplayFarmNameOnBreadcrumbs
+              ? farmName ?? ''
+              : LocaleKeys.compartment.tr(),
+        );
+
   final String? farmName;
+  final bool shouldDisplayFarmNameOnBreadcrumbs;
 
   static Future<AddingCompartmentResult?> push(
     BuildContext context, {
     String? farmId,
     String? farmName,
     String? campId,
+    bool shouldDisplayFarmNameOnBreadcrumbs = false,
   }) {
     return Navigator.of(context).push<AddingCompartmentResult?>(
       MaterialPageRoute(
@@ -26,6 +37,7 @@ class CompartmentScreen extends BaseStatefulWidget {
             create: (_) => CompartmentCubit(farmId ?? '', campId: campId),
             child: CompartmentScreen(
               farmName: farmName,
+              shouldDisplayFarmNameOnBreadcrumbs: shouldDisplayFarmNameOnBreadcrumbs,
             ),
           );
         },

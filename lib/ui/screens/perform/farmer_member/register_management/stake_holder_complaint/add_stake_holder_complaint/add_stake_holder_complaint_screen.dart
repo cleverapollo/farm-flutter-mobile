@@ -5,7 +5,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/stake_holder_complaint/add_stake_holder_complaint_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
@@ -14,8 +14,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class AddStakeHolderComplaintScreen extends StatefulWidget {
-  const AddStakeHolderComplaintScreen({super.key, this.complaint});
+class AddStakeHolderComplaintScreen extends BaseStatefulWidget {
+  AddStakeHolderComplaintScreen({
+    super.key,
+    this.complaint,
+  }) : super(
+          screenName: complaint == null
+              ? LocaleKeys.addStakeHolderComplaint.tr()
+              : LocaleKeys.stakeholder_complaint_detail.tr(),
+        );
 
   final ComplaintsAndDisputesRegister? complaint;
 
@@ -46,7 +53,7 @@ class AddStakeHolderComplaintScreen extends StatefulWidget {
                   ),
               isAddNew: complaint == null,
             ),
-            child: const AddStakeHolderComplaintScreen(),
+            child: AddStakeHolderComplaintScreen(complaint: complaint),
           );
         },
       ),
@@ -55,7 +62,7 @@ class AddStakeHolderComplaintScreen extends StatefulWidget {
 }
 
 class _AddStakeHolderComplaintScreenState
-    extends State<AddStakeHolderComplaintScreen> {
+    extends BaseStatefulWidgetState<AddStakeHolderComplaintScreen> {
   late final AddStakeHolderComplaintCubit cubit;
   final _formKey = GlobalKey<FormBuilderState>();
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
@@ -123,10 +130,14 @@ class _AddStakeHolderComplaintScreenState
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoFarmAppBar.showTrailingAndFarmName(
+        appBar: CmoAppBar(
           title: widget.complaint == null
               ? LocaleKeys.addStakeHolderComplaint.tr()
-              : 'Edit Complaint',
+              : LocaleKeys.stakeholder_complaint_detail.tr(),
+          leading: Assets.icons.icArrowLeft.svgBlack,
+          onTapLeading: Navigator.of(context).pop,
+          trailing: Assets.icons.icClose.svgBlack,
+          onTapTrailing: Navigator.of(context).pop,
         ),
         body: SafeArea(
           child: BlocSelector<AddStakeHolderComplaintCubit,

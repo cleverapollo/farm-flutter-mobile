@@ -12,12 +12,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class AddUpdateAnnualProductionScreen extends StatefulWidget {
-  const AddUpdateAnnualProductionScreen({
+class AddUpdateAnnualProductionScreen extends BaseStatefulWidget {
+  AddUpdateAnnualProductionScreen({
     super.key,
     this.selectedAnnualFarmProduction,
     this.isEditing = false,
-  });
+  }) : super(
+          screenName: isEditing
+              ? LocaleKeys.annual_production_detail.tr()
+              : LocaleKeys.add_annual_production.tr(),
+        );
 
   final AnnualFarmProduction? selectedAnnualFarmProduction;
   final bool isEditing;
@@ -41,8 +45,7 @@ class AddUpdateAnnualProductionScreen extends StatefulWidget {
   }
 }
 
-class _AddUpdateAnnualProductionScreenState
-    extends State<AddUpdateAnnualProductionScreen> {
+class _AddUpdateAnnualProductionScreenState extends BaseStatefulWidgetState<AddUpdateAnnualProductionScreen> {
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
@@ -104,7 +107,7 @@ class _AddUpdateAnnualProductionScreenState
         if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
-              msg: '${LocaleKeys.addAnnualProduction.tr()} $resultId',
+              msg: '${LocaleKeys.add_annual_production.tr()} $resultId',
             );
 
             await context.read<AnnualFarmProductionCubit>().loadListAnnualFarmProductions();
@@ -130,7 +133,9 @@ class _AddUpdateAnnualProductionScreenState
         builder: (context, state) {
           return Scaffold(
             appBar: CmoAppBar(
-              title: LocaleKeys.addAnnualProduction.tr(),
+              title: widget.isEditing
+                  ? LocaleKeys.annual_production_detail.tr()
+                  : LocaleKeys.add_annual_production.tr(),
               subtitle: state.activeFarm?.farmName ?? '',
               subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
               leading: Assets.icons.icArrowLeft.svgBlack,

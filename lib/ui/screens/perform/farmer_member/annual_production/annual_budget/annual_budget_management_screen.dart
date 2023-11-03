@@ -10,8 +10,12 @@ import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AnnualBudgetManagementScreen extends StatefulWidget {
-  const AnnualBudgetManagementScreen({super.key});
+class AnnualBudgetManagementScreen extends BaseStatefulWidget {
+  AnnualBudgetManagementScreen({
+    super.key,
+  }) : super(
+          screenName: LocaleKeys.annualBudgets.tr(),
+        );
 
   @override
   State<StatefulWidget> createState() => _AnnualBudgetManagementScreenState();
@@ -19,14 +23,13 @@ class AnnualBudgetManagementScreen extends StatefulWidget {
   static void push(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const AnnualBudgetManagementScreen(),
+        builder: (_) => AnnualBudgetManagementScreen(),
       ),
     );
   }
 }
 
-class _AnnualBudgetManagementScreenState
-    extends State<AnnualBudgetManagementScreen> {
+class _AnnualBudgetManagementScreenState extends BaseStatefulWidgetState<AnnualBudgetManagementScreen> {
   Timer? _debounceInputTimer;
 
   @override

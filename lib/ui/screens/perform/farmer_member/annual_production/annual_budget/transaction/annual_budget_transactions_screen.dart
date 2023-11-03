@@ -12,11 +12,13 @@ import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AnnualBudgetTransactionsScreen extends StatefulWidget {
-  const AnnualBudgetTransactionsScreen({
+class AnnualBudgetTransactionsScreen extends BaseStatefulWidget {
+  AnnualBudgetTransactionsScreen({
     super.key,
     required this.annualBudget,
-  });
+  }) : super (
+    screenName: LocaleKeys.transactions.tr(),
+  );
 
   final AnnualBudget annualBudget;
 
@@ -38,7 +40,7 @@ class AnnualBudgetTransactionsScreen extends StatefulWidget {
 }
 
 class _AnnualBudgetTransactionsScreenState
-    extends State<AnnualBudgetTransactionsScreen> {
+    extends BaseStatefulWidgetState<AnnualBudgetTransactionsScreen> {
   Timer? _debounceInputTimer;
 
   @override

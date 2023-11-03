@@ -9,8 +9,12 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AnnualProductionManagementScreen extends StatefulWidget {
-  const AnnualProductionManagementScreen({super.key});
+class AnnualProductionManagementScreen extends BaseStatefulWidget {
+  AnnualProductionManagementScreen({
+    super.key,
+  }) : super(
+          screenName: LocaleKeys.annualProduction.tr(),
+        );
 
   @override
   State<StatefulWidget> createState() => _AnnualProductionManagementScreen();
@@ -18,14 +22,13 @@ class AnnualProductionManagementScreen extends StatefulWidget {
   static void push(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const AnnualProductionManagementScreen(),
+        builder: (_) => AnnualProductionManagementScreen(),
       ),
     );
   }
 }
 
-class _AnnualProductionManagementScreen
-    extends State<AnnualProductionManagementScreen> {
+class _AnnualProductionManagementScreen extends BaseStatefulWidgetState<AnnualProductionManagementScreen> {
   Timer? _debounceInputTimer;
 
   @override

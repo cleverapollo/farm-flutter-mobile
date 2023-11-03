@@ -8,7 +8,6 @@ import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_cubit.dart';
 import 'package:cmo/state/register_management_asi_cubit/register_management_asi_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
@@ -20,8 +19,16 @@ import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddingAsiScreen extends StatefulWidget {
-  const AddingAsiScreen({super.key});
+class AddingAsiScreen extends BaseStatefulWidget {
+  AddingAsiScreen({
+    super.key,
+    required this.isAddNew,
+  }) : super(
+          screenName:
+              isAddNew ? LocaleKeys.add_asi.tr() : LocaleKeys.asi_detail.tr(),
+        );
+
+  final bool isAddNew;
 
   static Future<dynamic> push(BuildContext context, {Asi? asi}) {
     return Navigator.push(
@@ -29,7 +36,7 @@ class AddingAsiScreen extends StatefulWidget {
       MaterialPageRoute(
         builder: (_) => BlocProvider(
           create: (_) => RMAsiCubit()..initAddData(initData: asi),
-          child: const AddingAsiScreen(),
+          child: AddingAsiScreen(isAddNew: asi == null),
         ),
       ),
     );
@@ -39,7 +46,7 @@ class AddingAsiScreen extends StatefulWidget {
   State<AddingAsiScreen> createState() => _AddingAsiScreenState();
 }
 
-class _AddingAsiScreenState extends State<AddingAsiScreen> {
+class _AddingAsiScreenState extends BaseStatefulWidgetState<AddingAsiScreen> {
   final _commentController = TextEditingController();
 
   @override
@@ -55,8 +62,14 @@ class _AddingAsiScreenState extends State<AddingAsiScreen> {
       builder: (context, state) {
         final cubit = context.read<RMAsiCubit>();
         return Scaffold(
-          appBar: CmoFarmAppBar.showTrailingAndFarmName(
-            title: LocaleKeys.asi.tr(),
+          appBar: CmoAppBar(
+            title: widget.isAddNew
+                ? LocaleKeys.add_asi.tr()
+                : LocaleKeys.asi_detail.tr(),
+            leading: Assets.icons.icArrowLeft.svgBlack,
+            onTapLeading: Navigator.of(context).pop,
+            trailing: Assets.icons.icClose.svgBlack,
+            onTapTrailing: Navigator.of(context).pop,
           ),
           body: CustomScrollView(
             slivers: [

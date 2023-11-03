@@ -1,13 +1,9 @@
-import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/biological_control_cubit/add_biological_control_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/add_biological_control_agents/widgets/select_control_agent_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
@@ -16,9 +12,15 @@ import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddBiologicalControlAgentsScreen extends StatefulWidget {
-  const AddBiologicalControlAgentsScreen(
-      {super.key, this.biologicalControlAgent});
+class AddBiologicalControlAgentsScreen extends BaseStatefulWidget {
+  AddBiologicalControlAgentsScreen({
+    super.key,
+    this.biologicalControlAgent,
+  }) : super(
+          screenName: biologicalControlAgent == null
+              ? LocaleKeys.addBCA.tr()
+              : LocaleKeys.edit_bca.tr(),
+        );
 
   final BiologicalControlAgent? biologicalControlAgent;
 
@@ -54,8 +56,7 @@ class AddBiologicalControlAgentsScreen extends StatefulWidget {
   }
 }
 
-class _AddBiologicalControlAgentsScreenState
-    extends State<AddBiologicalControlAgentsScreen> {
+class _AddBiologicalControlAgentsScreenState extends BaseStatefulWidgetState<AddBiologicalControlAgentsScreen> {
   late AddBiologicalControlCubit cubit;
 
   bool loading = false;
@@ -89,10 +90,14 @@ class _AddBiologicalControlAgentsScreenState
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoFarmAppBar.showTrailingAndFarmName(
+        appBar: CmoAppBar(
           title: widget.biologicalControlAgent == null
               ? LocaleKeys.addBCA.tr()
               : LocaleKeys.edit_bca.tr(),
+          leading: Assets.icons.icArrowLeft.svgBlack,
+          onTapLeading: Navigator.of(context).pop,
+          trailing: Assets.icons.icClose.svgBlack,
+          onTapTrailing: Navigator.of(context).pop,
         ),
         body: BlocSelector<AddBiologicalControlCubit, AddBiologicalControlState,
             bool>(

@@ -11,14 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tuple/tuple.dart';
 
-class SiteManagementPlanScreen extends StatefulWidget {
-  const SiteManagementPlanScreen({super.key});
+class SiteManagementPlanScreen extends BaseStatefulWidget {
+  SiteManagementPlanScreen({super.key}) : super(screenName: LocaleKeys.siteManagementPlan.tr());
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const SiteManagementPlanScreen(),
+        builder: (_) => SiteManagementPlanScreen(),
       ),
     );
   }
@@ -27,7 +27,7 @@ class SiteManagementPlanScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _SiteManagementPlanScreenState();
 }
 
-class _SiteManagementPlanScreenState extends State<SiteManagementPlanScreen> {
+class _SiteManagementPlanScreenState extends BaseStatefulWidgetState<SiteManagementPlanScreen> {
   @override
   void initState() {
     super.initState();

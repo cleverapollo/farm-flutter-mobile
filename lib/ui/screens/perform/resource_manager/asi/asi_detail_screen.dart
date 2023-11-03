@@ -20,7 +20,7 @@ class ASIDetailScreen extends BaseStatefulWidget {
     this.isEditing = false,
   }) : super(
           screenName:
-              isEditing ? LocaleKeys.asi_detail.tr() : LocaleKeys.addASI.tr(),
+              isEditing ? LocaleKeys.asi_detail.tr() : LocaleKeys.add_asi.tr(),
         );
 
   final String? farmName;
@@ -69,7 +69,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
-        title: widget.isEditing ? LocaleKeys.asi_detail.tr() : LocaleKeys.addASI.tr(),
+        title: widget.isEditing ? LocaleKeys.asi_detail.tr() : LocaleKeys.add_asi.tr(),
         subtitle: widget.farmName ?? '',
         trailing: Assets.icons.icClose.svgBlack,
         onTapTrailing: Navigator.of(context).pop,

@@ -4,7 +4,6 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_aai_cubit/add_aai_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
@@ -17,8 +16,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
-class AddingAAIScreen extends StatefulWidget {
-  const AddingAAIScreen({super.key});
+class AddingAAIScreen extends BaseStatefulWidget {
+  AddingAAIScreen({
+    required this.isAddNew,
+    super.key,
+  }) : super(
+          screenName:
+              isAddNew ? LocaleKeys.add_aai.tr() : LocaleKeys.aai_detail.tr(),
+        );
+
+  final bool isAddNew;
 
   static Future<AccidentAndIncident?> push(BuildContext context,
       {AccidentAndIncident? aai}) {
@@ -39,7 +46,9 @@ class AddingAAIScreen extends StatefulWidget {
                   ),
               isAddNew: aai == null,
             ),
-            child: const AddingAAIScreen(),
+            child: AddingAAIScreen(
+              isAddNew: aai == null,
+            ),
           );
         },
       ),
@@ -50,7 +59,7 @@ class AddingAAIScreen extends StatefulWidget {
   State<AddingAAIScreen> createState() => _AddingAAIScreenState();
 }
 
-class _AddingAAIScreenState extends State<AddingAAIScreen> {
+class _AddingAAIScreenState extends BaseStatefulWidgetState<AddingAAIScreen> {
   final _commentController = TextEditingController();
   final _lostTimeInDaysController = TextEditingController();
 
@@ -176,8 +185,14 @@ class _AddingAAIScreenState extends State<AddingAAIScreen> {
           _lostTimeInDaysController.text = state.lostTimeInDay ?? '';
         },
         child: Scaffold(
-          appBar: CmoFarmAppBar.showTrailingAndFarmName(
-            title: initState.isAddNew ? LocaleKeys.add_aai.tr() : 'Edit AAI',
+          appBar: CmoAppBar(
+            title: initState.isAddNew
+                ? LocaleKeys.add_aai.tr()
+                : LocaleKeys.aai_detail.tr(),
+            leading: Assets.icons.icArrowLeft.svgBlack,
+            onTapLeading: Navigator.of(context).pop,
+            trailing: Assets.icons.icClose.svgBlack,
+            onTapTrailing: Navigator.of(context).pop,
           ),
           body: BlocSelector<AddAAICubit, AddAAIState, bool>(
             selector: (state) => state.isDataReady,

@@ -4,7 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/training_cubit/add_training_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
@@ -14,8 +14,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class TrainingAddScreen extends StatefulWidget {
-  const TrainingAddScreen({super.key});
+class TrainingAddScreen extends BaseStatefulWidget {
+  TrainingAddScreen({
+    super.key,
+    required this.isAddNew,
+  }) : super(
+          screenName: isAddNew
+              ? LocaleKeys.add_training.tr()
+              : LocaleKeys.training_detail.tr(),
+        );
+
+  final bool isAddNew;
 
   static Future<TrainingRegister?> push(
     BuildContext context, {
@@ -41,7 +50,7 @@ class TrainingAddScreen extends StatefulWidget {
                       farmId: farm.farmId),
               isAddNew: training == null,
             ),
-            child: const TrainingAddScreen(),
+            child: TrainingAddScreen(isAddNew: training == null,),
           );
         },
       ),
@@ -52,7 +61,7 @@ class TrainingAddScreen extends StatefulWidget {
   State<TrainingAddScreen> createState() => _TrainingAddScreenState();
 }
 
-class _TrainingAddScreenState extends State<TrainingAddScreen> {
+class _TrainingAddScreenState extends BaseStatefulWidgetState<TrainingAddScreen> {
   late final AddTrainingCubit cubit;
 
   bool loading = false;
@@ -120,10 +129,14 @@ class _TrainingAddScreenState extends State<TrainingAddScreen> {
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoFarmAppBar.showTrailingAndFarmName(
+        appBar: CmoAppBar(
           title: initState.isAddNew
               ? LocaleKeys.add_training.tr()
-              : 'Edit Training',
+              : LocaleKeys.training_detail.tr(),
+          leading: Assets.icons.icArrowLeft.svgBlack,
+          onTapLeading: Navigator.of(context).pop,
+          trailing: Assets.icons.icClose.svgBlack,
+          onTapTrailing: Navigator.of(context).pop,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),

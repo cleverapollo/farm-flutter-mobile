@@ -7,7 +7,6 @@ import 'package:cmo/model/chemical_application_method/chemical_application_metho
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_cubit.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
@@ -15,8 +14,15 @@ import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddingChemicalScreen extends StatefulWidget {
-  const AddingChemicalScreen({super.key, this.data});
+class AddingChemicalScreen extends BaseStatefulWidget {
+  AddingChemicalScreen({
+    super.key,
+    this.data,
+  }) : super(
+          screenName: data == null
+              ? LocaleKeys.add_chemical.tr()
+              : LocaleKeys.chemical_detail.tr(),
+        );
 
   final Chemical? data;
 
@@ -33,7 +39,7 @@ class AddingChemicalScreen extends StatefulWidget {
   State<AddingChemicalScreen> createState() => _AddingChemicalScreenState();
 }
 
-class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
+class _AddingChemicalScreenState extends BaseStatefulWidgetState<AddingChemicalScreen> {
   final _commentController = TextEditingController();
 
   @override
@@ -49,8 +55,14 @@ class _AddingChemicalScreenState extends State<AddingChemicalScreen> {
         final cubit = context.read<RMChemicalCubit>();
 
         return Scaffold(
-          appBar: CmoFarmAppBar.showTrailingAndFarmName(
-            title: LocaleKeys.add_chemical.tr(),
+          appBar: CmoAppBar(
+            title: widget.data == null
+                ? LocaleKeys.add_chemical.tr()
+                : LocaleKeys.chemical_detail.tr(),
+            leading: Assets.icons.icArrowLeft.svgBlack,
+            onTapLeading: Navigator.of(context).pop,
+            trailing: Assets.icons.icClose.svgBlack,
+            onTapTrailing: Navigator.of(context).pop,
           ),
           body: state.isLoading
               ? const Center(child: CircularProgressIndicator())

@@ -6,7 +6,6 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/add_biological_control_agents/add_biological_control_agents_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
@@ -14,10 +13,10 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-class BiologicalControlAgentsScreen extends StatefulWidget {
-  const BiologicalControlAgentsScreen({
+class BiologicalControlAgentsScreen extends BaseStatefulWidget {
+  BiologicalControlAgentsScreen({
     super.key,
-  });
+  }) : super(screenName: LocaleKeys.biological_control_agents.tr());
 
   @override
   State<StatefulWidget> createState() => _BiologicalControlAgentsScreenState();
@@ -26,14 +25,13 @@ class BiologicalControlAgentsScreen extends StatefulWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const BiologicalControlAgentsScreen(),
+        builder: (_) => BiologicalControlAgentsScreen(),
       ),
     );
   }
 }
 
-class _BiologicalControlAgentsScreenState
-    extends State<BiologicalControlAgentsScreen> {
+class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<BiologicalControlAgentsScreen> {
   final List<BiologicalControlAgent> items = [];
   bool isLoading = true;
 
@@ -133,9 +131,12 @@ class _BiologicalControlAgentsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoFarmAppBar.showAddingAndFarmName(
+      appBar: CmoAppBar(
         title: LocaleKeys.biological_control_agents.tr(),
-        onTapAdding: () async {
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
+        trailing: Assets.icons.icAdd.svgBlack,
+        onTapTrailing: () async {
           final result = await AddBiologicalControlAgentsScreen.push(context);
           if (result != null) {
             await _init();

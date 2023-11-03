@@ -4,7 +4,6 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_employee_grievance/add_employee_grievance_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
@@ -13,14 +12,21 @@ import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import '../../widgets/information_text_widget.dart';
 
-class AddEmployeeGrievanceScreen extends StatefulWidget {
-  const AddEmployeeGrievanceScreen({
+class AddEmployeeGrievanceScreen extends BaseStatefulWidget {
+
+  final bool isAddNew;
+
+  AddEmployeeGrievanceScreen({
     super.key,
-  });
+    required this.isAddNew,
+  }) : super(
+    screenName: isAddNew
+        ? LocaleKeys.addEmployeeGrievance.tr()
+        : LocaleKeys.edit_employee_grievance.tr(),
+  );
 
   @override
   State<StatefulWidget> createState() => _AddEmployeeGrievanceScreenState();
@@ -50,7 +56,7 @@ class AddEmployeeGrievanceScreen extends StatefulWidget {
                     updateDT: DateTime.now(),
                   ),
             ),
-            child: const AddEmployeeGrievanceScreen(),
+            child: AddEmployeeGrievanceScreen(isAddNew: employeeGrievance == null),
           );
         },
       ),
@@ -58,8 +64,7 @@ class AddEmployeeGrievanceScreen extends StatefulWidget {
   }
 }
 
-class _AddEmployeeGrievanceScreenState
-    extends State<AddEmployeeGrievanceScreen> {
+class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmployeeGrievanceScreen> {
   late final AddEmployeeGrievanceCubit cubit;
 
   bool loading = false;
@@ -116,10 +121,14 @@ class _AddEmployeeGrievanceScreenState
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoFarmAppBar.showTrailingAndFarmName(
+        appBar: CmoAppBar(
           title: initState.isAddNew
               ? LocaleKeys.addEmployeeGrievance.tr()
               : LocaleKeys.edit_employee_grievance.tr(),
+          leading: Assets.icons.icArrowLeft.svgBlack,
+          onTapLeading: Navigator.of(context).pop,
+          trailing: Assets.icons.icClose.svgBlack,
+          onTapTrailing: Navigator.of(context).pop,
         ),
         body: SafeArea(
           child: AutofillGroup(

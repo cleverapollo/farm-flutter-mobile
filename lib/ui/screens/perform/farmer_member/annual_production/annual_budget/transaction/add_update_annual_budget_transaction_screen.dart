@@ -94,7 +94,7 @@ class _AddUpdateAnnualBudgetTransactionScreenState
         if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
-              msg: '${LocaleKeys.addBudget.tr()} $resultId',
+              msg: '${LocaleKeys.add_budget.tr()} $resultId',
             );
 
             await context

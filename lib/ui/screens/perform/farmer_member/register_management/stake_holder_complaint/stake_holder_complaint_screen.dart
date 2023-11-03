@@ -6,17 +6,17 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/state/stake_holder_complaint/stake_holder_complaint_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/add_stake_holder_complaint/add_stake_holder_complaint_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class StakeHolderComplaintScreen extends StatefulWidget {
-  const StakeHolderComplaintScreen({
-    super.key,
-  });
+class StakeHolderComplaintScreen extends BaseStatefulWidget {
+
+  StakeHolderComplaintScreen({super.key})
+      : super(screenName: LocaleKeys.stakeholder_complaints.tr());
 
   @override
   State<StatefulWidget> createState() => _StakeHolderComplaintScreenState();
@@ -28,7 +28,7 @@ class StakeHolderComplaintScreen extends StatefulWidget {
         builder: (_) {
           return BlocProvider(
             create: (_) => StateHolderComplaintCubit(),
-            child: const StakeHolderComplaintScreen(),
+            child: StakeHolderComplaintScreen(),
           );
         },
       ),
@@ -36,8 +36,7 @@ class StakeHolderComplaintScreen extends StatefulWidget {
   }
 }
 
-class _StakeHolderComplaintScreenState
-    extends State<StakeHolderComplaintScreen> {
+class _StakeHolderComplaintScreenState extends BaseStatefulWidgetState<StakeHolderComplaintScreen> {
   late final StateHolderComplaintCubit cubit;
 
   @override
@@ -79,9 +78,12 @@ class _StakeHolderComplaintScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoFarmAppBar.showAddingAndFarmName(
+      appBar: CmoAppBar(
         title: LocaleKeys.stakeholder_complaints.tr(),
-        onTapAdding: () => onNavigateToAddGrievance(),
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
+        trailing: Assets.icons.icAdd.svgBlack,
+        onTapTrailing: onNavigateToAddGrievance,
       ),
       body: SafeArea(
         child: Padding(

@@ -11,8 +11,12 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CampManagementScreen extends StatefulWidget {
-  CampManagementScreen({Key? key}) : super(key: key);
+class CampManagementScreen extends BaseStatefulWidget {
+  CampManagementScreen({Key? key})
+      : super(
+          key: key,
+          screenName: LocaleKeys.site.tr(),
+        );
 
   static Future push(BuildContext context) {
     return Navigator.of(context).push(
@@ -29,7 +33,7 @@ class CampManagementScreen extends StatefulWidget {
   State<CampManagementScreen> createState() => _CampManagementScreenState();
 }
 
-class _CampManagementScreenState extends State<CampManagementScreen> {
+class _CampManagementScreenState extends BaseStatefulWidgetState<CampManagementScreen> {
   Timer? _debounceInputTimer;
   List<Camp> _filteredCamps = [];
   late CampManagementCubit cubit;

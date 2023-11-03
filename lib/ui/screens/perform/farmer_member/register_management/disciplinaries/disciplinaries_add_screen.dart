@@ -9,7 +9,7 @@ import 'package:cmo/model/labour_management/farmer_worker.dart';
 import 'package:cmo/model/sanction_register/sanction_register.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_cubit.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
@@ -22,8 +22,16 @@ import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
 import '../widgets/information_text_widget.dart';
 
-class DisciplinariesAddScreen extends StatefulWidget {
-  const DisciplinariesAddScreen({super.key, required this.data});
+class DisciplinariesAddScreen extends BaseStatefulWidget {
+  DisciplinariesAddScreen({
+    super.key,
+    this.data,
+  }) : super(
+    screenName: data == null
+        ? LocaleKeys.add_disciplinary.tr()
+        : LocaleKeys.disciplinary_detail.tr(),
+  );
+
 
   final SanctionRegister? data;
   static Future<dynamic> push(BuildContext context, {SanctionRegister? data}) {
@@ -38,7 +46,7 @@ class DisciplinariesAddScreen extends StatefulWidget {
       _DisciplinariesAddScreenState();
 }
 
-class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
+class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<DisciplinariesAddScreen> {
   late final GlobalKey<SfSignaturePadState> signatureKey;
   final legacySignature = ValueNotifier<Image?>(null);
 
@@ -60,8 +68,14 @@ class _DisciplinariesAddScreenState extends State<DisciplinariesAddScreen> {
     return BlocProvider<DisciplinariesCubit>(
       create: (_) => DisciplinariesCubit()..initAddData(data: widget.data),
       child: Scaffold(
-        appBar: CmoFarmAppBar.showTrailingAndFarmName(
-          title: LocaleKeys.add_disciplinary.tr(),
+        appBar: CmoAppBar(
+          title: widget.data == null
+              ? LocaleKeys.add_disciplinary.tr()
+              : LocaleKeys.disciplinary_detail.tr(),
+          leading: Assets.icons.icArrowLeft.svgBlack,
+          onTapLeading: Navigator.of(context).pop,
+          trailing: Assets.icons.icClose.svgBlack,
+          onTapTrailing: Navigator.of(context).pop,
         ),
         body: BlocSelector<DisciplinariesCubit, DisciplinariesState, bool>(
           selector: (state) => state.isLoading,

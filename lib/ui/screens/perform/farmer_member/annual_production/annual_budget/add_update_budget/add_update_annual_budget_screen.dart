@@ -11,13 +11,16 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'widgets/add_update_annual_budget_detail.dart';
 
-class AddAnnualBudgetScreen extends StatefulWidget {
-
-  const AddAnnualBudgetScreen({
+class AddAnnualBudgetScreen extends BaseStatefulWidget {
+  AddAnnualBudgetScreen({
     super.key,
     this.selectedAnnualBudget,
     this.isEditing = false,
-  });
+  }) : super(
+          screenName: isEditing
+              ? LocaleKeys.budget_detail.tr()
+              : LocaleKeys.add_budget.tr(),
+        );
 
   final AnnualBudget? selectedAnnualBudget;
   final bool isEditing;
@@ -41,7 +44,7 @@ class AddAnnualBudgetScreen extends StatefulWidget {
   }
 }
 
-class _AddAnnualBudgetScreenState extends State<AddAnnualBudgetScreen> {
+class _AddAnnualBudgetScreenState extends BaseStatefulWidgetState<AddAnnualBudgetScreen> {
   bool loading = false;
 
   final _formKey = GlobalKey<FormBuilderState>();
@@ -84,7 +87,7 @@ class _AddAnnualBudgetScreenState extends State<AddAnnualBudgetScreen> {
         if (resultId != null) {
           if (context.mounted) {
             showSnackSuccess(
-              msg: '${LocaleKeys.addBudget.tr()} $resultId',
+              msg: '${LocaleKeys.add_budget.tr()} $resultId',
             );
 
             await context.read<AnnualBudgetManagementCubit>().loadListAnnualBudgets();
@@ -109,7 +112,9 @@ class _AddAnnualBudgetScreenState extends State<AddAnnualBudgetScreen> {
         builder: (context, state) {
           return Scaffold(
             appBar: CmoAppBar(
-              title: LocaleKeys.addBudget.tr(),
+              title: widget.isEditing
+                  ? LocaleKeys.budget_detail.tr()
+                  : LocaleKeys.add_budget.tr(),
               subtitle: state.activeFarm?.farmName ?? '',
               subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
               leading: Assets.icons.icArrowLeft.svgBlack,

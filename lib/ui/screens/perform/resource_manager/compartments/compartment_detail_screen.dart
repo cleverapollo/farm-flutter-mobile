@@ -27,7 +27,7 @@ class CompartmentDetailScreen extends BaseStatefulWidget {
     this.farmName,
   }) : super(
           key: key,
-          screenName: LocaleKeys.compartment.tr(),
+          screenName: LocaleKeys.compartment_detail.tr(),
         );
 
   static dynamic push(

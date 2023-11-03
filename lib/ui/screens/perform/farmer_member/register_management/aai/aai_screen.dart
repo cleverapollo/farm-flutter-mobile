@@ -7,15 +7,14 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/accident_and_incident.dart';
 import 'package:cmo/state/aai_cubit/aai_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/aai/adding_aai_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AAIScreen extends StatefulWidget {
-  const AAIScreen({super.key});
+class AAIScreen extends BaseStatefulWidget {
+  AAIScreen({super.key}) : super(screenName: LocaleKeys.accident_incidents.tr());
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
@@ -24,7 +23,7 @@ class AAIScreen extends StatefulWidget {
         builder: (_) {
           return BlocProvider(
             create: (_) => AAICubit(),
-            child: const AAIScreen(),
+            child: AAIScreen(),
           );
         },
       ),
@@ -35,7 +34,7 @@ class AAIScreen extends StatefulWidget {
   State<AAIScreen> createState() => _AAIScreenState();
 }
 
-class _AAIScreenState extends State<AAIScreen> {
+class _AAIScreenState extends BaseStatefulWidgetState<AAIScreen> {
   final List<AccidentAndIncident> items = [];
   bool isLoading = true;
 
@@ -110,9 +109,12 @@ class _AAIScreenState extends State<AAIScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoFarmAppBar.showAddingAndFarmName(
+      appBar: CmoAppBar(
         title: LocaleKeys.accident_incidents.tr(),
-        onTapAdding: () async {
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
+        trailing: Assets.icons.icAdd.svgBlack,
+        onTapTrailing: () async {
           await AddingAAIScreen.push(context);
           await _init();
         },

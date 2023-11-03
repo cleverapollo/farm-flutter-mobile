@@ -1,27 +1,32 @@
 import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/sanction_register/sanction_register.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_cubit.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_add_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DisciplinariesScreen extends StatefulWidget {
-  const DisciplinariesScreen({super.key});
+class DisciplinariesScreen extends BaseStatefulWidget {
+  DisciplinariesScreen({super.key}) : super(screenName: LocaleKeys.disciplinary.tr());
 
   static Future<void> push(BuildContext context) {
-    return Navigator.push(context,
-        MaterialPageRoute(builder: (_) => const DisciplinariesScreen()));
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => DisciplinariesScreen(),
+      ),
+    );
   }
 
   @override
   State<DisciplinariesScreen> createState() => _DisciplinariesScreenState();
 }
 
-class _DisciplinariesScreenState extends State<DisciplinariesScreen> {
+class _DisciplinariesScreenState extends BaseStatefulWidgetState<DisciplinariesScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DisciplinariesCubit>(
@@ -30,11 +35,14 @@ class _DisciplinariesScreenState extends State<DisciplinariesScreen> {
         selector: (state) => state.isLoading,
         builder: (context, isLoading) {
           return Scaffold(
-            appBar: CmoFarmAppBar.showAddingAndFarmName(
+            appBar: CmoAppBar(
               title: LocaleKeys.disciplinary.tr(),
-              onTapAdding: () async {
+              leading: Assets.icons.icArrowLeft.svgBlack,
+              onTapLeading: Navigator.of(context).pop,
+              trailing: Assets.icons.icAdd.svgBlack,
+              onTapTrailing: () async {
                 final shouldRefresh =
-                    await DisciplinariesAddScreen.push(context);
+                await DisciplinariesAddScreen.push(context);
                 if (shouldRefresh != null && context.mounted) {
                   await context.read<DisciplinariesCubit>().initData();
                 }

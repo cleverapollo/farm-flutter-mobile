@@ -5,14 +5,13 @@ import 'package:flutter/widgets.dart';
 
 class NavigationBreadcrumbs {
 
-  NavigationBreadcrumbs() {
-    initNavigationBreadcrumbs();
-  }
+  NavigationBreadcrumbs();
 
   String? farmName;
   final previousSectionName = ValueNotifier<List<String>>(<String>[]);
 
   Future<void> initNavigationBreadcrumbs() async {
+    previousSectionName.value = <String>[];
     final currentRole = await configService.getActiveUserRole();
     switch (currentRole) {
       case UserRoleEnum.regionalManager:
@@ -29,8 +28,14 @@ class NavigationBreadcrumbs {
 
         break;
       case UserRoleEnum.farmerMember:
+        final activeFarm = await configService.getActiveFarm();
+        if (activeFarm?.farmName != null && activeFarm!.farmName!.isNotBlank) {
+          previousSectionName.value.add(activeFarm.farmName!);
+        }
+
+        break;
       case UserRoleEnum.behave:
-      default:
+      case null:
         break;
     }
   }
@@ -45,5 +50,9 @@ class NavigationBreadcrumbs {
         return;
       }
     }
+  }
+
+  void logout() {
+    previousSectionName.value = <String>[];
   }
 }

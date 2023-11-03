@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/register_management/rte_species/rte_species_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
@@ -14,8 +14,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'rte_species_detail_screen.dart';
 
-class RteSpeciesScreen extends StatefulWidget {
-  const RteSpeciesScreen({super.key});
+class RteSpeciesScreen extends BaseStatefulWidget {
+  RteSpeciesScreen({super.key}) : super(screenName: LocaleKeys.rteSpecies.tr());
 
   @override
   State<StatefulWidget> createState() => _RteSpeciesScreenState();
@@ -24,13 +24,13 @@ class RteSpeciesScreen extends StatefulWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const RteSpeciesScreen(),
+        builder: (_) => RteSpeciesScreen(),
       ),
     );
   }
 }
 
-class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
+class _RteSpeciesScreenState extends BaseStatefulWidgetState<RteSpeciesScreen> {
   @override
   void initState() {
     super.initState();
@@ -53,9 +53,12 @@ class _RteSpeciesScreenState extends State<RteSpeciesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoFarmAppBar.showAddingAndFarmName(
+      appBar: CmoAppBar(
         title: LocaleKeys.rteSpecies.tr(),
-        onTapAdding: navigateToDetail,
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
+        trailing: Assets.icons.icAdd.svgBlack,
+        onTapTrailing: navigateToDetail,
       ),
       body: BlocBuilder<RteSpeciesCubit, RteSpeciesState>(
         builder: (context, state) {

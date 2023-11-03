@@ -2,7 +2,6 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/camp.dart';
 import 'package:cmo/model/data/farm.dart';
-import 'package:cmo/state/farmer/camp_management/add_camp_cubit.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/widgets/infestation_details_section.dart';
@@ -13,8 +12,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'widgets/actuals_section.dart';
 import 'widgets/area_metrics_section.dart';
 
-class AddCampScreen extends StatefulWidget {
-  AddCampScreen({Key? key}) : super(key: key);
+class AddCampScreen extends BaseStatefulWidget {
+  AddCampScreen({Key? key})
+      : super(
+          key: key,
+          screenName: LocaleKeys.add_camp.tr(),
+        );
 
   static Future push(BuildContext context, {Camp? camp}) {
     return Navigator.of(context).push(
@@ -33,7 +36,7 @@ class AddCampScreen extends StatefulWidget {
   State<AddCampScreen> createState() => _AddCampScreenState();
 }
 
-class _AddCampScreenState extends State<AddCampScreen> {
+class _AddCampScreenState extends BaseStatefulWidgetState<AddCampScreen> {
   late AddCampCubit cubit;
 
   @override

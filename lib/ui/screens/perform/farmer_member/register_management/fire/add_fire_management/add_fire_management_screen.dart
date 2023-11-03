@@ -3,7 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
@@ -15,12 +15,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class AddFireManagementScreen extends StatefulWidget {
-  const AddFireManagementScreen({
+class AddFireManagementScreen extends BaseStatefulWidget {
+  AddFireManagementScreen({
     super.key,
     this.fireRegister,
     required this.locationModel,
-  });
+  }) : super(
+          screenName: fireRegister == null
+              ? LocaleKeys.addFire.tr()
+              : LocaleKeys.edit_fire.tr(),
+        );
 
   final FireRegister? fireRegister;
   final LocationModel locationModel;
@@ -52,7 +56,7 @@ class AddFireManagementScreen extends StatefulWidget {
   }
 }
 
-class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
+class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManagementScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
@@ -62,10 +66,14 @@ class _AddFireManagementScreenState extends State<AddFireManagementScreen> {
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoFarmAppBar.showTrailingAndFarmName(
+        appBar: CmoAppBar(
           title: widget.fireRegister == null
               ? LocaleKeys.addFire.tr()
               : LocaleKeys.edit_fire.tr(),
+          leading: Assets.icons.icArrowLeft.svgBlack,
+          onTapLeading: Navigator.of(context).pop,
+          trailing: Assets.icons.icClose.svgBlack,
+          onTapTrailing: Navigator.of(context).pop,
         ),
         body: BlocSelector<FireRegisterDetailCubit, FireRegisterDetailState, bool>(
           selector: (state) => state.loading,

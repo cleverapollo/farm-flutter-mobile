@@ -1,10 +1,8 @@
-import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/rte_species/rte_species_map_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
@@ -19,11 +17,15 @@ import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import '../widgets/information_text_widget.dart';
 import 'widgets/rte_species_photo.dart';
 
-class RteSpeciesDetailScreen extends StatefulWidget {
-  const RteSpeciesDetailScreen({
+class RteSpeciesDetailScreen extends BaseStatefulWidget {
+  RteSpeciesDetailScreen({
     super.key,
     this.rteSpecies,
-  });
+  }) : super(
+          screenName: rteSpecies == null
+              ? LocaleKeys.addRteSpecies.tr()
+              : LocaleKeys.edit_rte_species.tr(),
+        );
 
   final RteSpecies? rteSpecies;
 
@@ -53,7 +55,7 @@ class RteSpeciesDetailScreen extends StatefulWidget {
   }
 }
 
-class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
+class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDetailScreen> {
   final rtePhotos = <RteSpeciesPhotoModel>[];
 
   @override
@@ -66,10 +68,14 @@ class _RteSpeciesDetailScreenState extends State<RteSpeciesDetailScreen> {
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: CmoFarmAppBar.showTrailingAndFarmName(
+        appBar: CmoAppBar(
           title: widget.rteSpecies == null
               ? LocaleKeys.addRteSpecies.tr()
               : LocaleKeys.edit_rte_species.tr(),
+          leading: Assets.icons.icArrowLeft.svgBlack,
+          onTapLeading: Navigator.of(context).pop,
+          trailing: Assets.icons.icClose.svgBlack,
+          onTapTrailing: Navigator.of(context).pop,
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 20),

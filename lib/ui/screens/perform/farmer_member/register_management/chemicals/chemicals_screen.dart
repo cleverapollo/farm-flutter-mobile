@@ -6,38 +6,43 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/chemical.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_cubit.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/chemicals/adding_chemical_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ChemicalsScreen extends StatefulWidget {
-  const ChemicalsScreen({super.key});
+class ChemicalsScreen extends BaseStatefulWidget {
+  ChemicalsScreen({super.key}) : super(screenName: LocaleKeys.chemicals.tr());
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (_) => BlocProvider<RMChemicalCubit>(
-                create: (_) => RMChemicalCubit()..initListData(),
-                child: const ChemicalsScreen())));
+      context,
+      MaterialPageRoute(
+        builder: (_) => BlocProvider<RMChemicalCubit>(
+          create: (_) => RMChemicalCubit()..initListData(),
+          child: ChemicalsScreen(),
+        ),
+      ),
+    );
   }
 
   @override
   State<ChemicalsScreen> createState() => _ChemicalsScreenState();
 }
 
-class _ChemicalsScreenState extends State<ChemicalsScreen> {
+class _ChemicalsScreenState extends BaseStatefulWidgetState<ChemicalsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RMChemicalCubit, RMChemicalState>(
       builder: (context, state) {
         final cubit = context.read<RMChemicalCubit>();
         return Scaffold(
-          appBar: CmoFarmAppBar.showAddingAndFarmName(
+          appBar: CmoAppBar(
             title: LocaleKeys.chemicals.tr(),
-            onTapAdding: () async {
+            leading: Assets.icons.icArrowLeft.svgBlack,
+            onTapLeading: Navigator.of(context).pop,
+            trailing: Assets.icons.icAdd.svgBlack,
+            onTapTrailing: () async {
               final shouldRefresh = await AddingChemicalScreen.push(context);
 
               if (shouldRefresh != null && context.mounted) {

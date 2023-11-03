@@ -6,15 +6,15 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_employee_grievance/employee_grievance_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/cmo_farm_app_bar.dart';
+
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/employee_grievance/add_employee_grievance/add_employee_grievance_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EmployeeGrievanceScreen extends StatefulWidget {
-  const EmployeeGrievanceScreen({super.key});
+class EmployeeGrievanceScreen extends BaseStatefulWidget {
+  EmployeeGrievanceScreen({super.key}) : super(screenName: LocaleKeys.employee_grievance.tr());
 
   @override
   State<StatefulWidget> createState() => _EmployeeGrievanceScreenState();
@@ -26,7 +26,7 @@ class EmployeeGrievanceScreen extends StatefulWidget {
         builder: (_) {
           return BlocProvider(
             create: (_) => EmployeeGrievanceCubit(),
-            child: const EmployeeGrievanceScreen(),
+            child: EmployeeGrievanceScreen(),
           );
         },
       ),
@@ -34,7 +34,7 @@ class EmployeeGrievanceScreen extends StatefulWidget {
   }
 }
 
-class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
+class _EmployeeGrievanceScreenState extends BaseStatefulWidgetState<EmployeeGrievanceScreen> {
   late final EmployeeGrievanceCubit cubit;
 
   @override
@@ -74,9 +74,12 @@ class _EmployeeGrievanceScreenState extends State<EmployeeGrievanceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CmoFarmAppBar.showAddingAndFarmName(
+      appBar: CmoAppBar(
         title: LocaleKeys.employee_grievance.tr(),
-        onTapAdding: onNavigateToAddGrievance,
+        leading: Assets.icons.icArrowLeft.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
+        trailing: Assets.icons.icAdd.svgBlack,
+        onTapTrailing: onNavigateToAddGrievance,
       ),
       body: SafeArea(
         child: Padding(

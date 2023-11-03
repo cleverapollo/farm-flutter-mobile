@@ -7,15 +7,20 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FarmerSyncSummaryScreen extends StatelessWidget {
-  const FarmerSyncSummaryScreen({super.key});
+class FarmerSyncSummaryScreen extends BaseStatefulWidget {
+  FarmerSyncSummaryScreen({super.key}) : super(screenName: LocaleKeys.syncSummary.tr());
 
   static void push(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const FarmerSyncSummaryScreen()),
+      MaterialPageRoute(builder: (_) => FarmerSyncSummaryScreen()),
     );
   }
 
+  @override
+  FarmerSyncSummaryScreenState createState() => FarmerSyncSummaryScreenState();
+}
+
+class FarmerSyncSummaryScreenState extends BaseStatefulWidgetState<FarmerSyncSummaryScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FarmerSyncSummaryCubit>(
