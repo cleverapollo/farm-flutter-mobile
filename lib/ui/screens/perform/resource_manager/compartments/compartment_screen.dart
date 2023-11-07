@@ -2,6 +2,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_maps_summaries_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/compartment_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -72,15 +73,23 @@ class _CompartmentScreenState extends BaseStatefulWidgetState<CompartmentScreen>
 
   Future<void> navigateToDetail({Compartment? compartment}) async {
     final state = context.read<CompartmentCubit>().state;
-    await CompartmentDetailScreen.push(
+    await CompartmentMapsSummariesScreen.push(
       context,
       farmId: state.farmId,
       farmName: widget.farmName,
-      campId: state.campId,
-      compartment: compartment,
+      selectedCompartment: compartment!,
+      listCompartments: state.listCompartment,
     );
 
-    await context.read<CompartmentCubit>().loadListCompartment();
+    // await CompartmentDetailScreen.push(
+    //   context,
+    //   farmId: state.farmId,
+    //   farmName: widget.farmName,
+    //   campId: state.campId,
+    //   compartment: compartment,
+    // );
+    //
+    // await context.read<CompartmentCubit>().loadListCompartment();
   }
 
   @override

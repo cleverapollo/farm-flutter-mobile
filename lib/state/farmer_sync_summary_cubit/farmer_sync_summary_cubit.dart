@@ -128,6 +128,10 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       await subscribeToUserDeviceClientIdFilterByFarmIdTopic();
       logger.d('--subscribeMasterDataByFarmIdAndUserDeviceId done');
 
+      logger.d('--insertByCallingAPI start');
+      await insertByCallingAPI();
+      logger.d('--insertByCallingAPI done');
+
       emit(
         state.copyWith(
           syncMessage: 'Sync complete',
@@ -253,20 +257,20 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
           } else if (topic == '${topicMasterDataSync}Camp.$userDeviceId') {
             emit(state.copyWith(syncMessage: 'Syncing Camps...'));
             await insertCamp(item);
-          } else if (topic ==
-              '${topicMasterDataSync}JobDescription.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
-            await insertJobDescription(item);
+          // } else if (topic ==
+          //     '${topicMasterDataSync}JobDescription.$userDeviceId') {
+          //   emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
+          //   await insertJobDescription(item);
           } else if (topic == '${topicMasterDataSync}Country.$userDeviceId') {
             emit(state.copyWith(syncMessage: 'Syncing Country...'));
             await insertCountry(item);
           } else if (topic == '${topicMasterDataSync}Gender.$userDeviceId') {
             emit(state.copyWith(syncMessage: 'Syncing Gender...'));
             await insertGender(item);
-          } else if (topic ==
-              '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Schedule Activity...'));
-            await insertScheduleActivity(item);
+          // } else if (topic ==
+          //     '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
+          //   emit(state.copyWith(syncMessage: 'Syncing Schedule Activity...'));
+          //   await insertScheduleActivity(item);
           } else if (topic ==
               '${topicMasterDataSync}GroupScheme.$userDeviceId') {
             emit(state.copyWith(syncMessage: 'Syncing Group Scheme...'));
@@ -944,17 +948,17 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                 await insertGender(item);
               }
 
-              if (topic == 'Cmo.MasterData.ScheduleActivity.Global') {
-                emit(state.copyWith(
-                    syncMessage: 'Syncing new and updated JobDescriptions...'));
-                await insertScheduleActivity(item);
-              }
+              // if (topic == 'Cmo.MasterData.ScheduleActivity.Global') {
+              //   emit(state.copyWith(
+              //       syncMessage: 'Syncing new and updated JobDescriptions...'));
+              //   await insertScheduleActivity(item);
+              // }
 
-              if (topic == 'Cmo.MasterData.JobDescription.Global') {
-                emit(state.copyWith(
-                    syncMessage: 'Syncing new and updated JobDescriptions...'));
-                await insertJobDescription(item);
-              }
+              // if (topic == 'Cmo.MasterData.JobDescription.Global') {
+              //   emit(state.copyWith(
+              //       syncMessage: 'Syncing new and updated JobDescriptions...'));
+              //   await insertJobDescription(item);
+              // }
 
               if (topic == 'Cmo.MasterData.Country.Global') {
                 emit(state.copyWith(
@@ -1474,10 +1478,10 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
               } else if (topic == '${topicMasterDataSync}Camp.$userDeviceId') {
                 emit(state.copyWith(syncMessage: 'Syncing Camps...'));
                 await insertCamp(item);
-              } else if (topic ==
-                  '${topicMasterDataSync}JobDescription.$userDeviceId') {
-                emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
-                await insertJobDescription(item);
+              // } else if (topic ==
+              //     '${topicMasterDataSync}JobDescription.$userDeviceId') {
+              //   emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
+              //   await insertJobDescription(item);
               } else if (topic ==
                   '${topicMasterDataSync}Country.$userDeviceId') {
                 emit(state.copyWith(syncMessage: 'Syncing Country...'));
@@ -1486,11 +1490,11 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                   '${topicMasterDataSync}Gender.$userDeviceId') {
                 emit(state.copyWith(syncMessage: 'Syncing Gender...'));
                 await insertGender(item);
-              } else if (topic ==
-                  '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
-                emit(state.copyWith(
-                    syncMessage: 'Syncing Schedule Activity...'));
-                await insertScheduleActivity(item);
+              // } else if (topic ==
+              //     '${topicMasterDataSync}ScheduleActivity.$userDeviceId') {
+              //   emit(state.copyWith(
+              //       syncMessage: 'Syncing Schedule Activity...'));
+              //   await insertScheduleActivity(item);
               } else if (topic ==
                   '${topicMasterDataSync}GroupScheme.$userDeviceId') {
                 emit(state.copyWith(syncMessage: 'Syncing Group Scheme...'));
@@ -1710,6 +1714,15 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     } catch (e) {}
   }
 
+  Future<void> insertByCallingAPI() async {
+    final dbCompany = await cmoDatabaseMasterService.db;
+    await dbCompany.writeTxn(() async {
+      logger.d('--insertJobDescription start');
+      await insertJobDescription();
+      logger.d('--insertJobDescription done');
+    });
+  }
+
   Future<int?> insertRejectReason(Message item) async {
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
@@ -1854,16 +1867,28 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     return null;
   }
 
-  Future<int?> insertJobDescription(Message item) async {
-    try {
-      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
-      if (bodyJson == null) return null;
-      final rs = JobDescription.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheJobDescription(rs);
-    } catch (e) {
-      logger.d('insert error: $e');
+  // Future<int?> insertJobDescription(Message item) async {
+  //   try {
+  //     final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+  //     if (bodyJson == null) return null;
+  //     final rs = JobDescription.fromJson(bodyJson);
+  //     return cmoDatabaseMasterService.cacheJobDescription(rs);
+  //   } catch (e) {
+  //     logger.d('insert error: $e');
+  //   }
+  //   return null;
+  // }
+
+  Future<void> insertJobDescription() async {
+    emit(state.copyWith(syncMessage: 'Syncing Job Description...'));
+    final jobDescriptions = await cmoPerformApiService.getListJobDescriptions(
+      groupSchemeId: groupSchemeId,
+    );
+    if (jobDescriptions.isNotBlank) {
+      for (final jobDescription in jobDescriptions!) {
+        await cmoDatabaseMasterService.cacheJobDescription(jobDescription);
+      }
     }
-    return null;
   }
 
   Future<int?> insertCountry(Message item) async {
@@ -1890,17 +1915,17 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     return null;
   }
 
-  Future<int?> insertScheduleActivity(Message item) async {
-    try {
-      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
-      if (bodyJson == null) return null;
-      final rs = ScheduleActivity.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheScheduleActivity(rs);
-    } catch (e) {
-      logger.d('insert error: $e');
-    }
-    return null;
-  }
+  // Future<int?> insertScheduleActivity(Message item) async {
+  //   try {
+  //     final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+  //     if (bodyJson == null) return null;
+  //     final rs = ScheduleActivity.fromJson(bodyJson);
+  //     return cmoDatabaseMasterService.cacheScheduleActivity(rs);
+  //   } catch (e) {
+  //     logger.d('insert error: $e');
+  //   }
+  //   return null;
+  // }
 
   Future<int?> insertGroupScheme(Message item) async {
     try {

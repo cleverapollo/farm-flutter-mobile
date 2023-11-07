@@ -6,7 +6,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/components/cmo_map.dart';
+import 'package:cmo/ui/components/map_center_icon.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/constants.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';

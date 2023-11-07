@@ -24,7 +24,7 @@ class CompartmentMapCubit extends Cubit<CompartmentMapState> {
     if (state.points.isNotBlank) {
       final _markers = <Marker>[];
       for (final item in state.points!) {
-        _markers.add(await generateMarkerFromLatLng(item));
+        _markers.add(await CommonFunctions.generateMarkerFromLatLng(item));
       }
 
       emit(
@@ -57,7 +57,7 @@ class CompartmentMapCubit extends Cubit<CompartmentMapState> {
 
   Future<void> creatNewMarker(LatLng? latLng) async {
     if (latLng == null) return;
-    final marker = await generateMarkerFromLatLng(latLng);
+    final marker = await CommonFunctions.generateMarkerFromLatLng(latLng);
     emit(
       state.copyWith(
         markers: state.markers + [marker],
@@ -74,17 +74,6 @@ class CompartmentMapCubit extends Cubit<CompartmentMapState> {
       state.copyWith(
         markers: _markers,
         tempMarkers: _markers,
-      ),
-    );
-  }
-
-  Future<Marker> generateMarkerFromLatLng(LatLng position) async {
-    return Marker(
-      markerId: MarkerId('place_name_${position.latitude}_${position.longitude}'),
-      position: position,
-      icon: await BitmapDescriptorHelper.getBitmapDescriptorFromSvgAsset(
-        Assets.icons.mapPolygonPoint.path,
-        const Size(8, 8),
       ),
     );
   }
