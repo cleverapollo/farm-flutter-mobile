@@ -11,7 +11,6 @@ import 'package:cmo/model/compartment/species_group_template.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/utils.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {

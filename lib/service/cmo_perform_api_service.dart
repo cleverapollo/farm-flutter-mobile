@@ -512,6 +512,31 @@ class CmoPerformApiService {
     return true;
   }
 
+  Future<List<JobDescription>?> getListJobDescriptions({
+    int? jobDescriptionId,
+    int? groupSchemeId,
+  }) async {
+    final response = await client.get<JsonListData>(
+      '${Env.apiGroupSchemeUrl}GroupSchemeJobDescription/GetAll?JobDescriptionId&GroupSchemeId',
+      queryParameters: {
+        "JobDescriptionId": jobDescriptionId,
+        "GroupSchemeId": groupSchemeId,
+      },
+
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data
+        ?.map((e) => JobDescription.fromJson(e as JsonData))
+        .toList();
+  }
+
   Future<List<ProductGroupTemplate>?> fetchProductGroupTemplates() async {
     final response = await client.get<JsonListData>(
       '${Env.performForestryUrl}ProductGroupTemplate/GetProductGroupTemplateByIds?',

@@ -3,7 +3,6 @@ import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/compartment/product_group_template.dart';
 import 'package:cmo/model/compartment/species_group_template.dart';
 import 'package:cmo/model/group_scheme.dart';
-import 'package:cmo/model/resource_manager_unit.dart';
 
 class CompartmentDetailState {
   CompartmentDetailState({
