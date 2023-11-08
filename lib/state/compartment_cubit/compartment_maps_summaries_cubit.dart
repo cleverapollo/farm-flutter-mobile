@@ -23,8 +23,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     final selectedCompartmentMapDetail = await generateCompartmentMapDetailFromCompartment(state.selectedCompartment);
     if (state.listCompartments.isNotBlank) {
       for (final compartment in state.listCompartments) {
-        final compartmentMapDetail =
-            await generateCompartmentMapDetailFromCompartment(compartment);
+        final compartmentMapDetail = await generateCompartmentMapDetailFromCompartment(compartment);
         if (compartmentMapDetail != null) {
           listCompartmentMapDetails.add(compartmentMapDetail);
         }
@@ -52,7 +51,13 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
 
       final markers = <Marker>[];
       for (final item in compartmentMapDetail.polygons) {
-        markers.add(await CommonFunctions.generateMarkerFromLatLng(item));
+        final marker = await MapUtils.generateMarkerFromLatLng(
+          item,
+          draggable: true,
+          onDrag: onDragPosition,
+        );
+
+        markers.add(marker);
       }
 
       return compartmentMapDetail.copyWith(markers: markers);
@@ -61,22 +66,49 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     return null;
   }
 
+  void onDragPosition(LatLng latLng, MarkerId markerId,) {
+    if (state.isEditing) {
+      print('onDragPosition ${latLng.latitude} ${latLng.longitude}');
+      var marker = state.selectedCompartmentMapDetails?.markers.firstWhereOrNull((element) => element.markerId == markerId);
+      if (marker != null) {
+        marker = marker.copyWith(positionParam: latLng);
+        final selectedCompartmentMapDetails = state.selectedCompartmentMapDetails;
+        selectedCompartmentMapDetails?.markers.removeWhere((element) => element.markerId == markerId);
+        selectedCompartmentMapDetails?.markers.add(marker);
+        emit(
+          state.copyWith(
+            selectedCompartmentMapDetails: selectedCompartmentMapDetails,
+          ),
+        );
+      }
+    }
+  }
+
   void onCameraMove(CameraPosition cameraPosition) {
     final latLng = LatLng(
       cameraPosition.target.latitude,
       cameraPosition.target.longitude,
     );
 
-    final compartmentMapDetail = state.listCompartmentMapDetails
-        .firstWhereOrNull((element) => MapUtils.checkPositionInsidePolygon(
-              latLng: latLng,
-              polygon: element.polygons,
-            ),
+    final compartmentMapDetail = state.listCompartmentMapDetails.firstWhereOrNull(
+      (element) => MapUtils.checkPositionInsidePolygon(
+        latLng: latLng,
+        polygon: element.polygons,
+      ),
     );
 
     emit(
       state.copyWith(
         compartmentMapDetailByCameraPosition: compartmentMapDetail,
+      ),
+    );
+  }
+
+  void editingPolygon() {
+    emit(
+      state.copyWith(
+        isEditing: true,
+        editingMarkers: state.selectedCompartmentMapDetails?.markers,
       ),
     );
   }

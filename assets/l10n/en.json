@@ -466,6 +466,8 @@
   "p_d_no": "P&D No",
   "select_treatment_method": "Select Treatment Method",
   "pets_and_diseases_required": "Pets and Diseases Required",
+  "edit_polygon": "Edit polygon",
+  "edit_details": "Edit details",
   "please_select_a_pet_and_disease_name_before_adding_treatment_methods": "Please select a pet and disease name before adding treatment methods",
   "add_training": "Add Training",
   "training_detail": "Training Detail",

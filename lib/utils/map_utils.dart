@@ -1,10 +1,40 @@
+import 'dart:ui';
+
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/gen/assets.gen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as map_toolkit;
 
+import 'utils.dart';
+
 class MapUtils {
+
+  static Future<Marker> generateMarkerFromLatLng(LatLng position, {
+    VoidCallback? onTap,
+    void Function(LatLng, MarkerId)? onDrag,
+    bool draggable = false,
+  }) async {
+    return Marker(
+      markerId: MarkerId('place_name_${position.latitude}_${position.longitude}'),
+      position: position,
+      onTap: onTap,
+      draggable: draggable,
+      onDrag: (latLng) {
+        print('onDrag ${latLng.latitude} ${latLng.longitude}');
+        onDrag?.call(
+          latLng,
+          MarkerId('place_name_${position.latitude}_${position.longitude}'),
+        );
+      },
+      icon: await BitmapDescriptorHelper.getBitmapDescriptorFromSvgAsset(
+        Assets.icons.mapPolygonPoint.path,
+        const Size(8, 8),
+      ),
+    );
+  }
+
   static map_toolkit.LatLng convertLatLng(LatLng latLng) {
     return map_toolkit.LatLng(
       latLng.latitude,

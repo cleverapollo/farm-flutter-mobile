@@ -32,15 +32,4 @@ class CommonFunctions {
       showSnackError(msg:'Could not send sms to $phoneNumber');
     }
   }
-
-  static Future<Marker> generateMarkerFromLatLng(LatLng position) async {
-    return Marker(
-      markerId: MarkerId('place_name_${position.latitude}_${position.longitude}'),
-      position: position,
-      icon: await BitmapDescriptorHelper.getBitmapDescriptorFromSvgAsset(
-        Assets.icons.mapPolygonPoint.path,
-        const Size(8, 8),
-      ),
-    );
-  }
 }

@@ -4,6 +4,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/components/map_center_icon.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +16,11 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
   CompartmentMapsSummariesScreen({
     super.key,
     this.farmName,
+    required this.farmId,
   }) : super(screenName: 'Compartment Maps Summaries');
 
   final String? farmName;
+  final String farmId;
 
   @override
   State<StatefulWidget> createState() => CompartmentMapsSummariesScreenState();
@@ -25,10 +28,10 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
   static dynamic push(
       BuildContext context, {
         required String farmId,
-        String? farmName,
-        String? campId,
         required List<Compartment> listCompartments,
         required Compartment selectedCompartment,
+        String? farmName,
+        String? campId,
       }) {
     return Navigator.of(context).push(
       MaterialPageRoute(
@@ -44,6 +47,7 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
             ),
             child: CompartmentMapsSummariesScreen(
               farmName: farmName,
+              farmId: farmId,
             ),
           );
         },
@@ -109,21 +113,14 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
 
   Set<Polyline> generatePolyline() {
     final state = context.read<CompartmentMapsSummariesCubit>().state;
-    final polylines = <Polyline>{};
-    for (final compartmentMapDetail in state.listCompartmentMapDetails) {
-      polylines.addAll(generateSetPolylineFromCompartmentMapDetail(compartmentMapDetail));
-    }
-
-    if (state.selectedCompartmentMapDetails != null) {
-      polylines.addAll(
-        generateSetPolylineFromCompartmentMapDetail(
-          state.selectedCompartmentMapDetails!,
-          isSelected: true,
-        ),
+    if (state.isEditing) {
+      return generateSetPolylineFromCompartmentMapDetail(
+        state.selectedCompartmentMapDetails!,
+        isSelected: true,
       );
     }
 
-    return polylines;
+    return <Polyline>{};
   }
 
   Polygon generateSetPolygonFromCompartmentMapDetail(
@@ -147,10 +144,14 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     final polygon = <Polygon>{};
 
     for (final compartmentMapDetail in state.listCompartmentMapDetails) {
-      polygon.add(generateSetPolygonFromCompartmentMapDetail(compartmentMapDetail));
+      if (compartmentMapDetail.compartment.localCompartmentId == state.selectedCompartment.localCompartmentId) {
+        continue;
+      } else {
+        polygon.add(generateSetPolygonFromCompartmentMapDetail(compartmentMapDetail));
+      }
     }
 
-    if (state.selectedCompartmentMapDetails != null) {
+    if (state.selectedCompartmentMapDetails != null && !state.isEditing) {
       polygon.add(
         generateSetPolygonFromCompartmentMapDetail(
           state.selectedCompartmentMapDetails!,
@@ -207,16 +208,21 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                   builder: (context, state) {
                     return GoogleMap(
                       initialCameraPosition: const CameraPosition(target: Constants.mapCenter, zoom: 14),
-                      // polylines: generatePolyline(),
+                      polylines: generatePolyline(),
                       polygons: generatePolygon(),
                       mapType: MapType.satellite,
                       myLocationEnabled: true,
-                      onCameraMove: (position) => context.read<CompartmentMapsSummariesCubit>().onCameraMove(position),
+                      markers: Set.of(state.editingMarkers),
+                      onCameraMove: (position) => context
+                          .read<CompartmentMapsSummariesCubit>()
+                          .onCameraMove(position),
                       onMapCreated: (GoogleMapController controller) {
                         mapController = controller;
-                        MapUtils.checkLocationPermission(onAllowed: () async {
+                        MapUtils.checkLocationPermission(
+                          onAllowed: () async {
                             await moveMapCameraToInitLocation();
-                        });
+                          },
+                        );
                       },
                     );
                   },
@@ -232,7 +238,9 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 InkWell(
-                  onTap: (){},
+                  onTap: () async {
+                    await showEditDialog();
+                  },
                   child: Container(
                     alignment: Alignment.center,
                     color: Colors.white,
@@ -275,6 +283,72 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
               style: context.textStyles.bodyNormal.blueDark2,
             ),
           ],
+        );
+      },
+    );
+  }
+
+
+  Future<void> showEditDialog() async {
+    await showDialog<void>(
+      context: context,
+      builder: (_) {
+        return Dialog(
+          alignment: Alignment.center,
+          clipBehavior: Clip.antiAlias,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 8, 8, 40),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: Navigator.of(context).pop,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Assets.icons.icClose.svgBlack,
+                  ),
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    context.read<CompartmentMapsSummariesCubit>().editingPolygon();
+                  },
+                  child: Text(
+                    LocaleKeys.edit_polygon.tr(),
+                    style: context.textStyles.bodyBold.blueDark2,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ),
+                const SizedBox(
+                  height: 28,
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    final state = context.read<CompartmentMapsSummariesCubit>().state;
+                    await CompartmentDetailScreen.push(
+                      context,
+                      farmId: widget.farmId,
+                      farmName: widget.farmName,
+                      compartment: state.selectedCompartment,
+                    );
+                  },
+                  child: Text(
+                    LocaleKeys.edit_details.tr(),
+                    style: context.textStyles.bodyBold.blueDark2,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );

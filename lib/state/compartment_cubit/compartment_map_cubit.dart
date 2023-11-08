@@ -24,7 +24,7 @@ class CompartmentMapCubit extends Cubit<CompartmentMapState> {
     if (state.points.isNotBlank) {
       final _markers = <Marker>[];
       for (final item in state.points!) {
-        _markers.add(await CommonFunctions.generateMarkerFromLatLng(item));
+        _markers.add(await MapUtils.generateMarkerFromLatLng(item));
       }
 
       emit(
@@ -57,7 +57,7 @@ class CompartmentMapCubit extends Cubit<CompartmentMapState> {
 
   Future<void> creatNewMarker(LatLng? latLng) async {
     if (latLng == null) return;
-    final marker = await CommonFunctions.generateMarkerFromLatLng(latLng);
+    final marker = await MapUtils.generateMarkerFromLatLng(latLng);
     emit(
       state.copyWith(
         markers: state.markers + [marker],

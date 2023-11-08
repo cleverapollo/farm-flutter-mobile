@@ -463,6 +463,8 @@
   "p_d_no": "P&D No",
   "select_treatment_method": "เลือกวิธีแก้ไข",
   "pets_and_diseases_required": "สิ่งที่โรคและแมลงต้องการใช้",
+  "edit_polygon": "Edit polygon",
+  "edit_details": "Edit details",
   "please_select_a_pet_and_disease_name_before_adding_treatment_methods": "เลือกชื่อของโรคและแมลงก่อนจะใช้วิธีแก้ไข",
   "add_training": "Add Training",
   "training_detail": "Training Detail",

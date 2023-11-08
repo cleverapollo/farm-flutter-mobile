@@ -52,11 +52,15 @@ class CompartmentMapsSummariesState {
   final Compartment selectedCompartment;
   final bool loading;
   final Object? error;
+  final bool isEditing;
+  final List<Marker> editingMarkers;
 
   CompartmentMapsSummariesState({
     required this.selectedCompartment,
     this.listCompartments = const <Compartment>[],
     this.listCompartmentMapDetails = const <CompartmentMapDetail>[],
+    this.editingMarkers = const <Marker>[],
+    this.isEditing = false,
     this.selectedCompartmentMapDetails,
     this.compartmentMapDetailByCameraPosition,
     this.loading = false,
@@ -71,6 +75,8 @@ class CompartmentMapsSummariesState {
     List<CompartmentMapDetail>? listCompartmentMapDetails,
     CompartmentMapDetail? selectedCompartmentMapDetails,
     CompartmentMapDetail? compartmentMapDetailByCameraPosition,
+    List<Marker>? editingMarkers,
+    bool? isEditing,
   }) {
     return CompartmentMapsSummariesState(
       selectedCompartment: selectedCompartment ?? this.selectedCompartment,
@@ -80,6 +86,8 @@ class CompartmentMapsSummariesState {
       compartmentMapDetailByCameraPosition: compartmentMapDetailByCameraPosition,
       loading: loading ?? this.loading,
       error: error ?? this.error,
+      editingMarkers: editingMarkers ?? this.editingMarkers,
+      isEditing: isEditing ?? this.isEditing,
     );
   }
 }
