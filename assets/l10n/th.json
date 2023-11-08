@@ -589,6 +589,7 @@
   "location_is_required": "Location is required",
   "date_is_required": "Date is required",
   "complete_polygon": "Complete polygon",
+  "perimeter": "Perimeter",
   "map_type": "Map Type",
   "default_text": "Default",
   "satellite": "Satellite",

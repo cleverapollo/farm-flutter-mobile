@@ -1,38 +1,85 @@
 part of 'compartment_maps_summaries_cubit.dart';
 
+class CompartmentMapDetail extends Object {
+  final Compartment compartment;
+  final List<Marker> markers;
+  final List<LatLng> polygons;
+
+  CompartmentMapDetail({
+    required this.compartment,
+    this.markers = const <Marker>[],
+    this.polygons = const <LatLng>[],
+  });
+
+  CompartmentMapDetail copyWith({
+    List<Marker>? markers,
+    List<LatLng>? polygons,
+    Compartment? compartment,
+  }) {
+    return CompartmentMapDetail(
+      compartment: compartment ?? this.compartment,
+      polygons: polygons ?? this.polygons,
+      markers: markers ?? this.markers,
+    );
+  }
+
+  LatLng centerPoint() {
+    if (polygons.isBlank) {
+      return Constants.mapCenter;
+    }
+
+    double centerLat = 0;
+    double centerLng = 0;
+
+    for (final item in polygons) {
+      centerLat += item.latitude;
+      centerLng += item.longitude;
+    }
+
+    return LatLng(centerLat / polygons.length, centerLng / polygons.length);
+  }
+
+  double getPerimeter() {
+    return MapUtils.computePerimeterInKm(polygons);
+  }
+}
+
 class CompartmentMapsSummariesState {
+  final List<CompartmentMapDetail> listCompartmentMapDetails;
+  final CompartmentMapDetail? selectedCompartmentMapDetails;
+  final CompartmentMapDetail? compartmentMapDetailByCameraPosition;
   final List<Compartment> listCompartments;
   final Compartment selectedCompartment;
-  final List<Marker> markers;
   final bool loading;
   final Object? error;
-  final Set<Polygon> polygon;
 
   CompartmentMapsSummariesState({
-    required this.listCompartments,
     required this.selectedCompartment,
+    this.listCompartments = const <Compartment>[],
+    this.listCompartmentMapDetails = const <CompartmentMapDetail>[],
+    this.selectedCompartmentMapDetails,
+    this.compartmentMapDetailByCameraPosition,
     this.loading = false,
     this.error,
-    this.markers = const <Marker>[],
-    this.polygon = const <Polygon>{},
   });
 
   CompartmentMapsSummariesState copyWith({
     bool? loading,
     Object? error,
-    List<Marker>? markers,
-    List<LatLng>? points,
     Compartment? selectedCompartment,
     List<Compartment>? listCompartments,
-    Set<Polygon>? polygon,
+    List<CompartmentMapDetail>? listCompartmentMapDetails,
+    CompartmentMapDetail? selectedCompartmentMapDetails,
+    CompartmentMapDetail? compartmentMapDetailByCameraPosition,
   }) {
     return CompartmentMapsSummariesState(
-      loading: loading ?? this.loading,
-      error: error ?? this.error,
-      markers: markers ?? this.markers,
       selectedCompartment: selectedCompartment ?? this.selectedCompartment,
       listCompartments: listCompartments ?? this.listCompartments,
-      polygon: polygon ?? this.polygon,
+      listCompartmentMapDetails: listCompartmentMapDetails ?? this.listCompartmentMapDetails,
+      selectedCompartmentMapDetails: selectedCompartmentMapDetails ?? this.selectedCompartmentMapDetails,
+      compartmentMapDetailByCameraPosition: compartmentMapDetailByCameraPosition,
+      loading: loading ?? this.loading,
+      error: error ?? this.error,
     );
   }
 }

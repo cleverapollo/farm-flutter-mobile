@@ -1,15 +1,12 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
-import 'package:cmo/model/asi.dart';
-import 'package:cmo/model/asi_photo/asi_photo.dart';
-import 'package:cmo/model/asi_type/asi_type.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
-import 'package:maps_toolkit/maps_toolkit.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AsiDetailCubit extends Cubit<AsiDetailState> {
   AsiDetailCubit({
@@ -53,11 +50,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
         );
 
         final polygons = compartment.getPolygonLatLng();
-        return PolygonUtil.containsLocation(
-          latLng,
-          polygons,
-          false,
-        );
+        return MapUtils.checkPositionInsidePolygon(latLng: latLng, polygon: polygons);
       });
 
       if (initCompartment != null) {

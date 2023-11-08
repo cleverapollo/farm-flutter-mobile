@@ -8,11 +8,16 @@ import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:maps_toolkit/maps_toolkit.dart';
 
 class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
-  CompartmentMapsSummariesScreen({super.key}) : super(screenName: 'Compartment Maps Summaries');
+  CompartmentMapsSummariesScreen({
+    super.key,
+    this.farmName,
+  }) : super(screenName: 'Compartment Maps Summaries');
+
+  final String? farmName;
 
   @override
   State<StatefulWidget> createState() => CompartmentMapsSummariesScreenState();
@@ -38,6 +43,7 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
               // ),
             ),
             child: CompartmentMapsSummariesScreen(
+              farmName: farmName,
             ),
           );
         },
@@ -46,32 +52,38 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
   }
 }
 
-class CompartmentMapsSummariesScreenState extends State<CompartmentMapsSummariesScreen> {
+class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<CompartmentMapsSummariesScreen> {
 
-  // Future<void> generatePolygon() {
-  //   // if (!_isFinished) return Set();
-  //   final polygon = Polygon(
-  //     polygonId: PolygonId('Polygon'),
-  //     points: state.markers.map((e) => e.position).toList(),
-  //     fillColor: context.colors.blueDark1.withOpacity(0.4),
-  //     strokeColor: Colors.transparent,
-  //   );
-  //   return Set.of([polygon]);
-  // }
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      await context.read<CompartmentMapsSummariesCubit>().initMapData();
+      await moveMapCameraToInitLocation();
+    });
+  }
 
-  Set<Polyline> _polylines(List<Marker> markers) {
+  GoogleMapController? mapController;
 
+  Set<Polyline> generateSetPolylineFromCompartmentMapDetail(
+    CompartmentMapDetail compartmentMapDetail, {
+    bool isSelected = false,
+  }) {
     var polylines = <Polyline>{};
-    if (markers.length < 2) {
+    if (compartmentMapDetail.markers.length < 2) {
       return polylines;
     }
 
-    for (var i = 1; i < markers.length; i++) {
+    final lineColor = isSelected ? context.colors.yellow : context.colors.grey;
+    for (var i = 1; i < compartmentMapDetail.markers.length; i++) {
       polylines.add(
         Polyline(
-          polylineId: PolylineId("${i - 1}_$i"),
-          points: [markers[i - 1].position, markers[i].position],
-          color: context.colors.grey,
+          polylineId: PolylineId('${compartmentMapDetail.compartment.localCompartmentId} ${i - 1}_$i'),
+          points: [
+            compartmentMapDetail.markers[i - 1].position,
+            compartmentMapDetail.markers[i].position
+          ],
+          color: lineColor,
           width: 5,
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
@@ -81,12 +93,13 @@ class CompartmentMapsSummariesScreenState extends State<CompartmentMapsSummaries
 
     polylines.add(
       Polyline(
-        polylineId: PolylineId('${markers.length - 1}_0'),
+        polylineId: PolylineId(
+            '${compartmentMapDetail.compartment.localCompartmentId} ${compartmentMapDetail.markers.length - 1}_0'),
         points: [
-          markers[markers.length - 1].position,
-          markers[0].position,
+          compartmentMapDetail.markers[compartmentMapDetail.markers.length - 1].position,
+          compartmentMapDetail.markers[0].position,
         ],
-        color: context.colors.grey,
+        color: lineColor,
         width: 5,
       ),
     );
@@ -94,38 +107,83 @@ class CompartmentMapsSummariesScreenState extends State<CompartmentMapsSummaries
     return polylines;
   }
 
-  Set<Polygon> generatePolygon(List<Marker> markers) {
-    // if (!_isFinished) return Set();
-    final polygon = Polygon(
-      polygonId: PolygonId('Polygon'),
-      points: markers.map((e) => e.position).toList(),
-      fillColor: context.colors.blueDark1.withOpacity(0.4),
-      strokeColor: Colors.transparent,
+  Set<Polyline> generatePolyline() {
+    final state = context.read<CompartmentMapsSummariesCubit>().state;
+    final polylines = <Polyline>{};
+    for (final compartmentMapDetail in state.listCompartmentMapDetails) {
+      polylines.addAll(generateSetPolylineFromCompartmentMapDetail(compartmentMapDetail));
+    }
+
+    if (state.selectedCompartmentMapDetails != null) {
+      polylines.addAll(
+        generateSetPolylineFromCompartmentMapDetail(
+          state.selectedCompartmentMapDetails!,
+          isSelected: true,
+        ),
+      );
+    }
+
+    return polylines;
+  }
+
+  Polygon generateSetPolygonFromCompartmentMapDetail(
+      CompartmentMapDetail compartmentMapDetail, {
+        bool isSelected = false,
+      }) {
+    final fillColor = isSelected ? context.colors.yellow.withOpacity(0.3) : context.colors.grey.withOpacity(0.5);
+    final strokeColor = isSelected ? context.colors.yellow : context.colors.grey;
+
+    return Polygon(
+      polygonId: PolygonId('${compartmentMapDetail.compartment.localCompartmentId}'),
+      points: compartmentMapDetail.markers.map((e) => e.position).toList(),
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: 5,
     );
-    return Set.of([polygon]);
   }
 
-  void _drawInitialPolygon() {
-    Future.delayed(const Duration(seconds: 1), () async {
-      setState(() {
-        // _isFinished = true;
-      });
+  Set<Polygon> generatePolygon() {
+    final state = context.read<CompartmentMapsSummariesCubit>().state;
+    final polygon = <Polygon>{};
 
-      await context.read<CompartmentMapsSummariesCubit>().initMapData();
-      _finishDrawing();
-    });
+    for (final compartmentMapDetail in state.listCompartmentMapDetails) {
+      polygon.add(generateSetPolygonFromCompartmentMapDetail(compartmentMapDetail));
+    }
+
+    if (state.selectedCompartmentMapDetails != null) {
+      polygon.add(
+        generateSetPolygonFromCompartmentMapDetail(
+          state.selectedCompartmentMapDetails!,
+          isSelected: true,
+        ),
+      );
+    }
+
+    return polygon;
   }
 
-  void _finishDrawing() {
-    final markers = context.read<CompartmentMapCubit>().state.markers;
-    if (markers.isEmpty) return;
-    // _isFinished = true;
-    // areaSquareMeters = SphericalUtil.computeArea(markers
-    //     .map((e) => mapToolkitLatlong.LatLng(
-    //     e.position.latitude, e.position.longitude))
-    //     .toList())
-    //     .toDouble();
-    setState(() {});
+  Future<void> moveMapCameraToInitLocation() async {
+    final state = context.read<CompartmentMapsSummariesCubit>().state;
+    if (state.selectedCompartmentMapDetails == null) {
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      await mapController?.animateCamera(
+        CameraUpdate.newLatLng(
+          LatLng(
+            position.latitude,
+            position.longitude,
+          ),
+        ),
+      );
+    } else {
+      await mapController?.animateCamera(
+        CameraUpdate.newLatLng(
+          state.selectedCompartmentMapDetails!.centerPoint(),
+        ),
+      );
+    }
   }
 
   @override
@@ -133,9 +191,11 @@ class CompartmentMapsSummariesScreenState extends State<CompartmentMapsSummaries
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.compartments.tr(),
-        // subtitle: widget.farmName ?? '',
+        subtitle: widget.farmName ?? '',
         leading: Assets.icons.icArrowLeft.svgBlack,
         onTapLeading: Navigator.of(context).pop,
+        trailing: Assets.icons.icClose.svgBlack,
+        onTapTrailing: Navigator.of(context).pop,
       ),
       body: Column(
         children: [
@@ -146,35 +206,17 @@ class CompartmentMapsSummariesScreenState extends State<CompartmentMapsSummaries
                 BlocBuilder<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState>(
                   builder: (context, state) {
                     return GoogleMap(
-                      initialCameraPosition: CameraPosition(target: Constants.mapCenter, zoom: 14),
-                      polylines: _polylines(state.markers),
-                      polygons: generatePolygon(state.markers),
+                      initialCameraPosition: const CameraPosition(target: Constants.mapCenter, zoom: 14),
+                      // polylines: generatePolyline(),
+                      polygons: generatePolygon(),
                       mapType: MapType.satellite,
                       myLocationEnabled: true,
-                      // onCameraMove: (position) => context.read<CompartmentMapCubit>().onCameraMove(position, _isFinished),
-                      markers: state.markers.toSet(),
+                      onCameraMove: (position) => context.read<CompartmentMapsSummariesCubit>().onCameraMove(position),
                       onMapCreated: (GoogleMapController controller) {
-                        if (state.markers.isNotBlank) {
-                          _drawInitialPolygon();
-                        }
-                        //
-                        // _controller = controller;
-                        // Geolocator.checkPermission().then((permission) async {
-                        //   if (permission == LocationPermission.whileInUse ||
-                        //       permission == LocationPermission.always) {
-                        //     if (widget.points.isBlank) {
-                        //       await _moveMapCameraCurrentLocation();
-                        //     }
-                        //   } else if (permission == LocationPermission.denied) {
-                        //     permission = await Geolocator.requestPermission();
-                        //     if (permission == LocationPermission.whileInUse ||
-                        //         permission == LocationPermission.always) {
-                        //       if (widget.points.isBlank) {
-                        //         await _moveMapCameraCurrentLocation();
-                        //       }
-                        //     }
-                        //   }
-                        // });
+                        mapController = controller;
+                        MapUtils.checkLocationPermission(onAllowed: () async {
+                            await moveMapCameraToInitLocation();
+                        });
                       },
                     );
                   },
@@ -183,119 +225,58 @@ class CompartmentMapsSummariesScreenState extends State<CompartmentMapsSummaries
               ],
             ),
           ),
-          const SizedBox(height: 36),
-          // Container(
-          //   decoration: BoxDecoration(
-          //     borderRadius: BorderRadius.circular(10),
-          //     border: Border.all(color: context.colors.grey),
-          //   ),
-          //   margin: const EdgeInsets.symmetric(horizontal: 16),
-          //   padding: const EdgeInsets.symmetric(vertical: 8),
-          //   alignment: Alignment.center,
-          //   child: Text(
-          //     _presentAreaSquare(),
-          //     style: context.textStyles.bodyBold,
-          //   ),
-          // ),
-          const SizedBox(height: 8),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     IconButton(
-            //       onPressed: _removePreviousPoint,
-            //       padding: EdgeInsets.zero,
-            //       iconSize: 36,
-            //       icon: Container(
-            //         alignment: Alignment.center,
-            //         color: Colors.white,
-            //         child: SvgGenImage(Assets.icons.icRefresh.path).svg(
-            //           width: 36,
-            //           height: 36,
-            //           colorFilter: const ColorFilter.mode(
-            //             Colors.blue,
-            //             BlendMode.srcIn,
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //     const SizedBox(width: 16),
-            //     IconButton(
-            //       onPressed: () async {
-            //         var center = await getCenter();
-            //         if (center != null) {
-            //           if (_isCompletedPoint(center)) {
-            //             _finishDrawing();
-            //           } else {
-            //             await context.read<CompartmentMapCubit>().creatNewMarker(center);
-            //             if (_isFinished) {
-            //               _finishDrawing();
-            //             } else {
-            //               setState(() {});
-            //             }
-            //           }
-            //         }
-            //       },
-            //       padding: EdgeInsets.zero,
-            //       iconSize: 36,
-            //       icon: Container(
-            //         alignment: Alignment.center,
-            //         color: Colors.white,
-            //         child: SvgGenImage(Assets.icons.icAccept.path).svg(
-            //           width: 36,
-            //           height: 36,
-            //           colorFilter: const ColorFilter.mode(
-            //             Colors.blue,
-            //             BlendMode.srcIn,
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            const SizedBox(height: 8),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 16),
-            //   child: Row(
-            //     children: [
-            //       Expanded(
-            //         child: CmoFilledButton(
-            //           title: LocaleKeys.complete_polygon.tr(),
-            //           onTap: _finishDrawing,
-            //         ),
-            //       ),
-            //       const SizedBox(width: 24),
-            //       Expanded(
-            //         child: CmoFilledButton(
-            //           title: LocaleKeys.next.tr(),
-            //           onTap: _isFinished
-            //               ? () {
-            //             widget.onSave(
-            //               (areaSquareMeters ?? 0) / 10000,
-            //               context
-            //                   .read<CompartmentMapCubit>()
-            //                   .state
-            //                   .markers
-            //                   .map(
-            //                     (e) => PolygonItem(
-            //                   latitude: e.position.latitude,
-            //                   longitude: e.position.longitude,
-            //                 ),
-            //               )
-            //                   .toList(),
-            //             );
-            //
-            //             Navigator.of(context).pop();
-            //           }
-            //               : null,
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 8,),
+          compartmentDetailData(),
+          const SizedBox(height: 32),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: (){},
+                  child: Container(
+                    alignment: Alignment.center,
+                    color: Colors.white,
+                    child: SvgGenImage(Assets.icons.icEditBlueCircle.path).svg(
+                      width: 60,
+                      height: 60,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+              ],
+            ),
+            const SizedBox(height: 24),
         ],
       ),
     );
   }
 
+  Widget compartmentDetailData() {
+    return BlocBuilder<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState>(
+      builder: (context, state) {
+        final compartmentName = state.compartmentMapDetailByCameraPosition?.compartment.unitNumber ?? '';
+        final perimeter = (state.compartmentMapDetailByCameraPosition?.getPerimeter() ?? 0).toStringAsFixed(2);
+        final area = (state.compartmentMapDetailByCameraPosition?.compartment.polygonArea ?? 0).toStringAsFixed(2);
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              compartmentName,
+              style: context.textStyles.bodyBold.blueDark2,
+            ),
+            Text(
+              '${LocaleKeys.perimeter.tr()} ${perimeter}km',
+              style: context.textStyles.bodyNormal.blueDark2,
+
+            ),
+            Text(
+              '${LocaleKeys.area.tr()} $area ha ${LocaleKeys.measured.tr()}',
+              style: context.textStyles.bodyNormal.blueDark2,
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

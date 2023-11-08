@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:cmo/extensions/extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:isar/isar.dart';
-import 'package:maps_toolkit/maps_toolkit.dart';
 
 part 'compartment.freezed.dart';
 part 'compartment.g.dart';

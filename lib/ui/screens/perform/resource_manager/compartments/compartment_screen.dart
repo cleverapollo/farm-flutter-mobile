@@ -73,23 +73,25 @@ class _CompartmentScreenState extends BaseStatefulWidgetState<CompartmentScreen>
 
   Future<void> navigateToDetail({Compartment? compartment}) async {
     final state = context.read<CompartmentCubit>().state;
-    await CompartmentMapsSummariesScreen.push(
-      context,
-      farmId: state.farmId,
-      farmName: widget.farmName,
-      selectedCompartment: compartment!,
-      listCompartments: state.listCompartment,
-    );
+    if (compartment != null) {
+      await CompartmentMapsSummariesScreen.push(
+        context,
+        farmId: state.farmId,
+        farmName: widget.farmName,
+        selectedCompartment: compartment,
+        listCompartments: state.listCompartment,
+      );
+    } else {
+      await CompartmentDetailScreen.push(
+        context,
+        farmId: state.farmId,
+        farmName: widget.farmName,
+        campId: state.campId,
+        compartment: compartment,
+      );
+    }
 
-    // await CompartmentDetailScreen.push(
-    //   context,
-    //   farmId: state.farmId,
-    //   farmName: widget.farmName,
-    //   campId: state.campId,
-    //   compartment: compartment,
-    // );
-    //
-    // await context.read<CompartmentCubit>().loadListCompartment();
+    await context.read<CompartmentCubit>().loadListCompartment();
   }
 
   @override
