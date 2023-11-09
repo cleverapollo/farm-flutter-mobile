@@ -12,17 +12,16 @@ import 'utils.dart';
 class MapUtils {
 
   static Future<Marker> generateMarkerFromLatLng(LatLng position, {
-    VoidCallback? onTap,
+    void Function(MarkerId)? onTap,
     void Function(LatLng, MarkerId)? onDrag,
     bool draggable = false,
   }) async {
     return Marker(
       markerId: MarkerId('place_name_${position.latitude}_${position.longitude}'),
       position: position,
-      onTap: onTap,
+      onTap: () => onTap?.call(MarkerId('place_name_${position.latitude}_${position.longitude}')),
       draggable: draggable,
       onDrag: (latLng) {
-        print('onDrag ${latLng.latitude} ${latLng.longitude}');
         onDrag?.call(
           latLng,
           MarkerId('place_name_${position.latitude}_${position.longitude}'),
@@ -40,6 +39,15 @@ class MapUtils {
       latLng.latitude,
       latLng.longitude,
     );
+  }
+
+  static double computeAreaInHa(List<LatLng>? polygon) {
+    if (polygon.isBlank || polygon!.length <= 2) {
+      return 0;
+    }
+
+    final mapToolkitPolygon = polygon.map(convertLatLng).toList();
+    return map_toolkit.SphericalUtil.computeArea(mapToolkitPolygon) / 10000;
   }
 
   static double computePerimeterInKm(List<LatLng>? polygon) {

@@ -590,6 +590,8 @@
   "location_is_required": "Location is required",
   "date_is_required": "Date is required",
   "complete_polygon": "Complete polygon",
+  "accept_changes": "Accept changes",
+  "exit": "Exit",
   "perimeter": "Perimeter",
   "map_type": "Map Type",
   "default_text": "Default",

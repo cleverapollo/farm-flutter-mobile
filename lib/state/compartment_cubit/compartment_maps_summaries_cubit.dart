@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/utils/utils.dart';
@@ -54,7 +57,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
         final marker = await MapUtils.generateMarkerFromLatLng(
           item,
           draggable: true,
-          onDrag: onDragPosition,
+          onTap: onTapMarker,
         );
 
         markers.add(marker);
@@ -66,18 +69,17 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     return null;
   }
 
-  void onDragPosition(LatLng latLng, MarkerId markerId,) {
+  void onTapMarker(MarkerId markerId) {
     if (state.isEditing) {
-      print('onDragPosition ${latLng.latitude} ${latLng.longitude}');
-      var marker = state.selectedCompartmentMapDetails?.markers.firstWhereOrNull((element) => element.markerId == markerId);
+      final marker = state.editingMarkers.firstWhereOrNull((element) => element.markerId == markerId);
       if (marker != null) {
-        marker = marker.copyWith(positionParam: latLng);
-        final selectedCompartmentMapDetails = state.selectedCompartmentMapDetails;
-        selectedCompartmentMapDetails?.markers.removeWhere((element) => element.markerId == markerId);
-        selectedCompartmentMapDetails?.markers.add(marker);
+        final editingMarkers = List<Marker>.from(state.editingMarkers);
+        editingMarkers.remove(marker);
+        editingMarkers.add(marker);
         emit(
           state.copyWith(
-            selectedCompartmentMapDetails: selectedCompartmentMapDetails,
+            selectedEditedMarker: marker,
+            editingMarkers: editingMarkers,
           ),
         );
       }
@@ -85,12 +87,33 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
   }
 
   void onCameraMove(CameraPosition cameraPosition) {
+    if (state.isEditing && state.selectedEditedMarker != null) {
+      final editingMarkers = List<Marker>.from(state.editingMarkers);
+      if (editingMarkers.length == 1) {
+        editingMarkers.add(editingMarkers.last);
+      }
+
+      editingMarkers[editingMarkers.length - 1] = editingMarkers[editingMarkers.length - 1].copyWith(
+        positionParam: LatLng(
+          cameraPosition.target.latitude,
+          cameraPosition.target.longitude,
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          editingMarkers: editingMarkers,
+        ),
+      );
+    }
+
     final latLng = LatLng(
       cameraPosition.target.latitude,
       cameraPosition.target.longitude,
     );
 
-    final compartmentMapDetail = state.listCompartmentMapDetails.firstWhereOrNull(
+    final compartmentMapDetail =
+        state.listCompartmentMapDetails.firstWhereOrNull(
       (element) => MapUtils.checkPositionInsidePolygon(
         latLng: latLng,
         polygon: element.polygons,
@@ -108,8 +131,61 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     emit(
       state.copyWith(
         isEditing: true,
-        editingMarkers: state.selectedCompartmentMapDetails?.markers,
+        editingMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
       ),
+    );
+  }
+
+  void onResetPolygon() {
+    emit(
+      state.resetEditingMarkers().copyWith(
+            editingMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
+          ),
+    );
+  }
+
+  void onRemoveMarker() {
+    if (state.editingMarkers.length <= 3) {
+      return;
+    }
+
+    final marker = state.editingMarkers.firstWhereOrNull((element) => element.markerId == state.selectedEditedMarker?.markerId);
+    if (marker != null) {
+      final editingMarkers = List<Marker>.from(state.editingMarkers);
+      editingMarkers.remove(marker);
+      emit(
+        state.resetEditingMarkers().copyWith(
+          editingMarkers: editingMarkers,
+        ),
+      );
+    }
+  }
+
+  Future<void> onAcceptChanges() async {
+    final listLatLng = state.editingMarkers
+        .map(
+          (e) => LatLng(
+            e.position.latitude,
+            e.position.longitude,
+          ),
+        )
+        .toList();
+    final listPolygonItem = state.editingMarkers
+        .map(
+          (e) => PolygonItem(
+            latitude: e.position.latitude,
+            longitude: e.position.longitude,
+          ),
+        )
+        .toList();
+    await cmoDatabaseMasterService.cacheCompartment(
+      state.selectedCompartment.copyWith(
+        updateDT: DateTime.now(),
+        isActive: true,
+        polygonArea: MapUtils.computeAreaInHa(listLatLng),
+        polygon: json.encode(listPolygonItem),
+      ),
+      isDirect: true,
     );
   }
 }

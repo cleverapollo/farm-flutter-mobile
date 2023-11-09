@@ -69,25 +69,21 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
 
   GoogleMapController? mapController;
 
-  Set<Polyline> generateSetPolylineFromCompartmentMapDetail(
-    CompartmentMapDetail compartmentMapDetail, {
-    bool isSelected = false,
-  }) {
+  Set<Polyline> generateSetPolylineFromListMarkers(List<Marker> markers) {
     var polylines = <Polyline>{};
-    if (compartmentMapDetail.markers.length < 2) {
+    if (markers.length < 2) {
       return polylines;
     }
 
-    final lineColor = isSelected ? context.colors.yellow : context.colors.grey;
-    for (var i = 1; i < compartmentMapDetail.markers.length; i++) {
+    for (var i = 1; i < markers.length; i++) {
       polylines.add(
         Polyline(
-          polylineId: PolylineId('${compartmentMapDetail.compartment.localCompartmentId} ${i - 1}_$i'),
+          polylineId: PolylineId('${markers[i].markerId.value} ${i - 1}_$i'),
           points: [
-            compartmentMapDetail.markers[i - 1].position,
-            compartmentMapDetail.markers[i].position
+            markers[i - 1].position,
+            markers[i].position,
           ],
-          color: lineColor,
+          color: context.colors.yellow,
           width: 5,
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
@@ -97,13 +93,12 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
 
     polylines.add(
       Polyline(
-        polylineId: PolylineId(
-            '${compartmentMapDetail.compartment.localCompartmentId} ${compartmentMapDetail.markers.length - 1}_0'),
+        polylineId: PolylineId('${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0'),
         points: [
-          compartmentMapDetail.markers[compartmentMapDetail.markers.length - 1].position,
-          compartmentMapDetail.markers[0].position,
+          markers[markers.length - 1].position,
+          markers[0].position,
         ],
-        color: lineColor,
+        color: context.colors.yellow,
         width: 5,
       ),
     );
@@ -114,13 +109,32 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
   Set<Polyline> generatePolyline() {
     final state = context.read<CompartmentMapsSummariesCubit>().state;
     if (state.isEditing) {
-      return generateSetPolylineFromCompartmentMapDetail(
-        state.selectedCompartmentMapDetails!,
-        isSelected: true,
+      return generateSetPolylineFromListMarkers(
+        state.editingMarkers,
       );
     }
 
     return <Polyline>{};
+  }
+
+  Set<Polygon> generatePolygon() {
+    final state = context.read<CompartmentMapsSummariesCubit>().state;
+    final polygon = <Polygon>{};
+
+    for (final compartmentMapDetail in state.listCompartmentMapDetails) {
+      if (compartmentMapDetail.compartment.localCompartmentId == state.selectedCompartment.localCompartmentId) {
+        continue;
+      } else {
+        polygon.add(generateSetPolygonFromCompartmentMapDetail(compartmentMapDetail));
+      }
+    }
+
+    final selectedPolygon = generatePolygonFromListMarker();
+    if (selectedPolygon != null) {
+      polygon.add(selectedPolygon);
+    }
+
+    return polygon;
   }
 
   Polygon generateSetPolygonFromCompartmentMapDetail(
@@ -139,28 +153,24 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     );
   }
 
-  Set<Polygon> generatePolygon() {
+  Polygon? generatePolygonFromListMarker() {
     final state = context.read<CompartmentMapsSummariesCubit>().state;
-    final polygon = <Polygon>{};
+    if (state.selectedCompartmentMapDetails != null) {
+      final listMarkers = state.isEditing
+          ? state.editingMarkers
+          : state.selectedCompartmentMapDetails!.markers;
+      final strokeColor = state.isEditing ? Colors.transparent : context.colors.yellow;
 
-    for (final compartmentMapDetail in state.listCompartmentMapDetails) {
-      if (compartmentMapDetail.compartment.localCompartmentId == state.selectedCompartment.localCompartmentId) {
-        continue;
-      } else {
-        polygon.add(generateSetPolygonFromCompartmentMapDetail(compartmentMapDetail));
-      }
-    }
-
-    if (state.selectedCompartmentMapDetails != null && !state.isEditing) {
-      polygon.add(
-        generateSetPolygonFromCompartmentMapDetail(
-          state.selectedCompartmentMapDetails!,
-          isSelected: true,
-        ),
+      return Polygon(
+        polygonId: PolygonId('${state.selectedCompartmentMapDetails?.compartment.localCompartmentId}'),
+        points: listMarkers.map((e) => e.position).toList(),
+        fillColor: context.colors.yellow.withOpacity(0.3),
+        strokeColor: strokeColor,
+        strokeWidth: 5,
       );
     }
 
-    return polygon;
+    return null;
   }
 
   Future<void> moveMapCameraToInitLocation() async {
@@ -234,25 +244,30 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           const SizedBox(height: 8,),
           compartmentDetailData(),
           const SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                  onTap: () async {
-                    await showEditDialog();
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    color: Colors.white,
-                    child: SvgGenImage(Assets.icons.icEditBlueCircle.path).svg(
-                      width: 60,
-                      height: 60,
+            BlocSelector<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState, bool>(selector: (state) => state.isEditing, builder: (context, isEditing) {
+              if (isEditing) {
+                return editingFunctionButton();
+              }
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: () async {
+                      await showEditDialog();
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      color: Colors.white,
+                      child: SvgGenImage(Assets.icons.icEditBlueCircle.path).svg(
+                        width: 60,
+                        height: 60,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 16),
-              ],
-            ),
+                  const SizedBox(width: 16),
+                ],
+              );
+            }),
             const SizedBox(height: 24),
         ],
       ),
@@ -288,6 +303,65 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     );
   }
 
+  Widget editingFunctionButton() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkWell(
+              onTap: () {
+                context.read<CompartmentMapsSummariesCubit>().onResetPolygon();
+                moveMapCameraToInitLocation();
+              },
+              child: Container(
+                alignment: Alignment.center,
+                child: SvgGenImage(Assets.icons.icRefreshMap.path).svg(
+                  height: 68,
+                  width: 68,
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            InkWell(
+              onTap: context.read<CompartmentMapsSummariesCubit>().onRemoveMarker,
+              child: Container(
+                alignment: Alignment.center,
+                child: SvgGenImage(Assets.icons.icDeleteMap.path).svg(
+                  height: 68,
+                  width: 68,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Expanded(
+                child: CmoFilledButton(
+                  title: LocaleKeys.accept_changes.tr(),
+                  onTap: () async {
+                    await context.read<CompartmentMapsSummariesCubit>().onAcceptChanges();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+              const SizedBox(width: 24),
+              Expanded(
+                child: CmoFilledButton(
+                  title: LocaleKeys.exit.tr(),
+                  onTap: Navigator.of(context).pop,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
   Future<void> showEditDialog() async {
     await showDialog<void>(

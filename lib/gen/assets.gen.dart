@@ -110,6 +110,10 @@ class $AssetsIconsGen {
   SvgGenImage get icDashboardSync =>
       const SvgGenImage('assets/icons/ic_dashboard_sync.svg');
 
+  /// File path: assets/icons/ic_delete_map.svg
+  SvgGenImage get icDeleteMap =>
+      const SvgGenImage('assets/icons/ic_delete_map.svg');
+
   /// File path: assets/icons/ic_down.svg
   SvgGenImage get icDown => const SvgGenImage('assets/icons/ic_down.svg');
 
@@ -248,6 +252,7 @@ class $AssetsIconsGen {
         icDashboardMember,
         icDashboardStakeholder,
         icDashboardSync,
+        icDeleteMap,
         icDown,
         icDrawer,
         icEdit,

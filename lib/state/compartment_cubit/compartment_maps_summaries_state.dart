@@ -54,6 +54,7 @@ class CompartmentMapsSummariesState {
   final Object? error;
   final bool isEditing;
   final List<Marker> editingMarkers;
+  final Marker? selectedEditedMarker;
 
   CompartmentMapsSummariesState({
     required this.selectedCompartment,
@@ -65,6 +66,7 @@ class CompartmentMapsSummariesState {
     this.compartmentMapDetailByCameraPosition,
     this.loading = false,
     this.error,
+    this.selectedEditedMarker,
   });
 
   CompartmentMapsSummariesState copyWith({
@@ -77,6 +79,7 @@ class CompartmentMapsSummariesState {
     CompartmentMapDetail? compartmentMapDetailByCameraPosition,
     List<Marker>? editingMarkers,
     bool? isEditing,
+    Marker? selectedEditedMarker,
   }) {
     return CompartmentMapsSummariesState(
       selectedCompartment: selectedCompartment ?? this.selectedCompartment,
@@ -88,6 +91,20 @@ class CompartmentMapsSummariesState {
       error: error ?? this.error,
       editingMarkers: editingMarkers ?? this.editingMarkers,
       isEditing: isEditing ?? this.isEditing,
+      selectedEditedMarker: selectedEditedMarker ?? this.selectedEditedMarker,
+    );
+  }
+
+  CompartmentMapsSummariesState resetEditingMarkers() {
+    return CompartmentMapsSummariesState(
+      selectedCompartment: selectedCompartment,
+      listCompartments: listCompartments,
+      listCompartmentMapDetails: listCompartmentMapDetails,
+      selectedCompartmentMapDetails: selectedCompartmentMapDetails,
+      compartmentMapDetailByCameraPosition: compartmentMapDetailByCameraPosition,
+      loading: loading,
+      error: error,
+      isEditing: isEditing,
     );
   }
 }
