@@ -17,10 +17,12 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
     super.key,
     this.farmName,
     required this.farmId,
+    required this.onSave,
   }) : super(screenName: 'Compartment Maps Summaries');
 
   final String? farmName;
   final String farmId;
+  final void Function(double?, List<PolygonItem>?) onSave;
 
   @override
   State<StatefulWidget> createState() => CompartmentMapsSummariesScreenState();
@@ -30,6 +32,7 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
         required String farmId,
         required List<Compartment> listCompartments,
         required Compartment selectedCompartment,
+        required void Function(double?, List<PolygonItem>?) onSave,
         String? farmName,
         String? campId,
       }) {
@@ -40,14 +43,11 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
             create: (_) => CompartmentMapsSummariesCubit(
               listCompartments: listCompartments,
               selectedCompartment: selectedCompartment,
-              // farmId,
-              // compartment: compartment ?? const Compartment(
-              //   isActive: true,
-              // ),
             ),
             child: CompartmentMapsSummariesScreen(
               farmName: farmName,
               farmId: farmId,
+              onSave: onSave,
             ),
           );
         },
@@ -69,49 +69,50 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
 
   GoogleMapController? mapController;
 
-  Set<Polyline> generateSetPolylineFromListMarkers(List<Marker> markers) {
-    var polylines = <Polyline>{};
-    if (markers.length < 2) {
-      return polylines;
-    }
-
-    for (var i = 1; i < markers.length; i++) {
-      polylines.add(
-        Polyline(
-          polylineId: PolylineId('${markers[i].markerId.value} ${i - 1}_$i'),
-          points: [
-            markers[i - 1].position,
-            markers[i].position,
-          ],
-          color: context.colors.yellow,
-          width: 5,
-          startCap: Cap.roundCap,
-          endCap: Cap.roundCap,
-        ),
-      );
-    }
-
-    polylines.add(
-      Polyline(
-        polylineId: PolylineId('${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0'),
-        points: [
-          markers[markers.length - 1].position,
-          markers[0].position,
-        ],
-        color: context.colors.yellow,
-        width: 5,
-      ),
-    );
-
-    return polylines;
-  }
-
   Set<Polyline> generatePolyline() {
     final state = context.read<CompartmentMapsSummariesCubit>().state;
-    if (state.isEditing) {
-      return generateSetPolylineFromListMarkers(
-        state.editingMarkers,
-      );
+    if (state.isCompletePolygon) {
+      return <Polyline>{};
+    }
+
+    if (state.isUpdating) {
+      final markers = state.temporaryMarkers;
+      var polylines = <Polyline>{};
+      if (markers.length < 2) {
+        return polylines;
+      }
+
+      for (var i = 1; i < markers.length; i++) {
+        polylines.add(
+          Polyline(
+            polylineId: PolylineId('${markers[i].markerId.value} ${i - 1}_$i'),
+            points: [
+              markers[i - 1].position,
+              markers[i].position,
+            ],
+            color: context.colors.yellow,
+            width: 5,
+            startCap: Cap.roundCap,
+            endCap: Cap.roundCap,
+          ),
+        );
+      }
+
+      if (state.isCompletePolygon) {
+        polylines.add(
+          Polyline(
+            polylineId: PolylineId('${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0'),
+            points: [
+              markers[markers.length - 1].position,
+              markers[0].position,
+            ],
+            color: context.colors.yellow,
+            width: 5,
+          ),
+        );
+      }
+
+      return polylines;
     }
 
     return <Polyline>{};
@@ -130,6 +131,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     }
 
     final selectedPolygon = generatePolygonFromListMarker();
+    if(state.isCompletePolygon) {
+      return {selectedPolygon!};
+    }
+
     if (selectedPolygon != null) {
       polygon.add(selectedPolygon);
     }
@@ -155,27 +160,25 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
 
   Polygon? generatePolygonFromListMarker() {
     final state = context.read<CompartmentMapsSummariesCubit>().state;
-    if (state.selectedCompartmentMapDetails != null) {
-      final listMarkers = state.isEditing
-          ? state.editingMarkers
-          : state.selectedCompartmentMapDetails!.markers;
-      final strokeColor = state.isEditing ? Colors.transparent : context.colors.yellow;
-
-      return Polygon(
-        polygonId: PolygonId('${state.selectedCompartmentMapDetails?.compartment.localCompartmentId}'),
-        points: listMarkers.map((e) => e.position).toList(),
-        fillColor: context.colors.yellow.withOpacity(0.3),
-        strokeColor: strokeColor,
-        strokeWidth: 5,
-      );
+    if (state.isAddingNew && !state.isCompletePolygon) {
+      return null;
     }
 
-    return null;
+    final listMarkers = state.selectedCompartmentMapDetails?.markers ?? [];
+    final strokeColor = context.colors.yellow;
+
+    return Polygon(
+      polygonId: PolygonId('${state.selectedCompartmentMapDetails?.compartment.localCompartmentId}'),
+      points: listMarkers.map((e) => e.position).toList(),
+      fillColor: context.colors.yellow.withOpacity(0.3),
+      strokeColor: strokeColor,
+      strokeWidth: 5,
+    );
   }
 
   Future<void> moveMapCameraToInitLocation() async {
     final state = context.read<CompartmentMapsSummariesCubit>().state;
-    if (state.selectedCompartmentMapDetails == null) {
+    if (state.isAddingNew) {
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
@@ -222,7 +225,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                       polygons: generatePolygon(),
                       mapType: MapType.satellite,
                       myLocationEnabled: true,
-                      markers: Set.of(state.editingMarkers),
+                      markers: Set.of(state.temporaryMarkers),
                       onCameraMove: (position) => context
                           .read<CompartmentMapsSummariesCubit>()
                           .onCameraMove(position),
@@ -244,10 +247,18 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           const SizedBox(height: 8,),
           compartmentDetailData(),
           const SizedBox(height: 32),
-            BlocSelector<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState, bool>(selector: (state) => state.isEditing, builder: (context, isEditing) {
-              if (isEditing) {
-                return editingFunctionButton();
+          BlocSelector<CompartmentMapsSummariesCubit,
+              CompartmentMapsSummariesState, bool>(
+            selector: (state) => state.isUpdating,
+            builder: (context, isEditing) {
+              // if (isEditing) {
+              //   return editingFunctionButton();
+              // }
+
+              if (context.read<CompartmentMapsSummariesCubit>().state.isAddingNew) {
+                return addingFunctionButton();
               }
+
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -258,7 +269,8 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                     child: Container(
                       alignment: Alignment.center,
                       color: Colors.white,
-                      child: SvgGenImage(Assets.icons.icEditBlueCircle.path).svg(
+                      child:
+                          SvgGenImage(Assets.icons.icEditBlueCircle.path).svg(
                         width: 60,
                         height: 60,
                       ),
@@ -267,8 +279,9 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                   const SizedBox(width: 16),
                 ],
               );
-            }),
-            const SizedBox(height: 24),
+            },
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     );
@@ -279,7 +292,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       builder: (context, state) {
         final compartmentName = state.compartmentMapDetailByCameraPosition?.compartment.unitNumber ?? '';
         final perimeter = (state.compartmentMapDetailByCameraPosition?.getPerimeter() ?? 0).toStringAsFixed(2);
-        final area = (state.compartmentMapDetailByCameraPosition?.compartment.polygonArea ?? 0).toStringAsFixed(2);
+        final area = (state.compartmentMapDetailByCameraPosition?.getAreaInHa() ?? 0).toStringAsFixed(2);
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -300,6 +313,92 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           ],
         );
       },
+    );
+  }
+
+  Widget addingFunctionButton() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkWell(
+              onTap: context.read<CompartmentMapsSummariesCubit>().removePreviousMarker,
+              child: Container(
+                alignment: Alignment.center,
+                child: SvgGenImage(Assets.icons.icRefreshMap.path).svg(
+                  height: 68,
+                  width: 68,
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            InkWell(
+              onTap: context.read<CompartmentMapsSummariesCubit>().createNewMarker,
+              child: Container(
+                alignment: Alignment.center,
+                child: SvgGenImage(Assets.icons.icAcceptMap.path).svg(
+                  height: 68,
+                  width: 68,
+                ),
+              ),
+            ),
+            // const SizedBox(width: 16),
+            // InkWell(
+            //   onTap: context.read<CompartmentMapsSummariesCubit>().onRemoveMarker,
+            //   child: Container(
+            //     alignment: Alignment.center,
+            //     child: SvgGenImage(Assets.icons.icEditBlueCircle.path).svg(
+            //       height: 68,
+            //       width: 68,
+            //     ),
+            //   ),
+            // ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Expanded(
+                child: CmoFilledButton(
+                  title: LocaleKeys.complete_polygon.tr(),
+                  onTap: context.read<CompartmentMapsSummariesCubit>().onCompletePolygon,
+                ),
+              ),
+              const SizedBox(width: 24),
+              Expanded(
+                child: BlocSelector<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState, bool>(
+                  selector: (state) => state.isCompletePolygon,
+                  builder: (context, isCompletePolygon) {
+                    return CmoFilledButton(
+                      title: LocaleKeys.next.tr(),
+                      disable: !isCompletePolygon,
+                      onTap: () {
+                        final selectedCompartmentMapDetails = context.read<CompartmentMapsSummariesCubit>().state.selectedCompartmentMapDetails;
+                        if (selectedCompartmentMapDetails != null) {
+                          widget.onSave(
+                            selectedCompartmentMapDetails.getAreaInHa(),
+                            selectedCompartmentMapDetails.markers
+                                .map((e) => PolygonItem(
+                                      latitude: e.position.latitude,
+                                      longitude: e.position.longitude,
+                                    ))
+                                .toList(),
+                          );
+                        }
+
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -411,6 +510,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                       farmId: widget.farmId,
                       farmName: widget.farmName,
                       compartment: state.selectedCompartment,
+                      listCompartments: state.listCompartments,
                     );
                   },
                   child: Text(

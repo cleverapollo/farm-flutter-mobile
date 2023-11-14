@@ -11,6 +11,10 @@ import 'utils.dart';
 
 class MapUtils {
 
+  static LatLng generateLatLngFromMarker(Marker marker) {
+    return LatLng(marker.position.latitude, marker.position.longitude);
+  }
+
   static Future<Marker> generateMarkerFromLatLng(LatLng position, {
     void Function(MarkerId)? onTap,
     void Function(LatLng, MarkerId)? onDrag,
@@ -31,6 +35,26 @@ class MapUtils {
         Assets.icons.mapPolygonPoint.path,
         const Size(8, 8),
       ),
+    );
+  }
+
+  static Marker copyMarkerValue(
+    Marker marker, {
+    void Function(MarkerId)? onTap,
+    void Function(LatLng, MarkerId)? onDrag,
+    bool draggable = false,
+  }) {
+    return Marker(markerId: MarkerId('place_name_${marker.position.latitude}_${marker.position.longitude}_${DateTime.now().microsecondsSinceEpoch}'),).copyWith(
+      positionParam: marker.position,
+      iconParam: marker.icon,
+      draggableParam: marker.draggable,
+      onTapParam: () => onTap?.call(MarkerId('place_name_${marker.position.latitude}_${marker.position.longitude}_${DateTime.now().microsecondsSinceEpoch}')),
+      onDragParam: (latLng) {
+        onDrag?.call(
+          latLng,
+          MarkerId('place_name_${marker.position.latitude}_${marker.position.longitude}_${DateTime.now().microsecondsSinceEpoch}'),
+        );
+      },
     );
   }
 
