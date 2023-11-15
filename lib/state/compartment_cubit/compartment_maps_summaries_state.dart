@@ -42,6 +42,10 @@ class CompartmentMapDetail extends Object {
   double getPerimeter() {
     return MapUtils.computePerimeterInKm(polygons);
   }
+
+  double getAreaInHa() {
+    return MapUtils.computeAreaInHa(polygons);
+  }
 }
 
 class CompartmentMapsSummariesState {
@@ -52,21 +56,29 @@ class CompartmentMapsSummariesState {
   final Compartment selectedCompartment;
   final bool loading;
   final Object? error;
-  final bool isEditing;
+  final bool isUpdating;
+  final bool isCompletePolygon;
   final List<Marker> editingMarkers;
+  final List<Marker> temporaryMarkers;
   final Marker? selectedEditedMarker;
+  final CameraPosition? currentCameraPosition;
+
+  bool get isAddingNew => selectedCompartment.polygon.isBlank;
 
   CompartmentMapsSummariesState({
     required this.selectedCompartment,
     this.listCompartments = const <Compartment>[],
     this.listCompartmentMapDetails = const <CompartmentMapDetail>[],
     this.editingMarkers = const <Marker>[],
-    this.isEditing = false,
+    this.temporaryMarkers = const <Marker>[],
+    this.isUpdating = false,
+    this.isCompletePolygon = false,
     this.selectedCompartmentMapDetails,
     this.compartmentMapDetailByCameraPosition,
     this.loading = false,
     this.error,
     this.selectedEditedMarker,
+    this.currentCameraPosition,
   });
 
   CompartmentMapsSummariesState copyWith({
@@ -78,8 +90,11 @@ class CompartmentMapsSummariesState {
     CompartmentMapDetail? selectedCompartmentMapDetails,
     CompartmentMapDetail? compartmentMapDetailByCameraPosition,
     List<Marker>? editingMarkers,
-    bool? isEditing,
+    List<Marker>? temporaryMarkers,
+    bool? isUpdating,
+    bool? isCompletePolygon,
     Marker? selectedEditedMarker,
+    CameraPosition? currentCameraPosition,
   }) {
     return CompartmentMapsSummariesState(
       selectedCompartment: selectedCompartment ?? this.selectedCompartment,
@@ -90,8 +105,11 @@ class CompartmentMapsSummariesState {
       loading: loading ?? this.loading,
       error: error ?? this.error,
       editingMarkers: editingMarkers ?? this.editingMarkers,
-      isEditing: isEditing ?? this.isEditing,
+      temporaryMarkers: temporaryMarkers ?? this.temporaryMarkers,
+      isUpdating: isUpdating ?? this.isUpdating,
+      isCompletePolygon: isCompletePolygon ?? this.isCompletePolygon,
       selectedEditedMarker: selectedEditedMarker ?? this.selectedEditedMarker,
+      currentCameraPosition: currentCameraPosition ?? this.currentCameraPosition,
     );
   }
 
@@ -104,7 +122,9 @@ class CompartmentMapsSummariesState {
       compartmentMapDetailByCameraPosition: compartmentMapDetailByCameraPosition,
       loading: loading,
       error: error,
-      isEditing: isEditing,
+      isUpdating: isUpdating,
+      isCompletePolygon: isCompletePolygon,
+      currentCameraPosition: currentCameraPosition,
     );
   }
 }

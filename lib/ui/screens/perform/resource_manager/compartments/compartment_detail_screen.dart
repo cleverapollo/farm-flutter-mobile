@@ -18,13 +18,16 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../asi/widgets/bottom_sheet_selection.dart';
 import 'compartment_map_screen.dart';
+import 'compartment_maps_summaries_screen.dart';
 
 class CompartmentDetailScreen extends BaseStatefulWidget {
   final String? farmName;
+  final List<Compartment> listCompartments;
 
   CompartmentDetailScreen({
     Key? key,
     this.farmName,
+    this.listCompartments = const <Compartment>[],
   }) : super(
           key: key,
           screenName: LocaleKeys.compartment_detail.tr(),
@@ -33,6 +36,7 @@ class CompartmentDetailScreen extends BaseStatefulWidget {
   static dynamic push(
     BuildContext context, {
     required String farmId,
+    required List<Compartment> listCompartments,
     Compartment? compartment,
     String? farmName,
     String? campId,
@@ -44,12 +48,14 @@ class CompartmentDetailScreen extends BaseStatefulWidget {
             create: (_) => CompartmentDetailCubit(
               farmId,
               campId: campId,
-              compartment: compartment ?? const Compartment(
-                isActive: true,
-              ),
+              compartment: compartment ??
+                  const Compartment(
+                    isActive: true,
+                  ),
             ),
             child: CompartmentDetailScreen(
               farmName: farmName,
+              listCompartments: listCompartments,
             ),
           );
         },
@@ -72,25 +78,36 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
   }
 
   Future<void> navigateToMap() async {
-    List<PolygonItem>? points = <PolygonItem>[];
-    final compartment = context.read<CompartmentDetailCubit>().state.compartment;
+    // List<PolygonItem>? points = <PolygonItem>[];
+    // final compartment = context.read<CompartmentDetailCubit>().state.compartment;
+    //
+    // if (compartment.polygon.isNotBlank) {
+    //   final jsonArray = json.decode(compartment.polygon ?? '') as List?;
+    //   points = jsonArray
+    //       ?.map((model) => PolygonItem.fromJson(model as Map<String, dynamic>))
+    //       .toList();
+    // }
+    //
+    // await CompartmentMapScreen.push(
+    //   context,
+    //   farmId: context.read<CompartmentDetailCubit>().state.farmId,
+    //   farmName: widget.farmName,
+    //   campId: context.read<CompartmentDetailCubit>().state.campId,
+    //   compartment: compartment,
+    //   points: points
+    //       ?.map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0))
+    //       .toList(),
+    //   onSave: _compartmentDetailCubit.onChangeLocation,
+    // );
+  }
 
-    if (compartment.polygon.isNotBlank) {
-      final jsonArray = json.decode(compartment.polygon ?? '') as List?;
-      points = jsonArray
-          ?.map((model) => PolygonItem.fromJson(model as Map<String, dynamic>))
-          .toList();
-    }
-
-    await CompartmentMapScreen.push(
+  Future<void> navigateToMapSummaries() async {
+    await CompartmentMapsSummariesScreen.push(
       context,
       farmId: context.read<CompartmentDetailCubit>().state.farmId,
       farmName: widget.farmName,
-      campId: context.read<CompartmentDetailCubit>().state.campId,
-      compartment: compartment,
-      points: points
-          ?.map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0))
-          .toList(),
+      selectedCompartment: context.read<CompartmentDetailCubit>().state.compartment,
+      listCompartments: widget.listCompartments,
       onSave: _compartmentDetailCubit.onChangeLocation,
     );
   }
@@ -147,6 +164,30 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                             buildSelectAreaType(),
                             buildSelectProductGroupTemplate(),
                             buildSelectSpecies(),
+                            BlocSelector<CompartmentDetailCubit, CompartmentDetailState, Compartment>(
+                              selector: (state) => state.compartment,
+                              builder: (context, compartment) {
+                                return AttributeItem(
+                                  child: InkWell(
+                                    onTap: navigateToMapSummaries,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              LocaleKeys.outline_polygon_area.tr(),
+                                              style: context.textStyles.bodyBold.blueDark2,
+                                            ),
+                                          ),
+                                          Assets.icons.icArrowRight.svgBlack,
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                             BlocSelector<CompartmentDetailCubit, CompartmentDetailState, Compartment>(
                               selector: (state) => state.compartment,
                               builder: (context, compartment) {

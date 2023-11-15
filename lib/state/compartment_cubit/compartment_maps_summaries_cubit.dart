@@ -23,15 +23,14 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
   Future<void> initMapData() async {
     emit(state.copyWith(loading: true));
     final listCompartmentMapDetails = <CompartmentMapDetail>[];
-    final selectedCompartmentMapDetail = await generateCompartmentMapDetailFromCompartment(state.selectedCompartment);
     if (state.listCompartments.isNotBlank) {
       for (final compartment in state.listCompartments) {
         final compartmentMapDetail = await generateCompartmentMapDetailFromCompartment(compartment);
-        if (compartmentMapDetail != null) {
-          listCompartmentMapDetails.add(compartmentMapDetail);
-        }
+        listCompartmentMapDetails.add(compartmentMapDetail);
       }
     }
+
+    final selectedCompartmentMapDetail = await generateCompartmentMapDetailFromCompartment(state.selectedCompartment);
 
     emit(
       state.copyWith(
@@ -43,7 +42,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     );
   }
 
-  Future<CompartmentMapDetail?> generateCompartmentMapDetailFromCompartment(
+  Future<CompartmentMapDetail> generateCompartmentMapDetailFromCompartment(
       Compartment compartment,
       ) async {
     if (compartment.polygon.isNotBlank) {
@@ -64,47 +63,35 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
       }
 
       return compartmentMapDetail.copyWith(markers: markers);
-    }
-
-    return null;
-  }
-
-  void onTapMarker(MarkerId markerId) {
-    if (state.isEditing) {
-      final marker = state.editingMarkers.firstWhereOrNull((element) => element.markerId == markerId);
-      if (marker != null) {
-        final editingMarkers = List<Marker>.from(state.editingMarkers);
-        editingMarkers.remove(marker);
-        editingMarkers.add(marker);
-        emit(
-          state.copyWith(
-            selectedEditedMarker: marker,
-            editingMarkers: editingMarkers,
-          ),
-        );
-      }
+    } else {
+      return CompartmentMapDetail(
+        compartment: compartment,
+      );
     }
   }
 
   void onCameraMove(CameraPosition cameraPosition) {
-    if (state.isEditing && state.selectedEditedMarker != null) {
-      final editingMarkers = List<Marker>.from(state.editingMarkers);
-      if (editingMarkers.length == 1) {
-        editingMarkers.add(editingMarkers.last);
+    emit(state.copyWith(currentCameraPosition: cameraPosition));
+    if (state.isUpdating && !state.isCompletePolygon) {
+      final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
+      if (temporaryMarkers.isNotBlank) {
+        if (temporaryMarkers.length == 1) {
+          temporaryMarkers.add(MapUtils.copyMarkerValue(temporaryMarkers.last));
+        }
+
+        temporaryMarkers[temporaryMarkers.length - 1] = temporaryMarkers[temporaryMarkers.length - 1].copyWith(
+          positionParam: LatLng(
+            cameraPosition.target.latitude,
+            cameraPosition.target.longitude,
+          ),
+        );
+
+        emit(
+          state.copyWith(
+            temporaryMarkers: temporaryMarkers,
+          ),
+        );
       }
-
-      editingMarkers[editingMarkers.length - 1] = editingMarkers[editingMarkers.length - 1].copyWith(
-        positionParam: LatLng(
-          cameraPosition.target.latitude,
-          cameraPosition.target.longitude,
-        ),
-      );
-
-      emit(
-        state.copyWith(
-          editingMarkers: editingMarkers,
-        ),
-      );
     }
 
     final latLng = LatLng(
@@ -127,10 +114,70 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     );
   }
 
+  void onTapMarker(MarkerId markerId) {
+    if (state.isUpdating) {
+      final marker = state.editingMarkers.firstWhereOrNull((element) => element.markerId == markerId);
+      if (marker != null) {
+        final editingMarkers = List<Marker>.from(state.editingMarkers);
+        editingMarkers.remove(marker);
+        editingMarkers.add(marker);
+        emit(
+          state.copyWith(
+            selectedEditedMarker: marker,
+            editingMarkers: editingMarkers,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> createNewMarker() async {
+    emit(state.copyWith(isUpdating: true));
+    if (state.currentCameraPosition == null) return;
+    final marker = await MapUtils.generateMarkerFromLatLng(state.currentCameraPosition!.target);
+    emit(
+      state.copyWith(
+        editingMarkers: state.editingMarkers + [marker],
+        temporaryMarkers: state.temporaryMarkers + [marker],
+        isCompletePolygon: false,
+      ),
+    );
+  }
+
+  void removePreviousMarker() {
+    final markers = state.temporaryMarkers;
+    if (markers.isEmpty) return;
+    markers.removeLast();
+    emit(
+      state.copyWith(
+        editingMarkers: markers,
+        temporaryMarkers: markers,
+        isCompletePolygon: false,
+      ),
+    );
+  }
+
+  void onCompletePolygon() {
+    final selectedCompartmentMapDetails = state.selectedCompartmentMapDetails?.copyWith(
+      markers: state.temporaryMarkers,
+      polygons: state.temporaryMarkers
+          .map(MapUtils.generateLatLngFromMarker)
+          .toList(),
+    );
+
+    emit(
+      state.copyWith(
+        isCompletePolygon: true,
+        compartmentMapDetailByCameraPosition: selectedCompartmentMapDetails,
+        selectedCompartmentMapDetails: selectedCompartmentMapDetails,
+      ),
+    );
+  }
+
   void editingPolygon() {
     emit(
       state.copyWith(
-        isEditing: true,
+        isUpdating: true,
         editingMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
       ),
     );

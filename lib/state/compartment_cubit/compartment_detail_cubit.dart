@@ -14,9 +14,11 @@ import 'package:cmo/utils/utils.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
-  CompartmentDetailCubit(String farmId,
-      {required Compartment compartment, String? campId})
-      : super(CompartmentDetailState(
+  CompartmentDetailCubit(
+    String farmId, {
+    required Compartment compartment,
+    String? campId,
+  }) : super(CompartmentDetailState(
             farmId: farmId,
             campId: campId,
             compartment: compartment.copyWith(
