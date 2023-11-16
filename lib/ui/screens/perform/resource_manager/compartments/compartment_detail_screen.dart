@@ -22,10 +22,12 @@ import 'compartment_maps_summaries_screen.dart';
 
 class CompartmentDetailScreen extends BaseStatefulWidget {
   final String? farmName;
+  final bool isEditing;
 
   CompartmentDetailScreen({
     Key? key,
     this.farmName,
+    this.isEditing = false,
   }) : super(
           key: key,
           screenName: LocaleKeys.compartment_detail.tr(),
@@ -53,6 +55,7 @@ class CompartmentDetailScreen extends BaseStatefulWidget {
             ),
             child: CompartmentDetailScreen(
               farmName: farmName,
+              isEditing: compartment != null,
             ),
           );
         },
@@ -172,8 +175,11 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              LocaleKeys.outline_polygon_area.tr(),
-                                              style: context.textStyles.bodyBold.blueDark2,
+                                              widget.isEditing
+                                                  ? LocaleKeys.view_edit_polygon_area.tr()
+                                                  : LocaleKeys.outline_polygon_area.tr(),
+                                              style: context.textStyles.bodyBold
+                                                  .blueDark2,
                                             ),
                                           ),
                                           Assets.icons.icArrowRight.svgBlack,

@@ -244,41 +244,6 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           ),
           const SizedBox(height: 8,),
           compartmentDetailData(),
-          const SizedBox(height: 32),
-          BlocSelector<CompartmentMapsSummariesCubit,
-              CompartmentMapsSummariesState, bool>(
-            selector: (state) => state.isUpdating,
-            builder: (context, isEditing) {
-              // if (isEditing) {
-              //   return editingFunctionButton();
-              // }
-
-              if (context.read<CompartmentMapsSummariesCubit>().state.isAddingNew) {
-                return addingFunctionButton();
-              }
-
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () async {
-                      await showEditDialog();
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      color: Colors.white,
-                      child:
-                          SvgGenImage(Assets.icons.icEditBlueCircle.path).svg(
-                        width: 60,
-                        height: 60,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                ],
-              );
-            },
-          ),
           const SizedBox(height: 24),
         ],
       ),
@@ -308,6 +273,36 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
               '${LocaleKeys.area.tr()} $area ha ${LocaleKeys.measured.tr()}',
               style: context.textStyles.bodyNormal.blueDark2,
             ),
+            const SizedBox(height: 32),
+            if (state.isAddingNew) ...[
+              addingFunctionButton(),
+            ] else if (state.isSelectedCompartmentMapDetails) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: () async {
+                      await showEditDialog();
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      color: Colors.white,
+                      child:
+                          SvgGenImage(Assets.icons.icEditBlueCircle.path).svg(
+                        width: 60,
+                        height: 60,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                ],
+              ),
+            ] else ...[
+              const SizedBox(
+                width: 60,
+                height: 60,
+              ),
+            ],
           ],
         );
       },

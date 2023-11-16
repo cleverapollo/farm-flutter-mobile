@@ -65,6 +65,10 @@ class CompartmentMapsSummariesState {
 
   bool get isAddingNew => selectedCompartment.polygon.isBlank;
 
+  bool get isSelectedCompartmentMapDetails =>
+      compartmentMapDetailByCameraPosition?.compartment.localCompartmentId ==
+      selectedCompartmentMapDetails?.compartment.localCompartmentId;
+
   CompartmentMapsSummariesState({
     required this.selectedCompartment,
     this.listCompartments = const <Compartment>[],
