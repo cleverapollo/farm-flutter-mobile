@@ -94,8 +94,10 @@ class FarmDashBoardInfo {
   FarmDashBoardInfo({
     this.totalLabour = 0,
     this.totalStakeholder = 0,
+    this.charcoalPlantationRoleEnum,
   });
 
   final int totalLabour;
   final int totalStakeholder;
+  final CharcoalPlantationRoleEnum? charcoalPlantationRoleEnum;
 }

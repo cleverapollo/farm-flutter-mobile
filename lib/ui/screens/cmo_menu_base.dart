@@ -343,7 +343,7 @@ class _CampCompartmentInfoItemState extends State<CampCompartmentInfoItem> {
         if (charcoalPlantationRoleEnum == null) return;
         switch (charcoalPlantationRoleEnum) {
           case CharcoalPlantationRoleEnum.isCharcoal:
-            CampManagementScreen.push(context);
+            // CampManagementScreen.push(context);
             break;
           case CharcoalPlantationRoleEnum.isPlantation:
             CompartmentScreen.push(context);

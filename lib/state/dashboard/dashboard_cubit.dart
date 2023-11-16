@@ -16,15 +16,23 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
   Future<void> initializeFarmDashBoard() async {
     try {
       emit(state.copyWith(loading: true));
-      final farm = await configService.getActiveFarm();
+      final userInfo = await configService.getActiveUser();
+      final activeFarm = await configService.getActiveFarm();
       final data = await cmoDatabaseMasterService
-          .getFarmerWorkersByFarmId(farm?.farmId ?? '');
+          .getFarmerWorkersByFarmId(activeFarm?.farmId ?? '');
+
+      CharcoalPlantationRoleEnum? getCharcoalPlantationRole;
+      if (activeFarm?.groupSchemeId != null && userInfo != null) {
+        getCharcoalPlantationRole = userInfo.getCharcoalPlantationRole;
+      }
+
       final totalStakeholder =
           await cmoDatabaseMasterService.getCountStakeholder();
       emit(state.copyWith(
           farmDashBoardInfo: FarmDashBoardInfo(
             totalLabour: data.length,
             totalStakeholder: totalStakeholder,
+              charcoalPlantationRoleEnum: getCharcoalPlantationRole,
           ),
           loading: false));
     } catch (e) {

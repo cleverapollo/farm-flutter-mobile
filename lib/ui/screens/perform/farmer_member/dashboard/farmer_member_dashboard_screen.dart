@@ -1,4 +1,5 @@
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/register_management.dart';
@@ -36,14 +37,15 @@ class _FarmerMemberDashboardScreenState
           physics: const ClampingScrollPhysics(),
           padding: const EdgeInsets.all(20),
           children: [
-            CmoCard(
-              onTap: () {
-                SiteManagementPlanScreen.push(context);
-              },
-              content: [
-                CmoCardHeader(title: LocaleKeys.siteManagementPlan.tr()),
-              ],
-            ),
+            if (data.farmDashBoardInfo?.charcoalPlantationRoleEnum != CharcoalPlantationRoleEnum.isCharcoal)
+              CmoCard(
+                onTap: () {
+                  SiteManagementPlanScreen.push(context);
+                },
+                content: [
+                  CmoCardHeader(title: LocaleKeys.siteManagementPlan.tr()),
+                ],
+              ),
             const SizedBox(height: 20),
             CmoTappable(
               onTap: () async {
