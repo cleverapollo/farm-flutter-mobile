@@ -11,11 +11,9 @@ part 'compartment_maps_summaries_state.dart';
 
 class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState> {
   CompartmentMapsSummariesCubit({
-    required List<Compartment> listCompartments,
     required Compartment selectedCompartment,
   }) : super(
           CompartmentMapsSummariesState(
-            listCompartments: listCompartments,
             selectedCompartment: selectedCompartment,
           ),
         );
@@ -23,8 +21,10 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
   Future<void> initMapData() async {
     emit(state.copyWith(loading: true));
     final listCompartmentMapDetails = <CompartmentMapDetail>[];
-    if (state.listCompartments.isNotBlank) {
-      for (final compartment in state.listCompartments) {
+    final activeGroupScheme = await configService.getActiveGroupScheme();
+    final listCompartments = await cmoDatabaseMasterService.getCompartmentsByGroupSchemeId(groupSchemeId: activeGroupScheme?.groupSchemeId);
+    if (listCompartments.isNotBlank) {
+      for (final compartment in listCompartments) {
         final compartmentMapDetail = await generateCompartmentMapDetailFromCompartment(compartment);
         listCompartmentMapDetails.add(compartmentMapDetail);
       }
@@ -35,9 +35,10 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     emit(
       state.copyWith(
         loading: false,
+        listCompartments: listCompartments,
+        listCompartmentMapDetails: listCompartmentMapDetails,
         selectedCompartmentMapDetails: selectedCompartmentMapDetail,
         compartmentMapDetailByCameraPosition: selectedCompartmentMapDetail,
-        listCompartmentMapDetails: listCompartmentMapDetails,
       ),
     );
   }

@@ -22,12 +22,10 @@ import 'compartment_maps_summaries_screen.dart';
 
 class CompartmentDetailScreen extends BaseStatefulWidget {
   final String? farmName;
-  final List<Compartment> listCompartments;
 
   CompartmentDetailScreen({
     Key? key,
     this.farmName,
-    this.listCompartments = const <Compartment>[],
   }) : super(
           key: key,
           screenName: LocaleKeys.compartment_detail.tr(),
@@ -55,7 +53,6 @@ class CompartmentDetailScreen extends BaseStatefulWidget {
             ),
             child: CompartmentDetailScreen(
               farmName: farmName,
-              listCompartments: listCompartments,
             ),
           );
         },
@@ -107,7 +104,6 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
       farmId: context.read<CompartmentDetailCubit>().state.farmId,
       farmName: widget.farmName,
       selectedCompartment: context.read<CompartmentDetailCubit>().state.compartment,
-      listCompartments: widget.listCompartments,
       onSave: _compartmentDetailCubit.onChangeLocation,
     );
   }

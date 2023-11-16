@@ -30,7 +30,6 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
   static dynamic push(
       BuildContext context, {
         required String farmId,
-        required List<Compartment> listCompartments,
         required Compartment selectedCompartment,
         required void Function(double?, List<PolygonItem>?) onSave,
         String? farmName,
@@ -41,7 +40,6 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
         builder: (_) {
           return BlocProvider(
             create: (_) => CompartmentMapsSummariesCubit(
-              listCompartments: listCompartments,
               selectedCompartment: selectedCompartment,
             ),
             child: CompartmentMapsSummariesScreen(
