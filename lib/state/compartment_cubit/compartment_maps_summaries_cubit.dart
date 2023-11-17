@@ -56,7 +56,6 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
       for (final item in compartmentMapDetail.polygons) {
         final marker = await MapUtils.generateMarkerFromLatLng(
           item,
-          draggable: true,
           onTap: onTapMarker,
         );
 
@@ -73,7 +72,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
 
   void onCameraMove(CameraPosition cameraPosition) {
     emit(state.copyWith(currentCameraPosition: cameraPosition));
-    if (state.isUpdating && !state.isCompletePolygon) {
+    if (state.isAddingNew && !state.isCompletePolygon) {
       final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
       if (temporaryMarkers.isNotBlank) {
         if (temporaryMarkers.length == 1) {
@@ -93,6 +92,32 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
           ),
         );
       }
+    } else if (state.isUpdating) {
+      final temporaryMarkers = state.temporaryMarkers;
+      var selectedMarker = state.temporaryMarkers.firstWhereOrNull((element) => element.markerId == state.selectedEditedMarker?.markerId);
+      if (selectedMarker != null) {
+        final selectedMarkerIndex = state.temporaryMarkers.indexOf(selectedMarker);
+        temporaryMarkers[selectedMarkerIndex] = temporaryMarkers[selectedMarkerIndex].copyWith(
+          positionParam: LatLng(
+            cameraPosition.target.latitude,
+            cameraPosition.target.longitude,
+          ),
+        );
+        selectedMarker = selectedMarker.copyWith(
+          positionParam: LatLng(
+            cameraPosition.target.latitude,
+            cameraPosition.target.longitude,
+          ),
+        );
+      }
+
+
+      emit(
+        state.copyWith(
+          selectedEditedMarker: selectedMarker,
+          temporaryMarkers: List<Marker>.from(temporaryMarkers),
+        ),
+      );
     }
 
     final latLng = LatLng(
@@ -117,15 +142,12 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
 
   void onTapMarker(MarkerId markerId) {
     if (state.isUpdating) {
-      final marker = state.editingMarkers.firstWhereOrNull((element) => element.markerId == markerId);
+      final marker = state.temporaryMarkers.firstWhereOrNull((element) => element.markerId == markerId);
       if (marker != null) {
-        final editingMarkers = List<Marker>.from(state.editingMarkers);
-        editingMarkers.remove(marker);
-        editingMarkers.add(marker);
         emit(
           state.copyWith(
             selectedEditedMarker: marker,
-            editingMarkers: editingMarkers,
+            editingMarkers: state.temporaryMarkers,
           ),
         );
       }
@@ -133,7 +155,6 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
   }
 
   Future<void> createNewMarker() async {
-    emit(state.copyWith(isUpdating: true));
     if (state.currentCameraPosition == null) return;
     final marker = await MapUtils.generateMarkerFromLatLng(state.currentCameraPosition!.target);
     emit(
@@ -159,9 +180,11 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
   }
 
   void onCompletePolygon() {
+    final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
+    temporaryMarkers.removeLast();
     final selectedCompartmentMapDetails = state.selectedCompartmentMapDetails?.copyWith(
-      markers: state.temporaryMarkers,
-      polygons: state.temporaryMarkers
+      markers: temporaryMarkers,
+      polygons: temporaryMarkers
           .map(MapUtils.generateLatLngFromMarker)
           .toList(),
     );
@@ -180,6 +203,18 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
       state.copyWith(
         isUpdating: true,
         editingMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
+        temporaryMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
+      ),
+    );
+  }
+
+  Future<void> onUpdateNewPositionMarker() async {
+    emit(
+      state.resetEditingMarkers(
+        isCleanEditingMarkers: false,
+        isCleanTemporaryMarkers: false,
+      ).copyWith(
+        editingMarkers: state.temporaryMarkers,
       ),
     );
   }

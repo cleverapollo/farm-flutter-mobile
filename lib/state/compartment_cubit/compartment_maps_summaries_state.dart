@@ -108,16 +108,20 @@ class CompartmentMapsSummariesState {
       compartmentMapDetailByCameraPosition: compartmentMapDetailByCameraPosition,
       loading: loading ?? this.loading,
       error: error ?? this.error,
-      editingMarkers: editingMarkers ?? this.editingMarkers,
-      temporaryMarkers: temporaryMarkers ?? this.temporaryMarkers,
       isUpdating: isUpdating ?? this.isUpdating,
       isCompletePolygon: isCompletePolygon ?? this.isCompletePolygon,
-      selectedEditedMarker: selectedEditedMarker ?? this.selectedEditedMarker,
       currentCameraPosition: currentCameraPosition ?? this.currentCameraPosition,
+      editingMarkers: editingMarkers ?? this.editingMarkers,
+      temporaryMarkers: temporaryMarkers ?? this.temporaryMarkers,
+      selectedEditedMarker: selectedEditedMarker ?? this.selectedEditedMarker,
     );
   }
 
-  CompartmentMapsSummariesState resetEditingMarkers() {
+  CompartmentMapsSummariesState resetEditingMarkers({
+    bool isCleanSelectedEditedMarker = true,
+    bool isCleanEditingMarkers = true,
+    bool isCleanTemporaryMarkers = true,
+  }) {
     return CompartmentMapsSummariesState(
       selectedCompartment: selectedCompartment,
       listCompartments: listCompartments,
@@ -129,6 +133,9 @@ class CompartmentMapsSummariesState {
       isUpdating: isUpdating,
       isCompletePolygon: isCompletePolygon,
       currentCameraPosition: currentCameraPosition,
+      editingMarkers: isCleanEditingMarkers ? <Marker>[] : editingMarkers,
+      temporaryMarkers: isCleanTemporaryMarkers ? <Marker>[] : temporaryMarkers,
+      selectedEditedMarker: isCleanSelectedEditedMarker ? null : selectedEditedMarker,
     );
   }
 }

@@ -73,7 +73,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       return <Polyline>{};
     }
 
-    if (state.isUpdating) {
+    if (state.isAddingNew) {
       final markers = state.temporaryMarkers;
       var polylines = <Polyline>{};
       if (markers.length < 2) {
@@ -111,6 +111,46 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       }
 
       return polylines;
+    } else if (state.isUpdating) {
+      final markers = state.temporaryMarkers;
+      var now = DateTime.now().microsecondsSinceEpoch;
+      var polylines = <Polyline>{};
+      if (markers.length < 2) {
+        return polylines;
+      }
+
+      for (var i = 1; i < markers.length; i++) {
+        polylines.add(
+          Polyline(
+            polylineId: PolylineId('${markers[i].markerId.value} ${i - 1}_$i $now'),
+            points: [
+              markers[i - 1].position,
+              markers[i].position,
+            ],
+            color: context.colors.yellow,
+            width: 5,
+            startCap: Cap.roundCap,
+            endCap: Cap.roundCap,
+          ),
+        );
+
+        now++;
+      }
+
+      polylines.add(
+        Polyline(
+          polylineId: PolylineId(
+              '${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0 $now}'),
+          points: [
+            markers[markers.length - 1].position,
+            markers[0].position,
+          ],
+          color: context.colors.red,
+          width: 5,
+        ),
+      );
+
+      return polylines;
     }
 
     return <Polyline>{};
@@ -133,7 +173,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       return {selectedPolygon!};
     }
 
-    if (selectedPolygon != null) {
+    if (selectedPolygon != null && !state.isUpdating) {
       polygon.add(selectedPolygon);
     }
 
@@ -244,6 +284,8 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           ),
           const SizedBox(height: 8,),
           compartmentDetailData(),
+          const SizedBox(height: 32),
+          functionButtons(),
           const SizedBox(height: 24),
         ],
       ),
@@ -251,11 +293,12 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
   }
 
   Widget compartmentDetailData() {
-    return BlocBuilder<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState>(
-      builder: (context, state) {
-        final compartmentName = state.compartmentMapDetailByCameraPosition?.compartment.unitNumber ?? '';
-        final perimeter = (state.compartmentMapDetailByCameraPosition?.getPerimeter() ?? 0).toStringAsFixed(2);
-        final area = (state.compartmentMapDetailByCameraPosition?.getAreaInHa() ?? 0).toStringAsFixed(2);
+    return BlocSelector<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState, CompartmentMapDetail?>(
+      selector: (state) => state.compartmentMapDetailByCameraPosition,
+      builder: (context, compartmentMapDetailByCameraPosition) {
+        final compartmentName = compartmentMapDetailByCameraPosition?.compartment.unitNumber ?? '';
+        final perimeter = (compartmentMapDetailByCameraPosition?.getPerimeter() ?? 0).toStringAsFixed(2);
+        final area = (compartmentMapDetailByCameraPosition?.getAreaInHa() ?? 0).toStringAsFixed(2);
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -273,38 +316,46 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
               '${LocaleKeys.area.tr()} $area ha ${LocaleKeys.measured.tr()}',
               style: context.textStyles.bodyNormal.blueDark2,
             ),
-            const SizedBox(height: 32),
-            if (state.isAddingNew) ...[
-              addingFunctionButton(),
-            ] else if (state.isSelectedCompartmentMapDetails) ...[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () async {
-                      await showEditDialog();
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      color: Colors.white,
-                      child:
-                          SvgGenImage(Assets.icons.icEditBlueCircle.path).svg(
-                        width: 60,
-                        height: 60,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                ],
-              ),
-            ] else ...[
-              const SizedBox(
-                width: 60,
-                height: 60,
-              ),
-            ],
           ],
         );
+      },
+    );
+  }
+
+  Widget functionButtons() {
+    return BlocBuilder<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState>(
+      builder: (context, state) {
+        Widget? child;
+        if (state.isAddingNew) {
+          child = addingFunctionButton();
+        } else if (state.isSelectedCompartmentMapDetails && !state.isUpdating) {
+          child = Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                onTap: context.read<CompartmentMapsSummariesCubit>().editingPolygon,
+                child: Container(
+                  alignment: Alignment.center,
+                  color: Colors.white,
+                  child: SvgGenImage(Assets.icons.icEditBlueCircle.path).svg(
+                    width: 60,
+                    height: 60,
+                  ),
+                ),
+              ),
+            ],
+          );
+        } else if (state.isUpdating) {
+          child = editingFunctionButton();
+        } else {
+          child = const SizedBox(
+            width: 60,
+            height: 60,
+          );
+        }
+
+        return child;
+
       },
     );
   }
@@ -336,17 +387,6 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                 ),
               ),
             ),
-            // const SizedBox(width: 16),
-            // InkWell(
-            //   onTap: context.read<CompartmentMapsSummariesCubit>().onRemoveMarker,
-            //   child: Container(
-            //     alignment: Alignment.center,
-            //     child: SvgGenImage(Assets.icons.icEditBlueCircle.path).svg(
-            //       height: 68,
-            //       width: 68,
-            //     ),
-            //   ),
-            // ),
           ],
         ),
         const SizedBox(height: 8),
@@ -402,10 +442,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
-              onTap: () {
-                context.read<CompartmentMapsSummariesCubit>().onResetPolygon();
-                moveMapCameraToInitLocation();
-              },
+              onTap: context.read<CompartmentMapsSummariesCubit>().removePreviousMarker,
               child: Container(
                 alignment: Alignment.center,
                 child: SvgGenImage(Assets.icons.icRefreshMap.path).svg(
@@ -416,10 +453,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
             ),
             const SizedBox(width: 16),
             InkWell(
-              onTap: context.read<CompartmentMapsSummariesCubit>().onRemoveMarker,
+              onTap: context.read<CompartmentMapsSummariesCubit>().onUpdateNewPositionMarker,
               child: Container(
                 alignment: Alignment.center,
-                child: SvgGenImage(Assets.icons.icDeleteMap.path).svg(
+                child: SvgGenImage(Assets.icons.icAcceptMap.path).svg(
                   height: 68,
                   width: 68,
                 ),
@@ -452,72 +489,6 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           ),
         ),
       ],
-    );
-  }
-
-  Future<void> showEditDialog() async {
-    await showDialog<void>(
-      context: context,
-      builder: (_) {
-        return Dialog(
-          alignment: Alignment.center,
-          clipBehavior: Clip.antiAlias,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 40),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 8, 8, 40),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: Navigator.of(context).pop,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Assets.icons.icClose.svgBlack,
-                  ),
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    context.read<CompartmentMapsSummariesCubit>().editingPolygon();
-                  },
-                  child: Text(
-                    LocaleKeys.edit_polygon.tr(),
-                    style: context.textStyles.bodyBold.blueDark2,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                ),
-                const SizedBox(
-                  height: 28,
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                    final state = context.read<CompartmentMapsSummariesCubit>().state;
-                    await CompartmentDetailScreen.push(
-                      context,
-                      farmId: widget.farmId,
-                      farmName: widget.farmName,
-                      compartment: state.selectedCompartment,
-                      listCompartments: state.listCompartments,
-                    );
-                  },
-                  child: Text(
-                    LocaleKeys.edit_details.tr(),
-                    style: context.textStyles.bodyBold.blueDark2,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }
