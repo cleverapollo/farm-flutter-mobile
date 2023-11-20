@@ -145,7 +145,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
             markers[markers.length - 1].position,
             markers[0].position,
           ],
-          color: context.colors.red,
+          color: context.colors.yellow,
           width: 5,
         ),
       );
@@ -442,7 +442,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
-              onTap: context.read<CompartmentMapsSummariesCubit>().removePreviousMarker,
+              onTap: context.read<CompartmentMapsSummariesCubit>().onResetPolygon,
               child: Container(
                 alignment: Alignment.center,
                 child: SvgGenImage(Assets.icons.icRefreshMap.path).svg(
@@ -470,12 +470,18 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           child: Row(
             children: [
               Expanded(
-                child: CmoFilledButton(
-                  title: LocaleKeys.accept_changes.tr(),
-                  onTap: () async {
-                    await context.read<CompartmentMapsSummariesCubit>().onAcceptChanges();
-                    Navigator.of(context).pop();
-                  },
+                child: BlocSelector<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState, bool>(
+                  selector: (state) => state.isChanged,
+                  builder: (context, isChanged) => CmoFilledButton(
+                    title: LocaleKeys.accept_changes.tr(),
+                    disable: !isChanged,
+                    onTap: () {
+                      context
+                          .read<CompartmentMapsSummariesCubit>()
+                          .onAcceptChanges(onSave: widget.onSave);
+                      Navigator.of(context).pop();
+                    },
+                  ),
                 ),
               ),
               const SizedBox(width: 24),

@@ -133,9 +133,17 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
       ),
     );
 
+    final selectedCompartmentMapDetail = MapUtils.checkPositionInsidePolygon(
+      latLng: latLng,
+      polygon: state.selectedCompartmentMapDetails?.polygons ?? <LatLng>[],
+    );
+
     emit(
       state.copyWith(
-        compartmentMapDetailByCameraPosition: compartmentMapDetail,
+        compartmentMapDetailByCameraPosition: (selectedCompartmentMapDetail
+                ? state.selectedCompartmentMapDetails
+                : null) ??
+            compartmentMapDetail,
       ),
     );
   }
@@ -210,19 +218,28 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
 
   Future<void> onUpdateNewPositionMarker() async {
     emit(
-      state.resetEditingMarkers(
-        isCleanEditingMarkers: false,
-        isCleanTemporaryMarkers: false,
-      ).copyWith(
-        editingMarkers: state.temporaryMarkers,
-      ),
+      state
+          .resetEditingMarkers(
+            isCleanEditingMarkers: false,
+            isCleanTemporaryMarkers: false,
+          )
+          .copyWith(
+            editingMarkers: state.temporaryMarkers,
+            isChanged: true,
+          ),
     );
   }
 
   void onResetPolygon() {
     emit(
       state.resetEditingMarkers().copyWith(
-            editingMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
+            isChanged: false,
+            temporaryMarkers: List<Marker>.from(
+              state.selectedCompartmentMapDetails?.markers ?? [],
+            ),
+            editingMarkers: List<Marker>.from(
+              state.selectedCompartmentMapDetails?.markers ?? [],
+            ),
           ),
     );
   }
@@ -244,31 +261,29 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     }
   }
 
-  Future<void> onAcceptChanges() async {
-    final listLatLng = state.editingMarkers
-        .map(
-          (e) => LatLng(
-            e.position.latitude,
-            e.position.longitude,
-          ),
-        )
-        .toList();
-    final listPolygonItem = state.editingMarkers
-        .map(
-          (e) => PolygonItem(
-            latitude: e.position.latitude,
-            longitude: e.position.longitude,
-          ),
-        )
-        .toList();
-    await cmoDatabaseMasterService.cacheCompartment(
-      state.selectedCompartment.copyWith(
-        updateDT: DateTime.now(),
-        isActive: true,
-        polygonArea: MapUtils.computeAreaInHa(listLatLng),
-        polygon: json.encode(listPolygonItem),
-      ),
-      isDirect: true,
+  void onAcceptChanges({
+    required void Function(double?, List<PolygonItem>?) onSave,
+  }) {
+    if (state.selectedCompartmentMapDetails == null) {
+      return;
+    }
+
+    final selectedCompartmentMapDetails =
+        state.selectedCompartmentMapDetails!.copyWith(
+      markers: state.editingMarkers,
+      polygons: state.editingMarkers.map(MapUtils.generateLatLngFromMarker).toList(),
+    );
+
+    onSave(
+      selectedCompartmentMapDetails.getAreaInHa(),
+      selectedCompartmentMapDetails.markers
+          .map(
+            (e) => PolygonItem(
+              latitude: e.position.latitude,
+              longitude: e.position.longitude,
+            ),
+          )
+          .toList(),
     );
   }
 }

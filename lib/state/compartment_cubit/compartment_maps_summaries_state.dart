@@ -62,7 +62,7 @@ class CompartmentMapsSummariesState {
   final List<Marker> temporaryMarkers;
   final Marker? selectedEditedMarker;
   final CameraPosition? currentCameraPosition;
-
+  final bool isChanged;
   bool get isAddingNew => selectedCompartment.polygon.isBlank;
 
   bool get isSelectedCompartmentMapDetails =>
@@ -83,6 +83,7 @@ class CompartmentMapsSummariesState {
     this.error,
     this.selectedEditedMarker,
     this.currentCameraPosition,
+    this.isChanged = false,
   });
 
   CompartmentMapsSummariesState copyWith({
@@ -97,6 +98,7 @@ class CompartmentMapsSummariesState {
     List<Marker>? temporaryMarkers,
     bool? isUpdating,
     bool? isCompletePolygon,
+    bool? isChanged,
     Marker? selectedEditedMarker,
     CameraPosition? currentCameraPosition,
   }) {
@@ -110,6 +112,7 @@ class CompartmentMapsSummariesState {
       error: error ?? this.error,
       isUpdating: isUpdating ?? this.isUpdating,
       isCompletePolygon: isCompletePolygon ?? this.isCompletePolygon,
+      isChanged: isChanged ?? this.isChanged,
       currentCameraPosition: currentCameraPosition ?? this.currentCameraPosition,
       editingMarkers: editingMarkers ?? this.editingMarkers,
       temporaryMarkers: temporaryMarkers ?? this.temporaryMarkers,
@@ -136,6 +139,7 @@ class CompartmentMapsSummariesState {
       editingMarkers: isCleanEditingMarkers ? <Marker>[] : editingMarkers,
       temporaryMarkers: isCleanTemporaryMarkers ? <Marker>[] : temporaryMarkers,
       selectedEditedMarker: isCleanSelectedEditedMarker ? null : selectedEditedMarker,
+      isChanged: isChanged,
     );
   }
 }
