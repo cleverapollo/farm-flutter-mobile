@@ -28,8 +28,8 @@ class CompartmentMapDetail extends Object {
       return Constants.mapCenter;
     }
 
-    double centerLat = 0;
-    double centerLng = 0;
+    var centerLat = 0.0;
+    var centerLng = 0.0;
 
     for (final item in polygons) {
       centerLat += item.latitude;
@@ -61,6 +61,7 @@ class CompartmentMapsSummariesState {
   final List<Marker> editingMarkers;
   final List<Marker> temporaryMarkers;
   final Marker? selectedEditedMarker;
+  final Polyline? selectedEditedPolyline;
   final CameraPosition? currentCameraPosition;
   final bool isChanged;
   bool get isAddingNew => selectedCompartment.polygon.isBlank;
@@ -81,6 +82,7 @@ class CompartmentMapsSummariesState {
     this.compartmentMapDetailByCameraPosition,
     this.loading = false,
     this.error,
+    this.selectedEditedPolyline,
     this.selectedEditedMarker,
     this.currentCameraPosition,
     this.isChanged = false,
@@ -101,6 +103,7 @@ class CompartmentMapsSummariesState {
     bool? isChanged,
     Marker? selectedEditedMarker,
     CameraPosition? currentCameraPosition,
+    Polyline? selectedEditedPolyline,
   }) {
     return CompartmentMapsSummariesState(
       selectedCompartment: selectedCompartment ?? this.selectedCompartment,
@@ -117,11 +120,13 @@ class CompartmentMapsSummariesState {
       editingMarkers: editingMarkers ?? this.editingMarkers,
       temporaryMarkers: temporaryMarkers ?? this.temporaryMarkers,
       selectedEditedMarker: selectedEditedMarker ?? this.selectedEditedMarker,
+      selectedEditedPolyline: selectedEditedPolyline ?? this.selectedEditedPolyline,
     );
   }
 
   CompartmentMapsSummariesState resetEditingMarkers({
     bool isCleanSelectedEditedMarker = true,
+    bool isCleanSelectedEditedPolyline = true,
     bool isCleanEditingMarkers = true,
     bool isCleanTemporaryMarkers = true,
   }) {
@@ -139,6 +144,7 @@ class CompartmentMapsSummariesState {
       editingMarkers: isCleanEditingMarkers ? <Marker>[] : editingMarkers,
       temporaryMarkers: isCleanTemporaryMarkers ? <Marker>[] : temporaryMarkers,
       selectedEditedMarker: isCleanSelectedEditedMarker ? null : selectedEditedMarker,
+      selectedEditedPolyline: isCleanSelectedEditedPolyline ? null : selectedEditedPolyline,
       isChanged: isChanged,
     );
   }

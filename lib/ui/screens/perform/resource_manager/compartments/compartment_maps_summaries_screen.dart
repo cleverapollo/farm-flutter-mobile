@@ -90,6 +90,9 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
             ],
             color: context.colors.yellow,
             width: 5,
+            onTap: () {
+              print('onTap polyline');
+            },
             startCap: Cap.roundCap,
             endCap: Cap.roundCap,
           ),
@@ -112,6 +115,8 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
 
       return polylines;
     } else if (state.isUpdating) {
+      final selectedPolyline = state.selectedEditedPolyline;
+
       final markers = state.temporaryMarkers;
       var now = DateTime.now().microsecondsSinceEpoch;
       var polylines = <Polyline>{};
@@ -119,37 +124,67 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
         return polylines;
       }
 
+      Color getPolylineColor(Polyline polyline) {
+        if (selectedPolyline == null) {
+          return context.colors.yellow;
+        }
+
+        final centerLatLng = MapUtils.getCenterPositionFromPolyline(selectedPolyline);
+        if (polyline.points.first == centerLatLng || polyline.points.last == centerLatLng ) {
+          return context.colors.greenFF47;
+        }
+
+        return context.colors.yellow;
+      }
+
       for (var i = 1; i < markers.length; i++) {
-        polylines.add(
-          Polyline(
-            polylineId: PolylineId('${markers[i].markerId.value} ${i - 1}_$i $now'),
-            points: [
-              markers[i - 1].position,
-              markers[i].position,
-            ],
-            color: context.colors.yellow,
-            width: 5,
-            startCap: Cap.roundCap,
-            endCap: Cap.roundCap,
-          ),
+        var polyline = Polyline(
+          consumeTapEvents: true,
+          width: 5,
+          startCap: Cap.roundCap,
+          endCap: Cap.roundCap,
+          polylineId: PolylineId('${markers[i].markerId.value} ${i - 1}_$i $now'),
+          points: [
+            markers[i - 1].position,
+            markers[i].position,
+          ],
+
         );
 
+        polyline = polyline.copyWith(
+          colorParam: getPolylineColor(polyline),
+          onTapParam: () {
+            context
+                .read<CompartmentMapsSummariesCubit>()
+                .onTapPolyline(polyline);
+          },
+        );
+
+        polylines.add(polyline);
         now++;
       }
 
-      polylines.add(
-        Polyline(
-          polylineId: PolylineId(
-              '${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0 $now}'),
-          points: [
-            markers[markers.length - 1].position,
-            markers[0].position,
-          ],
-          color: context.colors.yellow,
-          width: 5,
-        ),
+      var lastPolyline = Polyline(
+        consumeTapEvents: true,
+        width: 5,
+        polylineId: PolylineId(
+            '${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0 $now}'),
+        points: [
+          markers[markers.length - 1].position,
+          markers[0].position,
+        ],
       );
 
+      lastPolyline = lastPolyline.copyWith(
+        colorParam: getPolylineColor(lastPolyline),
+        onTapParam: () {
+          context
+              .read<CompartmentMapsSummariesCubit>()
+              .onTapPolyline(lastPolyline);
+        },
+      );
+
+      polylines.add(lastPolyline);
       return polylines;
     }
 

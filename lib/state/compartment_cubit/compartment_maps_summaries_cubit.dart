@@ -162,6 +162,36 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     }
   }
 
+  Future<void> onTapPolyline(Polyline polyline) async {
+    if (state.isUpdating) {
+      final centerLatLng = MapUtils.getCenterPositionFromPolyline(polyline);
+      final centerMaker = await MapUtils.generateMarkerFromLatLng(
+        centerLatLng,
+        onTap: onTapMarker,
+      );
+
+      final listMarker = List<Marker>.from(state.temporaryMarkers);
+      final firstMarker = listMarker.firstWhereOrNull(
+        (marker) =>
+            marker.position.latitude == polyline.points.first.latitude &&
+            marker.position.longitude == polyline.points.first.longitude,
+      );
+
+      if (firstMarker != null) {
+        final firstMarkerIndex = listMarker.indexOf(firstMarker);
+        listMarker.insert(firstMarkerIndex + 1, centerMaker);
+      }
+
+      emit(
+          state.copyWith(
+            selectedEditedPolyline: polyline,
+            editingMarkers: listMarker,
+            temporaryMarkers: listMarker,
+          ),
+        );
+    }
+  }
+
   Future<void> createNewMarker() async {
     if (state.currentCameraPosition == null) return;
     final marker = await MapUtils.generateMarkerFromLatLng(state.currentCameraPosition!.target);

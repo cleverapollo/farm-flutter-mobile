@@ -19,6 +19,7 @@ abstract class _AppColor {
   static const blueDark3 = Color(0xFF283554);
   static const red = Color(0xFFFF0000);
   static const green = Color(0xFF04C504);
+  static const greenFF47 = Color(0xFF00FF47);
   static const yellow = Color(0xFFFFC122);
   static const redError = Color(0xFFE71010);
   static const shadow = Color(0x40000000);
@@ -91,6 +92,7 @@ class ColorThemeExt extends ThemeExtension<ColorThemeExt> {
   final greenC600 = _AppColor.greenC600;
   final blue71B8 = _AppColor.blue71B8;
   final orange9736 = _AppColor.orange9736;
+  final greenFF47 = _AppColor.greenFF47;
 
   @override
   ThemeExtension<ColorThemeExt> copyWith() => this;

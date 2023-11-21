@@ -10,6 +10,12 @@ import 'package:maps_toolkit/maps_toolkit.dart' as map_toolkit;
 import 'utils.dart';
 
 class MapUtils {
+  static LatLng getCenterPositionFromPolyline(Polyline polyline) {
+    return LatLng(
+      (polyline.points.first.latitude + polyline.points.last.latitude) / 2,
+      (polyline.points.first.longitude + polyline.points.last.longitude) / 2,
+    );
+  }
 
   static LatLng generateLatLngFromMarker(Marker marker) {
     return LatLng(marker.position.latitude, marker.position.longitude);
