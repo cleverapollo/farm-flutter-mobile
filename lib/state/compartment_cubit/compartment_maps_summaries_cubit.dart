@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:cmo/di.dart';
@@ -93,10 +94,10 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
         );
       }
     } else if (state.isUpdating) {
-      final temporaryMarkers = state.temporaryMarkers;
-      var selectedMarker = state.temporaryMarkers.firstWhereOrNull((element) => element.markerId == state.selectedEditedMarker?.markerId);
+      final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
+      var selectedMarker = temporaryMarkers.firstWhereOrNull((element) => element.markerId == state.selectedEditedMarker?.markerId);
       if (selectedMarker != null) {
-        final selectedMarkerIndex = state.temporaryMarkers.indexOf(selectedMarker);
+        final selectedMarkerIndex = temporaryMarkers.indexOf(selectedMarker);
         temporaryMarkers[selectedMarkerIndex] = temporaryMarkers[selectedMarkerIndex].copyWith(
           positionParam: LatLng(
             cameraPosition.target.latitude,
@@ -115,7 +116,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
       emit(
         state.copyWith(
           selectedEditedMarker: selectedMarker,
-          temporaryMarkers: List<Marker>.from(temporaryMarkers),
+          temporaryMarkers: temporaryMarkers,
         ),
       );
     }
@@ -155,7 +156,6 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
         emit(
           state.copyWith(
             selectedEditedMarker: marker,
-            editingMarkers: state.temporaryMarkers,
           ),
         );
       }
@@ -242,6 +242,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
         isUpdating: true,
         editingMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
         temporaryMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
+        listMarkersHistory: [List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? [])],
       ),
     );
   }
@@ -254,22 +255,37 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
             isCleanTemporaryMarkers: false,
           )
           .copyWith(
-            editingMarkers: state.temporaryMarkers,
+            editingMarkers: List<Marker>.from(state.temporaryMarkers),
+            listMarkersHistory: List<List<Marker>>.from(state.listMarkersHistory + [state.editingMarkers]),
             isChanged: true,
           ),
     );
   }
 
   void onResetPolygon() {
+    if (state.listMarkersHistory.length <= 1) {
+      emit(
+        state.resetEditingMarkers().copyWith(
+          isChanged: false,
+          editingMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
+          temporaryMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
+          listMarkersHistory: [List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? [])],
+        ),
+      );
+
+      return;
+    }
+
+    final newListMarkersHistory = List<List<Marker>>.from(state.listMarkersHistory);
+    final lastListMarkersSnapshot = newListMarkersHistory.last;
+    newListMarkersHistory.removeLast();
+
     emit(
       state.resetEditingMarkers().copyWith(
             isChanged: false,
-            temporaryMarkers: List<Marker>.from(
-              state.selectedCompartmentMapDetails?.markers ?? [],
-            ),
-            editingMarkers: List<Marker>.from(
-              state.selectedCompartmentMapDetails?.markers ?? [],
-            ),
+            listMarkersHistory: newListMarkersHistory,
+            temporaryMarkers: List<Marker>.from(lastListMarkersSnapshot),
+            editingMarkers: List<Marker>.from(lastListMarkersSnapshot),
           ),
     );
   }

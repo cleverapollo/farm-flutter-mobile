@@ -64,6 +64,8 @@ class CompartmentMapsSummariesState {
   final Polyline? selectedEditedPolyline;
   final CameraPosition? currentCameraPosition;
   final bool isChanged;
+  final List<List<Marker>> listMarkersHistory;
+
   bool get isAddingNew => selectedCompartment.polygon.isBlank;
 
   bool get isSelectedCompartmentMapDetails =>
@@ -82,6 +84,7 @@ class CompartmentMapsSummariesState {
     this.compartmentMapDetailByCameraPosition,
     this.loading = false,
     this.error,
+    this.listMarkersHistory = const <List<Marker>>[],
     this.selectedEditedPolyline,
     this.selectedEditedMarker,
     this.currentCameraPosition,
@@ -104,6 +107,7 @@ class CompartmentMapsSummariesState {
     Marker? selectedEditedMarker,
     CameraPosition? currentCameraPosition,
     Polyline? selectedEditedPolyline,
+    List<List<Marker>>? listMarkersHistory,
   }) {
     return CompartmentMapsSummariesState(
       selectedCompartment: selectedCompartment ?? this.selectedCompartment,
@@ -121,6 +125,7 @@ class CompartmentMapsSummariesState {
       temporaryMarkers: temporaryMarkers ?? this.temporaryMarkers,
       selectedEditedMarker: selectedEditedMarker ?? this.selectedEditedMarker,
       selectedEditedPolyline: selectedEditedPolyline ?? this.selectedEditedPolyline,
+      listMarkersHistory: listMarkersHistory ?? this.listMarkersHistory,
     );
   }
 
@@ -146,6 +151,7 @@ class CompartmentMapsSummariesState {
       selectedEditedMarker: isCleanSelectedEditedMarker ? null : selectedEditedMarker,
       selectedEditedPolyline: isCleanSelectedEditedPolyline ? null : selectedEditedPolyline,
       isChanged: isChanged,
+      listMarkersHistory: listMarkersHistory,
     );
   }
 }
