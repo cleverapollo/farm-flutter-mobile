@@ -5,8 +5,10 @@ import 'package:cmo/ui/theme/theme.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
 
-const _h1 = 60.0;
-const _h2 = 90.0;
+// const _h1 = 60.0;
+// const _h2 = 90.0;
+const _h1 = 45.0;
+const _h2 = 60.0;
 
 class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CmoAppBar({
@@ -38,7 +40,7 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? sectionName;
 
   @override
-  Size get preferredSize => const Size.fromHeight(_h2);
+  Size get preferredSize => Size.fromHeight(subtitle != null ? _h2 : _h1); // const Size.fromHeight(_h2);
 
   @override
   Widget build(BuildContext context) {
@@ -140,10 +142,10 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
                 trailing,
               ],
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: buildNavigationBreadcrumbs(context),
-            ),
+            // Align(
+            //   alignment: Alignment.centerLeft,
+            //   child: buildNavigationBreadcrumbs(context),
+            // ),
           ],
         ),
       ),
