@@ -59,10 +59,6 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {
-      await context.read<CompartmentMapsSummariesCubit>().initMapData();
-      await moveMapCameraToInitLocation();
-    });
   }
 
   GoogleMapController? mapController;
@@ -199,7 +195,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       if (compartmentMapDetail.compartment.localCompartmentId == state.selectedCompartment.localCompartmentId) {
         continue;
       } else {
-        polygon.add(generateSetPolygonFromCompartmentMapDetail(compartmentMapDetail));
+        final generatePolygon = generateSetPolygonFromCompartmentMapDetail(compartmentMapDetail);
+        if (generatePolygon != null) {
+          polygon.add(generatePolygon);
+        }
       }
     }
 
@@ -215,12 +214,14 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     return polygon;
   }
 
-  Polygon generateSetPolygonFromCompartmentMapDetail(
+  Polygon? generateSetPolygonFromCompartmentMapDetail(
       CompartmentMapDetail compartmentMapDetail, {
         bool isSelected = false,
       }) {
     final fillColor = isSelected ? context.colors.yellow.withOpacity(0.3) : context.colors.grey.withOpacity(0.5);
     final strokeColor = isSelected ? context.colors.yellow : context.colors.grey;
+
+    if (compartmentMapDetail.markers.isBlank) return null;
 
     return Polygon(
       polygonId: PolygonId('${compartmentMapDetail.compartment.localCompartmentId}'),
@@ -233,7 +234,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
 
   Polygon? generatePolygonFromListMarker() {
     final state = context.read<CompartmentMapsSummariesCubit>().state;
-    if (state.isAddingNew && !state.isCompletePolygon) {
+    if ((state.isAddingNew && !state.isCompletePolygon) || (state.selectedCompartmentMapDetails?.markers == null || state.selectedCompartmentMapDetails!.markers.isBlank)) {
       return null;
     }
 
@@ -306,7 +307,12 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                         mapController = controller;
                         MapUtils.checkLocationPermission(
                           onAllowed: () async {
-                            await moveMapCameraToInitLocation();
+                            await Future.delayed(Duration(seconds: 1)).then((_) async {
+                              await context.read<CompartmentMapsSummariesCubit>().initMapData();
+                              await moveMapCameraToInitLocation();
+                            });
+
+
                           },
                         );
                       },
