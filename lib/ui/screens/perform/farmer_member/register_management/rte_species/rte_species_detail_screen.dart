@@ -72,7 +72,7 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
           title: widget.rteSpecies == null
               ? LocaleKeys.addRteSpecies.tr()
               : LocaleKeys.edit_rte_species.tr(),
-          leading: Assets.icons.icArrowLeft.svgBlack,
+          leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,

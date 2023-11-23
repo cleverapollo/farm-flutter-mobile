@@ -65,9 +65,9 @@ class _ASIScreenState extends BaseStatefulWidgetState<ASIScreen> {
       appBar: CmoAppBar(
         title: LocaleKeys.asi.tr(),
         subtitle: widget.farmName ?? '',
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icAdd.svgBlack,
+        trailing: Assets.icons.icUpdatedAddButton.svgBlack,
         onTapTrailing: navigateToASIDetail,
       ),
       body: SizedBox.expand(

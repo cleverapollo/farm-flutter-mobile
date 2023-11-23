@@ -76,9 +76,9 @@ class _EmployeeGrievanceScreenState extends BaseStatefulWidgetState<EmployeeGrie
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.employee_grievance.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icAdd.svgBlack,
+        trailing: Assets.icons.icUpdatedAddButton.svgBlack,
         onTapTrailing: onNavigateToAddGrievance,
       ),
       body: SafeArea(

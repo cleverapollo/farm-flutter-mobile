@@ -80,9 +80,9 @@ class _StakeHolderComplaintScreenState extends BaseStatefulWidgetState<StakeHold
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.stakeholder_complaints.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icAdd.svgBlack,
+        trailing: Assets.icons.icUpdatedAddButton.svgBlack,
         onTapTrailing: onNavigateToAddGrievance,
       ),
       body: SafeArea(

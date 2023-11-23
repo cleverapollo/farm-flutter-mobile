@@ -54,7 +54,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.image_detail.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: Column(

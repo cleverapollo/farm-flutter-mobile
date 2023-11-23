@@ -77,7 +77,7 @@ class _FarmerStakeHolderSelectJobDescriptionState
       appBar: CmoAppBar(
         title: LocaleKeys.jobDescription.tr(),
         subtitle: widget.workerName,
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: Column(

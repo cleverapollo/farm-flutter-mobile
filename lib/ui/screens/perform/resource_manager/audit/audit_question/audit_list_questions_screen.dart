@@ -196,7 +196,7 @@ class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQu
         title: LocaleKeys.audit.tr(),
         subtitle: widget.audit.compartmentName ?? widget.audit.farmName,
         subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icClose.svgBlack,
         onTapTrailing: () {

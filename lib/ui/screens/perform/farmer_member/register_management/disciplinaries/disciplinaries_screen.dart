@@ -37,9 +37,9 @@ class _DisciplinariesScreenState extends BaseStatefulWidgetState<DisciplinariesS
           return Scaffold(
             appBar: CmoAppBar(
               title: LocaleKeys.disciplinary.tr(),
-              leading: Assets.icons.icArrowLeft.svgBlack,
+              leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: Navigator.of(context).pop,
-              trailing: Assets.icons.icAdd.svgBlack,
+              trailing: Assets.icons.icUpdatedAddButton.svgBlack,
               onTapTrailing: () async {
                 final shouldRefresh =
                 await DisciplinariesAddScreen.push(context);

@@ -148,9 +148,9 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
             return CmoAppBar(
               title: LocaleKeys.stakeholderManagement.tr(),
               subtitle: '${LocaleKeys.siteName.tr()}: ${resourceManagerUnit?.regionalManagerUnitName}',
-              leading: Assets.icons.icArrowLeft.svgBlack,
+              leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: Navigator.of(context).pop,
-              trailing: Assets.icons.icAdd.svgBlack,
+              trailing: Assets.icons.icUpdatedAddButton.svgBlack,
               onTapTrailing: () {
                 StakeHolderDetailScreen.push(context);
               },
@@ -167,9 +167,9 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
             return CmoAppBar(
               title: LocaleKeys.stakeholderManagement.tr(),
               subtitle: snapshot.data?.farmName ?? '',
-              leading: Assets.icons.icArrowLeft.svgBlack,
+              leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: Navigator.of(context).pop,
-              trailing: Assets.icons.icAdd.svgBlack,
+              trailing: Assets.icons.icUpdatedAddButton.svgBlack,
               onTapTrailing: onNavigateToAddStakeholder,
             );
           },

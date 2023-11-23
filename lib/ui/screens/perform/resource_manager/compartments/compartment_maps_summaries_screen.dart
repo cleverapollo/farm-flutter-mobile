@@ -280,7 +280,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       appBar: CmoAppBar(
         title: LocaleKeys.compartments.tr(),
         subtitle: widget.farmName ?? '',
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icClose.svgBlack,
         onTapTrailing: Navigator.of(context).pop,

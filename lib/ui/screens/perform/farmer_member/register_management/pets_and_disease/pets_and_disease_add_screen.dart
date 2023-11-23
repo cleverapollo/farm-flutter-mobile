@@ -57,7 +57,7 @@ class _PetsAndDiseaseAddScreenState extends BaseStatefulWidgetState<PetsAndDisea
           title: widget.data == null
               ? LocaleKeys.add_pets_and_disease.tr()
               : LocaleKeys.pets_and_disease_detail.tr(),
-          leading: Assets.icons.icArrowLeft.svgBlack,
+          leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
@@ -150,7 +150,7 @@ class _PetsAndDiseaseAddScreenState extends BaseStatefulWidgetState<PetsAndDisea
                               ),
                             ),
                           ),
-                          Assets.icons.icAdd.svgBlack,
+                          Assets.icons.icUpdatedAddButton.svgBlack,
                         ],
                       ),
                     ),

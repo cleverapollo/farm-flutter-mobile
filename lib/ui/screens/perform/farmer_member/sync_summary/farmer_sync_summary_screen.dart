@@ -33,7 +33,7 @@ class FarmerSyncSummaryScreenState extends BaseStatefulWidgetState<FarmerSyncSum
           return Scaffold(
             appBar: CmoAppBar(
               title: LocaleKeys.syncSummary.tr(),
-              leading: Assets.icons.icArrowLeft.svgBlack,
+              leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: () {
                 if (isSyncing) return;
                 Navigator.pop(context);

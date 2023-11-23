@@ -125,7 +125,7 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
           title: initState.isAddNew
               ? LocaleKeys.addEmployeeGrievance.tr()
               : LocaleKeys.edit_employee_grievance.tr(),
-          leading: Assets.icons.icArrowLeft.svgBlack,
+          leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,

@@ -50,9 +50,9 @@ class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagem
             title: LocaleKeys.memberManagement.tr(),
             subtitle:
                 '${LocaleKeys.rmu_name.tr()}: ${resourceManagerUnit?.regionalManagerUnitName}',
-            leading: Assets.icons.icArrowLeft.svgBlack,
+            leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
-            trailing: Assets.icons.icAdd.svgBlack,
+            trailing: Assets.icons.icUpdatedAddButton.svgBlack,
             onTapTrailing: () async {
               await AddMemberScreen.push(context);
               await context.read<MemberManagementCubit>().reload();

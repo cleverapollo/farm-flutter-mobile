@@ -66,7 +66,7 @@ class _AddingAsiScreenState extends BaseStatefulWidgetState<AddingAsiScreen> {
             title: widget.isAddNew
                 ? LocaleKeys.add_asi.tr()
                 : LocaleKeys.asi_detail.tr(),
-            leading: Assets.icons.icArrowLeft.svgBlack,
+            leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
             trailing: Assets.icons.icClose.svgBlack,
             onTapTrailing: Navigator.of(context).pop,

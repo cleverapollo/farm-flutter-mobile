@@ -164,7 +164,7 @@ class _CompartmentMapScreenState extends State<CompartmentMapScreen> {
       appBar: CmoAppBar(
         title: LocaleKeys.compartments.tr(),
         subtitle: widget.farmName ?? '',
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: Column(

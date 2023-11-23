@@ -144,7 +144,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.newAssessment.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: BlocSelector<EntityCubit, EntityState, int?>(

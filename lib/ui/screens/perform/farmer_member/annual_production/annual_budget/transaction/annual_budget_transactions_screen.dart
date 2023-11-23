@@ -59,9 +59,9 @@ class _AnnualBudgetTransactionsScreenState
       appBar: CmoAppBar(
         title: LocaleKeys.transactions.tr(),
         subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icAdd.svgBlack,
+        trailing: Assets.icons.icUpdatedAddButton.svgBlack,
         onTapTrailing: () => AddUpdateAnnualBudgetTransactionScreen.push(
           context,
           selectedAnnualBudget: widget.annualBudget,

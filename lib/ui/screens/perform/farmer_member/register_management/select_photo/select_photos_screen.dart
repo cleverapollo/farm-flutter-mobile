@@ -111,7 +111,7 @@ class _SelectPhotosScreenState extends State<SelectPhotosScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.photos.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icClose.svgBlack,
         onTapTrailing: Navigator.of(context).pop,

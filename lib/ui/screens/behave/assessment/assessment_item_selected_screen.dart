@@ -54,7 +54,7 @@ class _AssessmentItemSelectedScreenState
     return Scaffold(
       appBar: CmoAppBar(
         title: widget.title,
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: Column(

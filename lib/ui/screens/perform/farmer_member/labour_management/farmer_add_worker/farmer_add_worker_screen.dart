@@ -161,7 +161,7 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
           subtitle:
               context.read<LabourManagementCubit>().state.activeFarm?.farmName,
           subtitleTextStyle: context.textStyles.bodyBold.blue,
-          leading: Assets.icons.icArrowLeft.svgBlack,
+          leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,

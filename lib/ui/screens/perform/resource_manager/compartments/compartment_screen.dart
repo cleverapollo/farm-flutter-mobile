@@ -113,8 +113,8 @@ class _CompartmentScreenState extends BaseStatefulWidgetState<CompartmentScreen>
             appBar: CmoAppBar(
               title: LocaleKeys.compartment.tr(),
               subtitle: widget.farmName ?? '',
-              leading: Assets.icons.icArrowLeft.svgBlack,
-              trailing: Assets.icons.icAdd.svgBlack,
+              leading: Assets.icons.icBackButton.svgBlack,
+              trailing: Assets.icons.icUpdatedAddButton.svgBlack,
               onTapLeading: () => onBack(listCompartment, total),
               onTapTrailing: navigateToDetail,
             ),

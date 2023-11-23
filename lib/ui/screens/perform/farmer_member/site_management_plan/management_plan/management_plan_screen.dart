@@ -98,7 +98,7 @@ class _ManagementPlanScreenState extends State<ManagementPlanScreen> {
         title: LocaleKeys.managementPlan.tr(),
         subtitle: LocaleKeys.imbeza.tr(),
         subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: ListView.separated(

@@ -54,7 +54,7 @@ class _AddCampScreenState extends BaseStatefulWidgetState<AddCampScreen> {
           appBar: CmoAppBar(
             title: LocaleKeys.add_camp.tr(),
             subtitle: farm?.farmName ?? '',
-            leading: Assets.icons.icArrowLeft.svgBlack,
+            leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
             trailing: Assets.icons.icClose.svgBlack,
             onTapTrailing: Navigator.of(context).pop,

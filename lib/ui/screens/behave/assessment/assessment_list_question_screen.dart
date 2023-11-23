@@ -106,7 +106,7 @@ class _AssessmentListQuestionScreenState
       appBar: CmoAppBar(
         title: LocaleKeys.assessments.tr(),
         subtitle: assessment?.jobCategoryName,
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icClose.svgBlack,
         onTapTrailing: Navigator.of(context).pop,

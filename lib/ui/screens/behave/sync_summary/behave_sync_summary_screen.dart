@@ -35,7 +35,7 @@ class _SyncSummaryScreenState extends State<SyncSummaryScreen> {
         return Scaffold(
           appBar: CmoAppBar(
             title: LocaleKeys.syncSummary.tr(),
-            leading: Assets.icons.icArrowLeft.svgBlack,
+            leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: () {
               if (!state.isLoadingSync) {
                 return Navigator.pop(context);

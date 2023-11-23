@@ -21,9 +21,12 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onTapTrailing,
     this.subtitleTextStyle,
     this.sectionName,
+    this.titleWidget,
   });
 
   final String title;
+
+  final Widget? titleWidget;
 
   final String? subtitle;
 
@@ -136,7 +139,7 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 7),
-                    child: text,
+                    child: titleWidget ?? text,
                   ),
                 ),
                 trailing,

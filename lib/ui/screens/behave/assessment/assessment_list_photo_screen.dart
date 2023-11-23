@@ -98,7 +98,7 @@ class _AssessmentListPhotoScreenState extends State<AssessmentListPhotoScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.takePhoto.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: ListView.separated(

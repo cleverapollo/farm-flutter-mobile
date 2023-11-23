@@ -47,7 +47,7 @@ class _SiteManagementPlanScreenState extends BaseStatefulWidgetState<SiteManagem
                 .activeFarm
                 ?.farmName ??
             '',
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
       body:

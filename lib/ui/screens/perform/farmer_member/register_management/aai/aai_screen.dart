@@ -111,9 +111,9 @@ class _AAIScreenState extends BaseStatefulWidgetState<AAIScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.accident_incidents.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icAdd.svgBlack,
+        trailing: Assets.icons.icUpdatedAddButton.svgBlack,
         onTapTrailing: () async {
           await AddingAAIScreen.push(context);
           await _init();

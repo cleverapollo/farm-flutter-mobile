@@ -58,9 +58,9 @@ class _FireManagementScreenState extends BaseStatefulWidgetState<FireManagementS
           return Scaffold(
             appBar: CmoAppBar(
               title: LocaleKeys.fire.tr(),
-              leading: Assets.icons.icArrowLeft.svgBlack,
+              leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: Navigator.of(context).pop,
-              trailing: Assets.icons.icAdd.svgBlack,
+              trailing: Assets.icons.icUpdatedAddButton.svgBlack,
               onTapTrailing: navigateToDetailFire,
             ),
             body: state.isLoading

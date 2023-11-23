@@ -39,9 +39,9 @@ class _ChemicalsScreenState extends BaseStatefulWidgetState<ChemicalsScreen> {
         return Scaffold(
           appBar: CmoAppBar(
             title: LocaleKeys.chemicals.tr(),
-            leading: Assets.icons.icArrowLeft.svgBlack,
+            leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
-            trailing: Assets.icons.icAdd.svgBlack,
+            trailing: Assets.icons.icUpdatedAddButton.svgBlack,
             onTapTrailing: () async {
               final shouldRefresh = await AddingChemicalScreen.push(context);
 

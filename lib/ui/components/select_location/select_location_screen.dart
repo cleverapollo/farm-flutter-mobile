@@ -173,7 +173,7 @@ class _SelectLocationState extends BaseStatefulWidgetState<SelectLocationScreen>
         subtitle: widget.farmName ?? '',
         trailing: Assets.icons.icClose.svgBlack,
         onTapTrailing: Navigator.of(context).pop,
-        leading: widget.shouldShowBackIcon ? Assets.icons.icArrowLeft.svgBlack : null,
+        leading: widget.shouldShowBackIcon ? Assets.icons.icBackButton.svgBlack : null,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: SizedBox.expand(

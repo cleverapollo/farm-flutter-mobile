@@ -126,7 +126,7 @@ class _FarmerStakeHolderUploadAvatarState extends State<FarmerStakeHolderUploadA
         Positioned.fill(
           child: Align(
             alignment: Alignment.centerRight,
-            child: Assets.icons.icAdd.svgWhite,
+            child: Assets.icons.icUpdatedAddButton.svgWhite,
           ),
         ),
       ],

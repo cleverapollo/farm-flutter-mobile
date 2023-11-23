@@ -88,7 +88,7 @@ class _EntitySearchScreenState extends State<EntitySearchScreen> {
       child: Scaffold(
         appBar: CmoAppBar(
           title: LocaleKeys.entity.tr(),
-          leading: Assets.icons.icArrowLeft.svg(),
+          leading: Assets.icons.icBackButton.svg(),
           onTapLeading: () => Navigator.of(context).pop(),
         ),
         body: Column(

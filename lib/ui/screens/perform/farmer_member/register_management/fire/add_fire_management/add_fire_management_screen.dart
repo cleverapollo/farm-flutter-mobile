@@ -70,7 +70,7 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
           title: widget.fireRegister == null
               ? LocaleKeys.addFire.tr()
               : LocaleKeys.edit_fire.tr(),
-          leading: Assets.icons.icArrowLeft.svgBlack,
+          leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,

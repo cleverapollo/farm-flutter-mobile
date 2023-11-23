@@ -141,7 +141,7 @@ class _AddUpdateAnnualBudgetTransactionScreenState
               title: state.indexTab == 0
                   ? LocaleKeys.addIncome.tr()
                   : LocaleKeys.addExpense.tr(),
-              leading: Assets.icons.icArrowLeft.svgBlack,
+              leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: Navigator.of(context).pop,
             ),
             body: Padding(

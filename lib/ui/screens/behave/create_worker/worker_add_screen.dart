@@ -107,7 +107,7 @@ class _WorkerAddScreenState extends State<WorkerAddScreen> {
       child: Scaffold(
         appBar: CmoAppBar(
           title: LocaleKeys.createWorker.tr(),
-          leading: Assets.icons.icArrowLeft.svgBlack,
+          leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
         ),
         body: SingleChildScrollView(

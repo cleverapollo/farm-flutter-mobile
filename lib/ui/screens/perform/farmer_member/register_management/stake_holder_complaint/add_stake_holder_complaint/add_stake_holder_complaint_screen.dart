@@ -134,7 +134,7 @@ class _AddStakeHolderComplaintScreenState
           title: widget.complaint == null
               ? LocaleKeys.addStakeHolderComplaint.tr()
               : LocaleKeys.stakeholder_complaint_detail.tr(),
-          leading: Assets.icons.icArrowLeft.svgBlack,
+          leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icClose.svgBlack,
           onTapTrailing: Navigator.of(context).pop,

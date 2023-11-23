@@ -59,7 +59,7 @@ class _AddingChemicalScreenState extends BaseStatefulWidgetState<AddingChemicalS
             title: widget.data == null
                 ? LocaleKeys.add_chemical.tr()
                 : LocaleKeys.chemical_detail.tr(),
-            leading: Assets.icons.icArrowLeft.svgBlack,
+            leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
             trailing: Assets.icons.icClose.svgBlack,
             onTapTrailing: Navigator.of(context).pop,

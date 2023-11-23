@@ -268,7 +268,7 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.siteLocation.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: SafeArea(

@@ -70,6 +70,25 @@ class _ResourceManagerDashboardScreenState
                     icon: Assets.icons.icDashboardMember.svg(),
                     onTap: () => MemberManagementScreen.push(context),
                     listInformationWidget: [
+                      CmoCardHeader(title: LocaleKeys.member_s.tr()),
+                      // DashboardInformationItem(
+                      //     title: LocaleKeys.onboarded.tr(),
+                      //     value: dashboardInfo?.onboardedMembers != null
+                      //         ? '${dashboardInfo?.onboardedMembers}/${dashboardInfo?.totalMembers}'
+                      //         : '',
+                      //   titleTextStyle: context.textStyles.bodyNormal.white,
+                      //   valueTextStyle: context.textStyles.bodyNormal.white,
+                      // ),
+                      // DashboardInformationItem(
+                      //     title: LocaleKeys.incomplete.tr(),
+                      //     value: dashboardInfo?.onboardedMembers != null
+                      //         ? '${dashboardInfo?.incompletedMembers}/${dashboardInfo?.totalMembers}'
+                      //         : '',
+                      //   titleTextStyle: context.textStyles.bodyNormal.white,
+                      //   valueTextStyle: context.textStyles.bodyNormal.white,
+                      // ),
+
+
                       buildMemberInformationWidget(
                         title: LocaleKeys.onboarded.tr(),
                         firstValue: '${dashboardInfo?.onboardedMembers ?? ''}',
@@ -84,8 +103,6 @@ class _ResourceManagerDashboardScreenState
                         title: LocaleKeys.total_members.tr(),
                         firstValue: '${dashboardInfo?.totalMembers ?? ''}',
                         secondValue: dashboardInfo?.totalMembersArea ?? 0,
-                        textStyle: context.textStyles.bodyBold.blue,
-                        secondValueTextStyle: context.textStyles.bodyBold.blue,
                       ),
                     ],
                   ),
@@ -95,19 +112,47 @@ class _ResourceManagerDashboardScreenState
                     icon: Assets.icons.icDashboardAudit.svg(),
                     onTap: () => AuditManagementScreen.push(context),
                     listInformationWidget: [
+                      CmoCardHeader(title: LocaleKeys.audit_s.tr()),
+                      // DashboardInformationItem(
+                      //   title: LocaleKeys.onboarded.tr(),
+                      //   value: state.totalCompletedAssessments != null
+                      //       ? '${state.totalCompletedAssessments}/${state.totalAssessments}'
+                      //       : '',
+                      //   titleTextStyle: context.textStyles.bodyNormal.white,
+                      //   valueTextStyle: context.textStyles.bodyNormal.white,
+                      // ),
+                      // DashboardInformationItem(
+                      //   title: LocaleKeys.incomplete.tr(),
+                      //   value: state.totalIncompleteAssessments != null
+                      //       ? '${state.totalIncompleteAssessments}/${state.totalAssessments}'
+                      //       : '',
+                      //   titleTextStyle: context.textStyles.bodyNormal.white,
+                      //   valueTextStyle: context.textStyles.bodyNormal.white,
+                      // ),
+                      //
+                      // DashboardInformationItem(
+                      //   title: LocaleKeys.membersOutstanding.tr(),
+                      //   value: '${state.totalAssessments ?? ''}',
+                      //   titleTextStyle: context.textStyles.bodyBold.orange9736,
+                      //   valueTextStyle: context.textStyles.bodyBold.orange9736,
+                      // ),
                       DashboardInformationItem(
                         title: LocaleKeys.onboarded.tr(),
                         value: '${state.totalCompletedAssessments ?? ''}',
+                        titleTextStyle: context.textStyles.bodyNormal.white,
+                        valueTextStyle: context.textStyles.bodyNormal.white,
                       ),
                       DashboardInformationItem(
                         title: LocaleKeys.incomplete.tr(),
                         value: '${state.totalIncompleteAssessments ?? ''}',
+                        titleTextStyle: context.textStyles.bodyNormal.white,
+                        valueTextStyle: context.textStyles.bodyNormal.white,
                       ),
                       DashboardInformationItem(
                         title: LocaleKeys.membersOutstanding.tr(),
                         value: '${state.totalAssessments ?? ''}',
-                        titleTextStyle: context.textStyles.bodyBold.orange9736,
-                        valueTextStyle: context.textStyles.bodyBold.orange9736,
+                        titleTextStyle: context.textStyles.bodyBold.yellow,
+                        valueTextStyle: context.textStyles.bodyBold.yellow,
                       ),
                     ],
                   ),
@@ -117,9 +162,20 @@ class _ResourceManagerDashboardScreenState
                     icon: Assets.icons.icDashboardStakeholder.svg(),
                     onTap: () => StakeHolderManagementScreen.push(context),
                     listInformationWidget: [
+                      CmoCardHeader(title: LocaleKeys.stakeholders.tr()),
+                      // DashboardInformationItem(
+                      //   title: LocaleKeys.national.tr(),
+                      //   value: '${dashboardInfo?.stakeHolders ?? 0}',
+                      //   titleTextStyle: context.textStyles.bodyNormal.white,
+                      //   valueTextStyle: context.textStyles.bodyNormal.white,
+                      // ),
+
+                      const SizedBox(height: 16,),
                       DashboardInformationItem(
                         title: LocaleKeys.national.tr(),
                         value: (dashboardInfo?.stakeHolders ?? 0).toString(),
+                        titleTextStyle: context.textStyles.bodyNormal.white,
+                        valueTextStyle: context.textStyles.bodyNormal.white,
                       ),
                     ],
                   ),
@@ -139,9 +195,19 @@ class _ResourceManagerDashboardScreenState
                     icon: Assets.icons.icDashboardSync.svg(),
                     onTap: () => ResourceManagerSyncSummaryScreen.push(context),
                     listInformationWidget: [
+                      CmoCardHeader(title: LocaleKeys.sync.tr()),
+                      // DashboardInformationItem(
+                      //   title: LocaleKeys.audits.tr(),
+                      //   value: (dashboardInfo?.unsynced ?? 0).toString(),
+                      //   titleTextStyle: context.textStyles.bodyNormal.white,
+                      //   valueTextStyle: context.textStyles.bodyNormal.white,
+                      // ),
+                      const SizedBox(height: 16,),
                       DashboardInformationItem(
                         title: LocaleKeys.audits.tr(),
                         value: (dashboardInfo?.unsynced ?? 0).toString(),
+                        titleTextStyle: context.textStyles.bodyNormal.white,
+                        valueTextStyle: context.textStyles.bodyNormal.white,
                       ),
                     ],
                   ),
@@ -169,7 +235,9 @@ class _ResourceManagerDashboardScreenState
               padding: const EdgeInsets.only(right: 8.0),
               child: Text(
                 '$title:',
-                style: textStyle ?? context.textStyles.bodyNormal.blueDark2,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textStyle ?? context.textStyles.bodyNormal.white,
               ),
             ),
         ),
@@ -177,14 +245,17 @@ class _ResourceManagerDashboardScreenState
           child: Text(
             firstValue,
             textAlign: TextAlign.center,
-            style: textStyle ?? context.textStyles.bodyNormal.blueDark2,
+            style: textStyle ?? context.textStyles.bodyNormal.white,
           ),
         ),
         Expanded(
+          flex: 2,
           child: Text(
             '${secondValue.toStringAsFixed(2)} ha',
             textAlign: TextAlign.right,
-            style: secondValueTextStyle ?? context.textStyles.bodyNormal.blue,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: secondValueTextStyle ?? context.textStyles.bodyNormal.white,
           ),
         ),
       ],
@@ -240,33 +311,38 @@ class DashboardItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CmoCard(
-      backgroundColor: context.colors.white,
+      // backgroundColor: context.colors.white,
+      // shouldShowArrowRight: false,
+      trailing: const Icon(
+        Icons.arrow_forward_ios_outlined,
+        size: 20,
+        color: Colors.white,
+      ),
       onTap: onTap,
       padding: const EdgeInsets.all(10),
-      shouldShowArrowRight: false,
       content: [
-        Row(
-          children: [
-            icon,
-            const SizedBox(
-              width: 20,
-            ),
-            Expanded(
-              child: Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: context.textStyles.bodyBold
-                    .copyWith(fontSize: 20)
-                    .blueDark2,
-              ),
-            ),
-            Assets.icons.icArrowRight.svgBlack,
-          ],
-        ),
-        const SizedBox(
-          height: 12,
-        ),
+        // Row(
+        //   children: [
+            // icon,
+            // const SizedBox(
+            //   width: 20,
+            // ),
+        //     Expanded(
+        //       child: Text(
+        //         title,
+        //         maxLines: 1,
+        //         overflow: TextOverflow.ellipsis,
+        //         style: context.textStyles.bodyBold
+        //             .copyWith(fontSize: 20)
+        //             .blueDark2,
+        //       ),
+        //     ),
+        //     Assets.icons.icArrowRight.svgBlack,
+        //   ],
+        // ),
+        // const SizedBox(
+        //   height: 12,
+        // ),
         ...listInformationWidget,
       ],
     );

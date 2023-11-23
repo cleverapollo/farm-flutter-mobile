@@ -165,7 +165,7 @@ class _AuditListPhotoScreenState extends BaseStatefulWidgetState<AuditListPhotoS
         return Scaffold(
           appBar: CmoAppBar(
             title: LocaleKeys.pictures.tr(),
-            leading: Assets.icons.icArrowLeft.svgBlack,
+            leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
             trailing: Assets.icons.icClose.svgBlack,
             onTapTrailing: Navigator.of(context).pop,

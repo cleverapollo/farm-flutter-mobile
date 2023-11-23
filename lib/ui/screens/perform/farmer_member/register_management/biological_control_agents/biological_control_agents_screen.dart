@@ -133,9 +133,9 @@ class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Biolog
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.biological_control_agents.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icAdd.svgBlack,
+        trailing: Assets.icons.icUpdatedAddButton.svgBlack,
         onTapTrailing: () async {
           final result = await AddBiologicalControlAgentsScreen.push(context);
           if (result != null) {

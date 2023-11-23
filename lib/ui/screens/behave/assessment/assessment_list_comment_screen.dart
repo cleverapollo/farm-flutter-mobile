@@ -102,7 +102,7 @@ class _AssessmentListCommentScreenState
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.comments.tr(),
-        leading: Assets.icons.icArrowLeft.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: ListView.separated(

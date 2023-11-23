@@ -218,7 +218,7 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
                         ? LocaleKeys.edit_stakeholder.tr()
                         : LocaleKeys.add_stakeholder.tr(),
                     subtitle: snapshot.data?.farmName ?? '',
-                    leading: Assets.icons.icArrowLeft.svgBlack,
+                    leading: Assets.icons.icBackButton.svgBlack,
                     onTapLeading: Navigator.of(context).pop,
                   );
                 },
@@ -230,7 +230,7 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
             title: widget.isEditing
                 ? LocaleKeys.edit_stakeholder.tr()
                 : LocaleKeys.add_stakeholder.tr(),
-            leading: Assets.icons.icArrowLeft.svgBlack,
+            leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
           );
         },

@@ -54,9 +54,9 @@ class _CampManagementScreenState extends BaseStatefulWidgetState<CampManagementS
           appBar: CmoAppBar(
             title: LocaleKeys.site.tr(),
             subtitle: farm?.farmName ?? '',
-            leading: Assets.icons.icArrowLeft.svgBlack,
+            leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
-            trailing: Assets.icons.icAdd.svgBlack,
+            trailing: Assets.icons.icUpdatedAddButton.svgBlack,
             onTapTrailing: () async {
               await AddCampScreen.push(context);
               cubit.init();

@@ -51,9 +51,9 @@ class _AnnualBudgetManagementScreenState extends BaseStatefulWidgetState<AnnualB
             title: LocaleKeys.annualBudgets.tr(),
             subtitle: state.activeFarm?.farmName ?? '',
             subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
-            leading: Assets.icons.icArrowLeft.svgBlack,
+            leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
-            trailing: Assets.icons.icAdd.svgBlack,
+            trailing: Assets.icons.icUpdatedAddButton.svgBlack,
             onTapTrailing: () => AddAnnualBudgetScreen.push(context),
           ),
           body: Column(

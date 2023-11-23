@@ -135,7 +135,7 @@ class _GlobalEntityScreenState extends State<GlobalEntityScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.entity.tr(),
-        leading: widget.canNavigateBack ? Assets.icons.icArrowLeft.svgBlack : null,
+        leading: widget.canNavigateBack ? Assets.icons.icBackButton.svgBlack : null,
         onTapLeading: Navigator.of(context).pop,
       ),
       body: SafeArea(child: child),

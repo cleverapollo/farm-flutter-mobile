@@ -20,14 +20,14 @@ class RMSyncScreen extends StatelessWidget {
     return BlocProvider(
       create: (_) => RMSyncCubit(
           userInfoCubit: context.read<UserInfoCubit>(),
-          userDeviceCubit: context.read<UserDeviceCubit>()),
+          userDeviceCubit: context.read<UserDeviceCubit>(),
+      ),
       child: WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            title: BlocBuilder<RMSyncCubit, RMSyncState>(
+          appBar: CmoAppBar(
+            title: '',
+            titleWidget: BlocBuilder<RMSyncCubit, RMSyncState>(
               builder: (context, state) {
                 return Center(
                   child: Text(
@@ -39,13 +39,8 @@ class RMSyncScreen extends StatelessWidget {
                 );
               },
             ),
-            leading: CmoTappable(
-              onTap: () => Navigator.of(context).pop(),
-              child: SizedBox.square(
-                dimension: 45,
-                child: Center(child: Assets.icons.icArrowLeft.svg()),
-              ),
-            ),
+            leading: Assets.icons.icBackButton.svgBlack,
+            onTapLeading: Navigator.of(context).pop,
           ),
           body: SizedBox.expand(
             child: Padding(

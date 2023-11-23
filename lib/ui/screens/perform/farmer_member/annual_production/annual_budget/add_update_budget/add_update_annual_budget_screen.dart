@@ -117,7 +117,7 @@ class _AddAnnualBudgetScreenState extends BaseStatefulWidgetState<AddAnnualBudge
                   : LocaleKeys.add_budget.tr(),
               subtitle: state.activeFarm?.farmName ?? '',
               subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
-              leading: Assets.icons.icArrowLeft.svgBlack,
+              leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: Navigator.of(context).pop,
             ),
             body: buildInputArea(state.listAnnualFarmProductions),
