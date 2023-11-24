@@ -12,6 +12,7 @@ class AttributeItem extends StatelessWidget {
   final bool isShowError;
   final String? errorText;
   final bool isUnderErrorBorder;
+  final bool inactive;
 
   const AttributeItem({
     required this.child,
@@ -20,41 +21,48 @@ class AttributeItem extends StatelessWidget {
     this.errorText,
     this.isShowError = false,
     this.isUnderErrorBorder = false,
+    this.inactive = false,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return Stack(
       children: [
-        Container(
-          padding: padding,
-          margin: margin,
-          decoration: BoxDecoration(
-            border: isShowError
-                ? errorBorder(context)
-                : Border(
-                    bottom: BorderSide(
-                      color: context.colors.blueDark2,
-                      width: 2,
-                    ),
-                  ),
-            borderRadius: isShowError && !isUnderErrorBorder ? BorderRadius.circular(4) : null,
-          ),
-          child: child,
-        ),
-        if (errorText.isNotBlank && isShowError)
-          Container(
-            margin: margin,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              errorText!,
-              style: context.textStyles.bodyNormal.redError.copyWith(fontSize: 12),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: padding,
+              margin: margin,
+              decoration: BoxDecoration(
+                border: isShowError
+                    ? errorBorder(context)
+                    : Border(
+                        bottom: BorderSide(
+                          color: context.colors.blueDark2,
+                          width: 2,
+                        ),
+                      ),
+                borderRadius: isShowError && !isUnderErrorBorder ? BorderRadius.circular(4) : null,
+              ),
+              child: child,
             ),
-          ),
+            if (errorText.isNotBlank && isShowError)
+              Container(
+                margin: margin,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  errorText!,
+                  style: context.textStyles.bodyNormal.redError.copyWith(fontSize: 12),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+          ],
+        ),
+        if (inactive)
+          const InactiveWidget(),
       ],
     );
   }
@@ -71,6 +79,22 @@ class AttributeItem extends StatelessWidget {
     return Border.all(
       color: context.colors.redError,
       width: 2,
+    );
+  }
+}
+
+class InactiveWidget extends StatelessWidget {
+  const InactiveWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: GestureDetector(
+        onTap: () {},
+        child: Container(
+          color: context.colors.grey.withOpacity(0.5),
+        ),
+      ),
     );
   }
 }

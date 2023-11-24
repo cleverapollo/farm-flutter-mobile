@@ -55,17 +55,24 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     }
   }
 
-  String? checkCompleteRequiredField() {
+  bool isConservationArea() {
     final compartment = state.compartment;
     final conservationAreaType = state.areaTypes.firstWhereOrNull(
-      (element) =>
-          element.areaTypeName.isNotBlank &&
+          (element) =>
+      element.areaTypeName.isNotBlank &&
           element.areaTypeName!.toLowerCase().contains(
-                'Conservation Area'.toLowerCase(),
-              ),
+            'Conservation Area'.toLowerCase(),
+          ),
     );
 
-    if (compartment.areaTypeId != null && compartment.areaTypeId == conservationAreaType?.areaTypeId) {
+    return compartment.areaTypeId != null && compartment.areaTypeId == conservationAreaType?.areaTypeId;
+  }
+
+  String? checkCompleteRequiredField() {
+    final compartment = state.compartment;
+
+
+    if (isConservationArea()) {
       if (compartment.polygonArea == null) {
         return LocaleKeys.polygon_area_is_required.tr();
       }

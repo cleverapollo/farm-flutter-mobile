@@ -1,6 +1,7 @@
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 
 class BottomSheetSelection extends StatelessWidget {
@@ -15,6 +16,7 @@ class BottomSheetSelection extends StatelessWidget {
   final bool isRequiredField;
   final bool isShowError;
   final String? errorText;
+  final bool inactive;
 
   const BottomSheetSelection({
     required this.onTap,
@@ -27,6 +29,7 @@ class BottomSheetSelection extends StatelessWidget {
     this.displayHorizontal = true,
     this.isRequiredField = false,
     this.isShowError = false,
+    this.inactive = false,
     this.errorText,
   });
 
@@ -81,40 +84,46 @@ class BottomSheetSelection extends StatelessWidget {
       );
     }
 
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Container(
-            margin: margin ?? const EdgeInsets.symmetric(horizontal: 16),
-            padding: padding ?? const EdgeInsets.symmetric(horizontal: 6),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: isShowError ? context.colors.redError : context.colors.blueDark2,
-                  width: 2,
+    return Stack(
+      children: [
+        InkWell(
+          onTap: onTap,
+          child: Column(
+            children: [
+              Container(
+                margin: margin ?? const EdgeInsets.symmetric(horizontal: 16),
+                padding: padding ?? const EdgeInsets.symmetric(horizontal: 6),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: isShowError ? context.colors.redError : context.colors.blueDark2,
+                      width: 2,
+                    ),
+                  ),
                 ),
+                child: child,
               ),
-            ),
-            child: child,
-          ),
 
-          if (isShowError)
-            Container(
-              margin: margin ?? const EdgeInsets.symmetric(horizontal: 16),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  errorText ?? LocaleKeys.required.tr(),
-                  style: context.textStyles.bodyNormal.redError
-                      .copyWith(fontSize: 12),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+              if (isShowError)
+                Container(
+                  margin: margin ?? const EdgeInsets.symmetric(horizontal: 16),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      errorText ?? LocaleKeys.required.tr(),
+                      style: context.textStyles.bodyNormal.redError
+                          .copyWith(fontSize: 12),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-        ],
-      ),
+            ],
+          ),
+        ),
+        if (inactive)
+          const InactiveWidget(),
+      ],
     );
   }
 
