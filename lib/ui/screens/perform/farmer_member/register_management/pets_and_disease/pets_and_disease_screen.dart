@@ -54,7 +54,7 @@ class _PetsAndDiseaseScreenState extends BaseStatefulWidgetState<PetsAndDiseaseS
                 : SingleChildScrollView(
                     child: Column(
                       children: [
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 18),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

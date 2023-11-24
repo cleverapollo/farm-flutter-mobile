@@ -2798,6 +2798,7 @@ class CmoDatabaseMasterService {
         .filter()
         .regionalManagerUnitIdEqualTo(rmuId)
         .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
         .findAll();
   }
 

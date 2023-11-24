@@ -13,16 +13,22 @@ import 'package:flutter/services.dart';
 class PhotoDetail {
   String photoBase64;
   String photoName;
+  Uint8List? imageBytesDecoded;
+  int photoId;
 
   PhotoDetail({
+    required this.photoId,
     required this.photoBase64,
     required this.photoName,
+    required this.imageBytesDecoded,
   });
 
   factory PhotoDetail.fromQuestionPhoto(QuestionPhoto questionPhoto) =>
       PhotoDetail(
         photoBase64: questionPhoto.photo ?? '',
+        photoId: questionPhoto.photoId ?? DateTime.now().microsecondsSinceEpoch,
         photoName: (questionPhoto.photoId ?? '').toString(),
+        imageBytesDecoded: base64Decode(questionPhoto.photo ?? ''),
       );
 }
 
@@ -39,8 +45,8 @@ class EditablePhotoItem extends StatefulWidget {
     this.onChanged,
     this.isAllowUploadNewPhoto = false,
     this.isAllowUpdateName = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<EditablePhotoItem> createState() => _EditablePhotoItemState();
@@ -55,7 +61,7 @@ class _EditablePhotoItemState extends State<EditablePhotoItem> {
   void initState() {
     super.initState();
     photoDetail = widget.photoDetail;
-    _controller.text = photoDetail.photoName ?? '';
+    _controller.text = photoDetail.photoName;
   }
 
   @override
@@ -72,18 +78,23 @@ class _EditablePhotoItemState extends State<EditablePhotoItem> {
         children: [
           GestureDetector(
             onTap: () {
-              if (photoDetail.photoBase64.isNotBlank) {
-                final imageProvider = MemoryImage(
-                    base64Decode(photoDetail.photoBase64 ?? ''));
+              if (photoDetail.photoBase64.isNotBlank && photoDetail.imageBytesDecoded.isNotBlank) {
+                final imageProvider = MemoryImage(photoDetail.imageBytesDecoded!);
                 showImageViewer(context, imageProvider);
               }
             },
-            child: Image.memory(
-              base64Decode(photoDetail.photoBase64),
-              fit: BoxFit.fitHeight,
-              width: 74,
-              height: 74,
-            ),
+            child: photoDetail.imageBytesDecoded.isNotBlank
+                ? Image.memory(
+                    key: Key(widget.photoDetail.photoId.toString()),
+                    widget.photoDetail.imageBytesDecoded!,
+                    fit: BoxFit.fitHeight,
+                    width: 74,
+                    height: 74,
+                  )
+                : const SizedBox(
+                    width: 74,
+                    height: 74,
+                  ),
           ),
           const SizedBox(
             width: 24,

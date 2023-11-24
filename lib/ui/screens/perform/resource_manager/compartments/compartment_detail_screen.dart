@@ -206,7 +206,7 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                                             children: [
                                               const SizedBox(width: 12),
                                               Text(
-                                                LocaleKeys.polygonArea.tr(),
+                                                '${LocaleKeys.polygonArea.tr()} (ha)',
                                                 style: context.textStyles.bodyBold.blueDark2,
                                               ),
                                               const SizedBox(width: 36),
@@ -334,7 +334,7 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                                 AttributeItem(
                                   inactive: isConservationArea,
                                   child: InputAttributeItem(
-                                      labelText: '${LocaleKeys.mai.tr()} m3/ha/pa',
+                                      labelText: '${LocaleKeys.mai.tr()} m3/ha/yr',
                                       labelTextStyle: context.textStyles.bodyBold.blueDark2,
                                       textStyle: context.textStyles.bodyNormal.blueDark2,
                                       initialValue: (initCompartment.utilMAI ?? '').toString(),

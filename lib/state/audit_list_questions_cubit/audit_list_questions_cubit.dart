@@ -309,6 +309,8 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
         isQuestionComplete: 1,
         rejectReasonId: null,
         rejectComment: null,
+        longitude: e.longitude,
+        latitude: e.latitude,
       );
     }).toList();
 
@@ -323,6 +325,21 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     await getListQuestionComment();
     await getListQuestionPhoto();
     await applyFilter();
+  }
+
+  Future<void> addPhoto({
+    required String photoPath,
+    required FarmQuestion auditQuestion,
+  }) async {
+    final photo = QuestionPhoto(
+      photo: photoPath,
+      assessmentId: state.audit?.assessmentId,
+      questionId: auditQuestion.questionId,
+      photoId: generatorInt32Id(),
+    );
+
+    await cmoDatabaseMasterService.cacheQuestionPhoto(photo);
+    await refreshAfterUploadPhoto();
   }
 
   Future<void> refreshAfterUploadPhoto() async {

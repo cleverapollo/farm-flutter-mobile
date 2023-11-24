@@ -74,7 +74,7 @@ class _PetsAndDiseaseAddScreenState extends BaseStatefulWidgetState<PetsAndDisea
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 12.0),
+                  const SizedBox(height: 18.0),
                   CmoHeaderTile(
                     title: LocaleKeys.details.tr(),
                     backgroundColor: context.colors.blueDark2,

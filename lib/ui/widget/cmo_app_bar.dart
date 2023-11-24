@@ -43,7 +43,7 @@ class CmoAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? sectionName;
 
   @override
-  Size get preferredSize => Size.fromHeight(subtitle != null ? _h2 : _h1); // const Size.fromHeight(_h2);
+  Size get preferredSize => const Size.fromHeight(_h2);
 
   @override
   Widget build(BuildContext context) {

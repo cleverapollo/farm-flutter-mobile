@@ -145,6 +145,7 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const SizedBox(height: 18),
                       CmoHeaderTile(
                         title: LocaleKeys.nameOfControlAgent.tr(),
                         backgroundColor: context.colors.blueDark2,

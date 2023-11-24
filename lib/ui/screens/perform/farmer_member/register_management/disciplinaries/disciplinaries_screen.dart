@@ -56,7 +56,7 @@ class _DisciplinariesScreenState extends BaseStatefulWidgetState<DisciplinariesS
                       return SingleChildScrollView(
                         child: Column(
                           children: [
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 18),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [

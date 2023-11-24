@@ -51,38 +51,42 @@ class _SiteManagementPlanScreenState extends BaseStatefulWidgetState<SiteManagem
         onTapLeading: Navigator.of(context).pop,
       ),
       body:
-          BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState, bool>(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: BlocSelector<SiteManagementPlanCubit, SiteManagementPlanState, bool>(
         selector: (state) => state.loading,
         builder: (context, isLoading) {
-          if (isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            if (isLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return SizedBox.expand(
+              child: BlocSelector<SiteManagementPlanCubit,
+                  SiteManagementPlanState, CharcoalPlantationRoleEnum>(
+                selector: (state) => state.charcoalPlantationRoleEnum,
+                builder: (context, charcoalPlantationRoleEnum) {
+                  switch (charcoalPlantationRoleEnum) {
+                    case CharcoalPlantationRoleEnum.isCharcoal:
+                      return _buildCharcoalManagementPlan();
+                    case CharcoalPlantationRoleEnum.isPlantation:
+                      return _buildPlantationFMP();
+                    case CharcoalPlantationRoleEnum.none:
+                      return Container();
+                  }
+                },
+              ),
             );
-          }
-          return SizedBox.expand(
-            child: BlocSelector<SiteManagementPlanCubit,
-                SiteManagementPlanState, CharcoalPlantationRoleEnum>(
-              selector: (state) => state.charcoalPlantationRoleEnum,
-              builder: (context, charcoalPlantationRoleEnum) {
-                switch (charcoalPlantationRoleEnum) {
-                  case CharcoalPlantationRoleEnum.isCharcoal:
-                    return _buildCharcoalManagementPlan();
-                  case CharcoalPlantationRoleEnum.isPlantation:
-                    return _buildPlantationFMP();
-                  case CharcoalPlantationRoleEnum.none:
-                    return Container();
-                }
-              },
-            ),
-          );
         },
       ),
+          ),
     );
   }
 
   Widget _buildPlantationFMP() {
     return Column(
       children: [
+        const SizedBox(height: 16,),
         _compartmentCard(context),
       ],
     );
@@ -95,6 +99,7 @@ class _SiteManagementPlanScreenState extends BaseStatefulWidgetState<SiteManagem
       builder: (context, state) {
         return Column(
           children: [
+            const SizedBox(height: 16,),
             _campCard(context),
             CmoTappable(
               onTap: () {

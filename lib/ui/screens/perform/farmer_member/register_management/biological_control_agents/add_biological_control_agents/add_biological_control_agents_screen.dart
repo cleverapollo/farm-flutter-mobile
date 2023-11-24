@@ -110,7 +110,8 @@ class _AddBiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Add
             return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                children: [
+                  const SizedBox(height: 18),
                   BlocBuilder<AddBiologicalControlCubit, AddBiologicalControlState>(
                     builder: (context, state) {
                       return SelectControlAgentWidget(

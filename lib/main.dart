@@ -15,6 +15,7 @@ import 'package:path_provider/path_provider.dart';
 late FlutterSecureStorage secureStorage;
 final snackbarKey = GlobalKey<ScaffoldMessengerState>();
 late List<CameraDescription> cameras;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
@@ -67,7 +68,6 @@ class CmoApp extends StatelessWidget {
         BlocProvider(create: (_) => AuditCubit()),
         BlocProvider(create: (_) => AuditListCubit()),
         BlocProvider(create: (_) => AuditListQuestionsCubit()),
-        BlocProvider(create: (_) => AuditQuestionPhotoCubit()),
         BlocProvider(create: (_) => StakeHolderListCubit()),
         BlocProvider(create: (_) => DashboardCubit()),
         BlocProvider(create: (_) => AddMemberCubit()),

@@ -127,12 +127,10 @@ class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQu
     await CustomCameraScreen.push(
       context,
       onDone: (base64Image) async {
-        await context.read<AuditQuestionPhotoCubit>().addPhoto(
+        await context.read<AuditListQuestionsCubit>().addPhoto(
               photoPath: base64Image,
               auditQuestion: auditQuestion,
             );
-
-        await context.read<AuditListQuestionsCubit>().refreshAfterUploadPhoto();
       },
     );
   }

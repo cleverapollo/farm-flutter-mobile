@@ -94,6 +94,7 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(height: 18),
                         CmoHeaderTile(
                           title: LocaleKeys.details.tr(),
                           backgroundColor: context.colors.blueDark2,

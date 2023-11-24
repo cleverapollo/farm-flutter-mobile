@@ -3,13 +3,10 @@ import 'dart:convert';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/service/image_picker_service.dart';
-import 'package:cmo/state/audit_question_photo/audit_question_photo_cubit.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_photo/audit_question_photo_detail_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/editable_photo_item.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/utils/file_utils.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,10 +27,13 @@ class AuditListPhotoScreen extends BaseStatefulWidget {
   }) async {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => AuditListPhotoScreen(
-          auditQuestion: auditQuestion,
-          auditId: auditId,
-          totalAuditPhotos: totalAuditPhotos,
+        builder: (_) => BlocProvider(
+          create: (_) => AuditQuestionPhotoCubit(),
+          child: AuditListPhotoScreen(
+            auditQuestion: auditQuestion,
+            auditId: auditId,
+            totalAuditPhotos: totalAuditPhotos,
+          ),
         ),
       ),
     );
@@ -50,8 +50,6 @@ class AuditListPhotoScreen extends BaseStatefulWidget {
 }
 
 class _AuditListPhotoScreenState extends BaseStatefulWidgetState<AuditListPhotoScreen> {
-  final ImagePickerService _imagePickerService = ImagePickerService();
-
   bool loading = false;
 
   @override
@@ -72,60 +70,6 @@ class _AuditListPhotoScreenState extends BaseStatefulWidgetState<AuditListPhotoS
     }
 
     return canUpload;
-  }
-
-  Future<void> _selectPhotoFromCamera() async {
-    final canUpload = verifyMaximumAuditPhotos();
-    if (!canUpload) return;
-
-    final croppedImage = await _imagePickerService.pickImageFromCamera(
-      title: DateTime.now().toString(),
-    );
-
-    if (croppedImage != null) {
-      if (context.mounted) {
-        setState(() {
-          loading = true;
-        });
-
-        final base64 = await FileUtil.toBase64(await FileUtil.writeToFileWithUint8List(await croppedImage.readAsBytes()));
-        await context.read<AuditQuestionPhotoCubit>().addPhoto(
-              photoPath: base64,
-              auditQuestion: widget.auditQuestion,
-            );
-
-        setState(() {
-          loading = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _selectPhotoFromGallery() async {
-    final canUpload = verifyMaximumAuditPhotos();
-    if (!canUpload) return;
-
-    final croppedImage = await _imagePickerService.pickImageFromGallery(
-      title: DateTime.now().toString(),
-    );
-
-    if (croppedImage != null) {
-      setState(() {
-        loading = true;
-      });
-
-      final base64 = await FileUtil.toBase64(await FileUtil.writeToFileWithUint8List(await croppedImage.readAsBytes()));
-      if (context.mounted) {
-        await context.read<AuditQuestionPhotoCubit>().addPhoto(
-              photoPath: base64,
-              auditQuestion: widget.auditQuestion,
-            );
-      }
-
-      setState(() {
-        loading = false;
-      });
-    }
   }
 
   Future<void> removePhoto(QuestionPhoto photo) async {
@@ -160,8 +104,7 @@ class _AuditListPhotoScreenState extends BaseStatefulWidgetState<AuditListPhotoS
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuditQuestionPhotoCubit, AuditQuestionPhotoState>(
-      bloc: context.read<AuditQuestionPhotoCubit>(),
-      builder: (context, snapshot) {
+      builder: (context, state) {
         return Scaffold(
           appBar: CmoAppBar(
             title: LocaleKeys.pictures.tr(),
@@ -171,22 +114,22 @@ class _AuditListPhotoScreenState extends BaseStatefulWidgetState<AuditListPhotoS
             onTapTrailing: Navigator.of(context).pop,
           ),
           body: ListView.separated(
-            itemCount: snapshot.photos.length,
+            itemCount: state.photos.length,
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             itemBuilder: (BuildContext context, int index) {
-              if (snapshot.photos[index].photo == null) return const SizedBox();
+              if (state.photos[index].photo == null) return const SizedBox();
               return InkWell(
                 onTap: () {
                   AuditQuestionsPhotoDetailScreen.push(
                     context,
-                    auditQuestionPhoto: snapshot.photos[index],
+                    auditQuestionPhoto: state.photos[index],
                     savePhoto: _replacePhoto,
                   );
                 },
                 child: EditablePhotoItem(
-                  photoDetail: PhotoDetail.fromQuestionPhoto(snapshot.photos[index]),
+                  photoDetail: PhotoDetail.fromQuestionPhoto(state.photos[index]),
                   onRemoved: () async {
-                    await removePhoto(snapshot.photos[index]);
+                    await removePhoto(state.photos[index]);
                   },
                 ),
               );
@@ -202,7 +145,7 @@ class _AuditListPhotoScreenState extends BaseStatefulWidgetState<AuditListPhotoS
               padding: const EdgeInsets.only(top: 12),
               child: CmoFilledButton(
                 onTap: () =>
-                    Navigator.of(context).pop(snapshot.photos.isNotEmpty),
+                    Navigator.of(context).pop(state.photos.isNotEmpty),
                 title: LocaleKeys.save.tr(),
                 loading: loading,
               ),
