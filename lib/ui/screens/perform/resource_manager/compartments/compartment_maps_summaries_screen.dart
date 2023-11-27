@@ -203,10 +203,6 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     }
 
     final selectedPolygon = generatePolygonFromListMarker();
-    if(state.isCompletePolygon) {
-      return {selectedPolygon!};
-    }
-
     if (selectedPolygon != null && !state.isUpdating) {
       polygon.add(selectedPolygon);
     }
