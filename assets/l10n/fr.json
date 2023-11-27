@@ -595,6 +595,8 @@
   "accept_changes": "Accept changes",
   "exit": "Exit",
   "perimeter": "Perimeter",
+  "select_a_point_or_line_to_edit": "Select a point or line to edit",
+  "pan_map_to_move_point": "Pan map to move point",
   "map_type": "Map Type",
   "default_text": "Default",
   "satellite": "Satellite",

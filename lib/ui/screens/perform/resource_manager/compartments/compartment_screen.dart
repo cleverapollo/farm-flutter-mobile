@@ -2,7 +2,6 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_maps_summaries_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/compartment_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';

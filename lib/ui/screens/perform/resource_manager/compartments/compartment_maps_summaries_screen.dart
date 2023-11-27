@@ -288,6 +288,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       body: Column(
         children: [
           const SizedBox(height: 24),
+          instructionMessages(),
           Expanded(
             child: Stack(
               children: [
@@ -330,6 +331,28 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           const SizedBox(height: 24),
         ],
       ),
+    );
+  }
+
+  Widget instructionMessages() {
+    return BlocBuilder<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState>(
+      builder: (context, state) {
+        var instructionMessage = '';
+
+        if (state.isUpdating) {
+          instructionMessage = LocaleKeys.select_a_point_or_line_to_edit.tr();
+          if (state.selectedEditedMarker != null || state.selectedEditedPolyline != null) {
+            instructionMessage = LocaleKeys.pan_map_to_move_point.tr();
+          }
+
+          return CmoHeaderTile(
+            title: instructionMessage,
+            backgroundColor: context.colors.black,
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
     );
   }
 
