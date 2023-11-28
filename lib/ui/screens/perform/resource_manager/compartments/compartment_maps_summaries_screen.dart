@@ -150,9 +150,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
         polyline = polyline.copyWith(
           colorParam: getPolylineColor(polyline),
           onTapParam: () {
-            context
-                .read<CompartmentMapsSummariesCubit>()
-                .onTapPolyline(polyline);
+            context.read<CompartmentMapsSummariesCubit>().onTapPolyline(
+                  polyline,
+                  onMoveCameraToCenterPoint: moveMapCameraToLocation,
+                );
           },
         );
 
@@ -174,9 +175,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       lastPolyline = lastPolyline.copyWith(
         colorParam: getPolylineColor(lastPolyline),
         onTapParam: () {
-          context
-              .read<CompartmentMapsSummariesCubit>()
-              .onTapPolyline(lastPolyline);
+          context.read<CompartmentMapsSummariesCubit>().onTapPolyline(
+                lastPolyline,
+                onMoveCameraToCenterPoint: moveMapCameraToLocation,
+              );
         },
       );
 
@@ -246,6 +248,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     );
   }
 
+  Future<void> moveMapCameraToLocation(LatLng position) async {
+    await mapController?.animateCamera(CameraUpdate.newLatLng(position));
+  }
+
   Future<void> moveMapCameraToInitLocation() async {
     final state = context.read<CompartmentMapsSummariesCubit>().state;
     if (state.isAddingNew) {
@@ -308,8 +314,6 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                               await context.read<CompartmentMapsSummariesCubit>().initMapData();
                               await moveMapCameraToInitLocation();
                             });
-
-
                           },
                         );
                       },

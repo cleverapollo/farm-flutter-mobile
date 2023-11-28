@@ -162,7 +162,10 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     }
   }
 
-  Future<void> onTapPolyline(Polyline polyline) async {
+  Future<void> onTapPolyline(
+    Polyline polyline, {
+    required void Function(LatLng centerLatLng) onMoveCameraToCenterPoint,
+  }) async {
     if (state.isUpdating) {
       final centerLatLng = MapUtils.getCenterPositionFromPolyline(polyline);
       final centerMaker = await MapUtils.generateMarkerFromLatLng(
@@ -189,6 +192,9 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
             temporaryMarkers: listMarker,
           ),
         );
+
+      onMoveCameraToCenterPoint(centerLatLng);
+      onTapMarker(centerMaker.markerId);
     }
   }
 
