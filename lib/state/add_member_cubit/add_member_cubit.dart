@@ -28,9 +28,24 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     if (!loadedFarmPropertyOwnerShipType) return;
 
     if (farm != null) {
-      emit(state.copyWith(farm: farm, farmBeforeEdit: farm));
-      final compartments =
-          await cmoDatabaseMasterService.getCompartmentByFarmId(farm.farmId);
+      final compartments = await cmoDatabaseMasterService
+          .getCompartmentsByGroupSchemeIdAndFarmId(
+        farmId: farm.farmId,
+        groupSchemeId: groupScheme?.groupSchemeId,
+      );
+
+      var totalArea = 0.0;
+      for (final compartment in compartments) {
+        totalArea += compartment.polygonArea ?? 0;
+      }
+
+      emit(
+        state.copyWith(
+          farm: farm.copyWith(farmSize: totalArea),
+          farmBeforeEdit: farm.copyWith(farmSize: totalArea),
+        ),
+      );
+
       final asis =
           await cmoDatabaseMasterService.getAsiRegisterByFarmId(farm.farmId);
 
@@ -85,7 +100,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       final isCompleteSiteLocation = farm.latitude != null &&
           farm.longitude != null &&
           farm.streetName != null;
-      final isCompleteCompartments = compartments?.isNotEmpty ?? false;
+      final isCompleteCompartments = compartments.isNotEmpty;
       final isCompleteASI = asis.isNotEmpty;
       final addMemberSDetailIsComplete = isCompleteSiteLocation &&
           farm.farmName != null &&
@@ -105,13 +120,12 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           address: farm.streetName,
         ),
         addMemberCompartmentsState: AddMemberCompartmentsState(
-          compartments: compartments ?? [],
-          farmSize: farm.farmSize,
+          compartments: compartments,
+          farmSize: totalArea,
         ),
         addMemberAsisState: AddMemberAsisState(asis: asis),
       );
 
-      final addMemberInclusionDateIsComplete = farm.inclusionDate != null;
       emit(state.copyWith(
         addMemberMPO: addMemberMPO,
         addMemberMDetails: addMemberMDetail,
