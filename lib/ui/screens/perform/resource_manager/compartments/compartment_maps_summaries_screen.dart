@@ -216,8 +216,8 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       CompartmentMapDetail compartmentMapDetail, {
         bool isSelected = false,
       }) {
-    final fillColor = isSelected ? context.colors.yellow.withOpacity(0.3) : context.colors.grey.withOpacity(0.5);
-    final strokeColor = isSelected ? context.colors.yellow : context.colors.grey;
+    final fillColor = isSelected ? context.colors.yellow.withOpacity(0.3) : context.colors.white.withOpacity(0.5);
+    final strokeColor = isSelected ? context.colors.yellow : context.colors.white;
 
     if (compartmentMapDetail.markers.isBlank) return null;
 
