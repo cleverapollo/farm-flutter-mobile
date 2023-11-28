@@ -180,7 +180,7 @@ class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQu
 
   Future<void> _saveQuestionAnswer() async {
     if (context.mounted) {
-      await context.read<AuditListQuestionsCubit>().onSave();
+      await context.read<AuditListQuestionsCubit>().checkAllAuditQuestionCompleted();
       await context.read<AuditListCubit>().refresh();
       await context.read<DashboardCubit>().refresh();
       Navigator.of(context).pop(true);

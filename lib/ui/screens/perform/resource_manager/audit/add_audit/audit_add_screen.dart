@@ -63,6 +63,8 @@ class _AuditAddScreen extends BaseStatefulWidgetState<AuditAddScreen> {
       if (context.mounted) {
         final audit = await context.read<AuditCubit>().submit();
         if (audit != null && context.mounted) {
+          await context.read<AuditListCubit>().refresh();
+          await context.read<DashboardCubit>().refresh();
           Navigator.of(context).pop();
           await AuditListQuestionsScreen.push(
             context,

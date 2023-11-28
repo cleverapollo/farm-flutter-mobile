@@ -296,25 +296,38 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     Compliance compliance, {
     void Function()? onCallback,
   }) async {
-    final answer = state.answers
+    var answer = state.answers
         .firstWhereOrNull((e) => e.questionId == question.questionId);
     if (answer == null) return;
 
-    final answerAfterSelect = state.answers.map((e) {
-      if (e.questionId != question.questionId) return e;
+    answer = answer.copyWith(
+      complianceId: compliance.complianceId,
+      questionAnswerId: DateTime.now().millisecondsSinceEpoch,
+      isQuestionComplete: 1,
+      rejectReasonId: null,
+      rejectComment: null,
+      longitude: answer.longitude,
+      latitude: answer.latitude,
+    );
 
-      return e.copyWith(
-        complianceId: compliance.complianceId,
-        questionAnswerId: e.questionAnswerId ?? DateTime.now().millisecondsSinceEpoch,
-        isQuestionComplete: 1,
-        rejectReasonId: null,
-        rejectComment: null,
-        longitude: e.longitude,
-        latitude: e.latitude,
-      );
-    }).toList();
+    // final answerAfterSelect = state.answers.map((e) {
+    //   if (e.questionId != question.questionId) return e;
+    //
+    //   return e.copyWith(
+    //     complianceId: compliance.complianceId,
+    //     questionAnswerId: e.questionAnswerId ?? DateTime.now().millisecondsSinceEpoch,
+    //     isQuestionComplete: 1,
+    //     rejectReasonId: null,
+    //     rejectComment: null,
+    //     longitude: e.longitude,
+    //     latitude: e.latitude,
+    //   );
+    // }).toList();
 
-    emit(state.copyWith(answers: answerAfterSelect));
+    // emit(state.copyWith(answers: answerAfterSelect));
+    await cmoDatabaseMasterService.cacheQuestionAnswer(answer);
+    await getListQuestionAnswers();
+    await markQuestionAnswerIsCompleted(question);
     await applyFilter();
     onCallback?.call();
   }
@@ -413,7 +426,7 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       await markQuestionAnswerIsCompleted(question);
     }
 
-    await checkAllAuditQuestionCompleted();
+    // await checkAllAuditQuestionCompleted();
   }
 
   void onChangeNote(String? value) {
