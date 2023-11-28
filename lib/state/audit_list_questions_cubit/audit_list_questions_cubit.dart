@@ -300,15 +300,24 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
         .firstWhereOrNull((e) => e.questionId == question.questionId);
     if (answer == null) return;
 
-    answer = answer.copyWith(
-      complianceId: compliance.complianceId,
-      questionAnswerId: DateTime.now().millisecondsSinceEpoch,
-      isQuestionComplete: 1,
-      rejectReasonId: null,
-      rejectComment: null,
-      longitude: answer.longitude,
-      latitude: answer.latitude,
-    );
+    if (answer.complianceId == compliance.complianceId) {
+      answer = answer.copyWith(
+        complianceId: null,
+        isQuestionComplete: 0,
+        longitude: answer.longitude,
+        latitude: answer.latitude,
+      );
+    } else {
+      answer = answer.copyWith(
+        complianceId: compliance.complianceId,
+        questionAnswerId: DateTime.now().millisecondsSinceEpoch,
+        isQuestionComplete: 1,
+        rejectReasonId: null,
+        rejectComment: null,
+        longitude: answer.longitude,
+        latitude: answer.latitude,
+      );
+    }
 
     // final answerAfterSelect = state.answers.map((e) {
     //   if (e.questionId != question.questionId) return e;
@@ -329,7 +338,10 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     await getListQuestionAnswers();
     await markQuestionAnswerIsCompleted(question);
     await applyFilter();
-    onCallback?.call();
+
+    if (answer.complianceId != null) {
+      onCallback?.call();
+    }
   }
 
   Future<void> refresh() async {
