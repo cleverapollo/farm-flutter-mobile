@@ -517,7 +517,7 @@ class CmoPerformApiService {
     int? groupSchemeId,
   }) async {
     final response = await client.get<JsonListData>(
-      '${Env.apiGroupSchemeUrl}GroupSchemeJobDescription/GetAll?JobDescriptionId&GroupSchemeId',
+      '${Env.apiGroupSchemeUrl}GroupSchemeJobDescription/GetAll?',
       queryParameters: {
         "JobDescriptionId": jobDescriptionId,
         "GroupSchemeId": groupSchemeId,
