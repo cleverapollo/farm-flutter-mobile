@@ -261,15 +261,9 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
         longitude: lng,
       );
 
-      final answers = state.answers;
-      answers.removeWhere((element) => element.questionAnswerId == answer?.questionAnswerId);
-      answers.add(answer);
-      emit(
-        state.copyWith(
-          answers: state.answers,
-          loading: false,
-        ),
-      );
+      await cmoDatabaseMasterService.cacheQuestionAnswer(answer);
+      await getListQuestionAnswers();
+      emit(state.copyWith(loading: false));
     }
   }
 
