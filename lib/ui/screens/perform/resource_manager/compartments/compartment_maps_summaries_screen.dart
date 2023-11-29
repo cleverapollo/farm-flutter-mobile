@@ -85,7 +85,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
               markers[i].position,
             ],
             color: context.colors.yellow,
-            width: 5,
+            width: 2,
             onTap: () {
               print('onTap polyline');
             },
@@ -104,7 +104,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
               markers[0].position,
             ],
             color: context.colors.yellow,
-            width: 5,
+            width: 2,
           ),
         );
       }
@@ -136,7 +136,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       for (var i = 1; i < markers.length; i++) {
         var polyline = Polyline(
           consumeTapEvents: true,
-          width: 5,
+          width: 2,
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
           polylineId: PolylineId('${markers[i].markerId.value} ${i - 1}_$i $now'),
@@ -163,7 +163,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
 
       var lastPolyline = Polyline(
         consumeTapEvents: true,
-        width: 5,
+        width: 2,
         polylineId: PolylineId(
             '${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0 $now}'),
         points: [
@@ -226,7 +226,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       points: compartmentMapDetail.markers.map((e) => e.position).toList(),
       fillColor: fillColor,
       strokeColor: strokeColor,
-      strokeWidth: 5,
+      strokeWidth: 2,
     );
   }
 
@@ -244,7 +244,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       points: listMarkers.map((e) => e.position).toList(),
       fillColor: context.colors.yellow.withOpacity(0.3),
       strokeColor: strokeColor,
-      strokeWidth: 5,
+      strokeWidth: 2,
     );
   }
 

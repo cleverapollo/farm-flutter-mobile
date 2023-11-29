@@ -1,3 +1,4 @@
+import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
 class MapCenterIcon extends StatelessWidget {
@@ -54,25 +55,23 @@ class MapCenterIcon extends StatelessWidget {
         Center(
           child: Container(
             alignment: Alignment.center,
-            width: 25,
-            height: 25,
+            width: 34,
+            height: 34,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(25)),
+              borderRadius: const BorderRadius.all(Radius.circular(25)),
               border: Border.all(
-                width: 1,
                 color: Colors.red,
-                style: BorderStyle.solid,
               ),
             ),
           ),
         ),
         Center(
           child: Container(
-            width: 8,
-            height: 8,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              color: Colors.white,
+            width: 4,
+            height: 4,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
+              color: context.colors.red,
             ),
           ),
         ),
