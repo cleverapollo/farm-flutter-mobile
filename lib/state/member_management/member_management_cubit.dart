@@ -146,7 +146,12 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
   }
 
   Future<void> onRemoveFarm(Farm farm) async {
-    await cmoDatabaseMasterService.cacheFarmAddMember(farm.copyWith(isActive: false));
+    await cmoDatabaseMasterService.cacheFarmAddMember(
+      farm.copyWith(
+        isActive: false,
+        isMasterDataSynced: 0,
+      ),
+    );
     showSnackSuccess(
       msg: '${LocaleKeys.remove.tr()} ${farm.id}!',
     );

@@ -2809,9 +2809,8 @@ class CmoDatabaseMasterService {
     return db.farms
         .filter()
         .regionalManagerUnitIdEqualTo(rmuId)
-        .isProspectMemberEqualTo(true)
+        // .isProspectMemberEqualTo(true)
         .isMasterDataSyncedEqualTo(0)
-        .isActiveEqualTo(true)
         .findAll();
   }
 
