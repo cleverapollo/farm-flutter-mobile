@@ -55,6 +55,7 @@ class Compartment with _$Compartment {
     @JsonKey(name: 'CampId') String? campId,
     @JsonKey(name: 'ProductGroupTemplateName') String? productGroupTemplateName,
     @JsonKey(name: 'SpeciesGroupTemplateName') String? speciesGroupTemplateName,
+    @JsonKey(name: 'AreaTypeName') String? areaTypeName,
   }) = _Compartment;
 
   const Compartment._();
@@ -130,6 +131,7 @@ extension CompartmentExtension on Compartment {
       unitNumber: unitNumber,
       utilMAI: utilMAI,
       workingCircleTemplateId: workingCircleTemplateId,
+      areaTypeName: areaTypeName,
     );
   }
 }

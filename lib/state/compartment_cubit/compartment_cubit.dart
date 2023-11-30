@@ -1,5 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
+import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -9,6 +11,15 @@ part 'compartment_state.dart';
 class CompartmentCubit extends HydratedCubit<CompartmentState> {
   CompartmentCubit(String farmId, {String? campId})
       : super(CompartmentState(farmId: farmId, campId: campId));
+
+  Future<void> initData() async {
+    await loadListCompartment();
+    final groupScheme = await configService.getActiveGroupScheme();
+    final farm = await configService.getActiveFarm();
+    final groupSchemeId = groupScheme?.groupSchemeId ?? farm?.groupSchemeId;
+    final areaTypes = await cmoDatabaseMasterService.getAreaTypesByGroupSchemeId(groupSchemeId);
+    emit(state.copyWith(areaTypes: areaTypes));
+  }
 
   Future<void> loadListCompartment() async {
     emit(state.copyWith(loading: true));
@@ -48,6 +59,19 @@ class CompartmentCubit extends HydratedCubit<CompartmentState> {
     } finally {
       emit(state.copyWith(loading: false));
     }
+  }
+
+  bool isConservationArea(Compartment compartment) {
+    final conservationAreaType = state.areaTypes.firstWhereOrNull(
+      (element) =>
+          element.areaTypeName.isNotBlank &&
+          element.areaTypeName!.toLowerCase().contains(
+                'Conservation Area'.toLowerCase(),
+              ),
+    );
+
+    return compartment.areaTypeId != null &&
+        compartment.areaTypeId == conservationAreaType?.areaTypeId;
   }
 
   @override

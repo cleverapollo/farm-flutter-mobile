@@ -650,6 +650,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
                 localCompartmentId: compartment.localCompartmentId,
                 productGroupTemplateName: compartment.productGroupTemplateName,
                 speciesGroupTemplateName: compartment.speciesGroupTemplateName,
+                areaTypeName: compartment.areaTypeName,
                 espacementWidth: compartment.espacementWidth,
                 espacementLength: compartment.espacementLength,
               ),
@@ -1069,17 +1070,20 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   Future<void> insertCompartmentsByRMUId() async {
     emit(state.copyWith(syncMessage: 'Syncing Compartments...'));
     final compartments = await cmoPerformApiService.getCompartmentsByRMUId();
+    final areaTypes = await cmoDatabaseMasterService.getAreaTypesByGroupSchemeId(groupSchemeId);
     final productGroupTemplates = await cmoDatabaseMasterService.getProductGroupTemplates(groupSchemeId);
     final speciesGroupTemplates = await cmoDatabaseMasterService.getSpeciesGroupTemplates(groupSchemeId);
     if (compartments.isNotBlank) {
       for (final compartment in compartments!) {
         final productGroupTemplate = productGroupTemplates.firstWhereOrNull((element) => element.productGroupTemplateId == compartment.productGroupTemplateId);
         final speciesGroupTemplate = speciesGroupTemplates.firstWhereOrNull((element) => element.speciesGroupTemplateId == compartment.speciesGroupTemplateId);
+        final areaType = areaTypes.firstWhereOrNull((element) => element.areaTypeId == compartment.areaTypeId);
         await cmoDatabaseMasterService.cacheCompartment(
           compartment.copyWith(
             localCompartmentId: compartment.managementUnitId.toIdIsarFromUuid,
             productGroupTemplateName: productGroupTemplate?.productGroupTemplateName,
             speciesGroupTemplateName: speciesGroupTemplate?.speciesGroupTemplateName,
+            areaTypeName: areaType?.areaTypeName,
           ),
         );
       }

@@ -54,7 +54,7 @@ class _CompartmentScreenState extends BaseStatefulWidgetState<CompartmentScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await context.read<CompartmentCubit>().loadListCompartment();
+      await context.read<CompartmentCubit>().initData();
     });
   }
 
@@ -91,7 +91,7 @@ class _CompartmentScreenState extends BaseStatefulWidgetState<CompartmentScreen>
       );
     // }
 
-    await context.read<CompartmentCubit>().loadListCompartment();
+    await context.read<CompartmentCubit>().initData();
   }
 
   @override
@@ -150,6 +150,7 @@ class _CompartmentScreenState extends BaseStatefulWidgetState<CompartmentScreen>
                           child: CompartmentItemWidget(
                             model: listCompartment[index],
                             onTap: () => navigateToDetail(compartment: listCompartment[index]),
+                            isConservationArea: context.read<CompartmentCubit>().isConservationArea(listCompartment[index]),
                           ),
                         );
                       },

@@ -14,10 +14,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class CompartmentItemWidget extends StatelessWidget {
   final Compartment model;
   final void Function() onTap;
+  final bool isConservationArea;
 
   const CompartmentItemWidget({
     required this.model,
     required this.onTap,
+    required this.isConservationArea,
   });
 
   @override
@@ -37,18 +39,26 @@ class CompartmentItemWidget extends StatelessWidget {
           CmoCardHeader(
             title: '${LocaleKeys.compartment.tr()}: ${model.unitNumber ?? ''}',
           ),
-          CmoCardItem(
-            title:
-                model.productGroupTemplateName ?? LocaleKeys.productGroup.tr(),
-            value: '${model.polygonArea?.toStringAsFixed(2)} ha',
-            ratioTitleSpace: 3,
-          ),
-          CmoCardItem(
-            title:
-                model.speciesGroupTemplateName ?? LocaleKeys.speciesGroup.tr(),
-            value: '',
-            ratioTitleSpace: 3,
-          ),
+          if (isConservationArea) ...[
+            CmoCardItem(
+              title: LocaleKeys.conservation_area.tr(),
+              value: '${model.polygonArea?.toStringAsFixed(2)} ha',
+              ratioTitleSpace: 3,
+            ),
+          ] else ...[
+            CmoCardItem(
+              title: model.productGroupTemplateName ??
+                  LocaleKeys.productGroup.tr(),
+              value: '${model.polygonArea?.toStringAsFixed(2)} ha',
+              ratioTitleSpace: 3,
+            ),
+            CmoCardItem(
+              title: model.speciesGroupTemplateName ??
+                  LocaleKeys.speciesGroup.tr(),
+              value: '',
+              ratioTitleSpace: 3,
+            ),
+          ],
         ],
       ),
     );

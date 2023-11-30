@@ -3,6 +3,7 @@ part of 'compartment_cubit.dart';
 class CompartmentState {
   const CompartmentState({
     this.listCompartment = const <Compartment>[],
+    this.areaTypes = const <AreaType>[],
     this.farmId = '',
     this.campId,
     this.loading = false,
@@ -12,6 +13,7 @@ class CompartmentState {
   final Object? error;
   final bool loading;
   final List<Compartment> listCompartment;
+  final List<AreaType> areaTypes;
   final String farmId;
   final String? campId;
 
@@ -19,6 +21,7 @@ class CompartmentState {
     bool? loading,
     Object? error,
     List<Compartment>? listCompartment,
+    List<AreaType>? areaTypes,
     String? farmId,
     String? campId,
   }) {
@@ -28,6 +31,7 @@ class CompartmentState {
       error: error ?? this.error,
       farmId: farmId ?? this.farmId,
       campId: campId ?? this.campId,
+      areaTypes: areaTypes ?? this.areaTypes,
     );
   }
 }
