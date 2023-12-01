@@ -18,7 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StakeHolderManagementScreen extends BaseStatefulWidget {
 
-  StakeHolderManagementScreen({super.key}) : super(screenName: LocaleKeys.stakeholderManagement.tr());
+  StakeHolderManagementScreen({super.key}) : super(screenName: LocaleKeys.neighbours.tr());
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
@@ -146,7 +146,7 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
           selector: (state) => state.resourceManagerUnit,
           builder: (context, resourceManagerUnit) {
             return CmoAppBar(
-              title: LocaleKeys.stakeholderManagement.tr(),
+              title: LocaleKeys.neighbours.tr(),
               subtitle: '${LocaleKeys.siteName.tr()}: ${resourceManagerUnit?.regionalManagerUnitName}',
               leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: Navigator.of(context).pop,
@@ -165,7 +165,7 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
           future: configService.getActiveFarm(),
           builder: (context, snapshot) {
             return CmoAppBar(
-              title: LocaleKeys.stakeholderManagement.tr(),
+              title: LocaleKeys.neighbours.tr(),
               subtitle: snapshot.data?.farmName ?? '',
               leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: Navigator.of(context).pop,
