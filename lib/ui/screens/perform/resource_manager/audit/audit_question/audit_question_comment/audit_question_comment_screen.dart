@@ -93,54 +93,61 @@ class _AuditQuestionCommentScreenState extends BaseStatefulWidgetState<AuditQues
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
-        body: Scrollbar(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                if (widget.question.xBone ?? false)
-                  Icon(
-                    IconsaxOutline.danger,
-                    size: 30.0,
-                    color: context.colors.red,
+        body: Column(
+          children: [
+            Expanded(
+              child: Scrollbar(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: [
+                      if (widget.question.xBone ?? false)
+                        Icon(
+                          IconsaxOutline.danger,
+                          size: 30.0,
+                          color: context.colors.red,
+                        ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      _buildQuestionValue(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: Divider(
+                          height: 2,
+                          thickness: 1,
+                          indent: 0,
+                          endIndent: 0,
+                          color: context.colors.black,
+                        ),
+                      ),
+                      _selectReasonDropdown(context),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      buildCommentTextField(),
+                      editIcon(),
+                    ],
                   ),
-                const SizedBox(
-                  height: 16,
                 ),
-                _buildQuestionValue(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: Divider(
-                    height: 2,
-                    thickness: 1,
-                    indent: 0,
-                    endIndent: 0,
-                    color: context.colors.black,
-                  ),
-                ),
-                _selectReasonDropdown(context),
-                const SizedBox(
-                  height: 15,
-                ),
-                buildCommentTextField(),
-                editIcon(),
-              ],
+              ),
             ),
-          ),
+            BlocBuilder<AuditQuestionCommentCubit, AuditQuestionCommentState>(
+              builder: (context, state) {
+                return Container(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 8),
+                  child: CmoFilledButton(
+                    disable: state.selectedRejectReason == null || state.questionComment!.comment.isBlank,
+                    onTap: save,
+                    title: LocaleKeys.save.tr(),
+                    loading: state.loading,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-        persistentFooterAlignment: AlignmentDirectional.center,
-        persistentFooterButtons: [
-          BlocBuilder<AuditQuestionCommentCubit, AuditQuestionCommentState>(
-            builder: (context, state) {
-              return CmoFilledButton(
-                disable: state.selectedRejectReason == null || state.questionComment!.comment.isBlank,
-                onTap: save,
-                title: LocaleKeys.save.tr(),
-                loading: state.loading,
-              );
-            },
-          ),
-        ],
       ),
     );
   }
