@@ -29,7 +29,6 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
       final fireCount = await _onCountFire(isRefreshUI: false);
       final rteCount = await _onCountRte(isRefreshUI: false);
       final chemicalCount = await _onCountChemical(isRefreshUI: false);
-      final stakeholderManagement = await _onCountStakeholder(isRefreshUI: false);
 
       emit(
         state.copyWith(
@@ -38,7 +37,6 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
           asi: asiCount,
           biologicalControlAgents: biologicalCount,
           employeeGrievance: employeeGrievanceCount,
-          stakeholderManagement: stakeholderManagement,
           training: trainingCount,
           fire: fireCount,
           rteSpecies: rteCount,
@@ -80,9 +78,6 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
         _onCountRte();
         break;
       case ManagementType.stakeholderComplaints:
-        break;
-      case ManagementType.stakeholderManagement:
-        _onCountStakeholder();
         break;
       case ManagementType.training:
         _onCountTraining();
@@ -132,18 +127,6 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
       emit(
         state.copyWith(
           employeeGrievance: total,
-        ),
-      );
-    }
-    return total;
-  }
-
-  Future<int> _onCountStakeholder({bool isRefreshUI = true}) async {
-    final total = await masterService.getCountStakeholder();
-    if (isRefreshUI) {
-      emit(
-        state.copyWith(
-          stakeholderManagement: total,
         ),
       );
     }

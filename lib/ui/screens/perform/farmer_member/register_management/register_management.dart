@@ -30,7 +30,6 @@ enum ManagementType {
   pestsDiseases,
   rteSpecies,
   stakeholderComplaints,
-  stakeholderManagement,
   training,
 }
 
@@ -78,8 +77,6 @@ class _RegisterManagementState extends BaseStatefulWidgetState<RegisterManagemen
         return state.rteSpecies;
       case ManagementType.stakeholderComplaints:
         return state.stakeholderComplaints;
-      case ManagementType.stakeholderManagement:
-        return state.stakeholderManagement;
       case ManagementType.training:
         return state.training;
     }
@@ -116,9 +113,6 @@ class _RegisterManagementState extends BaseStatefulWidgetState<RegisterManagemen
         break;
       case ManagementType.stakeholderComplaints:
         await StakeHolderComplaintScreen.push(context);
-        break;
-      case ManagementType.stakeholderManagement:
-        await StakeHolderManagementScreen.push(context);
         break;
       case ManagementType.training:
         await TrainingScreen.push(context);
@@ -204,11 +198,6 @@ class _RegisterManagementState extends BaseStatefulWidgetState<RegisterManagemen
                     context: context,
                     type: ManagementType.stakeholderComplaints,
                     title: LocaleKeys.stakeholder_complaints.tr(),
-                  ),
-                  _buildItem(
-                    context: context,
-                    type: ManagementType.stakeholderManagement,
-                    title: LocaleKeys.stakeholder_management.tr(),
                   ),
                   _buildItem(
                     context: context,

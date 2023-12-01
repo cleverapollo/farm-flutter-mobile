@@ -92,7 +92,7 @@ class _FarmerMemberDashboardScreenState
                 builder: (context, dashboardInfo) {
                   return CmoCard(
                     content: [
-                      CmoCardHeader(title: LocaleKeys.stakeholder_management.tr()),
+                      CmoCardHeader(title: LocaleKeys.neighbours.tr()),
                       CmoCardItem(
                         title: LocaleKeys.national.tr(),
                         value: '${data.farmDashBoardInfo?.totalStakeholder}',

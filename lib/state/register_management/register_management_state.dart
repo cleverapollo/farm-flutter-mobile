@@ -12,7 +12,6 @@ class RegisterManagementState {
     this.pestsDiseases = 0,
     this.rteSpecies = 0,
     this.stakeholderComplaints = 0,
-    this.stakeholderManagement = 0,
     this.training = 0,
     this.isDataReady = false,
   });
@@ -28,7 +27,6 @@ class RegisterManagementState {
   final int pestsDiseases;
   final int rteSpecies;
   final int stakeholderComplaints;
-  final int stakeholderManagement;
   final int training;
 
   RegisterManagementState copyWith({
@@ -43,7 +41,6 @@ class RegisterManagementState {
     int? pestsDiseases,
     int? rteSpecies,
     int? stakeholderComplaints,
-    int? stakeholderManagement,
     int? training,
   }) {
     return RegisterManagementState(
@@ -60,8 +57,6 @@ class RegisterManagementState {
       rteSpecies: rteSpecies ?? this.rteSpecies,
       stakeholderComplaints:
       stakeholderComplaints ?? this.stakeholderComplaints,
-      stakeholderManagement:
-      stakeholderManagement ?? this.stakeholderManagement,
       training: training ?? this.training,
     );
   }
