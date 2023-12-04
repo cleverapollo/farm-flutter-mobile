@@ -5,7 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class IncompleteFilter extends StatelessWidget {
-  const IncompleteFilter({super.key});
+  const IncompleteFilter({
+    super.key,
+    required this.onScrollToTop,
+  });
+
+  final void Function() onScrollToTop;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +26,9 @@ class IncompleteFilter extends StatelessWidget {
               context
                   .read<AuditListQuestionsCubit>()
                   .setIncompleteFilter(incompleteFilter ? 0 : 1);
+              if (!incompleteFilter) {
+                onScrollToTop();
+              }
             },
           );
         },

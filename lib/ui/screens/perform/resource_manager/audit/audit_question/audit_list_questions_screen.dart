@@ -52,6 +52,7 @@ class AuditListQuestionsScreen extends BaseStatefulWidget {
 class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQuestionsScreen> {
   bool loading = false;
 
+  final scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -213,12 +214,21 @@ class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQu
           buildFilterSection(),
           buildInformationWidget(),
           const AuditProgressIndicator(),
-          const IncompleteFilter(),
+          IncompleteFilter(
+            onScrollToTop: () {
+              scrollController.animateTo(
+                0.0,
+                curve: Curves.easeOut,
+                duration: const Duration(milliseconds: 300),
+              );
+            },
+          ),
           Expanded(
             child: BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
               builder: (context, snapshot) {
                 final filterQuestions = snapshot.filteredQuestions;
                 return ListView.separated(
+                  controller: scrollController,
                   itemCount: filterQuestions.length,
                   itemBuilder: (context, index) {
                     final question = filterQuestions[index];
