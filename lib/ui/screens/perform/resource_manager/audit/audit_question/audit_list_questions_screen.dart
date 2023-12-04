@@ -51,7 +51,6 @@ class AuditListQuestionsScreen extends BaseStatefulWidget {
 
 class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQuestionsScreen> {
   bool loading = false;
-
   final scrollController = ScrollController();
   @override
   void initState() {
@@ -330,8 +329,8 @@ class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQu
         children: [
           Row(
             children: [
-              const Expanded(child: CarFilter()),
               const Expanded(child: ComplianceFilter()),
+              Expanded(child: CarFilter(actionKey: context.read<AuditListQuestionsCubit>().globalKeyForCarFilter,)),
             ].withSpaceBetween(width: 20),
           ),
           AuditSearchField(),

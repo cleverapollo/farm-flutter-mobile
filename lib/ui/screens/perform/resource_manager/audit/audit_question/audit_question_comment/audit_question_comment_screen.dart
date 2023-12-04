@@ -182,7 +182,7 @@ class _AuditQuestionCommentScreenState extends BaseStatefulWidgetState<AuditQues
         BlocBuilder<AuditQuestionCommentCubit, AuditQuestionCommentState>(
           builder: (context, state) {
             return CmoCustomDropdown<RejectReason>(
-              actionKey: 'reject_reason',
+              keyName: 'reject_reason',
               enable: state.isEditing,
               listItems: state.rejectReasons
                   .map((item) => OptionItem<RejectReason>(id: item, title: item.rejectReasonName ?? ''))

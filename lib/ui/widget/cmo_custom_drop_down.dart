@@ -2,6 +2,15 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
+class ChangeIsDropDownOpenedNotifier extends ChangeNotifier {
+  bool isDropDownOpened = false;
+
+  void addOne(bool shouldOpen) {
+    isDropDownOpened = shouldOpen;
+    notifyListeners();
+  }
+}
+
 class OptionItem<T> {
   final T id;
   final String title;
@@ -27,36 +36,64 @@ class OptionItem<T> {
 }
 
 class CmoCustomDropdown<T> extends StatefulWidget {
-  final String actionKey;
+  final String keyName;
   final OptionItem<T>? itemSelected;
   final List<OptionItem<T>> listItems;
   final String hintText;
   final void Function(T) onSelected;
   final bool enable;
+  final bool automaticallyChangeIsDropDownOpenedValue;
+  final GlobalKey? actionKey;
 
   const CmoCustomDropdown({
-    required this.actionKey,
+    required this.keyName,
     required this.listItems,
     required this.onSelected,
+    this.actionKey,
     this.hintText = '',
     this.itemSelected,
     this.enable = true,
-  }) : super();
+    this.automaticallyChangeIsDropDownOpenedValue = false,
+  });
 
   @override
-  _CmoCustomDropdownState createState() => _CmoCustomDropdownState<T>();
+  CmoCustomDropdownState createState() => CmoCustomDropdownState<T>();
 }
 
-class _CmoCustomDropdownState<T> extends State<CmoCustomDropdown<T>> {
+class CmoCustomDropdownState<T> extends State<CmoCustomDropdown<T>> {
   late GlobalKey actionKey;
   late double height, width, xPosition, yPosition;
   late OverlayEntry floatingDropdown;
   bool isDropdownOpened = false;
+  late ChangeIsDropDownOpenedNotifier notifier;
 
   @override
   void initState() {
-    actionKey = LabeledGlobalKey(widget.actionKey);
+    actionKey = widget.actionKey ?? GlobalKey(debugLabel: widget.keyName);
+    isDropdownOpened = widget.automaticallyChangeIsDropDownOpenedValue;
+    notifier = ChangeIsDropDownOpenedNotifier();
+    notifier.addListener(
+      () => setState(
+        () {
+          isDropdownOpened = notifier.isDropDownOpened;
+        },
+      ),
+    );
+
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+
+    print('CHANGE CHANGE');
+    if (widget.automaticallyChangeIsDropDownOpenedValue) {
+      isDropdownOpened = widget.automaticallyChangeIsDropDownOpenedValue;
+      findDropdownData();
+      floatingDropdown = _createFloatingDropdown();
+      Overlay.of(context).insert(floatingDropdown);
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -113,6 +150,15 @@ class _CmoCustomDropdownState<T> extends State<CmoCustomDropdown<T>> {
         );
       },
     );
+  }
+
+  void showDropdown(){
+    setState(() {
+      findDropdownData();
+      floatingDropdown = _createFloatingDropdown();
+      Overlay.of(context).insert(floatingDropdown);
+      isDropdownOpened = true;
+    });
   }
 
   @override

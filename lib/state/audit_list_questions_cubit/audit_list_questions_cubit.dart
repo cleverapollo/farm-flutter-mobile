@@ -5,14 +5,18 @@ import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/data/question_comment.dart';
 import 'package:cmo/model/data/question_photo.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'audit_list_questions_state.dart';
 
 class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   AuditListQuestionsCubit() : super(const AuditListQuestionsState());
+
+  final GlobalKey globalKeyForCarFilter = GlobalKey(debugLabel: 'car_filter');
 
   QuestionAnswer? getAnswerByQuestionId(int? questionId) {
     if (questionId == null) return null;
@@ -27,12 +31,33 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   }
 
   void setCarFilter(CarFilterEnum? filterEnum) {
-    emit(state.copyWith(selectedCARFilter: filterEnum));
+    emit(
+      state.copyWith(
+        selectedCARFilter: filterEnum,
+        isNCComplianceFilter: false,
+      ),
+    );
     applyFilter();
   }
 
   void setComplianceFilter(Compliance? compliance) {
-    emit(state.copyWith(selectedComplianceFilter: compliance));
+    final ncCompliance = state.compliances.firstWhereOrNull(
+          (element) => element.isNC,
+    );
+
+    emit(
+      state.copyWith(
+        selectedComplianceFilter: compliance,
+        isNCComplianceFilter:
+            compliance?.complianceId == ncCompliance?.complianceId,
+      ),
+    );
+
+    if (compliance?.complianceId == ncCompliance?.complianceId) {
+      final currentState = globalKeyForCarFilter.currentState as CmoCustomDropdownState?;
+      currentState?.showDropdown();
+    }
+
     applyFilter();
   }
 

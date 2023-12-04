@@ -13,7 +13,7 @@ class ComplianceFilter extends StatelessWidget {
     return BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
       builder: (context, state) {
         return CmoCustomDropdown<Compliance?>(
-          actionKey: 'compliance_filter',
+          keyName: 'compliance_filter',
           listItems: state.compliances
               .map(
                 (item) => OptionItem<Compliance?>(

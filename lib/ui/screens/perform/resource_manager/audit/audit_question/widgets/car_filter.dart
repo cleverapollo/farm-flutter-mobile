@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CarFilter extends StatelessWidget {
+  final GlobalKey actionKey;
+
   const CarFilter({
-    super.key,
+    required this.actionKey,
   });
 
   @override
@@ -15,7 +17,9 @@ class CarFilter extends StatelessWidget {
     return BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
       builder: (context, state) {
         return CmoCustomDropdown<CarFilterEnum>(
-          actionKey: 'car_filter',
+          keyName: 'car_filter',
+          actionKey: actionKey,
+          automaticallyChangeIsDropDownOpenedValue: state.isNCComplianceFilter,
           listItems: state.carFilterEnums
               .map((item) => OptionItem<CarFilterEnum>(id: item, title: item.valueName))
               .toList(),
@@ -23,9 +27,9 @@ class CarFilter extends StatelessWidget {
           itemSelected: state.selectedCARFilter == null
               ? null
               : OptionItem<CarFilterEnum>(
-                  id: state.selectedCARFilter!,
-                  title: state.selectedCARFilter!.valueName,
-                ),
+            id: state.selectedCARFilter!,
+            title: state.selectedCARFilter!.valueName,
+          ),
           onSelected: context.read<AuditListQuestionsCubit>().setCarFilter,
         );
       },
