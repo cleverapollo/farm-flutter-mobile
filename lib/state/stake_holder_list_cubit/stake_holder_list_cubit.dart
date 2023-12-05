@@ -71,8 +71,13 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
   }
 
   Future<void> onRemoveStakeholder(StakeHolder stakeHolder) async {
-    await cmoDatabaseMasterService
-        .removeStakeHolder(int.parse(stakeHolder.stakeHolderId!));
+    await cmoDatabaseMasterService.cacheStakeHolderFromFarm(
+      stakeHolder.copyWith(
+        isMasterDataSynced: 0,
+        isActive: 0,
+      ),
+    );
+
     showSnackSuccess(
       msg: '${LocaleKeys.remove.tr()} ${stakeHolder.stakeHolderId}!',
     );

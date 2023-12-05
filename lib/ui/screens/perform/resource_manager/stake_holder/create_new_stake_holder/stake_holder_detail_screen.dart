@@ -22,8 +22,8 @@ class StakeHolderDetailScreen extends BaseStatefulWidget {
     this.isEditing = false,
   }) : super(
           screenName: isEditing
-              ? LocaleKeys.edit_stakeholder.tr()
-              : LocaleKeys.add_stakeholder.tr(),
+              ? LocaleKeys.local_neighbours_detail.tr()
+              : LocaleKeys.add_local_neighbours_detail.tr(),
         );
 
   final StakeHolder? stakeHolder;
@@ -215,8 +215,8 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
                 builder: (context, snapshot) {
                   return CmoAppBar(
                     title: widget.isEditing
-                        ? LocaleKeys.edit_stakeholder.tr()
-                        : LocaleKeys.add_stakeholder.tr(),
+                        ? LocaleKeys.local_neighbours_detail.tr()
+                        : LocaleKeys.add_local_neighbours_detail.tr(),
                     subtitle: snapshot.data?.farmName ?? '',
                     leading: Assets.icons.icBackButton.svgBlack,
                     onTapLeading: Navigator.of(context).pop,
@@ -280,8 +280,22 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
               name: 'Cell',
               title: LocaleKeys.phoneNumber.tr(),
               initialValue: widget.isEditing ? widget.stakeHolder?.cell : null,
-              firstSuffixIcon: Assets.icons.icCallBlue.svg(),
-              secondSuffixIcon: Assets.icons.icSmsBlue.svg(),
+              firstSuffixIcon: CmoTappable(
+                onTap: () async {
+                  if (widget.isEditing) {
+                    await CommonFunctions.sendSms(widget.stakeHolder?.cell);
+                  }
+                },
+                child: Assets.icons.icSmsBlue.svg(),
+              ),
+              secondSuffixIcon: CmoTappable(
+                onTap: () async {
+                  if (widget.isEditing) {
+                    await CommonFunctions.makePhoneCall(widget.stakeHolder?.cell);
+                  }
+                },
+                child: Assets.icons.icCallBlue.svg(),
+              ),
               keyboardType: TextInputType.number,
             ),
           ].withSpaceBetween(height: 10),

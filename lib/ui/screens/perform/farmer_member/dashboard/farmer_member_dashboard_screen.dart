@@ -94,7 +94,7 @@ class _FarmerMemberDashboardScreenState
                     content: [
                       CmoCardHeader(title: LocaleKeys.neighbours.tr()),
                       CmoCardItem(
-                        title: LocaleKeys.national.tr(),
+                        title: LocaleKeys.local_neighbours.tr(),
                         value: '${data.farmDashBoardInfo?.totalStakeholder}',
                       ),
                     ],

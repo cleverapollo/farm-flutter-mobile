@@ -204,10 +204,25 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
         ),
       );
     } else {
-      return FarmerModeStakeHolderItem(
-        model: model,
-        haveGreyBackground: haveGreyBackground,
-        onTap: () {},
+      return CmoDismissibleItem(
+        key: Key(model.id.toString()),
+        title: LocaleKeys.removeStakeholder.tr(),
+        subtitle: LocaleKeys.removeStakeholderAlertContent.tr(),
+        onRemove: () async {
+          await context.read<StakeHolderListCubit>().onRemoveStakeholder(model);
+          await context.read<DashboardCubit>().refresh();
+        },
+        child: FarmerModeStakeHolderItem(
+          model: model,
+          haveGreyBackground: haveGreyBackground,
+          onTap: () {
+            StakeHolderDetailScreen.push(
+              context,
+              stakeHolder: model,
+              isEditing: true,
+            );
+          },
+        ),
       );
     }
   }
