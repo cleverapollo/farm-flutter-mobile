@@ -25,4 +25,4 @@ flutter pub run easy_localization:generate -S assets/l10n -O lib/l10n -f keys -o
 
 flutter packages pub run build_runner build --delete-conflicting-outputs
 
-flutter build apk
+flutter build appbundle
