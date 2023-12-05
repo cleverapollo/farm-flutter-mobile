@@ -330,7 +330,7 @@ class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQu
           Row(
             children: [
               const Expanded(child: ComplianceFilter()),
-              Expanded(child: CarFilter(actionKey: context.read<AuditListQuestionsCubit>().globalKeyForCarFilter,)),
+              const Expanded(child: CarFilter()),
             ].withSpaceBetween(width: 20),
           ),
           AuditSearchField(),

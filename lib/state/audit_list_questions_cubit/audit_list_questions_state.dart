@@ -21,7 +21,7 @@ class AuditListQuestionsState extends Equatable {
     this.selectedComplianceFilter,
     this.searchText,
     this.loading = false,
-    this.isNCComplianceFilter = false,
+    this.isOpenedCarFilter = false,
   });
 
   final bool loading;
@@ -43,7 +43,7 @@ class AuditListQuestionsState extends Equatable {
   final int totalComments;
   final int totalPhotos;
   final String? searchText;
-  final bool isNCComplianceFilter;
+  final bool isOpenedCarFilter;
 
   AuditListQuestionsState copyWith({
     Audit? audit,
@@ -67,7 +67,7 @@ class AuditListQuestionsState extends Equatable {
     int? totalComments,
     int? totalPhotos,
     String? searchText,
-    bool? isNCComplianceFilter,
+    bool? isOpenedCarFilter,
   }) {
     return AuditListQuestionsState(
       loading: loading ?? this.loading,
@@ -89,7 +89,7 @@ class AuditListQuestionsState extends Equatable {
       totalComments: totalComments ?? this.totalComments,
       totalPhotos: totalPhotos ?? this.totalPhotos,
       searchText: searchText ?? this.searchText,
-      isNCComplianceFilter: isNCComplianceFilter ?? this.isNCComplianceFilter,
+      isOpenedCarFilter: isOpenedCarFilter ?? this.isOpenedCarFilter,
     );
   }
 
@@ -115,7 +115,7 @@ class AuditListQuestionsState extends Equatable {
         incompleteFilter,
         totalPhotos,
         totalComments,
-        isNCComplianceFilter,
+        isOpenedCarFilter,
       ];
 
   List<QuestionAnswer> getAnsweredQuestions() {

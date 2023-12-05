@@ -16,8 +16,6 @@ part 'audit_list_questions_state.dart';
 class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
   AuditListQuestionsCubit() : super(const AuditListQuestionsState());
 
-  final GlobalKey globalKeyForCarFilter = GlobalKey(debugLabel: 'car_filter');
-
   QuestionAnswer? getAnswerByQuestionId(int? questionId) {
     if (questionId == null) return null;
     return state.answers.firstWhereOrNull(
@@ -34,9 +32,10 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
     emit(
       state.copyWith(
         selectedCARFilter: filterEnum,
-        isNCComplianceFilter: false,
+        isOpenedCarFilter: false,
       ),
     );
+
     applyFilter();
   }
 
@@ -45,20 +44,22 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
           (element) => element.isNC,
     );
 
+    final isNCCompliance = compliance != null &&
+            compliance.complianceId == ncCompliance?.complianceId
+        ? true
+        : null;
     emit(
       state.copyWith(
         selectedComplianceFilter: compliance,
-        isNCComplianceFilter:
-            compliance?.complianceId == ncCompliance?.complianceId,
+        isOpenedCarFilter: isNCCompliance,
       ),
     );
 
-    if (compliance?.complianceId == ncCompliance?.complianceId) {
-      final currentState = globalKeyForCarFilter.currentState as CmoCustomDropdownState?;
-      currentState?.showDropdown();
-    }
-
     applyFilter();
+  }
+
+  void onTapCarFilterDropdown() {
+    emit(state.copyWith(isOpenedCarFilter: !state.isOpenedCarFilter));
   }
 
   void setIncompleteFilter(int? status) {

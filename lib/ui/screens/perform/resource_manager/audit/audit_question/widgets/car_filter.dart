@@ -6,20 +6,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CarFilter extends StatelessWidget {
-  final GlobalKey actionKey;
-
   const CarFilter({
-    required this.actionKey,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuditListQuestionsCubit, AuditListQuestionsState>(
       builder: (context, state) {
+        return DropdownStateless<CarFilterEnum>(
+          keyName: 'car_filter',
+          isDropdownOpened: state.isOpenedCarFilter,
+          onTapDropdown: context.read<AuditListQuestionsCubit>().onTapCarFilterDropdown,
+          listItems: state.carFilterEnums
+              .map((item) => OptionItem<CarFilterEnum>(id: item, title: item.valueName))
+              .toList(),
+          hintText: LocaleKeys.all_cars.tr(),
+          itemSelected: state.selectedCARFilter == null
+              ? null
+              : OptionItem<CarFilterEnum>(
+            id: state.selectedCARFilter!,
+            title: state.selectedCARFilter!.valueName,
+          ),
+          onSelected: context.read<AuditListQuestionsCubit>().setCarFilter,
+        );
         return CmoCustomDropdown<CarFilterEnum>(
           keyName: 'car_filter',
-          actionKey: actionKey,
-          automaticallyChangeIsDropDownOpenedValue: state.isNCComplianceFilter,
           listItems: state.carFilterEnums
               .map((item) => OptionItem<CarFilterEnum>(id: item, title: item.valueName))
               .toList(),
