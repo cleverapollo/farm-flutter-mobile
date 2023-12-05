@@ -69,7 +69,7 @@ class BottomSheetSelection extends StatelessWidget {
                     value!,
                     maxLines: 3,
                     style: context.textStyles.bodyNormal.blueDark2,
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.left,
                   ),
               ],
             ),

@@ -1,9 +1,9 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/register_management/register_management_cubit.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/aai/aai_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/biological_control_agents_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/chemicals/chemicals_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_screen.dart';
@@ -13,8 +13,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_an
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/rte_species/rte_species_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/stake_holder_complaint_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
-import 'package:cmo/ui/theme/theme.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,7 +87,12 @@ class _RegisterManagementState extends BaseStatefulWidgetState<RegisterManagemen
         await AAIScreen.push(context);
         break;
       case ManagementType.asi:
-        await AsiScreen.push(context);
+        final farm = await configService.getActiveFarm();
+        await ASIScreen.push(
+          context,
+          farmId: farm?.farmId,
+          farmName: farm?.farmName,
+        );
         break;
       case ManagementType.biologicalControlAgents:
         await BiologicalControlAgentsScreen.push(context);

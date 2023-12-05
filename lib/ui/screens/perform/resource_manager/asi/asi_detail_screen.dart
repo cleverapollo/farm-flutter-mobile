@@ -6,10 +6,12 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/thumbnail_image.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
+import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -71,7 +73,9 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
       appBar: CmoAppBar(
         title: widget.isEditing ? LocaleKeys.asi_detail.tr() : LocaleKeys.add_asi.tr(),
         subtitle: widget.farmName ?? '',
-        trailing: Assets.icons.icClose.svgBlack,
+        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
+        leading: Assets.icons.icBackButton.svgBlack,
+        onTapLeading: Navigator.of(context).pop,
         onTapTrailing: Navigator.of(context).pop,
       ),
       body: Stack(
@@ -99,39 +103,38 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          CmoHeaderTile(title: LocaleKeys.asi.tr()),
           const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: buildSelectCompartment(
-              context: context,
-              compartmentName: state.asi.compartmentName ?? '',
-              compartments: state.compartments,
+          CmoHeaderTile(title: LocaleKeys.details.tr()),
+          const SizedBox(height: 12),
+          buildSelectCompartment(
+            context: context,
+            compartmentName: state.asi.compartmentName ?? '',
+            compartments: state.compartments,
+          ),
+          const SizedBox(height: 6),
+          buildSelectASIType(
+            context: context,
+            asi: state.asi,
+            types: state.types,
+          ),
+          const SizedBox(height: 6),
+          buildLatLngWidget(),
+          const SizedBox(height: 6),
+          buildDatePicker(datetime: state.asi.date),
+          const SizedBox(height: 6),
+          AttributeItem(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            child: SizedBox(
+              height: 150,
+              child: GeneralCommentWidget(
+                initialValue: state.asi.comment,
+                maxLines: 5,
+                hintText: LocaleKeys.generalComments.tr(),
+                hintTextStyle: context.textStyles.bodyBold.blueDark2,
+                textStyle: context.textStyles.bodyNormal.blueDark2,
+                onChanged: _asiDetailCubit.onCommentChanged,
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: buildSelectASIType(
-              context: context,
-              asi: state.asi,
-              types: state.types,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: buildLatLngWidget(),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: buildDatePicker(datetime: state.asi.date),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: _buildCommentWidget(comment: state.asi.comment),
           ),
           const SizedBox(height: 12),
           if (state.listAsiPhotos.isNotBlank)
@@ -155,6 +158,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
           title: LocaleKeys.save.tr(),
           loading: state.isLoading,
           onTap: () async {
+            FocusManager.instance.primaryFocus?.unfocus();
             if (state.asi.latitude == null) {
               showSnackError(msg: LocaleKeys.location_is_required.tr());
               return;
@@ -175,21 +179,6 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
     );
   }
 
-  Widget _buildCommentWidget({required String? comment}) {
-    return CmoTextField(
-      inputDecoration: _buildInputDecoration(
-        context,
-        LocaleKeys.comments.tr(),
-      ),
-      name: comment ?? '',
-      initialValue: comment,
-      maxLines: 5,
-      onChanged: (value) {
-        _asiDetailCubit.onCommentChanged(comment: value);
-      },
-    );
-  }
-
   Widget buildSelectCompartment({
     required BuildContext context,
     required String compartmentName,
@@ -198,8 +187,10 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
     return BottomSheetSelection(
       hintText: LocaleKeys.compartment.tr(),
       value: compartmentName,
+      displayHorizontal: false,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       onTap: () async {
-        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
         if (compartments.isBlank) return;
         await showCustomBottomSheet<void>(
           context,
@@ -235,8 +226,10 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
     return BottomSheetSelection(
       hintText: LocaleKeys.type.tr(),
       value: asi.asiTypeName,
+      displayHorizontal: false,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       onTap: () async {
-        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
         if (types.isBlank) return;
         await showCustomBottomSheet<void>(
           context,
@@ -273,6 +266,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
       builder: (context, state) {
         return InkWell(
           onTap: () async {
+            FocusManager.instance.primaryFocus?.unfocus();
             final locationModel = LocationModel()
               ..latitude = state.asi.latitude
               ..longitude = state.asi.longitude;
@@ -288,14 +282,9 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
             final mapResult = result as LocationModel;
             context.read<AsiDetailCubit>().onSelectLocation(mapResult);
           },
-          child: Container(
+          child: AttributeItem(
             margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: context.colors.grey),
-              ),
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             child: Row(
               children: [
                 Text(
@@ -313,7 +302,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                if (state.asi.latitude != null) Assets.icons.icTick.widget,
+                const SizedBox(width: 8,),
                 Icon(
                   Icons.keyboard_arrow_right_rounded,
                   color: context.colors.black,
@@ -335,6 +324,8 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
     return BottomSheetSelection(
       hintText: LocaleKeys.date.tr(),
       value: currentDate,
+      displayHorizontal: false,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       rightIconData: Padding(
         padding: const EdgeInsets.only(bottom: 4.0),
         child: Row(
@@ -352,7 +343,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
         ),
       ),
       onTap: () async {
-        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
         final result = await showDatePicker(
             context: context,
             initialDate: datetime ?? DateTime.now(),
@@ -361,24 +352,6 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
         );
         _asiDetailCubit.onDateChanged(date: result);
       },
-    );
-  }
-
-  InputDecoration _buildInputDecoration(
-    BuildContext context,
-    String hintText,
-  ) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.all(8),
-      hintText: hintText,
-      hintStyle: context.textStyles.bodyBold.black,
-      isDense: true,
-      border: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.grey),
-      ),
-      focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.blue),
-      ),
     );
   }
 }

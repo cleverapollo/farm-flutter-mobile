@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/asi.dart';
@@ -39,11 +40,6 @@ class _ASIScreenState extends BaseStatefulWidgetState<ASIScreen> {
   bool isCollapse = false;
 
   Timer? _debounceInputTimer;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   Future<void> navigateToASIDetail({Asi? asi}) async {
     await ASIDetailScreen.push(
@@ -161,9 +157,10 @@ class _ASIScreenState extends BaseStatefulWidgetState<ASIScreen> {
                                               LocaleKeys.asiType.tr(),
                                         ),
                                         CmoCardItem(
-                                          title:
-                                              listAsi[index].compartmentName ??
-                                                  '',
+                                          title: listAsi[index].date.ddMMYyyy(),
+                                        ),
+                                        CmoCardItem(
+                                          title: listAsi[index].comment ?? '',
                                         ),
                                       ],
                                     ),

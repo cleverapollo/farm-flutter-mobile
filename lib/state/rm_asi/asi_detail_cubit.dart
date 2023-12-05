@@ -103,7 +103,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     emit(state.copyWith(photoName: text));
   }
 
-  void onCommentChanged({required String? comment}) {
+  void onCommentChanged(String? comment) {
     state.asi = state.asi.copyWith(comment: comment);
   }
 
@@ -163,6 +163,20 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
         ),
       ),
     );
+
+    final selectedCompartment = state.compartments.firstWhereOrNull((compartment) {
+      final latLng = LatLng(
+        locationModel.latitude!,
+        locationModel.longitude!,
+      );
+
+      final polygons = compartment.getPolygonLatLng();
+      return MapUtils.checkPositionInsidePolygon(latLng: latLng, polygon: polygons);
+    });
+
+    if (selectedCompartment != null) {
+      onCompartmentChanged(selectedCompartment);
+    }
 
     if (locationModel.listImage.isNotBlank) {
       var randomId = generatorInt32Id();
