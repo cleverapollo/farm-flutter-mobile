@@ -5,10 +5,12 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/training_cubit/training_cubit.dart';
 
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_add_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../widgets/status_filter_widget.dart';
 
 class TrainingScreen extends BaseStatefulWidget {
   TrainingScreen({super.key}) : super(screenName: LocaleKeys.training.tr());
@@ -43,7 +45,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
   Future<void> onNavigateToAddTraining() async {
     final farm = await configService.getActiveFarm();
     if (farm != null && context.mounted) {
-      final result = await TrainingAddScreen.push(
+      final result = await TrainingDetailScreen.push(
         context,
         farm: farm,
       );
@@ -57,7 +59,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
       int index, TrainingRegister training) async {
     final farm = await configService.getActiveFarm();
     if (farm != null && context.mounted) {
-      final result = await TrainingAddScreen.push(
+      final result = await TrainingDetailScreen.push(
         context,
         farm: farm,
         training: training,
@@ -95,24 +97,15 @@ class _TrainingScreenState extends State<TrainingScreen> {
   }
 
   Widget _buildBody(TrainingState state) {
-    final items = state.items;
+    final items = state.filterItems;
     return Column(
       children: [
-        CmoTappable(
-          onTap: () => {},
-          child: CmoCard(
-            childAlignment: MainAxisAlignment.center,
-            content: [
-              CmoCardHeader(title: LocaleKeys.summary.tr()),
-              CmoCardHeader(
-                title: LocaleKeys.total.tr(),
-                valueEnd: items.length.toString(),
-              ),
-            ],
-            trailing: Assets.icons.icDown.svgWhite,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
+          child: StatusFilterWidget(
+            onSelectFilter: cubit.onFilterStatus,
           ),
         ),
-        const SizedBox(height: 24),
         Expanded(
           child: ListView.separated(
             shrinkWrap: true,
@@ -176,8 +169,11 @@ class _TrainingItemWidget extends StatelessWidget {
               data.trainingTypeName),
           _buildILineItem(
               context, '${LocaleKeys.date.tr()} : ', data.date.yMd()),
-          _buildILineItem(context, '${LocaleKeys.expiry_date.tr()} : ',
-              data.expiryDate.yMd()),
+          _buildILineItem(
+            context,
+            '${LocaleKeys.expiry_date.tr()} : ',
+            data.expiryDate == null ? '' : data.expiryDate.yMd(),
+          ),
           _buildILineItem(
               context, '${LocaleKeys.trainer_name.tr()} : ', data.trainerName),
           _buildILineItem(

@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/model/model.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
@@ -19,7 +20,24 @@ class TrainingCubit extends Cubit<TrainingState> {
       state.copyWith(
         isDataReady: true,
         items: items,
+        filterItems: items,
       ),
     );
+
+    onFilterStatus(StatusFilterEnum.open);
+  }
+
+  void onFilterStatus(StatusFilterEnum statusFilter) {
+    var filterItems = <TrainingRegister>[];
+    switch (statusFilter) {
+      case StatusFilterEnum.open:
+        filterItems = state.items.where((element) => element.expiryDate == null).toList();
+        break;
+      case StatusFilterEnum.closed:
+        filterItems = state.items.where((element) => element.expiryDate != null).toList();
+        break;
+    }
+
+    emit(state.copyWith(filterItems: filterItems));
   }
 }

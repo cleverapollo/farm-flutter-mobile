@@ -48,12 +48,12 @@ class AttributeItem extends StatelessWidget {
               ),
               child: child,
             ),
-            if (errorText.isNotBlank && isShowError)
+            if (isShowError)
               Container(
                 margin: margin,
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  errorText!,
+                  errorText ?? LocaleKeys.required.tr(),
                   style: context.textStyles.bodyNormal.redError.copyWith(fontSize: 12),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
