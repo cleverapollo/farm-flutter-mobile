@@ -24,7 +24,7 @@ class TrainingCubit extends Cubit<TrainingState> {
       ),
     );
 
-    onFilterStatus(StatusFilterEnum.open);
+    onFilterStatus(state.statusFilter);
   }
 
   void onFilterStatus(StatusFilterEnum statusFilter) {
@@ -38,6 +38,11 @@ class TrainingCubit extends Cubit<TrainingState> {
         break;
     }
 
-    emit(state.copyWith(filterItems: filterItems));
+    emit(
+      state.copyWith(
+        filterItems: filterItems,
+        statusFilter: statusFilter,
+      ),
+    );
   }
 }
