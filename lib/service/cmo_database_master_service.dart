@@ -1457,7 +1457,11 @@ class CmoDatabaseMasterService {
   Future<List<Country>> getCountry() async {
     final db = await _db();
 
-    return db.countrys.filter().isActiveEqualTo(true).findAll();
+    return db.countrys
+        .filter()
+        .isActiveEqualTo(true)
+        .sortByCountryNameDesc()
+        .findAll();
   }
 
   Future<List<ChemicalType>> getChemicalTypeByFarmId(String farmId) async {

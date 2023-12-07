@@ -43,7 +43,7 @@ class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Biolog
   var stakeHolders = <StakeHolder>[];
   var monitorings = <MonitoringRequirement>[];
   var agentTypes = <BiologicalControlAgentType>[];
-
+  List<Country> countries = <Country>[];
   @override
   void initState() {
     super.initState();
@@ -59,14 +59,17 @@ class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Biolog
         farm?.groupSchemeId ?? 0,
       );
 
-      final farmStakeHolders = await cmoDatabaseMasterService
-          .getFarmStakeHolderByFarmId(farm?.farmId ?? '');
+      countries = await cmoDatabaseMasterService.getCountry();
 
-      for (final item in farmStakeHolders) {
-        final stakeholders = await cmoDatabaseMasterService
-            .getStakeHoldersByStakeHolderId(item.stakeHolderId ?? '');
-        stakeHolders.addAll(stakeholders);
-      }
+      stakeHolders = await cmoDatabaseMasterService.getStakeHolders();
+      // final farmStakeHolders = await cmoDatabaseMasterService
+      //     .getFarmStakeHolderByFarmId(farm?.farmId ?? '');
+      //
+      // for (final item in farmStakeHolders) {
+      //   final stakeholders = await cmoDatabaseMasterService
+      //       .getStakeHoldersByStakeHolderId(item.stakeHolderId ?? '');
+      //   stakeHolders.addAll(stakeholders);
+      // }
 
       if (context.mounted) setState(() {});
     });
@@ -126,6 +129,11 @@ class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Biolog
     }
 
     setState(() {});
+  }
+
+  String getCountryNameByCountryId(int? countryId) {
+    final country = countries.firstWhereOrNull((element) => element.countryId == countryId);
+    return country?.countryName == null ? '' : country!.countryName!;
   }
 
   @override
@@ -203,8 +211,7 @@ class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Biolog
                               agentType?.biologicalControlAgentTypeId,
                           biologicalControlAgentTypeName:
                               agentType?.biologicalControlAgentTypeName,
-                          biologicalControlAgentTypeCountryName:
-                              agentType?.countryId.toString(),
+                          biologicalControlAgentTypeCountryName: getCountryNameByCountryId(agentType?.countryId),
                           reasonForBioAgent: agentType?.reasonForBioAgent,
                           biologicalControlAgentTypeScientificName: agentType
                               ?.biologicalControlAgentTypeScientificName,

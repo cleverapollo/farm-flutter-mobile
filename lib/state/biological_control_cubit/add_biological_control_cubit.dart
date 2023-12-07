@@ -1,3 +1,4 @@
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:cmo/di.dart';
@@ -13,7 +14,6 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
           AddBiologicalControlState(
             agent: agent,
             isAddNew: isAddNew,
-            isDataReady: false,
           ),
         ) {
     onInit();
@@ -21,7 +21,6 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
 
   Future<void> onInit() async {
     try {
-      final stakeHolders = <StakeHolder>[];
       final farm = await configService.getActiveFarm();
 
       final monitorings = await cmoDatabaseMasterService
@@ -32,14 +31,19 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
         farm?.groupSchemeId ?? 0,
       );
 
-      final farmStakeHolders = await cmoDatabaseMasterService
-          .getFarmStakeHolderByFarmId(farm?.farmId ?? '');
+      final countries = await cmoDatabaseMasterService.getCountry();
 
-      for (final item in farmStakeHolders) {
-        final stakeholders = await cmoDatabaseMasterService
-            .getStakeHoldersByStakeHolderId(item.stakeHolderId ?? '');
-        stakeHolders.addAll(stakeholders);
-      }
+      final stakeHolders = await cmoDatabaseMasterService.getStakeHolders();
+
+      // final farmStakeHolders = await cmoDatabaseMasterService
+      //     .getFarmStakeHolderByFarmId(farm?.farmId ?? '');
+      //
+      //
+      // for (final item in farmStakeHolders) {
+      //   final stakeholders = await cmoDatabaseMasterService
+      //       .getStakeHoldersByStakeHolderId(item.stakeHolderId ?? '');
+      //   stakeHolders.addAll(stakeholders);
+      // }
 
       emit(
         state.copyWith(
@@ -47,6 +51,7 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
           stakeHolders: stakeHolders,
           monitorings: monitorings,
           agentTypes: agentTypes,
+          countries: countries,
         ),
       );
     } catch (e) {
@@ -56,6 +61,11 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
     }
   }
 
+  String getCountryNameByCountryId(int? countryId) {
+    final country = state.countries.firstWhereOrNull((element) => element.countryId == countryId);
+    return country?.countryName == null ? '' : country!.countryName!;
+  }
+
   void onSelectControlAgent(BiologicalControlAgentType agentType) {
     emit(
       state.copyWith(
@@ -63,7 +73,7 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
         agent: state.agent.copyWith(
           biologicalControlAgentTypeId: agentType.biologicalControlAgentTypeId,
           biologicalControlAgentTypeName: agentType.biologicalControlAgentTypeName,
-          biologicalControlAgentTypeCountryName: agentType.countryId.toString(),
+          biologicalControlAgentTypeCountryName: getCountryNameByCountryId(agentType.countryId),
           reasonForBioAgent: agentType.reasonForBioAgent,
           biologicalControlAgentTypeScientificName: agentType.biologicalControlAgentTypeScientificName,
         ),
@@ -110,9 +120,13 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
   }
 
   void onStakeHolderChanged(StakeHolder? stakeHolder) {
-    state.agent = state.agent.copyWith(
-      stakeholderId: stakeHolder?.stakeHolderId,
-      stakeholderName: stakeHolder?.stakeholderName,
+    emit(
+      state.copyWith(
+        agent: state.agent.copyWith(
+          stakeholderId: stakeHolder?.stakeHolderId,
+          stakeholderName: stakeHolder?.stakeholderName,
+        ),
+      ),
     );
   }
 

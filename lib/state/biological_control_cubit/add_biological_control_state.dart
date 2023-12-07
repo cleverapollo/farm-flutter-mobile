@@ -9,6 +9,7 @@ class AddBiologicalControlState {
     this.stakeHolders = const [],
     this.monitorings = const [],
     this.agentTypes = const [],
+    this.countries = const <Country>[],
     this.isSelectControlAgentError = false,
   });
 
@@ -19,6 +20,7 @@ class AddBiologicalControlState {
   final List<StakeHolder> stakeHolders;
   final List<MonitoringRequirement> monitorings;
   final List<BiologicalControlAgentType> agentTypes;
+  final List<Country> countries;
   final bool isSelectControlAgentError;
 
   AddBiologicalControlState copyWith({
@@ -28,6 +30,7 @@ class AddBiologicalControlState {
     List<StakeHolder>? stakeHolders,
     List<MonitoringRequirement>? monitorings,
     List<BiologicalControlAgentType>? agentTypes,
+    List<Country>? countries,
     bool? isSelectControlAgentError,
   }) {
     return AddBiologicalControlState(
@@ -38,6 +41,7 @@ class AddBiologicalControlState {
       monitorings: monitorings ?? this.monitorings,
       agentTypes: agentTypes ?? this.agentTypes,
       isAddNew: isAddNew,
+      countries: countries ?? this.countries,
       isSelectControlAgentError: isSelectControlAgentError ?? this.isSelectControlAgentError,
     );
   }

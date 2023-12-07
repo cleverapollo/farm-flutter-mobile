@@ -1,3 +1,4 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -30,6 +31,7 @@ class SelectControlAgentWidget extends StatefulWidget {
 class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
   BiologicalControlAgentType? selectedAgent;
   late final List<BiologicalControlAgentType> agentTypes;
+  List<Country> countries = <Country>[];
 
   @override
   void initState() {
@@ -42,6 +44,18 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
     if (index != -1) {
       selectedAgent = agentTypes[index];
     }
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async {
+        countries = await cmoDatabaseMasterService.getCountry();
+        setState(() {});
+      },
+    );
+  }
+
+  String getCountryNameByCountryId(int? countryId) {
+    final country = countries.firstWhereOrNull((element) => element.countryId == countryId);
+    return country?.countryName == null ? '' : country!.countryName!;
   }
 
   @override
@@ -110,7 +124,7 @@ class _SelectControlAgentWidgetState extends State<SelectControlAgentWidget> {
         AutofillWidget(
           margin: const EdgeInsets.symmetric(horizontal: 24.0),
           title: LocaleKeys.countryOfOrigin.tr(),
-          value: selectedAgent?.biologicalControlAgentTypeName,
+          value: getCountryNameByCountryId(selectedAgent?.countryId),
         ),
         AutofillWidget(
           margin: const EdgeInsets.symmetric(horizontal: 24.0),
