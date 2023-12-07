@@ -3054,6 +3054,15 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<int> getCountSanctionRegistersByFarmId(String farmId) async {
+    final db = await _db();
+    return db.sanctionRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .count();
+  }
+
   Future<int> getCountEmployeeGrievancesByFarmId(String farmId) async {
     final db = await _db();
     return db.grievanceRegisters

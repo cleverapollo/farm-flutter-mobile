@@ -159,8 +159,6 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
   }) {
     emit(state.copyWith(
       data: state.data?.copyWith(
-        sanctionRegisterId: state.data?.sanctionRegisterId ??
-            DateTime.now().millisecondsSinceEpoch.toString(),
         campOrCompartment: campOrCompartment ?? state.data?.campOrCompartment,
         descriptionOfSanction: descriptionOfSanction ?? state.data?.descriptionOfSanction,
         comment: comment ?? state.data?.comment,
@@ -212,6 +210,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
 
       final result = await cmoDatabaseMasterService
           .cacheSanctionRegisterFromFarm(state.data!.copyWith(
+        sanctionRegisterId: state.data?.sanctionRegisterId ?? DateTime.now().millisecondsSinceEpoch.toString(),
         isActive: true,
         isSynced: isSynced,
         isLocal: !isSynced,
