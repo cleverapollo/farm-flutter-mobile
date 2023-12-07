@@ -19,7 +19,6 @@ class AccidentAndIncident with _$AccidentAndIncident {
     @JsonKey(name: 'DateRecieved') DateTime? dateRecieved,
     @JsonKey(name: 'DateOfIncident') DateTime? dateOfIncident,
     @JsonKey(name: 'DateResumeWork') DateTime? dateResumeWork,
-    @JsonKey(name: 'DateOfBirth') DateTime? dateOfBirth,
     @JsonKey(name: 'WorkerDisabled') bool? workerDisabled,
     @JsonKey(name: 'JobDescriptionId') int? jobDescriptionId,
     @JsonKey(name: 'Comment') String? comment,

@@ -4,14 +4,14 @@ import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-part 'add_aai_state.dart';
+part 'aai_detail_state.dart';
 
-class AddAAICubit extends Cubit<AddAAIState> {
-  AddAAICubit({
+class AAIDetailCubit extends Cubit<AAIDetailState> {
+  AAIDetailCubit({
     required AccidentAndIncident accidentAndIncident,
     required bool isAddNew,
   }) : super(
-          AddAAIState(
+          AAIDetailState(
             accidentAndIncident: accidentAndIncident,
             isAddNew: isAddNew,
           ),
@@ -40,6 +40,11 @@ class AddAAICubit extends Cubit<AddAAIState> {
         jobDescriptions.addAll(jobs);
       }
 
+      final aaiRegisterPropertyDamages = await cmoDatabaseMasterService
+          .getAllAccidentAndIncidentRegisterPropertyDamagedByAccidentAndIncidentRegisterNo(
+        state.accidentAndIncident.accidentAndIncidentRegisterNo ?? '',
+      );
+
       emit(
         state.copyWith(
           workers: workers,
@@ -47,6 +52,7 @@ class AddAAICubit extends Cubit<AddAAIState> {
           propertyDamaged: propertyDamaged,
           jobDescriptions: jobDescriptions,
           lostTimeInDay: _calculateTimeLost(),
+          selectedPropertyDamages: aaiRegisterPropertyDamages,
           isDataReady: true,
         ),
       );
@@ -60,8 +66,8 @@ class AddAAICubit extends Cubit<AddAAIState> {
   void onDateReceiveChanged(DateTime? dateTime) {
     emit(
       state.copyWith(
-        accidentAndIncident:
-            state.accidentAndIncident.copyWith(dateRecieved: dateTime),
+        accidentAndIncident: state.accidentAndIncident.copyWith(dateRecieved: dateTime),
+        isDateReportedError: dateTime == null,
       ),
     );
   }
@@ -69,8 +75,8 @@ class AddAAICubit extends Cubit<AddAAIState> {
   void onDateOfIncidentChanged(DateTime? dateTime) {
     emit(
       state.copyWith(
-        accidentAndIncident:
-            state.accidentAndIncident.copyWith(dateOfIncident: dateTime),
+        accidentAndIncident: state.accidentAndIncident.copyWith(dateOfIncident: dateTime),
+        isDateIncidentError: dateTime == null,
       ),
     );
     onCalculateLostTimeInDay();
@@ -83,17 +89,8 @@ class AddAAICubit extends Cubit<AddAAIState> {
             state.accidentAndIncident.copyWith(dateResumeWork: dateTime),
       ),
     );
-    onCalculateLostTimeInDay();
-  }
 
-  void onDateOfBirthChanged(DateTime? dateTime) {
-    emit(
-      state.copyWith(
-        accidentAndIncident: state.accidentAndIncident.copyWith(
-          dateOfBirth: dateTime,
-        ),
-      ),
-    );
+    onCalculateLostTimeInDay();
   }
 
   void onWorkDisableChanged({bool? workerDisabled}) {
@@ -107,8 +104,22 @@ class AddAAICubit extends Cubit<AddAAIState> {
   }
 
   void onCommentChanged(String? comment) {
-    state.accidentAndIncident = state.accidentAndIncident.copyWith(
-      comment: comment,
+    emit(
+      state.copyWith(
+        accidentAndIncident: state.accidentAndIncident.copyWith(
+          comment: comment,
+        ),
+      ),
+    );
+  }
+
+  void onSelectPropertyDamaged(
+    List<AccidentAndIncidentPropertyDamaged> selectedPropertyDamaged,
+  ) {
+    emit(
+      state.copyWith(
+        selectedPropertyDamages: selectedPropertyDamaged,
+      ),
     );
   }
 
@@ -122,6 +133,7 @@ class AddAAICubit extends Cubit<AddAAIState> {
     emit(
       state.copyWith(
         workerSelect: worker,
+        isWorkerError: worker == null,
         jobDescriptions: jobDescriptions,
         accidentAndIncident: state.accidentAndIncident.copyWith(
           workerId: worker?.workerId,
@@ -181,5 +193,84 @@ class AddAAICubit extends Cubit<AddAAIState> {
     );
 
     emit(state.copyWith(natureOfInjurySelect: selectNatureOfInjury));
+  }
+
+  bool onValidateRequireField() {
+    if (state.accidentAndIncident.workerId == null ||
+        state.accidentAndIncident.dateRecieved == null ||
+        state.accidentAndIncident.dateOfIncident == null) {
+      emit(
+        state.copyWith(
+          isWorkerError: state.accidentAndIncident.workerId == null,
+          isDateReportedError: state.accidentAndIncident.dateRecieved == null,
+          isDateIncidentError: state.accidentAndIncident.dateOfIncident == null,
+        ),
+      );
+
+      return true;
+    }
+
+    if (state.accidentAndIncident.dateOfIncident != null &&
+        state.accidentAndIncident.dateRecieved != null &&
+        state.accidentAndIncident.dateRecieved!.isBefore(state.accidentAndIncident.dateOfIncident!)) {
+      showSnackError(msg: 'Reported date must be on or after incident date');
+      return true;
+    }
+
+    if (state.accidentAndIncident.dateResumeWork != null &&
+        state.accidentAndIncident.dateResumeWork!.isBefore(state.accidentAndIncident.dateOfIncident!)) {
+      showSnackError(msg: 'Resume work date must be on or after incident date');
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<void> onSave({required void Function(int?) onSuccess}) async {
+    if (onValidateRequireField()) {
+      return;
+    }
+
+    final farm = await configService.getActiveFarm();
+    var aai = state.accidentAndIncident;
+    aai = aai.copyWith(
+      farmId: farm?.farmId,
+      accidentAndIncidentRegisterId: null,
+      isActive: true,
+      isMasterDataSynced: false,
+      updateDT: DateTime.now(),
+      createDT: aai.createDT ?? DateTime.now(),
+    );
+
+    int? resultId;
+
+    final databaseService = cmoDatabaseMasterService;
+
+    final futures = <Future<void>>[];
+
+    for (final item in state.selectedPropertyDamages) {
+      futures.add(
+        cmoDatabaseMasterService.cacheAccidentAndIncidentPropertyDamagedFromFarm(
+          item.copyWith(
+            accidentAndIncidentRegisterNo: aai.accidentAndIncidentRegisterNo,
+          ),
+        ),
+      );
+    }
+
+    await Future.wait(futures);
+
+    await (await databaseService.db).writeTxn(() async {
+      resultId = await databaseService.cacheAccidentAndIncident(
+        aai.copyWith(
+          dateOfIncident:
+              state.accidentAndIncident.dateOfIncident ?? DateTime.now(),
+        ),
+      );
+    });
+
+    if (resultId != null) {
+      onSuccess(resultId);
+    }
   }
 }

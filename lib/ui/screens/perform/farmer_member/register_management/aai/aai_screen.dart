@@ -7,7 +7,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/accident_and_incident.dart';
 import 'package:cmo/state/aai_cubit/aai_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/aai/adding_aai_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/aai/aai_detail_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -115,7 +115,7 @@ class _AAIScreenState extends BaseStatefulWidgetState<AAIScreen> {
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icUpdatedAddButton.svgBlack,
         onTapTrailing: () async {
-          await AddingAAIScreen.push(context);
+          await AAIDetailScreen.push(context);
           await _init();
         },
       ),
@@ -162,7 +162,7 @@ class _AAIScreenState extends BaseStatefulWidgetState<AAIScreen> {
                         final item = filteredItems[index];
                         return GestureDetector(
                             onTap: () async {
-                              final result = await AddingAAIScreen.push(context,
+                              final result = await AAIDetailScreen.push(context,
                                   aai: item);
                               if (result == null) return;
                               filteredItems[index] = result;
@@ -202,7 +202,7 @@ class _AAIItem extends StatelessWidget {
               horizontal: _itemHorizontalPadding,
             ),
             child: Text(
-              '${LocaleKeys.asi_no.tr()}: ${aai.accidentAndIncidentRegisterNo}',
+              '${LocaleKeys.aai_no.tr()}: ${aai.accidentAndIncidentRegisterNo}',
               style: context.textStyles.bodyBold
                   .copyWith(color: context.colors.blue),
             ),

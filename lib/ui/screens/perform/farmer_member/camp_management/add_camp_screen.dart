@@ -170,7 +170,7 @@ class _AddCampScreenState extends BaseStatefulWidgetState<AddCampScreen> {
 }
 
 class SelectorAttributeItem extends StatelessWidget {
-  final String hintText;
+  final String? hintText;
   final String? text;
   final Widget? textWidget;
   final EdgeInsetsGeometry contentPadding;
@@ -181,7 +181,7 @@ class SelectorAttributeItem extends StatelessWidget {
   final TextStyle? hintStyle;
 
   const SelectorAttributeItem({
-    required this.hintText,
+    this.hintText,
     this.text,
     this.labelText,
     this.labelStyle,

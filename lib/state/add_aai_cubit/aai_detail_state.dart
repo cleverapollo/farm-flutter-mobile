@@ -1,7 +1,7 @@
-part of 'add_aai_cubit.dart';
+part of 'aai_detail_cubit.dart';
 
-class AddAAIState {
-  AddAAIState({
+class AAIDetailState {
+  AAIDetailState({
     required this.accidentAndIncident,
     required this.isAddNew,
     this.isDataReady = false,
@@ -9,10 +9,14 @@ class AddAAIState {
     this.jobDescriptions = const [],
     this.natureOfInjuries = const [],
     this.propertyDamaged = const [],
+    this.selectedPropertyDamages = const <AccidentAndIncidentPropertyDamaged>[],
     this.lostTimeInDay = '',
     this.workerSelect,
     this.jobDescriptionSelect,
     this.natureOfInjurySelect,
+    this.isWorkerError = false,
+    this.isDateIncidentError = false,
+    this.isDateReportedError = false,
   });
 
   final bool isAddNew;
@@ -26,31 +30,43 @@ class AddAAIState {
   final NatureOfInjury? natureOfInjurySelect;
   final List<PropertyDamaged> propertyDamaged;
   AccidentAndIncident accidentAndIncident;
+  final List<AccidentAndIncidentPropertyDamaged> selectedPropertyDamages;
+  final bool isWorkerError;
+  final bool isDateIncidentError;
+  final bool isDateReportedError;
 
-  AddAAIState copyWith({
+  AAIDetailState copyWith({
     AccidentAndIncident? accidentAndIncident,
     String? lostTimeInDay,
     List<FarmerWorker>? workers,
     List<WorkerJobDescription>? jobDescriptions,
     List<NatureOfInjury>? natureOfInjuries,
     List<PropertyDamaged>? propertyDamaged,
+    List<AccidentAndIncidentPropertyDamaged>? selectedPropertyDamages,
     FarmerWorker? workerSelect,
     WorkerJobDescription? jobDescriptionSelect,
     NatureOfInjury? natureOfInjurySelect,
     bool? isDataReady,
+    bool? isWorkerError,
+    bool? isDateIncidentError,
+    bool? isDateReportedError,
   }) {
-    return AddAAIState(
+    return AAIDetailState(
       accidentAndIncident: accidentAndIncident ?? this.accidentAndIncident,
       workers: workers ?? this.workers,
       jobDescriptions: jobDescriptions ?? this.jobDescriptions,
       natureOfInjuries: natureOfInjuries ?? this.natureOfInjuries,
       propertyDamaged: propertyDamaged ?? this.propertyDamaged,
+      selectedPropertyDamages: selectedPropertyDamages ?? this.selectedPropertyDamages,
       isAddNew: isAddNew,
       lostTimeInDay: lostTimeInDay ?? this.lostTimeInDay,
       isDataReady: isDataReady ?? this.isDataReady,
       workerSelect: workerSelect ?? this.workerSelect,
       jobDescriptionSelect: jobDescriptionSelect ?? this.jobDescriptionSelect,
       natureOfInjurySelect: natureOfInjurySelect ?? this.natureOfInjurySelect,
+      isWorkerError: isWorkerError ?? this.isWorkerError,
+      isDateIncidentError: isDateIncidentError ?? this.isDateIncidentError,
+      isDateReportedError: isDateReportedError ?? this.isDateReportedError,
     );
   }
 }
