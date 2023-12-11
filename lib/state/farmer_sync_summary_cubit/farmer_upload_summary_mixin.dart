@@ -1063,7 +1063,7 @@ mixin FarmUploadSummaryMixin {
         }).toList();
 
         itemPayLoad = itemPayLoad.copyWith(
-          Register: item.toPayLoad().copyWith(WorkerId: '1548065459292'),
+          Register: item.toPayLoad(),
           PropertyDamaged: accidentAndIncidentPropertyDamagedPayLoad,
         );
 
