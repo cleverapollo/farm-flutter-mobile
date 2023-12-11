@@ -182,10 +182,26 @@ class CmoDatabaseMasterService {
       String workerId) async {
     final db = await _db();
 
-    return db.workerJobDescriptions
+    final workerJobDescriptions = await db.workerJobDescriptions
         .filter()
         .workerIdEqualTo(workerId)
         .findAll();
+
+    final result = <WorkerJobDescription>[];
+    if (workerJobDescriptions.isNotBlank) {
+      for (final workerJobDescription in workerJobDescriptions) {
+        final jobDescription =
+            await getJobDescriptionById(workerJobDescription.jobDescriptionId);
+        result.add(
+          workerJobDescription.copyWith(
+            jobDescriptionName: workerJobDescription.jobDescriptionName ??
+                jobDescription?.jobDescriptionName,
+          ),
+        );
+      }
+    }
+
+    return result;
   }
 
   Future<int?> cacheWorkerJobDescription(WorkerJobDescription item) async {
@@ -2522,7 +2538,10 @@ class CmoDatabaseMasterService {
   Future<JobDescription?> getJobDescriptionById(int? id) async {
     if (id == null) return null;
     final db = await _db();
-    return db.jobDescriptions.filter().jobDescriptionIdEqualTo(id).findFirst();
+    return db.jobDescriptions.filter()
+        .isActiveEqualTo(true)
+        .jobDescriptionIdEqualTo(id)
+        .findFirst();
   }
 
   Future<List<JobDescription>> getJobDescriptions() async {

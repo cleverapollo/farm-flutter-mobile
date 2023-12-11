@@ -133,6 +133,8 @@ class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
 
   Future<void> onRemoveLabour(FarmerWorker worker) async {
     await cmoDatabaseMasterService.removeFarmerWorker(worker.id);
+    await cmoDatabaseMasterService.deletedWorkerJobDescriptionByJobDescriptionId(worker.workerId);
+
     showSnackSuccess(
       msg: '${LocaleKeys.remove.tr()} ${worker.id}!',
     );
