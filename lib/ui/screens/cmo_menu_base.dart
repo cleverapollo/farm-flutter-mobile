@@ -61,7 +61,7 @@ class CmoMenuBase extends StatefulWidget {
 }
 
 class _CmoMenuBaseState extends State<CmoMenuBase> {
-  late final Widget _menuContent;
+  Widget _menuContent = const SizedBox.shrink();
 
   @override
   void didChangeDependencies() {
