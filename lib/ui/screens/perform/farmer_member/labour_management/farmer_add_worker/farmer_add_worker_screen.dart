@@ -86,8 +86,8 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
             .deletedWorkerJobDescriptionByJobDescriptionId(
                 farmerWorker.workerId);
 
-        var count = DateTime.now().microsecondsSinceEpoch;
-
+        var count = await cmoDatabaseMasterService.getCountWorkerJobDescription();
+        count++;
         for (final item in selectedWorkerJobDescriptions.value) {
           futures.add(cmoDatabaseMasterService.cacheWorkerJobDescription(
               item.copyWith(workerJobDescriptionId: count++)));
