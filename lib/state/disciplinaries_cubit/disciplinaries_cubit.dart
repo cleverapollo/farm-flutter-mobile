@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/camp.dart';
@@ -14,18 +15,8 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     initConfigData();
   }
 
-  Future<void> onChangeStatus(bool isOpen) async {
-    emit(state.copyWith(isLoading: true));
-
-    final result = await cmoDatabaseMasterService
-        .getSanctionRegisterByFarmId(state.farmId!, isOpen: isOpen);
-
-    emit(state.copyWith(
-        sanctionRegisters: result, isOpen: isOpen, isLoading: false));
-  }
-
   Future<void> initData() async {
-    emit(state.copyWith(isLoading: true));
+    emit(DisciplinariesState().copyWith(isLoading: true));
 
     await initConfigData();
 
@@ -34,7 +25,14 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     emit(state.copyWith(isLoading: false));
 
     if (result.isNotEmpty) {
-      emit(state.copyWith(sanctionRegisters: result));
+      emit(
+        state.copyWith(
+          sanctionRegisters: result,
+          filterSanctionRegisters: result,
+        ),
+      );
+
+      applyFilter();
     }
   }
 
@@ -112,6 +110,51 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     emit(state.copyWith(isLoading: false));
   }
 
+  void onFilterStatus(StatusFilterEnum statusFilter) {
+    emit(
+      state.copyWith(
+        statusFilterEnum: statusFilter,
+      ),
+    );
+
+    applyFilter();
+  }
+
+  void searching(String? inputSearch) {
+    emit(state.copyWith(inputSearch: inputSearch));
+    applyFilter();
+  }
+
+  void applyFilter() {
+    var filterItems = state.sanctionRegisters;
+    switch (state.statusFilterEnum) {
+      case StatusFilterEnum.open:
+        filterItems = state.sanctionRegisters
+            .where((element) => element.dateReceived == null)
+            .toList();
+        break;
+      case StatusFilterEnum.closed:
+        filterItems = state.sanctionRegisters
+            .where((element) => element.dateReceived != null)
+            .toList();
+        break;
+    }
+
+    if (state.inputSearch.isNotBlank) {
+      filterItems = filterItems
+          .where(
+            (element) => element.displayWorkerName.isNotBlank && element.displayWorkerName!.contains(state.inputSearch!),
+          )
+          .toList();
+    }
+
+    emit(
+      state.copyWith(
+        filterSanctionRegisters: filterItems,
+      ),
+    );
+  }
+
   void onSelectWorker(FarmerWorker selectWorker) {
     emit(
       state.copyWith(
@@ -164,8 +207,21 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
         comment: comment ?? state.data?.comment,
         signatureDate: signatureDate ?? state.data?.signatureDate,
         signatureImage: signatureImage ?? state.data?.signatureImage,
+        signaturePoints: signaturePoint ?? state.data?.signaturePoints,
       ),
     ));
+  }
+
+  void onSign(String? image, String? point) {
+    emit(
+      state.copyWith(
+        data: state.data?.copyWith(
+          signatureImage: image,
+          signaturePoints: point,
+          signatureDate: DateTime.now().toString(),
+        ),
+      ),
+    );
   }
 
   void onClearSignaturePad() {
@@ -180,7 +236,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
   void validateRequiredField() {
     emit(
       state.copyWith(
-        isDateIssuedError: state.data?.dateReceived == null,
+        // isDateIssuedError: state.data?.dateReceived == null,
         isSelectWorkerError: state.data?.workerId == null || state.data!.workerId.isBlank,
         isDisciplinariesIssueError: state.data?.issueTypeId == null,
       ),
@@ -190,7 +246,8 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
   Future<bool> onSave() async {
     try {
       validateRequiredField();
-      final haveError = state.isDateIssuedError ||
+      final haveError =
+          // state.isDateIssuedError ||
           state.isSelectWorkerError ||
           state.isDisciplinariesIssueError;
 

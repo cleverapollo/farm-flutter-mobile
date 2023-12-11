@@ -9,6 +9,7 @@ import 'package:cmo/model/labour_management/farmer_worker.dart';
 import 'package:cmo/model/sanction_register/sanction_register.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_cubit.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
+import 'package:cmo/ui/components/signature_widget.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
@@ -296,6 +297,7 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
 
                                         cubit.onChangeData(
                                             signatureImage: imageBase64,
+                                            signaturePoint: signatureKey.currentState?.toString(),
                                             signatureDate:
                                                 DateTime.now().toString());
                                       },
@@ -322,7 +324,8 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
                                   title: LocaleKeys.accept_signature_and_save.tr(),
                                 disable: state.data?.workerId == null &&
                                     state.data?.dateReceived == null &&
-                                    state.data?.issueTypeId == null,
+                                    state.data?.issueTypeId == null &&
+                                    state.data?.signatureImage == null,
                                 onTap: () async {
                                     final canNext = await cubit.onSave();
 

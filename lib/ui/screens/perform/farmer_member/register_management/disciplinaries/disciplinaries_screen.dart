@@ -4,8 +4,10 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/sanction_register/sanction_register.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_cubit.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
+import 'package:cmo/ui/components/search_field.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_add_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,6 +36,9 @@ class _DisciplinariesScreenState extends BaseStatefulWidgetState<DisciplinariesS
       child: BlocSelector<DisciplinariesCubit, DisciplinariesState, bool>(
         selector: (state) => state.isLoading,
         builder: (context, isLoading) {
+
+          final cubit = context.read<DisciplinariesCubit>();
+
           return Scaffold(
             appBar: CmoAppBar(
               title: LocaleKeys.disciplinary.tr(),
@@ -50,98 +55,48 @@ class _DisciplinariesScreenState extends BaseStatefulWidgetState<DisciplinariesS
             ),
             body: isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : BlocBuilder<DisciplinariesCubit, DisciplinariesState>(
-                    builder: (context, state) {
-                      final cubit = context.read<DisciplinariesCubit>();
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 18),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    cubit.onChangeStatus(true);
-                                  },
-                                  child: _StatusFilterWidget(
-                                    text: LocaleKeys.open.tr(),
-                                    isSelected: state.isOpen,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                InkWell(
-                                  onTap: () {
-                                    cubit.onChangeStatus(false);
-                                  },
-                                  child: _StatusFilterWidget(
-                                    text: LocaleKeys.close.tr(),
-                                    isSelected: !state.isOpen,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            ListView.separated(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 24, vertical: 18),
-                                separatorBuilder: (_, index) =>
-                                    const SizedBox(height: 14),
-                                itemCount: state.sanctionRegisters.length,
-                                itemBuilder: (context, index) => InkWell(
-                                      onTap: () async {
-                                        final shouldRefresh =
-                                            await DisciplinariesAddScreen.push(
-                                                context,
-                                                data: state
-                                                    .sanctionRegisters[index]);
-
-                                        if (shouldRefresh != null) {
-                                          await cubit.initData();
-                                        }
-                                      },
-                                      child: _DisciplinariesItemWidget(
-                                          state.sanctionRegisters[index]),
-                                    )),
-                          ],
+                : Column(
+                    children: [
+                      SearchField(
+                        searching: cubit.searching,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
+                        child: StatusFilterWidget(
+                          onSelectFilter: cubit.onFilterStatus,
+                          statusFilter: cubit.state.statusFilterEnum,
                         ),
-                      );
-                    },
+                      ),
+                      Expanded(
+                        child: BlocBuilder<DisciplinariesCubit,
+                            DisciplinariesState>(
+                          builder: (context, state) {
+                            return ListView.separated(
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                              separatorBuilder: (_, index) => const SizedBox(height: 14),
+                              itemCount: state.filterSanctionRegisters.length,
+                              itemBuilder: (context, index) => InkWell(
+                                onTap: () async {
+                                  final shouldRefresh =
+                                      await DisciplinariesAddScreen.push(
+                                          context,
+                                          data: state.filterSanctionRegisters[index]);
+
+                                  if (shouldRefresh != null) {
+                                    await cubit.initData();
+                                  }
+                                },
+                                child: _DisciplinariesItemWidget(
+                                    state.filterSanctionRegisters[index]),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _StatusFilterWidget extends StatelessWidget {
-  const _StatusFilterWidget({
-    required this.text,
-    this.isSelected = false,
-    super.key,
-  });
-
-  final bool isSelected;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: isSelected ? context.colors.blue : context.colors.white,
-        border: isSelected ? null : Border.all(color: context.colors.black),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 35),
-      alignment: Alignment.center,
-      child: Text(
-        text,
-        style: context.textStyles.bodyNormal.copyWith(
-          fontSize: 12,
-          color: isSelected ? context.colors.white : context.colors.black,
-        ),
       ),
     );
   }
