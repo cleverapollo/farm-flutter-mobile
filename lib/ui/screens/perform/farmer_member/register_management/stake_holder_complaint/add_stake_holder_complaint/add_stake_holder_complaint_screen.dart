@@ -5,6 +5,8 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/stake_holder_complaint/add_stake_holder_complaint_cubit.dart';
+import 'package:cmo/ui/components/date_picker_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
@@ -43,8 +45,7 @@ class AddStakeHolderComplaintScreen extends BaseStatefulWidget {
               farm: farm,
               complaint: complaint ??
                   ComplaintsAndDisputesRegister(
-                    complaintsAndDisputesRegisterNo:
-                        DateTime.now().millisecondsSinceEpoch.toString(),
+                    complaintsAndDisputesRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
                     dateReceived: DateTime.now(),
                     createDT: DateTime.now(),
                     updateDT: DateTime.now(),
@@ -88,6 +89,11 @@ class _AddStakeHolderComplaintScreenState
       });
       try {
         await hideInputMethod();
+        final isError = cubit.onValidateRequireField();
+        if (isError) {
+          return;
+        }
+
         var complaint = cubit.state.complaint;
         complaint = complaint.copyWith(
           isActive: true,
@@ -234,7 +240,7 @@ class _AddStakeHolderComplaintScreenState
       child: CmoDropdown<StakeHolder>(
         name: LocaleKeys.complaintName.tr(),
         hintText: LocaleKeys.complaintName.tr(),
-        validator: requiredValidator,
+        // validator: requiredValidator,
         style: context.textStyles.bodyBold.blueDark2,
         inputDecoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(
@@ -285,42 +291,33 @@ class _AddStakeHolderComplaintScreenState
   }
 
   Widget _buildSelectDateClosed(DateTime? dateClosed) {
-    return AttributeItem(
-      child: CmoDatePicker(
-        name: LocaleKeys.dateClosed.tr(),
-        hintText: LocaleKeys.dateClosed.tr(),
-        validator: (DateTime? value) {
-          if (value == null) return null;
-          if (value.millisecondsSinceEpoch >
-              DateTime.now().millisecondsSinceEpoch) {
-            return 'Closed date cannot be in the future';
-          }
-          final receivedValue =
-              _formKey.currentState?.value['DateReceived'] as DateTime?;
-          if (receivedValue != null &&
-              value.millisecondsSinceEpoch <
-                  receivedValue.millisecondsSinceEpoch) {
-            return 'Closed date must be after received date';
-          }
-          return null;
-        },
-        initialValue: dateClosed,
-        onChanged: cubit.onDateClosedChanged,
-        inputDecoration: InputDecoration(
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
+    return BlocBuilder<AddStakeHolderComplaintCubit, AddStakeHolderComplaintState>(
+      builder: (context, state) {
+        return AttributeItem(
+          isUnderErrorBorder: true,
+          isShowError: state.isDateClosedError,
+          errorText: state.dateClosedErrorText,
+          child: DatePickerWidget(
+            lastDate: DateTime.now().add(const Duration(days: 100000)),
+            firstDate: state.complaint.dateReceived ?? DateTime.now(),
+            initialDate: state.complaint.dateClosed ?? DateTime.now(),
+            onChangeDate: cubit.onDateClosedChanged,
+            child: SelectorAttributeItem(
+              labelText: LocaleKeys.dateClosed.tr(),
+              labelStyle: context.textStyles.bodyBold.blueDark2,
+              text: state.complaint.dateClosed == null
+                  ? ''
+                  : state.complaint.dateClosed.yMd(),
+              textStyle: context.textStyles.bodyNormal.blueDark2,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              trailing: Assets.icons.icCalendar.svgBlack,
+            ),
           ),
-          suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-          suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
-          isDense: true,
-          hintText: LocaleKeys.dateClosed.tr(),
-          hintStyle: context.textStyles.bodyBold.blueDark2,
-          labelText: LocaleKeys.dateClosed.tr(),
-          labelStyle: context.textStyles.bodyBold.blueDark2,
-        ),
-      ),
+        );
+      },
     );
   }
 }

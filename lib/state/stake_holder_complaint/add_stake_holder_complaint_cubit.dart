@@ -63,14 +63,27 @@ class AddStakeHolderComplaintCubit extends Cubit<AddStakeHolderComplaintState> {
   }
 
   void onDateReceivedChanged(DateTime? value) {
-    state.complaint = state.complaint.copyWith(
-      dateReceived: value,
+    emit(
+      state.copyWith(
+        complaint: state.complaint.copyWith(
+          dateReceived: value,
+          dateClosed: state.complaint.dateClosed != null &&
+                  value != null &&
+                  state.complaint.dateClosed!.isBefore(value)
+              ? value
+              : state.complaint.dateClosed,
+        ),
+      ),
     );
   }
 
   void onDateClosedChanged(DateTime? value) {
-    state.complaint = state.complaint.copyWith(
-      dateClosed: value,
+    emit(
+      state.copyWith(
+        complaint: state.complaint.copyWith(
+          dateClosed: value,
+        ),
+      ),
     );
   }
 
@@ -86,5 +99,22 @@ class AddStakeHolderComplaintCubit extends Cubit<AddStakeHolderComplaintState> {
     state.complaint = state.complaint.copyWith(
       comment: comment,
     );
+  }
+
+  bool onValidateRequireField() {
+    if (state.complaint.dateClosed != null &&
+        state.complaint.dateReceived != null &&
+        state.complaint.dateClosed!.isBefore(state.complaint.dateReceived!)) {
+      emit(
+        state.copyWith(
+          dateClosedErrorText: 'Closed date must be after received date',
+          isDateClosedError: true,
+        ),
+      );
+
+      return true;
+    }
+
+    return false;
   }
 }
