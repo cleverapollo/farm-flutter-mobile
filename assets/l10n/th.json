@@ -139,6 +139,7 @@
   "addStakeHolderComplaint": "การร้องเรียนเพิ่มเติมของผู้มีส่วนได้เสีย",
   "stakeholder_complaint_detail": "Stakeholder Complaint Detail",
   "nameOfControlAgent": "ชื่อสารที่ใช้ในการควบคุม",
+  "nameOfWorker": "Name of Worker",
   "select_name_of_control_agent": "Select Name of Control Agent",
   "scientificName": "ชื่อวิทยาศาสตร์",
   "countryOfOrigin": "ประเทศต้นทาง",

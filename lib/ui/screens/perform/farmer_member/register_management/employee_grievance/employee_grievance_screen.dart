@@ -9,6 +9,7 @@ import 'package:cmo/state/add_employee_grievance/employee_grievance_cubit.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/employee_grievance/add_employee_grievance/add_employee_grievance_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -98,29 +99,19 @@ class _EmployeeGrievanceScreenState extends BaseStatefulWidgetState<EmployeeGrie
   }
 
   Widget _buildBody(EmployeeGrievanceState state) {
-    final items = state.items;
+    final items = state.filterItems;
     return Column(
       children: [
-        CmoTappable(
-          onTap: () => {},
-          child: CmoCard(
-            childAlignment: MainAxisAlignment.center,
-            content: [
-              CmoCardHeader(title: LocaleKeys.summary.tr()),
-              CmoCardHeader(
-                title: LocaleKeys.total.tr(),
-                valueEnd: items.length.toString(),
-              ),
-            ],
-            trailing: Assets.icons.icDown.svgWhite,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
+          child: StatusFilterWidget(
+            onSelectFilter: cubit.onFilterStatus,
+            statusFilter: state.statusFilter,
           ),
         ),
-        const SizedBox(height: 24),
         Expanded(
           child: ListView.separated(
-            separatorBuilder: (context, index) => const SizedBox(
-              height: 22,
-            ),
+            separatorBuilder: (context, index) => const SizedBox(height: 22),
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];

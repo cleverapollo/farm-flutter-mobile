@@ -119,7 +119,7 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
   Widget build(BuildContext context) {
     final initState = cubit.state;
     return GestureDetector(
-      onTap: FocusScope.of(context).unfocus,
+      onTap: FocusManager.instance.primaryFocus?.unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
           title: initState.isAddNew
@@ -127,7 +127,7 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
               : LocaleKeys.edit_employee_grievance.tr(),
           leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
-          trailing: Assets.icons.icClose.svgBlack,
+          trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
         body: SafeArea(
@@ -147,7 +147,7 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
                     children: [
                       const SizedBox(height: 18),
                       CmoHeaderTile(
-                        title: LocaleKeys.nameOfControlAgent.tr(),
+                        title: LocaleKeys.nameOfWorker.tr(),
                         backgroundColor: context.colors.blueDark2,
                       ),
                       _selectWorkerName(),
@@ -426,7 +426,7 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
         initialValue: dateClosed,
         hintText: LocaleKeys.dateClosed.tr(),
         lastDate: DateTime.now(),
-        onChanged: (date) => cubit.onDateReceivedChanged(date),
+        onChanged: cubit.onDateClosedChanged,
         inputDecoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(

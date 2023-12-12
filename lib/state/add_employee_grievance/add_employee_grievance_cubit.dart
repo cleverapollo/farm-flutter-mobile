@@ -15,7 +15,6 @@ class AddEmployeeGrievanceCubit extends Cubit<AddEmployeeGrievanceState> {
             farm: farm,
             employeeGrievance: employeeGrievance,
             isAddNew: isAddNew,
-            isDataReady: false,
           ),
         ) {
     onInit();

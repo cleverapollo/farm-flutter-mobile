@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -22,14 +23,49 @@ class EmployeeGrievanceCubit extends Cubit<EmployeeGrievanceState> {
       emit(
         state.copyWith(
           items: items,
+          filterItems: items,
           isDataReady: true,
         ),
       );
+
+      applyFilter();
     } catch (e) {
       showSnackError(msg: e.toString());
     } finally {
       emit(state.copyWith(isDataReady: true));
     }
+  }
+
+  void onFilterStatus(StatusFilterEnum statusFilter) {
+    emit(
+      state.copyWith(
+        statusFilter: statusFilter,
+      ),
+    );
+
+    applyFilter();
+  }
+
+  void applyFilter() {
+    var filterItems = <GrievanceRegister>[];
+    switch (state.statusFilter) {
+      case StatusFilterEnum.open:
+        filterItems = state.items
+            .where((element) => element.dateClosed == null && element.closureDetails.isBlank)
+            .toList();
+        break;
+      case StatusFilterEnum.closed:
+        filterItems = state.items
+            .where((element) => element.dateClosed != null || element.closureDetails.isNotBlank)
+            .toList();
+        break;
+    }
+
+    emit(
+      state.copyWith(
+        filterItems: filterItems,
+      ),
+    );
   }
 
   void onUpdateItem(int index, GrievanceRegister updatedItem) {
@@ -40,6 +76,8 @@ class EmployeeGrievanceCubit extends Cubit<EmployeeGrievanceState> {
         items: items,
       ),
     );
+
+    applyFilter();
   }
 
   void onInsertNewItem(GrievanceRegister newItem) {
@@ -48,5 +86,7 @@ class EmployeeGrievanceCubit extends Cubit<EmployeeGrievanceState> {
         items: [...state.items, newItem],
       ),
     );
+
+    applyFilter();
   }
 }
