@@ -59,19 +59,25 @@ class LabourManagementItem extends StatelessWidget {
                       onTap: () async {
                         await CommonFunctions.sendSms(farmerWorker.phoneNumber);
                       },
-                      child: Assets.icons.icSmsBlue.svg(),
+                      child: SizedBox(
+                        width: 50,
+                        child: Center(child: Assets.icons.icSmsBlue.svg()),
+                      ),
                     ),
                     const SizedBox(
-                      width: 40,
+                      width: 10,
                     ),
                     CmoTappable(
                       onTap: () async {
                         await CommonFunctions.makePhoneCall(farmerWorker.phoneNumber);
                       },
-                      child: Assets.icons.icCallBlue.svg(),
+                      child: SizedBox(
+                          width: 50,
+                          child: Center(child: Assets.icons.icCallBlue.svg()),
+                      ),
                     ),
                     const SizedBox(
-                      width: 40,
+                      width: 20,
                     ),
                     Assets.icons.icEdit.svg(),
                   ],
