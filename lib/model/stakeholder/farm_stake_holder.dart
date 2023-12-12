@@ -13,6 +13,8 @@ class FarmStakeHolder with _$FarmStakeHolder {
     @JsonKey(name: 'FarmStakeholderId') String? farmStakeHolderId,
     @JsonKey(name: 'StakeholderId') String? stakeHolderId,
     @JsonKey(name: 'FarmId') String? farmId,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _FarmStakeHolder;
 

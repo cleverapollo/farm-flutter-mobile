@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/ui/ui.dart';
@@ -27,10 +28,17 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
 
   Future<void> initStakeholderDetailData(StakeHolder? stakeHolder) async {
     emit(state.copyWith(loading: true));
-
     try {
       final service = cmoDatabaseMasterService;
+      final currentRole = await configService.getActiveUserRole();
       final stakeHolderTypes = await service.getStakeHolderTypes();
+      emit(
+        state.copyWith(
+          currentUserRole: currentRole,
+          listStakeholderTypes: stakeHolderTypes,
+        ),
+      );
+
       final farm = await configService.getActiveFarm();
       if (farm != null && stakeHolder != null) {
         final additionalInfos = await Future.wait([
@@ -49,7 +57,6 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
           state.copyWith(
             stakeHolder: stakeHolder,
             farm: farm,
-            listStakeholderTypes: stakeHolderTypes,
             listCustomaryUseRights: additionalInfos[0] as List<FarmStakeholderCustomaryUseRight>,
             listSocialUpliftments: additionalInfos[1] as List<FarmStakeholderSocialUpliftment>,
             listSpecialSites: additionalInfos[2] as List<FarmStakeholderSpecialSite>,
@@ -64,17 +71,17 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
               stakeHolderId: stakeHolderId.toString(),
               isActive: 1,
               isMasterDataSynced: 0,
+              createDT: DateTime.now(),
+              updateDT: DateTime.now(),
             ),
-            farmerStakeHolder: FarmerStakeHolder(
-              farmId: farm?.farmId ?? '',
-              farmerStakeHolderId:
-              DateTime.now().millisecondsSinceEpoch.toString(),
-              stakeholderId: stakeHolderId.toString(),
-              isActive: true,
-              isMasterDataSynced: false,
-              isLocal: true,
-            ),
-            listStakeholderTypes: stakeHolderTypes,
+            // farmerStakeHolder: FarmerStakeHolder(
+            //   farmId: farm?.farmId ?? '',
+            //   farmerStakeHolderId: DateTime.now().millisecondsSinceEpoch.toString(),
+            //   stakeholderId: stakeHolderId.toString(),
+            //   isActive: true,
+            //   isMasterDataSynced: false,
+            //
+            // ),
           ),
         );
       }
@@ -222,6 +229,10 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
     }
 
     await Future.wait(futures);
+  }
+
+  Future<void> onSaveGroupSchemeStakeholder() async {
+
   }
 
   @override

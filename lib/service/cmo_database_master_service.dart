@@ -134,7 +134,6 @@ class CmoDatabaseMasterService {
         PestsAndDiseasesRegisterTreatmentMethodSchema,
         CampSchema,
         GenderSchema,
-        FarmerStakeHolderSchema,
         DisciplinariesSchema,
         ConfigDataSchema,
         FarmMemberObjectiveAnswerSchema,
@@ -421,20 +420,6 @@ class CmoDatabaseMasterService {
     return db.specialSites.filter().isMasterDataSyncedEqualTo(0).findAll();
   }
 
-  Future<List<FarmerStakeHolder>> getFarmStakeholder() async {
-    final db = await _db();
-
-    return db.farmerStakeHolders.filter().farmIdIsNotNull().findAll();
-  }
-
-  Future<int?> cacheFarmerStakeholder(FarmerStakeHolder item) async {
-    final db = await _db();
-
-    return db.writeTxn(() async {
-      return db.farmerStakeHolders.put(item);
-    });
-  }
-
   Future<List<FarmStakeholderSocialUpliftment>>
       getUnsycnedFarmStakeholderSocialUpliftments() async {
     final db = await _db();
@@ -464,11 +449,17 @@ class CmoDatabaseMasterService {
   }
 
   Future<int?> cacheFarmStakeholderSpecialSites(
-      FarmStakeholderSpecialSite item) async {
+    FarmStakeholderSpecialSite item, {
+    bool isDirect = false,
+  }) async {
     final db = await _db();
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.farmStakeholderSpecialSites.put(item);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.farmStakeholderSpecialSites.put(item);
+      });
+    }
   }
 
   Future<List<FarmStakeholderCustomaryUseRight>>
@@ -779,12 +770,6 @@ class CmoDatabaseMasterService {
         .farmStakeholderIdEqualTo(stakeholderId.toString())
         .isActiveEqualTo(1)
         .findAll();
-  }
-
-  Future<int?> cacheFarmStakeHolder(FarmerStakeHolder data) async {
-    final db = await _db();
-
-    return db.farmerStakeHolders.put(data);
   }
 
   Future<int?> cacheFarmStakeHolderFromFarm(FarmStakeHolder data) async {
@@ -1328,13 +1313,6 @@ class CmoDatabaseMasterService {
         .or()
         .isMasterDataSyncedIsNull()
         .findAll();
-  }
-
-  Future<List<FarmerStakeHolder>> getFarmerStakeHolderByFarmId(
-      String farmId) async {
-    final db = await _db();
-
-    return db.farmerStakeHolders.filter().farmIdEqualTo(farmId).findAll();
   }
 
   Future<List<CustomaryUseRight>> getCustomaryUseRight() async {

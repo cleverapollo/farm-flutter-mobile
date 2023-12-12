@@ -80,7 +80,6 @@ export 'chemical_application_method/chemical_application_method.dart';
 export 'chemical_type/chemical_type.dart';
 export 'country/country.dart';
 export 'customary_use_right/customary_use_right.dart';
-export 'farmer_stake_holder/farmer_stake_holder.dart';
 export 'fire/fire_register.dart';
 export 'fire_cause/fire_cause.dart';
 export 'grievance_issue/grievance_issue.dart';

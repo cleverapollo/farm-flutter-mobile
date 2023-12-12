@@ -43,7 +43,8 @@ class StakeHolderDetailScreen extends BaseStatefulWidget {
                   stakeHolder: stakeHolder,
                   isEditing: isEditing,
                 ),
-              )),
+              ),
+      ),
     );
   }
 

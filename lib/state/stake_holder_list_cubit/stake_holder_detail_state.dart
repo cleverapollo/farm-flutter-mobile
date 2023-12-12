@@ -1,6 +1,7 @@
 part of 'stake_holder_detail_cubit.dart';
 
 class StakeholderDetailState {
+  final UserRoleEnum? currentUserRole;
   final Object? error;
   final bool? loading;
   final ResourceManagerUnit? resourceManagerUnit;
@@ -22,6 +23,7 @@ class StakeholderDetailState {
     this.farm,
     this.farmerStakeHolder,
     this.stakeHolder,
+    this.currentUserRole,
     this.listStakeholderTypes = const <StakeHolderType>[],
     this.listSocialUpliftments = const <FarmStakeholderSocialUpliftment>[],
     this.listCustomaryUseRights = const <FarmStakeholderCustomaryUseRight>[],
@@ -45,6 +47,7 @@ class StakeholderDetailState {
     List<SocialUpliftment>? listSocialUpliftment,
     List<SpecialSite>? listSpecialSite,
     List<CustomaryUseRight>? listCustomaryUseRight,
+    UserRoleEnum? currentUserRole,
   }) {
     return StakeholderDetailState(
       error: error ?? this.error,
@@ -60,6 +63,7 @@ class StakeholderDetailState {
       listSocialUpliftment: listSocialUpliftment ?? this.listSocialUpliftment,
       listSpecialSite: listSpecialSite ?? this.listSpecialSite,
       listCustomaryUseRight: listCustomaryUseRight ?? this.listCustomaryUseRight,
+      currentUserRole: currentUserRole ?? this.currentUserRole,
     );
   }
 
