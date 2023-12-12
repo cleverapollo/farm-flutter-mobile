@@ -5,6 +5,7 @@ import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_cubit.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/pets_and_disease_add_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -55,29 +56,12 @@ class _PetsAndDiseaseScreenState extends BaseStatefulWidgetState<PetsAndDiseaseS
                     child: Column(
                       children: [
                         const SizedBox(height: 18),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                cubit.onChangeStatus(true);
-                              },
-                              child: _StatusFilterWidget(
-                                text: LocaleKeys.open.tr(),
-                                isSelected: state.isOpen ?? true,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            InkWell(
-                              onTap: () {
-                                cubit.onChangeStatus(false);
-                              },
-                              child: _StatusFilterWidget(
-                                text: LocaleKeys.close.tr(),
-                                isSelected: !(state.isOpen ?? true),
-                              ),
-                            ),
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
+                          child: StatusFilterWidget(
+                            onSelectFilter: cubit.onFilterStatus,
+                            statusFilter: state.statusFilter,
+                          ),
                         ),
                         ListView.separated(
                             physics: const NeverScrollableScrollPhysics(),
@@ -86,47 +70,16 @@ class _PetsAndDiseaseScreenState extends BaseStatefulWidgetState<PetsAndDiseaseS
                                 horizontal: 24, vertical: 18),
                             separatorBuilder: (_, index) =>
                                 const SizedBox(height: 14),
-                            itemCount: state.petsAndDiseaseRegisters.length,
+                            itemCount: state.filterPetsAndDiseaseRegisters.length,
                             itemBuilder: (context, index) =>
                                 _PetsAndDiseaseItemWidget(
                                     data:
-                                        state.petsAndDiseaseRegisters[index])),
+                                        state.filterPetsAndDiseaseRegisters[index])),
                       ],
                     ),
                   );
           },
         ));
-  }
-}
-
-class _StatusFilterWidget extends StatelessWidget {
-  const _StatusFilterWidget({
-    required this.text,
-    this.isSelected = false,
-    super.key,
-  });
-
-  final bool isSelected;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: isSelected ? context.colors.blue : context.colors.white,
-        border: isSelected ? null : Border.all(color: context.colors.black),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 35),
-      alignment: Alignment.center,
-      child: Text(
-        text,
-        style: context.textStyles.bodyNormal.copyWith(
-          fontSize: 12,
-          color: isSelected ? context.colors.white : context.colors.black,
-        ),
-      ),
-    );
   }
 }
 

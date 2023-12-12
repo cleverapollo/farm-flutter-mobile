@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/pest_and_disease_type/pest_and_disease_type.dart';
 import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and_diseases_register_treatment_method.dart';
@@ -12,15 +13,6 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
     initConfigData();
   }
 
-  Future<void> onChangeStatus(bool isUnderControl) async {
-    final result = await cmoDatabaseMasterService
-        .getPetsAndDiseaseRegisterByFarmId(state.farmId!,
-            isUnderControl: isUnderControl);
-
-    emit(state.copyWith(
-        petsAndDiseaseRegisters: result, isOpen: isUnderControl));
-  }
-
   Future<void> initData() async {
     emit(state.copyWith(isLoading: true));
     final inited = await initConfigData();
@@ -30,7 +22,15 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
     final result = await cmoDatabaseMasterService
         .getPetsAndDiseaseRegisterByFarmId(state.farmId!);
 
-    emit(state.copyWith(petsAndDiseaseRegisters: result, isLoading: false));
+    emit(
+      state.copyWith(
+        petsAndDiseaseRegisters: result,
+        filterPetsAndDiseaseRegisters: result,
+        isLoading: false,
+      ),
+    );
+
+    applyFilter();
   }
 
   Future<bool> initConfigData() async {
@@ -93,6 +93,38 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
               DateTime.now().millisecondsSinceEpoch.toString(),
         ),
         isLoading: false));
+  }
+
+  void onFilterStatus(StatusFilterEnum statusFilter) {
+    emit(
+      state.copyWith(
+        statusFilter: statusFilter,
+      ),
+    );
+
+    applyFilter();
+  }
+
+  void applyFilter() {
+    var filterItems = <PetsAndDiseaseRegister>[];
+    switch (state.statusFilter) {
+      case StatusFilterEnum.open:
+        filterItems = state.petsAndDiseaseRegisters
+            .where((element) => element.underControl != null && element.underControl!)
+            .toList();
+        break;
+      case StatusFilterEnum.closed:
+        filterItems = state.petsAndDiseaseRegisters
+            .where((element) => element.underControl == null || !element.underControl!)
+            .toList();
+        break;
+    }
+
+    emit(
+      state.copyWith(
+        filterPetsAndDiseaseRegisters: filterItems,
+      ),
+    );
   }
 
   void onSelectPetsAndDiseaseType(PestsAndDiseaseType selectPetsAndDiseaseType) {

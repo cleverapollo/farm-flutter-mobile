@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/model/pest_and_disease_type/pest_and_disease_type.dart';
 import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and_diseases_register_treatment_method.dart';
 import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
@@ -19,6 +20,8 @@ class PetsAndDiseasesState with _$PetsAndDiseasesState {
         List<PestsAndDiseasesRegisterTreatmentMethod>
             selectPestsAndDiseasesRegisterTreatmentMethods,
     @Default([]) List<PetsAndDiseaseRegister> petsAndDiseaseRegisters,
+    @Default([]) List<PetsAndDiseaseRegister> filterPetsAndDiseaseRegisters,
+    @Default(StatusFilterEnum.open) StatusFilterEnum statusFilter,
     PestsAndDiseaseType? selectPetsAndDiseaseType,
     @Default([]) List<TreatmentMethod> treatmentMethods,
     @Default(false) bool isSelectPetTypeError,

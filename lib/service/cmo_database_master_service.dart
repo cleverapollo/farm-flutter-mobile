@@ -1809,6 +1809,19 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<int> countPestsAndDiseasesByFarmId(String? farmId) async {
+    final db = await _db();
+
+    final result = await db.petsAndDiseaseRegisters
+        .filter()
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
+        .findAll();
+
+    return result.length;
+  }
+
   Future<List<PetsAndDiseaseRegister>> getPetsAndDiseaseRegisterByFarmId(
       String farmId,
       {bool? isUnderControl}) async {
