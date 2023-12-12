@@ -463,7 +463,7 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
         return AttributeItem(
           margin: const EdgeInsets.symmetric(horizontal: 24),
           child: DatePickerWidget(
-            lastDate: DateTime.now().add(const Duration(days: 100000)),
+            lastDate: DateTime.now(),
             firstDate: DateTime.now().subtract(const Duration(days: 100000)),
             initialDate: state.accidentAndIncident.dateResumeWork ?? DateTime.now(),
             onChangeDate: cubit.onDateResumeChanged,
