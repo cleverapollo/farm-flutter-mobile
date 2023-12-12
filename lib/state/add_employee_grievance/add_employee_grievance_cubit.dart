@@ -103,4 +103,25 @@ class AddEmployeeGrievanceCubit extends Cubit<AddEmployeeGrievanceState> {
       comment: comment,
     );
   }
+
+  Future<void> onSave({required void Function(int?, GrievanceRegister) onCallBack}) async {
+    var employeeGrievance = state.employeeGrievance;
+    employeeGrievance = employeeGrievance.copyWith(
+      isActive: true,
+      isMasterdataSynced: false,
+      createDT: employeeGrievance.createDT ?? DateTime.now(),
+      updateDT: DateTime.now(),
+    );
+
+    int? resultId;
+
+    final databaseService = cmoDatabaseMasterService;
+
+    await (await databaseService.db).writeTxn(() async {
+      resultId =
+          await databaseService.cacheEmployeeGrievance(employeeGrievance);
+    });
+
+    onCallBack(resultId, employeeGrievance);
+  }
 }

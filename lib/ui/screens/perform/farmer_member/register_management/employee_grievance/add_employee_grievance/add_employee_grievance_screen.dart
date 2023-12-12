@@ -1,4 +1,3 @@
-import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -81,33 +80,18 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
     });
     try {
       await hideInputMethod();
-      var employeeGrievance = cubit.state.employeeGrievance;
-      employeeGrievance = employeeGrievance.copyWith(
-        isActive: true,
-        isMasterdataSynced: false,
-        createDT: employeeGrievance.createDT ?? DateTime.now(),
-        updateDT: DateTime.now(),
+      await cubit.onSave(
+        onCallBack: (resultId, employeeGrievance) {
+          if (resultId != null) {
+            if (context.mounted) {
+              showSnackSuccess(
+                msg: '${cubit.state.isAddNew ? LocaleKeys.addEmployeeGrievance.tr() : LocaleKeys.edit_employee_grievance.tr()} $resultId',
+              );
+              Navigator.of(context).pop(employeeGrievance);
+            }
+          }
+        },
       );
-
-      int? resultId;
-
-      if (mounted) {
-        final databaseService = cmoDatabaseMasterService;
-
-        await (await databaseService.db).writeTxn(() async {
-          resultId = await databaseService.cacheEmployeeGrievance(employeeGrievance);
-        });
-      }
-
-      if (resultId != null) {
-        if (context.mounted) {
-          showSnackSuccess(
-            msg:
-                '${cubit.state.isAddNew ? LocaleKeys.addEmployeeGrievance.tr() : LocaleKeys.edit_employee_grievance.tr()} $resultId',
-          );
-          Navigator.of(context).pop(employeeGrievance);
-        }
-      }
     } finally {
       setState(() {
         loading = false;
