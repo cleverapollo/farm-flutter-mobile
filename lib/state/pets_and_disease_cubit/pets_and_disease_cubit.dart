@@ -53,8 +53,7 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
 
     if (!inited) return;
 
-    final petsAndDiseasesTypes = await cmoDatabaseMasterService
-        .getAllPetsAndDiseaseTypeByGroupSchemeId(state.groupSchemeId!);
+    final petsAndDiseasesTypes = await cmoDatabaseMasterService.getPestsAndDiseaseTypeByGroupSchemeId(state.groupSchemeId!);
     final treatmentMethods = await cmoDatabaseMasterService
         .getTreatmentMethodByGroupSchemeId(state.groupSchemeId!);
     final petsAndDiseaseTreatmentMethod = await cmoDatabaseMasterService
@@ -118,7 +117,6 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
     int? numberOfOutbreaks,
     double? areaLost,
     bool? underControl,
-    PestsAndDiseaseType? selectPetsAndDiseaseType,
     List<PestsAndDiseasesRegisterTreatmentMethod>?
         selectPestsAndDiseasesRegisterTreatmentMethods,
   }) {

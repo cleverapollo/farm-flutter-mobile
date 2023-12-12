@@ -10,11 +10,13 @@ class PestsAndDiseaseType with _$PestsAndDiseaseType {
   const factory PestsAndDiseaseType({
     @JsonKey(name: 'PestsAndDiseaseTypeId') int? pestsAndDiseaseTypeId,
     @JsonKey(name: 'PestsAndDiseaseTypeName') String? pestsAndDiseaseTypeName,
+    @JsonKey(name: 'ScientificName') String? scientificName,
     @JsonKey(name: 'CreateDT') DateTime? createDT,
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
     @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
+    @JsonKey(name: 'HasTreatmentMethods') bool? hasTreatmentMethods,
   }) = _PestsAndDiseaseType;
 
   const PestsAndDiseaseType._();

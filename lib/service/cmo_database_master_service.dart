@@ -2292,16 +2292,6 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<PestsAndDiseaseType>> getAllPetsAndDiseaseTypeByGroupSchemeId(
-      int groupSchemeId) async {
-    final db = await _db();
-
-    return db.pestsAndDiseaseTypes
-        .filter()
-        .groupSchemeIdEqualTo(groupSchemeId)
-        .findAll();
-  }
-
   Future<List<PestsAndDiseasesRegisterTreatmentMethod>>
       getAllPestsAndDiseasesRegisterTreatmentMethod() async {
     final db = await _db();
