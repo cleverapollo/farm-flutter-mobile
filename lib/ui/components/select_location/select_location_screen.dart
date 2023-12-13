@@ -171,7 +171,7 @@ class _SelectLocationState extends BaseStatefulWidgetState<SelectLocationScreen>
       appBar: CmoAppBar(
         title: widget.title,
         subtitle: widget.farmName ?? '',
-        trailing: Assets.icons.icClose.svgBlack,
+        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
         onTapTrailing: Navigator.of(context).pop,
         leading: widget.shouldShowBackIcon ? Assets.icons.icBackButton.svgBlack : null,
         onTapLeading: Navigator.of(context).pop,

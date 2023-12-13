@@ -196,7 +196,7 @@ class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQu
         subtitleTextStyle: context.textStyles.bodyBold.blueDark2,
         leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
-        trailing: Assets.icons.icClose.svgBlack,
+        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
         onTapTrailing: () {
           switch (widget.auditComeFrom) {
             case AuditComeFromEnum.dashboard:

@@ -160,7 +160,7 @@ class _ASIMapScreenState extends State<ASIMapScreen> {
       appBar: CmoAppBar(
         title: LocaleKeys.asi.tr(),
         subtitle: widget.farmName ?? '',
-        trailing: Assets.icons.icClose.svgBlack,
+        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
         onTapTrailing: Navigator.of(context).pop,
       ),
       body: SizedBox.expand(

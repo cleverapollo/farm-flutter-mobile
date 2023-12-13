@@ -138,7 +138,7 @@ class _RteSpeciesPhotoState extends State<RteSpeciesPhoto> {
                   onTap: () => widget.onRemoved?.call(),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Assets.icons.icClose.svgBlack,
+                    child: Assets.icons.icUpdatedCloseButton.svgBlack,
                   ),
                 ),
               ],

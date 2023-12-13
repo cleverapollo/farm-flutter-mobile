@@ -32,7 +32,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.settings.tr(),
-        trailing: Assets.icons.icClose.svgBlack,
+        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
         onTapTrailing: Navigator.of(context).pop,
       ),
       body: Column(

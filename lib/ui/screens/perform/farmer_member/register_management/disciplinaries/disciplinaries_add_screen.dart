@@ -75,7 +75,7 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
               : LocaleKeys.disciplinary_detail.tr(),
           leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
-          trailing: Assets.icons.icClose.svgBlack,
+          trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
         body: BlocSelector<DisciplinariesCubit, DisciplinariesState, bool>(

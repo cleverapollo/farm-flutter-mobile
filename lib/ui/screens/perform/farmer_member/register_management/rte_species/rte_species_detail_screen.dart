@@ -74,7 +74,7 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
               : LocaleKeys.edit_rte_species.tr(),
           leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
-          trailing: Assets.icons.icClose.svgBlack,
+          trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
         body: SingleChildScrollView(

@@ -162,7 +162,7 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
           subtitleTextStyle: context.textStyles.bodyBold.blue,
           leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
-          trailing: Assets.icons.icClose.svgBlack,
+          trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
         body: SingleChildScrollView(

@@ -27,7 +27,7 @@ class LegalScreen extends StatelessWidget {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.legal.tr(),
-        trailing: Assets.icons.icClose.svgBlack,
+        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
         onTapTrailing: Navigator.of(context).pop,
       ),
       body: Column(

@@ -79,7 +79,7 @@ class _AssessmentSignatureScreenState extends State<AssessmentSignatureScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.assessments.tr(),
-        trailing: Assets.icons.icClose.svgBlack,
+        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
         onTapTrailing: Navigator.of(context).pop,
       ),
       body: Column(

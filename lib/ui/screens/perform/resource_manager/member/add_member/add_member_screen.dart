@@ -80,7 +80,7 @@ class _AddMemberScreenState extends BaseStatefulWidgetState<AddMemberScreen> {
     return Scaffold(
       appBar: CmoAppBar(
         title: widget.farm == null ? LocaleKeys.addMember.tr() : LocaleKeys.member_detail.tr(),
-        trailing: Assets.icons.icClose.svgBlack,
+        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
         onTapTrailing: () {
           Navigator.pop(context, true);
         },

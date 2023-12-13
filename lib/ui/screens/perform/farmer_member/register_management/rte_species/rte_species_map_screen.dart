@@ -140,7 +140,7 @@ class _RteSpeciesMapScreenState extends State<RteSpeciesMapScreen> {
       appBar: CmoAppBar(
         title: LocaleKeys.rteSpecies.tr(),
         subtitle: widget.activeFarm?.farmName ?? '',
-        trailing: Assets.icons.icClose.svgBlack,
+        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
         onTapTrailing: Navigator.of(context).pop,
       ),
       body: SizedBox.expand(

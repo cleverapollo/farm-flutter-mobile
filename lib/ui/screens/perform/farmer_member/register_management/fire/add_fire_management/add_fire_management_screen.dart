@@ -72,7 +72,7 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
               : LocaleKeys.edit_fire.tr(),
           leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
-          trailing: Assets.icons.icClose.svgBlack,
+          trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
         body: BlocSelector<FireRegisterDetailCubit, FireRegisterDetailState, bool>(
