@@ -9,7 +9,9 @@ import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -110,6 +112,7 @@ class _AddStakeHolderComplaintScreenState
               createDT: complaint.createDT ?? DateTime.now(),
               updateDT: DateTime.now(),
             ),
+            isDirect: false,
           );
         }
 
@@ -155,76 +158,84 @@ class _AddStakeHolderComplaintScreenState
               }
               final state = cubit.state;
               final complaint = state.complaint;
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: FormBuilder(
-                  key: _formKey,
-                  onChanged: () {},
-                  autovalidateMode: autoValidateMode,
-                  child: AutofillGroup(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          _selectComplaintName(
-                            state.complaints,
-                            complaint.stakeholderId,
-                          ),
-                          AttributeItem(
-                            child: InputAttributeItem(
-                              validator: (_) => null,
-                              initialValue: complaint.issueDescription,
-                              textStyle:
-                                  context.textStyles.bodyNormal.blueDark2,
-                              labelText: LocaleKeys.issueRaised.tr(),
-                              labelTextStyle:
-                                  context.textStyles.bodyBold.blueDark2,
-                              onChanged: (value) {
-                                cubit.onIssueDescriptionChanged(value);
-                              },
+              return Column(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: FormBuilder(
+                        key: _formKey,
+                        onChanged: () {},
+                        autovalidateMode: autoValidateMode,
+                        child: AutofillGroup(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                _selectComplaintName(
+                                  state.stakeholders,
+                                  complaint.stakeholderId,
+                                ),
+                                AttributeItem(
+                                  child: InputAttributeItem(
+                                    validator: (_) => null,
+                                    initialValue: complaint.issueDescription,
+                                    textStyle:
+                                        context.textStyles.bodyNormal.blueDark2,
+                                    labelText: LocaleKeys.issueRaised.tr(),
+                                    labelTextStyle:
+                                        context.textStyles.bodyBold.blueDark2,
+                                    onChanged: (value) {
+                                      cubit.onIssueDescriptionChanged(value);
+                                    },
+                                  ),
+                                ),
+                                _buildSelectDateReceived(complaint.dateReceived),
+                                _buildSelectDateClosed(complaint.dateClosed),
+                                AttributeItem(
+                                  child: InputAttributeItem(
+                                    validator: (_) => null,
+                                    textStyle:
+                                        context.textStyles.bodyNormal.blueDark2,
+                                    labelText: LocaleKeys.closureDetails.tr(),
+                                    labelTextStyle:
+                                        context.textStyles.bodyBold.blueDark2,
+                                    initialValue: complaint.closureDetails,
+                                    onChanged: cubit.onClosureDetailChanged,
+                                  ),
+                                ),
+                                AttributeItem(
+                                  child: SizedBox(
+                                    height: 250,
+                                    child: GeneralCommentWidget(
+                                      initialValue: complaint.comment,
+                                      hintText: LocaleKeys.generalComments.tr(),
+                                      onChanged: cubit.onCommentChanged,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          _buildSelectDateReceived(complaint.dateReceived),
-                          _buildSelectDateClosed(complaint.dateClosed),
-                          AttributeItem(
-                            child: InputAttributeItem(
-                              validator: (_) => null,
-                              textStyle:
-                                  context.textStyles.bodyNormal.blueDark2,
-                              labelText: LocaleKeys.closureDetails.tr(),
-                              labelTextStyle:
-                                  context.textStyles.bodyBold.blueDark2,
-                              initialValue: complaint.closureDetails,
-                              onChanged: cubit.onClosureDetailChanged,
-                            ),
-                          ),
-                          AttributeItem(
-                            child: SizedBox(
-                              height: 250,
-                              child: GeneralCommentWidget(
-                                initialValue: complaint.comment,
-                                hintText: LocaleKeys.generalComments.tr(),
-                                onChanged: cubit.onCommentChanged,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                    child: CmoFilledButton(
+                      title: LocaleKeys.save.tr(),
+                      onTap: onSubmit,
+                      loading: loading,
+                    ),
+                  ),
+                ],
               );
             },
           ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: CmoFilledButton(
-          title: LocaleKeys.save.tr(),
-          onTap: onSubmit,
-          loading: loading,
         ),
       ),
     );
@@ -234,33 +245,47 @@ class _AddStakeHolderComplaintScreenState
     List<StakeHolder> stakeHolders,
     String? stakeHolderId,
   ) {
-    final initStakeHolder =
-        stakeHolders.firstWhereOrNull((e) => e.stakeHolderId == stakeHolderId);
-    return AttributeItem(
-      child: CmoDropdown<StakeHolder>(
-        name: LocaleKeys.complaintName.tr(),
-        hintText: LocaleKeys.complaintName.tr(),
-        // validator: requiredValidator,
-        style: context.textStyles.bodyBold.blueDark2,
-        inputDecoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
-          ),
-          isDense: true,
+    return BlocBuilder<AddStakeHolderComplaintCubit,
+        AddStakeHolderComplaintState>(
+      builder: (context, state) {
+        return BottomSheetSelection(
           hintText: LocaleKeys.complaintName.tr(),
-          hintStyle: context.textStyles.bodyBold.blueDark2,
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-        ),
-        onChanged: (data) {
-          cubit.onStateHolderChanged(data);
-        },
-        initialValue: initStakeHolder,
-        itemsData: stakeHolders
-            .map((e) => CmoDropdownItem(id: e, name: e.stakeholderName ?? ''))
-            .toList(),
-      ),
+          displayHorizontal: false,
+          margin: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          value: state.stakeholders
+              .firstWhereOrNull(
+                (element) =>
+                    element.stakeHolderId == state.complaint.stakeholderId,
+              )
+              ?.stakeholderName,
+          onTap: () async {
+            FocusScope.of(context).unfocus();
+            if (state.stakeholders.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: ListView.builder(
+                itemCount: state.stakeholders.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      cubit.onStateHolderChanged(state.stakeholders[index]);
+                      Navigator.pop(context);
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        state.stakeholders[index].stakeholderName ?? '',
+                        style: context.textStyles.bodyBold.blueDark2,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

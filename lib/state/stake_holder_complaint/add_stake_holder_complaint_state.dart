@@ -6,7 +6,7 @@ class AddStakeHolderComplaintState {
     required this.complaint,
     this.isAddNew = true,
     this.isDataReady = false,
-    this.complaints = const [],
+    this.stakeholders = const [],
     this.isDateClosedError = false,
     this.dateClosedErrorText,
   });
@@ -15,21 +15,21 @@ class AddStakeHolderComplaintState {
   final bool isDataReady;
   final bool isAddNew;
   ComplaintsAndDisputesRegister complaint;
-  final List<StakeHolder> complaints;
   final bool isDateClosedError;
   final String? dateClosedErrorText;
+  final List<StakeHolder> stakeholders;
 
   AddStakeHolderComplaintState copyWith({
     bool? isDataReady,
     ComplaintsAndDisputesRegister? complaint,
-    List<StakeHolder>? complaints,
     bool? isDateClosedError,
     String? dateClosedErrorText,
+    List<StakeHolder>? stakeholders,
   }) {
     return AddStakeHolderComplaintState(
       isDataReady: isDataReady ?? this.isDataReady,
       complaint: complaint ?? this.complaint,
-      complaints: complaints ?? this.complaints,
+      stakeholders: stakeholders ?? this.stakeholders,
       isAddNew: isAddNew,
       farm: farm,
       isDateClosedError: isDateClosedError ?? this.isDateClosedError,

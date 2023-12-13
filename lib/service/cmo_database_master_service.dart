@@ -1919,12 +1919,18 @@ class CmoDatabaseMasterService {
   }
 
   Future<int?> cacheComplaintsAndDisputesRegister(
-      ComplaintsAndDisputesRegister item) async {
+    ComplaintsAndDisputesRegister item, {
+    bool isDirect = true,
+  }) async {
     final db = await _db();
 
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.complaintsAndDisputesRegisters.put(item);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.complaintsAndDisputesRegisters.put(item);
+      });
+    }
   }
 
   Future<List<ComplaintsAndDisputesRegister>>

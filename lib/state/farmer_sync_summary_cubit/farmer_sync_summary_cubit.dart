@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/compartment/area_type.dart';
+import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/stakeholder/farm_stake_holder.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
@@ -2198,9 +2199,12 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
-      final rs = PetsAndDiseaseRegister.fromJson(bodyJson);
-      return cmoDatabaseMasterService
-          .cachePetsAndDisease(rs.copyWith(isMasterdataSynced: true));
+      final complaint = ComplaintsAndDisputesRegister.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheComplaintsAndDisputesRegister(
+        complaint.copyWith(
+          isMasterdataSynced: true,
+        ),
+      );
     } catch (e) {
       logger.d('insert error: $e');
     }

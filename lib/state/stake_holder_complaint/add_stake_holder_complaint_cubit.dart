@@ -23,21 +23,12 @@ class AddStakeHolderComplaintCubit extends Cubit<AddStakeHolderComplaintState> {
 
   Future<void> onInit() async {
     try {
-      final complaints = <StakeHolder>[];
       final farm = await configService.getActiveFarm();
-
-      final result = await cmoDatabaseMasterService
-          .getFarmStakeHolderByFarmId(farm?.farmId ?? '');
-
-      for (final item in result) {
-        final stakeholders = await cmoDatabaseMasterService
-            .getStakeHoldersByStakeHolderId(item.stakeHolderId ?? '');
-        complaints.addAll(stakeholders);
-      }
+      final stakeholders = await cmoDatabaseMasterService.getStakeHolders();
       emit(
         state.copyWith(
           isDataReady: true,
-          complaints: complaints,
+          stakeholders: stakeholders,
           complaint: state.complaint.copyWith(
             farmId: farm?.farmId ?? '',
           ),
@@ -88,10 +79,14 @@ class AddStakeHolderComplaintCubit extends Cubit<AddStakeHolderComplaintState> {
   }
 
   void onStateHolderChanged(StakeHolder? stakeHolder) {
-    state.complaint = state.complaint.copyWith(
-      complaintsAndDisputesRegisterName: stakeHolder?.stakeholderName,
-      stakeholderName: stakeHolder?.stakeholderName,
-      stakeholderId: stakeHolder?.stakeHolderId,
+    emit(
+      state.copyWith(
+        complaint: state.complaint.copyWith(
+          complaintsAndDisputesRegisterName: stakeHolder?.stakeholderName,
+          stakeholderName: stakeHolder?.stakeholderName,
+          stakeholderId: stakeHolder?.stakeHolderId,
+        ),
+      ),
     );
   }
 
