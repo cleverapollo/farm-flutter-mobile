@@ -6,7 +6,6 @@ class StakeholderDetailState {
   final bool? loading;
   final ResourceManagerUnit? resourceManagerUnit;
   final Farm? farm;
-  final FarmerStakeHolder? farmerStakeHolder;
   final StakeHolder? stakeHolder;
   final List<StakeHolderType>? listStakeholderTypes;
   final List<FarmStakeholderSocialUpliftment>? listSocialUpliftments;
@@ -21,7 +20,6 @@ class StakeholderDetailState {
     this.loading,
     this.resourceManagerUnit,
     this.farm,
-    this.farmerStakeHolder,
     this.stakeHolder,
     this.currentUserRole,
     this.listStakeholderTypes = const <StakeHolderType>[],
@@ -38,7 +36,6 @@ class StakeholderDetailState {
     bool? loading,
     ResourceManagerUnit? resourceManagerUnit,
     Farm? farm,
-    FarmerStakeHolder? farmerStakeHolder,
     StakeHolder? stakeHolder,
     List<StakeHolderType>? listStakeholderTypes,
     List<FarmStakeholderSocialUpliftment>? listSocialUpliftments,
@@ -54,7 +51,6 @@ class StakeholderDetailState {
       loading: loading ?? this.loading,
       resourceManagerUnit: resourceManagerUnit ?? this.resourceManagerUnit,
       farm: farm ?? this.farm,
-      farmerStakeHolder: farmerStakeHolder ?? this.farmerStakeHolder,
       stakeHolder: stakeHolder ?? this.stakeHolder,
       listStakeholderTypes: listStakeholderTypes ?? this.listStakeholderTypes,
       listSocialUpliftments: listSocialUpliftments ?? this.listSocialUpliftments,

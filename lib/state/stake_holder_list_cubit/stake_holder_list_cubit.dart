@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -77,6 +78,40 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
         isActive: 0,
       ),
     );
+
+    final currentRole = await configService.getActiveUserRole();
+    switch (currentRole) {
+      case UserRoleEnum.farmerMember:
+        final farmerStakeholder = await cmoDatabaseMasterService.getFarmStakeholderByStakeholderId(
+          stakeHolder.stakeHolderId,
+        );
+
+        if (farmerStakeholder != null) {
+          await cmoDatabaseMasterService.cacheFarmStakeholder(
+            farmerStakeholder.copyWith(
+              isMasterDataSynced: 0,
+            ),
+            isDirect: false,
+          );
+        }
+        break;
+      case UserRoleEnum.regionalManager:
+        final groupSchemeStakeholder = await cmoDatabaseMasterService.getGroupSchemeStakeholderByStakeholderId(
+          stakeHolder.stakeHolderId!,
+        );
+
+        if (groupSchemeStakeholder != null) {
+          await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
+            groupSchemeStakeholder.copyWith(
+              isMasterDataSynced: 0,
+            ),
+            isDirect: false,
+          );
+        }
+        break;
+      default:
+        break;
+    }
 
     showSnackSuccess(
       msg: '${LocaleKeys.remove.tr()} ${stakeHolder.stakeHolderId}!',

@@ -94,65 +94,24 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
           updateDT: DateTime.now(),
         );
 
-        int? resultId;
+        await cubit.onSaveStakeholder(
+          stakeHolder,
+          widget.isEditing,
+          onCallback: (resultId) async {
+            if (resultId != null) {
+              if (context.mounted) {
+                showSnackSuccess(
+                  msg:
+                      '${widget.isEditing ? LocaleKeys.edit_stakeholder.tr() : LocaleKeys.createNewStakeholder.tr()} $resultId',
+                );
 
-        await cubit.onSaveAdditionalInfo();
-
-        if (mounted) {
-          final databaseService = cmoDatabaseMasterService;
-
-          await (await databaseService.db).writeTxn(() async {
-            resultId =
-                await databaseService.cacheStakeHolder(stakeHolder.copyWith(
-              isActive: 1,
-              isMasterDataSynced: 0,
-            ));
-          });
-        }
-
-        if (widget.isEditing) {
-          final groupSchemeStakeholder = await cmoDatabaseMasterService
-              .getGroupSchemeStakeholderByStakeholderId(
-            stakeHolder.stakeHolderId!,
-          );
-          if (groupSchemeStakeholder != null) {
-            await (await cmoDatabaseMasterService.db).writeTxn(() async {
-              await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
-                groupSchemeStakeholder.copyWith(
-                  isMasterDataSynced: 0,
-                ),
-              );
-            });
-          }
-        } else {
-          final activeGroupScheme = await configService.getActiveGroupScheme();
-          final groupSchemeStakeholder =
-              const GroupSchemeStakeholder().copyWith(
-            groupSchemeId: activeGroupScheme?.groupSchemeId,
-            stakeholderId: stakeHolder.stakeHolderId,
-            isMasterDataSynced: 0,
-            groupSchemeStakeholderId:
-                DateTime.now().millisecondsSinceEpoch.toString(),
-          );
-
-          await (await cmoDatabaseMasterService.db).writeTxn(() async {
-            await cmoDatabaseMasterService
-                .cacheGroupSchemeStakeholder(groupSchemeStakeholder);
-          });
-        }
-
-        if (resultId != null) {
-          if (context.mounted) {
-            showSnackSuccess(
-              msg:
-                  '${widget.isEditing ? LocaleKeys.edit_stakeholder.tr() : LocaleKeys.createNewStakeholder.tr()} $resultId',
-            );
-
-            await context.read<StakeHolderListCubit>().refresh();
-            await context.read<DashboardCubit>().refresh();
-            Navigator.of(context).pop();
-          }
-        }
+                await context.read<StakeHolderListCubit>().refresh();
+                await context.read<DashboardCubit>().refresh();
+                Navigator.of(context).pop();
+              }
+            }
+          },
+        );
       } finally {
         setState(() {
           loading = false;
@@ -361,6 +320,10 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
   Widget _buildAdditionalInfo() {
     return BlocBuilder<StakeholderDetailCubit, StakeholderDetailState>(
       builder: (context, state) {
+        if (state.currentUserRole == UserRoleEnum.regionalManager) {
+          return const SizedBox.shrink();
+        }
+
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

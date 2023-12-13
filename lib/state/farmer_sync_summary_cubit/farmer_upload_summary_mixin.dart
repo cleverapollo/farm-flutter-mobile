@@ -8,13 +8,9 @@ import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/biological_control_agent_register_payload/biological_control_agent_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/camp_payload/camp_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/chemical_register_payload/chemical_register_payload.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_customary_use_right_payload/farm_stakeholder_customary_use_right_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_payload/farm_stakeholder_payload.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_social_upliftment_payload/farm_stakeholder_social_upliftment_payload.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_special_site_payload/farm_stakeholder_special_site_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_accident_and_incident_register_payload/main_accident_and_incident_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_asi_register_payload/main_asi_register_payload.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_farm_stakeholder_payload/main_farm_stakeholder_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_pests_and_diseases_register_payload/main_pests_and_diseases_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_rte_species_register_payload/main_rte_species_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/properties_payload/properties_payload.dart';
@@ -367,11 +363,10 @@ mixin FarmUploadSummaryMixin {
       final messages = <Message>[];
       final futures = <Future<void>>[];
 
-      final farmStakeholdersPayLoad = <MainFarmStakeholderPayLoad>[];
+      final farmStakeholdersPayLoad = <FarmStakeholderPayLoad>[];
 
-      final allFarmsSH = await cmoDatabaseMasterService.getFarmStakeholder();
-      final unSyncedStakeholders =
-          await cmoDatabaseMasterService.getUnsyncedStakeholder();
+      final allFarmStakeholders = await cmoDatabaseMasterService.getFarmStakeholder();
+      final unSyncedStakeholders = await cmoDatabaseMasterService.getUnsyncedStakeholder();
       final unSyncedFSSU = await cmoDatabaseMasterService
           .getUnsycnedFarmStakeholderSocialUpliftments();
       final unSyncedFSSS = await cmoDatabaseMasterService
@@ -380,56 +375,41 @@ mixin FarmUploadSummaryMixin {
           .getUnsycnedFarmStakeholderCustomaryUseRights();
 
       for (final unSyncedStakeholderItem in unSyncedStakeholders) {
-        const data = MainFarmStakeholderPayLoad();
+        final farmStakeholder = allFarmStakeholders.firstWhereOrNull((element) => element.stakeHolderId == unSyncedStakeholderItem.stakeHolderId);
 
-        var farmStakeholderPayLoad = const FarmStakeholderPayLoad();
-
-        for (final item in allFarmsSH) {
-          if ((item.stakeholderId ?? '') ==
-              unSyncedStakeholderItem.stakeHolderId) {
-            farmStakeholderPayLoad = item.toPayLoad();
-          }
-        }
-
-        final farmStakeholderCustomaryUseRightsPayLoad =
-            <FarmStakeholderCustomaryUseRightPayLoad>[];
+        final farmStakeholderCustomaryUseRights = <FarmStakeholderCustomaryUseRight>[];
 
         for (final item in unSyncedFSCUR) {
-          if (item.farmStakeholderId ==
-              farmStakeholderPayLoad.FarmStakeholderId) {
-            farmStakeholderCustomaryUseRightsPayLoad.add(item.toPayLoad());
+          if (item.farmStakeholderId == farmStakeholder?.farmStakeHolderId) {
+            farmStakeholderCustomaryUseRights.add(item);
           }
         }
 
-        final farmStakeholderSocialUpliftmentsPayLoad =
-            <FarmStakeholderSocialUpliftmentPayLoad>[];
+        final farmStakeholderSocialUpliftments = <FarmStakeholderSocialUpliftment>[];
 
         for (final item in unSyncedFSSU) {
-          if (item.farmStakeholderId ==
-              farmStakeholderPayLoad.FarmStakeholderId) {
-            farmStakeholderSocialUpliftmentsPayLoad.add(item.toPayLoad());
+          if (item.farmStakeholderId == farmStakeholder?.farmStakeHolderId) {
+            farmStakeholderSocialUpliftments.add(item);
           }
         }
 
-        final farmStakeholderSpecialSitesPayLoad =
-            <FarmStakeholderSpecialSitePayLoad>[];
+        final farmStakeholderSpecialSites = <FarmStakeholderSpecialSite>[];
 
         for (final item in unSyncedFSSS) {
-          if (item.farmStakeholderId ==
-              farmStakeholderPayLoad.FarmStakeholderId) {
-            farmStakeholderSpecialSitesPayLoad.add(item.toPayLoad());
+          if (item.farmStakeholderId == farmStakeholder?.farmStakeHolderId) {
+            farmStakeholderSpecialSites.add(item);
           }
         }
 
-        farmStakeholdersPayLoad.add(data.copyWith(
-          Stakeholder: unSyncedStakeholderItem.toPayLoad(),
-          FarmStakeholder: farmStakeholderPayLoad,
-          FarmStakeholderCustomaryUseRights:
-              farmStakeholderCustomaryUseRightsPayLoad,
-          FarmStakeholderSocialUpliftments:
-              farmStakeholderSocialUpliftmentsPayLoad,
-          FarmStakeholderSpecialSites: farmStakeholderSpecialSitesPayLoad,
-        ));
+        farmStakeholdersPayLoad.add(
+          FarmStakeholderPayLoad(
+            stakeholder: unSyncedStakeholderItem,
+            farmStakeholder: farmStakeholder,
+            farmStakeholderCustomaryUseRights: farmStakeholderCustomaryUseRights,
+            farmStakeholderSocialUpliftments: farmStakeholderSocialUpliftments,
+            farmStakeholderSpecialSites: farmStakeholderSpecialSites,
+          ),
+        );
 
         if (_enableUpdateStatus) {
           futures.add(cmoDatabaseMasterService.cacheStakeHolderFromFarm(

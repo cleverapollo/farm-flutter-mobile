@@ -1997,7 +1997,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       if (bodyJson == null) return null;
       final rs = StakeHolder.fromJson(bodyJson);
       return cmoDatabaseMasterService
-          .cacheStakeHolder(rs.copyWith(isMasterDataSynced: 1));
+          .cacheStakeholder(rs.copyWith(isMasterDataSynced: 1));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -2010,7 +2010,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       if (bodyJson == null) return null;
       final rs = FarmStakeHolder.fromJson(bodyJson);
       return cmoDatabaseMasterService
-          .cacheFarmStakeHolderFromFarm(rs.copyWith(isMasterDataSynced: 1));
+          .cacheFarmStakeholder(rs.copyWith(isMasterDataSynced: 1));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -2060,9 +2060,11 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
-      final rs = FarmerStakeHolder.fromJson(bodyJson);
-      return cmoDatabaseMasterService
-          .cacheFarmStakeHolder(rs.copyWith(isMasterDataSynced: true));
+      final rs = FarmStakeholderSpecialSite.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheFarmStakeholderSpecialSites(
+        rs.copyWith(isMasterDataSynced: 1),
+        isDirect: true,
+      );
     } catch (e) {
       logger.d('insert error: $e');
     }

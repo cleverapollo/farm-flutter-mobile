@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
+import 'package:cmo/model/stakeholder/farm_stake_holder.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
@@ -32,14 +33,15 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
       final service = cmoDatabaseMasterService;
       final currentRole = await configService.getActiveUserRole();
       final stakeHolderTypes = await service.getStakeHolderTypes();
+      final farm = await configService.getActiveFarm();
       emit(
         state.copyWith(
           currentUserRole: currentRole,
           listStakeholderTypes: stakeHolderTypes,
+          farm: farm,
         ),
       );
 
-      final farm = await configService.getActiveFarm();
       if (farm != null && stakeHolder != null) {
         final additionalInfos = await Future.wait([
           service.getFarmStakeholderCustomaryUseRights(
@@ -63,25 +65,15 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
           ),
         );
       } else {
-        final stakeHolderId = DateTime.now().millisecondsSinceEpoch;
-
         emit(
           state.copyWith(
             stakeHolder: StakeHolder(
-              stakeHolderId: stakeHolderId.toString(),
+              stakeHolderId: DateTime.now().millisecondsSinceEpoch.toString(),
               isActive: 1,
               isMasterDataSynced: 0,
               createDT: DateTime.now(),
               updateDT: DateTime.now(),
             ),
-            // farmerStakeHolder: FarmerStakeHolder(
-            //   farmId: farm?.farmId ?? '',
-            //   farmerStakeHolderId: DateTime.now().millisecondsSinceEpoch.toString(),
-            //   stakeholderId: stakeHolderId.toString(),
-            //   isActive: true,
-            //   isMasterDataSynced: false,
-            //
-            // ),
           ),
         );
       }
@@ -109,8 +101,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
         final data = <SocialUpliftment>[];
         final farmerData = <FarmStakeholderSocialUpliftment>[];
 
-        final socialUpliftmentId =
-        DateTime.now().millisecondsSinceEpoch.toString();
+        final socialUpliftmentId = DateTime.now().millisecondsSinceEpoch.toString();
 
         data
           ..addAll(state.listSocialUpliftment ?? [])
@@ -125,7 +116,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
           ..addAll(state.listSocialUpliftments ?? [])
           ..add(FarmStakeholderSocialUpliftment(
             socialUpliftmentId: socialUpliftmentId,
-            farmStakeholderId: state.farmerStakeHolder?.farmerStakeHolderId.toString(),
+            farmStakeholderSocialUpliftmentId: DateTime.now().microsecondsSinceEpoch.toString(),
             isActive: 1,
             isMasterDataSynced: 0,
           ));
@@ -153,8 +144,8 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
           ..addAll(state.listSpecialSites ?? [])
           ..add(FarmStakeholderSpecialSite(
             specialSiteId: specialSiteId,
-            farmStakeholderId: state.farmerStakeHolder?.farmerStakeHolderId.toString(),
             isActive: 1,
+            farmStakeholderSpecialSiteId: DateTime.now().microsecondsSinceEpoch.toString(),
             isMasterDataSynced: 0,
           ));
 
@@ -183,8 +174,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
           ..addAll(state.listCustomaryUseRights ?? [])
           ..add(FarmStakeholderCustomaryUseRight(
             customaryUseRightId: customaryUseRightId,
-            farmStakeholderId:
-            state.farmerStakeHolder?.farmerStakeHolderId.toString(),
+            farmStakeholderCustomaryUseRightId: DateTime.now().microsecondsSinceEpoch.toString(),
             isActive: 1,
             isMasterDataSynced: 0,
           ));
@@ -197,19 +187,21 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
     }
   }
 
-  Future<void> onSaveAdditionalInfo() async {
+  Future<void> onSaveAdditionalInfo(String? farmStakeholderId) async {
     final futures = <Future<void>>[];
-
-    if (state.farmerStakeHolder != null) {
-      futures.add(cmoDatabaseMasterService.cacheFarmerStakeholder(state.farmerStakeHolder!));
-    }
 
     for (final item in state.listCustomaryUseRight ?? <CustomaryUseRight>[]) {
       futures.add(cmoDatabaseMasterService.cacheCustomaryUseRightFromFarm(item));
     }
 
     for (final item in state.listCustomaryUseRights ?? <FarmStakeholderCustomaryUseRight>[]) {
-      futures.add(cmoDatabaseMasterService.cacheFarmStakeholderCustomaryUseRights(item));
+      futures.add(
+        cmoDatabaseMasterService.cacheFarmStakeholderCustomaryUseRights(
+          item.copyWith(
+            farmStakeholderId: farmStakeholderId,
+          ),
+        ),
+      );
     }
 
     for (final item in state.listSocialUpliftment ?? <SocialUpliftment>[]) {
@@ -217,7 +209,13 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
     }
 
     for (final item in state.listSocialUpliftments ?? <FarmStakeholderSocialUpliftment>[]) {
-      futures.add(cmoDatabaseMasterService.cacheFarmStakeholderSocialUpliftments(item));
+      futures.add(
+        cmoDatabaseMasterService.cacheFarmStakeholderSocialUpliftments(
+          item.copyWith(
+            farmStakeholderId: farmStakeholderId,
+          ),
+        ),
+      );
     }
 
     for (final item in state.listSpecialSite ?? <SpecialSite>[]) {
@@ -225,14 +223,122 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
     }
 
     for (final item in state.listSpecialSites ?? <FarmStakeholderSpecialSite>[]) {
-      futures.add(cmoDatabaseMasterService.cacheFarmStakeholderSpecialSites(item));
+      futures.add(
+        cmoDatabaseMasterService.cacheFarmStakeholderSpecialSites(
+          item.copyWith(
+            farmStakeholderId: farmStakeholderId,
+          ),
+        ),
+      );
     }
 
     await Future.wait(futures);
   }
 
-  Future<void> onSaveGroupSchemeStakeholder() async {
+  Future<void> onSaveStakeholder(
+    StakeHolder stakeholder,
+    bool isEditing, {
+    required void Function(int?) onCallback,
+  }) async {
+    emit(
+      state.copyWith(
+        stakeHolder: stakeholder,
+      ),
+    );
 
+    final databaseService = cmoDatabaseMasterService;
+    final resultId = await databaseService.cacheStakeholder(
+      stakeholder.copyWith(
+        isActive: 1,
+        isMasterDataSynced: 0,
+      ),
+      isDirect: false,
+    );
+
+    onCallback(resultId);
+
+    if (state.currentUserRole != null) {
+      switch (state.currentUserRole!) {
+        case UserRoleEnum.regionalManager:
+          await onSaveGroupSchemeStakeholder(isEditing);
+          break;
+        case UserRoleEnum.farmerMember:
+          final farmStakeholderId = await onSaveFarmStakeholder(isEditing);
+          await onSaveAdditionalInfo(farmStakeholderId);
+          break;
+        case UserRoleEnum.behave:
+          break;
+      }
+    }
+  }
+
+  Future<void> onSaveGroupSchemeStakeholder(bool isEditing) async {
+    if (isEditing) {
+      final groupSchemeStakeholder = await cmoDatabaseMasterService
+          .getGroupSchemeStakeholderByStakeholderId(
+        state.stakeHolder!.stakeHolderId!,
+      );
+
+      if (groupSchemeStakeholder != null) {
+        await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
+          groupSchemeStakeholder.copyWith(
+            isMasterDataSynced: 0,
+          ),
+          isDirect: false,
+        );
+      }
+    } else {
+      final activeGroupScheme = await configService.getActiveGroupScheme();
+      final groupSchemeStakeholder = GroupSchemeStakeholder(
+        isMasterDataSynced: 0,
+        groupSchemeId: activeGroupScheme?.groupSchemeId,
+        groupSchemeStakeholderId: DateTime.now().millisecondsSinceEpoch.toString(),
+        stakeholderId: state.stakeHolder?.stakeHolderId,
+      );
+
+      await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
+        groupSchemeStakeholder,
+        isDirect: false,
+      );
+    }
+  }
+
+  Future<String> onSaveFarmStakeholder(bool isEditing) async {
+    var farmStakeholderId = '';
+    if (isEditing) {
+      final farmerStakeholder = await cmoDatabaseMasterService
+          .getFarmStakeholderByStakeholderId(
+        state.stakeHolder?.stakeHolderId,
+      );
+
+      if (farmerStakeholder != null) {
+        farmStakeholderId = farmerStakeholder.farmStakeHolderId ?? '';
+          await cmoDatabaseMasterService.cacheFarmStakeholder(
+            farmerStakeholder.copyWith(
+              isMasterDataSynced: 0,
+            ),
+            isDirect: false,
+          );
+      }
+    } else {
+      final farmStakeHolder = FarmStakeHolder(
+        isMasterDataSynced: 0,
+        farmId: state.farm?.farmId,
+        stakeHolderId: state.stakeHolder?.stakeHolderId,
+        farmStakeHolderId: DateTime.now().millisecondsSinceEpoch.toString(),
+        updateDT: DateTime.now(),
+        createDT: DateTime.now(),
+      );
+
+      farmStakeholderId = farmStakeHolder.farmStakeHolderId ?? '';
+
+      await cmoDatabaseMasterService.cacheFarmStakeholder(
+        farmStakeHolder,
+        isDirect: false,
+      );
+    }
+
+    return farmStakeholderId;
   }
 
   @override

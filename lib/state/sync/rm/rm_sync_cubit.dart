@@ -592,7 +592,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           if (isPublic) {
             await (await cmoDatabaseMasterService.db).writeTxn(() async {
               logger.d('Try update stakeholder status to synced');
-              await cmoDatabaseMasterService.cacheStakeHolder(
+              await cmoDatabaseMasterService.cacheStakeholder(
                 StakeHolder.fromStakeholderPayLoad(
                   groupSchemeStakeholderPayload.Stakeholder!.copyWith(
                     IsMasterDataSynced: 1,
@@ -773,7 +773,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final stakeHolder = StakeHolder.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheStakeHolder(stakeHolder);
+      return cmoDatabaseMasterService.cacheStakeholder(stakeHolder);
     } catch (e) {
       logger.d('insert error: $e');
     }

@@ -772,10 +772,35 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<int?> cacheFarmStakeHolderFromFarm(FarmStakeHolder data) async {
+  Future<int?> cacheFarmStakeholder(
+    FarmStakeHolder data, {
+    bool isDirect = true,
+  }) async {
     final db = await _db();
 
-    return db.farmStakeHolders.put(data);
+    if (isDirect) {
+      return db.farmStakeHolders.put(data);
+    } else {
+      return db.writeTxn(() async {
+        return db.farmStakeHolders.put(data);
+      });
+    }
+  }
+
+  Future<List<FarmStakeHolder>> getFarmStakeholder() async {
+    final db = await _db();
+    return db.farmStakeHolders.where().findAll();
+  }
+
+  Future<FarmStakeHolder?> getFarmStakeholderByStakeholderId(
+    String? stakeholderId,
+  ) async {
+    if (stakeholderId == null) return null;
+    final db = await _db();
+    return db.farmStakeHolders
+        .filter()
+        .stakeHolderIdEqualTo(stakeholderId)
+        .findFirst();
   }
 
   Future<List<FarmStakeHolder>> getFarmStakeHolderByFarmId(
@@ -785,10 +810,20 @@ class CmoDatabaseMasterService {
     return db.farmStakeHolders.filter().farmIdEqualTo(farmId).findAll();
   }
 
-  Future<int?> cacheGroupSchemeStakeholder(GroupSchemeStakeholder data) async {
+  Future<int?> cacheGroupSchemeStakeholder(
+    GroupSchemeStakeholder data, {
+    bool isDirect = true,
+  }) async {
     final db = await _db();
 
-    return db.groupSchemeStakeholders.put(data);
+    if (isDirect) {
+      return db.groupSchemeStakeholders.put(data);
+    } else {
+      return db.writeTxn(() async {
+        return db.groupSchemeStakeholders.put(data);
+      });
+    }
+
   }
 
   Future<int?> cacheAccidentAndIncident(AccidentAndIncident data) async {
@@ -2963,9 +2998,18 @@ class CmoDatabaseMasterService {
     });
   }
 
-  Future<int> cacheStakeHolder(StakeHolder item) async {
+  Future<int> cacheStakeholder(
+    StakeHolder item, {
+    bool isDirect = true,
+  }) async {
     final db = await _db();
-    return db.stakeHolders.put(item);
+    if (isDirect) {
+      return db.stakeHolders.put(item);
+    } else {
+      return db.writeTxn(() async {
+        return db.stakeHolders.put(item);
+      });
+    }
   }
 
   Future<int> cacheStakeHolderFromFarm(StakeHolder item) async {
