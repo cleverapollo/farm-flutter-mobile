@@ -5,6 +5,7 @@ import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_cubit.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/pets_and_disease_add_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -71,105 +72,40 @@ class _PetsAndDiseaseScreenState extends BaseStatefulWidgetState<PetsAndDiseaseS
                             separatorBuilder: (_, index) =>
                                 const SizedBox(height: 14),
                             itemCount: state.filterPetsAndDiseaseRegisters.length,
-                            itemBuilder: (context, index) =>
-                                _PetsAndDiseaseItemWidget(
-                                    data:
-                                        state.filterPetsAndDiseaseRegisters[index])),
+                            itemBuilder: (context, index) => InkWell(
+                              onTap: () async {
+                                final shouldRefresh = await PetsAndDiseaseAddScreen
+                                    .push(context, data: state
+                                    .filterPetsAndDiseaseRegisters[index],);
+
+                                if (shouldRefresh != null && context.mounted) {
+                                  await context.read<PetsAndDiseasesCubit>()
+                                      .initData();
+                                }
+                              },
+
+                              child: RegisterItem(
+                                title: '${LocaleKeys.p_d_no.tr()} : ${state.filterPetsAndDiseaseRegisters[index].pestsAndDiseasesRegisterNo}',
+                                mapData: generateInformationMapData(state.filterPetsAndDiseaseRegisters[index]),
+                              ),
+                            ),
+                        ),
                       ],
                     ),
                   );
           },
         ));
   }
-}
 
-class _PetsAndDiseaseItemWidget extends StatelessWidget {
-  const _PetsAndDiseaseItemWidget({required this.data});
-
-  static const double _itemHorizontalPadding = 4;
-
-  final PetsAndDiseaseRegister data;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () async {
-        final shouldRefresh =
-            await PetsAndDiseaseAddScreen.push(context, data: data);
-
-        if (shouldRefresh != null && context.mounted) {
-          await context.read<PetsAndDiseasesCubit>().initData();
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 9),
-        decoration: BoxDecoration(
-          border: Border.all(color: context.colors.greyD9D9),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: _itemHorizontalPadding,
-              ),
-              child: Text(
-                '${LocaleKeys.p_d_no.tr()} : ${data.pestsAndDiseasesRegisterNo}',
-                style: context.textStyles.bodyBold
-                    .copyWith(color: context.colors.blue),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: _itemHorizontalPadding * 2,
-                vertical: 6,
-              ),
-              child: Container(
-                height: 1,
-                color: context.colors.black,
-              ),
-            ),
-            _buildILineItem(context, '${LocaleKeys.name_pet_disease.tr()} : ',
-                data.pestsAndDiseaseTypeName),
-            _buildILineItem(context, '${LocaleKeys.treatment_methods.tr()} : ',
-                data.pestsAndDiseaseTreatmentMethods),
-            _buildILineItem(
-                context,
-                '${LocaleKeys.numbers_of_outbreaks.tr()} : ',
-                (data.numberOfOutbreaks ?? 0).toString()),
-            _buildILineItem(context, '${LocaleKeys.area_lost.tr()}: ',
-                (data.areaLost ?? 0).toString()),
-            _buildILineItem(context, '${LocaleKeys.under_control.tr()} : ',
-                (data.underControl ?? false).toString()),
-            _buildILineItem(
-                context, '${LocaleKeys.generalComments.tr()} : ', data.comment),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Padding _buildILineItem(BuildContext context, String label, String? value) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              label,
-              style: context.textStyles.bodyNormal,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value ?? '',
-              style: context.textStyles.bodyNormal,
-            ),
-          )
-        ],
-      ),
-    );
+  Map<String, String?> generateInformationMapData(PetsAndDiseaseRegister registerItem) {
+    return {
+      LocaleKeys.name_pet_disease.tr(): registerItem.pestsAndDiseaseTypeName,
+      LocaleKeys.treatment_methods.tr(): registerItem.pestsAndDiseaseTreatmentMethods,
+      LocaleKeys.numbers_of_outbreaks.tr(): (registerItem.numberOfOutbreaks ?? 0).toString(),
+      LocaleKeys.area_lost.tr(): (registerItem.areaLost ?? 0).toString(),
+      LocaleKeys.under_control.tr(): (registerItem.underControl ?? false).toString(),
+      LocaleKeys.general_comments.tr(): registerItem.comment,
+    };
   }
 }
+

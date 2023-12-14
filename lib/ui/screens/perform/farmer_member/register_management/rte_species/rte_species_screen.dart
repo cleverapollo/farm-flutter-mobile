@@ -7,7 +7,7 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/register_management/rte_species/rte_species_cubit.dart';
 
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -83,8 +83,9 @@ class _RteSpeciesScreenState extends BaseStatefulWidgetState<RteSpeciesScreen> {
                 onTap: () async {
                   await navigateToDetail(rteSpecies: item);
                 },
-                child: _RteSpeciesItem(
-                  rteSpecies: item,
+                child: RegisterItem(
+                  title: '${LocaleKeys.rteSpecies.tr()}: ${item.rteSpeciesRegisterNo?.toString()}',
+                  mapData: generateInformationMapData(item),
                 ),
               );
             },
@@ -93,58 +94,14 @@ class _RteSpeciesScreenState extends BaseStatefulWidgetState<RteSpeciesScreen> {
       ),
     );
   }
-}
 
-class _RteSpeciesItem extends StatelessWidget {
-  const _RteSpeciesItem({
-    required this.rteSpecies,
-  });
-
-  final RteSpecies rteSpecies;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: context.colors.greyD9D9),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${LocaleKeys.rteSpecies.tr()}: ${rteSpecies.rteSpeciesRegisterNo?.toString()}',
-            style: context.textStyles.bodyBold.blue,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 6,
-            ),
-            child: Divider(
-              color: context.colors.blueDark2,
-              height: 1,
-            ),
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.speciesType.tr(),
-            valueLabel: rteSpecies.animalTypeName,
-            backgroundColor: context.colors.greyLight1,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.commonName.tr(),
-            valueLabel: rteSpecies.commonName,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.dateSpotted.tr(),
-            valueLabel: rteSpecies.dateSpotted.yMd(),
-            backgroundColor: context.colors.greyLight1,
-          ),
-        ],
-      ),
-    );
+  Map<String, String?> generateInformationMapData(RteSpecies registerItem) {
+    return {
+      LocaleKeys.speciesType.tr(): registerItem.animalTypeName,
+      LocaleKeys.commonName.tr(): registerItem.commonName,
+      LocaleKeys.dateSpotted.tr(): registerItem.dateSpotted.yMd(),
+      LocaleKeys.general_comments.tr(): registerItem.comment,
+    };
   }
 }
+

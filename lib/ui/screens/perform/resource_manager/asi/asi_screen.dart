@@ -6,6 +6,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/state/rm_asi/asi_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_state.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,14 @@ class _ASIScreenState extends BaseStatefulWidgetState<ASIScreen> {
     if (context.mounted) {
       await context.read<AsiCubit>().loadAsis();
     }
+  }
+
+  Map<String, String?> generateInformationMapData(Asi registerItem) {
+    return {
+      LocaleKeys.asiType.tr(): registerItem.asiTypeName,
+      LocaleKeys.date.tr(): registerItem.date.ddMMYyyy(),
+      LocaleKeys.general_comments.tr(): registerItem.comment,
+    };
   }
 
   @override
@@ -150,19 +159,9 @@ class _ASIScreenState extends BaseStatefulWidgetState<ASIScreen> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: CmoTappable(
                                     onTap: () => navigateToASIDetail(asi: listAsi[index]),
-                                    child: CmoCard(
-                                      content: [
-                                        CmoCardHeader(
-                                          title: listAsi[index].asiTypeName ??
-                                              LocaleKeys.asiType.tr(),
-                                        ),
-                                        CmoCardItem(
-                                          title: listAsi[index].date.ddMMYyyy(),
-                                        ),
-                                        CmoCardItem(
-                                          title: listAsi[index].comment ?? '',
-                                        ),
-                                      ],
+                                    child: RegisterItem(
+                                      title: '${LocaleKeys.asi_no.tr()}: ${listAsi[index].asiRegisterNo}',
+                                      mapData: generateInformationMapData(listAsi[index]),
                                     ),
                                   ),
                                 );

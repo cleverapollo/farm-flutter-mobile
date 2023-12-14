@@ -9,8 +9,7 @@ import 'package:cmo/state/fire_cubit/fire_cubit.dart';
 import 'package:cmo/state/fire_cubit/fire_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/fire/add_fire_management/add_fire_management_screen.dart';
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -118,8 +117,9 @@ class _FireManagementScreenState extends BaseStatefulWidgetState<FireManagementS
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () => navigateToDetailFire(fireRegister: state.data[index]),
-                                child: _FireManagementItem(
-                                  fireRegister: state.data[index],
+                                child: RegisterItem(
+                                  title: '${LocaleKeys.fireNo.tr()}: ${state.data[index].fireRegisterNo?.toString()}',
+                                  mapData: generateInformationMapData(state.data[index]),
                                 ),
                               );
                             },
@@ -132,72 +132,16 @@ class _FireManagementScreenState extends BaseStatefulWidgetState<FireManagementS
         },
     );
   }
-}
 
-class _FireManagementItem extends StatelessWidget {
-  const _FireManagementItem({
-    required this.fireRegister,
-  });
-
-  final FireRegister fireRegister;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: context.colors.greyD9D9),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${LocaleKeys.fireNo.tr()}: ${fireRegister.fireRegisterNo?.toString()}',
-            style: context.textStyles.bodyBold.blue,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 6,
-            ),
-            child: Divider(
-              color: context.colors.blueDark2,
-              height: 1,
-            ),
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.fireCause.tr(),
-            valueLabel: fireRegister.fireCauseName,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.dateDetected.tr(),
-            valueLabel: fireRegister.date?.ddMMYyyy(),
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.dateExtinguished.tr(),
-            valueLabel: fireRegister.extinguished?.ddMMYyyy(),
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.areaBurntHa.tr(),
-            valueLabel: fireRegister.areaBurnt?.toString() ?? '',
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.commercialAreaLossHa.tr(),
-            valueLabel: fireRegister.commercialAreaLoss?.toString() ?? '',
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.dateExtinguished.tr(),
-            valueLabel: fireRegister.extinguished?.ddMMYyyy(),
-          ),
-          GeneralCommentsItem(
-            comment: fireRegister.comment,
-          ),
-        ],
-      ),
-    );
+  Map<String, String?> generateInformationMapData(FireRegister registerItem) {
+    return {
+      LocaleKeys.fireCause.tr(): registerItem.fireCauseName,
+      LocaleKeys.dateDetected.tr(): registerItem.date?.ddMMYyyy(),
+      LocaleKeys.dateExtinguished.tr(): registerItem.extinguished?.ddMMYyyy(),
+      LocaleKeys.areaBurntHa.tr(): registerItem.areaBurnt?.toString(),
+      LocaleKeys.commercialAreaLossHa.tr(): registerItem.commercialAreaLoss?.toString(),
+      LocaleKeys.general_comments.tr(): registerItem.comment,
+    };
   }
 }
 

@@ -7,6 +7,7 @@ import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
 import 'package:cmo/ui/components/search_field.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_add_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -86,8 +87,10 @@ class _DisciplinariesScreenState extends BaseStatefulWidgetState<DisciplinariesS
                                     await cubit.initData();
                                   }
                                 },
-                                child: _DisciplinariesItemWidget(
-                                    state.filterSanctionRegisters[index]),
+                                child: RegisterItem(
+                                  title: '${LocaleKeys.disciplinary_no.tr()} : ${state.filterSanctionRegisters[index].sanctionRegisterId}',
+                                  mapData: generateInformationMapData(state.filterSanctionRegisters[index]),
+                                ),
                               ),
                             );
                           },
@@ -100,87 +103,16 @@ class _DisciplinariesScreenState extends BaseStatefulWidgetState<DisciplinariesS
       ),
     );
   }
-}
 
-class _DisciplinariesItemWidget extends StatelessWidget {
-  static const double _itemHorizontalPadding = 4;
-
-  final SanctionRegister data;
-
-  const _DisciplinariesItemWidget(this.data, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 9),
-      decoration: BoxDecoration(
-        border: Border.all(color: context.colors.greyD9D9),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: _itemHorizontalPadding,
-            ),
-            child: Text(
-              '${LocaleKeys.disciplinary_no.tr()} : ${data.sanctionRegisterId}',
-              style: context.textStyles.bodyBold
-                  .copyWith(color: context.colors.blue),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: _itemHorizontalPadding * 2,
-              vertical: 6,
-            ),
-            child: Container(
-              height: 1,
-              color: context.colors.black,
-            ),
-          ),
-          _buildILineItem(
-              context, '${LocaleKeys.worker.tr()}: ', data.displayWorkerName),
-          _buildILineItem(context, '${LocaleKeys.dateIssued.tr()} : ',
-              data.dateReceived.mmmDdYyyy()),
-          _buildILineItem(context, '${LocaleKeys.camp_compartment.tr()} : ',
-              data.campOrCompartment),
-          _buildILineItem(context, '${LocaleKeys.disciplinaries_issue.tr()} : ',
-              data.issueTypeName),
-          _buildILineItem(
-              context,
-              '${LocaleKeys.disciplinaries_steps_taken.tr()} : ',
-              data.descriptionOfSanction),
-          _buildILineItem(context, '${LocaleKeys.signed.tr()} : ',
-              DateTime.tryParse(data.signatureDate ?? '').mmmDdYyyy()),
-          _buildILineItem(
-              context, '${LocaleKeys.generalComments.tr()} : ', data.comment),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildILineItem(BuildContext context, String label, String? value) {
-    if (value.isNullOrEmpty) return const SizedBox();
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: context.textStyles.bodyBold,
-          ),
-          Expanded(
-            child: Text(
-              value ?? '',
-              style: context.textStyles.bodyNormal,
-            ),
-          )
-        ],
-      ),
-    );
+  Map<String, String?> generateInformationMapData(SanctionRegister registerItem) {
+    return {
+      LocaleKeys.worker.tr(): registerItem.displayWorkerName,
+      LocaleKeys.dateIssued.tr(): registerItem.dateReceived.mmmDdYyyy(),
+      LocaleKeys.camp_compartment.tr(): registerItem.campOrCompartment,
+      LocaleKeys.disciplinaries_issue.tr(): registerItem.issueTypeName,
+      LocaleKeys.disciplinaries_steps_taken.tr(): registerItem.descriptionOfSanction,
+      LocaleKeys.signed.tr(): DateTime.tryParse(registerItem.signatureDate ?? '').mmmDdYyyy(),
+      LocaleKeys.general_comments.tr(): registerItem.comment,
+    };
   }
 }

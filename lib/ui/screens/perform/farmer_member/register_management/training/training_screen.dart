@@ -6,11 +6,12 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/training_cubit/training_cubit.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/training_detail_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../widgets/status_filter_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 
 class TrainingScreen extends BaseStatefulWidget {
   TrainingScreen({super.key}) : super(screenName: LocaleKeys.training.tr());
@@ -117,7 +118,10 @@ class _TrainingScreenState extends State<TrainingScreen> {
                 onTap: () {
                   onNavigateToEditTraining(index, item);
                 },
-                child: _TrainingItemWidget(data: item),
+                child: RegisterItem(
+                  title: '${LocaleKeys.training_no.tr()}: ${item.trainingRegisterNo}',
+                  mapData: generateInformationMapData(item),
+                ),
               );
             },
           ),
@@ -125,84 +129,17 @@ class _TrainingScreenState extends State<TrainingScreen> {
       ],
     );
   }
-}
 
-class _TrainingItemWidget extends StatelessWidget {
-  const _TrainingItemWidget({super.key, required this.data});
-
-  static const double _itemHorizontalPadding = 4;
-
-  final TrainingRegister data;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 9),
-      decoration: BoxDecoration(
-        border: Border.all(color: context.colors.greyD9D9),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: _itemHorizontalPadding,
-            ),
-            child: Text(
-              '${LocaleKeys.training_no.tr()}: ${data.trainingRegisterNo}',
-              style: context.textStyles.bodyBold
-                  .copyWith(color: context.colors.blue),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: _itemHorizontalPadding * 2,
-              vertical: 6,
-            ),
-            child: Container(
-              height: 1,
-              color: context.colors.black,
-            ),
-          ),
-          _buildILineItem(context, '${LocaleKeys.training_type.tr()} : ',
-              data.trainingTypeName),
-          _buildILineItem(
-              context, '${LocaleKeys.date.tr()} : ', data.date.yMd()),
-          _buildILineItem(
-            context,
-            '${LocaleKeys.expiry_date.tr()} : ',
-            data.expiryDate == null ? '' : data.expiryDate.yMd(),
-          ),
-          _buildILineItem(
-              context, '${LocaleKeys.trainer_name.tr()} : ', data.trainerName),
-          _buildILineItem(
-              context, '${LocaleKeys.trainee_name.tr()} : ', data.workerName),
-          _buildILineItem(context, '${LocaleKeys.signed.tr()} : ',
-              data.signatureDate.yMd()),
-          _buildILineItem(
-              context, '${LocaleKeys.generalComments.tr()} : ', data.comment),
-        ],
-      ),
-    );
-  }
-
-  Padding _buildILineItem(BuildContext context, String label, String? value) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: context.textStyles.bodyNormal,
-          ),
-          Text(
-            value ?? '',
-            style: context.textStyles.bodyNormal,
-          )
-        ],
-      ),
-    );
+  Map<String, String?> generateInformationMapData(TrainingRegister registerItem) {
+    return {
+      LocaleKeys.training_type.tr(): registerItem.trainingTypeName,
+      LocaleKeys.date.tr(): registerItem.date.yMd(),
+      LocaleKeys.expiry_date.tr(): registerItem.expiryDate.yMd(),
+      LocaleKeys.trainer_name.tr(): registerItem.trainerName,
+      LocaleKeys.trainee_name.tr(): registerItem.workerName,
+      LocaleKeys.signed.tr(): registerItem.signatureDate.yMd(),
+      LocaleKeys.general_comments.tr(): registerItem.comment,
+    };
   }
 }
+

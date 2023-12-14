@@ -7,8 +7,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/biological_control_agents/add_biological_control_agents/add_biological_control_agents_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comments_item.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -230,9 +229,13 @@ class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Biolog
                             filteredItems[index] = result;
                             setState(() {});
                           },
-                          child: _BiologicalControlAgentItem(
-                            agent: itemMapping,
+                          child: RegisterItem(
+                            title: '${LocaleKeys.complaintNo.tr()}: ${itemMapping.biologicalControlAgentRegisterNo?.toString()}',
+                            mapData: generateInformationMapData(itemMapping),
                           ),
+                          // _BiologicalControlAgentItem(
+                          //   agent: itemMapping,
+                          // ),
                         );
                       },
                     ),
@@ -242,76 +245,17 @@ class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Biolog
             ),
     );
   }
-}
 
-class _BiologicalControlAgentItem extends StatelessWidget {
-  const _BiologicalControlAgentItem({
-    required this.agent,
-  });
-
-  final BiologicalControlAgent agent;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: context.colors.greyD9D9),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${LocaleKeys.complaintNo.tr()}: ${agent.biologicalControlAgentRegisterNo?.toString()}',
-            style: context.textStyles.bodyBold.blue,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 6,
-            ),
-            child: Divider(
-              color: context.colors.blueDark2,
-              height: 1,
-            ),
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.nameOfControlAgent.tr(),
-            valueLabel: agent.biologicalControlAgentTypeName,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.scientificName.tr(),
-            valueLabel: agent.biologicalControlAgentTypeScientificName,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.countryOfOrigin.tr(),
-            valueLabel: agent.biologicalControlAgentTypeCountryName,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.reasonForBioAgent.tr(),
-            valueLabel: agent.reasonForBioAgent,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.dateReleased.tr(),
-            valueLabel: agent.dateReleased?.ddMMYyyy(),
-            backgroundColor: context.colors.greyLight1,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.stakeholderName.tr(),
-            valueLabel: agent.stakeholderName,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.description.tr(),
-            valueLabel: agent.monitoringRequirementName,
-          ),
-          GeneralCommentsItem(
-            comment: agent.comment,
-          ),
-        ],
-      ),
-    );
+  Map<String, String?> generateInformationMapData(BiologicalControlAgent registerItem) {
+    return {
+      LocaleKeys.nameOfControlAgent.tr(): registerItem.biologicalControlAgentTypeName,
+      LocaleKeys.scientificName.tr(): registerItem.biologicalControlAgentTypeScientificName,
+      LocaleKeys.countryOfOrigin.tr(): registerItem.biologicalControlAgentTypeCountryName,
+      LocaleKeys.reasonForBioAgent.tr(): registerItem.reasonForBioAgent,
+      LocaleKeys.dateReleased.tr(): registerItem.dateReleased.ddMMYyyy(),
+      LocaleKeys.stakeholderName.tr(): registerItem.stakeholderName,
+      LocaleKeys.description.tr(): registerItem.monitoringRequirementName,
+      LocaleKeys.general_comments.tr(): registerItem.comment,
+    };
   }
 }

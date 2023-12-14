@@ -8,7 +8,7 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_employee_grievance/employee_grievance_cubit.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/employee_grievance/add_employee_grievance/add_employee_grievance_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_item.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -119,8 +119,9 @@ class _EmployeeGrievanceScreenState extends BaseStatefulWidgetState<EmployeeGrie
                 onTap: () {
                   onNavigateToEditGrievance(index, item);
                 },
-                child: _EmployeeGrievanceItem(
-                  employeeGrievance: item,
+                child: RegisterItem(
+                  title: '${LocaleKeys.grievanceNo.tr()}: ${item.grievanceRegisterNo?.toString()}',
+                  mapData: generateInformationMapData(item),
                 ),
               );
             },
@@ -129,60 +130,15 @@ class _EmployeeGrievanceScreenState extends BaseStatefulWidgetState<EmployeeGrie
       ],
     );
   }
-}
 
-class _EmployeeGrievanceItem extends StatelessWidget {
-  const _EmployeeGrievanceItem({
-    required this.employeeGrievance,
-  });
-
-  final GrievanceRegister employeeGrievance;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: context.colors.greyD9D9),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${LocaleKeys.grievanceNo.tr()}: ${employeeGrievance.grievanceRegisterNo?.toString()}',
-            style: context.textStyles.bodyBold.blue,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 6,
-            ),
-            child: Divider(
-              color: context.colors.blueDark2,
-              height: 1,
-            ),
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.worker.tr(),
-            valueLabel: employeeGrievance.workerName,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.grievanceIssue.tr(),
-            valueLabel: employeeGrievance.grievanceIssueName,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.dateReceived.tr(),
-            valueLabel: employeeGrievance.dateReceived?.yMd(),
-            backgroundColor: context.colors.greyLight1,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.allocatedTo.tr(),
-            valueLabel: employeeGrievance.allocatedToName,
-          ),
-        ],
-      ),
-    );
+  Map<String, String?> generateInformationMapData(GrievanceRegister registerItem) {
+    return {
+      LocaleKeys.worker.tr(): registerItem.workerName,
+      LocaleKeys.grievanceIssue.tr(): registerItem.grievanceIssueName,
+      LocaleKeys.dateReceived.tr(): registerItem.dateReceived?.yMd(),
+      LocaleKeys.allocatedTo.tr(): registerItem.allocatedToName,
+      LocaleKeys.general_comments.tr(): registerItem.comment,
+    };
   }
 }
+

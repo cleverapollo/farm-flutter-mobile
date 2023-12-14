@@ -13,6 +13,8 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../widgets/register_item.dart';
+
 class AAIScreen extends BaseStatefulWidget {
   AAIScreen({super.key}) : super(screenName: LocaleKeys.accident_incidents.tr());
 
@@ -168,7 +170,11 @@ class _AAIScreenState extends BaseStatefulWidgetState<AAIScreen> {
                               filteredItems[index] = result;
                               setState(() {});
                             },
-                            child: _AAIItem(item));
+                            child: RegisterItem(
+                              title: '${LocaleKeys.aai_no.tr()}: ${item.accidentAndIncidentRegisterNo}',
+                              mapData: generateInformationMapData(item),
+                            ),
+                        );
                       },
                     ),
                   ),
@@ -177,224 +183,26 @@ class _AAIScreenState extends BaseStatefulWidgetState<AAIScreen> {
             ),
     );
   }
-}
 
-class _AAIItem extends StatelessWidget {
-  static const double _itemHorizontalPadding = 4;
-
-  final AccidentAndIncident aai;
-
-  const _AAIItem(this.aai, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 9),
-      decoration: BoxDecoration(
-        border: Border.all(color: context.colors.greyD9D9),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: _itemHorizontalPadding,
-            ),
-            child: Text(
-              '${LocaleKeys.aai_no.tr()}: ${aai.accidentAndIncidentRegisterNo}',
-              style: context.textStyles.bodyBold
-                  .copyWith(color: context.colors.blue),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: _itemHorizontalPadding * 2,
-              vertical: 6,
-            ),
-            child: Container(
-              height: 1,
-              color: context.colors.black,
-            ),
-          ),
-          Container(
-            color: context.colors.greyLight1,
-            child: Padding(
-              padding:
-                  const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    LocaleKeys.worker.tr(),
-                    style: context.textStyles.bodyNormal,
-                  ),
-                  Text(
-                    aai.workerName ?? '',
-                    style: context.textStyles.bodyNormal,
-                  )
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  LocaleKeys.jobDescription.tr(),
-                  style: context.textStyles.bodyNormal,
-                ),
-                Flexible(
-                  child: Text(
-                    aai.jobDescriptionName ?? '',
-                    style: context.textStyles.bodyNormal,
-                    textAlign: TextAlign.end,
-                  ),
-                )
-              ],
-            ),
-          ),
-          Container(
-            color: context.colors.greyLight1,
-            child: Padding(
-              padding:
-                  const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    LocaleKeys.nature_of_injury.tr(),
-                    style: context.textStyles.bodyNormal,
-                  ),
-                  Text(
-                    aai.natureOfInjuryName ?? '',
-                    style: context.textStyles.bodyNormal,
-                  )
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  LocaleKeys.date_of_incident.tr(),
-                  style: context.textStyles.bodyNormal,
-                ),
-                Text(
-                  aai.dateOfIncident?.ddMMYyyy() ?? '',
-                  style: context.textStyles.bodyNormal,
-                )
-              ],
-            ),
-          ),
-          Container(
-            color: context.colors.greyLight1,
-            child: Padding(
-              padding:
-                  const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    LocaleKeys.date_reported.tr(),
-                    style: context.textStyles.bodyNormal,
-                  ),
-                  Text(
-                    aai.dateRecieved.ddMMYyyy() ?? '',
-                    style: context.textStyles.bodyNormal,
-                  )
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  LocaleKeys.resumed_work_on.tr(),
-                  style: context.textStyles.bodyNormal,
-                ),
-                Text(
-                  aai.dateResumeWork?.ddMMYyyy() ?? '',
-                  style: context.textStyles.bodyNormal,
-                )
-              ],
-            ),
-          ),
-          Container(
-            color: context.colors.greyLight1,
-            child: Padding(
-              padding:
-                  const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    LocaleKeys.lost_time_in_days.tr(),
-                    style: context.textStyles.bodyNormal,
-                  ),
-                  Text(
-                    aai.dateResumeWork != null && aai.dateOfIncident != null
-                        ? aai.dateResumeWork!
-                            .difference(aai.dateOfIncident!)
-                            .inDays
-                            .toString()
-                        : '',
-                    style: context.textStyles.bodyNormal,
-                  )
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  LocaleKeys.worker_disabled.tr(),
-                  style: context.textStyles.bodyNormal,
-                ),
-                Text(
-                  aai.workerDisabled == true
-                      ? LocaleKeys.yes.tr()
-                      : LocaleKeys.no.tr(),
-                  style: context.textStyles.bodyNormal,
-                )
-              ],
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  LocaleKeys.general_comments.tr(),
-                  style: context.textStyles.bodyNormal,
-                ),
-                Text(
-                  aai.comment ?? '',
-                  style: context.textStyles.bodyNormal,
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+  Map<String, String?> generateInformationMapData(AccidentAndIncident registerItem) {
+    return {
+      LocaleKeys.worker.tr(): registerItem.workerName,
+      LocaleKeys.jobDescription.tr(): registerItem.jobDescriptionName,
+      LocaleKeys.nature_of_injury.tr(): registerItem.natureOfInjuryName,
+      LocaleKeys.date_of_incident.tr(): registerItem.dateOfIncident?.ddMMYyyy(),
+      LocaleKeys.date_reported.tr(): registerItem.dateRecieved.ddMMYyyy(),
+      LocaleKeys.resumed_work_on.tr(): registerItem.dateResumeWork?.ddMMYyyy(),
+      LocaleKeys.lost_time_in_days.tr(): registerItem.dateResumeWork != null &&
+          registerItem.dateOfIncident != null
+          ? registerItem.dateResumeWork!
+          .difference(registerItem.dateOfIncident!)
+          .inDays
+          .toString()
+          : '',
+      LocaleKeys.worker_disabled.tr(): registerItem.workerDisabled == true
+          ? LocaleKeys.yes.tr()
+          : LocaleKeys.no.tr(),
+      LocaleKeys.general_comments.tr(): registerItem.comment,
+    };
   }
 }

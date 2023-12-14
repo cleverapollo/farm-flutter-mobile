@@ -8,10 +8,11 @@ import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disput
 import 'package:cmo/state/stake_holder_complaint/stake_holder_complaint_cubit.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/add_stake_holder_complaint/add_stake_holder_complaint_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/key_value_item_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../widgets/register_item.dart';
 
 class StakeHolderComplaintScreen extends BaseStatefulWidget {
 
@@ -132,8 +133,9 @@ class _StakeHolderComplaintScreenState extends BaseStatefulWidgetState<StakeHold
                 onTap: () {
                   onNavigateToEditGrievance(index, item);
                 },
-                child: _StakeHolderComplaintItem(
-                  complaint: items[index],
+                child: RegisterItem(
+                  title: '${LocaleKeys.complaintNo.tr()}: ${items[index].complaintsAndDisputesRegisterNo?.toString()}',
+                  mapData: generateInformationMapData(items[index]),
                 ),
               );
             },
@@ -142,61 +144,14 @@ class _StakeHolderComplaintScreenState extends BaseStatefulWidgetState<StakeHold
       ],
     );
   }
-}
 
-class _StakeHolderComplaintItem extends StatelessWidget {
-  const _StakeHolderComplaintItem({
-    required this.complaint,
-  });
-
-  final ComplaintsAndDisputesRegister complaint;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: context.colors.greyD9D9),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${LocaleKeys.complaintNo.tr()}: ${complaint.complaintsAndDisputesRegisterNo?.toString()}',
-            style: context.textStyles.bodyBold.blue,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 6,
-            ),
-            child: Divider(
-              color: context.colors.blueDark2,
-              height: 1,
-            ),
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.complaintName.tr(),
-            valueLabel: complaint.complaintsAndDisputesRegisterName,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.issueRaised.tr(),
-            valueLabel: complaint.issueDescription,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.dateReceived.tr(),
-            valueLabel: complaint.dateReceived?.ddMMYyyy(),
-            backgroundColor: context.colors.greyLight1,
-          ),
-          KeyValueItemWidget(
-            keyLabel: LocaleKeys.dateClosed.tr(),
-            valueLabel: complaint.dateClosed?.ddMMYyyy(),
-            backgroundColor: context.colors.greyLight1,
-          ),
-        ],
-      ),
-    );
+  Map<String, String?> generateInformationMapData(ComplaintsAndDisputesRegister registerItem) {
+    return {
+      LocaleKeys.complaintName.tr(): registerItem.complaintsAndDisputesRegisterName,
+      LocaleKeys.issueRaised.tr(): registerItem.issueDescription,
+      LocaleKeys.dateReceived.tr(): registerItem.dateReceived.ddMMYyyy(),
+      LocaleKeys.dateClosed.tr(): registerItem.dateClosed.ddMMYyyy(),
+      LocaleKeys.general_comments.tr(): registerItem.comment,
+    };
   }
 }

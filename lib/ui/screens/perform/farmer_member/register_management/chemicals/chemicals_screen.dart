@@ -7,6 +7,7 @@ import 'package:cmo/model/chemical.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_cubit.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/chemicals/adding_chemical_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -95,14 +96,47 @@ class _ChemicalsScreenState extends BaseStatefulWidgetState<ChemicalsScreen> {
                         itemBuilder: (_, index) => state
                                 .chemicalsSearch[index].chemicalNo.isNullOrEmpty
                             ? null
-                            : _ChemicalsItem(state.chemicalsSearch[index]),
-                      ),
+                            : InkWell(
+                          onTap: () async {
+                            final shouldRefresh =
+                            await AddingChemicalScreen.push(
+                                context, data: state.chemicalsSearch[index]);
+
+                            if (shouldRefresh != null && context.mounted) {
+                              await context.read<RMChemicalCubit>()
+                                  .initListData();
+                            }
+                          },
+
+                          child: RegisterItem(
+                            title: '${LocaleKeys.chemicals.tr()}: ${state
+                                .chemicalsSearch[index].chemicalNo}',
+                            mapData: generateInformationMapData(state
+                                .chemicalsSearch[index]),
+                          ),
+                        ),
+                ),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  Map<String, String?> generateInformationMapData(Chemical registerItem) {
+    return {
+      LocaleKeys.chemicalType.tr(): registerItem.chemicalType,
+      LocaleKeys.chemicalApplicationMethod.tr(): registerItem.chemicalApplicationMethod,
+      LocaleKeys.dateIssued.tr(): registerItem.date?.ddMMYyyy(),
+      LocaleKeys.openingStockAndPurchases.tr(): registerItem.openingStock?.toString(),
+      LocaleKeys.issued.tr(): registerItem.issued?.toString(),
+      LocaleKeys.balance.tr(): registerItem.balance?.toString(),
+      LocaleKeys.mixture.tr(): registerItem.mixture,
+      LocaleKeys.locationUsed.tr(): registerItem.campName,
+      LocaleKeys.usagePerHa.tr(): registerItem.usagePerHa?.toString(),
+      LocaleKeys.general_comments.tr(): registerItem.comment,
+    };
   }
 }
 
@@ -130,162 +164,6 @@ class _StatusFilterWidget extends StatelessWidget {
           fontSize: 12,
           color: isSelected ? context.colors.white : context.colors.black,
         ),
-      ),
-    );
-  }
-}
-
-class _ChemicalsItem extends StatelessWidget {
-  const _ChemicalsItem(this.chemical);
-  static const double _itemHorizontalPadding = 4;
-
-  final Chemical chemical;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () async {
-        final shouldRefresh =
-            await AddingChemicalScreen.push(context, data: chemical);
-
-        if (shouldRefresh != null && context.mounted) {
-          await context.read<RMChemicalCubit>().initListData();
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 9),
-        decoration: BoxDecoration(
-          border: Border.all(color: context.colors.greyD9D9),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: _itemHorizontalPadding,
-              ),
-              child: Text(
-                '${LocaleKeys.chemicals.tr()}: ${chemical.chemicalNo}',
-                style: context.textStyles.bodyBold
-                    .copyWith(color: context.colors.blue),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: _itemHorizontalPadding * 2,
-                vertical: 6,
-              ),
-              child: Container(
-                height: 1,
-                color: context.colors.black,
-              ),
-            ),
-            Container(
-              color: context.colors.greyLight1,
-              child: _ItemRow(
-                title: LocaleKeys.chemicalType.tr(),
-                value: chemical.chemicalType ?? '',
-              ),
-            ),
-            _ItemRow(
-              title: LocaleKeys.chemicalApplicationMethod.tr(),
-              value: chemical.chemicalApplicationMethod ?? '',
-            ),
-            Container(
-              color: context.colors.greyLight1,
-              child: _ItemRow(
-                title: LocaleKeys.dateIssued.tr(),
-                value: chemical.date?.ddMMYyyy() ?? '',
-              ),
-            ),
-            _ItemRow(
-              title: LocaleKeys.openingStockAndPurchases.tr(),
-              value: chemical.openingStock?.toString() ?? '',
-            ),
-            Container(
-              color: context.colors.greyLight1,
-              child: _ItemRow(
-                title: LocaleKeys.issued.tr(),
-                value: chemical.issued?.toString() ?? '',
-              ),
-            ),
-            _ItemRow(
-              title: LocaleKeys.balance.tr(),
-              value: chemical.balance?.toString() ?? '',
-            ),
-            Container(
-              color: context.colors.greyLight1,
-              child: _ItemRow(
-                title: LocaleKeys.mixture.tr(),
-                value: chemical.mixture ?? '',
-              ),
-            ),
-            _ItemRow(
-              title: LocaleKeys.locationUsed.tr(),
-              value: chemical.campName ?? '',
-            ),
-            Container(
-              color: context.colors.greyLight1,
-              child: _ItemRow(
-                title: LocaleKeys.usagePerHa.tr(),
-                value: chemical.usagePerHa?.toString() ?? '',
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    LocaleKeys.general_comments.tr(),
-                    style: context.textStyles.bodyNormal,
-                  ),
-                  Text(
-                    chemical.comment ?? '',
-                    style: context.textStyles.bodyNormal,
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ItemRow extends StatelessWidget {
-  const _ItemRow({
-    required this.title,
-    required this.value,
-  });
-  static const double _itemHorizontalPadding = 4;
-  final String title;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(_itemHorizontalPadding, 8, 11, 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              title,
-              style: context.textStyles.bodyNormal,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: context.textStyles.bodyNormal,
-            ),
-          )
-        ],
       ),
     );
   }
