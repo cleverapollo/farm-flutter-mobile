@@ -25,6 +25,7 @@ class CmoMap extends StatefulWidget {
   final LatLng? selectedPoint;
   final bool isAllowManualLatLng;
   final bool shouldShowPhotoButton;
+  final void Function()? onMapCreated;
 
   const CmoMap({
     Key? key,
@@ -41,6 +42,7 @@ class CmoMap extends StatefulWidget {
     this.onRemoveMarker,
     this.selectedPoint,
     this.shouldShowPhotoButton = true,
+    this.onMapCreated,
   }) : super(key: key);
 
   @override
@@ -167,6 +169,7 @@ class CmoMapState extends State<CmoMap> {
                   onMapCreated: (controller) {
                     mapController = controller;
                     checkPermission();
+                    widget.onMapCreated?.call();
                   },
                   onCameraMove: _onCameraMove,
                   myLocationEnabled: true,

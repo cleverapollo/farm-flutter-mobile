@@ -1,0 +1,2 @@
+class register_item {
+}

@@ -2,6 +2,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
+import 'package:cmo/ui/components/loading_circle.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/file_utils.dart';
 import 'package:cmo/utils/logger.dart';
@@ -86,7 +87,7 @@ class _SelectLocationState extends BaseStatefulWidgetState<SelectLocationScreen>
       widget.alwaysEnableSaveButton ??
       (locationModel.latitude != null && locationModel.longitude != null);
 
-  bool loading = false;
+  bool loading = true;
 
   @override
   void initState() {
@@ -167,64 +168,81 @@ class _SelectLocationState extends BaseStatefulWidgetState<SelectLocationScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBar(
-        title: widget.title,
-        subtitle: widget.farmName ?? '',
-        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-        onTapTrailing: Navigator.of(context).pop,
-        leading: widget.shouldShowBackIcon ? Assets.icons.icBackButton.svgBlack : null,
-        onTapLeading: Navigator.of(context).pop,
-      ),
-      body: SizedBox.expand(
-        child: ColoredBox(
-          color: context.colors.white,
-          child: Column(
-            children: [
-              if (widget.shouldShowDangerIcon)
-                Icon(
-                  IconsaxOutline.danger,
-                  size: 30.0,
-                  color: context.colors.red,
-                ),
-              Expanded(
-                flex: 6,
-                child: CmoMap(
-                  key: mapKey,
-                  showMarker: true,
-                  showButtonList: true,
-                  onMapMoved: (_, __) {},
-                  onPinned: onPinned,
-                  shouldShowPhotoButton: widget.shouldShowPhotoButton,
-                  onRemoveMarker: onRemoveMarker,
-                  takePhotoFromCamera: takePhotoFromCamera,
-                  onSelectPhotos: onSelectPhoto,
-                  initialMapCenter: initLatLng,
-                  selectedPoint: initLatLng,
-                ),
-              ),
-              const SizedBox(height: 32),
-              Align(
-                child: CmoFilledButton(
-                  title: widget.saveTitle ?? LocaleKeys.next.tr(),
-                  disable: !isEnableNextButton,
-                  loading: loading,
-                  onTap: () {
-                    if (isEnableNextButton) {
-                      if (widget.onSave == null) {
-                        Navigator.of(context).pop(locationModel);
-                      } else {
-                        widget.onSave!(locationModel);
-                      }
-                    }
-                  },
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
-            ],
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Scaffold(
+            appBar: CmoAppBar(
+              title: widget.title,
+              subtitle: widget.farmName ?? '',
+              trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
+              onTapTrailing: Navigator.of(context).pop,
+              leading: widget.shouldShowBackIcon ? Assets.icons.icBackButton.svgBlack : null,
+              onTapLeading: Navigator.of(context).pop,
+            ),
+            body: SizedBox.expand(
+                    child: ColoredBox(
+                      color: context.colors.white,
+                      child: Column(
+                        children: [
+                          if (widget.shouldShowDangerIcon)
+                            Icon(
+                              IconsaxOutline.danger,
+                              size: 30.0,
+                              color: context.colors.red,
+                            ),
+                          Expanded(
+                            flex: 6,
+                            child: CmoMap(
+                              key: mapKey,
+                              showMarker: true,
+                              showButtonList: true,
+                              onMapMoved: (_, __) {},
+                              onPinned: onPinned,
+                              shouldShowPhotoButton: widget.shouldShowPhotoButton,
+                              onRemoveMarker: onRemoveMarker,
+                              takePhotoFromCamera: takePhotoFromCamera,
+                              onSelectPhotos: onSelectPhoto,
+                              initialMapCenter: initLatLng,
+                              selectedPoint: initLatLng,
+                              onMapCreated: () {
+                                setState(() {
+                                  loading = false;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+                          Align(
+                            child: CmoFilledButton(
+                              title: widget.saveTitle ?? LocaleKeys.next.tr(),
+                              disable: !isEnableNextButton,
+                              loading: loading,
+                              onTap: () {
+                                if (isEnableNextButton) {
+                                  if (widget.onSave == null) {
+                                    Navigator.of(context).pop(locationModel);
+                                  } else {
+                                    widget.onSave!(locationModel);
+                                  }
+                                }
+                              },
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).padding.bottom),
+                        ],
+                      ),
+                    ),
+                  ),
+
           ),
         ),
-      ),
+
+        if (loading)
+          Positioned.fill(
+            child: LoadingCircle(),
+          ),
+      ],
     );
   }
 }
