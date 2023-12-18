@@ -106,5 +106,5 @@ export 'stakeholder/farm_stakeholder_social_upliftment.dart';
 export 'stakeholder/farm_stakeholder_special_site.dart';
 export 'compartment/product_group_template.dart';
 export 'compartment/species_group_template.dart';
-
+export 'force_update/force_update_model.dart';
 

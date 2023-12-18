@@ -24,6 +24,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_add.svg
   SvgGenImage get icAdd => const SvgGenImage('assets/icons/ic_add.svg');
 
+  /// File path: assets/icons/ic_app_logo.svg
+  SvgGenImage get icAppLogo =>
+      const SvgGenImage('assets/icons/ic_app_logo.svg');
+
   /// File path: assets/icons/ic_arrow_down.svg
   SvgGenImage get icArrowDown =>
       const SvgGenImage('assets/icons/ic_arrow_down.svg');
@@ -235,6 +239,7 @@ class $AssetsIconsGen {
         icAccept,
         icAcceptMap,
         icAdd,
+        icAppLogo,
         icArrowDown,
         icArrowLeft,
         icArrowRight,

@@ -830,4 +830,32 @@ class CmoPerformApiService {
     final data = response.data;
     return data?.map((e) => Farm.fromJson(e as JsonData)).toList();
   }
+
+  /// need to check again
+  Future<ForceUpdateModel?> checkUpdate(
+      String currentVersion,
+      ) async {
+    try {
+      return ForceUpdateModel(
+        forceUpdate: false,
+        shouldUpdate: false,
+      );
+      final response = await client.get<JsonData?>(
+        '${Env.performDnnApiUrl}check-version',
+        queryParameters: {'version': currentVersion,},
+        options: Options(headers: {'accessToken': 'false'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data;
+      return data == null ? null : ForceUpdateModel.fromJson(data);
+    } catch (e) {
+      logger.d('Cannot insertUpdatedCompartment $e');
+      return null;
+    }
+  }
 }
