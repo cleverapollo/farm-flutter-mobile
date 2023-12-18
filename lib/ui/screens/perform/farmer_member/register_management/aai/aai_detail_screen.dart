@@ -206,7 +206,7 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
                               child: GeneralCommentWidget(
                                 hintText: '',
                                 shouldShowTitle: true,
-                                titleTextStyle: context.textStyles.bodyBold.blueDark2,
+                                titleTextStyle: context.textStyles.bodyNormal.blueDark2,
                                 height: 120,
                                 initialValue: state.accidentAndIncident.comment,
                                 textStyle: context.textStyles.bodyNormal.blueDark2,
