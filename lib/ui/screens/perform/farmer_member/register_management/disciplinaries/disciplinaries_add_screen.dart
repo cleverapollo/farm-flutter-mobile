@@ -9,6 +9,7 @@ import 'package:cmo/model/labour_management/farmer_worker.dart';
 import 'package:cmo/model/sanction_register/sanction_register.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_cubit.dart';
 import 'package:cmo/state/disciplinaries_cubit/disciplinaries_state.dart';
+import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/components/signature_widget.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
@@ -109,7 +110,7 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
                               hintText: LocaleKeys.workers.tr(),
                               hintTextStyle: context.textStyles.bodyBold.blueDark3,
                               displayHorizontal: false,
-                              value: selectWorker?.firstName ??
+                              value: selectWorker?.fullName ??
                                   state.data?.displayWorkerName ??
                                   '',
                               margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -132,8 +133,7 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 24.0),
                                           child: Text(
-                                            state.workers[index].firstName ??
-                                                '',
+                                            state.workers[index].fullName,
                                             style: context.textStyles.bodyBold
                                                 .copyWith(
                                               color: context.colors.blueDark2,
@@ -148,7 +148,6 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
                             );
                           },
                         ),
-                        const SizedBox(height: 12),
                         buildSelectDateIssued(),
                         BlocSelector<DisciplinariesCubit, DisciplinariesState,
                             IssueType?>(
@@ -157,13 +156,15 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
                             return BottomSheetSelection(
                               isShowError: state.isDisciplinariesIssueError,
                               hintText: LocaleKeys.disciplinaries_issue.tr(),
-                              hintTextStyle: context.textStyles.bodyBold.blueDark3,
+                              hintTextStyle: context.textStyles.bodyBold.blueDark2,
                               displayHorizontal: false,
                               value: selectIssue?.issueTypeName ??
                                   state.data?.issueTypeName,
                               margin: const EdgeInsets.symmetric(horizontal: 24),
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 14),
+                                vertical: 12,
+                                horizontal: 12,
+                              ),
                               onTap: () async {
                                 FocusScope.of(context).unfocus();
                                 if (state.issueTypes.isBlank) return;
@@ -358,23 +359,12 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
           errorText: LocaleKeys.required.tr(),
           isUnderErrorBorder: true,
           margin: const EdgeInsets.symmetric(horizontal: 24),
-          child: CmoDatePicker(
-            name: 'DateIssued',
-            onChanged: context.read<DisciplinariesCubit>().onSelectDateIssued,
-            initialValue: state.data?.dateReceived,
+          child: DatePickerWidget(
             lastDate: DateTime.now(),
-            inputDecoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 4,
-                horizontal: 12,
-              ),
-              suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-              suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
-              isDense: true,
-              labelText: LocaleKeys.dateIssued.tr(),
-              labelStyle: context.textStyles.bodyBold.blueDark3,
-            ),
+            initialDate: state.data?.dateReceived,
+            title: LocaleKeys.dateIssued.tr(),
+            firstDate: DateTime.now().subtract(const Duration(days: 100000)),
+            onChangeDate: context.read<DisciplinariesCubit>().onSelectDateIssued,
           ),
         );
       },

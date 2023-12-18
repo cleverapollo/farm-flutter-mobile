@@ -4,6 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/training_cubit/training_detail_cubit.dart';
+import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/components/signature_widget.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
@@ -144,9 +145,9 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
                                 child: InputAttributeItem(
                                   validator: (_) => null,
                                   initialValue: training.trainerName,
-                                  textStyle: context.textStyles.bodyNormal.blueDark2,
+                                  textStyle: context.textStyles.bodyNormal.blueDark3,
                                   labelText: LocaleKeys.trainer_name.tr(),
-                                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                  labelTextStyle: context.textStyles.bodyBold.blueDark3,
                                   onChanged: cubit.onTrainerChanged,
                                 ),
                               );
@@ -167,8 +168,8 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
                                 initialValue: training.comment,
                                 maxLines: 5,
                                 hintText: LocaleKeys.generalComments.tr(),
-                                hintTextStyle: context.textStyles.bodyBold.blueDark2,
-                                textStyle: context.textStyles.bodyNormal.blueDark2,
+                                hintTextStyle: context.textStyles.bodyBold.blueDark3,
+                                textStyle: context.textStyles.bodyNormal.blueDark3,
                                 onChanged: cubit.onCommentChanged,
                               ),
                             ),
@@ -227,7 +228,7 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
                       child: Text(
                         state.trainingTypes[index].trainingTypeName ?? '',
                         style: context.textStyles.bodyBold.copyWith(
-                          color: context.colors.blueDark2,
+                          color: context.colors.blueDark3,
                         ),
                       ),
                     ),
@@ -246,24 +247,15 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
       builder: (context, state) {
         return AttributeItem(
           isShowError: state.isDateError,
+          errorText: LocaleKeys.required.tr(),
+          isUnderErrorBorder: true,
           margin: const EdgeInsets.symmetric(horizontal: 24),
-          child: CmoDatePicker(
-            name: LocaleKeys.date.tr(),
-            validator: requiredValidator,
-            initialValue: state.training.date,
-            onChanged: cubit.onDateIssuedChanged,
-            inputDecoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 12,
-              ),
-              suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-              suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
-              isDense: true,
-              labelText: LocaleKeys.date.tr(),
-              labelStyle: context.textStyles.bodyBold.blueDark2,
-            ),
+          child: DatePickerWidget(
+            lastDate: DateTime.now().add(const Duration(days: 100000)),
+            initialDate: state.training.date,
+            title: LocaleKeys.date.tr(),
+            firstDate: DateTime.now().subtract(const Duration(days: 100000)),
+            onChangeDate: cubit.onDateIssuedChanged,
           ),
         );
       },
@@ -279,7 +271,7 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
           hintText: LocaleKeys.trainee_name.tr(),
           hintTextStyle: context.textStyles.bodyBold.blueDark3,
           displayHorizontal: false,
-          value: initWorker?.firstName,
+          value: initWorker?.fullName,
           margin: const EdgeInsets.symmetric(horizontal: 24),
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           onTap: () async {
@@ -298,10 +290,10 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
                     title: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       child: Text(
-                        state.workers[index].firstName ?? '',
+                        state.workers[index].fullName ?? '',
                         style: context.textStyles.bodyBold
                             .copyWith(
-                          color: context.colors.blueDark2,
+                          color: context.colors.blueDark3,
                         ),
                       ),
                     ),
@@ -333,9 +325,9 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
               suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
               suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
               isDense: true,
-              hintStyle: context.textStyles.bodyBold.blueDark2,
+              hintStyle: context.textStyles.bodyBold.blueDark3,
               labelText: LocaleKeys.expiry_date.tr(),
-              labelStyle: context.textStyles.bodyBold.blueDark2,
+              labelStyle: context.textStyles.bodyBold.blueDark3,
             ),
           ),
         );
