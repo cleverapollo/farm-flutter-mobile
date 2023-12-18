@@ -108,7 +108,7 @@ class FireRegisterDetailCubit extends Cubit<FireRegisterDetailState> {
   }
 
   Future<void> onSave({required VoidCallback onSuccess}) async {
-    if (state.fireRegister?.extinguished != null && state.fireRegister!.date!.isAfter(state.fireRegister!.extinguished!)) {
+    if (state.fireRegister?.extinguished != null && state.fireRegister?.date != null && state.fireRegister!.date!.isAfter(state.fireRegister!.extinguished!)) {
       showSnackError(msg: 'Extinguished date must be after detected date');
       return;
     }

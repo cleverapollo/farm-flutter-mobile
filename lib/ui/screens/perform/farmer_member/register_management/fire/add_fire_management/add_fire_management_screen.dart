@@ -105,7 +105,7 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
           builder: (context, state) {
             return CmoFilledButton(
               title: LocaleKeys.save.tr(),
-              disable: state.fireRegister?.latitude == null,
+              // disable: state.fireRegister?.latitude == null,
               onTap: () async {
                 await context.read<FireRegisterDetailCubit>().onSave(
                   onSuccess: () async {
