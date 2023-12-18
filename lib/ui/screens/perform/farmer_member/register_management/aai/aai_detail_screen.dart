@@ -198,20 +198,19 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
                             );
                           },
                         ),
+                        const SizedBox(height: 12),
                         BlocBuilder<AAIDetailCubit, AAIDetailState>(
                           builder: (context, state) {
-                            return AttributeItem(
-                              margin: const EdgeInsets.symmetric(horizontal: 24),
-                              child: SizedBox(
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                              child: GeneralCommentWidget(
+                                hintText: '',
+                                shouldShowTitle: true,
+                                titleTextStyle: context.textStyles.bodyBold.blueDark2,
                                 height: 120,
-                                child: GeneralCommentWidget(
-                                  initialValue: state.accidentAndIncident.comment,
-                                  maxLines: 5,
-                                  hintText: LocaleKeys.generalComments.tr(),
-                                  hintTextStyle: context.textStyles.bodyNormal.blueDark2,
-                                  textStyle: context.textStyles.bodyNormal.blueDark2,
-                                  onChanged: cubit.onCommentChanged,
-                                ),
+                                initialValue: state.accidentAndIncident.comment,
+                                textStyle: context.textStyles.bodyNormal.blueDark2,
+                                onChanged: cubit.onCommentChanged,
                               ),
                             );
                           },
