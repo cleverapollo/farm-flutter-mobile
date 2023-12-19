@@ -13,7 +13,7 @@ flutter clean
 if [[ ! -z "$env" ]]; then
   #Update environment
   printf "Environment now: $env\n"
-  cp -a lib/env/"${env}"/.env_v2 .env
+  cp -a lib/env/"${env}"/.env .env
   printf "Setup environment finish\n"
 else
   printf "Environment must be set!!!!!\n"

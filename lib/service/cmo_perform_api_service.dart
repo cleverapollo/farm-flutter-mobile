@@ -368,7 +368,6 @@ class CmoPerformApiService {
     required String currentClientId,
     int pageSize = 200,
   }) async {
-    final accessToken = await _readAccessToken();
     final response = await client.get<JsonData>(
       '${Env.apstoryMqApiUrl}message',
       queryParameters: {
@@ -377,7 +376,7 @@ class CmoPerformApiService {
         'topic': '$topicMasterDataSync*.$currentClientId',
         'pageSize': '$pageSize',
       },
-      // options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      // options: Options(headers: {'accessToken': 'true'}),
     );
 
     if (response.statusCode != 200) {
@@ -517,7 +516,7 @@ class CmoPerformApiService {
     int? groupSchemeId,
   }) async {
     final response = await client.get<JsonListData>(
-      '${Env.apiGroupSchemeUrl}GetGroupSchemeJobDescription?',
+      '${Env.apiGroupSchemeUrl}GetGroupSchemeJobDescriptions?',
       queryParameters: {
         "JobDescriptionId": jobDescriptionId,
         "GroupSchemeId": groupSchemeId,
