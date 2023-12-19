@@ -517,7 +517,7 @@ class CmoPerformApiService {
     int? groupSchemeId,
   }) async {
     final response = await client.get<JsonListData>(
-      '${Env.apiGroupSchemeUrl}GroupSchemeJobDescription?',
+      '${Env.apiGroupSchemeUrl}GetGroupSchemeJobDescription?',
       queryParameters: {
         "JobDescriptionId": jobDescriptionId,
         "GroupSchemeId": groupSchemeId,
@@ -539,7 +539,7 @@ class CmoPerformApiService {
 
   Future<List<ProductGroupTemplate>?> fetchProductGroupTemplates() async {
     final response = await client.get<JsonListData>(
-      '${Env.performForestryUrl}ProductGroupTemplate/GetProductGroupTemplateByIds?',
+      '${Env.apiGroupSchemeUrl}GetProductGroupTemplateByIds?',
       queryParameters: {
         "groupSchemeId": "undefined",
         "areaTypeId": "undefined",
@@ -562,7 +562,7 @@ class CmoPerformApiService {
 
   Future<List<AsiType>?> fetchRMAsiType() async {
     final response = await client.get<JsonListData>(
-      '${Env.apiGroupSchemeUrl}AsiType/GetRMAsiType',
+      '${Env.apiGroupSchemeUrl}GetRMAsiType',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -577,7 +577,7 @@ class CmoPerformApiService {
 
   Future<List<AsiType>?> fetchFarmerAsiType() async {
     final response = await client.get<JsonListData>(
-      '${Env.apiGroupSchemeUrl}AsiType/GetFarmersAsiType',
+      '${Env.apiGroupSchemeUrl}GetFarmersAsiType',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -592,7 +592,7 @@ class CmoPerformApiService {
 
   Future<List<SpeciesGroupTemplate>?> fetchSpeciesGroupTemplates() async {
     final response = await client.get<JsonListData>(
-      '${Env.performForestryUrl}SpeciesGroupTemplate/GetSpeciesGroupTemplateByIds?',
+      '${Env.apiGroupSchemeUrl}GetSpeciesGroupTemplateByIds?',
       queryParameters: {
         "groupSchemeId": "undefined",
         "areaTypeId": "undefined",
@@ -615,7 +615,7 @@ class CmoPerformApiService {
 
   Future<List<AreaType>?> fetchAreaTypes() async {
     final response = await client.get<JsonListData>(
-      '${Env.performForestryUrl}AreaType/GetAreaTypeByUserIdAndRole?',
+      '${Env.apiGroupSchemeUrl}GetAreaTypeByUserIdAndRole?',
       queryParameters: {
         "userId": "0",
         "isRegionalManager": "false",
@@ -635,7 +635,7 @@ class CmoPerformApiService {
   Future<List<Compartment>?> getCompartmentsByRMUId() async {
     try {
       final response = await client.get<JsonListData>(
-        '${Env.performForestryUrl}ManagementUnit/GetManagementUnitByRMId?',
+        '${Env.apiGroupSchemeUrl}GetManagementUnitByRMId?',
         queryParameters: {
           'dnnUserId': 0,
           'isActive': true,
@@ -660,7 +660,7 @@ class CmoPerformApiService {
   Future<List<Compartment>?> getCompartmentsByFarmId(String farmId) async {
     try {
       final response = await client.get<List<dynamic>>(
-        '${Env.performForestryUrl}ManagementUnit/GetManagementUnitByFarmerId?',
+        '${Env.apiGroupSchemeUrl}GetManagementUnitByFarmerId?',
         queryParameters: {'dnnUserId': 0, 'isActive': true, 'farmId': farmId},
         options: Options(headers: {'accessToken': 'true'}),
       );
@@ -684,7 +684,7 @@ class CmoPerformApiService {
   Future<List<Asi>?> getRMAsiRegisters() async {
     try {
       final response = await client.get<JsonListData>(
-        '${Env.apiGroupSchemeUrl}AsiRegister/GetAsiRegisterByRMUser',
+        '${Env.apiGroupSchemeUrl}GetAsiRegisterByRMUser',
         options: Options(headers: {'accessToken': 'true'}),
       );
 
@@ -706,7 +706,7 @@ class CmoPerformApiService {
       String? asiRegisterId) async {
     try {
       final response = await client.get<JsonListData>(
-        '${Env.apiGroupSchemeUrl}AsiRegisterPhoto/GetAsiRegisterPhotosByAsiRegisterId?asiRegisterId=${asiRegisterId}',
+        '${Env.apiGroupSchemeUrl}GetAsiRegisterPhotosByAsiRegisterId?asiRegisterId=${asiRegisterId}',
         options: Options(headers: {'accessToken': 'true'}),
       );
 
@@ -729,7 +729,7 @@ class CmoPerformApiService {
   ) async {
     try {
       final response = await client.post<JsonData?>(
-        '${Env.performForestryUrl}ManagementUnit/InsUpdManagementUnit',
+        '${Env.apiGroupSchemeUrl}InsUpdManagementUnit',
         data: compartment.toJson(),
         options: Options(headers: {'accessToken': 'true'}),
       );
@@ -751,7 +751,7 @@ class CmoPerformApiService {
     try {
       log(asi.toJson().toString());
       final response = await client.post<JsonData>(
-        '${Env.apiGroupSchemeUrl}AsiRegister/CreateOrUpdateAsiRegister',
+        '${Env.apiGroupSchemeUrl}CreateOrUpdateAsiRegister',
         data: asi.toJson(),
         options: Options(headers: {'accessToken': 'true'}),
       );
@@ -773,7 +773,7 @@ class CmoPerformApiService {
     try {
       log(asiPhoto.toJson().toString());
       final response = await client.post<JsonData>(
-        '${Env.apiGroupSchemeUrl}AsiRegisterPhoto/CreateOrUpdateAsiRegisterPhoto',
+        '${Env.apiGroupSchemeUrl}CreateOrUpdateAsiRegisterPhoto',
         data: asiPhoto.toJson(),
         options: Options(headers: {'accessToken': 'true'}),
       );
@@ -794,7 +794,7 @@ class CmoPerformApiService {
   Future<List<Farm>?> getFarmSearch({String? filterString}) async {
     try {
       final response = await client.post<JsonData>(
-        '${Env.apiGroupSchemeUrl}Farm/SearchFarms',
+        '${Env.apiGroupSchemeUrl}SearchFarms',
         data: {
           'FarmName': filterString,
           'IsRegionalManager': true,
@@ -819,7 +819,7 @@ class CmoPerformApiService {
 
   Future<List<Farm>?> getRMFarmSearch({String? filterString}) async {
     final response = await client.get<JsonListData>(
-      '${Env.apiGroupSchemeUrl}Farm/GetRMFarmSearch?filterString=$filterString',
+      '${Env.apiGroupSchemeUrl}GetRMFarmSearch?filterString=$filterString',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
