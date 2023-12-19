@@ -198,7 +198,6 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
             StakeHolderDetailScreen.push(
               context,
               stakeHolder: model,
-              isEditing: true,
             );
           },
         ),
@@ -219,7 +218,6 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
             StakeHolderDetailScreen.push(
               context,
               stakeHolder: model,
-              isEditing: true,
             );
           },
         ),

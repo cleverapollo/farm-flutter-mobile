@@ -248,7 +248,7 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
       onChanged: widget.onChanged,
       enabled: widget.enabled,
       onFieldSubmitted: widget.onSubmitted,
-      maxLines: _controller.text.isEmpty ? widget.maxLines : 1,
+      maxLines: widget.maxLines,
       controller: _controller,
       style: widget.textStyle ?? context.textStyles.bodyBold,
       keyboardType: widget.keyboardType,

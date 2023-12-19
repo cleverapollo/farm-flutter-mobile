@@ -16,9 +16,8 @@ import 'package:cmo/utils/helpers.dart';
 import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-import '../widgets/information_text_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
 
 class TrainingDetailScreen extends BaseStatefulWidget {
   TrainingDetailScreen({

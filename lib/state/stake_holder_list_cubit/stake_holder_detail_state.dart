@@ -8,12 +8,16 @@ class StakeholderDetailState {
   final Farm? farm;
   final StakeHolder? stakeHolder;
   final List<StakeHolderType>? listStakeholderTypes;
-  final List<FarmStakeholderSocialUpliftment>? listSocialUpliftments;
-  final List<FarmStakeholderCustomaryUseRight>? listCustomaryUseRights;
-  final List<FarmStakeholderSpecialSite>? listSpecialSites;
-  final List<SocialUpliftment>? listSocialUpliftment;
-  final List<SpecialSite>? listSpecialSite;
-  final List<CustomaryUseRight>? listCustomaryUseRight;
+  final List<FarmStakeholderSocialUpliftment>? listFarmSocialUpliftments;
+  final List<FarmStakeholderCustomaryUseRight>? listFarmCustomaryUseRights;
+  final List<FarmStakeholderSpecialSite>? listFarmSpecialSites;
+  final List<SocialUpliftment>? listSocialUpliftments;
+  final List<SpecialSite>? listSpecialSites;
+  final List<CustomaryUseRight>? listCustomaryUseRights;
+
+  final bool isSelectTypeError;
+  final bool isEntityNameError;
+  final bool isContactNameError;
 
   StakeholderDetailState({
     this.error,
@@ -23,12 +27,15 @@ class StakeholderDetailState {
     this.stakeHolder,
     this.currentUserRole,
     this.listStakeholderTypes = const <StakeHolderType>[],
-    this.listSocialUpliftments = const <FarmStakeholderSocialUpliftment>[],
-    this.listCustomaryUseRights = const <FarmStakeholderCustomaryUseRight>[],
-    this.listSpecialSites = const <FarmStakeholderSpecialSite>[],
-    this.listSocialUpliftment = const <SocialUpliftment>[],
-    this.listSpecialSite = const <SpecialSite>[],
-    this.listCustomaryUseRight = const <CustomaryUseRight>[],
+    this.listFarmSocialUpliftments = const <FarmStakeholderSocialUpliftment>[],
+    this.listFarmCustomaryUseRights = const <FarmStakeholderCustomaryUseRight>[],
+    this.listFarmSpecialSites = const <FarmStakeholderSpecialSite>[],
+    this.listSocialUpliftments = const <SocialUpliftment>[],
+    this.listSpecialSites = const <SpecialSite>[],
+    this.listCustomaryUseRights = const <CustomaryUseRight>[],
+    this.isSelectTypeError = false,
+    this.isEntityNameError = false,
+    this.isContactNameError = false,
   });
 
   StakeholderDetailState copyWith({
@@ -38,13 +45,16 @@ class StakeholderDetailState {
     Farm? farm,
     StakeHolder? stakeHolder,
     List<StakeHolderType>? listStakeholderTypes,
-    List<FarmStakeholderSocialUpliftment>? listSocialUpliftments,
-    List<FarmStakeholderCustomaryUseRight>? listCustomaryUseRights,
-    List<FarmStakeholderSpecialSite>? listSpecialSites,
-    List<SocialUpliftment>? listSocialUpliftment,
-    List<SpecialSite>? listSpecialSite,
-    List<CustomaryUseRight>? listCustomaryUseRight,
+    List<FarmStakeholderSocialUpliftment>? listFarmSocialUpliftments,
+    List<FarmStakeholderCustomaryUseRight>? listFarmCustomaryUseRights,
+    List<FarmStakeholderSpecialSite>? listFarmSpecialSites,
+    List<SocialUpliftment>? listSocialUpliftments,
+    List<SpecialSite>? listSpecialSites,
+    List<CustomaryUseRight>? listCustomaryUseRights,
     UserRoleEnum? currentUserRole,
+    bool? isSelectTypeError,
+    bool? isEntityNameError,
+    bool? isContactNameError,
   }) {
     return StakeholderDetailState(
       error: error ?? this.error,
@@ -53,20 +63,16 @@ class StakeholderDetailState {
       farm: farm ?? this.farm,
       stakeHolder: stakeHolder ?? this.stakeHolder,
       listStakeholderTypes: listStakeholderTypes ?? this.listStakeholderTypes,
+      listFarmSocialUpliftments: listFarmSocialUpliftments ?? this.listFarmSocialUpliftments,
+      listFarmCustomaryUseRights: listFarmCustomaryUseRights ?? this.listFarmCustomaryUseRights,
+      listFarmSpecialSites: listFarmSpecialSites ?? this.listFarmSpecialSites,
       listSocialUpliftments: listSocialUpliftments ?? this.listSocialUpliftments,
-      listCustomaryUseRights: listCustomaryUseRights ?? this.listCustomaryUseRights,
       listSpecialSites: listSpecialSites ?? this.listSpecialSites,
-      listSocialUpliftment: listSocialUpliftment ?? this.listSocialUpliftment,
-      listSpecialSite: listSpecialSite ?? this.listSpecialSite,
-      listCustomaryUseRight: listCustomaryUseRight ?? this.listCustomaryUseRight,
+      listCustomaryUseRights: listCustomaryUseRights ?? this.listCustomaryUseRights,
       currentUserRole: currentUserRole ?? this.currentUserRole,
-    );
-  }
-
-  StakeholderDetailState cleanCache() {
-    return StakeholderDetailState(
-      error: error,
-      loading: loading,
+      isSelectTypeError: isSelectTypeError ?? this.isSelectTypeError,
+      isEntityNameError: isEntityNameError ?? this.isEntityNameError,
+      isContactNameError: isContactNameError ?? this.isContactNameError,
     );
   }
 }

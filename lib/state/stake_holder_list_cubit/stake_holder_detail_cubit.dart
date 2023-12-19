@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/stakeholder/farm_stake_holder.dart';
@@ -15,56 +16,57 @@ enum AdditionalInfoEnum {
 }
 
 class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
-  StakeholderDetailCubit({StakeHolder? stakeHolder})
-      : super(
-          StakeholderDetailState(
-            stakeHolder: stakeHolder ??
-                StakeHolder(
-                  stakeHolderId: DateTime.now().millisecondsSinceEpoch.toString(),
-                  isActive: 1,
-                  isMasterDataSynced: 0,
-                ),
-          ),
-        );
+  StakeholderDetailCubit({
+    StakeHolder? stakeHolder,
+  }) : super(
+          StakeholderDetailState(stakeHolder: stakeHolder),
+        ) {
+    initStakeholderDetailData();
+  }
 
-  Future<void> initStakeholderDetailData(StakeHolder? stakeHolder) async {
+  Future<void> initStakeholderDetailData() async {
     emit(state.copyWith(loading: true));
+
     try {
       final service = cmoDatabaseMasterService;
       final currentRole = await configService.getActiveUserRole();
       final stakeHolderTypes = await service.getStakeHolderTypes();
       final farm = await configService.getActiveFarm();
+      final listCustomaryUseRights = await service.getCustomaryUseRight();
+      final listSocialUpliftments = await service.getSocialUpliftment();
+      final listSpecialSites = await service.getSpecialSite();
+
       emit(
         state.copyWith(
+          farm: farm,
           currentUserRole: currentRole,
           listStakeholderTypes: stakeHolderTypes,
-          farm: farm,
+          listCustomaryUseRights: listCustomaryUseRights,
+          listSocialUpliftments: listSocialUpliftments,
+          listSpecialSites: listSpecialSites,
         ),
       );
 
-      if (farm != null && stakeHolder != null) {
+      if (farm != null && state.stakeHolder != null) {
         final additionalInfos = await Future.wait([
           service.getFarmStakeholderCustomaryUseRights(
-              stakeholderId:
-              int.tryParse(stakeHolder.stakeHolderId ?? '') ?? 0),
+              stakeholderId: int.tryParse(state.stakeHolder?.stakeHolderId ?? '') ?? 0),
           service.getFarmStakeholderSocialUpliftments(
-              stakeholderId:
-              int.tryParse(stakeHolder.stakeHolderId ?? '') ?? 0),
+              stakeholderId: int.tryParse(state.stakeHolder?.stakeHolderId ?? '') ?? 0),
           service.getFarmStakeholderSpecialSites(
-              stakeholderId:
-              int.tryParse(stakeHolder.stakeHolderId ?? '') ?? 0),
+              stakeholderId: int.tryParse(state.stakeHolder?.stakeHolderId ?? '') ?? 0),
         ]);
 
         emit(
           state.copyWith(
-            stakeHolder: stakeHolder,
-            farm: farm,
-            listCustomaryUseRights: additionalInfos[0] as List<FarmStakeholderCustomaryUseRight>,
-            listSocialUpliftments: additionalInfos[1] as List<FarmStakeholderSocialUpliftment>,
-            listSpecialSites: additionalInfos[2] as List<FarmStakeholderSpecialSite>,
+            listFarmCustomaryUseRights: additionalInfos[0] as List<FarmStakeholderCustomaryUseRight>,
+            listFarmSocialUpliftments: additionalInfos[1] as List<FarmStakeholderSocialUpliftment>,
+            listFarmSpecialSites: additionalInfos[2] as List<FarmStakeholderSpecialSite>,
           ),
         );
-      } else {
+      }
+
+      if (state.stakeHolder == null) {
         emit(
           state.copyWith(
             stakeHolder: StakeHolder(
@@ -88,6 +90,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
   void onSelectStakeholder(String? stakeHolderTypeId) {
     emit(
       state.copyWith(
+        isSelectTypeError: stakeHolderTypeId == null,
         stakeHolder: state.stakeHolder?.copyWith(
           stakeHolderTypeId: stakeHolderTypeId,
         ),
@@ -95,106 +98,158 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
     );
   }
 
+  void onChangeStakeholderName(String? stakeholderName) {
+    emit(
+      state.copyWith(
+        isEntityNameError: stakeholderName.isBlank,
+        stakeHolder: state.stakeHolder?.copyWith(
+          stakeholderName: stakeholderName,
+        ),
+      ),
+    );
+  }
+
+  void onChangeContactName(String? contactName) {
+    emit(
+      state.copyWith(
+        isContactNameError: contactName.isBlank,
+        stakeHolder: state.stakeHolder?.copyWith(
+          contactName: contactName,
+        ),
+      ),
+    );
+  }
+
+  void onChangeEmail(String? email) {
+    emit(
+      state.copyWith(
+        stakeHolder: state.stakeHolder?.copyWith(
+          email: email,
+        ),
+      ),
+    );
+  }
+
+  void onChangeAddress(String? address) {
+    emit(
+      state.copyWith(
+        stakeHolder: state.stakeHolder?.copyWith(
+          address1: address,
+        ),
+      ),
+    );
+  }
+
+  void onChangePhoneNumber(String? phoneNumber) {
+    emit(
+      state.copyWith(
+        stakeHolder: state.stakeHolder?.copyWith(
+          cell: phoneNumber,
+        ),
+      ),
+    );
+  }
+
   void onCreateAdditionalInfo(AdditionalInfoEnum type, String name) {
-    switch (type) {
-      case AdditionalInfoEnum.socialUpliftment:
-        final data = <SocialUpliftment>[];
-        final farmerData = <FarmStakeholderSocialUpliftment>[];
-
-        final socialUpliftmentId = DateTime.now().millisecondsSinceEpoch.toString();
-
-        data
-          ..addAll(state.listSocialUpliftment ?? [])
-          ..add(SocialUpliftment(
-            socialUpliftmentId: socialUpliftmentId,
-            socialUpliftmentName: name,
-            isActive: true,
-            isMasterDataSynced: 0,
-          ));
-
-        farmerData
-          ..addAll(state.listSocialUpliftments ?? [])
-          ..add(FarmStakeholderSocialUpliftment(
-            socialUpliftmentId: socialUpliftmentId,
-            farmStakeholderSocialUpliftmentId: DateTime.now().microsecondsSinceEpoch.toString(),
-            isActive: 1,
-            isMasterDataSynced: 0,
-          ));
-
-        emit(state.copyWith(
-          listSocialUpliftment: data,
-          listSocialUpliftments: farmerData,
-        ));
-        break;
-      case AdditionalInfoEnum.specialSite:
-        final data = <SpecialSite>[];
-        final farmerData = <FarmStakeholderSpecialSite>[];
-
-        final specialSiteId = DateTime.now().millisecondsSinceEpoch.toString();
-
-        data
-          ..addAll(state.listSpecialSite ?? [])
-          ..add(SpecialSite(
-            specialSiteId: specialSiteId,
-            specialSiteName: name,
-            isActive: true,
-            isMasterDataSynced: 0,
-          ));
-        farmerData
-          ..addAll(state.listSpecialSites ?? [])
-          ..add(FarmStakeholderSpecialSite(
-            specialSiteId: specialSiteId,
-            isActive: 1,
-            farmStakeholderSpecialSiteId: DateTime.now().microsecondsSinceEpoch.toString(),
-            isMasterDataSynced: 0,
-          ));
-
-        emit(state.copyWith(
-          listSpecialSite: data,
-          listSpecialSites: farmerData,
-        ));
-        break;
-      case AdditionalInfoEnum.customaryUseRight:
-        final data = <CustomaryUseRight>[];
-        final farmerData = <FarmStakeholderCustomaryUseRight>[];
-
-        final customaryUseRightId =
-        DateTime.now().millisecondsSinceEpoch.toString();
-
-        data
-          ..addAll(state.listCustomaryUseRight ?? [])
-          ..add(CustomaryUseRight(
-            customaryUseRightId: customaryUseRightId,
-            customaryUseRightName: name,
-            isActive: true,
-            isMasterDataSynced: 0,
-          ));
-
-        farmerData
-          ..addAll(state.listCustomaryUseRights ?? [])
-          ..add(FarmStakeholderCustomaryUseRight(
-            customaryUseRightId: customaryUseRightId,
-            farmStakeholderCustomaryUseRightId: DateTime.now().microsecondsSinceEpoch.toString(),
-            isActive: 1,
-            isMasterDataSynced: 0,
-          ));
-
-        emit(state.copyWith(
-          listCustomaryUseRight: data,
-          listCustomaryUseRights: farmerData,
-        ));
-        break;
-    }
+    // switch (type) {
+    //   case AdditionalInfoEnum.socialUpliftment:
+    //     final data = <SocialUpliftment>[];
+    //     final farmerData = <FarmStakeholderSocialUpliftment>[];
+    //
+    //     final socialUpliftmentId = DateTime.now().millisecondsSinceEpoch.toString();
+    //
+    //     data
+    //       ..addAll(state.listSocialUpliftments ?? [])
+    //       ..add(SocialUpliftment(
+    //         socialUpliftmentId: socialUpliftmentId,
+    //         socialUpliftmentName: name,
+    //         isActive: true,
+    //         isMasterDataSynced: 0,
+    //       ));
+    //
+    //     farmerData
+    //       ..addAll(state.listFarmSocialUpliftments ?? [])
+    //       ..add(FarmStakeholderSocialUpliftment(
+    //         socialUpliftmentId: socialUpliftmentId,
+    //         farmStakeholderSocialUpliftmentId: DateTime.now().microsecondsSinceEpoch.toString(),
+    //         isActive: 1,
+    //         isMasterDataSynced: 0,
+    //       ));
+    //
+    //     emit(state.copyWith(
+    //       listSocialUpliftment: data,
+    //       listSocialUpliftments: farmerData,
+    //     ));
+    //     break;
+    //   case AdditionalInfoEnum.specialSite:
+    //     final data = <SpecialSite>[];
+    //     final farmerData = <FarmStakeholderSpecialSite>[];
+    //
+    //     final specialSiteId = DateTime.now().millisecondsSinceEpoch.toString();
+    //
+    //     data
+    //       ..addAll(state.listSpecialSites ?? [])
+    //       ..add(SpecialSite(
+    //         specialSiteId: specialSiteId,
+    //         specialSiteName: name,
+    //         isActive: true,
+    //         isMasterDataSynced: 0,
+    //       ));
+    //     farmerData
+    //       ..addAll(state.listFarmSpecialSites ?? [])
+    //       ..add(FarmStakeholderSpecialSite(
+    //         specialSiteId: specialSiteId,
+    //         isActive: 1,
+    //         farmStakeholderSpecialSiteId: DateTime.now().microsecondsSinceEpoch.toString(),
+    //         isMasterDataSynced: 0,
+    //       ));
+    //
+    //     emit(state.copyWith(
+    //       listSpecialSite: data,
+    //       listSpecialSites: farmerData,
+    //     ));
+    //     break;
+    //   case AdditionalInfoEnum.customaryUseRight:
+    //     final data = <CustomaryUseRight>[];
+    //     final farmerData = <FarmStakeholderCustomaryUseRight>[];
+    //
+    //     final customaryUseRightId =
+    //     DateTime.now().millisecondsSinceEpoch.toString();
+    //
+    //     data
+    //       ..addAll(state.listCustomaryUseRights ?? [])
+    //       ..add(CustomaryUseRight(
+    //         customaryUseRightId: customaryUseRightId,
+    //         customaryUseRightName: name,
+    //         isActive: true,
+    //         isMasterDataSynced: 0,
+    //       ));
+    //
+    //     farmerData
+    //       ..addAll(state.listFarmCustomaryUseRights ?? [])
+    //       ..add(FarmStakeholderCustomaryUseRight(
+    //         customaryUseRightId: customaryUseRightId,
+    //         farmStakeholderCustomaryUseRightId: DateTime.now().microsecondsSinceEpoch.toString(),
+    //         isActive: 1,
+    //         isMasterDataSynced: 0,
+    //       ));
+    //
+    //     emit(state.copyWith(
+    //       listCustomaryUseRight: data,
+    //       listCustomaryUseRights: farmerData,
+    //     ));
+    //     break;
+    // }
   }
 
   Future<void> onSaveAdditionalInfo(String? farmStakeholderId) async {
     final futures = <Future<void>>[];
 
-    for (final item in state.listCustomaryUseRight ?? <CustomaryUseRight>[]) {
+    for (final item in state.listCustomaryUseRights ?? <CustomaryUseRight>[]) {
       futures.add(cmoDatabaseMasterService.cacheCustomaryUseRightFromFarm(item));
     }
 
-    for (final item in state.listCustomaryUseRights ?? <FarmStakeholderCustomaryUseRight>[]) {
+    for (final item in state.listFarmCustomaryUseRights ?? <FarmStakeholderCustomaryUseRight>[]) {
       futures.add(
         cmoDatabaseMasterService.cacheFarmStakeholderCustomaryUseRights(
           item.copyWith(
@@ -204,11 +259,11 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
       );
     }
 
-    for (final item in state.listSocialUpliftment ?? <SocialUpliftment>[]) {
+    for (final item in state.listSocialUpliftments ?? <SocialUpliftment>[]) {
       futures.add(cmoDatabaseMasterService.cacheSocialUpliftmentFromFarm(item));
     }
 
-    for (final item in state.listSocialUpliftments ?? <FarmStakeholderSocialUpliftment>[]) {
+    for (final item in state.listFarmSocialUpliftments ?? <FarmStakeholderSocialUpliftment>[]) {
       futures.add(
         cmoDatabaseMasterService.cacheFarmStakeholderSocialUpliftments(
           item.copyWith(
@@ -218,11 +273,11 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
       );
     }
 
-    for (final item in state.listSpecialSite ?? <SpecialSite>[]) {
+    for (final item in state.listSpecialSites ?? <SpecialSite>[]) {
       futures.add(cmoDatabaseMasterService.cacheSpecialSiteFromFarm(item));
     }
 
-    for (final item in state.listSpecialSites ?? <FarmStakeholderSpecialSite>[]) {
+    for (final item in state.listFarmSpecialSites ?? <FarmStakeholderSpecialSite>[]) {
       futures.add(
         cmoDatabaseMasterService.cacheFarmStakeholderSpecialSites(
           item.copyWith(
@@ -235,20 +290,34 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
     await Future.wait(futures);
   }
 
-  Future<void> onSaveStakeholder(
-    StakeHolder stakeholder,
-    bool isEditing, {
+  bool onValidateRequireField() {
+    if (state.stakeHolder?.stakeHolderTypeId == null ||
+        (state.stakeHolder?.contactName?.isBlank ?? true) ||
+        (state.stakeHolder?.stakeholderName?.isBlank ?? true)) {
+      emit(
+        state.copyWith(
+          isSelectTypeError: state.stakeHolder?.stakeHolderTypeId == null,
+          isEntityNameError: state.stakeHolder?.contactName?.isBlank ?? true,
+          isContactNameError: state.stakeHolder?.stakeholderName?.isBlank ?? true,
+        ),
+      );
+
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<void> onSaveStakeholder(bool isEditing, {
     required void Function(int?) onCallback,
   }) async {
-    emit(
-      state.copyWith(
-        stakeHolder: stakeholder,
-      ),
-    );
+    if(onValidateRequireField()) {
+      return;
+    }
 
     final databaseService = cmoDatabaseMasterService;
     final resultId = await databaseService.cacheStakeholder(
-      stakeholder.copyWith(
+      state.stakeHolder!.copyWith(
         isActive: 1,
         isMasterDataSynced: 0,
       ),

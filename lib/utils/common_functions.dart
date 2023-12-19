@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 class CommonFunctions {
   static Future<void> makePhoneCall(String? phoneNumber) async {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (phoneNumber.isBlank) {
       return;
     }
@@ -21,6 +22,7 @@ class CommonFunctions {
   }
 
   static Future<void> sendSms(String? phoneNumber) async {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (phoneNumber.isBlank) {
       return;
     }
