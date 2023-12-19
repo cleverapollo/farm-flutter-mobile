@@ -65,7 +65,7 @@ class CmoBehaveApiService {
       };
 
       final response = await client.post<JsonData>(
-        '${_apiAuthUrl}login',
+        '${_apiAuthUrl}Login',
         data: body,
       );
 

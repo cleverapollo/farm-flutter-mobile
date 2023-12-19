@@ -56,7 +56,7 @@ class CmoPerformApiService {
       };
 
       final response = await client.post<JsonData>(
-        '${Env.performDnnAuthUrl}login',
+        '${Env.performDnnAuthUrl}Login',
         data: body,
       );
 
@@ -517,7 +517,7 @@ class CmoPerformApiService {
     int? groupSchemeId,
   }) async {
     final response = await client.get<JsonListData>(
-      '${Env.apiGroupSchemeUrl}GroupSchemeJobDescription/GetAll?',
+      '${Env.apiGroupSchemeUrl}GroupSchemeJobDescription?',
       queryParameters: {
         "JobDescriptionId": jobDescriptionId,
         "GroupSchemeId": groupSchemeId,
