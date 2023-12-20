@@ -85,7 +85,7 @@ class _PetsAndDiseaseScreenState extends BaseStatefulWidgetState<PetsAndDiseaseS
                               },
 
                               child: RegisterItem(
-                                title: '${LocaleKeys.p_d_no.tr()} : ${state.filterPetsAndDiseaseRegisters[index].pestsAndDiseasesRegisterNo}',
+                                title: '${LocaleKeys.pests_diseases.tr()} : ${state.filterPetsAndDiseaseRegisters[index].pestsAndDiseasesRegisterNo}',
                                 mapData: generateInformationMapData(state.filterPetsAndDiseaseRegisters[index]),
                               ),
                             ),
@@ -103,7 +103,9 @@ class _PetsAndDiseaseScreenState extends BaseStatefulWidgetState<PetsAndDiseaseS
       LocaleKeys.treatment_methods.tr(): registerItem.pestsAndDiseaseTreatmentMethods,
       LocaleKeys.numbers_of_outbreaks.tr(): (registerItem.numberOfOutbreaks ?? 0).toString(),
       LocaleKeys.area_lost.tr(): (registerItem.areaLost ?? 0).toString(),
-      LocaleKeys.under_control.tr(): (registerItem.underControl ?? false).toString(),
+      LocaleKeys.under_control.tr(): (registerItem.underControl ?? false)
+          ? LocaleKeys.yes.tr()
+          : LocaleKeys.no.tr(),
       LocaleKeys.general_comments.tr(): registerItem.comment,
     };
   }

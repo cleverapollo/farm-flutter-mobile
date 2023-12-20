@@ -230,12 +230,9 @@ class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Biolog
                             setState(() {});
                           },
                           child: RegisterItem(
-                            title: '${LocaleKeys.complaintNo.tr()}: ${itemMapping.biologicalControlAgentRegisterNo?.toString()}',
+                            title: '${LocaleKeys.bca_no.tr()}: ${itemMapping.biologicalControlAgentRegisterNo?.toString()}',
                             mapData: generateInformationMapData(itemMapping),
                           ),
-                          // _BiologicalControlAgentItem(
-                          //   agent: itemMapping,
-                          // ),
                         );
                       },
                     ),

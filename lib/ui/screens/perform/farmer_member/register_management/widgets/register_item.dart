@@ -1,3 +1,4 @@
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
@@ -53,16 +54,65 @@ class RegisterItem extends StatelessWidget {
     final children = <Widget>[];
     for (var index = 0; index < mapData.keys.length; index++) {
       final keyString = mapData.keys.elementAt(index);
-      children.add(
-        InformationRowItem(
-          keyString: keyString,
-          value: mapData[keyString],
-          isGreyBackground: index.isOdd,
-        ),
-      );
+      if (keyString.contains(LocaleKeys.general_comments.tr())) {
+        children.add(
+          GeneralCommentItem(
+            value: mapData[keyString],
+            isGreyBackground: index.isOdd,
+          ),
+        );
+      } else {
+        children.add(
+          InformationRowItem(
+            keyString: keyString,
+            value: mapData[keyString],
+            isGreyBackground: index.isOdd,
+          ),
+        );
+      }
     }
 
     return children;
+  }
+}
+
+class GeneralCommentItem extends StatelessWidget {
+  final String? value;
+  final bool isGreyBackground;
+
+  const GeneralCommentItem({
+    super.key,
+    required this.value,
+    this.isGreyBackground = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final backgroundColor = isGreyBackground ? context.colors.greyLight1 : context.colors.white;
+    return Container(
+      color: backgroundColor,
+      padding: const EdgeInsets.fromLTRB(4, 8, 11, 8),
+      width: double.infinity,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            LocaleKeys.general_comments.tr(),
+            textAlign: TextAlign.left,
+            overflow: TextOverflow.ellipsis,
+            style: context.textStyles.bodyBold,
+          ),
+          Text(
+            value ?? '',
+            textAlign: TextAlign.left,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: context.textStyles.bodyNormal,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -94,7 +144,7 @@ class InformationRowItem extends StatelessWidget {
               textAlign: TextAlign.left,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: context.textStyles.bodyNormal,
+              style: context.textStyles.bodyBold,
             ),
           ),
           Expanded(

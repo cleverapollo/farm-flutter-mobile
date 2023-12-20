@@ -64,8 +64,7 @@ class AddStakeHolderComplaintScreen extends BaseStatefulWidget {
   }
 }
 
-class _AddStakeHolderComplaintScreenState
-    extends BaseStatefulWidgetState<AddStakeHolderComplaintScreen> {
+class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddStakeHolderComplaintScreen> {
   late final AddStakeHolderComplaintCubit cubit;
   final _formKey = GlobalKey<FormBuilderState>();
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;

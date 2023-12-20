@@ -8,6 +8,7 @@ import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disput
 import 'package:cmo/state/stake_holder_complaint/stake_holder_complaint_cubit.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/add_stake_holder_complaint/add_stake_holder_complaint_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/status_filter_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -93,7 +94,7 @@ class _StakeHolderComplaintScreenState extends BaseStatefulWidgetState<StakeHold
               BlocBuilder<StateHolderComplaintCubit, StakeHolderComplaintState>(
             builder: (context, state) {
               if (state.isDataReady) {
-                return _buildBody(cubit.state.items);
+                return _buildBody(state);
               }
               return const Center(child: CircularProgressIndicator());
             },
@@ -103,39 +104,31 @@ class _StakeHolderComplaintScreenState extends BaseStatefulWidgetState<StakeHold
     );
   }
 
-  Widget _buildBody(List<ComplaintsAndDisputesRegister> items) {
+  Widget _buildBody(StakeHolderComplaintState state) {
     return Column(
       children: [
-        CmoTappable(
-          onTap: () => {},
-          child: CmoCard(
-            childAlignment: MainAxisAlignment.center,
-            content: [
-              CmoCardHeader(title: LocaleKeys.summary.tr()),
-              CmoCardHeader(
-                title: LocaleKeys.total.tr(),
-                valueEnd: items.length.toString(),
-              ),
-            ],
-            trailing: Assets.icons.icDown.svgWhite,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(21, 0, 21, 16),
+          child: StatusFilterWidget(
+            onSelectFilter: cubit.onFilterStatus,
+            statusFilter: state.statusFilter,
           ),
         ),
-        const SizedBox(height: 24),
         Expanded(
           child: ListView.separated(
             separatorBuilder: (context, index) => const SizedBox(
               height: 22,
             ),
-            itemCount: items.length,
+            itemCount: state.filterItems.length,
             itemBuilder: (context, index) {
-              final item = items[index];
+              final item = state.filterItems[index];
               return GestureDetector(
                 onTap: () {
                   onNavigateToEditGrievance(index, item);
                 },
                 child: RegisterItem(
-                  title: '${LocaleKeys.complaintNo.tr()}: ${items[index].complaintsAndDisputesRegisterNo?.toString()}',
-                  mapData: generateInformationMapData(items[index]),
+                  title: '${LocaleKeys.complaintNo.tr()}: ${item.complaintsAndDisputesRegisterNo?.toString()}',
+                  mapData: generateInformationMapData(item),
                 ),
               );
             },
