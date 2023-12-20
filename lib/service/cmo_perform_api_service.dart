@@ -831,18 +831,11 @@ class CmoPerformApiService {
     return data?.map((e) => Farm.fromJson(e as JsonData)).toList();
   }
 
-  /// need to check again
-  Future<ForceUpdateModel?> checkUpdate(
-      String currentVersion,
-      ) async {
+  Future<CheckForUpdate?> checkUpdate() async {
     try {
-      return ForceUpdateModel(
-        forceUpdate: false,
-        shouldUpdate: false,
-      );
       final response = await client.get<JsonData?>(
-        '${Env.performDnnApiUrl}check-version',
-        queryParameters: {'version': currentVersion,},
+        '${Env.performDnnApiUrl}GetLatestAppVersion?',
+        queryParameters: {'appName': 'empower',},
         options: Options(headers: {'accessToken': 'false'}),
       );
 
@@ -852,7 +845,7 @@ class CmoPerformApiService {
       }
 
       final data = response.data;
-      return data == null ? null : ForceUpdateModel.fromJson(data);
+      return data == null ? null : CheckForUpdate.fromJson(data);
     } catch (e) {
       logger.d('Cannot insertUpdatedCompartment $e');
       return null;

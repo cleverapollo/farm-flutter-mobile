@@ -30,30 +30,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> checkForUpdate() async {
-    final forceUpdateModel = await appInfoService.checkUpdate();
-    if (forceUpdateModel == null) {
-      return;
-    }
-
-    if (forceUpdateModel.forceUpdate) {
+    final shouldUpdate = await appInfoService.checkForUpdate();
+    if (shouldUpdate) {
       showUpdateDialog(
         context,
         canPopWithBackButtonAndroid: false,
         functionRight: () {
-          appInfoService.goToStore();
-        },
-      );
-    } else if (forceUpdateModel.shouldUpdate) {
-      showUpdateDialog(
-        context,
-        canPopWithBackButtonAndroid: false,
-        isShow2Button: true,
-        functionLeft: () {
-          Navigator.of(context).pop();
-          processWithoutUpdate();
-        },
-        functionRight: () {
-          Navigator.of(context).pop();
           appInfoService.goToStore();
         },
       );

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -16,9 +17,15 @@ class AppInfoService {
     appName = packageInfo.appName;
   }
 
-  Future<ForceUpdateModel?> checkUpdate() async {
-    final forceUpdateModel = await cmoPerformApiService.checkUpdate(version ?? '');
-    return forceUpdateModel;
+  Future<bool> checkForUpdate() async {
+    final checkForUpdate = await cmoPerformApiService.checkUpdate();
+    final currentVersion = version?.getExtendedVersionNumber();
+    final latestVersion = checkForUpdate?.versionNumber?.getExtendedVersionNumber();
+    if (currentVersion != null && latestVersion != null) {
+      return currentVersion.compareTo(latestVersion) == -1;
+    }
+
+    return false;
   }
 
   Future<void> goToStore() async {
