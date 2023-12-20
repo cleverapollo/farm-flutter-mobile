@@ -9,6 +9,9 @@ import 'package:cmo/state/stake_holder_list_cubit/stake_holder_detail_cubit.dart
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/select_customary_use_rights.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/select_social_upliftments.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/select_special_sites.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
@@ -218,7 +221,10 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
                         );
                       },
                     ),
-                    // _buildAdditionalInfo(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: _buildAdditionalInfo(),
+                    ),
                     const SizedBox(
                       height: 80,
                     ),
@@ -277,14 +283,6 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
     );
   }
 
-  Widget _buildDividerWidget() {
-    return Divider(
-      height: 2,
-      thickness: 1,
-      color: context.colors.grey,
-    );
-  }
-
   Widget _buildSelectWorkerWidget() {
     return BlocBuilder<StakeholderDetailCubit, StakeholderDetailState>(
       builder: (context, state) {
@@ -336,6 +334,144 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
     );
   }
 
+  Widget _buildSelectSocialUpliftments() {
+    return BlocBuilder<StakeholderDetailCubit, StakeholderDetailState>(
+      builder: (context, state) {
+        return InkWell(
+          onTap: () {
+            SelectSocialUpliftments.push(
+              context: context,
+              onSave: context.read<StakeholderDetailCubit>().onChangeSocialUpliftment,
+              stakeholderName: state.stakeHolder?.stakeholderName,
+              listFarmSocialUpliftments: state.listFarmSocialUpliftments,
+              listSocialUpliftments: state.listSocialUpliftments,
+            );
+          },
+          child: AttributeItem(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 12,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      LocaleKeys.social_upliftments.tr(),
+                      style: context.textStyles.bodyBold.blueDark2,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    state.listFarmSocialUpliftments.length.toString(),
+                    style: context.textStyles.bodyBold.blueDark2,
+                  ),
+                  const SizedBox(
+                    width: 50,
+                  ),
+                  Assets.icons.icArrowRight.svgBlack,
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSelectSpecialSites() {
+    return BlocBuilder<StakeholderDetailCubit, StakeholderDetailState>(
+      builder: (context, state) {
+        return InkWell(
+          onTap: () {
+            SelectSpecialSite.push(
+              context: context,
+              onSave: context.read<StakeholderDetailCubit>().onChangeSpecialSite,
+              stakeholderName: state.stakeHolder?.stakeholderName,
+              listFarmSpecialSite: state.listFarmSpecialSites,
+              listSpecialSite: state.listSpecialSites,
+            );
+          },
+          child: AttributeItem(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 12,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      LocaleKeys.special_sites.tr(),
+                      style: context.textStyles.bodyBold.blueDark2,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    state.listFarmSpecialSites.length.toString(),
+                    style: context.textStyles.bodyBold.blueDark2,
+                  ),
+                  const SizedBox(
+                    width: 50,
+                  ),
+                  Assets.icons.icArrowRight.svgBlack,
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSelectCustomaryUseRights() {
+    return BlocBuilder<StakeholderDetailCubit, StakeholderDetailState>(
+      builder: (context, state) {
+        return InkWell(
+          onTap: () {
+            SelectCustomaryUseRight.push(
+              context: context,
+              onSave: context.read<StakeholderDetailCubit>().onChangeCustomaryUseRight,
+              stakeholderName: state.stakeHolder?.stakeholderName,
+              listFarmCustomaryUseRight: state.listFarmCustomaryUseRights,
+              listCustomaryUseRight: state.listCustomaryUseRights,
+            );
+          },
+          child: AttributeItem(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 12,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      LocaleKeys.customary_use_rights.tr(),
+                      style: context.textStyles.bodyBold.blueDark2,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    state.listFarmCustomaryUseRights.length.toString(),
+                    style: context.textStyles.bodyBold.blueDark2,
+                  ),
+                  const SizedBox(
+                    width: 50,
+                  ),
+                  Assets.icons.icArrowRight.svgBlack,
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildAdditionalInfo() {
     return BlocBuilder<StakeholderDetailCubit, StakeholderDetailState>(
       builder: (context, state) {
@@ -347,113 +483,12 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 24),
-            Text(
-              'Additional Info',
-              textAlign: TextAlign.start,
-              style: context.textStyles.bodyBold.black,
-            ),
-            _buildDividerWidget(),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${state.listFarmSocialUpliftments?.length} Social Upliftments',
-                  style: context.textStyles.bodyNormal.black,
-                ),
-                InkWell(
-                    onTap: () => showAdditionalInfoDialog(
-                        context: context,
-                        title: 'Add Social Upliftment',
-                        type: AdditionalInfoEnum.socialUpliftment),
-                    child: const Icon(Icons.add_circle_outline)),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${state.listFarmSpecialSites?.length} Special Sites',
-                  style: context.textStyles.bodyNormal.black,
-                ),
-                InkWell(
-                    onTap: () => showAdditionalInfoDialog(
-                        context: context,
-                        title: 'Add Special Site',
-                        type: AdditionalInfoEnum.specialSite),
-                    child: const Icon(Icons.add_circle_outline)),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${state.listFarmCustomaryUseRights?.length} Customary Use Rights',
-                  style: context.textStyles.bodyNormal.black,
-                ),
-                InkWell(
-                    onTap: () => showAdditionalInfoDialog(
-                        context: context,
-                        title: 'Add Customary Use Right',
-                        type: AdditionalInfoEnum.customaryUseRight),
-                    child: const Icon(Icons.add_circle_outline)),
-              ],
-            ),
-            const SizedBox(height: 32),
+            _buildSelectSocialUpliftments(),
+            _buildSelectSpecialSites(),
+            _buildSelectCustomaryUseRights(),
           ],
         );
       },
     );
   }
-}
-
-Future<void> showAdditionalInfoDialog({
-  required BuildContext context,
-  required String title,
-  required AdditionalInfoEnum type,
-}) async {
-  return showDialog<void>(
-    context: context,
-    builder: (BuildContext _) {
-      String? name = '';
-      return AlertDialog(
-        title: const Text('Additional Info'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text(
-                title,
-                style: context.textStyles.bodyBold.black,
-              ),
-              TextField(
-                onChanged: (p0) {
-                  name = p0;
-                },
-              ),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(LocaleKeys.ok.tr().toUpperCase()),
-            onPressed: () {
-              context
-                  .read<StakeholderDetailCubit>()
-                  .onCreateAdditionalInfo(type, name ?? '');
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
 }

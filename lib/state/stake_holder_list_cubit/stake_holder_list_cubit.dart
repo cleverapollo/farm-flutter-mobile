@@ -14,13 +14,31 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
     emit(state.copyWith(loadingList: true));
     try {
       final service = cmoDatabaseMasterService;
-      final data = await service.getStakeHolders();
-      emit(
-        state.copyWith(
-          listStakeHolders: data,
-          filterListStakeHolders: data,
-        ),
-      );
+
+      final currentRole = await configService.getActiveUserRole();
+      switch (currentRole) {
+        case UserRoleEnum.farmerMember:
+          final listStakeHolders = await cmoDatabaseMasterService.getAllActiveStakeholdersByFarmStakeholder();
+          emit(
+            state.copyWith(
+              listStakeHolders: listStakeHolders,
+              filterListStakeHolders: listStakeHolders,
+            ),
+          );
+
+          break;
+        case UserRoleEnum.regionalManager:
+          final data = await service.getStakeHolders();
+          emit(
+            state.copyWith(
+              listStakeHolders: data,
+              filterListStakeHolders: data,
+            ),
+          );
+          break;
+        default:
+          break;
+      }
     } catch (e) {
       emit(state.copyWith(error: e));
       showSnackError(msg: e.toString());

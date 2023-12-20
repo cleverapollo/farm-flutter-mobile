@@ -60,7 +60,7 @@ class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Biolog
 
       countries = await cmoDatabaseMasterService.getCountry();
 
-      stakeHolders = await cmoDatabaseMasterService.getStakeHolders();
+      stakeHolders = await cmoDatabaseMasterService.getAllActiveStakeholdersByFarmStakeholder();
       // final farmStakeHolders = await cmoDatabaseMasterService
       //     .getFarmStakeHolderByFarmId(farm?.farmId ?? '');
       //

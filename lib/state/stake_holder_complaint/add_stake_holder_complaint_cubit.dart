@@ -24,7 +24,7 @@ class AddStakeHolderComplaintCubit extends Cubit<AddStakeHolderComplaintState> {
   Future<void> onInit() async {
     try {
       final farm = await configService.getActiveFarm();
-      final stakeholders = await cmoDatabaseMasterService.getStakeHolders();
+      final stakeholders = await cmoDatabaseMasterService.getAllActiveStakeholdersByFarmStakeholder();
       emit(
         state.copyWith(
           isDataReady: true,

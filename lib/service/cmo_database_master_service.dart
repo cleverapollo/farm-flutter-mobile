@@ -743,31 +743,34 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<FarmStakeholderCustomaryUseRight>>
-      getFarmStakeholderCustomaryUseRights({required int stakeholderId}) async {
+      getFarmStakeholderCustomaryUseRights({required String? farmStakeholderId}) async {
+    if (farmStakeholderId.isBlank) return <FarmStakeholderCustomaryUseRight>[];
     final db = await _db();
     return db.farmStakeholderCustomaryUseRights
         .filter()
-        .farmStakeholderIdEqualTo(stakeholderId.toString())
+        .farmStakeholderIdEqualTo(farmStakeholderId)
         .isActiveEqualTo(1)
         .findAll();
   }
 
   Future<List<FarmStakeholderSocialUpliftment>>
-      getFarmStakeholderSocialUpliftments({required int stakeholderId}) async {
+      getFarmStakeholderSocialUpliftments({required String? farmStakeholderId}) async {
+    if (farmStakeholderId.isBlank) return <FarmStakeholderSocialUpliftment>[];
     final db = await _db();
     return db.farmStakeholderSocialUpliftments
         .filter()
-        .farmStakeholderIdEqualTo(stakeholderId.toString())
+        .farmStakeholderIdEqualTo(farmStakeholderId)
         .isActiveEqualTo(1)
         .findAll();
   }
 
   Future<List<FarmStakeholderSpecialSite>> getFarmStakeholderSpecialSites(
-      {required int stakeholderId}) async {
+      {required String? farmStakeholderId}) async {
+    if (farmStakeholderId.isBlank) return <FarmStakeholderSpecialSite>[];
     final db = await _db();
     return db.farmStakeholderSpecialSites
         .filter()
-        .farmStakeholderIdEqualTo(stakeholderId.toString())
+        .farmStakeholderIdEqualTo(farmStakeholderId)
         .isActiveEqualTo(1)
         .findAll();
   }
@@ -787,9 +790,26 @@ class CmoDatabaseMasterService {
     }
   }
 
+  Future<List<StakeHolder>> getAllActiveStakeholdersByFarmStakeholder() async {
+    final farmerStakeholders = await getFarmStakeholder();
+    var listStakeHolders = <StakeHolder>[];
+    if (farmerStakeholders.isNotBlank) {
+      for(final farmerStakeholder in farmerStakeholders) {
+        final stakeholder = await getStakeHoldersByStakeHolderId(farmerStakeholder.stakeHolderId);
+        if (stakeholder != null) {
+          listStakeHolders.add(stakeholder);
+        }
+      }
+
+      return listStakeHolders;
+    }
+
+    return <StakeHolder>[];
+  }
+
   Future<List<FarmStakeHolder>> getFarmStakeholder() async {
     final db = await _db();
-    return db.farmStakeHolders.where().findAll();
+    return db.farmStakeHolders.where().sortByCreateDTDesc().findAll();
   }
 
   Future<FarmStakeHolder?> getFarmStakeholderByStakeholderId(
@@ -3182,14 +3202,15 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<StakeHolder>> getStakeHoldersByStakeHolderId(String id) async {
+  Future<StakeHolder?> getStakeHoldersByStakeHolderId(String? id) async {
+    if (id.isBlank) return null;
     final db = await _db();
     return db.stakeHolders
         .filter()
         .stakeHolderIdEqualTo(id)
         .isActiveEqualTo(1)
         .sortByCreateDTDesc()
-        .findAll();
+        .findFirst();
   }
 
   Future<bool> removeStakeHolder(int stakeHolderId) async {

@@ -26,12 +26,11 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
         getCharcoalPlantationRole = userInfo.getCharcoalPlantationRole;
       }
 
-      final totalStakeholder =
-          await cmoDatabaseMasterService.getCountStakeholder();
+      final totalStakeholder = await cmoDatabaseMasterService.getAllActiveStakeholdersByFarmStakeholder();
       emit(state.copyWith(
           farmDashBoardInfo: FarmDashBoardInfo(
             totalLabour: data.length,
-            totalStakeholder: totalStakeholder,
+            totalStakeholder: totalStakeholder.length,
               charcoalPlantationRoleEnum: getCharcoalPlantationRole,
           ),
           loading: false));

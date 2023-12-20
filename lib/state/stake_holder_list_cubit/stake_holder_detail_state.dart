@@ -8,12 +8,12 @@ class StakeholderDetailState {
   final Farm? farm;
   final StakeHolder? stakeHolder;
   final List<StakeHolderType>? listStakeholderTypes;
-  final List<FarmStakeholderSocialUpliftment>? listFarmSocialUpliftments;
-  final List<FarmStakeholderCustomaryUseRight>? listFarmCustomaryUseRights;
-  final List<FarmStakeholderSpecialSite>? listFarmSpecialSites;
-  final List<SocialUpliftment>? listSocialUpliftments;
-  final List<SpecialSite>? listSpecialSites;
-  final List<CustomaryUseRight>? listCustomaryUseRights;
+  final List<FarmStakeholderSocialUpliftment> listFarmSocialUpliftments;
+  final List<FarmStakeholderCustomaryUseRight> listFarmCustomaryUseRights;
+  final List<FarmStakeholderSpecialSite> listFarmSpecialSites;
+  final List<SocialUpliftment> listSocialUpliftments;
+  final List<SpecialSite> listSpecialSites;
+  final List<CustomaryUseRight> listCustomaryUseRights;
 
   final bool isSelectTypeError;
   final bool isEntityNameError;

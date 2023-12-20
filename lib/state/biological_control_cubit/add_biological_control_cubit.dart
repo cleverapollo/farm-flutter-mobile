@@ -33,7 +33,7 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
 
       final countries = await cmoDatabaseMasterService.getCountry();
 
-      final stakeHolders = await cmoDatabaseMasterService.getStakeHolders();
+      final stakeHolders = await cmoDatabaseMasterService.getAllActiveStakeholdersByFarmStakeholder();
 
       // final farmStakeHolders = await cmoDatabaseMasterService
       //     .getFarmStakeHolderByFarmId(farm?.farmId ?? '');
