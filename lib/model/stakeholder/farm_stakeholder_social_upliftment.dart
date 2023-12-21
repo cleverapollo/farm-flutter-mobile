@@ -16,7 +16,7 @@ class FarmStakeholderSocialUpliftment with _$FarmStakeholderSocialUpliftment {
         String? farmStakeholderSocialUpliftmentId,
     @JsonKey(name: 'FarmStakeholderId') String? farmStakeholderId,
     @JsonKey(name: 'SocialUpliftmentId') String? socialUpliftmentId,
-    @JsonKey(name: 'IsActive') int? isActive,
+    @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _FarmStakeholderSocialUpliftment;
 
@@ -29,16 +29,4 @@ class FarmStakeholderSocialUpliftment with _$FarmStakeholderSocialUpliftment {
   Id get id =>
       int.tryParse(farmStakeholderSocialUpliftmentId ?? '') ??
       Isar.autoIncrement;
-}
-
-extension FarmStakeholderSocialUpliftmentX on FarmStakeholderSocialUpliftment {
-  FarmStakeholderSocialUpliftmentPayLoad toPayLoad() {
-    return FarmStakeholderSocialUpliftmentPayLoad(
-      FarmStakeholderSocialUpliftmentId: farmStakeholderSocialUpliftmentId,
-      FarmStakeholderId: farmStakeholderId,
-      SocialUpliftmentId: socialUpliftmentId,
-      IsActive: isActive,
-      IsMasterDataSynced: isMasterDataSynced,
-    );
-  }
 }

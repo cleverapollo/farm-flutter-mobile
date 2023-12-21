@@ -431,11 +431,17 @@ class CmoDatabaseMasterService {
   }
 
   Future<int?> cacheFarmStakeholderSocialUpliftments(
-      FarmStakeholderSocialUpliftment item) async {
+    FarmStakeholderSocialUpliftment item, {
+    bool isDirect = false,
+  }) async {
     final db = await _db();
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.farmStakeholderSocialUpliftments.put(item);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.farmStakeholderSocialUpliftments.put(item);
+      });
+    }
   }
 
   Future<List<FarmStakeholderSpecialSite>>
@@ -472,11 +478,15 @@ class CmoDatabaseMasterService {
   }
 
   Future<int?> cacheFarmStakeholderCustomaryUseRights(
-      FarmStakeholderCustomaryUseRight item) async {
+      FarmStakeholderCustomaryUseRight item, {bool isDirect = false,}) async {
     final db = await _db();
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.farmStakeholderCustomaryUseRights.put(item);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.farmStakeholderCustomaryUseRights.put(item);
+      });
+    }
   }
 
   Future<List<StakeHolder>> getUnsyncedStakeholder() async {
@@ -749,7 +759,7 @@ class CmoDatabaseMasterService {
     return db.farmStakeholderCustomaryUseRights
         .filter()
         .farmStakeholderIdEqualTo(farmStakeholderId)
-        .isActiveEqualTo(1)
+        .isActiveEqualTo(true)
         .findAll();
   }
 
@@ -760,7 +770,7 @@ class CmoDatabaseMasterService {
     return db.farmStakeholderSocialUpliftments
         .filter()
         .farmStakeholderIdEqualTo(farmStakeholderId)
-        .isActiveEqualTo(1)
+        .isActiveEqualTo(true)
         .findAll();
   }
 
@@ -771,7 +781,7 @@ class CmoDatabaseMasterService {
     return db.farmStakeholderSpecialSites
         .filter()
         .farmStakeholderIdEqualTo(farmStakeholderId)
-        .isActiveEqualTo(1)
+        .isActiveEqualTo(true)
         .findAll();
   }
 

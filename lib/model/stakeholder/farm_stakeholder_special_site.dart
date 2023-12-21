@@ -16,7 +16,7 @@ class FarmStakeholderSpecialSite with _$FarmStakeholderSpecialSite {
         String? farmStakeholderSpecialSiteId,
     @JsonKey(name: 'FarmStakeholderId') String? farmStakeholderId,
     @JsonKey(name: 'SpecialSiteId') String? specialSiteId,
-    @JsonKey(name: 'IsActive') int? isActive,
+    @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _FarmStakeholderSpecialSite;
 
@@ -28,16 +28,4 @@ class FarmStakeholderSpecialSite with _$FarmStakeholderSpecialSite {
   @override
   Id get id =>
       int.tryParse(farmStakeholderSpecialSiteId ?? '') ?? Isar.autoIncrement;
-}
-
-extension FarmStakeholderSpecialSiteX on FarmStakeholderSpecialSite {
-  FarmStakeholderSpecialSitePayLoad toPayLoad() {
-    return FarmStakeholderSpecialSitePayLoad(
-      FarmStakeholderSpecialSiteId: farmStakeholderSpecialSiteId,
-      SpecialSiteId: specialSiteId,
-      FarmStakeholderId: farmStakeholderId,
-      IsActive: isActive,
-      IsMasterDataSynced: isMasterDataSynced,
-    );
-  }
 }

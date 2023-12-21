@@ -16,7 +16,7 @@ class FarmStakeholderCustomaryUseRight with _$FarmStakeholderCustomaryUseRight {
         String? farmStakeholderCustomaryUseRightId,
     @JsonKey(name: 'FarmStakeholderId') String? farmStakeholderId,
     @JsonKey(name: 'CustomaryUseRightId') String? customaryUseRightId,
-    @JsonKey(name: 'IsActive') int? isActive,
+    @JsonKey(name: 'IsActive') bool? isActive,
     @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
   }) = _FarmStakeholderCustomaryUseRight;
 
@@ -30,17 +30,4 @@ class FarmStakeholderCustomaryUseRight with _$FarmStakeholderCustomaryUseRight {
   Id get id =>
       int.tryParse(farmStakeholderCustomaryUseRightId ?? '') ??
       Isar.autoIncrement;
-}
-
-extension FarmStakeholderCustomaryUseRightX
-    on FarmStakeholderCustomaryUseRight {
-  FarmStakeholderCustomaryUseRightPayLoad toPayLoad() {
-    return FarmStakeholderCustomaryUseRightPayLoad(
-      FarmStakeholderCustomaryUseRightId: farmStakeholderCustomaryUseRightId,
-      FarmStakeholderId: farmStakeholderId,
-      CustomaryUseRightId: customaryUseRightId,
-      IsActive: isActive,
-      IsMasterDataSynced: isMasterDataSynced,
-    );
-  }
 }

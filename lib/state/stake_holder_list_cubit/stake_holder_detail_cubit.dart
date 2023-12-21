@@ -155,7 +155,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
               (element) => FarmStakeholderSocialUpliftment(
                 socialUpliftmentId: element.socialUpliftmentId,
                 farmStakeholderSocialUpliftmentId: (now++).toString(),
-                isActive: 1,
+                isActive: true,
                 isMasterDataSynced: 0,
               ),
             )
@@ -173,7 +173,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
               (element) => FarmStakeholderSpecialSite(
                 specialSiteId: element.specialSiteId,
                 farmStakeholderSpecialSiteId: (now++).toString(),
-                isActive: 1,
+                isActive: true,
                 isMasterDataSynced: 0,
               ),
             )
@@ -191,7 +191,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
               (element) => FarmStakeholderCustomaryUseRight(
                 customaryUseRightId: element.customaryUseRightId,
                 farmStakeholderCustomaryUseRightId: (now++).toString(),
-                isActive: 1,
+                isActive: true,
                 isMasterDataSynced: 0,
               ),
             )
