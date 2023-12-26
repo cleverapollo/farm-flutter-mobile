@@ -1,17 +1,15 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/pest_and_disease_type/pest_and_disease_type.dart';
 import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and_diseases_register_treatment_method.dart';
 import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
-import 'package:cmo/model/treament_method/treament_method.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_cubit.dart';
 import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/select_property_damaged.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';

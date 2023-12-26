@@ -5,7 +5,7 @@ import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/ui/components/select_site_location_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_screen.dart';
+import 'package:cmo/ui/screens/perform/asi/asi_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';

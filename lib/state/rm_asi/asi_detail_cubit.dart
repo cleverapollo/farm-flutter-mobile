@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/utils/utils.dart';
@@ -23,26 +24,30 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
               asiRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
             ),
           ),
-        );
+        ) {
+    fetchData();
+  }
 
   Future<void> fetchData() async {
-    final userRole = await configService.getActiveUserRole();
-    final activeGroupScheme = await configService.getActiveGroupScheme();
+    // final userRole = await configService.getActiveUserRole();
+    // final activeGroupScheme = await configService.getActiveGroupScheme();
 
-    List<AsiType>? types;
-    if (userRole == UserRoleEnum.farmerMember) {
-      types = await cmoPerformApiService.fetchFarmerAsiType();
-    } else {
-      types = await cmoDatabaseMasterService.getAsiTypeByGroupSchemeId(activeGroupScheme?.groupSchemeId);
-    }
+    // List<AsiType>? types;
+    // if (userRole == UserRoleEnum.farmerMember) {
+    //   types = await cmoPerformApiService.fetchFarmerAsiType();
+    // } else {
+    //   types = await cmoDatabaseMasterService.getAsiTypeByGroupSchemeId(activeGroupScheme?.groupSchemeId);
+    // }
 
+    final types = await cmoDatabaseMasterService.getAsiTypes();
     final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(
       state.asi.farmId ?? '',
     );
 
     if (state.asi.latitude != null &&
         state.asi.longitude != null &&
-        compartments.isNotBlank) {
+        compartments.isNotBlank &&
+        state.asi.managementUnitId.isBlank) {
       final initCompartment = compartments.firstWhereOrNull((compartment) {
         final latLng = LatLng(
           state.asi.latitude!,

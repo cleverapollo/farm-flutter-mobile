@@ -8,7 +8,7 @@ import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_detail_cubit.dart';
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/select_customary_use_rights.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/select_social_upliftments.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/select_special_sites.dart';

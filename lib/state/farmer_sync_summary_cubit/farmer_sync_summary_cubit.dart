@@ -113,11 +113,12 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       );
       logger.d('--createFarmerSystemEvent done');
       await Future.delayed(const Duration(seconds: 5), () {});
-      logger.d('--syncFarmerMasterData');
-      await subscribeToSyncAllFarmerMasterData();
-      logger.d('--syncFarmerMasterData done');
-
       logger.d('--onSyncDataForCompartments');
+
+      logger.d('--insertByCallingAPI start');
+      await insertByCallingAPI();
+      logger.d('--insertByCallingAPI done');
+
       await onSyncDataForCompartments();
       logger.d('--onSyncDataForCompartments done');
 
@@ -125,13 +126,13 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       await subscribeToCompartmentsByFarmId();
       logger.d('--subscribeToCompartmentsByFarmId done');
 
+      logger.d('--syncFarmerMasterData');
+      await subscribeToSyncAllFarmerMasterData();
+      logger.d('--syncFarmerMasterData done');
+
       logger.d('--subscribeMasterDataByFarmIdAndUserDeviceId');
       await subscribeToUserDeviceClientIdFilterByFarmIdTopic();
       logger.d('--subscribeMasterDataByFarmIdAndUserDeviceId done');
-
-      logger.d('--insertByCallingAPI start');
-      await insertByCallingAPI();
-      logger.d('--insertByCallingAPI done');
 
       emit(
         state.copyWith(
@@ -184,9 +185,9 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       await onSyncDataForCompartments();
 
-      await summaryFarmerSync();
-
       await subscribeToCompartmentsByFarmId();
+
+      await summaryFarmerSync();
 
       await subscribeToTrickleFeedMasterDataTopic();
 
@@ -2166,24 +2167,27 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     return null;
   }
 
-  Future<int?> insertAsiRegister(Message item) async {
+  Future<void> insertAsiRegister(Message item) async {
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
-      if (bodyJson == null) return null;
+      if (bodyJson == null) return;
       final rs = Asi.fromJson(bodyJson);
+      final compartment = await cmoDatabaseMasterService.getCompartmentsByManagementUnitId(managementUnitId: rs.managementUnitId);
+      final asiType = await cmoDatabaseMasterService.getAsiTypesById(rs.asiTypeId);
 
-      final resultSync = await cmoDatabaseMasterService.cacheAsi(
+      await cmoDatabaseMasterService.cacheAsi(
           rs.copyWith(
             isMasterdataSynced: true,
             localId: int.tryParse(rs.asiRegisterNo ?? ''),
+            compartmentName: compartment?.unitNumber,
+            localCompartmentId: compartment?.localCompartmentId,
+            asiTypeName: asiType?.asiTypeName,
           ),
-          isDirect: true);
-
-      return resultSync;
+          isDirect: true,
+      );
     } catch (e) {
       logger.d('insert error: $e');
     }
-    return null;
   }
 
   Future<int?> insertFireRegister(Message item) async {

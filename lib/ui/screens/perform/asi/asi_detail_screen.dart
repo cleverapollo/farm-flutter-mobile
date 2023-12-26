@@ -7,8 +7,8 @@ import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/thumbnail_image.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection.dart';
+import 'package:cmo/ui/screens/perform/asi/widgets/thumbnail_image.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
@@ -43,7 +43,7 @@ class ASIDetailScreen extends BaseStatefulWidget {
               asi: asi,
               campId: campId,
               farmId: farmId,
-            )..fetchData(),
+            ),
             child: ASIDetailScreen(
               farmName: farmName,
               isEditing: asi != null,

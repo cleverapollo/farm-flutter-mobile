@@ -4,7 +4,9 @@ import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AsiCubit extends Cubit<AsiState> {
-  AsiCubit(String farmId, {String? campId}) : super(AsiState(farmId: farmId, campId: campId));
+  AsiCubit(String farmId, {String? campId}) : super(AsiState(farmId: farmId, campId: campId)) {
+    loadAsis();
+  }
 
   Future<void> loadAsis() async {
     try {

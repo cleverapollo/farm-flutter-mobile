@@ -6,7 +6,7 @@ import 'package:cmo/state/state.dart';
 
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/widget/cmo_drop_down_layout_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';

@@ -23,17 +23,6 @@ class RMAsiCubit extends Cubit<RMAsiState> {
             .toList()));
   }
 
-  Future<void> onChangeStatus(bool isOpen) async {
-    emit(state.copyWith(isLoading: true, isOpen: isOpen));
-
-    final result = await cmoDatabaseMasterService
-        .getAsiRegisterByFarmId(state.farmId!, isOpen: isOpen);
-
-    emit(state.copyWith(asisData: result, asisDataSearch: result));
-
-    emit(state.copyWith(isLoading: false));
-  }
-
   Future<bool> initConfig() async {
     try {
       if (state.farmId != null && state.groupSchemeId != null) return true;
@@ -97,8 +86,7 @@ class RMAsiCubit extends Cubit<RMAsiState> {
 
     if (!initResult) return;
 
-    final result =
-        await cmoDatabaseMasterService.getAsiRegisterByFarmId(state.farmId!);
+    final result = await cmoDatabaseMasterService.getAsiRegisterByFarmId(state.farmId);
 
     final asiTypes = await cmoDatabaseMasterService
         .getAsiTypeByGroupSchemeId(state.groupSchemeId!);

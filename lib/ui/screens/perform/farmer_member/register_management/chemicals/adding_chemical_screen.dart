@@ -7,7 +7,7 @@ import 'package:cmo/model/chemical_application_method/chemical_application_metho
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_cubit.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/asi/widgets/bottom_sheet_selection.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';

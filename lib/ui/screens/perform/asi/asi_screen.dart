@@ -7,7 +7,7 @@ import 'package:cmo/model/asi.dart';
 import 'package:cmo/state/rm_asi/asi_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_item.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/asi/asi_detail_screen.dart';
+import 'package:cmo/ui/screens/perform/asi/asi_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +23,7 @@ class ASIScreen extends BaseStatefulWidget {
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
-            create: (_) => AsiCubit(farmId ?? '', campId: campId)..loadAsis(),
+            create: (_) => AsiCubit(farmId ?? '', campId: campId),
             child: ASIScreen(
               farmName: farmName,
             ),

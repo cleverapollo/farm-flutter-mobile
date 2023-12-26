@@ -13,7 +13,7 @@ import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../asi/widgets/bottom_sheet_selection.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 
 class AuditAddScreen extends BaseStatefulWidget {
   AuditAddScreen({

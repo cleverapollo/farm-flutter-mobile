@@ -1555,6 +1555,16 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<AsiType?> getAsiTypesById(int? asiTypeId) async {
+    if (asiTypeId == null) return null;
+    final db = await _db();
+    return db.asiTypes
+        .filter()
+        .isActiveEqualTo(true)
+        .asiTypeIdEqualTo(asiTypeId)
+        .findFirst();
+  }
+
   Future<List<AsiType>> getAsiTypes() async {
     final db = await _db();
 
@@ -2187,32 +2197,14 @@ class CmoDatabaseMasterService {
     return db.asis.filter().isActiveEqualTo(true).findAll();
   }
 
-  Future<List<Asi>> getAsiRegisterByFarmId(String farmId,
-      {bool? isOpen}) async {
+  Future<List<Asi>> getAsiRegisterByFarmId(String? farmId) async {
+    if (farmId.isBlank) return <Asi>[];
     final db = await _db();
-    if (isOpen == null) {
-      return db.asis
-          .filter()
-          .farmIdEqualTo(farmId)
-          .isActiveEqualTo(true)
-          .sortByCreateDTDesc()
-          .findAll();
-    }
-    if (isOpen == true) {
-      return db.asis
-          .filter()
-          .farmIdEqualTo(farmId)
-          .isActiveEqualTo(true)
-          .dateIsNotNull()
-          .sortByCreateDTDesc()
-          .findAll();
-    }
 
     return db.asis
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
-        .dateIsNull()
         .sortByCreateDTDesc()
         .findAll();
   }
@@ -3764,6 +3756,26 @@ class CmoDatabaseMasterService {
     }
 
     return <Compartment>[];
+  }
+
+  Future<Compartment?> getCompartmentsByManagementUnitId({
+    String? managementUnitId,
+  }) async {
+    if (managementUnitId == null) return null;
+    final db = await _db();
+    try {
+      final compartment = await db.compartments
+          .filter()
+          .isActiveEqualTo(true)
+          .managementUnitIdEqualTo(managementUnitId)
+          .findFirst();
+
+      return compartment;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return null;
   }
 
   Future<Compartment?> getCompartmentsByUnitNumber({

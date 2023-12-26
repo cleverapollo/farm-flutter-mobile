@@ -14,10 +14,8 @@ import 'package:cmo/ui/widget/cmo_percentage_input_attribute_widget.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../asi/widgets/bottom_sheet_selection.dart';
-import 'compartment_map_screen.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'compartment_maps_summaries_screen.dart';
 
 class CompartmentDetailScreen extends BaseStatefulWidget {
