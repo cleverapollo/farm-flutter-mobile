@@ -6,6 +6,7 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
+import 'package:cmo/ui/screens/perform/asi/asi_map_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/screens/perform/asi/widgets/thumbnail_image.dart';
@@ -267,20 +268,21 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
         return InkWell(
           onTap: () async {
             FocusManager.instance.primaryFocus?.unfocus();
-            final locationModel = LocationModel()
-              ..latitude = state.asi.latitude
-              ..longitude = state.asi.longitude;
-            final result = await SelectLocationScreen.push(
-              context,
-              title: LocaleKeys.asi_detail.tr(),
-              farmName: widget.farmName,
-              locationModel: locationModel,
-              shouldShowPhotoButton: false,
-            );
-
-            if (result == null) return;
-            final mapResult = result as LocationModel;
-            context.read<AsiDetailCubit>().onSelectLocation(mapResult);
+            await AsiMapScreen.push(context, asi: state.asi, onSave: (_, __){});
+            // final locationModel = LocationModel()
+            //   ..latitude = state.asi.latitude
+            //   ..longitude = state.asi.longitude;
+            // final result = await SelectLocationScreen.push(
+            //   context,
+            //   title: LocaleKeys.asi_detail.tr(),
+            //   farmName: widget.farmName,
+            //   locationModel: locationModel,
+            //   shouldShowPhotoButton: false,
+            // );
+            //
+            // if (result == null) return;
+            // final mapResult = result as LocationModel;
+            // context.read<AsiDetailCubit>().onSelectLocation(mapResult);
           },
           child: AttributeItem(
             margin: const EdgeInsets.symmetric(horizontal: 16),
