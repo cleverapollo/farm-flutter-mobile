@@ -5,7 +5,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_ma
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/register_management.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/site_management_plan/site_management_plan_sreen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/sync_summary/farmer_sync_summary_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
+import 'package:cmo/ui/screens/perform/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

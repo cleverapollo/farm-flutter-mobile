@@ -29,6 +29,11 @@ extension StringNullExtension on String? {
     return emailValid;
   }
 
+  bool get validPhoneNumber {
+    if (isBlank || this!.length < 10) return false;
+    return true;
+  }
+
   String get emptyIfNull {
     return this ?? '';
   }

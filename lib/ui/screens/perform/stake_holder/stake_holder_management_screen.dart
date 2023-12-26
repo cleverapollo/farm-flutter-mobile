@@ -8,13 +8,14 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_state.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/stake_holder_detail_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/farmer_mode_stake_holder_item.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/widgets/rm_mode_stake_holder_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'create_new_stake_holder/stake_holder_detail_screen.dart';
+import 'widgets/farmer_mode_stake_holder_item.dart';
+import 'widgets/rm_mode_stake_holder_item.dart';
 
 class StakeHolderManagementScreen extends BaseStatefulWidget {
 

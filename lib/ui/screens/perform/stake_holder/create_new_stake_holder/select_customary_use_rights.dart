@@ -3,68 +3,69 @@ import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/widgets/additional_multiple_selection_item.dart';
+import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/widgets/additional_multiple_selection_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-class SelectSpecialSite extends StatefulWidget {
-  const SelectSpecialSite({
+class SelectCustomaryUseRight extends StatefulWidget {
+  const SelectCustomaryUseRight({
     super.key,
     required this.onSave,
     this.stakeholderName,
-    this.listSpecialSite = const <SpecialSite>[],
-    this.listFarmSpecialSite = const <FarmStakeholderSpecialSite>[],
+    this.listCustomaryUseRight = const <CustomaryUseRight>[],
+    this.listFarmCustomaryUseRight = const <FarmStakeholderCustomaryUseRight>[],
   });
 
-  final List<SpecialSite> listSpecialSite;
-  final List<FarmStakeholderSpecialSite> listFarmSpecialSite;
-  final void Function(List<SpecialSite>) onSave;
+  final List<CustomaryUseRight> listCustomaryUseRight;
+  final List<FarmStakeholderCustomaryUseRight> listFarmCustomaryUseRight;
+  final void Function(List<CustomaryUseRight>) onSave;
   final String? stakeholderName;
 
   @override
-  State<StatefulWidget> createState() => _SelectSpecialSiteState();
+  State<StatefulWidget> createState() => _SelectCustomaryUseRightState();
 
   static Future<dynamic> push({
     required BuildContext context,
-    required List<SpecialSite> listSpecialSite,
-    required List<FarmStakeholderSpecialSite> listFarmSpecialSite,
-    required void Function(List<SpecialSite>) onSave,
+    required List<CustomaryUseRight> listCustomaryUseRight,
+    required List<FarmStakeholderCustomaryUseRight> listFarmCustomaryUseRight,
+    required void Function(List<CustomaryUseRight>) onSave,
     String? stakeholderName,
   }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => SelectSpecialSite(
+        builder: (_) => SelectCustomaryUseRight(
           onSave: onSave,
           stakeholderName: stakeholderName,
-          listSpecialSite: listSpecialSite,
-          listFarmSpecialSite: listFarmSpecialSite,
+          listCustomaryUseRight: listCustomaryUseRight,
+          listFarmCustomaryUseRight: listFarmCustomaryUseRight,
         ),
       ),
     );
   }
 }
 
-class _SelectSpecialSiteState extends State<SelectSpecialSite> {
+class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
   Timer? _debounceInputTimer;
 
-  List<SpecialSite> selectedItems = <SpecialSite>[];
-  List<SpecialSite> filterListItems = <SpecialSite>[];
+  List<CustomaryUseRight> selectedItems = <CustomaryUseRight>[];
+  List<CustomaryUseRight> filterListItems = <CustomaryUseRight>[];
 
   @override
   void initState() {
     super.initState();
-    filterListItems = widget.listSpecialSite;
+    filterListItems = widget.listCustomaryUseRight;
     selectedItems.addAll(
-      widget.listFarmSpecialSite
+      widget.listFarmCustomaryUseRight
           .map(
-            (e) => SpecialSite(
-              specialSiteId: e.specialSiteId,
-              specialSiteName: widget.listSpecialSite
+            (e) => CustomaryUseRight(
+              customaryUseRightId: e.customaryUseRightId,
+              customaryUseRightName: widget.listCustomaryUseRight
                   .firstWhereOrNull(
-                    (element) => element.specialSiteId == e.specialSiteId,
+                    (element) =>
+                        element.customaryUseRightId == e.customaryUseRightId,
                   )
-                  ?.specialSiteName,
+                  ?.customaryUseRightName,
             ),
           )
           .toList(),
@@ -73,16 +74,16 @@ class _SelectSpecialSiteState extends State<SelectSpecialSite> {
 
   void onSearch(String? inputSearch) {
     if (inputSearch == null || inputSearch.isEmpty) {
-      filterListItems = widget.listSpecialSite;
+      filterListItems = widget.listCustomaryUseRight;
     } else {
-      filterListItems = widget.listSpecialSite
+      filterListItems = widget.listCustomaryUseRight
           .where(
             (element) =>
-                element.specialSiteName
-                    ?.toLowerCase()
-                    .contains(inputSearch.toLowerCase()) ??
-                false,
-          )
+        element.customaryUseRightName
+            ?.toLowerCase()
+            .contains(inputSearch.toLowerCase()) ??
+            false,
+      )
           .toList();
     }
 
@@ -93,7 +94,7 @@ class _SelectSpecialSiteState extends State<SelectSpecialSite> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
-        title: LocaleKeys.special_sites.tr(),
+        title: LocaleKeys.customary_use_rights.tr(),
         subtitle: widget.stakeholderName,
         leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
@@ -110,7 +111,7 @@ class _SelectSpecialSiteState extends State<SelectSpecialSite> {
                 _debounceInputTimer?.cancel();
                 _debounceInputTimer = Timer(
                   const Duration(milliseconds: 200),
-                  () => onSearch(input),
+                      () => onSearch(input),
                 );
               },
             ),
@@ -142,26 +143,26 @@ class _SelectSpecialSiteState extends State<SelectSpecialSite> {
     );
   }
 
-  Widget _buildItem(SpecialSite item) {
+  Widget _buildItem(CustomaryUseRight item) {
     final activeItem = selectedItems.firstWhereOrNull(
-      (element) => element.specialSiteId == item.specialSiteId,
+          (element) => element.customaryUseRightId == item.customaryUseRightId,
     );
 
     return AdditionalMultipleSelectionItem(
       onTap: () {
         final includedItem = selectedItems.firstWhereOrNull(
-          (e) => e.specialSiteId == item.specialSiteId,
+              (e) => e.customaryUseRightId == item.customaryUseRightId,
         );
         if (includedItem == null) {
           selectedItems.add(item);
         } else {
-          selectedItems
-              .removeWhere((e) => e.specialSiteId == item.specialSiteId);
+          selectedItems.removeWhere(
+                  (e) => e.customaryUseRightId == item.customaryUseRightId);
         }
 
         if (mounted) setState(() {});
       },
-      title: item.specialSiteName,
+      title: item.customaryUseRightName,
       isSelected: activeItem != null,
     );
   }

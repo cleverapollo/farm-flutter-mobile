@@ -3,69 +3,69 @@ import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/widgets/additional_multiple_selection_item.dart';
+import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/widgets/additional_multiple_selection_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-class SelectCustomaryUseRight extends StatefulWidget {
-  const SelectCustomaryUseRight({
+class SelectSocialUpliftments extends StatefulWidget {
+  const SelectSocialUpliftments({
     super.key,
     required this.onSave,
     this.stakeholderName,
-    this.listCustomaryUseRight = const <CustomaryUseRight>[],
-    this.listFarmCustomaryUseRight = const <FarmStakeholderCustomaryUseRight>[],
+    this.listSocialUpliftments = const <SocialUpliftment>[],
+    this.listFarmSocialUpliftments = const <FarmStakeholderSocialUpliftment>[],
   });
 
-  final List<CustomaryUseRight> listCustomaryUseRight;
-  final List<FarmStakeholderCustomaryUseRight> listFarmCustomaryUseRight;
-  final void Function(List<CustomaryUseRight>) onSave;
+  final List<SocialUpliftment> listSocialUpliftments;
+  final List<FarmStakeholderSocialUpliftment> listFarmSocialUpliftments;
+  final void Function(List<SocialUpliftment>) onSave;
   final String? stakeholderName;
 
   @override
-  State<StatefulWidget> createState() => _SelectCustomaryUseRightState();
+  State<StatefulWidget> createState() => _SelectSocialUpliftmentsState();
 
   static Future<dynamic> push({
     required BuildContext context,
-    required List<CustomaryUseRight> listCustomaryUseRight,
-    required List<FarmStakeholderCustomaryUseRight> listFarmCustomaryUseRight,
-    required void Function(List<CustomaryUseRight>) onSave,
+    required List<SocialUpliftment> listSocialUpliftments,
+    required List<FarmStakeholderSocialUpliftment> listFarmSocialUpliftments,
+    required void Function(List<SocialUpliftment>) onSave,
     String? stakeholderName,
   }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => SelectCustomaryUseRight(
+        builder: (_) => SelectSocialUpliftments(
           onSave: onSave,
           stakeholderName: stakeholderName,
-          listCustomaryUseRight: listCustomaryUseRight,
-          listFarmCustomaryUseRight: listFarmCustomaryUseRight,
+          listSocialUpliftments: listSocialUpliftments,
+          listFarmSocialUpliftments: listFarmSocialUpliftments,
         ),
       ),
     );
   }
 }
 
-class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
+class _SelectSocialUpliftmentsState extends State<SelectSocialUpliftments> {
   Timer? _debounceInputTimer;
 
-  List<CustomaryUseRight> selectedItems = <CustomaryUseRight>[];
-  List<CustomaryUseRight> filterListItems = <CustomaryUseRight>[];
+  List<SocialUpliftment> selectedItems = <SocialUpliftment>[];
+  List<SocialUpliftment> filterListItems = <SocialUpliftment>[];
 
   @override
   void initState() {
     super.initState();
-    filterListItems = widget.listCustomaryUseRight;
+    filterListItems = widget.listSocialUpliftments;
     selectedItems.addAll(
-      widget.listFarmCustomaryUseRight
+      widget.listFarmSocialUpliftments
           .map(
-            (e) => CustomaryUseRight(
-              customaryUseRightId: e.customaryUseRightId,
-              customaryUseRightName: widget.listCustomaryUseRight
+            (e) => SocialUpliftment(
+              socialUpliftmentId: e.socialUpliftmentId,
+              socialUpliftmentName: widget.listSocialUpliftments
                   .firstWhereOrNull(
                     (element) =>
-                        element.customaryUseRightId == e.customaryUseRightId,
+                        element.socialUpliftmentId == e.socialUpliftmentId,
                   )
-                  ?.customaryUseRightName,
+                  ?.socialUpliftmentName,
             ),
           )
           .toList(),
@@ -74,16 +74,16 @@ class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
 
   void onSearch(String? inputSearch) {
     if (inputSearch == null || inputSearch.isEmpty) {
-      filterListItems = widget.listCustomaryUseRight;
+      filterListItems = widget.listSocialUpliftments;
     } else {
-      filterListItems = widget.listCustomaryUseRight
+      filterListItems = widget.listSocialUpliftments
           .where(
             (element) =>
-        element.customaryUseRightName
-            ?.toLowerCase()
-            .contains(inputSearch.toLowerCase()) ??
-            false,
-      )
+                element.socialUpliftmentName
+                    ?.toLowerCase()
+                    .contains(inputSearch.toLowerCase()) ??
+                false,
+          )
           .toList();
     }
 
@@ -94,7 +94,7 @@ class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
-        title: LocaleKeys.customary_use_rights.tr(),
+        title: LocaleKeys.social_upliftments.tr(),
         subtitle: widget.stakeholderName,
         leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
@@ -143,26 +143,26 @@ class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
     );
   }
 
-  Widget _buildItem(CustomaryUseRight item) {
+  Widget _buildItem(SocialUpliftment item) {
     final activeItem = selectedItems.firstWhereOrNull(
-          (element) => element.customaryUseRightId == item.customaryUseRightId,
+      (element) => element.socialUpliftmentId == item.socialUpliftmentId,
     );
 
     return AdditionalMultipleSelectionItem(
       onTap: () {
         final includedItem = selectedItems.firstWhereOrNull(
-              (e) => e.customaryUseRightId == item.customaryUseRightId,
+          (e) => e.socialUpliftmentId == item.socialUpliftmentId,
         );
         if (includedItem == null) {
           selectedItems.add(item);
         } else {
           selectedItems.removeWhere(
-                  (e) => e.customaryUseRightId == item.customaryUseRightId);
+              (e) => e.socialUpliftmentId == item.socialUpliftmentId);
         }
 
         if (mounted) setState(() {});
       },
-      title: item.customaryUseRightName,
+      title: item.socialUpliftmentName,
       isSelected: activeItem != null,
     );
   }

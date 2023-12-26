@@ -3,7 +3,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_management_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/member_management_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/stake_holder_management_screen.dart';
+import 'package:cmo/ui/screens/perform/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/sync_summary/resource_manager_sync_summary_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/foundation.dart';

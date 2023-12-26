@@ -1,7 +1,7 @@
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/widgets/input_text_field_with_title.dart';
+import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/widgets/input_text_field_with_title.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/validator.dart';
 import 'package:flutter/material.dart';

@@ -3,69 +3,68 @@ import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/widgets/additional_multiple_selection_item.dart';
+import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/widgets/additional_multiple_selection_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-class SelectSocialUpliftments extends StatefulWidget {
-  const SelectSocialUpliftments({
+class SelectSpecialSite extends StatefulWidget {
+  const SelectSpecialSite({
     super.key,
     required this.onSave,
     this.stakeholderName,
-    this.listSocialUpliftments = const <SocialUpliftment>[],
-    this.listFarmSocialUpliftments = const <FarmStakeholderSocialUpliftment>[],
+    this.listSpecialSite = const <SpecialSite>[],
+    this.listFarmSpecialSite = const <FarmStakeholderSpecialSite>[],
   });
 
-  final List<SocialUpliftment> listSocialUpliftments;
-  final List<FarmStakeholderSocialUpliftment> listFarmSocialUpliftments;
-  final void Function(List<SocialUpliftment>) onSave;
+  final List<SpecialSite> listSpecialSite;
+  final List<FarmStakeholderSpecialSite> listFarmSpecialSite;
+  final void Function(List<SpecialSite>) onSave;
   final String? stakeholderName;
 
   @override
-  State<StatefulWidget> createState() => _SelectSocialUpliftmentsState();
+  State<StatefulWidget> createState() => _SelectSpecialSiteState();
 
   static Future<dynamic> push({
     required BuildContext context,
-    required List<SocialUpliftment> listSocialUpliftments,
-    required List<FarmStakeholderSocialUpliftment> listFarmSocialUpliftments,
-    required void Function(List<SocialUpliftment>) onSave,
+    required List<SpecialSite> listSpecialSite,
+    required List<FarmStakeholderSpecialSite> listFarmSpecialSite,
+    required void Function(List<SpecialSite>) onSave,
     String? stakeholderName,
   }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => SelectSocialUpliftments(
+        builder: (_) => SelectSpecialSite(
           onSave: onSave,
           stakeholderName: stakeholderName,
-          listSocialUpliftments: listSocialUpliftments,
-          listFarmSocialUpliftments: listFarmSocialUpliftments,
+          listSpecialSite: listSpecialSite,
+          listFarmSpecialSite: listFarmSpecialSite,
         ),
       ),
     );
   }
 }
 
-class _SelectSocialUpliftmentsState extends State<SelectSocialUpliftments> {
+class _SelectSpecialSiteState extends State<SelectSpecialSite> {
   Timer? _debounceInputTimer;
 
-  List<SocialUpliftment> selectedItems = <SocialUpliftment>[];
-  List<SocialUpliftment> filterListItems = <SocialUpliftment>[];
+  List<SpecialSite> selectedItems = <SpecialSite>[];
+  List<SpecialSite> filterListItems = <SpecialSite>[];
 
   @override
   void initState() {
     super.initState();
-    filterListItems = widget.listSocialUpliftments;
+    filterListItems = widget.listSpecialSite;
     selectedItems.addAll(
-      widget.listFarmSocialUpliftments
+      widget.listFarmSpecialSite
           .map(
-            (e) => SocialUpliftment(
-              socialUpliftmentId: e.socialUpliftmentId,
-              socialUpliftmentName: widget.listSocialUpliftments
+            (e) => SpecialSite(
+              specialSiteId: e.specialSiteId,
+              specialSiteName: widget.listSpecialSite
                   .firstWhereOrNull(
-                    (element) =>
-                        element.socialUpliftmentId == e.socialUpliftmentId,
+                    (element) => element.specialSiteId == e.specialSiteId,
                   )
-                  ?.socialUpliftmentName,
+                  ?.specialSiteName,
             ),
           )
           .toList(),
@@ -74,12 +73,12 @@ class _SelectSocialUpliftmentsState extends State<SelectSocialUpliftments> {
 
   void onSearch(String? inputSearch) {
     if (inputSearch == null || inputSearch.isEmpty) {
-      filterListItems = widget.listSocialUpliftments;
+      filterListItems = widget.listSpecialSite;
     } else {
-      filterListItems = widget.listSocialUpliftments
+      filterListItems = widget.listSpecialSite
           .where(
             (element) =>
-                element.socialUpliftmentName
+                element.specialSiteName
                     ?.toLowerCase()
                     .contains(inputSearch.toLowerCase()) ??
                 false,
@@ -94,7 +93,7 @@ class _SelectSocialUpliftmentsState extends State<SelectSocialUpliftments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
-        title: LocaleKeys.social_upliftments.tr(),
+        title: LocaleKeys.special_sites.tr(),
         subtitle: widget.stakeholderName,
         leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
@@ -111,7 +110,7 @@ class _SelectSocialUpliftmentsState extends State<SelectSocialUpliftments> {
                 _debounceInputTimer?.cancel();
                 _debounceInputTimer = Timer(
                   const Duration(milliseconds: 200),
-                      () => onSearch(input),
+                  () => onSearch(input),
                 );
               },
             ),
@@ -143,26 +142,26 @@ class _SelectSocialUpliftmentsState extends State<SelectSocialUpliftments> {
     );
   }
 
-  Widget _buildItem(SocialUpliftment item) {
+  Widget _buildItem(SpecialSite item) {
     final activeItem = selectedItems.firstWhereOrNull(
-      (element) => element.socialUpliftmentId == item.socialUpliftmentId,
+      (element) => element.specialSiteId == item.specialSiteId,
     );
 
     return AdditionalMultipleSelectionItem(
       onTap: () {
         final includedItem = selectedItems.firstWhereOrNull(
-          (e) => e.socialUpliftmentId == item.socialUpliftmentId,
+          (e) => e.specialSiteId == item.specialSiteId,
         );
         if (includedItem == null) {
           selectedItems.add(item);
         } else {
-          selectedItems.removeWhere(
-              (e) => e.socialUpliftmentId == item.socialUpliftmentId);
+          selectedItems
+              .removeWhere((e) => e.specialSiteId == item.specialSiteId);
         }
 
         if (mounted) setState(() {});
       },
-      title: item.socialUpliftmentName,
+      title: item.specialSiteName,
       isSelected: activeItem != null,
     );
   }

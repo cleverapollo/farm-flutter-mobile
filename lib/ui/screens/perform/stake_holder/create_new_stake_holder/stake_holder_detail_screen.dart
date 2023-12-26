@@ -1,6 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/user_role_enum.dart';
-import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -9,9 +9,9 @@ import 'package:cmo/state/stake_holder_list_cubit/stake_holder_detail_cubit.dart
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/select_customary_use_rights.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/select_social_upliftments.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/stake_holder/create_new_stake_holder/select_special_sites.dart';
+import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/select_customary_use_rights.dart';
+import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/select_social_upliftments.dart';
+import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/select_special_sites.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
@@ -154,13 +154,18 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
                             labelText: LocaleKeys.email.tr(),
                             keyboardType: TextInputType.emailAddress,
                             labelTextStyle: context.textStyles.bodyBold.blueDark3,
-                            onChanged: context.read<StakeholderDetailCubit>().onChangeEmail,
+                            textCapitalization: TextCapitalization.none,
+                            onChanged: context
+                                .read<StakeholderDetailCubit>()
+                                .onChangeEmail,
                             suffixIcon: CmoTappable(
-                              onTap: () {},
-                              child: Assets.icons.icMail.svg(
-                                width: 24,
-                                height: 24,
-                              ),
+                              onTap: () => CommonFunctions.sendEmail(state.stakeHolder?.email),
+                              child: state.stakeHolder?.email != null && state.stakeHolder!.email.validEmail
+                                  ? Assets.icons.icMail.svg(
+                                      width: 24,
+                                      height: 24,
+                                    )
+                                  : const SizedBox.shrink(),
                             ),
                           ),
                         );
@@ -200,21 +205,23 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
                                   onChanged: context.read<StakeholderDetailCubit>().onChangePhoneNumber,
                                 ),
                               ),
-                              CmoTappable(
-                                onTap: () => CommonFunctions.sendSms(state.stakeHolder?.cell),
-                                child: Assets.icons.icSms.svg(
-                                  width: 24,
-                                  height: 24,
+                              if (state.stakeHolder?.cell != null && state.stakeHolder!.cell.validPhoneNumber) ...[
+                                CmoTappable(
+                                  onTap: () => CommonFunctions.sendSms(state.stakeHolder?.cell),
+                                  child: Assets.icons.icSms.svg(
+                                    width: 24,
+                                    height: 24,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 32),
-                              CmoTappable(
-                                onTap: () => CommonFunctions.makePhoneCall(state.stakeHolder?.cell),
-                                child: Assets.icons.icPhone.svg(
-                                  width: 24,
-                                  height: 24,
+                                const SizedBox(width: 32),
+                                CmoTappable(
+                                  onTap: () => CommonFunctions.makePhoneCall(state.stakeHolder?.cell),
+                                  child: Assets.icons.icPhone.svg(
+                                    width: 24,
+                                    height: 24,
+                                  ),
                                 ),
-                              ),
+                              ],
                               const SizedBox(width: 12),
                             ],
                           ),
