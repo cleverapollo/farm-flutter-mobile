@@ -14,6 +14,9 @@ class StakeholderDetailState {
   final List<SocialUpliftment> listSocialUpliftments;
   final List<SpecialSite> listSpecialSites;
   final List<CustomaryUseRight> listCustomaryUseRights;
+  final List<SocialUpliftment> selectedSocialUpliftments;
+  final List<SpecialSite> selectedSpecialSites;
+  final List<CustomaryUseRight> selectedCustomaryUseRights;
 
   final bool isSelectTypeError;
   final bool isEntityNameError;
@@ -33,6 +36,9 @@ class StakeholderDetailState {
     this.listSocialUpliftments = const <SocialUpliftment>[],
     this.listSpecialSites = const <SpecialSite>[],
     this.listCustomaryUseRights = const <CustomaryUseRight>[],
+    this.selectedSocialUpliftments = const <SocialUpliftment>[],
+    this.selectedSpecialSites = const <SpecialSite>[],
+    this.selectedCustomaryUseRights = const <CustomaryUseRight>[],
     this.isSelectTypeError = false,
     this.isEntityNameError = false,
     this.isContactNameError = false,
@@ -51,6 +57,9 @@ class StakeholderDetailState {
     List<SocialUpliftment>? listSocialUpliftments,
     List<SpecialSite>? listSpecialSites,
     List<CustomaryUseRight>? listCustomaryUseRights,
+    List<SocialUpliftment>? selectedSocialUpliftments,
+    List<SpecialSite>? selectedSpecialSites,
+    List<CustomaryUseRight>? selectedCustomaryUseRights,
     UserRoleEnum? currentUserRole,
     bool? isSelectTypeError,
     bool? isEntityNameError,
@@ -73,6 +82,9 @@ class StakeholderDetailState {
       isSelectTypeError: isSelectTypeError ?? this.isSelectTypeError,
       isEntityNameError: isEntityNameError ?? this.isEntityNameError,
       isContactNameError: isContactNameError ?? this.isContactNameError,
+      selectedSocialUpliftments: selectedSocialUpliftments ?? this.selectedSocialUpliftments,
+      selectedSpecialSites: selectedSpecialSites ?? this.selectedSpecialSites,
+      selectedCustomaryUseRights: selectedCustomaryUseRights ?? this.selectedCustomaryUseRights,
     );
   }
 }

@@ -11,38 +11,16 @@ class SelectSpecialSite extends StatefulWidget {
   const SelectSpecialSite({
     super.key,
     required this.onSave,
-    this.stakeholderName,
     this.listSpecialSite = const <SpecialSite>[],
-    this.listFarmSpecialSite = const <FarmStakeholderSpecialSite>[],
+    this.selectedSpecialSites = const <SpecialSite>[],
   });
 
   final List<SpecialSite> listSpecialSite;
-  final List<FarmStakeholderSpecialSite> listFarmSpecialSite;
+  final List<SpecialSite> selectedSpecialSites;
   final void Function(List<SpecialSite>) onSave;
-  final String? stakeholderName;
 
   @override
   State<StatefulWidget> createState() => _SelectSpecialSiteState();
-
-  static Future<dynamic> push({
-    required BuildContext context,
-    required List<SpecialSite> listSpecialSite,
-    required List<FarmStakeholderSpecialSite> listFarmSpecialSite,
-    required void Function(List<SpecialSite>) onSave,
-    String? stakeholderName,
-  }) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SelectSpecialSite(
-          onSave: onSave,
-          stakeholderName: stakeholderName,
-          listSpecialSite: listSpecialSite,
-          listFarmSpecialSite: listFarmSpecialSite,
-        ),
-      ),
-    );
-  }
 }
 
 class _SelectSpecialSiteState extends State<SelectSpecialSite> {
@@ -55,20 +33,7 @@ class _SelectSpecialSiteState extends State<SelectSpecialSite> {
   void initState() {
     super.initState();
     filterListItems = widget.listSpecialSite;
-    selectedItems.addAll(
-      widget.listFarmSpecialSite
-          .map(
-            (e) => SpecialSite(
-              specialSiteId: e.specialSiteId,
-              specialSiteName: widget.listSpecialSite
-                  .firstWhereOrNull(
-                    (element) => element.specialSiteId == e.specialSiteId,
-                  )
-                  ?.specialSiteName,
-            ),
-          )
-          .toList(),
-    );
+    selectedItems.addAll(widget.selectedSpecialSites);
   }
 
   void onSearch(String? inputSearch) {
@@ -89,19 +54,19 @@ class _SelectSpecialSiteState extends State<SelectSpecialSite> {
     setState(() {});
   }
 
+  void onClear() {
+    setState(() {
+      selectedItems.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBar(
-        title: LocaleKeys.special_sites.tr(),
-        subtitle: widget.stakeholderName,
-        leading: Assets.icons.icBackButton.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
-      ),
-      body: Column(
-        children: [
+    return Column(
+      children: [
+        if (widget.listSpecialSite.length >= 7)
           Padding(
-            padding: const EdgeInsets.fromLTRB(21, 32, 21, 24),
+            padding: const EdgeInsets.fromLTRB(21, 0, 21, 0),
             child: CmoTextField(
               name: LocaleKeys.search.tr(),
               hintText: LocaleKeys.search.tr(),
@@ -110,35 +75,61 @@ class _SelectSpecialSiteState extends State<SelectSpecialSite> {
                 _debounceInputTimer?.cancel();
                 _debounceInputTimer = Timer(
                   const Duration(milliseconds: 200),
-                  () => onSearch(input),
+                      () => onSearch(input),
                 );
               },
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).padding.bottom + 80,
-                left: 21,
-                right: 21,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12),
+          child: Row(
+            children: [
+              Assets.icons.icRemoveSelection.svg(),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  LocaleKeys.select_all_value_items.tr(args: [selectedItems.length.toString()]),
+                  style: context.textStyles.bodyBold.blue,
+                ),
               ),
-              child: ListView.builder(
-                itemCount: filterListItems.length,
-                itemBuilder: (context, index) =>
-                    _buildItem(filterListItems[index]),
+              GestureDetector(
+                onTap: onClear,
+                child: Text(
+                  LocaleKeys.clear.tr(),
+                  style: context.textStyles.bodyBold.blue,
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: CmoFilledButton(
-        title: LocaleKeys.save.tr(),
-        onTap: () {
-          widget.onSave(selectedItems);
-          Navigator.of(context).pop();
-        },
-      ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: filterListItems.length,
+            itemBuilder: (context, index) =>
+                _buildItem(filterListItems[index]),
+          ),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CmoFilledButton(
+                title: LocaleKeys.cancel.tr(),
+                onTap: Navigator.of(context).pop,
+              ),
+              CmoFilledButton(
+                title: LocaleKeys.save.tr(),
+                onTap: () {
+                  widget.onSave(selectedItems);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

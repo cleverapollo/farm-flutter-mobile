@@ -160,6 +160,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_mail.svg
   SvgGenImage get icMail => const SvgGenImage('assets/icons/ic_mail.svg');
 
+  /// File path: assets/icons/ic_non_selected.svg
+  SvgGenImage get icNonSelected =>
+      const SvgGenImage('assets/icons/ic_non_selected.svg');
+
   /// File path: assets/icons/ic_pan.svg
   SvgGenImage get icPan => const SvgGenImage('assets/icons/ic_pan.svg');
 
@@ -183,6 +187,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_remove.svg
   SvgGenImage get icRemove => const SvgGenImage('assets/icons/ic_remove.svg');
 
+  /// File path: assets/icons/ic_remove_selection.svg
+  SvgGenImage get icRemoveSelection =>
+      const SvgGenImage('assets/icons/ic_remove_selection.svg');
+
   /// File path: assets/icons/ic_search.svg
   SvgGenImage get icSearch => const SvgGenImage('assets/icons/ic_search.svg');
 
@@ -193,6 +201,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_select_photo_map.svg
   SvgGenImage get icSelectPhotoMap =>
       const SvgGenImage('assets/icons/ic_select_photo_map.svg');
+
+  /// File path: assets/icons/ic_selected.svg
+  SvgGenImage get icSelected =>
+      const SvgGenImage('assets/icons/ic_selected.svg');
 
   /// File path: assets/icons/ic_share_button.svg
   SvgGenImage get icShareButton =>
@@ -276,6 +288,7 @@ class $AssetsIconsGen {
         icLocationAudit,
         icLocationAuditFillBackground,
         icMail,
+        icNonSelected,
         icPan,
         icPassword,
         icPhone,
@@ -283,9 +296,11 @@ class $AssetsIconsGen {
         icRefresh,
         icRefreshMap,
         icRemove,
+        icRemoveSelection,
         icSearch,
         icSearchOutline,
         icSelectPhotoMap,
+        icSelected,
         icShareButton,
         icSms,
         icSmsBlue,

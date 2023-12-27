@@ -11,38 +11,16 @@ class SelectCustomaryUseRight extends StatefulWidget {
   const SelectCustomaryUseRight({
     super.key,
     required this.onSave,
-    this.stakeholderName,
     this.listCustomaryUseRight = const <CustomaryUseRight>[],
-    this.listFarmCustomaryUseRight = const <FarmStakeholderCustomaryUseRight>[],
+    this.selectedCustomaryUseRights = const <CustomaryUseRight>[],
   });
 
   final List<CustomaryUseRight> listCustomaryUseRight;
-  final List<FarmStakeholderCustomaryUseRight> listFarmCustomaryUseRight;
+  final List<CustomaryUseRight> selectedCustomaryUseRights;
   final void Function(List<CustomaryUseRight>) onSave;
-  final String? stakeholderName;
 
   @override
   State<StatefulWidget> createState() => _SelectCustomaryUseRightState();
-
-  static Future<dynamic> push({
-    required BuildContext context,
-    required List<CustomaryUseRight> listCustomaryUseRight,
-    required List<FarmStakeholderCustomaryUseRight> listFarmCustomaryUseRight,
-    required void Function(List<CustomaryUseRight>) onSave,
-    String? stakeholderName,
-  }) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SelectCustomaryUseRight(
-          onSave: onSave,
-          stakeholderName: stakeholderName,
-          listCustomaryUseRight: listCustomaryUseRight,
-          listFarmCustomaryUseRight: listFarmCustomaryUseRight,
-        ),
-      ),
-    );
-  }
 }
 
 class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
@@ -55,21 +33,7 @@ class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
   void initState() {
     super.initState();
     filterListItems = widget.listCustomaryUseRight;
-    selectedItems.addAll(
-      widget.listFarmCustomaryUseRight
-          .map(
-            (e) => CustomaryUseRight(
-              customaryUseRightId: e.customaryUseRightId,
-              customaryUseRightName: widget.listCustomaryUseRight
-                  .firstWhereOrNull(
-                    (element) =>
-                        element.customaryUseRightId == e.customaryUseRightId,
-                  )
-                  ?.customaryUseRightName,
-            ),
-          )
-          .toList(),
-    );
+    selectedItems.addAll(widget.selectedCustomaryUseRights);
   }
 
   void onSearch(String? inputSearch) {
@@ -90,19 +54,19 @@ class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
     setState(() {});
   }
 
+  void onClear() {
+    setState(() {
+      selectedItems.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBar(
-        title: LocaleKeys.customary_use_rights.tr(),
-        subtitle: widget.stakeholderName,
-        leading: Assets.icons.icBackButton.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
-      ),
-      body: Column(
-        children: [
+    return Column(
+      children: [
+        if (widget.listCustomaryUseRight.length >= 7)
           Padding(
-            padding: const EdgeInsets.fromLTRB(21, 32, 21, 24),
+            padding: const EdgeInsets.fromLTRB(21, 0, 21, 0),
             child: CmoTextField(
               name: LocaleKeys.search.tr(),
               hintText: LocaleKeys.search.tr(),
@@ -116,30 +80,55 @@ class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
               },
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).padding.bottom + 80,
-                left: 21,
-                right: 21,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12),
+          child: Row(
+            children: [
+              Assets.icons.icRemoveSelection.svg(),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  LocaleKeys.select_all_value_items.tr(args: [selectedItems.length.toString()]),
+                  style: context.textStyles.bodyBold.blue,
+                ),
               ),
-              child: ListView.builder(
-                itemCount: filterListItems.length,
-                itemBuilder: (context, index) =>
-                    _buildItem(filterListItems[index]),
+              GestureDetector(
+                onTap: onClear,
+                child: Text(
+                  LocaleKeys.clear.tr(),
+                  style: context.textStyles.bodyBold.blue,
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: CmoFilledButton(
-        title: LocaleKeys.save.tr(),
-        onTap: () {
-          widget.onSave(selectedItems);
-          Navigator.of(context).pop();
-        },
-      ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: filterListItems.length,
+            itemBuilder: (context, index) =>
+                _buildItem(filterListItems[index]),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CmoFilledButton(
+                title: LocaleKeys.cancel.tr(),
+                onTap: Navigator.of(context).pop,
+              ),
+              CmoFilledButton(
+                title: LocaleKeys.save.tr(),
+                onTap: () {
+                  widget.onSave(selectedItems);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

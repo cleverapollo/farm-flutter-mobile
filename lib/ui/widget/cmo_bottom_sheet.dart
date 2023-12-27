@@ -1,48 +1,6 @@
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-Future showCustomModalBottomSheet(
-  BuildContext context, {
-  required Widget content,
-}) async {
-  return showModalBottomSheet(
-    context: context,
-    enableDrag: true,
-    isDismissible: true,
-    constraints: BoxConstraints(
-      maxHeight: MediaQuery.of(context).size.height * 2 / 3,
-      minHeight: MediaQuery.of(context).size.height / 2,
-    ),
-    clipBehavior: Clip.antiAliasWithSaveLayer,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10.0),
-    ),
-    builder: (builder) {
-      return Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(width: 10),
-          ),
-        ),
-        child: Column(
-          children: [
-            Container(
-              height: 2,
-              width: 20,
-              padding: const EdgeInsets.only(
-                top: 12,
-                bottom: 16,
-              ),
-              color: Colors.black,
-            ),
-            Expanded(child: content),
-          ],
-        ),
-      );
-    },
-  );
-}
-
 Future<Object> showCustomBottomSheet<T>(
   BuildContext context, {
   required Widget content,

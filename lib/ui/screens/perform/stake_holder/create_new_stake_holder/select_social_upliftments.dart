@@ -11,38 +11,16 @@ class SelectSocialUpliftments extends StatefulWidget {
   const SelectSocialUpliftments({
     super.key,
     required this.onSave,
-    this.stakeholderName,
     this.listSocialUpliftments = const <SocialUpliftment>[],
-    this.listFarmSocialUpliftments = const <FarmStakeholderSocialUpliftment>[],
+    this.selectedSocialUpliftments = const <SocialUpliftment>[],
   });
 
   final List<SocialUpliftment> listSocialUpliftments;
-  final List<FarmStakeholderSocialUpliftment> listFarmSocialUpliftments;
+  final List<SocialUpliftment> selectedSocialUpliftments;
   final void Function(List<SocialUpliftment>) onSave;
-  final String? stakeholderName;
 
   @override
   State<StatefulWidget> createState() => _SelectSocialUpliftmentsState();
-
-  static Future<dynamic> push({
-    required BuildContext context,
-    required List<SocialUpliftment> listSocialUpliftments,
-    required List<FarmStakeholderSocialUpliftment> listFarmSocialUpliftments,
-    required void Function(List<SocialUpliftment>) onSave,
-    String? stakeholderName,
-  }) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SelectSocialUpliftments(
-          onSave: onSave,
-          stakeholderName: stakeholderName,
-          listSocialUpliftments: listSocialUpliftments,
-          listFarmSocialUpliftments: listFarmSocialUpliftments,
-        ),
-      ),
-    );
-  }
 }
 
 class _SelectSocialUpliftmentsState extends State<SelectSocialUpliftments> {
@@ -55,21 +33,7 @@ class _SelectSocialUpliftmentsState extends State<SelectSocialUpliftments> {
   void initState() {
     super.initState();
     filterListItems = widget.listSocialUpliftments;
-    selectedItems.addAll(
-      widget.listFarmSocialUpliftments
-          .map(
-            (e) => SocialUpliftment(
-              socialUpliftmentId: e.socialUpliftmentId,
-              socialUpliftmentName: widget.listSocialUpliftments
-                  .firstWhereOrNull(
-                    (element) =>
-                        element.socialUpliftmentId == e.socialUpliftmentId,
-                  )
-                  ?.socialUpliftmentName,
-            ),
-          )
-          .toList(),
-    );
+    selectedItems.addAll(widget.selectedSocialUpliftments);
   }
 
   void onSearch(String? inputSearch) {
@@ -90,19 +54,19 @@ class _SelectSocialUpliftmentsState extends State<SelectSocialUpliftments> {
     setState(() {});
   }
 
+  void onClear() {
+    setState(() {
+      selectedItems.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CmoAppBar(
-        title: LocaleKeys.social_upliftments.tr(),
-        subtitle: widget.stakeholderName,
-        leading: Assets.icons.icBackButton.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
-      ),
-      body: Column(
-        children: [
+    return Column(
+      children: [
+        if (widget.listSocialUpliftments.length >= 7)
           Padding(
-            padding: const EdgeInsets.fromLTRB(21, 32, 21, 24),
+            padding: const EdgeInsets.fromLTRB(21, 0, 21, 0),
             child: CmoTextField(
               name: LocaleKeys.search.tr(),
               hintText: LocaleKeys.search.tr(),
@@ -111,35 +75,61 @@ class _SelectSocialUpliftmentsState extends State<SelectSocialUpliftments> {
                 _debounceInputTimer?.cancel();
                 _debounceInputTimer = Timer(
                   const Duration(milliseconds: 200),
-                      () => onSearch(input),
+                  () => onSearch(input),
                 );
               },
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).padding.bottom + 80,
-                left: 21,
-                right: 21,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12),
+          child: Row(
+            children: [
+              Assets.icons.icRemoveSelection.svg(),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  LocaleKeys.select_all_value_items.tr(args: [selectedItems.length.toString()]),
+                  style: context.textStyles.bodyBold.blue,
+                ),
               ),
-              child: ListView.builder(
-                itemCount: filterListItems.length,
-                itemBuilder: (context, index) =>
-                    _buildItem(filterListItems[index]),
+              GestureDetector(
+                onTap: onClear,
+                child: Text(
+                  LocaleKeys.clear.tr(),
+                  style: context.textStyles.bodyBold.blue,
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: CmoFilledButton(
-        title: LocaleKeys.save.tr(),
-        onTap: () {
-          widget.onSave(selectedItems);
-          Navigator.of(context).pop();
-        },
-      ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: filterListItems.length,
+            itemBuilder: (context, index) =>
+                _buildItem(filterListItems[index]),
+          ),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CmoFilledButton(
+                title: LocaleKeys.cancel.tr(),
+                onTap: Navigator.of(context).pop,
+              ),
+              CmoFilledButton(
+                title: LocaleKeys.save.tr(),
+                onTap: () {
+                  widget.onSave(selectedItems);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

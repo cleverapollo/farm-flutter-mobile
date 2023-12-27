@@ -345,13 +345,21 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
     return BlocBuilder<StakeholderDetailCubit, StakeholderDetailState>(
       builder: (context, state) {
         return InkWell(
-          onTap: () {
-            SelectSocialUpliftments.push(
-              context: context,
-              onSave: context.read<StakeholderDetailCubit>().onChangeSocialUpliftment,
-              stakeholderName: state.stakeHolder?.stakeholderName,
-              listFarmSocialUpliftments: state.listFarmSocialUpliftments,
-              listSocialUpliftments: state.listSocialUpliftments,
+          onTap: () async {
+            FocusManager.instance.primaryFocus?.unfocus();
+            if (state.listSocialUpliftments.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                child: SelectSocialUpliftments(
+                  onSave: context
+                      .read<StakeholderDetailCubit>()
+                      .onChangeSocialUpliftment,
+                  selectedSocialUpliftments: state.selectedSocialUpliftments,
+                  listSocialUpliftments: state.listSocialUpliftments,
+                ),
+              ),
             );
           },
           child: AttributeItem(
@@ -371,7 +379,7 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
                     ),
                   ),
                   Text(
-                    state.listFarmSocialUpliftments.length.toString(),
+                    state.selectedSocialUpliftments.length.toString(),
                     style: context.textStyles.bodyBold.blueDark2,
                   ),
                   const SizedBox(
@@ -391,13 +399,21 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
     return BlocBuilder<StakeholderDetailCubit, StakeholderDetailState>(
       builder: (context, state) {
         return InkWell(
-          onTap: () {
-            SelectSpecialSite.push(
-              context: context,
-              onSave: context.read<StakeholderDetailCubit>().onChangeSpecialSite,
-              stakeholderName: state.stakeHolder?.stakeholderName,
-              listFarmSpecialSite: state.listFarmSpecialSites,
-              listSpecialSite: state.listSpecialSites,
+          onTap: () async {
+            FocusManager.instance.primaryFocus?.unfocus();
+            if (state.listSpecialSites.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                child: SelectSpecialSite(
+                  onSave: context
+                      .read<StakeholderDetailCubit>()
+                      .onChangeSpecialSite,
+                  selectedSpecialSites: state.selectedSpecialSites,
+                  listSpecialSite: state.listSpecialSites,
+                ),
+              ),
             );
           },
           child: AttributeItem(
@@ -417,7 +433,7 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
                     ),
                   ),
                   Text(
-                    state.listFarmSpecialSites.length.toString(),
+                    state.selectedSpecialSites.length.toString(),
                     style: context.textStyles.bodyBold.blueDark2,
                   ),
                   const SizedBox(
@@ -437,13 +453,22 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
     return BlocBuilder<StakeholderDetailCubit, StakeholderDetailState>(
       builder: (context, state) {
         return InkWell(
-          onTap: () {
-            SelectCustomaryUseRight.push(
-              context: context,
-              onSave: context.read<StakeholderDetailCubit>().onChangeCustomaryUseRight,
-              stakeholderName: state.stakeHolder?.stakeholderName,
-              listFarmCustomaryUseRight: state.listFarmCustomaryUseRights,
-              listCustomaryUseRight: state.listCustomaryUseRights,
+          onTap: () async {
+            FocusManager.instance.primaryFocus?.unfocus();
+            if (state.listCustomaryUseRights.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom),
+                child: SelectCustomaryUseRight(
+                  onSave: context
+                      .read<StakeholderDetailCubit>()
+                      .onChangeCustomaryUseRight,
+                  selectedCustomaryUseRights: state.selectedCustomaryUseRights,
+                  listCustomaryUseRight: state.listCustomaryUseRights,
+                ),
+              ),
             );
           },
           child: AttributeItem(
@@ -463,7 +488,7 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
                     ),
                   ),
                   Text(
-                    state.listFarmCustomaryUseRights.length.toString(),
+                    state.selectedCustomaryUseRights.length.toString(),
                     style: context.textStyles.bodyBold.blueDark2,
                   ),
                   const SizedBox(
