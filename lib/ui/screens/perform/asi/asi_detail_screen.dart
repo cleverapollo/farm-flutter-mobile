@@ -268,7 +268,11 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
         return InkWell(
           onTap: () async {
             FocusManager.instance.primaryFocus?.unfocus();
-            await AsiMapScreen.push(context, asi: state.asi, onSave: (_, __){});
+            await AsiMapScreen.push(
+              context,
+              asi: state.asi,
+              onSave: context.read<AsiDetailCubit>().onSelectLocation,
+            );
             // final locationModel = LocationModel()
             //   ..latitude = state.asi.latitude
             //   ..longitude = state.asi.longitude;

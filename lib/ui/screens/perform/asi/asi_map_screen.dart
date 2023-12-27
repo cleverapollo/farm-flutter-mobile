@@ -4,7 +4,6 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/rm_asi/asi_map_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_map_state.dart';
-import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/components/map_center_icon.dart';
 import 'package:cmo/ui/ui.dart';
@@ -22,7 +21,7 @@ class AsiMapScreen extends BaseStatefulWidget {
   }) : super(screenName: 'ASI Map Screen');
 
   final String? farmName;
-  final void Function(double?, List<PolygonItem>?) onSave;
+  final void Function(Asi) onSave;
 
   @override
   State<StatefulWidget> createState() => AsiMapScreenState();
@@ -30,7 +29,7 @@ class AsiMapScreen extends BaseStatefulWidget {
   static dynamic push(
       BuildContext context, {
         required Asi asi,
-        required void Function(double?, List<PolygonItem>?) onSave,
+        required void Function(Asi) onSave,
         String? farmName,
       }) {
     return Navigator.of(context).push(
@@ -53,224 +52,64 @@ class AsiMapScreen extends BaseStatefulWidget {
 
 class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   GoogleMapController? mapController;
 
-  Set<Polyline> generatePolyline() {
-    // final state = context.read<CompartmentMapsSummariesCubit>().state;
-    // if (state.isCompletePolygon) {
-    //   return <Polyline>{};
-    // }
-    //
-    // if (state.isAddingNew) {
-    //   final markers = state.temporaryMarkers;
-    //   var polylines = <Polyline>{};
-    //   if (markers.length < 2) {
-    //     return polylines;
-    //   }
-    //
-    //   for (var i = 1; i < markers.length; i++) {
-    //     polylines.add(
-    //       Polyline(
-    //         polylineId: PolylineId('${markers[i].markerId.value} ${i - 1}_$i'),
-    //         points: [
-    //           markers[i - 1].position,
-    //           markers[i].position,
-    //         ],
-    //         color: context.colors.yellow,
-    //         width: 2,
-    //         onTap: () {
-    //           print('onTap polyline');
-    //         },
-    //         startCap: Cap.roundCap,
-    //         endCap: Cap.roundCap,
-    //       ),
-    //     );
-    //   }
-    //
-    //   if (state.isCompletePolygon) {
-    //     polylines.add(
-    //       Polyline(
-    //         polylineId: PolylineId('${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0'),
-    //         points: [
-    //           markers[markers.length - 1].position,
-    //           markers[0].position,
-    //         ],
-    //         color: context.colors.yellow,
-    //         width: 2,
-    //       ),
-    //     );
-    //   }
-    //
-    //   return polylines;
-    // } else if (state.isUpdating) {
-    //   final selectedPolyline = state.selectedEditedPolyline;
-    //
-    //   final markers = state.temporaryMarkers;
-    //   var now = DateTime.now().microsecondsSinceEpoch;
-    //   var polylines = <Polyline>{};
-    //   if (markers.length < 2) {
-    //     return polylines;
-    //   }
-    //
-    //   Color getPolylineColor(Polyline polyline) {
-    //     if (selectedPolyline == null) {
-    //       return context.colors.yellow;
-    //     }
-    //
-    //     final centerLatLng = MapUtils.getCenterPositionFromPolyline(selectedPolyline);
-    //     if (polyline.points.first == centerLatLng || polyline.points.last == centerLatLng ) {
-    //       return context.colors.greenFF47;
-    //     }
-    //
-    //     return context.colors.yellow;
-    //   }
-    //
-    //   for (var i = 1; i < markers.length; i++) {
-    //     var polyline = Polyline(
-    //       consumeTapEvents: true,
-    //       width: 2,
-    //       startCap: Cap.roundCap,
-    //       endCap: Cap.roundCap,
-    //       polylineId: PolylineId('${markers[i].markerId.value} ${i - 1}_$i $now'),
-    //       points: [
-    //         markers[i - 1].position,
-    //         markers[i].position,
-    //       ],
-    //
-    //     );
-    //
-    //     polyline = polyline.copyWith(
-    //       colorParam: getPolylineColor(polyline),
-    //       onTapParam: () {
-    //         context.read<CompartmentMapsSummariesCubit>().onTapPolyline(
-    //           polyline,
-    //           onMoveCameraToCenterPoint: moveMapCameraToLocation,
-    //         );
-    //       },
-    //     );
-    //
-    //     polylines.add(polyline);
-    //     now++;
-    //   }
-    //
-    //   var lastPolyline = Polyline(
-    //     consumeTapEvents: true,
-    //     width: 2,
-    //     polylineId: PolylineId(
-    //         '${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0 $now}'),
-    //     points: [
-    //       markers[markers.length - 1].position,
-    //       markers[0].position,
-    //     ],
-    //   );
-    //
-    //   lastPolyline = lastPolyline.copyWith(
-    //     colorParam: getPolylineColor(lastPolyline),
-    //     onTapParam: () {
-    //       context.read<CompartmentMapsSummariesCubit>().onTapPolyline(
-    //         lastPolyline,
-    //         onMoveCameraToCenterPoint: moveMapCameraToLocation,
-    //       );
-    //     },
-    //   );
-    //
-    //   polylines.add(lastPolyline);
-    //   return polylines;
-    // }
-
-    return <Polyline>{};
-  }
-
   Set<Polygon> generatePolygon() {
-    // final state = context.read<CompartmentMapsSummariesCubit>().state;
+    final state = context.read<AsiMapCubit>().state;
     final polygon = <Polygon>{};
+    if (state.outlineMarker.isBlank) return polygon;
 
-    // for (final compartmentMapDetail in state.listCompartmentMapDetails) {
-    //   if (compartmentMapDetail.compartment.localCompartmentId == state.selectedCompartment.localCompartmentId) {
-    //     continue;
-    //   } else {
-    //     final generatePolygon = generateSetPolygonFromCompartmentMapDetail(compartmentMapDetail);
-    //     if (generatePolygon != null) {
-    //       polygon.add(generatePolygon);
-    //     }
-    //   }
-    // }
-    //
-    // final selectedPolygon = generatePolygonFromListMarker();
-    // if (selectedPolygon != null && !state.isUpdating) {
-    //   polygon.add(selectedPolygon);
-    // }
+    final listMarkers = state.outlineMarker;
+    final strokeColor = context.colors.yellow;
 
-    return polygon;
-  }
-
-  Polygon? generateSetPolygonFromCompartmentMapDetail(
-      CompartmentMapDetail compartmentMapDetail, {
-        bool isSelected = false,
-      }) {
-    final fillColor = isSelected ? context.colors.yellow.withOpacity(0.3) : context.colors.white.withOpacity(0.5);
-    final strokeColor = isSelected ? context.colors.yellow : context.colors.white;
-
-    if (compartmentMapDetail.markers.isBlank) return null;
-
-    return Polygon(
-      polygonId: PolygonId('${compartmentMapDetail.compartment.localCompartmentId}'),
-      points: compartmentMapDetail.markers.map((e) => e.position).toList(),
-      fillColor: fillColor,
-      strokeColor: strokeColor,
-      strokeWidth: 2,
-    );
-  }
-
-  Polygon? generatePolygonFromListMarker() {
-    // final state = context.read<AsiMapCubit>().state;
-    // if ((state.isAddingNew && !state.isCompletePolygon) || (state.selectedCompartmentMapDetails?.markers == null || state.selectedCompartmentMapDetails!.markers.isBlank)) {
-    //   return null;
-    // }
-    //
-    // final listMarkers = state.selectedCompartmentMapDetails?.markers ?? [];
-    // final strokeColor = context.colors.yellow;
-    //
-    // return Polygon(
-    //   polygonId: PolygonId('${state.selectedCompartmentMapDetails?.compartment.localCompartmentId}'),
-    //   points: listMarkers.map((e) => e.position).toList(),
-    //   fillColor: context.colors.yellow.withOpacity(0.3),
-    //   strokeColor: strokeColor,
-    //   strokeWidth: 2,
-    // );
+    return {
+      Polygon(
+        polygonId: PolygonId('${state.outlinedCompartment?.localCompartmentId}'),
+        points: listMarkers.map((e) => e.position).toList(),
+        fillColor: context.colors.yellow.withOpacity(0.3),
+        strokeColor: strokeColor,
+        strokeWidth: 2,
+      )
+    };
   }
 
   Future<void> moveMapCameraToLocation(LatLng position) async {
     await mapController?.animateCamera(CameraUpdate.newLatLng(position));
   }
 
+  Future<void> moveMapCameraToCurrentLocation() async {
+    final position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    await mapController?.animateCamera(
+      CameraUpdate.newLatLng(
+        LatLng(
+          position.latitude,
+          position.longitude,
+        ),
+      ),
+    );
+  }
+
   Future<void> moveMapCameraToInitLocation() async {
     final state = context.read<AsiMapCubit>().state;
-    // if (state.isAddingNew) {
-    //   final position = await Geolocator.getCurrentPosition(
-    //     desiredAccuracy: LocationAccuracy.high,
-    //   );
-    //
-    //   await mapController?.animateCamera(
-    //     CameraUpdate.newLatLng(
-    //       LatLng(
-    //         position.latitude,
-    //         position.longitude,
-    //       ),
-    //     ),
-    //   );
-    // } else {
-    //   await mapController?.animateCamera(
-    //     CameraUpdate.newLatLng(
-    //       state.selectedCompartmentMapDetails!.centerPoint(),
-    //     ),
-    //   );
-    // }
+    if (state.asi.latitude != null && state.asi.longitude != null) {
+      await moveMapCameraToLocation(
+        LatLng(
+          state.asi.latitude!,
+          state.asi.longitude!,
+        ),
+      );
+    } else if (state.outlinedCompartment != null) {
+      await mapController?.animateCamera(
+        CameraUpdate.newLatLng(
+          state.outlinedCompartment!.centerPoint(),
+        ),
+      );
+    } else {
+      await moveMapCameraToCurrentLocation();
+    }
   }
 
   @override
@@ -294,7 +133,6 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
                   builder: (context, state) {
                     return GoogleMap(
                       initialCameraPosition: const CameraPosition(target: Constants.mapCenter, zoom: 14),
-                      polylines: generatePolyline(),
                       polygons: generatePolygon(),
                       mapType: MapType.satellite,
                       myLocationEnabled: true,
@@ -306,8 +144,7 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
                         mapController = controller;
                         MapUtils.checkLocationPermission(
                           onAllowed: () async {
-                            await Future.delayed(Duration(seconds: 1)).then((_) async {
-                              await context.read<AsiMapCubit>().initMapData();
+                            await Future.delayed(const Duration(seconds: 1)).then((_) async {
                               await moveMapCameraToInitLocation();
                             });
                           },
@@ -339,13 +176,8 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
                   title: LocaleKeys.save.tr(),
                   disable: marker == null,
                   onTap: () {
-                    // if (isEnableNextButton) {
-                    //   if (widget.onSave == null) {
-                    //     Navigator.of(context).pop(locationModel);
-                    //   } else {
-                    //     widget.onSave!(locationModel);
-                    //   }
-                    // }
+                    widget.onSave(context.read<AsiMapCubit>().state.asi);
+                    Navigator.of(context).pop();
                   },
                 ),
               );

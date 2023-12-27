@@ -1,9 +1,6 @@
 import 'package:cmo/di.dart';
-import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
-import 'package:cmo/extensions/string.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -13,7 +10,6 @@ import 'asi_map_state.dart';
 class AsiMapCubit extends Cubit<AsiMapState> {
   AsiMapCubit({
     required Asi asi,
-    String? farmId,
   }) : super(
     AsiMapState(
       asi: asi,
@@ -27,123 +23,95 @@ class AsiMapCubit extends Cubit<AsiMapState> {
       state.asi.farmId,
     );
 
-    if (state.asi.latitude != null &&
-        state.asi.longitude != null &&
-        compartments.isNotBlank) {
-      final initCompartment = compartments.firstWhereOrNull((compartment) {
-        final latLng = LatLng(
-          state.asi.latitude!,
-          state.asi.longitude!,
-        );
-
-        final polygons = compartment.getPolygonLatLng();
-        return MapUtils.checkPositionInsidePolygon(latLng: latLng, polygon: polygons);
-      });
-
-      if (initCompartment != null) {
-        onCompartmentChanged(initCompartment);
-      }
-    }
-
     emit(
       state.copyWith(
         compartments: compartments,
       ),
     );
-  }
 
-  Future<void> saveAsi() async {
-    try {
-      emit(state.copyWith(isLoading: true));
-      await cmoDatabaseMasterService.cacheAsi(
-        state.asi.copyWith(
-          isMasterdataSynced: false,
-          createDT: state.asi.createDT ?? DateTime.now(),
-          updateDT: DateTime.now(),
+    Compartment? initCompartment;
+
+    if (state.asi.latitude != null &&
+        state.asi.longitude != null &&
+        compartments.isNotBlank) {
+      initCompartment = checkOutlineCompartment(
+        LatLng(
+          state.asi.latitude!,
+          state.asi.longitude!,
         ),
       );
 
-    } catch (e) {
-      logger.e('Cannot saveASI $e');
-    } finally {
-      emit(state.copyWith(isLoading: false));
+      final marker = await MapUtils.generateMarkerFromLatLng(
+        LatLng(
+          state.asi.latitude!,
+          state.asi.longitude!,
+        ),
+        shouldShowCustomIconMarker: false,
+      );
+      emit(state.copyWith(marker: marker));
+    } else if (state.asi.localCompartmentId != null) {
+      initCompartment = state.compartments.firstWhereOrNull((element) => element.localCompartmentId == state.asi.localCompartmentId);
+    }
+
+    if (initCompartment != null) {
+      await updateOutlineCompartment(initCompartment);
     }
   }
 
-  void onCompartmentChanged(Compartment? compartment) {
+  Future<void> updateOutlineCompartment(Compartment? compartment) async {
+    if (compartment == null) return;
+    final markers = <Marker>[];
+    for (final item in compartment.getPolygonLatLng()) {
+      final marker = await MapUtils.generateMarkerFromLatLng(
+        item,
+      );
+
+      markers.add(marker);
+    }
+
     emit(
       state.copyWith(
         asi: state.asi.copyWith(
-          managementUnitId: compartment?.managementUnitId,
-          compartmentName: compartment?.unitNumber,
-          localCompartmentId: compartment?.localCompartmentId,
+          managementUnitId: compartment.managementUnitId,
+          compartmentName: compartment.unitNumber,
+          localCompartmentId: compartment.localCompartmentId,
         ),
-
+        outlineMarker: markers,
         outlinedCompartment: compartment,
       ),
     );
   }
 
-  void onSelectLocation(LocationModel locationModel) {
+  void removeMarker() {
     emit(
       state.copyWith(
-        asi: state.asi.copyWith(
-          latitude: locationModel.latitude,
-          longitude: locationModel.longitude,
-        ),
+        isClearMarker: true,
+        isClearOutlineCompartment: true,
       ),
     );
-
-    final selectedCompartment = state.compartments.firstWhereOrNull((compartment) {
-      final latLng = LatLng(
-        locationModel.latitude!,
-        locationModel.longitude!,
-      );
-
-      final polygons = compartment.getPolygonLatLng();
-      return MapUtils.checkPositionInsidePolygon(latLng: latLng, polygon: polygons);
-    });
-
-    if (selectedCompartment != null) {
-      onCompartmentChanged(selectedCompartment);
-    }
-  }
-
-  Future<void> initMapData() async {
-    emit(state.copyWith(isLoading: true));
-    // final listCompartments = await cmoDatabaseMasterService.getCompartmentsByGroupSchemeId(groupSchemeId: activeGroupScheme?.groupSchemeId);
-    // if (listCompartments.isNotBlank) {
-    //   for (final compartment in listCompartments) {
-    //     final compartmentMapDetail = await generateCompartmentMapDetailFromCompartment(compartment);
-    //     listCompartmentMapDetails.add(compartmentMapDetail);
-    //   }
-    // }
-    //
-    // final selectedCompartmentMapDetail = await generateCompartmentMapDetailFromCompartment(state.selectedCompartment);
-    //
-    // emit(
-    //   state.copyWith(
-    //     loading: false,
-    //     listCompartments: listCompartments,
-    //     listCompartmentMapDetails: listCompartmentMapDetails,
-    //     selectedCompartmentMapDetails: selectedCompartmentMapDetail,
-    //     compartmentMapDetailByCameraPosition: selectedCompartmentMapDetail,
-    //   ),
-    // );
-  }
-
-  void removeMarker() {
-    emit(state.copyWith(isClearMarker: true));
   }
 
   Future<void> createNewMarker() async {
     if (state.currentCameraPosition == null) return;
-    final marker = await MapUtils.generateMarkerFromLatLng(state.currentCameraPosition!.target);
+    final marker = await MapUtils.generateMarkerFromLatLng(
+      state.currentCameraPosition!.target,
+      shouldShowCustomIconMarker: false,
+    );
+
     emit(
       state.copyWith(
         marker: marker,
+        asi: state.asi.copyWith(
+          latitude: marker.position.latitude,
+          longitude: marker.position.longitude,
+        ),
       ),
     );
+
+    final outlineCompartment = checkOutlineCompartment(state.currentCameraPosition!.target);
+    if (outlineCompartment != null) {
+      await updateOutlineCompartment(outlineCompartment);
+    }
   }
 
   Compartment? checkOutlineCompartment(LatLng latLng) {
@@ -157,79 +125,5 @@ class AsiMapCubit extends Cubit<AsiMapState> {
 
   void onCameraMove(CameraPosition cameraPosition) {
     emit(state.copyWith(currentCameraPosition: cameraPosition));
-    // if (state.isAddingNew && !state.isCompletePolygon) {
-    //   final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
-    //   if (temporaryMarkers.isNotBlank) {
-    //     if (temporaryMarkers.length == 1) {
-    //       temporaryMarkers.add(MapUtils.copyMarkerValue(temporaryMarkers.last));
-    //     }
-    //
-    //     temporaryMarkers[temporaryMarkers.length - 1] = temporaryMarkers[temporaryMarkers.length - 1].copyWith(
-    //       positionParam: LatLng(
-    //         cameraPosition.target.latitude,
-    //         cameraPosition.target.longitude,
-    //       ),
-    //     );
-    //
-    //     emit(
-    //       state.copyWith(
-    //         temporaryMarkers: temporaryMarkers,
-    //       ),
-    //     );
-    //   }
-    // } else if (state.isUpdating) {
-    //   final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
-    //   var selectedMarker = temporaryMarkers.firstWhereOrNull((element) => element.markerId == state.selectedEditedMarker?.markerId);
-    //   if (selectedMarker != null) {
-    //     final selectedMarkerIndex = temporaryMarkers.indexOf(selectedMarker);
-    //     temporaryMarkers[selectedMarkerIndex] = temporaryMarkers[selectedMarkerIndex].copyWith(
-    //       positionParam: LatLng(
-    //         cameraPosition.target.latitude,
-    //         cameraPosition.target.longitude,
-    //       ),
-    //     );
-    //     selectedMarker = selectedMarker.copyWith(
-    //       positionParam: LatLng(
-    //         cameraPosition.target.latitude,
-    //         cameraPosition.target.longitude,
-    //       ),
-    //     );
-    //   }
-    //
-    //
-    //   emit(
-    //     state.copyWith(
-    //       selectedEditedMarker: selectedMarker,
-    //       temporaryMarkers: temporaryMarkers,
-    //     ),
-    //   );
-    // }
-
-    // final latLng = LatLng(
-    //   cameraPosition.target.latitude,
-    //   cameraPosition.target.longitude,
-    // );
-    //
-    // final compartmentMapDetail =
-    // state.listCompartmentMapDetails.firstWhereOrNull(
-    //       (element) => MapUtils.checkPositionInsidePolygon(
-    //     latLng: latLng,
-    //     polygon: element.polygons,
-    //   ),
-    // );
-    //
-    // final selectedCompartmentMapDetail = MapUtils.checkPositionInsidePolygon(
-    //   latLng: latLng,
-    //   polygon: state.selectedCompartmentMapDetails?.polygons ?? <LatLng>[],
-    // );
-    //
-    // emit(
-    //   state.copyWith(
-    //     compartmentMapDetailByCameraPosition: (selectedCompartmentMapDetail
-    //         ? state.selectedCompartmentMapDetails
-    //         : null) ??
-    //         compartmentMapDetail,
-    //   ),
-    // );
   }
 }

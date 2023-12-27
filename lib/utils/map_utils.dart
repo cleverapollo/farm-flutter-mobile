@@ -25,6 +25,7 @@ class MapUtils {
     void Function(MarkerId)? onTap,
     void Function(LatLng, MarkerId)? onDrag,
     bool draggable = false,
+    bool shouldShowCustomIconMarker = true,
   }) async {
     return Marker(
       markerId: MarkerId('place_name_${position.latitude}_${position.longitude}'),
@@ -37,10 +38,12 @@ class MapUtils {
           MarkerId('place_name_${position.latitude}_${position.longitude}'),
         );
       },
-      icon: await BitmapDescriptorHelper.getBitmapDescriptorFromSvgAsset(
-        Assets.icons.mapPolygonPoint.path,
-        const Size(8, 8),
-      ),
+      icon: shouldShowCustomIconMarker
+          ? await BitmapDescriptorHelper.getBitmapDescriptorFromSvgAsset(
+              Assets.icons.mapPolygonPoint.path,
+              const Size(8, 8),
+            )
+          : BitmapDescriptor.defaultMarker,
     );
   }
 
