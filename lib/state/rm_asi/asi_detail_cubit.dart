@@ -29,7 +29,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
   }
 
   Future<void> fetchData() async {
-    // final userRole = await configService.getActiveUserRole();
+    final userRole = await configService.getActiveUserRole();
     // final activeGroupScheme = await configService.getActiveGroupScheme();
 
     // List<AsiType>? types;
@@ -68,6 +68,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     emit(
       state.copyWith(
         types: types,
+        userRole: userRole,
         compartments: compartments,
         listAsiPhotos: listAsiPhotos,
       ),

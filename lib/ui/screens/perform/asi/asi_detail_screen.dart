@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/date.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
@@ -5,8 +6,8 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
-import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/asi/asi_map_screen.dart';
+import 'package:cmo/ui/screens/perform/asi/widgets/select_compartment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/screens/perform/asi/widgets/thumbnail_image.dart';
@@ -111,6 +112,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
             context: context,
             compartmentName: state.asi.compartmentName ?? '',
             compartments: state.compartments,
+            userRole: state.userRole,
           ),
           const SizedBox(height: 6),
           buildSelectASIType(
@@ -184,6 +186,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
     required BuildContext context,
     required String compartmentName,
     required List<Compartment> compartments,
+    UserRoleEnum? userRole,
   }) {
     return BottomSheetSelection(
       hintText: LocaleKeys.compartment.tr(),
@@ -195,25 +198,10 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
         if (compartments.isBlank) return;
         await showCustomBottomSheet<void>(
           context,
-          content: ListView.builder(
-            itemCount: compartments.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                onTap: () {
-                  _asiDetailCubit.onCompartmentChanged(compartments[index]);
-                  Navigator.pop(context);
-                },
-                title: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Text(
-                    compartments[index].unitNumber ?? '',
-                    style: context.textStyles.bodyBold.copyWith(
-                      color: context.colors.blueDark2,
-                    ),
-                  ),
-                ),
-              );
-            },
+          content: SelectCompartmentWidget(
+            onSave: _asiDetailCubit.onCompartmentChanged,
+            compartments: compartments,
+            shouldShowSearchField: userRole == UserRoleEnum.regionalManager,
           ),
         );
       },

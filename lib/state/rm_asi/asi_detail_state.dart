@@ -1,5 +1,6 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/components/select_location/select_location_screen.dart';
+
 class AsiDetailState {
   AsiDetailState({
     required this.asi,
@@ -8,11 +9,14 @@ class AsiDetailState {
     this.listAsiPhotos = const <AsiPhoto>[],
     this.photoName,
     this.isLoading = false,
+    this.userRole,
   });
 
   final List<AsiType> types;
   final List<Compartment> compartments;
   final List<AsiPhoto> listAsiPhotos;
+  final UserRoleEnum? userRole;
+
   String? photoName;
   Asi asi;
   final bool isLoading;
@@ -24,6 +28,7 @@ class AsiDetailState {
     String? photoName,
     Asi? asi,
     List<AsiPhoto>? listAsiPhotos,
+    UserRoleEnum? userRole,
   }) {
     return AsiDetailState(
       isLoading: isLoading ?? this.isLoading,
@@ -32,6 +37,7 @@ class AsiDetailState {
       photoName: photoName ?? this.photoName,
       asi: asi ?? this.asi,
       listAsiPhotos: listAsiPhotos ?? this.listAsiPhotos,
+      userRole: userRole ?? this.userRole,
     );
   }
 }
