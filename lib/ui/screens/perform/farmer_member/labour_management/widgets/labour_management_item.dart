@@ -39,7 +39,7 @@ class LabourManagementItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 20, right: 8),
+                padding: const EdgeInsets.only(top: 10, right: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -61,6 +61,7 @@ class LabourManagementItem extends StatelessWidget {
                       },
                       child: SizedBox(
                         width: 50,
+                        height: 50,
                         child: Center(child: Assets.icons.icSmsBlue.svg()),
                       ),
                     ),
@@ -73,6 +74,7 @@ class LabourManagementItem extends StatelessWidget {
                       },
                       child: SizedBox(
                           width: 50,
+                          height: 50,
                           child: Center(child: Assets.icons.icCallBlue.svg()),
                       ),
                     ),
