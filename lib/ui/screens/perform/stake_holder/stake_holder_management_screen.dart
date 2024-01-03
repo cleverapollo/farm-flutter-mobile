@@ -147,7 +147,7 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
           selector: (state) => state.resourceManagerUnit,
           builder: (context, resourceManagerUnit) {
             return CmoAppBar(
-              title: LocaleKeys.neighbours.tr(),
+              title: LocaleKeys.stakeholders.tr(),
               subtitle: '${LocaleKeys.siteName.tr()}: ${resourceManagerUnit?.regionalManagerUnitName}',
               leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: Navigator.of(context).pop,
