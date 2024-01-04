@@ -228,13 +228,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
 
     for (final item in state.listFarmCustomaryUseRights) {
       futures.add(
-        cmoDatabaseMasterService.cacheFarmStakeholderCustomaryUseRights(
-          item.copyWith(
-            farmStakeholderId: farmStakeholderId,
-            isActive: false,
-            isMasterDataSynced: 0,
-          ),
-        ),
+        cmoDatabaseMasterService.removeFarmStakeholderCustomaryUseRight(item.id),
       );
     }
 
@@ -254,13 +248,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
 
     for (final item in state.listFarmSocialUpliftments) {
       futures.add(
-        cmoDatabaseMasterService.cacheFarmStakeholderSocialUpliftments(
-          item.copyWith(
-            farmStakeholderId: farmStakeholderId,
-            isActive: false,
-            isMasterDataSynced: 0,
-          ),
-        ),
+        cmoDatabaseMasterService.removeFarmStakeholderSocialUpliftment(item.id),
       );
     }
 
@@ -280,13 +268,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
 
     for (final item in state.listFarmSpecialSites) {
       futures.add(
-        cmoDatabaseMasterService.cacheFarmStakeholderSpecialSites(
-          item.copyWith(
-            farmStakeholderId: farmStakeholderId,
-            isActive: false,
-            isMasterDataSynced: 0,
-          ),
-        ),
+        cmoDatabaseMasterService.removeFarmStakeholderSpecialSite(item.id),
       );
     }
 

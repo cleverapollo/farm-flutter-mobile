@@ -427,6 +427,7 @@ class CmoDatabaseMasterService {
     return db.farmStakeholderSocialUpliftments
         .filter()
         .isMasterDataSyncedEqualTo(0)
+        .isActiveEqualTo(true)
         .findAll();
   }
 
@@ -444,6 +445,13 @@ class CmoDatabaseMasterService {
     }
   }
 
+  Future<bool> removeFarmStakeholderSocialUpliftment(int id) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.farmStakeholderSocialUpliftments.delete(id);
+    });
+  }
+
   Future<List<FarmStakeholderSpecialSite>>
       getUnsycnedFarmStakeholderSpecialSites() async {
     final db = await _db();
@@ -451,6 +459,7 @@ class CmoDatabaseMasterService {
     return db.farmStakeholderSpecialSites
         .filter()
         .isMasterDataSyncedEqualTo(0)
+        .isActiveEqualTo(true)
         .findAll();
   }
 
@@ -468,12 +477,20 @@ class CmoDatabaseMasterService {
     }
   }
 
+  Future<bool> removeFarmStakeholderSpecialSite(int id) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.farmStakeholderSpecialSites.delete(id);
+    });
+  }
+
   Future<List<FarmStakeholderCustomaryUseRight>>
       getUnsycnedFarmStakeholderCustomaryUseRights() async {
     final db = await _db();
     return db.farmStakeholderCustomaryUseRights
         .filter()
         .isMasterDataSyncedEqualTo(0)
+        .isActiveEqualTo(true)
         .findAll();
   }
 
@@ -487,6 +504,13 @@ class CmoDatabaseMasterService {
         return db.farmStakeholderCustomaryUseRights.put(item);
       });
     }
+  }
+
+  Future<bool> removeFarmStakeholderCustomaryUseRight(int id) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.farmStakeholderCustomaryUseRights.delete(id);
+    });
   }
 
   Future<List<StakeHolder>> getUnsyncedStakeholder() async {
