@@ -1255,7 +1255,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         hasData = true;
         await insertRegionalManagerMasterDataToLocal(messages);
         await cmoPerformApiService.commitMessageList(
-          currentClientId: userDeviceId,
+          currentClientId: userDeviceId.toString(),
           messages: messages,
           topicMasterDataSync: topicRegionalManagerMasterDataSync,
         );
@@ -1402,7 +1402,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       });
 
       await cmoPerformApiService.commitMessageList(
-        currentClientId: userDeviceId,
+        currentClientId: userDeviceId.toString(),
         messages: messages,
         topicMasterDataSync: topicRegionalManagerUnitMasterDataSync,
       );
@@ -1469,7 +1469,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         });
 
         await cmoPerformApiService.commitMessageList(
-          currentClientId: userDeviceId,
+          currentClientId: userDeviceId.toString(),
           messages: messages,
           topicMasterDataSync: trickleFeedMasterDataTopic,
         );
@@ -1547,7 +1547,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         });
 
         await cmoPerformApiService.commitMessageList(
-          currentClientId: userDeviceId,
+          currentClientId: userDeviceId.toString(),
           messages: messages,
           topicMasterDataSync: trickleFeedTopicByGroupSchemeId,
         );
@@ -1610,7 +1610,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         });
 
         await cmoPerformApiService.commitMessageList(
-          currentClientId: userDeviceId,
+          currentClientId: userDeviceId.toString(),
           messages: messages,
           topicMasterDataSync: trickleFeedTopicByRegionalManagerUnitId,
         );

@@ -466,7 +466,7 @@ class CmoPerformApiService {
 
   Future<bool?> commitMessageList({
     required String topicMasterDataSync,
-    required int currentClientId,
+    required String currentClientId,
     required List<Message> messages,
   }) async {
     final body = messages.map((e) => e.toJson()).toList();
@@ -476,7 +476,7 @@ class CmoPerformApiService {
       data: body,
       queryParameters: {
         'key': Env.performApstoryMqKey,
-        'client': '$currentClientId',
+        'client': currentClientId,
         'topic': '$topicMasterDataSync*.$currentClientId'
       },
     );

@@ -102,15 +102,18 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       logger.d('--Farmer Sync Data start');
       await cmoDatabaseMasterService.deleteAll();
-      await Future.delayed(const Duration(seconds: 5));
-      logger.d('--createSubscriptions');
-      await createSubscriptions();
-      logger.d('--createSubscriptions done');
+      await Future.delayed(const Duration(seconds: 2));
       logger.d('--createFarmerSystemEvent');
       await cmoPerformApiService.createFarmerSystemEvent(
         farmId: farmId,
         userDeviceId: userDeviceId,
       );
+
+      await Future.delayed(const Duration(seconds: 20), () {});
+      logger.d('--createSubscriptions');
+      await createSubscriptions();
+      logger.d('--createSubscriptions done');
+
       logger.d('--createFarmerSystemEvent done');
       await Future.delayed(const Duration(seconds: 5), () {});
       logger.d('--onSyncDataForCompartments');
@@ -179,7 +182,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       logger.d('Create System Event Success --- $systemEventId');
       emit(state.copyWith(syncMessage: 'Syncing...'));
 
-      await Future.delayed(const Duration(seconds: 5), () {});
+      await Future.delayed(const Duration(seconds: 20), () {});
 
       await createSubscriptions();
 
@@ -189,13 +192,13 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       await summaryFarmerSync();
 
-      await subscribeToTrickleFeedMasterDataTopic();
-
-      await subscribeToTrickleFeedMasterDataTopicByFarmId();
-
-      await subscribeToTrickleFeedMasterDataTopicByGroupSchemeId();
-
-      await subscribeToUserDeviceClientIdFilterByFarmIdTopic();
+      // await subscribeToTrickleFeedMasterDataTopic();
+      //
+      // await subscribeToTrickleFeedMasterDataTopicByFarmId();
+      //
+      // await subscribeToTrickleFeedMasterDataTopicByGroupSchemeId();
+      //
+      // await subscribeToUserDeviceClientIdFilterByFarmIdTopic();
 
       await Future.delayed(const Duration(seconds: 3), () {});
 
@@ -464,7 +467,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         }
       });
       await cmoPerformApiService.commitMessageList(
-        currentClientId: userDeviceId,
+        currentClientId: userDeviceId.toString(),
         messages: messages,
         topicMasterDataSync: topicMasterDataSync,
       );
@@ -1011,6 +1014,11 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
             }
           }
         });
+        await cmoPerformApiService.commitMessageList(
+          currentClientId: 'global',
+          messages: messages,
+          topicMasterDataSync: topicTrickleFeedFarmerMasterDataByFarmId,
+        );
       }
     } catch (e) {
       isSync = false;
@@ -1115,6 +1123,11 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
             }
           }
         });
+        await cmoPerformApiService.commitMessageList(
+          currentClientId: userDeviceId.toString(),
+          messages: messages,
+          topicMasterDataSync: topicTrickleFeedFarmerMasterDataByFarmId,
+        );
       }
     } catch (e) {
       isSync = false;
@@ -1248,6 +1261,11 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
             }
           }
         });
+        await cmoPerformApiService.commitMessageList(
+          currentClientId: groupSchemeId.toString(),
+          messages: messages,
+          topicMasterDataSync: topicTrickleFeedFgsMasterDataByGroupSchemeId,
+        );
       }
     } catch (e) {
       isSync = false;
@@ -1430,6 +1448,11 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
             }
           }
         });
+        await cmoPerformApiService.commitMessageList(
+          currentClientId: farmId,
+          messages: messages,
+          topicMasterDataSync: topicTrickleFeedFarmerMasterDataByFarmId,
+        );
       }
     } catch (e) {
       isSync = false;
@@ -1712,6 +1735,11 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
             }
           }
         });
+        await cmoPerformApiService.commitMessageList(
+          currentClientId: userDeviceId.toString(),
+          messages: messages,
+          topicMasterDataSync: topicMasterDataSync,
+        );
       }
     } catch (e) {}
   }
