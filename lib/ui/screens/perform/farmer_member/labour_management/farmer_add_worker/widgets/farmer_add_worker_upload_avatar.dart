@@ -75,18 +75,18 @@ class _FarmerStakeHolderUploadAvatarState extends State<FarmerStakeHolderUploadA
               actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               actions: <Widget>[
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CmoFilledButton(
+                    InkWell(
                       onTap: _selectPhotoFromCamera,
-                      title: LocaleKeys.takePhoto.tr(),
+                      child: Assets.icons.icCameraBlueDark.svg(),
                     ),
                     const SizedBox(
                       width: 24,
                     ),
-                    CmoFilledButton(
+                    InkWell(
                       onTap: _selectPhotoFromGallery,
-                      title: LocaleKeys.selectPhoto.tr(),
+                      child: Assets.icons.icGalleryBlueDark.svg(),
                     ),
                   ],
                 )
@@ -120,16 +120,6 @@ class _FarmerStakeHolderUploadAvatarState extends State<FarmerStakeHolderUploadA
   }
 
   Widget _defaultWidget() {
-    return Stack(
-      children: [
-        Assets.icons.icAvatar.svgBlack,
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Assets.icons.icUpdatedAddButton.svgWhite,
-          ),
-        ),
-      ],
-    );
+    return Assets.icons.icWorkerProfile.svg();
   }
 }

@@ -291,15 +291,11 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
                   },
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: FarmerSelectGenderWidget(
-                  initialValue: farmerWorker.genderId,
-                  onTap: (id) {
-                    farmerWorker = farmerWorker.copyWith(genderId: id);
-                  },
-                ),
+              FarmerSelectGenderWidget(
+                initialValue: farmerWorker.genderId,
+                onTap: (id) {
+                  farmerWorker = farmerWorker.copyWith(genderId: id);
+                },
               ),
             ],
           ),

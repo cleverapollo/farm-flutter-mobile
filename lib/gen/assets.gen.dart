@@ -73,6 +73,10 @@ class $AssetsIconsGen {
   SvgGenImage get icCameraAuditFillBackground =>
       const SvgGenImage('assets/icons/ic_camera_audit_fill_background.svg');
 
+  /// File path: assets/icons/ic_camera_blue_dark.svg
+  SvgGenImage get icCameraBlueDark =>
+      const SvgGenImage('assets/icons/ic_camera_blue_dark.svg');
+
   /// File path: assets/icons/ic_chat_audit.svg
   SvgGenImage get icChatAudit =>
       const SvgGenImage('assets/icons/ic_chat_audit.svg');
@@ -138,6 +142,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_gallery_audit_fill_background.svg
   SvgGenImage get icGalleryAuditFillBackground =>
       const SvgGenImage('assets/icons/ic_gallery_audit_fill_background.svg');
+
+  /// File path: assets/icons/ic_gallery_blue_dark.svg
+  SvgGenImage get icGalleryBlueDark =>
+      const SvgGenImage('assets/icons/ic_gallery_blue_dark.svg');
 
   /// File path: assets/icons/ic_home.svg
   SvgGenImage get icHome => const SvgGenImage('assets/icons/ic_home.svg');
@@ -242,6 +250,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_visible.svg
   SvgGenImage get icVisible => const SvgGenImage('assets/icons/ic_visible.svg');
 
+  /// File path: assets/icons/ic_worker_profile.svg
+  SvgGenImage get icWorkerProfile =>
+      const SvgGenImage('assets/icons/ic_worker_profile.svg');
+
   /// File path: assets/icons/map_polygon_point.svg
   SvgGenImage get mapPolygonPoint =>
       const SvgGenImage('assets/icons/map_polygon_point.svg');
@@ -264,6 +276,7 @@ class $AssetsIconsGen {
         icCamera,
         icCameraAudit,
         icCameraAuditFillBackground,
+        icCameraBlueDark,
         icChatAudit,
         icChatAuditFillBackground,
         icCheck,
@@ -282,6 +295,7 @@ class $AssetsIconsGen {
         icEditBlueCircle,
         icGalleryAudit,
         icGalleryAuditFillBackground,
+        icGalleryBlueDark,
         icHome,
         icLang,
         icLocation,
@@ -311,6 +325,7 @@ class $AssetsIconsGen {
         icUser,
         icUsername,
         icVisible,
+        icWorkerProfile,
         mapPolygonPoint
       ];
 }

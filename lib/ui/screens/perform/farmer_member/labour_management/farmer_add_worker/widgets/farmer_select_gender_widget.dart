@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
@@ -19,32 +20,35 @@ class FarmerSelectGenderWidget extends StatefulWidget {
 }
 
 class _FarmerSelectGenderWidgetState extends State<FarmerSelectGenderWidget> {
-  final listGender = ValueNotifier(<CmoDropdownItem>[]);
+  final listGender = ValueNotifier(<Gender>[]);
 
-  late CmoDropdownItem selectedGender;
+  late Gender selectedGender;
+  double widthButton = 0;
 
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    Future.microtask(() async {
+      // listGender.value = await cmoDatabaseMasterService.getGender();
       listGender.value = [
-        CmoDropdownItem(id: 1, name: LocaleKeys.male_key.tr()),
-        CmoDropdownItem(id: 2, name: LocaleKeys.female_key.tr()),
+        Gender(genderId: 1, genderName: LocaleKeys.male_key.tr()),
+        Gender(genderId: 2, genderName: LocaleKeys.female_key.tr()),
       ];
 
       selectedGender = listGender.value.firstWhereOrNull(
               (element) => element.id == widget.initialValue) ??
           listGender.value.first;
+      widthButton =
+          (MediaQuery.of(context).size.width - 75) / listGender.value.length;
     });
   }
 
-  void _onSelectGender(CmoDropdownItem selectedItem) {
+  void _onSelectGender(Gender selectedItem) {
     setState(() {
       selectedGender = selectedItem;
     });
 
-    widget.onTap(selectedGender.id as int);
+    widget.onTap(selectedGender.id);
   }
 
   @override
@@ -62,51 +66,36 @@ class _FarmerSelectGenderWidgetState extends State<FarmerSelectGenderWidget> {
                 style: context.textStyles.bodyBold.black,
               ),
             ),
-            Wrap(
-              spacing: 30,
-              children: data.map(_buildItem).toList(),
-            )
+            Row(
+              children: data
+                  .map((element) => _buildItem(element))
+                  .toList()
+                  .withSpaceBetween(width: 25),
+            ),
           ],
         );
       },
     );
   }
 
-  Widget _buildItem(CmoDropdownItem item) {
+  Widget _buildItem(Gender item) {
     final isSelected = item.id == selectedGender.id;
-    return FilledButton(
-      onPressed: () => _onSelectGender(item),
-      style: FilledButton.styleFrom(
-        minimumSize: const Size(140, 39),
-        backgroundColor:
-            isSelected ? context.colors.blue : context.colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        shape: RoundedRectangleBorder(
+    return InkWell(
+      onTap: () => _onSelectGender(item),
+      child: Container(
+        width: widthButton,
+        height: 40,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isSelected ? context.colors.blue : context.colors.white,
           borderRadius: BorderRadius.circular(10),
-          side: isSelected
-              ? BorderSide.none
-              : BorderSide(color: context.colors.grey),
+          border: isSelected ? null : Border.all(color: context.colors.grey),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  item.name,
-                  style: context.textStyles.bodyBold.copyWith(
-                    color: isSelected
-                        ? context.colors.white
-                        : context.colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ],
+        child: Text(
+          item.genderName ?? '',
+          style: context.textStyles.bodyBold.copyWith(
+            color: isSelected ? context.colors.white : context.colors.black,
+          ),
         ),
       ),
     );
