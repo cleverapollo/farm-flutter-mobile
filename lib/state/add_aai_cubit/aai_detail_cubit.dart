@@ -137,7 +137,7 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
         jobDescriptions: jobDescriptions,
         accidentAndIncident: state.accidentAndIncident.copyWith(
           workerId: worker?.workerId,
-          workerName: worker?.firstName,
+          workerName: worker?.fullName,
           jobDescriptionId: null,
           jobDescriptionName: null,
         ),

@@ -20,11 +20,13 @@ class EmployeeGrievanceCubit extends Cubit<EmployeeGrievanceState> {
       final farm = await configService.getActiveFarm();
       final items = await cmoDatabaseMasterService
           .getEmployeeGrievancesByFarmId(farm!.farmId);
+      final workers = await cmoDatabaseMasterService.getFarmerWorkersByFarmId(farm.farmId ?? '');
       emit(
         state.copyWith(
           items: items,
           filterItems: items,
           isDataReady: true,
+          farmerWorkers: workers,
         ),
       );
 
@@ -88,5 +90,13 @@ class EmployeeGrievanceCubit extends Cubit<EmployeeGrievanceState> {
     );
 
     applyFilter();
+  }
+
+  String getWorkerNameByWorkerId(String? workerId) {
+    if (workerId.isBlank) return '';
+    return state.farmerWorkers
+            .firstWhereOrNull((element) => element.workerId == workerId)
+            ?.fullName ??
+        '';
   }
 }

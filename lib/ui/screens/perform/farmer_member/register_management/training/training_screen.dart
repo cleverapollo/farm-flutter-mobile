@@ -132,7 +132,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
 
   Map<String, String?> generateInformationMapData(TrainingRegister registerItem) {
     return {
-      LocaleKeys.training_type.tr(): registerItem.trainingTypeName,
+      LocaleKeys.training_type.tr(): cubit.getWorkerNameByWorkerId(registerItem.workerId),
       LocaleKeys.date.tr(): registerItem.date.yMd(),
       LocaleKeys.expiry_date.tr(): registerItem.expiryDate.yMd(),
       LocaleKeys.trainer_name.tr(): registerItem.trainerName,

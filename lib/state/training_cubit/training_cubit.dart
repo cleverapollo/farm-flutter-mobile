@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
@@ -16,11 +17,13 @@ class TrainingCubit extends Cubit<TrainingState> {
   Future<void> onLoadData() async {
     final farm = await configService.getActiveFarm();
     final items = await cmoDatabaseMasterService.getTrainingByFarmId(farm!.farmId);
+    final workers = await cmoDatabaseMasterService.getFarmerWorkersByFarmId(farm.farmId ?? '');
     emit(
       state.copyWith(
         isDataReady: true,
         items: items,
         filterItems: items,
+        farmerWorkers: workers,
       ),
     );
 
@@ -44,5 +47,13 @@ class TrainingCubit extends Cubit<TrainingState> {
         statusFilter: statusFilter,
       ),
     );
+  }
+
+  String getWorkerNameByWorkerId(String? workerId) {
+    if (workerId.isBlank) return '';
+    return state.farmerWorkers
+        .firstWhereOrNull((element) => element.workerId == workerId)
+        ?.fullName ??
+        '';
   }
 }

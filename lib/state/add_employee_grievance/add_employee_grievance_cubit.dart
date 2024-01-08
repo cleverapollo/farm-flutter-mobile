@@ -81,7 +81,7 @@ class AddEmployeeGrievanceCubit extends Cubit<AddEmployeeGrievanceState> {
       state.copyWith(
         employeeGrievance: state.employeeGrievance.copyWith(
           workerId: worker?.workerId,
-          workerName: worker?.firstName,
+          workerName: worker?.fullName,
         ),
       ),
     );

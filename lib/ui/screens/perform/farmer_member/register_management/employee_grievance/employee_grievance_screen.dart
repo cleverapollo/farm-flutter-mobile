@@ -133,7 +133,7 @@ class _EmployeeGrievanceScreenState extends BaseStatefulWidgetState<EmployeeGrie
 
   Map<String, String?> generateInformationMapData(GrievanceRegister registerItem) {
     return {
-      LocaleKeys.worker.tr(): registerItem.workerName,
+      LocaleKeys.worker.tr(): cubit.getWorkerNameByWorkerId(registerItem.workerId),
       LocaleKeys.grievanceIssue.tr(): registerItem.grievanceIssueName,
       LocaleKeys.dateReceived.tr(): registerItem.dateReceived?.yMd(),
       LocaleKeys.allocatedTo.tr(): registerItem.allocatedToName,

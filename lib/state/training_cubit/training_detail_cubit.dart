@@ -61,7 +61,7 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
         isTraineeNameError: worker == null,
         training: state.training.copyWith(
           workerId: worker?.workerId ?? '',
-          workerName: worker?.firstName ?? '',
+          workerName: worker?.fullName ?? '',
         ),
       ),
     );
