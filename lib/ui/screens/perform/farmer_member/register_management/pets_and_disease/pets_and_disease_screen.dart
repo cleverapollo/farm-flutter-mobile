@@ -98,9 +98,11 @@ class _PetsAndDiseaseScreenState extends BaseStatefulWidgetState<PetsAndDiseaseS
   }
 
   Map<String, String?> generateInformationMapData(PetsAndDiseaseRegister registerItem) {
+    final cubit = context.read<PetsAndDiseasesCubit>();
+
     return {
-      LocaleKeys.name_pet_disease.tr(): registerItem.pestsAndDiseaseTypeName,
-      LocaleKeys.treatment_methods.tr(): registerItem.pestsAndDiseaseTreatmentMethods,
+      LocaleKeys.name_pet_disease.tr(): cubit.getPestAndDiseaseTypeName(registerItem),
+      LocaleKeys.treatment_methods.tr(): cubit.getTotalTreatmentMethods(registerItem),
       LocaleKeys.numbers_of_outbreaks.tr(): (registerItem.numberOfOutbreaks ?? 0).toString(),
       LocaleKeys.area_lost.tr(): (registerItem.areaLost ?? 0).toString(),
       LocaleKeys.under_control.tr(): (registerItem.underControl ?? false)

@@ -7,7 +7,7 @@ part 'pests_and_diseases_treatment_method_payload.g.dart';
 class PestsAndDiseasesTreatmentMethodPayLoad
     with _$PestsAndDiseasesTreatmentMethodPayLoad {
   const factory PestsAndDiseasesTreatmentMethodPayLoad({
-    num? PestsAndDiseasesRegisterTreatmentMethodId,
+    String? PestsAndDiseasesRegisterTreatmentMethodId,
     String? PestsAndDiseasesRegisterTreatmentMethodNo,
     String? PestsAndDiseasesRegisterId,
     String? PestsAndDiseasesRegisterNo,

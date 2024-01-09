@@ -1850,7 +1850,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       if (bodyJson == null) return null;
       final rs = PestsAndDiseasesRegisterTreatmentMethod.fromJson(bodyJson);
       return cmoDatabaseMasterService
-          .cachePetsAndDiseaseRegisterTreatmentMethod(
+          .cachePestsAndDiseasesRegisterTreatmentMethod(
               rs.copyWith(isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
@@ -2265,8 +2265,10 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = PetsAndDiseaseRegister.fromJson(bodyJson);
-      return cmoDatabaseMasterService
-          .cachePetsAndDisease(rs.copyWith(isMasterdataSynced: true));
+      return cmoDatabaseMasterService.cachePetsAndDisease(
+        rs.copyWith(isMasterdataSynced: true),
+        isDirect: true,
+      );
     } catch (e) {
       logger.d('insert error: $e');
     }

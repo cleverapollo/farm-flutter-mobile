@@ -13,7 +13,7 @@ class SelectPropertyDamaged extends StatefulWidget {
   });
 
   final List<TreatmentMethod> treatmentMethods;
-  final List<PestsAndDiseasesRegisterTreatmentMethod> selectTreatmentMethod;
+  final List<TreatmentMethod> selectTreatmentMethod;
 
   @override
   State<StatefulWidget> createState() => _SelectPropertyDamagedState();
@@ -21,8 +21,7 @@ class SelectPropertyDamaged extends StatefulWidget {
   static Future<dynamic> push({
     required BuildContext context,
     required List<TreatmentMethod> treatmentMethods,
-    required List<PestsAndDiseasesRegisterTreatmentMethod>
-        selectTreatmentMethod,
+    required List<TreatmentMethod> selectTreatmentMethod,
   }) {
     return Navigator.push(
       context,
@@ -38,21 +37,20 @@ class SelectPropertyDamaged extends StatefulWidget {
 
 class _SelectPropertyDamagedState extends State<SelectPropertyDamaged> {
 
-  final List<TreatmentMethod> selectedItems = [];
+  final List<TreatmentMethod> selectedItems = <TreatmentMethod>[];
 
   @override
   void initState() {
     super.initState();
-    selectedItems.addAll(widget.selectTreatmentMethod
-        .map((e) => TreatmentMethod(treatmentMethodId: e.treatmentMethodId))
-        .toList());
+    selectedItems.clear();
+    selectedItems.addAll(widget.selectTreatmentMethod);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
-        title: 'Select Property Damaged',
+        title: LocaleKeys.select_treatment_method.tr(),
         leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
@@ -76,38 +74,24 @@ class _SelectPropertyDamagedState extends State<SelectPropertyDamaged> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: CmoFilledButton(
         title: LocaleKeys.save.tr(),
-        onTap: () {
-          Navigator.of(context).pop(selectedItems
-              .map((e) => PestsAndDiseasesRegisterTreatmentMethod(
-                    pestsAndDiseasesRegisterTreatmentMethodId: null,
-                    pestsAndDiseasesRegisterTreatmentMethodNo:
-                        DateTime.now().millisecondsSinceEpoch.toString(),
-                    treatmentMethodId: e.treatmentMethodId,
-                    isActive: true,
-                    isMasterdataSynced: false,
-                  ))
-              .toList());
-        },
+        onTap: () => Navigator.of(context).pop(selectedItems),
       ),
     );
   }
 
   Widget _buildItem(TreatmentMethod item) {
-    final activeItem = selectedItems.firstWhere(
-        (element) => element.treatmentMethodId == item.treatmentMethodId,
-        orElse: () => const TreatmentMethod());
+    final activeItem = selectedItems.firstWhereOrNull((element) => element.treatmentMethodId == item.treatmentMethodId);
 
     return InkWell(
       onTap: () {
         setState(() {
-          final canAdd = selectedItems.firstWhereOrNull(
-                  (e) => e.treatmentMethodId == item.treatmentMethodId) ==
-              null;
+          final canAdd = selectedItems.firstWhereOrNull((e) => e.treatmentMethodId == item.treatmentMethodId) == null;
           if (canAdd) {
             selectedItems.add(item);
           } else {
             selectedItems.removeWhere(
-                (e) => e.treatmentMethodId == item.treatmentMethodId);
+              (e) => e.treatmentMethodId == item.treatmentMethodId,
+            );
           }
         });
       },
@@ -120,7 +104,7 @@ class _SelectPropertyDamagedState extends State<SelectPropertyDamaged> {
                 style: context.textStyles.bodyNormal.black,
               ),
             ),
-            if (activeItem != const TreatmentMethod())
+            if (activeItem != null)
               _buildSelectedIcon()
             else
               Assets.icons.icCheckCircle.svg(),

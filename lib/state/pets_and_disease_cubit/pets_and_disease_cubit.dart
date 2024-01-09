@@ -22,10 +22,14 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
     final result = await cmoDatabaseMasterService
         .getPetsAndDiseaseRegisterByFarmId(state.farmId!);
 
+    final allTreatmentMethod = await cmoDatabaseMasterService.getAllPestsAndDiseasesRegisterTreatmentMethod();
+    final allPestsAndDiseaseTypes = await cmoDatabaseMasterService.getAllPestsAndDiseaseTypes();
     emit(
       state.copyWith(
         petsAndDiseaseRegisters: result,
         filterPetsAndDiseaseRegisters: result,
+        pestsAndDiseasesRegisterTreatmentMethods: allTreatmentMethod,
+        petsAndDiseaseTypes: allPestsAndDiseaseTypes,
         isLoading: false,
       ),
     );
@@ -44,55 +48,6 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
     } catch (e) {
       return false;
     }
-  }
-
-  Future<void> initAddData({PetsAndDiseaseRegister? data}) async {
-    emit(state.copyWith(isLoading: true));
-
-    final inited = await initConfigData();
-
-    if (!inited) return;
-
-    final petsAndDiseasesTypes = await cmoDatabaseMasterService.getPestsAndDiseaseTypeByGroupSchemeId(state.groupSchemeId!);
-    final treatmentMethods = await cmoDatabaseMasterService
-        .getTreatmentMethodByGroupSchemeId(state.groupSchemeId!);
-    final petsAndDiseaseTreatmentMethod = await cmoDatabaseMasterService
-        .getAllPestsAndDiseasesRegisterTreatmentMethod();
-
-    emit(state.copyWith(
-      petsAndDiseaseTypes: petsAndDiseasesTypes,
-      pestsAndDiseasesRegisterTreatmentMethods: petsAndDiseaseTreatmentMethod,
-      treatmentMethods: treatmentMethods,
-    ));
-
-    if (data != null) {
-      final pestsAndDiseasesTreatmentMethod = await cmoDatabaseMasterService
-          .getPestsAndDiseasesRegisterTreatmentMethodByPestsAndDiseasesRegisterNo(
-              data.pestsAndDiseasesRegisterNo);
-
-      final selectPestsAndDiseasesType = state.petsAndDiseaseTypes
-          .firstWhereOrNull(
-              (e) => e.pestsAndDiseaseTypeId == data.pestsAndDiseaseTypeId);
-
-      emit(state.copyWith(
-        data: data.copyWith(
-          createDT: data.createDT ?? DateTime.now(),
-          updateDT: DateTime.now(),
-        ),
-        carClosed: data.carClosedDate != null,
-        carRaised: data.carRaisedDate != null,
-        selectPetsAndDiseaseType: selectPestsAndDiseasesType,
-        selectPestsAndDiseasesRegisterTreatmentMethods:
-            pestsAndDiseasesTreatmentMethod,
-      ));
-    }
-
-    emit(state.copyWith(
-        data: state.data.copyWith(
-          pestsAndDiseasesRegisterNo: state.data.pestsAndDiseasesRegisterNo ??
-              DateTime.now().millisecondsSinceEpoch.toString(),
-        ),
-        isLoading: false));
   }
 
   void onFilterStatus(StatusFilterEnum statusFilter) {
@@ -127,99 +82,23 @@ class PetsAndDiseasesCubit extends Cubit<PetsAndDiseasesState> {
     );
   }
 
-  void onSelectPetsAndDiseaseType(PestsAndDiseaseType selectPetsAndDiseaseType) {
-    emit(
-      state.copyWith(
-        selectPetsAndDiseaseType: selectPetsAndDiseaseType,
-        isSelectPetTypeError: false,
-        data: state.data.copyWith(
-          pestsAndDiseaseTypeId:
-              selectPetsAndDiseaseType.pestsAndDiseaseTypeId ??
-                  state.selectPetsAndDiseaseType?.pestsAndDiseaseTypeId,
-          pestsAndDiseaseTypeName:
-              selectPetsAndDiseaseType.pestsAndDiseaseTypeName ??
-                  state.selectPetsAndDiseaseType?.pestsAndDiseaseTypeName,
-        ),
-      ),
+  String getPestAndDiseaseTypeName(PetsAndDiseaseRegister registerItem) {
+    return state.petsAndDiseaseTypes
+            .firstWhereOrNull(
+              (element) =>
+                  element.pestsAndDiseaseTypeId ==
+                  registerItem.pestsAndDiseaseTypeId,
+            )
+            ?.pestsAndDiseaseTypeName ??
+        '';
+  }
+
+  String getTotalTreatmentMethods(PetsAndDiseaseRegister registerItem) {
+    final listItems = state.pestsAndDiseasesRegisterTreatmentMethods.where(
+      (element) =>
+          element.pestsAndDiseasesRegisterNo ==
+          registerItem.pestsAndDiseasesRegisterNo,
     );
-  }
-
-  void onChangeData({
-    String? comment,
-    int? numberOfOutbreaks,
-    double? areaLost,
-    bool? underControl,
-    List<PestsAndDiseasesRegisterTreatmentMethod>?
-        selectPestsAndDiseasesRegisterTreatmentMethods,
-  }) {
-
-    emit(state.copyWith(
-      data: state.data.copyWith(
-        comment: comment ?? state.data.comment,
-        numberOfOutbreaks: numberOfOutbreaks ?? state.data.numberOfOutbreaks,
-        areaLost: areaLost ?? state.data.areaLost,
-        underControl: underControl ?? state.data.underControl,
-      ),
-      selectPestsAndDiseasesRegisterTreatmentMethods:
-          selectPestsAndDiseasesRegisterTreatmentMethods != null
-              ? selectPestsAndDiseasesRegisterTreatmentMethods
-                  .map((e) => e.copyWith(
-                        pestsAndDiseasesRegisterNo:
-                            state.data.pestsAndDiseasesRegisterNo,
-                      ))
-                  .toList()
-              : state.selectPestsAndDiseasesRegisterTreatmentMethods,
-    ));
-  }
-
-  bool onValidateRequiredField() {
-    if (state.selectPetsAndDiseaseType == null) {
-      emit(
-        state.copyWith(
-          isSelectPetTypeError: true,
-        ),
-      );
-
-      return false;
-    }
-
-    return true;
-  }
-
-  Future<bool> onSave() async {
-    if (!onValidateRequiredField()) {
-      return false;
-    }
-
-    final futures = <Future<void>>[];
-
-    final needDeleted = await cmoDatabaseMasterService
-        .deletedPestsAndDiseaseTreatmentMethodByPestsAndDiseasesRegisterNo(
-            state.data.pestsAndDiseasesRegisterNo);
-
-    for (final item in state.selectPestsAndDiseasesRegisterTreatmentMethods) {
-      futures.add(
-          cmoDatabaseMasterService.cachePestsAndDiseaseTreatmentMethod(item));
-    }
-
-    await Future.wait(futures);
-
-    final value = await cmoDatabaseMasterService
-        .cachePetsAndDiseaseFromFarm(state.data.copyWith(
-      isActive: true,
-      isMasterdataSynced: false,
-      pestsAndDiseasesRegisterId: null,
-      farmId: state.farmId,
-      updateDT: DateTime.now(),
-      createDT: state.data.createDT ?? DateTime.now(),
-    ));
-
-    if (value != null) {
-      showSnackSuccess(msg: 'Save Pests And Disease $value Successfully');
-      return true;
-    } else {
-      showSnackError(msg: 'Something was wrong, please try again.');
-      return false;
-    }
+    return listItems.isBlank ? '0' : listItems.length.toString();
   }
 }

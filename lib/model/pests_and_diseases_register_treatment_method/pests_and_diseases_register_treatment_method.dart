@@ -11,7 +11,7 @@ class PestsAndDiseasesRegisterTreatmentMethod
     with _$PestsAndDiseasesRegisterTreatmentMethod {
   const factory PestsAndDiseasesRegisterTreatmentMethod({
     @JsonKey(name: 'PestsAndDiseasesRegisterTreatmentMethodId')
-        int? pestsAndDiseasesRegisterTreatmentMethodId,
+        String? pestsAndDiseasesRegisterTreatmentMethodId,
     @JsonKey(name: 'PestsAndDiseasesRegisterTreatmentMethodNo')
         String? pestsAndDiseasesRegisterTreatmentMethodNo,
     @JsonKey(name: 'PestsAndDiseasesRegisterId')

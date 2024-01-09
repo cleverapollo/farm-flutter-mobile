@@ -1041,17 +1041,19 @@ class CmoDatabaseMasterService {
     }
   }
 
-  Future<int?> cachePetsAndDisease(PetsAndDiseaseRegister data) async {
+  Future<int?> cachePetsAndDisease(
+    PetsAndDiseaseRegister data, {
+    bool isDirect = false,
+  }) async {
     final db = await _db();
 
-    return db.petsAndDiseaseRegisters.put(data);
-  }
-
-  Future<int?> cachePetsAndDiseaseFromFarm(PetsAndDiseaseRegister data) async {
-    final db = await _db();
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.petsAndDiseaseRegisters.put(data);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.petsAndDiseaseRegisters.put(data);
+      });
+    }
   }
 
   Future<int?> cachePetsAndDiseaseTreatmentMethod(
@@ -1061,20 +1063,17 @@ class CmoDatabaseMasterService {
     return db.pestsAndDiseaseTypeTreatmentMethods.put(data);
   }
 
-  Future<int?> cachePetsAndDiseaseRegisterTreatmentMethod(
-      PestsAndDiseasesRegisterTreatmentMethod data) async {
+  Future<int?> cachePestsAndDiseasesRegisterTreatmentMethod(
+      PestsAndDiseasesRegisterTreatmentMethod data, {bool isDirect = true,}) async {
     final db = await _db();
 
-    return db.pestsAndDiseasesRegisterTreatmentMethods.put(data);
-  }
-
-  Future<int?> cachePetsAndDiseaseRegisterTreatmentMethodFromFarm(
-      PestsAndDiseasesRegisterTreatmentMethod data) async {
-    final db = await _db();
-
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.pestsAndDiseasesRegisterTreatmentMethods.put(data);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.pestsAndDiseasesRegisterTreatmentMethods.put(data);
+      });
+    }
   }
 
   Future<int?> cacheRteSpeciesPhotos(RteSpeciesPhotoModel data) async {
@@ -1279,15 +1278,6 @@ class CmoDatabaseMasterService {
     return db.pestsAndDiseaseTypes.put(data);
   }
 
-  Future<int?> cachePestsAndDiseaseTreatmentMethod(
-      PestsAndDiseasesRegisterTreatmentMethod item) async {
-    final db = await _db();
-
-    return db.writeTxn(() async {
-      return db.pestsAndDiseasesRegisterTreatmentMethods.put(item);
-    });
-  }
-
   Future<int?>
       deletedPestsAndDiseaseTreatmentMethodByPestsAndDiseasesRegisterNo(
           String? id) async {
@@ -1423,7 +1413,8 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<TreatmentMethod>> getTreatmentMethodByGroupSchemeId(
-      int id) async {
+      int? id) async {
+    if (id == null) return <TreatmentMethod>[];
     final db = await _db();
 
     return db.treatmentMethods
@@ -1860,9 +1851,11 @@ class CmoDatabaseMasterService {
   Future<List<PestsAndDiseasesRegisterTreatmentMethod>>
       getPestsAndDiseasesRegisterTreatmentMethodByPestsAndDiseasesRegisterNo(
           String? id) async {
+    if (id == null) return <PestsAndDiseasesRegisterTreatmentMethod>[];
     final db = await _db();
     return db.pestsAndDiseasesRegisterTreatmentMethods
         .filter()
+        .isActiveEqualTo(true)
         .pestsAndDiseasesRegisterNoEqualTo(id)
         .findAll();
   }
@@ -2174,7 +2167,8 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<PestsAndDiseaseType>> getPestsAndDiseaseTypeByGroupSchemeId(
-      int id) async {
+      int? id) async {
+    if (id == null) return <PestsAndDiseaseType>[];
     final db = await _db();
 
     return db.pestsAndDiseaseTypes
@@ -2182,6 +2176,12 @@ class CmoDatabaseMasterService {
         .groupSchemeIdEqualTo(id)
         .isActiveEqualTo(true)
         .findAll();
+  }
+
+  Future<List<PestsAndDiseaseType>> getAllPestsAndDiseaseTypes() async {
+    final db = await _db();
+
+    return db.pestsAndDiseaseTypes.filter().isActiveEqualTo(true).findAll();
   }
 
   Future<List<AccidentAndIncidentPropertyDamaged>>

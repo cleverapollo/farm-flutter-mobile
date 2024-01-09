@@ -10,26 +10,15 @@ part 'pets_and_disease_state.freezed.dart';
 @freezed
 class PetsAndDiseasesState with _$PetsAndDiseasesState {
   const factory PetsAndDiseasesState({
-    @Default(PetsAndDiseaseRegister()) PetsAndDiseaseRegister data,
-    @Default(PetsAndDiseaseRegister()) PetsAndDiseaseRegister dataBeforeEdit,
     @Default([]) List<PestsAndDiseaseType> petsAndDiseaseTypes,
     @Default([])
         List<PestsAndDiseasesRegisterTreatmentMethod>
             pestsAndDiseasesRegisterTreatmentMethods,
-    @Default([])
-        List<PestsAndDiseasesRegisterTreatmentMethod>
-            selectPestsAndDiseasesRegisterTreatmentMethods,
     @Default([]) List<PetsAndDiseaseRegister> petsAndDiseaseRegisters,
     @Default([]) List<PetsAndDiseaseRegister> filterPetsAndDiseaseRegisters,
     @Default(StatusFilterEnum.open) StatusFilterEnum statusFilter,
-    PestsAndDiseaseType? selectPetsAndDiseaseType,
-    @Default([]) List<TreatmentMethod> treatmentMethods,
-    @Default(false) bool isSelectPetTypeError,
     int? groupSchemeId,
     String? farmId,
-    bool? carRaised,
-    bool? carClosed,
-    bool? isOpen,
     @Default(false) bool isLoading,
   }) = _PetsAndDiseasesState;
 }

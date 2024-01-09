@@ -876,12 +876,12 @@ mixin FarmUploadSummaryMixin {
         pestsAndDiseasesRegistersPayLoad.add(payLoadItem);
 
         if (_enableUpdateStatus) {
-          futures.add(cmoDatabaseMasterService.cachePetsAndDiseaseFromFarm(
+          futures.add(cmoDatabaseMasterService.cachePetsAndDisease(
               item.copyWith(isMasterdataSynced: true)));
 
           for (final item in registerTreatmentMethod) {
             futures.add(cmoDatabaseMasterService
-                .cachePetsAndDiseaseRegisterTreatmentMethodFromFarm(
+                .cachePestsAndDiseasesRegisterTreatmentMethod(
                     item.copyWith(isMasterdataSynced: true)));
           }
         }
