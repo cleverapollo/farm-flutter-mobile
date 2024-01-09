@@ -3251,6 +3251,15 @@ class CmoDatabaseMasterService {
     return db.stakeHolderTypes.filter().isActiveEqualTo(1).findAll();
   }
 
+  Future<List<StakeHolderType>> getFarmerStakeHolderTypes() async {
+    final db = await _db();
+    return db.stakeHolderTypes
+        .filter()
+        .isActiveEqualTo(1)
+        .isForFarmerEqualTo(true)
+        .findAll();
+  }
+
   Future<List<FarmerWorker>> getFarmerWorkersByFarmId(String farmId) async {
     final db = await _db();
     return db.farmerWorkers

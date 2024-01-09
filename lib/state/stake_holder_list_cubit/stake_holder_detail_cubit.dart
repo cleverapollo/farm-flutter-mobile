@@ -24,11 +24,15 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
     try {
       final service = cmoDatabaseMasterService;
       final currentRole = await configService.getActiveUserRole();
-      final stakeHolderTypes = await service.getStakeHolderTypes();
+      var stakeHolderTypes = await service.getStakeHolderTypes();
       final farm = await configService.getActiveFarm();
       final listCustomaryUseRights = await service.getCustomaryUseRight();
       final listSocialUpliftments = await service.getSocialUpliftment();
       final listSpecialSites = await service.getSpecialSite();
+
+      if (currentRole == UserRoleEnum.farmerMember) {
+        stakeHolderTypes = await service.getFarmerStakeHolderTypes();
+      }
 
       emit(
         state.copyWith(
