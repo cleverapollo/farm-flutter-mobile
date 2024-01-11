@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
@@ -41,9 +42,16 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
       }
 
       final aaiRegisterPropertyDamages = await cmoDatabaseMasterService
-          .getAllAccidentAndIncidentRegisterPropertyDamagedByAccidentAndIncidentRegisterNo(
-        state.accidentAndIncident.accidentAndIncidentRegisterNo ?? '',
+          .getAllAAIPropertyDamagedByAccidentAndIncidentRegisterNo(
+        state.accidentAndIncident.accidentAndIncidentRegisterNo,
       );
+
+      final selectedPropertyDamages = propertyDamaged
+          .where((e) =>
+              aaiRegisterPropertyDamages.firstWhereOrNull((element) =>
+                  element.propertyDamagedId == e.propertyDamagedId) !=
+              null)
+          .toList();
 
       emit(
         state.copyWith(
@@ -52,7 +60,7 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
           propertyDamaged: propertyDamaged,
           jobDescriptions: jobDescriptions,
           lostTimeInDay: _calculateTimeLost(),
-          selectedPropertyDamages: aaiRegisterPropertyDamages,
+          selectedPropertyDamages: selectedPropertyDamages,
           isDataReady: true,
         ),
       );
@@ -114,7 +122,7 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
   }
 
   void onSelectPropertyDamaged(
-    List<AccidentAndIncidentPropertyDamaged> selectedPropertyDamaged,
+    List<PropertyDamaged> selectedPropertyDamaged,
   ) {
     emit(
       state.copyWith(
@@ -248,26 +256,37 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
 
     final futures = <Future<void>>[];
 
+    futures.add(cmoDatabaseMasterService.removeAllPropertyDamagedByAccidentAndIncidentRegisterNo(state.accidentAndIncident.accidentAndIncidentRegisterNo));
+    var now = DateTime.now().microsecondsSinceEpoch;
     for (final item in state.selectedPropertyDamages) {
+      now++;
       futures.add(
-        cmoDatabaseMasterService.cacheAccidentAndIncidentPropertyDamagedFromFarm(
-          item.copyWith(
+        cmoDatabaseMasterService.cacheAccidentAndIncidentPropertyDamaged(
+          AccidentAndIncidentPropertyDamaged(
+            accidentAndIncidentRegisterPropertyDamagedId: null,
+            accidentAndIncidentRegisterPropertyDamagedNo: now.toString(),
+            propertyDamagedId: item.propertyDamagedId,
             accidentAndIncidentRegisterNo: aai.accidentAndIncidentRegisterNo,
+            accidentAndIncidentRegisterId: aai.accidentAndIncidentRegisterId,
+            isActive: true,
+            isMasterdataSynced: false,
           ),
+
+          isDirect: false,
         ),
       );
     }
 
     await Future.wait(futures);
 
-    await (await databaseService.db).writeTxn(() async {
-      resultId = await databaseService.cacheAccidentAndIncident(
-        aai.copyWith(
-          dateOfIncident:
-              state.accidentAndIncident.dateOfIncident ?? DateTime.now(),
-        ),
-      );
-    });
+    resultId = await databaseService.cacheAccidentAndIncident(
+      aai.copyWith(
+        dateOfIncident:
+        state.accidentAndIncident.dateOfIncident ?? DateTime.now(),
+      ),
+
+      isDirect: false,
+    );
 
     if (resultId != null) {
       onSuccess(resultId);

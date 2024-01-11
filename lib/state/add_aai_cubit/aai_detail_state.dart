@@ -9,7 +9,7 @@ class AAIDetailState {
     this.jobDescriptions = const [],
     this.natureOfInjuries = const [],
     this.propertyDamaged = const [],
-    this.selectedPropertyDamages = const <AccidentAndIncidentPropertyDamaged>[],
+    this.selectedPropertyDamages = const <PropertyDamaged>[],
     this.lostTimeInDay = '',
     this.workerSelect,
     this.jobDescriptionSelect,
@@ -30,7 +30,7 @@ class AAIDetailState {
   final NatureOfInjury? natureOfInjurySelect;
   final List<PropertyDamaged> propertyDamaged;
   AccidentAndIncident accidentAndIncident;
-  final List<AccidentAndIncidentPropertyDamaged> selectedPropertyDamages;
+  final List<PropertyDamaged> selectedPropertyDamages;
   final bool isWorkerError;
   final bool isDateIncidentError;
   final bool isDateReportedError;
@@ -42,7 +42,7 @@ class AAIDetailState {
     List<WorkerJobDescription>? jobDescriptions,
     List<NatureOfInjury>? natureOfInjuries,
     List<PropertyDamaged>? propertyDamaged,
-    List<AccidentAndIncidentPropertyDamaged>? selectedPropertyDamages,
+    List<PropertyDamaged>? selectedPropertyDamages,
     FarmerWorker? workerSelect,
     WorkerJobDescription? jobDescriptionSelect,
     NatureOfInjury? natureOfInjurySelect,

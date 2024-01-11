@@ -684,6 +684,33 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<List<AccidentAndIncidentPropertyDamaged>> getAllAAIPropertyDamagedByAccidentAndIncidentRegisterNo(
+    String? accidentAndIncidentRegisterNo,
+  ) async {
+    if (accidentAndIncidentRegisterNo.isBlank)
+      return <AccidentAndIncidentPropertyDamaged>[];
+    final db = await _db();
+
+    return db.accidentAndIncidentPropertyDamageds
+        .filter()
+        .accidentAndIncidentRegisterNoEqualTo(accidentAndIncidentRegisterNo)
+        .findAll();
+  }
+
+  Future<int?> removeAllPropertyDamagedByAccidentAndIncidentRegisterNo(
+    String? accidentAndIncidentRegisterNo,
+  ) async {
+    if (accidentAndIncidentRegisterNo.isBlank) return null;
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.accidentAndIncidentPropertyDamageds
+          .filter()
+          .accidentAndIncidentRegisterNoEqualTo(accidentAndIncidentRegisterNo)
+          .deleteAll();
+    });
+  }
+
   Future<ConfigData?> getConfig(ConfigEnum config) async {
     final db = await _db();
 
@@ -880,18 +907,20 @@ class CmoDatabaseMasterService {
 
   }
 
-  Future<int?> cacheAccidentAndIncident(AccidentAndIncident data) async {
+  Future<int?> cacheAccidentAndIncident(
+    AccidentAndIncident data, {
+    bool isDirect = true,
+  }) async {
+
     final db = await _db();
 
-    return db.accidentAndIncidents.put(data);
-  }
-
-  Future<int?> cacheAccidentAndIncidentFromFarm(
-      AccidentAndIncident data) async {
-    final db = await _db();
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.accidentAndIncidents.put(data);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.accidentAndIncidents.put(data);
+      });
+    }
   }
 
   Future<List<AccidentAndIncident>> getAccidentAndIncidentRegistersByFarmId(
@@ -916,19 +945,18 @@ class CmoDatabaseMasterService {
   }
 
   Future<int?> cacheAccidentAndIncidentPropertyDamaged(
-      AccidentAndIncidentPropertyDamaged data) async {
+    AccidentAndIncidentPropertyDamaged data, {
+    bool isDirect = true,
+  }) async {
     final db = await _db();
 
-    return db.accidentAndIncidentPropertyDamageds.put(data);
-  }
-
-  Future<int?> cacheAccidentAndIncidentPropertyDamagedFromFarm(
-      AccidentAndIncidentPropertyDamaged data) async {
-    final db = await _db();
-
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.accidentAndIncidentPropertyDamageds.put(data);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.accidentAndIncidentPropertyDamageds.put(data);
+      });
+    }
   }
 
   Future<int?> cacheAsi(

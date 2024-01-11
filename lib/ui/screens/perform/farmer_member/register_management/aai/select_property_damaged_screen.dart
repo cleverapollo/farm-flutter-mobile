@@ -8,23 +8,27 @@ import 'package:flutter/material.dart';
 class SelectPropertyDamagedScreen extends StatefulWidget {
   const SelectPropertyDamagedScreen({
     super.key,
-    required this.propertyDamages,
+    this.propertyDamages = const <PropertyDamaged>[],
+    this.selectedPropertyDamages = const <PropertyDamaged>[],
   });
 
   final List<PropertyDamaged> propertyDamages;
+  final List<PropertyDamaged> selectedPropertyDamages;
 
   @override
   State<StatefulWidget> createState() => SelectPropertyDamagedState();
 
   static Future<dynamic> push(
     BuildContext context,
-    List<PropertyDamaged> propertyDamageds,
+    List<PropertyDamaged> propertyDamages,
+      List<PropertyDamaged> selectedPropertyDamages,
   ) {
     return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => SelectPropertyDamagedScreen(
-          propertyDamages: propertyDamageds,
+          propertyDamages: propertyDamages,
+          selectedPropertyDamages: selectedPropertyDamages,
         ),
       ),
     );
@@ -37,6 +41,8 @@ class SelectPropertyDamagedState extends State<SelectPropertyDamagedScreen> {
   @override
   void initState() {
     super.initState();
+    selectedItems.clear();
+    selectedItems.addAll(widget.selectedPropertyDamages);
   }
 
   @override
@@ -68,20 +74,7 @@ class SelectPropertyDamagedState extends State<SelectPropertyDamagedScreen> {
       floatingActionButton: CmoFilledButton(
         title: LocaleKeys.save.tr(),
         onTap: () {
-          Navigator.of(context).pop(
-            selectedItems
-                .map(
-                  (e) => AccidentAndIncidentPropertyDamaged(
-                    accidentAndIncidentRegisterPropertyDamagedId: null,
-                    accidentAndIncidentRegisterPropertyDamagedNo:
-                        DateTime.now().millisecondsSinceEpoch.toString(),
-                    propertyDamagedId: e.propertyDamagedId,
-                    isActive: true,
-                    isMasterdataSynced: false,
-                  ),
-                )
-                .toList(),
-          );
+          Navigator.of(context).pop(selectedItems);
         },
       ),
     );

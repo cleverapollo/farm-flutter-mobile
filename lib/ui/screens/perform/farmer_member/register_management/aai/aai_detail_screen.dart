@@ -158,10 +158,11 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
                                 final result = await SelectPropertyDamagedScreen.push(
                                   context,
                                   state.propertyDamaged,
+                                  state.selectedPropertyDamages,
                                 );
 
                                 if (result != null) {
-                                  cubit.onSelectPropertyDamaged(result as List<AccidentAndIncidentPropertyDamaged>);
+                                  cubit.onSelectPropertyDamaged(result as List<PropertyDamaged>);
                                 }
                               },
                               child: AttributeItem(
@@ -177,6 +178,12 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
                                       ),
                                     ),
 
+                                    Text(
+                                      state.selectedPropertyDamages.length.toString(),
+                                      style: context.textStyles.bodyNormal.blueDark2,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    const SizedBox(width: 12),
                                     Assets.icons.icUpdatedAddButton.svgBlack,
                                   ],
                                 ),

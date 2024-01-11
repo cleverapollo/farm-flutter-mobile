@@ -1050,13 +1050,20 @@ mixin FarmUploadSummaryMixin {
         accidentAndIncidentRegistersRegistersPayLoad.add(itemPayLoad);
 
         if (_enableUpdateStatus) {
-          futures.add(cmoDatabaseMasterService.cacheAccidentAndIncidentFromFarm(
-              item.copyWith(isMasterDataSynced: true)));
+          futures.add(
+            cmoDatabaseMasterService.cacheAccidentAndIncident(
+              item.copyWith(isMasterDataSynced: true),
+              isDirect: false,
+            ),
+          );
 
           for (final item in accidentAndIncidentPropertyDamaged) {
-            futures.add(cmoDatabaseMasterService
-                .cacheAccidentAndIncidentPropertyDamagedFromFarm(
-                    item.copyWith(isMasterdataSynced: true)));
+            futures.add(
+              cmoDatabaseMasterService.cacheAccidentAndIncidentPropertyDamaged(
+                item.copyWith(isMasterdataSynced: true),
+                isDirect: false,
+              ),
+            );
           }
         }
       }
