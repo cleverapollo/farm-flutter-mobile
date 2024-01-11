@@ -33,6 +33,12 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
       final propertyDamaged = await cmoDatabaseMasterService
           .getPropertyDamagedByGroupSchemeId(farm?.groupSchemeId ?? 0);
 
+      propertyDamaged.sort((first, second) {
+        return (first.propertyDamagedName ?? '')
+            .toLowerCase()
+            .compareTo((second.propertyDamagedName ?? '').toLowerCase());
+      });
+
       final jobDescriptions = <WorkerJobDescription>[];
       final workerId = state.accidentAndIncident.workerId;
       if (workerId != null) {
