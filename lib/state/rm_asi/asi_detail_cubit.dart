@@ -30,16 +30,22 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
 
   Future<void> fetchData() async {
     final userRole = await configService.getActiveUserRole();
-    // final activeGroupScheme = await configService.getActiveGroupScheme();
 
-    // List<AsiType>? types;
-    // if (userRole == UserRoleEnum.farmerMember) {
-    //   types = await cmoPerformApiService.fetchFarmerAsiType();
-    // } else {
-    //   types = await cmoDatabaseMasterService.getAsiTypeByGroupSchemeId(activeGroupScheme?.groupSchemeId);
-    // }
+    var asiTypes = <AsiType>[];
+    switch (userRole) {
+      case UserRoleEnum.regionalManager:
+        final activeGroupScheme = await configService.getActiveGroupScheme();
+        asiTypes = await cmoDatabaseMasterService.getAsiTypeByGroupSchemeId(activeGroupScheme?.groupSchemeId);
+        break;
+      case UserRoleEnum.farmerMember:
+        final activeFarm = await configService.getActiveFarm();
+        asiTypes = await cmoDatabaseMasterService.getAsiTypeByGroupSchemeId(activeFarm?.groupSchemeId);
+        break;
+      case UserRoleEnum.behave:
+      default:
+        break;
+    }
 
-    final types = await cmoDatabaseMasterService.getAsiTypes();
     final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(
       state.asi.farmId ?? '',
     );
@@ -67,7 +73,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
 
     emit(
       state.copyWith(
-        types: types,
+        types: asiTypes,
         userRole: userRole,
         compartments: compartments,
         listAsiPhotos: listAsiPhotos,
