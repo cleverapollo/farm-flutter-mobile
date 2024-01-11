@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:isar/isar.dart';
 
 extension StringNullExtension on String? {
@@ -16,7 +18,16 @@ extension StringNullExtension on String? {
     final versionString = this?.replaceAll('.', '');
     if (int.tryParse(versionString ?? '') != null) {
       final versionCells = this!.split('.').map((i) => int.tryParse(i)).toList();
-      return (versionCells[0] ?? 0) * 100000 + (versionCells[1] ?? 0) * 1000 + (versionCells[2] ?? 0);
+      if (versionCells.length == 3) {
+        return (versionCells[0] ?? 0) * 100000 + (versionCells[1] ?? 0) * 1000 + (versionCells[2] ?? 0);
+      }
+
+      var extendedVersionNumber = 0;
+      for(var index = 0; index < versionCells.length; index++) {
+        extendedVersionNumber += (versionCells[index] ?? 0) * (pow(10, (versionCells.length - index)*2)).toInt();
+      }
+
+      return extendedVersionNumber;
     }
 
     return null;
