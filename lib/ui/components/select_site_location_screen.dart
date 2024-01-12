@@ -274,7 +274,6 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 18),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
@@ -307,9 +306,7 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 12),
             Expanded(
-              flex: 4,
               child: CmoMap(
                 key: mapKey,
                 onMapMoved: onCameraMoved,
@@ -321,7 +318,7 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
                 isAllowManualLatLng: !widget.hasInternet,
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 12),
             Center(
               child: CmoFilledButton(
                 title: widget.showResetAcceptIcons ? LocaleKeys.done.tr() : LocaleKeys.save.tr(),

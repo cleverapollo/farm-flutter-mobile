@@ -159,7 +159,6 @@ class CmoMapState extends State<CmoMap> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox(height: 36),
         Expanded(
           child: Stack(
             children: [
