@@ -58,7 +58,7 @@ class _ASIScreenState extends BaseStatefulWidgetState<ASIScreen> {
 
   Map<String, String?> generateInformationMapData(Asi registerItem) {
     return {
-      LocaleKeys.asiType.tr(): registerItem.asiTypeName,
+      LocaleKeys.asiType.tr(): context.read<AsiCubit>().getAsiTypeName(registerItem),
       LocaleKeys.date.tr(): registerItem.date.ddMMYyyy(),
       LocaleKeys.general_comments.tr(): registerItem.comment,
     };

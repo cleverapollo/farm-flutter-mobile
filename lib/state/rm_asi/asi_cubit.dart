@@ -1,4 +1,6 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/model/model.dart';
 import 'package:cmo/state/rm_asi/asi_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +13,8 @@ class AsiCubit extends Cubit<AsiState> {
   Future<void> loadAsis() async {
     try {
       var data = await cmoDatabaseMasterService.getAsiRegisterByFarmId(state.farmId);
+      final asiTypes = await cmoDatabaseMasterService.getAsiTypes();
+
       if (state.campId != null) {
         data = data.where((element) => element.campId == state.campId).toList();
       }
@@ -18,6 +22,7 @@ class AsiCubit extends Cubit<AsiState> {
         state.copyWith(
           listAsi: data,
           filterAsi: data,
+          asiTypes: asiTypes,
         ),
       );
     } catch (e) {
@@ -51,5 +56,12 @@ class AsiCubit extends Cubit<AsiState> {
         ),
       );
     }
+  }
+
+  String getAsiTypeName(Asi asi) {
+    return state.asiTypes
+            .firstWhereOrNull((element) => element.asiTypeId == asi.asiTypeId)
+            ?.asiTypeName ??
+        '';
   }
 }
