@@ -8,11 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RMSyncScreen extends StatelessWidget {
-  final bool isSyncSummary;
-
   const RMSyncScreen({
     super.key,
-    this.isSyncSummary = false,
   });
 
   @override
@@ -112,15 +109,9 @@ class RMSyncScreen extends StatelessWidget {
                           title: LocaleKeys.sync.tr(),
                           loading: state,
                           onTap: () async {
-                            if (isSyncSummary) {
-                              await context.read<RMSyncCubit>().syncSummary(
-                                onSuccess: () async {
-                                  Navigator.of(context).pop(true);
-                                },
-                              );
-                            } else {
-                              await context.read<RMSyncCubit>().sync(context);
-                            }
+                            await context
+                                .read<RMSyncCubit>()
+                                .syncOnboarding(context);
                           },
                         ),
                       );

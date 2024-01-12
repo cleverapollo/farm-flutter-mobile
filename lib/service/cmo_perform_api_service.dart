@@ -237,30 +237,6 @@ class CmoPerformApiService {
         .toList();
   }
 
-  Future<bool> createSystemEvent({
-    required String systemEventName,
-    required int primaryKey,
-    required int userDeviceId,
-  }) async {
-    final body = {
-      'SystemEventName': 'SyncAssessmentMasterData',
-      'PrimaryKey': primaryKey,
-      'UserDeviceId': userDeviceId
-    };
-
-    final response = await client.post<dynamic>(
-      '${Env.performDnnApiUrl}CreateSystemEvent',
-      data: body,
-      options: Options(headers: {'accessToken': 'true'}),
-    );
-
-    if (response.statusCode != 200) {
-      showSnackError(msg: 'Unknow error: ${response.statusCode}');
-      return false;
-    }
-    return true;
-  }
-
   Future<bool> createSubscription(
       {required String topic, required int currentClientId}) async {
     try {
@@ -278,16 +254,14 @@ class CmoPerformApiService {
     }
   }
 
-  // TODO(DONG): refactor it
-  /// clone from createSystemEvent()
-  /// consider to refactor later for common function for creating system event
-  Future<bool> createRMSystemEvent({
-    required int rmuId,
+  Future<bool> createSystemEvent({
+    required String systemEventName,
+    required String primaryKey,
     required int userDeviceId,
   }) async {
     final body = {
-      'SystemEventName': 'SyncGSRegionalManagerMasterData',
-      'PrimaryKey': '$rmuId',
+      'SystemEventName': systemEventName,
+      'PrimaryKey': primaryKey,
       'UserDeviceId': userDeviceId
     };
 
@@ -297,70 +271,39 @@ class CmoPerformApiService {
       options: Options(headers: {'accessToken': 'true'}),
     );
 
-    await checkRMSystemEventExist(
-        systemEventId: response.data['SystemEventId'] as int);
+    final systemEventId = response.data['SystemEventId'] as int?;
+    final isReady = await isDataReadyFromServer(systemEventId);
 
-    if (response.statusCode != 200) {
+    if (!isReady) {
       showSnackError(msg: 'Unknow error: ${response.statusCode}');
       return false;
     }
+
     return true;
   }
 
-  Future<void> checkRMSystemEventExist({required int systemEventId}) async {
-    try {
-      await client.get<dynamic>(
-        '${Env.performDnnApiUrl}SystemEventExists',
-        queryParameters: {'systemEventId': systemEventId},
-        options: Options(headers: {'accessToken': 'true'}),
-      );
-    } catch (_) {}
+  /// System Event will be deleted from server after handling all data
+  /// The data will be ready to get through pub-sub API after System Event was deleted.
+  Future<bool> isDataReadyFromServer(int? systemEventId) async {
+    if (systemEventId == null) return false;
+    var isExisted = true;
+    while(isExisted) {
+      await Future.delayed(const Duration(seconds: 3));
+      isExisted = await checkSystemEventExist(systemEventId);
+    }
+
+    return !isExisted;
   }
 
-  Future<bool> createFarmerSystemEvent({
-    required String farmId,
-    required int userDeviceId,
-  }) async {
-    final body = {
-      'SystemEventName': 'SyncGSMasterData',
-      'PrimaryKey': farmId,
-      'UserDeviceId': userDeviceId
-    };
-
-    final response = await client.post<dynamic>(
-      '${Env.performDnnApiUrl}CreateSystemEvent',
-      data: body,
+  Future<bool> checkSystemEventExist(int? systemEventId) async {
+    if (systemEventId == null) return false;
+    final response = await client.get<dynamic>(
+      '${Env.performDnnApiUrl}SystemEventExists',
+      queryParameters: {'systemEventId': systemEventId},
       options: Options(headers: {'accessToken': 'true'}),
     );
 
-    var isReady = false;
-    while(!isReady) {
-      await Future.delayed(const Duration(milliseconds: 800));
-      isReady = await checkFarmSystemEventExist(systemEventId: response.data['SystemEventId'] as int);
-    }
-
-    if (response.statusCode != 200) {
-      showSnackError(msg: 'Unknow error: ${response.statusCode}');
-      return false;
-    }
-
-    return true;
-  }
-
-  Future<bool> checkFarmSystemEventExist({required int systemEventId}) async {
-    try {
-      final result = await client.get<dynamic>(
-        '${Env.performDnnApiUrl}SystemEventExists',
-        queryParameters: {'systemEventId': systemEventId},
-        options: Options(headers: {'accessToken': 'true'}),
-      );
-      if (result.statusCode == 200) {
-        return true;
-      }
-      return false;
-    } catch (_) {
-      return false;
-    }
+    return response.data as bool;
   }
 
   Future<MasterDataMessage?> pullFarmerGlobalMessage({

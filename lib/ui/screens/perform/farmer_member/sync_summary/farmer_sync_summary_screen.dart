@@ -62,7 +62,7 @@ class FarmerSyncSummaryScreenState extends BaseStatefulWidgetState<FarmerSyncSum
                             title: LocaleKeys.sync.tr(),
                             onTap: () {
                               if (!state.isSyncing) {
-                                context.read<FarmerSyncSummaryCubit>().onSync();
+                                context.read<FarmerSyncSummaryCubit>().syncFarmerSummary();
                               }
                             },
                           )),
@@ -84,7 +84,7 @@ class FarmerSyncSummaryScreenState extends BaseStatefulWidgetState<FarmerSyncSum
                           title: LocaleKeys.sync.tr(),
                           onTap: () {
                             if (!state.isSyncing) {
-                              context.read<FarmerSyncSummaryCubit>().onSync();
+                              context.read<FarmerSyncSummaryCubit>().syncFarmerSummary();
                             }
                           },
                         )),

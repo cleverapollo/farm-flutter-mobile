@@ -232,25 +232,30 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     emit(state.copyWith(rmSyncSummaryInformation: summaryInformation));
   }
 
-  Future<void> sync(BuildContext context) async {
+  Future<void> syncOnboarding(BuildContext context) async {
     try {
       emit(
         state.copyWith(
             syncMessage: 'Syncing All Master Data...', isLoading: true),
       );
 
-      logger.d('--RM Sync Data start');
-      await Future.delayed(const Duration(seconds: 5));
-      logger.d('--createSubscriptions');
-      await createSubscriptions();
-      logger.d('--createSubscriptions done');
+      logger.d('--RM Sync Onboarding Data start');
       logger.d('--createRMSystemEvent');
-      await cmoPerformApiService.createRMSystemEvent(
-        rmuId: rmuId,
+      await cmoPerformApiService.createSystemEvent(
+        systemEventName: 'SyncGSRegionalManagerMasterData',
+        primaryKey: rmuId.toString(),
         userDeviceId: userDeviceId,
       );
       logger.d('--createRMSystemEvent done');
-      await Future.delayed(const Duration(seconds: 5), () {});
+
+      logger.d('--createSubscriptions');
+      await createSubscriptions();
+      logger.d('--createSubscriptions done');
+
+      logger.d('--insertByCallingAPI start');
+      await insertByCallingAPI();
+      logger.d('--insertByCallingAPI done');
+
       logger.d('--syncRegionalManagerMasterData');
       await syncRegionalManagerMasterData();
       logger.d('--syncRegionalManagerMasterData done');
@@ -259,14 +264,14 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       await syncRegionalManagerUnitMasterData();
       logger.d('--syncRegionalManagerUnitMasterData done');
 
-      logger.d('--insertByCallingAPI start');
-      await insertByCallingAPI();
-      logger.d('--insertByCallingAPI done');
-
       emit(
         state.copyWith(
-            syncMessage: 'Sync complete', isLoaded: true, isLoading: false),
+          syncMessage: 'Sync complete',
+          isLoaded: true,
+          isLoading: false,
+        ),
       );
+
       await Future.delayed(const Duration(milliseconds: 500), () {});
       await configService.setRMSynced(isSynced: true);
       if (context.mounted) CmoDashboardBase.push(context);
@@ -294,28 +299,28 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       await publishFarm();
       await publishGroupSchemeStakeholders();
 
-      await Future.delayed(const Duration(seconds: 15), () async {
-        await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
-        await subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId();
-        await subscribeToRegionalManagerUnitTrickleFeedTopicByRegionalManagerUnitId();
-        await publishCompartments();
-        await Future.delayed(const Duration(seconds: 5), () async {
-          await publishASIs();
-          await publishAudits();
-        });
+      // Keep delay time for waiting server generate data
+      await Future.delayed(const Duration(seconds: 15), () async {});
+      await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
+      await subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId();
+      await subscribeToRegionalManagerUnitTrickleFeedTopicByRegionalManagerUnitId();
+      await publishCompartments();
+      await Future.delayed(const Duration(seconds: 5), () async {
+        await publishASIs();
+        await publishAudits();
+      });
 
-        emit(
-          state.copyWith(
-            syncMessage: 'Sync complete',
-            isLoaded: true,
-            isLoading: false,
-          ),
-        );
+      emit(
+        state.copyWith(
+          syncMessage: 'Sync complete',
+          isLoaded: true,
+          isLoading: false,
+        ),
+      );
 
-        await Future.delayed(const Duration(seconds: 2), () async {
-          await getSummaryInformation();
-          onSuccess.call();
-        });
+      await Future.delayed(const Duration(seconds: 2), () async {
+        await getSummaryInformation();
+        onSuccess.call();
       });
     } catch (e) {
       logger.e(e);
@@ -401,8 +406,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             if (isSyncedSuccess) {
               await cmoDatabaseMasterService.cacheFarmAddMember(
                 farm.copyWith(
-                  isMasterDataSynced: 1,
-                  canDelete: 0,
+                  isMasterDataSynced: true,
                 ),
               );
 
@@ -710,11 +714,11 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
               isDirect: true,
             );
 
-            final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
-            await publishListAsiPhotos(
-              asi: syncedAsi.copyWith(localId: asi.localId),
-              listAsiPhotos: listAsiPhotos,
-            );
+            // final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
+            // await publishListAsiPhotos(
+            //   asi: syncedAsi.copyWith(localId: asi.localId),
+            //   listAsiPhotos: listAsiPhotos,
+            // );
 
             logger.d('Successfully published ASI: ${syncedAsi.asiRegisterId}');
           } else {
@@ -1056,8 +1060,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
       return cmoDatabaseMasterService.cacheFarm(
         farm.copyWith(
-          isMasterDataSynced: 1,
-          isLocal: 0,
+          isMasterDataSynced: true,
           signatureImage: farm.signatureImage.base64SyncServerToString,
         ),
       );
@@ -1298,14 +1301,14 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
               syncMessage: 'Syncing Property Ownership Type...'));
           await insertFarmPropertyOwnershipType(item);
         } else if (topic ==
-            '${topicRegionalManagerMasterDataSync}ScheduleActivity.$userDeviceId') {
-          emit(state.copyWith(syncMessage: 'Syncing Schedule Activity...'));
-          await insertScheduleActivity(item);
-        } else if (topic ==
-            '${topicRegionalManagerMasterDataSync}Schedule.$userDeviceId') {
-          emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
-          await insertSchedule(item);
-        } else if (topic ==
+        //     '${topicRegionalManagerMasterDataSync}ScheduleActivity.$userDeviceId') {
+        //   emit(state.copyWith(syncMessage: 'Syncing Schedule Activity...'));
+        //   await insertScheduleActivity(item);
+        // } else if (topic ==
+        //     '${topicRegionalManagerMasterDataSync}Schedule.$userDeviceId') {
+        //   emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
+        //   await insertSchedule(item);
+        // } else if (topic ==
             '${topicRegionalManagerMasterDataSync}AuditTemplate.$userDeviceId') {
           emit(state.copyWith(syncMessage: 'Syncing Audit Template...'));
           await insertAuditTemplate(item);
@@ -1446,9 +1449,9 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             if (topic == 'Cmo.MasterData.RM.PropOwnerType.Global') {
               emit(state.copyWith(syncMessage: 'Syncing new and updated Farm Property Ownership Type...'));
               await insertFarmPropertyOwnershipType(item);
-            } else if (topic == 'Cmo.MasterData.RM.ScheduleActivity.Global') {
-              emit(state.copyWith(syncMessage: 'Syncing new and updated Schedule Activities...'));
-              await insertScheduleActivity(item);
+            // } else if (topic == 'Cmo.MasterData.RM.ScheduleActivity.Global') {
+            //   emit(state.copyWith(syncMessage: 'Syncing new and updated Schedule Activities...'));
+            //   await insertScheduleActivity(item);
             } else if (topic == 'Cmo.MasterData.RM.AuditTemplate.Global') {
               emit(state.copyWith(syncMessage: 'Syncing new and updated Audit Templates...'));
               await insertAuditTemplate(item);

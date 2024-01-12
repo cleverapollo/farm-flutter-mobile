@@ -14,16 +14,8 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     emit(state.copyWith(isLoading: true));
     final groupScheme = await configService.getActiveGroupScheme();
     final rmUnit = await configService.getActiveRegionalManager();
-    if (rmUnit?.id == null) {
-      return;
-    }
-    final data = await cmoDatabaseMasterService.getFarmsByRMUnit(rmUnit!.id);
-    if (data == null) {
-      return;
-    }
-
+    final data = await cmoDatabaseMasterService.getFarmsByRMUnit(rmUnit?.regionalManagerUnitId);
     final allFarms = <Farm>[];
-
     final addMemberCubit = context.read<AddMemberCubit>();
 
     for (final farm in data) {
@@ -32,7 +24,7 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
 
       allFarms.add(farm.copyWith(
         stepCount: addMemberCubit.state.farm?.stepCount,
-        isGroupSchemeMember: addMemberCubit.state.farm?.isGroupSchemeMember,
+        isGroupSchemeMember: addMemberCubit.state.farm?.isGroupSchemeMember ?? false,
       ));
     }
 
@@ -149,7 +141,7 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     await cmoDatabaseMasterService.cacheFarmAddMember(
       farm.copyWith(
         isActive: false,
-        isMasterDataSynced: 0,
+        isMasterDataSynced: false,
       ),
     );
     showSnackSuccess(

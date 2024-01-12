@@ -104,24 +104,22 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       await cmoDatabaseMasterService.deleteAll();
       await Future.delayed(const Duration(seconds: 2));
       logger.d('--createFarmerSystemEvent');
-      await cmoPerformApiService.createFarmerSystemEvent(
-        farmId: farmId,
+      await cmoPerformApiService.createSystemEvent(
+        systemEventName: 'SyncGSMasterData',
+        primaryKey: farmId,
         userDeviceId: userDeviceId,
       );
+      logger.d('--createFarmerSystemEvent done');
 
-      await Future.delayed(const Duration(seconds: 20), () {});
       logger.d('--createSubscriptions');
       await createSubscriptions();
       logger.d('--createSubscriptions done');
-
-      logger.d('--createFarmerSystemEvent done');
-      await Future.delayed(const Duration(seconds: 5), () {});
-      logger.d('--onSyncDataForCompartments');
 
       logger.d('--insertByCallingAPI start');
       await insertByCallingAPI();
       logger.d('--insertByCallingAPI done');
 
+      logger.d('--onSyncDataForCompartments');
       await onSyncDataForCompartments();
       logger.d('--onSyncDataForCompartments done');
 
@@ -160,7 +158,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     }
   }
 
-  Future<void> onSync({bool isOnboardingSync = false}) async {
+  Future<void> syncFarmerSummary() async {
     try {
       emit(state.copyWith(isSyncing: true, syncMessage: 'Syncing...'));
       final canSync = await initDataConfig();
@@ -170,50 +168,32 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         return emit(state.copyWith(isSyncing: true, syncMessage: 'Sync'));
       }
 
-      if (!isOnboardingSync) {
-        await onUploadingFarmData();
-      }
-
-      final systemEventId = await cmoPerformApiService.createFarmerSystemEvent(
-        farmId: farmId,
-        userDeviceId: userDeviceId,
-      );
-
-      logger.d('Create System Event Success --- $systemEventId');
       emit(state.copyWith(syncMessage: 'Syncing...'));
 
-      await Future.delayed(const Duration(seconds: 20), () {});
+      await onUploadingFarmData();
 
-      await createSubscriptions();
+      // Keep delay time for waiting server generate data
+      await Future.delayed(const Duration(seconds: 30), () async {
+        await onSyncDataForCompartments();
 
-      await onSyncDataForCompartments();
+        await subscribeToCompartmentsByFarmId();
 
-      await subscribeToCompartmentsByFarmId();
+        await subscribeToTrickleFeedMasterDataTopic();
 
-      await summaryFarmerSync();
+        await subscribeToTrickleFeedMasterDataTopicByFarmId();
 
-      // await subscribeToTrickleFeedMasterDataTopic();
-      //
-      // await subscribeToTrickleFeedMasterDataTopicByFarmId();
-      //
-      // await subscribeToTrickleFeedMasterDataTopicByGroupSchemeId();
-      //
-      // await subscribeToUserDeviceClientIdFilterByFarmIdTopic();
+        await subscribeToTrickleFeedMasterDataTopicByGroupSchemeId();
+      });
 
       await Future.delayed(const Duration(seconds: 3), () {});
 
       emit(state.copyWith(
           syncMessage: 'Sync', isSyncing: false, isDoneSyncing: true));
 
-      if (!isOnboardingSync) {
-        await initDataSync();
-      }
+      await initDataSync();
 
       showSnackSuccess(msg: 'Sync Success');
     } catch (e) {
-      if (kDebugMode) {
-        throw FlutterError(e.toString());
-      }
       showSnackError(msg: 'Sync failed. Please try again');
       emit(state.copyWith(
           isSyncing: false,
@@ -329,10 +309,12 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
             emit(state.copyWith(
                 syncMessage: 'Syncing Annual Farm Budget Transactions...'));
             await insertAnnualFarmTransactionBudget(item);
-          } else if (topic == '${topicMasterDataSync}Schedule.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
-            await insertSchedule(item);
-          } else if (topic ==
+          }
+          // else if (topic == '${topicMasterDataSync}Schedule.$userDeviceId') {
+          //   emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
+          //   await insertSchedule(item);
+          // }
+          else if (topic ==
               '${topicMasterDataSync}AaiRegister.$userDeviceId') {
             emit(state.copyWith(
                 syncMessage: 'Syncing Accident and Incident Registers...'));
@@ -582,7 +564,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
               (value) => data = data.copyWith(workersTotal: value.length)),
         )
         ..add(
-          databaseMasterService.getStakeHolderTypes().then(
+          databaseMasterService.getFarmerStakeHolderTypes().then(
               (value) => data = data.copyWith(stakeholderTypes: value.length)),
         )
         ..add(
@@ -1242,7 +1224,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                     syncMessage:
                         'Syncing new and updated Treatment Methods...'));
                 await insertTreatmentMethod(item);
-                await insertPestsAndDiseaseTypeTreatmentMethod(item);
               } else if (topic ==
                   '${topicTrickleFeedFgsMasterDataByGroupSchemeId}IssueType.$groupSchemeId') {
                 emit(state.copyWith(
@@ -2571,7 +2552,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         .map((e) => cmoPerformApiService.createSubscription(
             topic: e, currentClientId: userDeviceId))
         .toList();
-    await Future.wait(futures)
-        .then((value) => debugPrint('TUNT createSubscriptions - $value'));
+    await Future.wait(futures);
   }
 }

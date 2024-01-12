@@ -282,11 +282,11 @@ class AddMemberCubit extends Cubit<AddMemberState> {
 
       var isSynced = state.farmBeforeEdit?.isMasterDataSynced;
 
-      if (1 == isSynced) {
+      if (isSynced != null && isSynced) {
         if (state.farm != state.farmBeforeEdit) {
-          isSynced = 0;
+          isSynced = false;
         } else {
-          isSynced = 1;
+          isSynced = true;
         }
       }
 
@@ -294,7 +294,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         farm: state.farm?.copyWith(
           stepCount: stepCount,
           isGroupSchemeMember: isGroupSchemeMember,
-          isMasterDataSynced: isSynced ?? 0,
+          isMasterDataSynced: isSynced ?? false,
         ),
       ));
     }
@@ -317,7 +317,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       state.copyWith(
         farm: state.farm?.copyWith(
           isSlimfCompliant: isSlimf,
-          isMasterDataSynced: 0,
+          isMasterDataSynced: false,
         ),
         addMemberSLIMF: AddMemberSLIMF(
           isSlimfCompliant: isSlimf,
@@ -434,7 +434,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           streetName: currentData.addMemberSiteLocations.address,
           province: currentData.province,
           farmSize: currentData.addMemberCompartmentsState.farmSize,
-          isMasterDataSynced: 0,
+          isMasterDataSynced: false,
         ),
         addMemberSDetails: currentData.copyWith(
           isComplete: isComplete,
@@ -456,7 +456,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       farm: state.farm?.copyWith(
         propertyOwnershipTypeId:
             propertyTypeSelected?.farmPropertyOwnershipTypeId,
-        isMasterDataSynced: 0,
+        isMasterDataSynced: false,
       ),
       addMemberMPO: addMemberMPO.copyWith(
         propertyTypeSelected: propertyTypeSelected,
@@ -585,7 +585,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         state.copyWith(
           farm: state.farm?.copyWith(
             objectiveAnswers: listFarmMemberObjectiveAnswers,
-            isMasterDataSynced: 0,
+            isMasterDataSynced: false,
           ),
           farmMemberObjectivesState: state.farmMemberObjectivesState.copyWith(
             listFarmMemberObjectiveAnswers: listFarmMemberObjectiveAnswers,
@@ -643,7 +643,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           idNumber: state.addMemberMDetails.idNumber,
           mobileNumber: state.addMemberMDetails.mobileNumber,
           email: state.addMemberMDetails.emailAddress,
-          isMasterDataSynced: 0,
+          isMasterDataSynced: false,
         ),
         addMemberMDetails: state.addMemberMDetails.copyWith(
           isComplete: isComplete,
@@ -672,7 +672,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
 
   Future<void> onDataChangeMemberContract() async {
     emit(state.copyWith(
-        farm: state.farm?.copyWith(isMasterDataSynced: 0),
+        farm: state.farm?.copyWith(isMasterDataSynced: false),
         addMemberContract: state.addMemberContract
             .copyWith(isAccept: true, isComplete: true)));
 
@@ -693,7 +693,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
             signatureDate: date,
             inclusionDate: date,
             signaturePoints: points,
-            isMasterDataSynced: 0,
+            isMasterDataSynced: false,
           ),
           addMemberSAF: state.addMemberSAF.copyWith(
             signatureImage: image,
@@ -714,7 +714,7 @@ class AddMemberCubit extends Cubit<AddMemberState> {
           signatureDate: null,
           signaturePoints: null,
           isGroupSchemeMember: false,
-          isMasterDataSynced: 0,
+          isMasterDataSynced: false,
         ),
         addMemberSAF: const AddMemberSAF()));
   }

@@ -14,9 +14,13 @@ class Farm with _$Farm {
     @JsonKey(name: 'FarmId') required String farmId,
     @JsonKey(name: 'FarmName') String? farmName,
     @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
+    @JsonKey(name: 'GroupSchemeName') String? groupSchemeName,
     @JsonKey(name: 'RegionalManagerUnitId') int? regionalManagerUnitId,
-    @JsonKey(name: 'IsActive') bool? isActive,
-    @Default(0) @JsonKey(name: 'IsMasterDataSynced') int? isMasterDataSynced,
+    @JsonKey(name: 'RegionalManagerUnitName') String? regionalManagerUnitName,
+    @Default(false)
+    @JsonKey(name: 'IsActive') bool isActive,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @JsonKey(name: 'IsSlimfCompliant') bool? isSlimfCompliant,
     @JsonKey(name: 'PropertyOwnershipTypeId') int? propertyOwnershipTypeId,
     @JsonKey(name: 'FirstName') String? firstName,
@@ -24,10 +28,6 @@ class Farm with _$Farm {
     @JsonKey(name: 'IdNumber') String? idNumber,
     @JsonKey(name: 'MobileNumber') String? mobileNumber,
     @JsonKey(name: 'Email') String? email,
-    @Default(false) @JsonKey(name: 'IsProspectMember') bool? isProspectMember,
-    @Default(false)
-    @JsonKey(name: 'IsGroupSchemeMember')
-        bool? isGroupSchemeMember,
     @JsonKey(name: 'Latitude') String? latitude,
     @JsonKey(name: 'Longitude') String? longitude,
     @JsonKey(name: 'StreetName') String? streetName,
@@ -37,38 +37,39 @@ class Farm with _$Farm {
     @JsonKey(name: 'FarmSize') double? farmSize,
     @JsonKey(name: 'InclusionDate') String? inclusionDate,
     @Default(false)
-    @JsonKey(name: 'IsCommunitiesNeighbouring')
-        bool? isCommunitiesNeighbouring,
+    @JsonKey(name: 'IsCommunitiesNeighbouring') bool? isCommunitiesNeighbouring,
     @Default(false)
-    @JsonKey(name: 'IsIndigenousNeighbouring')
-        bool? isIndigenousNeighbouring,
-    @Default(false) @JsonKey(name: 'IsHcvNeighbouring') bool? isHcvNeighbouring,
+    @JsonKey(name: 'IsIndigenousNeighbouring') bool? isIndigenousNeighbouring,
     @Default(false)
-    @JsonKey(name: 'IsRiversOrStreamsNeighbouring')
-        bool? isRiversOrStreamsNeighbouring,
-    @Default(false) @JsonKey(name: 'IsChemicalsUsed') bool? isChemicalsUsed,
+    @JsonKey(name: 'IsHcvNeighbouring') bool? isHcvNeighbouring,
     @Default(false)
-    @JsonKey(name: 'IsEcosystemsServicesOffered')
-        bool? isEcosystemsServicesOffered,
-    @JsonKey(name: 'ProduceFscCertifiedCharcoalCostEffectivelyId')
-        int? produceFscCertifiedCharcoalCostEffectivelyId,
+    @JsonKey(name: 'IsRiversOrStreamsNeighbouring') bool? isRiversOrStreamsNeighbouring,
+    @Default(false)
+    @JsonKey(name: 'IsChemicalsUsed') bool? isChemicalsUsed,
+    @Default(false)
+    @JsonKey(name: 'IsEcosystemsServicesOffered') bool? isEcosystemsServicesOffered,
+    @JsonKey(name: 'ProduceFscCertifiedCharcoalCostEffectivelyId') int? produceFscCertifiedCharcoalCostEffectivelyId,
     @JsonKey(name: 'ImproveRangeLandId') int? improveRangeLandId,
     @JsonKey(name: 'ImproveAccessToFarmId') int? improveAccessToFarmId,
     @JsonKey(name: 'RestoreBushveldId') int? restoreBushveldId,
-    @JsonKey(name: 'ProtectedRteDuringOperationId')
-        int? protectedRteDuringOperationId,
-    @JsonKey(name: 'ManageResourcesSustainablyId')
-        int? manageResourcesSustainablyId,
+    @JsonKey(name: 'ProtectedRteDuringOperationId') int? protectedRteDuringOperationId,
+    @JsonKey(name: 'ManageResourcesSustainablyId') int? manageResourcesSustainablyId,
     @JsonKey(name: 'SignaturePoints') String? signaturePoints,
     @JsonKey(name: 'SignatureImage') String? signatureImage,
     @JsonKey(name: 'SignatureDate') String? signatureDate,
-    @JsonKey(name: 'CanDelete') int? canDelete,
-    @JsonKey(name: 'IsLocal') int? isLocal,
+    @Default(false)
+    @JsonKey(name: 'IsGroupSchemeMember') bool isGroupSchemeMember,
+    @Default(false)
+    @JsonKey(name: 'IsProspectMember') bool isProspectMember,
+    @Default(false)
+    @JsonKey(name: 'IsSuspended') bool isSuspended,
+    @JsonKey(name: 'FarmRoleId') String? farmRoleId,
+
+
+    @Default(false) @JsonKey(name: 'IsMasterDataSynced') bool isMasterDataSynced,
     @ignore List<FarmMemberObjectiveAnswer>? objectiveAnswers,
     @ignore List<FarmMemberRiskProfileAnswer>? riskProfileAnswers,
     @JsonKey(name: 'StepCount') int? stepCount,
-    @JsonKey(name: 'CreateDT') DateTime? createDT,
-    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
   }) = _Farm;
 
   factory Farm.fromJson(Map<String, dynamic> json) => _$FarmFromJson(json);
@@ -76,7 +77,7 @@ class Farm with _$Farm {
   const Farm._();
 
   @override
-  Id get id => int.tryParse(farmId) ?? int.parse(farmId);
+  Id get id => int.tryParse(farmId) ?? Isar.autoIncrement;
 }
 
 extension FarmExtension on Farm {
