@@ -147,7 +147,8 @@ class CmoDatabaseMasterService {
       FarmStakeHolderSchema,
       AreaTypeSchema,
       ProductGroupTemplateSchema,
-      SpeciesGroupTemplateSchema
+      SpeciesGroupTemplateSchema,
+      TraineeRegisterSchema
     ];
 
     schemes.sort((first, second) {
@@ -287,6 +288,52 @@ class CmoDatabaseMasterService {
         .groupSchemeIdEqualTo(groupSchemeId)
         .isActiveEqualTo(true)
         .findAll();
+  }
+
+  Future<int?> cacheTraineeRegister(
+      TraineeRegister item, {
+        bool isDirect = false,
+      }) async {
+    final db = await _db();
+    if (isDirect) {
+      return db.traineeRegisters.put(item);
+    } else {
+      return db.writeTxn(() async {
+        return db.traineeRegisters.put(item);
+      });
+    }
+  }
+
+  Future<int?> removeAllTraineeRegistersByTrainingRegisterNo(
+      String? trainingRegisterNo,
+      ) async {
+    if (trainingRegisterNo.isBlank) return null;
+    final db = await _db();
+
+    return db.writeTxn(() async {
+      return db.traineeRegisters
+          .filter()
+          .trainingRegisterNoEqualTo(trainingRegisterNo)
+          .deleteAll();
+    });
+  }
+
+  Future<List<TraineeRegister>> getTraineeRegistersByTrainingRegisterNo(
+    String? trainingRegisterNo,
+  ) async {
+    if (trainingRegisterNo.isBlank) return <TraineeRegister>[];
+
+    final db = await _db();
+
+    return db.traineeRegisters
+        .filter()
+        .trainingRegisterNoEqualTo(trainingRegisterNo)
+        .findAll();
+  }
+
+  Future<List<TraineeRegister>> getAllTraineeRegisters() async {
+    final db = await _db();
+    return db.traineeRegisters.where().findAll();
   }
 
   Future<int?> cacheFarmMemberObjectiveAnswer(
@@ -1116,17 +1163,19 @@ class CmoDatabaseMasterService {
     return db.rteSpeciesPhotoModels.put(data);
   }
 
-  Future<int?> cacheTraining(TrainingRegister data) async {
+  Future<int?> cacheTraining(
+    TrainingRegister data, {
+    bool isDirect = true,
+  }) async {
     final db = await _db();
 
-    return db.trainingRegisters.put(data);
-  }
-
-  Future<int?> cacheTrainingRegisterFromFarm(TrainingRegister data) async {
-    final db = await _db();
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.trainingRegisters.put(data);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.trainingRegisters.put(data);
+      });
+    }
   }
 
   Future<int?> cacheAnimalType(AnimalType data) async {
@@ -1465,6 +1514,14 @@ class CmoDatabaseMasterService {
         .filter()
         .groupSchemeIdEqualTo(id)
         .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<List<TrainingType>> getAllTrainingTypes() async {
+    final db = await _db();
+
+    return db.trainingTypes
+        .where()
         .findAll();
   }
 

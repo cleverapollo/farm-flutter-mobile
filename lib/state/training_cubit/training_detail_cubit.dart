@@ -29,9 +29,19 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
       final workers = await cmoDatabaseMasterService
           .getFarmerWorkersByFarmId(farm?.farmId ?? '');
 
+      final traineeRegister = await cmoDatabaseMasterService.getTraineeRegistersByTrainingRegisterNo(state.training.trainingRegisterNo);
+      final selectedTrainee = <FarmerWorker>[];
+      for (final item in traineeRegister) {
+        final trainee = workers.firstWhereOrNull((element) => element.workerId == item.workerId);
+        if (trainee != null) {
+          selectedTrainee.add(trainee);
+        }
+      }
+
       emit(
         state.copyWith(
           isDataReady: true,
+          selectedTrainees: selectedTrainee,
           trainingTypes: trainingTypes,
           workers: workers,
         ),
@@ -139,15 +149,23 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
     );
   }
 
+  void onSelectTrainee(List<FarmerWorker> selectedTrainees) {
+    emit(
+      state.copyWith(
+        selectedTrainees: selectedTrainees,
+      ),
+    );
+  }
+
   bool onValidateRequireField() {
     if (state.training.date == null ||
-        state.training.workerId == null ||
+        state.selectedTrainees.isBlank ||
         state.training.trainerName.isBlank ||
         state.training.trainingTypeId == null) {
       emit(
         state.copyWith(
           isDateError: state.training.date == null,
-          isTraineeNameError: state.training.workerId == null,
+          isTraineeNameError: state.selectedTrainees.isBlank,
           isTrainerNameError: state.training.trainerName.isBlank,
           isTrainingTypeError: state.training.trainingTypeId == null,
         ),
@@ -182,10 +200,28 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
 
     final databaseService = cmoDatabaseMasterService;
 
-    await (await databaseService.db).writeTxn(() async {
-      resultId = await databaseService.cacheTraining(training);
-    });
+    resultId = await databaseService.cacheTraining(
+      training,
+      isDirect: false,
+    );
 
+    await databaseService.removeAllTraineeRegistersByTrainingRegisterNo(training.trainingRegisterNo);
+    var now = DateTime.now().millisecondsSinceEpoch;
+    for (final item in state.selectedTrainees) {
+      now++;
+      await databaseService.cacheTraineeRegister(
+        TraineeRegister(
+          traineeRegisterId: now.toString(),
+          trainingRegisterId: training.trainingRegisterId,
+          trainingRegisterNo: training.trainingRegisterNo,
+          workerId: item.workerId,
+          workerName: item.fullName,
+          isMasterdataSynced: false,
+          updateDT: DateTime.now(),
+          createDT: DateTime.now(),
+        ),
+      );
+    }
     if (resultId != null) {
       onSuccess(resultId);
     }

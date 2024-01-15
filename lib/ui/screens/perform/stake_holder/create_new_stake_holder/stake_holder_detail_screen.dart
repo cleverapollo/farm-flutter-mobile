@@ -7,11 +7,9 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_detail_cubit.dart';
 import 'package:cmo/state/stake_holder_list_cubit/stake_holder_list_cubit.dart';
+import 'package:cmo/ui/components/bottom_sheet_multiple_selection.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
-import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/select_customary_use_rights.dart';
-import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/select_social_upliftments.dart';
-import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/select_special_sites.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
@@ -351,13 +349,31 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
             await showCustomBottomSheet<void>(
               context,
               content: Padding(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-                child: SelectSocialUpliftments(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom),
+                child: BottomSheetMultipleSelection<SocialUpliftment>(
+                  alwaysShowSearchField: false,
+                  listItems: state.listSocialUpliftments
+                      .map(
+                        (e) => BottomSheetMultipleSelectionItem(
+                          item: e,
+                          id: e.socialUpliftmentId,
+                          titleValue: e.socialUpliftmentName,
+                        ),
+                      )
+                      .toList(),
+                  selectedItems: state.selectedSocialUpliftments
+                      .map(
+                        (e) => BottomSheetMultipleSelectionItem(
+                          item: e,
+                          id: e.socialUpliftmentId,
+                          titleValue: e.socialUpliftmentName,
+                        ),
+                      )
+                      .toList(),
                   onSave: context
                       .read<StakeholderDetailCubit>()
                       .onChangeSocialUpliftment,
-                  selectedSocialUpliftments: state.selectedSocialUpliftments,
-                  listSocialUpliftments: state.listSocialUpliftments,
                 ),
               ),
             );
@@ -405,13 +421,31 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
             await showCustomBottomSheet<void>(
               context,
               content: Padding(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-                child: SelectSpecialSite(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom),
+                child: BottomSheetMultipleSelection<SpecialSite>(
+                  alwaysShowSearchField: false,
+                  listItems: state.listSpecialSites
+                      .map(
+                        (e) => BottomSheetMultipleSelectionItem(
+                          item: e,
+                          id: e.specialSiteId,
+                          titleValue: e.specialSiteName,
+                        ),
+                      )
+                      .toList(),
+                  selectedItems: state.selectedSpecialSites
+                      .map(
+                        (e) => BottomSheetMultipleSelectionItem(
+                          item: e,
+                          id: e.specialSiteId,
+                          titleValue: e.specialSiteName,
+                        ),
+                      )
+                      .toList(),
                   onSave: context
                       .read<StakeholderDetailCubit>()
                       .onChangeSpecialSite,
-                  selectedSpecialSites: state.selectedSpecialSites,
-                  listSpecialSite: state.listSpecialSites,
                 ),
               ),
             );
@@ -459,14 +493,30 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
             await showCustomBottomSheet<void>(
               context,
               content: Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom),
-                child: SelectCustomaryUseRight(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                child: BottomSheetMultipleSelection<CustomaryUseRight>(
+                  alwaysShowSearchField: false,
+                  listItems: state.listCustomaryUseRights
+                      .map(
+                        (e) => BottomSheetMultipleSelectionItem(
+                          item: e,
+                          id: e.customaryUseRightId,
+                          titleValue: e.customaryUseRightName,
+                        ),
+                      )
+                      .toList(),
+                  selectedItems: state.selectedCustomaryUseRights
+                      .map(
+                        (e) => BottomSheetMultipleSelectionItem(
+                          item: e,
+                          id: e.customaryUseRightId,
+                          titleValue: e.customaryUseRightName,
+                        ),
+                      )
+                      .toList(),
                   onSave: context
                       .read<StakeholderDetailCubit>()
                       .onChangeCustomaryUseRight,
-                  selectedCustomaryUseRights: state.selectedCustomaryUseRights,
-                  listCustomaryUseRight: state.listCustomaryUseRights,
                 ),
               ),
             );

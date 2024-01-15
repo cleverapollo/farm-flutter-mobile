@@ -1,3 +1,4 @@
+import 'package:cmo/model/model.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/training_register_payload/training_register_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
@@ -65,4 +66,27 @@ extension TrainingRegisterX on TrainingRegister {
       CreateDT: createDT,
     );
   }
+}
+
+@freezed
+@Collection(ignore: {'copyWith'})
+class TraineeRegister with _$TraineeRegister {
+  const factory TraineeRegister({
+    @JsonKey(name: 'TraineeRegisterId') String? traineeRegisterId,
+    @JsonKey(name: 'TrainingRegisterNo') String? trainingRegisterNo,
+    @JsonKey(name: 'TrainingRegisterId') String? trainingRegisterId,
+    @JsonKey(name: 'WorkerId') String? workerId,
+    @JsonKey(name: 'WorkerName') String? workerName,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
+    @Default(false)
+    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
+  }) = _TraineeRegister;
+
+  const TraineeRegister._();
+
+  factory TraineeRegister.fromJson(Map<String, dynamic> json) => _$TraineeRegisterFromJson(json);
+
+  @override
+  Id get id => int.tryParse(traineeRegisterId ?? '') ?? Isar.autoIncrement;
 }

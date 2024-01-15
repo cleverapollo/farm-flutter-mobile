@@ -6,19 +6,22 @@ class TrainingState {
     this.filterItems = const <TrainingRegister>[],
     this.isDataReady = false,
     this.statusFilter = StatusFilterEnum.open,
-    this.farmerWorkers = const <FarmerWorker>[],
+    this.traineeRegisters = const <TraineeRegister>[],
+    this.trainingTypes = const <TrainingType>[],
   });
 
   final bool isDataReady;
   final List<TrainingRegister> items;
   final List<TrainingRegister> filterItems;
   final StatusFilterEnum statusFilter;
-  final List<FarmerWorker> farmerWorkers;
+  final List<TraineeRegister> traineeRegisters;
+  final List<TrainingType> trainingTypes;
 
   TrainingState copyWith({
     List<TrainingRegister>? items,
     List<TrainingRegister>? filterItems,
-    List<FarmerWorker>? farmerWorkers,
+    List<TraineeRegister>? traineeRegisters,
+    List<TrainingType>? trainingTypes,
     bool? isDataReady,
     StatusFilterEnum? statusFilter,
   }) {
@@ -27,7 +30,8 @@ class TrainingState {
       filterItems: filterItems ?? this.filterItems,
       isDataReady: isDataReady ?? this.isDataReady,
       statusFilter: statusFilter ?? this.statusFilter,
-      farmerWorkers: farmerWorkers ?? this.farmerWorkers,
+      trainingTypes: trainingTypes ?? this.trainingTypes,
+      traineeRegisters: traineeRegisters ?? this.traineeRegisters,
     );
   }
 }

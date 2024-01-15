@@ -8,6 +8,7 @@ class TrainingDetailState {
     this.isDataReady = false,
     this.trainingTypes = const [],
     this.workers = const [],
+    this.selectedTrainees = const <FarmerWorker>[],
     this.isTrainingTypeError = false,
     this.isDateError = false,
     this.isTrainerNameError = false,
@@ -20,6 +21,7 @@ class TrainingDetailState {
   TrainingRegister training;
   final List<TrainingType> trainingTypes;
   final List<FarmerWorker> workers;
+  final List<FarmerWorker> selectedTrainees;
   final bool isTrainingTypeError;
   final bool isDateError;
   final bool isTrainerNameError;
@@ -30,6 +32,7 @@ class TrainingDetailState {
     TrainingRegister? training,
     List<TrainingType>? trainingTypes,
     List<FarmerWorker>? workers,
+    List<FarmerWorker>? selectedTrainees,
     bool? isTrainingTypeError,
     bool? isDateError,
     bool? isTrainerNameError,
@@ -46,6 +49,7 @@ class TrainingDetailState {
       isTrainerNameError: isTrainerNameError ?? this.isTrainerNameError,
       isDateError: isDateError ?? this.isDateError,
       isTraineeNameError: isTraineeNameError ?? this.isTraineeNameError,
+      selectedTrainees: selectedTrainees ?? this.selectedTrainees,
     );
   }
 }

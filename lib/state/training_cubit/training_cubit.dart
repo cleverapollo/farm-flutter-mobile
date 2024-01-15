@@ -17,13 +17,16 @@ class TrainingCubit extends Cubit<TrainingState> {
   Future<void> onLoadData() async {
     final farm = await configService.getActiveFarm();
     final items = await cmoDatabaseMasterService.getTrainingByFarmId(farm!.farmId);
-    final workers = await cmoDatabaseMasterService.getFarmerWorkersByFarmId(farm.farmId ?? '');
+    final traineeRegisters = await cmoDatabaseMasterService.getAllTraineeRegisters();
+    final trainingTypes = await cmoDatabaseMasterService.getAllTrainingTypes();
+
     emit(
       state.copyWith(
         isDataReady: true,
         items: items,
         filterItems: items,
-        farmerWorkers: workers,
+        traineeRegisters: traineeRegisters,
+        trainingTypes: trainingTypes,
       ),
     );
 
@@ -49,11 +52,18 @@ class TrainingCubit extends Cubit<TrainingState> {
     );
   }
 
-  String getWorkerNameByWorkerId(String? workerId) {
-    if (workerId.isBlank) return '';
-    return state.farmerWorkers
-        .firstWhereOrNull((element) => element.workerId == workerId)
-        ?.fullName ??
+  String getTotalTrainee(String? trainingRegisterNo) {
+    if (trainingRegisterNo.isBlank) return '';
+    final listTrainee = state.traineeRegisters
+        .where((element) => element.trainingRegisterNo == trainingRegisterNo);
+    return listTrainee.isBlank ? '' : listTrainee.length.toString();
+  }
+
+  String getTrainingTypeNameByTrainingTypeId(int? trainingTypeId) {
+    if (trainingTypeId == null) return '';
+    return state.trainingTypes
+        .firstWhereOrNull((element) => element.trainingTypeId == trainingTypeId)
+        ?.trainingTypeName ??
         '';
   }
 }

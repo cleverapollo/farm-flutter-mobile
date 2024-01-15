@@ -2,48 +2,62 @@ import 'dart:async';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/widgets/additional_multiple_selection_item.dart';
+import 'package:cmo/ui/components/multiple_selection_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-class SelectCustomaryUseRight extends StatefulWidget {
-  const SelectCustomaryUseRight({
-    super.key,
-    required this.onSave,
-    this.listCustomaryUseRight = const <CustomaryUseRight>[],
-    this.selectedCustomaryUseRights = const <CustomaryUseRight>[],
+class BottomSheetMultipleSelectionItem<T> {
+
+  const BottomSheetMultipleSelectionItem({
+    required this.item,
+    this.id,
+    this.titleValue,
   });
 
-  final List<CustomaryUseRight> listCustomaryUseRight;
-  final List<CustomaryUseRight> selectedCustomaryUseRights;
-  final void Function(List<CustomaryUseRight>) onSave;
-
-  @override
-  State<StatefulWidget> createState() => _SelectCustomaryUseRightState();
+  final T item;
+  final String? id;
+  final String? titleValue;
 }
 
-class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
+class BottomSheetMultipleSelection<T> extends StatefulWidget {
+  const BottomSheetMultipleSelection({
+    super.key,
+    required this.onSave,
+    this.listItems = const [],
+    this.selectedItems = const [],
+    this.alwaysShowSearchField = true,
+  });
+
+  final List<BottomSheetMultipleSelectionItem<T>> listItems;
+  final List<BottomSheetMultipleSelectionItem<T>> selectedItems;
+  final void Function(List<T>) onSave;
+  final bool alwaysShowSearchField;
+
+  @override
+  State<StatefulWidget> createState() => _BottomSheetMultipleSelectionState<T>();
+}
+
+class _BottomSheetMultipleSelectionState<T> extends State<BottomSheetMultipleSelection<T>> {
   Timer? _debounceInputTimer;
 
-  List<CustomaryUseRight> selectedItems = <CustomaryUseRight>[];
-  List<CustomaryUseRight> filterListItems = <CustomaryUseRight>[];
+  List<BottomSheetMultipleSelectionItem<T>> selectedItems = <BottomSheetMultipleSelectionItem<T>>[];
+  List<BottomSheetMultipleSelectionItem<T>> filterListItems = <BottomSheetMultipleSelectionItem<T>>[];
 
   @override
   void initState() {
     super.initState();
-    filterListItems = widget.listCustomaryUseRight;
-    selectedItems.addAll(widget.selectedCustomaryUseRights);
+    filterListItems = widget.listItems;
+    selectedItems.addAll(widget.selectedItems);
   }
 
   void onSearch(String? inputSearch) {
     if (inputSearch == null || inputSearch.isEmpty) {
-      filterListItems = widget.listCustomaryUseRight;
+      filterListItems = widget.listItems;
     } else {
-      filterListItems = widget.listCustomaryUseRight
+      filterListItems = widget.listItems
           .where(
             (element) =>
-        element.customaryUseRightName
+        element.titleValue
             ?.toLowerCase()
             .contains(inputSearch.toLowerCase()) ??
             false,
@@ -60,11 +74,18 @@ class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
     });
   }
 
+  void onSelectAll() {
+    setState(() {
+      selectedItems.clear();
+      selectedItems.addAll(widget.listItems);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget.listCustomaryUseRight.length >= 7)
+        if (widget.alwaysShowSearchField || widget.listItems.length >= 7)
           Padding(
             padding: const EdgeInsets.fromLTRB(21, 0, 21, 0),
             child: CmoTextField(
@@ -87,9 +108,12 @@ class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
               Assets.icons.icRemoveSelection.svg(),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  LocaleKeys.select_all_value_items.tr(args: [selectedItems.length.toString()]),
-                  style: context.textStyles.bodyBold.blue,
+                child: GestureDetector(
+                  onTap: onSelectAll,
+                  child: Text(
+                    LocaleKeys.select_all_value_items.tr(args: [selectedItems.length.toString()]),
+                    style: context.textStyles.bodyBold.blue,
+                  ),
                 ),
               ),
               GestureDetector(
@@ -121,7 +145,7 @@ class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
               CmoFilledButton(
                 title: LocaleKeys.save.tr(),
                 onTap: () {
-                  widget.onSave(selectedItems);
+                  widget.onSave(selectedItems.map((e) => e.item).toList());
                   Navigator.of(context).pop();
                 },
               ),
@@ -132,26 +156,26 @@ class _SelectCustomaryUseRightState extends State<SelectCustomaryUseRight> {
     );
   }
 
-  Widget _buildItem(CustomaryUseRight item) {
+  Widget _buildItem(BottomSheetMultipleSelectionItem<T> item) {
     final activeItem = selectedItems.firstWhereOrNull(
-          (element) => element.customaryUseRightId == item.customaryUseRightId,
+          (element) => element.id == item.id,
     );
 
-    return AdditionalMultipleSelectionItem(
+    return MultipleSelectionItem(
       onTap: () {
         final includedItem = selectedItems.firstWhereOrNull(
-              (e) => e.customaryUseRightId == item.customaryUseRightId,
+              (e) => e.id == item.id,
         );
         if (includedItem == null) {
           selectedItems.add(item);
         } else {
           selectedItems.removeWhere(
-                  (e) => e.customaryUseRightId == item.customaryUseRightId);
+                  (e) => e.id == item.id);
         }
 
         if (mounted) setState(() {});
       },
-      title: item.customaryUseRightName,
+      title: item.titleValue,
       isSelected: activeItem != null,
     );
   }

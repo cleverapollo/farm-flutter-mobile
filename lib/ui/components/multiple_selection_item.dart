@@ -3,12 +3,12 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class AdditionalMultipleSelectionItem extends StatelessWidget {
+class MultipleSelectionItem extends StatelessWidget {
   final void Function() onTap;
   final String? title;
   final bool isSelected;
 
-  AdditionalMultipleSelectionItem({
+  MultipleSelectionItem({
     required this.onTap,
     required this.title,
     this.isSelected = false,

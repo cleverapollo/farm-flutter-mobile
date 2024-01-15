@@ -3,6 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/training_cubit/training_detail_cubit.dart';
+import 'package:cmo/ui/components/bottom_sheet_multiple_selection.dart';
 import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/components/signature_widget.dart';
 
@@ -262,40 +263,42 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
   Widget _selectTraineeName() {
     return BlocBuilder<TrainingDetailCubit, TrainingDetailState>(
       builder: (context, state) {
-        final initWorker = state.workers.firstWhereOrNull((element) => element.workerId == state.training.workerId);
         return BottomSheetSelection(
           isShowError: state.isTraineeNameError,
-          hintText: LocaleKeys.trainee_name.tr(),
+          hintText: LocaleKeys.add_trainee.tr(),
           hintTextStyle: context.textStyles.bodyBold.blueDark3,
-          displayHorizontal: false,
-          value: initWorker?.fullName,
+          value: state.selectedTrainees.length.toString(),
           margin: const EdgeInsets.symmetric(horizontal: 24),
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
+          rightIconData: Assets.icons.icUpdatedAddButton.svgBlack,
           onTap: () async {
             FocusManager.instance.primaryFocus?.unfocus();
             if (state.workers.isBlank) return;
             await showCustomBottomSheet<void>(
               context,
-              content: ListView.builder(
-                itemCount: state.workers.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () {
-                      cubit.onWorkerChanged(state.workers[index]);
-                      Navigator.pop(context);
-                    },
-                    title: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        state.workers[index].fullName ?? '',
-                        style: context.textStyles.bodyBold
-                            .copyWith(
-                          color: context.colors.blueDark3,
+              content: Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                child: BottomSheetMultipleSelection<FarmerWorker>(
+                  listItems: state.workers
+                      .map(
+                        (e) => BottomSheetMultipleSelectionItem(
+                          item: e,
+                          id: e.workerId,
+                          titleValue: e.fullName,
                         ),
-                      ),
-                    ),
-                  );
-                },
+                      )
+                      .toList(),
+                  selectedItems: state.selectedTrainees
+                      .map(
+                        (e) => BottomSheetMultipleSelectionItem(
+                          item: e,
+                          id: e.workerId,
+                          titleValue: e.fullName,
+                        ),
+                      )
+                      .toList(),
+                  onSave: context.read<TrainingDetailCubit>().onSelectTrainee,
+                ),
               ),
             );
           },

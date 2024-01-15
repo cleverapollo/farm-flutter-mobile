@@ -633,8 +633,12 @@ mixin FarmUploadSummaryMixin {
 
       if (_enableUpdateStatus) {
         for (final item in trainingRegisters) {
-          futures.add(cmoDatabaseMasterService.cacheTrainingRegisterFromFarm(
-              item.copyWith(isMasterdataSynced: true)));
+          futures.add(
+            cmoDatabaseMasterService.cacheTraining(
+              item.copyWith(isMasterdataSynced: true),
+              isDirect: false,
+            ),
+          );
         }
       }
 
