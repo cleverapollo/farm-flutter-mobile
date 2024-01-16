@@ -21,4 +21,17 @@ extension DateTimeExtensions on DateTime? {
     final formattedDate = dateFormat.format(this!);
     return formattedDate;
   }
+
+  int age() {
+    if (this == null) return 0;
+    final today = DateTime.now();
+    final year = today.year - this!.year;
+    final mth = today.month - this!.month;
+    final days = today.day - this!.day;
+    if (mth < 0 || (mth == 0 && days < 0)) {
+      return year - 1;
+    }
+
+    return year;
+  }
 }

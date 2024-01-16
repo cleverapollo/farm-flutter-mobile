@@ -32,3 +32,4 @@ export 'compartment_cubit/compartment_map_cubit.dart';
 export 'fire_cubit/fire_register_detail_cubit.dart';
 export 'compartment_cubit/compartment_maps_summaries_cubit.dart';
 export 'pets_and_disease_cubit/pets_and_disease_detail_cubit.dart';
+export 'labour_management/labour_detail_cubit.dart';

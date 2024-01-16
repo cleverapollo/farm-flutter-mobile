@@ -1,4 +1,5 @@
 import 'package:cmo/extensions/bool_estension.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/worker_payload/worker_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -44,6 +45,13 @@ class FarmerWorker with _$FarmerWorker {
 }
 
 extension FarmerWorkerX on FarmerWorker {
+  bool isUnder16() {
+    final dob = DateTime.tryParse(dateOfBirth ?? '');
+    if (dob == null) return true;
+    final age = dob.age();
+    return age < 16;
+  }
+
   FarmWorkerPayload toPayLoad() {
     return FarmWorkerPayload(
       FirstName: firstName,

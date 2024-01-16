@@ -95,7 +95,6 @@ class _LabourManagementScreenState extends BaseStatefulWidgetState<LabourManagem
                         onTap: () => FarmerAddWorkerScreen.push(
                           context,
                           farmerWorker: filterWorkers[index],
-                          isEditing: true,
                         ),
                       ),
                     );

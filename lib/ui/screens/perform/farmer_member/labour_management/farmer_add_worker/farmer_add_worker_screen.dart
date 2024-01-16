@@ -6,6 +6,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
+import 'package:cmo/state/labour_management/labour_detail_cubit.dart';
 import 'package:cmo/state/labour_management/labour_management_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_worker/job_description/farmer_add_worker_select_job_description.dart';
@@ -16,7 +17,6 @@ import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class FarmerAddWorkerScreen extends BaseStatefulWidget {
   FarmerAddWorkerScreen({super.key, this.farmerWorker, this.isEditing = false})
@@ -35,14 +35,16 @@ class FarmerAddWorkerScreen extends BaseStatefulWidget {
   static Future<dynamic> push(
     BuildContext context, {
     FarmerWorker? farmerWorker,
-    bool isEditing = false,
   }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => FarmerAddWorkerScreen(
-          isEditing: isEditing,
-          farmerWorker: farmerWorker,
+        builder: (_) => BlocProvider(
+          create: (_) => LabourDetailCubit(farmerWorker),
+          child: FarmerAddWorkerScreen(
+            isEditing: farmerWorker != null,
+            farmerWorker: farmerWorker,
+          ),
         ),
       ),
     );
@@ -54,27 +56,22 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
 
   bool loading = false;
 
-  final _formKey = GlobalKey<FormBuilderState>();
-
-  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
-
   late FarmerWorker farmerWorker;
 
   final selectedWorkerJobDescriptions =
       ValueNotifier<List<WorkerJobDescription>>([]);
 
   Future<void> onSubmit() async {
-    setState(() {
-      autoValidateMode = AutovalidateMode.always;
-    });
-    if (_formKey.currentState?.saveAndValidate() ?? false) {
-      var value = _formKey.currentState?.value;
-      if (value == null) return;
-      value = {...value};
 
-      setState(() {
-        loading = true;
-      });
+    if (farmerWorker.isUnder16()) {
+      showSnackError(msg: 'Labour cannot under 16 years old');
+      return;
+    }
+
+    setState(() {
+      loading = true;
+    });
+
       try {
         await hideInputMethod();
 
@@ -103,7 +100,7 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
             genderId: farmerWorker.genderId ?? 1,
             isLocal: 1,
             isActive: true,
-            createDT: DateTime.now().toIso8601String(),
+            createDT: farmerWorker.createDT ?? DateTime.now().toIso8601String(),
             updateDT: DateTime.now().toIso8601String(),
           ));
 
@@ -125,7 +122,6 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
           loading = false;
         });
       }
-    }
   }
 
   @override
@@ -226,79 +222,74 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
   Widget _buildInputArea() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: FormBuilder(
-        key: _formKey,
-        onChanged: () {},
-        autovalidateMode: autoValidateMode,
-        child: AutofillGroup(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AttributeItem(
-                child: InputAttributeItem(
-                  labelText: LocaleKeys.firstName.tr(),
-                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                  textStyle: context.textStyles.bodyNormal.blueDark2,
-                  initialValue: farmerWorker.firstName,
-                  onChanged: (value) {
-                    _validateFirstName = value;
-                    farmerWorker = farmerWorker.copyWith(firstName: value);
-                    _validate();
-                  },
-                ),
-              ),
-              AttributeItem(
-                child: InputAttributeItem(
-                  labelText: LocaleKeys.lastName.tr(),
-                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                  textStyle: context.textStyles.bodyNormal.blueDark2,
-                  initialValue: farmerWorker.surname,
-                  onChanged: (value) {
-                    _validateLastName = value;
-                    farmerWorker = farmerWorker.copyWith(surname: value);
-                    _validate();
-                  },
-                ),
-              ),
-              _buildSelectBirth(),
-              _buildJobDescription(),
-              AttributeItem(
-                child: InputAttributeItem(
-                  keyboardType: TextInputType.name,
-                  inputFormatters: [UpperCaseTextFormatter()],
-                  labelText: LocaleKeys.idNumber.tr(),
-                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                  textStyle: context.textStyles.bodyNormal.blueDark2,
-                  initialValue: farmerWorker.idNumber,
-                  onChanged: (value) {
-                    _validateIdNumber = value;
-                    farmerWorker = farmerWorker.copyWith(idNumber: value);
-                    _validate();
-                  },
-                ),
-              ),
-              AttributeItem(
-                child: InputAttributeItem(
-                  keyboardType: TextInputType.number,
-                  initialValue: farmerWorker.phoneNumber,
-                  labelText: LocaleKeys.phoneNumber.tr(),
-                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                  textStyle: context.textStyles.bodyNormal.blueDark2,
-                  onChanged: (value) {
-                    _validatePhoneNumber = value;
-                    farmerWorker = farmerWorker.copyWith(phoneNumber: value);
-                    _validate();
-                  },
-                ),
-              ),
-              FarmerSelectGenderWidget(
-                initialValue: farmerWorker.genderId,
-                onTap: (id) {
-                  farmerWorker = farmerWorker.copyWith(genderId: id);
+      child: AutofillGroup(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AttributeItem(
+              child: InputAttributeItem(
+                labelText: LocaleKeys.firstName.tr(),
+                labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                textStyle: context.textStyles.bodyNormal.blueDark2,
+                initialValue: farmerWorker.firstName,
+                onChanged: (value) {
+                  _validateFirstName = value;
+                  farmerWorker = farmerWorker.copyWith(firstName: value);
+                  _validate();
                 },
               ),
-            ],
-          ),
+            ),
+            AttributeItem(
+              child: InputAttributeItem(
+                labelText: LocaleKeys.lastName.tr(),
+                labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                textStyle: context.textStyles.bodyNormal.blueDark2,
+                initialValue: farmerWorker.surname,
+                onChanged: (value) {
+                  _validateLastName = value;
+                  farmerWorker = farmerWorker.copyWith(surname: value);
+                  _validate();
+                },
+              ),
+            ),
+            _buildSelectBirth(),
+            _buildJobDescription(),
+            AttributeItem(
+              child: InputAttributeItem(
+                keyboardType: TextInputType.name,
+                inputFormatters: [UpperCaseTextFormatter()],
+                labelText: LocaleKeys.idNumber.tr(),
+                labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                textStyle: context.textStyles.bodyNormal.blueDark2,
+                initialValue: farmerWorker.idNumber,
+                onChanged: (value) {
+                  _validateIdNumber = value;
+                  farmerWorker = farmerWorker.copyWith(idNumber: value);
+                  _validate();
+                },
+              ),
+            ),
+            AttributeItem(
+              child: InputAttributeItem(
+                keyboardType: TextInputType.number,
+                initialValue: farmerWorker.phoneNumber,
+                labelText: LocaleKeys.phoneNumber.tr(),
+                labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                textStyle: context.textStyles.bodyNormal.blueDark2,
+                onChanged: (value) {
+                  _validatePhoneNumber = value;
+                  farmerWorker = farmerWorker.copyWith(phoneNumber: value);
+                  _validate();
+                },
+              ),
+            ),
+            FarmerSelectGenderWidget(
+              initialValue: farmerWorker.genderId,
+              onTap: (id) {
+                farmerWorker = farmerWorker.copyWith(genderId: id);
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -309,8 +300,7 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
       onTap: () async {
         final date = await showDatePicker(
           context: context,
-          initialDate: DateTime.tryParse(farmerWorker.dateOfBirth ?? '') ??
-              DateTime.now(),
+          initialDate: DateTime.tryParse(farmerWorker.dateOfBirth ?? '') ?? DateTime.now(),
           firstDate: DateTime.now().add(const Duration(days: -1000000)),
           lastDate: DateTime.now(),
         );

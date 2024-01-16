@@ -16,7 +16,6 @@ import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddStakeHolderComplaintScreen extends BaseStatefulWidget {
   AddStakeHolderComplaintScreen({
@@ -66,7 +65,6 @@ class AddStakeHolderComplaintScreen extends BaseStatefulWidget {
 
 class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddStakeHolderComplaintScreen> {
   late final AddStakeHolderComplaintCubit cubit;
-  final _formKey = GlobalKey<FormBuilderState>();
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
   bool loading = false;
 
@@ -79,15 +77,9 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
   Future<void> onSubmit() async {
     setState(() {
       autoValidateMode = AutovalidateMode.always;
+      loading = true;
     });
-    if (_formKey.currentState?.saveAndValidate() ?? false) {
-      var value = _formKey.currentState?.value;
-      if (value == null) return;
-      value = {...value};
 
-      setState(() {
-        loading = true;
-      });
       try {
         await hideInputMethod();
         final isError = cubit.onValidateRequireField();
@@ -130,7 +122,6 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
           loading = false;
         });
       }
-    }
   }
 
   @override
@@ -162,62 +153,57 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: FormBuilder(
-                        key: _formKey,
-                        onChanged: () {},
-                        autovalidateMode: autoValidateMode,
-                        child: AutofillGroup(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  height: 20,
+                      child: AutofillGroup(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              _selectComplaintName(
+                                state.stakeholders,
+                                complaint.stakeholderId,
+                              ),
+                              AttributeItem(
+                                child: InputAttributeItem(
+                                  validator: (_) => null,
+                                  initialValue: complaint.issueDescription,
+                                  textStyle:
+                                  context.textStyles.bodyNormal.blueDark2,
+                                  labelText: LocaleKeys.issueRaised.tr(),
+                                  labelTextStyle:
+                                  context.textStyles.bodyBold.blueDark2,
+                                  onChanged: (value) {
+                                    cubit.onIssueDescriptionChanged(value);
+                                  },
                                 ),
-                                _selectComplaintName(
-                                  state.stakeholders,
-                                  complaint.stakeholderId,
+                              ),
+                              _buildSelectDateReceived(complaint.dateReceived),
+                              _buildSelectDateClosed(complaint.dateClosed),
+                              AttributeItem(
+                                child: InputAttributeItem(
+                                  validator: (_) => null,
+                                  textStyle:
+                                  context.textStyles.bodyNormal.blueDark2,
+                                  labelText: LocaleKeys.closureDetails.tr(),
+                                  labelTextStyle:
+                                  context.textStyles.bodyBold.blueDark2,
+                                  initialValue: complaint.closureDetails,
+                                  onChanged: cubit.onClosureDetailChanged,
                                 ),
-                                AttributeItem(
-                                  child: InputAttributeItem(
-                                    validator: (_) => null,
-                                    initialValue: complaint.issueDescription,
-                                    textStyle:
-                                        context.textStyles.bodyNormal.blueDark2,
-                                    labelText: LocaleKeys.issueRaised.tr(),
-                                    labelTextStyle:
-                                        context.textStyles.bodyBold.blueDark2,
-                                    onChanged: (value) {
-                                      cubit.onIssueDescriptionChanged(value);
-                                    },
+                              ),
+                              AttributeItem(
+                                child: SizedBox(
+                                  height: 250,
+                                  child: GeneralCommentWidget(
+                                    initialValue: complaint.comment,
+                                    hintText: LocaleKeys.generalComments.tr(),
+                                    onChanged: cubit.onCommentChanged,
                                   ),
                                 ),
-                                _buildSelectDateReceived(complaint.dateReceived),
-                                _buildSelectDateClosed(complaint.dateClosed),
-                                AttributeItem(
-                                  child: InputAttributeItem(
-                                    validator: (_) => null,
-                                    textStyle:
-                                        context.textStyles.bodyNormal.blueDark2,
-                                    labelText: LocaleKeys.closureDetails.tr(),
-                                    labelTextStyle:
-                                        context.textStyles.bodyBold.blueDark2,
-                                    initialValue: complaint.closureDetails,
-                                    onChanged: cubit.onClosureDetailChanged,
-                                  ),
-                                ),
-                                AttributeItem(
-                                  child: SizedBox(
-                                    height: 250,
-                                    child: GeneralCommentWidget(
-                                      initialValue: complaint.comment,
-                                      hintText: LocaleKeys.generalComments.tr(),
-                                      onChanged: cubit.onCommentChanged,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
