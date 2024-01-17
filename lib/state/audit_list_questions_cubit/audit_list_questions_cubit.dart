@@ -92,12 +92,13 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
         filterList = filterList
             .where(
               (question) =>
-                  (question.xBone == null || question.xBone == false) &&
-                  answerWithNCCompliance.firstWhereOrNull(
-                        (element) =>
-                            element.complianceId == ncComplianceId &&
-                            question.questionId == element.questionId,
-                      ) != null,
+                  (question.xBone == null || question.xBone == false)
+                      // &&
+                  // answerWithNCCompliance.firstWhereOrNull(
+                  //       (element) =>
+                  //           element.complianceId == ncComplianceId &&
+                  //           question.questionId == element.questionId,
+                  //     ) != null,
             )
             .toList();
         break;
@@ -105,16 +106,18 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
         filterList = filterList
             .where(
               (question) =>
-                  (question.xBone != null && question.xBone!) &&
-                  answerWithNCCompliance.firstWhereOrNull(
-                        (element) =>
-                            element.complianceId == ncComplianceId &&
-                            question.questionId == element.questionId,
-                      ) != null,
+                  (question.xBone != null && question.xBone!)
+                      // &&
+                  // answerWithNCCompliance.firstWhereOrNull(
+                  //       (element) =>
+                  //           element.complianceId == ncComplianceId &&
+                  //           question.questionId == element.questionId,
+                  //     ) != null,
             )
             .toList();
         break;
       case CarFilterEnum.allCARs:
+      case CarFilterEnum.noCars:
       default:
         break;
     }

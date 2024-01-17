@@ -26,10 +26,10 @@ class ComplianceFilter extends StatelessWidget {
               0,
               OptionItem<Compliance?>(
                 id: const Compliance(complianceId: -1),
-                title: LocaleKeys.compliance.tr(),
+                title: LocaleKeys.compliance_level.tr(),
               ),
             ),
-          hintText: LocaleKeys.compliance.tr(),
+          hintText: LocaleKeys.compliance_level.tr(),
           itemSelected: state.selectedComplianceFilter == null || state.selectedComplianceFilter?.complianceId == -1
               ? null
               : OptionItem<Compliance?>(

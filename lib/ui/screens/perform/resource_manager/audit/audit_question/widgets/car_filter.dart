@@ -21,7 +21,7 @@ class CarFilter extends StatelessWidget {
           listItems: state.carFilterEnums
               .map((item) => OptionItem<CarFilterEnum>(id: item, title: item.valueName))
               .toList(),
-          hintText: LocaleKeys.all_cars.tr(),
+          hintText: LocaleKeys.no_cars.tr(),
           itemSelected: state.selectedCARFilter == null
               ? null
               : OptionItem<CarFilterEnum>(
