@@ -1,4 +1,5 @@
 import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
 enum AuditQuestionIconEnum {
@@ -42,6 +43,7 @@ class CmoNumberIconWidget extends StatefulWidget {
     int? number,
     bool enable = false,
     void Function()? onTap,
+    bool isDisable = false,
   }) {
     return CmoNumberIconWidget._(
       byEnum: true,
@@ -49,6 +51,7 @@ class CmoNumberIconWidget extends StatefulWidget {
       number: number,
       enable: enable,
       onTap: onTap,
+      isDisable: isDisable,
     );
   }
 
@@ -62,6 +65,7 @@ class CmoNumberIconWidget extends StatefulWidget {
     required this.byEnum,
     this.iconType,
     this.onTap,
+    this.isDisable = false,
   });
 
   final int? number;
@@ -69,6 +73,7 @@ class CmoNumberIconWidget extends StatefulWidget {
   final bool byEnum;
   final AuditQuestionIconEnum? iconType;
   final void Function()? onTap;
+  final bool isDisable;
 
   @override
   State<CmoNumberIconWidget> createState() => _CmoNumberIconWidgetState();
@@ -115,7 +120,19 @@ class _CmoNumberIconWidgetState extends State<CmoNumberIconWidget> {
                           height: 32,
                           width: 32,
                         ),
-                      )
+                      ),
+                      if (widget.isDisable)
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: 32,
+                            width: 32,
+                            decoration: BoxDecoration(
+                              color: context.colors.greyCCCC.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 );

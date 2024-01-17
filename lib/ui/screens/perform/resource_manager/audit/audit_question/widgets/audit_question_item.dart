@@ -18,6 +18,7 @@ class AuditQuestionItem extends StatelessWidget {
     required this.onTapLocation,
     required this.onTapCamera,
     this.answer,
+    this.reactMaximumUploadedPhoto = false,
   });
 
   final FarmQuestion question;
@@ -27,6 +28,7 @@ class AuditQuestionItem extends StatelessWidget {
   final VoidCallback viewComment;
   final VoidCallback onTapLocation;
   final VoidCallback onTapCamera;
+  final bool reactMaximumUploadedPhoto;
   final void Function(Compliance) addAnswer;
 
   @override
@@ -134,6 +136,7 @@ class AuditQuestionItem extends StatelessWidget {
                         return CmoNumberIconWidget.byEnum(
                           onTap: onTapCamera,
                           iconType: AuditQuestionIconEnum.camera,
+                          isDisable: reactMaximumUploadedPhoto,
                         );
                       },
                     ),

@@ -514,13 +514,13 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
           logger.d('Publish message to topic $publishAuditsTopic');
 
-          final isPublicFarm = await cmoPerformApiService.public(
+          final isPublicAudit = await cmoPerformApiService.public(
             currentClientId: userDeviceId.toString(),
             topic: publishAuditsTopic,
             messages: [message],
           );
 
-          if (isPublicFarm) {
+          if (isPublicAudit) {
             await cmoDatabaseMasterService.cacheAudit(
               audit.copyWith(
                 synced: true,

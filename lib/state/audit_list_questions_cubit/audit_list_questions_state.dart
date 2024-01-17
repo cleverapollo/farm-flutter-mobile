@@ -160,4 +160,8 @@ class AuditListQuestionsState extends Equatable {
         )
         .toList();
   }
+
+  bool reactMaximumUploadedPhoto() {
+    return totalPhotos >= Constants.MAX_UPLOADED_PHOTOS_AUDIT;
+  }
 }

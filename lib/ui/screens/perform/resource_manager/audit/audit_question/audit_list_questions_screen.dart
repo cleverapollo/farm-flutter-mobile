@@ -124,6 +124,10 @@ class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQu
   Future<void> onTapCamera({
     required FarmQuestion auditQuestion,
   }) async {
+    if (context
+        .read<AuditListQuestionsCubit>()
+        .state
+        .reactMaximumUploadedPhoto()) return;
     await CustomCameraScreen.push(
       context,
       onDone: (base64Image) async {
@@ -238,6 +242,7 @@ class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQu
                       question: question,
                       answer: answer,
                       compliances: snapshot.compliances,
+                      reactMaximumUploadedPhoto: snapshot.reactMaximumUploadedPhoto(),
                       onTapLocation: () async {
                         await _onTapLocation(auditQuestion: question);
                       },
@@ -363,8 +368,7 @@ class _AuditListQuestionsScreenState extends BaseStatefulWidgetState<AuditListQu
                   Assets.icons.icCamera.svgWhite,
                   Padding(
                     padding: const EdgeInsets.only(left: 6.0),
-                    child: BlocSelector<AuditListQuestionsCubit,
-                        AuditListQuestionsState, int>(
+                    child: BlocSelector<AuditListQuestionsCubit, AuditListQuestionsState, int>(
                       selector: (state) => state.totalPhotos,
                       builder: (context, lengthPhoto) => Text(
                         '$lengthPhoto/${Constants.MAX_UPLOADED_PHOTOS_AUDIT.toString()}',
