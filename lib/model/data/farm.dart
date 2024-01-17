@@ -63,8 +63,6 @@ class Farm with _$Farm {
     @JsonKey(name: 'IsProspectMember') bool isProspectMember,
     @Default(false)
     @JsonKey(name: 'IsSuspended') bool isSuspended,
-    @JsonKey(name: 'FarmRoleId') String? farmRoleId,
-
 
     @Default(false) @JsonKey(name: 'IsMasterDataSynced') bool isMasterDataSynced,
     @ignore List<FarmMemberObjectiveAnswer>? objectiveAnswers,
