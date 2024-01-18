@@ -24,6 +24,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_add.svg
   SvgGenImage get icAdd => const SvgGenImage('assets/icons/ic_add.svg');
 
+  /// File path: assets/icons/ic_add_more_photo.svg
+  SvgGenImage get icAddMorePhoto =>
+      const SvgGenImage('assets/icons/ic_add_more_photo.svg');
+
   /// File path: assets/icons/ic_app_logo.svg
   SvgGenImage get icAppLogo =>
       const SvgGenImage('assets/icons/ic_app_logo.svg');
@@ -76,6 +80,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_camera_blue_dark.svg
   SvgGenImage get icCameraBlueDark =>
       const SvgGenImage('assets/icons/ic_camera_blue_dark.svg');
+
+  /// File path: assets/icons/ic_camera_rte.svg
+  SvgGenImage get icCameraRte =>
+      const SvgGenImage('assets/icons/ic_camera_rte.svg');
 
   /// File path: assets/icons/ic_chat_audit.svg
   SvgGenImage get icChatAudit =>
@@ -263,6 +271,7 @@ class $AssetsIconsGen {
         icAccept,
         icAcceptMap,
         icAdd,
+        icAddMorePhoto,
         icAppLogo,
         icArrowDown,
         icArrowLeft,
@@ -277,6 +286,7 @@ class $AssetsIconsGen {
         icCameraAudit,
         icCameraAuditFillBackground,
         icCameraBlueDark,
+        icCameraRte,
         icChatAudit,
         icChatAuditFillBackground,
         icCheck,

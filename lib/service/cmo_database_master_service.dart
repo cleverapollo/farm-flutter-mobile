@@ -3310,6 +3310,18 @@ class CmoDatabaseMasterService {
     return db.writeTxn(() => db.rteSpeciesPhotoModels.put(item));
   }
 
+  Future<void> removeRteSpeciesPhotoModelsByRteSpeciesRegisterNo(
+      String? rteSpeciesRegisterNo) async {
+    final db = await _db();
+
+    await db.writeTxn(() async {
+      await db.rteSpeciesPhotoModels
+          .filter()
+          .rteSpeciesNoEqualTo(rteSpeciesRegisterNo)
+          .deleteAll();
+    });
+  }
+
   Future<bool> removeRteSpeciesPhotoModel(int id) async {
     final db = await _db();
     return db.writeTxn(() async {

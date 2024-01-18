@@ -173,6 +173,8 @@
   "species": "Species",
   "rteSpecies": "RTE Species",
   "addRteSpecies": "เพิ่มเติมชนิดพันธ์ RTE (หายาก,ถูกคุกคาม,ใกล้สูญพันธ์)",
+  "add_photo": "Add Photo",
+  "add_more": "Add More",
   "edit_rte_species": "Edit RTE Species",
   "speciesType": "ประเภทของชนิดพันธ์",
   "commonName": "ชื่อที่ใช้ทั่วไป",

@@ -40,13 +40,9 @@ class _RteSpeciesScreenState extends BaseStatefulWidgetState<RteSpeciesScreen> {
   }
 
   Future<void> navigateToDetail({RteSpecies? rteSpecies}) async {
-    final locationModel = LocationModel()
-      ..latitude = rteSpecies?.latitude
-      ..longitude = rteSpecies?.longitude;
     await RteSpeciesDetailScreen.push(
       context,
       rteSpecies: rteSpecies,
-      locationModel: locationModel,
     );
   }
 

@@ -3,7 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/rte_species/rte_species_map_screen.dart';
+import 'package:cmo/ui/components/custom_camera_component/custom_camera_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
@@ -15,19 +15,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/rte_species/widgets/rte_species_photo.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/rte_species/widgets/rte_species_photo_section.dart';
 
 class RteSpeciesDetailScreen extends BaseStatefulWidget {
   RteSpeciesDetailScreen({
     super.key,
-    this.rteSpecies,
+    this.isEditing = false,
   }) : super(
-          screenName: rteSpecies == null
-              ? LocaleKeys.addRteSpecies.tr()
-              : LocaleKeys.edit_rte_species.tr(),
+          screenName: isEditing
+              ? LocaleKeys.edit_rte_species.tr()
+              : LocaleKeys.addRteSpecies.tr(),
         );
 
-  final RteSpecies? rteSpecies;
+  final bool isEditing;
 
   @override
   State<StatefulWidget> createState() => _RteSpeciesDetailScreenState();
@@ -35,7 +35,6 @@ class RteSpeciesDetailScreen extends BaseStatefulWidget {
   static Future<RteSpecies?> push(
     BuildContext context, {
     RteSpecies? rteSpecies,
-    LocationModel? locationModel,
   }) {
     return Navigator.push(
       context,
@@ -43,11 +42,9 @@ class RteSpeciesDetailScreen extends BaseStatefulWidget {
         builder: (_) => BlocProvider(
           create: (_) => RteSpeciesDetailCubit(
             rteSpecies: rteSpecies,
-          )..init(
-              locationModel: locationModel,
-            ),
+          ),
           child: RteSpeciesDetailScreen(
-            rteSpecies: rteSpecies,
+            isEditing: rteSpecies != null,
           ),
         ),
       ),
@@ -56,22 +53,28 @@ class RteSpeciesDetailScreen extends BaseStatefulWidget {
 }
 
 class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDetailScreen> {
-  final rtePhotos = <RteSpeciesPhotoModel>[];
 
-  @override
-  void initState() {
-    super.initState();
+  Future<void> navigateToCamera() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (context.read<RteSpeciesDetailCubit>().reactMaximumUploadedPhoto()) {
+      return;
+    }
+
+    await CustomCameraScreen.push(
+      context,
+      onDone: context.read<RteSpeciesDetailCubit>().onUpdatePhoto,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: FocusScope.of(context).unfocus,
+      onTap: FocusManager.instance.primaryFocus?.unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
-          title: widget.rteSpecies == null
-              ? LocaleKeys.addRteSpecies.tr()
-              : LocaleKeys.edit_rte_species.tr(),
+          title: widget.isEditing
+              ? LocaleKeys.edit_rte_species.tr()
+              : LocaleKeys.addRteSpecies.tr(),
           leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
@@ -104,6 +107,24 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
                           .onChangeCommonName,
                     ),
                   ),
+                  buildLatLngWidget(),
+                  RteSpeciesPhotoSection(
+                    navigateToCamera: navigateToCamera,
+                    onRemove: context.read<RteSpeciesDetailCubit>().onRemovePhoto,
+                  ),
+                  buildSelectDateSpotted(state),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 21),
+                    child: GeneralCommentWidget(
+                      height: 100,
+                      textStyle: context.textStyles.bodyNormal.blueDark2,
+                      shouldShowTitle: true,
+                      hintText: '',
+                      initialValue: state.rteSpecies?.comment,
+                      onChanged: context.read<RteSpeciesDetailCubit>().onChangeComment,
+                    ),
+                  ),
                   InformationText(),
                   CmoHeaderTile(
                     title: LocaleKeys.additional_details_optional.tr(),
@@ -123,31 +144,6 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
                     ),
                   ),
                   selectSpeciesRange(context, state),
-                  buildSelectDateSpotted(state),
-                  buildLatLngWidget(state),
-                  const SizedBox(height: 12),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 21),
-                    child: GeneralCommentWidget(
-                      height: 100,
-                      textStyle: context.textStyles.bodyNormal.blueDark2,
-                      shouldShowTitle: true,
-                      hintText: '',
-                      initialValue: state.rteSpecies?.comment,
-                      onChanged: context.read<RteSpeciesDetailCubit>().onChangeComment,
-                    ),
-                  ),
-                  if (state.rtePhotos.isNotBlank)
-                    ...state.rtePhotos.map(
-                      (rteSpeciesPhotoModel) => RteSpeciesPhoto(
-                        rteSpeciesPhotoModel: rteSpeciesPhotoModel,
-                        onRemoved: () => context
-                            .read<RteSpeciesDetailCubit>()
-                            .onRemovePhoto(rteSpeciesPhotoModel),
-                        onChanged:
-                            context.read<RteSpeciesDetailCubit>().onUpdatePhoto,
-                      ),
-                    ),
                 ],
               );
             },
@@ -171,7 +167,11 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
           disable: context.read<RteSpeciesDetailCubit>().state.rteSpecies?.latitude == null,
           onTap: () async {
             await context.read<RteSpeciesDetailCubit>().onSave(
-              onSuccess: () async {
+              onSuccess: (rteSpeciesId) async {
+                showSnackSuccess(
+                  msg:
+                      '${widget.isEditing ? LocaleKeys.edit_rte_species.tr() : LocaleKeys.addRteSpecies.tr()} $rteSpeciesId',
+                );
                 await context.read<RteSpeciesCubit>().loadRteSpecies();
                 if (context.mounted) {
                   Navigator.of(context).pop();
@@ -193,7 +193,7 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
       displayHorizontal: false,
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       onTap: () async {
-        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
         if (state.animalTypes.isBlank) return;
         await showCustomBottomSheet<void>(
           context,
@@ -269,7 +269,7 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
       margin: const EdgeInsets.symmetric(horizontal: 21),
       child: CmoDatePicker(
         name: 'DateSpotted',
-        hintText: LocaleKeys.dateSpotted.tr(),
+        hintText: LocaleKeys.date.tr(),
         lastDate: DateTime.now(),
         validator: (DateTime? value) {
           if (value == null) return null;
@@ -291,68 +291,76 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
           suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
           suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
           isDense: true,
-          hintText: LocaleKeys.dateSpotted.tr(),
+          hintText: LocaleKeys.date.tr(),
           hintStyle: context.textStyles.bodyNormal.blueDark2,
-          labelText: LocaleKeys.dateSpotted.tr(),
+          labelText: LocaleKeys.date.tr(),
           labelStyle: context.textStyles.bodyNormal.blueDark2,
         ),
       ),
     );
   }
 
-  Widget buildLatLngWidget(RteSpeciesDetailState state) {
-    return InkWell(
-      onTap: () async {
-        final locationModel = await RteSpeciesMapScreen.push(
-          context,
-          activeFarm: state.activeFarm,
-          locationModel: LocationModel()
-            ..longitude = state.rteSpecies?.longitude
-            ..latitude = state.rteSpecies?.latitude,
-        ) as LocationModel?;
+  Widget buildLatLngWidget() {
+    return BlocBuilder<RteSpeciesDetailCubit, RteSpeciesDetailState>(
+      builder: (context, state) {
+        return InkWell(
+          onTap: () async {
+            FocusManager.instance.primaryFocus?.unfocus();
+            final locationModel = LocationModel()
+              ..longitude = state.rteSpecies?.longitude
+              ..latitude = state.rteSpecies?.latitude;
 
-        if (locationModel != null) {
-          context
-              .read<RteSpeciesDetailCubit>()
-              .onChangeLocationAndPhoto(locationModel);
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        margin: const EdgeInsets.symmetric(horizontal: 21),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: context.colors.blueDark2,
-              width: 2,
-            ),
-          ),
-        ),
-        child: Row(
-          children: [
-            Text(
-              LocaleKeys.lat_long.tr(),
-              style: context.textStyles.bodyBold.blueDark2,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            Expanded(
-              child: Text(
-                state.rteSpecies?.latitude == null
-                    ? ''
-                    : '${state.rteSpecies?.latitude?.toStringAsFixed(5)} , ${state.rteSpecies?.longitude?.toStringAsFixed(5)}',
-                style: context.textStyles.bodyNormal.blueDark2,
-                textAlign: TextAlign.center,
+            final result = await SelectLocationScreen.push(
+              context,
+              title: LocaleKeys.rteSpecies.tr(),
+              farmName: state.activeFarm?.farmName,
+              locationModel: locationModel,
+              shouldShowPhotoButton: false,
+              shouldShowBackIcon: true,
+              saveTitle: LocaleKeys.save.tr(),
+            );
+
+            if (result == null) return;
+            context.read<RteSpeciesDetailCubit>().onChangeLocation(result as LocationModel);
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            margin: const EdgeInsets.symmetric(horizontal: 21),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: context.colors.blueDark2,
+                  width: 2,
+                ),
               ),
             ),
-            Icon(
-              Icons.keyboard_arrow_right_rounded,
-              color: context.colors.black,
-              size: 32,
-            )
-          ],
-        ),
-      ),
+            child: Row(
+              children: [
+                Text(
+                  LocaleKeys.lat_long.tr(),
+                  style: context.textStyles.bodyBold.blueDark2,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Expanded(
+                  child: Text(
+                    state.rteSpecies?.latitude == null
+                        ? ''
+                        : '${state.rteSpecies?.latitude?.toStringAsFixed(5)} , ${state.rteSpecies?.longitude?.toStringAsFixed(5)}',
+                    style: context.textStyles.bodyNormal.blueDark2,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Icon(
+                  Icons.keyboard_arrow_right_rounded,
+                  color: context.colors.black,
+                  size: 32,
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
