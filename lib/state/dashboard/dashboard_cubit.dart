@@ -44,8 +44,7 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
       await getResourceManagerMembers();
       await getStakeHolders();
       await RMGetTotalAssessments();
-      final service = cmoDatabaseMasterService;
-      final totalStakeholders = await service.getStakeHolders();
+      final totalStakeholders = await cmoDatabaseMasterService.getStakeHolders();
       emit(state.copyWith(totalStakeholders: totalStakeholders.length));
     } catch (error) {
       handleError(error);
@@ -144,35 +143,6 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
                 .length,
       ),
     );
-  }
-
-  Future<void> handleMemberStepCountFromService(BuildContext context) async {
-    final service = cmoDatabaseMasterService;
-    final resourceManagerUnit = await configService.getActiveRegionalManager();
-    if (resourceManagerUnit == null) {
-      return;
-    }
-    final farms = await service.getFarmsByRMUnit(resourceManagerUnit.id);
-    final allFarms = <Farm>[];
-
-    final addMemberCubit = context.read<AddMemberCubit>();
-
-    for (final farm in farms ?? <Farm>[]) {
-      await addMemberCubit.initAddMember(farm: farm);
-      await addMemberCubit.stepCount();
-
-      allFarms.add(farm.copyWith(
-        stepCount: addMemberCubit.state.farm?.stepCount,
-        isGroupSchemeMember: addMemberCubit.state.farm?.isGroupSchemeMember ?? false,
-      ));
-    }
-
-    final dbCompany = await cmoDatabaseMasterService.db;
-    await dbCompany.writeTxn(() async {
-      for (final item in allFarms) {
-        await cmoDatabaseMasterService.cacheFarm(item);
-      }
-    });
   }
 
   Future<void> getResourceManagerMembers() async {

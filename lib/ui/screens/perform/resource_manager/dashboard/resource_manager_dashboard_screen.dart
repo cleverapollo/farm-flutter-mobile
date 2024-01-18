@@ -23,9 +23,6 @@ class _ResourceManagerDashboardScreenState
   void initState() {
     super.initState();
     Future.microtask(() async {
-      await context
-          .read<DashboardCubit>()
-          .handleMemberStepCountFromService(context);
       await context.read<DashboardCubit>().initializeRM();
     });
   }

@@ -2880,14 +2880,17 @@ class CmoDatabaseMasterService {
     }
   }
 
-  Future<int> cacheFarm(Farm item) async {
+  Future<int?> cacheFarm(
+    Farm? item, {
+    bool isDirect = false,
+  }) async {
+    if (item == null) return null;
     final db = await _db();
-    return db.farms.put(item);
-  }
-
-  Future<int> cacheFarmAddMember(Farm item) async {
-    final db = await _db();
-    return db.writeTxn(() => db.farms.put(item));
+    if (isDirect) {
+      return db.farms.put(item);
+    } else {
+      return db.writeTxn(() => db.farms.put(item));
+    }
   }
 
   Future<List<FarmQuestion>?> getFarmQuestions({
@@ -3813,20 +3816,11 @@ class CmoDatabaseMasterService {
 
   Future<List<Compartment>?> getAllCompartments() async {
     final db = await _db();
-    try {
-      final compartments = await db.compartments
-          .filter()
-          .isActiveEqualTo(true)
-          .sortByCreateDTDesc()
-          .findAll();
-
-      return compartments;
-    } catch (error) {
-      handleError(error);
-      return <Compartment>[];
-    }
-
-    return <Compartment>[];
+    return db.compartments
+        .filter()
+        .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
+        .findAll();
   }
 
   Future<Compartment?> getCompartmentsByManagementUnitId({

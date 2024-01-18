@@ -6,6 +6,8 @@ import '../../model/model.dart';
 
 class MemberManagementState {
   const MemberManagementState({
+    this.activeRMU,
+    this.activeGroupScheme,
     this.allFarms = const [],
     this.allCompartments = const <Compartment>[],
     this.allRiskProfileQuestions = const <RiskProfileQuestion>[],
@@ -13,12 +15,13 @@ class MemberManagementState {
     this.allFarmMemberObjectives = const <FarmMemberObjective>[],
     this.allFarmMemberObjectiveAnswers = const <FarmMemberObjectiveAnswer>[],
     this.filteringFarms = const [],
-    this.resourceManagerUnit,
-    this.groupScheme,
     this.filteringText,
     this.isInCompleteSelected = true,
     this.isLoading = false,
   });
+
+  final GroupScheme? activeGroupScheme;
+  final ResourceManagerUnit? activeRMU;
 
   final bool isLoading;
   final List<Farm> allFarms;
@@ -27,8 +30,6 @@ class MemberManagementState {
   final List<FarmMemberRiskProfileAnswer> allFarmMemberRiskProfileAnswers;
   final List<FarmMemberObjective> allFarmMemberObjectives;
   final List<FarmMemberObjectiveAnswer> allFarmMemberObjectiveAnswers;
-  final ResourceManagerUnit? resourceManagerUnit;
-  final GroupScheme? groupScheme;
   final List<Farm> filteringFarms;
   final String? filteringText;
   final bool isInCompleteSelected;
@@ -40,14 +41,17 @@ class MemberManagementState {
     List<FarmMemberRiskProfileAnswer>? allFarmMemberRiskProfileAnswers,
     List<FarmMemberObjective>? allFarmMemberObjectives,
     List<FarmMemberObjectiveAnswer>? allFarmMemberObjectiveAnswers,
-    ResourceManagerUnit? resourceManagerUnit,
-    GroupScheme? groupScheme,
+    ResourceManagerUnit? activeRMU,
+    GroupScheme? activeGroupScheme,
     List<Farm>? filteringFarms,
     String? filteringText,
     bool? isInCompleteSelected,
     bool? isLoading,
   }) {
     return MemberManagementState(
+      activeRMU: activeRMU ?? this.activeRMU,
+      activeGroupScheme: activeGroupScheme ?? this.activeGroupScheme,
+
       isLoading: isLoading ?? this.isLoading,
       allFarms: allFarms ?? this.allFarms,
       allCompartments: allCompartments ?? this.allCompartments,
@@ -55,8 +59,6 @@ class MemberManagementState {
       allFarmMemberRiskProfileAnswers: allFarmMemberRiskProfileAnswers ?? this.allFarmMemberRiskProfileAnswers,
       allFarmMemberObjectives: allFarmMemberObjectives ?? this.allFarmMemberObjectives,
       allFarmMemberObjectiveAnswers: allFarmMemberObjectiveAnswers ?? this.allFarmMemberObjectiveAnswers,
-      resourceManagerUnit: resourceManagerUnit ?? this.resourceManagerUnit,
-      groupScheme: groupScheme ?? this.groupScheme,
       filteringFarms: filteringFarms ?? this.filteringFarms,
       filteringText: filteringText ?? this.filteringText,
       isInCompleteSelected: isInCompleteSelected ?? this.isInCompleteSelected,

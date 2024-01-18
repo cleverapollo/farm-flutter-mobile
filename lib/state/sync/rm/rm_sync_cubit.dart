@@ -404,7 +404,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
             stopwatch.stop();
             if (isSyncedSuccess) {
-              await cmoDatabaseMasterService.cacheFarmAddMember(
+              await cmoDatabaseMasterService.cacheFarm(
                 farm.copyWith(
                   isMasterDataSynced: true,
                 ),
@@ -1063,6 +1063,8 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           isMasterDataSynced: true,
           signatureImage: farm.signatureImage.base64SyncServerToString,
         ),
+
+        isDirect: true,
       );
     } catch (e) {
       logger.d('insert error: $e');

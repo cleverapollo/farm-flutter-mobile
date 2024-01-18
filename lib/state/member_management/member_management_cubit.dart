@@ -8,40 +8,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MemberManagementCubit extends Cubit<MemberManagementState> {
-  MemberManagementCubit() : super(const MemberManagementState());
+  MemberManagementCubit() : super(const MemberManagementState()) {
+    init();
+  }
 
-  Future<void> init(BuildContext context) async {
+  Future<void> init() async {
     emit(state.copyWith(isLoading: true));
     final groupScheme = await configService.getActiveGroupScheme();
     final rmUnit = await configService.getActiveRegionalManager();
-    final data = await cmoDatabaseMasterService.getFarmsByRMUnit(rmUnit?.regionalManagerUnitId);
-    final allFarms = <Farm>[];
-    final addMemberCubit = context.read<AddMemberCubit>();
 
-    for (final farm in data) {
-      await addMemberCubit.initAddMember(farm: farm);
-      await addMemberCubit.stepCount();
+    emit(
+      state.copyWith(
+        activeGroupScheme: groupScheme,
+        activeRMU: rmUnit,
+      ),
+    );
 
-      allFarms.add(farm.copyWith(
-        stepCount: addMemberCubit.state.farm?.stepCount,
-        isGroupSchemeMember: addMemberCubit.state.farm?.isGroupSchemeMember ?? false,
-      ));
-    }
-
-    emit(state.copyWith(
-      groupScheme: groupScheme,
-      resourceManagerUnit: rmUnit,
-      allFarms: allFarms,
-    ));
+    await getListFarms();
+    await getListCompartment();
+    await getListRiskProfileQuestionsAndAnswers();
+    await getListFarmMemberObjectivesAndAnswers();
     _applySearch(isInCompleteSelected: true);
-
-    await initDataCompartments();
-    await initDataRiskProfileQuestion();
-    await initDataFarmMemberObjectives();
     emit(state.copyWith(isLoading: false));
   }
 
-  Future<void> initDataCompartments() async {
+  Future<void> getListFarms() async {
+    final listFarms = await cmoDatabaseMasterService.getFarmsByRMUnit(state.activeRMU?.regionalManagerUnitId);
+
+    emit(
+      state.copyWith(
+        allFarms: listFarms,
+      ),
+    );
+  }
+
+  Future<void> getListCompartment() async {
     final compartments = await cmoDatabaseMasterService.getAllCompartments();
     emit(
       state.copyWith(
@@ -50,16 +51,12 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     );
   }
 
-  Future<void> initDataRiskProfileQuestion() async {
-    final activeGroupScheme = await configService.getActiveGroupScheme();
-
-    final riskProfileQuestions =
-        await cmoDatabaseMasterService.getRiskProfileQuestionByGroupSchemeId(
-      activeGroupScheme?.groupSchemeId,
+  Future<void> getListRiskProfileQuestionsAndAnswers() async {
+    final riskProfileQuestions = await cmoDatabaseMasterService.getRiskProfileQuestionByGroupSchemeId(
+      state.activeGroupScheme?.groupSchemeId,
     );
 
-    final farmMemberRiskProfileAnswer =
-        await cmoDatabaseMasterService.getAllFarmMemberRiskProfileAnswers();
+    final farmMemberRiskProfileAnswer = await cmoDatabaseMasterService.getAllFarmMemberRiskProfileAnswers();
 
     emit(
       state.copyWith(
@@ -69,16 +66,12 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     );
   }
 
-  Future<void> initDataFarmMemberObjectives() async {
-    final activeGroupScheme = await configService.getActiveGroupScheme();
-
-    final farmMemberObjective =
-        await cmoDatabaseMasterService.getAllFarmMemberObjectiveByGroupSchemeId(
-      activeGroupScheme?.groupSchemeId,
+  Future<void> getListFarmMemberObjectivesAndAnswers() async {
+    final farmMemberObjective = await cmoDatabaseMasterService.getAllFarmMemberObjectiveByGroupSchemeId(
+      state.activeGroupScheme?.groupSchemeId,
     );
 
-    final farmMemberObjectiveAnswers =
-        await cmoDatabaseMasterService.getAllFarmMemberObjectiveAnswer();
+    final farmMemberObjectiveAnswers = await cmoDatabaseMasterService.getAllFarmMemberObjectiveAnswer();
 
     emit(
       state.copyWith(
@@ -88,19 +81,12 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     );
   }
 
-  Future reload() async {
-    emit(state.copyWith(isLoading: true));
-    final rmUnit = await configService.getActiveRegionalManager();
-    if (rmUnit?.id == null) {
-      return;
-    }
-    var data = await cmoDatabaseMasterService.getFarmsByRMUnit(rmUnit!.id);
-    emit(state.copyWith(allFarms: data));
+  Future<void> reload() async {
+    await getListFarms();
+    await getListCompartment();
+    await getListRiskProfileQuestionsAndAnswers();
+    await getListFarmMemberObjectivesAndAnswers();
     _applySearch(isInCompleteSelected: state.isInCompleteSelected);
-    await initDataCompartments();
-    await initDataRiskProfileQuestion();
-    await initDataFarmMemberObjectives();
-    emit(state.copyWith(isLoading: false));
   }
 
   void onSearchTextChanged(String? value) {
@@ -138,12 +124,13 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
   }
 
   Future<void> onRemoveFarm(Farm farm) async {
-    await cmoDatabaseMasterService.cacheFarmAddMember(
+    await cmoDatabaseMasterService.cacheFarm(
       farm.copyWith(
         isActive: false,
         isMasterDataSynced: false,
       ),
     );
+
     showSnackSuccess(
       msg: '${LocaleKeys.remove.tr()} ${farm.id}!',
     );

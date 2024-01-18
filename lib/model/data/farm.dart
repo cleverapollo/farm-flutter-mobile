@@ -106,12 +106,8 @@ extension FarmExtension on Farm {
     }
 
     if (farmName.isNotBlank &&
-        town.isNotBlank &&
-        province.isNotBlank &&
         latitude.isNotBlank &&
-        longitude.isNotBlank &&
-        streetName.isNotBlank &&
-        compartments.isNotBlank) {
+        longitude.isNotBlank) {
       stepCount++;
     }
 
@@ -136,9 +132,6 @@ extension FarmExtension on Farm {
     if (!signatureDate.isNullOrEmpty) {
       stepCount++;
     }
-
-    //handle for done screen
-    if (stepCount == 7) stepCount++;
 
     return stepCount;
   }

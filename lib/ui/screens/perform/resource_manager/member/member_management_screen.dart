@@ -4,6 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
+import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/add_member_screen.dart';
@@ -22,8 +23,7 @@ class MemberManagementScreen extends BaseStatefulWidget {
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
-            create: (BuildContext context) =>
-                MemberManagementCubit()..init(context),
+            create: (BuildContext context) => MemberManagementCubit(),
             child: MemberManagementScreen(),
           );
         },
@@ -38,13 +38,26 @@ class MemberManagementScreen extends BaseStatefulWidget {
 class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagementScreen> {
   Timer? _searchDebounce;
 
+  Future<void> onRemoveFarm(Farm farm) async {
+    await context.read<MemberManagementCubit>().onRemoveFarm(farm);
+    await context.read<DashboardCubit>().getResourceManagerMembers();
+  }
+
+  Future<void> onNavigateToDetail({
+    Farm? farm,
+  }) async {
+    await AddMemberScreen.push(context, farm: farm);
+    await context.read<MemberManagementCubit>().reload();
+    await context.read<DashboardCubit>().getResourceManagerMembers();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CmoTappable(
       onTap: FocusScope.of(context).unfocus,
       child: BlocSelector<MemberManagementCubit, MemberManagementState,
           ResourceManagerUnit?>(
-        selector: (state) => state.resourceManagerUnit,
+        selector: (state) => state.activeRMU,
         builder: (context, resourceManagerUnit) => Scaffold(
           appBar: CmoAppBar(
             title: LocaleKeys.memberManagement.tr(),
@@ -53,10 +66,7 @@ class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagem
             leading: Assets.icons.icBackButton.svgBlack,
             onTapLeading: Navigator.of(context).pop,
             trailing: Assets.icons.icUpdatedAddButton.svgBlack,
-            onTapTrailing: () async {
-              await AddMemberScreen.push(context);
-              await context.read<MemberManagementCubit>().reload();
-            },
+            onTapTrailing: onNavigateToDetail,
           ),
           body: BlocSelector<MemberManagementCubit, MemberManagementState,
               List<Farm>>(
@@ -146,23 +156,11 @@ class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagem
                           itemBuilder: (_, index) {
                             final farm = filteringFarms[index];
                             return InkWell(
-                              onTap: () async {
-                                final result = await AddMemberScreen.push(
-                                    context,
-                                    farm: farm);
-
-                                if (true == result && context.mounted) {
-                                  await context
-                                      .read<MemberManagementCubit>()
-                                      .reload();
-                                }
-                              },
+                              onTap: () => onNavigateToDetail(farm: farm),
                               child: MemberItem(
                                 farm: farm,
                                 canDelete: state.isInCompleteSelected,
-                                onDelete: () async => context
-                                    .read<MemberManagementCubit>()
-                                    .onRemoveFarm(farm),
+                                onDelete: () => onRemoveFarm(farm),
                               ),
                             );
                           },
