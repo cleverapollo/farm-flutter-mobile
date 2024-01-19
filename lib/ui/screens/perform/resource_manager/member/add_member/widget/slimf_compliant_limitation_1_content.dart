@@ -2,7 +2,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/widgets.dart';
 
-import 'slimf_and_mpo_section.dart';
+import 'member_slimf_section.dart';
 
 class SlimfCompliantLimitation1Content extends StatelessWidget {
   const SlimfCompliantLimitation1Content({super.key});

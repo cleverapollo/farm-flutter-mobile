@@ -1,26 +1,24 @@
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
-import 'package:cmo/ui/components/select_site_location_screen.dart';
-import 'package:cmo/ui/screens/perform/asi/asi_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
+import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'add_member_sign_contract_widget.dart';
-import 'widget/add_member_site_detail_section.dart';
-import 'widget/cmo_collapse_title_widget.dart';
-import 'widget/cmo_drop_down_layout_widget.dart';
-import 'widget/farm_member_objectives_widget.dart';
-import 'widget/farm_member_risk_assessments_widget.dart';
-import 'widget/slimf_and_mpo_section.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/add_member_sign_contract_widget.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/widget/member_property_ownership_section.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/widget/member_site_detail_section.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/widget/member_objectives_section.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/widget/member_risk_assessments_section.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/widget/member_detail_section.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/widget/member_slimf_section.dart';
 
 class AddMemberScreen extends BaseStatefulWidget {
   AddMemberScreen({super.key, this.farm})
@@ -36,7 +34,10 @@ class AddMemberScreen extends BaseStatefulWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => AddMemberScreen(farm: farm),
+        builder: (_) => BlocProvider(
+          create: (_) => MemberDetailCubit(farm),
+          child: AddMemberScreen(farm: farm),
+        ),
       ),
     );
   }
@@ -46,7 +47,7 @@ class AddMemberScreen extends BaseStatefulWidget {
 }
 
 class _AddMemberScreenState extends BaseStatefulWidgetState<AddMemberScreen> {
-  late final AddMemberCubit cubit;
+  late final MemberDetailCubit cubit;
   late final DashboardCubit dashboardCubit;
 
   final onScrollDownButtonValue = ValueNotifier(true);
@@ -55,9 +56,6 @@ class _AddMemberScreenState extends BaseStatefulWidgetState<AddMemberScreen> {
 
   @override
   void dispose() {
-    cubit.stepCount();
-    dashboardCubit.getResourceManagerMembers();
-    cubit.cleanCache();
     super.dispose();
   }
 
@@ -70,10 +68,7 @@ class _AddMemberScreenState extends BaseStatefulWidgetState<AddMemberScreen> {
             _scrollController.position.maxScrollExtent);
       });
     dashboardCubit = context.read<DashboardCubit>();
-    Future.microtask(() async {
-      await context.read<AddMemberCubit>().initAddMember(farm: widget.farm);
-      cubit = context.read<AddMemberCubit>();
-    });
+    cubit = context.read<MemberDetailCubit>();
   }
 
   @override
@@ -86,7 +81,7 @@ class _AddMemberScreenState extends BaseStatefulWidgetState<AddMemberScreen> {
           Navigator.pop(context, true);
         },
       ),
-      body: BlocSelector<AddMemberCubit, AddMemberState, bool>(
+      body: BlocSelector<MemberDetailCubit, MemberDetailState, bool>(
         selector: (state) => state.isLoading,
         builder: (context, bool isLoading) {
           if (isLoading) {
@@ -101,29 +96,23 @@ class _AddMemberScreenState extends BaseStatefulWidgetState<AddMemberScreen> {
             controller: _scrollController,
             child: Column(
               children: [
-                const SizedBox(height: 8),
-                const SlimfAndMpoSection(),
-                const SizedBox(height: 12),
-                const _AddMemberMDetails(),
-                const SizedBox(height: 12),
-                AddMemberSiteDetailSection(),
-                const SizedBox(height: 12),
-                const FarmMemberRiskAssessmentsWidget(),
-                const SizedBox(height: 12),
-                const FarmMemberObjectivesWidget(),
-                const SizedBox(height: 12),
+                const MemberSLIMFSection(),
+                const MemberPropertyOwnershipSection(),
+                const MemberDetailSection(),
+                const MemberSiteDetailSection(),
+                const MemberRiskAssessmentsSection(),
+                const MemberObjectivesSection(),
                 AddMemberSignContractWidget(
                   shouldScrollBottom: _handleScrollBottom,
                   farm: widget.farm,
                 ),
-                const SizedBox(height: 12),
-              ],
+              ].withSpaceBetween(height: 12),
             ),
           );
         },
       ),
       floatingActionButton:
-          BlocSelector<AddMemberCubit, AddMemberState, AddMemberSAF>(
+          BlocSelector<MemberDetailCubit, MemberDetailState, AddMemberSAF>(
         selector: (state) {
           return state.addMemberSAF;
         },
@@ -180,134 +169,4 @@ class _AddMemberScreenState extends BaseStatefulWidgetState<AddMemberScreen> {
   }
 }
 
-class _AddMemberMDetails extends StatelessWidget {
-  const _AddMemberMDetails();
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<AddMemberCubit, AddMemberState, AddMemberMDetails>(
-      selector: (state) => state.addMemberMDetails,
-      builder: (context, AddMemberMDetails data) {
-        final cubit = context.read<AddMemberCubit>();
-        return CmoCollapseTitle(
-          key: data.sectionKey,
-          initiallyExpanded: !data.isSectionCollapse,
-          title: LocaleKeys.memberDetails.tr(),
-          showTick: data.isComplete,
-          child: Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AttributeItem(
-                  isShowError: data.isFirstNameError,
-                  errorText: LocaleKeys.firstName.tr(),
-                  child: InputAttributeItem(
-                    initialValue: data.firstName,
-                    textStyle: context.textStyles.bodyNormal.blueDark2,
-                    labelText: LocaleKeys.firstName.tr(),
-                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                    onSubmitted: (p0) {
-                      if (data.isComplete) {
-                        cubit.onChangeMemberDetailState(isCollapse: true);
-                        cubit.onChangeSiteDetailState(isCollapse: false);
-                      }
-                    },
-                    onChanged: (value) {
-                      cubit.onDataChangeMemberDetail(firstName: value);
-                    },
-                  ),
-                ),
-                const SizedBox(height: 12),
-                AttributeItem(
-                  isShowError: data.isLastNameError,
-                  errorText: LocaleKeys.lastName.tr(),
-                  child: InputAttributeItem(
-                    initialValue: data.lastName,
-                    textStyle: context.textStyles.bodyNormal.blueDark2,
-                    labelText: LocaleKeys.lastName.tr(),
-                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                    onSubmitted: (p0) {
-                      if (data.isComplete) {
-                        cubit.onChangeMemberDetailState(isCollapse: true);
-                        cubit.onChangeSiteDetailState(isCollapse: false);
-                      }
-                    },
-                    onChanged: (value) {
-                      cubit.onDataChangeMemberDetail(lastName: value);
-                    },
-                  ),
-                ),
-                const SizedBox(height: 12),
-                AttributeItem(
-                  isShowError: data.isIdNumberError,
-                  errorText: LocaleKeys.idPassportNumber.tr(),
-                  child: InputAttributeItem(
-                    initialValue: data.idNumber,
-                    textStyle: context.textStyles.bodyNormal.blueDark2,
-                    labelText: LocaleKeys.idPassportNumber.tr(),
-                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                    keyboardType: TextInputType.emailAddress,
-                    onSubmitted: (p0) {
-                      if (data.isComplete) {
-                        cubit.onChangeMemberDetailState(isCollapse: true);
-                        cubit.onChangeSiteDetailState(isCollapse: false);
-                      }
-                    },
-                    onChanged: (value) {
-                      cubit.onDataChangeMemberDetail(idNumber: value);
-                    },
-                  ),
-                ),
-                const SizedBox(height: 12),
-                AttributeItem(
-                  isShowError: data.isMobileNumberError,
-                  errorText: LocaleKeys.mobileNumber.tr(),
-                  child: InputAttributeItem(
-                    initialValue: data.mobileNumber,
-                    textStyle: context.textStyles.bodyNormal.blueDark2,
-                    labelText: LocaleKeys.mobileNumber.tr(),
-                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                    keyboardType: TextInputType.phone,
-                    onSubmitted: (p0) {
-                      if (data.isComplete) {
-                        cubit.onChangeMemberDetailState(isCollapse: true);
-                        cubit.onChangeSiteDetailState(isCollapse: false);
-                      }
-                    },
-                    onChanged: (value) {
-                      cubit.onDataChangeMemberDetail(mobileNumber: value);
-                    },
-                  ),
-                ),
-                const SizedBox(height: 12),
-                AttributeItem(
-                  errorText: 'Please enter a valid email format',
-                  isShowError: data.isEmailError,
-                  child: InputAttributeItem(
-                    initialValue: data.emailAddress,
-                    textStyle: context.textStyles.bodyNormal.black,
-                    labelText:
-                        '${LocaleKeys.emailAddress.tr()} (${LocaleKeys.optional.tr()})',
-                    labelTextStyle: context.textStyles.bodyNormal.blueDark2,
-                    keyboardType: TextInputType.emailAddress,
-                    onSubmitted: (text) {
-                      if (data.isComplete) {
-                        cubit.onChangeMemberDetailState(isCollapse: true);
-                        cubit.onChangeSiteDetailState(isCollapse: false);
-                      }
-                    },
-                    onChanged: (value) {
-                      cubit.onDataChangeMemberDetail(emailAddress: value);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}

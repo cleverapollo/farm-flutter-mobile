@@ -29,24 +29,13 @@ class _ResourceManagerDashboardScreenState
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<DashboardCubit, DashboardState, DashboardState>(
-      selector: (state) {
-        return state;
-      },
+    return BlocBuilder<DashboardCubit, DashboardState>(
       builder: (context, state) {
         if (state.loading) {
           return Center(
             child: CircularProgressIndicator(
               strokeWidth: 2,
               color: context.colors.white,
-            ),
-          );
-        }
-
-        if (state.error != null && kDebugMode) {
-          return Center(
-            child: Text(
-              '${state.error}',
             ),
           );
         }

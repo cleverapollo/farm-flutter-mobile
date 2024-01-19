@@ -2,7 +2,6 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_member_cubit/add_member_state.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,7 +15,8 @@ class FarmMemberObjectiveQuestionWidget extends StatefulWidget {
   State<FarmMemberObjectiveQuestionWidget> createState() =>
       _FarmMemberObjectiveQuestionWidgetState();
 
-  FarmMemberObjectiveQuestionWidget({
+  const FarmMemberObjectiveQuestionWidget({
+    super.key,
     required this.farmMemberObjective,
     required this.listFarmObjectiveOptions,
   });
@@ -57,7 +57,7 @@ class _FarmMemberObjectiveQuestionWidgetState
   }
 
   Widget selectOption() {
-    return BlocSelector<AddMemberCubit, AddMemberState, FarmMemberObjectivesState>(
+    return BlocSelector<MemberDetailCubit, MemberDetailState, FarmMemberObjectivesState>(
       selector: (state) {
         return state.farmMemberObjectivesState;
       },
@@ -70,7 +70,7 @@ class _FarmMemberObjectiveQuestionWidgetState
               )
               ?.farmObjectiveOptionId,
           onTap: (farmObjectiveOptionId) async {
-            await context.read<AddMemberCubit>().onAnswerFarmMemberObjective(
+            await context.read<MemberDetailCubit>().onAnswerFarmMemberObjective(
                   question: widget.farmMemberObjective,
                   farmObjectiveOptionId: farmObjectiveOptionId,
                 );

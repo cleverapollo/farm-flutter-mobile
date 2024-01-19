@@ -4209,7 +4209,7 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<Compartment>?> getCompartmentByFarmId(String? farmId) async {
+  Future<List<Compartment>> getCompartmentByFarmId(String? farmId) async {
     if (farmId.isBlank) return <Compartment>[];
     final db = await _db();
     return db.compartments

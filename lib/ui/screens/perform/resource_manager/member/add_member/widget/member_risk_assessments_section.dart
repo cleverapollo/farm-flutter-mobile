@@ -9,12 +9,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cmo_chip_item_widget.dart';
 import 'cmo_collapse_title_widget.dart';
 
-class FarmMemberRiskAssessmentsWidget extends StatelessWidget {
-  const FarmMemberRiskAssessmentsWidget();
+class MemberRiskAssessmentsSection extends StatelessWidget {
+  const MemberRiskAssessmentsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AddMemberCubit, AddMemberState, FarmMemberRiskAssessmentsState>(
+    return BlocSelector<MemberDetailCubit, MemberDetailState, FarmMemberRiskAssessmentsState>(
         selector: (state) => state.farmMemberRiskAssessmentsState,
         builder: (context, FarmMemberRiskAssessmentsState farmMemberRiskAssessmentsState) {
           return CmoCollapseTitle(
@@ -67,7 +67,7 @@ class FarmMemberRiskAssessmentsWidget extends StatelessWidget {
         CmoYesNoQuestion(
           initialValue: answer,
           onTap: (value) =>
-              context.read<AddMemberCubit>().onAnswerRiskProfileQuestion(
+              context.read<MemberDetailCubit>().onAnswerRiskProfileQuestion(
                     answer: value,
                     question: question,
                   ),

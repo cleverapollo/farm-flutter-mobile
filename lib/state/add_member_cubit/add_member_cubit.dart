@@ -7,143 +7,128 @@ import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddMemberCubit extends Cubit<AddMemberState> {
-  AddMemberCubit() : super(const AddMemberState());
-
-  void cleanCache() {
-    emit(state.cleanCache().copyWith(isLoading: true));
+class MemberDetailCubit extends Cubit<MemberDetailState> {
+  MemberDetailCubit(Farm? farm) : super(MemberDetailState(farm: farm)) {
+    initData();
   }
 
-  Future<void> initAddMember({Farm? farm}) async {
-    cleanCache();
-    await initDataFarm(farm);
+  Future<void> initData() async {
+    emit(state.copyWith(isLoading: true));
+    final activeGroupScheme = await configService.getActiveGroupScheme();
+    final activeRmu = await configService.getActiveRegionalManager();
+    emit(
+      state.copyWith(
+        activeGroupScheme: activeGroupScheme,
+        farm: state.farm ?? Farm(
+          farmId: DateTime
+              .now()
+              .millisecondsSinceEpoch
+              .toString(),
+          groupSchemeId: activeGroupScheme?.groupSchemeId,
+          regionalManagerUnitId: activeRmu?.regionalManagerUnitId,
+          isActive: true,
+          createDT: DateTime.now(),
+          updateDT: DateTime.now(),
+        ),
+      ),
+    );
+
+    await initMemberSLIMFState();
+    await initMemberPropertyOwnershipState();
+    initMemberDetailsState();
+    await initMemberSiteDetailsState();
+    await initDataRiskProfileQuestion();
+    await initDataFarmMemberObjectives();
+    initAddMemberSAF();
     emit(state.copyWith(isLoading: false));
   }
 
-  Future<void> initDataFarm(Farm? farm) async {
-    final groupScheme = await configService.getActiveGroupScheme();
-    final groupSchemeUnit = await configService.getActiveRegionalManager();
-    final loadedFarmPropertyOwnerShipType =
-        await getAllFarmPropertyOwnerShipType();
-    if (!loadedFarmPropertyOwnerShipType) return;
+  Future<void> initMemberSLIMFState() async {
+    final isMemberSLIMFStateCompleted = state.farm?.isSlimfCompliant != null;
+    final memberSLIMFState = MemberSLIMFState(
+      isComplete: isMemberSLIMFStateCompleted,
+      isSlimfCompliant: state.farm?.isSlimfCompliant,
+    );
 
-    if (farm != null) {
-      final compartments = await cmoDatabaseMasterService
-          .getCompartmentsByGroupSchemeIdAndFarmId(
-        farmId: farm.farmId,
-        groupSchemeId: groupScheme?.groupSchemeId,
-      );
+    emit(
+      state.copyWith(
+        memberSLIMFState: memberSLIMFState,
+      ),
+    );
+  }
 
-      var totalArea = 0.0;
-      for (final compartment in compartments) {
-        totalArea += compartment.polygonArea ?? 0;
+  Future<void> initMemberPropertyOwnershipState() async {
+    final propertyTypes = await cmoDatabaseMasterService.getFarmPropertyOwnershipType();
+    FarmPropertyOwnershipType? propertyTypeSelected;
+    for (final item in propertyTypes) {
+      if (item.farmPropertyOwnershipTypeId == state.farm?.propertyOwnershipTypeId) {
+        propertyTypeSelected = item;
       }
-
-      emit(
-        state.copyWith(
-          farm: farm.copyWith(farmSize: totalArea),
-          farmBeforeEdit: farm.copyWith(farmSize: totalArea),
-        ),
-      );
-
-      final asis =
-          await cmoDatabaseMasterService.getAsiRegisterByFarmId(farm.farmId);
-
-      final addMemberSlimfIsComplete = farm.isSlimfCompliant != null;
-      final addMemberSlimf = AddMemberSLIMF(
-        isComplete: addMemberSlimfIsComplete,
-        isSlimfCompliant: farm.isSlimfCompliant,
-      );
-
-      emit(
-        state.copyWith(
-          addMemberSLIMF: addMemberSlimf,
-        ),
-      );
-
-      FarmPropertyOwnershipType? propertyTypeSelected;
-
-      for (final item in state.addMemberMPO.propertyTypes) {
-        if (item.farmPropertyOwnershipTypeId == farm.propertyOwnershipTypeId) {
-          propertyTypeSelected = item;
-        }
-      }
-
-      final addMemberMPOIsComplete = propertyTypeSelected != null;
-      final addMemberMPO = AddMemberMPO(
-        isComplete: addMemberMPOIsComplete,
-        propertyTypeSelected: propertyTypeSelected,
-        propertyTypes: state.addMemberMPO.propertyTypes,
-      );
-
-      final addMemberMDetailIsComplete = farm.firstName != null &&
-          farm.lastName != null &&
-          farm.idNumber != null &&
-          farm.mobileNumber != null;
-      final addMemberMDetail = AddMemberMDetails(
-        isComplete: addMemberMDetailIsComplete,
-        firstName: farm.firstName,
-        lastName: farm.lastName,
-        idNumber: farm.idNumber,
-        mobileNumber: farm.mobileNumber,
-        emailAddress: farm.email,
-      );
-
-      final addMemberSAFIsComplete = farm.signatureDate != null;
-      final addMemberSAF = AddMemberSAF(
-        signatureDate: farm.signatureDate,
-        signatureImage: farm.signatureImage,
-        signaturePoints: farm.signaturePoints,
-        isComplete: addMemberSAFIsComplete,
-      );
-
-      final isCompleteSiteLocation = farm.latitude != null &&
-          farm.longitude != null &&
-          farm.streetName != null;
-      final isCompleteCompartments = compartments.isNotEmpty;
-      final isCompleteASI = asis.isNotEmpty;
-      final addMemberSDetailIsComplete = isCompleteSiteLocation &&
-          farm.farmName != null &&
-          farm.town != null &&
-          farm.province != null;
-      final addMemberSDetail = AddMemberSDetails(
-        isComplete: addMemberSDetailIsComplete,
-        isCompleteSiteLocation: isCompleteSiteLocation,
-        haveCompartments: isCompleteCompartments,
-        isCompleteASI: isCompleteASI,
-        siteName: farm.farmName,
-        town: farm.town,
-        province: farm.province,
-        addMemberSiteLocations: AddMemberSiteLocations(
-          lat: double.tryParse(farm.latitude ?? ''),
-          lng: double.tryParse(farm.longitude ?? ''),
-          address: farm.streetName,
-        ),
-        addMemberCompartmentsState: AddMemberCompartmentsState(
-          compartments: compartments,
-          farmSize: totalArea,
-        ),
-        addMemberAsisState: AddMemberAsisState(asis: asis),
-      );
-
-      emit(state.copyWith(
-        addMemberMPO: addMemberMPO,
-        addMemberMDetails: addMemberMDetail,
-        addMemberSDetails: addMemberSDetail,
-        addMemberSAF: addMemberSAF,
-      ));
-    } else {
-      emit(state.copyWith(
-          farm: Farm(
-        farmId: DateTime.now().millisecondsSinceEpoch.toString(),
-        groupSchemeId: groupScheme?.groupSchemeId,
-        regionalManagerUnitId: groupSchemeUnit?.regionalManagerUnitId,
-        isActive: true,
-      )));
     }
 
-    await initDataRiskProfileQuestion();
-    await initDataFarmMemberObjectives();
+    final addMemberMPOIsComplete = propertyTypeSelected != null;
+    final memberPropertyOwnershipState = MemberPropertyOwnershipState(
+      isComplete: addMemberMPOIsComplete,
+      propertyTypeSelected: propertyTypeSelected,
+      propertyTypes: propertyTypes,
+    );
+
+    emit(
+      state.copyWith(
+        memberPropertyOwnershipState: memberPropertyOwnershipState,
+      ),
+    );
+  }
+
+  void initMemberDetailsState() {
+    emit(
+      state.copyWith(
+        memberDetailSectionState: MemberDetailSectionState(
+          firstName: state.farm?.firstName,
+          lastName: state.farm?.lastName,
+          idNumber: state.farm?.idNumber,
+          mobileNumber: state.farm?.mobileNumber,
+          emailAddress: state.farm?.email,
+        ),
+      ),
+    );
+  }
+
+  Future<void> initMemberSiteDetailsState() async {
+    await updateFarmSizeByCompartments();
+    final asis = await cmoDatabaseMasterService.getAsiRegisterByFarmId(state.farm?.farmId);
+
+    final isCompleteASI = asis.isNotEmpty;
+    final memberSiteDetailsState = MemberSiteDetailsState(
+      isCompleteASI: isCompleteASI,
+      siteName: state.farm?.farmName,
+      town: state.farm?.town,
+      province: state.farm?.province,
+      lat: double.tryParse(state.farm?.latitude ?? ''),
+      lng: double.tryParse(state.farm?.longitude ?? ''),
+      addMemberAsisState: AddMemberAsisState(asis: asis),
+    );
+
+    emit(
+      state.copyWith(
+        memberSiteDetailsState: memberSiteDetailsState,
+      ),
+    );
+  }
+
+  void initAddMemberSAF() {
+    final addMemberSAF = AddMemberSAF(
+      signatureDate: state.farm?.signatureDate,
+      signatureImage: state.farm?.signatureImage,
+      signaturePoints: state.farm?.signaturePoints,
+      isComplete: state.farm?.signatureDate != null,
+    );
+
+    emit(
+      state.copyWith(
+        addMemberSAF: addMemberSAF,
+      ),
+    );
   }
 
   Future<void> initDataRiskProfileQuestion() async {
@@ -239,276 +224,191 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     );
   }
 
-  Future<void> stepCount() async {
-    var stepCount = 0;
-
-    if (state.addMemberSLIMF.isComplete) {
-      stepCount++;
-    }
-
-    if (state.addMemberMPO.isComplete) {
-      stepCount++;
-    }
-
-    if (state.addMemberMDetails.isComplete) {
-      stepCount++;
-    }
-
-    if (state.addMemberSDetails.isComplete) {
-      stepCount++;
-    }
-
-    if (state.farmMemberRiskAssessmentsState.isComplete) {
-      stepCount++;
-    }
-
-    if (state.farmMemberObjectivesState.isComplete) {
-      stepCount++;
-    }
-
-    if (state.addMemberSAF.isComplete) {
-      stepCount++;
-    }
-
-    if (state.addMemberClose.isComplete) {
-      stepCount++;
-    }
-
-    if (stepCount == 7) stepCount++;
-
-    if (state.farm?.isGroupSchemeMember == false ||
-        state.farm?.isGroupSchemeMember == null) {
-      final isGroupSchemeMember = stepCount == 8;
-
-      var isSynced = state.farmBeforeEdit?.isMasterDataSynced;
-
-      if (isSynced != null && isSynced) {
-        if (state.farm != state.farmBeforeEdit) {
-          isSynced = false;
-        } else {
-          isSynced = true;
-        }
-      }
-
-      emit(state.copyWith(
-        farm: state.farm?.copyWith(
-          stepCount: stepCount,
-          isGroupSchemeMember: isGroupSchemeMember,
-          isMasterDataSynced: isSynced ?? false,
-        ),
-      ));
-    }
-    if (stepCount != 0) {
-      await cacheFarm();
-    }
-  }
-
   Future<void> cacheFarm() async {
-    await cmoDatabaseMasterService.cacheFarmAddMember(
-      state.farm!.copyWith(
+    await cmoDatabaseMasterService.cacheFarm(
+      state.farm?.copyWith(
+        isMasterDataSynced: false,
         createDT: state.farm?.createDT ?? DateTime.now(),
         updateDT: DateTime.now(),
       ),
     );
   }
 
-  Future<void> onTapSlimf({required bool isSlimf}) async {
+  Future<void> onUpdateSlimfSection(bool isSlimf) async {
     emit(
       state.copyWith(
         farm: state.farm?.copyWith(
           isSlimfCompliant: isSlimf,
           isMasterDataSynced: false,
         ),
-        addMemberSLIMF: AddMemberSLIMF(
+        memberSLIMFState: MemberSLIMFState(
           isSlimfCompliant: isSlimf,
           isComplete: true,
           isSectionCollapse: true,
         ),
       ),
     );
+
     onChangeMPOState(isCollapse: false);
-    checkIsProspectMember();
-    if (state.addMemberSLIMF.isComplete) {
+    checkIsGroupSchemeMember();
+    await cacheFarm();
+  }
+
+  Future<void> onUpdateMemberPropertyOwnershipState(
+      FarmPropertyOwnershipType? propertyTypeSelected,
+      ) async {
+    emit(
+      state.copyWith(
+        farm: state.farm?.copyWith(
+          propertyOwnershipTypeId: propertyTypeSelected?.farmPropertyOwnershipTypeId,
+          isMasterDataSynced: false,
+        ),
+        memberPropertyOwnershipState: state.memberPropertyOwnershipState.copyWith(
+          propertyTypeSelected: propertyTypeSelected,
+          isComplete: true,
+          isSectionCollapse: true,
+        ),
+      ),
+    );
+
+    checkIsGroupSchemeMember();
+    onChangeMemberDetailState(isCollapse: false);
+    await cacheFarm();
+  }
+
+  Future<void> onChangeMemberDetailSection({
+    String? firstName,
+    String? lastName,
+    String? idNumber,
+    String? mobileNumber,
+    String? emailAddress,
+  }) async {
+    emit(
+      state.copyWith(
+        memberDetailSectionState: state.memberDetailSectionState.copyWith(
+          firstName: firstName ?? state.memberDetailSectionState.firstName,
+          lastName: lastName ?? state.memberDetailSectionState.lastName,
+          idNumber: idNumber ?? state.memberDetailSectionState.idNumber,
+          mobileNumber: mobileNumber ?? state.memberDetailSectionState.mobileNumber,
+          emailAddress: emailAddress ?? state.memberDetailSectionState.emailAddress,
+        ),
+      ),
+    );
+
+    emit(
+      state.copyWith(
+        farm: state.farm?.copyWith(
+          firstName: state.memberDetailSectionState.firstName,
+          lastName: state.memberDetailSectionState.lastName,
+          idNumber: state.memberDetailSectionState.idNumber,
+          mobileNumber: state.memberDetailSectionState.mobileNumber,
+          email: state.memberDetailSectionState.emailAddress,
+          isMasterDataSynced: false,
+        ),
+        memberDetailSectionState: state.memberDetailSectionState.copyWith(
+          isFirstNameError:
+              firstName?.isBlank ?? state.memberDetailSectionState.isFirstNameError,
+          isLastNameError:
+              lastName?.isBlank ?? state.memberDetailSectionState.isLastNameError,
+          isIdNumberError: idNumber == null
+              ? state.memberDetailSectionState.isIdNumberError
+              : (idNumber.isBlank || idNumber.length < 8),
+          isMobileNumberError: mobileNumber == null
+              ? state.memberDetailSectionState.isMobileNumberError
+              : (mobileNumber.isBlank || mobileNumber.length < 8),
+          isEmailError: emailAddress == null
+              ? state.memberDetailSectionState.isEmailError
+              : (state.memberDetailSectionState.emailAddress.isNullOrEmpty ||
+                  !state.memberDetailSectionState.emailAddress.validEmail),
+        ),
+      ),
+    );
+
+    if (state.memberDetailSectionState.isComplete) {
+      checkIsGroupSchemeMember();
+      await Future.delayed(const Duration(milliseconds: 500));
       await cacheFarm();
     }
   }
 
-  Future<bool> getAllFarmPropertyOwnerShipType() async {
-    final data = await cmoDatabaseMasterService.getFarmPropertyOwnershipType();
+  Future<void> updateFarmSizeByCompartments({
+    bool shouldCacheFarm = false,
+  }) async {
+    final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(
+      state.farm?.farmId,
+    );
 
-    final addMemberMPO = state.addMemberMPO;
-
-    if (data.isNotEmpty) {
-      emit(state.copyWith(
-        addMemberMPO: addMemberMPO.copyWith(propertyTypes: data),
-      ));
-      return true;
+    var totalArea = 0.0;
+    for (final compartment in compartments) {
+      totalArea += compartment.polygonArea ?? 0;
     }
-    return false;
+
+    emit(
+      state.copyWith(
+        farm: state.farm?.copyWith(farmSize: totalArea),
+      ),
+    );
+
+    if (shouldCacheFarm) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      await cacheFarm();
+    }
   }
 
-  Future<void> onDataChangeSiteDetail({
+  Future<void> onChangeMemberSiteDetailSection({
     String? siteName,
     String? town,
     String? province,
-    bool? isExpansionOpen,
     double? siteLocationLat,
     double? siteLocationLng,
     String? siteLocationAddress,
-    AddingCompartmentResult? addingCompartmentResult,
     List<Asi>? asis,
   }) async {
-    final data = state.addMemberSDetails;
-
-    if (isExpansionOpen != null) {
-      emit(state.copyWith(
-          addMemberSDetails: data.copyWith(isExpansionOpen: true)));
-    }
-
-    if (addingCompartmentResult != null) {
-      final compartments = <Compartment>[];
-
-      if ((addingCompartmentResult.compartments ?? []).isEmpty) return;
-
-      compartments.addAll(addingCompartmentResult.compartments!);
-
-      emit(state.copyWith(
-          addMemberSDetails: data.copyWith(
-              addMemberCompartmentsState: AddMemberCompartmentsState(
-        compartments: compartments,
-        farmSize: addingCompartmentResult.totalAreaHa,
-      ))));
-    }
-
+    final data = state.memberSiteDetailsState;
     if (asis != null) {
       emit(state.copyWith(
-          addMemberSDetails: data.copyWith(
+          memberSiteDetailsState: data.copyWith(
               addMemberAsisState: AddMemberAsisState(asis: asis))));
     }
 
-    emit(state.copyWith(
-        addMemberSDetails: state.addMemberSDetails.copyWith(
-      siteName: siteName ?? state.addMemberSDetails.siteName,
-      town: town ?? state.addMemberSDetails.town,
-      province: province ?? state.addMemberSDetails.province,
-      isSiteNameError:
-          siteName?.isBlank ?? state.addMemberSDetails.isSiteNameError,
-      isTownError: town?.isBlank ?? state.addMemberSDetails.isTownError,
-      isProvinceError:
-          province?.isBlank ?? state.addMemberSDetails.isProvinceError,
-      addMemberSiteLocations:
-          state.addMemberSDetails.addMemberSiteLocations.copyWith(
-        lat: siteLocationLat ??
-            state.addMemberSDetails.addMemberSiteLocations.lat,
-        lng: siteLocationLng ??
-            state.addMemberSDetails.addMemberSiteLocations.lng,
-        address: siteLocationAddress ??
-            state.addMemberSDetails.addMemberSiteLocations.address,
+    emit(
+      state.copyWith(
+        memberSiteDetailsState: state.memberSiteDetailsState.copyWith(
+          siteName: siteName ?? state.memberSiteDetailsState.siteName,
+          town: town ?? state.memberSiteDetailsState.town,
+          province: province ?? state.memberSiteDetailsState.province,
+          isSiteNameError: siteName?.isBlank ?? state.memberSiteDetailsState.isSiteNameError,
+          isTownError: town?.isBlank ?? state.memberSiteDetailsState.isTownError,
+          isProvinceError: province?.isBlank ?? state.memberSiteDetailsState.isProvinceError,
+          lat: siteLocationLat ?? state.memberSiteDetailsState.lat,
+          lng: siteLocationLng ?? state.memberSiteDetailsState.lng,
+        ),
       ),
-    )));
+    );
 
-    final currentData = state.addMemberSDetails;
-
-    final isCompleteSiteLocation =
-        currentData.addMemberSiteLocations.lat != null &&
-            currentData.addMemberSiteLocations.lng != null &&
-            currentData.addMemberSiteLocations.address != null;
-
-    final haveCompartments =
-        currentData.addMemberCompartmentsState.compartments.isNotEmpty &&
-            currentData.addMemberCompartmentsState.farmSize != null;
+    final currentData = state.memberSiteDetailsState;
 
     final isCompleteAsi = currentData.addMemberAsisState.asis.isNotEmpty;
-
-    final isComplete = currentData.siteName != null &&
-        currentData.town != null &&
-        currentData.province != null &&
-        isCompleteSiteLocation;
 
     emit(state.copyWith(
         farm: state.farm?.copyWith(
           farmName: currentData.siteName,
           town: currentData.town,
-          latitude: currentData.addMemberSiteLocations.lat.toString(),
-          longitude: currentData.addMemberSiteLocations.lng.toString(),
-          streetName: currentData.addMemberSiteLocations.address,
           province: currentData.province,
-          farmSize: currentData.addMemberCompartmentsState.farmSize,
+          latitude: currentData.lat.toString(),
+          longitude: currentData.lng.toString(),
+          streetName: currentData.initAddressForSiteLocation(),
           isMasterDataSynced: false,
         ),
-        addMemberSDetails: currentData.copyWith(
-          isComplete: isComplete,
-          isCompleteSiteLocation: isCompleteSiteLocation,
-          haveCompartments: haveCompartments,
+        memberSiteDetailsState: currentData.copyWith(
           isCompleteASI: isCompleteAsi,
         )));
 
-    if (isComplete) {
+    if (currentData.isComplete) {
+      checkIsGroupSchemeMember();
+      await Future.delayed(const Duration(milliseconds: 500));
       await cacheFarm();
     }
-  }
-
-  Future<void> onDataChangeMPO(
-      FarmPropertyOwnershipType? propertyTypeSelected) async {
-    final addMemberMPO = state.addMemberMPO;
-
-    emit(state.copyWith(
-      farm: state.farm?.copyWith(
-        propertyOwnershipTypeId:
-            propertyTypeSelected?.farmPropertyOwnershipTypeId,
-        isMasterDataSynced: false,
-      ),
-      addMemberMPO: addMemberMPO.copyWith(
-        propertyTypeSelected: propertyTypeSelected,
-        isExpansionOpen: false,
-        isComplete: true,
-        isSectionCollapse: true,
-      ),
-    ));
-
-    checkIsProspectMember();
-    if (state.addMemberMPO.isComplete) {
-      await cacheFarm();
-    }
-    onChangeMemberDetailState(isCollapse: false);
-  }
-
-  void checkIsProspectMember() {
-    emit(
-      state.copyWith(
-        farm: state.farm?.copyWith(
-          isProspectMember: state.addMemberSLIMF.isComplete &&
-              state.addMemberMPO.isComplete &&
-              state.addMemberMDetails.isComplete,
-        ),
-      ),
-    );
-  }
-
-  void checkIsGroupSchemeMember() {
-    emit(
-      state.copyWith(
-        farm: state.farm?.copyWith(
-          isGroupSchemeMember: state.addMemberSLIMF.isComplete &&
-              state.addMemberMPO.isComplete &&
-              state.addMemberMDetails.isComplete &&
-              state.addMemberSDetails.isComplete &&
-              state.farmMemberRiskAssessmentsState.isComplete &&
-              state.farmMemberObjectivesState.isComplete &&
-              state.addMemberContract.isComplete &&
-              state.addMemberSAF.isComplete &&
-              state.addMemberClose.isComplete,
-        ),
-      ),
-    );
-  }
-
-  Future<void> onExpansionChangedMPO(bool isExpansionOpen) async {
-    final addMemberMPO = state.addMemberMPO;
-
-    emit(state.copyWith(
-      addMemberMPO: addMemberMPO.copyWith(isExpansionOpen: isExpansionOpen),
-    ));
   }
 
   Future<void> onAnswerRiskProfileQuestion({
@@ -517,11 +417,10 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   }) async {
     final farmMemberRiskAssessmentsState = state.farmMemberRiskAssessmentsState;
     final listFarmMemberRiskProfileAnswers = <FarmMemberRiskProfileAnswer>[];
-    listFarmMemberRiskProfileAnswers.addAll(
-        farmMemberRiskAssessmentsState.listFarmMemberRiskProfileAnswers);
+    listFarmMemberRiskProfileAnswers.addAll(farmMemberRiskAssessmentsState.listFarmMemberRiskProfileAnswers);
     var currentAnswer = listFarmMemberRiskProfileAnswers.firstWhereOrNull(
-      (element) =>
-          element.riskProfileQuestionId == question.riskProfileQuestionId,
+          (element) =>
+      element.riskProfileQuestionId == question.riskProfileQuestionId,
     );
 
     if (currentAnswer != null) {
@@ -534,10 +433,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       );
       emit(
         state.copyWith(
-          farm: state.farm
-              ?.copyWith(riskProfileAnswers: listFarmMemberRiskProfileAnswers),
-          farmMemberRiskAssessmentsState:
-              state.farmMemberRiskAssessmentsState.copyWith(
+          farm: state.farm?.copyWith(riskProfileAnswers: listFarmMemberRiskProfileAnswers),
+          farmMemberRiskAssessmentsState: state.farmMemberRiskAssessmentsState.copyWith(
             listFarmMemberRiskProfileAnswers: listFarmMemberRiskProfileAnswers,
           ),
         ),
@@ -546,17 +443,15 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       final futures = <Future<dynamic>>[];
 
       for (final item in listFarmMemberRiskProfileAnswers) {
-        futures.add(
-            cmoDatabaseMasterService.cacheFarmMemberRiskProfileAnswer(item));
+        futures.add(cmoDatabaseMasterService.cacheFarmMemberRiskProfileAnswer(item));
       }
 
+      checkIsGroupSchemeMember();
       futures.add(cacheFarm());
 
       await Future.wait(futures);
 
-      if (question.id ==
-          state.farmMemberRiskAssessmentsState.listRiskProfileQuestions.last
-              .id) {
+      if (question.id == state.farmMemberRiskAssessmentsState.listRiskProfileQuestions.last.id) {
         onChangeMemberRiskAssessmentState(isCollapse: true);
         onChangeMemberFarmObjectiveState(isCollapse: false);
       }
@@ -572,8 +467,8 @@ class AddMemberCubit extends Cubit<AddMemberState> {
     listFarmMemberObjectiveAnswers
         .addAll(farmMemberObjectivesState.listFarmMemberObjectiveAnswers);
     var currentAnswer = listFarmMemberObjectiveAnswers.firstWhereOrNull(
-        (element) =>
-            element.farmMemberObjectiveId == question.farmMemberObjectiveId);
+            (element) =>
+        element.farmMemberObjectiveId == question.farmMemberObjectiveId);
     if (currentAnswer != null) {
       listFarmMemberObjectiveAnswers.remove(currentAnswer);
       currentAnswer = currentAnswer.copyWith(
@@ -596,87 +491,39 @@ class AddMemberCubit extends Cubit<AddMemberState> {
       final futures = <Future<dynamic>>[];
 
       for (final item in listFarmMemberObjectiveAnswers) {
-        futures
-            .add(cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(item));
+        futures.add(cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(item));
       }
 
+      checkIsGroupSchemeMember();
       futures.add(cacheFarm());
 
       await Future.wait(futures);
     }
   }
 
-  Future<void> onDataChangeMemberDetail({
-    String? firstName,
-    String? lastName,
-    String? idNumber,
-    String? mobileNumber,
-    String? emailAddress,
-  }) async {
-    final data = state.addMemberMDetails;
+  void checkIsGroupSchemeMember() {
+    final isGroupSchemeMember = state.memberSLIMFState.isComplete &&
+        state.memberPropertyOwnershipState.isComplete &&
+        state.memberDetailSectionState.isComplete &&
+        state.memberSiteDetailsState.isComplete &&
+        state.farmMemberRiskAssessmentsState.isComplete &&
+        state.farmMemberObjectivesState.isComplete &&
+        state.addMemberContract.isComplete &&
+        state.addMemberSAF.isComplete;
 
-    emit(state.copyWith(
-      addMemberMDetails: data.copyWith(
-        firstName: firstName ?? data.firstName,
-        lastName: lastName ?? data.lastName,
-        idNumber: idNumber ?? data.idNumber,
-        mobileNumber: mobileNumber ?? data.mobileNumber,
-        emailAddress: emailAddress ?? data.emailAddress,
-      ),
-    ));
-
-    final isComplete = !state.addMemberMDetails.firstName.isNullOrEmpty &&
-        !state.addMemberMDetails.lastName.isNullOrEmpty &&
-        !state.addMemberMDetails.idNumber.isNullOrEmpty &&
-        !(state.addMemberMDetails.idNumber!.length < 8) &&
-        !state.addMemberMDetails.mobileNumber.isNullOrEmpty &&
-        !(state.addMemberMDetails.mobileNumber!.length < 8) &&
-        !(state.addMemberMDetails.emailAddress.isNullOrEmpty
-            ? false
-            : !state.addMemberMDetails.emailAddress.validEmail);
+    final isProspectMember = !isGroupSchemeMember &&
+        state.memberSLIMFState.isComplete &&
+        state.memberPropertyOwnershipState.isComplete &&
+        state.memberDetailSectionState.isComplete;
 
     emit(
       state.copyWith(
         farm: state.farm?.copyWith(
-          firstName: state.addMemberMDetails.firstName,
-          lastName: state.addMemberMDetails.lastName,
-          idNumber: state.addMemberMDetails.idNumber,
-          mobileNumber: state.addMemberMDetails.mobileNumber,
-          email: state.addMemberMDetails.emailAddress,
-          isMasterDataSynced: false,
-        ),
-        addMemberMDetails: state.addMemberMDetails.copyWith(
-          isComplete: isComplete,
-          isFirstNameError:
-              firstName?.isBlank ?? state.addMemberMDetails.isFirstNameError,
-          isLastNameError:
-              lastName?.isBlank ?? state.addMemberMDetails.isLastNameError,
-          isIdNumberError: idNumber == null
-              ? state.addMemberMDetails.isIdNumberError
-              : (idNumber.isBlank || idNumber.length < 8),
-          isMobileNumberError: mobileNumber == null
-              ? state.addMemberMDetails.isMobileNumberError
-              : (mobileNumber.isBlank || mobileNumber.length < 8),
-          isEmailError: state.addMemberMDetails.emailAddress.isNullOrEmpty
-              ? false
-              : !state.addMemberMDetails.emailAddress.validEmail,
+          isGroupSchemeMember: isGroupSchemeMember,
+          isProspectMember: isProspectMember,
         ),
       ),
     );
-
-    checkIsProspectMember();
-    if (isComplete) {
-      await cacheFarm();
-    }
-  }
-
-  Future<void> onDataChangeMemberContract() async {
-    emit(state.copyWith(
-        farm: state.farm?.copyWith(isMasterDataSynced: false),
-        addMemberContract: state.addMemberContract
-            .copyWith(isAccept: true, isComplete: true)));
-
-    await cacheFarm();
   }
 
   void onExpandedSAF(bool p0) {
@@ -685,9 +532,13 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   }
 
   Future<void> onDataChangeMemberSignContract(
-      String? image, String? points, String? date) async {
+    String? image,
+    String? points,
+    String? date,
+  ) async {
     if (image != null && points != null && date != null) {
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           farm: state.farm?.copyWith(
             signatureImage: image,
             signatureDate: date,
@@ -700,7 +551,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
             signatureDate: date,
             signaturePoints: points,
             isComplete: true,
-          )));
+          ),
+        ),
+      );
 
       checkIsGroupSchemeMember();
       await cacheFarm();
@@ -719,36 +572,57 @@ class AddMemberCubit extends Cubit<AddMemberState> {
         addMemberSAF: const AddMemberSAF()));
   }
 
-  Future<void> onDataChangeClose() async {
-    emit(state.copyWith(
-        addMemberClose: state.addMemberClose.copyWith(
-      isClose: true,
-      isComplete: true,
-    )));
-  }
-
   void checkErrorAllSteps() {
-    // Step 3 with AddMemberMDetails
     emit(
       state.copyWith(
-        addMemberMDetails: state.addMemberMDetails.copyWith(
-          isFirstNameError: state.addMemberMDetails.firstName.isBlank,
-          isLastNameError: state.addMemberMDetails.lastName.isBlank,
-          isIdNumberError: state.addMemberMDetails.idNumber.isBlank ||
-              state.addMemberMDetails.idNumber!.length < 8,
-          isMobileNumberError: state.addMemberMDetails.mobileNumber.isBlank ||
-              state.addMemberMDetails.mobileNumber!.length < 8,
+        // Step 3 with MemberDetailsSection
+        memberDetailSectionState: state.memberDetailSectionState.copyWith(
+          isFirstNameError: state.memberDetailSectionState.firstName.isBlank,
+          isLastNameError: state.memberDetailSectionState.lastName.isBlank,
+          isIdNumberError: state.memberDetailSectionState.idNumber.isBlank || state.memberDetailSectionState.idNumber!.length < 8,
+          isMobileNumberError: state.memberDetailSectionState.mobileNumber.isBlank || state.memberDetailSectionState.mobileNumber!.length < 8,
+          isEmailError: state.memberDetailSectionState.emailAddress.isBlank
+              ? false
+              : !state.memberDetailSectionState.emailAddress.validEmail,
+        ),
+
+        // Step 4 with MemberSiteDetailsState
+        memberSiteDetailsState: state.memberSiteDetailsState.copyWith(
+          isSiteNameError: state.memberSiteDetailsState.siteName.isBlank,
+          isTownError: state.memberSiteDetailsState.town.isBlank,
+          isProvinceError: state.memberSiteDetailsState.province.isBlank,
         ),
       ),
     );
   }
 
+  Future<void> onComplete({
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
+    if (state.isAllCompleted) {
+      emit(
+        state.copyWith(
+          farm: state.farm?.copyWith(
+            isGroupSchemeMember: true,
+            isProspectMember: true,
+          ),
+        ),
+      );
+      await cacheFarm();
+      onSuccess();
+    } else {
+      checkErrorAllSteps();
+      onError();
+    }
+  }
+
   void onChangeSlimfState({bool? isCollapse}) {
     emit(
       state.copyWith(
-        addMemberSLIMF: state.addMemberSLIMF.copyWith(
+        memberSLIMFState: state.memberSLIMFState.copyWith(
           isSectionCollapse:
-              isCollapse ?? !state.addMemberSLIMF.isSectionCollapse,
+              isCollapse ?? !state.memberSLIMFState.isSectionCollapse,
         ),
       ),
     );
@@ -757,9 +631,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   void onChangeMPOState({bool? isCollapse}) {
     emit(
       state.copyWith(
-        addMemberMPO: state.addMemberMPO.copyWith(
+        memberPropertyOwnershipState: state.memberPropertyOwnershipState.copyWith(
           isSectionCollapse:
-              isCollapse ?? !state.addMemberMPO.isSectionCollapse,
+              isCollapse ?? !state.memberPropertyOwnershipState.isSectionCollapse,
         ),
       ),
     );
@@ -768,9 +642,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   void onChangeMemberDetailState({bool? isCollapse}) {
     emit(
       state.copyWith(
-        addMemberMDetails: state.addMemberMDetails.copyWith(
+        memberDetailSectionState: state.memberDetailSectionState.copyWith(
           isSectionCollapse:
-              isCollapse ?? !state.addMemberMDetails.isSectionCollapse,
+              isCollapse ?? !state.memberDetailSectionState.isSectionCollapse,
           sectionKey: UniqueKey(),
         ),
       ),
@@ -780,9 +654,9 @@ class AddMemberCubit extends Cubit<AddMemberState> {
   void onChangeSiteDetailState({bool? isCollapse}) {
     emit(
       state.copyWith(
-        addMemberSDetails: state.addMemberSDetails.copyWith(
+        memberSiteDetailsState: state.memberSiteDetailsState.copyWith(
           isSectionCollapse:
-              isCollapse ?? !state.addMemberSDetails.isSectionCollapse,
+              isCollapse ?? !state.memberSiteDetailsState.isSectionCollapse,
           sectionKey: UniqueKey(),
         ),
       ),

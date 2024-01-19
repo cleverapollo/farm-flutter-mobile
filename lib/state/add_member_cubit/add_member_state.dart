@@ -1,45 +1,40 @@
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'add_member_state.freezed.dart';
 
 @freezed
-class AddMemberState with _$AddMemberState {
-  const factory AddMemberState({
+class MemberDetailState with _$MemberDetailState {
+  const factory MemberDetailState({
     @Default(false) bool isLoading,
-    Farm? farm,
-    Farm? farmBeforeEdit,
-    @Default(AddMemberSLIMF()) AddMemberSLIMF addMemberSLIMF,
-    @Default(AddMemberMPO()) AddMemberMPO addMemberMPO,
-    @Default(AddMemberMDetails()) AddMemberMDetails addMemberMDetails,
-    @Default(AddMemberSDetails()) AddMemberSDetails addMemberSDetails,
+    required Farm? farm,
+    GroupScheme? activeGroupScheme,
+    @Default(MemberSLIMFState()) MemberSLIMFState memberSLIMFState,
+    @Default(MemberPropertyOwnershipState()) MemberPropertyOwnershipState memberPropertyOwnershipState,
+    @Default(MemberDetailSectionState()) MemberDetailSectionState memberDetailSectionState,
+    @Default(MemberSiteDetailsState()) MemberSiteDetailsState memberSiteDetailsState,
     @Default(FarmMemberObjectivesState())
         FarmMemberObjectivesState farmMemberObjectivesState,
     @Default(AddMemberContract()) AddMemberContract addMemberContract,
     @Default(AddMemberSAF()) AddMemberSAF addMemberSAF,
     @Default(FarmMemberRiskAssessmentsState())
         FarmMemberRiskAssessmentsState farmMemberRiskAssessmentsState,
-    @Default(AddMemberClose()) AddMemberClose addMemberClose,
-  }) = _AddMemberState;
+  }) = _MemberDetailState;
 }
 
-extension AddMemberStateExtension on AddMemberState {
-  AddMemberState cleanCache() {
-    return const AddMemberState();
-  }
-
+extension MemberDetailStateExtension on MemberDetailState {
   bool get isAllCompleted {
-    final isCompleted = addMemberSLIMF.isComplete &&
-        addMemberMPO.isComplete &&
-        addMemberMDetails.isComplete &&
-        addMemberSDetails.isComplete &&
+    return memberSLIMFState.isComplete &&
+        memberPropertyOwnershipState.isComplete &&
+        memberDetailSectionState.isComplete &&
+        memberSiteDetailsState.isComplete &&
         farmMemberObjectivesState.isComplete &&
         addMemberSAF.isComplete &&
         farmMemberRiskAssessmentsState.isComplete;
-
-    return isCompleted;
   }
 }
 
@@ -55,14 +50,6 @@ class AddMemberSAF with _$AddMemberSAF {
 }
 
 @freezed
-class AddMemberClose with _$AddMemberClose {
-  const factory AddMemberClose({
-    @Default(false) bool isComplete,
-    bool? isClose,
-  }) = _AddMemberClose;
-}
-
-@freezed
 class AddMemberContract with _$AddMemberContract {
   const factory AddMemberContract({
     @Default(false) bool isComplete,
@@ -71,29 +58,27 @@ class AddMemberContract with _$AddMemberContract {
 }
 
 @freezed
-class AddMemberSLIMF with _$AddMemberSLIMF {
-  const factory AddMemberSLIMF({
+class MemberSLIMFState with _$MemberSLIMFState {
+  const factory MemberSLIMFState({
     @Default(false) bool isComplete,
     @Default(false) bool isSectionCollapse,
     bool? isSlimfCompliant,
-  }) = _AddMemberSLIMF;
+  }) = _MemberSLIMFState;
 }
 
 @freezed
-class AddMemberMPO with _$AddMemberMPO {
-  const factory AddMemberMPO({
+class MemberPropertyOwnershipState with _$MemberPropertyOwnershipState {
+  const factory MemberPropertyOwnershipState({
     @Default(false) bool isComplete,
-    @Default(false) bool isExpansionOpen,
     @Default(true) bool isSectionCollapse,
     FarmPropertyOwnershipType? propertyTypeSelected,
     @Default([]) List<FarmPropertyOwnershipType> propertyTypes,
-  }) = _AddMemberMPO;
+  }) = _MemberPropertyOwnershipState;
 }
 
 @freezed
-class AddMemberMDetails with _$AddMemberMDetails {
-  const factory AddMemberMDetails({
-    @Default(false) bool isComplete,
+class MemberDetailSectionState with _$MemberDetailSectionState {
+  const factory MemberDetailSectionState({
     @Default(false) bool isFirstNameError,
     @Default(false) bool isLastNameError,
     @Default(false) bool isIdNumberError,
@@ -106,15 +91,23 @@ class AddMemberMDetails with _$AddMemberMDetails {
     String? idNumber,
     String? mobileNumber,
     String? emailAddress,
-  }) = _AddMemberMDetails;
+  }) = _MemberDetailSectionState;
+}
+
+extension MemberDetailsStateExtension on MemberDetailSectionState {
+  bool get isComplete {
+    return firstName.isNotBlank &&
+        lastName.isNotBlank &&
+        idNumber.isNotBlank &&
+        idNumber!.length >= 8 &&
+        mobileNumber.isNotBlank &&
+        mobileNumber!.length >= 8;
+  }
 }
 
 @freezed
-class AddMemberSDetails with _$AddMemberSDetails {
-  const factory AddMemberSDetails({
-    @Default(false) bool isComplete,
-    @Default(false) bool isCompleteSiteLocation,
-    @Default(false) bool haveCompartments,
+class MemberSiteDetailsState with _$MemberSiteDetailsState {
+  const factory MemberSiteDetailsState({
     @Default(false) bool isCompleteASI,
     @Default(false) bool isExpansionOpen,
     @Default(false) bool isSiteNameError,
@@ -125,15 +118,24 @@ class AddMemberSDetails with _$AddMemberSDetails {
     String? siteName,
     String? town,
     String? province,
-    @Default(AddMemberSiteLocations())
-        AddMemberSiteLocations addMemberSiteLocations,
-    @Default(AddMemberCompartmentsState())
-        AddMemberCompartmentsState addMemberCompartmentsState,
+    double? lat,
+    double? lng,
     @Default(AddMemberAsisState()) AddMemberAsisState addMemberAsisState,
-  }) = _AddMemberSDetails;
+  }) = _MemberSiteDetailsState;
 }
 
-extension AddMemberSDetailsExtension on AddMemberSDetails {
+extension MemberSiteDetailsStateExtension on MemberSiteDetailsState {
+  bool get isComplete {
+    return siteName.isNotBlank &&
+        town.isNotBlank &&
+        province.isNotBlank &&
+        isCompleteSiteLocation;
+  }
+
+  bool get isCompleteSiteLocation {
+    return lat != null && lng != null;
+  }
+
   String initAddressForSiteLocation() {
     var address = '';
     if (town != null) {
@@ -150,23 +152,6 @@ extension AddMemberSDetailsExtension on AddMemberSDetails {
 
     return address;
   }
-}
-
-@freezed
-class AddMemberSiteLocations with _$AddMemberSiteLocations {
-  const factory AddMemberSiteLocations({
-    double? lat,
-    double? lng,
-    String? address,
-  }) = _AddMemberSiteLocations;
-}
-
-@freezed
-class AddMemberCompartmentsState with _$AddMemberCompartmentsState {
-  const factory AddMemberCompartmentsState({
-    @Default([]) List<Compartment> compartments,
-    double? farmSize,
-  }) = _AddMemberCompartmentsState;
 }
 
 @freezed
@@ -188,12 +173,9 @@ class FarmMemberRiskAssessmentsState with _$FarmMemberRiskAssessmentsState {
   }) = _FarmMemberRiskAssessmentsState;
 }
 
-extension FarmMemberRiskAssessmentsStateExtension
-    on FarmMemberRiskAssessmentsState {
-  bool get isComplete =>
-      listFarmMemberRiskProfileAnswers
-          .firstWhereOrNull((element) => element.answer == null) ==
-      null;
+extension FarmMemberRiskAssessmentsStateExtension on FarmMemberRiskAssessmentsState {
+
+  bool get isComplete => listFarmMemberRiskProfileAnswers.firstWhereOrNull((element) => element.answer == null) == null;
 
   FarmMemberRiskProfileAnswer? getFarmMemberRiskProfileAnswer(
     int riskProfileQuestionId,
@@ -220,10 +202,7 @@ class FarmMemberObjectivesState with _$FarmMemberObjectivesState {
 }
 
 extension FarmMemberObjectivesStateExtension on FarmMemberObjectivesState {
-  bool get isComplete =>
-      listFarmMemberObjectiveAnswers.firstWhereOrNull(
-          (element) => element.farmObjectiveOptionId == null) ==
-      null;
+  bool get isComplete => listFarmMemberObjectiveAnswers.firstWhereOrNull((element) => element.farmObjectiveOptionId == null) == null;
 
   String getFarmMemberObjectiveAnswerTitle(int farmMemberObjectiveId) {
     final answer = listFarmMemberObjectiveAnswers.firstWhereOrNull(

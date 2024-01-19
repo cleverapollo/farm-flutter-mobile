@@ -19,13 +19,10 @@ class AddMemberDone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AddMemberCubit, AddMemberState, Farm?>(
-      selector: (state) => state.farm,
-      builder: (context, farmState) {
         return Scaffold(
             appBar: CmoAppBar(
               title: LocaleKeys.addMember.tr(),
-              subtitle: farmState?.farmName ?? '',
+              subtitle: farm?.farmName ?? '',
             ),
             body: SizedBox.expand(
               child: Padding(
@@ -33,7 +30,7 @@ class AddMemberDone extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                        '${farmState?.firstName ?? farm?.firstName ?? ''} ${farmState?.lastName ?? farm?.lastName ?? ''} ${LocaleKeys.member_is_now_a_group_scheme_member.tr()}'
+                        '${farm?.firstName ?? farm?.firstName ?? ''} ${farm?.lastName ?? farm?.lastName ?? ''} ${LocaleKeys.member_is_now_a_group_scheme_member.tr()}'
                             .trimLeft(),
                         style: context.textStyles.bodyNormal
                             .copyWith(color: context.colors.black)),
@@ -47,12 +44,8 @@ class AddMemberDone extends StatelessWidget {
                     Center(
                         child: CmoFilledButton(
                             title: LocaleKeys.close.tr(),
-                            onTap: () {
-                              context
-                                  .read<AddMemberCubit>()
-                                  .onDataChangeClose();
-                              context.read<AddMemberCubit>().stepCount();
-                              context
+                            onTap: () async {
+                              await context
                                   .read<DashboardCubit>()
                                   .getResourceManagerMembers();
                               CmoDashboardBase.push(context);
@@ -61,8 +54,7 @@ class AddMemberDone extends StatelessWidget {
                   ],
                 ),
               ),
-            ));
-      },
-    );
+            ),
+        );
   }
 }

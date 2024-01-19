@@ -71,7 +71,7 @@ class _AddMemberSignContractWidgetState
     final byteData = await image?.toByteData(format: ImageByteFormat.png);
     final file = await FileUtil.writeToFile(byteData!);
     final base64 = await FileUtil.toBase64(file);
-    await context.read<AddMemberCubit>().onDataChangeMemberSignContract(
+    await context.read<MemberDetailCubit>().onDataChangeMemberSignContract(
           base64,
           points,
           DateTime.now().toIso8601String(),
@@ -136,7 +136,7 @@ class _AddMemberSignContractWidgetState
   }
 
   Widget _addMemberNewSignWidget(Size size) {
-    return BlocBuilder<AddMemberCubit, AddMemberState>(
+    return BlocBuilder<MemberDetailCubit, MemberDetailState>(
       buildWhen: (previous, current) =>
           previous.farm != current.farm ||
           previous.addMemberSAF != current.addMemberSAF,
@@ -216,28 +216,23 @@ class _AddMemberSignContractWidgetState
                             onTap: () async {
                               legacySignature.value = null;
                               signatureKey.currentState?.clear();
-                              context.read<AddMemberCubit>().onClearSignature();
+                              context.read<MemberDetailCubit>().onClearSignature();
                             })),
                     Center(
                         child: CmoFilledButton(
                             title:
                                 LocaleKeys.accept_signature_and_finalise.tr(),
                             onTap: () async {
-                              final state =
-                                  context.read<AddMemberCubit>().state;
-
-                              if (state.isAllCompleted) {
-                                if (context.mounted) {
-                                  await AddMemberDone.push(context,
-                                      farm: widget.farm);
+                              context.read<MemberDetailCubit>().onComplete(
+                                onSuccess: () async {
+                                  if (context.mounted) {
+                                    await AddMemberDone.push(context, farm: state.farm);
+                                  }
+                                },
+                                onError: () {
+                                  showSnackError(msg: 'Should complete all steps.');
                                 }
-                              } else {
-                                context
-                                    .read<AddMemberCubit>()
-                                    .checkErrorAllSteps();
-                                showSnackError(
-                                    msg: 'Should complete all steps.');
-                              }
+                              );
                             })),
                     const SizedBox(height: 20),
                   ],
