@@ -8,6 +8,7 @@ abstract class AppLocale {
   static const ms = Locale('ms');
   static const th = Locale('th');
   static const zu = Locale('zu');
+  static const vi = Locale('vi');
 
   static List<Locale> get all => [
         en,
@@ -15,5 +16,6 @@ abstract class AppLocale {
         ms,
         th,
         zu,
+        vi,
       ];
 }

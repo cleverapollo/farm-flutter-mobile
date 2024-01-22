@@ -362,11 +362,14 @@ class $AssetsL10nGen {
   /// File path: assets/l10n/th.json
   String get th => 'assets/l10n/th.json';
 
+  /// File path: assets/l10n/vi.json
+  String get vi => 'assets/l10n/vi.json';
+
   /// File path: assets/l10n/zu.json
   String get zu => 'assets/l10n/zu.json';
 
   /// List of all assets
-  List<String> get values => [en, fr, ms, th, zu];
+  List<String> get values => [en, fr, ms, th, vi, zu];
 }
 
 class Assets {

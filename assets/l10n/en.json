@@ -204,7 +204,8 @@
     "fr": "French",
     "ms": "Bahasa",
     "th": "ภาษาไทย",
-    "zu": "Zulu"
+    "zu": "Zulu",
+    "vi": "Vietnamese"
   },
   "locationName": "Location Name",
   "login": "Login",
@@ -345,7 +346,6 @@
   "ok": "ok",
   "cancel": "cancel",
   "group_scheme_management": "Group Scheme Management",
-  "group_scheme": "Group Scheme",
   "resource_management_unit": "Resource Management Unit",
   "operations_management": "Operations Management",
   "enter": "Enter",
