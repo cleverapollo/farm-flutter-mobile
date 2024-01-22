@@ -2274,8 +2274,25 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = TrainingRegister.fromJson(bodyJson);
-      return cmoDatabaseMasterService
-          .cacheTraining(rs.copyWith(isMasterdataSynced: true));
+
+      var now = DateTime.now().microsecondsSinceEpoch;
+      for (final traineeItem in rs.traineeRegisters ?? <TraineeRegister>[]) {
+        now++;
+        final existedTrainee = await cmoDatabaseMasterService
+            .getTraineeRegistersByTrainingRegisterNoAndWorkerId(
+          trainingRegisterNo: traineeItem.trainingRegisterNo,
+          workerId: traineeItem.workerId,
+        );
+
+        await cmoDatabaseMasterService.cacheTraineeRegister(
+          traineeItem.copyWith(
+            localId: existedTrainee == null ? now : existedTrainee.localId,
+          ),
+          isDirect: true,
+        );
+      }
+
+      return cmoDatabaseMasterService.cacheTraining(rs.copyWith(isMasterdataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }

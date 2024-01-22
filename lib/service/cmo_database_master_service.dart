@@ -318,6 +318,21 @@ class CmoDatabaseMasterService {
     });
   }
 
+  Future<TraineeRegister?> getTraineeRegistersByTrainingRegisterNoAndWorkerId({
+    String? trainingRegisterNo,
+    String? workerId,
+  }) async {
+    if (trainingRegisterNo.isBlank || workerId.isBlank) return null;
+
+    final db = await _db();
+
+    return db.traineeRegisters
+        .filter()
+        .trainingRegisterNoEqualTo(trainingRegisterNo)
+        .workerIdEqualTo(workerId)
+        .findFirst();
+  }
+
   Future<List<TraineeRegister>> getTraineeRegistersByTrainingRegisterNo(
     String? trainingRegisterNo,
   ) async {

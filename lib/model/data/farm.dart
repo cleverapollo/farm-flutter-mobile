@@ -67,7 +67,6 @@ class Farm with _$Farm {
     @Default(false) @JsonKey(name: 'IsMasterDataSynced') bool isMasterDataSynced,
     @ignore List<FarmMemberObjectiveAnswer>? objectiveAnswers,
     @ignore List<FarmMemberRiskProfileAnswer>? riskProfileAnswers,
-    @JsonKey(name: 'StepCount') int? stepCount,
   }) = _Farm;
 
   factory Farm.fromJson(Map<String, dynamic> json) => _$FarmFromJson(json);

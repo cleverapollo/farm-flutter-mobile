@@ -623,12 +623,15 @@ mixin FarmUploadSummaryMixin {
 
       final trainingRegisters =
           await cmoDatabaseMasterService.getUnsyncedTrainingRegisters(mFarmId);
-
-      final trainingRegistersPayLoad =
-          trainingRegisters.map((e) => e.toPayLoad()).toList();
-
-      for (final item in trainingRegistersPayLoad) {
-        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
+      for (final item in trainingRegisters) {
+        final traineeRegisters = await cmoDatabaseMasterService.getTraineeRegistersByTrainingRegisterNo(item.trainingRegisterNo);
+        messages.add(
+          globalMessage.copyWith(
+            body: jsonEncode(
+              item.copyWith(traineeRegisters: traineeRegisters),
+            ),
+          ),
+        );
       }
 
       if (_enableUpdateStatus) {

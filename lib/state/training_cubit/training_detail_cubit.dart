@@ -211,12 +211,11 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
       now++;
       await databaseService.cacheTraineeRegister(
         TraineeRegister(
-          traineeRegisterId: now.toString(),
+          localId: now,
           trainingRegisterId: training.trainingRegisterId,
           trainingRegisterNo: training.trainingRegisterNo,
           workerId: item.workerId,
           workerName: item.fullName,
-          isMasterdataSynced: false,
           updateDT: DateTime.now(),
           createDT: DateTime.now(),
         ),
