@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -8,13 +10,11 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
-import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/rte_species/widgets/rte_species_photo_section.dart';
 
 class RteSpeciesDetailScreen extends BaseStatefulWidget {
@@ -54,6 +54,8 @@ class RteSpeciesDetailScreen extends BaseStatefulWidget {
 
 class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDetailScreen> {
 
+  Timer? debounceInputTimer;
+
   Future<void> navigateToCamera() async {
     FocusManager.instance.primaryFocus?.unfocus();
     if (context.read<RteSpeciesDetailCubit>().reactMaximumUploadedPhoto()) {
@@ -90,23 +92,7 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
                     title: LocaleKeys.species.tr(),
                     backgroundColor: context.colors.blueDark2,
                   ),
-                  AttributeItem(
-                    margin: const EdgeInsets.symmetric(horizontal: 21),
-                    isUnderErrorBorder: true,
-                    errorText: LocaleKeys.required.tr(),
-                    isShowError: state.isCommonNameError,
-                    child: InputAttributeItem(
-                      labelText: LocaleKeys.commonName.tr(),
-                      textStyle: context.textStyles.bodyNormal.blueDark3,
-                      labelTextStyle: context.textStyles.bodyBold.blueDark3,
-                      validator: requiredValidator,
-                      hintTextStyle: context.textStyles.bodyBold.black,
-                      initialValue: state.rteSpecies?.commonName,
-                      onChanged: context
-                          .read<RteSpeciesDetailCubit>()
-                          .onChangeCommonName,
-                    ),
-                  ),
+                  selectCommonName(),
                   buildLatLngWidget(),
                   RteSpeciesPhotoSection(
                     navigateToCamera: navigateToCamera,
@@ -125,25 +111,12 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
                       onChanged: context.read<RteSpeciesDetailCubit>().onChangeComment,
                     ),
                   ),
-                  InformationText(),
+                  const SizedBox(height: 8),
                   CmoHeaderTile(
                     title: LocaleKeys.additional_details_optional.tr(),
                     backgroundColor: context.colors.blueDark2,
                   ),
-                  selectSpeciesType(context, state),
-                  AttributeItem(
-                    margin: const EdgeInsets.symmetric(horizontal: 21),
-                    child: InputAttributeItem(
-                      textStyle: context.textStyles.bodyNormal.blueDark2,
-                      labelTextStyle: context.textStyles.bodyNormal.blueDark2,
-                      labelText: LocaleKeys.scientificName.tr(),
-                      initialValue: state.rteSpecies?.scientificName,
-                      onChanged: context
-                          .read<RteSpeciesDetailCubit>()
-                          .onChangeScientificName,
-                    ),
-                  ),
-                  selectSpeciesRange(context, state),
+                  buildAutofillWidget(),
                 ],
               );
             },
@@ -158,13 +131,12 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
   }
 
   Widget _buildButton() {
-    return BlocSelector<RteSpeciesDetailCubit, RteSpeciesDetailState, bool>(
-      selector: (state) => state.loading,
-      builder: (context, loading) {
+    return BlocBuilder<RteSpeciesDetailCubit, RteSpeciesDetailState>(
+      builder: (context, state) {
         return CmoFilledButton(
           title: LocaleKeys.save.tr(),
-          loading: loading,
-          disable: context.read<RteSpeciesDetailCubit>().state.rteSpecies?.latitude == null,
+          loading: state.loading,
+          disable: !context.read<RteSpeciesDetailCubit>().onValidateRequiredField(),
           onTap: () async {
             await context.read<RteSpeciesDetailCubit>().onSave(
               onSuccess: (rteSpeciesId) async {
@@ -184,81 +156,129 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
     );
   }
 
-  Widget selectSpeciesType(BuildContext context, RteSpeciesDetailState state) {
-    return BottomSheetSelection(
-      hintText: LocaleKeys.speciesType.tr(),
-      hintTextStyle: context.textStyles.bodyNormal.blueDark2,
-      value: state.rteSpecies?.animalTypeName,
-      margin: const EdgeInsets.symmetric(horizontal: 21),
-      displayHorizontal: false,
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-      onTap: () async {
-        FocusManager.instance.primaryFocus?.unfocus();
-        if (state.animalTypes.isBlank) return;
-        await showCustomBottomSheet<void>(
-          context,
-          content: ListView.builder(
-            itemCount: state.animalTypes.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                onTap: () {
-                  context
-                      .read<RteSpeciesDetailCubit>()
-                      .onChangeSpeciesType(state.animalTypes[index]);
-                  Navigator.pop(context);
-                },
-                title: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Text(
-                    state.animalTypes[index].animalTypeName ?? '',
-                    style: context.textStyles.bodyBold.copyWith(
-                      color: context.colors.blueDark2,
+  Widget selectCommonName() {
+    return BlocBuilder<RteSpeciesDetailCubit, RteSpeciesDetailState>(
+      builder: (context, state) {
+        return BottomSheetSelection(
+          hintText: LocaleKeys.commonName.tr(),
+          margin: const EdgeInsets.symmetric(horizontal: 21),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          value: state.selectedGroupSchemeMasterSpecies?.commonName,
+          displayHorizontal: false,
+          onTap: () async {
+            FocusManager.instance.primaryFocus?.unfocus();
+            if (state.filterGroupSchemeMasterSpecies.isBlank) return;
+            await showCustomBottomSheet<void>(
+              context,
+              content: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: CmoTextField(
+                      name: LocaleKeys.search.tr(),
+                      hintText: LocaleKeys.search.tr(),
+                      prefixIcon: Assets.icons.icSearch.svg(),
+                      onChanged: (input) {
+                        debounceInputTimer?.cancel();
+                        debounceInputTimer = Timer(
+                          const Duration(milliseconds: 200),
+                          () => context
+                              .read<RteSpeciesDetailCubit>()
+                              .searchGroupSchemeMasterSpecies(input),
+                        );
+                      },
                     ),
                   ),
-                ),
-              );
-            },
-          ),
+                  Expanded(
+                    child: BlocSelector<RteSpeciesDetailCubit,
+                        RteSpeciesDetailState, List<GroupSchemeMasterSpecies>>(
+                      selector: (state) => state.filterGroupSchemeMasterSpecies,
+                      builder: (context, filterGroupSchemeMasterSpecies) {
+                        return ListView.builder(
+                          itemCount: filterGroupSchemeMasterSpecies.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              onTap: () async {
+                                await context
+                                    .read<RteSpeciesDetailCubit>()
+                                    .updateSelectedGroupSchemeMasterSpecies(
+                                        filterGroupSchemeMasterSpecies[index]);
+                                Navigator.pop(context);
+                              },
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 24.0),
+                              title: Text(
+                                filterGroupSchemeMasterSpecies[index]
+                                        .commonName ??
+                                    '',
+                                style: context.textStyles.bodyBold.blueDark2,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );
   }
 
-  Widget selectSpeciesRange(BuildContext context, RteSpeciesDetailState state) {
-    return BottomSheetSelection(
-      hintText: LocaleKeys.speciesRange.tr(),
-      hintTextStyle: context.textStyles.bodyNormal.blueDark2,
-      displayHorizontal: false,
-      margin: const EdgeInsets.symmetric(horizontal: 21),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-      value: state.rteSpecies?.speciesRangeName,
-      onTap: () async {
-        FocusScope.of(context).unfocus();
-        if (state.speciesRanges.isBlank) return;
-        await showCustomBottomSheet<void>(
-          context,
-          content: ListView.builder(
-            itemCount: state.speciesRanges.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                onTap: () {
-                  context
-                      .read<RteSpeciesDetailCubit>()
-                      .onChangeSpeciesRange(state.speciesRanges[index]);
-                  Navigator.pop(context);
-                },
-                title: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Text(
-                    state.speciesRanges[index].speciesRangeName ?? '',
-                    style: context.textStyles.bodyBold.copyWith(
-                      color: context.colors.blueDark2,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
+  Widget buildAutofillWidget() {
+    return BlocSelector<RteSpeciesDetailCubit, RteSpeciesDetailState, GroupSchemeMasterSpecies?>(
+      selector: (state) => state.selectedGroupSchemeMasterSpecies,
+      builder: (context, selectedGroupSchemeMasterSpecies) {
+        return Column(
+          children: [
+            AutofillWidget(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
+              title: LocaleKeys.secondary_name.tr(),
+              value: selectedGroupSchemeMasterSpecies?.commonName2,
+              textStyle: context.textStyles.bodyNormal.grey,
+              underlineColor: context.colors.grey,
+            ),
+            AutofillWidget(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
+              title: LocaleKeys.speciesType.tr(),
+              value: selectedGroupSchemeMasterSpecies?.animalTypeName,
+              textStyle: context.textStyles.bodyNormal.grey,
+              underlineColor: context.colors.grey,
+            ),
+            AutofillWidget(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
+              title: LocaleKeys.scientificName.tr(),
+              value: selectedGroupSchemeMasterSpecies?.scientificName,
+              textStyle: context.textStyles.bodyNormal.grey,
+              underlineColor: context.colors.grey,
+            ),
+
+            AutofillWidget(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
+              title: LocaleKeys.species_range.tr(),
+              value: selectedGroupSchemeMasterSpecies?.speciesRangeName,
+              textStyle: context.textStyles.bodyNormal.grey,
+              underlineColor: context.colors.grey,
+            ),
+            AutofillWidget(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
+              title: LocaleKeys.endangered_status.tr(),
+              value: selectedGroupSchemeMasterSpecies?.endangeredStatusName,
+              textStyle: context.textStyles.bodyNormal.grey,
+              underlineColor: context.colors.grey,
+            ),
+
+            AutofillWidget(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
+              title: LocaleKeys.buffer_zone_distance.tr(),
+              value: selectedGroupSchemeMasterSpecies?.bufferZoneDistance,
+              textStyle: context.textStyles.bodyNormal.grey,
+              underlineColor: context.colors.grey,
+            ),
+          ],
         );
       },
     );

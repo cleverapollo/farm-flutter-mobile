@@ -97,7 +97,7 @@ class CmoPerformApiService {
     Response<Map<String, dynamic>>? response;
 
     response = await client.get<JsonData>(
-      '${Env.performDnnApiUrl}GetUser',
+      '${Env.apiGroupSchemeUrl}GetUser',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -156,7 +156,7 @@ class CmoPerformApiService {
     };
 
     final response = await client.post<JsonData>(
-      '${Env.performDnnApiUrl}CreateUserDevice',
+      '${Env.apiGroupSchemeUrl}CreateUserDevice',
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -174,7 +174,7 @@ class CmoPerformApiService {
     required int userId,
   }) async {
     final response = await client.get<JsonListData>(
-      '${Env.performDnnApiUrl}GetCompanyByUserId',
+      '${Env.apiGroupSchemeUrl}GetCompanyByUserId',
       queryParameters: {'userId': userId.toString()},
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -190,7 +190,7 @@ class CmoPerformApiService {
 
   Future<List<Farm>?> fetchFarms() async {
     final response = await client.get<JsonListData>(
-      '${Env.performDnnApiUrl}GetFarms',
+      '${Env.apiGroupSchemeUrl}GetFarms',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -205,7 +205,7 @@ class CmoPerformApiService {
 
   Future<List<GroupScheme>?> fetchGroupSchemes() async {
     final response = await client.get<JsonListData>(
-      '${Env.performDnnApiUrl}GetGroupschemes',
+      '${Env.apiGroupSchemeUrl}GetGroupschemes',
       options: Options(headers: {'accessToken': 'true'}),
     );
 
@@ -221,7 +221,7 @@ class CmoPerformApiService {
   Future<List<ResourceManagerUnit>?> fetchResourceManagerUnits(
       int groupSchemeId) async {
     final response = await client.get<JsonListData>(
-      '${Env.performDnnApiUrl}GetRegionalManagerUnits',
+      '${Env.apiGroupSchemeUrl}GetRegionalManagerUnits',
       queryParameters: {'groupSchemeId': groupSchemeId.toString()},
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -266,7 +266,7 @@ class CmoPerformApiService {
     };
 
     final response = await client.post<dynamic>(
-      '${Env.performDnnApiUrl}CreateSystemEvent',
+      '${Env.apiGroupSchemeUrl}CreateSystemEvent',
       data: body,
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -298,7 +298,7 @@ class CmoPerformApiService {
   Future<bool> checkSystemEventExist(int? systemEventId) async {
     if (systemEventId == null) return false;
     final response = await client.get<dynamic>(
-      '${Env.performDnnApiUrl}SystemEventExists',
+      '${Env.apiGroupSchemeUrl}SystemEventExists',
       queryParameters: {'systemEventId': systemEventId},
       options: Options(headers: {'accessToken': 'true'}),
     );
@@ -476,6 +476,23 @@ class CmoPerformApiService {
     final data = response.data;
     return data
         ?.map((e) => JobDescription.fromJson(e as JsonData))
+        .toList();
+  }
+
+  Future<List<GroupSchemeMasterSpecies>?> getListGroupSchemeMasterSpecies() async {
+    final response = await client.get<JsonListData>(
+      '${Env.apiGroupSchemeUrl}GetAllGsMasterSpecies?',
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data
+        ?.map((e) => GroupSchemeMasterSpecies.fromJson(e as JsonData))
         .toList();
   }
 
@@ -777,7 +794,7 @@ class CmoPerformApiService {
   Future<CheckForUpdate?> checkUpdate() async {
     try {
       final response = await client.get<JsonData?>(
-        '${Env.performDnnApiUrl}GetLatestAppVersion?',
+        '${Env.apiGroupSchemeUrl}GetLatestAppVersion?',
         queryParameters: {'appName': 'empower',},
         options: Options(headers: {'accessToken': 'false'}),
       );

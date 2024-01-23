@@ -148,7 +148,8 @@ class CmoDatabaseMasterService {
       AreaTypeSchema,
       ProductGroupTemplateSchema,
       SpeciesGroupTemplateSchema,
-      TraineeRegisterSchema
+      TraineeRegisterSchema,
+      GroupSchemeMasterSpeciesSchema
     ];
 
     schemes.sort((first, second) {
@@ -1884,22 +1885,19 @@ class CmoDatabaseMasterService {
         .count();
   }
 
-  Future<List<RteSpeciesPhotoModel>> getUnsyncedRteSpeciesPhotoByFarmId(
-      String farmId) async {
+  Future<List<RteSpeciesPhotoModel>> getUnsyncedRteSpeciesPhoto() async {
     final db = await _db();
     return db.rteSpeciesPhotoModels
         .filter()
-        .farmIdEqualTo(farmId)
         .isMasterdataSyncedEqualTo(false)
+        .isActiveEqualTo(true)
         .findAll();
   }
 
-  Future<List<RteSpeciesPhotoModel>> getRteSpeciesPhotoByFarmId(
-      String farmId) async {
+  Future<List<RteSpeciesPhotoModel>> getAllRteSpeciesPhotos() async {
     final db = await _db();
     return db.rteSpeciesPhotoModels
         .filter()
-        .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
         .findAll();
   }
@@ -1913,16 +1911,30 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<RteSpeciesPhotoModel>>
-      getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
-          String? rteRegisterPhoto) async {
+  Future<List<RteSpeciesPhotoModel>> getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
+    String? rteRegisterPhoto,
+  ) async {
     if (rteRegisterPhoto.isBlank) return <RteSpeciesPhotoModel>[];
 
     final db = await _db();
 
     return db.rteSpeciesPhotoModels
         .filter()
-        .rteSpeciesNoEqualTo(rteRegisterPhoto)
+        .rteSpeciesRegisterNoEqualTo(rteRegisterPhoto)
+        .findAll();
+  }
+
+  Future<List<RteSpeciesPhotoModel>> getUnsyncedRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
+    String? rteRegisterPhoto,
+  ) async {
+    if (rteRegisterPhoto.isBlank) return <RteSpeciesPhotoModel>[];
+
+    final db = await _db();
+
+    return db.rteSpeciesPhotoModels
+        .filter()
+        .rteSpeciesRegisterNoEqualTo(rteRegisterPhoto)
+        .isMasterdataSyncedEqualTo(false)
         .findAll();
   }
 
@@ -2704,6 +2716,23 @@ class CmoDatabaseMasterService {
     return x;
   }
 
+  Future<int> cacheGroupSchemeMasterSpecies(
+    GroupSchemeMasterSpecies item, {
+    bool isDirect = true,
+  }) async {
+    final db = await _db();
+    if (isDirect) {
+      return db.groupSchemeMasterSpecies.put(item);
+    } else {
+      return db.writeTxn(() => db.groupSchemeMasterSpecies.put(item));
+    }
+  }
+
+  Future<List<GroupSchemeMasterSpecies>> getAllGroupSchemeMasterSpecies() async {
+    final db = await _db();
+    return db.groupSchemeMasterSpecies.filter().isActiveEqualTo(true).findAll();
+  }
+
   Future<int> cacheJobDescription(JobDescription item) async {
     final db = await _db();
     return db.jobDescriptions.put(item);
@@ -3317,7 +3346,7 @@ class CmoDatabaseMasterService {
     await db.writeTxn(() async {
       await db.rteSpeciesPhotoModels
           .filter()
-          .rteSpeciesNoEqualTo(rteSpeciesRegisterNo)
+          .rteSpeciesRegisterNoEqualTo(rteSpeciesRegisterNo)
           .deleteAll();
     });
   }

@@ -35,12 +35,19 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
     final rtePhotos = await cmoDatabaseMasterService
         .getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
             state.rteSpecies?.rteSpeciesRegisterNo);
+
+    final groupSchemeMasterSpecies = await cmoDatabaseMasterService.getAllGroupSchemeMasterSpecies();
+    final selectedGroupSchemeMasterSpecies = groupSchemeMasterSpecies.firstWhereOrNull((element) => element.groupSchemeMasterSpeciesId == state.rteSpecies?.groupSchemeMasterSpeciesId);
+
     emit(
       state.copyWith(
         activeFarm: activeFarm,
         speciesRanges: speciesRanges,
         animalTypes: animalTypes,
         rtePhotos: rtePhotos,
+        groupSchemeMasterSpecies: groupSchemeMasterSpecies,
+        filterGroupSchemeMasterSpecies: groupSchemeMasterSpecies,
+        selectedGroupSchemeMasterSpecies: selectedGroupSchemeMasterSpecies,
         rteSpecies: state.rteSpecies?.copyWith(
           farmId: state.rteSpecies?.farmId ?? activeFarm?.farmId,
           createDT: state.rteSpecies?.createDT ?? DateTime.now(),
@@ -50,47 +57,53 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
     );
   }
 
-  void onChangeSpeciesType(AnimalType animalType) {
+  Future<void> updateSelectedGroupSchemeMasterSpecies(
+    GroupSchemeMasterSpecies groupSchemeMasterSpecies,
+  ) async {
     emit(
       state.copyWith(
+        selectedGroupSchemeMasterSpecies: groupSchemeMasterSpecies,
+        filterGroupSchemeMasterSpecies: state.groupSchemeMasterSpecies,
         rteSpecies: state.rteSpecies?.copyWith(
-          animalTypeId: animalType.animalTypeId,
-          animalTypeName: animalType.animalTypeName,
+          groupSchemeMasterSpeciesId:
+              groupSchemeMasterSpecies.groupSchemeMasterSpeciesId,
         ),
       ),
     );
   }
 
-  void onChangeCommonName(String? commonName) {
-    emit(
-      state.copyWith(
-        isCommonNameError: false,
-        rteSpecies: state.rteSpecies?.copyWith(
-          commonName: commonName,
-        ),
-      ),
-    );
-  }
+  void searchGroupSchemeMasterSpecies(String? searchText) {
+    emit(state.copyWith(loading: true));
+    try {
+      if (searchText == null || searchText.isEmpty) {
+        emit(
+          state.copyWith(
+            filterGroupSchemeMasterSpecies: state.groupSchemeMasterSpecies,
+          ),
+        );
+      } else {
+        final filteredItems = state.groupSchemeMasterSpecies
+            .where(
+              (element) =>
+                  element.commonName
+                      ?.toLowerCase()
+                      .contains(searchText.toLowerCase()) ??
+                  false,
+            )
+            .toList();
 
-  void onChangeScientificName(String? scientificName) {
-    emit(
-      state.copyWith(
-        rteSpecies: state.rteSpecies?.copyWith(
-          scientificName: scientificName,
-        ),
-      ),
-    );
-  }
-
-  void onChangeSpeciesRange(SpeciesRange speciesRange) {
-    emit(
-      state.copyWith(
-        rteSpecies: state.rteSpecies?.copyWith(
-          speciesRangeId: speciesRange.speciesRangeId,
-          speciesRangeName: speciesRange.speciesRangeName,
-        ),
-      ),
-    );
+        emit(
+          state.copyWith(
+            filterGroupSchemeMasterSpecies: filteredItems,
+          ),
+        );
+      }
+    } catch (e) {
+      emit(state.copyWith(error: e));
+      showSnackError(msg: e.toString());
+    } finally {
+      emit(state.copyWith(loading: false));
+    }
   }
 
   void onChangeDateSpotted(DateTime? dateSpotted) {
@@ -125,16 +138,15 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
   void onUpdatePhoto(String base64Image) {
     var randomId = generatorInt32Id();
     final rtePhoto = RteSpeciesPhotoModel(
-      farmId: state.activeFarm?.farmId,
       isMasterdataSynced: false,
       photo: base64Image,
       rteSpeciesRegisterPhotoNo: DateTime.now().millisecondsSinceEpoch.toString(),
       rteSpeciesRegisterPhotoId: randomId++,
-      rteSpeciesNo: state.rteSpecies?.rteSpeciesRegisterNo,
-      rteSpeciesId: state.rteSpecies?.rteSpeciesRegisterId,
-      photoName: DateTime.now().millisecondsSinceEpoch.toString(),
+      rteSpeciesRegisterNo: state.rteSpecies?.rteSpeciesRegisterNo,
+      rteSpeciesRegisterId: state.rteSpecies?.rteSpeciesRegisterId,
       isActive: true,
-      isLocal: true,
+      createDT: DateTime.now(),
+      updateDT: DateTime.now(),
     );
 
     emit(state.copyWith(rtePhotos: state.rtePhotos + [rtePhoto]));
@@ -151,12 +163,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
   }
 
   bool onValidateRequiredField() {
-    if (state.rteSpecies?.commonName == null || state.rteSpecies!.commonName.isBlank) {
-      emit(state.copyWith(isCommonNameError: true));
-      return false;
-    }
-
-    return true;
+    return state.selectedGroupSchemeMasterSpecies != null && state.rteSpecies?.latitude != null;
   }
 
   Future<void> onSave({

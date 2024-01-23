@@ -8,20 +8,24 @@ class RteSpeciesDetailState {
     this.speciesRanges = const <SpeciesRange>[],
     this.rtePhotos = const <RteSpeciesPhotoModel>[],
     this.removedRtePhotos = const <RteSpeciesPhotoModel>[],
+    this.groupSchemeMasterSpecies = const <GroupSchemeMasterSpecies>[],
+    this.filterGroupSchemeMasterSpecies = const <GroupSchemeMasterSpecies>[],
     this.loading = false,
-    this.isCommonNameError = false,
     this.error,
+    this.selectedGroupSchemeMasterSpecies,
   });
 
   final Farm? activeFarm;
   final RteSpecies? rteSpecies;
   final List<AnimalType> animalTypes;
   final List<SpeciesRange> speciesRanges;
+  final List<GroupSchemeMasterSpecies> groupSchemeMasterSpecies;
+  final List<GroupSchemeMasterSpecies> filterGroupSchemeMasterSpecies;
   final List<RteSpeciesPhotoModel> rtePhotos;
   final List<RteSpeciesPhotoModel> removedRtePhotos;
+  final GroupSchemeMasterSpecies? selectedGroupSchemeMasterSpecies;
   final Object? error;
   final bool loading;
-  final bool isCommonNameError;
 
   RteSpeciesDetailState copyWith({
     RteSpecies? rteSpecies,
@@ -30,9 +34,11 @@ class RteSpeciesDetailState {
     List<SpeciesRange>? speciesRanges,
     List<RteSpeciesPhotoModel>? rtePhotos,
     List<RteSpeciesPhotoModel>? removedRtePhotos,
+    List<GroupSchemeMasterSpecies>? groupSchemeMasterSpecies,
+    List<GroupSchemeMasterSpecies>? filterGroupSchemeMasterSpecies,
     bool? loading,
     Object? error,
-    bool? isCommonNameError,
+    GroupSchemeMasterSpecies? selectedGroupSchemeMasterSpecies,
   }) {
     return RteSpeciesDetailState(
       loading: loading ?? this.loading,
@@ -40,10 +46,12 @@ class RteSpeciesDetailState {
       rteSpecies: rteSpecies ?? this.rteSpecies,
       animalTypes: animalTypes ?? this.animalTypes,
       speciesRanges: speciesRanges ?? this.speciesRanges,
+      groupSchemeMasterSpecies: groupSchemeMasterSpecies ?? this.groupSchemeMasterSpecies,
+      filterGroupSchemeMasterSpecies: filterGroupSchemeMasterSpecies ?? this.filterGroupSchemeMasterSpecies,
       rtePhotos: rtePhotos ?? this.rtePhotos,
       error: error ?? this.error,
       removedRtePhotos: removedRtePhotos ?? this.removedRtePhotos,
-      isCommonNameError: isCommonNameError ?? this.isCommonNameError,
+      selectedGroupSchemeMasterSpecies: selectedGroupSchemeMasterSpecies ?? this.selectedGroupSchemeMasterSpecies,
     );
   }
 }
