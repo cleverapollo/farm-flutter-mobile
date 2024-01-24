@@ -131,10 +131,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       await subscribeToSyncAllFarmerMasterData();
       logger.d('--syncFarmerMasterData done');
 
-      logger.d('--subscribeMasterDataByFarmIdAndUserDeviceId');
-      await subscribeToUserDeviceClientIdFilterByFarmIdTopic();
-      logger.d('--subscribeMasterDataByFarmIdAndUserDeviceId done');
-
       emit(
         state.copyWith(
           syncMessage: 'Sync complete',
@@ -706,12 +702,12 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                   data.copyWith(rteSpeciesRegistersUnsynced: value.length)),
         )
         ..add(
-          databaseMasterService.getUnsyncedRteSpeciesPhotoByFarmId(farmId).then(
+          databaseMasterService.getUnsyncedRteSpeciesPhoto().then(
               (value) => data = data.copyWith(
                   rteSpeciesRegistersPhotosUnsynced: value.length)),
         )
         ..add(
-          databaseMasterService.getRteSpeciesPhotoByFarmId(farmId).then(
+          databaseMasterService.getAllRteSpeciesPhotos().then(
               (value) => data =
                   data.copyWith(rteSpeciesRegistersPhotosTotal: value.length)),
         )
@@ -1731,6 +1727,10 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       logger.d('--insertJobDescription start');
       await insertJobDescription();
       logger.d('--insertJobDescription done');
+
+      logger.d('--insertGroupSchemeMasterSpecies start');
+      await insertGroupSchemeMasterSpecies();
+      logger.d('--insertGroupSchemeMasterSpecies done');
     });
   }
 
@@ -1898,6 +1898,16 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     if (jobDescriptions.isNotBlank) {
       for (final jobDescription in jobDescriptions!) {
         await cmoDatabaseMasterService.cacheJobDescription(jobDescription);
+      }
+    }
+  }
+
+  Future<void> insertGroupSchemeMasterSpecies() async {
+    emit(state.copyWith(syncMessage: 'Syncing Group Scheme Master Species...'));
+    final groupSchemeMasterSpecies = await cmoPerformApiService.getListGroupSchemeMasterSpecies();
+    if (groupSchemeMasterSpecies.isNotBlank) {
+      for (final groupSchemeMasterSpecie in groupSchemeMasterSpecies!) {
+        await cmoDatabaseMasterService.cacheGroupSchemeMasterSpecies(groupSchemeMasterSpecie);
       }
     }
   }
@@ -2550,9 +2560,14 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
-      final rs = RteSpeciesPhotoModel.fromJson(bodyJson);
-      return cmoDatabaseMasterService
-          .cacheRteSpeciesPhotos(rs.copyWith(isMasterdataSynced: true));
+      final rs = RteSpeciesRegisterPhoto.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(
+        rs.copyWith(
+          isMasterdataSynced: true,
+          photo: rs.photo.base64SyncServerToString,
+        ),
+        isDirect: true,
+      );
     } catch (e) {
       logger.d('insert error: $e');
     }

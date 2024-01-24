@@ -25,8 +25,6 @@ class RteSpecies with _$RteSpecies {
     @JsonKey(name: 'IsActive') bool? isActive,
     @Default(false)
     @JsonKey(name: 'IsMasterdataSynced') bool? isMasterDataSynced,
-    @JsonKey(name: 'Photos')
-    @ignore List<RteSpeciesPhotoModel>? photos,
   }) = _RteSpecies;
 
   const RteSpecies._();

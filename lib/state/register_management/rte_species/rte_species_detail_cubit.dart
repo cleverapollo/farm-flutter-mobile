@@ -137,7 +137,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
 
   void onUpdatePhoto(String base64Image) {
     var randomId = generatorInt32Id();
-    final rtePhoto = RteSpeciesPhotoModel(
+    final rtePhoto = RteSpeciesRegisterPhoto(
       isMasterdataSynced: false,
       photo: base64Image,
       rteSpeciesRegisterPhotoNo: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -152,7 +152,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
     emit(state.copyWith(rtePhotos: state.rtePhotos + [rtePhoto]));
   }
 
-  void onRemovePhoto(RteSpeciesPhotoModel rteSpeciesPhotoModel) {
+  void onRemovePhoto(RteSpeciesRegisterPhoto rteSpeciesPhotoModel) {
     final rtePhotos = state.rtePhotos;
     rtePhotos.removeWhere((element) => element.rteSpeciesRegisterPhotoId == rteSpeciesPhotoModel.rteSpeciesRegisterPhotoId);
     emit(
@@ -175,20 +175,24 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
       }
 
       emit(state.copyWith(loading: true));
-      int? rteSpeciesId;
-      rteSpeciesId = await cmoDatabaseMasterService.cacheRteSpecies(
-        isDirect: false,
-        state.rteSpecies!.copyWith(
-          updateDT: DateTime.now(),
-          createDT: state.rteSpecies?.createDT ?? DateTime.now(),
-        ),
-      );
-
       await cmoDatabaseMasterService.removeRteSpeciesPhotoModelsByRteSpeciesRegisterNo(state.rteSpecies?.rteSpeciesRegisterNo);
 
       for (final item in state.rtePhotos) {
-        await cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(item);
+        await cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(
+          item.copyWith(
+            isMasterdataSynced: false,
+          ),
+        );
       }
+
+      final rteSpeciesId = await cmoDatabaseMasterService.cacheRteSpecies(
+        isDirect: false,
+        state.rteSpecies!.copyWith(
+          isMasterDataSynced: false,
+          createDT: state.rteSpecies?.createDT ?? DateTime.now(),
+          updateDT: DateTime.now(),
+        ),
+      );
 
       onSuccess(rteSpeciesId);
     } catch (e) {

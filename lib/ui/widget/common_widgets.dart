@@ -13,6 +13,7 @@ class AttributeItem extends StatelessWidget {
   final String? errorText;
   final bool isUnderErrorBorder;
   final bool inactive;
+  final Color? underlineColor;
 
   const AttributeItem({
     required this.child,
@@ -22,6 +23,7 @@ class AttributeItem extends StatelessWidget {
     this.isShowError = false,
     this.isUnderErrorBorder = false,
     this.inactive = false,
+    this.underlineColor,
     super.key,
   });
 
@@ -40,7 +42,7 @@ class AttributeItem extends StatelessWidget {
                     ? errorBorder(context)
                     : Border(
                         bottom: BorderSide(
-                          color: context.colors.blueDark2,
+                          color: underlineColor ?? context.colors.blueDark2,
                           width: 2,
                         ),
                       ),
@@ -105,6 +107,8 @@ class AutofillWidget extends StatelessWidget {
   final String? value;
   final EdgeInsets padding;
   final EdgeInsets margin;
+  final TextStyle? textStyle;
+  final Color? underlineColor;
 
   const AutofillWidget({
     super.key,
@@ -112,12 +116,15 @@ class AutofillWidget extends StatelessWidget {
     required this.value,
     this.padding = const EdgeInsets.fromLTRB(10, 4, 10, 4),
     this.margin = EdgeInsets.zero,
+    this.textStyle,
+    this.underlineColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return AttributeItem(
       margin: margin,
+      underlineColor: underlineColor,
       child: Container(
         padding: padding,
         child: Column(
@@ -127,13 +134,13 @@ class AutofillWidget extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: context.textStyles.bodyBold.blueDark3,
+                  style: textStyle ?? context.textStyles.bodyBold.blueDark3,
                 ),
               ],
             ),
             Text(
               value ?? '',
-              style: context.textStyles.bodyNormal.blueDark3,
+              style: textStyle ?? context.textStyles.bodyNormal.blueDark3,
             ),
           ],
         ),

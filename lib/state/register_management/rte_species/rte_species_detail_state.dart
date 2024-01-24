@@ -6,8 +6,8 @@ class RteSpeciesDetailState {
     this.rteSpecies,
     this.animalTypes = const <AnimalType>[],
     this.speciesRanges = const <SpeciesRange>[],
-    this.rtePhotos = const <RteSpeciesPhotoModel>[],
-    this.removedRtePhotos = const <RteSpeciesPhotoModel>[],
+    this.rtePhotos = const <RteSpeciesRegisterPhoto>[],
+    this.removedRtePhotos = const <RteSpeciesRegisterPhoto>[],
     this.groupSchemeMasterSpecies = const <GroupSchemeMasterSpecies>[],
     this.filterGroupSchemeMasterSpecies = const <GroupSchemeMasterSpecies>[],
     this.loading = false,
@@ -21,8 +21,8 @@ class RteSpeciesDetailState {
   final List<SpeciesRange> speciesRanges;
   final List<GroupSchemeMasterSpecies> groupSchemeMasterSpecies;
   final List<GroupSchemeMasterSpecies> filterGroupSchemeMasterSpecies;
-  final List<RteSpeciesPhotoModel> rtePhotos;
-  final List<RteSpeciesPhotoModel> removedRtePhotos;
+  final List<RteSpeciesRegisterPhoto> rtePhotos;
+  final List<RteSpeciesRegisterPhoto> removedRtePhotos;
   final GroupSchemeMasterSpecies? selectedGroupSchemeMasterSpecies;
   final Object? error;
   final bool loading;
@@ -32,8 +32,8 @@ class RteSpeciesDetailState {
     Farm? activeFarm,
     List<AnimalType>? animalTypes,
     List<SpeciesRange>? speciesRanges,
-    List<RteSpeciesPhotoModel>? rtePhotos,
-    List<RteSpeciesPhotoModel>? removedRtePhotos,
+    List<RteSpeciesRegisterPhoto>? rtePhotos,
+    List<RteSpeciesRegisterPhoto>? removedRtePhotos,
     List<GroupSchemeMasterSpecies>? groupSchemeMasterSpecies,
     List<GroupSchemeMasterSpecies>? filterGroupSchemeMasterSpecies,
     bool? loading,

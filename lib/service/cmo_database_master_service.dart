@@ -74,7 +74,7 @@ class CmoDatabaseMasterService {
       BiologicalControlAgentSchema,
       EmployeeGrievanceSchema,
       FireManagementSchema,
-      RteSpeciesPhotoModelSchema,
+      RteSpeciesRegisterPhotoSchema,
       RteSpeciesSchema,
       FarmQuestionSchema,
       CriteriaSchema,
@@ -1173,12 +1173,6 @@ class CmoDatabaseMasterService {
     }
   }
 
-  Future<int?> cacheRteSpeciesPhotos(RteSpeciesPhotoModel data) async {
-    final db = await _db();
-
-    return db.rteSpeciesPhotoModels.put(data);
-  }
-
   Future<int?> cacheTraining(
     TrainingRegister data, {
     bool isDirect = true,
@@ -1885,18 +1879,18 @@ class CmoDatabaseMasterService {
         .count();
   }
 
-  Future<List<RteSpeciesPhotoModel>> getUnsyncedRteSpeciesPhoto() async {
+  Future<List<RteSpeciesRegisterPhoto>> getUnsyncedRteSpeciesPhoto() async {
     final db = await _db();
-    return db.rteSpeciesPhotoModels
+    return db.rteSpeciesRegisterPhotos
         .filter()
         .isMasterdataSyncedEqualTo(false)
         .isActiveEqualTo(true)
         .findAll();
   }
 
-  Future<List<RteSpeciesPhotoModel>> getAllRteSpeciesPhotos() async {
+  Future<List<RteSpeciesRegisterPhoto>> getAllRteSpeciesPhotos() async {
     final db = await _db();
-    return db.rteSpeciesPhotoModels
+    return db.rteSpeciesRegisterPhotos
         .filter()
         .isActiveEqualTo(true)
         .findAll();
@@ -1911,27 +1905,27 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<RteSpeciesPhotoModel>> getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
+  Future<List<RteSpeciesRegisterPhoto>> getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
     String? rteRegisterPhoto,
   ) async {
-    if (rteRegisterPhoto.isBlank) return <RteSpeciesPhotoModel>[];
+    if (rteRegisterPhoto.isBlank) return <RteSpeciesRegisterPhoto>[];
 
     final db = await _db();
 
-    return db.rteSpeciesPhotoModels
+    return db.rteSpeciesRegisterPhotos
         .filter()
         .rteSpeciesRegisterNoEqualTo(rteRegisterPhoto)
         .findAll();
   }
 
-  Future<List<RteSpeciesPhotoModel>> getUnsyncedRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
+  Future<List<RteSpeciesRegisterPhoto>> getUnsyncedRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
     String? rteRegisterPhoto,
   ) async {
-    if (rteRegisterPhoto.isBlank) return <RteSpeciesPhotoModel>[];
+    if (rteRegisterPhoto.isBlank) return <RteSpeciesRegisterPhoto>[];
 
     final db = await _db();
 
-    return db.rteSpeciesPhotoModels
+    return db.rteSpeciesRegisterPhotos
         .filter()
         .rteSpeciesRegisterNoEqualTo(rteRegisterPhoto)
         .isMasterdataSyncedEqualTo(false)
@@ -3327,16 +3321,16 @@ class CmoDatabaseMasterService {
     }
   }
 
-  Future<int> cacheRteSpeciesFromFarm(RteSpecies item) async {
+  Future<int> cacheRteSpeciesPhotoModel(
+    RteSpeciesRegisterPhoto item, {
+    bool isDirect = false,
+  }) async {
     final db = await _db();
-    return db.writeTxn(() async {
-      return db.rteSpecies.put(item);
-    });
-  }
-
-  Future<int> cacheRteSpeciesPhotoModel(RteSpeciesPhotoModel item) async {
-    final db = await _db();
-    return db.writeTxn(() => db.rteSpeciesPhotoModels.put(item));
+    if (isDirect) {
+      return db.rteSpeciesRegisterPhotos.put(item);
+    } else {
+      return db.writeTxn(() => db.rteSpeciesRegisterPhotos.put(item));
+    }
   }
 
   Future<void> removeRteSpeciesPhotoModelsByRteSpeciesRegisterNo(
@@ -3344,7 +3338,7 @@ class CmoDatabaseMasterService {
     final db = await _db();
 
     await db.writeTxn(() async {
-      await db.rteSpeciesPhotoModels
+      await db.rteSpeciesRegisterPhotos
           .filter()
           .rteSpeciesRegisterNoEqualTo(rteSpeciesRegisterNo)
           .deleteAll();
@@ -3354,7 +3348,7 @@ class CmoDatabaseMasterService {
   Future<bool> removeRteSpeciesPhotoModel(int id) async {
     final db = await _db();
     return db.writeTxn(() async {
-      return db.rteSpeciesPhotoModels.delete(id);
+      return db.rteSpeciesRegisterPhotos.delete(id);
     });
   }
 

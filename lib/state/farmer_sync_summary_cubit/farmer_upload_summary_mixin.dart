@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/model.dart';
@@ -12,7 +13,6 @@ import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_sta
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_accident_and_incident_register_payload/main_accident_and_incident_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_asi_register_payload/main_asi_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_pests_and_diseases_register_payload/main_pests_and_diseases_register_payload.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_rte_species_register_payload/main_rte_species_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/properties_payload/properties_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/worker_payload/worker_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
@@ -791,43 +791,50 @@ mixin FarmUploadSummaryMixin {
       final messages = <Message>[];
       final futures = <Future<void>>[];
 
-      final rteSpeciesRegisters =
-          await cmoDatabaseMasterService.getUnsyncedRteSpeciesByFarmId(mFarmId);
-
-      final mainRteSpeciesRegisterPayLoad = <MainRteSpeciesRegisterPayLoad>[];
+      final rteSpeciesRegisters = await cmoDatabaseMasterService.getUnsyncedRteSpeciesByFarmId(mFarmId);
 
       for (final item in rteSpeciesRegisters) {
         final rteSpeciesPhotos = await cmoDatabaseMasterService
-            .getAllRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
-                item.rteSpeciesRegisterNo ?? '');
-
-        mainRteSpeciesRegisterPayLoad.add(MainRteSpeciesRegisterPayLoad(
-            Register: item.toPayLoad(),
-            Photos: rteSpeciesPhotos.map((e) {
-              if (e.rteSpeciesId == null) {
-                return e
-                    .copyWith(
-                        rteSpeciesId: '00000000-0000-0000-0000-000000000000')
-                    .toPayLoad();
-              }
-
-              return e.toPayLoad();
-            }).toList()));
+            .getUnsyncedRteSpeciesRegisterPhotoByRteSpeciesRegisterNo(
+          item.rteSpeciesRegisterNo,
+        );
 
         for (final photo in rteSpeciesPhotos) {
-          futures.add(cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(
-              photo.copyWith(isMasterdataSynced: true)));
+          futures.add(
+            cmoDatabaseMasterService.cacheRteSpeciesPhotoModel(
+              photo.copyWith(isMasterdataSynced: true),
+            ),
+          );
         }
-      }
 
-      for (final item in mainRteSpeciesRegisterPayLoad) {
-        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
+        messages.add(
+          globalMessage.copyWith(
+            body: jsonEncode(
+              RteSpeciesRegisterPayload(
+                register: item,
+                photos: rteSpeciesPhotos
+                    .map(
+                      (item) => item.copyWith(
+                        rteSpeciesRegisterId: item.rteSpeciesRegisterId ??
+                            '00000000-0000-0000-0000-000000000000',
+                        photo: item.photo?.stringToBase64SyncServer,
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ),
+        );
       }
 
       if (_enableUpdateStatus) {
         for (final item in rteSpeciesRegisters) {
-          futures.add(cmoDatabaseMasterService.cacheRteSpeciesFromFarm(
-              item.copyWith(isMasterDataSynced: true)));
+          futures.add(
+            cmoDatabaseMasterService.cacheRteSpecies(
+              item.copyWith(isMasterDataSynced: true),
+              isDirect: false,
+            ),
+          );
         }
       }
 

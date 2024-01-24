@@ -71,7 +71,7 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: FocusManager.instance.primaryFocus?.unfocus,
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         appBar: CmoAppBar(
           title: widget.isEditing

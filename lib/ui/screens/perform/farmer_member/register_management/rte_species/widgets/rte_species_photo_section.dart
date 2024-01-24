@@ -19,7 +19,7 @@ class RteSpeciesPhotoSection extends StatelessWidget {
   });
 
   final void Function() navigateToCamera;
-  final void Function(RteSpeciesPhotoModel) onRemove;
+  final void Function(RteSpeciesRegisterPhoto) onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +103,7 @@ class RteSpeciesPhotoSection extends StatelessWidget {
 }
 
 class RteSpeciesPhotoItem extends StatelessWidget {
-  final RteSpeciesPhotoModel rteSpeciesPhotoModel;
+  final RteSpeciesRegisterPhoto rteSpeciesPhotoModel;
   final void Function()? onRemoved;
 
   const RteSpeciesPhotoItem({

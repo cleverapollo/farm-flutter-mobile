@@ -16,9 +16,6 @@ abstract class Env {
   @EnviedField(varName: 'GOOGLE_PLACE_API_KEY', obfuscate: true)
   static final googlePlaceApiKey = _Env.googlePlaceApiKey;
 
-  @EnviedField(varName: 'VERSION', obfuscate: true)
-  static final version = _Env.version;
-
   @EnviedField(varName: 'ENV', obfuscate: true)
   static final env = _Env.env;
 
@@ -51,9 +48,6 @@ abstract class Env {
 
   @EnviedField(varName: 'BEHAVE_DNN_API_URL', obfuscate: true)
   static final behaveDnnApiUrl = _Env.behaveDnnApiUrl;
-
-  @EnviedField(varName: 'PERFORM_DNN_API_URL', obfuscate: true)
-  static final performDnnApiUrl = _Env.performDnnApiUrl;
 
   @EnviedField(varName: 'DB_SCHEMA_VERSION', obfuscate: true)
   static final dbSchemaVersion = _Env.dbSchemaVersion;

@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
@@ -12,9 +13,11 @@ class RteSpeciesCubit extends HydratedCubit<RteSpeciesState> {
 
   Future<void> init() async {
     final activeFarm = await configService.getActiveFarm();
+    final groupSchemeMasterSpecies = await cmoDatabaseMasterService.getAllGroupSchemeMasterSpecies();
     emit(
       state.copyWith(
         activeFarm: activeFarm,
+        groupSchemeMasterSpecies: groupSchemeMasterSpecies,
       ),
     );
 
@@ -54,7 +57,7 @@ class RteSpeciesCubit extends HydratedCubit<RteSpeciesState> {
         final filteredItems = state.listRteSpecies
             .where(
               (element) =>
-                  element.commonName
+                  element.rteSpeciesRegisterNo
                       ?.toLowerCase()
                       .contains(searchText.toLowerCase()) ??
                   false,
@@ -73,6 +76,28 @@ class RteSpeciesCubit extends HydratedCubit<RteSpeciesState> {
     } finally {
       emit(state.copyWith(loading: false));
     }
+  }
+
+  String getCommonName(RteSpecies item) {
+    return state.groupSchemeMasterSpecies
+            .firstWhereOrNull(
+              (element) =>
+                  element.groupSchemeMasterSpeciesId ==
+                  item.groupSchemeMasterSpeciesId,
+            )
+            ?.commonName ??
+        '';
+  }
+
+  String getSpeciesTypeName(RteSpecies item) {
+    return state.groupSchemeMasterSpecies
+            .firstWhereOrNull(
+              (element) =>
+                  element.groupSchemeMasterSpeciesId ==
+                  item.groupSchemeMasterSpeciesId,
+            )
+            ?.animalTypeName ??
+        '';
   }
 
   @override
