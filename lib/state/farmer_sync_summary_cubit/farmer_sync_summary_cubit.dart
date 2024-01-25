@@ -103,6 +103,11 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       logger.d('--Farmer Sync Data start');
       await cmoDatabaseMasterService.deleteAll();
       await Future.delayed(const Duration(seconds: 2));
+
+      logger.d('--createSubscriptions');
+      await createSubscriptions();
+      logger.d('--createSubscriptions done');
+
       logger.d('--createFarmerSystemEvent');
       await cmoPerformApiService.createSystemEvent(
         systemEventName: 'SyncGSMasterData',
@@ -110,10 +115,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         userDeviceId: userDeviceId,
       );
       logger.d('--createFarmerSystemEvent done');
-
-      logger.d('--createSubscriptions');
-      await createSubscriptions();
-      logger.d('--createSubscriptions done');
 
       logger.d('--insertByCallingAPI start');
       await insertByCallingAPI();
@@ -200,6 +201,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
   }
 
   Future<void> subscribeToSyncAllFarmerMasterData() async {
+    emit(state.copyWith(syncMessage: 'Syncing All Farmer Master Data...'));
     var sync = true;
     while (sync) {
       MasterDataMessage? resPull;
@@ -1722,6 +1724,8 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
   }
 
   Future<void> insertByCallingAPI() async {
+    emit(state.copyWith(syncMessage: 'Syncing By Calling API...'));
+
     final dbCompany = await cmoDatabaseMasterService.db;
     await dbCompany.writeTxn(() async {
       logger.d('--insertJobDescription start');

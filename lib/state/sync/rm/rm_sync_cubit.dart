@@ -240,7 +240,12 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       );
 
       logger.d('--RM Sync Onboarding Data start');
-      logger.d('--createRMSystemEvent');
+
+      logger.d('--createSubscriptions start');
+      await createSubscriptions();
+      logger.d('--createSubscriptions done');
+
+      logger.d('--createRMSystemEvent start');
       await cmoPerformApiService.createSystemEvent(
         systemEventName: 'SyncGSRegionalManagerMasterData',
         primaryKey: rmuId.toString(),
@@ -248,19 +253,15 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       );
       logger.d('--createRMSystemEvent done');
 
-      logger.d('--createSubscriptions');
-      await createSubscriptions();
-      logger.d('--createSubscriptions done');
-
       logger.d('--insertByCallingAPI start');
       await insertByCallingAPI();
       logger.d('--insertByCallingAPI done');
 
-      logger.d('--syncRegionalManagerMasterData');
+      logger.d('--syncRegionalManagerMasterData start');
       await syncRegionalManagerMasterData();
       logger.d('--syncRegionalManagerMasterData done');
 
-      logger.d('--syncRegionalManagerUnitMasterData');
+      logger.d('--syncRegionalManagerUnitMasterData start');
       await syncRegionalManagerUnitMasterData();
       logger.d('--syncRegionalManagerUnitMasterData done');
 
@@ -272,6 +273,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         ),
       );
 
+      logger.d('--RM Sync Onboarding Data done');
       await Future.delayed(const Duration(milliseconds: 500), () {});
       await configService.setRMSynced(isSynced: true);
       if (context.mounted) CmoDashboardBase.push(context);
@@ -1242,6 +1244,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> syncRegionalManagerMasterData() async {
+    emit(state.copyWith(syncMessage: 'Syncing Regional Manager Master Data...'));
     var sync = true;
     var hasData = false;
     while (sync) {
@@ -1368,6 +1371,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> syncRegionalManagerUnitMasterData() async {
+    emit(state.copyWith(syncMessage: 'Syncing Regional Manager Unit Master Data...'));
     var sync = true;
     while (sync) {
       MasterDataMessage? resPull;

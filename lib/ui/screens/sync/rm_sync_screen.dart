@@ -12,6 +12,14 @@ class RMSyncScreen extends StatelessWidget {
     super.key,
   });
 
+  static Future<void> push(BuildContext context) {
+    return Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const RMSyncScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
