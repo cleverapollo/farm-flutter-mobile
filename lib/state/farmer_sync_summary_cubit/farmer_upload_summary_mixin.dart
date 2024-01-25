@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
-import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
@@ -14,7 +13,6 @@ import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_acc
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_asi_register_payload/main_asi_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_pests_and_diseases_register_payload/main_pests_and_diseases_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/properties_payload/properties_payload.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/worker_payload/worker_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farmer_sync_summary_state.dart';
 import 'package:cmo/utils/logger.dart';
 
@@ -110,22 +108,19 @@ mixin FarmUploadSummaryMixin {
       final workers = await cmoDatabaseMasterService
           .getUnsyncedWorkersWithJobDescriptionsByFarmId(mFarmId);
 
-      final workerPayLoads = <FarmWorkerPayload>[];
-
       for (final worker in workers) {
-        var workerPayLoad = const FarmWorkerPayload();
-
         final workerJobDescriptions = await cmoDatabaseMasterService
             .getWorkerJobDescriptionByWorkerId(worker.workerId ?? '');
 
-        final workerJobDescriptionPayLoads =
-            workerJobDescriptions.map((e) => e.toPayLoad()).toList();
+        final workerJobDescriptionPayLoads = workerJobDescriptions.map((e) => e.toPayLoad()).toList();
 
-        workerPayLoad = worker
-            .toPayLoad()
-            .copyWith(JobDescriptions: workerJobDescriptionPayLoads);
-
-        workerPayLoads.add(workerPayLoad);
+        messages.add(
+          globalMessage.copyWith(
+            body: jsonEncode(
+              worker.copyWith(jobDescriptions: workerJobDescriptionPayLoads),
+            ),
+          ),
+        );
 
         if (_enableUpdateStatus) {
           futures.add(cmoDatabaseMasterService
@@ -133,9 +128,9 @@ mixin FarmUploadSummaryMixin {
         }
       }
 
-      for (final item in workerPayLoads) {
-        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
-      }
+      // for (final item in workerPayLoads) {
+      //   messages.add(globalMessage.copyWith(body: jsonEncode(item)));
+      // }
 
       futures.add(cmoPerformApiService.public(
         currentClientId: mUserDeviceId.toString(),

@@ -2,13 +2,17 @@ part of 'labour_detail_cubit.dart';
 
 class LabourDetailState {
   const LabourDetailState({
-    this.farmerWorker,
+    required this.farmerWorker,
     this.listJobDescriptions = const <JobDescription>[],
     this.filterJobDescriptions = const <JobDescription>[],
     this.loading = false,
     this.error,
     this.activeFarm,
     this.listWorkerJobDescriptions = const <WorkerJobDescription>[],
+    this.isFirstNameError = false,
+    this.isLastNameNameError = false,
+    this.isIdNumberError = false,
+    this.isPhoneNumberError = false,
   });
 
   final Object? error;
@@ -17,7 +21,11 @@ class LabourDetailState {
   final List<JobDescription> filterJobDescriptions;
   final Farm? activeFarm;
   final List<WorkerJobDescription> listWorkerJobDescriptions;
-  final FarmerWorker? farmerWorker;
+  final FarmerWorker farmerWorker;
+  final bool isFirstNameError;
+  final bool isLastNameNameError;
+  final bool isIdNumberError;
+  final bool isPhoneNumberError;
 
   LabourDetailState copyWith({
     FarmerWorker? farmerWorker,
@@ -27,6 +35,10 @@ class LabourDetailState {
     List<JobDescription>? filterJobDescriptions,
     Farm? activeFarm,
     List<WorkerJobDescription>? listWorkerJobDescriptions,
+    bool? isFirstNameError,
+    bool? isLastNameNameError,
+    bool? isIdNumberError,
+    bool? isPhoneNumberError,
   }) {
     return LabourDetailState(
       farmerWorker: farmerWorker ?? this.farmerWorker,
@@ -36,8 +48,11 @@ class LabourDetailState {
       filterJobDescriptions:
       filterJobDescriptions ?? this.filterJobDescriptions,
       activeFarm: activeFarm ?? this.activeFarm,
-      listWorkerJobDescriptions:
-      listWorkerJobDescriptions ?? this.listWorkerJobDescriptions,
+      listWorkerJobDescriptions: listWorkerJobDescriptions ?? this.listWorkerJobDescriptions,
+      isFirstNameError: isFirstNameError ?? this.isFirstNameError,
+      isLastNameNameError: isLastNameNameError ?? this.isLastNameNameError,
+      isIdNumberError: isIdNumberError ?? this.isIdNumberError,
+      isPhoneNumberError: isPhoneNumberError ?? this.isPhoneNumberError,
     );
   }
 }

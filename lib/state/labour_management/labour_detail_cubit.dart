@@ -9,28 +9,37 @@ part 'labour_detail_state.dart';
 
 class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   LabourDetailCubit(FarmerWorker? farmerWorker)
-      : super(const LabourDetailState()) {
-    init(farmerWorker);
+      : super(
+          LabourDetailState(
+            farmerWorker: farmerWorker ??
+                FarmerWorker(
+                  createDT: DateTime.now(),
+                  updateDT: DateTime.now(),
+                  workerId: DateTime.now().millisecondsSinceEpoch.toString(),
+                  isActive: 1,
+                  isLocal: 1,
+                ),
+          ),
+        ) {
+    init();
   }
 
-  Future<void> init(FarmerWorker? farmerWorker) async {
+  Future<void> init() async {
     emit(state.copyWith(loading: true));
     try {
       final activeFarm = await configService.getActiveFarm();
       final data = await cmoDatabaseMasterService.getJobDescriptions();
-      final selectedWorkerJobDescriptions = await cmoDatabaseMasterService.getWorkerJobDescriptionByWorkerId(farmerWorker?.workerId ?? '');
+      final selectedWorkerJobDescriptions = await cmoDatabaseMasterService
+          .getWorkerJobDescriptionByWorkerId(state.farmerWorker.workerId);
       emit(
         state.copyWith(
           activeFarm: activeFarm,
           listJobDescriptions: data,
           filterJobDescriptions: data,
           listWorkerJobDescriptions: selectedWorkerJobDescriptions,
-          farmerWorker: farmerWorker ??
-              FarmerWorker(
-                farmId: activeFarm?.farmId,
-                createDT: DateTime.now().millisecondsSinceEpoch.toString(),
-                workerId: DateTime.now().millisecondsSinceEpoch.toString(),
-              ),
+          farmerWorker: state.farmerWorker.copyWith(
+            farmId: state.farmerWorker.farmId ?? activeFarm?.farmId,
+          ),
         ),
       );
     } catch (e) {
@@ -41,6 +50,77 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
     }
   }
 
+  void onChangeDateOfBirth(DateTime? dateTime) {
+    if (dateTime != null) {
+      emit(
+        state.copyWith(
+          farmerWorker: state.farmerWorker.copyWith(
+            dateOfBirth: dateTime.toIso8601String(),
+          ),
+        ),
+      );
+    }
+  }
+
+  void onChangeFirstName(String? inputValue) {
+    emit(
+      state.copyWith(
+        farmerWorker: state.farmerWorker.copyWith(
+          firstName: inputValue,
+        ),
+      ),
+    );
+  }
+
+  void onChangeSecondFirstName(String? inputValue) {
+    emit(
+      state.copyWith(
+        farmerWorker: state.farmerWorker.copyWith(
+          surname: inputValue,
+        ),
+      ),
+    );
+  }
+
+  void onChangeSurname(String? inputValue) {
+    emit(
+      state.copyWith(
+        farmerWorker: state.farmerWorker.copyWith(
+          surname: inputValue,
+        ),
+      ),
+    );
+  }
+
+  void onChangeSecondSurname(String? inputValue) {
+    emit(
+      state.copyWith(
+        farmerWorker: state.farmerWorker.copyWith(
+          firstName: inputValue,
+        ),
+      ),
+    );
+  }
+
+  void onChangeIdNumber(String? inputValue) {
+    emit(
+      state.copyWith(
+        farmerWorker: state.farmerWorker.copyWith(
+          idNumber: inputValue,
+        ),
+      ),
+    );
+  }
+
+  void onChangeDriveLicenseNumber(String? inputValue) {
+    emit(
+      state.copyWith(
+        farmerWorker: state.farmerWorker.copyWith(
+          driverLicenseNumber: inputValue,
+        ),
+      ),
+    );
+  }
   void searchJobDescription(String? searchText) {
     emit(state.copyWith(loading: true));
     try {

@@ -9,17 +9,17 @@ import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/labour_management/labour_detail_cubit.dart';
 import 'package:cmo/state/labour_management/labour_management_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_worker/job_description/farmer_add_worker_select_job_description.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_worker/widgets/farmer_add_worker_upload_avatar.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_worker/widgets/farmer_select_gender_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/job_description/farmer_add_worker_select_job_description.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/widgets/farmer_add_worker_upload_avatar.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/widgets/farmer_select_gender_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FarmerAddWorkerScreen extends BaseStatefulWidget {
-  FarmerAddWorkerScreen({super.key, this.farmerWorker, this.isEditing = false})
+class LabourDetailScreen extends BaseStatefulWidget {
+  LabourDetailScreen({super.key, this.farmerWorker, this.isEditing = false})
       : super(
           screenName: isEditing
               ? LocaleKeys.labour_detail.tr()
@@ -30,7 +30,7 @@ class FarmerAddWorkerScreen extends BaseStatefulWidget {
   final bool isEditing;
 
   @override
-  State<StatefulWidget> createState() => _FarmerAddWorkerScreenState();
+  State<StatefulWidget> createState() => _LabourDetailScreenState();
 
   static Future<dynamic> push(
     BuildContext context, {
@@ -41,7 +41,7 @@ class FarmerAddWorkerScreen extends BaseStatefulWidget {
       MaterialPageRoute(
         builder: (_) => BlocProvider(
           create: (_) => LabourDetailCubit(farmerWorker),
-          child: FarmerAddWorkerScreen(
+          child: LabourDetailScreen(
             isEditing: farmerWorker != null,
             farmerWorker: farmerWorker,
           ),
@@ -51,7 +51,10 @@ class FarmerAddWorkerScreen extends BaseStatefulWidget {
   }
 }
 
-class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorkerScreen> {
+class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScreen> {
+
+  late LabourDetailCubit cubit;
+
   final isAllValid = ValueNotifier<bool>(false);
 
   bool loading = false;
@@ -64,7 +67,7 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
   Future<void> onSubmit() async {
 
     if (farmerWorker.isUnder16()) {
-      showSnackError(msg: 'Labour cannot under 16 years old');
+      showSnackError(msg: LocaleKeys.error_message_labour_under_16.tr());
       return;
     }
 
@@ -99,9 +102,9 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
               await databaseService.cacheWorkerFromFarm(farmerWorker.copyWith(
             genderId: farmerWorker.genderId ?? 1,
             isLocal: 1,
-            isActive: true,
-            createDT: farmerWorker.createDT ?? DateTime.now().toIso8601String(),
-            updateDT: DateTime.now().toIso8601String(),
+            isActive: 1,
+            createDT: farmerWorker.createDT ?? DateTime.now(),
+            updateDT: DateTime.now(),
           ));
 
           if (context.mounted) {
@@ -127,13 +130,14 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
   @override
   void initState() {
     super.initState();
+    cubit = context.read<LabourDetailCubit>();
     if (widget.isEditing && widget.farmerWorker != null) {
       farmerWorker = widget.farmerWorker!;
       _validate(isInit: true);
     } else {
       farmerWorker = FarmerWorker(
         farmId: context.read<LabourManagementCubit>().state.activeFarm?.farmId,
-        createDT: widget.farmerWorker?.createDT ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        createDT: widget.farmerWorker?.createDT ?? DateTime.now(),
         workerId: DateTime.now().millisecondsSinceEpoch.toString(),
       );
     }
@@ -226,62 +230,103 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AttributeItem(
-              child: InputAttributeItem(
-                labelText: LocaleKeys.firstName.tr(),
-                labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                textStyle: context.textStyles.bodyNormal.blueDark2,
-                initialValue: farmerWorker.firstName,
-                onChanged: (value) {
-                  _validateFirstName = value;
-                  farmerWorker = farmerWorker.copyWith(firstName: value);
-                  _validate();
-                },
-              ),
+            BlocBuilder<LabourDetailCubit, LabourDetailState>(
+              builder: (context, state) {
+                return AttributeItem(
+                  isShowError: state.isFirstNameError,
+                  isUnderErrorBorder: true,
+                  child: InputAttributeItem(
+                    labelText: LocaleKeys.firstName.tr(),
+                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                    initialValue: state.farmerWorker.firstName,
+                    onChanged: cubit.onChangeFirstName,
+                    // onChanged: (value) {
+                    //   _validateFirstName = value;
+                    //   farmerWorker = farmerWorker.copyWith(firstName: value);
+                    //   _validate();
+                    // },
+                  ),
+                );
+              },
             ),
-            AttributeItem(
-              child: InputAttributeItem(
-                labelText: LocaleKeys.lastName.tr(),
-                labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                textStyle: context.textStyles.bodyNormal.blueDark2,
-                initialValue: farmerWorker.surname,
-                onChanged: (value) {
-                  _validateLastName = value;
-                  farmerWorker = farmerWorker.copyWith(surname: value);
-                  _validate();
-                },
-              ),
+            BlocBuilder<LabourDetailCubit, LabourDetailState>(
+              builder: (context, state) {
+                return AttributeItem(
+                  isShowError: state.isLastNameNameError,
+                  isUnderErrorBorder: true,
+                  child: InputAttributeItem(
+                    labelText: LocaleKeys.lastName.tr(),
+                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                    initialValue: state.farmerWorker.surname,
+                    onChanged: cubit.onChangeSurname,
+                    // onChanged: (value) {
+                    //   _validateLastName = value;
+                    //   farmerWorker = farmerWorker.copyWith(surname: value);
+                    //   _validate();
+                    // },
+                  ),
+                );
+              },
             ),
             _buildSelectBirth(),
-            _buildJobDescription(),
-            AttributeItem(
-              child: InputAttributeItem(
-                keyboardType: TextInputType.name,
-                inputFormatters: [UpperCaseTextFormatter()],
-                labelText: LocaleKeys.idNumber.tr(),
-                labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                textStyle: context.textStyles.bodyNormal.blueDark2,
-                initialValue: farmerWorker.idNumber,
-                onChanged: (value) {
-                  _validateIdNumber = value;
-                  farmerWorker = farmerWorker.copyWith(idNumber: value);
-                  _validate();
-                },
-              ),
+            BlocBuilder<LabourDetailCubit, LabourDetailState>(
+              builder: (context, state) {
+                return AttributeItem(
+                  child: InputAttributeItem(
+                    keyboardType: TextInputType.number,
+                    initialValue: state.farmerWorker.driverLicenseNumber,
+                    labelText: LocaleKeys.drive_license_number.tr(),
+                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                    onChanged: cubit.onChangeDriveLicenseNumber,
+                  ),
+                );
+              },
             ),
-            AttributeItem(
-              child: InputAttributeItem(
-                keyboardType: TextInputType.number,
-                initialValue: farmerWorker.phoneNumber,
-                labelText: LocaleKeys.phoneNumber.tr(),
-                labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                textStyle: context.textStyles.bodyNormal.blueDark2,
-                onChanged: (value) {
-                  _validatePhoneNumber = value;
-                  farmerWorker = farmerWorker.copyWith(phoneNumber: value);
-                  _validate();
-                },
-              ),
+            _buildJobDescription(),
+            BlocBuilder<LabourDetailCubit, LabourDetailState>(
+              builder: (context, state) {
+                return AttributeItem(
+                  isShowError: state.isIdNumberError,
+                  isUnderErrorBorder: true,
+                  child: InputAttributeItem(
+                    keyboardType: TextInputType.name,
+                    inputFormatters: [UpperCaseTextFormatter()],
+                    labelText: LocaleKeys.idNumber.tr(),
+                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                    initialValue: state.farmerWorker.idNumber,
+                    onChanged: cubit.onChangeIdNumber,
+                    // onChanged: (value) {
+                    //   _validateIdNumber = value;
+                    //   farmerWorker = farmerWorker.copyWith(idNumber: value);
+                    //   _validate();
+                    // },
+                  ),
+                );
+              },
+            ),
+            BlocBuilder<LabourDetailCubit, LabourDetailState>(
+              builder: (context, state) {
+                return AttributeItem(
+                  isShowError: state.isPhoneNumberError,
+                  isUnderErrorBorder: true,
+                  child: InputAttributeItem(
+                    keyboardType: TextInputType.number,
+                    initialValue: farmerWorker.phoneNumber,
+                    labelText: LocaleKeys.phoneNumber.tr(),
+                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                    onChanged: (value) {
+                      _validatePhoneNumber = value;
+                      farmerWorker = farmerWorker.copyWith(phoneNumber: value);
+                      _validate();
+                    },
+                  ),
+                );
+              },
             ),
             FarmerSelectGenderWidget(
               initialValue: farmerWorker.genderId,
@@ -305,30 +350,35 @@ class _FarmerAddWorkerScreenState extends BaseStatefulWidgetState<FarmerAddWorke
           lastDate: DateTime.now(),
         );
 
-        if (date != null) {
-          setState(() {
-            farmerWorker =
-                farmerWorker.copyWith(dateOfBirth: date.toIso8601String());
-          });
-        }
+        cubit.onChangeDateOfBirth(date);
+        // if (date != null) {
+        //   setState(() {
+        //     farmerWorker =
+        //         farmerWorker.copyWith(dateOfBirth: date.toIso8601String());
+        //   });
+        // }
       },
-      child: AttributeItem(
-        child: SelectorAttributeItem(
-          hintText: '',
-          text: farmerWorker.dateOfBirth.isBlank
-              ? LocaleKeys.yyyy_mm_dd.tr()
-              : DateTime.tryParse(farmerWorker.dateOfBirth!).yMd(),
-          labelText: LocaleKeys.dateOfBirth.tr(),
-          labelStyle: context.textStyles.bodyBold.blueDark2,
-          textStyle: farmerWorker.dateOfBirth.isBlank
-              ? context.textStyles.bodyNormal.grey
-              : context.textStyles.bodyNormal.blueDark2,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
-          ),
-          trailing: Assets.icons.icCalendar.svgBlack,
-        ),
+      child: BlocBuilder<LabourDetailCubit, LabourDetailState>(
+        builder: (context, state) {
+          return AttributeItem(
+            child: SelectorAttributeItem(
+              hintText: '',
+              text: state.farmerWorker.dateOfBirth.isBlank
+                  ? LocaleKeys.yyyy_mm_dd.tr()
+                  : DateTime.tryParse(state.farmerWorker.dateOfBirth!).yMd(),
+              labelText: LocaleKeys.dateOfBirth.tr(),
+              labelStyle: context.textStyles.bodyBold.blueDark2,
+              textStyle: state.farmerWorker.dateOfBirth.isBlank
+                  ? context.textStyles.bodyNormal.grey
+                  : context.textStyles.bodyNormal.blueDark2,
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 12,
+              ),
+              trailing: Assets.icons.icCalendar.svgBlack,
+            ),
+          );
+        },
       ),
     );
   }
