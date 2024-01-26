@@ -29,6 +29,7 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
           isActive: true,
           createDT: DateTime.now(),
           updateDT: DateTime.now(),
+          inclusionDate: DateTime.now().toString(),
         ),
       ),
     );
@@ -606,6 +607,7 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
           farm: state.farm?.copyWith(
             isGroupSchemeMember: true,
             isProspectMember: true,
+            updateDT: DateTime.now(),
           ),
         ),
       );

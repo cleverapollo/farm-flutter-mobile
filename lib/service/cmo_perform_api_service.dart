@@ -644,6 +644,9 @@ class CmoPerformApiService {
     try {
       final response = await client.get<JsonListData>(
         '${Env.apiGroupSchemeUrl}GetAsiRegisterByRMUser',
+        queryParameters: {
+          'isActive': true,
+        },
         options: Options(headers: {'accessToken': 'true'}),
       );
 
