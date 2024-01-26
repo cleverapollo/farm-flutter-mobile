@@ -8,7 +8,7 @@ class LabourDetailState {
     this.loading = false,
     this.error,
     this.activeFarm,
-    this.listWorkerJobDescriptions = const <WorkerJobDescription>[],
+    this.selectedWorkerJobDescriptions = const <WorkerJobDescription>[],
     this.isFirstNameError = false,
     this.isLastNameNameError = false,
     this.isIdNumberError = false,
@@ -20,7 +20,7 @@ class LabourDetailState {
   final List<JobDescription> listJobDescriptions;
   final List<JobDescription> filterJobDescriptions;
   final Farm? activeFarm;
-  final List<WorkerJobDescription> listWorkerJobDescriptions;
+  final List<WorkerJobDescription> selectedWorkerJobDescriptions;
   final FarmerWorker farmerWorker;
   final bool isFirstNameError;
   final bool isLastNameNameError;
@@ -34,7 +34,7 @@ class LabourDetailState {
     List<JobDescription>? listJobDescriptions,
     List<JobDescription>? filterJobDescriptions,
     Farm? activeFarm,
-    List<WorkerJobDescription>? listWorkerJobDescriptions,
+    List<WorkerJobDescription>? selectedWorkerJobDescriptions,
     bool? isFirstNameError,
     bool? isLastNameNameError,
     bool? isIdNumberError,
@@ -48,7 +48,7 @@ class LabourDetailState {
       filterJobDescriptions:
       filterJobDescriptions ?? this.filterJobDescriptions,
       activeFarm: activeFarm ?? this.activeFarm,
-      listWorkerJobDescriptions: listWorkerJobDescriptions ?? this.listWorkerJobDescriptions,
+      selectedWorkerJobDescriptions: selectedWorkerJobDescriptions ?? this.selectedWorkerJobDescriptions,
       isFirstNameError: isFirstNameError ?? this.isFirstNameError,
       isLastNameNameError: isLastNameNameError ?? this.isLastNameNameError,
       isIdNumberError: isIdNumberError ?? this.isIdNumberError,

@@ -8,7 +8,9 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 part 'labour_management_state.dart';
 
 class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
-  LabourManagementCubit() : super(const LabourManagementState());
+  LabourManagementCubit() : super(const LabourManagementState()) {
+    init();
+  }
 
   Future<void> init() async {
     final activeFarm = await configService.getActiveFarm();
@@ -29,26 +31,6 @@ class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
         state.copyWith(
           listWorkers: data,
           filterWorkers: data,
-        ),
-      );
-    } catch (e) {
-      emit(state.copyWith(error: e));
-      showSnackError(msg: e.toString());
-    } finally {
-      emit(state.copyWith(loading: false));
-    }
-  }
-
-  Future<void> loadListJobDescriptions() async {
-    emit(state.copyWith(loading: true));
-    try {
-      final service = cmoDatabaseMasterService;
-      final data = await service.getJobDescriptions();
-
-      emit(
-        state.copyWith(
-          listJobDescriptions: data,
-          filterJobDescriptions: data,
         ),
       );
     } catch (e) {
@@ -86,40 +68,6 @@ class LabourManagementCubit extends HydratedCubit<LabourManagementState> {
         emit(
           state.copyWith(
             filterWorkers: filteredItems,
-          ),
-        );
-      }
-    } catch (e) {
-      emit(state.copyWith(error: e));
-      showSnackError(msg: e.toString());
-    } finally {
-      emit(state.copyWith(loading: false));
-    }
-  }
-
-  void searchJobDescription(String? searchText) {
-    emit(state.copyWith(loading: true));
-    try {
-      if (searchText == null || searchText.isEmpty) {
-        emit(
-          state.copyWith(
-            filterJobDescriptions: state.listJobDescriptions,
-          ),
-        );
-      } else {
-        final filteredItems = state.listJobDescriptions
-            .where(
-              (element) =>
-                  element.jobDescriptionName
-                      ?.toLowerCase()
-                      .contains(searchText.toLowerCase()) ??
-                  false,
-            )
-            .toList();
-
-        emit(
-          state.copyWith(
-            filterJobDescriptions: filteredItems,
           ),
         );
       }

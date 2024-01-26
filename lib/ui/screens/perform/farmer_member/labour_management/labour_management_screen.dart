@@ -4,7 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/labour_management/labour_management_cubit.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/labour_management/farmer_add_worker/farmer_add_worker_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/labour_detail_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/widgets/labour_management_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,11 @@ class LabourManagementScreen extends BaseStatefulWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => LabourManagementScreen(),
+        builder: (_) => BlocProvider(
+          create: (_) => LabourManagementCubit(),
+          child: LabourManagementScreen(
+          ),
+        ),
       ),
     );
   }
@@ -29,13 +33,6 @@ class LabourManagementScreen extends BaseStatefulWidget {
 class _LabourManagementScreenState extends BaseStatefulWidgetState<LabourManagementScreen> {
   Timer? _debounceInputTimer;
 
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      context.read<LabourManagementCubit>().init();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +45,7 @@ class _LabourManagementScreenState extends BaseStatefulWidgetState<LabourManagem
         leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icUpdatedAddButton.svgBlack,
-        onTapTrailing: () => FarmerAddWorkerScreen.push(context),
+        onTapTrailing: () => LabourDetailScreen.push(context),
       ),
       body: Column(
         children: [
@@ -92,7 +89,7 @@ class _LabourManagementScreenState extends BaseStatefulWidgetState<LabourManagem
                       },
                       child: LabourManagementItem(
                         farmerWorker: filterWorkers[index],
-                        onTap: () => FarmerAddWorkerScreen.push(
+                        onTap: () => LabourDetailScreen.push(
                           context,
                           farmerWorker: filterWorkers[index],
                         ),

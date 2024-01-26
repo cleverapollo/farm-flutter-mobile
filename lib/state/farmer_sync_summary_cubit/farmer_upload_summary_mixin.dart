@@ -112,19 +112,17 @@ mixin FarmUploadSummaryMixin {
         final workerJobDescriptions = await cmoDatabaseMasterService
             .getWorkerJobDescriptionByWorkerId(worker.workerId ?? '');
 
-        final workerJobDescriptionPayLoads = workerJobDescriptions.map((e) => e.toPayLoad()).toList();
-
         messages.add(
           globalMessage.copyWith(
             body: jsonEncode(
-              worker.copyWith(jobDescriptions: workerJobDescriptionPayLoads),
+              worker.copyWith(jobDescriptions: workerJobDescriptions),
             ),
           ),
         );
 
         if (_enableUpdateStatus) {
           futures.add(cmoDatabaseMasterService
-              .cacheWorkerFromFarm(worker.copyWith(isLocal: 0)));
+              .cacheWorkerFromFarm(worker.copyWith(isLocal: false)));
         }
       }
 

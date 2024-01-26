@@ -40,8 +40,7 @@ class LabourManagementState {
       filterJobDescriptions:
           filterJobDescriptions ?? this.filterJobDescriptions,
       activeFarm: activeFarm ?? this.activeFarm,
-      listWorkerJobDescriptions:
-          listWorkerJobDescriptions ?? this.listWorkerJobDescriptions,
+      listWorkerJobDescriptions: listWorkerJobDescriptions ?? this.listWorkerJobDescriptions,
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/worker_job_description_payload/worker_job_description_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -25,18 +24,4 @@ class WorkerJobDescription with _$WorkerJobDescription {
 
   @override
   Id get id => workerJobDescriptionId ?? Isar.autoIncrement;
-}
-
-extension WorkerJobDescriptionX on WorkerJobDescription {
-  WorkerJobDescriptionPayLoad toPayLoad() {
-    return WorkerJobDescriptionPayLoad(
-      WorkerId: int.tryParse(workerId ?? ''),
-      WorkerJobDescriptionId: workerJobDescriptionId,
-      JobDescriptionId: jobDescriptionId,
-      JobDescriptionName: jobDescriptionName,
-      CreateDT: createDT,
-      UpdateDT: updateDT,
-      IsActive: isActive,
-    );
-  }
 }

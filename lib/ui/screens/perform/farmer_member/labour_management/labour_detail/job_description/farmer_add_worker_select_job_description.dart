@@ -4,7 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/job_description.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
-import 'package:cmo/state/labour_management/labour_management_cubit.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
@@ -66,9 +66,6 @@ class _FarmerStakeHolderSelectJobDescriptionState
               ))
           .toList(),
     );
-    Future.microtask(() async {
-      await context.read<LabourManagementCubit>().loadListJobDescriptions();
-    });
   }
 
   @override
@@ -93,15 +90,14 @@ class _FarmerStakeHolderSelectJobDescriptionState
                 _debounceInputTimer = Timer(
                   const Duration(milliseconds: 200),
                   () => context
-                      .read<LabourManagementCubit>()
+                      .read<LabourDetailCubit>()
                       .searchJobDescription(input),
                 );
               },
             ),
           ),
           Expanded(
-            child: BlocSelector<LabourManagementCubit, LabourManagementState,
-                List<JobDescription>>(
+            child: BlocSelector<LabourDetailCubit, LabourDetailState, List<JobDescription>>(
               selector: (state) => state.filterJobDescriptions,
               builder: (context, filterJobDescriptions) {
                 return Padding(

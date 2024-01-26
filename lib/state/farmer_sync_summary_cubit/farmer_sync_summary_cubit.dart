@@ -1821,7 +1821,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       final worker = FarmerWorker.fromJson(bodyJson);
       return cmoDatabaseMasterService
-          .cacheFarmerWorker(worker.copyWith(isLocal: 0));
+          .cacheFarmerWorker(worker.copyWith(isLocal: false));
     } catch (e) {
       logger.d('insert error: $e');
     }

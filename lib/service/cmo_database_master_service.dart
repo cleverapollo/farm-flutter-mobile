@@ -179,14 +179,16 @@ class CmoDatabaseMasterService {
     final farmWorkers = await db.farmerWorkers
         .filter()
         .farmIdEqualTo(farmId)
-        .isLocalEqualTo(1)
+        .isLocalEqualTo(true)
         .findAll();
 
     return farmWorkers;
   }
 
   Future<List<WorkerJobDescription>> getWorkerJobDescriptionByWorkerId(
-      String workerId) async {
+    String? workerId,
+  ) async {
+    if (workerId.isBlank) return <WorkerJobDescription>[];
     final db = await _db();
 
     final workerJobDescriptions = await db.workerJobDescriptions
@@ -2394,7 +2396,7 @@ class CmoDatabaseMasterService {
         .filter()
         .farmIdEqualTo(farmId)
         .isActiveEqualTo(true)
-        .isLocalEqualTo(1)
+        .isLocalEqualTo(true)
         .findAll();
   }
 

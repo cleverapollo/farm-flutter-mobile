@@ -55,110 +55,44 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
 
   late LabourDetailCubit cubit;
 
-  final isAllValid = ValueNotifier<bool>(false);
-
   bool loading = false;
 
-  late FarmerWorker farmerWorker;
+  Future<void> onSave() async {
+    await cubit.onSave(
+      onSuccess: (resultId) async {
+        if (context.mounted) {
+          showSnackSuccess(
+            msg:
+                '${widget.isEditing ? LocaleKeys.labour_detail.tr() : LocaleKeys.addLabour.tr()} $resultId',
+          );
 
-  final selectedWorkerJobDescriptions =
-      ValueNotifier<List<WorkerJobDescription>>([]);
-
-  Future<void> onSubmit() async {
-
-    if (farmerWorker.isUnder16()) {
-      showSnackError(msg: LocaleKeys.error_message_labour_under_16.tr());
-      return;
-    }
-
-    setState(() {
-      loading = true;
-    });
-
-      try {
-        await hideInputMethod();
-
-        int? resultId;
-
-        final futures = <Future<int?>>[];
-
-        final needDeleted = await cmoDatabaseMasterService
-            .deletedWorkerJobDescriptionByJobDescriptionId(
-                farmerWorker.workerId);
-
-        var count = await cmoDatabaseMasterService.getCountWorkerJobDescription();
-        count++;
-        for (final item in selectedWorkerJobDescriptions.value) {
-          futures.add(cmoDatabaseMasterService.cacheWorkerJobDescription(
-              item.copyWith(workerJobDescriptionId: count++)));
+          await context.read<LabourManagementCubit>().loadListWorkers();
+          await context.read<DashboardCubit>().refresh();
         }
 
-        final canNext = await Future.wait(futures);
-
-        if (mounted) {
-          final databaseService = cmoDatabaseMasterService;
-
-          resultId =
-              await databaseService.cacheWorkerFromFarm(farmerWorker.copyWith(
-            genderId: farmerWorker.genderId ?? 1,
-            isLocal: 1,
-            isActive: 1,
-            createDT: farmerWorker.createDT ?? DateTime.now(),
-            updateDT: DateTime.now(),
-          ));
-
-          if (context.mounted) {
-            showSnackSuccess(
-              msg: '${LocaleKeys.createWorker.tr()} $resultId',
-            );
-
-            await context.read<LabourManagementCubit>().loadListWorkers();
-            await context.read<DashboardCubit>().refresh();
-          }
-
-          if(context.mounted){
-            return Navigator.of(context).pop(farmerWorker);
-          }
+        if (context.mounted) {
+          Navigator.of(context).pop();
         }
-      } finally {
-        setState(() {
-          loading = false;
-        });
-      }
+      },
+    );
   }
 
   @override
   void initState() {
     super.initState();
     cubit = context.read<LabourDetailCubit>();
-    if (widget.isEditing && widget.farmerWorker != null) {
-      farmerWorker = widget.farmerWorker!;
-      _validate(isInit: true);
-    } else {
-      farmerWorker = FarmerWorker(
-        farmId: context.read<LabourManagementCubit>().state.activeFarm?.farmId,
-        createDT: widget.farmerWorker?.createDT ?? DateTime.now(),
-        workerId: DateTime.now().millisecondsSinceEpoch.toString(),
-      );
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      selectedWorkerJobDescriptions.value = await cmoDatabaseMasterService
-          .getWorkerJobDescriptionByWorkerId(farmerWorker.workerId ?? '');
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: FocusScope.of(context).unfocus,
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         appBar: CmoAppBar(
           title: widget.isEditing
               ? LocaleKeys.labour_detail.tr()
               : LocaleKeys.addLabour.tr(),
-          subtitle:
-              context.read<LabourManagementCubit>().state.activeFarm?.farmName,
+          subtitle: context.read<LabourDetailCubit>().state.activeFarm?.farmName,
           subtitleTextStyle: context.textStyles.bodyBold.blue,
           leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
@@ -168,16 +102,31 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
         body: SingleChildScrollView(
           child: Column(
             children: [
-              FarmerStakeHolderUploadAvatar(
-                photoUrl: farmerWorker.photo,
-                onSelectAvatar: (photoPath) {
-                  farmerWorker = farmerWorker.copyWith(
-                    photo: photoPath,
+              BlocBuilder<LabourDetailCubit, LabourDetailState>(
+                builder: (context, state) {
+                  return FarmerStakeHolderUploadAvatar(
+                    photoUrl: state.farmerWorker.photo,
+                    onSelectAvatar: cubit.onSelectAvatar,
                   );
                 },
               ),
               CmoHeaderTile(title: LocaleKeys.details.tr()),
-              _buildInputArea(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    firstNameWidget(),
+                    lastNameWidget(),
+                    selectBirth(),
+                    driverLicenseNumberWidget(),
+                    selectJobDescription(),
+                    idNumberWidget(),
+                    phoneNumberWidget(),
+                    selectGenderWidget(),
+                  ],
+                ),
+              ),
               const SizedBox(
                 height: 90,
               ),
@@ -185,13 +134,11 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: ValueListenableBuilder(
-          valueListenable: isAllValid,
-          builder: (context, canSave, __) {
+        floatingActionButton: BlocBuilder<LabourDetailCubit, LabourDetailState>(
+          builder: (context, state) {
             return CmoFilledButton(
-              disable: !canSave,
               title: LocaleKeys.save.tr(),
-              onTap: onSubmit,
+              onTap: onSave,
               loading: loading,
             );
           },
@@ -200,167 +147,124 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
     );
   }
 
-  String? _validateFirstName = '';
-  String? _validateLastName = '';
-  String? _validateIdNumber = '';
-  String? _validatePhoneNumber = '';
-
-  void _validate({bool isInit = false}) {
-    if (isInit) {
-      final isValid = !farmerWorker.firstName.isNullOrEmpty &&
-          !farmerWorker.surname.isNullOrEmpty &&
-          !farmerWorker.idNumber.isNullOrEmpty &&
-          !farmerWorker.phoneNumber.isNullOrEmpty;
-      isAllValid.value = isValid;
-      return;
-    }
-
-    final validate = _validateFirstName.isNullOrEmpty ||
-        _validateLastName.isNullOrEmpty ||
-        _validateIdNumber.isNullOrEmpty ||
-        _validatePhoneNumber.isNullOrEmpty;
-
-    isAllValid.value = !validate;
-  }
-
-  Widget _buildInputArea() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: AutofillGroup(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            BlocBuilder<LabourDetailCubit, LabourDetailState>(
-              builder: (context, state) {
-                return AttributeItem(
-                  isShowError: state.isFirstNameError,
-                  isUnderErrorBorder: true,
-                  child: InputAttributeItem(
-                    labelText: LocaleKeys.firstName.tr(),
-                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                    textStyle: context.textStyles.bodyNormal.blueDark2,
-                    initialValue: state.farmerWorker.firstName,
-                    onChanged: cubit.onChangeFirstName,
-                    // onChanged: (value) {
-                    //   _validateFirstName = value;
-                    //   farmerWorker = farmerWorker.copyWith(firstName: value);
-                    //   _validate();
-                    // },
-                  ),
-                );
-              },
-            ),
-            BlocBuilder<LabourDetailCubit, LabourDetailState>(
-              builder: (context, state) {
-                return AttributeItem(
-                  isShowError: state.isLastNameNameError,
-                  isUnderErrorBorder: true,
-                  child: InputAttributeItem(
-                    labelText: LocaleKeys.lastName.tr(),
-                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                    textStyle: context.textStyles.bodyNormal.blueDark2,
-                    initialValue: state.farmerWorker.surname,
-                    onChanged: cubit.onChangeSurname,
-                    // onChanged: (value) {
-                    //   _validateLastName = value;
-                    //   farmerWorker = farmerWorker.copyWith(surname: value);
-                    //   _validate();
-                    // },
-                  ),
-                );
-              },
-            ),
-            _buildSelectBirth(),
-            BlocBuilder<LabourDetailCubit, LabourDetailState>(
-              builder: (context, state) {
-                return AttributeItem(
-                  child: InputAttributeItem(
-                    keyboardType: TextInputType.number,
-                    initialValue: state.farmerWorker.driverLicenseNumber,
-                    labelText: LocaleKeys.drive_license_number.tr(),
-                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                    textStyle: context.textStyles.bodyNormal.blueDark2,
-                    onChanged: cubit.onChangeDriveLicenseNumber,
-                  ),
-                );
-              },
-            ),
-            _buildJobDescription(),
-            BlocBuilder<LabourDetailCubit, LabourDetailState>(
-              builder: (context, state) {
-                return AttributeItem(
-                  isShowError: state.isIdNumberError,
-                  isUnderErrorBorder: true,
-                  child: InputAttributeItem(
-                    keyboardType: TextInputType.name,
-                    inputFormatters: [UpperCaseTextFormatter()],
-                    labelText: LocaleKeys.idNumber.tr(),
-                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                    textStyle: context.textStyles.bodyNormal.blueDark2,
-                    initialValue: state.farmerWorker.idNumber,
-                    onChanged: cubit.onChangeIdNumber,
-                    // onChanged: (value) {
-                    //   _validateIdNumber = value;
-                    //   farmerWorker = farmerWorker.copyWith(idNumber: value);
-                    //   _validate();
-                    // },
-                  ),
-                );
-              },
-            ),
-            BlocBuilder<LabourDetailCubit, LabourDetailState>(
-              builder: (context, state) {
-                return AttributeItem(
-                  isShowError: state.isPhoneNumberError,
-                  isUnderErrorBorder: true,
-                  child: InputAttributeItem(
-                    keyboardType: TextInputType.number,
-                    initialValue: farmerWorker.phoneNumber,
-                    labelText: LocaleKeys.phoneNumber.tr(),
-                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                    textStyle: context.textStyles.bodyNormal.blueDark2,
-                    onChanged: (value) {
-                      _validatePhoneNumber = value;
-                      farmerWorker = farmerWorker.copyWith(phoneNumber: value);
-                      _validate();
-                    },
-                  ),
-                );
-              },
-            ),
-            FarmerSelectGenderWidget(
-              initialValue: farmerWorker.genderId,
-              onTap: (id) {
-                farmerWorker = farmerWorker.copyWith(genderId: id);
-              },
-            ),
-          ],
-        ),
-      ),
+  Widget firstNameWidget() {
+    return BlocBuilder<LabourDetailCubit, LabourDetailState>(
+      builder: (context, state) {
+        return AttributeItem(
+          isShowError: state.isFirstNameError,
+          isUnderErrorBorder: true,
+          child: InputAttributeItem(
+            labelText: LocaleKeys.firstName.tr(),
+            labelTextStyle: context.textStyles.bodyBold.blueDark2,
+            textStyle: context.textStyles.bodyNormal.blueDark2,
+            initialValue: state.farmerWorker.firstName,
+            onChanged: cubit.onChangeFirstName,
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildSelectBirth() {
-    return InkWell(
-      onTap: () async {
-        final date = await showDatePicker(
-          context: context,
-          initialDate: DateTime.tryParse(farmerWorker.dateOfBirth ?? '') ?? DateTime.now(),
-          firstDate: DateTime.now().add(const Duration(days: -1000000)),
-          lastDate: DateTime.now(),
+  Widget lastNameWidget() {
+    return BlocBuilder<LabourDetailCubit, LabourDetailState>(
+      builder: (context, state) {
+        return AttributeItem(
+          isShowError: state.isLastNameNameError,
+          isUnderErrorBorder: true,
+          child: InputAttributeItem(
+            labelText: LocaleKeys.lastName.tr(),
+            labelTextStyle: context.textStyles.bodyBold.blueDark2,
+            textStyle: context.textStyles.bodyNormal.blueDark2,
+            initialValue: state.farmerWorker.surname,
+            onChanged: cubit.onChangeSurname,
+          ),
         );
-
-        cubit.onChangeDateOfBirth(date);
-        // if (date != null) {
-        //   setState(() {
-        //     farmerWorker =
-        //         farmerWorker.copyWith(dateOfBirth: date.toIso8601String());
-        //   });
-        // }
       },
-      child: BlocBuilder<LabourDetailCubit, LabourDetailState>(
-        builder: (context, state) {
-          return AttributeItem(
+    );
+  }
+
+  Widget driverLicenseNumberWidget() {
+    return BlocBuilder<LabourDetailCubit, LabourDetailState>(
+      builder: (context, state) {
+        return AttributeItem(
+          child: InputAttributeItem(
+            keyboardType: TextInputType.number,
+            initialValue: state.farmerWorker.driverLicenseNumber,
+            labelText: LocaleKeys.drive_license_number.tr(),
+            labelTextStyle: context.textStyles.bodyBold.blueDark2,
+            textStyle: context.textStyles.bodyNormal.blueDark2,
+            onChanged: cubit.onChangeDriveLicenseNumber,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget idNumberWidget() {
+    return BlocBuilder<LabourDetailCubit, LabourDetailState>(
+      builder: (context, state) {
+        return AttributeItem(
+          isShowError: state.isIdNumberError,
+          isUnderErrorBorder: true,
+          child: InputAttributeItem(
+            keyboardType: TextInputType.name,
+            inputFormatters: [UpperCaseTextFormatter()],
+            labelText: LocaleKeys.idNumber.tr(),
+            labelTextStyle: context.textStyles.bodyBold.blueDark2,
+            textStyle: context.textStyles.bodyNormal.blueDark2,
+            initialValue: state.farmerWorker.idNumber,
+            onChanged: cubit.onChangeIdNumber,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget phoneNumberWidget() {
+    return BlocBuilder<LabourDetailCubit, LabourDetailState>(
+      builder: (context, state) {
+        return AttributeItem(
+          isShowError: state.isPhoneNumberError,
+          isUnderErrorBorder: true,
+          child: InputAttributeItem(
+            keyboardType: TextInputType.number,
+            initialValue: state.farmerWorker.phoneNumber,
+            labelText: LocaleKeys.phoneNumber.tr(),
+            labelTextStyle: context.textStyles.bodyBold.blueDark2,
+            textStyle: context.textStyles.bodyNormal.blueDark2,
+            onChanged: cubit.onChangePhoneNumber,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget selectGenderWidget() {
+    return BlocBuilder<LabourDetailCubit, LabourDetailState>(
+      builder: (context, state) {
+        return FarmerSelectGenderWidget(
+          initialValue: state.farmerWorker.genderId,
+          onTap: cubit.onSelectGender,
+        );
+      },
+    );
+  }
+
+  Widget selectBirth() {
+    return BlocBuilder<LabourDetailCubit, LabourDetailState>(
+      builder: (context, state) {
+        return InkWell(
+          onTap: () async {
+            final date = await showDatePicker(
+              context: context,
+              initialDate: DateTime.tryParse(state.farmerWorker.dateOfBirth ?? '') ?? DateTime.now(),
+              firstDate: DateTime.now().add(const Duration(days: -1000000)),
+              lastDate: DateTime.now(),
+            );
+
+            cubit.onChangeDateOfBirth(date);
+          },
+          child: AttributeItem(
             child: SelectorAttributeItem(
               hintText: '',
               text: state.farmerWorker.dateOfBirth.isBlank
@@ -377,28 +281,23 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
               ),
               trailing: Assets.icons.icCalendar.svgBlack,
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildJobDescription() {
-    return BlocBuilder<LabourManagementCubit, LabourManagementState>(
+  Widget selectJobDescription() {
+    return BlocBuilder<LabourDetailCubit, LabourDetailState>(
       builder: (context, state) {
         return InkWell(
           onTap: () {
             FarmerStakeHolderSelectJobDescription.push(
               context: context,
-              selectedJobDesc: selectedWorkerJobDescriptions.value,
-              onSave: (result) {
-                selectedWorkerJobDescriptions.value =
-                    selectedWorkerJobDescriptions.value
-                      ..clear()
-                      ..addAll(result);
-              },
-              workerId: int.tryParse(farmerWorker.workerId ?? ''),
-              workerName: farmerWorker.fullName,
+              selectedJobDesc: state.selectedWorkerJobDescriptions,
+              onSave: cubit.onSelectJobDescription,
+              workerId: int.tryParse(state.farmerWorker.workerId ?? ''),
+              workerName: state.farmerWorker.fullName,
             );
           },
           child: AttributeItem(
@@ -418,14 +317,9 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  ValueListenableBuilder(
-                    valueListenable: selectedWorkerJobDescriptions,
-                    builder: (context, data, _) {
-                      return Text(
-                        data.length.toString() ?? '',
-                        style: context.textStyles.bodyBold.black,
-                      );
-                    },
+                  Text(
+                    state.selectedWorkerJobDescriptions.length.toString(),
+                    style: context.textStyles.bodyBold.black,
                   ),
                   Assets.icons.icArrowRight.svgBlack,
                 ],

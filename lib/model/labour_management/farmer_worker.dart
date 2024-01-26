@@ -1,7 +1,6 @@
 import 'package:cmo/extensions/bool_estension.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/worker_job_description_payload/worker_job_description_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -30,12 +29,14 @@ class FarmerWorker with _$FarmerWorker {
     @JsonKey(name: 'Photo') String? photo,
     @JsonKey(name: 'CreateDT') DateTime? createDT,
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
-    @JsonKey(name: 'IsLocal') int? isLocal,
     @JsonKey(name: 'CanDelete') int? canDelete,
-    @JsonKey(name: 'IsActive') int? isActive,
     @JsonKey(name: 'DriverLicenseNumber') String? driverLicenseNumber,
+    @Default(true)
+    @JsonKey(name: 'IsActive') bool? isActive,
+    @Default(true)
+    @JsonKey(name: 'IsLocal') bool? isLocal,
     @ignore
-    @JsonKey(name: 'JobDescriptions') List<WorkerJobDescriptionPayLoad>? jobDescriptions,
+    @JsonKey(name: 'JobDescriptions') List<WorkerJobDescription>? jobDescriptions,
   }) = _FarmerWorker;
 
   const FarmerWorker._();
