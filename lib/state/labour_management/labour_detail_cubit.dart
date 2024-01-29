@@ -29,14 +29,13 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
     emit(state.copyWith(loading: true));
     try {
       final activeFarm = await configService.getActiveFarm();
-      final data = await cmoDatabaseMasterService.getJobDescriptions();
+      final jobDescriptions = await cmoDatabaseMasterService.getJobDescriptions();
       final selectedWorkerJobDescriptions = await cmoDatabaseMasterService.getWorkerJobDescriptionByWorkerId(state.farmerWorker.workerId);
 
       emit(
         state.copyWith(
           activeFarm: activeFarm,
-          listJobDescriptions: data,
-          filterJobDescriptions: data,
+          listJobDescriptions: jobDescriptions,
           selectedWorkerJobDescriptions: selectedWorkerJobDescriptions,
           farmerWorker: state.farmerWorker.copyWith(
             farmId: state.farmerWorker.farmId ?? activeFarm?.farmId,
@@ -87,7 +86,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
     emit(
       state.copyWith(
         farmerWorker: state.farmerWorker.copyWith(
-          surname: inputValue,
+          secondFirstName: inputValue,
         ),
       ),
     );
@@ -107,7 +106,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
     emit(
       state.copyWith(
         farmerWorker: state.farmerWorker.copyWith(
-          firstName: inputValue,
+          secondSurname: inputValue,
         ),
       ),
     );
@@ -153,76 +152,76 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
     );
   }
 
-  void onSelectJobDescription(List<WorkerJobDescription> selectedWorkerJobDescriptions) {
+  void onSelectForeigner(bool isForeigner) {
     emit(
       state.copyWith(
-        selectedWorkerJobDescriptions: selectedWorkerJobDescriptions,
+        farmerWorker: state.farmerWorker.copyWith(
+          isForeigner: isForeigner,
+        ),
       ),
     );
   }
 
-  Future<void> loadListJobDescriptions() async {
-    emit(state.copyWith(loading: true));
-    try {
-      final service = cmoDatabaseMasterService;
-      final data = await service.getJobDescriptions();
-
-      emit(
-        state.copyWith(
-          listJobDescriptions: data,
-          filterJobDescriptions: data,
+  void onChangeWorkPermitNumber(String? inputValue) {
+    emit(
+      state.copyWith(
+        farmerWorker: state.farmerWorker.copyWith(
+          workPermitNumber: inputValue,
         ),
-      );
-    } catch (e) {
-      emit(state.copyWith(error: e));
-      showSnackError(msg: e.toString());
-    } finally {
-      emit(state.copyWith(loading: false));
-    }
+      ),
+    );
   }
 
-  void searchJobDescription(String? searchText) {
-    emit(state.copyWith(loading: true));
-    try {
-      if (searchText == null || searchText.isEmpty) {
-        emit(
-          state.copyWith(
-            filterJobDescriptions: state.listJobDescriptions,
-          ),
-        );
-      } else {
-        final filteredItems = state.listJobDescriptions
-            .where(
-              (element) =>
-          element.jobDescriptionName
-              ?.toLowerCase()
-              .contains(searchText.toLowerCase()) ??
-              false,
-        )
-            .toList();
+  void onSelectJobDescription(List<JobDescription> selectedJobDescriptions) {
+    emit(
+      state.copyWith(
+        selectedWorkerJobDescriptions: selectedJobDescriptions
+            .map(
+              (e) => WorkerJobDescription(
+                workerId: state.farmerWorker.workerId.toString(),
+                jobDescriptionId: e.jobDescriptionId,
+                jobDescriptionName: e.jobDescriptionName,
+                createDT: DateTime.now(),
+                updateDT: DateTime.now(),
+                isActive: true,
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
 
-        emit(
-          state.copyWith(
-            filterJobDescriptions: filteredItems,
+  List<JobDescription> getListSelectedJobDescriptions() {
+    return state.selectedWorkerJobDescriptions
+        .map(
+          (e) => JobDescription(
+            jobDescriptionId: e.jobDescriptionId,
+            jobDescriptionName: e.jobDescriptionName,
           ),
-        );
-      }
-    } catch (e) {
-      emit(state.copyWith(error: e));
-      showSnackError(msg: e.toString());
-    } finally {
-      emit(state.copyWith(loading: false));
-    }
+        )
+        .toList();
   }
 
   bool onValidateRequireField() {
-    if (state.farmerWorker.firstName.isNullOrEmpty || state.farmerWorker.surname.isNullOrEmpty || state.farmerWorker.idNumber.isNullOrEmpty || state.farmerWorker.phoneNumber.isNullOrEmpty) {
+    final isFirstNameError = state.farmerWorker.firstName.isNullOrEmpty;
+    final isLastNameNameError = state.farmerWorker.surname.isNullOrEmpty;
+    final isIdNumberError = state.farmerWorker.idNumber.isNullOrEmpty;
+    final isPhoneNumberError = state.farmerWorker.phoneNumber.isNullOrEmpty;
+    final isWorkPermitNumberError = state.farmerWorker.isForeigner != null &&
+        state.farmerWorker.isForeigner! &&
+        state.farmerWorker.workPermitNumber.isNullOrEmpty;
+
+    if (isFirstNameError ||
+        isLastNameNameError ||
+        isIdNumberError ||
+        isPhoneNumberError) {
       emit(
         state.copyWith(
-          isFirstNameError: state.farmerWorker.firstName.isNullOrEmpty,
-          isLastNameNameError: state.farmerWorker.surname.isNullOrEmpty,
-          isIdNumberError: state.farmerWorker.idNumber.isNullOrEmpty,
-          isPhoneNumberError: state.farmerWorker.phoneNumber.isNullOrEmpty,
+          isFirstNameError: isFirstNameError,
+          isLastNameNameError: isLastNameNameError,
+          isIdNumberError: isIdNumberError,
+          isPhoneNumberError: isPhoneNumberError,
+          isWorkPermitNumberError: isWorkPermitNumberError,
         ),
       );
 
@@ -245,9 +244,9 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
     }
 
     final futures = <Future<int?>>[];
-    await cmoDatabaseMasterService
-        .deletedWorkerJobDescriptionByJobDescriptionId(
-            state.farmerWorker.workerId);
+    await cmoDatabaseMasterService.deletedWorkerJobDescriptionByJobDescriptionId(
+      state.farmerWorker.workerId,
+    );
     var count = await cmoDatabaseMasterService.getCountWorkerJobDescription();
     count++;
     for (final item in state.selectedWorkerJobDescriptions) {
@@ -260,13 +259,14 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
 
     await Future.wait(futures);
 
-    final resultId = await cmoDatabaseMasterService.cacheWorkerFromFarm(
+    final resultId = await cmoDatabaseMasterService.cacheFarmerWorker(
       state.farmerWorker.copyWith(
         genderId: state.farmerWorker.genderId ?? 1,
         isLocal: true,
         isActive: true,
         updateDT: DateTime.now(),
       ),
+      isDirect: false,
     );
 
     onSuccess(resultId);

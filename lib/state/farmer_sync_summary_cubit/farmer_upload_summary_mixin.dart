@@ -121,14 +121,14 @@ mixin FarmUploadSummaryMixin {
         );
 
         if (_enableUpdateStatus) {
-          futures.add(cmoDatabaseMasterService
-              .cacheWorkerFromFarm(worker.copyWith(isLocal: false)));
+          futures.add(
+            cmoDatabaseMasterService.cacheFarmerWorker(
+              worker.copyWith(isLocal: false),
+              isDirect: false,
+            ),
+          );
         }
       }
-
-      // for (final item in workerPayLoads) {
-      //   messages.add(globalMessage.copyWith(body: jsonEncode(item)));
-      // }
 
       futures.add(cmoPerformApiService.public(
         currentClientId: mUserDeviceId.toString(),

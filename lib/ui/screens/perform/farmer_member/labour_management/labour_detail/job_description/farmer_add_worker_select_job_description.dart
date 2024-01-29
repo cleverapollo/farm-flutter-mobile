@@ -13,35 +13,34 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class FarmerStakeHolderSelectJobDescription extends StatefulWidget {
   const FarmerStakeHolderSelectJobDescription({
     super.key,
-    this.selectedJobDesc,
+    required this.listJobDescriptions,
+    required this.selectedJobDesc,
     required this.onSave,
-    this.workerId,
     this.workerName,
   });
 
-  final List<WorkerJobDescription>? selectedJobDesc;
-  final void Function(List<WorkerJobDescription>) onSave;
-  final int? workerId;
+  final List<JobDescription> listJobDescriptions;
+  final List<JobDescription> selectedJobDesc;
+  final void Function(List<JobDescription>) onSave;
   final String? workerName;
 
   @override
-  State<StatefulWidget> createState() =>
-      _FarmerStakeHolderSelectJobDescriptionState();
+  State<StatefulWidget> createState() => _FarmerStakeHolderSelectJobDescriptionState();
 
   static Future<dynamic> push({
     required BuildContext context,
-    List<WorkerJobDescription>? selectedJobDesc,
-    required void Function(List<WorkerJobDescription>) onSave,
-    int? workerId,
+    required List<JobDescription> listJobDescriptions,
+    required List<JobDescription> selectedJobDesc,
+    required void Function(List<JobDescription>) onSave,
     String? workerName,
   }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => FarmerStakeHolderSelectJobDescription(
+          listJobDescriptions: listJobDescriptions,
           selectedJobDesc: selectedJobDesc,
           onSave: onSave,
-          workerId: workerId,
           workerName: workerName,
         ),
       ),
@@ -54,18 +53,39 @@ class _FarmerStakeHolderSelectJobDescriptionState
   Timer? _debounceInputTimer;
 
   List<JobDescription> selectedItems = <JobDescription>[];
+  List<JobDescription> filterJobDescriptions = <JobDescription>[];
+  List<JobDescription> listJobDescriptions = <JobDescription>[];
 
   @override
   void initState() {
     super.initState();
-    selectedItems.addAll(
-      (widget.selectedJobDesc ?? [])
-          .map((e) => JobDescription(
-                jobDescriptionId: e.jobDescriptionId,
-                jobDescriptionName: e.jobDescriptionName,
-              ))
-          .toList(),
-    );
+    listJobDescriptions.addAll(widget.listJobDescriptions);
+    filterJobDescriptions.addAll(widget.listJobDescriptions);
+    selectedItems.addAll(widget.selectedJobDesc);
+  }
+
+  void searchJobDescription(String? searchText) {
+    try {
+      if (searchText == null || searchText.isEmpty) {
+        filterJobDescriptions = listJobDescriptions;
+      } else {
+        final filteredItems = listJobDescriptions
+            .where(
+              (element) =>
+                  element.jobDescriptionName
+                      ?.toLowerCase()
+                      .contains(searchText.toLowerCase()) ??
+                  false,
+            )
+            .toList();
+
+        filterJobDescriptions = filteredItems;
+      }
+    } catch (e) {
+      showSnackError(msg: e.toString());
+    } finally {
+      setState(() {});
+    }
   }
 
   @override
@@ -89,30 +109,22 @@ class _FarmerStakeHolderSelectJobDescriptionState
                 _debounceInputTimer?.cancel();
                 _debounceInputTimer = Timer(
                   const Duration(milliseconds: 200),
-                  () => context
-                      .read<LabourDetailCubit>()
-                      .searchJobDescription(input),
+                  () => searchJobDescription(input),
                 );
               },
             ),
           ),
           Expanded(
-            child: BlocSelector<LabourDetailCubit, LabourDetailState, List<JobDescription>>(
-              selector: (state) => state.filterJobDescriptions,
-              builder: (context, filterJobDescriptions) {
-                return Padding(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 80),
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) => const SizedBox(
-                      height: 12,
-                    ),
-                    itemCount: filterJobDescriptions.length,
-                    padding: const EdgeInsets.symmetric(horizontal: 21),
-                    itemBuilder: (context, index) =>
-                        _buildItem(filterJobDescriptions[index]),
-                  ),
-                );
-              },
+            child: Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 80),
+              child: ListView.separated(
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: 12,
+                ),
+                itemCount: filterJobDescriptions.length,
+                padding: const EdgeInsets.symmetric(horizontal: 21),
+                itemBuilder: (context, index) => _buildItem(filterJobDescriptions[index]),
+              ),
             ),
           ),
         ],
@@ -121,21 +133,7 @@ class _FarmerStakeHolderSelectJobDescriptionState
       floatingActionButton: CmoFilledButton(
         title: LocaleKeys.save.tr(),
         onTap: () {
-          widget.onSave(
-            selectedItems
-                .map(
-                  (e) => WorkerJobDescription(
-                    workerId: widget.workerId.toString(),
-                    jobDescriptionId: e.jobDescriptionId,
-                    jobDescriptionName: e.jobDescriptionName,
-                    createDT: DateTime.now(),
-                    updateDT: DateTime.now(),
-                    isActive: true,
-                  ),
-                )
-                .toList(),
-          );
-
+          widget.onSave(selectedItems);
           Navigator.of(context).pop();
         },
       ),

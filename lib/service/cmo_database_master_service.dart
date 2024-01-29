@@ -3172,16 +3172,19 @@ class CmoDatabaseMasterService {
     });
   }
 
-  Future<int> cacheFarmerWorker(FarmerWorker item) async {
+  Future<int> cacheFarmerWorker(
+    FarmerWorker item, {
+    bool isDirect = true,
+  }) async {
     final db = await _db();
-    return db.farmerWorkers.put(item);
-  }
-
-  Future<int> cacheWorkerFromFarm(FarmerWorker item) async {
-    final db = await _db();
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.farmerWorkers.put(item);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.farmerWorkers.put(item);
+      });
+    }
+
   }
 
   Future<int> cacheStakeholder(

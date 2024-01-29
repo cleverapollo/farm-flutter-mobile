@@ -294,3 +294,113 @@ class _InputAttributeItemState extends State<InputAttributeItem> {
     );
   }
 }
+
+class YesNoQuestion extends StatelessWidget {
+  const YesNoQuestion({
+    super.key,
+    required this.title,
+    required this.value,
+    required this.onChangeValue,
+    this.textStyle,
+    this.padding,
+  });
+
+  final bool? value;
+  final void Function(bool) onChangeValue;
+  final TextStyle? textStyle;
+  final String title;
+  final EdgeInsets? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: padding ?? const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: context.textStyles.bodyBold.copyWith(
+              color: context.colors.black,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              InkWell(
+                onTap: () => onChangeValue(true),
+                child: Container(
+                  alignment: Alignment.center,
+                  width: 110,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: buildColor(value, true),
+                    border: Border.all(
+                      width: 2,
+                      color: (value ?? false)
+                          ? Colors.transparent
+                          : context.colors.blueDark2,
+                    ),
+                  ),
+                  child: Text(
+                    LocaleKeys.yes.tr(),
+                    style: (textStyle ?? context.textStyles.bodyNormal).copyWith(
+                      color: (value ?? false) ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              InkWell(
+                onTap: () => onChangeValue(false),
+                child: Container(
+                  alignment: Alignment.center,
+                  width: 110,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: buildColor(value, false),
+                    border: Border.all(
+                      width: 2,
+                      color: (value ?? true) ? context.colors.blueDark2 : Colors.transparent,
+                    ),
+                  ),
+                  child: Text(
+                    LocaleKeys.no.tr(),
+                    style: (textStyle ?? context.textStyles.bodyNormal)
+                        .copyWith(
+                      color: !(value ?? true) ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color buildColor(bool? isSelect, bool isC) {
+    if (isC) {
+      if (isSelect == null) {
+        return Colors.white;
+      }
+      if (isSelect) {
+        return const Color(0xff2072B9);
+      }
+      return Colors.white;
+    }
+
+    if (isSelect == null) {
+      return Colors.white;
+    }
+    if (isSelect) {
+      return Colors.white;
+    }
+    return const Color(0xff2072B9);
+  }
+}
+

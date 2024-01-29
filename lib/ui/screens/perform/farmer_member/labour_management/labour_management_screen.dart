@@ -4,6 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/labour_management/labour_management_cubit.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/labour_detail_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/widgets/labour_management_item.dart';
 import 'package:cmo/ui/ui.dart';
@@ -33,6 +34,17 @@ class LabourManagementScreen extends BaseStatefulWidget {
 class _LabourManagementScreenState extends BaseStatefulWidgetState<LabourManagementScreen> {
   Timer? _debounceInputTimer;
 
+  Future<void> navigateToDetail({
+    FarmerWorker? farmerWorker,
+  }) async {
+    await LabourDetailScreen.push(
+      context,
+      farmerWorker: farmerWorker,
+    );
+
+    await context.read<LabourManagementCubit>().loadListWorkers();
+    await context.read<DashboardCubit>().refresh();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +57,7 @@ class _LabourManagementScreenState extends BaseStatefulWidgetState<LabourManagem
         leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icUpdatedAddButton.svgBlack,
-        onTapTrailing: () => LabourDetailScreen.push(context),
+        onTapTrailing: () => navigateToDetail(),
       ),
       body: Column(
         children: [
@@ -89,10 +101,7 @@ class _LabourManagementScreenState extends BaseStatefulWidgetState<LabourManagem
                       },
                       child: LabourManagementItem(
                         farmerWorker: filterWorkers[index],
-                        onTap: () => LabourDetailScreen.push(
-                          context,
-                          farmerWorker: filterWorkers[index],
-                        ),
+                        onTap: () => navigateToDetail(farmerWorker: filterWorkers[index]),
                       ),
                     );
                   },

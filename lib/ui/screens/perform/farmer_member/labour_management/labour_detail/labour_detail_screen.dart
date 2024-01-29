@@ -66,11 +66,6 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
                 '${widget.isEditing ? LocaleKeys.labour_detail.tr() : LocaleKeys.addLabour.tr()} $resultId',
           );
 
-          await context.read<LabourManagementCubit>().loadListWorkers();
-          await context.read<DashboardCubit>().refresh();
-        }
-
-        if (context.mounted) {
           Navigator.of(context).pop();
         }
       },
@@ -99,49 +94,63 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
           onTapTrailing: Navigator.of(context).pop,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              BlocBuilder<LabourDetailCubit, LabourDetailState>(
-                builder: (context, state) {
-                  return FarmerStakeHolderUploadAvatar(
-                    photoUrl: state.farmerWorker.photo,
-                    onSelectAvatar: cubit.onSelectAvatar,
-                  );
-                },
-              ),
-              CmoHeaderTile(title: LocaleKeys.details.tr()),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    firstNameWidget(),
-                    lastNameWidget(),
-                    selectBirth(),
-                    driverLicenseNumberWidget(),
-                    selectJobDescription(),
-                    idNumberWidget(),
-                    phoneNumberWidget(),
-                    selectGenderWidget(),
+                    BlocBuilder<LabourDetailCubit, LabourDetailState>(
+                      builder: (context, state) {
+                        return FarmerStakeHolderUploadAvatar(
+                          photoUrl: state.farmerWorker.photo,
+                          onSelectAvatar: cubit.onSelectAvatar,
+                        );
+                      },
+                    ),
+                    CmoHeaderTile(title: LocaleKeys.details.tr()),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          firstNameWidget(),
+                          lastNameWidget(),
+                          secondFirstNameWidget(),
+                          secondLastNameWidget(),
+                          selectBirth(),
+                          selectJobDescription(),
+                          idNumberWidget(),
+                          driverLicenseNumberWidget(),
+                          phoneNumberWidget(),
+                          foreignerWidget(),
+                          selectGenderWidget(),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 60,
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 90,
-              ),
-            ],
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: BlocBuilder<LabourDetailCubit, LabourDetailState>(
-          builder: (context, state) {
-            return CmoFilledButton(
-              title: LocaleKeys.save.tr(),
-              onTap: onSave,
-              loading: loading,
-            );
-          },
+            ),
+            BlocBuilder<LabourDetailCubit, LabourDetailState>(
+              builder: (context, state) {
+                return Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom,
+                    top: 12,
+                  ),
+                  child: CmoFilledButton(
+                    title: LocaleKeys.save.tr(),
+                    onTap: onSave,
+                    loading: loading,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -165,6 +174,24 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
     );
   }
 
+  Widget secondFirstNameWidget() {
+    return BlocBuilder<LabourDetailCubit, LabourDetailState>(
+      builder: (context, state) {
+        return AttributeItem(
+          isShowError: state.isFirstNameError,
+          isUnderErrorBorder: true,
+          child: InputAttributeItem(
+            labelText: LocaleKeys.second_first_name.tr(),
+            labelTextStyle: context.textStyles.bodyBold.blueDark2,
+            textStyle: context.textStyles.bodyNormal.blueDark2,
+            initialValue: state.farmerWorker.secondFirstName,
+            onChanged: cubit.onChangeSecondFirstName,
+          ),
+        );
+      },
+    );
+  }
+
   Widget lastNameWidget() {
     return BlocBuilder<LabourDetailCubit, LabourDetailState>(
       builder: (context, state) {
@@ -182,6 +209,25 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
       },
     );
   }
+
+  Widget secondLastNameWidget() {
+    return BlocBuilder<LabourDetailCubit, LabourDetailState>(
+      builder: (context, state) {
+        return AttributeItem(
+          isShowError: state.isLastNameNameError,
+          isUnderErrorBorder: true,
+          child: InputAttributeItem(
+            labelText: LocaleKeys.second_last_name.tr(),
+            labelTextStyle: context.textStyles.bodyBold.blueDark2,
+            textStyle: context.textStyles.bodyNormal.blueDark2,
+            initialValue: state.farmerWorker.secondSurname,
+            onChanged: cubit.onChangeSecondSurname,
+          ),
+        );
+      },
+    );
+  }
+
 
   Widget driverLicenseNumberWidget() {
     return BlocBuilder<LabourDetailCubit, LabourDetailState>(
@@ -287,6 +333,42 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
     );
   }
 
+  Widget foreignerWidget() {
+    return BlocBuilder<LabourDetailCubit, LabourDetailState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            AttributeItem(
+              child: YesNoQuestion(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 12,
+                ),
+                title: LocaleKeys.foreigner.tr(),
+                value: state.farmerWorker.isForeigner,
+                onChangeValue: cubit.onSelectForeigner,
+              ),
+            ),
+            if (state.farmerWorker.isForeigner != null &&
+                state.farmerWorker.isForeigner!)
+              AttributeItem(
+                isShowError: state.isWorkPermitNumberError,
+                isUnderErrorBorder: true,
+                child: InputAttributeItem(
+                  keyboardType: TextInputType.number,
+                  initialValue: state.farmerWorker.workPermitNumber,
+                  labelText: LocaleKeys.work_permit_number.tr(),
+                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                  textStyle: context.textStyles.bodyNormal.blueDark2,
+                  onChanged: cubit.onChangeWorkPermitNumber,
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget selectJobDescription() {
     return BlocBuilder<LabourDetailCubit, LabourDetailState>(
       builder: (context, state) {
@@ -294,9 +376,9 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
           onTap: () {
             FarmerStakeHolderSelectJobDescription.push(
               context: context,
-              selectedJobDesc: state.selectedWorkerJobDescriptions,
+              selectedJobDesc: cubit.getListSelectedJobDescriptions(),
+              listJobDescriptions: state.listJobDescriptions,
               onSave: cubit.onSelectJobDescription,
-              workerId: int.tryParse(state.farmerWorker.workerId ?? ''),
               workerName: state.farmerWorker.fullName,
             );
           },

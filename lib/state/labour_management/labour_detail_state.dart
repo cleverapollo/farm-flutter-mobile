@@ -4,7 +4,6 @@ class LabourDetailState {
   const LabourDetailState({
     required this.farmerWorker,
     this.listJobDescriptions = const <JobDescription>[],
-    this.filterJobDescriptions = const <JobDescription>[],
     this.loading = false,
     this.error,
     this.activeFarm,
@@ -13,12 +12,12 @@ class LabourDetailState {
     this.isLastNameNameError = false,
     this.isIdNumberError = false,
     this.isPhoneNumberError = false,
+    this.isWorkPermitNumberError = false,
   });
 
   final Object? error;
   final bool loading;
   final List<JobDescription> listJobDescriptions;
-  final List<JobDescription> filterJobDescriptions;
   final Farm? activeFarm;
   final List<WorkerJobDescription> selectedWorkerJobDescriptions;
   final FarmerWorker farmerWorker;
@@ -26,33 +25,33 @@ class LabourDetailState {
   final bool isLastNameNameError;
   final bool isIdNumberError;
   final bool isPhoneNumberError;
+  final bool isWorkPermitNumberError;
 
   LabourDetailState copyWith({
     FarmerWorker? farmerWorker,
     bool? loading,
     Object? error,
     List<JobDescription>? listJobDescriptions,
-    List<JobDescription>? filterJobDescriptions,
     Farm? activeFarm,
     List<WorkerJobDescription>? selectedWorkerJobDescriptions,
     bool? isFirstNameError,
     bool? isLastNameNameError,
     bool? isIdNumberError,
     bool? isPhoneNumberError,
+    bool? isWorkPermitNumberError,
   }) {
     return LabourDetailState(
       farmerWorker: farmerWorker ?? this.farmerWorker,
       loading: loading ?? this.loading,
       error: error ?? this.error,
       listJobDescriptions: listJobDescriptions ?? this.listJobDescriptions,
-      filterJobDescriptions:
-      filterJobDescriptions ?? this.filterJobDescriptions,
       activeFarm: activeFarm ?? this.activeFarm,
       selectedWorkerJobDescriptions: selectedWorkerJobDescriptions ?? this.selectedWorkerJobDescriptions,
       isFirstNameError: isFirstNameError ?? this.isFirstNameError,
       isLastNameNameError: isLastNameNameError ?? this.isLastNameNameError,
       isIdNumberError: isIdNumberError ?? this.isIdNumberError,
       isPhoneNumberError: isPhoneNumberError ?? this.isPhoneNumberError,
+      isWorkPermitNumberError: isWorkPermitNumberError ?? this.isWorkPermitNumberError,
     );
   }
 }

@@ -18,6 +18,8 @@ class FarmerWorker with _$FarmerWorker {
     @JsonKey(name: 'WorkerId') String? workerId,
     @JsonKey(name: 'FirstName') String? firstName,
     @JsonKey(name: 'Surname') String? surname,
+    @JsonKey(name: 'SecondFirstName') String? secondFirstName,
+    @JsonKey(name: 'SecondSurname') String? secondSurname,
     @JsonKey(name: 'FarmId') String? farmId,
     @JsonKey(name: 'IdNumber') String? idNumber,
     @JsonKey(name: 'GenderId') int? genderId,
@@ -31,6 +33,8 @@ class FarmerWorker with _$FarmerWorker {
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @JsonKey(name: 'CanDelete') int? canDelete,
     @JsonKey(name: 'DriverLicenseNumber') String? driverLicenseNumber,
+    @JsonKey(name: 'IsForeigner') bool? isForeigner,
+    @JsonKey(name: 'WorkPermitNumber') String? workPermitNumber,
     @Default(true)
     @JsonKey(name: 'IsActive') bool? isActive,
     @Default(true)
