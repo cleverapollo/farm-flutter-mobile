@@ -32,7 +32,7 @@ class FarmerWorker with _$FarmerWorker {
     @JsonKey(name: 'CreateDT') DateTime? createDT,
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @JsonKey(name: 'CanDelete') int? canDelete,
-    @JsonKey(name: 'DriverLicenseNumber') String? driverLicenseNumber,
+    @JsonKey(name: 'DriverLicenceNumber') String? driverLicenseNumber,
     @JsonKey(name: 'IsForeigner') bool? isForeigner,
     @JsonKey(name: 'WorkPermitNumber') String? workPermitNumber,
     @Default(true)

@@ -1,20 +1,15 @@
-import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/extensions/input_formatter_extension.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/model/worker_job_description/worker_job_description.dart';
-import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/labour_management/labour_detail_cubit.dart';
-import 'package:cmo/state/labour_management/labour_management_cubit.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/job_description/farmer_add_worker_select_job_description.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/widgets/farmer_add_worker_upload_avatar.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/widgets/farmer_select_gender_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
-import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
