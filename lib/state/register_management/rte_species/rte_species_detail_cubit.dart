@@ -20,6 +20,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
                   rteSpeciesRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
                   isActive: true,
                   isMasterDataSynced: false,
+                  dateSpotted: DateTime.now(),
                 ),
           ),
         ) {
