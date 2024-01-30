@@ -17,25 +17,12 @@ class CarFilter extends StatelessWidget {
         return DropdownStateless<CarFilterEnum>(
           keyName: 'car_filter',
           isDropdownOpened: state.isOpenedCarFilter,
+          textStyle: context.textStyles.bodyNormal.blueDark2.copyWith(fontSize: 15),
           onTapDropdown: context.read<AuditListQuestionsCubit>().onTapCarFilterDropdown,
           listItems: state.carFilterEnums
               .map((item) => OptionItem<CarFilterEnum>(id: item, title: item.valueName))
               .toList(),
           hintText: LocaleKeys.no_cars.tr(),
-          itemSelected: state.selectedCARFilter == null
-              ? null
-              : OptionItem<CarFilterEnum>(
-            id: state.selectedCARFilter!,
-            title: state.selectedCARFilter!.valueName,
-          ),
-          onSelected: context.read<AuditListQuestionsCubit>().setCarFilter,
-        );
-        return CmoCustomDropdown<CarFilterEnum>(
-          keyName: 'car_filter',
-          listItems: state.carFilterEnums
-              .map((item) => OptionItem<CarFilterEnum>(id: item, title: item.valueName))
-              .toList(),
-          hintText: LocaleKeys.all_cars.tr(),
           itemSelected: state.selectedCARFilter == null
               ? null
               : OptionItem<CarFilterEnum>(

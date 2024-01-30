@@ -38,6 +38,7 @@ class DropdownStateless<T> extends StatelessWidget {
   final bool enable;
   final void Function() onTapDropdown;
   final bool isDropdownOpened;
+  final TextStyle? textStyle;
 
   DropdownStateless({
     required this.keyName,
@@ -48,6 +49,7 @@ class DropdownStateless<T> extends StatelessWidget {
     required this.listItems,
     this.itemSelected,
     this.enable = true,
+    this.textStyle,
   }) {
     actionKey = LabeledGlobalKey(keyName);
   }
@@ -88,6 +90,7 @@ class DropdownStateless<T> extends StatelessWidget {
                 height: listItems.length * height,
                 child: DropDown<T>(
                   listItem: listItems,
+                  textStyle: textStyle,
                   onTap: (value) {
                     onRemoveDropdown();
                     onTapDropdown();
@@ -145,7 +148,7 @@ class DropdownStateless<T> extends StatelessWidget {
                 itemSelected?.title ?? hintText,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: context.textStyles.bodyNormal.blueDark2,
+                style: textStyle ?? context.textStyles.bodyNormal.blueDark2,
               ),
             ),
             Assets.icons.icArrowDown.svg(),
@@ -165,6 +168,7 @@ class CmoCustomDropdown<T> extends StatefulWidget {
   final bool enable;
   final bool automaticallyChangeIsDropDownOpenedValue;
   final GlobalKey? actionKey;
+  final TextStyle? textStyle;
 
   const CmoCustomDropdown({
     required this.keyName,
@@ -175,6 +179,7 @@ class CmoCustomDropdown<T> extends StatefulWidget {
     this.itemSelected,
     this.enable = true,
     this.automaticallyChangeIsDropDownOpenedValue = false,
+    this.textStyle,
   });
 
   @override
@@ -232,6 +237,7 @@ class CmoCustomDropdownState<T> extends State<CmoCustomDropdown<T>> {
                 height: widget.listItems.length * height,
                 child: DropDown<T>(
                   listItem: widget.listItems,
+                  textStyle: widget.textStyle,
                   onTap: (value) {
                     floatingDropdown.remove();
                     setState(() {
@@ -282,7 +288,7 @@ class CmoCustomDropdownState<T> extends State<CmoCustomDropdown<T>> {
                 widget.itemSelected?.title ?? widget.hintText,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: context.textStyles.bodyNormal.blueDark2,
+                style: widget.textStyle ?? context.textStyles.bodyNormal.blueDark2,
               ),
             ),
             Assets.icons.icArrowDown.svg(),
@@ -296,10 +302,12 @@ class CmoCustomDropdownState<T> extends State<CmoCustomDropdown<T>> {
 class DropDown<T> extends StatelessWidget {
   final List<OptionItem<T>> listItem;
   final void Function(OptionItem<T>) onTap;
+  final TextStyle? textStyle;
 
   const DropDown({
     required this.listItem,
     required this.onTap,
+    this.textStyle,
   }) : super();
 
   @override
@@ -322,6 +330,7 @@ class DropDown<T> extends StatelessWidget {
                           isHighlighted: true,
                         )
                       : item,
+                  textStyle: textStyle,
                 ),
               ),
             )
@@ -333,8 +342,13 @@ class DropDown<T> extends StatelessWidget {
 
 class CustomDropDownItem<T> extends StatelessWidget {
   final OptionItem<T> optionItem;
+  final TextStyle? textStyle;
 
-  const CustomDropDownItem({super.key, required this.optionItem});
+  const CustomDropDownItem({
+    super.key,
+    required this.optionItem,
+    this.textStyle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -353,7 +367,7 @@ class CustomDropDownItem<T> extends StatelessWidget {
               optionItem.title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: context.textStyles.bodyNormal.copyWith(color: textColor),
+              style: (textStyle ?? context.textStyles.bodyNormal).copyWith(color: textColor),
             ),
           ),
           if (optionItem.suffixIcon != null) ...[optionItem.suffixIcon!],

@@ -30,6 +30,7 @@ class ComplianceFilter extends StatelessWidget {
               ),
             ),
           hintText: LocaleKeys.compliance_level.tr(),
+          textStyle: context.textStyles.bodyNormal.blueDark2.copyWith(fontSize: 14),
           itemSelected: state.selectedComplianceFilter == null || state.selectedComplianceFilter?.complianceId == -1
               ? null
               : OptionItem<Compliance?>(
