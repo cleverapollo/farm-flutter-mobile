@@ -1,4 +1,3 @@
-import 'package:cmo/extensions/bool_estension.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -24,7 +23,7 @@ class FarmerWorker with _$FarmerWorker {
     @JsonKey(name: 'IdNumber') String? idNumber,
     @JsonKey(name: 'GenderId') int? genderId,
     @JsonKey(name: 'PhoneNumber') String? phoneNumber,
-    @JsonKey(name: 'DateOfBirth') String? dateOfBirth,
+    @JsonKey(name: 'DateOfBirth') DateTime? dateOfBirth,
     @JsonKey(name: 'Nationality') String? nationality,
     @JsonKey(name: 'PhotoURL') String? photoURL,
     @JsonKey(name: 'NormalisedPhotoURL') String? normalisedPhotoURL,
@@ -48,15 +47,13 @@ class FarmerWorker with _$FarmerWorker {
   factory FarmerWorker.fromJson(Map<String, dynamic> json) =>
       _$FarmerWorkerFromJson(json);
 
-  @override
   Id get id => int.tryParse(workerId ?? '') ?? Isar.autoIncrement;
 }
 
 extension FarmerWorkerX on FarmerWorker {
   bool isUnder16() {
-    final dob = DateTime.tryParse(dateOfBirth ?? '');
-    if (dob == null) return true;
-    final age = dob.age();
+    if (dateOfBirth == null) return true;
+    final age = dateOfBirth.age();
     return age < 16;
   }
 

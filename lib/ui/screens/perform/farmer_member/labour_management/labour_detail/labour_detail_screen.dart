@@ -298,7 +298,7 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
           onTap: () async {
             final date = await showDatePicker(
               context: context,
-              initialDate: DateTime.tryParse(state.farmerWorker.dateOfBirth ?? '') ?? DateTime.now(),
+              initialDate: state.farmerWorker.dateOfBirth ?? DateTime.now(),
               firstDate: DateTime.now().add(const Duration(days: -1000000)),
               lastDate: DateTime.now(),
             );
@@ -308,12 +308,12 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
           child: AttributeItem(
             child: SelectorAttributeItem(
               hintText: '',
-              text: state.farmerWorker.dateOfBirth.isBlank
+              text: state.farmerWorker.dateOfBirth == null
                   ? LocaleKeys.yyyy_mm_dd.tr()
-                  : DateTime.tryParse(state.farmerWorker.dateOfBirth!).yMd(),
+                  : state.farmerWorker.dateOfBirth.yMd(),
               labelText: LocaleKeys.dateOfBirth.tr(),
               labelStyle: context.textStyles.bodyBold.blueDark2,
-              textStyle: state.farmerWorker.dateOfBirth.isBlank
+              textStyle: state.farmerWorker.dateOfBirth == null
                   ? context.textStyles.bodyNormal.grey
                   : context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(

@@ -65,7 +65,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
       emit(
         state.copyWith(
           farmerWorker: state.farmerWorker.copyWith(
-            dateOfBirth: dateTime.toIso8601String(),
+            dateOfBirth: dateTime,
           ),
         ),
       );
