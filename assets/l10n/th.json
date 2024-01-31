@@ -495,6 +495,7 @@
   "training_type": "ประเภทการฝึกอบรม",
   "expiry_date": "วันหมดอายุ",
   "trainer_name": "ชื่อผู้ให้การฝึกอบรม",
+  "trainees": "Trainees",
   "trainee_name": "ชื่อผู้เข้ารับการฝึกอบรม",
   "add_trainee": "Add Trainee/s",
   "training_no": "หมายเลขการฝึกอบรม",

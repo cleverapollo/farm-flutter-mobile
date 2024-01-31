@@ -91,7 +91,7 @@ class _BottomSheetMultipleSelectionState<T> extends State<BottomSheetMultipleSel
             child: CmoTextField(
               name: LocaleKeys.search.tr(),
               hintText: LocaleKeys.search.tr(),
-              suffixIcon: Assets.icons.icSearch.svg(),
+              prefixIcon: Assets.icons.icSearchOutline.svg(),
               onChanged: (input) {
                 _debounceInputTimer?.cancel();
                 _debounceInputTimer = Timer(

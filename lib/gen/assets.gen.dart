@@ -207,6 +207,10 @@ class $AssetsIconsGen {
   SvgGenImage get icRemoveSelection =>
       const SvgGenImage('assets/icons/ic_remove_selection.svg');
 
+  /// File path: assets/icons/ic_remove_trainee.svg
+  SvgGenImage get icRemoveTrainee =>
+      const SvgGenImage('assets/icons/ic_remove_trainee.svg');
+
   /// File path: assets/icons/ic_search.svg
   SvgGenImage get icSearch => const SvgGenImage('assets/icons/ic_search.svg');
 
@@ -239,6 +243,10 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/ic_tick.svg
   SvgGenImage get icTick => const SvgGenImage('assets/icons/ic_tick.svg');
+
+  /// File path: assets/icons/ic_trainees.svg
+  SvgGenImage get icTrainees =>
+      const SvgGenImage('assets/icons/ic_trainees.svg');
 
   /// File path: assets/icons/ic_updated_add_button.svg
   SvgGenImage get icUpdatedAddButton =>
@@ -321,6 +329,7 @@ class $AssetsIconsGen {
         icRefreshMap,
         icRemove,
         icRemoveSelection,
+        icRemoveTrainee,
         icSearch,
         icSearchOutline,
         icSelectPhotoMap,
@@ -330,6 +339,7 @@ class $AssetsIconsGen {
         icSmsBlue,
         icTakePhotoMap,
         icTick,
+        icTrainees,
         icUpdatedAddButton,
         icUpdatedCloseButton,
         icUser,

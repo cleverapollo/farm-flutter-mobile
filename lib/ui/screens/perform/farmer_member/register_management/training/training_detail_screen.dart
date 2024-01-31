@@ -6,6 +6,7 @@ import 'package:cmo/state/training_cubit/training_detail_cubit.dart';
 import 'package:cmo/ui/components/bottom_sheet_multiple_selection.dart';
 import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/components/signature_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/widgets/trainee_widget.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
@@ -263,45 +264,76 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
   Widget _selectTraineeName() {
     return BlocBuilder<TrainingDetailCubit, TrainingDetailState>(
       builder: (context, state) {
-        return BottomSheetSelection(
-          isShowError: state.isTraineeNameError,
-          hintText: LocaleKeys.add_trainee.tr(),
-          hintTextStyle: context.textStyles.bodyBold.blueDark3,
-          value: state.selectedTrainees.length.toString(),
-          margin: const EdgeInsets.symmetric(horizontal: 24),
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
-          rightIconData: Assets.icons.icUpdatedAddButton.svgBlack,
-          onTap: () async {
-            FocusManager.instance.primaryFocus?.unfocus();
-            if (state.workers.isBlank) return;
-            await showCustomBottomSheet<void>(
-              context,
-              content: Padding(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-                child: BottomSheetMultipleSelection<FarmerWorker>(
-                  listItems: state.workers
-                      .map(
-                        (e) => BottomSheetMultipleSelectionItem(
-                          item: e,
-                          id: e.workerId,
-                          titleValue: e.fullName,
+        return Column(
+          children: [
+            BottomSheetSelection(
+              isShowError: state.isTraineeNameError,
+              hintText: LocaleKeys.add_trainee.tr(),
+              hintTextStyle: context.textStyles.bodyBold.blueDark3,
+              value: state.selectedTrainees.length.toString(),
+              margin: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
+              rightIconData: Assets.icons.icUpdatedAddButton.svgBlack,
+              onTap: () async {
+                FocusManager.instance.primaryFocus?.unfocus();
+                if (state.workers.isBlank) return;
+                await showCustomBottomSheet<void>(
+                  context,
+                  content: Padding(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Assets.icons.icTrainees.svg(
+                              height: 24,
+                              width: 24,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              LocaleKeys.trainees.tr(),
+                              style: context.textStyles.bodyBold.blueDark2.copyWith(
+                                fontSize: 24,
+                              ),
+                            ),
+                          ],
                         ),
-                      )
-                      .toList(),
-                  selectedItems: state.selectedTrainees
-                      .map(
-                        (e) => BottomSheetMultipleSelectionItem(
-                          item: e,
-                          id: e.workerId,
-                          titleValue: e.fullName,
+                        const SizedBox(height: 16),
+                        Expanded(
+                          child: BottomSheetMultipleSelection<FarmerWorker>(
+                            listItems: state.workers
+                                .map(
+                                  (e) => BottomSheetMultipleSelectionItem(
+                                    item: e,
+                                    id: e.workerId,
+                                    titleValue: e.fullName,
+                                  ),
+                                )
+                                .toList(),
+                            selectedItems: state.selectedTrainees
+                                .map(
+                                  (e) => BottomSheetMultipleSelectionItem(
+                                    item: e,
+                                    id: e.workerId,
+                                    titleValue: e.fullName,
+                                  ),
+                                )
+                                .toList(),
+                            onSave: cubit.onSelectTrainee,
+                          ),
                         ),
-                      )
-                      .toList(),
-                  onSave: context.read<TrainingDetailCubit>().onSelectTrainee,
-                ),
-              ),
-            );
-          },
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+            TraineeWidget(
+              selectedTrainees: state.selectedTrainees,
+              onRemove: cubit.onRemoveTrainee,
+            ),
+          ],
         );
       },
     );

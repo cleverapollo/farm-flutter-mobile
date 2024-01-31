@@ -157,6 +157,16 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
     );
   }
 
+  void onRemoveTrainee(FarmerWorker trainee) {
+    final selectedTrainees = state.selectedTrainees;
+    selectedTrainees.remove(trainee);
+    emit(
+      state.copyWith(
+        selectedTrainees: selectedTrainees,
+      ),
+    );
+  }
+
   bool onValidateRequireField() {
     if (state.training.date == null ||
         state.selectedTrainees.isBlank ||
