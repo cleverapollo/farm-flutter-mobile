@@ -15,6 +15,7 @@ class TraineeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (selectedTrainees.isEmpty) return const SizedBox.shrink();
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24),
       padding: const EdgeInsets.symmetric(vertical: 12),
