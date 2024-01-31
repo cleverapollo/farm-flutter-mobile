@@ -243,6 +243,7 @@
   "nationality": "Nationality",
   "newAssessment": "Penilaian Baru",
   "newAudit": "Audit Baru",
+  "pre_populate_from_last_audit": "Pre-populate from last audit",
   "newItems": "Item Baru",
   "next": "Seterusnya",
   "no": "Tidak",

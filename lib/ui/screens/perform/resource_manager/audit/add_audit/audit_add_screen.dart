@@ -9,6 +9,7 @@ import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_questions_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
+import 'package:cmo/ui/widget/cmo_switch.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,8 +34,11 @@ class AuditAddScreen extends BaseStatefulWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => AuditAddScreen(
-          auditComeFrom: auditComeFrom,
+        builder: (_) => BlocProvider(
+          create: (_) => AuditCubit(),
+          child: AuditAddScreen(
+            auditComeFrom: auditComeFrom,
+          ),
         ),
       ),
     );
@@ -45,14 +49,6 @@ class _AuditAddScreen extends BaseStatefulWidgetState<AuditAddScreen> {
   bool loading = false;
 
   Timer? debounceInputTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() async {
-      await context.read<AuditCubit>().initialize();
-    });
-  }
 
   Future<void> onSubmit() async {
     setState(() {
@@ -109,6 +105,7 @@ class _AuditAddScreen extends BaseStatefulWidgetState<AuditAddScreen> {
                         buildSelectAuditTemplate(),
                         buildSelectSite(),
                         // buildSelectCompartment(),
+                        buildPrepopulateAuditWidget(),
                       ],
                     ),
                   ),
@@ -292,6 +289,22 @@ class _AuditAddScreen extends BaseStatefulWidgetState<AuditAddScreen> {
               ),
             );
           },
+        );
+      },
+    );
+  }
+
+  Widget buildPrepopulateAuditWidget() {
+    return BlocBuilder<AuditCubit, AuditState>(
+      builder: (context, state) {
+        return CmoSwitch(
+          displaySwitchAsPrefix: true,
+          value: state.isPrepopulateAudit,
+          title: LocaleKeys.pre_populate_from_last_audit.tr(),
+          padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
+          spaceBetween: 10,
+          textStyle: context.textStyles.bodyNormalItalic.blueDark2,
+          onChanged: context.read<AuditCubit>().selectPrepopulateAudit,
         );
       },
     );

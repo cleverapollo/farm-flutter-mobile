@@ -241,6 +241,7 @@
   "nationality": "Nationality",
   "newAssessment": "New Assessment",
   "newAudit": "New Audit",
+  "pre_populate_from_last_audit": "Pre-populate from last audit",
   "newItems": "New Items",
   "next": "Next",
   "no": "No",

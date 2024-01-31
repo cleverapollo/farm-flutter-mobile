@@ -13,6 +13,8 @@ class AuditState extends Equatable {
     this.selectedAuditTemplate,
     this.selectedFarm,
     this.selectedCompartment,
+    this.isPrepopulateAudit = false,
+    this.prepopulateAudit,
   });
 
   final bool loading;
@@ -26,6 +28,8 @@ class AuditState extends Equatable {
   final Farm? selectedFarm;
   final AuditTemplate? selectedAuditTemplate;
   final Compartment? selectedCompartment;
+  final bool isPrepopulateAudit;
+  final Audit? prepopulateAudit;
 
   AuditState copyWith({
     bool? loading,
@@ -39,6 +43,8 @@ class AuditState extends Equatable {
     Farm? selectedFarm,
     AuditTemplate? selectedAuditTemplate,
     Compartment? selectedCompartment,
+    bool? isPrepopulateAudit,
+    Audit? prepopulateAudit,
   }) {
     return AuditState(
       loading: loading ?? this.loading,
@@ -52,6 +58,8 @@ class AuditState extends Equatable {
       selectedAuditTemplate: selectedAuditTemplate ?? this.selectedAuditTemplate,
       selectedCompartment: selectedCompartment ?? this.selectedCompartment,
       selectedFarm: selectedFarm ?? this.selectedFarm,
+      isPrepopulateAudit: isPrepopulateAudit ?? this.isPrepopulateAudit,
+      prepopulateAudit: prepopulateAudit ?? this.prepopulateAudit,
     );
   }
 
@@ -69,6 +77,8 @@ class AuditState extends Equatable {
         selectedCompartment,
         selectedAuditTemplate,
         Json.tryEncode(cacheCreateData),
+        isPrepopulateAudit,
+        prepopulateAudit,
       ];
 }
 

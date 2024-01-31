@@ -240,6 +240,7 @@
   "nationality": "Nationality",
   "newAssessment": "การประเมินใหม่",
   "newAudit": "การตรวจสอบใหม่",
+  "pre_populate_from_last_audit": "Pre-populate from last audit",
   "newItems": "รายการใหม่",
   "next": "ต่อไป",
   "no": "เลขที่",

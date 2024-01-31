@@ -241,6 +241,7 @@
   "nationality": "Nationality",
   "newAssessment": "ukuhlola okusha",
   "newAudit": "ucwaningo olusha",
+  "pre_populate_from_last_audit": "Pre-populate from last audit",
   "newItems": "qala okusha/ into entsha",
   "next": "okulandelayo",
   "no": "cha",

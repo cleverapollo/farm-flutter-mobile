@@ -3885,6 +3885,21 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<Audit?> getAuditByAuditTemplateIdAndFarmId({
+    int? auditTemplateId,
+    String? farmId,
+  }) async {
+    if (auditTemplateId == null || farmId.isBlank) return null;
+    final db = await _db();
+    return db.audits
+        .filter()
+        .auditTemplateIdEqualTo(auditTemplateId)
+        .farmIdEqualTo(farmId)
+        .isActiveEqualTo(true)
+        .sortByCreatedDesc()
+        .findFirst();
+  }
+
   Future<int> cacheAudit(Audit item) async {
     final db = await _db();
     return db.writeTxn(() async {

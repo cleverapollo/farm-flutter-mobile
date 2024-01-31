@@ -10,10 +10,17 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 part 'audit_state.dart';
 
 class AuditCubit extends HydratedCubit<AuditState> {
-  AuditCubit() : super(const AuditState());
+  AuditCubit() : super(const AuditState()) {
+    initialize();
+  }
 
-  void cleanCache() {
-    emit(const AuditState());
+  Future<void> initialize() async {
+    try {
+      await getListAuditTemplates();
+      await getListSites();
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   Future<void> updateSelectedFarm(Farm farm) async {
@@ -24,15 +31,38 @@ class AuditCubit extends HydratedCubit<AuditState> {
       ),
     );
 
-    await getListCompartments();
+    await getPrepopulateAudit();
+    // await getListCompartments();
+  }
+
+  Future<void> updateSelectedAuditTemplate(AuditTemplate auditTemplate) async {
+    emit(state.copyWith(selectedAuditTemplate: auditTemplate));
+    await getPrepopulateAudit();
   }
 
   void updateSelectedCompartment(Compartment? compartment) {
     emit(state.copyWith(selectedCompartment: compartment));
   }
 
-  void updateSelectedAuditTemplate(AuditTemplate auditTemplate) {
-    emit(state.copyWith(selectedAuditTemplate: auditTemplate));
+  void selectPrepopulateAudit(bool isPrepopulate) {
+    if (state.prepopulateAudit == null) return;
+    emit(state.copyWith(isPrepopulateAudit: isPrepopulate));
+  }
+
+  Future<void> getPrepopulateAudit() async {
+    if (state.selectedFarm?.farmId == null ||
+        state.selectedAuditTemplate?.auditTemplateId == null) return;
+    final prepopulateAudit = await cmoDatabaseMasterService.getAuditByAuditTemplateIdAndFarmId(
+      farmId: state.selectedFarm?.farmId,
+      auditTemplateId: state.selectedAuditTemplate?.auditTemplateId,
+    );
+
+    emit(
+      state.copyWith(
+        isPrepopulateAudit: prepopulateAudit != null,
+        prepopulateAudit: prepopulateAudit,
+      ),
+    );
   }
 
   String? checkCompleteRequiredField() {
@@ -69,6 +99,11 @@ class AuditCubit extends HydratedCubit<AuditState> {
       final service = cmoDatabaseMasterService;
       int? newId;
       newId = await service.cacheAudit(audit);
+      if (state.isPrepopulateAudit) {
+        await cacheQuestionAnswersFromPrepopulateAudit(audit);
+        await cacheQuestionCommentFromPrepopulateAudit(audit);
+      }
+
       showSnackSuccess(msg: 'Save audit success with id: $newId');
     } catch (e) {
       showSnackError(msg: e.toString());
@@ -108,14 +143,50 @@ class AuditCubit extends HydratedCubit<AuditState> {
     emit(state.copyWith(compartments: [const Compartment(unitNumber: 'None'),...compartments]));
   }
 
-  Future<void> initialize() async {
-    try {
-      cleanCache();
-      await getListAuditTemplates();
-      await getListSites();
-    } catch (error) {
-      handleError(error);
+  Future<void> cacheQuestionAnswersFromPrepopulateAudit(Audit audit) async {
+    final rmu = await configService.getActiveRegionalManager();
+    final answers = await cmoDatabaseMasterService.getQuestionAnswersByRmuIdAndAuditTemplateIdAndAssessmentId(
+      rmuId: rmu?.regionalManagerUnitId,
+      auditTemplateId: state.prepopulateAudit?.auditTemplateId,
+      assessmentId: state.prepopulateAudit?.assessmentId,
+    );
+
+    final futures = <Future<void>>[];
+    var now = DateTime.now().millisecondsSinceEpoch;
+    for (final answer in answers) {
+      futures.add(
+        cmoDatabaseMasterService.cacheQuestionAnswer(
+          answer.copyWith(
+            assessmentId: audit.assessmentId,
+            questionAnswerId: now++,
+            latitude: null,
+            longitude: null,
+          ),
+        ),
+      );
     }
+
+    await Future.wait(futures);
+  }
+
+  Future<void> cacheQuestionCommentFromPrepopulateAudit(Audit audit) async {
+    final questionComments = await cmoDatabaseMasterService.getQuestionCommentsByAssessmentId(
+      state.prepopulateAudit?.assessmentId,
+    );
+
+    final futures = <Future<void>>[];
+    for (final questionComment in questionComments) {
+      futures.add(
+        cmoDatabaseMasterService.cacheQuestionComment(
+          questionComment.copyWith(
+            assessmentId: audit.assessmentId,
+            commentId: generatorInt32Id(),
+          ),
+        ),
+      );
+    }
+
+    await Future.wait(futures);
   }
 
   void handleError(Object error) {
