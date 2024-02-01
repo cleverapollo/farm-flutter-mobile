@@ -5,7 +5,7 @@ import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 
 class BottomSheetSelection extends StatelessWidget {
-  final VoidCallback onTap;
+  final GestureTapCallback? onTap;
   final String? value;
   final String hintText;
   final Widget? rightIconData;
@@ -19,8 +19,8 @@ class BottomSheetSelection extends StatelessWidget {
   final bool inactive;
 
   const BottomSheetSelection({
-    required this.onTap,
     required this.hintText,
+    this.onTap,
     this.value,
     this.rightIconData,
     this.padding,

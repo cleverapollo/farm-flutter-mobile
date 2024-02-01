@@ -6,6 +6,7 @@ import 'package:cmo/model/chemical.dart';
 import 'package:cmo/model/chemical_application_method/chemical_application_method.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_cubit.dart';
 import 'package:cmo/state/register_management_chemical_cubit/register_management_chemical_state.dart';
+import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
@@ -232,26 +233,13 @@ class _AddingChemicalScreenState extends BaseStatefulWidgetState<AddingChemicalS
                                 );
                               },
                             ),
-                            GestureDetector(
-                              onTap: () async {
-                                final date = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime.now()
-                                      .add(const Duration(days: -1000000)),
-                                  lastDate: DateTime.now()
-                                      .add(const Duration(days: 1000000)),
-                                );
-                                cubit.onChangeData(dateTime: date);
-                              },
-                              child: AttributeItem(
-                                child: SelectorAttributeItem(
-                                    hintText: LocaleKeys.dateIssued.tr(),
-                                    text: state.chemical.date != null
-                                        ? state.chemical.date.yMd()
-                                        : 'Date Time Captured',
-                                    contentPadding: const EdgeInsets.all(4),
-                                    trailing: Assets.icons.icCalendar.svgBlack),
+                            AttributeItem(
+                              child: DatePickerWidget(
+                                initialDate: state.chemical.date,
+                                firstDate: DateTime.now().add(const Duration(days: -1000000)),
+                                lastDate: DateTime.now().add(const Duration(days: 1000000)),
+                                onChangeDate: (date) => cubit.onChangeData(dateTime: date),
+                                title: LocaleKeys.dateIssued.tr(),
                               ),
                             ),
                             AttributeItem(

@@ -6,6 +6,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
+import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/screens/perform/asi/asi_map_screen.dart';
 import 'package:cmo/ui/screens/perform/asi/widgets/select_compartment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
@@ -315,37 +316,34 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
     if (datetime != null) {
       currentDate = datetime.yMd();
     }
-    return BottomSheetSelection(
-      hintText: LocaleKeys.date.tr(),
-      value: currentDate,
-      displayHorizontal: false,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      rightIconData: Padding(
-        padding: const EdgeInsets.only(bottom: 4.0),
-        child: Row(
-          children: [
-            if (datetime != null) Assets.icons.icTick.widget,
-            const SizedBox(
-              width: 8,
-            ),
-            Icon(
-              Icons.date_range_sharp,
-              color: context.colors.black,
-              size: 24,
-            ),
-          ],
+
+    return DatePickerWidget(
+      firstDate: DateTime(2018, 3, 5),
+      lastDate: DateTime(DateTime.now().year + 5, 12, 31),
+      initialDate: datetime,
+      onChangeDate: _asiDetailCubit.onDateChanged,
+      child: BottomSheetSelection(
+        hintText: LocaleKeys.date.tr(),
+        value: currentDate,
+        displayHorizontal: false,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        rightIconData: Padding(
+          padding: const EdgeInsets.only(bottom: 4.0),
+          child: Row(
+            children: [
+              if (datetime != null) Assets.icons.icTick.widget,
+              const SizedBox(
+                width: 8,
+              ),
+              Icon(
+                Icons.date_range_sharp,
+                color: context.colors.black,
+                size: 24,
+              ),
+            ],
+          ),
         ),
       ),
-      onTap: () async {
-        FocusManager.instance.primaryFocus?.unfocus();
-        final result = await showDatePicker(
-            context: context,
-            initialDate: datetime ?? DateTime.now(),
-            firstDate: DateTime(2018, 3, 5),
-            lastDate: DateTime(DateTime.now().year + 5, 12, 31),
-        );
-        _asiDetailCubit.onDateChanged(date: result);
-      },
     );
   }
 }

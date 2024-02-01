@@ -145,7 +145,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     );
   }
 
-  void onDateChanged({required DateTime? date}) {
+  void onDateChanged(DateTime? date) {
     emit(
       state.copyWith(
         asi: state.asi.copyWith(date: date),

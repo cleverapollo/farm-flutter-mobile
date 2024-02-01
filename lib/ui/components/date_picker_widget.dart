@@ -1,7 +1,11 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
+import 'package:cmo/state/state.dart';
+import 'package:cmo/third_party/lunar_calendar/date_init.dart';
+import 'package:cmo/third_party/lunar_calendar/flutter_lunar_datetime_picker.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DatePickerWidget extends StatelessWidget {
   final DateTime? initialDate;
@@ -21,19 +25,45 @@ class DatePickerWidget extends StatelessWidget {
     this.initialDate,
   });
 
+  Future<void> onShowGregorianCalendar(BuildContext context) async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: initialDate ?? DateTime.now(),
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+
+    if (date != null) {
+      onChangeDate(date);
+    }
+  }
+
+  Future<void> onShowLunarCalendar(BuildContext context) async {
+    await LunarDatePicker.showDatePicker(
+      context,
+      showTime: false,
+      dateInitTime: DateInitTime(
+        currentTime: DateTime.now(),
+        maxTime: lastDate,
+        minTime: firstDate,
+      ),
+      onConfirm: (dateTime, dateTimeUtc) {
+        onChangeDate(dateTimeUtc);
+      },
+      onChanged: (time, dateTimeUtc) {
+        debugPrint('change:${dateTimeUtc.toString()}');
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        final date = await showDatePicker(
-          context: context,
-          initialDate: initialDate ?? DateTime.now(),
-          firstDate: firstDate,
-          lastDate: lastDate,
-        );
-
-        if (date != null) {
-          onChangeDate(date);
+        if(context.read<SettingsCubit>().shouldShowLunarCalendar()) {
+          await onShowLunarCalendar(context);
+        } else {
+          await onShowGregorianCalendar(context);
         }
       },
       child: child ??

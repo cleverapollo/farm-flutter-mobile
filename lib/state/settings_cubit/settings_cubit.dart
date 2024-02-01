@@ -32,6 +32,10 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     emit(state.copyWith(themeMode: mode));
   }
 
+  bool shouldShowLunarCalendar() {
+    return state.locale == AppLocale.th || state.locale == AppLocale.vi;
+  }
+
   @override
   SettingsState? fromJson(Map<String, dynamic> json) {
     final locale = json['locale'] as String?;

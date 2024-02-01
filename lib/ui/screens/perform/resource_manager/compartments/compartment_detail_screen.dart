@@ -7,6 +7,7 @@ import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_cubit.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_state.dart';
+import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/espacement_input_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
@@ -268,40 +269,18 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                                 ),
                                 AttributeItem(
                                   inactive: isConservationArea,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, String?>(
-                                            selector: (state) => state.compartment.plannedPlantDT,
-                                            builder: (context, plannedDate) {
-                                              return Text(
-                                                plannedDate == null
-                                                    ? LocaleKeys.plannedPlantDate.tr()
-                                                    : DateTime.parse(plannedDate).yMd(),
-                                                style: context.textStyles.bodyBold.blueDark2,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        IconButton(
-                                          padding: const EdgeInsets.all(4),
-                                          constraints: const BoxConstraints(),
-                                          onPressed: () async {
-                                            final datetime = await showDatePicker(
-                                              context: context,
-                                              initialDate: DateTime.now(),
-                                              firstDate: DateTime.now().add(const Duration(days: -1000000)),
-                                              lastDate: DateTime.now(),
-                                            );
-                                            _compartmentDetailCubit.onPlannedPlantDateChanged(datetime);
-                                          },
-                                          icon: Assets.icons.icCalendar.svgBlack,
-                                        ),
-                                      ],
-                                    ),
+                                  child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, String?>(
+                                    selector: (state) => state.compartment.plannedPlantDT,
+                                    builder: (context, plannedDate) {
+                                      final plannedDateTime = DateTime.tryParse(plannedDate ?? '');
+                                      return DatePickerWidget(
+                                        lastDate: DateTime.now(),
+                                        firstDate: DateTime.now().add(const Duration(days: -1000000)),
+                                        initialDate: plannedDateTime,
+                                        onChangeDate: _compartmentDetailCubit.onPlannedPlantDateChanged,
+                                        title: LocaleKeys.plannedPlantDate.tr(),
+                                      );
+                                    },
                                   ),
                                 ),
                                 AttributeItem(

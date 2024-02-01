@@ -4,6 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/labour_management/labour_detail_cubit.dart';
+import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/job_description/farmer_add_worker_select_job_description.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/widgets/farmer_add_worker_upload_avatar.dart';
@@ -292,20 +293,14 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
   }
 
   Widget selectBirth() {
-    return BlocBuilder<LabourDetailCubit, LabourDetailState>(
-      builder: (context, state) {
-        return InkWell(
-          onTap: () async {
-            final date = await showDatePicker(
-              context: context,
-              initialDate: state.farmerWorker.dateOfBirth ?? DateTime.now(),
-              firstDate: DateTime.now().add(const Duration(days: -1000000)),
-              lastDate: DateTime.now(),
-            );
-
-            cubit.onChangeDateOfBirth(date);
-          },
-          child: AttributeItem(
+    return AttributeItem(
+      child: BlocBuilder<LabourDetailCubit, LabourDetailState>(
+        builder: (context, state) {
+          return DatePickerWidget(
+            lastDate: DateTime.now(),
+            firstDate: DateTime.now().add(const Duration(days: -1000000)),
+            initialDate: state.farmerWorker.dateOfBirth,
+            onChangeDate: cubit.onChangeDateOfBirth,
             child: SelectorAttributeItem(
               hintText: '',
               text: state.farmerWorker.dateOfBirth == null
@@ -322,9 +317,9 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
               ),
               trailing: Assets.icons.icCalendar.svgBlack,
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
