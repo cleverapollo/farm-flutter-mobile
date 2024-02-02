@@ -1,9 +1,6 @@
 import 'package:cmo/extensions/string.dart';
-import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class CommonFunctions {

@@ -238,7 +238,7 @@ class _AddingChemicalScreenState extends BaseStatefulWidgetState<AddingChemicalS
                                 initialDate: state.chemical.date,
                                 firstDate: DateTime.now().add(const Duration(days: -1000000)),
                                 lastDate: DateTime.now().add(const Duration(days: 1000000)),
-                                onChangeDate: (date) => cubit.onChangeData(dateTime: date),
+                                onConfirm: (date) => cubit.onChangeData(dateTime: date),
                                 title: LocaleKeys.dateIssued.tr(),
                               ),
                             ),

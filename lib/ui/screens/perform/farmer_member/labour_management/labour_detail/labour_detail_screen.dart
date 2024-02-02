@@ -300,7 +300,7 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
             lastDate: DateTime.now(),
             firstDate: DateTime.now().add(const Duration(days: -1000000)),
             initialDate: state.farmerWorker.dateOfBirth,
-            onChangeDate: cubit.onChangeDateOfBirth,
+            onConfirm: cubit.onChangeDateOfBirth,
             child: SelectorAttributeItem(
               hintText: '',
               text: state.farmerWorker.dateOfBirth == null

@@ -321,7 +321,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
       firstDate: DateTime(2018, 3, 5),
       lastDate: DateTime(DateTime.now().year + 5, 12, 31),
       initialDate: datetime,
-      onChangeDate: _asiDetailCubit.onDateChanged,
+      onConfirm: _asiDetailCubit.onDateChanged,
       child: BottomSheetSelection(
         hintText: LocaleKeys.date.tr(),
         value: currentDate,

@@ -277,7 +277,7 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                                         lastDate: DateTime.now(),
                                         firstDate: DateTime.now().add(const Duration(days: -1000000)),
                                         initialDate: plannedDateTime,
-                                        onChangeDate: _compartmentDetailCubit.onPlannedPlantDateChanged,
+                                        onConfirm: _compartmentDetailCubit.onPlannedPlantDateChanged,
                                         title: LocaleKeys.plannedPlantDate.tr(),
                                       );
                                     },

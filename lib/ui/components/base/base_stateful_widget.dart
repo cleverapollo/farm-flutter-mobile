@@ -1,5 +1,8 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/state/state.dart';
+import 'package:cmo/utils/date_time_utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class BaseStatefulWidget extends StatefulWidget {
   final String screenName;
@@ -10,7 +13,16 @@ abstract class BaseStatefulWidget extends StatefulWidget {
   });
 }
 
-abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends State<T>{
+abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends State<T> {
+
+  DateTime? convertDateTimeToLunar(DateTime? dateTime) {
+    final settingCubit = context.read<SettingsCubit>();
+    if (settingCubit.shouldShowLunarCalendar()) {
+      return DateTimeUtils.convertDateTimeToLunar(dateTime);
+    } else {
+      return dateTime;
+    }
+  }
 
   @override
   void initState() {

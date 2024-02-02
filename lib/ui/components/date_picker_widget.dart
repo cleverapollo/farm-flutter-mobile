@@ -4,6 +4,7 @@ import 'package:cmo/state/state.dart';
 import 'package:cmo/third_party/lunar_calendar/date_init.dart';
 import 'package:cmo/third_party/lunar_calendar/flutter_lunar_datetime_picker.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,15 +14,17 @@ class DatePickerWidget extends StatelessWidget {
   final DateTime lastDate;
   final Widget? child;
   final String? title;
-  final void Function(DateTime) onChangeDate;
+  final TextStyle? titleStyle;
+  final void Function(DateTime) onConfirm;
 
   const DatePickerWidget({
     super.key,
     required this.firstDate,
     required this.lastDate,
-    required this.onChangeDate,
+    required this.onConfirm,
     this.child,
     this.title,
+    this.titleStyle,
     this.initialDate,
   });
 
@@ -34,7 +37,7 @@ class DatePickerWidget extends StatelessWidget {
     );
 
     if (date != null) {
-      onChangeDate(date);
+      onConfirm(date);
     }
   }
 
@@ -43,17 +46,21 @@ class DatePickerWidget extends StatelessWidget {
       context,
       showTime: false,
       dateInitTime: DateInitTime(
-        currentTime: DateTime.now(),
+        currentTime: initialDate ?? DateTime.now(),
         maxTime: lastDate,
         minTime: firstDate,
       ),
-      onConfirm: (dateTime, dateTimeUtc) {
-        onChangeDate(dateTimeUtc);
-      },
-      onChanged: (time, dateTimeUtc) {
-        debugPrint('change:${dateTimeUtc.toString()}');
-      },
+      onConfirm: onConfirm,
     );
+  }
+
+  DateTime? convertDateTimeToLunar(BuildContext context, DateTime? dateTime) {
+    final settingCubit = context.read<SettingsCubit>();
+    if (settingCubit.shouldShowLunarCalendar()) {
+      return DateTimeUtils.convertDateTimeToLunar(dateTime);
+    } else {
+      return dateTime;
+    }
   }
 
   @override
@@ -80,13 +87,13 @@ class DatePickerWidget extends StatelessWidget {
                   children: [
                     Text(
                       title ?? '',
-                      style: context.textStyles.bodyBold.blueDark2,
+                      style: titleStyle ?? context.textStyles.bodyBold.blueDark2,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
                     if (initialDate != null)
                       Text(
-                        initialDate.yMd(),
+                        convertDateTimeToLunar(context, initialDate).yMd(),
                         maxLines: 3,
                         style: context.textStyles.bodyNormal.blueDark2,
                         textAlign: TextAlign.left,

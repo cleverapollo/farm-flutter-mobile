@@ -311,7 +311,7 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
             lastDate: DateTime.now().add(const Duration(days: 100000)),
             firstDate: state.complaint.dateReceived ?? DateTime.now(),
             initialDate: state.complaint.dateClosed ?? DateTime.now(),
-            onChangeDate: cubit.onDateClosedChanged,
+            onConfirm: cubit.onDateClosedChanged,
             child: SelectorAttributeItem(
               labelText: LocaleKeys.dateClosed.tr(),
               labelStyle: context.textStyles.bodyBold.blueDark2,

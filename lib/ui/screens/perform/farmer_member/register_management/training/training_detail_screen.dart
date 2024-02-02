@@ -254,7 +254,7 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
             initialDate: state.training.date,
             title: LocaleKeys.date.tr(),
             firstDate: DateTime.now().subtract(const Duration(days: 100000)),
-            onChangeDate: cubit.onDateIssuedChanged,
+            onConfirm: cubit.onDateIssuedChanged,
           ),
         );
       },

@@ -302,13 +302,13 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
             lastDate: DateTime.now(),
             firstDate: DateTime.now().subtract(const Duration(days: 100000)),
             initialDate: state.accidentAndIncident.dateOfIncident ?? DateTime.now(),
-            onChangeDate: cubit.onDateOfIncidentChanged,
+            onConfirm: cubit.onDateOfIncidentChanged,
             child: SelectorAttributeItem(
               labelText: LocaleKeys.date_of_incident.tr(),
               labelStyle: context.textStyles.bodyBold.blueDark2,
               text: state.accidentAndIncident.dateOfIncident == null
                   ? ''
-                  : state.accidentAndIncident.dateOfIncident.yMd(),
+                  : convertDateTimeToLunar(state.accidentAndIncident.dateOfIncident).yMd(),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -334,13 +334,13 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
             firstDate: DateTime.now().subtract(const Duration(days: 100000)),
             initialDate:
                 state.accidentAndIncident.dateRecieved ?? DateTime.now(),
-            onChangeDate: cubit.onDateReceiveChanged,
+            onConfirm: cubit.onDateReceiveChanged,
             child: SelectorAttributeItem(
               labelText: LocaleKeys.date_reported.tr(),
               labelStyle: context.textStyles.bodyBold.blueDark2,
               text: state.accidentAndIncident.dateRecieved == null
                   ? ''
-                  : state.accidentAndIncident.dateRecieved.yMd(),
+                  : convertDateTimeToLunar(state.accidentAndIncident.dateRecieved).yMd(),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -472,13 +472,13 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
             lastDate: DateTime.now(),
             firstDate: DateTime.now().subtract(const Duration(days: 100000)),
             initialDate: state.accidentAndIncident.dateResumeWork ?? DateTime.now(),
-            onChangeDate: cubit.onDateResumeChanged,
+            onConfirm: cubit.onDateResumeChanged,
             child: SelectorAttributeItem(
               labelText: LocaleKeys.resumed_work_on.tr(),
               labelStyle: context.textStyles.bodyNormal.blueDark2,
               text: state.accidentAndIncident.dateResumeWork == null
                   ? ''
-                  : state.accidentAndIncident.dateResumeWork.yMd(),
+                  : convertDateTimeToLunar(state.accidentAndIncident.dateResumeWork).yMd(),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,

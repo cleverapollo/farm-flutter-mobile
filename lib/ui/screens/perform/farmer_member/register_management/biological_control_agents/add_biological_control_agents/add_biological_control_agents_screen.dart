@@ -176,7 +176,7 @@ class _AddBiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Add
             lastDate: DateTime.now(),
             firstDate: DateTime.now().subtract(const Duration(days: 100000)),
             initialDate: dateReleased ?? DateTime.now(),
-            onChangeDate: cubit.onDateReleasedChanged,
+            onConfirm: cubit.onDateReleasedChanged,
             child: SelectorAttributeItem(
               labelText: LocaleKeys.dateReleased.tr(),
               labelStyle: context.textStyles.bodyBold.blueDark3,
