@@ -3,6 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_employee_grievance/add_employee_grievance_cubit.dart';
+import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
@@ -141,9 +142,7 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
                         backgroundColor: context.colors.blueDark2,
                       ),
                       _selectGrievanceIssue(),
-                      _buildSelectDateReceived(
-                        employeeGrievance.dateReceived,
-                      ),
+                      _buildSelectDateReceived(),
                       _selectAllocatedTo(),
                       const SizedBox(height: 8,),
                       Padding(
@@ -159,7 +158,7 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
                           onChanged: cubit.onActionTakenChanged,
                         ),
                       ),
-                      _buildSelectDateClosed(employeeGrievance.dateClosed),
+                      _buildSelectDateClosed(),
                       const SizedBox(height: 8,),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 21),
@@ -344,88 +343,43 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
             );
           },
         );
-
-        // return AttributeItem(
-        //   child: CmoDropdown<FarmerWorker>(
-        //     name: LocaleKeys.allocatedTo.tr(),
-        //     initialValue: initAllocated,
-        //     style: context.textStyles.bodyNormal.blueDark3,
-        //     inputDecoration: InputDecoration(
-        //       contentPadding: const EdgeInsets.symmetric(
-        //         vertical: 8,
-        //         horizontal: 12,
-        //       ),
-        //       isDense: true,
-        //       hintText: LocaleKeys.allocatedTo.tr(),
-        //       hintStyle: context.textStyles.bodyNormal.blueDark3,
-        //       border: InputBorder.none,
-        //       focusedBorder: InputBorder.none,
-        //     ),
-        //     onChanged: (value) {
-        //       cubit.onAllocatedChanged(value);
-        //     },
-        //     itemsData: workers
-        //         .map((e) => CmoDropdownItem(id: e, name: e.firstName ?? ''))
-        //         .toList(),
-        //   ),
-        // );
       },
     );
   }
 
-  Widget _buildSelectDateReceived(DateTime? dateReceived) {
-    return AttributeItem(
-      margin: const EdgeInsets.symmetric(horizontal: 21),
-      child: CmoDatePicker(
-        name: LocaleKeys.dateReceived.tr(),
-        initialValue: dateReceived,
-        hintText: LocaleKeys.dateReceived.tr(),
-        validator: requiredValidator,
-        lastDate: DateTime.now(),
-        onChanged: (date) => cubit.onDateReceivedChanged(date),
-        inputDecoration: InputDecoration(
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
+  Widget _buildSelectDateReceived() {
+    return BlocBuilder<AddEmployeeGrievanceCubit, AddEmployeeGrievanceState>(
+      builder: (context, state) {
+        return AttributeItem(
+          margin: const EdgeInsets.symmetric(horizontal: 21),
+          child: DatePickerWidget(
+            lastDate: DateTime.now(),
+            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            title: LocaleKeys.dateReceived.tr(),
+            titleStyle: context.textStyles.bodyNormal.blueDark2,
+            initialDate: state.employeeGrievance.dateReceived,
+            onConfirm: cubit.onDateReceivedChanged,
           ),
-          suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-          suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
-          isDense: true,
-          hintText: LocaleKeys.dateReceived.tr(),
-          hintStyle: context.textStyles.bodyNormal.black,
-          labelText: LocaleKeys.dateReceived.tr(),
-          labelStyle: context.textStyles.bodyNormal.black,
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildSelectDateClosed(DateTime? dateClosed) {
-    return AttributeItem(
-      margin: const EdgeInsets.symmetric(horizontal: 21),
-      child: CmoDatePicker(
-        name: 'DateClosed',
-        initialValue: dateClosed,
-        hintText: LocaleKeys.dateClosed.tr(),
-        lastDate: DateTime.now(),
-        onChanged: cubit.onDateClosedChanged,
-        inputDecoration: InputDecoration(
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
+  Widget _buildSelectDateClosed() {
+    return BlocBuilder<AddEmployeeGrievanceCubit, AddEmployeeGrievanceState>(
+      builder: (context, state) {
+        return AttributeItem(
+          margin: const EdgeInsets.symmetric(horizontal: 21),
+          child: DatePickerWidget(
+            lastDate: DateTime.now(),
+            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            title: LocaleKeys.dateClosed.tr(),
+            titleStyle: context.textStyles.bodyNormal.blueDark2,
+            initialDate: state.employeeGrievance.dateClosed,
+            onConfirm: cubit.onDateClosedChanged,
           ),
-          suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-          suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
-          isDense: true,
-          hintText: LocaleKeys.dateClosed.tr(),
-          hintStyle: context.textStyles.bodyNormal.blueDark3,
-          labelText: LocaleKeys.dateClosed.tr(),
-          labelStyle: context.textStyles.bodyNormal.blueDark3,
-        ),
-      ),
+        );
+      },
     );
   }
 }

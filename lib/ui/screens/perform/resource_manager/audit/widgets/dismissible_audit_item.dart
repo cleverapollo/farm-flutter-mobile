@@ -11,11 +11,13 @@ class DismissibleAuditItem extends StatelessWidget {
     required this.audit,
     required this.onRemove,
     required this.onTapAudit,
+    this.createdDate,
   });
 
   final Audit audit;
   final VoidCallback onRemove;
   final VoidCallback onTapAudit;
+  final DateTime? createdDate;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +67,7 @@ class DismissibleAuditItem extends StatelessWidget {
             content: [
               CmoCardHeader(
                 title:
-                    '${audit.compartmentName ?? ''} \t\t\t\t\t ${LocaleKeys.created.tr()}: ${DateTime.tryParse(audit.created ?? '').ddMMYyyy()}',
+                    '${audit.compartmentName ?? ''} \t\t\t\t\t ${LocaleKeys.created.tr()}: ${createdDate.ddMMYyyy()}',
               ),
               Text(
                 audit.auditTemplateName ?? '',

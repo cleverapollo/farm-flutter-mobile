@@ -3,6 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/components/date_picker_widget.dart';
 
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
@@ -282,23 +283,15 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
       builder: (context, state) {
         return AttributeItem(
           margin: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: CmoDatePicker(
-            name: 'DateDetected',
-            onChanged: (date) => context.read<FireRegisterDetailCubit>().onDataChange(date: date),
-            initialValue: state.fireRegister?.date,
+          child: DatePickerWidget(
             lastDate: DateTime.now(),
-            inputDecoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 4,
-                horizontal: 12,
-              ),
-              suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-              suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
-              isDense: true,
-              labelText: LocaleKeys.dateDetected.tr(),
-              labelStyle: context.textStyles.bodyNormal.blueDark2,
-            ),
+            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            title: LocaleKeys.dateDetected.tr(),
+            titleStyle: context.textStyles.bodyNormal.blueDark2,
+            initialDate: state.fireRegister?.date,
+            onConfirm: (date) => context
+                .read<FireRegisterDetailCubit>()
+                .onDataChange(date: date),
           ),
         );
       },
@@ -310,23 +303,15 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
       builder: (context, state) {
         return AttributeItem(
           margin: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: CmoDatePicker(
-            name: 'DateExtinguished',
-            onChanged: (date) => context.read<FireRegisterDetailCubit>().onDataChange(extinguished: date),
-            initialValue: state.fireRegister?.extinguished,
+          child: DatePickerWidget(
             lastDate: DateTime.now(),
-            inputDecoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 4,
-                horizontal: 12,
-              ),
-              suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-              suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
-              isDense: true,
-              labelText: LocaleKeys.dateExtinguished.tr(),
-              labelStyle: context.textStyles.bodyNormal.blueDark2,
-            ),
+            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            title: LocaleKeys.dateExtinguished.tr(),
+            titleStyle: context.textStyles.bodyNormal.blueDark2,
+            initialDate: state.fireRegister?.extinguished,
+            onConfirm: (date) => context
+                .read<FireRegisterDetailCubit>()
+                .onDataChange(extinguished: date),
           ),
         );
       },

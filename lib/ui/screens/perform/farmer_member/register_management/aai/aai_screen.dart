@@ -110,9 +110,9 @@ class _AAIScreenState extends BaseStatefulWidgetState<AAIScreen> {
       LocaleKeys.worker.tr(): cubit.getWorkerNameByWorkerId(registerItem.workerId),
       LocaleKeys.jobDescription.tr(): registerItem.jobDescriptionName,
       LocaleKeys.nature_of_injury.tr(): registerItem.natureOfInjuryName,
-      LocaleKeys.date_of_incident.tr(): registerItem.dateOfIncident?.ddMMYyyy(),
-      LocaleKeys.date_reported.tr(): registerItem.dateRecieved.ddMMYyyy(),
-      LocaleKeys.resumed_work_on.tr(): registerItem.dateResumeWork?.ddMMYyyy(),
+      LocaleKeys.date_of_incident.tr(): convertDateTimeToLunar(registerItem.dateOfIncident).ddMMYyyy(),
+      LocaleKeys.date_reported.tr(): convertDateTimeToLunar(registerItem.dateRecieved).ddMMYyyy(),
+      LocaleKeys.resumed_work_on.tr(): convertDateTimeToLunar(registerItem.dateResumeWork).ddMMYyyy(),
       LocaleKeys.lost_time_in_days.tr(): registerItem.dateResumeWork != null &&
           registerItem.dateOfIncident != null
           ? registerItem.dateResumeWork!

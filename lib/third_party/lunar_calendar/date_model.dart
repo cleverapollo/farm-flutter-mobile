@@ -272,8 +272,10 @@ class LunarPickerModel extends CommonPickerModel {
           if (i >= minMonth + 1) {
             getLunarMiddleMonth(lunarMonths[i]);
           }
-        } else if (currentLunarTime.getYear() == maxLunarTime.getYear()) {
-            getLunarMiddleMonth(lunarMonths[i]);
+        // } else if (currentLunarTime.getYear() == maxLunarTime.getYear()) {
+
+        } else {
+          getLunarMiddleMonth(lunarMonths[i]);
         }
       }
     }

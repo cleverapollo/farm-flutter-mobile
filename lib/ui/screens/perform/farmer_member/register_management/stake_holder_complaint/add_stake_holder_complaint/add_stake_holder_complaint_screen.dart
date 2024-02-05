@@ -179,7 +179,7 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
                                   },
                                 ),
                               ),
-                              _buildSelectDateReceived(complaint.dateReceived),
+                              _buildSelectDateReceived(),
                               _buildSelectDateClosed(complaint.dateClosed),
                               AttributeItem(
                                 child: InputAttributeItem(
@@ -274,29 +274,31 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
     );
   }
 
-  Widget _buildSelectDateReceived(DateTime? receiveDate) {
-    return AttributeItem(
-      child: CmoDatePicker(
-        name: 'DateReceived',
-        hintText: LocaleKeys.dateReceived.tr(),
-        validator: requiredValidator,
-        initialValue: receiveDate,
-        onChanged: cubit.onDateReceivedChanged,
-        inputDecoration: InputDecoration(
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
+  Widget _buildSelectDateReceived() {
+    return BlocBuilder<AddStakeHolderComplaintCubit, AddStakeHolderComplaintState>(
+      builder: (context, state) {
+        return AttributeItem(
+          child: DatePickerWidget(
+            lastDate: DateTime.now(),
+            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            initialDate: state.complaint.dateReceived,
+            onConfirm: cubit.onDateReceivedChanged,
+            child: SelectorAttributeItem(
+              labelText: LocaleKeys.dateReceived.tr(),
+              labelStyle: context.textStyles.bodyBold.blueDark2,
+              text: state.complaint.dateReceived == null
+                  ? ''
+                  : convertDateTimeToLunar(state.complaint.dateReceived).yMd(),
+              textStyle: context.textStyles.bodyNormal.blueDark2,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              trailing: Assets.icons.icCalendar.svgBlack,
+            ),
           ),
-          suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-          suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
-          isDense: true,
-          hintText: LocaleKeys.dateReceived.tr(),
-          hintStyle: context.textStyles.bodyBold.blueDark2,
-          labelText: LocaleKeys.dateReceived.tr(),
-          labelStyle: context.textStyles.bodyBold.blueDark2,
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -308,16 +310,16 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
           isShowError: state.isDateClosedError,
           errorText: state.dateClosedErrorText,
           child: DatePickerWidget(
-            lastDate: DateTime.now().add(const Duration(days: 100000)),
+            lastDate: DateTime.now().add(const Duration(days: 1000)),
             firstDate: state.complaint.dateReceived ?? DateTime.now(),
-            initialDate: state.complaint.dateClosed ?? DateTime.now(),
+            initialDate: state.complaint.dateClosed,
             onConfirm: cubit.onDateClosedChanged,
             child: SelectorAttributeItem(
               labelText: LocaleKeys.dateClosed.tr(),
               labelStyle: context.textStyles.bodyBold.blueDark2,
               text: state.complaint.dateClosed == null
                   ? ''
-                  : state.complaint.dateClosed.yMd(),
+                  : convertDateTimeToLunar(state.complaint.dateClosed).yMd(),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,

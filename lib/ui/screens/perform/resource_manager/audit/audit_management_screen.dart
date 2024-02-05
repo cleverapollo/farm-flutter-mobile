@@ -9,7 +9,7 @@ import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/add_audit/audit_add_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/audit_list_questions_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/audit_list_item.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/dismissible_audit_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/widgets/status_button.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -114,8 +114,50 @@ class _AuditManagementScreenState extends BaseStatefulWidgetState<AuditManagemen
               ),
               const SizedBox(height: 16),
               Expanded(
-                child: AuditListItem(
-                  onTap: (audit) => onTapAudit(context, audit),
+                child: BlocBuilder<AuditListCubit, AuditListState>(
+                  builder: (context, state) {
+                    if (state.loading) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: context.colors.white,
+                        ),
+                      );
+                    }
+
+                    if (state.error != null) {
+                      return Center(
+                        child: Text(
+                          '${state.error}',
+                        ),
+                      );
+                    }
+
+                    return RefreshIndicator(
+                      onRefresh: () {
+                        return context.read<AuditListCubit>().refresh();
+                      },
+                      child: ListView.builder(
+                        itemCount: state.filterAudits.length,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemBuilder: (BuildContext context, int index) {
+                          final item = state.filterAudits[index];
+                          return DismissibleAuditItem(
+                            audit: item,
+                            createdDate: convertDateTimeToLunar(DateTime.tryParse(item.created ?? '')),
+                            onTapAudit: () => onTapAudit(context, item),
+                            onRemove: () async {
+                              await context.read<AuditListCubit>().removeAudit(
+                                item,
+                                callback: () =>
+                                    context.read<DashboardCubit>().refresh(),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

@@ -275,7 +275,7 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                                       final plannedDateTime = DateTime.tryParse(plannedDate ?? '');
                                       return DatePickerWidget(
                                         lastDate: DateTime.now(),
-                                        firstDate: DateTime.now().add(const Duration(days: -1000000)),
+                                        firstDate: DateTime.now().add(const Duration(days: -1000)),
                                         initialDate: plannedDateTime,
                                         onConfirm: _compartmentDetailCubit.onPlannedPlantDateChanged,
                                         title: LocaleKeys.plannedPlantDate.tr(),
@@ -311,13 +311,16 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                                 AttributeItem(
                                   inactive: isConservationArea,
                                   child: InputAttributeItem(
-                                      labelText: '${LocaleKeys.mai.tr()} m3/ha/yr',
-                                      labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                                      textStyle: context.textStyles.bodyNormal.blueDark2,
-                                      initialValue: (initCompartment.utilMAI ?? '').toString(),
-                                      keyboardType: TextInputType.phone,
-                                      hintText: LocaleKeys.mai.tr(),
-                                      onChanged: (value) => _compartmentDetailCubit.onMAIChanged(int.tryParse(value))),
+                                    labelText: '${LocaleKeys.mai.tr()} m3/ha/yr',
+                                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                                    initialValue: (initCompartment.utilMAI ?? '').toString(),
+                                    keyboardType: TextInputType.phone,
+                                    hintText: LocaleKeys.mai.tr(),
+                                    onChanged: (value) => _compartmentDetailCubit.onMAIChanged(
+                                      int.tryParse(value),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),

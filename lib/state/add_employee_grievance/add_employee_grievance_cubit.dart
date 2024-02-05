@@ -54,14 +54,22 @@ class AddEmployeeGrievanceCubit extends Cubit<AddEmployeeGrievanceState> {
   }
 
   void onDateReceivedChanged(DateTime? value) {
-    state.employeeGrievance = state.employeeGrievance.copyWith(
-      dateReceived: value,
+    emit(
+      state.copyWith(
+        employeeGrievance: state.employeeGrievance.copyWith(
+          dateReceived: value,
+        ),
+      ),
     );
   }
 
   void onDateClosedChanged(DateTime? value) {
-    state.employeeGrievance = state.employeeGrievance.copyWith(
-      dateClosed: value,
+    emit(
+      state.copyWith(
+        employeeGrievance: state.employeeGrievance.copyWith(
+          dateClosed: value,
+        ),
+      ),
     );
   }
 

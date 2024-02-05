@@ -128,7 +128,7 @@ class _ChemicalsScreenState extends BaseStatefulWidgetState<ChemicalsScreen> {
     return {
       LocaleKeys.chemicalType.tr(): registerItem.chemicalType,
       LocaleKeys.chemicalApplicationMethod.tr(): registerItem.chemicalApplicationMethod,
-      LocaleKeys.dateIssued.tr(): registerItem.date?.ddMMYyyy(),
+      LocaleKeys.dateIssued.tr(): convertDateTimeToLunar(registerItem.date).ddMMYyyy(),
       LocaleKeys.openingStockAndPurchases.tr(): registerItem.openingStock?.toString(),
       LocaleKeys.issued.tr(): registerItem.issued?.toString(),
       LocaleKeys.balance.tr(): registerItem.balance?.toString(),

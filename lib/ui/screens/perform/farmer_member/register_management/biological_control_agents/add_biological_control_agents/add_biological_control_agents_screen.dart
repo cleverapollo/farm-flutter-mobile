@@ -174,7 +174,7 @@ class _AddBiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Add
           margin: const EdgeInsets.symmetric(horizontal: 24.0),
           child: DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(const Duration(days: 100000)),
+            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
             initialDate: dateReleased ?? DateTime.now(),
             onConfirm: cubit.onDateReleasedChanged,
             child: SelectorAttributeItem(
@@ -182,7 +182,7 @@ class _AddBiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Add
               labelStyle: context.textStyles.bodyBold.blueDark3,
               text: state.agent.dateReleased == null
                   ? ''
-                  : state.agent.dateReleased.yMd(),
+                  : convertDateTimeToLunar(state.agent.dateReleased).yMd(),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,

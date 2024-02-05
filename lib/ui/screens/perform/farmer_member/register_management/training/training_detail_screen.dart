@@ -158,7 +158,7 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
                             title: LocaleKeys.additional_details_optional.tr(),
                             backgroundColor: context.colors.blueDark2,
                           ),
-                          _buildSelectExpiryDate(training.expiryDate),
+                          _buildSelectExpiryDate(),
                           AttributeItem(
                             margin: const EdgeInsets.symmetric(horizontal: 24),
                             child: SizedBox(
@@ -250,10 +250,10 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
           isUnderErrorBorder: true,
           margin: const EdgeInsets.symmetric(horizontal: 24),
           child: DatePickerWidget(
-            lastDate: DateTime.now().add(const Duration(days: 100000)),
+            lastDate: DateTime.now().add(const Duration(days: 1000)),
             initialDate: state.training.date,
             title: LocaleKeys.date.tr(),
-            firstDate: DateTime.now().subtract(const Duration(days: 100000)),
+            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
             onConfirm: cubit.onDateIssuedChanged,
           ),
         );
@@ -339,28 +339,17 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
     );
   }
 
-  Widget _buildSelectExpiryDate(DateTime? dateTime) {
+  Widget _buildSelectExpiryDate() {
     return BlocBuilder<TrainingDetailCubit, TrainingDetailState>(
       builder: (context, state) {
         return AttributeItem(
           margin: const EdgeInsets.symmetric(horizontal: 24),
-          child: CmoDatePicker(
-            name: LocaleKeys.expiry_date.tr(),
-            initialValue: dateTime,
-            onChanged: cubit.onExpiryDateChanged,
-            inputDecoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 12,
-              ),
-              suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-              suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
-              isDense: true,
-              hintStyle: context.textStyles.bodyBold.blueDark3,
-              labelText: LocaleKeys.expiry_date.tr(),
-              labelStyle: context.textStyles.bodyBold.blueDark3,
-            ),
+          child: DatePickerWidget(
+            lastDate: DateTime.now().add(const Duration(days: 1000)),
+            initialDate: state.training.expiryDate,
+            title: LocaleKeys.expiry_date.tr(),
+            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            onConfirm: cubit.onExpiryDateChanged,
           ),
         );
       },

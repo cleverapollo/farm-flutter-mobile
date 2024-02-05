@@ -249,7 +249,7 @@ class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Biolog
       LocaleKeys.scientificName.tr(): registerItem.biologicalControlAgentTypeScientificName,
       LocaleKeys.countryOfOrigin.tr(): registerItem.biologicalControlAgentTypeCountryName,
       LocaleKeys.reasonForBioAgent.tr(): registerItem.reasonForBioAgent,
-      LocaleKeys.dateReleased.tr(): registerItem.dateReleased.ddMMYyyy(),
+      LocaleKeys.dateReleased.tr(): convertDateTimeToLunar(registerItem.dateReleased).ddMMYyyy(),
       LocaleKeys.stakeholderName.tr(): registerItem.stakeholderName,
       LocaleKeys.description.tr(): registerItem.monitoringRequirementName,
       LocaleKeys.general_comments.tr(): registerItem.comment,

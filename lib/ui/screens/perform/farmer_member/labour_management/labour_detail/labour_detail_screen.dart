@@ -298,14 +298,14 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
         builder: (context, state) {
           return DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().add(const Duration(days: -1000000)),
+            firstDate: DateTime.now().add(const Duration(days: -1000)),
             initialDate: state.farmerWorker.dateOfBirth,
             onConfirm: cubit.onChangeDateOfBirth,
             child: SelectorAttributeItem(
               hintText: '',
               text: state.farmerWorker.dateOfBirth == null
                   ? LocaleKeys.yyyy_mm_dd.tr()
-                  : state.farmerWorker.dateOfBirth.yMd(),
+                  : convertDateTimeToLunar(state.farmerWorker.dateOfBirth).yMd(),
               labelText: LocaleKeys.dateOfBirth.tr(),
               labelStyle: context.textStyles.bodyBold.blueDark2,
               textStyle: state.farmerWorker.dateOfBirth == null

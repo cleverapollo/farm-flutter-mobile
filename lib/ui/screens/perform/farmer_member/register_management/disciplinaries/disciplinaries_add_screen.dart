@@ -362,7 +362,7 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
             lastDate: DateTime.now(),
             initialDate: state.data?.dateReceived,
             title: LocaleKeys.dateIssued.tr(),
-            firstDate: DateTime.now().subtract(const Duration(days: 100000)),
+            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
             onConfirm: context.read<DisciplinariesCubit>().onSelectDateIssued,
           ),
         );

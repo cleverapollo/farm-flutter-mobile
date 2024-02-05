@@ -136,8 +136,8 @@ class _FireManagementScreenState extends BaseStatefulWidgetState<FireManagementS
   Map<String, String?> generateInformationMapData(FireRegister registerItem) {
     return {
       LocaleKeys.fireCause.tr(): registerItem.fireCauseName,
-      LocaleKeys.dateDetected.tr(): registerItem.date?.ddMMYyyy(),
-      LocaleKeys.dateExtinguished.tr(): registerItem.extinguished?.ddMMYyyy(),
+      LocaleKeys.dateDetected.tr(): convertDateTimeToLunar(registerItem.date).ddMMYyyy(),
+      LocaleKeys.dateExtinguished.tr(): convertDateTimeToLunar(registerItem.extinguished).ddMMYyyy(),
       LocaleKeys.areaBurntHa.tr(): registerItem.areaBurnt?.toString(),
       LocaleKeys.commercialAreaLossHa.tr(): registerItem.commercialAreaLoss?.toString(),
       LocaleKeys.general_comments.tr(): registerItem.comment,

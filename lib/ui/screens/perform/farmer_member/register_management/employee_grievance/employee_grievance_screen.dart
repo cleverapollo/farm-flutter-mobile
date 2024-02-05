@@ -135,7 +135,7 @@ class _EmployeeGrievanceScreenState extends BaseStatefulWidgetState<EmployeeGrie
     return {
       LocaleKeys.worker.tr(): cubit.getWorkerNameByWorkerId(registerItem.workerId),
       LocaleKeys.grievanceIssue.tr(): registerItem.grievanceIssueName,
-      LocaleKeys.dateReceived.tr(): registerItem.dateReceived?.yMd(),
+      LocaleKeys.dateReceived.tr(): convertDateTimeToLunar(registerItem.dateReceived).yMd(),
       LocaleKeys.allocatedTo.tr(): registerItem.allocatedToName,
       LocaleKeys.general_comments.tr(): registerItem.comment,
     };

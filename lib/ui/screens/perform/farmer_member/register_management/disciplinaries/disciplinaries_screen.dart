@@ -107,7 +107,7 @@ class _DisciplinariesScreenState extends BaseStatefulWidgetState<DisciplinariesS
   Map<String, String?> generateInformationMapData(SanctionRegister registerItem) {
     return {
       LocaleKeys.worker.tr(): registerItem.displayWorkerName,
-      LocaleKeys.dateIssued.tr(): registerItem.dateReceived.mmmDdYyyy(),
+      LocaleKeys.dateIssued.tr(): convertDateTimeToLunar(registerItem.dateReceived).mmmDdYyyy(),
       LocaleKeys.camp_compartment.tr(): registerItem.campOrCompartment,
       LocaleKeys.disciplinaries_issue.tr(): registerItem.issueTypeName,
       LocaleKeys.disciplinaries_steps_taken.tr(): registerItem.descriptionOfSanction,

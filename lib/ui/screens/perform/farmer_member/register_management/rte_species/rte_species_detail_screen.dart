@@ -6,6 +6,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/components/custom_camera_component/custom_camera_screen.dart';
+import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
@@ -98,7 +99,7 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
                     navigateToCamera: navigateToCamera,
                     onRemove: context.read<RteSpeciesDetailCubit>().onRemovePhoto,
                   ),
-                  buildSelectDateSpotted(state),
+                  buildSelectDateSpotted(),
                   const SizedBox(height: 12),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 21),
@@ -284,39 +285,21 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
     );
   }
 
-  Widget buildSelectDateSpotted(RteSpeciesDetailState state) {
-    return AttributeItem(
-      margin: const EdgeInsets.symmetric(horizontal: 21),
-      child: CmoDatePicker(
-        name: 'DateSpotted',
-        hintText: LocaleKeys.date.tr(),
-        lastDate: DateTime.now(),
-        validator: (DateTime? value) {
-          if (value == null) return null;
-          if (value.millisecondsSinceEpoch >
-              DateTime.now().millisecondsSinceEpoch) {
-            return 'Date spotted cannot be in the future';
-          }
-
-          return null;
-        },
-        initialValue: state.rteSpecies?.dateSpotted,
-        onChanged: context.read<RteSpeciesDetailCubit>().onChangeDateSpotted,
-        inputDecoration: InputDecoration(
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
+  Widget buildSelectDateSpotted() {
+    return BlocBuilder<RteSpeciesDetailCubit, RteSpeciesDetailState>(
+      builder: (context, state) {
+        return AttributeItem(
+          margin: const EdgeInsets.symmetric(horizontal: 21),
+          child: DatePickerWidget(
+            lastDate: DateTime.now(),
+            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            title: LocaleKeys.date.tr(),
+            titleStyle: context.textStyles.bodyNormal.blueDark2,
+            initialDate: state.rteSpecies?.dateSpotted,
+            onConfirm: context.read<RteSpeciesDetailCubit>().onChangeDateSpotted,
           ),
-          suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-          suffixIcon: Center(child: Assets.icons.icCalendar.svgBlack),
-          isDense: true,
-          hintText: LocaleKeys.date.tr(),
-          hintStyle: context.textStyles.bodyNormal.blueDark2,
-          labelText: LocaleKeys.date.tr(),
-          labelStyle: context.textStyles.bodyNormal.blueDark2,
-        ),
-      ),
+        );
+      },
     );
   }
 

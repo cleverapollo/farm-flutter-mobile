@@ -31,10 +31,10 @@ class TrainingScreen extends BaseStatefulWidget {
   }
 
   @override
-  State<TrainingScreen> createState() => _TrainingScreenState();
+  BaseStatefulWidgetState<TrainingScreen> createState() => _TrainingScreenState();
 }
 
-class _TrainingScreenState extends State<TrainingScreen> {
+class _TrainingScreenState extends BaseStatefulWidgetState<TrainingScreen> {
   late final TrainingCubit cubit;
 
   @override
@@ -133,8 +133,8 @@ class _TrainingScreenState extends State<TrainingScreen> {
   Map<String, String?> generateInformationMapData(TrainingRegister registerItem) {
     return {
       LocaleKeys.training_type.tr(): cubit.getTrainingTypeNameByTrainingTypeId(registerItem.trainingTypeId),
-      LocaleKeys.date.tr(): registerItem.date.yMd(),
-      LocaleKeys.expiry_date.tr(): registerItem.expiryDate.yMd(),
+      LocaleKeys.date.tr(): convertDateTimeToLunar(registerItem.date).yMd(),
+      LocaleKeys.expiry_date.tr(): convertDateTimeToLunar(registerItem.expiryDate).yMd(),
       LocaleKeys.trainer_name.tr(): registerItem.trainerName,
       LocaleKeys.trainee_name.tr(): cubit.getTotalTrainee(registerItem.trainingRegisterNo),
       LocaleKeys.signed.tr(): registerItem.signatureDate.yMd(),
