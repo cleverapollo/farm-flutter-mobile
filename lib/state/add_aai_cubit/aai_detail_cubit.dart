@@ -3,6 +3,7 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'aai_detail_state.dart';
@@ -32,6 +33,10 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
 
       final propertyDamaged = await cmoDatabaseMasterService
           .getPropertyDamagedByGroupSchemeId(farm?.groupSchemeId ?? 0);
+
+      final aaiPhotos = await cmoDatabaseMasterService.getAllAAIRegisterPhotoByAAIRegisterNo(
+        state.accidentAndIncident.accidentAndIncidentRegisterNo,
+      );
 
       propertyDamaged.sort((first, second) {
         return (first.propertyDamagedName ?? '')
@@ -67,6 +72,7 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
           jobDescriptions: jobDescriptions,
           lostTimeInDay: _calculateTimeLost(),
           selectedPropertyDamages: selectedPropertyDamages,
+          aaiPhotos: aaiPhotos,
           isDataReady: true,
         ),
       );
@@ -209,6 +215,37 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
     emit(state.copyWith(natureOfInjurySelect: selectNatureOfInjury));
   }
 
+  void onUpdatePhoto(String base64Image) {
+    var randomId = generatorInt32Id();
+    final aaiPhoto = AccidentAndIncidentPhoto(
+      isMasterdataSynced: false,
+      photo: base64Image,
+      accidentAndIncidentRegisterPhotoNo: DateTime.now().millisecondsSinceEpoch.toString(),
+      accidentAndIncidentRegisterPhotoId: randomId++,
+      accidentAndIncidentRegisterNo: state.accidentAndIncident.accidentAndIncidentRegisterNo,
+      accidentAndIncidentRegisterId: state.accidentAndIncident.accidentAndIncidentRegisterId,
+      isActive: true,
+      createDT: DateTime.now(),
+      updateDT: DateTime.now(),
+    );
+
+    emit(state.copyWith(aaiPhotos: state.aaiPhotos + [aaiPhoto]));
+  }
+
+  void onRemovePhoto(int? accidentAndIncidentRegisterPhotoId) {
+    final aaiPhotos = state.aaiPhotos;
+    aaiPhotos.removeWhere(
+      (element) =>
+          element.accidentAndIncidentRegisterPhotoId ==
+          accidentAndIncidentRegisterPhotoId,
+    );
+    emit(
+      state.copyWith(
+        aaiPhotos: aaiPhotos,
+      ),
+    );
+  }
+
   bool onValidateRequireField() {
     if (state.accidentAndIncident.workerId == null ||
         state.accidentAndIncident.dateRecieved == null ||
@@ -240,12 +277,27 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
     return false;
   }
 
+  bool reactMaximumUploadedPhoto() {
+    return state.aaiPhotos.length >= Constants.MAX_UPLOADED_REGISTER_PHOTOS;
+  }
+
   Future<void> onSave({required void Function(int?) onSuccess}) async {
     if (onValidateRequireField()) {
       return;
     }
 
     final farm = await configService.getActiveFarm();
+
+    await cmoDatabaseMasterService.removeAllAAIPhotoModelsByAccidentAndIncidentRegisterNo(state.accidentAndIncident.accidentAndIncidentRegisterNo);
+
+    for (final item in state.aaiPhotos) {
+      await cmoDatabaseMasterService.cacheAAIPhotoModel(
+        item.copyWith(
+          isMasterdataSynced: false,
+        ),
+      );
+    }
+
     var aai = state.accidentAndIncident;
     aai = aai.copyWith(
       farmId: farm?.farmId,
@@ -269,7 +321,6 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
       futures.add(
         cmoDatabaseMasterService.cacheAccidentAndIncidentPropertyDamaged(
           AccidentAndIncidentPropertyDamaged(
-            accidentAndIncidentRegisterPropertyDamagedId: null,
             accidentAndIncidentRegisterPropertyDamagedNo: now.toString(),
             propertyDamagedId: item.propertyDamagedId,
             accidentAndIncidentRegisterNo: aai.accidentAndIncidentRegisterNo,

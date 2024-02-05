@@ -149,7 +149,8 @@ class CmoDatabaseMasterService {
       ProductGroupTemplateSchema,
       SpeciesGroupTemplateSchema,
       TraineeRegisterSchema,
-      GroupSchemeMasterSpeciesSchema
+      GroupSchemeMasterSpeciesSchema,
+      AccidentAndIncidentPhotoSchema
     ];
 
     schemes.sort((first, second) {
@@ -3355,6 +3356,67 @@ class CmoDatabaseMasterService {
     return db.writeTxn(() async {
       return db.rteSpeciesRegisterPhotos.delete(id);
     });
+  }
+
+  Future<int> cacheAAIPhotoModel(
+    AccidentAndIncidentPhoto item, {
+    bool isDirect = false,
+  }) async {
+    final db = await _db();
+    if (isDirect) {
+      return db.accidentAndIncidentPhotos.put(item);
+    } else {
+      return db.writeTxn(() => db.accidentAndIncidentPhotos.put(item));
+    }
+  }
+
+  Future<void> removeAllAAIPhotoModelsByAccidentAndIncidentRegisterNo(
+      String? accidentAndIncidentRegisterNo) async {
+    final db = await _db();
+
+    await db.writeTxn(() async {
+      await db.accidentAndIncidentPhotos
+          .filter()
+          .accidentAndIncidentRegisterNoEqualTo(accidentAndIncidentRegisterNo)
+          .deleteAll();
+    });
+  }
+
+  Future<bool> removeAAIPhotoModel(int id) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.accidentAndIncidentPhotos.delete(id);
+    });
+  }
+
+  Future<List<AccidentAndIncidentPhoto>> getAllAAIRegisterPhotoByAAIRegisterNo(
+    String? accidentAndIncidentRegisterNo,
+  ) async {
+    if (accidentAndIncidentRegisterNo.isBlank)
+      return <AccidentAndIncidentPhoto>[];
+
+    final db = await _db();
+
+    return db.accidentAndIncidentPhotos
+        .filter()
+        .accidentAndIncidentRegisterNoEqualTo(accidentAndIncidentRegisterNo)
+        .findAll();
+  }
+
+  Future<List<AccidentAndIncidentPhoto>> getUnsyncedAllAAIRegisterPhotoByAAIRegisterNo(
+    String? accidentAndIncidentRegisterNo,
+  ) async {
+    if (accidentAndIncidentRegisterNo.isBlank) {
+      return <AccidentAndIncidentPhoto>[];
+    }
+
+    final db = await _db();
+
+    return db.accidentAndIncidentPhotos
+        .filter()
+        .accidentAndIncidentRegisterNoEqualTo(accidentAndIncidentRegisterNo)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
   }
 
   Future<Worker?> getWorkerById(String? id) async {

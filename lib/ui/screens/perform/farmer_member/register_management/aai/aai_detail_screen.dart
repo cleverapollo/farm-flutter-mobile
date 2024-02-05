@@ -3,10 +3,12 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/add_aai_cubit/aai_detail_cubit.dart';
+import 'package:cmo/ui/components/custom_camera_component/custom_camera_screen.dart';
 import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_photo_section.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/select_item_widget.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
@@ -102,6 +104,18 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
     }
   }
 
+  Future<void> navigateToCamera() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (context.read<AAIDetailCubit>().reactMaximumUploadedPhoto()) {
+      return;
+    }
+
+    await CustomCameraScreen.push(
+      context,
+      onDone: context.read<AAIDetailCubit>().onUpdatePhoto,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final initState = cubit.state;
@@ -137,6 +151,7 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
                         _buildSelectWorkerWidget(),
                         _buildSelectDateIncident(),
                         _buildSelectDateReceived(),
+                        buildPhotoSection(),
                         InformationText(),
                         CmoHeaderTile(
                           title: LocaleKeys.additional_details_optional.tr(),
@@ -349,6 +364,25 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
               trailing: Assets.icons.icCalendar.svgBlack,
             ),
           ),
+        );
+      },
+    );
+  }
+
+  Widget buildPhotoSection() {
+    return BlocBuilder<AAIDetailCubit, AAIDetailState>(
+      builder: (context, state) {
+        return RegisterPhotoSection(
+          navigateToCamera: navigateToCamera,
+          photos: state.aaiPhotos
+              .map(
+                (e) => RegisterPhotoModel(
+              photo: e.photo,
+              photoId: e.accidentAndIncidentRegisterPhotoId,
+            ),
+          )
+              .toList(),
+          onRemove: context.read<AAIDetailCubit>().onRemovePhoto,
         );
       },
     );

@@ -4,12 +4,10 @@ import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/model/worker_job_description/worker_job_description.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/biological_control_agent_register_payload/biological_control_agent_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/camp_payload/camp_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/chemical_register_payload/chemical_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/farm_stakeholder_payload/farm_stakeholder_payload.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_accident_and_incident_register_payload/main_accident_and_incident_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_asi_register_payload/main_asi_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_pests_and_diseases_register_payload/main_pests_and_diseases_register_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/properties_payload/properties_payload.dart';
@@ -1020,41 +1018,48 @@ mixin FarmUploadSummaryMixin {
       final messages = <Message>[];
       final futures = <Future<void>>[];
 
-      final accidentAndIncidentRegistersRegistersPayLoad =
-          <MainAccidentAndIncidentRegisterPayLoad>[];
-
       final accidentAndIncidentRegisters = await cmoDatabaseMasterService
-          .getUnsyncedAccidentAndIncidentRegistersByFarmId(mFarmId);
+          .getUnsyncedAccidentAndIncidentRegistersByFarmId(
+        mFarmId,
+      );
 
       for (final item in accidentAndIncidentRegisters) {
-        var itemPayLoad = const MainAccidentAndIncidentRegisterPayLoad();
+        var itemPayLoad = const AccidentAndIncidentPayload();
 
         final accidentAndIncidentPropertyDamaged = await cmoDatabaseMasterService
             .getAllAccidentAndIncidentRegisterPropertyDamagedByAccidentAndIncidentRegisterNo(
-                item.accidentAndIncidentRegisterNo ?? '');
-
-        var accidentAndIncidentPropertyDamagedPayLoad =
-            accidentAndIncidentPropertyDamaged
-                .map((e) => e.toPayLoad())
-                .toList();
-
-        accidentAndIncidentPropertyDamagedPayLoad =
-            accidentAndIncidentPropertyDamagedPayLoad.map((e) {
-          if (e.AccidentAndIncidentRegisterId == null) {
-            return e.copyWith(
-              AccidentAndIncidentRegisterId:
-                  '00000000-0000-0000-0000-000000000000',
-            );
-          }
-          return e;
-        }).toList();
-
-        itemPayLoad = itemPayLoad.copyWith(
-          Register: item.toPayLoad(),
-          PropertyDamaged: accidentAndIncidentPropertyDamagedPayLoad,
+          item.accidentAndIncidentRegisterNo ?? '',
         );
 
-        accidentAndIncidentRegistersRegistersPayLoad.add(itemPayLoad);
+        final aaiPhotos = await cmoDatabaseMasterService
+            .getUnsyncedAllAAIRegisterPhotoByAAIRegisterNo(
+          item.accidentAndIncidentRegisterNo,
+        );
+
+        itemPayLoad = itemPayLoad.copyWith(
+          register: item,
+          propertyDamaged: accidentAndIncidentPropertyDamaged
+              .map(
+                (element) => element.copyWith(
+                  accidentAndIncidentRegisterId:
+                      item.accidentAndIncidentRegisterId ??
+                          '00000000-0000-0000-0000-000000000000',
+                ),
+              )
+              .toList(),
+          photos: aaiPhotos
+              .map(
+                (item) => item.copyWith(
+                  accidentAndIncidentRegisterId:
+                      item.accidentAndIncidentRegisterId ??
+                          '00000000-0000-0000-0000-000000000000',
+                  photo: item.photo?.stringToBase64SyncServer,
+                ),
+              )
+              .toList(),
+        );
+
+        messages.add(globalMessage.copyWith(body: jsonEncode(itemPayLoad)));
 
         if (_enableUpdateStatus) {
           futures.add(
@@ -1072,18 +1077,24 @@ mixin FarmUploadSummaryMixin {
               ),
             );
           }
+
+          for (final photo in aaiPhotos) {
+            futures.add(
+              cmoDatabaseMasterService.cacheAAIPhotoModel(
+                photo.copyWith(isMasterdataSynced: true),
+              ),
+            );
+          }
         }
       }
 
-      for (final item in accidentAndIncidentRegistersRegistersPayLoad) {
-        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
-      }
-
-      futures.add(cmoPerformApiService.public(
-        currentClientId: mUserDeviceId.toString(),
-        topic: topicByFarmIdAndUserDeviceId('AaiRegister'),
-        messages: messages,
-      ));
+      futures.add(
+        cmoPerformApiService.public(
+          currentClientId: mUserDeviceId.toString(),
+          topic: topicByFarmIdAndUserDeviceId('AaiRegister'),
+          messages: messages,
+        ),
+      );
 
       await Future.wait(futures);
     } catch (e) {

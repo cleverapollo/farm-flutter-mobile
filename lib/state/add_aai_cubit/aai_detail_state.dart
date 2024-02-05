@@ -17,6 +17,8 @@ class AAIDetailState {
     this.isWorkerError = false,
     this.isDateIncidentError = false,
     this.isDateReportedError = false,
+    this.aaiPhotos = const <AccidentAndIncidentPhoto>[],
+    this.removedAAIPhotos = const <AccidentAndIncidentPhoto>[],
   });
 
   final bool isAddNew;
@@ -34,6 +36,8 @@ class AAIDetailState {
   final bool isWorkerError;
   final bool isDateIncidentError;
   final bool isDateReportedError;
+  final List<AccidentAndIncidentPhoto> aaiPhotos;
+  final List<AccidentAndIncidentPhoto> removedAAIPhotos;
 
   AAIDetailState copyWith({
     AccidentAndIncident? accidentAndIncident,
@@ -50,6 +54,8 @@ class AAIDetailState {
     bool? isWorkerError,
     bool? isDateIncidentError,
     bool? isDateReportedError,
+    List<AccidentAndIncidentPhoto>? aaiPhotos,
+    List<AccidentAndIncidentPhoto>? removedAAIPhotos,
   }) {
     return AAIDetailState(
       accidentAndIncident: accidentAndIncident ?? this.accidentAndIncident,
@@ -67,6 +73,8 @@ class AAIDetailState {
       isWorkerError: isWorkerError ?? this.isWorkerError,
       isDateIncidentError: isDateIncidentError ?? this.isDateIncidentError,
       isDateReportedError: isDateReportedError ?? this.isDateReportedError,
+      aaiPhotos: aaiPhotos ?? this.aaiPhotos,
+      removedAAIPhotos: removedAAIPhotos ?? this.removedAAIPhotos,
     );
   }
 }

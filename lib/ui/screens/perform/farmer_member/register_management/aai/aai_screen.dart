@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/accident_and_incident.dart';
+import 'package:cmo/model/accident_and_incident/accident_and_incident.dart';
 import 'package:cmo/state/aai_cubit/aai_cubit.dart';
 import 'package:cmo/ui/components/search_field.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/aai/aai_detail_screen.dart';

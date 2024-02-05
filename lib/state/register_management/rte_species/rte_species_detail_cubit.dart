@@ -153,9 +153,9 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
     emit(state.copyWith(rtePhotos: state.rtePhotos + [rtePhoto]));
   }
 
-  void onRemovePhoto(RteSpeciesRegisterPhoto rteSpeciesPhotoModel) {
+  void onRemovePhoto(int? rteSpeciesRegisterPhotoId) {
     final rtePhotos = state.rtePhotos;
-    rtePhotos.removeWhere((element) => element.rteSpeciesRegisterPhotoId == rteSpeciesPhotoModel.rteSpeciesRegisterPhotoId);
+    rtePhotos.removeWhere((element) => element.rteSpeciesRegisterPhotoId == rteSpeciesRegisterPhotoId);
     emit(
       state.copyWith(
         rtePhotos: rtePhotos,
@@ -204,7 +204,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
   }
 
   bool reactMaximumUploadedPhoto() {
-    return state.rtePhotos.length >= Constants.MAX_UPLOADED_PHOTOS_RTE_SPECIES;
+    return state.rtePhotos.length >= Constants.MAX_UPLOADED_REGISTER_PHOTOS;
   }
 
   @override

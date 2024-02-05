@@ -33,20 +33,3 @@ class AccidentAndIncidentPropertyDamaged
   Id get id =>
       int.tryParse(accidentAndIncidentRegisterPropertyDamagedNo ?? '') ?? Isar.autoIncrement;
 }
-
-extension AccidentAndIncidentPropertyDamagedX
-    on AccidentAndIncidentPropertyDamaged {
-  AccidentAndIncidentRegisterPropertyDamagedPayLoad toPayLoad() {
-    return AccidentAndIncidentRegisterPropertyDamagedPayLoad(
-      AccidentAndIncidentRegisterPropertyDamagedId:
-          accidentAndIncidentRegisterPropertyDamagedId,
-      AccidentAndIncidentRegisterPropertyDamagedNo:
-          accidentAndIncidentRegisterPropertyDamagedNo,
-      AccidentAndIncidentRegisterId: accidentAndIncidentRegisterId,
-      AccidentAndIncidentRegisterNo: accidentAndIncidentRegisterNo,
-      PropertyDamagedId: propertyDamagedId,
-      IsActive: isActive,
-      IsMasterdataSynced: isMasterdataSynced,
-    );
-  }
-}

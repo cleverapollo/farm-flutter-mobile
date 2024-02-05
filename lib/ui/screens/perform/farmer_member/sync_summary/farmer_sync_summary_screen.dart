@@ -12,7 +12,9 @@ class FarmerSyncSummaryScreen extends BaseStatefulWidget {
 
   static void push(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => FarmerSyncSummaryScreen()),
+      MaterialPageRoute(
+        builder: (_) => FarmerSyncSummaryScreen(),
+      ),
     );
   }
 
