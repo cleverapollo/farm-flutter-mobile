@@ -7,6 +7,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/user_info.dart';
 import 'package:cmo/state/auth_cubit/auth_cubit.dart';
 import 'package:cmo/state/entity_cubit/entity_cubit.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
 import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_add_screen.dart';
@@ -14,10 +15,14 @@ import 'package:cmo/ui/screens/behave/create_worker/worker_add_screen.dart';
 import 'package:cmo/ui/screens/global_entity.dart';
 import 'package:cmo/ui/screens/onboarding/login/login_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_production_management_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/labour_detail_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/register_management.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/add_member_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/add_audit/audit_add_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/member_management_screen.dart';
 import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/stake_holder_detail_screen.dart';
+import 'package:cmo/ui/screens/perform/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/screens/setting/legal/legal_screen.dart';
 import 'package:cmo/ui/screens/setting/settings_screen.dart';
 import 'package:cmo/ui/screens/setting/support/support_screen.dart';
@@ -27,6 +32,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/annual_budget_management_screen.dart';
+
+import 'perform/farmer_member/labour_management/labour_management_screen.dart';
 
 class CmoMenuBase extends StatefulWidget {
   factory CmoMenuBase.behave({required VoidCallback onTapClose}) {
@@ -81,37 +88,47 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
   Widget _buildFarmerMemberMenu() {
     return Column(
       children: [
-        buildHeader(context, title: LocaleKeys.siteManagementPlan.tr()),
-        buildOption(
-          context,
+        SiteManagementPlanSection(),
+        const SizedBox(height: 7),
+        const _Divider(),
+        _HeaderItem(
           title: LocaleKeys.labourManagement.tr(),
-        ),
-        CampCompartmentInfoItem(),
-        buildOption(
-          context,
-          title: LocaleKeys.annualProduction.tr(),
           onTap: () {
             if (context.mounted) Navigator.of(context).pop();
-            AnnualProductionManagementScreen.push(context);
+            LabourManagementScreen.push(context);
           },
         ),
-        buildOption(
-          context,
-          title: LocaleKeys.annualBudgets.tr(),
-          onTap: () {
-            if (context.mounted) Navigator.of(context).pop();
-            AnnualBudgetManagementScreen.push(context);
+        _OptionItem(
+          title: LocaleKeys.addLabour.tr(),
+          onTap: () async {
+            await LabourDetailScreen.push(
+              context,
+            );
+            await context.read<DashboardCubit>().refresh();
           },
         ),
         const SizedBox(height: 7),
         const _Divider(),
-        buildHeader(context, title: LocaleKeys.stakeholders.tr()),
-        buildOption(
-          context,
-          title: LocaleKeys.createNewStakeholder.tr(),
+        _HeaderItem(
+          title: LocaleKeys.monitoring.tr(),
           onTap: () {
             if (context.mounted) Navigator.of(context).pop();
+            RegisterManagement.push(context);
+          },
+        ),
+        const _Divider(),
+        _HeaderItem(
+          title: LocaleKeys.neighbours.tr(),
+          onTap: () {
+            if (context.mounted) Navigator.of(context).pop();
+            StakeHolderManagementScreen.push(context);
+          },
+        ),
+        _OptionItem(
+          title: LocaleKeys.add_local_neighbours_detail.tr(),
+          onTap: () async {
             StakeHolderDetailScreen.push(context);
+            await context.read<DashboardCubit>().refresh();
           },
         ),
       ],
@@ -121,27 +138,21 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
   Widget _buildResourceManagerMenu() {
     return Column(
       children: [
-        buildHeader(
-          context,
+        _HeaderItem(
           title: LocaleKeys.memberManagement.tr(),
+          onTap: () => MemberManagementScreen.push(context),
         ),
-        buildOption(context, title: LocaleKeys.createNew.tr(), onTap: () {
-          if (context.mounted) Navigator.of(context).pop();
-          AddMemberScreen.push(context);
-        }),
-        buildOption(
-          context,
-          title: LocaleKeys.compartments.tr(),
-          onTap: () {
-            if (context.mounted) Navigator.of(context).pop();
-            CompartmentScreen.push(context);
+        _OptionItem(
+          title: LocaleKeys.createNew.tr(),
+          onTap: () async {
+            await AddMemberScreen.push(context);
+            await context.read<DashboardCubit>().getResourceManagerMembers();
           },
         ),
         const SizedBox(height: 7),
         const _Divider(),
-        buildHeader(context, title: LocaleKeys.audit_s.tr()),
-        buildOption(
-          context,
+        _HeaderItem(title: LocaleKeys.audit_s.tr()),
+        _OptionItem(
           title: LocaleKeys.createNew.tr(),
           onTap: () {
             if (context.mounted) Navigator.of(context).pop();
@@ -153,13 +164,12 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
         ),
         const SizedBox(height: 7),
         const _Divider(),
-        buildHeader(context, title: LocaleKeys.stakeholders.tr()),
-        buildOption(
-          context,
+        _HeaderItem(title: LocaleKeys.stakeholders.tr()),
+        _OptionItem(
           title: LocaleKeys.createNewStakeholder.tr(),
-          onTap: () {
-            if (context.mounted) Navigator.of(context).pop();
+          onTap: () async {
             StakeHolderDetailScreen.push(context);
+            await context.read<DashboardCubit>().refresh();
           },
         ),
       ],
@@ -169,19 +179,17 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
   Widget _buildBehaveContentMenu() {
     return Column(
       children: [
-        buildHeader(context, title: LocaleKeys.dashboard.tr()),
+        _HeaderItem(title: LocaleKeys.dashboard.tr()),
         const _Divider(),
-        buildHeader(context, title: LocaleKeys.assessments.tr()),
-        buildOption(
-          context,
+        _HeaderItem(title: LocaleKeys.assessments.tr()),
+        _OptionItem(
           title: LocaleKeys.createNew.tr(),
           onTap: () => AssessmentAddScreen.push(context),
         ),
         const SizedBox(height: 7),
         const _Divider(),
-        buildHeader(context, title: LocaleKeys.workers.tr()),
-        buildOption(
-          context,
+        _HeaderItem(title: LocaleKeys.workers.tr()),
+        _OptionItem(
           title: LocaleKeys.createNew.tr(),
           onTap: () => WorkerAddScreen.push(context),
         ),
@@ -216,7 +224,7 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
             child: Column(
               children: [
                 _UserRowInformation(onTapClose: widget.onTapClose),
-                buildHeader(context, title: LocaleKeys.entity.tr()),
+                _HeaderItem(title: LocaleKeys.entity.tr()),
                 EntityInformation(widget.userRole),
                 const _Divider(),
                 const SizedBox(height: 7),
@@ -272,29 +280,45 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
       style: context.textStyles.bodyNormal.white,
     );
   }
+}
 
-  Widget buildHeader(BuildContext context, {required String title}) {
-    return SizedBox(
-      height: 43,
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.all(5),
-          child: Text(
-            title,
-            style: context.textStyles.bodyBold.white,
+class _HeaderItem extends StatelessWidget {
+  _HeaderItem({required this.title, this.onTap,});
+
+  final String title;
+  final void Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        height: 43,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: Text(
+              title,
+              style: context.textStyles.bodyBold.white,
+            ),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget buildOption(BuildContext context,
-      {required String title, Function? onTap}) {
-    return InkWell(
-      onTap: () {
-        onTap?.call();
-      },
+class _OptionItem extends StatelessWidget {
+  _OptionItem({required this.title, required this.onTap,});
+
+  final String title;
+  final void Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
       child: SizedBox(
         height: 34,
         child: Align(
@@ -312,15 +336,15 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
   }
 }
 
-class CampCompartmentInfoItem extends StatefulWidget {
+class SiteManagementPlanSection extends StatefulWidget {
 
-  CampCompartmentInfoItem();
+  SiteManagementPlanSection();
 
   @override
-  State<StatefulWidget> createState() => _CampCompartmentInfoItemState();
+  State<StatefulWidget> createState() => _SiteManagementPlanSectionState();
 }
 
-class _CampCompartmentInfoItemState extends State<CampCompartmentInfoItem> {
+class _SiteManagementPlanSectionState extends State<SiteManagementPlanSection> {
 
   CharcoalPlantationRoleEnum? charcoalPlantationRoleEnum;
 
@@ -337,7 +361,33 @@ class _CampCompartmentInfoItemState extends State<CampCompartmentInfoItem> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return Column(
+      children: [
+        _HeaderItem(title: LocaleKeys.siteManagementPlan.tr()),
+        campCompartmentItem(),
+        if (charcoalPlantationRoleEnum == CharcoalPlantationRoleEnum.isCharcoal) ...[
+          _OptionItem(
+            title: LocaleKeys.annualProduction.tr(),
+            onTap: () {
+              if (context.mounted) Navigator.of(context).pop();
+              AnnualProductionManagementScreen.push(context);
+            },
+          ),
+          _OptionItem(
+            title: LocaleKeys.annualBudgets.tr(),
+            onTap: () {
+              if (context.mounted) Navigator.of(context).pop();
+              AnnualBudgetManagementScreen.push(context);
+            },
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget campCompartmentItem() {
+    return _OptionItem(
+      title: LocaleKeys.camp_compartment_management.tr(),
       onTap: () {
         if (charcoalPlantationRoleEnum == null) return;
         switch (charcoalPlantationRoleEnum) {
@@ -351,19 +401,6 @@ class _CampCompartmentInfoItemState extends State<CampCompartmentInfoItem> {
             break;
         }
       },
-      child: SizedBox(
-        height: 34,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Text(
-              LocaleKeys.camp_compartment_management.tr(),
-              style: context.textStyles.bodyNormal.white,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -45,10 +45,16 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
     });
   }
 
-  Future<void> onNavigateToAddStakeholder() async {
+  Future<void> onNavigateToDetail({
+    StakeHolder? stakeHolder,
+  }) async {
     if (context.mounted) {
-      StakeHolderDetailScreen.push(context);
+      StakeHolderDetailScreen.push(
+        context,
+        stakeHolder: stakeHolder,
+      );
       await context.read<StakeHolderListCubit>().refresh();
+      await context.read<DashboardCubit>().refresh();
     }
   }
 
@@ -152,9 +158,7 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
               leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: Navigator.of(context).pop,
               trailing: Assets.icons.icUpdatedAddButton.svgBlack,
-              onTapTrailing: () {
-                StakeHolderDetailScreen.push(context);
-              },
+              onTapTrailing: onNavigateToDetail,
             );
           },
         ),
@@ -171,7 +175,7 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
               leading: Assets.icons.icBackButton.svgBlack,
               onTapLeading: Navigator.of(context).pop,
               trailing: Assets.icons.icUpdatedAddButton.svgBlack,
-              onTapTrailing: onNavigateToAddStakeholder,
+              onTapTrailing: onNavigateToDetail,
             );
           },
         ),
@@ -195,12 +199,7 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
         },
         child: RmModeStakeHolderItem(
           model: model,
-          onTap: () {
-            StakeHolderDetailScreen.push(
-              context,
-              stakeHolder: model,
-            );
-          },
+          onTap: () => onNavigateToDetail(stakeHolder: model),
         ),
       );
     } else {
@@ -215,12 +214,7 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
         child: FarmerModeStakeHolderItem(
           model: model,
           haveGreyBackground: haveGreyBackground,
-          onTap: () {
-            StakeHolderDetailScreen.push(
-              context,
-              stakeHolder: model,
-            );
-          },
+          onTap: () => onNavigateToDetail(stakeHolder: model),
         ),
       );
     }

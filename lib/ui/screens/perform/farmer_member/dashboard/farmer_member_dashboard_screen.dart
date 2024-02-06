@@ -48,13 +48,7 @@ class _FarmerMemberDashboardScreenState
               ),
             const SizedBox(height: 20),
             CmoTappable(
-              onTap: () async {
-                await LabourManagementScreen.push(context).then((_) async {
-                  await context
-                      .read<DashboardCubit>()
-                      .initializeFarmDashBoard();
-                });
-              },
+              onTap: () => LabourManagementScreen.push(context),
               child: CmoCard(
                 content: [
                   CmoCardHeader(title: LocaleKeys.labourManagement.tr()),
@@ -80,13 +74,7 @@ class _FarmerMemberDashboardScreenState
             ),
             const SizedBox(height: 20),
             CmoTappable(
-              onTap: () async {
-                await StakeHolderManagementScreen.push(context).then((_) async {
-                  await context
-                      .read<DashboardCubit>()
-                      .initializeFarmDashBoard();
-                });
-              },
+              onTap: () => StakeHolderManagementScreen.push(context),
               child: BlocSelector<DashboardCubit, DashboardState, bool?>(
                 selector: (state) => state.loading,
                 builder: (context, dashboardInfo) {

@@ -15,14 +15,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LabourDetailScreen extends BaseStatefulWidget {
-  LabourDetailScreen({super.key, this.farmerWorker, this.isEditing = false})
-      : super(
+  LabourDetailScreen({
+    super.key,
+    this.isEditing = false,
+  }) : super(
           screenName: isEditing
               ? LocaleKeys.labour_detail.tr()
               : LocaleKeys.addLabour.tr(),
         );
 
-  final FarmerWorker? farmerWorker;
   final bool isEditing;
 
   @override
@@ -39,7 +40,6 @@ class LabourDetailScreen extends BaseStatefulWidget {
           create: (_) => LabourDetailCubit(farmerWorker),
           child: LabourDetailScreen(
             isEditing: farmerWorker != null,
-            farmerWorker: farmerWorker,
           ),
         ),
       ),
@@ -298,7 +298,7 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
         builder: (context, state) {
           return DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().add(const Duration(days: -1000)),
+            firstDate: DateTime.now().add(const Duration(days: -50000)),
             initialDate: state.farmerWorker.dateOfBirth,
             onConfirm: cubit.onChangeDateOfBirth,
             child: SelectorAttributeItem(
