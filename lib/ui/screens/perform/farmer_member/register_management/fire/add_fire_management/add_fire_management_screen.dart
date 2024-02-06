@@ -3,53 +3,45 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/fire/fire_register.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/components/custom_camera_component/custom_camera_screen.dart';
 import 'package:cmo/ui/components/date_picker_widget.dart';
 
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_photo_section.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/widget/cmo_drop_down_layout_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddFireManagementScreen extends BaseStatefulWidget {
   AddFireManagementScreen({
     super.key,
-    this.fireRegister,
-    required this.locationModel,
+    this.isEditing = false,
   }) : super(
-          screenName: fireRegister == null
-              ? LocaleKeys.addFire.tr()
-              : LocaleKeys.edit_fire.tr(),
+          screenName: isEditing
+              ? LocaleKeys.edit_fire.tr()
+              : LocaleKeys.addFire.tr(),
         );
 
-  final FireRegister? fireRegister;
-  final LocationModel locationModel;
-
+  final bool isEditing;
   @override
   State<StatefulWidget> createState() => _AddFireManagementScreenState();
 
   static Future<dynamic> push(
     BuildContext context, {
     FireRegister? fireRegister,
-    required LocationModel locationModel,
   }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => BlocProvider<FireRegisterDetailCubit>(
-          create: (_) => FireRegisterDetailCubit()
-            ..initialize(
-              fireRegister: fireRegister,
-              locationModel: locationModel,
-            ),
+          create: (_) => FireRegisterDetailCubit(fireRegister),
           child: AddFireManagementScreen(
-            fireRegister: fireRegister,
-            locationModel: locationModel,
+            isEditing: fireRegister != null,
           ),
         ),
       ),
@@ -58,9 +50,18 @@ class AddFireManagementScreen extends BaseStatefulWidget {
 }
 
 class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManagementScreen> {
-  final _formKey = GlobalKey<FormBuilderState>();
 
-  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
+  Future<void> navigateToCamera() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (context.read<FireRegisterDetailCubit>().reactMaximumUploadedPhoto()) {
+      return;
+    }
+
+    await CustomCameraScreen.push(
+      context,
+      onDone: context.read<FireRegisterDetailCubit>().onUpdatePhoto,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +69,9 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: CmoAppBar(
-          title: widget.fireRegister == null
-              ? LocaleKeys.addFire.tr()
-              : LocaleKeys.edit_fire.tr(),
+          title: widget.isEditing
+              ? LocaleKeys.edit_fire.tr()
+              : LocaleKeys.addFire.tr(),
           leading: Assets.icons.icBackButton.svgBlack,
           onTapLeading: Navigator.of(context).pop,
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
@@ -106,7 +107,6 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
           builder: (context, state) {
             return CmoFilledButton(
               title: LocaleKeys.save.tr(),
-              // disable: state.fireRegister?.latitude == null,
               onTap: () async {
                 await context.read<FireRegisterDetailCubit>().onSave(
                   onSuccess: () async {
@@ -127,62 +127,57 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
       buildWhen: (previous, current) =>
           previous.fireRegister != current.fireRegister,
       builder: (context, state) {
-        return FormBuilder(
-            key: _formKey,
-            onChanged: () {},
-            autovalidateMode: autoValidateMode,
-            child: AutofillGroup(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AttributeItem(
-                    margin: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: InputAttributeItem(
-                      initialValue: '${state.fireRegister?.areaBurnt ?? ''}',
-                      textStyle: context.textStyles.bodyNormal.blueDark2,
-                      labelText: LocaleKeys.areaBurntHa.tr(),
-                      labelTextStyle: context.textStyles.bodyNormal.black,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      onChanged: (value) {
-                        context.read<FireRegisterDetailCubit>().onDataChange(
-                          areaBurnt: double.tryParse(value) ?? 0,
-                        );
-                      },
-                    ),
-                  ),
-                  AttributeItem(
-                    margin: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: InputAttributeItem(
-                      initialValue: '${state.fireRegister?.commercialAreaLoss ?? ''}',
-                      textStyle: context.textStyles.bodyNormal.blueDark2,
-                      labelText: LocaleKeys.commercialAreaLossHa.tr(),
-                      labelTextStyle: context.textStyles.bodyNormal.blueDark2,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      onChanged: (value) {
-                        context.read<FireRegisterDetailCubit>().onDataChange(
-                              commercialAreaLoss: double.tryParse(value) ?? 0,
-                            );
-                      },
-                    ),
-                  ),
-                  _buildLatLng(),
-                  const SizedBox(height: 12),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: GeneralCommentWidget(
-                      hintText: '',
-                      height: 120,
-                      shouldShowTitle: true,
-                      initialValue: state.fireRegister?.comment,
-                      textStyle: context.textStyles.bodyNormal.black,
-                      onChanged: (value) {
-                        context.read<FireRegisterDetailCubit>().onDataChange(comment: value);
-                      },
-                    ),
-                  ),
-                ],
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AttributeItem(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: InputAttributeItem(
+                initialValue: '${state.fireRegister?.areaBurnt ?? ''}',
+                textStyle: context.textStyles.bodyNormal.blueDark2,
+                labelText: LocaleKeys.areaBurntHa.tr(),
+                labelTextStyle: context.textStyles.bodyNormal.black,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                onChanged: (value) {
+                  context.read<FireRegisterDetailCubit>().onDataChange(
+                    areaBurnt: double.tryParse(value) ?? 0,
+                  );
+                },
               ),
             ),
+            AttributeItem(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: InputAttributeItem(
+                initialValue: '${state.fireRegister?.commercialAreaLoss ?? ''}',
+                textStyle: context.textStyles.bodyNormal.blueDark2,
+                labelText: LocaleKeys.commercialAreaLossHa.tr(),
+                labelTextStyle: context.textStyles.bodyNormal.blueDark2,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                onChanged: (value) {
+                  context.read<FireRegisterDetailCubit>().onDataChange(
+                    commercialAreaLoss: double.tryParse(value) ?? 0,
+                  );
+                },
+              ),
+            ),
+            _buildLatLng(),
+            const SizedBox(height: 12),
+            buildPhotoSection(),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: GeneralCommentWidget(
+                hintText: '',
+                height: 120,
+                shouldShowTitle: true,
+                initialValue: state.fireRegister?.comment,
+                textStyle: context.textStyles.bodyNormal.black,
+                onChanged: (value) {
+                  context.read<FireRegisterDetailCubit>().onDataChange(comment: value);
+                },
+              ),
+            ),
+          ],
         );
       },
     );
@@ -229,6 +224,25 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
           );
         },
       ),
+    );
+  }
+
+  Widget buildPhotoSection() {
+    return BlocBuilder<FireRegisterDetailCubit, FireRegisterDetailState>(
+      builder: (context, state) {
+        return RegisterPhotoSection(
+          navigateToCamera: navigateToCamera,
+          photos: state.firePhotos
+              .map(
+                (e) => RegisterPhotoModel(
+              photo: e.photo,
+              photoId: e.fireRegisterPhotoId,
+            ),
+          )
+              .toList(),
+          onRemove: context.read<FireRegisterDetailCubit>().onRemovePhoto,
+        );
+      },
     );
   }
 

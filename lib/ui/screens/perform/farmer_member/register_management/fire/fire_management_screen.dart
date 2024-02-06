@@ -25,7 +25,7 @@ class FireManagementScreen extends BaseStatefulWidget {
       context,
       MaterialPageRoute(
         builder: (_) => BlocProvider<FireCubit>(
-          create: (_) => FireCubit()..initLoadData(),
+          create: (_) => FireCubit(),
           child: FireManagementScreen(),
         ),
       ),
@@ -35,13 +35,9 @@ class FireManagementScreen extends BaseStatefulWidget {
 
 class _FireManagementScreenState extends BaseStatefulWidgetState<FireManagementScreen> {
   Future<void> navigateToDetailFire({FireRegister? fireRegister}) async {
-    final locationModel = LocationModel()
-      ..latitude = fireRegister?.latitude
-      ..longitude = fireRegister?.longitude;
     final shouldRefresh = await AddFireManagementScreen.push(
       context,
       fireRegister: fireRegister,
-      locationModel: locationModel,
     );
 
     if (shouldRefresh != null) {

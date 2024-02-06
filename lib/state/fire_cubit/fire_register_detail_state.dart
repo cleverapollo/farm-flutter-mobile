@@ -7,6 +7,8 @@ class FireRegisterDetailState {
     this.activeFarm,
     this.fireCauseSelect,
     this.fireCauses = const <FireCause>[],
+    this.firePhotos = const <FireRegisterPhoto>[],
+    this.removedFirePhotos = const <FireRegisterPhoto>[],
   });
 
   final bool loading;
@@ -14,6 +16,8 @@ class FireRegisterDetailState {
   final List<FireCause> fireCauses;
   final FireCause? fireCauseSelect;
   final Farm? activeFarm;
+  final List<FireRegisterPhoto> firePhotos;
+  final List<FireRegisterPhoto> removedFirePhotos;
 
   FireRegisterDetailState copyWith({
     bool? loading,
@@ -21,6 +25,8 @@ class FireRegisterDetailState {
     List<FireCause>? fireCauses,
     FireCause? fireCauseSelect,
     Farm? activeFarm,
+    List<FireRegisterPhoto>? firePhotos,
+    List<FireRegisterPhoto>? removedFirePhotos,
   }) {
     return FireRegisterDetailState(
       loading: loading ?? this.loading,
@@ -28,6 +34,8 @@ class FireRegisterDetailState {
       activeFarm: activeFarm ?? this.activeFarm,
       fireCauses: fireCauses ?? this.fireCauses,
       fireCauseSelect: fireCauseSelect ?? this.fireCauseSelect,
+      firePhotos: firePhotos ?? this.firePhotos,
+      removedFirePhotos: removedFirePhotos ?? this.removedFirePhotos,
     );
   }
 }

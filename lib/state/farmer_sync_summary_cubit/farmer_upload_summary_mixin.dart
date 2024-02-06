@@ -712,20 +712,43 @@ mixin FarmUploadSummaryMixin {
       final messages = <Message>[];
       final futures = <Future<void>>[];
 
-      final fireRegisters =
-          await cmoDatabaseMasterService.getUnsyncedFireRegisters(mFarmId);
+      final fireRegisters = await cmoDatabaseMasterService.getUnsyncedFireRegisters(mFarmId);
 
-      final fireRegistersPayLoad =
-          fireRegisters.map((e) => e.toPayLoad()).toList();
+      for (final fireRegister in fireRegisters) {
+        final photos = await cmoDatabaseMasterService.getUnsyncedAllFireRegisterPhotosByFireRegisterNo(
+          fireRegister.fireRegisterNo,
+        );
 
-      for (final item in fireRegistersPayLoad) {
-        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
-      }
+        messages.add(
+          globalMessage.copyWith(
+            body: jsonEncode(
+              FireRegisterPayload(
+                register: fireRegister,
+                photos: photos
+                    .map(
+                      (e) => e.copyWith(
+                        photo: e.photo.stringToBase64SyncServer,
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ),
+        );
 
-      if (_enableUpdateStatus) {
-        for (final item in fireRegisters) {
-          futures.add(cmoDatabaseMasterService.cacheFireRegisterFromFarm(
-              item.copyWith(isMasterdataSynced: true)));
+        futures.add(
+          cmoDatabaseMasterService.cacheFireRegister(
+            fireRegister.copyWith(isMasterdataSynced: true),
+            isDirect: false,
+          ),
+        );
+
+        for (final photo in photos) {
+          futures.add(
+            cmoDatabaseMasterService.cacheFirePhotoModel(
+              photo.copyWith(isMasterdataSynced: true),
+            ),
+          );
         }
       }
 

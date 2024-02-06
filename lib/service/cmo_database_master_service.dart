@@ -73,7 +73,6 @@ class CmoDatabaseMasterService {
       FarmerStakeHolderComplaintSchema,
       BiologicalControlAgentSchema,
       EmployeeGrievanceSchema,
-      FireManagementSchema,
       RteSpeciesRegisterPhotoSchema,
       RteSpeciesSchema,
       FarmQuestionSchema,
@@ -103,6 +102,7 @@ class CmoDatabaseMasterService {
       ComplaintsAndDisputesRegisterSchema,
       GrievanceRegisterSchema,
       FireRegisterSchema,
+      FireRegisterPhotoSchema,
       PetsAndDiseaseRegisterSchema,
       TrainingRegisterSchema,
       AnnualBudgetSchema,
@@ -1100,17 +1100,19 @@ class CmoDatabaseMasterService {
     return db.employeeGrievances.put(data);
   }
 
-  Future<int?> cacheFireRegister(FireRegister data) async {
+  Future<int?> cacheFireRegister(
+    FireRegister data, {
+    bool isDirect = true,
+  }) async {
     final db = await _db();
 
-    return db.fireRegisters.put(data);
-  }
-
-  Future<int?> cacheFireRegisterFromFarm(FireRegister data) async {
-    final db = await _db();
-    return db.writeTxn(() async {
+    if (isDirect) {
       return db.fireRegisters.put(data);
-    });
+    } else {
+      return db.writeTxn(() async {
+        return db.fireRegisters.put(data);
+      });
+    }
   }
 
   Future<int> countFireRegistersByFarmId(String? farmId) async {
@@ -3310,11 +3312,6 @@ class CmoDatabaseMasterService {
         .count();
   }
 
-  Future<int> cacheFireManagement(FireManagement item) async {
-    final db = await _db();
-    return db.fireManagements.put(item);
-  }
-
   Future<int> cacheRteSpecies(
     RteSpecies item, {
     bool isDirect = true,
@@ -3415,6 +3412,68 @@ class CmoDatabaseMasterService {
     return db.accidentAndIncidentPhotos
         .filter()
         .accidentAndIncidentRegisterNoEqualTo(accidentAndIncidentRegisterNo)
+        .isMasterdataSyncedEqualTo(false)
+        .findAll();
+  }
+
+  Future<int> cacheFirePhotoModel(
+      FireRegisterPhoto item, {
+        bool isDirect = false,
+      }) async {
+    final db = await _db();
+    if (isDirect) {
+      return db.fireRegisterPhotos.put(item);
+    } else {
+      return db.writeTxn(() => db.fireRegisterPhotos.put(item));
+    }
+  }
+
+  Future<void> removeAllFireRegisterPhotosByFireRegisterNo(
+      String? fireRegisterNo,
+      ) async {
+    final db = await _db();
+
+    await db.writeTxn(() async {
+      await db.fireRegisterPhotos
+          .filter()
+          .fireRegisterNoEqualTo(fireRegisterNo)
+          .deleteAll();
+    });
+  }
+
+  Future<bool> removeFireRegisterPhotoModel(int id) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.fireRegisterPhotos.delete(id);
+    });
+  }
+
+  Future<List<FireRegisterPhoto>> getAllFireRegisterPhotosByFireRegisterNo(
+      String? fireRegisterNo,
+      ) async {
+    if (fireRegisterNo.isBlank)
+      return <FireRegisterPhoto>[];
+
+    final db = await _db();
+
+    return db.fireRegisterPhotos
+        .filter()
+        .fireRegisterNoEqualTo(fireRegisterNo)
+        .findAll();
+  }
+
+  Future<List<FireRegisterPhoto>> getUnsyncedAllFireRegisterPhotosByFireRegisterNo(
+      String? fireRegisterNo,
+      ) async {
+    if (fireRegisterNo.isBlank) {
+      return <FireRegisterPhoto>[];
+    }
+
+    final db = await _db();
+
+    return db.fireRegisterPhotos
+        .filter()
+        .fireRegisterNoEqualTo(fireRegisterNo)
         .isMasterdataSyncedEqualTo(false)
         .findAll();
   }
