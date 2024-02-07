@@ -32,6 +32,7 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
       final rteCount = await _onCountRte(isRefreshUI: false);
       final complaints = await _onCountComplaint(isRefreshUI: false);
       final chemicalCount = await _onCountChemical(isRefreshUI: false);
+      final illegalActivitiesCount = await _onCountIllegalActivities(isRefreshUI: false);
 
       emit(
         state.copyWith(
@@ -47,6 +48,7 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
           disciplinaries: disciplinaryCount,
           stakeholderComplaints: complaints,
           pestsDiseases: pestAndDiseasesCount,
+          illegalActivities: illegalActivitiesCount,
         ),
       );
     } catch (e) {
@@ -90,6 +92,9 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
         break;
       case ManagementType.training:
         _onCountTraining();
+        break;
+      case ManagementType.illegalActivities:
+        _onCountIllegalActivities();
         break;
     }
   }
@@ -227,4 +232,16 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
     return total;
   }
 
+  Future<int> _onCountIllegalActivities({bool isRefreshUI = true}) async {
+    final total = await masterService.getAllIllegalActivityRegisters();
+    if (isRefreshUI) {
+      emit(
+        state.copyWith(
+          stakeholderComplaints: total.length,
+        ),
+      );
+    }
+
+    return total.length;
+  }
 }

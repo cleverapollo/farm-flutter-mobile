@@ -150,7 +150,8 @@ class CmoDatabaseMasterService {
       SpeciesGroupTemplateSchema,
       TraineeRegisterSchema,
       GroupSchemeMasterSpeciesSchema,
-      AccidentAndIncidentPhotoSchema
+      AccidentAndIncidentPhotoSchema,
+      IllegalActivityRegisterSchema
     ];
 
     schemes.sort((first, second) {
@@ -500,6 +501,36 @@ class CmoDatabaseMasterService {
         .filter()
         .isMasterDataSyncedEqualTo(0)
         .isActiveEqualTo(true)
+        .findAll();
+  }
+
+  Future<int?> cacheIllegalActivityRegister(
+      IllegalActivityRegister? item, {
+        bool isDirect = false,
+      }) async {
+    if (item == null) return null;
+    final db = await _db();
+    if (isDirect) {
+      return db.illegalActivityRegisters.put(item);
+    } else {
+      return db.writeTxn(() async {
+        return db.illegalActivityRegisters.put(item);
+      });
+    }
+  }
+
+  Future<List<IllegalActivityRegister>> getAllIllegalActivityRegisters() async {
+    final db = await _db();
+    return db.illegalActivityRegisters.filter().isActiveEqualTo(true).findAll();
+  }
+
+  Future<List<IllegalActivityRegister>>
+      getAllUnsyncedIllegalActivityRegisters() async {
+    final db = await _db();
+    return db.illegalActivityRegisters
+        .filter()
+        .isActiveEqualTo(true)
+        .isMasterdataSyncedEqualTo(false)
         .findAll();
   }
 
