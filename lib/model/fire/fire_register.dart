@@ -1,3 +1,4 @@
+import 'package:cmo/model/model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -27,6 +28,8 @@ class FireRegister with _$FireRegister {
     @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
     @JsonKey(name: 'CreateDT') DateTime? createDT,
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
+    @ignore
+    @JsonKey(name: 'Photos') List<FireRegisterPhoto>? photos,
   }) = _FireRegister;
 
   const FireRegister._();

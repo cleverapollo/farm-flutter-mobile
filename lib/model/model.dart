@@ -66,7 +66,6 @@ export 'biological_control_agent/control_agent.dart';
 export 'employee_grievance/employee_grievance.dart';
 export 'fire/fire_register.dart';
 export 'fire/fire_register_photo.dart';
-export 'fire/fire_register_payload.dart';
 export 'rte_species/rte_species_register_payload.dart';
 export 'rte_species/rte_species.dart';
 export 'rte_species/rte_species_register_photo.dart';

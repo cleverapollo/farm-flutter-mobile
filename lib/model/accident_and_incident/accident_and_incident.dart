@@ -1,3 +1,4 @@
+import 'package:cmo/model/model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -32,6 +33,8 @@ class AccidentAndIncident with _$AccidentAndIncident {
     @JsonKey(name: 'PropertyDamaged') String? propertyDamaged,
     @JsonKey(name: 'CreateDT') DateTime? createDT,
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
+    @ignore
+    @JsonKey(name: 'Photos') List<AccidentAndIncidentPhoto>? photos,
   }) = _AccidentAndIncident;
 
   const AccidentAndIncident._();
@@ -39,7 +42,6 @@ class AccidentAndIncident with _$AccidentAndIncident {
   factory AccidentAndIncident.fromJson(Map<String, dynamic> json) =>
       _$AccidentAndIncidentFromJson(json);
 
-  @override
   Id get id =>
       int.tryParse(accidentAndIncidentRegisterNo ?? '') ?? Isar.autoIncrement;
 }

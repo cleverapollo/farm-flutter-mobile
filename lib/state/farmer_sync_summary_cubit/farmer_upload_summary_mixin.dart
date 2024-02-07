@@ -722,8 +722,7 @@ mixin FarmUploadSummaryMixin {
         messages.add(
           globalMessage.copyWith(
             body: jsonEncode(
-              FireRegisterPayload(
-                register: fireRegister,
+              fireRegister.copyWith(
                 photos: photos
                     .map(
                       (e) => e.copyWith(
