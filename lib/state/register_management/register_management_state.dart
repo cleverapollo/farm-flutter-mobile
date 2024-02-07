@@ -13,6 +13,7 @@ class RegisterManagementState {
     this.rteSpecies = 0,
     this.stakeholderComplaints = 0,
     this.training = 0,
+    this.illegalActivities = 0,
     this.isDataReady = false,
   });
 
@@ -28,6 +29,7 @@ class RegisterManagementState {
   final int rteSpecies;
   final int stakeholderComplaints;
   final int training;
+  final int illegalActivities;
 
   RegisterManagementState copyWith({
     bool? isDataReady,
@@ -42,6 +44,7 @@ class RegisterManagementState {
     int? rteSpecies,
     int? stakeholderComplaints,
     int? training,
+    int? illegalActivities,
   }) {
     return RegisterManagementState(
       isDataReady: isDataReady ?? this.isDataReady,
@@ -58,6 +61,7 @@ class RegisterManagementState {
       stakeholderComplaints:
       stakeholderComplaints ?? this.stakeholderComplaints,
       training: training ?? this.training,
+      illegalActivities: illegalActivities ?? this.illegalActivities,
     );
   }
 }

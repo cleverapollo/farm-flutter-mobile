@@ -1,4 +1,3 @@
-export 'app_mode.dart';
 export 'assessment.dart';
 export 'company.dart';
 export 'data/company_question.dart';
@@ -111,4 +110,5 @@ export 'stakeholder/farm_stakeholder_special_site.dart';
 export 'compartment/product_group_template.dart';
 export 'compartment/species_group_template.dart';
 export 'check_for_update/check_for_update.dart';
+export 'illegal_activity/illegal_activity_register.dart';
 

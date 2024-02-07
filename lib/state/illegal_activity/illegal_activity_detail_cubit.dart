@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -139,5 +138,4 @@ class IllegalActivityDetailCubit extends Cubit<IllegalActivityDetailState> {
     );
     onSuccess.call();
   }
-
 }

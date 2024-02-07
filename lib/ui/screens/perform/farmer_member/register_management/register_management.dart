@@ -10,6 +10,8 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/chemica
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/disciplinaries/disciplinaries_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/employee_grievance/employee_grievance_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/fire/fire_management_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/illegal_activity/illegal_activity_detail.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/illegal_activity/illegal_activity_management.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/pets_and_disease_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/rte_species/rte_species_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/stake_holder_complaint/stake_holder_complaint_screen.dart';
@@ -28,6 +30,7 @@ enum ManagementType {
   fire,
   pestsDiseases,
   rteSpecies,
+  illegalActivities,
   stakeholderComplaints,
   training,
 }
@@ -78,6 +81,8 @@ class _RegisterManagementState extends BaseStatefulWidgetState<RegisterManagemen
         return state.stakeholderComplaints;
       case ManagementType.training:
         return state.training;
+      case ManagementType.illegalActivities:
+        return state.illegalActivities;
     }
   }
 
@@ -120,6 +125,9 @@ class _RegisterManagementState extends BaseStatefulWidgetState<RegisterManagemen
         break;
       case ManagementType.training:
         await TrainingScreen.push(context);
+        break;
+      case ManagementType.illegalActivities:
+        await IllegalActivityManagement.push(context);
         break;
     }
     cubit.onRefreshItems(type);
@@ -187,6 +195,11 @@ class _RegisterManagementState extends BaseStatefulWidgetState<RegisterManagemen
                     context: context,
                     type: ManagementType.fire,
                     title: LocaleKeys.fire.tr(),
+                  ),
+                  _buildItem(
+                    context: context,
+                    type: ManagementType.illegalActivities,
+                    title: LocaleKeys.illegal_activities.tr(),
                   ),
                   _buildItem(
                     context: context,
