@@ -300,6 +300,7 @@ class _AuditAddScreen extends BaseStatefulWidgetState<AuditAddScreen> {
         return CmoSwitch(
           displaySwitchAsPrefix: true,
           value: state.isPrepopulateAudit,
+          disable: state.isDisablePrepopulateAudit,
           title: LocaleKeys.pre_populate_from_last_audit.tr(),
           padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
           spaceBetween: 10,

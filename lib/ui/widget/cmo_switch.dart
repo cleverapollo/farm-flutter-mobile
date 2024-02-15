@@ -12,6 +12,7 @@ class CmoSwitch extends StatelessWidget {
     this.padding,
     this.textStyle,
     this.spaceBetween,
+    this.disable = false,
   });
 
   final String title;
@@ -28,9 +29,12 @@ class CmoSwitch extends StatelessWidget {
 
   final double? spaceBetween;
 
+  final bool disable;
+
   @override
   Widget build(BuildContext context) {
     final children = <Widget>[];
+    final disableColor = context.colors.greyCCCC;
     final titleWidget = Expanded(
       child: Text(
         title,
@@ -42,9 +46,9 @@ class CmoSwitch extends StatelessWidget {
     final switchWidget = CupertinoSwitch(
       value: value,
       onChanged: onChanged,
-      activeColor: context.colors.blue71B8,
-      thumbColor: context.colors.blueDark2,
-      trackColor: context.colors.grey,
+      activeColor: disable ? disableColor : context.colors.blue71B8,
+      thumbColor: disable ? disableColor : context.colors.blueDark2,
+      trackColor: disable ? disableColor : context.colors.grey,
     );
     if (displaySwitchAsPrefix) {
       children.addAll([

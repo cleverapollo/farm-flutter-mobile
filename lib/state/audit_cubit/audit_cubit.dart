@@ -31,7 +31,6 @@ class AuditCubit extends HydratedCubit<AuditState> {
       ),
     );
 
-    await getPrepopulateAudit();
     // await getListCompartments();
   }
 
@@ -45,20 +44,19 @@ class AuditCubit extends HydratedCubit<AuditState> {
   }
 
   void selectPrepopulateAudit(bool isPrepopulate) {
-    if (state.prepopulateAudit == null) return;
+    if (state.isDisablePrepopulateAudit) return;
     emit(state.copyWith(isPrepopulateAudit: isPrepopulate));
   }
 
   Future<void> getPrepopulateAudit() async {
-    if (state.selectedFarm?.farmId == null ||
-        state.selectedAuditTemplate?.auditTemplateId == null) return;
-    final prepopulateAudit = await cmoDatabaseMasterService.getAuditByAuditTemplateIdAndFarmId(
-      farmId: state.selectedFarm?.farmId,
+    if (state.selectedAuditTemplate?.auditTemplateId == null) return;
+    final prepopulateAudit = await cmoDatabaseMasterService.getAuditByAuditTemplateId(
       auditTemplateId: state.selectedAuditTemplate?.auditTemplateId,
     );
 
     emit(
       state.copyWith(
+        isDisablePrepopulateAudit: prepopulateAudit == null,
         isPrepopulateAudit: prepopulateAudit != null,
         prepopulateAudit: prepopulateAudit,
       ),
