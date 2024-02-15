@@ -61,6 +61,7 @@ mixin FarmUploadSummaryMixin {
     await _publishAccidentAndIncidentRegisters(); // done
     await _publishBiologicalControlAgentRegisters(); // done
     await _publishCompartment();
+    await _publishIllegalActivities();
   }
 
   Future<void> _publishCompartment() async {
@@ -91,6 +92,33 @@ mixin FarmUploadSummaryMixin {
         }
       } else {
         logger.d('No Compartments to sync');
+      }
+    } catch (error) {
+      logger.e(error);
+    }
+  }
+
+  Future<void> _publishIllegalActivities() async {
+    onStatus('Sync Illegal Activities...');
+    try {
+      logger.d('Get unsynced Illegal Activities');
+      final activities = await cmoDatabaseMasterService
+          .getAllUnsyncedIllegalActivityRegisters();
+      if (activities.isNotBlank) {
+        logger.d('Unsynced Illegal Activities count: ${activities.length}');
+        for (final activity in activities) {
+          final syncedActivity = await cmoPerformApiService.insertUpdatedIllegalActivity(activity);
+          if (syncedActivity != null) {
+            await cmoDatabaseMasterService.cacheIllegalActivityRegister(
+              syncedActivity.copyWith(
+                isMasterdataSynced: true,
+              ),
+              isDirect: true,
+            );
+          }
+        }
+      } else {
+        logger.d('No Illegal Activities to sync');
       }
     } catch (error) {
       logger.e(error);

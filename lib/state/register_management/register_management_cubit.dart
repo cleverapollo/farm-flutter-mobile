@@ -58,43 +58,43 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
     }
   }
 
-  void onRefreshItems(ManagementType type) {
+  Future<void> onRefreshItems(ManagementType type) async {
     switch(type) {
       case ManagementType.accidentIncidents:
-        _onCountAAI();
+        await _onCountAAI();
         break;
       case ManagementType.asi:
-        _onCountAsi();
+        await _onCountAsi();
         break;
       case ManagementType.biologicalControlAgents:
-        _onCountBiologicalControlAgent();
+        await _onCountBiologicalControlAgent();
         break;
       case ManagementType.chemicals:
-        _onCountChemical();
+        await _onCountChemical();
         break;
       case ManagementType.disciplinaries:
-        _onCountSanctionRegisters();
+        await _onCountSanctionRegisters();
         break;
       case ManagementType.employeeGrievance:
-        _onCountEmployeeGrievance();
+        await _onCountEmployeeGrievance();
         break;
       case ManagementType.fire:
-        _onCountFire();
+        await _onCountFire();
         break;
       case ManagementType.pestsDiseases:
-        _onCountPestAndDiseases();
+        await _onCountPestAndDiseases();
         break;
       case ManagementType.rteSpecies:
-        _onCountRte();
+        await _onCountRte();
         break;
       case ManagementType.stakeholderComplaints:
-        _onCountComplaint();
+        await _onCountComplaint();
         break;
       case ManagementType.training:
-        _onCountTraining();
+        await _onCountTraining();
         break;
       case ManagementType.illegalActivities:
-        _onCountIllegalActivities();
+        await _onCountIllegalActivities();
         break;
     }
   }
@@ -237,7 +237,7 @@ class RegisterManagementCubit extends Cubit<RegisterManagementState> {
     if (isRefreshUI) {
       emit(
         state.copyWith(
-          stakeholderComplaints: total.length,
+          illegalActivities: total.length,
         ),
       );
     }

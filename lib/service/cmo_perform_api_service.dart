@@ -814,4 +814,44 @@ class CmoPerformApiService {
       return null;
     }
   }
+
+  Future<IllegalActivityRegister?> insertUpdatedIllegalActivity(
+    IllegalActivityRegister illegalActivityRegister,
+  ) async {
+    try {
+      final response = await client.post<JsonData?>(
+        '${Env.apiGroupSchemeUrl}InsertOrUpdateIllegalActivity',
+        data: illegalActivityRegister.toJson(),
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data;
+      return data == null ? null : IllegalActivityRegister.fromJson(data);
+    } catch (e) {
+      logger.d('Cannot insertUpdatedIllegalActivity $e');
+      return null;
+    }
+  }
+
+  Future<List<IllegalActivityRegister>?> getListIllegalActivities() async {
+    final response = await client.get<JsonListData>(
+      '${Env.apiGroupSchemeUrl}GetIllegalActivities?',
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    if (response.statusCode != 200) {
+      showSnackError(msg: 'Unknow error: ${response.statusCode}');
+      return null;
+    }
+
+    final data = response.data;
+    return data
+        ?.map((e) => IllegalActivityRegister.fromJson(e as JsonData))
+        .toList();
+  }
 }

@@ -1329,6 +1329,10 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       logger.d('--insertGroupSchemeMasterSpecies start');
       await insertGroupSchemeMasterSpecies();
       logger.d('--insertGroupSchemeMasterSpecies done');
+
+      logger.d('--insertIllegalActivities start');
+      await insertIllegalActivities();
+      logger.d('--insertIllegalActivities done');
     });
   }
 
@@ -1506,6 +1510,19 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     if (groupSchemeMasterSpecies.isNotBlank) {
       for (final groupSchemeMasterSpecie in groupSchemeMasterSpecies!) {
         await cmoDatabaseMasterService.cacheGroupSchemeMasterSpecies(groupSchemeMasterSpecie);
+      }
+    }
+  }
+
+  Future<void> insertIllegalActivities() async {
+    emit(state.copyWith(syncMessage: 'Syncing Illegal Activities...'));
+    final illegalActivities = await cmoPerformApiService.getListIllegalActivities();
+    if (illegalActivities.isNotBlank) {
+      for (final illegalActivity in illegalActivities!) {
+        await cmoDatabaseMasterService.cacheIllegalActivityRegister(
+          illegalActivity,
+          isDirect: true,
+        );
       }
     }
   }

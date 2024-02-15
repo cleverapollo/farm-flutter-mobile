@@ -130,7 +130,8 @@ class _RegisterManagementState extends BaseStatefulWidgetState<RegisterManagemen
         await IllegalActivityManagement.push(context);
         break;
     }
-    cubit.onRefreshItems(type);
+
+    await cubit.onRefreshItems(type);
   }
 
   @override
