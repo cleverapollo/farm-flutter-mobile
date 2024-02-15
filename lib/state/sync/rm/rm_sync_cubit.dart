@@ -1270,10 +1270,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       }
     }
 
-    final riskProfileQuestions = await cmoDatabaseMasterService.getRiskProfileQuestionByGroupSchemeId(groupSchemeId);
-    final farmMemberObjective = await cmoDatabaseMasterService.getAllFarmMemberObjectiveByGroupSchemeId(groupSchemeId);
-
-    if (hasData == false || riskProfileQuestions.isBlank || farmMemberObjective.isBlank) {
+    if (hasData == false) {
       await Future.delayed(const Duration(milliseconds: 800));
       await syncRegionalManagerMasterData();
     }
