@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/complaints_and_disputes_register/complaints_and_disputes_register.dart';
 import 'package:cmo/model/model.dart';
@@ -95,7 +96,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     try {
       emit(
         state.copyWith(
-          syncMessage: 'Syncing All Master Data...',
+          syncMessage: '${LocaleKeys.syncing_all_master_data.tr()}...',
           isSyncing: true,
         ),
       );

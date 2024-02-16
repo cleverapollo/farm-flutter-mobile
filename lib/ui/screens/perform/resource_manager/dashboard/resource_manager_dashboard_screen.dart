@@ -52,11 +52,11 @@ class _ResourceManagerDashboardScreenState
                 padding: const EdgeInsets.all(20),
                 children: [
                   DashboardItemWidget(
-                    title: LocaleKeys.member_s.tr(),
+                    title: LocaleKeys.members.tr(),
                     icon: Assets.icons.icDashboardMember.svg(),
                     onTap: () => MemberManagementScreen.push(context),
                     listInformationWidget: [
-                      CmoCardHeader(title: LocaleKeys.member_s.tr()),
+                      CmoCardHeader(title: LocaleKeys.members.tr()),
                       // DashboardInformationItem(
                       //     title: LocaleKeys.onboarded.tr(),
                       //     value: dashboardInfo?.onboardedMembers != null

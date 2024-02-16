@@ -37,7 +37,7 @@ class MemberPropertyOwnershipSection extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0, top: 12),
                   child: Text(
-                    LocaleKeys.propertyType.tr(),
+                    LocaleKeys.property_type.tr(),
                     style: context.textStyles.titleBold.copyWith(
                       color: context.colors.black,
                       fontSize: 16,
@@ -89,7 +89,7 @@ class MemberPropertyOwnershipSection extends StatelessWidget {
                           child: Text(
                             memberPropertyOwnershipState.propertyTypeSelected
                                 ?.farmPropertyOwnershipTypeName ??
-                                '${LocaleKeys.select.tr()} ${LocaleKeys.propertyType.tr().toLowerCase()}',
+                                '${LocaleKeys.select.tr()} ${LocaleKeys.property_type.tr().toLowerCase()}',
                             style: isHintText
                                 ? context.textStyles.bodyNormal.grey
                                 : context.textStyles.bodyNormal.black,

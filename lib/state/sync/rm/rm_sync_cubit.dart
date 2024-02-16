@@ -5,6 +5,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/env/env.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/audit/audit_payload.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
@@ -236,7 +237,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     try {
       emit(
         state.copyWith(
-            syncMessage: 'Syncing All Master Data...', isLoading: true),
+            syncMessage: '${LocaleKeys.syncing_all_master_data.tr()}...', isLoading: true),
       );
 
       logger.d('--RM Sync Onboarding Data start');
@@ -1075,7 +1076,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> insertCompartmentsByRMUId() async {
-    emit(state.copyWith(syncMessage: 'Syncing Compartments...'));
+    emit(state.copyWith(syncMessage: '${LocaleKeys.syncing_comparments.tr()}...'));
     final compartments = await cmoPerformApiService.getCompartmentsByRMUId();
     final areaTypes = await cmoDatabaseMasterService.getAreaTypesByGroupSchemeId(groupSchemeId);
     final productGroupTemplates = await cmoDatabaseMasterService.getProductGroupTemplates(groupSchemeId);
@@ -1098,7 +1099,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> insertAreaTypes() async {
-    emit(state.copyWith(syncMessage: 'Syncing Area Type...'));
+    emit(state.copyWith(syncMessage: '${LocaleKeys.syncing_area_type.tr()}...'));
     final areaTypes = await cmoPerformApiService.fetchAreaTypes();
     if (areaTypes.isNotBlank) {
       for (final areaType in areaTypes!) {
@@ -1128,7 +1129,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> insertAsiTypes() async {
-    emit(state.copyWith(syncMessage: 'Syncing ASI Types...'));
+    emit(state.copyWith(syncMessage: '${LocaleKeys.syncing_asi_type.tr()}...'));
     final asiTypes = await cmoPerformApiService.fetchRMAsiType();
     if (asiTypes.isNotBlank) {
       for (final asiType in asiTypes!) {
@@ -1295,7 +1296,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           await insertGroupSchemeStakeholder(item);
         } else if (topic ==
             '${topicRegionalManagerMasterDataSync}SHT.$userDeviceId') {
-          emit(state.copyWith(syncMessage: 'Syncing Stakeholder Types...'));
+          emit(state.copyWith(syncMessage: '${LocaleKeys.syncing_stakeholder_types.tr()}...'));
           await insertStakeholderType(item);
         } else if (topic ==
             '${topicRegionalManagerMasterDataSync}PropOwnerType.$userDeviceId') {
@@ -1328,7 +1329,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           await insertPrinciple(item);
         } else if (topic ==
             '${topicRegionalManagerMasterDataSync}Indicator.$userDeviceId') {
-          emit(state.copyWith(syncMessage: 'Syncing Indicator...'));
+          emit(state.copyWith(syncMessage: '${LocaleKeys.syncing_indicator.tr()}...'));
           await insertIndicator(item);
         } else if (topic ==
             '${topicRegionalManagerMasterDataSync}ImpactOn.$userDeviceId') {
@@ -1340,7 +1341,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           await insertImpactCaused(item);
         } else if (topic ==
             '${topicRegionalManagerMasterDataSync}Severity.$userDeviceId') {
-          emit(state.copyWith(syncMessage: 'Syncing Severity...'));
+          emit(state.copyWith(syncMessage: '${LocaleKeys.syncing_severity.tr()}...'));
           await insertSeverity(item);
         } else if (topic ==
             '${topicRegionalManagerMasterDataSync}RMU.$userDeviceId') {
@@ -1397,7 +1398,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             await insertCompliance(item);
           } else if (topic ==
               '${topicRegionalManagerUnitMasterDataSync}Question.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Questions...'));
+            emit(state.copyWith(syncMessage: '${LocaleKeys.syncing_questions.tr()}...'));
             await insertQuestion(item);
           } else if (topic ==
               '${topicRegionalManagerUnitMasterDataSync}Farm.$userDeviceId') {

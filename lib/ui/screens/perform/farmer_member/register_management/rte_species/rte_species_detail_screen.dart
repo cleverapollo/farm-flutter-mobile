@@ -312,7 +312,7 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
 
             final result = await SelectLocationScreen.push(
               context,
-              title: LocaleKeys.rteSpecies.tr(),
+              title: LocaleKeys.rte_species.tr(),
               farmName: state.activeFarm?.farmName,
               locationModel: locationModel,
               shouldShowPhotoButton: false,

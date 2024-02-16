@@ -14,7 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'rte_species_detail_screen.dart';
 
 class RteSpeciesScreen extends BaseStatefulWidget {
-  RteSpeciesScreen({super.key}) : super(screenName: LocaleKeys.rteSpecies.tr());
+  RteSpeciesScreen({super.key}) : super(screenName: LocaleKeys.rte_species.tr());
 
   @override
   State<StatefulWidget> createState() => _RteSpeciesScreenState();
@@ -49,7 +49,7 @@ class _RteSpeciesScreenState extends BaseStatefulWidgetState<RteSpeciesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
-        title: LocaleKeys.rteSpecies.tr(),
+        title: LocaleKeys.rte_species.tr(),
         leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
         trailing: Assets.icons.icUpdatedAddButton.svgBlack,
@@ -79,7 +79,7 @@ class _RteSpeciesScreenState extends BaseStatefulWidgetState<RteSpeciesScreen> {
                   await navigateToDetail(rteSpecies: item);
                 },
                 child: RegisterItem(
-                  title: '${LocaleKeys.rteSpecies.tr()}: ${item.rteSpeciesRegisterNo?.toString()}',
+                  title: '${LocaleKeys.rte_species.tr()}: ${item.rteSpeciesRegisterNo?.toString()}',
                   mapData: generateInformationMapData(item),
                 ),
               );
