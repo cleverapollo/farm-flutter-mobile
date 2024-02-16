@@ -39,9 +39,9 @@ class LegalScreen extends StatelessWidget {
               final activeUserRole = await configService.getActiveUserRole();
               late Uri uri;
               if (activeUserRole == UserRoleEnum.behave) {
-                uri = Uri.https(Env.cmoApiUrl, '/cmo/behave/Terms');
+                uri = Uri.https(Env.cmoApiUrl, '/behave/Terms');
               } else {
-                uri = Uri.https(Env.cmoApiUrl, '/cmo/Terms');
+                uri = Uri.https(Env.cmoApiUrl, '/Terms');
               }
               launchUrl(uri);
             },
