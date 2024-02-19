@@ -20,7 +20,10 @@ class DisciplinariesScreen extends BaseStatefulWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => DisciplinariesScreen(),
+        builder: (_) => BlocProvider<DisciplinariesCubit>(
+          create: (_) => DisciplinariesCubit()..initData(),
+          child: DisciplinariesScreen(),
+        ),
       ),
     );
   }
@@ -32,9 +35,7 @@ class DisciplinariesScreen extends BaseStatefulWidget {
 class _DisciplinariesScreenState extends BaseStatefulWidgetState<DisciplinariesScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<DisciplinariesCubit>(
-      create: (_) => DisciplinariesCubit()..initData(),
-      child: BlocSelector<DisciplinariesCubit, DisciplinariesState, bool>(
+    return BlocSelector<DisciplinariesCubit, DisciplinariesState, bool>(
         selector: (state) => state.isLoading,
         builder: (context, isLoading) {
 
@@ -100,16 +101,15 @@ class _DisciplinariesScreenState extends BaseStatefulWidgetState<DisciplinariesS
                   ),
           );
         },
-      ),
     );
   }
 
   Map<String, String?> generateInformationMapData(SanctionRegister registerItem) {
     return {
-      LocaleKeys.worker.tr(): registerItem.displayWorkerName,
+      LocaleKeys.worker.tr(): context.read<DisciplinariesCubit>().getWorkerName(registerItem.workerId),
       LocaleKeys.dateIssued.tr(): convertDateTimeToLunar(registerItem.dateReceived).mmmDdYyyy(),
       LocaleKeys.camp_compartment.tr(): registerItem.campOrCompartment,
-      LocaleKeys.disciplinaries_issue.tr(): registerItem.issueTypeName,
+      LocaleKeys.disciplinaries_issue.tr(): context.read<DisciplinariesCubit>().getIssueTypeName(registerItem.issueTypeId),
       LocaleKeys.disciplinaries_steps_taken.tr(): registerItem.descriptionOfSanction,
       LocaleKeys.signed.tr(): DateTime.tryParse(registerItem.signatureDate ?? '').mmmDdYyyy(),
       LocaleKeys.general_comments.tr(): registerItem.comment,

@@ -1,4 +1,3 @@
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/sanction_register_payload/sanction_register_payload.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
@@ -14,7 +13,7 @@ class SanctionRegister with _$SanctionRegister {
     @JsonKey(name: 'WorkerId') String? workerId,
     @JsonKey(name: 'CampId') String? campId,
     @JsonKey(name: 'CampOrCompartment') String? campOrCompartment,
-    @JsonKey(name: 'DateReceived') DateTime? dateReceived,
+    @JsonKey(name: 'DateRecieved') DateTime? dateReceived,
     @JsonKey(name: 'IssueTypeId') int? issueTypeId,
     @JsonKey(name: 'DescriptionOfSanction') String? descriptionOfSanction,
     @JsonKey(name: 'Comment') String? comment,
@@ -38,35 +37,5 @@ class SanctionRegister with _$SanctionRegister {
   factory SanctionRegister.fromJson(Map<String, dynamic> json) =>
       _$SanctionRegisterFromJson(json);
 
-  @override
   Id get id => int.tryParse(sanctionRegisterId ?? '') ?? Isar.autoIncrement;
-}
-
-extension SanctionRegisterX on SanctionRegister {
-  SanctionRegisterPayLoad toPayLoad() {
-    return SanctionRegisterPayLoad(
-      SanctionRegisterId: sanctionRegisterId,
-      FarmId: farmId,
-      WorkerId: workerId,
-      CampId: campId,
-      CampOrCompartment: campOrCompartment,
-      DateRecieved: dateReceived,
-      IssueTypeId: issueTypeId,
-      DescriptionOfSanction: descriptionOfSanction,
-      Comment: comment,
-      CarRaisedDate: carRaisedDate,
-      CarClosedDate: carClosedDate,
-      SignaturePoints: signaturePoints,
-      SignatureImage: signatureImage,
-      SignatureDate: signatureDate,
-      IsActive: isActive,
-      IsSynced: isSynced,
-      IsLocal: isLocal,
-      DisplayWorkerName: displayWorkerName,
-      CampName: campName,
-      IssueTypeName: issueTypeName,
-      UpdateDT: updateDT,
-      CreateDT: createDT,
-    );
-  }
 }

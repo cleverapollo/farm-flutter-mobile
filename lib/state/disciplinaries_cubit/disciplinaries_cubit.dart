@@ -23,17 +23,34 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     final result = await cmoDatabaseMasterService
         .getSanctionRegisterByFarmId(state.farmId!);
     emit(state.copyWith(isLoading: false));
-
+    final workers = await cmoDatabaseMasterService.getFarmerWorkersByFarmId(state.farmId!);
+    final issueTypes = await cmoDatabaseMasterService.getIssueTypeByGroupSchemeId(int.parse(state.groupSchemeId!),);
     if (result.isNotEmpty) {
       emit(
         state.copyWith(
           sanctionRegisters: result,
           filterSanctionRegisters: result,
+          workers: workers,
+          issueTypes: issueTypes,
         ),
       );
 
       applyFilter();
     }
+  }
+
+  String getWorkerName(String? workerId) {
+    return state.workers
+            .firstWhereOrNull((element) => element.workerId == workerId)
+            ?.fullName ??
+        '';
+  }
+
+  String getIssueTypeName(int? issueTypeId) {
+    return state.issueTypes
+            .firstWhereOrNull((element) => element.issueTypeId == issueTypeId)
+            ?.issueTypeName ??
+        '';
   }
 
   Future<void> initConfigData() async {

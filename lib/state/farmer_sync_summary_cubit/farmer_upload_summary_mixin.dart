@@ -550,10 +550,7 @@ mixin FarmUploadSummaryMixin {
       final sanctionRegisters = await cmoDatabaseMasterService
           .getUnsyncedSanctionRegistersByFarmId(mFarmId);
 
-      final sanctionRegistersPayLoad =
-          sanctionRegisters.map((e) => e.toPayLoad()).toList();
-
-      for (final item in sanctionRegistersPayLoad) {
+      for (final item in sanctionRegisters) {
         messages.add(globalMessage.copyWith(body: jsonEncode(item)));
       }
 
