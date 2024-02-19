@@ -166,7 +166,7 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
                               child: GeneralCommentWidget(
                                 initialValue: training.comment,
                                 maxLines: 5,
-                                hintText: LocaleKeys.generalComments.tr(),
+                                hintText: LocaleKeys.general_comments.tr(),
                                 hintTextStyle: context.textStyles.bodyBold.blueDark3,
                                 textStyle: context.textStyles.bodyNormal.blueDark3,
                                 onChanged: cubit.onCommentChanged,

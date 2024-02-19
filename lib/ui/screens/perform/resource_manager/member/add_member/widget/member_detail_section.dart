@@ -21,7 +21,7 @@ class MemberDetailSection extends StatelessWidget {
         return CmoCollapseTitle(
           key: memberDetailSectionState.sectionKey,
           initiallyExpanded: !memberDetailSectionState.isSectionCollapse,
-          title: LocaleKeys.memberDetails.tr(),
+          title: LocaleKeys.member_detail.tr(),
           showTick: memberDetailSectionState.isComplete,
           child: Container(
             color: Colors.white,

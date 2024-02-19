@@ -21,7 +21,7 @@ class GeneralCommentsItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            LocaleKeys.generalComments.tr(),
+            LocaleKeys.general_comments.tr(),
             style: context.textStyles.bodyNormal.black,
           ),
           Text(

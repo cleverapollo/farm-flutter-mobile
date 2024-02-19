@@ -127,7 +127,7 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  widget.title ?? LocaleKeys.generalComments.tr(),
+                  widget.title ?? LocaleKeys.general_comments.tr(),
                   style: widget.titleTextStyle ?? context.textStyles.bodyNormal.blueDark2,
                 ),
               ),

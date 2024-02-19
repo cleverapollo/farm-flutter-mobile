@@ -133,7 +133,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
               child: GeneralCommentWidget(
                 initialValue: state.asi.comment,
                 maxLines: 5,
-                hintText: LocaleKeys.generalComments.tr(),
+                hintText: LocaleKeys.general_comments.tr(),
                 hintTextStyle: context.textStyles.bodyBold.blueDark2,
                 textStyle: context.textStyles.bodyNormal.blueDark2,
                 onChanged: _asiDetailCubit.onCommentChanged,

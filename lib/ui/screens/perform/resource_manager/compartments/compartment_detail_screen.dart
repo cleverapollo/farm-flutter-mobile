@@ -299,7 +299,7 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                                 AttributeItem(
                                   inactive: isConservationArea,
                                   child: InputAttributeItem(
-                                      labelText: '${LocaleKeys.rotation.tr()} (Years)',
+                                      labelText: '${LocaleKeys.rotation.tr()} (${LocaleKeys.years.tr()})',
                                       labelTextStyle: context.textStyles.bodyBold.blueDark2,
                                       textStyle: context.textStyles.bodyNormal.blueDark2,
                                       initialValue: (initCompartment.rotationNumber ?? '').toString(),

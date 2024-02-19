@@ -198,7 +198,7 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
                                   height: 250,
                                   child: GeneralCommentWidget(
                                     initialValue: complaint.comment,
-                                    hintText: LocaleKeys.generalComments.tr(),
+                                    hintText: LocaleKeys.general_comments.tr(),
                                     onChanged: cubit.onCommentChanged,
                                   ),
                                 ),
