@@ -56,7 +56,7 @@ class FireRegisterDetailCubit extends Cubit<FireRegisterDetailState> {
 
   void onDataChange({
     FireCause? fireCauseSelect,
-    DateTime? date,
+    DateTime? detected,
     DateTime? extinguished,
     double? areaBurnt,
     double? commercialAreaLoss,
@@ -65,17 +65,17 @@ class FireRegisterDetailCubit extends Cubit<FireRegisterDetailState> {
     String? comment,
     List<String>? selectAsiPhotoBase64s,
   }) {
-    if (date != null &&
+    if (detected != null &&
         state.fireRegister?.extinguished != null &&
-        date.isAfter(state.fireRegister!.extinguished!)) {
+        detected.isAfter(state.fireRegister!.extinguished!)) {
       showSnackError(msg: 'Extinguished date must be after detected date');
       emit(state.copyWith(fireRegister: state.fireRegister?.cleanDateData(isDetected: true)));
       return;
     }
 
     if (extinguished != null &&
-        state.fireRegister?.date != null &&
-        extinguished.isBefore(state.fireRegister!.date!)) {
+        state.fireRegister?.detected != null &&
+        extinguished.isBefore(state.fireRegister!.detected!)) {
       showSnackError(msg: 'Extinguished date must be after detected date');
       emit(state.copyWith(fireRegister: state.fireRegister?.cleanDateData(isExtinguished: true)));
       return;
@@ -86,7 +86,7 @@ class FireRegisterDetailCubit extends Cubit<FireRegisterDetailState> {
         fireCauseSelect: fireCauseSelect ?? state.fireCauseSelect,
         fireRegister: state.fireRegister?.copyWith(
           fireRegisterId: null,
-          date: date ?? state.fireRegister?.date,
+          detected: detected ?? state.fireRegister?.date,
           areaBurnt: areaBurnt ?? state.fireRegister?.areaBurnt,
           commercialAreaLoss: commercialAreaLoss ?? state.fireRegister?.commercialAreaLoss,
           latitude: lat ?? state.fireRegister?.latitude,

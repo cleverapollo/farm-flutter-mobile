@@ -1655,7 +1655,9 @@ class CmoDatabaseMasterService {
     return db.genders.filter().isActiveEqualTo(true).findAll();
   }
 
-  Future<List<FireCause>> getFireCauseByGroupSchemeId(int groupSchemeId) async {
+  Future<List<FireCause>> getFireCauseByGroupSchemeId(
+      int? groupSchemeId) async {
+    if (groupSchemeId == null) return <FireCause>[];
     final db = await _db();
 
     return db.fireCauses

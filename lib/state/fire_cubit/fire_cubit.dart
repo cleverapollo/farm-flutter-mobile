@@ -19,12 +19,15 @@ class FireCubit extends Cubit<FireState> {
     final result = await cmoDatabaseMasterService.getFireRegistersByFarmId(
         farmId: farm?.farmId);
 
+    final fireCauses = await cmoDatabaseMasterService.getFireCauseByGroupSchemeId(farm?.groupSchemeId);
+
     emit(
       state.copyWith(
         data: result,
         dataSearch: result,
         isLoading: false,
         activeFarm: farm,
+        fireCauses: fireCauses,
       ),
     );
   }
@@ -51,5 +54,12 @@ class FireCubit extends Cubit<FireState> {
 
     emit(state.copyWith(
         data: result, dataSearch: result, isOpen: isOpen, isLoading: false));
+  }
+
+  String getFireCauseName(int? fireCauseId) {
+    return state.fireCauses
+            .firstWhereOrNull((element) => element.fireCauseId == fireCauseId)
+            ?.fireCauseName ??
+        '';
   }
 }

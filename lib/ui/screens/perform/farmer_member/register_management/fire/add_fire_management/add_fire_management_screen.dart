@@ -302,10 +302,10 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
             firstDate: DateTime.now().subtract(const Duration(days: 1000)),
             title: LocaleKeys.dateDetected.tr(),
             titleStyle: context.textStyles.bodyNormal.blueDark2,
-            initialDate: state.fireRegister?.date,
+            initialDate: state.fireRegister?.detected,
             onConfirm: (date) => context
                 .read<FireRegisterDetailCubit>()
-                .onDataChange(date: date),
+                .onDataChange(detected: date),
           ),
         );
       },
