@@ -233,7 +233,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     emit(state.copyWith(rmSyncSummaryInformation: summaryInformation));
   }
 
-  Future<void> syncOnboarding(BuildContext context) async {
+  Future<void> syncOnboarding() async {
     try {
       emit(
         state.copyWith(
@@ -277,7 +277,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       logger.d('--RM Sync Onboarding Data done');
       await Future.delayed(const Duration(milliseconds: 500), () {});
       await configService.setRMSynced(isSynced: true);
-      if (context.mounted) CmoDashboardBase.push(context);
     } catch (e) {
       logger.e(e);
       emit(

@@ -111,4 +111,5 @@ export 'compartment/product_group_template.dart';
 export 'compartment/species_group_template.dart';
 export 'check_for_update/check_for_update.dart';
 export 'illegal_activity/illegal_activity_register.dart';
+export 'local_database_status/local_database_status.dart';
 

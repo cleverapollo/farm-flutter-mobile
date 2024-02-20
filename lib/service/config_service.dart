@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfigService {
   Future<void> logout() async {
+    await updateLatestLocalDatabaseStatus();
     await setRMSynced(isSynced: false);
     await setIsAuthorized(isAuthorized: false);
     await clearPerformConfig();
@@ -150,8 +151,8 @@ class ConfigService {
 
   Future<void> clearPerformConfig() async {
     await clearActiveGroupScheme();
-    await clearActiveFarm();
     await clearActiveRegionalManager();
+    await clearActiveFarm();
   }
 
   Future<bool> clearActiveGroupScheme() async {
@@ -167,5 +168,46 @@ class ConfigService {
   Future<bool> clearActiveRegionalManager() async {
     final sp = await SharedPreferences.getInstance();
     return sp.setString('ActiveRegionalManager', '');
+  }
+
+  Future<bool> setLocalDatabaseStatus({required LocalDatabaseStatus? localDatabaseStatus}) async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setString('LocalDatabaseStatus', jsonEncode(localDatabaseStatus?.toJson()));
+  }
+
+  Future<LocalDatabaseStatus?> getLocalDatabaseStatus() async {
+    final sp = await SharedPreferences.getInstance();
+    final rawJson = sp.getString('LocalDatabaseStatus');
+    if (rawJson == null || rawJson.isEmpty) return null;
+    return LocalDatabaseStatus.fromJson(jsonDecode(rawJson) as Map<String, dynamic>);
+  }
+
+  Future<void> updateLatestLocalDatabaseStatus() async {
+    final currentUsername = await getActiveUser();
+    final currentGS = await getActiveGroupScheme();
+    final currentRMU = await getActiveRegionalManager();
+
+    await setLocalDatabaseStatus(
+      localDatabaseStatus: LocalDatabaseStatus(
+        latestUserName: currentUsername?.userName,
+        latestGroupSchemeName: currentGS?.groupSchemeName,
+        latestGroupSchemeId: currentGS?.groupSchemeId,
+        latestRegionalManagerUnitId: currentRMU?.regionalManagerUnitId,
+        latestRegionalManagerUnitName: currentRMU?.regionalManagerUnitName,
+      ),
+    );
+  }
+
+  Future<bool> alreadyHaveOldData() async {
+    final currentUsername = await getActiveUser();
+    final currentGS = await getActiveGroupScheme();
+    final currentRMU = await getActiveRegionalManager();
+    final latestLocalDatabaseStatus = await getLocalDatabaseStatus();
+
+    return latestLocalDatabaseStatus?.latestRegionalManagerUnitId ==
+            currentRMU?.regionalManagerUnitId &&
+        latestLocalDatabaseStatus?.latestGroupSchemeId ==
+            currentGS?.groupSchemeId &&
+        latestLocalDatabaseStatus?.latestUserName == currentUsername?.userName;
   }
 }

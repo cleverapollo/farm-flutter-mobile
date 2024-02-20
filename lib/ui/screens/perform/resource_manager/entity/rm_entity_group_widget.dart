@@ -91,7 +91,6 @@ class _RMEntityGroupWidgetState extends State<RMEntityGroupWidget> {
       return;
     }
 
-    await cmoDatabaseMasterService.deleteAll();
     await context.read<UserDeviceCubit>().createPerformUserDevice();
     await configService.setActiveRegionalManager(unit: selectedResourceManagerUnit!);
     await configService.setActiveGroupScheme(groupScheme: selectedGroupScheme!);
