@@ -34,10 +34,13 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
 
   Future<void> getListFarms() async {
     final listFarms = await cmoDatabaseMasterService.getFarmsByRMUnit(state.activeRMU?.regionalManagerUnitId);
-
+    final incompleteFarms = await cmoDatabaseMasterService.getIncompleteFarmsByRMUnit(state.activeRMU?.regionalManagerUnitId);
+    final completedFarms = await cmoDatabaseMasterService.getCompletedFarmsByRMUnit(state.activeRMU?.regionalManagerUnitId);
     emit(
       state.copyWith(
         allFarms: listFarms,
+        incompleteFarms: incompleteFarms,
+        completedFarms: completedFarms,
       ),
     );
   }
@@ -101,9 +104,11 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
   }
 
   void _applySearch({String? searchText, required bool isInCompleteSelected}) {
-    var filteringItems = state.allFarms.where((element) => !isInCompleteSelected
-        ? element.isGroupSchemeMember == true
-        : element.isGroupSchemeMember != true);
+    var filteringItems = state.allFarms.where(
+      (element) => isInCompleteSelected
+          ? element.isGroupSchemeMember != true
+          : element.isGroupSchemeMember,
+    );
     if (searchText?.isNotEmpty ?? false) {
       filteringItems = filteringItems.where((element) {
         final searchStr = searchText!.toLowerCase();

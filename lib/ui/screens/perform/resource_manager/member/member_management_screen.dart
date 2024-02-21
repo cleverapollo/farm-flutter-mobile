@@ -8,6 +8,7 @@ import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/add_member_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_status_filter.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -74,6 +75,8 @@ class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagem
             builder: (context, filteringFarms) {
               return Column(
                 children: [
+                  const SizedBox(height: 20),
+                  const MemberStatusFilter(),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
                     child: CmoTextField(
@@ -93,54 +96,6 @@ class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagem
                       },
                     ),
                   ),
-                  Row(
-                    children: [
-                      const Spacer(),
-                      BlocSelector<MemberManagementCubit, MemberManagementState,
-                          bool>(
-                        selector: (state) => state.isInCompleteSelected,
-                        builder: (context, isInCompleteSelected) {
-                          return CmoFilledButton(
-                            onTap: () {
-                              context
-                                  .read<MemberManagementCubit>()
-                                  .onFilterGroupChanged(true);
-                            },
-                            disable: !isInCompleteSelected,
-                            canChangeDisableStatus: true,
-                            title: LocaleKeys.incomplete.tr(),
-                            titleStyle: context.textStyles.bodyBold.white
-                                .copyWith(fontSize: 12),
-                            radius: 15,
-                            size: const Size(100, 39),
-                          );
-                        },
-                      ),
-                      const SizedBox(width: 12),
-                      BlocSelector<MemberManagementCubit, MemberManagementState,
-                          bool>(
-                        selector: (state) => state.isInCompleteSelected,
-                        builder: (context, isInCompleteSelected) {
-                          return CmoFilledButton(
-                            onTap: () {
-                              context
-                                  .read<MemberManagementCubit>()
-                                  .onFilterGroupChanged(false);
-                            },
-                            disable: isInCompleteSelected,
-                            canChangeDisableStatus: true,
-                            title: LocaleKeys.members.tr(),
-                            titleStyle: context.textStyles.bodyBold.white
-                                .copyWith(fontSize: 12),
-                            radius: 15,
-                            size: const Size(100, 39),
-                          );
-                        },
-                      ),
-                      const Spacer(),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
                   Expanded(
                     child: BlocBuilder<MemberManagementCubit, MemberManagementState>(
                       builder: (context, state) {

@@ -9,12 +9,14 @@ class MemberManagementState {
     this.activeRMU,
     this.activeGroupScheme,
     this.allFarms = const [],
+    this.filteringFarms = const [],
+    this.incompleteFarms = const <Farm>[],
+    this.completedFarms = const <Farm>[],
     this.allCompartments = const <Compartment>[],
     this.allRiskProfileQuestions = const <RiskProfileQuestion>[],
     this.allFarmMemberRiskProfileAnswers = const <FarmMemberRiskProfileAnswer>[],
     this.allFarmMemberObjectives = const <FarmMemberObjective>[],
     this.allFarmMemberObjectiveAnswers = const <FarmMemberObjectiveAnswer>[],
-    this.filteringFarms = const [],
     this.filteringText,
     this.isInCompleteSelected = true,
     this.isLoading = false,
@@ -25,6 +27,8 @@ class MemberManagementState {
 
   final bool isLoading;
   final List<Farm> allFarms;
+  final List<Farm> incompleteFarms;
+  final List<Farm> completedFarms;
   final List<Compartment> allCompartments;
   final List<RiskProfileQuestion> allRiskProfileQuestions;
   final List<FarmMemberRiskProfileAnswer> allFarmMemberRiskProfileAnswers;
@@ -36,6 +40,8 @@ class MemberManagementState {
 
   MemberManagementState copyWith({
     List<Farm>? allFarms,
+    List<Farm>? incompleteFarms,
+    List<Farm>? completedFarms,
     List<Compartment>? allCompartments,
     List<RiskProfileQuestion>? allRiskProfileQuestions,
     List<FarmMemberRiskProfileAnswer>? allFarmMemberRiskProfileAnswers,
@@ -51,9 +57,10 @@ class MemberManagementState {
     return MemberManagementState(
       activeRMU: activeRMU ?? this.activeRMU,
       activeGroupScheme: activeGroupScheme ?? this.activeGroupScheme,
-
       isLoading: isLoading ?? this.isLoading,
       allFarms: allFarms ?? this.allFarms,
+      completedFarms: completedFarms ?? this.completedFarms,
+      incompleteFarms: incompleteFarms ?? this.incompleteFarms,
       allCompartments: allCompartments ?? this.allCompartments,
       allRiskProfileQuestions: allRiskProfileQuestions ?? this.allRiskProfileQuestions,
       allFarmMemberRiskProfileAnswers: allFarmMemberRiskProfileAnswers ?? this.allFarmMemberRiskProfileAnswers,

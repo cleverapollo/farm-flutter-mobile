@@ -3611,6 +3611,36 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<List<Farm>> getIncompleteFarmsByRMUnit(
+      int? regionalManagerUnitId,
+      ) async {
+    if (regionalManagerUnitId == null) return <Farm>[];
+    final db = await _db();
+    return db.farms
+        .filter()
+        .regionalManagerUnitIdEqualTo(regionalManagerUnitId)
+        .isActiveEqualTo(true)
+        .isSuspendedEqualTo(false)
+        .isGroupSchemeMemberEqualTo(false)
+        .sortByCreateDTDesc()
+        .findAll();
+  }
+
+  Future<List<Farm>> getCompletedFarmsByRMUnit(
+      int? regionalManagerUnitId,
+      ) async {
+    if (regionalManagerUnitId == null) return <Farm>[];
+    final db = await _db();
+    return db.farms
+        .filter()
+        .regionalManagerUnitIdEqualTo(regionalManagerUnitId)
+        .isActiveEqualTo(true)
+        .isSuspendedEqualTo(false)
+        .isGroupSchemeMemberEqualTo(true)
+        .sortByCreateDTDesc()
+        .findAll();
+  }
+
   Future<List<Farm>?> getUnsyncedFarmCountByRegionalManagerUnitId(
       int resourceManagerUnit) async {
     final db = await _db();
