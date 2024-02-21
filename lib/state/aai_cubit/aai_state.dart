@@ -7,6 +7,8 @@ class AAIState {
     this.isLoading = false,
     this.statusFilter = StatusFilterEnum.open,
     this.farmerWorkers = const <FarmerWorker>[],
+    this.jobDescriptions = const <JobDescription>[],
+    this.natureOfInjuries = const <NatureOfInjury>[],
     this.inputSearch,
   });
 
@@ -15,12 +17,16 @@ class AAIState {
   final bool isLoading;
   final StatusFilterEnum statusFilter;
   final List<FarmerWorker> farmerWorkers;
+  final List<JobDescription> jobDescriptions;
+  final List<NatureOfInjury> natureOfInjuries;
   final String? inputSearch;
 
   AAIState copyWith({
     List<AccidentAndIncident>? filteredItems,
     List<AccidentAndIncident>? items,
     List<FarmerWorker>? farmerWorkers,
+    List<JobDescription>? jobDescriptions,
+    List<NatureOfInjury>? natureOfInjuries,
     bool? isLoading,
     StatusFilterEnum? statusFilter,
     String? inputSearch,
@@ -32,6 +38,8 @@ class AAIState {
       farmerWorkers: farmerWorkers ?? this.farmerWorkers,
       statusFilter: statusFilter ?? this.statusFilter,
       inputSearch: inputSearch ?? this.inputSearch,
+      natureOfInjuries: natureOfInjuries ?? this.natureOfInjuries,
+      jobDescriptions: jobDescriptions ?? this.jobDescriptions,
     );
   }
 }

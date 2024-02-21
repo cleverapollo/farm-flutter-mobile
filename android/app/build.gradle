@@ -54,7 +54,7 @@ android {
 
     signingConfigs {
         release {
-        storeFile file('/Users/hatk/Desktop/cmo_company/cmo-flutter/lib/env/production/upload-keystore.jks')
+            storeFile file('/Users/hatk/Desktop/cmo_company/cmo-flutter/lib/env/production/upload-keystore.jks')
             storePassword '123456'
             keyPassword '123456'
             keyAlias 'upload-keystore'

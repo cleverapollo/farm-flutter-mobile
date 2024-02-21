@@ -1602,7 +1602,9 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<NatureOfInjury>> getNatureOfInjuryByGroupSchemeId(int id) async {
+  Future<List<NatureOfInjury>> getNatureOfInjuryByGroupSchemeId(int? id) async {
+    if (id == null) return <NatureOfInjury>[];
+
     final db = await _db();
 
     return db.natureOfInjurys
@@ -1613,7 +1615,9 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<MonitoringRequirement>> getMonitoringRequirementByGroupSchemeId(
-      int id) async {
+      int? id,
+      ) async {
+    if (id == null) return <MonitoringRequirement>[];
     final db = await _db();
 
     return db.monitoringRequirements

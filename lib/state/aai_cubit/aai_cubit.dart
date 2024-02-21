@@ -15,11 +15,16 @@ class AAICubit extends Cubit<AAIState> {
     final farm = await configService.getActiveFarm();
     final items = await cmoDatabaseMasterService.getAccidentAndIncidentRegistersByFarmId(farm!.farmId);
     final workers = await cmoDatabaseMasterService.getFarmerWorkersByFarmId(farm.farmId);
+    final natureOfInjuries = await cmoDatabaseMasterService.getNatureOfInjuryByGroupSchemeId(farm.groupSchemeId);
+    final jobDescriptions = await cmoDatabaseMasterService.getJobDescriptions();
+
     emit(
       state.copyWith(
         items: items,
         filteredItems: items,
         farmerWorkers: workers,
+        natureOfInjuries: natureOfInjuries,
+        jobDescriptions: jobDescriptions,
       ),
     );
 
@@ -76,6 +81,24 @@ class AAICubit extends Cubit<AAIState> {
     return state.farmerWorkers
         .firstWhereOrNull((element) => element.workerId == workerId)
         ?.fullName ??
+        '';
+  }
+
+  String getNatureOfInjuryNameByNatureOfInjuryId(int? natureOfInjuryId) {
+    if (natureOfInjuryId == null) return '';
+    return state.natureOfInjuries
+            .firstWhereOrNull(
+                (element) => element.natureOfInjuryId == natureOfInjuryId)
+            ?.natureOfInjuryName ??
+        '';
+  }
+
+  String getJobDescriptionNameByJobDescriptionId(int? jobDescriptionId) {
+    if (jobDescriptionId == null) return '';
+    return state.jobDescriptions
+            .firstWhereOrNull(
+                (element) => element.jobDescriptionId == jobDescriptionId)
+            ?.jobDescriptionName ??
         '';
   }
 }
