@@ -46,6 +46,16 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
         break;
     }
 
+    if (state.asi.asiTypeId != null) {
+      final selectedAsiType = asiTypes.firstWhereOrNull(
+          (element) => element.asiTypeId == state.asi.asiTypeId);
+      emit(
+        state.copyWith(
+          asi: state.asi.copyWith(asiTypeName: selectedAsiType?.asiTypeName),
+        ),
+      );
+    }
+
     final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(
       state.asi.farmId ?? '',
     );
