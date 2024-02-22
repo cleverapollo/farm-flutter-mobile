@@ -41,7 +41,7 @@ class _BehaveSyncSummaryItemWidgetState
         SyncPairItemModel(LocaleKeys.plantation.tr(), count: state.data?.mdPlantation),
         SyncPairItemModel(LocaleKeys.contractor.tr(), count: state.data?.mdContractor),
         SyncPairItemModel(LocaleKeys.job_category.tr(), count: state.data?.mdJobCategory),
-        SyncPairItemModel(LocaleKeys.jobDescription.tr(),
+        SyncPairItemModel(LocaleKeys.job_description.tr(),
             count: state.data?.mdJobDescription),
         SyncPairItemModel(LocaleKeys.jobElement.tr(), count: state.data?.mdElement),
         SyncPairItemModel(LocaleKeys.pdca.tr(), count: state.data?.mdPdca),

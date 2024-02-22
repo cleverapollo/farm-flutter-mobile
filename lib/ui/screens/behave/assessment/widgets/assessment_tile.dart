@@ -95,7 +95,7 @@ class AssessmentTile extends StatelessWidget {
                           ),
                           CmoOptionTile(
                             height: 24,
-                            title: LocaleKeys.jobDescription.tr(),
+                            title: LocaleKeys.job_description.tr(),
                             value: data.jobDescriptionName ??
                                 data.jobDescriptionId?.toString(),
                             shouldShowArrow: false,

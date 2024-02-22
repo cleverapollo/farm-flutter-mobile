@@ -108,7 +108,7 @@ class _AAIScreenState extends BaseStatefulWidgetState<AAIScreen> {
   Map<String, String?> generateInformationMapData(AccidentAndIncident registerItem) {
     return {
       LocaleKeys.worker.tr(): cubit.getWorkerNameByWorkerId(registerItem.workerId),
-      LocaleKeys.jobDescription.tr(): cubit.getJobDescriptionNameByJobDescriptionId(registerItem.jobDescriptionId),
+      LocaleKeys.job_description.tr(): cubit.getJobDescriptionNameByJobDescriptionId(registerItem.jobDescriptionId),
       LocaleKeys.nature_of_injury.tr(): cubit.getNatureOfInjuryNameByNatureOfInjuryId(registerItem.natureOfInjuryId),
       LocaleKeys.date_of_incident.tr(): convertDateTimeToLunar(registerItem.dateOfIncident).ddMMYyyy(),
       LocaleKeys.date_reported.tr(): convertDateTimeToLunar(registerItem.dateRecieved).ddMMYyyy(),

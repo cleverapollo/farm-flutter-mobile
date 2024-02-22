@@ -68,7 +68,6 @@
   "cropImage": "Crop Image",
   "dashboard": "ideshibhodi",
   "date": "usuku",
-  "dateOfBirth": "usuku lokuzalwa",
   "debugInfo": "Debug Information",
   "details": "imininingwane",
   "accident_and_incident_details": "Accident and Incident Details",
@@ -110,7 +109,6 @@
   "infestation": "Infestation",
   "information": "imininingwane",
   "internalAuditChecklist": "uhlu lokuhlola lwangaphakathi ",
-  "jobDescription": "incazelo yomsebenzi",
   "work_permit_number": "Work Permit Number",
   "foreigner": "Foreigner",
   "jobElement": "isici somsebenzi",
@@ -644,6 +642,6 @@
   "site_is_required": "Site is required",
   "tons_will_be_produced": "Tons of the product that will be produced at this camp",
   "of_land_unallocated": "of land unallocated",
-  "date_of_birth": "Date Of Birth",
+  "date_of_birth": "usuku lokuzalwa",
   "worker_name": "Worker Name"
 }

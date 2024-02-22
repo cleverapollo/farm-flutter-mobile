@@ -234,7 +234,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
         ),
         const SizedBox(height: 8),
         AssessmentSelectedItem(
-          title: LocaleKeys.jobDescription.tr(),
+          title: LocaleKeys.job_description.tr(),
           textEditingController: _jobDescriptionController,
           onTap: () async {
             final jobTypes =
@@ -243,7 +243,7 @@ class _AssessmentAddScreenState extends State<AssessmentAddScreen> {
             if (!context.mounted) return;
             final item = await AssessmentItemSelectedScreen.push(
               context,
-              title: LocaleKeys.jobDescription.tr(),
+              title: LocaleKeys.job_description.tr(),
               items: jobTypes
                   .map((e) => AssessmentItem(e.jobDescriptionName ?? '', e))
                   .toList(),

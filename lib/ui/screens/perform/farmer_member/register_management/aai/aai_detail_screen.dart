@@ -398,7 +398,7 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
         final initJob = state.jobDescriptions
             .firstWhereOrNull((element) => element.jobDescriptionId == jobId);
         return BottomSheetSelection(
-          hintText: LocaleKeys.jobDescription.tr(),
+          hintText: LocaleKeys.job_description.tr(),
           hintTextStyle: context.textStyles.bodyNormal.blueDark2,
           margin: const EdgeInsets.symmetric(horizontal: 24),
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),

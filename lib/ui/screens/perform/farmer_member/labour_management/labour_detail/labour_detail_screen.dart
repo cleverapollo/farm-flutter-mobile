@@ -306,7 +306,7 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
               text: state.farmerWorker.dateOfBirth == null
                   ? LocaleKeys.yyyy_mm_dd.tr()
                   : convertDateTimeToLunar(state.farmerWorker.dateOfBirth).yMd(),
-              labelText: LocaleKeys.dateOfBirth.tr(),
+              labelText: LocaleKeys.date_of_birth.tr(),
               labelStyle: context.textStyles.bodyBold.blueDark2,
               textStyle: state.farmerWorker.dateOfBirth == null
                   ? context.textStyles.bodyNormal.grey
@@ -383,7 +383,7 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
                 children: [
                   Flexible(
                     child: Text(
-                      LocaleKeys.jobDescription.tr(),
+                      LocaleKeys.job_description.tr(),
                       style: context.textStyles.bodyBold.black,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

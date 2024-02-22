@@ -159,7 +159,7 @@ class _WorkerAddScreenState extends State<WorkerAddScreen> {
             ),
             CmoDatePicker(
               name: 'DOB',
-              hintText: LocaleKeys.dateOfBirth.tr(),
+              hintText: LocaleKeys.date_of_birth.tr(),
               validator: requiredValidator,
             ),
             CmoTextField(
@@ -292,7 +292,7 @@ class _WorkerAddScreenState extends State<WorkerAddScreen> {
                   return CmoDropdown(
                     name: 'JobDescriptionId',
                     validator: requiredValidator,
-                    hintText: LocaleKeys.jobDescription.tr(),
+                    hintText: LocaleKeys.job_description.tr(),
                     itemsData: snapshot.data
                         ?.map(
                           (e) => CmoDropdownItem(

@@ -92,7 +92,7 @@ class _FarmerStakeHolderSelectJobDescriptionState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
-        title: LocaleKeys.jobDescription.tr(),
+        title: LocaleKeys.job_description.tr(),
         subtitle: widget.workerName,
         leading: Assets.icons.icBackButton.svgBlack,
         onTapLeading: Navigator.of(context).pop,
