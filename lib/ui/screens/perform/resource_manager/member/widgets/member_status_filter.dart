@@ -28,9 +28,9 @@ class MemberStatusFilter extends StatelessWidget {
                   onTap: () {
                     context
                         .read<MemberManagementCubit>()
-                        .onFilterGroupChanged(true);
+                        .onFilterGroupChanged(MemberManagementStatusFilter.incomplete);
                   },
-                  isSelected: state.isInCompleteSelected,
+                  isSelected: state.statusFilter == MemberManagementStatusFilter.incomplete,
                   title: LocaleKeys.incomplete.tr(),
                   subtitle: state.incompleteFarms.length.toString(),
                 ),
@@ -40,9 +40,9 @@ class MemberStatusFilter extends StatelessWidget {
                   onTap: () {
                     context
                         .read<MemberManagementCubit>()
-                        .onFilterGroupChanged(false);
+                        .onFilterGroupChanged(MemberManagementStatusFilter.complete);
                   },
-                  isSelected: !state.isInCompleteSelected,
+                  isSelected: state.statusFilter == MemberManagementStatusFilter.complete,
                   title: LocaleKeys.members.tr(),
                   subtitle: state.completedFarms.length.toString(),
                 ),

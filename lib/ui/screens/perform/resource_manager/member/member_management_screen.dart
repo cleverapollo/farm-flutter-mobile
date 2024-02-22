@@ -8,6 +8,9 @@ import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/add_member_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_list_view.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_map_view.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_search_view_mode_filter.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_status_filter.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +51,7 @@ class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagem
     Farm? farm,
   }) async {
     await AddMemberScreen.push(context, farm: farm);
-    await context.read<MemberManagementCubit>().reload();
+    await context.read<MemberManagementCubit>().refresh();
     await context.read<DashboardCubit>().getResourceManagerMembers();
   }
 
@@ -69,63 +72,41 @@ class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagem
             trailing: Assets.icons.icUpdatedAddButton.svgBlack,
             onTapTrailing: onNavigateToDetail,
           ),
-          body: BlocSelector<MemberManagementCubit, MemberManagementState,
-              List<Farm>>(
-            selector: (state) => state.filteringFarms,
-            builder: (context, filteringFarms) {
-              return Column(
-                children: [
-                  const SizedBox(height: 20),
-                  const MemberStatusFilter(),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-                    child: CmoTextField(
-                      name: LocaleKeys.search.tr(),
-                      prefixIcon: Assets.icons.icSearch.svg(),
-                      hintText: LocaleKeys.search.tr(),
-                      onChanged: (searchText) {
-                        _searchDebounce?.cancel();
-                        _searchDebounce = Timer(
-                          const Duration(milliseconds: 300),
-                          () {
-                            context
-                                .read<MemberManagementCubit>()
-                                .onSearchTextChanged(searchText);
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: BlocBuilder<MemberManagementCubit, MemberManagementState>(
-                      builder: (context, state) {
-                        if (state.isLoading) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-
-                        return ListView.separated(
-                          itemCount: filteringFarms.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 20),
-                          itemBuilder: (_, index) {
-                            final farm = filteringFarms[index];
-                            return InkWell(
-                              onTap: () => onNavigateToDetail(farm: farm),
-                              child: MemberItem(
-                                farm: farm,
-                                canDelete: state.isInCompleteSelected,
-                                onDelete: () => onRemoveFarm(farm),
-                              ),
+          body: Column(
+            children: [
+              const SizedBox(height: 20),
+              const MemberStatusFilter(),
+              const SizedBox(height: 12),
+              const MemberSearchViewModeFilter(),
+              const SizedBox(height: 18),
+              Expanded(
+                child: BlocSelector<MemberManagementCubit, MemberManagementState, MemberManagementViewMode>(
+                  selector: (state) => state.viewMode,
+                  builder: (context, viewMode) {
+                    switch (viewMode) {
+                      case MemberManagementViewMode.listView:
+                        return MembersListView(
+                          onSearch: (searchText) {
+                            _searchDebounce?.cancel();
+                            _searchDebounce = Timer(
+                              const Duration(milliseconds: 300),
+                              () {
+                                context
+                                    .read<MemberManagementCubit>()
+                                    .onSearchTextChanged(searchText);
+                              },
                             );
                           },
+                          onNavigateToDetail: (farm) => onNavigateToDetail(farm: farm),
+                          onRemoveFarm: onRemoveFarm,
                         );
-                      },
-                    ),
-                  ),
-                ],
-              );
-            },
+                      case MemberManagementViewMode.mapView:
+                        return MemberMapView();
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),

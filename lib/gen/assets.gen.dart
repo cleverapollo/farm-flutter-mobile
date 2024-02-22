@@ -176,6 +176,14 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_mail.svg
   SvgGenImage get icMail => const SvgGenImage('assets/icons/ic_mail.svg');
 
+  /// File path: assets/icons/ic_map_view_active.svg
+  SvgGenImage get icMapViewActive =>
+      const SvgGenImage('assets/icons/ic_map_view_active.svg');
+
+  /// File path: assets/icons/ic_map_view_inactive.svg
+  SvgGenImage get icMapViewInactive =>
+      const SvgGenImage('assets/icons/ic_map_view_inactive.svg');
+
   /// File path: assets/icons/ic_non_selected.svg
   SvgGenImage get icNonSelected =>
       const SvgGenImage('assets/icons/ic_non_selected.svg');
@@ -320,6 +328,8 @@ class $AssetsIconsGen {
         icLocationAudit,
         icLocationAuditFillBackground,
         icMail,
+        icMapViewActive,
+        icMapViewInactive,
         icNonSelected,
         icPan,
         icPassword,

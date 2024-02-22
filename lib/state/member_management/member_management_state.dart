@@ -3,12 +3,20 @@ import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 
 import '../../model/model.dart';
+enum MemberManagementViewMode {
+  listView,
+  mapView
+}
+
+enum MemberManagementStatusFilter {
+  incomplete,
+  complete
+}
 
 class MemberManagementState {
   const MemberManagementState({
     this.activeRMU,
     this.activeGroupScheme,
-    this.allFarms = const [],
     this.filteringFarms = const [],
     this.incompleteFarms = const <Farm>[],
     this.completedFarms = const <Farm>[],
@@ -18,15 +26,16 @@ class MemberManagementState {
     this.allFarmMemberObjectives = const <FarmMemberObjective>[],
     this.allFarmMemberObjectiveAnswers = const <FarmMemberObjectiveAnswer>[],
     this.filteringText,
-    this.isInCompleteSelected = true,
     this.isLoading = false,
+    this.viewMode = MemberManagementViewMode.listView,
+    this.statusFilter = MemberManagementStatusFilter.incomplete,
+    this.selectedFarm,
   });
 
   final GroupScheme? activeGroupScheme;
   final ResourceManagerUnit? activeRMU;
 
   final bool isLoading;
-  final List<Farm> allFarms;
   final List<Farm> incompleteFarms;
   final List<Farm> completedFarms;
   final List<Compartment> allCompartments;
@@ -36,10 +45,11 @@ class MemberManagementState {
   final List<FarmMemberObjectiveAnswer> allFarmMemberObjectiveAnswers;
   final List<Farm> filteringFarms;
   final String? filteringText;
-  final bool isInCompleteSelected;
+  final MemberManagementViewMode viewMode;
+  final MemberManagementStatusFilter statusFilter;
+  final Farm? selectedFarm;
 
   MemberManagementState copyWith({
-    List<Farm>? allFarms,
     List<Farm>? incompleteFarms,
     List<Farm>? completedFarms,
     List<Compartment>? allCompartments,
@@ -51,14 +61,15 @@ class MemberManagementState {
     GroupScheme? activeGroupScheme,
     List<Farm>? filteringFarms,
     String? filteringText,
-    bool? isInCompleteSelected,
     bool? isLoading,
+    MemberManagementViewMode? viewMode,
+    MemberManagementStatusFilter? statusFilter,
+    Farm? selectedFarm,
   }) {
     return MemberManagementState(
       activeRMU: activeRMU ?? this.activeRMU,
       activeGroupScheme: activeGroupScheme ?? this.activeGroupScheme,
       isLoading: isLoading ?? this.isLoading,
-      allFarms: allFarms ?? this.allFarms,
       completedFarms: completedFarms ?? this.completedFarms,
       incompleteFarms: incompleteFarms ?? this.incompleteFarms,
       allCompartments: allCompartments ?? this.allCompartments,
@@ -68,7 +79,9 @@ class MemberManagementState {
       allFarmMemberObjectiveAnswers: allFarmMemberObjectiveAnswers ?? this.allFarmMemberObjectiveAnswers,
       filteringFarms: filteringFarms ?? this.filteringFarms,
       filteringText: filteringText ?? this.filteringText,
-      isInCompleteSelected: isInCompleteSelected ?? this.isInCompleteSelected,
+      viewMode: viewMode ?? this.viewMode,
+      statusFilter: statusFilter ?? this.statusFilter,
+      selectedFarm: selectedFarm ?? this.selectedFarm,
     );
   }
 }

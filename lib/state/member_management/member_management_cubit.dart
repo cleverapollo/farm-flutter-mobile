@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
@@ -24,21 +25,23 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
       ),
     );
 
+    await refresh();
+    emit(state.copyWith(isLoading: false));
+  }
+
+  Future<void> refresh() async {
     await getListFarms();
     await getListCompartment();
     await getListRiskProfileQuestionsAndAnswers();
     await getListFarmMemberObjectivesAndAnswers();
-    _applySearch(isInCompleteSelected: true);
-    emit(state.copyWith(isLoading: false));
+    applyFilter();
   }
 
   Future<void> getListFarms() async {
-    final listFarms = await cmoDatabaseMasterService.getFarmsByRMUnit(state.activeRMU?.regionalManagerUnitId);
     final incompleteFarms = await cmoDatabaseMasterService.getIncompleteFarmsByRMUnit(state.activeRMU?.regionalManagerUnitId);
     final completedFarms = await cmoDatabaseMasterService.getCompletedFarmsByRMUnit(state.activeRMU?.regionalManagerUnitId);
     emit(
       state.copyWith(
-        allFarms: listFarms,
         incompleteFarms: incompleteFarms,
         completedFarms: completedFarms,
       ),
@@ -84,48 +87,74 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     );
   }
 
-  Future<void> reload() async {
-    await getListFarms();
-    await getListCompartment();
-    await getListRiskProfileQuestionsAndAnswers();
-    await getListFarmMemberObjectivesAndAnswers();
-    _applySearch(isInCompleteSelected: state.isInCompleteSelected);
-  }
-
-  void onSearchTextChanged(String? value) {
-    _applySearch(
-        searchText: value, isInCompleteSelected: state.isInCompleteSelected);
-  }
-
-  void onFilterGroupChanged(bool isInCompleteSelected) {
-    _applySearch(
-        searchText: state.filteringText,
-        isInCompleteSelected: isInCompleteSelected);
-  }
-
-  void _applySearch({String? searchText, required bool isInCompleteSelected}) {
-    var filteringItems = state.allFarms.where(
-      (element) => isInCompleteSelected
-          ? element.isGroupSchemeMember != true
-          : element.isGroupSchemeMember,
-    );
-    if (searchText?.isNotEmpty ?? false) {
-      filteringItems = filteringItems.where((element) {
-        final searchStr = searchText!.toLowerCase();
-        final existFarmName =
-            element.farmName?.toLowerCase().contains(searchStr) ?? false;
-        final existFirstName =
-            element.firstName?.toLowerCase().contains(searchStr) ?? false;
-        final existLastName =
-            element.lastName?.toLowerCase().contains(searchStr) ?? false;
-        return existFarmName || existFirstName || existLastName;
-      });
+  void onChangeViewMode() {
+    final currentViewMode = state.viewMode;
+    if (currentViewMode == MemberManagementViewMode.mapView) {
+      emit(
+        state.copyWith(viewMode: MemberManagementViewMode.listView),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          viewMode: MemberManagementViewMode.mapView,
+        ),
+      );
     }
-    emit(state.copyWith(
-      filteringFarms: filteringItems.toList(),
-      filteringText: searchText ?? '',
-      isInCompleteSelected: isInCompleteSelected,
-    ));
+  }
+
+  void updateSelectedFarm(Farm farm) {
+    emit(
+      state.copyWith(
+        selectedFarm: farm,
+      ),
+    );
+  }
+
+  Future<void> onSearchTextChanged(String? value) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    emit(
+      state.copyWith(
+        filteringText: value,
+      ),
+    );
+    applyFilter();
+  }
+
+  void onFilterGroupChanged(MemberManagementStatusFilter statusFilter) {
+    emit(
+      state.copyWith(
+        statusFilter: statusFilter,
+      ),
+    );
+    applyFilter();
+  }
+
+  void applyFilter() {
+    List<Farm>? filteringItems;
+    switch (state.statusFilter) {
+      case MemberManagementStatusFilter.incomplete:
+        filteringItems = state.incompleteFarms;
+        break;
+      case MemberManagementStatusFilter.complete:
+        filteringItems = state.completedFarms;
+        break;
+    }
+
+    if (state.filteringText.isNotBlank) {
+      filteringItems = filteringItems.where((element) {
+        final searchStr = state.filteringText!.toLowerCase();
+        final existFarmName = element.farmName?.toLowerCase().contains(searchStr) ?? false;
+        final existFirstName = element.firstName?.toLowerCase().contains(searchStr) ?? false;
+        final existLastName = element.lastName?.toLowerCase().contains(searchStr) ?? false;
+        return existFarmName || existFirstName || existLastName;
+      }).toList();
+    }
+
+    emit(
+      state.copyWith(
+        filteringFarms: filteringItems,
+      ),
+    );
   }
 
   Future<void> onRemoveFarm(Farm farm) async {
@@ -140,6 +169,6 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
       msg: '${LocaleKeys.remove.tr()} ${farm.id}!',
     );
 
-    await reload();
+    await refresh();
   }
 }
