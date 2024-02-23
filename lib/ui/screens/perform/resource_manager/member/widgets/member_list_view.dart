@@ -13,13 +13,11 @@ class MembersListView extends StatelessWidget {
   const MembersListView({
     required this.onNavigateToDetail,
     required this.onRemoveFarm,
-    required this.onSearch,
     super.key,
   });
 
   final void Function(Farm?) onNavigateToDetail;
   final void Function(Farm) onRemoveFarm;
-  final void Function(String?) onSearch;
 
   @override
   Widget build(BuildContext context) {

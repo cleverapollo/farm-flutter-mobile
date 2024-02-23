@@ -3,12 +3,9 @@ import 'dart:async';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/job_description.dart';
-import 'package:cmo/model/worker_job_description/worker_job_description.dart';
-import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FarmerStakeHolderSelectJobDescription extends StatefulWidget {
   const FarmerStakeHolderSelectJobDescription({

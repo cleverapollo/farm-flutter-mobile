@@ -19,7 +19,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'widgets/member_item.dart';
 
 class MemberManagementScreen extends BaseStatefulWidget {
-  MemberManagementScreen({super.key}) : super(screenName: LocaleKeys.memberManagement.tr());
+  MemberManagementScreen({super.key})
+      : super(screenName: LocaleKeys.memberManagement.tr());
 
   static Future<void> push(BuildContext context) {
     return Navigator.push(
@@ -39,7 +40,8 @@ class MemberManagementScreen extends BaseStatefulWidget {
   State<MemberManagementScreen> createState() => _MemberManagementScreenState();
 }
 
-class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagementScreen> {
+class _MemberManagementScreenState
+    extends BaseStatefulWidgetState<MemberManagementScreen> {
   Timer? _searchDebounce;
 
   Future<void> onRemoveFarm(Farm farm) async {
@@ -80,28 +82,15 @@ class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagem
               const MemberSearchViewModeFilter(),
               const SizedBox(height: 18),
               Expanded(
-                child: BlocSelector<MemberManagementCubit, MemberManagementState, MemberManagementViewMode>(
-                  selector: (state) => state.viewMode,
-                  builder: (context, viewMode) {
-                    switch (viewMode) {
-                      case MemberManagementViewMode.listView:
-                        return MembersListView(
-                          onSearch: (searchText) {
-                            _searchDebounce?.cancel();
-                            _searchDebounce = Timer(
-                              const Duration(milliseconds: 300),
-                              () {
-                                context
-                                    .read<MemberManagementCubit>()
-                                    .onSearchTextChanged(searchText);
-                              },
-                            );
-                          },
-                          onNavigateToDetail: (farm) => onNavigateToDetail(farm: farm),
-                          onRemoveFarm: onRemoveFarm,
-                        );
-                      case MemberManagementViewMode.mapView:
-                        return MemberMapView();
+                child: BlocSelector<MemberManagementCubit,
+                    MemberManagementState, MemberManagementStatusFilter>(
+                  selector: (state) => state.statusFilter,
+                  builder: (context, statusFilter) {
+                    switch (statusFilter) {
+                      case MemberManagementStatusFilter.incomplete:
+                        return listViewMode();
+                      case MemberManagementStatusFilter.complete:
+                        return completedMemberContent();
                     }
                   },
                 ),
@@ -110,6 +99,28 @@ class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagem
           ),
         ),
       ),
+    );
+  }
+
+  Widget listViewMode() {
+    return MembersListView(
+      onNavigateToDetail: (farm) => onNavigateToDetail(farm: farm),
+      onRemoveFarm: onRemoveFarm,
+    );
+  }
+
+  Widget completedMemberContent() {
+    return BlocSelector<MemberManagementCubit, MemberManagementState,
+        MemberManagementViewMode>(
+      selector: (state) => state.viewMode,
+      builder: (context, viewMode) {
+        switch (viewMode) {
+          case MemberManagementViewMode.listView:
+            return listViewMode();
+          case MemberManagementViewMode.mapView:
+            return MemberMapView();
+        }
+      },
     );
   }
 }

@@ -15,12 +15,15 @@ class MemberSearchViewModeFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<MemberManagementCubit, MemberManagementState, MemberManagementViewMode>(
-      selector: (state) => state.viewMode,
-      builder: (context, viewMode) {
+    return BlocBuilder<MemberManagementCubit, MemberManagementState>(
+      builder: (context, state) {
+        if (state.statusFilter == MemberManagementStatusFilter.incomplete) {
+          return const SizedBox.shrink();
+        }
+
         final cubit = context.read<MemberManagementCubit>();
         Widget? searchWidget;
-        switch (viewMode) {
+        switch (state.viewMode) {
           case MemberManagementViewMode.mapView:
             searchWidget = buildSelectSite();
             break;
@@ -40,10 +43,12 @@ class MemberSearchViewModeFilter extends StatelessWidget {
               Expanded(
                 child: searchWidget,
               ),
-              const SizedBox(width: 12,),
+              const SizedBox(
+                width: 12,
+              ),
               InkWell(
                 onTap: context.read<MemberManagementCubit>().onChangeViewMode,
-                child: viewMode == MemberManagementViewMode.listView
+                child: state.viewMode == MemberManagementViewMode.listView
                     ? Assets.icons.icMapViewInactive.svg()
                     : Assets.icons.icMapViewActive.svg(),
               ),

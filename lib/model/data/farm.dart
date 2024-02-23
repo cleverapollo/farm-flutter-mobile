@@ -67,6 +67,7 @@ class Farm with _$Farm {
     @Default(false) @JsonKey(name: 'IsMasterDataSynced') bool isMasterDataSynced,
     @ignore List<FarmMemberObjectiveAnswer>? objectiveAnswers,
     @ignore List<FarmMemberRiskProfileAnswer>? riskProfileAnswers,
+    @ignore List<Compartment>? compartments,
   }) = _Farm;
 
   factory Farm.fromJson(Map<String, dynamic> json) => _$FarmFromJson(json);
@@ -79,7 +80,6 @@ class Farm with _$Farm {
 
 extension FarmExtension on Farm {
   int numberStepComplete({
-    List<Compartment>? compartments,
     List<RiskProfileQuestion>? allRiskProfileQuestions,
     List<FarmMemberRiskProfileAnswer>? allFarmMemberRiskProfileAnswers,
     List<FarmMemberObjective>? allFarmMemberObjectives,
@@ -139,5 +139,14 @@ extension FarmExtension on Farm {
     if (isMasterDataSynced == null || isMasterDataSynced == 0) return null;
 
     return signatureDate != null || isGroupSchemeMember == true;
+  }
+
+  double calculateFarmSizeBasedOnCompartments() {
+    var size = 0.0;
+    for (final compartment in compartments ?? <Compartment>[]) {
+      size += compartment.polygonArea ?? 0.0;
+    }
+
+    return size;
   }
 }

@@ -162,6 +162,8 @@
   "allocatedTo": "ผู้ที่รับเรื่องร้องเรียน",
   "actionTaken": "สิ่งที่ได้ดำเนินการหลังจากได้รับการร้องเรียน",
   "addEmployeeGrievance": "เพิ่มบันทึกข้อร้องเรียน",
+  "open_site": "Open Site",
+  "view_member_details": "View Member Details",
   "edit_employee_grievance": "Edit Employee Grievance",
   "male_key": "ผู้ชาย",
   "female_key": "ผู้หญิง",
