@@ -31,7 +31,6 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
 
   Future<void> refresh() async {
     await getListFarms();
-    await getListCompartment();
     await getListRiskProfileQuestionsAndAnswers();
     await getListFarmMemberObjectivesAndAnswers();
     applyFilter();
@@ -44,15 +43,6 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
       state.copyWith(
         incompleteFarms: incompleteFarms,
         completedFarms: completedFarms,
-      ),
-    );
-  }
-
-  Future<void> getListCompartment() async {
-    final compartments = await cmoDatabaseMasterService.getAllCompartments();
-    emit(
-      state.copyWith(
-        allCompartments: compartments,
       ),
     );
   }
@@ -170,5 +160,14 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     );
 
     await refresh();
+  }
+
+  double calculateTotalFarmSizeRmu() {
+    var totalSizes = 0.0;
+    for(final farm in state.completedFarms) {
+      totalSizes += farm.calculateFarmSizeBasedOnCompartments();
+    }
+
+    return totalSizes;
   }
 }

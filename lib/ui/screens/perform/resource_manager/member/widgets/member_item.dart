@@ -57,7 +57,6 @@ class MemberItem extends StatelessWidget {
                       : BlocBuilder<MemberManagementCubit, MemberManagementState>(
                           builder: (context, state) {
                             final stepCount = farm.numberStepComplete(
-                              compartments: state.allCompartments,
                               allFarmMemberObjectiveAnswers: state.allFarmMemberObjectiveAnswers,
                               allFarmMemberObjectives: state.allFarmMemberObjectives,
                               allFarmMemberRiskProfileAnswers: state.allFarmMemberRiskProfileAnswers,

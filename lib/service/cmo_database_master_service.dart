@@ -3616,7 +3616,7 @@ class CmoDatabaseMasterService {
       ) async {
     if (regionalManagerUnitId == null) return <Farm>[];
     final db = await _db();
-    return db.farms
+    final listFarms = await db.farms
         .filter()
         .regionalManagerUnitIdEqualTo(regionalManagerUnitId)
         .isActiveEqualTo(true)
@@ -3624,6 +3624,14 @@ class CmoDatabaseMasterService {
         .isGroupSchemeMemberEqualTo(false)
         .sortByCreateDTDesc()
         .findAll();
+
+    final farms = <Farm>[];
+    for (final farm in listFarms) {
+      final compartments = await getCompartmentByFarmId(farm.farmId);
+      farms.add(farm.copyWith(compartments: compartments));
+    }
+
+    return farms;
   }
 
   Future<List<Farm>> getCompletedFarmsByRMUnit(
@@ -3631,7 +3639,7 @@ class CmoDatabaseMasterService {
       ) async {
     if (regionalManagerUnitId == null) return <Farm>[];
     final db = await _db();
-    return db.farms
+    final listFarms = await db.farms
         .filter()
         .regionalManagerUnitIdEqualTo(regionalManagerUnitId)
         .isActiveEqualTo(true)
@@ -3639,6 +3647,14 @@ class CmoDatabaseMasterService {
         .isGroupSchemeMemberEqualTo(true)
         .sortByCreateDTDesc()
         .findAll();
+
+    final farms = <Farm>[];
+    for (final farm in listFarms) {
+      final compartments = await getCompartmentByFarmId(farm.farmId);
+      farms.add(farm.copyWith(compartments: compartments));
+    }
+
+    return farms;
   }
 
   Future<List<Farm>?> getUnsyncedFarmCountByRegionalManagerUnitId(
