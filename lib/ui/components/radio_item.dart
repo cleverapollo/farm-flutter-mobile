@@ -8,39 +8,45 @@ class RadioItem extends StatelessWidget {
   final bool isSelected;
   final bool isDisplayIconFirst;
   final void Function() onTap;
+  final EdgeInsets padding;
 
   RadioItem({
     this.title,
     required this.onTap,
     this.isSelected = false,
     this.isDisplayIconFirst = false,
+    this.padding = EdgeInsets.zero,
   });
 
   @override
   Widget build(BuildContext context) {
+    final titleWidget = Expanded(
+      child: Text(
+        title ?? '',
+        style: context.textStyles.bodyNormal.black,
+      ),
+    );
+
+    final tickIcon = Stack(
+      children: [
+        Assets.icons.icCheckCircle.svg(),
+        if (isSelected)
+          Positioned.fill(
+            child: Align(
+              child: Assets.icons.icCheck.svg(),
+            ),
+          ),
+      ],
+    );
+
     return InkWell(
       onTap: onTap,
-      child: AttributeItem(
+      child: Padding(
+        padding: padding,
         child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                title ?? '',
-                style: context.textStyles.bodyNormal.black,
-              ),
-            ),
-            Stack(
-              children: [
-                Assets.icons.icCheckCircle.svg(),
-                if (isSelected)
-                  Positioned.fill(
-                    child: Align(
-                      child: Assets.icons.icCheck.svg(),
-                    ),
-                  ),
-              ],
-            ),
-          ],
+          children: isDisplayIconFirst
+              ? [tickIcon, const SizedBox(width: 12), titleWidget]
+              : [titleWidget, tickIcon],
         ),
       ),
     );

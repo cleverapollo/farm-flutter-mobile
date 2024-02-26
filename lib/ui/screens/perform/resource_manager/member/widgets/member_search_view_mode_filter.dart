@@ -25,6 +25,7 @@ class MemberSearchViewModeFilter extends StatelessWidget {
         Widget? searchWidget;
         switch (state.viewMode) {
           case MemberManagementViewMode.mapView:
+          case MemberManagementViewMode.mapDetailView:
             searchWidget = buildSelectSite();
             break;
           case MemberManagementViewMode.listView:
@@ -80,13 +81,8 @@ class MemberSearchViewModeFilter extends StatelessWidget {
                       name: LocaleKeys.search_site.tr(),
                       hintText: LocaleKeys.search_site.tr(),
                       prefixIcon: Assets.icons.icSearch.svg(),
-                      onChanged: (input) {
-                        // debounceInputTimer?.cancel();
-                        // debounceInputTimer = Timer(
-                        //   const Duration(milliseconds: 200),
-                        //       () => context.read<AuditCubit>().searchSites(input),
-                        // );
-                      },
+                      initialValue: state.filteringText,
+                      onChanged: context.read<MemberManagementCubit>().onSearchTextChanged,
                     ),
                   ),
                   Expanded(

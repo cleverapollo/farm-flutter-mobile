@@ -8,6 +8,7 @@ import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/add_member_screen.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_detail_map_view.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_list_view.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_map_view.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_search_view_mode_filter.dart';
@@ -110,15 +111,16 @@ class _MemberManagementScreenState
   }
 
   Widget completedMemberContent() {
-    return BlocSelector<MemberManagementCubit, MemberManagementState,
-        MemberManagementViewMode>(
-      selector: (state) => state.viewMode,
-      builder: (context, viewMode) {
-        switch (viewMode) {
+    return BlocBuilder<MemberManagementCubit, MemberManagementState>(
+      builder: (context, state) {
+        switch (state.viewMode) {
           case MemberManagementViewMode.listView:
             return listViewMode();
           case MemberManagementViewMode.mapView:
             return MemberMapView();
+          case MemberManagementViewMode.mapDetailView:
+            if(state.selectedFarm == null) return const SizedBox.shrink();
+            return MemberDetailMapView(state.selectedFarm!);
         }
       },
     );

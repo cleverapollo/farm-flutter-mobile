@@ -1,4 +1,6 @@
 export 'add_member_cubit/add_member_cubit.dart';
+export 'member_management/member_management_cubit.dart';
+export 'member_management/member_detail_map_view_cubit.dart';
 export 'assessment_cubit/assessment_cubit.dart';
 export 'assessment_list_cubit/assessment_list_cubit.dart';
 export 'assessment_question_cubit/assessment_question_cubit.dart';

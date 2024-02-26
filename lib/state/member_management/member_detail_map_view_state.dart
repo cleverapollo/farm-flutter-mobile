@@ -1,27 +1,7 @@
-import 'package:cmo/model/data/farm.dart';
-import 'package:cmo/model/group_scheme.dart';
-import 'package:cmo/model/resource_manager_unit.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../../model/model.dart';
-enum MemberManagementViewMode {
-  listView,
-  mapView,
-  mapDetailView,
-}
-
-enum MemberManagementStatusFilter {
-  incomplete,
-  complete
-}
-
-class MemberManagementState {
-  const MemberManagementState({
-    this.activeRMU,
-    this.activeGroupScheme,
-    this.filteringFarms = const [],
-    this.incompleteFarms = const <Farm>[],
-    this.completedFarms = const <Farm>[],
+part of 'member_detail_map_view_cubit.dart';
+class MemberDetailMapViewState {
+  const MemberDetailMapViewState({
+    this.farm,
     this.allRiskProfileQuestions = const <RiskProfileQuestion>[],
     this.allFarmMemberRiskProfileAnswers = const <FarmMemberRiskProfileAnswer>[],
     this.allFarmMemberObjectives = const <FarmMemberObjective>[],
@@ -36,17 +16,13 @@ class MemberManagementState {
     this.isShowSiteName = false,
   });
 
-  final GroupScheme? activeGroupScheme;
-  final ResourceManagerUnit? activeRMU;
+  final Farm? farm;
 
   final bool isLoading;
-  final List<Farm> incompleteFarms;
-  final List<Farm> completedFarms;
   final List<RiskProfileQuestion> allRiskProfileQuestions;
   final List<FarmMemberRiskProfileAnswer> allFarmMemberRiskProfileAnswers;
   final List<FarmMemberObjective> allFarmMemberObjectives;
   final List<FarmMemberObjectiveAnswer> allFarmMemberObjectiveAnswers;
-  final List<Farm> filteringFarms;
   final String? filteringText;
   final MemberManagementViewMode viewMode;
   final MemberManagementStatusFilter statusFilter;
@@ -55,8 +31,8 @@ class MemberManagementState {
   final bool isShowSiteName;
   final List<Marker> markers;
 
-  MemberManagementState copyWith({
-    List<Farm>? incompleteFarms,
+  MemberDetailMapViewState copyWith({
+    Farm? farm,
     List<Farm>? completedFarms,
     List<RiskProfileQuestion>? allRiskProfileQuestions,
     List<FarmMemberRiskProfileAnswer>? allFarmMemberRiskProfileAnswers,
@@ -74,17 +50,14 @@ class MemberManagementState {
     bool? isShowSiteName,
     List<Marker>? markers,
   }) {
-    return MemberManagementState(
-      activeRMU: activeRMU ?? this.activeRMU,
-      activeGroupScheme: activeGroupScheme ?? this.activeGroupScheme,
+    return MemberDetailMapViewState(
+      farm: farm ?? this.farm,
+
       isLoading: isLoading ?? this.isLoading,
-      completedFarms: completedFarms ?? this.completedFarms,
-      incompleteFarms: incompleteFarms ?? this.incompleteFarms,
       allRiskProfileQuestions: allRiskProfileQuestions ?? this.allRiskProfileQuestions,
       allFarmMemberRiskProfileAnswers: allFarmMemberRiskProfileAnswers ?? this.allFarmMemberRiskProfileAnswers,
       allFarmMemberObjectives: allFarmMemberObjectives ?? this.allFarmMemberObjectives,
       allFarmMemberObjectiveAnswers: allFarmMemberObjectiveAnswers ?? this.allFarmMemberObjectiveAnswers,
-      filteringFarms: filteringFarms ?? this.filteringFarms,
       filteringText: filteringText ?? this.filteringText,
       viewMode: viewMode ?? this.viewMode,
       statusFilter: statusFilter ?? this.statusFilter,
