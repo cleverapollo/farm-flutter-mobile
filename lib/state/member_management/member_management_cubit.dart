@@ -41,8 +41,18 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
   }
 
   Future<void> getListFarms() async {
-    final incompleteFarms = await cmoDatabaseMasterService.getIncompleteFarmsByRMUnit(state.activeRMU?.regionalManagerUnitId);
-    final completedFarms = await cmoDatabaseMasterService.getCompletedFarmsByRMUnit(state.activeRMU?.regionalManagerUnitId);
+    final incompleteFarms = await cmoDatabaseMasterService.getFarmsByRMUnit(
+      state.activeRMU?.regionalManagerUnitId,
+      isCompleted: false,
+      includedAsi: true,
+      includedCompartments: true,
+    );
+    final completedFarms = await cmoDatabaseMasterService.getFarmsByRMUnit(
+      state.activeRMU?.regionalManagerUnitId,
+      isCompleted: true,
+      includedAsi: true,
+      includedCompartments: true,
+    );
     emit(
       state.copyWith(
         incompleteFarms: incompleteFarms,
@@ -82,18 +92,19 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
   }
 
   void onChangeViewMode() {
-    final currentViewMode = state.viewMode;
+    var currentViewMode = state.viewMode;
     if (currentViewMode == MemberManagementViewMode.mapView) {
-      emit(
-        state.copyWith(viewMode: MemberManagementViewMode.listView),
-      );
+      currentViewMode =  MemberManagementViewMode.listView;
     } else {
-      emit(
-        state.copyWith(
-          viewMode: MemberManagementViewMode.mapView,
-        ),
-      );
+      currentViewMode =  MemberManagementViewMode.mapView;
     }
+
+    emit(
+      state.copyWith(
+        viewMode: currentViewMode,
+        filteringFarms: state.completedFarms,
+      ),
+    );
   }
 
   Future<void> onShowMemberDetailMapView() async {
