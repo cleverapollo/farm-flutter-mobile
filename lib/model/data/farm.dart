@@ -1,5 +1,6 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:isar/isar.dart';
 
 import '../model.dart';
@@ -67,7 +68,10 @@ class Farm with _$Farm {
     @Default(false) @JsonKey(name: 'IsMasterDataSynced') bool isMasterDataSynced,
     @ignore List<FarmMemberObjectiveAnswer>? objectiveAnswers,
     @ignore List<FarmMemberRiskProfileAnswer>? riskProfileAnswers,
-    @ignore List<Compartment>? compartments,
+    @Default(<Compartment>[])
+    @ignore List<Compartment> compartments,
+    @Default(<Asi>[])
+    @ignore List<Asi> asi,
   }) = _Farm;
 
   factory Farm.fromJson(Map<String, dynamic> json) => _$FarmFromJson(json);
@@ -143,10 +147,27 @@ extension FarmExtension on Farm {
 
   double calculateFarmSizeBasedOnCompartments() {
     var size = 0.0;
-    for (final compartment in compartments ?? <Compartment>[]) {
+    for (final compartment in compartments) {
       size += compartment.polygonArea ?? 0.0;
     }
 
     return size;
+  }
+
+  LatLng? centerPoint() {
+    var centerLat = 0.0;
+    var centerLong = 0.0;
+    if (compartments.isBlank) return null;
+
+    for (final compartment in compartments) {
+      final centerPoint = compartment.centerPoint();
+      centerLat += centerPoint.latitude;
+      centerLong += centerPoint.longitude;
+    }
+
+    return LatLng(
+      centerLat / compartments.length,
+      centerLong / compartments.length,
+    );
   }
 }

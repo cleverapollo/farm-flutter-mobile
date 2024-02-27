@@ -3598,21 +3598,49 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<Farm>> getFarmsByRMUnit(
-    int? regionalManagerUnitId,
-  ) async {
+    int? regionalManagerUnitId, {
+    bool? isCompleted,
+    bool includedCompartments = false,
+    bool includedAsi = false,
+  }) async {
     if (regionalManagerUnitId == null) return <Farm>[];
     final db = await _db();
-    return db.farms
+    final listFarms = await db.farms
         .filter()
         .regionalManagerUnitIdEqualTo(regionalManagerUnitId)
         .isActiveEqualTo(true)
         .isSuspendedEqualTo(false)
+        .optional(
+          isCompleted != null,
+          (q) => q.isGroupSchemeMemberEqualTo(isCompleted!),
+        )
         .sortByCreateDTDesc()
         .findAll();
+
+    final farms = <Farm>[];
+    for (var farm in listFarms) {
+      if (includedCompartments) {
+        final compartments = await getCompartmentByFarmId(farm.farmId);
+        farm = farm.copyWith(compartments: compartments);
+      }
+
+      if (includedAsi) {
+        final asi = await getAsiRegisterByFarmId(farm.farmId);
+        farm = farm.copyWith(asi: asi);
+      }
+
+      farms.add(farm);
+    }
+
+    return farms;
   }
 
   Future<List<Farm>> getIncompleteFarmsByRMUnit(
-      int? regionalManagerUnitId,
+      int? regionalManagerUnitId, {
+        bool isCompleted = false,
+        bool includedCompartments = false,
+        bool includedAsi = false,
+  }
       ) async {
     if (regionalManagerUnitId == null) return <Farm>[];
     final db = await _db();

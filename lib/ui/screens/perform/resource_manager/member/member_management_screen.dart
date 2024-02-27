@@ -7,11 +7,11 @@ import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
 import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
+import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/add_member_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_detail_map_view.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_list_view.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_map_view.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_search_view_mode_filter.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_status_filter.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -80,8 +80,6 @@ class _MemberManagementScreenState
               const SizedBox(height: 20),
               const MemberStatusFilter(),
               const SizedBox(height: 12),
-              const MemberSearchViewModeFilter(),
-              const SizedBox(height: 18),
               Expanded(
                 child: BlocSelector<MemberManagementCubit,
                     MemberManagementState, MemberManagementStatusFilter>(
@@ -89,7 +87,11 @@ class _MemberManagementScreenState
                   builder: (context, statusFilter) {
                     switch (statusFilter) {
                       case MemberManagementStatusFilter.incomplete:
-                        return listViewMode();
+                        return MembersListView(
+                          shouldShowSearchField: false,
+                          onNavigateToDetail: (farm) => onNavigateToDetail(farm: farm),
+                          onRemoveFarm: onRemoveFarm,
+                        );
                       case MemberManagementStatusFilter.complete:
                         return completedMemberContent();
                     }
@@ -103,24 +105,26 @@ class _MemberManagementScreenState
     );
   }
 
-  Widget listViewMode() {
-    return MembersListView(
-      onNavigateToDetail: (farm) => onNavigateToDetail(farm: farm),
-      onRemoveFarm: onRemoveFarm,
-    );
-  }
-
   Widget completedMemberContent() {
     return BlocBuilder<MemberManagementCubit, MemberManagementState>(
       builder: (context, state) {
         switch (state.viewMode) {
           case MemberManagementViewMode.listView:
-            return listViewMode();
+            return MembersListView(
+              onNavigateToDetail: (farm) => onNavigateToDetail(farm: farm),
+              onRemoveFarm: onRemoveFarm,
+            );
           case MemberManagementViewMode.mapView:
-            return MemberMapView();
+            return const MemberMapView();
           case MemberManagementViewMode.mapDetailView:
-            if(state.selectedFarm == null) return const SizedBox.shrink();
-            return MemberDetailMapView(state.selectedFarm!);
+            if (state.selectedFarm == null) return const SizedBox.shrink();
+            return BlocProvider(
+              create: (_) => MemberDetailMapViewCubit(state.selectedFarm),
+              child: MemberDetailMapView(
+                state.selectedFarm!,
+                onNavigateToDetail: () => onNavigateToDetail(farm: state.selectedFarm),
+              ),
+            );
         }
       },
     );
