@@ -17,6 +17,7 @@ import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/file_utils.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
@@ -362,7 +363,7 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
             lastDate: DateTime.now(),
             initialDate: state.data?.dateReceived,
             title: LocaleKeys.dateIssued.tr(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             onConfirm: context.read<DisciplinariesCubit>().onSelectDateIssued,
           ),
         );

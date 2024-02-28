@@ -12,6 +12,7 @@ import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -236,8 +237,8 @@ class _AddingChemicalScreenState extends BaseStatefulWidgetState<AddingChemicalS
                             AttributeItem(
                               child: DatePickerWidget(
                                 initialDate: state.chemical.date,
-                                firstDate: DateTime.now().add(const Duration(days: -1000)),
-                                lastDate: DateTime.now().add(const Duration(days: 1000)),
+                                firstDate: DateTime.now().add(const Duration(days: -Constants.DEFAULT_DAY_DURATION_OFFSET)),
+                                lastDate: DateTime.now().add(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
                                 onConfirm: (date) => cubit.onChangeData(dateTime: date),
                                 title: LocaleKeys.dateIssued.tr(),
                               ),

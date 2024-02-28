@@ -315,7 +315,7 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
           isShowError: state.isDateIncidentError,
           child: DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             initialDate: state.accidentAndIncident.dateOfIncident ?? DateTime.now(),
             onConfirm: cubit.onDateOfIncidentChanged,
             child: SelectorAttributeItem(
@@ -346,7 +346,7 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
           isUnderErrorBorder: true,
           child: DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             initialDate:
                 state.accidentAndIncident.dateRecieved ?? DateTime.now(),
             onConfirm: cubit.onDateReceiveChanged,
@@ -504,7 +504,7 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 24),
           child: DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             initialDate: state.accidentAndIncident.dateResumeWork ?? DateTime.now(),
             onConfirm: cubit.onDateResumeChanged,
             child: SelectorAttributeItem(

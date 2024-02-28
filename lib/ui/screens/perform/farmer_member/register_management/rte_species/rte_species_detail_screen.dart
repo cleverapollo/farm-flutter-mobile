@@ -12,6 +12,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -289,7 +290,7 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
           margin: const EdgeInsets.symmetric(horizontal: 21),
           child: DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             title: LocaleKeys.date.tr(),
             titleStyle: context.textStyles.bodyNormal.blueDark2,
             initialDate: state.rteSpecies?.dateSpotted,

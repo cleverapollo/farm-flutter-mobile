@@ -14,6 +14,7 @@ import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/helpers.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -250,10 +251,10 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
           isUnderErrorBorder: true,
           margin: const EdgeInsets.symmetric(horizontal: 24),
           child: DatePickerWidget(
-            lastDate: DateTime.now().add(const Duration(days: 1000)),
+            lastDate: DateTime.now().add(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             initialDate: state.training.date,
             title: LocaleKeys.date.tr(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             onConfirm: cubit.onDateIssuedChanged,
           ),
         );
@@ -345,10 +346,10 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
         return AttributeItem(
           margin: const EdgeInsets.symmetric(horizontal: 24),
           child: DatePickerWidget(
-            lastDate: DateTime.now().add(const Duration(days: 1000)),
+            lastDate: DateTime.now().add(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             initialDate: state.training.expiryDate,
             title: LocaleKeys.expiry_date.tr(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             onConfirm: cubit.onExpiryDateChanged,
           ),
         );

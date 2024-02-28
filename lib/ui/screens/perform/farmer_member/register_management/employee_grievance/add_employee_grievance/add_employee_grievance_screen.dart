@@ -354,7 +354,7 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
           margin: const EdgeInsets.symmetric(horizontal: 21),
           child: DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             title: LocaleKeys.dateReceived.tr(),
             titleStyle: context.textStyles.bodyNormal.blueDark2,
             initialDate: state.employeeGrievance.dateReceived,
@@ -372,7 +372,7 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
           margin: const EdgeInsets.symmetric(horizontal: 21),
           child: DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             title: LocaleKeys.dateClosed.tr(),
             titleStyle: context.textStyles.bodyNormal.blueDark2,
             initialDate: state.employeeGrievance.dateClosed,

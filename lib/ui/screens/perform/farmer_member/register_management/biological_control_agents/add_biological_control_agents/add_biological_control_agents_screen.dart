@@ -174,7 +174,7 @@ class _AddBiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Add
           margin: const EdgeInsets.symmetric(horizontal: 24.0),
           child: DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             initialDate: dateReleased ?? DateTime.now(),
             onConfirm: cubit.onDateReleasedChanged,
             child: SelectorAttributeItem(

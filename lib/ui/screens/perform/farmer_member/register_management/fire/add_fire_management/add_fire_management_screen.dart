@@ -14,6 +14,7 @@ import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/widget
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -299,7 +300,7 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
           margin: const EdgeInsets.symmetric(horizontal: 24.0),
           child: DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             title: LocaleKeys.dateDetected.tr(),
             titleStyle: context.textStyles.bodyNormal.blueDark2,
             initialDate: state.fireRegister?.detected,
@@ -319,7 +320,7 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
           margin: const EdgeInsets.symmetric(horizontal: 24.0),
           child: DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             title: LocaleKeys.dateExtinguished.tr(),
             titleStyle: context.textStyles.bodyNormal.blueDark2,
             initialDate: state.fireRegister?.extinguished,

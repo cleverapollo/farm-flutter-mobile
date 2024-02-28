@@ -9,6 +9,7 @@ import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -193,7 +194,7 @@ class _IllegalActivityDetailState extends BaseStatefulWidgetState<IllegalActivit
           margin: const EdgeInsets.symmetric(horizontal: 24),
           child: DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             initialDate: dateReceived,
             onConfirm: cubit.onDateReceivedChanged,
             child: SelectorAttributeItem(
@@ -224,7 +225,7 @@ class _IllegalActivityDetailState extends BaseStatefulWidgetState<IllegalActivit
           errorText: state.dateClosedErrorText,
           margin: const EdgeInsets.symmetric(horizontal: 24),
           child: DatePickerWidget(
-            lastDate: DateTime.now().add(const Duration(days: 1000)),
+            lastDate: DateTime.now().add(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             firstDate: state.illegalActivityRegister?.dateReceived ?? DateTime.now(),
             initialDate: state.illegalActivityRegister?.dateClosed,
             onConfirm: cubit.onDateClosedChanged,

@@ -280,7 +280,7 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
         return AttributeItem(
           child: DatePickerWidget(
             lastDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(const Duration(days: 1000)),
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             initialDate: state.complaint.dateReceived,
             onConfirm: cubit.onDateReceivedChanged,
             child: SelectorAttributeItem(
@@ -310,7 +310,7 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
           isShowError: state.isDateClosedError,
           errorText: state.dateClosedErrorText,
           child: DatePickerWidget(
-            lastDate: DateTime.now().add(const Duration(days: 1000)),
+            lastDate: DateTime.now().add(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
             firstDate: state.complaint.dateReceived ?? DateTime.now(),
             initialDate: state.complaint.dateClosed,
             onConfirm: cubit.onDateClosedChanged,

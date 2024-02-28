@@ -13,6 +13,7 @@ class Constants {
   static const performRoleName = "CMO GroupScheme Platform";
   static const regionalManagerRoleName = "Regional Manager";
   static const LatLng mapCenter = LatLng(-26.024176, 28.042453);
+  static const int DEFAULT_DAY_DURATION_OFFSET = 10000;
 }
 
 class SecureStorageConstant {
