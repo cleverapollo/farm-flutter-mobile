@@ -66,6 +66,7 @@
   "criteria": "หลักเกณฑ์ต่างๆ",
   "cropImage": "รูปภาพของพืชที่มีอยู่",
   "dashboard": "ภาพรวม",
+  "you_have_no_data": "There is no data associated with your account. \nKindly log out and attempt the operation again.",
   "date": "วันที่พบ",
   "debugInfo": "ข้อมูลเพื่อการแก้ไขจุดบกพร่อง",
   "details": "รายละเอียด",

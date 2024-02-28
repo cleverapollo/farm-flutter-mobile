@@ -69,6 +69,7 @@
   "criteria": "Criteria",
   "cropImage": "Crop Image",
   "dashboard": "Trang chủ",
+  "you_have_no_data": "There is no data associated with your account. \nKindly log out and attempt the operation again.",
   "date": "Ngày",
   "debugInfo": "Debug Information",
   "details": "Chi tiết",

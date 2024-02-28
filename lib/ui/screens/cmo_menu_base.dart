@@ -259,7 +259,7 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
                   onTap: () => LegalScreen.push(context),
                 ),
                 const SizedBox(height: 55),
-                const _LogoutButton(),
+                const LogoutButton(),
                 const SizedBox(height: 24),
                 Assets.images.logo.image(height: 47, fit: BoxFit.contain),
                 const SizedBox(height: 12),
@@ -629,14 +629,14 @@ class _Divider extends StatelessWidget {
   }
 }
 
-class _LogoutButton extends StatefulWidget {
-  const _LogoutButton();
+class LogoutButton extends StatefulWidget {
+  const LogoutButton();
 
   @override
-  State<_LogoutButton> createState() => __LogoutButtonState();
+  State<LogoutButton> createState() => _LogoutButtonState();
 }
 
-class __LogoutButtonState extends State<_LogoutButton> {
+class _LogoutButtonState extends State<LogoutButton> {
   bool loading = false;
 
   @override
@@ -658,7 +658,7 @@ class __LogoutButtonState extends State<_LogoutButton> {
             await context.read<UserInfoCubit>().clear();
             await configService.logout();
           }
-          if (context.mounted) Navigator.of(context).pop();
+
           if (context.mounted) LoginScreen.push(context);
         } finally {
           setState(() {

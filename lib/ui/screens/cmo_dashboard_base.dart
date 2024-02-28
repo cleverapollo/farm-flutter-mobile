@@ -79,6 +79,7 @@ class _CmoDashboardBaseState extends BaseStatefulWidgetState<CmoDashboardBase> {
             farmerBuilder: (_) => CmoMenuBase.farmerMember(
               onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
             ),
+            haveNoDataBuilder: (_) => const SizedBox.shrink(),
           ),
           drawerScrimColor: Colors.transparent,
           body: CmoModeBuilder(
@@ -86,7 +87,33 @@ class _CmoDashboardBaseState extends BaseStatefulWidgetState<CmoDashboardBase> {
             resourceManagerBuilder: (_) =>
                 const ResourceManagerDashboardScreen(),
             farmerBuilder: (_) => const FarmerMemberDashboardScreen(),
-          )),
+            haveNoDataBuilder: (_) => const HaveNoDataDashboard(),
+          ),
+      ),
+    );
+  }
+}
+
+class HaveNoDataDashboard extends StatelessWidget {
+  const HaveNoDataDashboard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Text(
+            LocaleKeys.you_have_no_data.tr(),
+            textAlign: TextAlign.center,
+            style: context.textStyles.bodyNormal.blueDark2,
+          ),
+        ),
+        const SizedBox(height: 12),
+        const LogoutButton(),
+      ],
     );
   }
 }

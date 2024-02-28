@@ -9,11 +9,13 @@ class CmoModeBuilder extends StatelessWidget {
     required this.behaveBuilder,
     required this.resourceManagerBuilder,
     required this.farmerBuilder,
+    required this.haveNoDataBuilder,
   });
 
   final WidgetBuilder behaveBuilder;
   final WidgetBuilder resourceManagerBuilder;
   final WidgetBuilder farmerBuilder;
+  final WidgetBuilder haveNoDataBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,8 @@ class CmoModeBuilder extends StatelessWidget {
           case UserRoleEnum.farmerMember:
             return farmerBuilder(context);
         }
-        return Container();
+
+        return haveNoDataBuilder(context);
       },
     );
   }

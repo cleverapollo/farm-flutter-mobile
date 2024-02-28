@@ -69,6 +69,7 @@
   "criteria": "Critères",
   "cropImage": "Crop Image",
   "dashboard": "Tableau de bord",
+  "you_have_no_data": "There is no data associated with your account. \nKindly log out and attempt the operation again.",
   "date": "Date",
   "debugInfo": "Informations de débogage",
   "details": "Détails",
