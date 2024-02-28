@@ -54,6 +54,7 @@ class CompartmentMapsSummariesState {
   final CompartmentMapDetail? compartmentMapDetailByCameraPosition;
   final List<Compartment> listCompartments;
   final Compartment selectedCompartment;
+  final String farmId;
   final bool loading;
   final Object? error;
   final bool isUpdating;
@@ -65,7 +66,6 @@ class CompartmentMapsSummariesState {
   final CameraPosition? currentCameraPosition;
   final bool isChanged;
   final List<List<Marker>> listMarkersHistory;
-
   bool get isAddingNew => selectedCompartment.polygon.isBlank;
 
   bool get isSelectedCompartmentMapDetails =>
@@ -74,6 +74,7 @@ class CompartmentMapsSummariesState {
 
   CompartmentMapsSummariesState({
     required this.selectedCompartment,
+    required this.farmId,
     this.listCompartments = const <Compartment>[],
     this.listCompartmentMapDetails = const <CompartmentMapDetail>[],
     this.editingMarkers = const <Marker>[],
@@ -95,6 +96,7 @@ class CompartmentMapsSummariesState {
     bool? loading,
     Object? error,
     Compartment? selectedCompartment,
+    String? farmId,
     List<Compartment>? listCompartments,
     List<CompartmentMapDetail>? listCompartmentMapDetails,
     CompartmentMapDetail? selectedCompartmentMapDetails,
@@ -110,6 +112,7 @@ class CompartmentMapsSummariesState {
     List<List<Marker>>? listMarkersHistory,
   }) {
     return CompartmentMapsSummariesState(
+      farmId: farmId ?? this.farmId,
       selectedCompartment: selectedCompartment ?? this.selectedCompartment,
       listCompartments: listCompartments ?? this.listCompartments,
       listCompartmentMapDetails: listCompartmentMapDetails ?? this.listCompartmentMapDetails,
@@ -136,6 +139,7 @@ class CompartmentMapsSummariesState {
     bool isCleanTemporaryMarkers = true,
   }) {
     return CompartmentMapsSummariesState(
+      farmId: farmId,
       selectedCompartment: selectedCompartment,
       listCompartments: listCompartments,
       listCompartmentMapDetails: listCompartmentMapDetails,

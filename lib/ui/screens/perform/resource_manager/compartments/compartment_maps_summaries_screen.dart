@@ -41,6 +41,7 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
           return BlocProvider(
             create: (_) => CompartmentMapsSummariesCubit(
               selectedCompartment: selectedCompartment,
+              farmId: farmId,
             ),
             child: CompartmentMapsSummariesScreen(
               farmName: farmName,

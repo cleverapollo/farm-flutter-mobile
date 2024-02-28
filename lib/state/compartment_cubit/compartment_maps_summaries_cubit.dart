@@ -13,17 +13,18 @@ part 'compartment_maps_summaries_state.dart';
 class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState> {
   CompartmentMapsSummariesCubit({
     required Compartment selectedCompartment,
+    required String farmId,
   }) : super(
           CompartmentMapsSummariesState(
             selectedCompartment: selectedCompartment,
+            farmId: farmId,
           ),
         );
 
   Future<void> initMapData() async {
     emit(state.copyWith(loading: true));
     final listCompartmentMapDetails = <CompartmentMapDetail>[];
-    final activeGroupScheme = await configService.getActiveGroupScheme();
-    final listCompartments = await cmoDatabaseMasterService.getCompartmentsByGroupSchemeId(groupSchemeId: activeGroupScheme?.groupSchemeId);
+    final listCompartments = await cmoDatabaseMasterService.getCompartmentByFarmId(state.farmId);
     if (listCompartments.isNotBlank) {
       for (final compartment in listCompartments) {
         final compartmentMapDetail = await generateCompartmentMapDetailFromCompartment(compartment);
