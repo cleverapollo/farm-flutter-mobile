@@ -35,7 +35,6 @@ class _ResourceManagerSyncSummaryScreenState extends BaseStatefulWidgetState<Res
   @override
   void initState() {
     super.initState();
-    context.read<RMSyncCubit>().initSummaryInformation();
   }
 
   @override

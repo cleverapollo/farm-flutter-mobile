@@ -161,12 +161,12 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     info.onboardedMembersArea = 0;
 
     for (final farm in farms) {
-      if (!farm.isGroupSchemeMember) {
-        info.incompletedMembers = info.incompletedMembers + 1;
-        info.incompleteMembersArea = info.incompleteMembersArea + (farm.farmSize ?? 0);
-      } else {
+      if (farm.isGroupSchemeMember) {
         info.onboardedMembers = info.onboardedMembers + 1;
         info.onboardedMembersArea = info.onboardedMembersArea + (farm.farmSize ?? 0);
+      } else {
+        info.incompletedMembers = info.incompletedMembers + 1;
+        info.incompleteMembersArea = info.incompleteMembersArea + (farm.farmSize ?? 0);
       }
     }
 

@@ -40,56 +40,56 @@ class RMSyncState extends BaseSyncState {
 
 class RmSyncSummaryInformation {
   RmSyncSummaryInformation({
-    this.unsyncedAudit = 0,
-    this.totalAudits = 0,
-    this.unsyncedFarm = 0,
-    this.totalFarms = 0,
-    this.auditTemplates = 0,
-    this.compliances = 0,
-    this.criteria = 0,
-    this.farmMemberObjectives = 0,
-    this.farmObjectivesOptions = 0,
-    this.farmPropertyOwnershipTypes = 0,
-    this.groupScheme = 0,
-    this.impactCaused = 0,
-    this.impactOn = 0,
-    this.indicators = 0,
-    this.principle = 0,
-    this.question = 0,
-    this.resourceManagementUnits = 0,
-    this.rejectReasons = 0,
-    this.riskProfileQuestions = 0,
-    this.severity = 0,
-    this.unsyncedStakeholders = 0,
-    this.stakeholderTypes = 0,
-    this.totalStakeholders = 0,
-    this.totalUnsynced = 0,
-    this.totalSynced = 0,
+    this.unsyncedAudit,
+    this.totalAudits,
+    this.unsyncedFarm,
+    this.totalFarms,
+    this.auditTemplates,
+    this.compliances,
+    this.criteria,
+    this.farmMemberObjectives,
+    this.farmObjectivesOptions,
+    this.farmPropertyOwnershipTypes,
+    this.groupScheme,
+    this.impactCaused,
+    this.impactOn,
+    this.indicators,
+    this.principle,
+    this.question,
+    this.resourceManagementUnits,
+    this.rejectReasons,
+    this.riskProfileQuestions,
+    this.severity,
+    this.unsyncedStakeholders,
+    this.stakeholderTypes,
+    this.totalStakeholders,
+    this.totalUnsynced,
+    this.totalSynced,
   });
 
-  int unsyncedAudit = 0;
-  int totalAudits = 0;
-  int unsyncedFarm = 0;
-  int totalFarms = 0;
-  int auditTemplates = 0;
-  int compliances = 0;
-  int criteria = 0;
-  int farmMemberObjectives = 0;
-  int farmObjectivesOptions = 0;
-  int farmPropertyOwnershipTypes = 0;
-  int groupScheme = 0;
-  int impactCaused = 0;
-  int impactOn = 0;
-  int indicators = 0;
-  int principle = 0;
-  int question = 0;
-  int resourceManagementUnits = 0;
-  int rejectReasons = 0;
-  int riskProfileQuestions = 0;
-  int severity = 0;
-  int totalStakeholders = 0;
-  int unsyncedStakeholders = 0;
-  int stakeholderTypes = 0;
-  int totalUnsynced = 0;
-  int totalSynced = 0;
+  int? unsyncedAudit;
+  int? totalAudits;
+  int? unsyncedFarm;
+  int? totalFarms;
+  int? auditTemplates;
+  int? compliances;
+  int? criteria;
+  int? farmMemberObjectives;
+  int? farmObjectivesOptions;
+  int? farmPropertyOwnershipTypes;
+  int? groupScheme;
+  int? impactCaused;
+  int? impactOn;
+  int? indicators;
+  int? principle;
+  int? question;
+  int? resourceManagementUnits;
+  int? rejectReasons;
+  int? riskProfileQuestions;
+  int? severity;
+  int? totalStakeholders;
+  int? unsyncedStakeholders;
+  int? stakeholderTypes;
+  int? totalUnsynced;
+  int? totalSynced;
 }

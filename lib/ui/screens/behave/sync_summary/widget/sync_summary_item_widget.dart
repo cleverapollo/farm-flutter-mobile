@@ -131,7 +131,7 @@ class _BehaveSyncSummaryItemWidgetState
               ),
               ...data.map((e) => SyncItemWidget(
                     label: e.title,
-                    count: e.count,
+                    count: e.count?.toInt(),
                   ))
             ],
           );

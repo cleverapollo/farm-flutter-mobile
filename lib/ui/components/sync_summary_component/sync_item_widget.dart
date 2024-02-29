@@ -6,15 +6,15 @@ class SyncItemWidget extends StatelessWidget {
   const SyncItemWidget({
     super.key,
     required this.label,
+    this.count,
     this.isTitle = false,
     this.isHighlight = false,
-    this.count = 0,
   });
 
   final String label;
   final bool isTitle;
   final bool isHighlight;
-  final num? count;
+  final int? count;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class SyncItemWidget extends StatelessWidget {
                       )),
                   Flexible(
                     fit: FlexFit.tight,
-                    child: Text('${count ?? '*'}',
+                    child: Text(count == null ? '' : count.toString(),
                         style: isTitle
                             ? context.textStyles.titleBold
                             : context.textStyles.bodyNormal.copyWith(

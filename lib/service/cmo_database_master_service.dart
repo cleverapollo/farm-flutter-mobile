@@ -1904,11 +1904,12 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<int> getCountStakeholder() async {
+  Future<int> getSyncedStakeholderCount() async {
     final db = await _db();
     return db.stakeHolders
         .filter()
         .isActiveEqualTo(1)
+        .isMasterDataSyncedEqualTo(1)
         .count();
   }
 
@@ -3079,6 +3080,18 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
+  Future<int> getSyncedFarmsCount(int? rmuId) async {
+    if (rmuId == null) return 0;
+    final db = await _db();
+    return db.farms
+        .filter()
+        .isGroupSchemeMemberEqualTo(true)
+        .isMasterDataSyncedEqualTo(true)
+        .isActiveEqualTo(true)
+        .isSuspendedEqualTo(false)
+        .count();
+  }
+
   Future<Farm?> getFarmById(String id) async {
     final db = await _db();
     return db.farms
@@ -4041,6 +4054,19 @@ class CmoDatabaseMasterService {
         .isActiveEqualTo(true)
         .sortByCreatedDesc()
         .findAll();
+  }
+
+  Future<int> getAuditsCountByCompletedStatus({
+    bool isCompleted = true,
+  }) async {
+    final db = await _db();
+    return db.audits
+        .filter()
+        .isActiveEqualTo(true)
+        .syncedEqualTo(true)
+        .completedEqualTo(isCompleted)
+        .sortByCreatedDesc()
+        .count();
   }
 
   Future<Audit?> getAuditByAuditTemplateId({
