@@ -238,7 +238,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     try {
       final publishFarmTopic = 'Cmo.MasterData.RM.Farm.$groupSchemeId.$userDeviceId';
       logger.d('Get unsynced farms by rmuIds: $rmuId');
-      final farms = await cmoDatabaseMasterService.getUnsyncedFarmsByRegionalManagerUnitId(rmuId);
+      final farms = await cmoDatabaseMasterService.getUnsyncedCompletedFarmsByRmuId(rmuId);
       if (farms.isNotBlank) {
         logger.d('Unsynced farms count: ${farms!.length}');
         for (final farm in farms) {

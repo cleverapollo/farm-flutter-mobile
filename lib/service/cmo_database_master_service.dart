@@ -3068,14 +3068,14 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  Future<List<Farm>?> getUnsyncedFarmsByRegionalManagerUnitId(
+  Future<List<Farm>?> getUnsyncedCompletedFarmsByRmuId(
       int? rmuId) async {
     if (rmuId == null) return null;
     final db = await _db();
     return db.farms
         .filter()
         .regionalManagerUnitIdEqualTo(rmuId)
-        // .isProspectMemberEqualTo(true)
+        .isGroupSchemeMemberEqualTo(true)
         .isMasterDataSyncedEqualTo(false)
         .findAll();
   }
