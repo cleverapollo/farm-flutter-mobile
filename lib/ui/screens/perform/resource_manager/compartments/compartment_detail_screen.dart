@@ -297,6 +297,7 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                                   ),
                                 ),
                                 buildingStockWidget(),
+                                buildingTotalStockingWidget(),
                                 AttributeItem(
                                   inactive: isConservationArea,
                                   child: InputAttributeItem(
@@ -553,6 +554,36 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                 ),
                 Text(
                   state.compartment.stockingPercentage != null ? state.compartment.stockingPercentage!.toStringAsFixed(2) : '',
+                  style: context.textStyles.bodyNormal.blueDark2,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildingTotalStockingWidget() {
+    return BlocBuilder<CompartmentDetailCubit, CompartmentDetailState>(
+      builder: (context, state) {
+        return AttributeItem(
+          inactive: context.read<CompartmentDetailCubit>().isConservationArea(),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      LocaleKeys.total_stocking.tr(),
+                      style: context.textStyles.bodyBold.blueDark2,
+                    ),
+                  ],
+                ),
+                Text(
+                  state.compartment.totalStocking.toStringAsFixed(2),
                   style: context.textStyles.bodyNormal.blueDark2,
                 ),
               ],

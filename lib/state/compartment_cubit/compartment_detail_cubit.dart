@@ -21,8 +21,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   }) : super(CompartmentDetailState(
             farmId: farmId,
             campId: campId,
-            compartment: compartment.copyWith(
-                effectiveArea: compartment.effectiveArea ?? 90),
+            compartment: compartment,
             compartmentBeforeEdit: compartment));
 
   Future<void> fetchData() async {
@@ -223,7 +222,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   void onEffectiveAreaChanged(double? value) {
     emit(
       state.copyWith(
-        compartment: state.compartment.copyWith(effectiveArea: value),
+        compartment: state.compartment.copyWith(effectiveArea: value ?? 0),
       ),
     );
   }
@@ -259,7 +258,13 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   }
 
   void onSurvivalPercentageDateChanged(double? value) {
-    state.compartment = state.compartment.copyWith(survival: value);
+    emit(
+      state.copyWith(
+        compartment: state.compartment.copyWith(
+          survival: value,
+        ),
+      ),
+    );
   }
 
   void onRotationChanged(int? value) {

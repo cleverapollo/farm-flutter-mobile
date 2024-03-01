@@ -23,7 +23,8 @@ class Compartment with _$Compartment {
     @JsonKey(name: 'UnitNumber') String? unitNumber,
     @JsonKey(name: 'Status') bool? status,
     @JsonKey(name: 'PolygonArea') double? polygonArea,
-    @JsonKey(name: 'EffectiveArea') double? effectiveArea,
+    @Default(90.0)
+    @JsonKey(name: 'EffectiveArea') double effectiveArea,
     @JsonKey(name: 'PlannedPlantDT') String? plannedPlantDT,
     @JsonKey(name: 'PlantDT') String? plantDT,
     @JsonKey(name: 'PlannedFellDT') String? plannedFellDT,
@@ -75,7 +76,15 @@ class Compartment with _$Compartment {
 
 extension CompartmentExtension on Compartment {
 
-  double? get stockingPercentage => 10000 / ((espacementLength ?? 1) * (espacementWidth ?? 1));
+  double? get stockingPercentage =>
+      10000 /
+      ((espacementLength ?? 1) * (espacementWidth ?? 1)) *
+      ((survival ?? 100) / 100);
+
+  double get totalStocking =>
+      (polygonArea ?? 1) *
+      (effectiveArea == 0 ? 1 : effectiveArea) *
+      (stockingPercentage ?? 1) / 100;
 
   List<LatLng> getPolygonLatLng() {
     final polygonLatLng = <LatLng>[];
