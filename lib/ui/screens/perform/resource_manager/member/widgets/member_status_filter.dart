@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';

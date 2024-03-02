@@ -44,7 +44,7 @@ class BitmapDescriptorHelper {
     String? subtitle,
   }) async {
     const textStyle = TextStyle(
-      fontSize: 32,
+      fontSize: 40,
       color: Colors.white,
       letterSpacing: 1.0,
       overflow: TextOverflow.ellipsis,

@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -56,8 +57,7 @@ class MembersListView extends StatelessWidget {
                     onTap: () => onNavigateToDetail(farm),
                     child: MemberItem(
                       farm: farm,
-                      canDelete: state.statusFilter ==
-                          MemberManagementStatusFilter.incomplete,
+                      canDelete: state.statusFilter == MemberManagementStatusFilter.incomplete,
                       onDelete: () => onRemoveFarm(farm),
                     ),
                   );

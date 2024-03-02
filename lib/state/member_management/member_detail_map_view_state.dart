@@ -2,69 +2,47 @@ part of 'member_detail_map_view_cubit.dart';
 class MemberDetailMapViewState {
   const MemberDetailMapViewState({
     this.farm,
-    this.allRiskProfileQuestions = const <RiskProfileQuestion>[],
-    this.allFarmMemberRiskProfileAnswers = const <FarmMemberRiskProfileAnswer>[],
-    this.allFarmMemberObjectives = const <FarmMemberObjective>[],
-    this.allFarmMemberObjectiveAnswers = const <FarmMemberObjectiveAnswer>[],
-    this.markers = const <Marker>[],
-    this.filteringText,
     this.isLoading = false,
-    this.viewMode = MemberManagementViewMode.listView,
-    this.statusFilter = MemberManagementStatusFilter.incomplete,
-    this.selectedFarm,
+    this.isShowCompartmentName = false,
+    this.isShowASI = false,
+    this.markers = const <Marker>[],
     this.selectedCompartment,
-    this.isShowSiteName = false,
+    this.compartments = const <Compartment>[],
+    this.filterCompartments = const <Compartment>[],
+    this.currentUserRole,
   });
 
   final Farm? farm;
-
   final bool isLoading;
-  final List<RiskProfileQuestion> allRiskProfileQuestions;
-  final List<FarmMemberRiskProfileAnswer> allFarmMemberRiskProfileAnswers;
-  final List<FarmMemberObjective> allFarmMemberObjectives;
-  final List<FarmMemberObjectiveAnswer> allFarmMemberObjectiveAnswers;
-  final String? filteringText;
-  final MemberManagementViewMode viewMode;
-  final MemberManagementStatusFilter statusFilter;
-  final Farm? selectedFarm;
+  final bool isShowCompartmentName;
+  final bool isShowASI;
+  final List<Compartment> compartments;
+  final List<Compartment> filterCompartments;
   final Compartment? selectedCompartment;
-  final bool isShowSiteName;
   final List<Marker> markers;
+  final UserRoleEnum? currentUserRole;
 
   MemberDetailMapViewState copyWith({
     Farm? farm,
-    List<Farm>? completedFarms,
-    List<RiskProfileQuestion>? allRiskProfileQuestions,
-    List<FarmMemberRiskProfileAnswer>? allFarmMemberRiskProfileAnswers,
-    List<FarmMemberObjective>? allFarmMemberObjectives,
-    List<FarmMemberObjectiveAnswer>? allFarmMemberObjectiveAnswers,
-    ResourceManagerUnit? activeRMU,
-    GroupScheme? activeGroupScheme,
-    List<Farm>? filteringFarms,
-    String? filteringText,
     bool? isLoading,
-    MemberManagementViewMode? viewMode,
-    MemberManagementStatusFilter? statusFilter,
-    Farm? selectedFarm,
+    bool? isShowCompartmentName,
+    bool? isShowASI,
     Compartment? selectedCompartment,
-    bool? isShowSiteName,
     List<Marker>? markers,
+    List<Compartment>? compartments,
+    List<Compartment>? filterCompartments,
+    UserRoleEnum? currentUserRole,
   }) {
     return MemberDetailMapViewState(
       farm: farm ?? this.farm,
-
       isLoading: isLoading ?? this.isLoading,
-      allRiskProfileQuestions: allRiskProfileQuestions ?? this.allRiskProfileQuestions,
-      allFarmMemberRiskProfileAnswers: allFarmMemberRiskProfileAnswers ?? this.allFarmMemberRiskProfileAnswers,
-      allFarmMemberObjectives: allFarmMemberObjectives ?? this.allFarmMemberObjectives,
-      allFarmMemberObjectiveAnswers: allFarmMemberObjectiveAnswers ?? this.allFarmMemberObjectiveAnswers,
-      filteringText: filteringText ?? this.filteringText,
-      viewMode: viewMode ?? this.viewMode,
-      statusFilter: statusFilter ?? this.statusFilter,
-      selectedFarm: selectedFarm ?? this.selectedFarm,
+      isShowCompartmentName: isShowCompartmentName ?? this.isShowCompartmentName,
+      isShowASI: isShowASI ?? this.isShowASI,
       selectedCompartment: selectedCompartment ?? this.selectedCompartment,
-      isShowSiteName: isShowSiteName ?? this.isShowSiteName,
       markers: markers ?? this.markers,
+      compartments: compartments ?? this.compartments,
+      filterCompartments: filterCompartments ?? this.filterCompartments,
+      currentUserRole: currentUserRole ?? this.currentUserRole,
     );
   }
 }

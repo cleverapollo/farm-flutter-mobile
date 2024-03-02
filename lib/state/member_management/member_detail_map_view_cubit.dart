@@ -1,8 +1,8 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/add_member_cubit/add_member_cubit.dart';
@@ -16,91 +16,85 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 part 'member_detail_map_view_state.dart';
 
 class MemberDetailMapViewCubit extends Cubit<MemberDetailMapViewState> {
-  MemberDetailMapViewCubit(Farm? farm) : super(MemberDetailMapViewState(farm: farm)) {
-    init();
-  }
+  MemberDetailMapViewCubit(Farm? farm)
+      : super(
+          MemberDetailMapViewState(
+            farm: farm,
+            compartments: farm?.compartments ?? <Compartment>[],
+            filterCompartments: farm?.compartments ?? <Compartment>[],
+          ),
+        );
 
-  Future<void> init() async {
-    emit(state.copyWith(isLoading: true));
-    final groupScheme = await configService.getActiveGroupScheme();
-    final rmUnit = await configService.getActiveRegionalManager();
-
+  Future<void> initMapData() async {
+    final currentUserRole = await configService.getActiveUserRole();
     emit(
       state.copyWith(
-        activeGroupScheme: groupScheme,
-        activeRMU: rmUnit,
-      ),
-    );
-
-    emit(state.copyWith(isLoading: false));
-  }
-
-  void onChangeViewMode() {
-    final currentViewMode = state.viewMode;
-    if (currentViewMode == MemberManagementViewMode.mapView) {
-      emit(
-        state.copyWith(viewMode: MemberManagementViewMode.listView),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          viewMode: MemberManagementViewMode.mapView,
-        ),
-      );
-    }
-  }
-
-  Future<void> onShowMemberDetailMapView() async {
-    emit(
-      state.copyWith(
-        viewMode: MemberManagementViewMode.mapDetailView,
+        currentUserRole: currentUserRole,
       ),
     );
 
     await generateListMarker();
   }
 
-  Future<void> updateShowSiteName() async {
+  Future<void> updateShowCompartmentName() async {
     emit(
       state.copyWith(
-        isShowSiteName: !state.isShowSiteName,
+        isShowCompartmentName: !state.isShowCompartmentName,
       ),
     );
 
     await generateListMarker();
   }
 
-  void updateSelectedFarm(Farm farm) {
+  Future<void> updateShowASI() async {
     emit(
       state.copyWith(
-        selectedFarm: farm,
+        isShowASI: !state.isShowASI,
+      ),
+    );
+
+    await generateListMarker();
+  }
+
+  void updateSelectedCompartment(Compartment selectedCompartment) {
+    emit(
+      state.copyWith(
+        selectedCompartment: selectedCompartment,
+        filterCompartments: state.compartments,
       ),
     );
   }
 
   Future<void> generateListMarker() async {
     final markers = <Marker>[];
-        for (final compartment in state.farm?.compartments ?? <Compartment>[]) {
-          final centerPoint = compartment.centerPoint();
-          final marker = Marker(
-            markerId: MarkerId('place_name_${centerPoint.latitude}_${centerPoint.longitude}'),
-            position: centerPoint,
-            // onTap: () => onTap?.call(MarkerId('place_name_${position.latitude}_${position.longitude}')),
-            // draggable: draggable,
-            // onDrag: (latLng) {
-            //   onDrag?.call(
-            //     latLng,
-            //     MarkerId('place_name_${position.latitude}_${position.longitude}'),
-            //   );
-            // },
-            icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
-              title: state.farm?.farmName,
-              // subtitle: 'managementUnitName',
-            ),
-          );
+    if (state.isShowCompartmentName) {
+      for (final compartment in state.farm?.compartments ?? <Compartment>[]) {
+        final centerPoint = compartment.centerPoint();
+        final marker = Marker(
+          markerId: MarkerId(
+              'place_name_${centerPoint.latitude}_${centerPoint.longitude}'),
+          position: centerPoint,
+          icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
+            title: state.farm?.farmName,
+            subtitle: compartment.unitNumber,
+          ),
+        );
 
-          markers.add(marker);
-        }
+        markers.add(marker);
+      }
+    }
+
+    if (state.isShowASI) {
+      for (final asi in state.farm?.asi ?? <Asi>[]) {
+        final asiPoint = LatLng(asi.latitude ?? 0, asi.longitude ?? 0);
+        final marker = Marker(
+          markerId: MarkerId('place_name_${asiPoint.latitude}_${asiPoint.longitude}'),
+          position: asiPoint,
+        );
+
+        markers.add(marker);
+      }
+    }
 
     emit(
       state.copyWith(

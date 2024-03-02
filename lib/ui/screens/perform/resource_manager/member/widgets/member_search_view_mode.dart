@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
 import 'package:flutter/material.dart';
