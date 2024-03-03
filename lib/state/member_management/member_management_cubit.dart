@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -215,14 +216,6 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
           final marker = Marker(
             markerId: MarkerId('place_name_${centerPoint.latitude}_${centerPoint.longitude}'),
             position: centerPoint,
-            // onTap: () => onTap?.call(MarkerId('place_name_${position.latitude}_${position.longitude}')),
-            // draggable: draggable,
-            // onDrag: (latLng) {
-            //   onDrag?.call(
-            //     latLng,
-            //     MarkerId('place_name_${position.latitude}_${position.longitude}'),
-            //   );
-            // },
             icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
               title: farm.farmName,
               // subtitle: 'managementUnitName',

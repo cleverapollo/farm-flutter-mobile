@@ -155,6 +155,10 @@ class $AssetsIconsGen {
   SvgGenImage get icGalleryBlueDark =>
       const SvgGenImage('assets/icons/ic_gallery_blue_dark.svg');
 
+  /// File path: assets/icons/ic_green_marker.svg
+  SvgGenImage get icGreenMarker =>
+      const SvgGenImage('assets/icons/ic_green_marker.svg');
+
   /// File path: assets/icons/ic_home.svg
   SvgGenImage get icHome => const SvgGenImage('assets/icons/ic_home.svg');
 
@@ -322,6 +326,7 @@ class $AssetsIconsGen {
         icGalleryAudit,
         icGalleryAuditFillBackground,
         icGalleryBlueDark,
+        icGreenMarker,
         icHome,
         icLang,
         icLocation,

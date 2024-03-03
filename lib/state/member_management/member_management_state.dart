@@ -1,19 +1,8 @@
-import 'package:cmo/model/data/farm.dart';
-import 'package:cmo/model/group_scheme.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../model/model.dart';
-enum MemberManagementViewMode {
-  listView,
-  mapView,
-  mapDetailView,
-}
-
-enum MemberManagementStatusFilter {
-  incomplete,
-  complete
-}
 
 class MemberManagementState {
   const MemberManagementState({

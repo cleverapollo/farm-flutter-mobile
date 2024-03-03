@@ -151,12 +151,6 @@ class AddCampCubit extends Cubit<AddCampState> {
         state.copyWith(camp: state.camp?.copyWith(actualYearOfHarvest: value)));
   }
 
-  void onCompartmentChanged(
-      {required AddingCompartmentResult addingCompartmentResult}) {
-    emit(state.copyWith(
-        compartments: addingCompartmentResult.compartments ?? []));
-  }
-
   void onAsisChanged({List<Asi>? asis}) {
     emit(state.copyWith(asis: asis ?? []));
   }

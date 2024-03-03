@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
@@ -16,8 +17,6 @@ import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_st
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'widgets/member_item.dart';
 
 class MemberManagementScreen extends BaseStatefulWidget {
   MemberManagementScreen({super.key})
@@ -122,6 +121,7 @@ class _MemberManagementScreenState
               create: (_) => MemberDetailMapViewCubit(state.selectedFarm),
               child: MemberDetailMapView(
                 state.selectedFarm!,
+                onChangeViewMode: context.read<MemberManagementCubit>().onChangeViewMode,
                 onNavigateToDetail: () => onNavigateToDetail(farm: state.selectedFarm),
               ),
             );

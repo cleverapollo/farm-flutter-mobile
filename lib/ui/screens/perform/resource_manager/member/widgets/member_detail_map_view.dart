@@ -2,7 +2,6 @@ import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/state/member_management/member_management_state.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/components/map_center_icon.dart';
@@ -252,13 +251,13 @@ class _MemberDetailMapViewState extends State<MemberDetailMapView> {
     );
 
     final showRteRadio = BlocSelector<MemberDetailMapViewCubit, MemberDetailMapViewState, bool>(
-      selector: (state) => state.isShowASI,
-      builder: (context, isShowASI) {
+      selector: (state) => state.isShowRTE,
+      builder: (context, isShowRTE) {
         return RadioItem(
-          onTap: context.read<MemberDetailMapViewCubit>().updateShowASI,
+          onTap: context.read<MemberDetailMapViewCubit>().updateShowRte,
           isDisplayIconFirst: true,
           title: LocaleKeys.show_rte.tr(),
-          isSelected: isShowASI,
+          isSelected: isShowRTE,
           padding: const EdgeInsets.symmetric(
             horizontal: 24,
           ),
@@ -305,7 +304,7 @@ class _MemberDetailMapViewState extends State<MemberDetailMapView> {
 
   Widget functionButtons() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         BlocSelector<MemberDetailMapViewCubit, MemberDetailMapViewState, Compartment?>(
           selector: (state) => state.selectedCompartment,
@@ -318,10 +317,22 @@ class _MemberDetailMapViewState extends State<MemberDetailMapView> {
             );
           },
         ),
-        CmoFilledButton(
-          title: LocaleKeys.view_member_details.tr(),
-          titleStyle: context.textStyles.bodyBold.white,
-          onTap: widget.onNavigateToDetail,
+        BlocSelector<MemberDetailMapViewCubit, MemberDetailMapViewState, UserRoleEnum?>(
+          selector: (state) => state.currentUserRole,
+          builder: (context, currentUserRole) {
+            if (currentUserRole == UserRoleEnum.farmerMember) {
+              return const SizedBox.shrink();
+            }
+
+            return Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: CmoFilledButton(
+                title: LocaleKeys.view_member_details.tr(),
+                titleStyle: context.textStyles.bodyBold.white,
+                onTap: widget.onNavigateToDetail,
+              ),
+            );
+          },
         ),
       ],
     );
