@@ -351,6 +351,8 @@
   "zulu": "Isizulu",
   "removeAssessment": "Susa Ukuhlola",
   "removeAssessmentAlertContent": "Uqinisekile ukuthi ufuna ukususa ukuhlola?",
+  "remove_compartment": "Remove compartment",
+  "remove_compartment_alert_content": "Are you sure you want to remove this compartment?",
   "removeAudit": "Ukususa ukucwaningwa kwamabhuku",
   "removeAuditAlertContent": "Uqinisekile ufuna ukususa ukucwaningwa kwamabhuku?",
   "removeAnnualBudget": "Remove Annual Budget",

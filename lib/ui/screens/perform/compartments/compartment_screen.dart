@@ -3,7 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_list_view_mode.dart';
+import 'package:cmo/ui/screens/perform/compartments/compartment_list_view_mode.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_detail_map_view.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';

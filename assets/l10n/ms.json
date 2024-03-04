@@ -352,6 +352,8 @@
   "zulu": "Zulu",
   "removeAssessment": "Penilaian",
   "removeAssessmentAlertContent": "Are you sure you want to remove this assessment?",
+  "remove_compartment": "Remove compartment",
+  "remove_compartment_alert_content": "Are you sure you want to remove this compartment?",
   "removeAudit": "Remove audit",
   "removeAuditAlertContent": "Are you sure you want to remove this audit?",
   "removeAnnualBudget": "Bajet tahunan",

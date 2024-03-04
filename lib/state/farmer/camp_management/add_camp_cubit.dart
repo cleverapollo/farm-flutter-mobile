@@ -3,8 +3,6 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/asi.dart';
 import 'package:cmo/model/camp.dart';
 import 'package:cmo/state/farmer/camp_management/add_camp_state.dart';
-import 'package:cmo/state/farmer/site_management_plan/site_management_plan_cubit.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

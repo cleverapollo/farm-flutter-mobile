@@ -6,7 +6,7 @@ import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/components/map_center_icon.dart';
 import 'package:cmo/ui/components/radio_item.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_detail_screen.dart';
+import 'package:cmo/ui/screens/perform/compartments/compartment_detail_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_detail_map_view_search_compartment.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_search_view_mode.dart';
 import 'package:cmo/ui/ui.dart';

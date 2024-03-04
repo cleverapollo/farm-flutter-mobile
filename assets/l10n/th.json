@@ -349,6 +349,8 @@
   "zulu": "ซูลู",
   "removeAssessment": "ลบผลการประเมิน",
   "removeAssessmentAlertContent": "มั่นใจหรือไม่ว่าจะลบผลการประเมินนี้?",
+  "remove_compartment": "Remove compartment",
+  "remove_compartment_alert_content": "Are you sure you want to remove this compartment?",
   "removeAudit": "ลบการตรวจสอบออกไป",
   "removeAuditAlertContent": "มั่นใจหรือไม่ว่าจะลบการตรวจสอบนี้ออกไป?",
   "removeAnnualBudget": "Remove Annual Budget",

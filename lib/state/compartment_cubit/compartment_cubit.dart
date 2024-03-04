@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/compartment/area_type.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
@@ -82,6 +83,24 @@ class CompartmentCubit extends HydratedCubit<CompartmentState> {
     } finally {
       emit(state.copyWith(loading: false));
     }
+  }
+
+  Future<void> onRemoveCompartment(Compartment compartment) async {
+    await cmoDatabaseMasterService.cacheCompartment(
+      compartment.copyWith(
+        updateDT: DateTime.now(),
+        isActive: false,
+        isMasterdataSynced: false,
+      ),
+
+      isDirect: true,
+    );
+
+    showSnackSuccess(
+      msg: '${LocaleKeys.remove.tr()} ${compartment.localCompartmentId}!',
+    );
+
+    await loadListCompartment();
   }
 
   bool isConservationArea(Compartment compartment) {

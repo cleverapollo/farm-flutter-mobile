@@ -3,7 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/compartments/widgets/compartment_item_widget.dart';
+import 'package:cmo/ui/screens/perform/compartments/widgets/compartment_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_search_view_mode.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/cupertino.dart';
@@ -63,12 +63,18 @@ class CompartmentListViewMode extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 15.0),
-                    child: CompartmentItemWidget(
-                      model: state.filterCompartment[index],
-                      onTap: () => navigateToDetail(state.filterCompartment[index]),
-                      isConservationArea: context
-                          .read<CompartmentCubit>()
-                          .isConservationArea(state.filterCompartment[index]),
+                    child: CmoDismissibleItem(
+                      key: Key(state.filterCompartment[index].localCompartmentId.toString()),
+                      title: LocaleKeys.remove_compartment.tr(),
+                      subtitle: LocaleKeys.remove_compartment_alert_content.tr(),
+                      onRemove: () => cubit.onRemoveCompartment(state.filterCompartment[index]),
+                      child: CompartmentItemWidget(
+                        model: state.filterCompartment[index],
+                        onTap: () => navigateToDetail(state.filterCompartment[index]),
+                        isConservationArea: context
+                            .read<CompartmentCubit>()
+                            .isConservationArea(state.filterCompartment[index]),
+                      ),
                     ),
                   );
                 },

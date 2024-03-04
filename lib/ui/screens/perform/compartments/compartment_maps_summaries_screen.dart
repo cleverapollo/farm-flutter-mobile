@@ -4,7 +4,6 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/components/map_center_icon.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_detail_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';

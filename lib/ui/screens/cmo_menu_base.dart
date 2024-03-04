@@ -5,21 +5,17 @@ import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/user_info.dart';
-import 'package:cmo/state/auth_cubit/auth_cubit.dart';
-import 'package:cmo/state/entity_cubit/entity_cubit.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/state/user_device_cubit/user_device_cubit.dart';
-import 'package:cmo/state/user_info_cubit/user_info_cubit.dart';
 import 'package:cmo/ui/screens/behave/assessment/assessment_add_screen.dart';
 import 'package:cmo/ui/screens/behave/create_worker/worker_add_screen.dart';
 import 'package:cmo/ui/screens/global_entity.dart';
 import 'package:cmo/ui/screens/onboarding/login/login_screen.dart';
+import 'package:cmo/ui/screens/perform/compartments/compartment_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_production_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/labour_detail_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/register_management.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/add_member_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/add_audit/audit_add_screen.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/compartments/compartment_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/member_management_screen.dart';
 import 'package:cmo/ui/screens/perform/stake_holder/create_new_stake_holder/stake_holder_detail_screen.dart';
 import 'package:cmo/ui/screens/perform/stake_holder/stake_holder_management_screen.dart';
@@ -33,7 +29,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_budget/annual_budget_management_screen.dart';
 
-import 'perform/farmer_member/labour_management/labour_management_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_management_screen.dart';
 
 class CmoMenuBase extends StatefulWidget {
   factory CmoMenuBase.behave({required VoidCallback onTapClose}) {
