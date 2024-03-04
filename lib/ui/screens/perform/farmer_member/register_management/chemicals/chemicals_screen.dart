@@ -33,7 +33,7 @@ class ChemicalsScreen extends BaseStatefulWidget {
 
 class _ChemicalsScreenState extends BaseStatefulWidgetState<ChemicalsScreen> {
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return BlocBuilder<RMChemicalCubit, RMChemicalState>(
       builder: (context, state) {
         final cubit = context.read<RMChemicalCubit>();

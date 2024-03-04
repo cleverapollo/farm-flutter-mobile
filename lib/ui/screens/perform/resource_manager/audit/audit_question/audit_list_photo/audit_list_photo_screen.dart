@@ -102,7 +102,7 @@ class _AuditListPhotoScreenState extends BaseStatefulWidgetState<AuditListPhotoS
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return BlocBuilder<AuditQuestionPhotoCubit, AuditQuestionPhotoState>(
       builder: (context, state) {
         return Scaffold(

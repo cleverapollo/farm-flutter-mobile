@@ -89,80 +89,80 @@ class _AddBiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Add
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: FocusManager.instance.primaryFocus?.unfocus,
-      child: Scaffold(
-        appBar: CmoAppBar(
-          title: widget.biologicalControlAgent == null
-              ? LocaleKeys.addBCA.tr()
-              : LocaleKeys.edit_bca.tr(),
-          leading: Assets.icons.icBackButton.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
-          trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-          onTapTrailing: Navigator.of(context).pop,
-        ),
-        body: BlocSelector<AddBiologicalControlCubit, AddBiologicalControlState,
-            bool>(
-          selector: (state) => state.isDataReady,
-          builder: (context, isDataReady) {
-            if (!isDataReady) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final initState = cubit.state;
-            return Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 18),
-                        BlocBuilder<AddBiologicalControlCubit,
-                            AddBiologicalControlState>(
-                          builder: (context, state) {
-                            return SelectControlAgentWidget(
-                              agentTypes: initState.agentTypes,
-                              onSelect: cubit.onSelectControlAgent,
-                              initAgent: initState.agent,
-                              isShowError: state.isSelectControlAgentError,
-                            );
-                          },
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return Scaffold(
+      appBar: CmoAppBar(
+        title: widget.biologicalControlAgent == null
+            ? LocaleKeys.addBCA.tr()
+            : LocaleKeys.edit_bca.tr(),
+        leading: Assets.icons.icBackButton.svgBlack,
+        onTapLeading: onShowWarningDispose,
+        trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
+        onTapTrailing: onShowWarningDispose,
+      ),
+      body: BlocSelector<AddBiologicalControlCubit, AddBiologicalControlState,
+          bool>(
+        selector: (state) => state.isDataReady,
+        builder: (context, isDataReady) {
+          if (!isDataReady) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final initState = cubit.state;
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 18),
+                      BlocBuilder<AddBiologicalControlCubit,
+                          AddBiologicalControlState>(
+                        builder: (context, state) {
+                          return SelectControlAgentWidget(
+                            agentTypes: initState.agentTypes,
+                            onSelect: cubit.onSelectControlAgent,
+                            initAgent: initState.agent,
+                            isShowError: state.isSelectControlAgentError,
+                          );
+                        },
+                      ),
+                      _buildSelectDateReleased(initState.agent.dateReleased),
+                      _buildSelectStakeHolderWidget(),
+                      _buildSelectDescriptionWidget(),
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: GeneralCommentWidget(
+                          hintText: '',
+                          shouldShowTitle: true,
+                          titleTextStyle: context.textStyles.bodyBold.blueDark2,
+                          height: 120,
+                          initialValue: initState.agent.comment,
+                          textStyle: context.textStyles.bodyNormal.blueDark2,
+                          onChanged: cubit.onCommentChanged,
                         ),
-                        _buildSelectDateReleased(initState.agent.dateReleased),
-                        _buildSelectStakeHolderWidget(),
-                        _buildSelectDescriptionWidget(),
-                        const SizedBox(height: 12),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                          child: GeneralCommentWidget(
-                            hintText: '',
-                            shouldShowTitle: true,
-                            titleTextStyle: context.textStyles.bodyBold.blueDark2,
-                            height: 120,
-                            initialValue: initState.agent.comment,
-                            textStyle: context.textStyles.bodyNormal.blueDark2,
-                            onChanged: cubit.onCommentChanged,
-                          ),
-                        ),
-                        const SizedBox(height: 60),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 60),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom),
-                  child: CmoFilledButton(
-                    title: LocaleKeys.save.tr(),
-                    onTap: onSubmit,
-                    loading: loading,
-                  ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom),
+                child: CmoFilledButton(
+                  title: LocaleKeys.save.tr(),
+                  onTap: onSubmit,
+                  loading: loading,
                 ),
-              ],
-            );
-          },
-        ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

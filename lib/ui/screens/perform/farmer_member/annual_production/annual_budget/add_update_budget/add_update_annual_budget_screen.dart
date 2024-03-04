@@ -104,7 +104,7 @@ class _AddAnnualBudgetScreenState extends BaseStatefulWidgetState<AddAnnualBudge
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: BlocSelector<AnnualBudgetManagementCubit, AnnualBudgetManagementState, AnnualBudgetManagementState>(

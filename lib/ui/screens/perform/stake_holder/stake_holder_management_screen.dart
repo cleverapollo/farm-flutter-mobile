@@ -59,7 +59,7 @@ class _StakeHolderManagementScreenState extends BaseStatefulWidgetState<StakeHol
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: FutureBuilder(

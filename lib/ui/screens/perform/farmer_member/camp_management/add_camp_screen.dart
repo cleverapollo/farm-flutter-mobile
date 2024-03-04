@@ -46,7 +46,7 @@ class _AddCampScreenState extends BaseStatefulWidgetState<AddCampScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return BlocSelector<AddCampCubit, AddCampState, Farm?>(
       selector: (state) => state.farm,
       builder: (context, farm) {

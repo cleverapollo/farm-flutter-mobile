@@ -40,9 +40,7 @@ class MemberManagementScreen extends BaseStatefulWidget {
   State<MemberManagementScreen> createState() => _MemberManagementScreenState();
 }
 
-class _MemberManagementScreenState
-    extends BaseStatefulWidgetState<MemberManagementScreen> {
-  Timer? _searchDebounce;
+class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagementScreen> {
 
   Future<void> onRemoveFarm(Farm farm) async {
     await context.read<MemberManagementCubit>().onRemoveFarm(farm);
@@ -58,7 +56,7 @@ class _MemberManagementScreenState
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return CmoTappable(
       onTap: FocusScope.of(context).unfocus,
       child: BlocSelector<MemberManagementCubit, MemberManagementState,

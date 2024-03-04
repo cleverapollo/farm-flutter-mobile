@@ -101,7 +101,10 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
   }
 
   @override
-  Widget build(BuildContext context) {
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
     final initState = cubit.state;
     return GestureDetector(
       onTap: FocusManager.instance.primaryFocus?.unfocus,
@@ -111,9 +114,9 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
               ? LocaleKeys.addEmployeeGrievance.tr()
               : LocaleKeys.edit_employee_grievance.tr(),
           leading: Assets.icons.icBackButton.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
+          onTapLeading: onShowWarningDispose,
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-          onTapTrailing: Navigator.of(context).pop,
+          onTapTrailing: onShowWarningDispose,
         ),
         body: SafeArea(
           child: AutofillGroup(

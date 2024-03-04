@@ -51,7 +51,10 @@ class _AddingChemicalScreenState extends BaseStatefulWidgetState<AddingChemicalS
   }
 
   @override
-  Widget build(BuildContext context) {
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
     return BlocBuilder<RMChemicalCubit, RMChemicalState>(
       builder: (context, state) {
         final cubit = context.read<RMChemicalCubit>();
@@ -62,9 +65,9 @@ class _AddingChemicalScreenState extends BaseStatefulWidgetState<AddingChemicalS
                 ? LocaleKeys.add_chemical.tr()
                 : LocaleKeys.chemical_detail.tr(),
             leading: Assets.icons.icBackButton.svgBlack,
-            onTapLeading: Navigator.of(context).pop,
+            onTapLeading: onShowWarningDispose,
             trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-            onTapTrailing: Navigator.of(context).pop,
+            onTapTrailing: onShowWarningDispose,
           ),
           body: state.isLoading
               ? const Center(child: CircularProgressIndicator())

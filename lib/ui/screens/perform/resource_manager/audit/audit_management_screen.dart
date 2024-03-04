@@ -43,7 +43,7 @@ class _AuditManagementScreenState extends BaseStatefulWidgetState<AuditManagemen
   Timer? _debounceInputTimer;
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return BlocSelector<AuditListCubit, AuditListState, ResourceManagerUnit?>(
       selector: (state) => state.resourceManagerUnit,
       builder: (context, resourceManagerUnit) {

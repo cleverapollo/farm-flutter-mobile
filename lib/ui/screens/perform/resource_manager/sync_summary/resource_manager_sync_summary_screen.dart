@@ -32,13 +32,9 @@ class ResourceManagerSyncSummaryScreen extends BaseStatefulWidget {
 }
 
 class _ResourceManagerSyncSummaryScreenState extends BaseStatefulWidgetState<ResourceManagerSyncSummaryScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.syncSummary.tr(),

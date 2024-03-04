@@ -32,7 +32,7 @@ class PetsAndDiseaseScreen extends BaseStatefulWidget {
 
 class _PetsAndDiseaseScreenState extends BaseStatefulWidgetState<PetsAndDiseaseScreen> {
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
         appBar: CmoAppBar(
           title: LocaleKeys.pets_and_disease.tr(),

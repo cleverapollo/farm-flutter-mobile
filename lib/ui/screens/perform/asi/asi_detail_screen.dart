@@ -71,15 +71,18 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: widget.isEditing ? LocaleKeys.asi_detail.tr() : LocaleKeys.add_asi.tr(),
         subtitle: widget.farmName ?? '',
         trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
         leading: Assets.icons.icBackButton.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
-        onTapTrailing: Navigator.of(context).pop,
+        onTapLeading: onShowWarningDispose,
+        onTapTrailing: onShowWarningDispose,
       ),
       body: Stack(
         children: [

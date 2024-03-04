@@ -54,41 +54,39 @@ class _CmoDashboardBaseState extends BaseStatefulWidgetState<CmoDashboardBase> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: Scaffold(
-          key: scaffoldKey,
-          appBar: CmoAppBar(
-            title: LocaleKeys.dashboard.tr(),
-            subtitle: entityName,
-            leading: Assets.icons.icDrawer.svg(),
-            onTapLeading: () => scaffoldKey.currentState?.openDrawer(),
-          ),
-          drawer: CmoModeBuilder(
-            behaveBuilder: (_) => CmoMenuBase.behave(
-              onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
-            ),
-            resourceManagerBuilder: (_) => CmoMenuBase.resourceManager(
-              onTapClose: () {
-                scaffoldKey.currentState?.closeDrawer();
-              },
-            ),
-            farmerBuilder: (_) => CmoMenuBase.farmerMember(
-              onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
-            ),
-            haveNoDataBuilder: (_) => const SizedBox.shrink(),
-          ),
-          drawerScrimColor: Colors.transparent,
-          body: CmoModeBuilder(
-            behaveBuilder: (_) => const BehaveDashboardScreen(),
-            resourceManagerBuilder: (_) =>
-                const ResourceManagerDashboardScreen(),
-            farmerBuilder: (_) => const FarmerMemberDashboardScreen(),
-            haveNoDataBuilder: (_) => const HaveNoDataDashboard(),
-          ),
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return Scaffold(
+      key: scaffoldKey,
+      appBar: CmoAppBar(
+        title: LocaleKeys.dashboard.tr(),
+        subtitle: entityName,
+        leading: Assets.icons.icDrawer.svg(),
+        onTapLeading: () => scaffoldKey.currentState?.openDrawer(),
+      ),
+      drawer: CmoModeBuilder(
+        behaveBuilder: (_) => CmoMenuBase.behave(
+          onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
+        ),
+        resourceManagerBuilder: (_) => CmoMenuBase.resourceManager(
+          onTapClose: () {
+            scaffoldKey.currentState?.closeDrawer();
+          },
+        ),
+        farmerBuilder: (_) => CmoMenuBase.farmerMember(
+          onTapClose: () => scaffoldKey.currentState?.closeDrawer(),
+        ),
+        haveNoDataBuilder: (_) => const SizedBox.shrink(),
+      ),
+      drawerScrimColor: Colors.transparent,
+      body: CmoModeBuilder(
+        behaveBuilder: (_) => const BehaveDashboardScreen(),
+        resourceManagerBuilder: (_) =>
+        const ResourceManagerDashboardScreen(),
+        farmerBuilder: (_) => const FarmerMemberDashboardScreen(),
+        haveNoDataBuilder: (_) => const HaveNoDataDashboard(),
       ),
     );
   }

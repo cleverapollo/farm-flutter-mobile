@@ -56,11 +56,6 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
 
 class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<CompartmentMapsSummariesScreen> {
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   GoogleMapController? mapController;
 
   Set<Polyline> generatePolyline() {
@@ -277,15 +272,18 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
   }
 
   @override
-  Widget build(BuildContext context) {
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.compartments.tr(),
         subtitle: widget.farmName ?? '',
         leading: Assets.icons.icBackButton.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
+        onTapLeading: onShowWarningDispose,
         trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-        onTapTrailing: Navigator.of(context).pop,
+        onTapTrailing: onShowWarningDispose,
       ),
       body: Column(
         children: [

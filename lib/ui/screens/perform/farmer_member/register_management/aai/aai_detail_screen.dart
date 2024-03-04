@@ -117,19 +117,20 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
     final initState = cubit.state;
-    return GestureDetector(
-      onTap: FocusScope.of(context).unfocus,
-      child: Scaffold(
+    return Scaffold(
         appBar: CmoAppBar(
           title: initState.isAddNew
               ? LocaleKeys.add_aai.tr()
               : LocaleKeys.aai_detail.tr(),
           leading: Assets.icons.icBackButton.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
+          onTapLeading: onShowWarningDispose,
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-          onTapTrailing: Navigator.of(context).pop,
+          onTapTrailing: onShowWarningDispose,
         ),
         body: BlocSelector<AAIDetailCubit, AAIDetailState, bool>(
           selector: (state) => state.isDataReady,
@@ -257,8 +258,7 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
             );
           },
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildSelectWorkerWidget() {

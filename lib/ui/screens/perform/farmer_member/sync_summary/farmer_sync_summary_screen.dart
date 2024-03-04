@@ -24,7 +24,7 @@ class FarmerSyncSummaryScreen extends BaseStatefulWidget {
 
 class FarmerSyncSummaryScreenState extends BaseStatefulWidgetState<FarmerSyncSummaryScreen> {
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return BlocProvider<FarmerSyncSummaryCubit>(
       create: (_) => FarmerSyncSummaryCubit(
         userDeviceCubit: context.read<UserDeviceCubit>(),

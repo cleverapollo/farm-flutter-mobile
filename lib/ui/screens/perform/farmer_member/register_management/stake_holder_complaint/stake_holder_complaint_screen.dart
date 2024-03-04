@@ -78,7 +78,7 @@ class _StakeHolderComplaintScreenState extends BaseStatefulWidgetState<StakeHold
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.stakeholder_complaints.tr(),

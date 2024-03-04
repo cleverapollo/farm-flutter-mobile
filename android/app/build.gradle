@@ -2,10 +2,6 @@ def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('app/key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-    println('keystoreProperties')
-    println(keystoreProperties['keyAlias'])
-    println(keystoreProperties['keyPassword'])
-    println(keystoreProperties['storePassword'])
 }
 
 def localProperties = new Properties()

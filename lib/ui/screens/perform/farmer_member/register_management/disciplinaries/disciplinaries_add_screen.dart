@@ -65,7 +65,10 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
   }
 
   @override
-  Widget build(BuildContext context) {
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return BlocProvider<DisciplinariesCubit>(
       create: (_) => DisciplinariesCubit()..initAddData(data: widget.data),
@@ -75,9 +78,9 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
               ? LocaleKeys.add_disciplinary.tr()
               : LocaleKeys.disciplinary_detail.tr(),
           leading: Assets.icons.icBackButton.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
+          onTapLeading: onShowWarningDispose,
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-          onTapTrailing: Navigator.of(context).pop,
+          onTapTrailing: onShowWarningDispose,
         ),
         body: BlocSelector<DisciplinariesCubit, DisciplinariesState, bool>(
           selector: (state) => state.isLoading,

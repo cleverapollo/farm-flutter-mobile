@@ -34,7 +34,7 @@ class DisciplinariesScreen extends BaseStatefulWidget {
 
 class _DisciplinariesScreenState extends BaseStatefulWidgetState<DisciplinariesScreen> {
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return BlocSelector<DisciplinariesCubit, DisciplinariesState, bool>(
         selector: (state) => state.isLoading,
         builder: (context, isLoading) {

@@ -125,18 +125,19 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: FocusScope.of(context).unfocus,
-      child: Scaffold(
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return Scaffold(
         appBar: CmoAppBar(
           title: widget.complaint == null
               ? LocaleKeys.addStakeHolderComplaint.tr()
               : LocaleKeys.stakeholder_complaint_detail.tr(),
           leading: Assets.icons.icBackButton.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
+          onTapLeading: onShowWarningDispose,
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-          onTapTrailing: Navigator.of(context).pop,
+          onTapTrailing: onShowWarningDispose,
         ),
         body: SafeArea(
           child: BlocSelector<AddStakeHolderComplaintCubit,
@@ -222,8 +223,7 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
             },
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _selectComplaintName(

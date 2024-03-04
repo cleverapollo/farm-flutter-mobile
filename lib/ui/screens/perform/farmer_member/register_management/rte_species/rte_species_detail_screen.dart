@@ -71,18 +71,19 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return Scaffold(
         appBar: CmoAppBar(
           title: widget.isEditing
               ? LocaleKeys.edit_rte_species.tr()
               : LocaleKeys.addRteSpecies.tr(),
           leading: Assets.icons.icBackButton.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
+          onTapLeading: onShowWarningDispose,
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-          onTapTrailing: Navigator.of(context).pop,
+          onTapTrailing: onShowWarningDispose,
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 20),
@@ -125,8 +126,7 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
         persistentFooterButtons: [
           _buildButton(),
         ],
-      ),
-    );
+      );
   }
 
   Widget _buildButton() {

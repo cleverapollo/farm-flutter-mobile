@@ -520,7 +520,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
     try {
       logger.d('Get unsynced compartment');
-      final compartments = await cmoDatabaseMasterService.getCompartmentsByGroupSchemeId(groupSchemeId: groupSchemeId);
+      final compartments = await cmoDatabaseMasterService.getAllUnsynedCompartmentsByGroupSchemeId(groupSchemeId: groupSchemeId);
       if (compartments.isNotBlank) {
         logger.d('Unsynced compartments count: ${compartments.length}');
         for (final compartment in compartments) {

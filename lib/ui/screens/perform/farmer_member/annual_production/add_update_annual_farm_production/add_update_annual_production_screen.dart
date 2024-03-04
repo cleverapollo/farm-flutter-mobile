@@ -124,7 +124,7 @@ class _AddUpdateAnnualProductionScreenState extends BaseStatefulWidgetState<AddU
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: BlocSelector<AnnualFarmProductionCubit, AnnualFarmProductionState,

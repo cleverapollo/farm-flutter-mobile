@@ -73,7 +73,7 @@ class _EmployeeGrievanceScreenState extends BaseStatefulWidgetState<EmployeeGrie
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.employee_grievance.tr(),

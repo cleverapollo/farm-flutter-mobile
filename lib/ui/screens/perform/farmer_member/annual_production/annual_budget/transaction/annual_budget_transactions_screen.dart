@@ -54,7 +54,7 @@ class _AnnualBudgetTransactionsScreenState
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.transactions.tr(),

@@ -46,7 +46,7 @@ class _FireManagementScreenState extends BaseStatefulWidgetState<FireManagementS
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return BlocBuilder<FireCubit, FireState>(
         builder: (context, state) {
           final cubit = context.read<FireCubit>();

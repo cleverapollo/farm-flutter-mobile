@@ -77,30 +77,6 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
     _compartmentDetailCubit.fetchData();
   }
 
-  Future<void> navigateToMap() async {
-    // List<PolygonItem>? points = <PolygonItem>[];
-    // final compartment = context.read<CompartmentDetailCubit>().state.compartment;
-    //
-    // if (compartment.polygon.isNotBlank) {
-    //   final jsonArray = json.decode(compartment.polygon ?? '') as List?;
-    //   points = jsonArray
-    //       ?.map((model) => PolygonItem.fromJson(model as Map<String, dynamic>))
-    //       .toList();
-    // }
-    //
-    // await CompartmentMapScreen.push(
-    //   context,
-    //   farmId: context.read<CompartmentDetailCubit>().state.farmId,
-    //   farmName: widget.farmName,
-    //   campId: context.read<CompartmentDetailCubit>().state.campId,
-    //   compartment: compartment,
-    //   points: points
-    //       ?.map((e) => LatLng(e.latitude ?? 0, e.longitude ?? 0))
-    //       .toList(),
-    //   onSave: _compartmentDetailCubit.onChangeLocation,
-    // );
-  }
-
   Future<void> navigateToMapSummaries() async {
     await CompartmentMapsSummariesScreen.push(
       context,
@@ -112,258 +88,253 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
   }
 
   @override
-  Widget build(BuildContext context) {
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
     final initCompartment = context.read<CompartmentDetailCubit>().state.compartment;
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: CmoAppBar(
-          title: LocaleKeys.compartment.tr(),
-          subtitle: widget.farmName ?? '',
-          leading: Assets.icons.icBackButton.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, bool>(
-            selector: (_) => context.read<CompartmentDetailCubit>().isConservationArea(),
-            builder: (context, isConservationArea) {
-              return Stack(
-                children: [
-                  Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 28),
-                        alignment: Alignment.centerLeft,
-                        color: context.colors.blueDark1,
-                        child: Text(
-                          LocaleKeys.details.tr(),
-                          style: context.textStyles.bodyBold.white,
-                        ),
+    return Scaffold(
+      appBar: CmoAppBar(
+        title: LocaleKeys.compartment.tr(),
+        subtitle: widget.farmName ?? '',
+        leading: Assets.icons.icBackButton.svgBlack,
+        onTapLeading: onShowWarningDispose,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, bool>(
+          selector: (_) => context.read<CompartmentDetailCubit>().isConservationArea(),
+          builder: (context, isConservationArea) {
+            return Stack(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 28),
+                      alignment: Alignment.centerLeft,
+                      color: context.colors.blueDark1,
+                      child: Text(
+                        LocaleKeys.details.tr(),
+                        style: context.textStyles.bodyBold.white,
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                BlocSelector<CompartmentDetailCubit, CompartmentDetailState, bool>(
-                                  selector: (state) => state.isCompartmentNameError,
-                                  builder: (context, isCompartmentNameError) {
-                                    return AttributeItem(
-                                      inactive: isConservationArea,
-                                      isShowError: isCompartmentNameError,
-                                      errorText: LocaleKeys.compartmentName.tr(),
-                                      child: InputAttributeItem(
-                                        labelText: LocaleKeys.compartmentName.tr(),
-                                        labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                                        textStyle: context.textStyles.bodyNormal.blueDark2,
-                                        initialValue: initCompartment.unitNumber,
-                                        onChanged: _compartmentDetailCubit.onCompartmentNameChanged,
-                                      ),
-                                    );
-                                  },
-                                ),
-                                buildSelectAreaType(),
-                                buildSelectProductGroupTemplate(),
-                                buildSelectSpecies(),
-                                BlocSelector<CompartmentDetailCubit, CompartmentDetailState, Compartment>(
-                                  selector: (state) => state.compartment,
-                                  builder: (context, compartment) {
-                                    return AttributeItem(
-                                      child: InkWell(
-                                        onTap: navigateToMapSummaries,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  widget.isEditing
-                                                      ? LocaleKeys.view_edit_polygon_area.tr()
-                                                      : LocaleKeys.outline_polygon_area.tr(),
-                                                  style: context.textStyles.bodyBold
-                                                      .blueDark2,
-                                                ),
-                                              ),
-                                              Assets.icons.icArrowRight.svgBlack,
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                BlocSelector<CompartmentDetailCubit, CompartmentDetailState, Compartment>(
-                                  selector: (state) => state.compartment,
-                                  builder: (context, compartment) {
-                                    return AttributeItem(
-                                      child: InkWell(
-                                        onTap: navigateToMap,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                          child: Row(
-                                            children: [
-                                              const SizedBox(width: 12),
-                                              Text(
-                                                '${LocaleKeys.polygonArea.tr()} (ha)',
-                                                style: context.textStyles.bodyBold.blueDark2,
-                                              ),
-                                              const SizedBox(width: 36),
-                                              Text(
-                                                compartment.polygonArea == null
-                                                    ? ''
-                                                    : '${compartment.polygonArea?.toStringAsFixed(2)}ha ${LocaleKeys.measured.tr()}',
-                                                style: context.textStyles.bodyNormal.blueDark2,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                BlocSelector<CompartmentDetailCubit, CompartmentDetailState, bool>(
-                                  selector: (state) => state.isEffectiveAreaError,
-                                  builder: (context, isEffectiveAreaError) {
-                                    return AttributeItem(
-                                      inactive: isConservationArea,
-                                      errorText: '${LocaleKeys.effectiveArea.tr()} (%)',
-                                      isShowError: isEffectiveAreaError,
-                                      child: PercentageInputAttributeItem(
-                                        labelText: '${LocaleKeys.effectiveArea.tr()} (%)',
-                                        labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                                        textStyle: context.textStyles.bodyNormal.blueDark2,
-                                        initialValue: (initCompartment.effectiveArea ?? '').toString(),
-                                        onChanged: (value) =>
-                                            _compartmentDetailCubit.onEffectiveAreaChanged(double.tryParse(value)),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                AttributeItem(
-                                  inactive: isConservationArea,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(width: 16),
-                                        Expanded(
-                                          child: Text(
-                                            LocaleKeys.espacement.tr(),
-                                            style: context.textStyles.bodyBold.blueDark2,
-                                          ),
-                                        ),
-                                        EspacementInputWidget(
-                                          widthValue: (initCompartment.espacementWidth ?? '').toString(),
-                                          lengthValue: (initCompartment.espacementLength ?? '').toString(),
-                                          onWidthChanged: (value) {
-                                            _compartmentDetailCubit.onEspacementWidthChanged(value);
-                                          },
-                                          onLengthChanged: (value) {
-                                            _compartmentDetailCubit.onEspacementLengthChanged(value);
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                AttributeItem(
-                                  inactive: isConservationArea,
-                                  child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, String?>(
-                                    selector: (state) => state.compartment.plannedPlantDT,
-                                    builder: (context, plannedDate) {
-                                      final plannedDateTime = DateTime.tryParse(plannedDate ?? '');
-                                      return DatePickerWidget(
-                                        lastDate: DateTime.now(),
-                                        firstDate: DateTime.now().add(const Duration(days: -Constants.DEFAULT_DAY_DURATION_OFFSET)),
-                                        initialDate: plannedDateTime,
-                                        onConfirm: _compartmentDetailCubit.onPlannedPlantDateChanged,
-                                        title: LocaleKeys.plannedPlantDate.tr(),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                AttributeItem(
-                                  inactive: isConservationArea,
-                                  child: PercentageInputAttributeItem(
-                                    labelText: '${LocaleKeys.survival.tr()} (%)',
-                                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                                    textStyle: context.textStyles.bodyNormal.blueDark2,
-                                    initialValue: (initCompartment.survival ?? '').toString(),
-                                    hintText: '${LocaleKeys.survival.tr()} %',
-                                    onChanged: (value) =>
-                                        _compartmentDetailCubit.onSurvivalPercentageDateChanged(double.tryParse(value)),
-                                  ),
-                                ),
-                                buildingStockWidget(),
-                                buildingTotalStockingWidget(),
-                                AttributeItem(
-                                  inactive: isConservationArea,
-                                  child: InputAttributeItem(
-                                      labelText: '${LocaleKeys.rotation.tr()} (${LocaleKeys.years.tr()})',
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              BlocSelector<CompartmentDetailCubit, CompartmentDetailState, bool>(
+                                selector: (state) => state.isCompartmentNameError,
+                                builder: (context, isCompartmentNameError) {
+                                  return AttributeItem(
+                                    inactive: isConservationArea,
+                                    isShowError: isCompartmentNameError,
+                                    errorText: LocaleKeys.compartmentName.tr(),
+                                    child: InputAttributeItem(
+                                      labelText: LocaleKeys.compartmentName.tr(),
                                       labelTextStyle: context.textStyles.bodyBold.blueDark2,
                                       textStyle: context.textStyles.bodyNormal.blueDark2,
-                                      initialValue: (initCompartment.rotationNumber ?? '').toString(),
-                                      keyboardType: TextInputType.phone,
-                                      hintText: LocaleKeys.rotation.tr(),
-                                      onChanged: (value) =>
-                                          _compartmentDetailCubit.onRotationChanged(int.tryParse(value))),
-                                ),
-                                AttributeItem(
-                                  inactive: isConservationArea,
-                                  child: InputAttributeItem(
-                                    labelText: '${LocaleKeys.mai.tr()} m3/ha/yr',
-                                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
-                                    textStyle: context.textStyles.bodyNormal.blueDark2,
-                                    initialValue: (initCompartment.utilMAI ?? '').toString(),
-                                    keyboardType: TextInputType.phone,
-                                    hintText: LocaleKeys.mai.tr(),
-                                    onChanged: (value) => _compartmentDetailCubit.onMAIChanged(
-                                      int.tryParse(value),
+                                      initialValue: initCompartment.unitNumber,
+                                      onChanged: _compartmentDetailCubit.onCompartmentNameChanged,
                                     ),
+                                  );
+                                },
+                              ),
+                              buildSelectAreaType(),
+                              buildSelectProductGroupTemplate(),
+                              buildSelectSpecies(),
+                              BlocSelector<CompartmentDetailCubit, CompartmentDetailState, Compartment>(
+                                selector: (state) => state.compartment,
+                                builder: (context, compartment) {
+                                  return AttributeItem(
+                                    child: InkWell(
+                                      onTap: navigateToMapSummaries,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                widget.isEditing
+                                                    ? LocaleKeys.view_edit_polygon_area.tr()
+                                                    : LocaleKeys.outline_polygon_area.tr(),
+                                                style: context.textStyles.bodyBold
+                                                    .blueDark2,
+                                              ),
+                                            ),
+                                            Assets.icons.icArrowRight.svgBlack,
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              BlocSelector<CompartmentDetailCubit, CompartmentDetailState, Compartment>(
+                                selector: (state) => state.compartment,
+                                builder: (context, compartment) {
+                                  return AttributeItem(
+                                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                    child: Row(
+                                      children: [
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          '${LocaleKeys.polygonArea.tr()} (ha)',
+                                          style: context.textStyles.bodyBold.blueDark2,
+                                        ),
+                                        const SizedBox(width: 36),
+                                        Text(
+                                          compartment.polygonArea == null
+                                              ? ''
+                                              : '${compartment.polygonArea?.toStringAsFixed(2)}ha ${LocaleKeys.measured.tr()}',
+                                          style: context.textStyles.bodyNormal.blueDark2,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                              BlocSelector<CompartmentDetailCubit, CompartmentDetailState, bool>(
+                                selector: (state) => state.isEffectiveAreaError,
+                                builder: (context, isEffectiveAreaError) {
+                                  return AttributeItem(
+                                    inactive: isConservationArea,
+                                    errorText: '${LocaleKeys.effectiveArea.tr()} (%)',
+                                    isShowError: isEffectiveAreaError,
+                                    child: PercentageInputAttributeItem(
+                                      labelText: '${LocaleKeys.effectiveArea.tr()} (%)',
+                                      labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                      textStyle: context.textStyles.bodyNormal.blueDark2,
+                                      initialValue: (initCompartment.effectiveArea ?? '').toString(),
+                                      onChanged: (value) =>
+                                          _compartmentDetailCubit.onEffectiveAreaChanged(double.tryParse(value)),
+                                    ),
+                                  );
+                                },
+                              ),
+                              AttributeItem(
+                                inactive: isConservationArea,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  child: Row(
+                                    children: [
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Text(
+                                          LocaleKeys.espacement.tr(),
+                                          style: context.textStyles.bodyBold.blueDark2,
+                                        ),
+                                      ),
+                                      EspacementInputWidget(
+                                        widthValue: (initCompartment.espacementWidth ?? '').toString(),
+                                        lengthValue: (initCompartment.espacementLength ?? '').toString(),
+                                        onWidthChanged: (value) {
+                                          _compartmentDetailCubit.onEspacementWidthChanged(value);
+                                        },
+                                        onLengthChanged: (value) {
+                                          _compartmentDetailCubit.onEspacementLengthChanged(value);
+                                        },
+                                      )
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                              AttributeItem(
+                                inactive: isConservationArea,
+                                child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, String?>(
+                                  selector: (state) => state.compartment.plannedPlantDT,
+                                  builder: (context, plannedDate) {
+                                    final plannedDateTime = DateTime.tryParse(plannedDate ?? '');
+                                    return DatePickerWidget(
+                                      lastDate: DateTime.now(),
+                                      firstDate: DateTime.now().add(const Duration(days: -Constants.DEFAULT_DAY_DURATION_OFFSET)),
+                                      initialDate: plannedDateTime,
+                                      onConfirm: _compartmentDetailCubit.onPlannedPlantDateChanged,
+                                      title: LocaleKeys.plannedPlantDate.tr(),
+                                    );
+                                  },
+                                ),
+                              ),
+                              AttributeItem(
+                                inactive: isConservationArea,
+                                child: PercentageInputAttributeItem(
+                                  labelText: '${LocaleKeys.survival.tr()} (%)',
+                                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                  textStyle: context.textStyles.bodyNormal.blueDark2,
+                                  initialValue: (initCompartment.survival ?? '').toString(),
+                                  hintText: '${LocaleKeys.survival.tr()} %',
+                                  onChanged: (value) =>
+                                      _compartmentDetailCubit.onSurvivalPercentageDateChanged(double.tryParse(value)),
+                                ),
+                              ),
+                              buildingStockWidget(),
+                              buildingTotalStockingWidget(),
+                              AttributeItem(
+                                inactive: isConservationArea,
+                                child: InputAttributeItem(
+                                    labelText: '${LocaleKeys.rotation.tr()} (${LocaleKeys.years.tr()})',
+                                    labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                    textStyle: context.textStyles.bodyNormal.blueDark2,
+                                    initialValue: (initCompartment.rotationNumber ?? '').toString(),
+                                    keyboardType: TextInputType.phone,
+                                    hintText: LocaleKeys.rotation.tr(),
+                                    onChanged: (value) =>
+                                        _compartmentDetailCubit.onRotationChanged(int.tryParse(value))),
+                              ),
+                              AttributeItem(
+                                inactive: isConservationArea,
+                                child: InputAttributeItem(
+                                  labelText: '${LocaleKeys.mai.tr()} m3/ha/yr',
+                                  labelTextStyle: context.textStyles.bodyBold.blueDark2,
+                                  textStyle: context.textStyles.bodyNormal.blueDark2,
+                                  initialValue: (initCompartment.utilMAI ?? '').toString(),
+                                  keyboardType: TextInputType.phone,
+                                  hintText: LocaleKeys.mai.tr(),
+                                  onChanged: (value) => _compartmentDetailCubit.onMAIChanged(
+                                    int.tryParse(value),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      BlocBuilder<CompartmentDetailCubit, CompartmentDetailState>(
-                        builder: (context, state) {
-                          return CmoFilledButton(
-                            title: LocaleKeys.save.tr(),
-                            onTap: () async {
-                              final errorMessage = _compartmentDetailCubit
-                                  .checkCompleteRequiredField();
-                              if (errorMessage.isNotBlank) {
-                                showSnackError(msg: errorMessage!);
-                                return;
-                              }
-                              await _compartmentDetailCubit.saveCompartment();
-                              if (context.mounted) {
-                                Navigator.of(context).pop();
-                              }
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  BlocSelector<CompartmentDetailCubit, CompartmentDetailState, bool>(
-                    selector: (state) => state.loading,
-                    builder: (context, loading) {
-                      if (!loading) return Container();
-                      return Container(
-                        alignment: Alignment.center,
-                        child: const CircularProgressIndicator(),
-                      );
-                    },
-                  ),
-                ],
-              );
-            },
-          ),
+                    ),
+                    BlocBuilder<CompartmentDetailCubit, CompartmentDetailState>(
+                      builder: (context, state) {
+                        return CmoFilledButton(
+                          title: LocaleKeys.save.tr(),
+                          onTap: () async {
+                            final errorMessage = _compartmentDetailCubit
+                                .checkCompleteRequiredField();
+                            if (errorMessage.isNotBlank) {
+                              showSnackError(msg: errorMessage!);
+                              return;
+                            }
+                            await _compartmentDetailCubit.saveCompartment();
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                BlocSelector<CompartmentDetailCubit, CompartmentDetailState, bool>(
+                  selector: (state) => state.loading,
+                  builder: (context, loading) {
+                    if (!loading) return Container();
+                    return Container(
+                      alignment: Alignment.center,
+                      child: const CircularProgressIndicator(),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

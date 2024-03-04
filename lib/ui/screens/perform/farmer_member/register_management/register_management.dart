@@ -141,7 +141,7 @@ class _RegisterManagementState extends BaseStatefulWidgetState<RegisterManagemen
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.monitoring.tr(),

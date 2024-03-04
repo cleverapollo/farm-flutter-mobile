@@ -4247,7 +4247,7 @@ class CmoDatabaseMasterService {
     return null;
   }
 
-  Future<List<Compartment>> getCompartmentsByGroupSchemeId({
+  Future<List<Compartment>> getAllUnsynedCompartmentsByGroupSchemeId({
     int? groupSchemeId,
   }) async {
     if (groupSchemeId == null) return <Compartment>[];
@@ -4255,7 +4255,6 @@ class CmoDatabaseMasterService {
     try {
       final compartments = await db.compartments
           .filter()
-          .isActiveEqualTo(true)
           .isMasterdataSyncedEqualTo(false)
           .groupSchemeIdEqualTo(groupSchemeId)
           .sortByUnitNumber()

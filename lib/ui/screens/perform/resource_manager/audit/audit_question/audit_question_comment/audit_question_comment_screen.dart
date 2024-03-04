@@ -82,7 +82,7 @@ class _AuditQuestionCommentScreenState extends BaseStatefulWidgetState<AuditQues
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(

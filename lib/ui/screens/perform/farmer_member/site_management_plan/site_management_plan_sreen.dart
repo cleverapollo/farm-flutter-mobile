@@ -37,7 +37,7 @@ class _SiteManagementPlanScreenState extends BaseStatefulWidgetState<SiteManagem
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.siteManagementPlan.tr(),

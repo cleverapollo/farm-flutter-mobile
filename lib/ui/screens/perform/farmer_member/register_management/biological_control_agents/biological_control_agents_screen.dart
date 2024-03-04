@@ -136,7 +136,7 @@ class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Biolog
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.biological_control_agents.tr(),

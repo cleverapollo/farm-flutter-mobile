@@ -167,7 +167,7 @@ class _SelectLocationState extends BaseStatefulWidgetState<SelectLocationScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Stack(
       children: [
         Positioned.fill(

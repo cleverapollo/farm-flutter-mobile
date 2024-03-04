@@ -47,7 +47,7 @@ class _LabourManagementScreenState extends BaseStatefulWidgetState<LabourManagem
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.labourManagement.tr(),

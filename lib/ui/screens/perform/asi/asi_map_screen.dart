@@ -113,15 +113,18 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.asi.tr(),
         subtitle: widget.farmName ?? '',
         leading: Assets.icons.icBackButton.svgBlack,
-        onTapLeading: Navigator.of(context).pop,
+        onTapLeading: onShowWarningDispose,
         trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-        onTapTrailing: Navigator.of(context).pop,
+        onTapTrailing: onShowWarningDispose,
       ),
       body: Column(
         children: [

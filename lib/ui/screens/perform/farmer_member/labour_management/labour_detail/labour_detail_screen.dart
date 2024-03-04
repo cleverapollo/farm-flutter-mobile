@@ -75,10 +75,11 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return Scaffold(
         appBar: CmoAppBar(
           title: widget.isEditing
               ? LocaleKeys.labour_detail.tr()
@@ -86,9 +87,9 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
           subtitle: context.read<LabourDetailCubit>().state.activeFarm?.farmName,
           subtitleTextStyle: context.textStyles.bodyBold.blue,
           leading: Assets.icons.icBackButton.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
+          onTapLeading: onShowWarningDispose,
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-          onTapTrailing: Navigator.of(context).pop,
+          onTapTrailing: onShowWarningDispose,
         ),
         body: Column(
           children: [
@@ -148,8 +149,7 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget firstNameWidget() {

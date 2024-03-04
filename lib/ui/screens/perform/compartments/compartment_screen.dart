@@ -25,14 +25,14 @@ class CompartmentScreen extends BaseStatefulWidget {
   final String? farmName;
   final bool shouldDisplayFarmNameOnBreadcrumbs;
 
-  static Future<AddingCompartmentResult?> push(
+  static Future<void> push(
     BuildContext context, {
     String? farmId,
     String? farmName,
     String? campId,
     bool shouldDisplayFarmNameOnBreadcrumbs = false,
   }) {
-    return Navigator.of(context).push<AddingCompartmentResult?>(
+    return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
@@ -53,16 +53,8 @@ class CompartmentScreen extends BaseStatefulWidget {
 
 class _CompartmentScreenState extends BaseStatefulWidgetState<CompartmentScreen> {
 
-  void onBack(
-    List<Compartment> listCompartment,
-    double total,
-  ) {
-    Navigator.of(context).pop(
-      AddingCompartmentResult(
-        compartments: listCompartment,
-        totalAreaHa: total,
-      ),
-    );
+  void onBack() {
+    Navigator.of(context).pop();
   }
 
   Future<void> navigateToDetail({Compartment? compartment}) async {
@@ -75,32 +67,29 @@ class _CompartmentScreenState extends BaseStatefulWidgetState<CompartmentScreen>
         compartment: compartment,
         listCompartments: state.listCompartment,
       );
-    // }
 
     await context.read<CompartmentCubit>().initData();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return BlocBuilder<CompartmentCubit, CompartmentState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: CmoAppBar(
+            title: LocaleKeys.compartment.tr(),
+            subtitle: widget.farmName ?? '',
+            leading: Assets.icons.icBackButton.svgBlack,
+            trailing: Assets.icons.icUpdatedAddButton.svgBlack,
+            onTapLeading: onGoBack,
+            onTapTrailing: navigateToDetail,
+          ),
+          body: contentWidget(state),
+        );
       },
-      child: BlocBuilder<CompartmentCubit, CompartmentState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: CmoAppBar(
-              title: LocaleKeys.compartment.tr(),
-              subtitle: widget.farmName ?? '',
-              leading: Assets.icons.icBackButton.svgBlack,
-              trailing: Assets.icons.icUpdatedAddButton.svgBlack,
-              onTapLeading: () => onBack(state.listCompartment, state.totalSize),
-              onTapTrailing: navigateToDetail,
-            ),
-            body: contentWidget(state),
-          );
-        },
-      ),
     );
   }
 
@@ -136,11 +125,4 @@ class _CompartmentScreenState extends BaseStatefulWidgetState<CompartmentScreen>
             ),
     );
   }
-}
-
-class AddingCompartmentResult {
-  List<Compartment>? compartments;
-  double totalAreaHa = 0;
-
-  AddingCompartmentResult({this.compartments, this.totalAreaHa = 0});
 }

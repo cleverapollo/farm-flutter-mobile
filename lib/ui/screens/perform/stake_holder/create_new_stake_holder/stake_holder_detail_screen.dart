@@ -85,10 +85,11 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return Scaffold(
         appBar: _buildCmoAppBar(context),
         body: Column(
           children: [
@@ -247,8 +248,7 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   PreferredSize _buildCmoAppBar(BuildContext context) {
@@ -269,7 +269,7 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
                         : LocaleKeys.add_local_neighbours_detail.tr(),
                     subtitle: snapshot.data?.farmName ?? '',
                     leading: Assets.icons.icBackButton.svgBlack,
-                    onTapLeading: Navigator.of(context).pop,
+                    onTapLeading: onShowWarningDispose,
                   );
                 },
               ),
@@ -281,7 +281,7 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
                 ? LocaleKeys.edit_stakeholder.tr()
                 : LocaleKeys.add_stakeholder.tr(),
             leading: Assets.icons.icBackButton.svgBlack,
-            onTapLeading: Navigator.of(context).pop,
+            onTapLeading: onShowWarningDispose,
           );
         },
       ),

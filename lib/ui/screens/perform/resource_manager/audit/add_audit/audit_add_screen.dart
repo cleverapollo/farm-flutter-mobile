@@ -77,7 +77,7 @@ class _AuditAddScreen extends BaseStatefulWidgetState<AuditAddScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: BlocSelector<AuditCubit, AuditState, String>(

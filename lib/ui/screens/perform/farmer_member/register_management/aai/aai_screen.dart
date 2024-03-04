@@ -50,7 +50,7 @@ class _AAIScreenState extends BaseStatefulWidgetState<AAIScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.accident_incidents.tr(),

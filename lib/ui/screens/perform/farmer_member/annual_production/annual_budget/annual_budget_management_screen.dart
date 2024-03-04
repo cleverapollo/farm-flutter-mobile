@@ -41,7 +41,7 @@ class _AnnualBudgetManagementScreenState extends BaseStatefulWidgetState<AnnualB
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return BlocSelector<AnnualBudgetManagementCubit,
         AnnualBudgetManagementState, AnnualBudgetManagementState>(
       selector: (state) => state,

@@ -40,7 +40,7 @@ class _AnnualProductionManagementScreen extends BaseStatefulWidgetState<AnnualPr
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return BlocSelector<AnnualFarmProductionCubit, AnnualFarmProductionState,
         AnnualFarmProductionState>(
       selector: (state) => state,

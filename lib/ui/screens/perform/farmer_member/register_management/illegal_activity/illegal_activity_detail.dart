@@ -71,18 +71,19 @@ class _IllegalActivityDetailState extends BaseStatefulWidgetState<IllegalActivit
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: FocusScope.of(context).unfocus,
-      child: Scaffold(
+  bool get canPopWithoutWarningDialog => false;
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return Scaffold(
         appBar: CmoAppBar(
           title: widget.isEditing
               ? LocaleKeys.illegal_activity_detail.tr()
               : LocaleKeys.add_illegal_activity.tr(),
           leading: Assets.icons.icBackButton.svgBlack,
-          onTapLeading: Navigator.of(context).pop,
+          onTapLeading: onShowWarningDispose,
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
-          onTapTrailing: Navigator.of(context).pop,
+          onTapTrailing: onShowWarningDispose,
         ),
         body: SafeArea(
             child: Column(
@@ -169,8 +170,7 @@ class _IllegalActivityDetailState extends BaseStatefulWidgetState<IllegalActivit
             ),
           ],
         )),
-      ),
-    );
+      );
   }
 
   Widget complaintNameWidget() {

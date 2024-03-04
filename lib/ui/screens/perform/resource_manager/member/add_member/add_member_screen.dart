@@ -72,7 +72,7 @@ class _AddMemberScreenState extends BaseStatefulWidgetState<AddMemberScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: widget.farm == null ? LocaleKeys.addMember.tr() : LocaleKeys.member_detail.tr(),
