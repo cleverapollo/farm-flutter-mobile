@@ -128,7 +128,7 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
                           color: context.colors.blue,
                           alignment: Alignment.center,
                           child: Text(
-                            LocaleKeys.keep_current_session.tr(),
+                            LocaleKeys.current_session.tr(),
                             style: context.textStyles.bodyBold.copyWith(color: context.colors.white),
                           ),
                         ),
