@@ -13,6 +13,7 @@ class MemberDetailMapViewState {
     this.currentUserRole,
     this.rteSpecies = const <RteSpecies>[],
     this.asis = const <Asi>[],
+    this.visibleRegion,
   });
 
   final Farm? farm;
@@ -27,6 +28,7 @@ class MemberDetailMapViewState {
   final UserRoleEnum? currentUserRole;
   final List<Asi> asis;
   final List<RteSpecies> rteSpecies;
+  final LatLngBounds? visibleRegion;
 
   MemberDetailMapViewState copyWith({
     Farm? farm,
@@ -41,6 +43,7 @@ class MemberDetailMapViewState {
     UserRoleEnum? currentUserRole,
     List<Asi>? asis,
     List<RteSpecies>? rteSpecies,
+    LatLngBounds? visibleRegion,
   }) {
     return MemberDetailMapViewState(
       farm: farm ?? this.farm,
@@ -55,6 +58,7 @@ class MemberDetailMapViewState {
       currentUserRole: currentUserRole ?? this.currentUserRole,
       asis: asis ?? this.asis,
       rteSpecies: rteSpecies ?? this.rteSpecies,
+      visibleRegion: visibleRegion ?? this.visibleRegion,
     );
   }
 }

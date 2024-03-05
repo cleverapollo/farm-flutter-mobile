@@ -3,6 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/components/ignore_pointer_loading.dart';
 import 'package:cmo/ui/components/map_center_icon.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
@@ -187,14 +188,18 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
   Set<Polygon> generatePolygon() {
     final state = context.read<CompartmentMapsSummariesCubit>().state;
     final polygon = <Polygon>{};
+    final visibleRegion = state.visibleRegion;
 
     for (final compartmentMapDetail in state.listCompartmentMapDetails) {
-      if (compartmentMapDetail.compartment.localCompartmentId == state.selectedCompartment.localCompartmentId) {
-        continue;
-      } else {
-        final generatePolygon = generateSetPolygonFromCompartmentMapDetail(compartmentMapDetail);
-        if (generatePolygon != null) {
-          polygon.add(generatePolygon);
+      final isCompartmentVisible = visibleRegion?.contains(compartmentMapDetail.compartment.centerPoint());
+      if (isCompartmentVisible != null && isCompartmentVisible) {
+        if (compartmentMapDetail.compartment.localCompartmentId == state.selectedCompartment.localCompartmentId) {
+          continue;
+        } else {
+          final generatePolygon = generateSetPolygonFromCompartmentMapDetail(compartmentMapDetail);
+          if (generatePolygon != null) {
+            polygon.add(generatePolygon);
+          }
         }
       }
     }
@@ -301,9 +306,12 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                       mapType: MapType.satellite,
                       myLocationEnabled: true,
                       markers: Set.of(state.temporaryMarkers),
-                      onCameraMove: (position) => context
-                          .read<CompartmentMapsSummariesCubit>()
-                          .onCameraMove(position),
+                        onCameraMove: (position) async {
+                          final visibleRegion = await mapController?.getVisibleRegion();
+                          context
+                              .read<CompartmentMapsSummariesCubit>()
+                              .onCameraMove(position, visibleRegion,);
+                        },
                       onMapCreated: (GoogleMapController controller) {
                         mapController = controller;
                         MapUtils.checkLocationPermission(
@@ -319,6 +327,16 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                   },
                 ),
                 const MapCenterIcon(),
+                Positioned.fill(
+                  child: BlocSelector<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState, bool>(
+                    selector: (state) => state.loading,
+                    builder: (context, loading) {
+                      return loading
+                          ? const IgnorePointerLoading()
+                          : const SizedBox.shrink();
+                    },
+                  ),
+                ),
               ],
             ),
           ),

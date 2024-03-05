@@ -56,6 +56,14 @@ class MemberDetailMapViewCubit extends Cubit<MemberDetailMapViewState> {
     await generateListMarker();
   }
 
+  void onCameraMove(LatLngBounds? visibleRegion) {
+    emit(
+      state.copyWith(
+        visibleRegion: visibleRegion,
+      ),
+    );
+  }
+
   Future<void> updateShowCompartmentName() async {
     emit(
       state.copyWith(

@@ -24,15 +24,25 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
   Future<void> initMapData() async {
     emit(state.copyWith(loading: true));
     final listCompartmentMapDetails = <CompartmentMapDetail>[];
-    final listCompartments = await cmoDatabaseMasterService.getCompartmentByFarmId(state.farmId);
+    final activeGroupScheme = await configService.getActiveGroupScheme();
+    final listCompartments = await cmoDatabaseMasterService.getCompartmentsByGroupSchemeId(
+      groupSchemeId: activeGroupScheme?.groupSchemeId,
+    );
+
     if (listCompartments.isNotBlank) {
       for (final compartment in listCompartments) {
-        final compartmentMapDetail = await generateCompartmentMapDetailFromCompartment(compartment);
+        final compartmentMapDetail =
+            await generateCompartmentMapDetailFromCompartment(
+          compartment,
+        );
         listCompartmentMapDetails.add(compartmentMapDetail);
       }
     }
 
-    final selectedCompartmentMapDetail = await generateCompartmentMapDetailFromCompartment(state.selectedCompartment);
+    final selectedCompartmentMapDetail =
+        await generateCompartmentMapDetailFromCompartment(
+      state.selectedCompartment,
+    );
 
     emit(
       state.copyWith(
@@ -72,7 +82,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     }
   }
 
-  void onCameraMove(CameraPosition cameraPosition) {
+  void onCameraMove(CameraPosition cameraPosition, LatLngBounds? visibleRegion) {
     emit(state.copyWith(currentCameraPosition: cameraPosition));
     if (state.isAddingNew && !state.isCompletePolygon) {
       final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
@@ -142,6 +152,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
 
     emit(
       state.copyWith(
+        visibleRegion: visibleRegion,
         compartmentMapDetailByCameraPosition: (selectedCompartmentMapDetail
                 ? state.selectedCompartmentMapDetails
                 : null) ??

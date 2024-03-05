@@ -66,6 +66,8 @@ class CompartmentMapsSummariesState {
   final CameraPosition? currentCameraPosition;
   final bool isChanged;
   final List<List<Marker>> listMarkersHistory;
+  final LatLngBounds? visibleRegion;
+
   bool get isAddingNew => selectedCompartment.polygon.isBlank;
 
   bool get isSelectedCompartmentMapDetails =>
@@ -90,6 +92,7 @@ class CompartmentMapsSummariesState {
     this.selectedEditedMarker,
     this.currentCameraPosition,
     this.isChanged = false,
+    this.visibleRegion,
   });
 
   CompartmentMapsSummariesState copyWith({
@@ -110,6 +113,7 @@ class CompartmentMapsSummariesState {
     CameraPosition? currentCameraPosition,
     Polyline? selectedEditedPolyline,
     List<List<Marker>>? listMarkersHistory,
+    LatLngBounds? visibleRegion,
   }) {
     return CompartmentMapsSummariesState(
       farmId: farmId ?? this.farmId,
@@ -129,6 +133,7 @@ class CompartmentMapsSummariesState {
       selectedEditedMarker: selectedEditedMarker ?? this.selectedEditedMarker,
       selectedEditedPolyline: selectedEditedPolyline ?? this.selectedEditedPolyline,
       listMarkersHistory: listMarkersHistory ?? this.listMarkersHistory,
+      visibleRegion: visibleRegion ?? this.visibleRegion,
     );
   }
 
@@ -156,6 +161,7 @@ class CompartmentMapsSummariesState {
       selectedEditedPolyline: isCleanSelectedEditedPolyline ? null : selectedEditedPolyline,
       isChanged: isChanged,
       listMarkersHistory: listMarkersHistory,
+      visibleRegion: visibleRegion,
     );
   }
 }

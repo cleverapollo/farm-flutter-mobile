@@ -4247,6 +4247,28 @@ class CmoDatabaseMasterService {
     return null;
   }
 
+  Future<List<Compartment>> getCompartmentsByGroupSchemeId({
+    int? groupSchemeId,
+  }) async {
+    if (groupSchemeId == null) return <Compartment>[];
+    final db = await _db();
+    try {
+      final compartments = await db.compartments
+          .filter()
+          .isActiveEqualTo(true)
+          .isMasterdataSyncedEqualTo(false)
+          .groupSchemeIdEqualTo(groupSchemeId)
+          .sortByUnitNumber()
+          .findAll();
+
+      return compartments;
+    } catch (error) {
+      handleError(error);
+    }
+
+    return <Compartment>[];
+  }
+
   Future<List<Compartment>> getAllUnsynedCompartmentsByGroupSchemeId({
     int? groupSchemeId,
   }) async {

@@ -32,15 +32,19 @@ class MemberMapViewState extends State<MemberMapView> {
     Farm? selectedFarm,
   ) {
     final polygon = <Polygon>{};
+    final visibleRegion = context.read<MemberManagementCubit>().state.visibleRegion;
 
     for (final farm in farms) {
       for (final compartment in farm.compartments) {
-        final generatePolygon = generateSetPolygonFromCompartment(
-          compartment,
-          isSelected: farm.farmId == selectedFarm?.farmId,
-        );
-        if (generatePolygon != null) {
-          polygon.add(generatePolygon);
+        final isCompartmentVisible = visibleRegion?.contains(compartment.centerPoint());
+        if (isCompartmentVisible != null && isCompartmentVisible) {
+          final generatePolygon = generateSetPolygonFromCompartment(
+            compartment,
+            isSelected: farm.farmId == selectedFarm?.farmId,
+          );
+          if (generatePolygon != null) {
+            polygon.add(generatePolygon);
+          }
         }
       }
     }
@@ -112,6 +116,10 @@ class MemberMapViewState extends State<MemberMapView> {
                     mapType: MapType.satellite,
                     markers: Set.of(state.markers),
                     myLocationEnabled: true,
+                    onCameraMove: (_) async {
+                      final visibleRegion = await mapController?.getVisibleRegion();
+                      context.read<MemberManagementCubit>().onCameraMove(visibleRegion);
+                    },
                     onMapCreated: (GoogleMapController controller) {
                       mapController = controller;
                       MapUtils.checkLocationPermission(

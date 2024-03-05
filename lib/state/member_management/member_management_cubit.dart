@@ -108,6 +108,14 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     );
   }
 
+  void onCameraMove(LatLngBounds? visibleRegion) {
+    emit(
+      state.copyWith(
+        visibleRegion: visibleRegion,
+      ),
+    );
+  }
+
   Future<void> onShowMemberDetailMapView() async {
     emit(
       state.copyWith(

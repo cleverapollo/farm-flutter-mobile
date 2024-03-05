@@ -45,14 +45,19 @@ class _MemberDetailMapViewState extends State<MemberDetailMapView> {
   ) {
     final polygon = <Polygon>{};
 
-    for(final compartment in compartments) {
-      final generatePolygon = generateSetPolygonFromCompartment(
-        context,
-        compartment,
-        isSelected: compartment.localCompartmentId == selectedCompartment?.localCompartmentId,
-      );
-      if (generatePolygon != null) {
-        polygon.add(generatePolygon);
+    final visibleRegion = context.read<MemberDetailMapViewCubit>().state.visibleRegion;
+    for (final compartment in compartments) {
+      final isCompartmentVisible = visibleRegion?.contains(compartment.centerPoint());
+      if (isCompartmentVisible != null && isCompartmentVisible) {
+        final generatePolygon = generateSetPolygonFromCompartment(
+          context,
+          compartment,
+          isSelected: compartment.localCompartmentId ==
+              selectedCompartment?.localCompartmentId,
+        );
+        if (generatePolygon != null) {
+          polygon.add(generatePolygon);
+        }
       }
     }
 
@@ -172,6 +177,12 @@ class _MemberDetailMapViewState extends State<MemberDetailMapView> {
                       state.farm?.compartments ?? <Compartment>[],
                       state.selectedCompartment,
                     ),
+                    onCameraMove: (_) async {
+                      final visibleRegion = await mapController?.getVisibleRegion();
+                      context
+                          .read<MemberDetailMapViewCubit>()
+                          .onCameraMove(visibleRegion);
+                    },
                     mapType: MapType.satellite,
                     markers: Set.of(state.markers),
                     myLocationEnabled: true,
