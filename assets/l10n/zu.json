@@ -294,6 +294,7 @@
   "reason": "izizathu",
   "registers": "bhalisa ",
   "remove": "Susa",
+  "cannot_delete_synced_compartment": "Cannot delete synced compartment",
   "edit": "Hlela",
   "resourceManagementUnit": "Resource Management Unit",
   "retake": "qala kabusha ",

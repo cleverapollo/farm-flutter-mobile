@@ -295,6 +295,7 @@
   "reason": "Sebab",
   "registers": "Daftar",
   "remove": "Alih keluar",
+  "cannot_delete_synced_compartment": "Cannot delete synced compartment",
   "edit": "Edit",
   "resourceManagementUnit": "Unit Pengurusan Sumber",
   "retake": "Mengambil Semula",

@@ -51,6 +51,7 @@ class CompartmentDetailScreen extends BaseStatefulWidget {
               compartment: compartment ??
                   const Compartment(
                     isActive: true,
+                    createdFromMobile: true,
                   ),
             ),
             child: CompartmentDetailScreen(
@@ -74,7 +75,6 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
   void initState() {
     super.initState();
     _compartmentDetailCubit = context.read<CompartmentDetailCubit>();
-    _compartmentDetailCubit.fetchData();
   }
 
   Future<void> navigateToMapSummaries() async {

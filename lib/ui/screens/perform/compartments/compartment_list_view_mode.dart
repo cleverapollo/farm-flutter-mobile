@@ -84,7 +84,7 @@ class CompartmentListViewMode extends StatelessWidget {
               const SizedBox(height: 16),
               CmoFilledButton(
                 title: LocaleKeys.done.tr(),
-                onTap: () => Navigator.of(context).pop,
+                onTap: Navigator.of(context).pop,
               ),
               const SizedBox(height: 16),
             ],

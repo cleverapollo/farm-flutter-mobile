@@ -293,6 +293,7 @@
   "reason": "Raison",
   "registers": "Registres",
   "remove": "Supprimer",
+  "cannot_delete_synced_compartment": "Cannot delete synced compartment",
   "edit": "Edit",
   "resourceManagementUnit": "Unité de gestion des ressources",
   "retake": "Reprendre",

@@ -292,6 +292,7 @@
   "reason": "เหตุผล",
   "registers": "ลงทะเบียน",
   "remove": "ลบ",
+  "cannot_delete_synced_compartment": "Cannot delete synced compartment",
   "edit": "แก้ไข",
   "resourceManagementUnit": "หน่วยจัดการทรัพยากร",
   "retake": "ทำใหม่",

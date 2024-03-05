@@ -86,21 +86,16 @@ class CompartmentCubit extends HydratedCubit<CompartmentState> {
   }
 
   Future<void> onRemoveCompartment(Compartment compartment) async {
-    await cmoDatabaseMasterService.cacheCompartment(
-      compartment.copyWith(
-        updateDT: DateTime.now(),
-        isActive: false,
-        isMasterdataSynced: false,
-      ),
+    if (compartment.canDelete) {
+      await cmoDatabaseMasterService.removeCompartment(compartment.id);
+      showSnackSuccess(
+        msg: '${LocaleKeys.remove.tr()} ${compartment.localCompartmentId}!',
+      );
 
-      isDirect: true,
-    );
-
-    showSnackSuccess(
-      msg: '${LocaleKeys.remove.tr()} ${compartment.localCompartmentId}!',
-    );
-
-    await loadListCompartment();
+      await loadListCompartment();
+    } else {
+      showSnackError(msg: LocaleKeys.cannot_delete_synced_compartment.tr());
+    }
   }
 
   bool isConservationArea(Compartment compartment) {

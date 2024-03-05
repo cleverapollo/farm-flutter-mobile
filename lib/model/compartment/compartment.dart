@@ -51,9 +51,11 @@ class Compartment with _$Compartment {
     @JsonKey(name: 'EspacementWidth') double? espacementWidth,
     @JsonKey(name: 'EspacementLength') double? espacementLength,
     @Default(false)
-    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
+    @JsonKey(name: 'IsMasterdataSynced') bool isMasterdataSynced,
 
     // New key value fields
+    @Default(false)
+    @JsonKey(name: 'CreatedFromMobile') bool createdFromMobile,
     @JsonKey(name: 'CampId') String? campId,
     @JsonKey(name: 'ProductGroupTemplateName') String? productGroupTemplateName,
     @JsonKey(name: 'SpeciesGroupTemplateName') String? speciesGroupTemplateName,
@@ -65,16 +67,12 @@ class Compartment with _$Compartment {
   factory Compartment.fromJson(Map<String, dynamic> json) =>
       _$CompartmentFromJson(json);
 
-  @override
-  Id get id {
-    final id = int.tryParse(managementUnitId ?? '') ??
-        DateTime.now().millisecondsSinceEpoch;
-
-    return localCompartmentId ?? id;
-  }
+  Id get id => localCompartmentId ?? DateTime.now().millisecondsSinceEpoch;
 }
 
 extension CompartmentExtension on Compartment {
+
+  bool get canDelete => createdFromMobile && !isMasterdataSynced;
 
   double? get stockingPercentage =>
       10000 /
@@ -159,6 +157,7 @@ extension CompartmentExtension on Compartment {
       utilMAI: utilMAI,
       workingCircleTemplateId: workingCircleTemplateId,
       areaTypeName: areaTypeName,
+      createdFromMobile: createdFromMobile,
     );
   }
 }

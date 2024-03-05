@@ -22,7 +22,9 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
             farmId: farmId,
             campId: campId,
             compartment: compartment,
-            compartmentBeforeEdit: compartment));
+            compartmentBeforeEdit: compartment)){
+    fetchData();
+  }
 
   Future<void> fetchData() async {
     try {
@@ -69,7 +71,6 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
 
   String? checkCompleteRequiredField() {
     final compartment = state.compartment;
-
 
     if (isConservationArea()) {
       if (compartment.polygonArea == null) {

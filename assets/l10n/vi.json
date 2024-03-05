@@ -293,6 +293,7 @@
   "reason": "Lý do",
   "registers": "Registers",
   "remove": "Loại bỏ",
+  "cannot_delete_synced_compartment": "Cannot delete synced compartment",
   "edit": "Chỉnh sửa",
   "resourceManagementUnit": "Resource Management Unit",
   "retake": "Retake",
