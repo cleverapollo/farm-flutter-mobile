@@ -508,7 +508,6 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
         state.memberSiteDetailsState.isComplete &&
         state.farmMemberRiskAssessmentsState.isComplete &&
         state.farmMemberObjectivesState.isComplete &&
-        state.addMemberContract.isComplete &&
         state.addMemberSAF.isComplete;
 
     final isProspectMember = !isGroupSchemeMember &&

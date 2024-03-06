@@ -19,7 +19,6 @@ class MemberDetailState with _$MemberDetailState {
     @Default(MemberSiteDetailsState()) MemberSiteDetailsState memberSiteDetailsState,
     @Default(FarmMemberObjectivesState())
         FarmMemberObjectivesState farmMemberObjectivesState,
-    @Default(AddMemberContract()) AddMemberContract addMemberContract,
     @Default(AddMemberSAF()) AddMemberSAF addMemberSAF,
     @Default(FarmMemberRiskAssessmentsState())
         FarmMemberRiskAssessmentsState farmMemberRiskAssessmentsState,
@@ -47,14 +46,6 @@ class AddMemberSAF with _$AddMemberSAF {
     String? signaturePoints,
     String? signatureDate,
   }) = _AddMemberSAF;
-}
-
-@freezed
-class AddMemberContract with _$AddMemberContract {
-  const factory AddMemberContract({
-    @Default(false) bool isComplete,
-    bool? isAccept,
-  }) = _AddMemberContract;
 }
 
 @freezed
