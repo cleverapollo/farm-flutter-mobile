@@ -158,6 +158,7 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     emit(
       state.copyWith(
         statusFilter: statusFilter,
+        filteringText: '',
       ),
     );
     applyFilter();
@@ -174,7 +175,7 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
         break;
     }
 
-    if (state.filteringText.isNotBlank) {
+    if (state.filteringText.isNotBlank && state.statusFilter == MemberManagementStatusFilter.complete) {
       filteringItems = filteringItems.where((element) {
         final searchStr = state.filteringText!.toLowerCase();
         final existFarmName = element.farmName?.toLowerCase().contains(searchStr) ?? false;
@@ -226,7 +227,6 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
             position: centerPoint,
             icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
               title: farm.farmName,
-              // subtitle: 'managementUnitName',
             ),
           );
 

@@ -103,16 +103,6 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     try {
       emit(state.copyWith(loading: true));
 
-      var isMastersynced = false;
-
-      if (state.compartmentBeforeEdit.isMasterdataSynced == true) {
-        if (state.compartment != state.compartmentBeforeEdit) {
-          isMastersynced = false;
-        } else {
-          isMastersynced = true;
-        }
-      }
-
       String? farmId;
       int? groupSchemeId;
 
@@ -136,7 +126,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
           farmId: farmId,
           campId: state.campId,
           isActive: true,
-          isMasterdataSynced: isMastersynced,
+          isMasterdataSynced: false,
         ),
         isDirect: true,
       );

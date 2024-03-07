@@ -967,6 +967,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             productGroupTemplateName: productGroupTemplate?.productGroupTemplateName,
             speciesGroupTemplateName: speciesGroupTemplate?.speciesGroupTemplateName,
             areaTypeName: areaType?.areaTypeName,
+            isMasterdataSynced: true,
           ),
         );
       }

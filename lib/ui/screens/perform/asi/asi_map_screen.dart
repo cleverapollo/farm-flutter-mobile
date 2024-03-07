@@ -57,20 +57,38 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
   Set<Polygon> generatePolygon() {
     final state = context.read<AsiMapCubit>().state;
     final polygon = <Polygon>{};
-    if (state.outlineMarker.isBlank) return polygon;
 
-    final listMarkers = state.outlineMarker;
-    final strokeColor = context.colors.yellow;
+    for (final compartment in state.compartments) {
+      final generatePolygon = generateSetPolygonFromCompartment(
+        context,
+        compartment,
+        isSelected: compartment.localCompartmentId == state.outlinedCompartment?.localCompartmentId,
+      );
+      if (generatePolygon != null) {
+        polygon.add(generatePolygon);
+      }
+    }
 
-    return {
-      Polygon(
-        polygonId: PolygonId('${state.outlinedCompartment?.localCompartmentId}'),
-        points: listMarkers.map((e) => e.position).toList(),
-        fillColor: context.colors.yellow.withOpacity(0.3),
-        strokeColor: strokeColor,
-        strokeWidth: 2,
-      )
-    };
+    return polygon;
+  }
+
+  Polygon? generateSetPolygonFromCompartment(
+    BuildContext context,
+    Compartment compartment, {
+    bool isSelected = false,
+  }) {
+    final strokeColor = isSelected ? context.colors.yellow : context.colors.white;
+    final fillColor = strokeColor.withOpacity(0.5);
+
+    if (compartment.getPolygonLatLng().isBlank) return null;
+
+    return Polygon(
+      polygonId: PolygonId('${compartment.localCompartmentId}'),
+      points: compartment.getPolygonLatLng(),
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: 2,
+    );
   }
 
   Future<void> moveMapCameraToLocation(LatLng position) async {

@@ -265,20 +265,6 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
               asi: state.asi,
               onSave: context.read<AsiDetailCubit>().onSelectLocation,
             );
-            // final locationModel = LocationModel()
-            //   ..latitude = state.asi.latitude
-            //   ..longitude = state.asi.longitude;
-            // final result = await SelectLocationScreen.push(
-            //   context,
-            //   title: LocaleKeys.asi_detail.tr(),
-            //   farmName: widget.farmName,
-            //   locationModel: locationModel,
-            //   shouldShowPhotoButton: false,
-            // );
-            //
-            // if (result == null) return;
-            // final mapResult = result as LocationModel;
-            // context.read<AsiDetailCubit>().onSelectLocation(mapResult);
           },
           child: AttributeItem(
             margin: const EdgeInsets.symmetric(horizontal: 16),
