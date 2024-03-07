@@ -37,15 +37,14 @@ class _FarmerMemberDashboardScreenState
           physics: const ClampingScrollPhysics(),
           padding: const EdgeInsets.all(20),
           children: [
-            if (data.farmDashBoardInfo?.charcoalPlantationRoleEnum != CharcoalPlantationRoleEnum.isCharcoal)
-              CmoCard(
-                onTap: () {
-                  SiteManagementPlanScreen.push(context);
-                },
-                content: [
-                  CmoCardHeader(title: LocaleKeys.siteManagementPlan.tr()),
-                ],
-              ),
+            CmoCard(
+              onTap: () {
+                SiteManagementPlanScreen.push(context);
+              },
+              content: [
+                CmoCardHeader(title: LocaleKeys.siteManagementPlan.tr()),
+              ],
+            ),
             const SizedBox(height: 20),
             CmoTappable(
               onTap: () => LabourManagementScreen.push(context),

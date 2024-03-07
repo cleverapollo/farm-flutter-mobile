@@ -101,6 +101,7 @@ class _SiteManagementPlanScreenState extends BaseStatefulWidgetState<SiteManagem
           children: [
             const SizedBox(height: 16,),
             _campCard(context),
+            const SizedBox(height: 16,),
             CmoTappable(
               onTap: () {
                 AnnualProductionManagementScreen.push(context);
@@ -120,6 +121,7 @@ class _SiteManagementPlanScreenState extends BaseStatefulWidgetState<SiteManagem
                 ],
               ),
             ),
+            const SizedBox(height: 16,),
             CmoTappable(
               onTap: () {
                 AnnualBudgetManagementScreen.push(context);

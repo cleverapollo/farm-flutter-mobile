@@ -49,17 +49,18 @@ extension UserInfoX on UserInfo {
   CharcoalPlantationRoleEnum get getCharcoalPlantationRole {
     final isCharcoal =
         listRoles.firstWhereOrNull((e) => e.roleName == 'Management Plan');
-    final isPlantation = listRoles
-        .firstWhereOrNull((e) => e.roleName == 'Compartment Management Plan');
+    // final isPlantation = listRoles
+    //     .firstWhereOrNull((e) => e.roleName == 'Compartment Management Plan');
 
     if (isCharcoal != null) {
       return CharcoalPlantationRoleEnum.isCharcoal;
     }
 
-    if (isPlantation != null) {
-      return CharcoalPlantationRoleEnum.isPlantation;
-    }
-    return CharcoalPlantationRoleEnum.none;
+    return CharcoalPlantationRoleEnum.isPlantation;
+    // if (isPlantation != null) {
+    //   return CharcoalPlantationRoleEnum.isPlantation;
+    // }
+    // return CharcoalPlantationRoleEnum.none;
   }
 }
 
