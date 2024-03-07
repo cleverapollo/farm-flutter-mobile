@@ -33,6 +33,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   }
 
   bool shouldShowLunarCalendar() {
+    return false;
     return state.locale == AppLocale.th || state.locale == AppLocale.vi;
   }
 
