@@ -36,6 +36,7 @@ class RMSyncScreenState extends BaseStatefulWidgetState<RMSyncScreen> {
 
   Future<void> processWithSyncOnboarding() async {
     await cmoDatabaseMasterService.deleteAll();
+    await context.read<UserDeviceCubit>().createPerformUserDevice();
     await context.read<RMSyncCubit>().syncOnboarding();
     await configService.updateLatestLocalDatabaseStatus();
     if (context.mounted) CmoDashboardBase.push(context);
