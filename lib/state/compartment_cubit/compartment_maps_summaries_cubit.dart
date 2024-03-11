@@ -308,9 +308,12 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     );
   }
 
-  List<Marker> getTemporarySavedMarkers() {
+  List<Marker> getTemporarySavedMarkers(bool shouldClearLastItem) {
     final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
-    temporaryMarkers.removeLast();
+    if (shouldClearLastItem) {
+      temporaryMarkers.removeLast();
+    }
+
     return temporaryMarkers;
   }
 

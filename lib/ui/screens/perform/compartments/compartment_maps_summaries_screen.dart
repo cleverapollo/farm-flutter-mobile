@@ -154,28 +154,54 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
         now++;
       }
 
-      var lastPolyline = Polyline(
-        consumeTapEvents: true,
-        width: 2,
-        polylineId: PolylineId(
-            '${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0 $now}'),
-        points: [
-          markers[markers.length - 1].position,
-          markers[0].position,
-        ],
-      );
 
-      lastPolyline = lastPolyline.copyWith(
-        colorParam: getPolylineColor(lastPolyline),
-        onTapParam: () {
-          context.read<CompartmentMapsSummariesCubit>().onTapPolyline(
-                lastPolyline,
-                onMoveCameraToCenterPoint: moveMapCameraToLocation,
-              );
-        },
-      );
+        var lastPolyline = Polyline(
+          consumeTapEvents: true,
+          width: 2,
+          polylineId: PolylineId(
+              '${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0 $now}'),
+          points: [
+            markers[markers.length - 1].position,
+            markers[0].position,
+          ],
+        );
 
-      polylines.add(lastPolyline);
+        lastPolyline = lastPolyline.copyWith(
+          colorParam: getPolylineColor(lastPolyline),
+          onTapParam: () {
+            context.read<CompartmentMapsSummariesCubit>().onTapPolyline(
+              lastPolyline,
+              onMoveCameraToCenterPoint: moveMapCameraToLocation,
+            );
+          },
+        );
+
+        polylines.add(lastPolyline);
+
+      return polylines;
+    } else if (state.selectedCompartmentMapDetails?.markers != null && state.selectedCompartmentMapDetails!.markers.length <= 2) {
+      final markers = state.selectedCompartmentMapDetails!.markers;
+      var now = DateTime.now().microsecondsSinceEpoch;
+      final polylines = <Polyline>{};
+      for (var i = 1; i < markers.length; i++) {
+        final polyline = Polyline(
+          consumeTapEvents: true,
+          width: 2,
+          startCap: Cap.roundCap,
+          endCap: Cap.roundCap,
+          color: context.colors.yellow,
+          polylineId: PolylineId('${markers[i].markerId.value} ${i - 1}_$i $now'),
+          points: [
+            markers[i - 1].position,
+            markers[i].position,
+          ],
+
+        );
+
+        polylines.add(polyline);
+        now++;
+      }
+
       return polylines;
     }
 
@@ -229,7 +255,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
 
   Polygon? generatePolygonFromListMarker() {
     final state = context.read<CompartmentMapsSummariesCubit>().state;
-    if ((state.isAddingNew && !state.isCompletePolygon) || (state.selectedCompartmentMapDetails?.markers == null || state.selectedCompartmentMapDetails!.markers.isBlank)) {
+    if ((state.isAddingNew && !state.isCompletePolygon) ||
+        (state.selectedCompartmentMapDetails?.markers == null ||
+            state.selectedCompartmentMapDetails!.markers.isBlank ||
+            state.selectedCompartmentMapDetails!.markers.length <= 2)) {
       return null;
     }
 
@@ -273,11 +302,16 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     }
   }
 
-  void onTemporarySavedListMarkersOnCompartmentModel() {
+  void onTemporarySavedListMarkersOnCompartmentModel({
+    bool shouldClearLastItem = true,
+  }) {
     final listMarkers = context
         .read<CompartmentMapsSummariesCubit>()
-        .getTemporarySavedMarkers();
-    if (listMarkers.length <= 2) return;
+        .getTemporarySavedMarkers(shouldClearLastItem);
+    if (listMarkers.length <= 1) {
+      return;
+    }
+
     final polygons = listMarkers.map(MapUtils.generateLatLngFromMarker).toList();
     final areaInHa = MapUtils.computeAreaInHa(polygons);
     widget.onSave(
@@ -564,7 +598,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
             InkWell(
               onTap: () {
                 context.read<CompartmentMapsSummariesCubit>().onUpdateNewPositionMarker();
-                onTemporarySavedListMarkersOnCompartmentModel();
+                onTemporarySavedListMarkersOnCompartmentModel(shouldClearLastItem: false);
               },
               child: Container(
                 alignment: Alignment.center,
