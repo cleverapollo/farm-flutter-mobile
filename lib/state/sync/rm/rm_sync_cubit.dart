@@ -1121,7 +1121,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> syncRegionalManagerMasterData() async {
-    emit(state.copyWith(syncMessage: 'Syncing Regional Manager Master Data...'));
+    emit(state.copyWith(syncMessage: 'Syncing Resource Manager Master Data...'));
     var sync = true;
     var hasData = false;
     while (sync) {
@@ -1222,7 +1222,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         } else if (topic ==
             '${topicRegionalManagerMasterDataSync}RMU.$userDeviceId') {
           emit(state.copyWith(
-              syncMessage: 'Syncing Regional Manager Unit...'));
+              syncMessage: 'Syncing Resource Manager Unit...'));
           await insertRegionalManagerUnit(item);
         } else if (topic ==
             '${topicRegionalManagerMasterDataSync}RiskProQuestion.$userDeviceId') {
@@ -1245,7 +1245,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> syncRegionalManagerUnitMasterData() async {
-    emit(state.copyWith(syncMessage: 'Syncing Regional Manager Unit Master Data...'));
+    emit(state.copyWith(syncMessage: 'Syncing Resource Manager Unit Master Data...'));
     var sync = true;
     while (sync) {
       MasterDataMessage? resPull;
