@@ -134,12 +134,6 @@ class _ResourceManagerDashboardScreenState
                         titleTextStyle: context.textStyles.bodyNormal.white,
                         valueTextStyle: context.textStyles.bodyNormal.white,
                       ),
-                      DashboardInformationItem(
-                        title: LocaleKeys.membersOutstanding.tr(),
-                        value: '${state.totalAssessments ?? ''}',
-                        titleTextStyle: context.textStyles.bodyBold.yellow,
-                        valueTextStyle: context.textStyles.bodyBold.yellow,
-                      ),
                     ],
                   ),
                   const SizedBox(height: 20),
