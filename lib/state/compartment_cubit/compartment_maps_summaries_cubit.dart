@@ -265,7 +265,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     );
   }
 
-  Future<void> onUpdateNewPositionMarker() async {
+  void onUpdateNewPositionMarker() {
     emit(
       state
           .resetEditingMarkers(
@@ -308,21 +308,10 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     );
   }
 
-  void onRemoveMarker() {
-    if (state.editingMarkers.length <= 3) {
-      return;
-    }
-
-    final marker = state.editingMarkers.firstWhereOrNull((element) => element.markerId == state.selectedEditedMarker?.markerId);
-    if (marker != null) {
-      final editingMarkers = List<Marker>.from(state.editingMarkers);
-      editingMarkers.remove(marker);
-      emit(
-        state.resetEditingMarkers().copyWith(
-          editingMarkers: editingMarkers,
-        ),
-      );
-    }
+  List<Marker> getTemporarySavedMarkers() {
+    final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
+    temporaryMarkers.removeLast();
+    return temporaryMarkers;
   }
 
   void onAcceptChanges({

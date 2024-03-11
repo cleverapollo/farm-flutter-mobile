@@ -67,7 +67,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
 
     if (state.isAddingNew) {
       final markers = state.temporaryMarkers;
-      var polylines = <Polyline>{};
+      final polylines = <Polyline>{};
       if (markers.length < 2) {
         return polylines;
       }
@@ -82,9 +82,6 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
             ],
             color: context.colors.yellow,
             width: 2,
-            onTap: () {
-              print('onTap polyline');
-            },
             startCap: Cap.roundCap,
             endCap: Cap.roundCap,
           ),
@@ -111,7 +108,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
 
       final markers = state.temporaryMarkers;
       var now = DateTime.now().microsecondsSinceEpoch;
-      var polylines = <Polyline>{};
+      final polylines = <Polyline>{};
       if (markers.length < 2) {
         return polylines;
       }
@@ -216,8 +213,8 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       CompartmentMapDetail compartmentMapDetail, {
         bool isSelected = false,
       }) {
-    final fillColor = isSelected ? context.colors.yellow.withOpacity(0.3) : context.colors.white.withOpacity(0.5);
     final strokeColor = isSelected ? context.colors.yellow : context.colors.white;
+    final fillColor = strokeColor.withOpacity(isSelected ? 0.3 : 0.5);
 
     if (compartmentMapDetail.markers.isBlank) return null;
 
@@ -242,7 +239,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     return Polygon(
       polygonId: PolygonId('${state.selectedCompartmentMapDetails?.compartment.localCompartmentId}'),
       points: listMarkers.map((e) => e.position).toList(),
-      fillColor: context.colors.yellow.withOpacity(0.3),
+      fillColor: strokeColor.withOpacity(0.3),
       strokeColor: strokeColor,
       strokeWidth: 2,
     );
@@ -276,6 +273,26 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     }
   }
 
+  void onTemporarySavedListMarkersOnCompartmentModel() {
+    final listMarkers = context
+        .read<CompartmentMapsSummariesCubit>()
+        .getTemporarySavedMarkers();
+    if (listMarkers.length <= 2) return;
+    final polygons = listMarkers.map(MapUtils.generateLatLngFromMarker).toList();
+    final areaInHa = MapUtils.computeAreaInHa(polygons);
+    widget.onSave(
+      areaInHa,
+      listMarkers
+          .map(
+            (e) => PolygonItem(
+              latitude: e.position.latitude,
+              longitude: e.position.longitude,
+            ),
+          )
+          .toList(),
+    );
+  }
+
   @override
   bool get canPopWithoutWarningDialog => false;
 
@@ -306,12 +323,15 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                       mapType: MapType.satellite,
                       myLocationEnabled: true,
                       markers: Set.of(state.temporaryMarkers),
-                        onCameraMove: (position) async {
-                          final visibleRegion = await mapController?.getVisibleRegion();
-                          context
-                              .read<CompartmentMapsSummariesCubit>()
-                              .onCameraMove(position, visibleRegion,);
-                        },
+                      onCameraMove: (position) async {
+                        final visibleRegion = await mapController?.getVisibleRegion();
+                        context
+                            .read<CompartmentMapsSummariesCubit>()
+                            .onCameraMove(
+                              position,
+                              visibleRegion,
+                            );
+                      },
                       onMapCreated: (GoogleMapController controller) {
                         mapController = controller;
                         MapUtils.checkLocationPermission(
@@ -447,7 +467,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
-              onTap: context.read<CompartmentMapsSummariesCubit>().removePreviousMarker,
+              onTap: () {
+                context.read<CompartmentMapsSummariesCubit>().removePreviousMarker();
+                onTemporarySavedListMarkersOnCompartmentModel();
+              },
               child: Container(
                 alignment: Alignment.center,
                 child: SvgGenImage(Assets.icons.icRefreshMap.path).svg(
@@ -458,7 +481,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
             ),
             const SizedBox(width: 16),
             InkWell(
-              onTap: context.read<CompartmentMapsSummariesCubit>().createNewMarker,
+              onTap: () async {
+                await context.read<CompartmentMapsSummariesCubit>().createNewMarker();
+                onTemporarySavedListMarkersOnCompartmentModel();
+              },
               child: Container(
                 alignment: Alignment.center,
                 child: SvgGenImage(Assets.icons.icAcceptMap.path).svg(
@@ -522,7 +548,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
-              onTap: context.read<CompartmentMapsSummariesCubit>().onResetPolygon,
+              onTap: () {
+                context.read<CompartmentMapsSummariesCubit>().onResetPolygon();
+                onTemporarySavedListMarkersOnCompartmentModel();
+              },
               child: Container(
                 alignment: Alignment.center,
                 child: SvgGenImage(Assets.icons.icRefreshMap.path).svg(
@@ -533,7 +562,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
             ),
             const SizedBox(width: 16),
             InkWell(
-              onTap: context.read<CompartmentMapsSummariesCubit>().onUpdateNewPositionMarker,
+              onTap: () {
+                context.read<CompartmentMapsSummariesCubit>().onUpdateNewPositionMarker();
+                onTemporarySavedListMarkersOnCompartmentModel();
+              },
               child: Container(
                 alignment: Alignment.center,
                 child: SvgGenImage(Assets.icons.icAcceptMap.path).svg(
