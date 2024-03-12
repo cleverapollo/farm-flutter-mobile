@@ -200,7 +200,7 @@ class _AddBiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Add
     return BlocBuilder<AddBiologicalControlCubit, AddBiologicalControlState>(
       builder: (context, state) {
         final stakeHolderId = state.agent.stakeholderId;
-        final findIndex = state.stakeHolders.indexWhere((element) => element.stakeHolderId == stakeHolderId);
+        final findIndex = state.stakeHolders.indexWhere((element) => element.stakeholderId == stakeHolderId);
         final initValue = findIndex != -1 ? state.stakeHolders[findIndex] : null;
         return BottomSheetSelection(
           hintText: LocaleKeys.stakeholderName.tr(),

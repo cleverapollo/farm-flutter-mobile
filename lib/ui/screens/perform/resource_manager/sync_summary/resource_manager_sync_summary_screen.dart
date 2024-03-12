@@ -41,13 +41,21 @@ class _ResourceManagerSyncSummaryScreenState extends BaseStatefulWidgetState<Res
   }
 
   Future<void> onSyncFailure() async {
+    final state = context.read<RMSyncCubit>().state;
     await onShowWarningDialog(
       context,
       title: LocaleKeys.sync_failed.tr(),
       subtitle: LocaleKeys.sync_failed_messages.tr(args: [
-        context.read<RMSyncCubit>().state.rmUnit?.regionalManagerUnitName ?? '',
+        state.rmUnit?.regionalManagerUnitName ?? '',
       ]),
       children: [
+        ...state.errorMessageItems.map(
+              (errorMessage) => Text(
+            errorMessage,
+            style: context.textStyles.bodyNormal.blueDark2,
+            textAlign: TextAlign.center,
+          ),
+        ),
         Row(
           children: [
             Expanded(
@@ -100,6 +108,9 @@ class _ResourceManagerSyncSummaryScreenState extends BaseStatefulWidgetState<Res
         onTapLeading: Navigator.of(context).pop,
       ),
       body: BlocListener<RMSyncCubit, RMSyncState>(
+        listenWhen: (previous, current) =>
+            previous.isSyncError != current.isSyncError ||
+            previous.isSynced != current.isSynced,
         listener: (context, state) async {
           if (state.isSyncError) {
             await onSyncFailure();

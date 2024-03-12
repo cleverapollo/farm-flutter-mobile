@@ -84,7 +84,7 @@ class AddStakeHolderComplaintCubit extends Cubit<AddStakeHolderComplaintState> {
         complaint: state.complaint.copyWith(
           complaintsAndDisputesRegisterName: stakeHolder?.stakeholderName,
           stakeholderName: stakeHolder?.stakeholderName,
-          stakeholderId: stakeHolder?.stakeHolderId,
+          stakeholderId: stakeHolder?.stakeholderId,
         ),
       ),
     );

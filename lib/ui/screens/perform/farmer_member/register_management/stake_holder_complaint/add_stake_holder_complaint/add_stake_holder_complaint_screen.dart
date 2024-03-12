@@ -241,7 +241,7 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
           value: state.stakeholders
               .firstWhereOrNull(
                 (element) =>
-                    element.stakeHolderId == state.complaint.stakeholderId,
+                    element.stakeholderId == state.complaint.stakeholderId,
               )
               ?.stakeholderName,
           onTap: () async {

@@ -202,7 +202,7 @@ class _BiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Biolog
                             ?.monitoringRequirementName;
                         final stakeholderName = stakeHolders
                             .firstWhereOrNull(
-                                (e) => e.stakeHolderId == item.stakeholderId)
+                                (e) => e.stakeholderId == item.stakeholderId)
                             ?.stakeholderName;
 
                         final itemMapping = item.copyWith(

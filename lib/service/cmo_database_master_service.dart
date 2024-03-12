@@ -1901,7 +1901,7 @@ class CmoDatabaseMasterService {
     final db = await _db();
     return db.stakeHolders
         .filter()
-        .isActiveEqualTo(true)
+        .isActiveEqualTo(1)
         .isMasterDataSyncedEqualTo(true)
         .count();
   }
@@ -3536,11 +3536,7 @@ class CmoDatabaseMasterService {
     final db = await _db();
     return db.stakeHolders
         .filter()
-        .isActiveEqualTo(true)
-        .or()
-        .isActiveIsNotNull()
-        .or()
-        .isActiveIsNull()
+        .isActiveEqualTo(1)
         .sortByCreateDTDesc()
         .findAll();
   }
@@ -3551,7 +3547,7 @@ class CmoDatabaseMasterService {
     return db.stakeHolders
         .filter()
         .stakeholderIdEqualTo(id)
-        .isActiveEqualTo(true)
+        .isActiveEqualTo(1)
         .sortByCreateDTDesc()
         .findFirst();
   }

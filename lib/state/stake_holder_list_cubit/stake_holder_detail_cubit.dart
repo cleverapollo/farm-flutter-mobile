@@ -48,7 +48,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
       if (farm != null && state.stakeHolder != null) {
         final farmerStakeholder = await cmoDatabaseMasterService
             .getFarmStakeholderByStakeholderId(
-          state.stakeHolder?.stakeHolderId,
+          state.stakeHolder?.stakeholderId,
         );
 
         final additionalInfos = await Future.wait([
@@ -72,9 +72,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
         emit(
           state.copyWith(
             stakeHolder: StakeHolder(
-              stakeHolderId: DateTime.now().millisecondsSinceEpoch.toString(),
-              isActive: 1,
-              isMasterDataSynced: 0,
+              stakeholderId: DateTime.now().millisecondsSinceEpoch.toString(),
               createDT: DateTime.now(),
               updateDT: DateTime.now(),
             ),
@@ -144,7 +142,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
       state.copyWith(
         isSelectTypeError: stakeHolderTypeId == null,
         stakeHolder: state.stakeHolder?.copyWith(
-          stakeHolderTypeId: stakeHolderTypeId,
+          stakeholderTypeId: stakeHolderTypeId,
         ),
       ),
     );
@@ -294,12 +292,12 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
   }
 
   bool onValidateRequireField() {
-    if (state.stakeHolder?.stakeHolderTypeId == null ||
+    if (state.stakeHolder?.stakeholderTypeId == null ||
         (state.stakeHolder?.contactName?.isBlank ?? true) ||
         (state.stakeHolder?.stakeholderName?.isBlank ?? true)) {
       emit(
         state.copyWith(
-          isSelectTypeError: state.stakeHolder?.stakeHolderTypeId == null,
+          isSelectTypeError: state.stakeHolder?.stakeholderTypeId == null,
           isEntityNameError: state.stakeHolder?.contactName?.isBlank ?? true,
           isContactNameError: state.stakeHolder?.stakeholderName?.isBlank ?? true,
         ),
@@ -321,8 +319,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
     final databaseService = cmoDatabaseMasterService;
     final resultId = await databaseService.cacheStakeholder(
       state.stakeHolder!.copyWith(
-        isActive: 1,
-        isMasterDataSynced: 0,
+        isMasterDataSynced: false,
       ),
       isDirect: false,
     );
@@ -348,13 +345,13 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
     if (isEditing) {
       final groupSchemeStakeholder = await cmoDatabaseMasterService
           .getGroupSchemeStakeholderByStakeholderId(
-        state.stakeHolder!.stakeHolderId!,
+        state.stakeHolder!.stakeholderId!,
       );
 
       if (groupSchemeStakeholder != null) {
         await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
           groupSchemeStakeholder.copyWith(
-            isMasterDataSynced: 0,
+            isMasterDataSynced: true,
           ),
           isDirect: false,
         );
@@ -362,10 +359,10 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
     } else {
       final activeGroupScheme = await configService.getActiveGroupScheme();
       final groupSchemeStakeholder = GroupSchemeStakeholder(
-        isMasterDataSynced: 0,
+        isMasterDataSynced: true,
         groupSchemeId: activeGroupScheme?.groupSchemeId,
         groupSchemeStakeholderId: DateTime.now().millisecondsSinceEpoch.toString(),
-        stakeholderId: state.stakeHolder?.stakeHolderId,
+        stakeholderId: state.stakeHolder?.stakeholderId,
       );
 
       await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
@@ -380,7 +377,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
     if (isEditing) {
       final farmerStakeholder = await cmoDatabaseMasterService
           .getFarmStakeholderByStakeholderId(
-        state.stakeHolder?.stakeHolderId,
+        state.stakeHolder?.stakeholderId,
       );
 
       if (farmerStakeholder != null) {
@@ -396,7 +393,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
       final farmStakeHolder = FarmStakeHolder(
         isMasterDataSynced: 0,
         farmId: state.farm?.farmId,
-        stakeHolderId: state.stakeHolder?.stakeHolderId,
+        stakeHolderId: state.stakeHolder?.stakeholderId,
         farmStakeHolderId: DateTime.now().millisecondsSinceEpoch.toString(),
         updateDT: DateTime.now(),
         createDT: DateTime.now(),

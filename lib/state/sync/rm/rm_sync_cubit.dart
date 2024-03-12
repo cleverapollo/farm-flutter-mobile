@@ -9,16 +9,13 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/audit/audit_payload.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/group_scheme_stakeholder_payload/group_scheme_stakeholder_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/main_group_scheme_stakeholder_payload/main_group_scheme_stakeholder_payload.dart';
 import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/properties_payload/properties_payload.dart';
-import 'package:cmo/state/farmer_sync_summary_cubit/farm_upload_payload/stakeholder_payload/stakeholder_payload.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/state/sync/base_sync_cubit.dart';
 import 'package:cmo/state/sync/base_sync_state.dart';
-import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/utils.dart';
-import 'package:flutter/material.dart';
 
 part 'rm_sync_state.dart';
 
@@ -164,55 +161,94 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     }
   }
 
-  Future<void> syncSummary({
-    required VoidCallback onSuccess,
-  }) async {
+  Future<void> syncSummary() async {
     try {
-      emit(
-        state.copyWith(
-          rmSyncSummaryInformation: RmSyncSummaryInformation(),
-        ),
-      );
       logger.d('--RM Sync Summary start--');
       emit(
         state.copyWith(
+          rmSyncSummaryInformation: RmSyncSummaryInformation(),
           syncMessage: 'RM Summary Syncing...',
+          errorMessageItems: const <String>[],
           isLoading: true,
+          isSyncing: true,
+          isSynced: false,
+          isSyncError: false,
+          isLoaded: false,
         ),
       );
+
+
       await publishFarm();
       await publishGroupSchemeStakeholders();
 
       // Keep delay time for waiting server generate data
+      emit(
+        state.copyWith(
+          syncMessage: 'Waiting for server to generate data...',
+        ),
+      );
       await Future.delayed(const Duration(seconds: 15), () async {});
       await subscribeToRegionalManagerTrickleFeedMasterDataTopic();
       await subscribeToRegionalManagerTrickleFeedTopicByGroupSchemeId();
       await subscribeToRegionalManagerUnitTrickleFeedTopicByRegionalManagerUnitId();
       await publishCompartments();
+      emit(
+        state.copyWith(
+          syncMessage: 'Waiting for compartment upload successfully...',
+        ),
+      );
       await Future.delayed(const Duration(seconds: 5), () async {
         await publishASIs();
         await publishAudits();
       });
 
-      emit(
-        state.copyWith(
-          syncMessage: 'Sync complete',
-          isLoaded: true,
-          isLoading: false,
-        ),
-      );
+      if (state.errorMessageItems.isNotBlank) {
+        emit(
+          state.copyWith(
+            isSyncError: true,
+            isLoaded: true,
+            isLoading: false,
+            isSynced: true,
+            isSyncing: false,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            isSyncError: false,
+            isLoaded: true,
+            isLoading: false,
+            isSynced: true,
+            isSyncing: false,
+            errorMessageItems: const <String>[],
+
+          ),
+        );
+      }
 
       await Future.delayed(const Duration(seconds: 2), () async {
         await getSummaryInformation();
-        onSuccess.call();
       });
     } catch (e) {
       logger.e(e);
+      String? errorMessage;
+      if (e is SyncError) {
+        errorMessage = e.errorMessage;
+      } else {
+        errorMessage = e.toString();
+      }
+
+      handleErrorMessage(
+        errorMessage: errorMessage,
+        snackErrorMessage: 'Sync Error',
+      );
       emit(
         state.copyWith(
-          syncMessage: 'Sync Failed, please check your network connectivity. Contact support if the problem persists.',
-          isLoaded: false,
+          syncMessage: 'Sync Error',
+          isLoaded: true,
           isLoading: false,
+          isSynced: true,
+          isSyncing: false,
         ),
       );
     }
@@ -227,104 +263,134 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     ];
   }
 
+
+  void handleErrorMessage({
+    required String snackErrorMessage,
+    String? errorMessage,
+  }) {
+    logger.e(snackErrorMessage);
+    showSnackError(msg: snackErrorMessage);
+    final errorMessages = List<String>.from(state.errorMessageItems);
+    errorMessages.add(errorMessage ?? '');
+    emit(
+      state.copyWith(
+        errorMessageItems: errorMessages,
+      ),
+    );
+  }
+
   Future<void> publishFarm() async {
     emit(
       state.copyWith(
-        syncMessage: 'Syncing Farms...',
-        isLoading: true,
+        syncMessage: 'Uploading Farms...',
       ),
     );
 
-    try {
-      final publishFarmTopic = 'Cmo.MasterData.RM.Farm.$groupSchemeId.$userDeviceId';
-      logger.d('Get unsynced farms by rmuIds: $rmuId');
-      final farms = await cmoDatabaseMasterService.getUnsyncedCompletedFarmsByRmuId(rmuId);
-      if (farms.isNotBlank) {
-        logger.d('Unsynced farms count: ${farms!.length}');
-        for (final farm in farms) {
-          final objectiveAnswers = await cmoDatabaseMasterService.getFarmMemberObjectiveAnswerByFarmIdAndIsMasterDataSynced(farm.farmId);
-          final riskProfileAnswers = await cmoDatabaseMasterService.getFarmMemberRiskProfileAnswerByFarmIdAndIsMasterDataSynced(farm.farmId);
-          final message = Message(
-            properties: getMessageProperties(),
-            body: jsonEncode(
-              farm
-                  .copyWith(
-                    objectiveAnswers: objectiveAnswers,
-                    riskProfileAnswers: riskProfileAnswers,
-                    signatureImage: farm.signatureImage.stringToBase64SyncServer,
-                  )
-                  .toJson(),
-            ),
-          );
-
-          log(jsonEncode(
+    final publishFarmTopic = 'Cmo.MasterData.RM.Farm.$groupSchemeId.$userDeviceId';
+    logger.d('Get unsynced farms by rmuIds: $rmuId');
+    final farms = await cmoDatabaseMasterService.getUnsyncedCompletedFarmsByRmuId(rmuId);
+    if (farms.isNotBlank) {
+      logger.d('Unsynced farms count: ${farms!.length}');
+      for (final farm in farms) {
+        final objectiveAnswers = await cmoDatabaseMasterService
+            .getFarmMemberObjectiveAnswerByFarmIdAndIsMasterDataSynced(
+          farm.farmId,
+        );
+        final riskProfileAnswers = await cmoDatabaseMasterService
+            .getFarmMemberRiskProfileAnswerByFarmIdAndIsMasterDataSynced(
+          farm.farmId,
+        );
+        final message = Message(
+          properties: getMessageProperties(),
+          body: jsonEncode(
             farm
                 .copyWith(
-              objectiveAnswers: objectiveAnswers,
-              riskProfileAnswers: riskProfileAnswers,
-              signatureImage: '',
-            )
+                  objectiveAnswers: objectiveAnswers,
+                  riskProfileAnswers: riskProfileAnswers,
+                  signatureImage: farm.signatureImage.stringToBase64SyncServer,
+                )
                 .toJson(),
-          ));
+          ),
+        );
 
-          logger.d('Publish message to topic $publishFarmTopic');
-          final isPublicFarm = await cmoPerformApiService.public(
-            currentClientId: userDeviceId.toString(),
-            topic: publishFarmTopic,
-            messages: [message],
-          );
+        log(
+          jsonEncode(
+            farm
+                .copyWith(
+                  objectiveAnswers: objectiveAnswers,
+                  riskProfileAnswers: riskProfileAnswers,
+                  signatureImage: '',
+                )
+                .toJson(),
+          ),
+        );
 
-          if (isPublicFarm) {
-            var isSyncedSuccess = false;
-            var stopwatch = Stopwatch()..start();
-            while (!isSyncedSuccess && stopwatch.elapsedMilliseconds < 120000) {
-              await Future.delayed(const Duration(milliseconds: 800));
-              final farms = await cmoPerformApiService.getFarmSearch(filterString: farm.farmName);
-              final isExist = farms.firstWhereOrNull((element) => element.farmId == farm.farmId);
-              if (isExist != null) {
-                isSyncedSuccess = true;
-              }
+        logger.d('Publish message to topic $publishFarmTopic');
+        final isPublicFarm = await cmoPerformApiService.public(
+          currentClientId: userDeviceId.toString(),
+          topic: publishFarmTopic,
+          messages: [message],
+        );
+
+        if (isPublicFarm) {
+          var isSyncedSuccess = false;
+          var stopwatch = Stopwatch()..start();
+          while (!isSyncedSuccess && stopwatch.elapsedMilliseconds < 120000) {
+            await Future.delayed(const Duration(milliseconds: 800));
+            final farms = await cmoPerformApiService.getFarmSearch(
+              filterString: farm.farmName,
+            );
+            final isExist = farms.firstWhereOrNull((element) => element.farmId == farm.farmId);
+            if (isExist != null) {
+              isSyncedSuccess = true;
             }
+          }
 
-            stopwatch.stop();
-            if (isSyncedSuccess) {
-              await cmoDatabaseMasterService.cacheFarm(
-                farm.copyWith(
+          stopwatch.stop();
+          if (isSyncedSuccess) {
+            await cmoDatabaseMasterService.cacheFarm(
+              farm.copyWith(
+                isMasterDataSynced: true,
+              ),
+            );
+
+            for (final objectiveAnswer in objectiveAnswers) {
+              await cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(
+                objectiveAnswer.copyWith(
                   isMasterDataSynced: true,
                 ),
               );
-
-              for (final objectiveAnswer in objectiveAnswers) {
-                await cmoDatabaseMasterService.cacheFarmMemberObjectiveAnswer(
-                  objectiveAnswer.copyWith(
-                    isMasterDataSynced: true,
-                  ),
-                );
-              }
-
-              for (final riskProfileAnswer in riskProfileAnswers) {
-                await cmoDatabaseMasterService.cacheFarmMemberRiskProfileAnswer(
-                  riskProfileAnswer.copyWith(
-                    isMasterDataSynced: true,
-                  ),
-                );
-              }
-
-              logger.d('Successfully published farmId: ${farm.farmId}');
-            } else {
-              showSnackError(msg: 'Publish Farm error: ${farm.farmName}');
-              logger.e('Failed to publish farmId: ${farm.farmId}');
             }
+
+            for (final riskProfileAnswer in riskProfileAnswers) {
+              await cmoDatabaseMasterService.cacheFarmMemberRiskProfileAnswer(
+                riskProfileAnswer.copyWith(
+                  isMasterDataSynced: true,
+                ),
+              );
+            }
+
+            logger.d('Successfully published farmId: ${farm.farmId}');
           } else {
-            showSnackError(msg: 'Publish Farm error: ${farm.farmName}');
-            logger.e('Failed to publish farmId: ${farm.farmId}');
+            handleErrorMessage(
+              snackErrorMessage: 'Published Farm ${farm.farmName} and cannot insert it into database.',
+              errorMessage: 'Farm ${farm.farmName}',
+            );
           }
+        } else {
+          handleErrorMessage(
+            snackErrorMessage: 'Publish Farm ${farm.farmName} error when sent to server.',
+            errorMessage: 'Farm ${farm.farmName}',
+          );
         }
-      } else {
-        logger.d('No farm to sync');
       }
-    } catch (error) {
-      logger.e(error);
+    } else {
+      logger.d('No farm to sync');
+      emit(
+        state.copyWith(
+          syncMessage: 'There are no farm to upload',
+        ),
+      );
     }
   }
 
@@ -332,123 +398,128 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     emit(
       state.copyWith(
         syncMessage: 'Syncing Audits, Comments and Photos...',
-        isLoading: true,
       ),
     );
 
-    try {
-      final publishAuditsTopic = 'Cmo.Assessment.RM.Complete.$groupSchemeId.$userDeviceId';
-      logger.d('Get unsynced /audits by userId');
-      var audits = await cmoDatabaseMasterService.getAllAudits();
-      if (audits.isNotBlank) {
-        audits = audits
-            .where(
-              (element) => element.completed == true && element.synced == false,
-            )
-            .toList();
-        logger.d('Unsynced audit: ${audits.length}');
+    final publishAuditsTopic = 'Cmo.Assessment.RM.Complete.$groupSchemeId.$userDeviceId';
+    logger.d('Get unsynced /audits by userId');
+    var audits = await cmoDatabaseMasterService.getAllAudits();
+    if (audits.isNotBlank) {
+      audits = audits
+          .where(
+            (element) => element.completed == true && element.synced == false,
+          )
+          .toList();
+      logger.d('Unsynced audit: ${audits.length}');
 
-        for (var audit in audits) {
-          var auditPayload = AuditPayload.fromAudit(audit).copyWith(
-            userDeviceId: userDeviceId,
-            userId: userId,
+      for (var audit in audits) {
+        var auditPayload = AuditPayload.fromAudit(audit).copyWith(
+          userDeviceId: userDeviceId,
+          userId: userId,
+        );
+
+        var auditQuestionAnswers = const AssessmentQuestionAnswers();
+
+        final questionAnswers = await cmoDatabaseMasterService
+            .getQuestionAnswersByRmuIdAndAuditTemplateIdAndAssessmentId(
+          rmuId: rmuId,
+          assessmentId: audit.assessmentId,
+          auditTemplateId: audit.auditTemplateId,
+        );
+
+        auditQuestionAnswers =
+            auditQuestionAnswers.copyWith(questionAnswer: questionAnswers);
+
+        for (final answer in questionAnswers) {
+          final questionComments =
+              await cmoDatabaseMasterService.getQuestionComments(
+            audit.assessmentId!,
+            answer.questionId!,
           );
 
-          var auditQuestionAnswers = const AssessmentQuestionAnswers();
+          auditQuestionAnswers = auditQuestionAnswers.copyWith(
+              questionComment:
+                  auditQuestionAnswers.questionComment + questionComments);
 
-          final questionAnswers = await cmoDatabaseMasterService
-              .getQuestionAnswersByRmuIdAndAuditTemplateIdAndAssessmentId(
-            rmuId: rmuId,
+          final questionPhotos = await cmoDatabaseMasterService
+              .getQuestionPhotosByAssessmentIdAndQuestionId(
             assessmentId: audit.assessmentId,
-            auditTemplateId: audit.auditTemplateId,
+            questionId: answer.questionId,
           );
 
-          auditQuestionAnswers = auditQuestionAnswers.copyWith(questionAnswer: questionAnswers);
+          auditQuestionAnswers = auditQuestionAnswers.copyWith(
+            questionPhoto: auditQuestionAnswers.questionPhoto +
+                questionPhotos.map((e) => e.toPayLoadWithBase64()).toList(),
+          );
+        }
 
-          for (final answer in questionAnswers) {
-            final questionComments = await cmoDatabaseMasterService.getQuestionComments(
-              audit.assessmentId!,
-              answer.questionId!,
-            );
+        auditPayload = auditPayload.copyWith(
+            assessmentQuestionAnswers: auditQuestionAnswers);
+        logger.d('Assign assessment/audit Payload to message $auditPayload');
 
-            auditQuestionAnswers = auditQuestionAnswers.copyWith(questionComment: auditQuestionAnswers.questionComment + questionComments);
+        final message = Message(
+          properties: getMessageProperties(),
+          body: jsonEncode(
+            auditPayload.toJson(),
+          ),
+        );
 
-            final questionPhotos = await cmoDatabaseMasterService.getQuestionPhotosByAssessmentIdAndQuestionId(
-              assessmentId: audit.assessmentId,
-              questionId: answer.questionId,
-            );
+        logger.d('Publish message to topic $publishAuditsTopic');
 
-            auditQuestionAnswers = auditQuestionAnswers.copyWith(
-              questionPhoto: auditQuestionAnswers.questionPhoto +
-                  questionPhotos.map((e) => e.toPayLoadWithBase64()).toList(),
-            );
-          }
+        final isPublicAudit = await cmoPerformApiService.public(
+          currentClientId: userDeviceId.toString(),
+          topic: publishAuditsTopic,
+          messages: [message],
+        );
 
-          auditPayload = auditPayload.copyWith(assessmentQuestionAnswers: auditQuestionAnswers);
-          logger.d('Assign assessment/audit Payload to message $auditPayload');
-
-          final message = Message(
-            properties: getMessageProperties(),
-            body: jsonEncode(
-              auditPayload.toJson(),
+        if (isPublicAudit) {
+          await cmoDatabaseMasterService.cacheAudit(
+            audit.copyWith(
+              synced: true,
             ),
           );
 
-          logger.d('Publish message to topic $publishAuditsTopic');
-
-          final isPublicAudit = await cmoPerformApiService.public(
-            currentClientId: userDeviceId.toString(),
-            topic: publishAuditsTopic,
-            messages: [message],
+          logger.d('Successfully published assessments/audits: ${audit.id}');
+        } else {
+          handleErrorMessage(
+            snackErrorMessage: 'Failed to publish assessments/audits: ${audit.id}',
+            errorMessage: 'Audit ${audit.id}',
           );
-
-          if (isPublicAudit) {
-            await cmoDatabaseMasterService.cacheAudit(
-              audit.copyWith(
-                synced: true,
-              ),
-            );
-
-            logger.d('Successfully published assessments/audits: ${audit.id}');
-          } else {
-            logger.e('Failed to publish assessments/audits: ${audit.id}');
-          }
         }
-      } else {
-        logger.d('No assessments/audits to sync');
       }
-    } catch (error) {
-      logger.e(error);
+    } else {
+      logger.d('No assessments/audits to sync');
+      emit(
+        state.copyWith(
+          syncMessage: 'There are no assessments/audits to upload',
+        ),
+      );
     }
   }
 
   Future<void> publishGroupSchemeStakeholders() async {
     emit(
       state.copyWith(
-        syncMessage: 'Syncing Group Scheme Stakeholders...',
-        isLoading: true,
+        syncMessage: 'Uploading Group Scheme Stakeholders...',
       ),
     );
 
-    try {
       final publishGroupSchemeStakeholdersTopic = 'Cmo.MasterData.RM.GSS.$groupSchemeId.$userDeviceId';
       logger.d('Get unsynced group scheme stakeholders');
       final groupSchemas = await cmoDatabaseMasterService.getGroupSchemeStakeholderByGroupSchemeId(groupSchemeId);
-      final unsyncedStakeholders = await cmoDatabaseMasterService.getUnsycnedStakeholders();
+      final unsyncedStakeholders = await cmoDatabaseMasterService.getUnsyncedStakeholder();
       final groupSchemeStakeholderPayloads = <MainGroupSchemeStakeholderPayLoad>[];
 
       for (final stakeholder in unsyncedStakeholders) {
-        var mainGroupSchemeStakeholderPayLoad = MainGroupSchemeStakeholderPayLoad();
-        mainGroupSchemeStakeholderPayLoad = mainGroupSchemeStakeholderPayLoad.copyWith(Stakeholder: StakeholderPayLoad.fromStakeholder(stakeholder));
+        var mainGroupSchemeStakeholderPayLoad = const MainGroupSchemeStakeholderPayLoad();
+        mainGroupSchemeStakeholderPayLoad = mainGroupSchemeStakeholderPayLoad.copyWith(stakeholder: stakeholder);
         final groupSchema = groupSchemas.firstWhereOrNull(
-          (element) =>
-              element.stakeholderId ==
-              mainGroupSchemeStakeholderPayLoad.Stakeholder?.StakeholderId,
+          (element) => element.stakeholderId == mainGroupSchemeStakeholderPayLoad.stakeholder?.stakeholderId,
         );
 
         if (groupSchema != null) {
           mainGroupSchemeStakeholderPayLoad = mainGroupSchemeStakeholderPayLoad.copyWith(
-            GroupSchemeStakeholder: GroupSchemeStakeholderPayLoad.fromGroupSchemeStakeholder(groupSchema),
+            groupSchemeStakeholder: groupSchema,
           );
         }
 
@@ -459,7 +530,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       if (groupSchemeStakeholderPayloads.isNotBlank) {
         logger.d('Unsynced group scheme stakeholders count: ${groupSchemeStakeholderPayloads.length}');
 
-        for (var groupSchemeStakeholderPayload in groupSchemeStakeholderPayloads) {
+        for (final groupSchemeStakeholderPayload in groupSchemeStakeholderPayloads) {
           final message = Message(
             properties: getMessageProperties(),
             body: jsonEncode(groupSchemeStakeholderPayload.toJson()),
@@ -477,137 +548,145 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             await (await cmoDatabaseMasterService.db).writeTxn(() async {
               logger.d('Try update stakeholder status to synced');
               await cmoDatabaseMasterService.cacheStakeholder(
-                StakeHolder.fromStakeholderPayLoad(
-                  groupSchemeStakeholderPayload.Stakeholder!.copyWith(
-                    IsMasterDataSynced: 1,
-                  ),
+                groupSchemeStakeholderPayload.stakeholder!.copyWith(
+                  isMasterDataSynced: true,
                 ),
               );
 
               logger.d('Try update group scheme stakeholder status to synced');
 
-              if (groupSchemeStakeholderPayload.GroupSchemeStakeholder != null) {
+              if (groupSchemeStakeholderPayload.groupSchemeStakeholder != null) {
                 await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
-                  GroupSchemeStakeholder.fromGroupSchemeStakeholderPayLoad(
-                    groupSchemeStakeholderPayload.GroupSchemeStakeholder!.copyWith(
-                      IsMasterDataSynced: 1,
-                    ),
+                  groupSchemeStakeholderPayload.groupSchemeStakeholder!.copyWith(
+                    isMasterDataSynced: true,
                   ),
                 );
               }
 
-              logger.d('Successfully published groupSchemeStakeholderId: ${groupSchemeStakeholderPayload.GroupSchemeStakeholder?.GroupSchemeStakeholderId}');
+              logger.d('Successfully published groupSchemeStakeholderId: ${groupSchemeStakeholderPayload.groupSchemeStakeholder?.groupSchemeStakeholderId}');
             });
           } else {
-            logger.e('Failed to publish groupSchemeStakeholderId: ${groupSchemeStakeholderPayload.GroupSchemeStakeholder?.GroupSchemeStakeholderId}');
+            handleErrorMessage(
+              snackErrorMessage: 'Failed to publish groupSchemeStakeholderId: ${groupSchemeStakeholderPayload.groupSchemeStakeholder?.groupSchemeStakeholderId}',
+              errorMessage: 'Group Scheme Stakeholder ${groupSchemeStakeholderPayload.stakeholder?.stakeholderName}',
+            );
           }
         }
       } else {
         logger.d('No group scheme stakeholders to sync');
+        emit(
+          state.copyWith(
+            syncMessage: 'No group scheme stakeholders to sync',
+          ),
+        );
       }
-    } catch (error) {
-      logger.e(error);
-    }
   }
 
   Future<void> publishCompartments() async {
     emit(
       state.copyWith(
-        syncMessage: 'Syncing Compartments...',
-        isLoading: true,
+        syncMessage: 'Uploading Compartments...',
       ),
     );
 
-    try {
-      logger.d('Get unsynced compartment');
-      final compartments = await cmoDatabaseMasterService.getAllUnsynedCompartmentsByGroupSchemeId(groupSchemeId: groupSchemeId);
-      if (compartments.isNotBlank) {
-        logger.d('Unsynced compartments count: ${compartments.length}');
-        for (final compartment in compartments) {
-          final syncedCompartment = await cmoPerformApiService.insertUpdatedCompartment(compartment);
-          if (syncedCompartment != null) {
-            await cmoDatabaseMasterService.cacheCompartment(
-              syncedCompartment.copyWith(
-                isMasterdataSynced: true,
-                localCompartmentId: compartment.localCompartmentId,
-                productGroupTemplateName: compartment.productGroupTemplateName,
-                speciesGroupTemplateName: compartment.speciesGroupTemplateName,
-                areaTypeName: compartment.areaTypeName,
-                espacementWidth: compartment.espacementWidth,
-                espacementLength: compartment.espacementLength,
-              ),
-              isDirect: true,
-            );
+    logger.d('Get unsynced compartment');
+    final compartments = await cmoDatabaseMasterService
+        .getAllUnsynedCompartmentsByGroupSchemeId(groupSchemeId: groupSchemeId);
+    if (compartments.isNotBlank) {
+      logger.d('Unsynced compartments count: ${compartments.length}');
+      for (final compartment in compartments) {
+        final syncedCompartment = await cmoPerformApiService.insertUpdatedCompartment(compartment);
+        if (syncedCompartment != null) {
+          await cmoDatabaseMasterService.cacheCompartment(
+            syncedCompartment.copyWith(
+              isMasterdataSynced: true,
+              localCompartmentId: compartment.localCompartmentId,
+              productGroupTemplateName: compartment.productGroupTemplateName,
+              speciesGroupTemplateName: compartment.speciesGroupTemplateName,
+              areaTypeName: compartment.areaTypeName,
+              espacementWidth: compartment.espacementWidth,
+              espacementLength: compartment.espacementLength,
+            ),
+            isDirect: true,
+          );
 
-            logger.d('Successfully published compartment: ${syncedCompartment.managementUnitId}');
-          } else {
-            logger.e('Failed to publish compartment: ${compartment.managementUnitId}');
-          }
+          logger.d('Successfully published compartment: ${syncedCompartment.managementUnitId}');
+        } else {
+          handleErrorMessage(
+            snackErrorMessage: 'Failed to publish compartment: ${compartment.unitNumber}',
+            errorMessage: 'Compartment ${compartment.unitNumber}',
+          );
         }
-      } else {
-        logger.d('No Compartments to sync');
       }
-    } catch (error) {
-      logger.e(error);
+    } else {
+      logger.d('No Compartments to sync');
+      emit(
+        state.copyWith(
+          syncMessage: 'No Compartments to sync',
+        ),
+      );
     }
   }
 
   Future<void> publishASIs() async {
     emit(
       state.copyWith(
-        syncMessage: 'Syncing ASI...',
-        isLoading: true,
+        syncMessage: 'Uploading ASI...',
       ),
     );
 
-    try {
-      logger.d('Get unsynced ASI');
-      final listASI = await cmoDatabaseMasterService.getRMAsiRegister();
-      final compartments = await cmoDatabaseMasterService.getAllCompartments();
+    logger.d('Get unsynced ASI');
+    final listASI = await cmoDatabaseMasterService.getRMAsiRegister();
+    final compartments = await cmoDatabaseMasterService.getAllCompartments();
 
-      if (listASI.isNotBlank) {
-        logger.d('Unsynced ASI count: ${listASI.length}');
-        for (final asi in listASI) {
-          final managementUnitId = compartments
-              .firstWhereOrNull((element) => element.localCompartmentId == asi.localCompartmentId)
-              ?.managementUnitId;
+    if (listASI.isNotBlank) {
+      logger.d('Unsynced ASI count: ${listASI.length}');
+      for (final asi in listASI) {
+        final managementUnitId = compartments
+            .firstWhereOrNull((element) =>
+                element.localCompartmentId == asi.localCompartmentId)
+            ?.managementUnitId;
 
-          final syncedAsi = await cmoPerformApiService.insertUpdatedASI(
-            asi.copyWith(
+        final syncedAsi = await cmoPerformApiService.insertUpdatedASI(
+          asi.copyWith(
+            managementUnitId: asi.managementUnitId ?? managementUnitId,
+          ),
+        );
+
+        if (syncedAsi != null) {
+          await cmoDatabaseMasterService.cacheAsi(
+            syncedAsi.copyWith(
+              localId: asi.localId,
+              localCompartmentId: asi.localCompartmentId,
+              compartmentName: asi.compartmentName,
               managementUnitId: asi.managementUnitId ?? managementUnitId,
+              asiTypeName: asi.asiTypeName,
+              isMasterdataSynced: true,
             ),
+            isDirect: true,
           );
 
-          if (syncedAsi != null) {
-            await cmoDatabaseMasterService.cacheAsi(
-              syncedAsi.copyWith(
-                localId: asi.localId,
-                localCompartmentId: asi.localCompartmentId,
-                compartmentName: asi.compartmentName,
-                managementUnitId: asi.managementUnitId ?? managementUnitId,
-                asiTypeName: asi.asiTypeName,
-                isMasterdataSynced: true,
-              ),
+          // final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
+          // await publishListAsiPhotos(
+          //   asi: syncedAsi.copyWith(localId: asi.localId),
+          //   listAsiPhotos: listAsiPhotos,
+          // );
 
-              isDirect: true,
-            );
-
-            // final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
-            // await publishListAsiPhotos(
-            //   asi: syncedAsi.copyWith(localId: asi.localId),
-            //   listAsiPhotos: listAsiPhotos,
-            // );
-
-            logger.d('Successfully published ASI: ${syncedAsi.asiRegisterId}');
-          } else {
-            logger.e('Failed to publish ASI: ${syncedAsi?.asiRegisterId}');
-          }
+          logger.d('Successfully published ASI: ${syncedAsi.asiRegisterId}');
+        } else {
+          handleErrorMessage(
+            snackErrorMessage: 'Failed to publish ASI: ${asi.asiRegisterNo}',
+            errorMessage: 'ASI ${asi.asiRegisterNo}',
+          );
         }
-      } else {
-        logger.d('No ASI to sync');
       }
-    } catch (error) {
-      logger.e(error);
+    } else {
+      logger.d('No ASI to sync');
+      emit(
+        state.copyWith(
+          syncMessage: 'No ASI to sync',
+        ),
+      );
     }
   }
 
@@ -615,38 +694,50 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     required Asi asi,
     List<AsiPhoto>? listAsiPhotos,
   }) async {
-    try {
-      logger.d('Get unsynced ASI Photos');
-      if (listAsiPhotos.isNotBlank) {
-        logger.d('Unsynced ASI Photos count: ${listAsiPhotos!.length}');
-        for (final asiPhoto in listAsiPhotos) {
-          final syncedAsiPhoto = await cmoPerformApiService.insertUpdatedAsiPhoto(
-            asiPhoto.copyWith(
-              photo: asiPhoto.photo.stringToBase64SyncServer,
-              asiRegisterId: asi.asiRegisterId,
-              asiRegisterNo: asi.asiRegisterNo,
+    emit(
+      state.copyWith(
+        syncMessage: 'Uploading ASI Photos...',
+      ),
+    );
+
+    logger.d('Get unsynced ASI Photos');
+    if (listAsiPhotos.isNotBlank) {
+      logger.d('Unsynced ASI Photos count: ${listAsiPhotos!.length}');
+      for (final asiPhoto in listAsiPhotos) {
+        final syncedAsiPhoto = await cmoPerformApiService.insertUpdatedAsiPhoto(
+          asiPhoto.copyWith(
+            photo: asiPhoto.photo.stringToBase64SyncServer,
+            asiRegisterId: asi.asiRegisterId,
+            asiRegisterNo: asi.asiRegisterNo,
+          ),
+        );
+
+        if (syncedAsiPhoto != null) {
+          await cmoDatabaseMasterService.cacheAsiPhoto(
+            syncedAsiPhoto.copyWith(
+              photo: syncedAsiPhoto.photo?.base64SyncServerToString,
+              asiRegisterLocalId: asi.localId,
+              isMasterdataSynced: true,
             ),
           );
 
-          if (syncedAsiPhoto != null) {
-            await cmoDatabaseMasterService.cacheAsiPhoto(
-              syncedAsiPhoto.copyWith(
-                photo: syncedAsiPhoto.photo?.base64SyncServerToString,
-                asiRegisterLocalId: asi.localId,
-                isMasterdataSynced: true,
-              ),
-            );
-
-            logger.d('Successfully published ASI: ${syncedAsiPhoto.asiRegisterPhotoId}');
-          } else {
-            logger.e('Failed to publish ASI: ${syncedAsiPhoto?.asiRegisterPhotoId}');
-          }
+          logger.d(
+              'Successfully published ASI: ${syncedAsiPhoto.asiRegisterPhotoId}');
+        } else {
+          handleErrorMessage(
+            snackErrorMessage:
+                'Failed to publish ASI: ${asiPhoto.asiRegisterLocalId}',
+            errorMessage: 'ASI photo ${asiPhoto.asiRegisterLocalId}',
+          );
         }
-      } else {
-        logger.d('No ASI Photos to sync');
       }
-    } catch (error) {
-      logger.e(error);
+    } else {
+      logger.d('No ASI photos to sync');
+      emit(
+        state.copyWith(
+          syncMessage: 'No ASI photos to sync',
+        ),
+      );
     }
   }
 
@@ -655,7 +746,11 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final stakeHolder = StakeHolder.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheStakeholder(stakeHolder);
+      return cmoDatabaseMasterService.cacheStakeholder(
+        stakeHolder.copyWith(
+          isMasterDataSynced: true,
+        ),
+      );
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -667,7 +762,11 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final stakeholder = GroupSchemeStakeholder.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheGroupSchemeStakeholder(stakeholder);
+      return cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
+        stakeholder.copyWith(
+          isMasterDataSynced: true,
+        ),
+      );
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -704,18 +803,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       if (bodyJson == null) return null;
       final activity = ScheduleActivity.fromJson(bodyJson);
       return cmoDatabaseMasterService.cacheScheduleActivity(activity);
-    } catch (e) {
-      logger.d('insert error: $e');
-    }
-    return null;
-  }
-
-  Future<int?> insertSchedule(Message item) async {
-    try {
-      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
-      if (bodyJson == null) return null;
-      final schedule = RMSchedule.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheRMSchedule(schedule);
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1032,6 +1119,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             compartmentName: compartment?.unitNumber,
             localCompartmentId: compartment?.localCompartmentId,
             asiTypeName: asiType?.asiTypeName,
+            isMasterdataSynced: true,
           ),
           isDirect: true,
         );
@@ -1089,7 +1177,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
   Future<void> createSubscriptions() async {
     final groupSchemeAllMasterDataTopic =
-        '$topicRegionalManagerMasterDataSync*.$userDeviceId';
+          '$topicRegionalManagerMasterDataSync*.$userDeviceId';
     final regionalManagerTrickleFeedMasterDataTopic =
         'Cmo.MasterData.RM.*.$groupSchemeId';
     const trickleFeedMasterDataTopic = 'Cmo.MasterData.*.Global';
@@ -1329,9 +1417,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             if (topic == 'Cmo.MasterData.RM.PropOwnerType.Global') {
               emit(state.copyWith(syncMessage: 'Syncing new and updated Farm Property Ownership Type...'));
               await insertFarmPropertyOwnershipType(item);
-            // } else if (topic == 'Cmo.MasterData.RM.ScheduleActivity.Global') {
-            //   emit(state.copyWith(syncMessage: 'Syncing new and updated Schedule Activities...'));
-            //   await insertScheduleActivity(item);
             } else if (topic == 'Cmo.MasterData.RM.AuditTemplate.Global') {
               emit(state.copyWith(syncMessage: 'Syncing new and updated Audit Templates...'));
               await insertAuditTemplate(item);

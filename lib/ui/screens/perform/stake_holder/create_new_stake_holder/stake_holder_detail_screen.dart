@@ -292,7 +292,7 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
     return BlocBuilder<StakeholderDetailCubit, StakeholderDetailState>(
       builder: (context, state) {
         final initStakeholderType = state.listStakeholderTypes.firstWhereOrNull(
-            (e) => e.stakeHolderTypeId == state.stakeHolder?.stakeHolderTypeId);
+            (e) => e.stakeHolderTypeId == state.stakeHolder?.stakeholderTypeId);
         return BottomSheetSelection(
           hintText: LocaleKeys.type.tr(),
           isShowError: state.isSelectTypeError,

@@ -394,7 +394,7 @@ mixin FarmUploadSummaryMixin {
           .getUnsycnedFarmStakeholderCustomaryUseRights();
 
       for (final unSyncedStakeholderItem in unSyncedStakeholders) {
-        final farmStakeholder = allFarmStakeholders.firstWhereOrNull((element) => element.stakeHolderId == unSyncedStakeholderItem.stakeHolderId);
+        final farmStakeholder = allFarmStakeholders.firstWhereOrNull((element) => element.stakeHolderId == unSyncedStakeholderItem.stakeholderId);
 
         final farmStakeholderCustomaryUseRights = <FarmStakeholderCustomaryUseRight>[];
 
@@ -432,7 +432,7 @@ mixin FarmUploadSummaryMixin {
 
         if (_enableUpdateStatus) {
           futures.add(cmoDatabaseMasterService.cacheStakeHolderFromFarm(
-              unSyncedStakeholderItem.copyWith(isMasterDataSynced: 1)));
+              unSyncedStakeholderItem.copyWith(isMasterDataSynced: true,)));
 
           for (final item in unSyncedFSCUR) {
             futures.add(

@@ -92,7 +92,7 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
   Future<void> onRemoveStakeholder(StakeHolder stakeHolder) async {
     await cmoDatabaseMasterService.cacheStakeHolderFromFarm(
       stakeHolder.copyWith(
-        isMasterDataSynced: 0,
+        isMasterDataSynced: false,
         isActive: 0,
       ),
     );
@@ -101,7 +101,7 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
     switch (currentRole) {
       case UserRoleEnum.farmerMember:
         final farmerStakeholder = await cmoDatabaseMasterService.getFarmStakeholderByStakeholderId(
-          stakeHolder.stakeHolderId,
+          stakeHolder.stakeholderId,
         );
 
         if (farmerStakeholder != null) {
@@ -115,13 +115,13 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
         break;
       case UserRoleEnum.regionalManager:
         final groupSchemeStakeholder = await cmoDatabaseMasterService.getGroupSchemeStakeholderByStakeholderId(
-          stakeHolder.stakeHolderId!,
+          stakeHolder.stakeholderId!,
         );
 
         if (groupSchemeStakeholder != null) {
           await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
             groupSchemeStakeholder.copyWith(
-              isMasterDataSynced: 0,
+              isMasterDataSynced: false,
             ),
             isDirect: false,
           );
@@ -132,7 +132,7 @@ class StakeHolderListCubit extends HydratedCubit<StakeHolderListState> {
     }
 
     showSnackSuccess(
-      msg: '${LocaleKeys.remove.tr()} ${stakeHolder.stakeHolderId}!',
+      msg: '${LocaleKeys.remove.tr()} ${stakeHolder.stakeholderId}!',
     );
 
     await loadListStakeHolders();

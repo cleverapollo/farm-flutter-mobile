@@ -123,7 +123,7 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
     emit(
       state.copyWith(
         agent: state.agent.copyWith(
-          stakeholderId: stakeHolder?.stakeHolderId,
+          stakeholderId: stakeHolder?.stakeholderId,
           stakeholderName: stakeHolder?.stakeholderName,
         ),
       ),
