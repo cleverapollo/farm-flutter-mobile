@@ -1447,8 +1447,13 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = SanctionRegister.fromJson(bodyJson);
-      return cmoDatabaseMasterService
-          .cacheSanctionRegister(rs.copyWith(isSynced: true, isLocal: false));
+      return cmoDatabaseMasterService.cacheSanctionRegister(
+        rs.copyWith(
+          isSynced: true,
+          isLocal: false,
+          signatureImage: rs.signatureImage.base64SyncServerToString,
+        ),
+      );
     } catch (e) {
       logger.d('insert error: $e');
     }

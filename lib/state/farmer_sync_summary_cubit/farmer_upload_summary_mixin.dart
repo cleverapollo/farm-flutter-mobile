@@ -551,7 +551,15 @@ mixin FarmUploadSummaryMixin {
           .getUnsyncedSanctionRegistersByFarmId(mFarmId);
 
       for (final item in sanctionRegisters) {
-        messages.add(globalMessage.copyWith(body: jsonEncode(item)));
+        messages.add(
+          globalMessage.copyWith(
+            body: jsonEncode(
+              item.copyWith(
+                signatureImage: item.signatureImage.stringToBase64SyncServer,
+              ),
+            ),
+          ),
+        );
       }
 
       if (_enableUpdateStatus) {
