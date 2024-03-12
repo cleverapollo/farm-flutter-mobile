@@ -5,6 +5,7 @@ import 'package:cmo/model/group_scheme.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/state/sync/rm/rm_sync_cubit.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,65 +50,11 @@ class RMSyncScreenState extends BaseStatefulWidgetState<RMSyncScreen> {
   Future<void> onSync() async {
     final alreadyHaveOldData = await configService.alreadyHaveOldData();
     if (alreadyHaveOldData) {
-      await showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.zero,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(12.0),
-              ),
-            ),
-            content: keepExistedDataDialogContent(),
-          );
-        },
-      );
-    } else {
-      await processWithSyncOnboarding();
-    }
-  }
-
-  Widget keepExistedDataDialogContent() {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      await onShowWarningDialog(
+        context,
+        title: LocaleKeys.warning.tr(),
+        subtitle: LocaleKeys.existed_local_data_dialog_message.tr(),
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(12.0),
-                topLeft: Radius.circular(12.0),
-              ),
-              color: context.colors.red,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  LocaleKeys.warning.tr(),
-                  style: context.textStyles.bodyBold.copyWith(
-                    color: context.colors.white,
-                    fontSize: 24,
-                  ),
-                ),
-                Icon(
-                  IconsaxOutline.danger,
-                  size: 30.0,
-                  color: context.colors.white,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12,),
-          Text(
-            LocaleKeys.existed_local_data_dialog_message.tr(),
-            style: context.textStyles.bodyNormal.blueDark2,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12,),
           InkWell(
             onTap: () async {
               Navigator.of(context).pop();
@@ -122,7 +69,8 @@ class RMSyncScreenState extends BaseStatefulWidgetState<RMSyncScreen> {
                     alignment: Alignment.center,
                     child: Text(
                       LocaleKeys.current_session.tr(),
-                      style: context.textStyles.bodyBold.copyWith(color: context.colors.white),
+                      style: context.textStyles.bodyBold
+                          .copyWith(color: context.colors.white),
                     ),
                   ),
                 ),
@@ -142,7 +90,8 @@ class RMSyncScreenState extends BaseStatefulWidgetState<RMSyncScreen> {
                     alignment: Alignment.center,
                     child: Text(
                       LocaleKeys.new_sync.tr(),
-                      style: context.textStyles.bodyBold.copyWith(color: context.colors.blue),
+                      style: context.textStyles.bodyBold
+                          .copyWith(color: context.colors.blue),
                     ),
                   ),
                 ),
@@ -150,8 +99,10 @@ class RMSyncScreenState extends BaseStatefulWidgetState<RMSyncScreen> {
             ),
           ),
         ],
-      ),
-    );
+      );
+    } else {
+      await processWithSyncOnboarding();
+    }
   }
 
   @override

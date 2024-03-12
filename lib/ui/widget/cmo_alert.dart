@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/ui/components/cmo_will_pop_scope.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -156,6 +157,73 @@ void showDialogBase(
                   ),
                 ],
               ),
+      );
+    },
+  );
+}
+
+Future<void> onShowWarningDialog(
+  BuildContext context, {
+  required String title,
+  required String subtitle,
+  List<Widget> children = const <Widget>[],
+}) async {
+  await showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.zero,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(12.0),
+          ),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(12.0),
+                    topLeft: Radius.circular(12.0),
+                  ),
+                  color: context.colors.red,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      title,
+                      style: context.textStyles.bodyBold.copyWith(
+                        color: context.colors.white,
+                        fontSize: 24,
+                      ),
+                    ),
+                    Icon(
+                      IconsaxOutline.danger,
+                      size: 30.0,
+                      color: context.colors.white,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  subtitle,
+                  style: context.textStyles.bodyNormal.blueDark2,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 12,),
+              ...children,
+            ],
+          ),
+        ),
       );
     },
   );

@@ -1639,7 +1639,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       if (bodyJson == null) return null;
       final rs = StakeHolder.fromJson(bodyJson);
       return cmoDatabaseMasterService
-          .cacheStakeholder(rs.copyWith(isMasterDataSynced: 1));
+          .cacheStakeholder(rs.copyWith(isMasterDataSynced: true));
     } catch (e) {
       logger.d('insert error: $e');
     }
@@ -1664,8 +1664,11 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = GroupSchemeStakeholder.fromJson(bodyJson);
-      return cmoDatabaseMasterService
-          .cacheGroupSchemeStakeholder(rs.copyWith(isMasterDataSynced: 1));
+      return cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
+        rs.copyWith(
+          isMasterDataSynced: true,
+        ),
+      );
     } catch (e) {
       logger.d('insert error: $e');
     }

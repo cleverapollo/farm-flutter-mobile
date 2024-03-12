@@ -4,11 +4,15 @@ class RMSyncState extends BaseSyncState {
   RMSyncState({
     this.groupScheme,
     this.rmUnit,
-    super.syncMessage,
-    super.isLoading,
-    super.isLoaded,
     this.rmSyncSummaryInformation,
     this.userInfo,
+    super.syncMessage,
+    super.errorMessageItems,
+    super.isSyncError,
+    super.isLoading,
+    super.isLoaded,
+    super.isSynced,
+    super.isSyncing,
   });
 
   GroupScheme? groupScheme;
@@ -20,6 +24,10 @@ class RMSyncState extends BaseSyncState {
     String? syncMessage,
     bool? isLoading,
     bool? isLoaded,
+    bool? isSyncing,
+    bool? isSynced,
+    bool? isSyncError,
+    List<String>? errorMessageItems,
     GroupScheme? groupScheme,
     ResourceManagerUnit? rmUnit,
     RmSyncSummaryInformation? rmSyncSummaryInformation,
@@ -27,13 +35,16 @@ class RMSyncState extends BaseSyncState {
   }) {
     return RMSyncState(
       syncMessage: syncMessage ?? this.syncMessage,
+      errorMessageItems: errorMessageItems ?? this.errorMessageItems,
       isLoading: isLoading ?? this.isLoading,
       isLoaded: isLoaded ?? this.isLoaded,
+      isSyncing: isSyncing ?? this.isSyncing,
+      isSyncError: isSyncError ?? this.isSyncError,
+      isSynced: isSynced ?? this.isSynced,
       groupScheme: groupScheme ?? this.groupScheme,
       rmUnit: rmUnit ?? this.rmUnit,
       userInfo: userInfo ?? this.userInfo,
-      rmSyncSummaryInformation:
-          rmSyncSummaryInformation ?? this.rmSyncSummaryInformation,
+      rmSyncSummaryInformation: rmSyncSummaryInformation ?? this.rmSyncSummaryInformation,
     );
   }
 }

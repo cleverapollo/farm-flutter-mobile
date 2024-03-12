@@ -619,7 +619,10 @@ class CmoDatabaseMasterService {
   Future<List<StakeHolder>> getUnsyncedStakeholder() async {
     final db = await _db();
 
-    return db.stakeHolders.filter().isMasterDataSyncedEqualTo(0).findAll();
+    return db.stakeHolders
+        .filter()
+        .isMasterDataSyncedEqualTo(false)
+        .findAll();
   }
 
   Future<List<AnnualBudget>> getUnsyncedAnnualBudgetByFarmId(
@@ -1512,17 +1515,6 @@ class CmoDatabaseMasterService {
         .findFirst();
   }
 
-  Future<List<StakeHolder>> getUnsycnedStakeholders() async {
-    final db = await _db();
-
-    return db.stakeHolders
-        .filter()
-        .isMasterDataSyncedEqualTo(0)
-        .or()
-        .isMasterDataSyncedIsNull()
-        .findAll();
-  }
-
   Future<List<CustomaryUseRight>> getCustomaryUseRight() async {
     final db = await _db();
 
@@ -1536,8 +1528,9 @@ class CmoDatabaseMasterService {
     return db.groupSchemeStakeholders
         .filter()
         .groupSchemeIdEqualTo(id)
-        .isMasterDataSyncedGreaterThan(1)
-        .isMasterDataSyncedLessThan(1)
+        .isMasterDataSyncedEqualTo(false)
+        .or()
+        .isMasterDataSyncedIsNull()
         .findAll();
   }
 
@@ -1908,8 +1901,8 @@ class CmoDatabaseMasterService {
     final db = await _db();
     return db.stakeHolders
         .filter()
-        .isActiveEqualTo(1)
-        .isMasterDataSyncedEqualTo(1)
+        .isActiveEqualTo(true)
+        .isMasterDataSyncedEqualTo(true)
         .count();
   }
 
@@ -3543,7 +3536,11 @@ class CmoDatabaseMasterService {
     final db = await _db();
     return db.stakeHolders
         .filter()
-        .isActiveEqualTo(1)
+        .isActiveEqualTo(true)
+        .or()
+        .isActiveIsNotNull()
+        .or()
+        .isActiveIsNull()
         .sortByCreateDTDesc()
         .findAll();
   }
@@ -3553,8 +3550,8 @@ class CmoDatabaseMasterService {
     final db = await _db();
     return db.stakeHolders
         .filter()
-        .stakeHolderIdEqualTo(id)
-        .isActiveEqualTo(1)
+        .stakeholderIdEqualTo(id)
+        .isActiveEqualTo(true)
         .sortByCreateDTDesc()
         .findFirst();
   }

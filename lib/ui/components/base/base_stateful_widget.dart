@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:cmo/utils/date_time_utils.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
@@ -64,103 +65,54 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
   Widget buildContent(BuildContext context);
 
   Future<void> onShowWarningDispose() async {
-    await showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(12.0),
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(12.0),
-                      topLeft: Radius.circular(12.0),
-                    ),
-                    color: context.colors.red,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        LocaleKeys.warning.tr(),
-                        style: context.textStyles.bodyBold.copyWith(
-                          color: context.colors.white,
-                          fontSize: 24,
-                        ),
-                      ),
-                      Icon(
-                        IconsaxOutline.danger,
-                        size: 30.0,
-                        color: context.colors.white,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12,),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+    await onShowWarningDialog(
+      context,
+      title: LocaleKeys.warning.tr(),
+      subtitle: LocaleKeys.warning_pop_back_content.tr(),
+      children: [
+        InkWell(
+          onTap: () async {
+            Navigator.of(context).pop();
+          },
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  color: context.colors.blue,
+                  alignment: Alignment.center,
                   child: Text(
-                    LocaleKeys.warning_pop_back_content.tr(),
-                    style: context.textStyles.bodyNormal.blueDark2,
-                    textAlign: TextAlign.center,
+                    LocaleKeys.current_session.tr(),
+                    style: context.textStyles.bodyBold
+                        .copyWith(color: context.colors.white),
                   ),
                 ),
-                const SizedBox(height: 12,),
-                InkWell(
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                  },
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          color: context.colors.blue,
-                          alignment: Alignment.center,
-                          child: Text(
-                            LocaleKeys.current_session.tr(),
-                            style: context.textStyles.bodyBold.copyWith(color: context.colors.white),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                    onGoBack();
-                  },
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          alignment: Alignment.center,
-                          child: Text(
-                            LocaleKeys.go_back.tr(),
-                            style: context.textStyles.bodyBold.copyWith(color: context.colors.blue),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+        InkWell(
+          onTap: () async {
+            Navigator.of(context).pop();
+            onGoBack();
+          },
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  alignment: Alignment.center,
+                  child: Text(
+                    LocaleKeys.go_back.tr(),
+                    style: context.textStyles.bodyBold
+                        .copyWith(color: context.colors.blue),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
