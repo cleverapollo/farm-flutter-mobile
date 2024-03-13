@@ -333,6 +333,7 @@
   "surname": "นามสกุล",
   "survival": "อัตราการอยู่รอด",
   "sync": "ซิงค์ข้อมูล",
+  "sync_successfully_completed": "Sync Successfully Completed",
   "syncSummary": "สรุปการซินโครไนซ์ข้อมูล",
   "synced": "ถ่ายโอนข้อมูลแล้ว",
   "takePhoto": "ถ่ายภาพ",

@@ -221,7 +221,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             isSynced: true,
             isSyncing: false,
             errorMessageItems: const <String>[],
-
           ),
         );
       }

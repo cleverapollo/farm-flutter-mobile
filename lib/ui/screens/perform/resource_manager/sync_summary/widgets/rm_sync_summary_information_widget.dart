@@ -149,6 +149,9 @@ class RmSyncSummaryInformationWidget extends StatelessWidget {
                 label: LocaleKeys.stakeholder_types.tr(),
                 count: summaryInformation.stakeholderTypes,
               ),
+              const SizedBox(
+                height: 20,
+              ),
             ],
           ),
         );

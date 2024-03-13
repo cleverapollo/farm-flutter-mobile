@@ -36,7 +36,6 @@ class ResourceManagerSyncSummaryScreen extends BaseStatefulWidget {
 class _ResourceManagerSyncSummaryScreenState extends BaseStatefulWidgetState<ResourceManagerSyncSummaryScreen> {
 
   Future<void> onSyncSuccess() async {
-    showSnackSuccess(msg: 'The summary sync was successful!');
     await context.read<DashboardCubit>().initializeRM();
   }
 
@@ -79,12 +78,12 @@ class _ResourceManagerSyncSummaryScreenState extends BaseStatefulWidgetState<Res
               child: InkWell(
                 onTap: () async {
                   Navigator.of(context).pop();
-                  onGoBack();
+                  await context.read<RMSyncCubit>().syncSummary();
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
-                    LocaleKeys.go_back.tr(),
+                    LocaleKeys.sync_again.tr(),
                     textAlign: TextAlign.center,
                     style: context.textStyles.bodyBold.copyWith(
                       color: context.colors.blue,
@@ -137,6 +136,19 @@ class _ResourceManagerSyncSummaryScreenState extends BaseStatefulWidgetState<Res
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          if (state.isSynced && !state.isSyncError)
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 12.0),
+                              margin: const EdgeInsets.only(bottom: 16.0),
+                              width: double.infinity,
+                              color: context.colors.green,
+                              alignment: Alignment.center,
+                              child: Text(
+                                LocaleKeys.sync_successfully_completed.tr(),
+                                style: context.textStyles.bodyBold.white,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           if (!state.isSyncing)
                             const SizedBox.shrink()
                           else
@@ -148,8 +160,7 @@ class _ResourceManagerSyncSummaryScreenState extends BaseStatefulWidgetState<Res
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-
-                          CmoFilledButton(
+                            CmoFilledButton(
                             loading: state.isLoading,
                             title: LocaleKeys.sync.tr(),
                             onTap: context.read<RMSyncCubit>().syncSummary,
