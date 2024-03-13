@@ -119,8 +119,9 @@ extension MemberSiteDetailsStateExtension on MemberSiteDetailsState {
   bool get isComplete {
     return siteName.isNotBlank &&
         town.isNotBlank &&
-        province.isNotBlank &&
-        isCompleteSiteLocation;
+        province.isNotBlank;
+        // &&
+        // isCompleteSiteLocation;
   }
 
   bool get isCompleteSiteLocation {

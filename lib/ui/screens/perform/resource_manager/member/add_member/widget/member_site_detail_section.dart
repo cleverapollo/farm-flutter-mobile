@@ -155,7 +155,7 @@ class _MemberSiteDetailSectionState extends State<MemberSiteDetailSection> {
                       }
                     },
                     title: LocaleKeys.siteLocation.tr(),
-                    showTick: memberSiteDetailsState.isCompleteSiteLocation,
+                    // showTick: memberSiteDetailsState.isCompleteSiteLocation,
                     isHideBorder: true,
                   ),
                 ),
