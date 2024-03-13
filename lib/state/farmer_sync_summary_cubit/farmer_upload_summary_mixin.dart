@@ -644,18 +644,39 @@ mixin FarmUploadSummaryMixin {
       onStatus('Sync Training Registers...');
       final messages = <Message>[];
       final futures = <Future<void>>[];
-
       final trainingRegisters =
           await cmoDatabaseMasterService.getUnsyncedTrainingRegisters(mFarmId);
       for (final item in trainingRegisters) {
         final traineeRegisters = await cmoDatabaseMasterService.getTraineeRegistersByTrainingRegisterNo(item.trainingRegisterNo);
-        messages.add(
-          globalMessage.copyWith(
-            body: jsonEncode(
-              item.copyWith(traineeRegisters: traineeRegisters),
-            ),
-          ),
+        await cmoDatabaseMasterService.removeAllTraineeRegistersByTrainingRegisterNo(
+          item.trainingRegisterNo,
         );
+
+        var trainingRegisterNo = item.trainingRegisterNo.isBlank
+            ? DateTime.now().microsecondsSinceEpoch
+            : int.parse(item.trainingRegisterNo!);
+        for (final trainee in traineeRegisters) {
+          final updatedTrainee = trainee.copyWith(
+            trainingRegisterId: null,
+            trainingRegisterNo: trainingRegisterNo.toString(),
+          );
+
+          messages.add(
+            globalMessage.copyWith(
+              body: jsonEncode(
+                item.copyWith(
+                  trainingRegisterId: null,
+                  trainingRegisterNo: trainingRegisterNo.toString(),
+                  traineeRegisters: [updatedTrainee],
+                  signatureImage: item.signatureImage.stringToBase64SyncServer,
+                ),
+              ),
+            ),
+          );
+
+          await cmoDatabaseMasterService.cacheTraineeRegister(updatedTrainee);
+          trainingRegisterNo++;
+        }
       }
 
       if (_enableUpdateStatus) {

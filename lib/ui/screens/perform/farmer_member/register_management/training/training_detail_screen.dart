@@ -176,11 +176,11 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
                             ),
                           ),
                           const SizedBox(height: 24),
-                          SignatureWidget(
-                            signatureImage: training.signatureImage,
-                            onClearSignature: cubit.onClearSignature,
-                            onDrawEnd: cubit.onSign,
-                          ),
+                          // SignatureWidget(
+                          //   signatureImage: training.signatureImage,
+                          //   onClearSignature: cubit.onClearSignature,
+                          //   onDrawEnd: cubit.onSign,
+                          // ),
                         ],
                       ),
                     ),

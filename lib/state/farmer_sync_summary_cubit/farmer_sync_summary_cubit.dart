@@ -1557,18 +1557,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     return null;
   }
 
-  // Future<int?> insertScheduleActivity(Message item) async {
-  //   try {
-  //     final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
-  //     if (bodyJson == null) return null;
-  //     final rs = ScheduleActivity.fromJson(bodyJson);
-  //     return cmoDatabaseMasterService.cacheScheduleActivity(rs);
-  //   } catch (e) {
-  //     logger.d('insert error: $e');
-  //   }
-  //   return null;
-  // }
-
   Future<int?> insertGroupScheme(Message item) async {
     try {
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
@@ -1947,7 +1935,12 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         );
       }
 
-      return cmoDatabaseMasterService.cacheTraining(rs.copyWith(isMasterdataSynced: true));
+      return cmoDatabaseMasterService.cacheTraining(
+        rs.copyWith(
+          isMasterdataSynced: true,
+          signatureImage: rs.signatureImage.base64SyncServerToString,
+        ),
+      );
     } catch (e) {
       logger.d('insert error: $e');
     }
