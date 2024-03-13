@@ -184,7 +184,7 @@ class _ResourceManagerDashboardScreenState
                       // ),
                       const SizedBox(height: 16,),
                       DashboardInformationItem(
-                        title: LocaleKeys.audits.tr(),
+                        title: LocaleKeys.upload_to_cloud.tr(),
                         value: (dashboardInfo?.unsynced ?? 0).toString(),
                         titleTextStyle: context.textStyles.bodyNormal.white,
                         valueTextStyle: context.textStyles.bodyNormal.white,
