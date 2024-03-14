@@ -4,6 +4,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/components/multiple_selection_item.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BottomSheetMultipleSelectionItem<T> {
@@ -42,6 +43,8 @@ class _BottomSheetMultipleSelectionState<T> extends State<BottomSheetMultipleSel
 
   List<BottomSheetMultipleSelectionItem<T>> selectedItems = <BottomSheetMultipleSelectionItem<T>>[];
   List<BottomSheetMultipleSelectionItem<T>> filterListItems = <BottomSheetMultipleSelectionItem<T>>[];
+
+  final scrollController = ScrollController();
 
   @override
   void initState() {
@@ -127,10 +130,14 @@ class _BottomSheetMultipleSelectionState<T> extends State<BottomSheetMultipleSel
           ),
         ),
         Expanded(
-          child: ListView.builder(
-            itemCount: filterListItems.length,
-            itemBuilder: (context, index) =>
-                _buildItem(filterListItems[index]),
+          child: Scrollbar(
+            controller: scrollController,
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: filterListItems.length,
+              itemBuilder: (context, index) =>
+                  _buildItem(filterListItems[index]),
+            ),
           ),
         ),
         Padding(
