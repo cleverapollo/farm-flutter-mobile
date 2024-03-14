@@ -1,3 +1,4 @@
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
@@ -108,6 +109,7 @@ class _PetsAndDiseaseScreenState extends BaseStatefulWidgetState<PetsAndDiseaseS
       LocaleKeys.under_control.tr(): (registerItem.underControl ?? false)
           ? LocaleKeys.yes.tr()
           : LocaleKeys.no.tr(),
+      LocaleKeys.discovered_date.tr(): convertDateTimeToLunar(registerItem.discoveredDate).mmmDdYyyy(),
       LocaleKeys.general_comments.tr(): registerItem.comment,
     };
   }

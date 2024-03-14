@@ -452,6 +452,7 @@
   "chemicalType": "Chemical Type",
   "chemicalApplicationMethod": "Chemical Application Method",
   "dateIssued": "Ngày thi hành",
+  "discovered_date": "Discovered Date",
   "disciplinary_detail_text_information": "*Nếu cần thêm thông tin chi tiết, vui lòng điền vào phần bên dưới",
   "openingStockAndPurchases": "Opening Stock And Purchases",
   "issued": "Issued",

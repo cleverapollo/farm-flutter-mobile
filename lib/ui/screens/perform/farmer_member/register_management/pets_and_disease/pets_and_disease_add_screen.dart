@@ -2,11 +2,8 @@ import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/model/pests_and_diseases_register_treatment_method/pests_and_diseases_register_treatment_method.dart';
-import 'package:cmo/model/pets_and_diseases/pets_and_diseases.dart';
-import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_cubit.dart';
-import 'package:cmo/state/pets_and_disease_cubit/pets_and_disease_state.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/camp_management/add_camp_screen.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/pets_and_disease/select_property_damaged.dart';
@@ -15,6 +12,7 @@ import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
+import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -193,6 +191,7 @@ class _PetsAndDiseaseAddScreenState extends BaseStatefulWidgetState<PetsAndDisea
                           ),
                         ),
                       ),
+                      buildSelectDiscoveredDate(),
                       const SizedBox(height: 12),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -279,6 +278,24 @@ class _PetsAndDiseaseAddScreenState extends BaseStatefulWidgetState<PetsAndDisea
               ),
             );
           },
+        );
+      },
+    );
+  }
+
+  Widget buildSelectDiscoveredDate() {
+    return BlocBuilder<PetsAndDiseasesDetailCubit, PetsAndDiseasesDetailState>(
+      builder: (context, state) {
+        return AttributeItem(
+          margin: const EdgeInsets.symmetric(horizontal: 24),
+          child: DatePickerWidget(
+            lastDate: DateTime.now(),
+            initialDate: state.petsAndDiseaseRegister?.discoveredDate,
+            title: LocaleKeys.discovered_date.tr(),
+            titleStyle: context.textStyles.bodyNormal.blueDark2,
+            firstDate: DateTime.now().subtract(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
+            onConfirm: (dateTime) => context.read<PetsAndDiseasesDetailCubit>().onChangeData(discoveredDate: dateTime),
+          ),
         );
       },
     );

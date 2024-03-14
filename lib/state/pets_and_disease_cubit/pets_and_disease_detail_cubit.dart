@@ -101,6 +101,7 @@ class PetsAndDiseasesDetailCubit extends Cubit<PetsAndDiseasesDetailState> {
     int? numberOfOutbreaks,
     double? areaLost,
     bool? underControl,
+    DateTime? discoveredDate,
   }) {
     emit(
       state.copyWith(
@@ -109,6 +110,7 @@ class PetsAndDiseasesDetailCubit extends Cubit<PetsAndDiseasesDetailState> {
           numberOfOutbreaks: numberOfOutbreaks ?? state.petsAndDiseaseRegister?.numberOfOutbreaks,
           areaLost: areaLost ?? state.petsAndDiseaseRegister?.areaLost,
           underControl: underControl ?? state.petsAndDiseaseRegister?.underControl,
+          discoveredDate: discoveredDate ?? state.petsAndDiseaseRegister?.discoveredDate,
         ),
       ),
     );

@@ -950,7 +950,7 @@ mixin FarmUploadSummaryMixin {
         }).toList();
 
         payLoadItem = payLoadItem.copyWith(
-          Register: item.toPayLoad(),
+          petsAndDiseaseRegister: item,
           TreatmentMethod: registerTreatmentMethodPayLoad,
         );
 

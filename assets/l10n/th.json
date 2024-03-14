@@ -450,6 +450,7 @@
   "chemicalType": "ชนิดของสารเคมี",
   "chemicalApplicationMethod": "วิธีการใช้สารเคมี",
   "dateIssued": "วันที่ทำรายการ",
+  "discovered_date": "Discovered Date",
   "disciplinary_detail_text_information": "*หากต้องการเพิ่มรายละเอียดอื่นๆ กรุณาเพิ่มเติมด้านล่าง",
   "openingStockAndPurchases": "การเริ่มเปิดสต็อคและการซื้อเข้ามา",
   "issued": "นำออกไปใช้",

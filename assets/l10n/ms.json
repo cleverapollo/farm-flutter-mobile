@@ -451,6 +451,7 @@
   "chemicalType": "Jenis Bahan Kimia",
   "chemicalApplicationMethod": "Kaedah penggunaan bahan kimia",
   "dateIssued": "Tarikh dikeluarkan",
+  "discovered_date": "Discovered Date",
   "disciplinary_detail_text_information": "*If more details are required, please fill in the below",
   "openingStockAndPurchases": "Stok Pembukaan dan Pembelian",
   "issued": "Issued",
