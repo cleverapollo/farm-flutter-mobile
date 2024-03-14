@@ -175,20 +175,9 @@ class _ResourceManagerDashboardScreenState
                     icon: Assets.icons.icDashboardSync.svg(),
                     onTap: () => ResourceManagerSyncSummaryScreen.push(context),
                     listInformationWidget: [
-                      CmoCardHeader(title: LocaleKeys.sync.tr()),
-                      // DashboardInformationItem(
-                      //   title: LocaleKeys.audits.tr(),
-                      //   value: (dashboardInfo?.unsynced ?? 0).toString(),
-                      //   titleTextStyle: context.textStyles.bodyNormal.white,
-                      //   valueTextStyle: context.textStyles.bodyNormal.white,
-                      // ),
                       const SizedBox(height: 16,),
-                      DashboardInformationItem(
-                        title: LocaleKeys.upload_to_cloud.tr(),
-                        value: (dashboardInfo?.unsynced ?? 0).toString(),
-                        titleTextStyle: context.textStyles.bodyNormal.white,
-                        valueTextStyle: context.textStyles.bodyNormal.white,
-                      ),
+                      CmoCardHeader(title: '${LocaleKeys.sync.tr()}(${LocaleKeys.upload.tr()})'),
+                      const SizedBox(height: 16,),
                     ],
                   ),
                 ],
