@@ -134,12 +134,14 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       logger.d('--insertByCallingAPI done');
 
       logger.d('--syncRegionalManagerMasterData start');
-      await syncRegionalManagerMasterData();
+      var hasData = await syncRegionalManagerMasterData();
       logger.d('--syncRegionalManagerMasterData done');
 
-      logger.d('--syncRegionalManagerUnitMasterData start');
-      await syncRegionalManagerUnitMasterData();
-      logger.d('--syncRegionalManagerUnitMasterData done');
+      if (hasData) {
+        logger.d('--syncRegionalManagerUnitMasterData start');
+        hasData = await syncRegionalManagerUnitMasterData();
+        logger.d('--syncRegionalManagerUnitMasterData done');
+      }
 
       emit(
         state.copyWith(
@@ -151,13 +153,14 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
       logger.d('--RM Sync Onboarding Data done');
       await Future.delayed(const Duration(milliseconds: 500), () {});
-      await configService.setRMSynced(isSynced: true);
+      await configService.setRMSynced(isSynced: hasData);
     } catch (e) {
       logger.e(e);
       emit(
         state.copyWith(
             syncMessage: 'Sync error', isLoaded: false, isLoading: false),
       );
+      await configService.setRMSynced(isSynced: false);
     }
   }
 
@@ -1207,7 +1210,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     );
   }
 
-  Future<void> syncRegionalManagerMasterData() async {
+  Future<bool> syncRegionalManagerMasterData() async {
     emit(state.copyWith(syncMessage: 'Syncing Resource Manager Master Data...'));
     var sync = true;
     var hasData = false;
@@ -1234,10 +1237,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       }
     }
 
-    if (hasData == false) {
-      await Future.delayed(const Duration(milliseconds: 800));
-      await syncRegionalManagerMasterData();
-    }
+    return hasData;
   }
 
   Future<void> insertRegionalManagerMasterDataToLocal(List<Message> messages) async {
@@ -1331,9 +1331,10 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     });
   }
 
-  Future<void> syncRegionalManagerUnitMasterData() async {
+  Future<bool> syncRegionalManagerUnitMasterData() async {
     emit(state.copyWith(syncMessage: 'Syncing Resource Manager Unit Master Data...'));
     var sync = true;
+    var hasData = false;
     while (sync) {
       MasterDataMessage? resPull;
 
@@ -1346,37 +1347,40 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       if (messages == null || messages.isEmpty) {
         sync = false;
         break;
-      }
+      } else {
+        hasData = true;
+        final dbCompany = await cmoDatabaseMasterService.db;
+        await dbCompany.writeTxn(() async {
+          for (var i = 0; i < messages.length; i++) {
+            final item = messages[i];
 
-      final dbCompany = await cmoDatabaseMasterService.db;
-      await dbCompany.writeTxn(() async {
-        for (var i = 0; i < messages.length; i++) {
-          final item = messages[i];
+            final topic = item.header?.originalTopic;
 
-          final topic = item.header?.originalTopic;
-
-          if (topic ==
-              '${topicRegionalManagerUnitMasterDataSync}Compliance.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Compliances...'));
-            await insertCompliance(item);
-          } else if (topic ==
-              '${topicRegionalManagerUnitMasterDataSync}Question.$userDeviceId') {
-            emit(state.copyWith(syncMessage: '${LocaleKeys.syncing_questions.tr()}...'));
-            await insertQuestion(item);
-          } else if (topic ==
-              '${topicRegionalManagerUnitMasterDataSync}Farm.$userDeviceId') {
-            emit(state.copyWith(syncMessage: 'Syncing Farms...'));
-            await insertFarm(item);
+            if (topic ==
+                '${topicRegionalManagerUnitMasterDataSync}Compliance.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Compliances...'));
+              await insertCompliance(item);
+            } else if (topic ==
+                '${topicRegionalManagerUnitMasterDataSync}Question.$userDeviceId') {
+              emit(state.copyWith(syncMessage: '${LocaleKeys.syncing_questions.tr()}...'));
+              await insertQuestion(item);
+            } else if (topic ==
+                '${topicRegionalManagerUnitMasterDataSync}Farm.$userDeviceId') {
+              emit(state.copyWith(syncMessage: 'Syncing Farms...'));
+              await insertFarm(item);
+            }
           }
-        }
-      });
+        });
 
-      await cmoPerformApiService.commitMessageList(
-        currentClientId: userDeviceId.toString(),
-        messages: messages,
-        topicMasterDataSync: topicRegionalManagerUnitMasterDataSync,
-      );
+        await cmoPerformApiService.commitMessageList(
+          currentClientId: userDeviceId.toString(),
+          messages: messages,
+          topicMasterDataSync: topicRegionalManagerUnitMasterDataSync,
+        );
+      }
     }
+
+    return hasData;
   }
 
   Future<void> subscribeToRegionalManagerTrickleFeedMasterDataTopic() async {

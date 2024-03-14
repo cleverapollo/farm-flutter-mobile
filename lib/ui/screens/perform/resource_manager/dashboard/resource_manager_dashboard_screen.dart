@@ -1,11 +1,14 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/global_entity.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_management_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/member_management_screen.dart';
 import 'package:cmo/ui/screens/perform/stake_holder/stake_holder_management_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/sync_summary/resource_manager_sync_summary_screen.dart';
 import 'package:cmo/ui/ui.dart';
+import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,14 +20,69 @@ class ResourceManagerDashboardScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _ResourceManagerDashboardScreenState();
 }
 
-class _ResourceManagerDashboardScreenState
-    extends State<ResourceManagerDashboardScreen> {
+class _ResourceManagerDashboardScreenState extends State<ResourceManagerDashboardScreen> {
   @override
   void initState() {
     super.initState();
     Future.microtask(() async {
       await context.read<DashboardCubit>().initializeRM();
+      final isRMSyncedSuccessful = await configService.isRMSynced();
+      if (!isRMSyncedSuccessful) {
+        await onSyncFailure();
+      }
     });
+  }
+
+  Future<void> onSyncFailure() async {
+    await onShowWarningDialog(
+      context,
+      title: LocaleKeys.sync_failed.tr(),
+      subtitle: LocaleKeys.sync_onboarding_failed_message.tr(),
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: InkWell(
+                onTap: () async {
+                  Navigator.of(context).pop();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    LocaleKeys.close.tr(),
+                    textAlign: TextAlign.center,
+                    style: context.textStyles.bodyBold.copyWith(
+                      color: context.colors.blue,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: InkWell(
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  GlobalEntityScreen.push(
+                    context,
+                    canNavigateBack: true,
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    LocaleKeys.sync_again.tr(),
+                    textAlign: TextAlign.center,
+                    style: context.textStyles.bodyBold.copyWith(
+                      color: context.colors.blue,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   @override

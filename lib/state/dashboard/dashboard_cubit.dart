@@ -45,7 +45,11 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
       await getStakeHolders();
       await RMGetTotalAssessments();
       final totalStakeholders = await cmoDatabaseMasterService.getStakeHolders();
-      emit(state.copyWith(totalStakeholders: totalStakeholders.length));
+      emit(
+        state.copyWith(
+          totalStakeholders: totalStakeholders.length,
+        ),
+      );
     } catch (error) {
       handleError(error);
     }
