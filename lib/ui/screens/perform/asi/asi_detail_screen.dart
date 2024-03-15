@@ -12,6 +12,7 @@ import 'package:cmo/ui/screens/perform/asi/widgets/select_compartment_widget.dar
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/screens/perform/asi/widgets/thumbnail_image.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/editable_photo_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
@@ -146,11 +147,16 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
           const SizedBox(height: 12),
           if (state.listAsiPhotos.isNotBlank)
             ...state.listAsiPhotos.map(
-              (asiPhoto) => ThumbnailImage(
-                asiPhoto: asiPhoto,
+              (asiPhoto) => EditablePhotoItem(
+                photoDetail: PhotoDetail.fromAsiPhoto(asiPhoto),
                 onRemoved: () => _asiDetailCubit.onRemoveAsiPhoto(asiPhoto),
-                onChanged: _asiDetailCubit.onUpdateAsiPhoto,
               ),
+
+              //     ThumbnailImage(
+              //   asiPhoto: asiPhoto,
+              //   onRemoved: () => _asiDetailCubit.onRemoveAsiPhoto(asiPhoto),
+              //   onChanged: _asiDetailCubit.onUpdateAsiPhoto,
+              // ),
             ),
         ],
       ),
@@ -264,6 +270,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
               context,
               asi: state.asi,
               onSave: context.read<AsiDetailCubit>().onSelectLocation,
+              onTakePhotoSuccess: context.read<AsiDetailCubit>().addNewPhoto,
             );
           },
           child: AttributeItem(

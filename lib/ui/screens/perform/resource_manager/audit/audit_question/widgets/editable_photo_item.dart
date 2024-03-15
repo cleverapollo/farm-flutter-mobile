@@ -30,6 +30,14 @@ class PhotoDetail {
         photoName: (questionPhoto.photoId ?? '').toString(),
         imageBytesDecoded: base64Decode(questionPhoto.photo ?? ''),
       );
+
+  factory PhotoDetail.fromAsiPhoto(AsiPhoto asiPhoto) =>
+      PhotoDetail(
+        photoBase64: asiPhoto.photo ?? '',
+        photoId: asiPhoto.asiRegisterLocalId ?? DateTime.now().microsecondsSinceEpoch,
+        photoName: (asiPhoto.photoName ?? '').toString(),
+        imageBytesDecoded: base64Decode(asiPhoto.photo ?? ''),
+      );
 }
 
 class EditablePhotoItem extends StatefulWidget {

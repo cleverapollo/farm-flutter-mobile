@@ -184,49 +184,17 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     }
   }
 
-  // void onSelectLocation(LocationModel locationModel) {
-  //   emit(
-  //     state.copyWith(
-  //       asi: state.asi.copyWith(
-  //         latitude: locationModel.latitude,
-  //         longitude: locationModel.longitude,
-  //       ),
-  //     ),
-  //   );
-  //
-  //   final selectedCompartment = state.compartments.firstWhereOrNull((compartment) {
-  //     final latLng = LatLng(
-  //       locationModel.latitude!,
-  //       locationModel.longitude!,
-  //     );
-  //
-  //     final polygons = compartment.getPolygonLatLng();
-  //     return MapUtils.checkPositionInsidePolygon(latLng: latLng, polygon: polygons);
-  //   });
-  //
-  //   if (selectedCompartment != null) {
-  //     onCompartmentChanged(selectedCompartment);
-  //   }
-  //
-  //   if (locationModel.listImage.isNotBlank) {
-  //     var randomId = generatorInt32Id();
-  //
-  //     final listAsiPhotos = <AsiPhoto>[];
-  //     for (final imageBase64 in locationModel.listImage) {
-  //       final asiPhoto = const AsiPhoto().copyWith(
-  //         photo: imageBase64,
-  //         photoName: DateTime.now().microsecondsSinceEpoch.toString(),
-  //         asiRegisterPhotoNo: (randomId++).toString(),
-  //       );
-  //
-  //       listAsiPhotos.add(asiPhoto);
-  //     }
-  //
-  //     emit(
-  //       state.copyWith(
-  //         listAsiPhotos: state.listAsiPhotos + listAsiPhotos,
-  //       ),
-  //     );
-  //   }
-  // }
+  void addNewPhoto(String photo) {
+    final asiPhoto = AsiPhoto(
+      photo: photo,
+      photoName: DateTime.now().microsecondsSinceEpoch.toString(),
+      asiRegisterPhotoNo: generatorInt32Id().toString(),
+    );
+
+    emit(
+      state.copyWith(
+        listAsiPhotos: state.listAsiPhotos + [asiPhoto],
+      ),
+    );
+  }
 }

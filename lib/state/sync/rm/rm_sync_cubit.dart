@@ -246,7 +246,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       );
       emit(
         state.copyWith(
-          syncMessage: 'Sync Error',
+          isSyncError: true,
           isLoaded: true,
           isLoading: false,
           isSynced: true,
@@ -667,11 +667,11 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             ),
           );
 
-          // final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
-          // await publishListAsiPhotos(
-          //   asi: syncedAsi.copyWith(localId: asi.localId),
-          //   listAsiPhotos: listAsiPhotos,
-          // );
+          final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
+          await publishListAsiPhotos(
+            asi: syncedAsi.copyWith(localId: asi.localId),
+            listAsiPhotos: listAsiPhotos,
+          );
 
           logger.d('Successfully published ASI: ${syncedAsi.asiRegisterId}');
         } else {
@@ -726,8 +726,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
               'Successfully published ASI: ${syncedAsiPhoto.asiRegisterPhotoId}');
         } else {
           handleErrorMessage(
-            snackErrorMessage:
-                'Failed to publish ASI: ${asiPhoto.asiRegisterLocalId}',
+            snackErrorMessage: 'Failed to publish ASI: ${asiPhoto.asiRegisterLocalId}',
             errorMessage: 'ASI photo ${asiPhoto.asiRegisterLocalId}',
           );
         }
@@ -1125,8 +1124,8 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           isDirect: true,
         );
 
-        // final listAsiPhotos = await cmoPerformApiService.getRMAsiRegisterPhotosByAsiRegisterId(asi.asiRegisterId);
-        // await insertRMAsiPhotos(localId, listAsiPhotos);
+        final listAsiPhotos = await cmoPerformApiService.getRMAsiRegisterPhotosByAsiRegisterId(asi.asiRegisterId);
+        await insertRMAsiPhotos(localId, listAsiPhotos);
       }
     }
   }
@@ -1138,6 +1137,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           asiPhoto.copyWith(
             photo: asiPhoto.photo.base64SyncServerToString,
             asiRegisterLocalId: asiRegisterLocalId,
+            isMasterdataSynced: true,
           ),
           isDirect: true,
         );
