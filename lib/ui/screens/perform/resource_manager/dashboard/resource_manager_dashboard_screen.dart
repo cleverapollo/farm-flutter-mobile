@@ -9,7 +9,6 @@ import 'package:cmo/ui/screens/perform/stake_holder/stake_holder_management_scre
 import 'package:cmo/ui/screens/perform/resource_manager/sync_summary/resource_manager_sync_summary_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_alert.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
