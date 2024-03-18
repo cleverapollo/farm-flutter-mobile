@@ -137,7 +137,6 @@ class _TrainingScreenState extends BaseStatefulWidgetState<TrainingScreen> {
       LocaleKeys.expiry_date.tr(): convertDateTimeToLunar(registerItem.expiryDate).yMd(),
       LocaleKeys.trainer_name.tr(): registerItem.trainerName,
       LocaleKeys.trainee_name.tr(): cubit.getTotalTrainee(registerItem.trainingRegisterNo),
-      LocaleKeys.signed.tr(): registerItem.signatureDate.yMd(),
       LocaleKeys.general_comments.tr(): registerItem.comment,
     };
   }
