@@ -242,7 +242,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
       handleErrorMessage(
         errorMessage: errorMessage,
-        snackErrorMessage: 'Sync Error',
+        snackErrorMessage: 'Error: $errorMessage',
       );
       emit(
         state.copyWith(
@@ -665,7 +665,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
               asiTypeName: asi.asiTypeName,
               isMasterdataSynced: true,
             ),
-            isDirect: true,
           );
 
           // final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
