@@ -309,10 +309,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
                 syncMessage: 'Syncing Annual Farm Budget Transactions...'));
             await insertAnnualFarmTransactionBudget(item);
           }
-          // else if (topic == '${topicMasterDataSync}Schedule.$userDeviceId') {
-          //   emit(state.copyWith(syncMessage: 'Syncing Schedule...'));
-          //   await insertSchedule(item);
-          // }
           else if (topic ==
               '${topicMasterDataSync}AaiRegister.$userDeviceId') {
             emit(state.copyWith(
@@ -1819,7 +1815,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       await cmoDatabaseMasterService.cacheAsi(
           rs.copyWith(
             isMasterdataSynced: true,
-            localId: int.tryParse(rs.asiRegisterNo ?? ''),
             compartmentName: compartment?.unitNumber,
             localCompartmentId: compartment?.localCompartmentId,
             asiTypeName: asiType?.asiTypeName,
@@ -2147,8 +2142,12 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
       if (bodyJson == null) return null;
       final rs = AsiPhoto.fromJson(bodyJson);
-      return cmoDatabaseMasterService
-          .cacheAsiPhoto(rs.copyWith(isMasterdataSynced: true), isDirect: true);
+      return cmoDatabaseMasterService.cacheAsiPhoto(
+          rs.copyWith(
+            isMasterdataSynced: true,
+            photo: rs.photo.base64SyncServerToString,
+          ),
+          isDirect: true);
     } catch (e) {
       logger.d('insert error: $e');
     }

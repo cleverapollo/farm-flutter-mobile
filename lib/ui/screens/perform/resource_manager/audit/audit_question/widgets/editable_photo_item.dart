@@ -35,7 +35,7 @@ class PhotoDetail {
       PhotoDetail(
         photoBase64: asiPhoto.photo ?? '',
         photoId: asiPhoto.asiRegisterLocalId ?? DateTime.now().microsecondsSinceEpoch,
-        photoName: (asiPhoto.photoName ?? '').toString(),
+        photoName: (asiPhoto.asiRegisterPhotoNo ?? DateTime.now().microsecondsSinceEpoch).toString(),
         imageBytesDecoded: base64Decode(asiPhoto.photo ?? ''),
       );
 }

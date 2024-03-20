@@ -20,7 +20,6 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
               farmId: farmId,
               campId: campId,
               date: DateTime.now(),
-              localId: DateTime.now().millisecondsSinceEpoch,
               asiRegisterNo: DateTime.now().millisecondsSinceEpoch.toString(),
             ),
           ),
@@ -79,7 +78,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
       }
     }
 
-    final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(state.asi.localId);
+    final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterNo(state.asi.asiRegisterNo);
 
     emit(
       state.copyWith(
@@ -89,6 +88,46 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
         listAsiPhotos: listAsiPhotos,
       ),
     );
+  }
+
+  bool reactMaximumUploadedPhoto() {
+    return state.listAsiPhotos.length >= Constants.MAX_UPLOADED_REGISTER_PHOTOS;
+  }
+
+  void onUpdatePhoto(String base64Image) {
+    final asiPhoto = AsiPhoto(
+      photo: base64Image,
+      asiRegisterPhotoNo: generatorInt32Id().toString(),
+      asiRegisterNo: state.asi.asiRegisterNo,
+      asiRegisterId: state.asi.asiRegisterId,
+      isMasterdataSynced: false,
+      isActive: true,
+      createDT: DateTime.now(),
+      updateDT: DateTime.now(),
+    );
+
+    emit(
+      state.copyWith(
+        listAsiPhotos: state.listAsiPhotos + [asiPhoto],
+      ),
+    );
+  }
+
+  void onRemovePhoto(int? asiRegisterPhotoNo) {
+    final removedPhoto = state.listAsiPhotos.firstWhereOrNull((element) => element.asiRegisterPhotoNo == asiRegisterPhotoNo?.toString());
+    if (removedPhoto != null) {
+      final listAsiPhotos = List<AsiPhoto>.from(state.listAsiPhotos);
+      final removedPhotos = List<AsiPhoto>.from(state.removedPhotos);
+      removedPhotos.add(removedPhoto);
+      listAsiPhotos.remove(removedPhoto);
+
+      emit(
+        state.copyWith(
+          listAsiPhotos: listAsiPhotos,
+          removedPhotos: removedPhotos,
+        ),
+      );
+    }
   }
 
   Future<void> saveAsi() async {
@@ -106,7 +145,6 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
         for (final asiPhoto in state.listAsiPhotos) {
           await cmoDatabaseMasterService.cacheAsiPhoto(
             asiPhoto.copyWith(
-              asiRegisterLocalId: state.asi.localId,
               asiRegisterNo: state.asi.asiRegisterNo,
               asiRegisterId: state.asi.asiRegisterId,
               isMasterdataSynced: false,
@@ -114,15 +152,29 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
           );
         }
       }
+
+      if (state.removedPhotos.isNotBlank) {
+        for (final asiPhoto in state.removedPhotos) {
+          if (asiPhoto.isMasterdataSynced ?? false) {
+            await cmoDatabaseMasterService.cacheAsiPhoto(
+              asiPhoto.copyWith(
+                asiRegisterNo: state.asi.asiRegisterNo,
+                asiRegisterId: state.asi.asiRegisterId,
+                isMasterdataSynced: false,
+                isActive: false,
+              ),
+            );
+          } else {
+            await cmoDatabaseMasterService.removeAsiPhoto(asiPhoto.id);
+          }
+        }
+      }
+
     } catch (e) {
       logger.e('Cannot saveASI $e');
     } finally {
       emit(state.copyWith(isLoading: false));
     }
-  }
-
-  void onPhotoNameChanged(String text) {
-    emit(state.copyWith(photoName: text));
   }
 
   void onCommentChanged(String? comment) {
@@ -163,38 +215,11 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     );
   }
 
-  void onUpdateAsiPhoto(AsiPhoto asiPhoto) {
-    final listAsiPhotos = state.listAsiPhotos;
-    listAsiPhotos.removeWhere((element) => element.asiRegisterPhotoNo == asiPhoto.asiRegisterPhotoNo);
-    listAsiPhotos.add(asiPhoto);
-    emit(state.copyWith(listAsiPhotos: listAsiPhotos));
-  }
-
-  void onRemoveAsiPhoto(AsiPhoto asiPhoto) {
-    final listAsiPhotos = state.listAsiPhotos;
-    listAsiPhotos.remove(asiPhoto);
-    emit(state.copyWith(listAsiPhotos: listAsiPhotos));
-  }
-
   void onSelectLocation(Asi asi) {
     emit(state.copyWith(asi: asi));
     final selectedCompartment = state.compartments.firstWhereOrNull((element) => element.localCompartmentId == asi.localCompartmentId);
     if (selectedCompartment != null) {
       onCompartmentChanged(selectedCompartment);
     }
-  }
-
-  void addNewPhoto(String photo) {
-    final asiPhoto = AsiPhoto(
-      photo: photo,
-      photoName: DateTime.now().microsecondsSinceEpoch.toString(),
-      asiRegisterPhotoNo: generatorInt32Id().toString(),
-    );
-
-    emit(
-      state.copyWith(
-        listAsiPhotos: state.listAsiPhotos + [asiPhoto],
-      ),
-    );
   }
 }

@@ -90,6 +90,7 @@ class RMSyncScreenState extends BaseStatefulWidgetState<RMSyncScreen> {
                     alignment: Alignment.center,
                     child: Text(
                       LocaleKeys.new_sync.tr(),
+                      textAlign: TextAlign.center,
                       style: context.textStyles.bodyBold
                           .copyWith(color: context.colors.blue),
                     ),

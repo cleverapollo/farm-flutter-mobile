@@ -20,12 +20,10 @@ class AsiMapScreen extends BaseStatefulWidget {
     super.key,
     this.farmName,
     required this.onSave,
-    required this.onTakePhotoSuccess,
   }) : super(screenName: 'ASI Map Screen');
 
   final String? farmName;
   final void Function(Asi) onSave;
-  final void Function(String) onTakePhotoSuccess;
 
   @override
   State<StatefulWidget> createState() => AsiMapScreenState();
@@ -34,7 +32,6 @@ class AsiMapScreen extends BaseStatefulWidget {
     BuildContext context, {
     required Asi asi,
     required void Function(Asi) onSave,
-    required void Function(String) onTakePhotoSuccess,
     String? farmName,
   }) {
     return Navigator.of(context).push(
@@ -47,7 +44,6 @@ class AsiMapScreen extends BaseStatefulWidget {
             child: AsiMapScreen(
               farmName: farmName,
               onSave: onSave,
-              onTakePhotoSuccess: onTakePhotoSuccess,
             ),
           );
         },
@@ -58,40 +54,6 @@ class AsiMapScreen extends BaseStatefulWidget {
 
 class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
   GoogleMapController? mapController;
-
-  final ImagePickerService imagePickerService = ImagePickerService();
-
-  Future<void> takePhotoFromCamera() async {
-    try {
-      final croppedImage = await imagePickerService.pickImageFromCamera(
-        title: DateTime.now().toString(),
-      );
-
-      if (croppedImage != null) {
-        final base64 = await FileUtil.croppedFileToBase64(croppedImage);
-        widget.onTakePhotoSuccess(base64);
-        showSnackSuccess(msg: 'Take photo successfully!');
-      }
-    } catch (e) {
-      logger.d(e.toString());
-    }
-  }
-
-  Future<void> onSelectPhoto() async {
-    try {
-      final croppedImage = await imagePickerService.pickImageFromGallery(
-        title: DateTime.now().toString(),
-      );
-
-      if (croppedImage != null) {
-        final base64 = await FileUtil.croppedFileToBase64(croppedImage);
-        widget.onTakePhotoSuccess(base64);
-        showSnackSuccess(msg: 'Selected photo successfully!');
-      }
-    } catch (e) {
-      logger.d(e.toString());
-    }
-  }
 
   Set<Polygon> generatePolygon() {
     final state = context.read<AsiMapCubit>().state;
@@ -257,26 +219,6 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
                 child: SvgGenImage(Assets.icons.icAcceptMap.path).svg(
                   height: 68,
                   width: 68,
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: onSelectPhoto,
-              child: Container(
-                alignment: Alignment.center,
-                child: SvgGenImage(Assets.icons.icSelectPhotoMap.path).svg(
-                  height: 60,
-                  width: 60,
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: takePhotoFromCamera,
-              child: Container(
-                alignment: Alignment.center,
-                child: SvgGenImage(Assets.icons.icTakePhotoMap.path).svg(
-                  height: 60,
-                  width: 60,
                 ),
               ),
             ),

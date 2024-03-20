@@ -658,7 +658,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         if (syncedAsi != null) {
           await cmoDatabaseMasterService.cacheAsi(
             syncedAsi.copyWith(
-              localId: asi.localId,
               localCompartmentId: asi.localCompartmentId,
               compartmentName: asi.compartmentName,
               managementUnitId: asi.managementUnitId ?? managementUnitId,
@@ -667,9 +666,9 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             ),
           );
 
-          final listAsiPhotos = await cmoDatabaseMasterService.getAllAsiPhotoByAsiRegisterLocalId(asi.localId);
+          final listAsiPhotos = await cmoDatabaseMasterService.getUnsyncAsiPhotoByAsiRegisterNo(asi.asiRegisterNo);
           await publishListAsiPhotos(
-            asi: syncedAsi.copyWith(localId: asi.localId),
+            asi: syncedAsi,
             listAsiPhotos: listAsiPhotos,
           );
 
@@ -715,15 +714,14 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
         if (syncedAsiPhoto != null) {
           await cmoDatabaseMasterService.cacheAsiPhoto(
-            syncedAsiPhoto.copyWith(
-              photo: syncedAsiPhoto.photo?.base64SyncServerToString,
-              asiRegisterLocalId: asi.localId,
+            asiPhoto.copyWith(
+              asiRegisterPhotoId: syncedAsiPhoto.asiRegisterPhotoId,
+              asiRegisterPhotoNo: syncedAsiPhoto.asiRegisterPhotoNo,
               isMasterdataSynced: true,
             ),
           );
 
-          logger.d(
-              'Successfully published ASI: ${syncedAsiPhoto.asiRegisterPhotoId}');
+          logger.d('Successfully published ASI: ${syncedAsiPhoto.asiRegisterPhotoId}');
         } else {
           handleErrorMessage(
             snackErrorMessage: 'Failed to publish ASI: ${asiPhoto.asiRegisterLocalId}',
@@ -1108,14 +1106,11 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     final asiTypes = await cmoDatabaseMasterService.getAsiTypes();
 
     if (listAsi.isNotBlank) {
-      var now = DateTime.now().microsecondsSinceEpoch;
       for (final asi in listAsi!) {
-        final localId = now++;
         final compartment = listCompartments.firstWhereOrNull((element) => element.managementUnitId == asi.managementUnitId);
         final asiType = asiTypes.firstWhereOrNull((element) => element.asiTypeId == asi.asiTypeId);
         await cmoDatabaseMasterService.cacheAsi(
           asi.copyWith(
-            localId: localId,
             compartmentName: compartment?.unitNumber,
             localCompartmentId: compartment?.localCompartmentId,
             asiTypeName: asiType?.asiTypeName,
@@ -1125,18 +1120,17 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         );
 
         final listAsiPhotos = await cmoPerformApiService.getRMAsiRegisterPhotosByAsiRegisterId(asi.asiRegisterId);
-        await insertRMAsiPhotos(localId, listAsiPhotos);
+        await insertRMAsiPhotos(listAsiPhotos);
       }
     }
   }
 
-  Future<void> insertRMAsiPhotos(int? asiRegisterLocalId, List<AsiPhoto>? listAsiPhoto) async {
+  Future<void> insertRMAsiPhotos(List<AsiPhoto>? listAsiPhoto) async {
     if (listAsiPhoto.isNotBlank) {
       for (final asiPhoto in listAsiPhoto!) {
         await cmoDatabaseMasterService.cacheAsiPhoto(
           asiPhoto.copyWith(
             photo: asiPhoto.photo.base64SyncServerToString,
-            asiRegisterLocalId: asiRegisterLocalId,
             isMasterdataSynced: true,
           ),
           isDirect: true,

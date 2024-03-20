@@ -700,26 +700,25 @@ class CmoDatabaseMasterService {
   }
 
   Future<List<AsiPhoto>> getAllAsiPhotoByAsiRegisterNo(
-      String? asiRegisterNo) async {
+      String? asiRegisterNo,
+      ) async {
     final db = await _db();
 
     return db.asiPhotos
         .filter()
-        .isActiveEqualTo(true)
         .asiRegisterNoEqualTo(asiRegisterNo)
-        .isMasterdataSyncedEqualTo(false)
+        .isActiveEqualTo(true)
         .findAll();
   }
 
-  Future<List<AsiPhoto>> getAllAsiPhotoByAsiRegisterLocalId(
-    int? asiRegisterLocalId,
+  Future<List<AsiPhoto>> getUnsyncAsiPhotoByAsiRegisterNo(
+    String? asiRegisterNo,
   ) async {
     final db = await _db();
 
     return db.asiPhotos
         .filter()
-        .isActiveEqualTo(true)
-        .asiRegisterLocalIdEqualTo(asiRegisterLocalId)
+        .asiRegisterNoEqualTo(asiRegisterNo)
         .isMasterdataSyncedEqualTo(false)
         .findAll();
   }

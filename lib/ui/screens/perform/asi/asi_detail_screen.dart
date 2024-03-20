@@ -6,12 +6,13 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/rm_asi/asi_detail_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_detail_state.dart';
+import 'package:cmo/ui/components/custom_camera_component/custom_camera_screen.dart';
 import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/screens/perform/asi/asi_map_screen.dart';
 import 'package:cmo/ui/screens/perform/asi/widgets/select_compartment_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
-import 'package:cmo/ui/screens/perform/asi/widgets/thumbnail_image.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_photo_section.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/editable_photo_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
@@ -69,6 +70,18 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
   void initState() {
     super.initState();
     _asiDetailCubit = context.read<AsiDetailCubit>();
+  }
+
+  Future<void> navigateToCamera() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (context.read<AsiDetailCubit>().reactMaximumUploadedPhoto()) {
+      return;
+    }
+
+    await CustomCameraScreen.push(
+      context,
+      onDone: context.read<AsiDetailCubit>().onUpdatePhoto,
+    );
   }
 
   @override
@@ -145,19 +158,17 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          if (state.listAsiPhotos.isNotBlank)
-            ...state.listAsiPhotos.map(
-              (asiPhoto) => EditablePhotoItem(
-                photoDetail: PhotoDetail.fromAsiPhoto(asiPhoto),
-                onRemoved: () => _asiDetailCubit.onRemoveAsiPhoto(asiPhoto),
-              ),
-
-              //     ThumbnailImage(
-              //   asiPhoto: asiPhoto,
-              //   onRemoved: () => _asiDetailCubit.onRemoveAsiPhoto(asiPhoto),
-              //   onChanged: _asiDetailCubit.onUpdateAsiPhoto,
-              // ),
-            ),
+          buildPhotoSection(),
+          // if (state.listAsiPhotos.isNotBlank)
+          //   ...state.listAsiPhotos.map(
+          //     (asiPhoto) => (asiPhoto.isActive ?? false)
+          //         ? EditablePhotoItem(
+          //             photoDetail: PhotoDetail.fromAsiPhoto(asiPhoto),
+          //             onRemoved: () => _asiDetailCubit.onRemoveAsiPhoto(asiPhoto),
+          //           )
+          //         : const SizedBox.shrink(),
+          //   ),
+          const SizedBox(height: 80),
         ],
       ),
     );
@@ -270,7 +281,6 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
               context,
               asi: state.asi,
               onSave: context.read<AsiDetailCubit>().onSelectLocation,
-              onTakePhotoSuccess: context.read<AsiDetailCubit>().addNewPhoto,
             );
           },
           child: AttributeItem(
@@ -340,6 +350,25 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildPhotoSection() {
+    return BlocBuilder<AsiDetailCubit, AsiDetailState>(
+      builder: (context, state) {
+        return RegisterPhotoSection(
+          navigateToCamera: navigateToCamera,
+          photos: state.listAsiPhotos
+              .map(
+                (e) => RegisterPhotoModel(
+              photo: e.photo,
+              photoId: int.parse(e.asiRegisterPhotoNo ?? DateTime.now().microsecondsSinceEpoch.toString()),
+            ),
+          )
+              .toList(),
+          onRemove: context.read<AsiDetailCubit>().onRemovePhoto,
+        );
+      },
     );
   }
 }

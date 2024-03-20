@@ -7,6 +7,7 @@ class AsiDetailState {
     this.types = const <AsiType>[],
     this.compartments = const <Compartment>[],
     this.listAsiPhotos = const <AsiPhoto>[],
+    this.removedPhotos = const <AsiPhoto>[],
     this.photoName,
     this.isLoading = false,
     this.userRole,
@@ -15,6 +16,7 @@ class AsiDetailState {
   final List<AsiType> types;
   final List<Compartment> compartments;
   final List<AsiPhoto> listAsiPhotos;
+  final List<AsiPhoto> removedPhotos;
   final UserRoleEnum? userRole;
 
   String? photoName;
@@ -28,6 +30,7 @@ class AsiDetailState {
     String? photoName,
     Asi? asi,
     List<AsiPhoto>? listAsiPhotos,
+    List<AsiPhoto>? removedPhotos,
     UserRoleEnum? userRole,
   }) {
     return AsiDetailState(
@@ -37,6 +40,7 @@ class AsiDetailState {
       photoName: photoName ?? this.photoName,
       asi: asi ?? this.asi,
       listAsiPhotos: listAsiPhotos ?? this.listAsiPhotos,
+      removedPhotos: removedPhotos ?? this.removedPhotos,
       userRole: userRole ?? this.userRole,
     );
   }

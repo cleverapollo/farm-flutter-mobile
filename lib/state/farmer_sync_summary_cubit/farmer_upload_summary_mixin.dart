@@ -715,25 +715,31 @@ mixin FarmUploadSummaryMixin {
 
       for (final item in asiRegisters) {
         final asiPhotos = await cmoDatabaseMasterService
-            .getAllAsiPhotoByAsiRegisterNo(item.asiRegisterNo);
+            .getUnsyncAsiPhotoByAsiRegisterNo(item.asiRegisterNo);
 
         final asiPhotosPayLoad = asiPhotos.map((e) {
           if (e.asiRegisterId == null) {
-            return e
-                .copyWith(asiRegisterId: '00000000-0000-0000-0000-000000000000')
-                .toPayLoad();
+            return e.copyWith(
+              asiRegisterId: '00000000-0000-0000-0000-000000000000',
+              photo: e.photo.stringToBase64SyncServer,
+            );
           }
-          return e.toPayLoad();
+          return e;
         }).toList();
 
         mainAsiRegisterPayLoad.add(MainAsiRegisterPayLoad(
-          Register: item.toPayLoad(),
-          Photos: asiPhotosPayLoad,
+          asi: item,
+          photos: asiPhotosPayLoad,
         ));
 
-        for (final item in asiPhotos) {
-          futures.add(cmoDatabaseMasterService
-              .cacheAsiPhoto(item.copyWith(isMasterdataSynced: true)));
+        for (final photo in asiPhotos) {
+          futures.add(
+            cmoDatabaseMasterService.cacheAsiPhoto(
+              photo.copyWith(
+                isMasterdataSynced: true,
+              ),
+            ),
+          );
         }
       }
 
