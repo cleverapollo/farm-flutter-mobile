@@ -242,11 +242,11 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     final strokeColor = isSelected ? context.colors.yellow : context.colors.white;
     final fillColor = strokeColor.withOpacity(isSelected ? 0.3 : 0.5);
 
-    if (compartmentMapDetail.markers.isBlank) return null;
+    if (compartmentMapDetail.polygons.isBlank) return null;
 
     return Polygon(
       polygonId: PolygonId('${compartmentMapDetail.compartment.localCompartmentId}'),
-      points: compartmentMapDetail.markers.map((e) => e.position).toList(),
+      points: compartmentMapDetail.polygons,
       fillColor: fillColor,
       strokeColor: strokeColor,
       strokeWidth: 2,

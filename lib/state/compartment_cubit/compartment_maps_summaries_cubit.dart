@@ -31,17 +31,17 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
 
     if (listCompartments.isNotBlank) {
       for (final compartment in listCompartments) {
-        final compartmentMapDetail =
-            await generateCompartmentMapDetailFromCompartment(
+        final compartmentMapDetail = await generateCompartmentMapDetailFromCompartment(
           compartment,
         );
+
         listCompartmentMapDetails.add(compartmentMapDetail);
       }
     }
 
-    final selectedCompartmentMapDetail =
-        await generateCompartmentMapDetailFromCompartment(
+    final selectedCompartmentMapDetail = await generateCompartmentMapDetailFromCompartment(
       state.selectedCompartment,
+      shouldGenerateMarker: true,
     );
 
     emit(
@@ -56,25 +56,30 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
   }
 
   Future<CompartmentMapDetail> generateCompartmentMapDetailFromCompartment(
-      Compartment compartment,
-      ) async {
+    Compartment compartment, {
+    bool shouldGenerateMarker = false,
+  }) async {
     if (compartment.polygon.isNotBlank) {
       final compartmentMapDetail = CompartmentMapDetail(
         compartment: compartment,
         polygons: compartment.getPolygonLatLng(),
       );
 
-      final markers = <Marker>[];
-      for (final item in compartmentMapDetail.polygons) {
-        final marker = await MapUtils.generateMarkerFromLatLng(
-          item,
-          onTap: onTapMarker,
-        );
+      if (shouldGenerateMarker) {
+        final markers = <Marker>[];
+        for (final item in compartmentMapDetail.polygons) {
+          final marker = await MapUtils.generateMarkerFromLatLng(
+            item,
+            onTap: onTapMarker,
+          );
 
-        markers.add(marker);
+          markers.add(marker);
+        }
+
+        return compartmentMapDetail.copyWith(markers: markers);
+      } else {
+        return compartmentMapDetail;
       }
-
-      return compartmentMapDetail.copyWith(markers: markers);
     } else {
       return CompartmentMapDetail(
         compartment: compartment,
