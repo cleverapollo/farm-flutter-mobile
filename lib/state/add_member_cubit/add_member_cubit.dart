@@ -324,11 +324,9 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
       ),
     );
 
-    if (state.memberDetailSectionState.isComplete) {
-      checkIsGroupSchemeMember();
-      await Future.delayed(const Duration(milliseconds: 500));
-      await cacheFarm();
-    }
+    checkIsGroupSchemeMember();
+    await Future.delayed(const Duration(milliseconds: 500));
+    await cacheFarm();
   }
 
   Future<void> updateFarmSizeByCompartments({
@@ -404,11 +402,9 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
           isCompleteASI: isCompleteAsi,
         )));
 
-    if (currentData.isComplete) {
-      checkIsGroupSchemeMember();
-      await Future.delayed(const Duration(milliseconds: 500));
-      await cacheFarm();
-    }
+    checkIsGroupSchemeMember();
+    await Future.delayed(const Duration(milliseconds: 500));
+    await cacheFarm();
   }
 
   Future<void> onAnswerRiskProfileQuestion({
