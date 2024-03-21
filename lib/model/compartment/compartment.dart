@@ -74,15 +74,23 @@ extension CompartmentExtension on Compartment {
 
   bool get canDelete => createdFromMobile && !isMasterdataSynced;
 
-  double? get stockingPercentage =>
-      10000 /
-      ((espacementLength ?? 1) * (espacementWidth ?? 1)) *
-      ((survival ?? 100) / 100);
+  double? get stockingPercentage {
+    if (espacementLength == null ||
+        espacementLength == 0 ||
+        espacementWidth == null ||
+        espacementWidth == 0) return null;
+    return 10000 /
+        ((espacementLength ?? 1) * (espacementWidth ?? 1)) *
+        ((survival ?? 100) / 100);
+  }
 
-  double get totalStocking =>
-      (polygonArea ?? 1) *
-      (effectiveArea == 0 ? 1 : effectiveArea) *
-      (stockingPercentage ?? 1) / 100;
+  double? get totalStocking {
+    if (stockingPercentage == null) return null;
+    return (polygonArea ?? 1) *
+        (effectiveArea == 0 ? 1 : effectiveArea) *
+        (stockingPercentage ?? 1) /
+        100;
+  }
 
   List<LatLng> getPolygonLatLng() {
     final polygonLatLng = <LatLng>[];

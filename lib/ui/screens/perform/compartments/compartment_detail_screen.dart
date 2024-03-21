@@ -554,7 +554,7 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                   ],
                 ),
                 Text(
-                  state.compartment.totalStocking.toStringAsFixed(2),
+                  state.compartment.totalStocking == null ? '' : state.compartment.totalStocking!.toStringAsFixed(2),
                   style: context.textStyles.bodyNormal.blueDark2,
                 ),
               ],
