@@ -110,6 +110,9 @@ class RMSyncScreenState extends BaseStatefulWidgetState<RMSyncScreen> {
   bool get canPopWithoutWarningDialog => false;
 
   @override
+  bool get shouldCheckConnectionSpeed => true;
+
+  @override
   Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(

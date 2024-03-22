@@ -90,6 +90,9 @@ class _SelectLocationState extends BaseStatefulWidgetState<SelectLocationScreen>
   bool loading = true;
 
   @override
+  bool get shouldCheckConnectionSpeed => true;
+
+  @override
   void initState() {
     super.initState();
     locationModel = widget.locationModel;

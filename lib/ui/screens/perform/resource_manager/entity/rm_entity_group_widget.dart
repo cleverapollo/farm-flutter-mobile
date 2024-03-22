@@ -15,20 +15,20 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class RMEntityGroupWidget extends StatefulWidget {
+class RMEntityGroupWidget extends BaseStatefulWidget {
 
-  const RMEntityGroupWidget({super.key});
+  const RMEntityGroupWidget({super.key}) : super(screenName: 'RMEntityGroupWidget');
 
   @override
   State<RMEntityGroupWidget> createState() => _RMEntityGroupWidgetState();
 }
 
-class _RMEntityGroupWidgetState extends State<RMEntityGroupWidget> {
+class _RMEntityGroupWidgetState extends BaseStatefulWidgetState<RMEntityGroupWidget> {
   GroupScheme? selectedGroupScheme;
   ResourceManagerUnit? selectedResourceManagerUnit;
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Column(
       children: [
         const SizedBox(height: 12),

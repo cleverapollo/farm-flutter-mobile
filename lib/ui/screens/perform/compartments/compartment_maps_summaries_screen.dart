@@ -59,6 +59,9 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
 
   GoogleMapController? mapController;
 
+  @override
+  bool get shouldCheckConnectionSpeed => true;
+
   Set<Polyline> generatePolyline() {
     final state = context.read<CompartmentMapsSummariesCubit>().state;
     if (state.isCompletePolygon) {

@@ -5,15 +5,16 @@ import 'package:cmo/state/entity_cubit/resource_manager/resource_manager_unit_cu
 import 'package:cmo/state/entity_cubit/resource_manager/resource_manager_unit_state.dart';
 import 'package:cmo/ui/components/entity_list.dart';
 import 'package:cmo/ui/theme/theme.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ResourceManagerUnitEntity extends StatefulWidget {
+class ResourceManagerUnitEntity extends BaseStatefulWidget {
   final ResourceManagerUnit? selectedEntity;
 
-  const ResourceManagerUnitEntity({this.selectedEntity, super.key});
+  const ResourceManagerUnitEntity({this.selectedEntity, super.key}) : super(screenName: 'ResourceManagerUnitEntity');
 
   static Future<ResourceManagerUnit?> push(
     BuildContext context, {
@@ -39,7 +40,7 @@ class ResourceManagerUnitEntity extends StatefulWidget {
 }
 
 class _ResourceManagerUnitEntityState<T>
-    extends State<ResourceManagerUnitEntity> {
+    extends BaseStatefulWidgetState<ResourceManagerUnitEntity> {
   ResourceManagerUnit? _selectedItem;
 
   @override
@@ -52,7 +53,7 @@ class _ResourceManagerUnitEntityState<T>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return CmoTappable(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(

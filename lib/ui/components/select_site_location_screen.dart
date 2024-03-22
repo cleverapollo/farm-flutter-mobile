@@ -7,6 +7,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/ui/theme/theme.dart';
+import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_app_bar.dart';
 import 'package:cmo/ui/widget/cmo_buttons.dart';
 import 'package:cmo/utils/constants.dart';
@@ -41,7 +42,7 @@ class SiteLocationScreenResult extends Equatable {
       ];
 }
 
-class SelectSiteLocationScreen extends StatefulWidget {
+class SelectSiteLocationScreen extends BaseStatefulWidget {
 
   final bool showMarker;
   final bool showResetAcceptIcons;
@@ -56,7 +57,7 @@ class SelectSiteLocationScreen extends StatefulWidget {
     this.showResetAcceptIcons = false,
     this.initLatLng,
     this.hasInternet = true,
-  });
+  }) : super(screenName: 'SelectSiteLocationScreen');
 
   static Future<T?> push<T>(
     BuildContext context, {
@@ -84,7 +85,7 @@ class SelectSiteLocationScreen extends StatefulWidget {
       _SelectSiteLocationScreenState();
 }
 
-class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
+class _SelectSiteLocationScreenState extends BaseStatefulWidgetState<SelectSiteLocationScreen> {
 
   late TextEditingController addressTextController;
   final debounce = Debouncer(milliseconds: 600);
@@ -264,7 +265,7 @@ class _SelectSiteLocationScreenState extends State<SelectSiteLocationScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
         title: LocaleKeys.siteLocation.tr(),

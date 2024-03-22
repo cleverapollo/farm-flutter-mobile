@@ -43,6 +43,8 @@
   "campManagement": "Gestion de camp",
   "campName": "Nom du camp",
   "no_filter": "No Filter",
+  "poor_connection": "Poor connection",
+  "try_moving_to_get_better_signal": "Try moving to get better signal",
   "no_cars": "No CARs",
   "all_cars": "All CARs",
   "all_compliances": "All Compliances",

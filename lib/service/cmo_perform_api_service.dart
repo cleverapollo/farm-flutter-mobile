@@ -854,4 +854,12 @@ class CmoPerformApiService {
         ?.map((e) => IllegalActivityRegister.fromJson(e as JsonData))
         .toList();
   }
+
+  Future<Response<dynamic>> downloadCheckNetworkSpeedFile() async {
+    final response = await client.get<dynamic>(
+      'https://drive.google.com/file/d/1lEn1DtJQW6-nTcoS_FG7-EB3Kamy0147/view?usp=sharing',
+    );
+
+    return response;
+  }
 }

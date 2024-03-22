@@ -4,11 +4,8 @@ import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:cmo/utils/date_time_utils.dart';
-import 'package:ficonsax/ficonsax.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 abstract class BaseStatefulWidget extends StatefulWidget {
   final String screenName;
@@ -32,11 +29,29 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
 
   bool canPopWithoutWarningDialog = true;
 
+  bool shouldCheckConnectionSpeed = false;
+
+  Future<void> checkConnectionSpeed() async {
+    final stopwatch = Stopwatch()..start();
+    final response = await cmoPerformApiService.downloadCheckNetworkSpeedFile();
+
+    if (response.statusCode == 200) {
+      final elapsed = stopwatch.elapsedMilliseconds;
+      final speedInKbps = (/*(2 / 1024)*/ 2 / (elapsed / 1000)) * 8;
+      if (speedInKbps < 15) {
+        showSnackPoorConnection(context);
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       navigationBreadcrumbs.updateCurrentSectionName(widget.screenName);
+      if (shouldCheckConnectionSpeed) {
+        await checkConnectionSpeed();
+      }
     });
   }
 
@@ -123,7 +138,6 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
     //     navigationBreadcrumbs.updateCurrentSectionName(null);
     //   }
     // });
-
     super.dispose();
   }
 }

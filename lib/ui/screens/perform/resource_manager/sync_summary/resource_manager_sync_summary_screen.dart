@@ -35,6 +35,9 @@ class ResourceManagerSyncSummaryScreen extends BaseStatefulWidget {
 
 class _ResourceManagerSyncSummaryScreenState extends BaseStatefulWidgetState<ResourceManagerSyncSummaryScreen> {
 
+  @override
+  bool get shouldCheckConnectionSpeed => true;
+
   Future<void> onSyncSuccess() async {
     await context.read<DashboardCubit>().initializeRM();
   }
