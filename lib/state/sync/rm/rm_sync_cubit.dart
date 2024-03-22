@@ -1036,7 +1036,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> insertCompartmentsByRMUId() async {
-    emit(state.copyWith(syncMessage: '${LocaleKeys.syncing_comparments.tr()}...'));
+    emit(state.copyWith(syncMessage: '${LocaleKeys.syncing_compartments.tr()}...'));
     final compartments = await cmoPerformApiService.getCompartmentsByRMUId();
     final areaTypes = await cmoDatabaseMasterService.getAreaTypesByGroupSchemeId(groupSchemeId);
     final productGroupTemplates = await cmoDatabaseMasterService.getProductGroupTemplates(groupSchemeId);
