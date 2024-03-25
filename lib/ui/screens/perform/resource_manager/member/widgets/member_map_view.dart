@@ -107,7 +107,7 @@ class MemberMapViewState extends State<MemberMapView> {
                   return GoogleMap(
                     initialCameraPosition: const CameraPosition(
                       target: Constants.mapCenter,
-                      zoom: 14,
+                      zoom: Constants.mapZoom,
                     ),
                     polygons: generatePolygon(
                       state.completedFarms,

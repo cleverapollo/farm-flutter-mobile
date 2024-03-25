@@ -170,7 +170,7 @@ class _MemberDetailMapViewState extends State<MemberDetailMapView> {
                   return GoogleMap(
                     initialCameraPosition: const CameraPosition(
                       target: Constants.mapCenter,
-                      zoom: 16,
+                      zoom: Constants.mapZoom,
                     ),
                     polygons: generatePolygon(
                       context,

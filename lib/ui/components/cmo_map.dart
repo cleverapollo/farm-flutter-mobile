@@ -174,7 +174,7 @@ class CmoMapState extends State<CmoMap> {
                   myLocationEnabled: true,
                   initialCameraPosition: CameraPosition(
                     target: widget.initialMapCenter ?? Constants.mapCenter,
-                    zoom: 16.0,
+                    zoom: Constants.mapZoom,
                   ),
                   markers: shouldShowMarker(),
                   onTap: (latLong) {

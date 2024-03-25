@@ -354,7 +354,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                 BlocBuilder<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState>(
                   builder: (context, state) {
                     return GoogleMap(
-                      initialCameraPosition: const CameraPosition(target: Constants.mapCenter, zoom: 14),
+                      initialCameraPosition: const CameraPosition(
+                        target: Constants.mapCenter,
+                        zoom: Constants.mapZoom,
+                      ),
                       polylines: generatePolyline(),
                       polygons: generatePolygon(),
                       mapType: MapType.satellite,

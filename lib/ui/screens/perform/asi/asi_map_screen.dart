@@ -2,13 +2,11 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/service/image_picker_service.dart';
 import 'package:cmo/state/rm_asi/asi_map_cubit.dart';
 import 'package:cmo/state/rm_asi/asi_map_state.dart';
 import 'package:cmo/ui/components/cmo_map.dart';
 import 'package:cmo/ui/components/map_center_icon.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/utils/file_utils.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,11 +27,11 @@ class AsiMapScreen extends BaseStatefulWidget {
   State<StatefulWidget> createState() => AsiMapScreenState();
 
   static dynamic push(
-    BuildContext context, {
-    required Asi asi,
-    required void Function(Asi) onSave,
-    String? farmName,
-  }) {
+      BuildContext context, {
+        required Asi asi,
+        required void Function(Asi) onSave,
+        String? farmName,
+      }) {
     return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) {
@@ -53,12 +51,12 @@ class AsiMapScreen extends BaseStatefulWidget {
 }
 
 class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
+
   GoogleMapController? mapController;
 
   Set<Polygon> generatePolygon() {
     final state = context.read<AsiMapCubit>().state;
     final polygon = <Polygon>{};
-
     if (state.outlineMarker.isBlank) return polygon;
 
     final listMarkers = state.outlineMarker;
@@ -66,8 +64,7 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
 
     return {
       Polygon(
-        polygonId:
-            PolygonId('${state.outlinedCompartment?.localCompartmentId}'),
+        polygonId: PolygonId('${state.outlinedCompartment?.localCompartmentId}'),
         points: listMarkers.map((e) => e.position).toList(),
         fillColor: context.colors.yellow.withOpacity(0.3),
         strokeColor: strokeColor,
@@ -119,9 +116,6 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
   bool get canPopWithoutWarningDialog => false;
 
   @override
-  bool get shouldCheckConnectionSpeed => true;
-
-  @override
   Widget buildContent(BuildContext context) {
     return Scaffold(
       appBar: CmoAppBar(
@@ -142,19 +136,21 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
                   builder: (context, state) {
                     return GoogleMap(
                       initialCameraPosition: const CameraPosition(
-                          target: Constants.mapCenter, zoom: 14),
+                        target: Constants.mapCenter,
+                        zoom: Constants.mapZoom,
+                      ),
                       polygons: generatePolygon(),
                       mapType: MapType.satellite,
                       myLocationEnabled: true,
                       markers: state.marker == null ? {} : {state.marker!},
-                      onCameraMove: (position) =>
-                          context.read<AsiMapCubit>().onCameraMove(position),
+                      onCameraMove: (position) => context
+                          .read<AsiMapCubit>()
+                          .onCameraMove(position),
                       onMapCreated: (GoogleMapController controller) {
                         mapController = controller;
                         MapUtils.checkLocationPermission(
                           onAllowed: () async {
-                            await Future.delayed(const Duration(seconds: 1))
-                                .then((_) async {
+                            await Future.delayed(const Duration(seconds: 1)).then((_) async {
                               await moveMapCameraToInitLocation();
                             });
                           },
@@ -215,6 +211,7 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
                 ),
               ),
             ),
+            const SizedBox(width: 16),
             InkWell(
               onTap: context.read<AsiMapCubit>().createNewMarker,
               child: Container(
@@ -225,7 +222,7 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
                 ),
               ),
             ),
-          ].withSpaceBetween(width: 16),
+          ],
         ),
       ],
     );
