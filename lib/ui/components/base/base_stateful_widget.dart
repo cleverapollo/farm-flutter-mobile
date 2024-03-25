@@ -37,7 +37,7 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
 
     if (response.statusCode == 200) {
       final elapsed = stopwatch.elapsedMilliseconds;
-      final speedInKbps = (/*(2 / 1024)*/ 2 / (elapsed / 1000)) * 8;
+      final speedInKbps = ((4081 / 1024) / (elapsed / 1000)) * 8;
       if (speedInKbps < 15) {
         showSnackPoorConnection(context);
       }

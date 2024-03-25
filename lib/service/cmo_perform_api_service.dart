@@ -857,7 +857,7 @@ class CmoPerformApiService {
 
   Future<Response<dynamic>> downloadCheckNetworkSpeedFile() async {
     final response = await client.get<dynamic>(
-      'https://drive.google.com/file/d/1lEn1DtJQW6-nTcoS_FG7-EB3Kamy0147/view?usp=sharing',
+      'https://cmologistics.azurewebsites.net/groupscheme/DesktopModules/Cmo.UI.Dnn.Api.GS/API/MobileV2/GetFile',
     );
 
     return response;
