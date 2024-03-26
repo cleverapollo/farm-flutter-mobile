@@ -113,7 +113,7 @@ class MemberMapViewState extends State<MemberMapView> {
                       state.completedFarms,
                       state.selectedFarm,
                     ),
-                    mapType: MapType.satellite,
+                    mapType: state.mapType,
                     markers: Set.of(state.markers),
                     myLocationEnabled: true,
                     onCameraMove: (_) async {
@@ -138,6 +138,13 @@ class MemberMapViewState extends State<MemberMapView> {
                   );
                     },
                   ),
+              Positioned(
+                left: 15,
+                bottom: 15,
+                child: MapTypeSwitchButton(
+                  onTap: context.read<MemberManagementCubit>().onChangeMapType,
+                ),
+              ),
               const MapCenterIcon(),
             ],
           ),

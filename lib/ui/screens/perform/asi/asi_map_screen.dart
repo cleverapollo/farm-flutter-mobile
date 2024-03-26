@@ -140,7 +140,7 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
                         zoom: Constants.mapZoom,
                       ),
                       polygons: generatePolygon(),
-                      mapType: MapType.satellite,
+                      mapType: state.mapType,
                       myLocationEnabled: true,
                       markers: state.marker == null ? {} : {state.marker!},
                       onCameraMove: (position) => context
@@ -158,6 +158,13 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
                       },
                     );
                   },
+                ),
+                Positioned(
+                  left: 15,
+                  bottom: 15,
+                  child: MapTypeSwitchButton(
+                    onTap: context.read<AsiMapCubit>().onChangeMapType,
+                  ),
                 ),
                 const MapCenterIcon(),
               ],

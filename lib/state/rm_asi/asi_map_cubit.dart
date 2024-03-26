@@ -126,4 +126,13 @@ class AsiMapCubit extends Cubit<AsiMapState> {
   void onCameraMove(CameraPosition cameraPosition) {
     emit(state.copyWith(currentCameraPosition: cameraPosition));
   }
+
+  void onChangeMapType() {
+    final currentMapType = state.mapType;
+    if (currentMapType == MapType.satellite) {
+      emit(state.copyWith(mapType: MapType.normal));
+    } else {
+      emit(state.copyWith(mapType: MapType.satellite));
+    }
+  }
 }

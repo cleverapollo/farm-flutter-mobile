@@ -14,6 +14,7 @@ class MemberDetailMapViewState {
     this.rteSpecies = const <RteSpecies>[],
     this.asis = const <Asi>[],
     this.visibleRegion,
+    this.mapType = MapType.satellite,
   });
 
   final Farm? farm;
@@ -29,6 +30,7 @@ class MemberDetailMapViewState {
   final List<Asi> asis;
   final List<RteSpecies> rteSpecies;
   final LatLngBounds? visibleRegion;
+  final MapType mapType;
 
   MemberDetailMapViewState copyWith({
     Farm? farm,
@@ -44,6 +46,7 @@ class MemberDetailMapViewState {
     List<Asi>? asis,
     List<RteSpecies>? rteSpecies,
     LatLngBounds? visibleRegion,
+    MapType? mapType,
   }) {
     return MemberDetailMapViewState(
       farm: farm ?? this.farm,
@@ -59,6 +62,7 @@ class MemberDetailMapViewState {
       asis: asis ?? this.asis,
       rteSpecies: rteSpecies ?? this.rteSpecies,
       visibleRegion: visibleRegion ?? this.visibleRegion,
+      mapType: mapType ?? this.mapType,
     );
   }
 }

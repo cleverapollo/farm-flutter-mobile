@@ -24,6 +24,7 @@ class MemberManagementState {
     this.selectedCompartment,
     this.isShowSiteName = false,
     this.visibleRegion,
+    this.mapType = MapType.satellite,
   });
 
   final GroupScheme? activeGroupScheme;
@@ -45,6 +46,7 @@ class MemberManagementState {
   final bool isShowSiteName;
   final List<Marker> markers;
   final LatLngBounds? visibleRegion;
+  final MapType mapType;
 
   MemberManagementState copyWith({
     List<Farm>? incompleteFarms,
@@ -65,6 +67,7 @@ class MemberManagementState {
     bool? isShowSiteName,
     List<Marker>? markers,
     LatLngBounds? visibleRegion,
+    MapType? mapType,
   }) {
     return MemberManagementState(
       activeRMU: activeRMU ?? this.activeRMU,
@@ -85,6 +88,7 @@ class MemberManagementState {
       isShowSiteName: isShowSiteName ?? this.isShowSiteName,
       markers: markers ?? this.markers,
       visibleRegion: visibleRegion ?? this.visibleRegion,
+      mapType: mapType ?? this.mapType,
     );
   }
 }

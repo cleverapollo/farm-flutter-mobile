@@ -79,3 +79,22 @@ class MapCenterIcon extends StatelessWidget {
     );
   }
 }
+
+class MapTypeSwitchButton extends StatelessWidget {
+  final void Function() onTap;
+
+  const MapTypeSwitchButton({
+    super.key,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black,
+      onPressed: onTap,
+      child: const Icon(Icons.layers_sharp),
+    );
+  }
+}

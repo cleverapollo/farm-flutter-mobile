@@ -55,6 +55,7 @@ class CmoMapState extends State<CmoMap> {
   Timer? _debounceOnCameraMove;
 
   Marker? marker;
+  MapType mapType = MapType.satellite;
 
   @override
   void initState() {
@@ -154,6 +155,16 @@ class CmoMapState extends State<CmoMap> {
     }
   }
 
+  void onChangeMapType() {
+    if (mapType == MapType.satellite) {
+      mapType = MapType.normal;
+    } else {
+      mapType = MapType.satellite;
+    }
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -164,7 +175,7 @@ class CmoMapState extends State<CmoMap> {
             children: [
               Positioned.fill(
                 child: GoogleMap(
-                  mapType: MapType.satellite,
+                  mapType: mapType,
                   onMapCreated: (controller) {
                     mapController = controller;
                     checkPermission();
@@ -182,6 +193,13 @@ class CmoMapState extends State<CmoMap> {
                       marker = _markerFrom(latLong);
                     });
                   },
+                ),
+              ),
+              Positioned(
+                left: 15,
+                bottom: 15,
+                child: MapTypeSwitchButton(
+                  onTap: onChangeMapType,
                 ),
               ),
               const MapCenterIcon(),

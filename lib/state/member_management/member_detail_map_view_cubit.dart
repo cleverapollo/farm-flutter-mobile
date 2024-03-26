@@ -103,6 +103,16 @@ class MemberDetailMapViewCubit extends Cubit<MemberDetailMapViewState> {
     );
   }
 
+
+  void onChangeMapType() {
+    final currentMapType = state.mapType;
+    if (currentMapType == MapType.satellite) {
+      emit(state.copyWith(mapType: MapType.normal));
+    } else {
+      emit(state.copyWith(mapType: MapType.satellite));
+    }
+  }
+
   Future<void> generateListMarker() async {
     final markers = <Marker>[];
     if (state.isShowCompartmentName) {

@@ -322,6 +322,16 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     return temporaryMarkers;
   }
 
+
+  void onChangeMapType() {
+    final currentMapType = state.mapType;
+    if (currentMapType == MapType.satellite) {
+      emit(state.copyWith(mapType: MapType.normal));
+    } else {
+      emit(state.copyWith(mapType: MapType.satellite));
+    }
+  }
+
   void onAcceptChanges({
     required void Function(double?, List<PolygonItem>?) onSave,
   }) {

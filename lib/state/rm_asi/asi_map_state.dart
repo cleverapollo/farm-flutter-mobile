@@ -10,6 +10,7 @@ class AsiMapState {
     this.outlinedCompartment,
     this.currentCameraPosition,
     this.outlineMarker = const <Marker>[],
+    this.mapType = MapType.satellite,
   });
 
   final List<Compartment> compartments;
@@ -19,6 +20,7 @@ class AsiMapState {
   final Compartment? outlinedCompartment;
   final CameraPosition? currentCameraPosition;
   final List<Marker> outlineMarker;
+  final MapType mapType;
 
   AsiMapState copyWith({
     bool? isLoading,
@@ -30,9 +32,11 @@ class AsiMapState {
     List<Marker>? outlineMarker,
     bool isClearMarker = false,
     bool isClearOutlineCompartment = false,
+    MapType? mapType,
   }) {
     return AsiMapState(
       isLoading: isLoading ?? this.isLoading,
+      mapType: mapType ?? this.mapType,
       compartments: compartments ?? this.compartments,
       asi: asi ?? this.asi,
       currentCameraPosition: currentCameraPosition ?? this.currentCameraPosition,

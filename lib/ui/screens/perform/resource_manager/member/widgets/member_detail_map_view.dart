@@ -183,7 +183,7 @@ class _MemberDetailMapViewState extends State<MemberDetailMapView> {
                           .read<MemberDetailMapViewCubit>()
                           .onCameraMove(visibleRegion);
                     },
-                    mapType: MapType.satellite,
+                    mapType: state.mapType,
                     markers: Set.of(state.markers),
                     myLocationEnabled: true,
                     onMapCreated: (GoogleMapController controller) {
@@ -205,6 +205,13 @@ class _MemberDetailMapViewState extends State<MemberDetailMapView> {
                     },
                   );
                 },
+              ),
+              Positioned(
+                left: 15,
+                bottom: 15,
+                child: MapTypeSwitchButton(
+                  onTap: context.read<MemberDetailMapViewCubit>().onChangeMapType,
+                ),
               ),
               const MapCenterIcon(),
             ],

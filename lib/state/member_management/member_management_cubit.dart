@@ -136,6 +136,16 @@ class MemberManagementCubit extends Cubit<MemberManagementState> {
     await generateListMarker();
   }
 
+
+  void onChangeMapType() {
+    final currentMapType = state.mapType;
+    if (currentMapType == MapType.satellite) {
+      emit(state.copyWith(mapType: MapType.normal));
+    } else {
+      emit(state.copyWith(mapType: MapType.satellite));
+    }
+  }
+
   void updateSelectedFarm(Farm farm) {
     emit(
       state.copyWith(

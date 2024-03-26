@@ -67,6 +67,7 @@ class CompartmentMapsSummariesState {
   final bool isChanged;
   final List<List<Marker>> listMarkersHistory;
   final LatLngBounds? visibleRegion;
+  final MapType mapType;
 
   bool get isAddingNew => selectedCompartment.polygon.isBlank;
 
@@ -93,6 +94,7 @@ class CompartmentMapsSummariesState {
     this.currentCameraPosition,
     this.isChanged = false,
     this.visibleRegion,
+    this.mapType = MapType.satellite,
   });
 
   CompartmentMapsSummariesState copyWith({
@@ -114,6 +116,7 @@ class CompartmentMapsSummariesState {
     Polyline? selectedEditedPolyline,
     List<List<Marker>>? listMarkersHistory,
     LatLngBounds? visibleRegion,
+    MapType? mapType,
   }) {
     return CompartmentMapsSummariesState(
       farmId: farmId ?? this.farmId,
@@ -134,6 +137,7 @@ class CompartmentMapsSummariesState {
       selectedEditedPolyline: selectedEditedPolyline ?? this.selectedEditedPolyline,
       listMarkersHistory: listMarkersHistory ?? this.listMarkersHistory,
       visibleRegion: visibleRegion ?? this.visibleRegion,
+      mapType: mapType ?? this.mapType,
     );
   }
 
@@ -162,6 +166,7 @@ class CompartmentMapsSummariesState {
       isChanged: isChanged,
       listMarkersHistory: listMarkersHistory,
       visibleRegion: visibleRegion,
+      mapType: mapType,
     );
   }
 }

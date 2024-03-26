@@ -360,7 +360,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                       ),
                       polylines: generatePolyline(),
                       polygons: generatePolygon(),
-                      mapType: MapType.satellite,
+                      mapType: state.mapType,
                       myLocationEnabled: true,
                       markers: Set.of(state.temporaryMarkers),
                       onCameraMove: (position) async {
@@ -385,6 +385,13 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                       },
                     );
                   },
+                ),
+                Positioned(
+                  left: 15,
+                  bottom: 15,
+                  child: MapTypeSwitchButton(
+                    onTap: context.read<CompartmentMapsSummariesCubit>().onChangeMapType,
+                  ),
                 ),
                 const MapCenterIcon(),
                 Positioned.fill(
