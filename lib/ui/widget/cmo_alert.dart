@@ -166,6 +166,8 @@ Future<void> onShowWarningDialog(
   BuildContext context, {
   required String title,
   required String subtitle,
+  IconData? icon,
+  Color? barColor,
   List<Widget> children = const <Widget>[],
 }) async {
   await showDialog<void>(
@@ -190,7 +192,7 @@ Future<void> onShowWarningDialog(
                     topRight: Radius.circular(12.0),
                     topLeft: Radius.circular(12.0),
                   ),
-                  color: context.colors.red,
+                  color: barColor ?? context.colors.red,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -203,7 +205,7 @@ Future<void> onShowWarningDialog(
                       ),
                     ),
                     Icon(
-                      IconsaxOutline.danger,
+                      icon ?? IconsaxOutline.danger,
                       size: 30.0,
                       color: context.colors.white,
                     ),

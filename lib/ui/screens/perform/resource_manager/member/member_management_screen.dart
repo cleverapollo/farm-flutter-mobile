@@ -5,10 +5,9 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/data/farm.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
-import 'package:cmo/state/dashboard/dashboard_cubit.dart';
-import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/resource_manager/audit/add_audit/audit_add_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/add_member_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_detail_map_view.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_list_view.dart';
@@ -45,6 +44,14 @@ class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagem
   Future<void> onRemoveFarm(Farm farm) async {
     await context.read<MemberManagementCubit>().onRemoveFarm(farm);
     await context.read<DashboardCubit>().getResourceManagerMembers();
+  }
+
+  void onAudit(Farm farm) {
+    AuditAddScreen.push(
+      context,
+      AuditComeFromEnum.menu,
+      selectedFarm: farm,
+    );
   }
 
   Future<void> onNavigateToDetail({
@@ -110,6 +117,7 @@ class _MemberManagementScreenState extends BaseStatefulWidgetState<MemberManagem
             return MembersListView(
               onNavigateToDetail: (farm) => onNavigateToDetail(farm: farm),
               onRemoveFarm: onRemoveFarm,
+              onAudit: onAudit,
             );
           case MemberManagementViewMode.mapView:
             return const MemberMapView();

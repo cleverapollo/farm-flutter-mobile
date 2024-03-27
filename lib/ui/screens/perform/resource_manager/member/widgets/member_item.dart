@@ -15,11 +15,13 @@ class MemberItem extends StatelessWidget {
   final Farm farm;
   final bool canDelete;
   final VoidCallback? onDelete;
+  final VoidCallback? onAudit;
 
   MemberItem({
     required this.farm,
     this.canDelete = false,
     this.onDelete,
+    this.onAudit,
   });
 
   @override
@@ -78,7 +80,81 @@ class MemberItem extends StatelessWidget {
     );
 
     if (!canDelete) {
-      return child;
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12.0),
+        child: Dismissible(
+          key: Key(farm.id.toString()),
+          direction: DismissDirection.startToEnd,
+          confirmDismiss: (_) async {
+            await onShowWarningDialog(
+              context,
+              title: LocaleKeys.audit.tr(),
+              subtitle: LocaleKeys.audit_member_alert_content.tr(args: [farm.farmName ?? '']),
+              barColor: context.colors.blue,
+              icon: Icons.settings,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: () async {
+                          Navigator.of(context).pop();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: Text(
+                            LocaleKeys.close.tr(),
+                            textAlign: TextAlign.center,
+                            style: context.textStyles.bodyBold.copyWith(
+                              color: context.colors.blue,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: InkWell(
+                        onTap: () async {
+                          Navigator.of(context).pop();
+                          onAudit?.call();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: Text(
+                            LocaleKeys.audit_now.tr(),
+                            textAlign: TextAlign.center,
+                            style: context.textStyles.bodyBold.copyWith(
+                              color: context.colors.blue,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+
+            return null;
+          },
+          background: Container(
+            color: context.colors.blue,
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Assets.icons.icAuditFromMember.svg(),
+                Text(
+                  LocaleKeys.audit.tr(),
+                  style: context.textStyles.bodyBold.white,
+                ),
+              ],
+            ),
+          ),
+          child: child,
+        ),
+      );
     }
 
     return Slidable(

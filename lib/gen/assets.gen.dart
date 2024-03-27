@@ -48,6 +48,10 @@ class $AssetsIconsGen {
   SvgGenImage get icArrowUp =>
       const SvgGenImage('assets/icons/ic_arrow_up.svg');
 
+  /// File path: assets/icons/ic_audit_from_member.svg
+  SvgGenImage get icAuditFromMember =>
+      const SvgGenImage('assets/icons/ic_audit_from_member.svg');
+
   /// File path: assets/icons/ic_avatar.svg
   SvgGenImage get icAvatar => const SvgGenImage('assets/icons/ic_avatar.svg');
 
@@ -297,6 +301,7 @@ class $AssetsIconsGen {
         icArrowLeft,
         icArrowRight,
         icArrowUp,
+        icAuditFromMember,
         icAvatar,
         icBackButton,
         icBarcode,

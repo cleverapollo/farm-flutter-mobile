@@ -15,12 +15,14 @@ class MembersListView extends StatelessWidget {
   const MembersListView({
     required this.onNavigateToDetail,
     required this.onRemoveFarm,
+    this.onAudit,
     this.shouldShowSearchField = true,
     super.key,
   });
 
   final void Function(Farm?) onNavigateToDetail;
   final void Function(Farm) onRemoveFarm;
+  final void Function(Farm)? onAudit;
   final bool shouldShowSearchField;
 
   @override
@@ -59,6 +61,7 @@ class MembersListView extends StatelessWidget {
                       farm: farm,
                       canDelete: state.statusFilter == MemberManagementStatusFilter.incomplete,
                       onDelete: () => onRemoveFarm(farm),
+                      onAudit: () => onAudit?.call(farm),
                     ),
                   );
                 },

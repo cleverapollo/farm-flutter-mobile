@@ -10,7 +10,13 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 part 'audit_state.dart';
 
 class AuditCubit extends HydratedCubit<AuditState> {
-  AuditCubit() : super(const AuditState()) {
+  AuditCubit({
+    Farm? selectedFarm,
+  }) : super(
+          AuditState(
+            selectedFarm: selectedFarm,
+          ),
+        ) {
     initialize();
   }
 

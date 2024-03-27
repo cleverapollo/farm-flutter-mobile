@@ -29,13 +29,14 @@ class AuditAddScreen extends BaseStatefulWidget {
 
   static Future<void> push(
     BuildContext context,
-    AuditComeFromEnum auditComeFrom,
-  ) {
+    AuditComeFromEnum auditComeFrom, {
+    Farm? selectedFarm,
+  }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => BlocProvider(
-          create: (_) => AuditCubit(),
+          create: (_) => AuditCubit(selectedFarm: selectedFarm),
           child: AuditAddScreen(
             auditComeFrom: auditComeFrom,
           ),
