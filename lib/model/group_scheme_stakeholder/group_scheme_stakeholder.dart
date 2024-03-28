@@ -11,6 +11,9 @@ class GroupSchemeStakeholder with _$GroupSchemeStakeholder {
     @JsonKey(name: 'GroupSchemeStakeholderId') String? groupSchemeStakeholderId,
     @JsonKey(name: 'StakeholderId') String? stakeholderId,
     @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
+    @JsonKey(name: 'RegionalManagerUnitId') int? regionalManagerUnitId,
+    @JsonKey(name: 'CreateDT') DateTime? createDT,
+    @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @Default(false)
     @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
   }) = _GroupSchemeStakeholder;
