@@ -3,6 +3,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
+import 'package:cmo/ui/components/custom_icon_slidable_action.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:cmo/utils/utils.dart';
@@ -80,80 +81,72 @@ class MemberItem extends StatelessWidget {
     );
 
     if (!canDelete) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 12.0),
-        child: Dismissible(
-          key: Key(farm.id.toString()),
-          direction: DismissDirection.startToEnd,
-          confirmDismiss: (_) async {
-            await onShowWarningDialog(
-              context,
-              title: LocaleKeys.audit.tr(),
-              subtitle: LocaleKeys.audit_member_alert_content.tr(args: [farm.farmName ?? '']),
-              barColor: context.colors.blue,
-              icon: Icons.settings,
-              children: [
-                Row(
+      return Slidable(
+        key: Key(farm.id.toString()),
+        startActionPane: ActionPane(
+          motion: const ScrollMotion(),
+          children: [
+            CustomIconSlidableAction(
+              onPressed: (_) async {
+                await onShowWarningDialog(
+                  context,
+                  title: LocaleKeys.audit.tr(),
+                  subtitle: LocaleKeys.audit_member_alert_content
+                      .tr(args: [farm.farmName ?? '']),
+                  barColor: context.colors.blue,
+                  icon: Icons.settings,
                   children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () async {
-                          Navigator.of(context).pop();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: Text(
-                            LocaleKeys.close.tr(),
-                            textAlign: TextAlign.center,
-                            style: context.textStyles.bodyBold.copyWith(
-                              color: context.colors.blue,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            onTap: () async {
+                              Navigator.of(context).pop();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Text(
+                                LocaleKeys.close.tr(),
+                                textAlign: TextAlign.center,
+                                style: context.textStyles.bodyBold.copyWith(
+                                  color: context.colors.blue,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    Expanded(
-                      child: InkWell(
-                        onTap: () async {
-                          Navigator.of(context).pop();
-                          onAudit?.call();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: Text(
-                            LocaleKeys.audit_now.tr(),
-                            textAlign: TextAlign.center,
-                            style: context.textStyles.bodyBold.copyWith(
-                              color: context.colors.blue,
+                        Expanded(
+                          child: InkWell(
+                            onTap: () async {
+                              Navigator.of(context).pop();
+                              onAudit?.call();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Text(
+                                LocaleKeys.audit_now.tr(),
+                                textAlign: TextAlign.center,
+                                style: context.textStyles.bodyBold.copyWith(
+                                  color: context.colors.blue,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
-                ),
-              ],
-            );
-
-            return null;
-          },
-          background: Container(
-            color: context.colors.blue,
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Assets.icons.icAuditFromMember.svg(),
-                Text(
-                  LocaleKeys.audit.tr(),
-                  style: context.textStyles.bodyBold.white,
-                ),
-              ],
+                );
+              },
+              padding: EdgeInsets.zero,
+              backgroundColor: context.colors.blue,
+              foregroundColor: context.colors.white,
+              icon: Assets.icons.icAuditFromMember.svg(),
+              label: LocaleKeys.audit.tr(),
             ),
-          ),
-          child: child,
+          ],
         ),
+        child: child,
       );
     }
 
