@@ -352,17 +352,23 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
         await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(
           groupSchemeStakeholder.copyWith(
             isMasterDataSynced: true,
+            createDT: groupSchemeStakeholder.createDT ?? DateTime.now(),
+            updateDT: DateTime.now(),
           ),
           isDirect: false,
         );
       }
     } else {
       final activeGroupScheme = await configService.getActiveGroupScheme();
+      final activeRmu = await configService.getActiveRegionalManager();
       final groupSchemeStakeholder = GroupSchemeStakeholder(
         isMasterDataSynced: true,
         groupSchemeId: activeGroupScheme?.groupSchemeId,
         groupSchemeStakeholderId: DateTime.now().millisecondsSinceEpoch.toString(),
         stakeholderId: state.stakeHolder?.stakeholderId,
+        regionalManagerUnitId: activeRmu?.regionalManagerUnitId,
+        createDT: DateTime.now(),
+        updateDT: DateTime.now(),
       );
 
       await cmoDatabaseMasterService.cacheGroupSchemeStakeholder(

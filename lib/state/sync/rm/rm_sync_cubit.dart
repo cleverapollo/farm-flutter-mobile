@@ -521,7 +521,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
         if (groupSchema != null) {
           mainGroupSchemeStakeholderPayLoad = mainGroupSchemeStakeholderPayLoad.copyWith(
-            groupSchemeStakeholder: groupSchema.copyWith(regionalManagerUnitId: rmuId),
+            groupSchemeStakeholder: groupSchema,
           );
         }
 
