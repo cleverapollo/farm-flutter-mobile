@@ -1,3 +1,6 @@
+import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
+import 'package:cmo/model/setting_config/setting_config.dart';
 import 'package:flutter/material.dart';
 
 import 'package:equatable/equatable.dart';
@@ -15,7 +18,14 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
             landingPage: LandingPage.dashboard,
             themeMode: ThemeMode.light,
           ),
-        );
+        ){
+    initData();
+  }
+
+  Future<void> initData() async {
+    final settingConfig = await configService.getSettingConfig();
+    emit(state.copyWith(settingConfig: settingConfig));
+  }
 
   void changeLanguage(BuildContext context, Locale locale) {
     if (locale == state.locale) return;
@@ -35,6 +45,46 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   bool shouldShowLunarCalendar() {
     return false;
     return state.locale == AppLocale.th || state.locale == AppLocale.vi;
+  }
+
+  Future<void> changeDateFormat(DateFormatEnum dateFormatEnum) async {
+    emit(
+      state.copyWith(
+        settingConfig: state.settingConfig.copyWith(
+          dateFormatEnum: dateFormatEnum,
+        ),
+      ),
+    );
+
+    await cacheSettingConfig();
+  }
+
+  Future<void> changeDistanceUnit(DistanceUnitEnum distanceUnitEnum) async {
+    emit(
+      state.copyWith(
+        settingConfig: state.settingConfig.copyWith(
+          distanceUnitEnum: distanceUnitEnum,
+        ),
+      ),
+    );
+
+    await cacheSettingConfig();
+  }
+
+  Future<void> changeAreaUnit(AreaUnitEnum areaUnitEnum) async {
+    emit(
+      state.copyWith(
+        settingConfig: state.settingConfig.copyWith(
+          areaUnitEnum: areaUnitEnum,
+        ),
+      ),
+    );
+
+    await cacheSettingConfig();
+  }
+
+  Future<void> cacheSettingConfig() async {
+    await configService.setSettingConfig(settingConfig: state.settingConfig);
   }
 
   @override

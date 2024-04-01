@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MemberDetailMapView extends StatefulWidget {
+class MemberDetailMapView extends BaseStatefulWidget {
   final Farm farm;
   final void Function()? onNavigateToDetail;
   final void Function() onChangeViewMode;
@@ -27,13 +27,13 @@ class MemberDetailMapView extends StatefulWidget {
     required this.onChangeViewMode,
     this.onNavigateToDetail,
     super.key,
-  });
+  }) : super(screenName: 'MemberDetailMapView');
 
   @override
   State<StatefulWidget> createState() => _MemberDetailMapViewState();
 }
 
-class _MemberDetailMapViewState extends State<MemberDetailMapView> {
+class _MemberDetailMapViewState extends BaseStatefulWidgetState<MemberDetailMapView> {
 
   GoogleMapController? mapController;
   List<Marker> markers = <Marker>[];
@@ -124,7 +124,7 @@ class _MemberDetailMapViewState extends State<MemberDetailMapView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Column(
       children: [
         BlocBuilder<MemberDetailMapViewCubit, MemberDetailMapViewState>(
@@ -232,7 +232,7 @@ class _MemberDetailMapViewState extends State<MemberDetailMapView> {
 
   Widget farmInformation() {
     return Text(
-      '${LocaleKeys.site_area.tr()}: ${widget.farm.calculateFarmSizeBasedOnCompartments().toStringAsFixed(2)} ha ${LocaleKeys.measured.tr()}',
+      '${LocaleKeys.site_area.tr()}: ${convertAreaUnit(widget.farm.calculateFarmSizeBasedOnCompartments())?.toStringAsFixed(2)} $areaUnit ${LocaleKeys.measured.tr()}',
       style: context.textStyles.bodyBold.blueDark2,
     );
   }

@@ -7,11 +7,13 @@ class CompartmentItemWidget extends StatelessWidget {
   final Compartment model;
   final void Function() onTap;
   final bool isConservationArea;
+  final String areaValue;
 
   const CompartmentItemWidget({
     required this.model,
     required this.onTap,
     required this.isConservationArea,
+    required this.areaValue,
   });
 
   @override
@@ -34,14 +36,14 @@ class CompartmentItemWidget extends StatelessWidget {
           if (isConservationArea) ...[
             CmoCardItem(
               title: LocaleKeys.conservation_area.tr(),
-              value: '${model.polygonArea?.toStringAsFixed(2)} ha',
+              value: areaValue,
               ratioTitleSpace: 3,
             ),
           ] else ...[
             CmoCardItem(
               title: model.productGroupTemplateName ??
                   LocaleKeys.productGroup.tr(),
-              value: '${model.polygonArea?.toStringAsFixed(2)} ha',
+              value: areaValue,
               ratioTitleSpace: 3,
             ),
             CmoCardItem(

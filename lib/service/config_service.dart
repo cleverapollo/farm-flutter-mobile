@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cmo/enum/user_role_enum.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
+import 'package:cmo/model/setting_config/setting_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfigService {
@@ -12,6 +13,7 @@ class ConfigService {
     await setIsAuthorized(isAuthorized: false);
     await clearPerformConfig();
     await clearUserConfig();
+    await setSettingConfig();
   }
 
   Future<bool> isFirstLaunch() async {
@@ -209,5 +211,22 @@ class ConfigService {
         latestLocalDatabaseStatus?.latestGroupSchemeId ==
             currentGS?.groupSchemeId &&
         latestLocalDatabaseStatus?.latestUserName == currentUsername?.userName;
+  }
+
+  Future<bool> setSettingConfig({SettingConfig? settingConfig}) async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.setString(
+      'SettingConfig',
+      settingConfig == null
+          ? ''
+          : jsonEncode(settingConfig.toJson()),
+    );
+  }
+
+  Future<SettingConfig> getSettingConfig() async {
+    final sp = await SharedPreferences.getInstance();
+    final rawJson = sp.getString('SettingConfig');
+    if (rawJson == null || rawJson.isEmpty) return const SettingConfig();
+    return SettingConfig.fromJson(jsonDecode(rawJson) as Map<String, dynamic>);
   }
 }

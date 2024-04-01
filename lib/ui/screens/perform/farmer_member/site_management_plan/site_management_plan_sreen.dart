@@ -204,7 +204,8 @@ class _SiteManagementPlanScreenState extends BaseStatefulWidgetState<SiteManagem
                   value: tuple2.item1.toString()),
               CmoCardItem(
                   title: '${LocaleKeys.total.tr()}',
-                  value: tuple2.item2.toStringAsFixed(2)),
+                  value: '${convertAreaUnit(tuple2.item2)?.toStringAsFixed(2)} $areaUnit',
+              ),
             ],
           );
         },

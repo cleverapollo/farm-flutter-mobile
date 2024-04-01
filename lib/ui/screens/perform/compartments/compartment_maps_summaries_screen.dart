@@ -444,8 +444,8 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       selector: (state) => state.compartmentMapDetailByCameraPosition,
       builder: (context, compartmentMapDetailByCameraPosition) {
         final compartmentName = compartmentMapDetailByCameraPosition?.compartment.unitNumber ?? '';
-        final perimeter = (compartmentMapDetailByCameraPosition?.getPerimeter() ?? 0).toStringAsFixed(2);
-        final area = (compartmentMapDetailByCameraPosition?.getAreaInHa() ?? 0).toStringAsFixed(2);
+        final perimeter = (convertDistanceUnit(compartmentMapDetailByCameraPosition?.getPerimeter()) ?? 0).toStringAsFixed(2);
+        final area = (convertAreaUnit(compartmentMapDetailByCameraPosition?.getAreaInHa()) ?? 0).toStringAsFixed(2);
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -455,12 +455,12 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
               style: context.textStyles.bodyBold.blueDark2,
             ),
             Text(
-              '${LocaleKeys.perimeter.tr()} ${perimeter}km',
+              '${LocaleKeys.perimeter.tr()} $perimeter $distanceUnit',
               style: context.textStyles.bodyNormal.blueDark2,
 
             ),
             Text(
-              '${LocaleKeys.area.tr()} $area ha ${LocaleKeys.measured.tr()}',
+              '${LocaleKeys.area.tr()} $area $areaUnit ${LocaleKeys.measured.tr()}',
               style: context.textStyles.bodyNormal.blueDark2,
             ),
           ],

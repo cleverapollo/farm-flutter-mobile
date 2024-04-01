@@ -16,14 +16,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MemberMapView extends StatefulWidget {
-  const MemberMapView({super.key});
+class MemberMapView extends BaseStatefulWidget {
+  const MemberMapView({super.key}) : super(screenName: 'MemberMapView');
 
   @override
   State<StatefulWidget> createState() => MemberMapViewState();
 }
 
-class MemberMapViewState extends State<MemberMapView> {
+class MemberMapViewState extends BaseStatefulWidgetState<MemberMapView> {
 
   GoogleMapController? mapController;
 
@@ -94,7 +94,7 @@ class MemberMapViewState extends State<MemberMapView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Column(
       children: [
         buildMemberSearchViewMode(),
@@ -237,7 +237,7 @@ class MemberMapViewState extends State<MemberMapView> {
               style: context.textStyles.bodyBold.blueDark2.copyWith(fontSize: 18),
             ),
             Text(
-              '${LocaleKeys.site_area.tr()}: ${context.read<MemberManagementCubit>().calculateTotalFarmSizeRmu().toStringAsFixed(2)} ha ${LocaleKeys.measured.tr()}',
+              '${LocaleKeys.site_area.tr()}: ${convertAreaUnit(context.read<MemberManagementCubit>().calculateTotalFarmSizeRmu())?.toStringAsFixed(2)} $areaUnit ${LocaleKeys.measured.tr()}',
               style: context.textStyles.bodyBold.blueDark2,
             ),
           ],

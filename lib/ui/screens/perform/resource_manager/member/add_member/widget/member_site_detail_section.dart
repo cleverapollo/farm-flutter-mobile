@@ -13,14 +13,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'cmo_collapse_title_widget.dart';
 import 'cmo_drop_down_layout_widget.dart';
 
-class MemberSiteDetailSection extends StatefulWidget {
-  const MemberSiteDetailSection({super.key});
+class MemberSiteDetailSection extends BaseStatefulWidget {
+  const MemberSiteDetailSection({super.key}) : super(screenName: 'MemberSiteDetailSection');
 
   @override
   State<StatefulWidget> createState() => _MemberSiteDetailSectionState();
 }
 
-class _MemberSiteDetailSectionState extends State<MemberSiteDetailSection> {
+class _MemberSiteDetailSectionState extends BaseStatefulWidgetState<MemberSiteDetailSection> {
   final townTextController = TextEditingController();
   final provinceTextController = TextEditingController();
   late MemberDetailCubit cubit;
@@ -34,7 +34,7 @@ class _MemberSiteDetailSectionState extends State<MemberSiteDetailSection> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return BlocSelector<MemberDetailCubit, MemberDetailState, MemberSiteDetailsState>(
       selector: (state) => state.memberSiteDetailsState,
       builder: (context, memberSiteDetailsState) {
@@ -165,7 +165,7 @@ class _MemberSiteDetailSectionState extends State<MemberSiteDetailSection> {
                     builder: (context, state) {
                       final farmSizeTitle = state.farm?.farmSize == null
                           ? null
-                          : '${state.farm!.farmSize!.toStringAsFixed(2)}${LocaleKeys.ha_unit.tr()}';
+                          : '${convertAreaUnit(state.farm!.farmSize)!.toStringAsFixed(2)}$areaUnit';
                       return CmoDropDownLayoutWidget(
                         title: LocaleKeys.compartment_s.tr(),
                         showTick: state.farm?.farmSize != null && state.farm!.farmSize! > 0,

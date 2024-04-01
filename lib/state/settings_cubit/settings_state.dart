@@ -16,6 +16,7 @@ class SettingsState extends Equatable {
     required this.locale,
     required this.landingPage,
     required this.themeMode,
+    this.settingConfig = const SettingConfig(),
   });
   final Locale locale;
 
@@ -23,15 +24,19 @@ class SettingsState extends Equatable {
 
   final ThemeMode themeMode;
 
+  final SettingConfig settingConfig;
+
   SettingsState copyWith({
     Locale? locale,
     LandingPage? landingPage,
     ThemeMode? themeMode,
+    SettingConfig? settingConfig,
   }) {
     return SettingsState(
       locale: locale ?? this.locale,
       landingPage: landingPage ?? this.landingPage,
       themeMode: themeMode ?? this.themeMode,
+      settingConfig: settingConfig ?? this.settingConfig,
     );
   }
 
@@ -40,5 +45,6 @@ class SettingsState extends Equatable {
         locale,
         landingPage,
         themeMode,
+        settingConfig,
       ];
 }

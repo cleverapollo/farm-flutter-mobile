@@ -186,7 +186,7 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                                         Text(
                                           compartment.polygonArea == null
                                               ? ''
-                                              : '${compartment.polygonArea?.toStringAsFixed(2)}ha ${LocaleKeys.measured.tr()}',
+                                              : '${convertAreaUnit(compartment.polygonArea)?.toStringAsFixed(2)}$areaUnit ${LocaleKeys.measured.tr()}',
                                           style: context.textStyles.bodyNormal.blueDark2,
                                         ),
                                       ],

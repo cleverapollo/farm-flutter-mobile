@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/model/setting_config/setting_config.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_alert.dart';
@@ -27,6 +28,21 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
     }
   }
 
+  double? convertAreaUnit(double? ha) {
+    final settingConfig = context.read<SettingsCubit>().state.settingConfig;
+    return settingConfig.areaUnitEnum.convertHaToDisplayAreaUnit(ha);
+  }
+
+  double? convertDistanceUnit(double? km) {
+    final settingConfig = context.read<SettingsCubit>().state.settingConfig;
+    return settingConfig.distanceUnitEnum.convertKmToDisplayDistanceUnit(km);
+  }
+
+  String? convertDateTimeFormat(DateTime? dateTime) {
+    final settingConfig = context.read<SettingsCubit>().state.settingConfig;
+    return settingConfig.dateFormatEnum.displayFormat(dateTime);
+  }
+
   bool canPopWithoutWarningDialog = true;
 
   bool shouldCheckConnectionSpeed = false;
@@ -44,6 +60,10 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
     }
   }
 
+  String get areaUnit => context.read<SettingsCubit>().state.settingConfig.areaUnitEnum.valueName;
+
+  String get distanceUnit => context.read<SettingsCubit>().state.settingConfig.distanceUnitEnum.valueName;
+
   @override
   void initState() {
     super.initState();
@@ -57,18 +77,23 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      child: GestureDetector(
-        onTap: FocusManager.instance.primaryFocus?.unfocus,
-        child: buildContent(context),
-      ),
-      onWillPop: () async {
-        if (canPopWithoutWarningDialog) {
-          return true;
-        } else {
-          await onShowWarningDispose();
-          return false;
-        }
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      buildWhen: (previous, current) => previous.settingConfig != current.settingConfig,
+      builder: (context, _) {
+        return WillPopScope(
+          child: GestureDetector(
+            onTap: FocusManager.instance.primaryFocus?.unfocus,
+            child: buildContent(context),
+          ),
+          onWillPop: () async {
+            if (canPopWithoutWarningDialog) {
+              return true;
+            } else {
+              await onShowWarningDispose();
+              return false;
+            }
+          },
+        );
       },
     );
   }

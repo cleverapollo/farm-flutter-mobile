@@ -22,6 +22,13 @@ extension DateTimeExtensions on DateTime? {
     return formattedDate;
   }
 
+  String formatWithPattern(String dateFormatPattern) {
+    if (this == null) return '';
+    final dateFormat = DateFormat(dateFormatPattern, 'EN');
+    final formattedDate = dateFormat.format(this!);
+    return formattedDate;
+  }
+
   int age() {
     if (this == null) return 0;
     final today = DateTime.now();

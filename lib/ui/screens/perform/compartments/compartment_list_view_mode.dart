@@ -9,16 +9,22 @@ import 'package:cmo/ui/ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CompartmentListViewMode extends StatelessWidget {
+class CompartmentListViewMode extends BaseStatefulWidget {
   const CompartmentListViewMode({
     super.key,
     required this.navigateToDetail,
-  });
+  }) : super(screenName: 'CompartmentListViewMode');
 
   final void Function(Compartment) navigateToDetail;
 
   @override
-  Widget build(BuildContext context) {
+  CompartmentListViewModeState createState() => CompartmentListViewModeState();
+}
+
+class CompartmentListViewModeState extends BaseStatefulWidgetState<CompartmentListViewMode> {
+
+  @override
+  Widget buildContent(BuildContext context) {
     return BlocBuilder<CompartmentCubit, CompartmentState>(
       builder: (context, state) {
         final cubit = context.read<CompartmentCubit>();
@@ -45,7 +51,7 @@ class CompartmentListViewMode extends StatelessWidget {
                 CmoCardHeader(title: LocaleKeys.summary.tr()),
                 CmoCardItem(
                   title: LocaleKeys.total.tr(),
-                  value: '${state.totalSize.toStringAsFixed(2)} ha',
+                  value: '${convertAreaUnit(state.totalSize)?.toStringAsFixed(2)} $areaUnit',
                   ratioTitleSpace: 3,
                 ),
                 CmoCardItem(
@@ -70,7 +76,8 @@ class CompartmentListViewMode extends StatelessWidget {
                       onRemove: () => cubit.onRemoveCompartment(state.filterCompartment[index]),
                       child: CompartmentItemWidget(
                         model: state.filterCompartment[index],
-                        onTap: () => navigateToDetail(state.filterCompartment[index]),
+                        areaValue: '${convertAreaUnit(state.filterCompartment[index].polygonArea)?.toStringAsFixed(2)} $areaUnit',
+                        onTap: () => widget.navigateToDetail(state.filterCompartment[index]),
                         isConservationArea: context
                             .read<CompartmentCubit>()
                             .isConservationArea(state.filterCompartment[index]),

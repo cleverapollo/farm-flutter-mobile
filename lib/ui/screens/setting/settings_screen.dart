@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
@@ -57,15 +58,26 @@ class _SettingsScreenState extends BaseStatefulWidgetState<SettingsScreen> {
             onTap: (i) => settingsCubit.changeThemeMode(i),
           ),
           CmoHeaderTile(title: LocaleKeys.units.tr()),
-          CmoOptionTile(
-            title: LocaleKeys.distanceUnits.tr(),
-            value: 'km',
-            shouldShowArrow: false,
+          _SettingsOptionPicker<DateFormatEnum>(
+            title: LocaleKeys.date_format.tr(),
+            value: settingsCubit.state.settingConfig.dateFormatEnum,
+            items: DateFormatEnum.values,
+            itemToString: (i) => i.valueName,
+            onTap: settingsCubit.changeDateFormat,
           ),
-          CmoOptionTile(
+          _SettingsOptionPicker<DistanceUnitEnum>(
+            title: LocaleKeys.distanceUnits.tr(),
+            value: settingsCubit.state.settingConfig.distanceUnitEnum,
+            items: DistanceUnitEnum.values,
+            itemToString: (i) => i.valueName,
+            onTap: settingsCubit.changeDistanceUnit,
+          ),
+          _SettingsOptionPicker<AreaUnitEnum>(
             title: LocaleKeys.area.tr(),
-            value: 'ha',
-            shouldShowArrow: false,
+            value: settingsCubit.state.settingConfig.areaUnitEnum,
+            items: AreaUnitEnum.values,
+            itemToString: (i) => i.valueName,
+            onTap: settingsCubit.changeAreaUnit,
           ),
         ],
       ),

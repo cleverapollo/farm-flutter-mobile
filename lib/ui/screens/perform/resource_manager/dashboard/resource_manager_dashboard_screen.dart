@@ -12,14 +12,14 @@ import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ResourceManagerDashboardScreen extends StatefulWidget {
-  const ResourceManagerDashboardScreen({super.key});
+class ResourceManagerDashboardScreen extends BaseStatefulWidget {
+  const ResourceManagerDashboardScreen({super.key}) : super(screenName: 'ResourceManagerDashboardScreen');
 
   @override
   State<StatefulWidget> createState() => _ResourceManagerDashboardScreenState();
 }
 
-class _ResourceManagerDashboardScreenState extends State<ResourceManagerDashboardScreen> {
+class _ResourceManagerDashboardScreenState extends BaseStatefulWidgetState<ResourceManagerDashboardScreen> {
   @override
   void initState() {
     super.initState();
@@ -85,7 +85,7 @@ class _ResourceManagerDashboardScreenState extends State<ResourceManagerDashboar
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return BlocBuilder<DashboardCubit, DashboardState>(
       builder: (context, state) {
         if (state.loading) {
@@ -253,6 +253,8 @@ class _ResourceManagerDashboardScreenState extends State<ResourceManagerDashboar
     TextStyle? textStyle,
     TextStyle? secondValueTextStyle,
   }) {
+    final convertSecondValue = context.read<SettingsCubit>().state.settingConfig.areaUnitEnum.convertHaToDisplayAreaUnit(secondValue);
+
     return Row(
       children: [
         Expanded(
@@ -277,7 +279,7 @@ class _ResourceManagerDashboardScreenState extends State<ResourceManagerDashboar
         Expanded(
           flex: 2,
           child: Text(
-            '${secondValue.toStringAsFixed(2)} ha',
+            '${convertSecondValue?.toStringAsFixed(2)} $areaUnit',
             textAlign: TextAlign.right,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
