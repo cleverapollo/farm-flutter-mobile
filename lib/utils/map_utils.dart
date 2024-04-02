@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
-import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as map_toolkit;
@@ -10,6 +9,13 @@ import 'package:maps_toolkit/maps_toolkit.dart' as map_toolkit;
 import 'utils.dart';
 
 class MapUtils {
+  static LatLng getCenterPositionBetweenTwoMarkers(Marker marker1, Marker marker2) {
+    return LatLng(
+      (marker1.position.latitude + marker2.position.latitude) / 2,
+      (marker1.position.longitude + marker2.position.longitude) / 2,
+    );
+  }
+
   static LatLng getCenterPositionFromPolyline(Polyline polyline) {
     return LatLng(
       (polyline.points.first.latitude + polyline.points.last.latitude) / 2,
@@ -72,6 +78,17 @@ class MapUtils {
       latLng.latitude,
       latLng.longitude,
     );
+  }
+
+  static double calculateDistanceBetweenTwoMarkers(
+    Marker marker1,
+    Marker marker2,
+  ) {
+    return map_toolkit.SphericalUtil.computeDistanceBetween(
+          convertLatLng(marker1.position),
+          convertLatLng(marker2.position),
+        ) /
+        1000.0;
   }
 
   static double computeAreaInHa(List<LatLng>? polygon) {

@@ -5,6 +5,8 @@ import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -87,7 +89,64 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     }
   }
 
-  void onCameraMove(CameraPosition cameraPosition, LatLngBounds? visibleRegion) {
+  Future<List<Marker>> generateMarkerWithDistanceValue(
+    List<Marker> markers,
+  ) async {
+    final listMarkers = List<Marker>.from(markers);
+    for (var index = 1; index < markers.length; index++) {
+      final centerPoint = MapUtils.getCenterPositionBetweenTwoMarkers(
+        markers[index - 1],
+        markers[index],
+      );
+
+      final distanceMarker = Marker(
+        markerId: MarkerId('place_name_${centerPoint.latitude}_${centerPoint.longitude}'),
+        position: centerPoint,
+        icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
+          title: '${MapUtils.calculateDistanceBetweenTwoMarkers(
+            markers[index - 1],
+            markers[index],
+          ).toStringAsFixed(2)}km',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 60,
+            leadingDistribution: TextLeadingDistribution.even,
+          ),
+        ),
+      );
+      listMarkers.insert(index - 1, distanceMarker);
+    }
+
+    final lastCenterPolyline = MapUtils.getCenterPositionBetweenTwoMarkers(
+      markers[markers.length - 1],
+      markers[0],
+    );
+
+    listMarkers.add(
+      Marker(
+        markerId: MarkerId(
+            'place_name_${lastCenterPolyline.latitude}_${lastCenterPolyline.longitude}'),
+        position: lastCenterPolyline,
+        icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
+          title: '${MapUtils.calculateDistanceBetweenTwoMarkers(
+            markers[markers.length - 1],
+            markers[0],
+          ).toStringAsFixed(2)}km',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 60,
+            leadingDistribution: TextLeadingDistribution.even,
+          ),
+        ),
+      ),
+    );
+
+    return listMarkers;
+  }
+
+  Future<void> onCameraMove(CameraPosition cameraPosition, LatLngBounds? visibleRegion) async {
     emit(state.copyWith(currentCameraPosition: cameraPosition));
     if (state.isAddingNew && !state.isCompletePolygon) {
       final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
@@ -106,6 +165,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
         emit(
           state.copyWith(
             temporaryMarkers: temporaryMarkers,
+            displayMarkers: await generateMarkerWithDistanceValue(temporaryMarkers),
           ),
         );
       }
@@ -133,6 +193,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
         state.copyWith(
           selectedEditedMarker: selectedMarker,
           temporaryMarkers: temporaryMarkers,
+          displayMarkers: await generateMarkerWithDistanceValue(temporaryMarkers),
         ),
       );
     }
@@ -207,6 +268,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
             selectedEditedPolyline: polyline,
             editingMarkers: listMarker,
             temporaryMarkers: listMarker,
+            displayMarkers: await generateMarkerWithDistanceValue(listMarker),
           ),
         );
 
@@ -222,12 +284,13 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
       state.copyWith(
         editingMarkers: state.editingMarkers + [marker],
         temporaryMarkers: state.temporaryMarkers + [marker],
+        displayMarkers: await generateMarkerWithDistanceValue(state.temporaryMarkers + [marker]),
         isCompletePolygon: false,
       ),
     );
   }
 
-  void removePreviousMarker() {
+  Future<void> removePreviousMarker() async {
     final markers = state.temporaryMarkers;
     if (markers.isEmpty) return;
     markers.removeLast();
@@ -235,6 +298,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
       state.copyWith(
         editingMarkers: markers,
         temporaryMarkers: markers,
+        displayMarkers: await generateMarkerWithDistanceValue(markers),
         isCompletePolygon: false,
       ),
     );
@@ -259,13 +323,15 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     );
   }
 
-  void editingPolygon() {
+  Future<void> editingPolygon() async {
+    final listMarkers = List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []);
     emit(
       state.copyWith(
         isUpdating: true,
-        editingMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
-        temporaryMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
-        listMarkersHistory: [List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? [])],
+        editingMarkers: listMarkers,
+        temporaryMarkers: listMarkers,
+        displayMarkers: await generateMarkerWithDistanceValue(listMarkers),
+        listMarkersHistory: [listMarkers],
       ),
     );
   }
@@ -285,14 +351,16 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     );
   }
 
-  void onResetPolygon() {
+  Future<void> onResetPolygon() async {
     if (state.listMarkersHistory.length <= 1) {
+      final listMarkers = List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []);
       emit(
         state.resetEditingMarkers().copyWith(
           isChanged: false,
-          editingMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
-          temporaryMarkers: List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []),
-          listMarkersHistory: [List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? [])],
+          editingMarkers: listMarkers,
+          temporaryMarkers: listMarkers,
+          displayMarkers: await generateMarkerWithDistanceValue(listMarkers),
+          listMarkersHistory: [listMarkers],
         ),
       );
 
@@ -302,13 +370,14 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     final newListMarkersHistory = List<List<Marker>>.from(state.listMarkersHistory);
     final lastListMarkersSnapshot = newListMarkersHistory.last;
     newListMarkersHistory.removeLast();
-
+    final listMarkers = List<Marker>.from(lastListMarkersSnapshot);
     emit(
       state.resetEditingMarkers().copyWith(
             isChanged: false,
             listMarkersHistory: newListMarkersHistory,
-            temporaryMarkers: List<Marker>.from(lastListMarkersSnapshot),
-            editingMarkers: List<Marker>.from(lastListMarkersSnapshot),
+            temporaryMarkers: listMarkers,
+            editingMarkers: listMarkers,
+            displayMarkers: await generateMarkerWithDistanceValue(listMarkers),
           ),
     );
   }

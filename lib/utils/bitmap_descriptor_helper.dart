@@ -42,8 +42,9 @@ class BitmapDescriptorHelper {
   static Future<BitmapDescriptor> getBytesFromCanvasDynamic({
     String? title,
     String? subtitle,
+    TextStyle? style,
   }) async {
-    const textStyle = TextStyle(
+    final textStyle = style ?? const TextStyle(
       fontSize: 40,
       color: Colors.white,
       letterSpacing: 1.0,

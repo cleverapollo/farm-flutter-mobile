@@ -362,10 +362,10 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                       polygons: generatePolygon(),
                       mapType: state.mapType,
                       myLocationEnabled: true,
-                      markers: Set.of(state.temporaryMarkers),
+                      markers: Set.of(state.displayMarkers),
                       onCameraMove: (position) async {
                         final visibleRegion = await mapController?.getVisibleRegion();
-                        context
+                        await context
                             .read<CompartmentMapsSummariesCubit>()
                             .onCameraMove(
                               position,

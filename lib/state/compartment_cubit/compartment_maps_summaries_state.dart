@@ -61,6 +61,7 @@ class CompartmentMapsSummariesState {
   final bool isCompletePolygon;
   final List<Marker> editingMarkers;
   final List<Marker> temporaryMarkers;
+  final List<Marker> displayMarkers;
   final Marker? selectedEditedMarker;
   final Polyline? selectedEditedPolyline;
   final CameraPosition? currentCameraPosition;
@@ -82,6 +83,7 @@ class CompartmentMapsSummariesState {
     this.listCompartmentMapDetails = const <CompartmentMapDetail>[],
     this.editingMarkers = const <Marker>[],
     this.temporaryMarkers = const <Marker>[],
+    this.displayMarkers = const <Marker>[],
     this.isUpdating = false,
     this.isCompletePolygon = false,
     this.selectedCompartmentMapDetails,
@@ -108,6 +110,7 @@ class CompartmentMapsSummariesState {
     CompartmentMapDetail? compartmentMapDetailByCameraPosition,
     List<Marker>? editingMarkers,
     List<Marker>? temporaryMarkers,
+    List<Marker>? displayMarkers,
     bool? isUpdating,
     bool? isCompletePolygon,
     bool? isChanged,
@@ -133,6 +136,7 @@ class CompartmentMapsSummariesState {
       currentCameraPosition: currentCameraPosition ?? this.currentCameraPosition,
       editingMarkers: editingMarkers ?? this.editingMarkers,
       temporaryMarkers: temporaryMarkers ?? this.temporaryMarkers,
+      displayMarkers: displayMarkers ?? this.displayMarkers,
       selectedEditedMarker: selectedEditedMarker ?? this.selectedEditedMarker,
       selectedEditedPolyline: selectedEditedPolyline ?? this.selectedEditedPolyline,
       listMarkersHistory: listMarkersHistory ?? this.listMarkersHistory,
@@ -161,6 +165,7 @@ class CompartmentMapsSummariesState {
       currentCameraPosition: currentCameraPosition,
       editingMarkers: isCleanEditingMarkers ? <Marker>[] : editingMarkers,
       temporaryMarkers: isCleanTemporaryMarkers ? <Marker>[] : temporaryMarkers,
+      displayMarkers: isCleanTemporaryMarkers ? <Marker>[] : displayMarkers,
       selectedEditedMarker: isCleanSelectedEditedMarker ? null : selectedEditedMarker,
       selectedEditedPolyline: isCleanSelectedEditedPolyline ? null : selectedEditedPolyline,
       isChanged: isChanged,
