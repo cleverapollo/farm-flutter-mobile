@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,7 +18,7 @@ class PetsAndDiseasesDetailCubit extends Cubit<PetsAndDiseasesDetailState> {
   }
 
   Future<void> onInit() async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(loading: true));
 
     final farm = await configService.getActiveFarm();
 
@@ -72,13 +73,14 @@ class PetsAndDiseasesDetailCubit extends Cubit<PetsAndDiseasesDetailState> {
       );
     }
 
-    emit(state.copyWith(isLoading: false));
+    emit(state.copyWith(loading: false));
   }
 
   void onSelectPetsAndDiseaseType(PestsAndDiseaseType selectPetsAndDiseaseType) {
     emit(
       state.copyWith(
         selectedPetsAndDiseaseType: selectPetsAndDiseaseType,
+        isEditing: true,
         isSelectPetTypeError: false,
         petsAndDiseaseRegister: state.petsAndDiseaseRegister?.copyWith(
           pestsAndDiseaseTypeId: selectPetsAndDiseaseType.pestsAndDiseaseTypeId,
@@ -91,6 +93,7 @@ class PetsAndDiseasesDetailCubit extends Cubit<PetsAndDiseasesDetailState> {
   void onSelectTreatmentMethod(List<TreatmentMethod> selectedTreatmentMethods) {
     emit(
       state.copyWith(
+        isEditing: true,
         selectedTreatmentMethods: selectedTreatmentMethods,
       ),
     );
@@ -105,6 +108,7 @@ class PetsAndDiseasesDetailCubit extends Cubit<PetsAndDiseasesDetailState> {
   }) {
     emit(
       state.copyWith(
+        isEditing: true,
         petsAndDiseaseRegister: state.petsAndDiseaseRegister?.copyWith(
           comment: comment ?? state.petsAndDiseaseRegister?.comment,
           numberOfOutbreaks: numberOfOutbreaks ?? state.petsAndDiseaseRegister?.numberOfOutbreaks,

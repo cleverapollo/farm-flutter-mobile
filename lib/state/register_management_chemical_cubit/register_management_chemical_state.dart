@@ -7,13 +7,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'register_management_chemical_state.freezed.dart';
 
 @freezed
-class RMChemicalState with _$RMChemicalState {
+class RMChemicalState with _$RMChemicalState{
   const factory RMChemicalState({
     @Default(Chemical()) Chemical chemical,
     @Default(Chemical()) Chemical chemicalBeforeEdit,
     String? farmId,
     int? groupSchemeId,
     @Default(false) bool isLoading,
+    @Default(false) bool isEditing,
     @Default(true) bool isOpen,
     @Default([]) List<ChemicalType> chemicalTypes,
     @Default([]) List<ChemicalApplicationMethod> chemicalApplicationMethods,

@@ -1,12 +1,13 @@
 part of 'illegal_activity_detail_cubit.dart';
 
-class IllegalActivityDetailState {
+class IllegalActivityDetailState extends BaseState {
   IllegalActivityDetailState({
     this.illegalActivityRegister,
     this.activeFarm,
     this.isIssueRaisedError = false,
     this.isDateClosedError = false,
     this.dateClosedErrorText,
+    super.isEditing,
   });
 
   final Farm? activeFarm;
@@ -20,11 +21,13 @@ class IllegalActivityDetailState {
     Farm? activeFarm,
     bool? isIssueRaisedError,
     bool? isDateClosedError,
+    bool? isEditing,
     String? dateClosedErrorText,
   }) {
     return IllegalActivityDetailState(
       illegalActivityRegister: illegalActivityRegister ?? this.illegalActivityRegister,
       activeFarm: activeFarm ?? this.activeFarm,
+      isEditing: isEditing ?? this.isEditing,
       isIssueRaisedError: isIssueRaisedError ?? this.isIssueRaisedError,
       isDateClosedError: isDateClosedError ?? this.isDateClosedError,
       dateClosedErrorText: dateClosedErrorText ?? this.dateClosedErrorText,

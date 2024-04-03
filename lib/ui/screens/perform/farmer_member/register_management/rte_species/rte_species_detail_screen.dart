@@ -71,7 +71,7 @@ class _RteSpeciesDetailScreenState extends BaseStatefulWidgetState<RteSpeciesDet
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !context.read<RteSpeciesDetailCubit>().state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {

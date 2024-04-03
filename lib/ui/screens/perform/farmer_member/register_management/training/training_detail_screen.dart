@@ -99,7 +99,7 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !cubit.state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {

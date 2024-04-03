@@ -3,11 +3,13 @@ import 'package:cmo/model/compartment/compartment.dart';
 import 'package:cmo/model/compartment/product_group_template.dart';
 import 'package:cmo/model/compartment/species_group_template.dart';
 import 'package:cmo/model/group_scheme.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 
-class CompartmentDetailState {
+class CompartmentDetailState extends BaseState {
   CompartmentDetailState({
-    this.loading = false,
-    this.error,
+    super.loading,
+    super.error,
+    super.isEditing,
     required this.compartment,
     this.areaTypes = const [],
     this.productGroupTemplates = const [],
@@ -27,8 +29,6 @@ class CompartmentDetailState {
     this.compartmentBeforeEdit = const Compartment(),
   });
 
-  final Object? error;
-  final bool loading;
   final bool isDataReady;
   final List<AreaType> areaTypes;
   final List<ProductGroupTemplate> productGroupTemplates;
@@ -49,6 +49,7 @@ class CompartmentDetailState {
 
   CompartmentDetailState copyWith({
     bool? loading,
+    bool? isEditing,
     String? farmId,
     String? campId,
     Object? error,
@@ -72,6 +73,7 @@ class CompartmentDetailState {
       farmId: farmId ?? this.farmId,
       campId: campId ?? this.campId,
       loading: loading ?? this.loading,
+      isEditing: isEditing ?? this.isEditing,
       error: error ?? this.error,
       compartment: compartment ?? this.compartment,
       compartmentBeforeEdit:

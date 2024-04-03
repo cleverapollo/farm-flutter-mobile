@@ -88,7 +88,7 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !_compartmentDetailCubit.state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {

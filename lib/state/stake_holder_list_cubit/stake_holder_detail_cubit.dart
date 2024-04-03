@@ -4,6 +4,7 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/model/stakeholder/farm_stake_holder.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
@@ -19,7 +20,12 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
   }
 
   Future<void> initStakeholderDetailData() async {
-    emit(state.copyWith(loading: true));
+    emit(
+      state.copyWith(
+        loading: true,
+        isEditing: false,
+      ),
+    );
 
     try {
       final service = cmoDatabaseMasterService;
@@ -140,6 +146,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
   void onSelectStakeholder(String? stakeHolderTypeId) {
     emit(
       state.copyWith(
+        isEditing: true,
         isSelectTypeError: stakeHolderTypeId == null,
         stakeHolder: state.stakeHolder?.copyWith(
           stakeholderTypeId: stakeHolderTypeId,
@@ -151,6 +158,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
   void onChangeStakeholderName(String? stakeholderName) {
     emit(
       state.copyWith(
+        isEditing: true,
         isEntityNameError: stakeholderName.isBlank,
         stakeHolder: state.stakeHolder?.copyWith(
           stakeholderName: stakeholderName,
@@ -162,6 +170,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
   void onChangeContactName(String? contactName) {
     emit(
       state.copyWith(
+        isEditing: true,
         isContactNameError: contactName.isBlank,
         stakeHolder: state.stakeHolder?.copyWith(
           contactName: contactName,
@@ -173,6 +182,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
   void onChangeEmail(String? email) {
     emit(
       state.copyWith(
+        isEditing: true,
         stakeHolder: state.stakeHolder?.copyWith(
           email: email,
         ),
@@ -183,6 +193,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
   void onChangeAddress(String? address) {
     emit(
       state.copyWith(
+        isEditing: true,
         stakeHolder: state.stakeHolder?.copyWith(
           address1: address,
         ),
@@ -193,6 +204,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
   void onChangePhoneNumber(String? phoneNumber) {
     emit(
       state.copyWith(
+        isEditing: true,
         stakeHolder: state.stakeHolder?.copyWith(
           cell: phoneNumber,
         ),
@@ -203,6 +215,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
   void onChangeSocialUpliftment(List<SocialUpliftment> socialUpliftments) {
     emit(
       state.copyWith(
+        isEditing: true,
         selectedSocialUpliftments: socialUpliftments,
       ),
     );
@@ -211,6 +224,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
   void onChangeSpecialSite(List<SpecialSite> specialSites) {
     emit(
       state.copyWith(
+        isEditing: true,
         selectedSpecialSites: specialSites,
       ),
     );
@@ -219,6 +233,7 @@ class StakeholderDetailCubit extends HydratedCubit<StakeholderDetailState> {
   void onChangeCustomaryUseRight(List<CustomaryUseRight> customaryUseRights) {
     emit(
       state.copyWith(
+        isEditing: true,
         selectedCustomaryUseRights: customaryUseRights,
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:cmo/di.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
@@ -56,6 +57,7 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
   void onTrainingTypeChanged(TrainingType? trainingType) {
     emit(
       state.copyWith(
+        isEditing: true,
         isTrainingTypeError: trainingType == null,
         training: state.training.copyWith(
           trainingTypeId: trainingType?.trainingTypeId ?? 0,
@@ -68,6 +70,7 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
   void onWorkerChanged(FarmerWorker? worker) {
     emit(
       state.copyWith(
+        isEditing: true,
         isTraineeNameError: worker == null,
         training: state.training.copyWith(
           workerId: worker?.workerId ?? '',
@@ -80,6 +83,7 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
   void onTrainerChanged(String? trainer) {
     emit(
       state.copyWith(
+        isEditing: true,
         isTrainerNameError: trainer.isBlank,
         training: state.training.copyWith(
           trainerName: trainer,
@@ -97,6 +101,7 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
 
     emit(
       state.copyWith(
+        isEditing: true,
         training: state.training.copyWith(
           expiryDate: dateTime,
         ),
@@ -107,6 +112,7 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
   void onDateIssuedChanged(DateTime? dateTime) {
     emit(
       state.copyWith(
+        isEditing: true,
         isDateError: dateTime == null,
         training: state.training.copyWith(
           date: dateTime,
@@ -118,6 +124,7 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
   void onCommentChanged(String? comment) {
     emit(
       state.copyWith(
+        isEditing: true,
         training: state.training.copyWith(
           comment: comment,
         ),
@@ -128,6 +135,7 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
   void onSign(String? image, String? point) {
     emit(
       state.copyWith(
+        isEditing: true,
         training: state.training.copyWith(
           signatureImage: image,
           signaturePoints: point,
@@ -140,6 +148,7 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
   void onClearSignature() {
     emit(
       state.copyWith(
+        isEditing: true,
         training: state.training.copyWith(
           signatureImage: null,
           signaturePoints: null,
@@ -152,6 +161,7 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
   void onSelectTrainee(List<FarmerWorker> selectedTrainees) {
     emit(
       state.copyWith(
+        isEditing: true,
         selectedTrainees: selectedTrainees,
       ),
     );
@@ -162,6 +172,7 @@ class TrainingDetailCubit extends Cubit<TrainingDetailState> {
     selectedTrainees.remove(trainee);
     emit(
       state.copyWith(
+        isEditing: true,
         selectedTrainees: selectedTrainees,
       ),
     );

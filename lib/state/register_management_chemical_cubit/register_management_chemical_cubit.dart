@@ -63,7 +63,12 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
   }
 
   Future<void> initAddData({Chemical? data}) async {
-    emit(state.copyWith(isLoading: true));
+    emit(
+      state.copyWith(
+        isLoading: true,
+        isEditing: false,
+      ),
+    );
     final canInit = await initConfig();
 
     if (!canInit) return;
@@ -116,6 +121,7 @@ class RMChemicalCubit extends Cubit<RMChemicalState> {
     String? comment,
   }) {
     emit(state.copyWith(
+      isEditing: true,
         chemical: state.chemical.copyWith(
       campId: int.tryParse(camp?.campId ?? state.chemical.campId.toString()),
       campName: camp?.campName ?? state.chemical.campName,

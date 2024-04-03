@@ -1,11 +1,9 @@
 part of 'labour_detail_cubit.dart';
 
-class LabourDetailState {
+class LabourDetailState extends BaseState {
   const LabourDetailState({
     required this.farmerWorker,
     this.listJobDescriptions = const <JobDescription>[],
-    this.loading = false,
-    this.error,
     this.activeFarm,
     this.selectedWorkerJobDescriptions = const <WorkerJobDescription>[],
     this.isFirstNameError = false,
@@ -13,10 +11,11 @@ class LabourDetailState {
     this.isIdNumberError = false,
     this.isPhoneNumberError = false,
     this.isWorkPermitNumberError = false,
-  });
+    super.isEditing,
+    super.loading = false,
+    super.error,
+  }) : super();
 
-  final Object? error;
-  final bool loading;
   final List<JobDescription> listJobDescriptions;
   final Farm? activeFarm;
   final List<WorkerJobDescription> selectedWorkerJobDescriptions;
@@ -39,8 +38,10 @@ class LabourDetailState {
     bool? isIdNumberError,
     bool? isPhoneNumberError,
     bool? isWorkPermitNumberError,
+    bool? isEditing,
   }) {
     return LabourDetailState(
+      isEditing: isEditing ?? this.isEditing,
       farmerWorker: farmerWorker ?? this.farmerWorker,
       loading: loading ?? this.loading,
       error: error ?? this.error,

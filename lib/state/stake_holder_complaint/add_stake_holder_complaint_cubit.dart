@@ -1,4 +1,5 @@
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:cmo/di.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
@@ -45,17 +46,28 @@ class AddStakeHolderComplaintCubit extends Cubit<AddStakeHolderComplaintState> {
     state.complaint = state.complaint.copyWith(
         issueDescription: value,
     );
+    emit(
+      state.copyWith(
+        isEditing: true,
+      ),
+    );
   }
 
   void onClosureDetailChanged(String value) {
     state.complaint = state.complaint.copyWith(
       closureDetails: value,
     );
+    emit(
+      state.copyWith(
+        isEditing: true,
+      ),
+    );
   }
 
   void onDateReceivedChanged(DateTime? value) {
     emit(
       state.copyWith(
+        isEditing: true,
         complaint: state.complaint.copyWith(
           dateReceived: value,
           dateClosed: state.complaint.dateClosed != null &&
@@ -71,6 +83,7 @@ class AddStakeHolderComplaintCubit extends Cubit<AddStakeHolderComplaintState> {
   void onDateClosedChanged(DateTime? value) {
     emit(
       state.copyWith(
+        isEditing: true,
         complaint: state.complaint.copyWith(
           dateClosed: value,
         ),
@@ -81,6 +94,7 @@ class AddStakeHolderComplaintCubit extends Cubit<AddStakeHolderComplaintState> {
   void onStateHolderChanged(StakeHolder? stakeHolder) {
     emit(
       state.copyWith(
+        isEditing: true,
         complaint: state.complaint.copyWith(
           complaintsAndDisputesRegisterName: stakeHolder?.stakeholderName,
           stakeholderName: stakeHolder?.stakeholderName,
@@ -93,6 +107,11 @@ class AddStakeHolderComplaintCubit extends Cubit<AddStakeHolderComplaintState> {
   void onCommentChanged(String comment) {
     state.complaint = state.complaint.copyWith(
       comment: comment,
+    );
+    emit(
+      state.copyWith(
+        isEditing: true,
+      ),
     );
   }
 

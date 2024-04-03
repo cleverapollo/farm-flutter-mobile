@@ -1,6 +1,6 @@
 part of 'rte_species_detail_cubit.dart';
 
-class RteSpeciesDetailState {
+class RteSpeciesDetailState extends BaseState {
   const RteSpeciesDetailState({
     this.activeFarm,
     this.rteSpecies,
@@ -10,8 +10,9 @@ class RteSpeciesDetailState {
     this.removedRtePhotos = const <RteSpeciesRegisterPhoto>[],
     this.groupSchemeMasterSpecies = const <GroupSchemeMasterSpecies>[],
     this.filterGroupSchemeMasterSpecies = const <GroupSchemeMasterSpecies>[],
-    this.loading = false,
-    this.error,
+    super.loading = false,
+    super.error,
+    super.isEditing,
     this.selectedGroupSchemeMasterSpecies,
   });
 
@@ -24,8 +25,6 @@ class RteSpeciesDetailState {
   final List<RteSpeciesRegisterPhoto> rtePhotos;
   final List<RteSpeciesRegisterPhoto> removedRtePhotos;
   final GroupSchemeMasterSpecies? selectedGroupSchemeMasterSpecies;
-  final Object? error;
-  final bool loading;
 
   RteSpeciesDetailState copyWith({
     RteSpecies? rteSpecies,
@@ -37,11 +36,13 @@ class RteSpeciesDetailState {
     List<GroupSchemeMasterSpecies>? groupSchemeMasterSpecies,
     List<GroupSchemeMasterSpecies>? filterGroupSchemeMasterSpecies,
     bool? loading,
+    bool? isEditing,
     Object? error,
     GroupSchemeMasterSpecies? selectedGroupSchemeMasterSpecies,
   }) {
     return RteSpeciesDetailState(
       loading: loading ?? this.loading,
+      isEditing: isEditing ?? this.isEditing,
       activeFarm: activeFarm ?? this.activeFarm,
       rteSpecies: rteSpecies ?? this.rteSpecies,
       animalTypes: animalTypes ?? this.animalTypes,

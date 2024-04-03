@@ -1,9 +1,7 @@
 part of 'stake_holder_detail_cubit.dart';
 
-class StakeholderDetailState {
+class StakeholderDetailState extends BaseState {
   final UserRoleEnum? currentUserRole;
-  final Object? error;
-  final bool? loading;
   final ResourceManagerUnit? resourceManagerUnit;
   final Farm? farm;
   final StakeHolder? stakeHolder;
@@ -23,8 +21,9 @@ class StakeholderDetailState {
   final bool isContactNameError;
 
   StakeholderDetailState({
-    this.error,
-    this.loading,
+    super.error,
+    super.loading,
+    super.isEditing,
     this.resourceManagerUnit,
     this.farm,
     this.stakeHolder,
@@ -47,6 +46,7 @@ class StakeholderDetailState {
   StakeholderDetailState copyWith({
     Object? error,
     bool? loading,
+    bool? isEditing,
     ResourceManagerUnit? resourceManagerUnit,
     Farm? farm,
     StakeHolder? stakeHolder,
@@ -68,6 +68,7 @@ class StakeholderDetailState {
     return StakeholderDetailState(
       error: error ?? this.error,
       loading: loading ?? this.loading,
+      isEditing: isEditing ?? this.isEditing,
       resourceManagerUnit: resourceManagerUnit ?? this.resourceManagerUnit,
       farm: farm ?? this.farm,
       stakeHolder: stakeHolder ?? this.stakeHolder,

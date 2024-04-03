@@ -80,6 +80,11 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
   Widget buildContent(BuildContext context);
 
   Future<void> onShowWarningDispose() async {
+    if (canPopWithoutWarningDialog) {
+      Navigator.of(context).pop();
+      return;
+    }
+
     await onShowWarningDialog(
       context,
       title: LocaleKeys.warning.tr(),

@@ -109,6 +109,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     emit(
       state.copyWith(
         listAsiPhotos: state.listAsiPhotos + [asiPhoto],
+        isEditing: true,
       ),
     );
   }
@@ -125,6 +126,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
         state.copyWith(
           listAsiPhotos: listAsiPhotos,
           removedPhotos: removedPhotos,
+          isEditing: true,
         ),
       );
     }
@@ -132,7 +134,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
 
   Future<void> saveAsi() async {
     try {
-      emit(state.copyWith(isLoading: true));
+      emit(state.copyWith(loading: true));
       await cmoDatabaseMasterService.cacheAsi(
         state.asi.copyWith(
           isMasterdataSynced: false,
@@ -173,17 +175,23 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
     } catch (e) {
       logger.e('Cannot saveASI $e');
     } finally {
-      emit(state.copyWith(isLoading: false));
+      emit(state.copyWith(loading: false));
     }
   }
 
   void onCommentChanged(String? comment) {
     state.asi = state.asi.copyWith(comment: comment);
+    emit(
+      state.copyWith(
+        isEditing: true,
+      ),
+    );
   }
 
   void onCompartmentChanged(Compartment? compartment) {
     emit(
       state.copyWith(
+        isEditing: true,
         asi: state.asi.copyWith(
           managementUnitId: compartment?.managementUnitId,
           compartmentName: compartment?.unitNumber,
@@ -199,6 +207,7 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
   }) {
     emit(
       state.copyWith(
+        isEditing: true,
         asi: state.asi.copyWith(
           asiTypeId: asiTypeId,
           asiTypeName: asiTypeName,
@@ -210,13 +219,19 @@ class AsiDetailCubit extends Cubit<AsiDetailState> {
   void onDateChanged(DateTime? date) {
     emit(
       state.copyWith(
+        isEditing: true,
         asi: state.asi.copyWith(date: date),
       ),
     );
   }
 
   void onSelectLocation(Asi asi) {
-    emit(state.copyWith(asi: asi));
+    emit(
+      state.copyWith(
+        asi: asi,
+        isEditing: true,
+      ),
+    );
     final selectedCompartment = state.compartments.firstWhereOrNull((element) => element.localCompartmentId == asi.localCompartmentId);
     if (selectedCompartment != null) {
       onCompartmentChanged(selectedCompartment);

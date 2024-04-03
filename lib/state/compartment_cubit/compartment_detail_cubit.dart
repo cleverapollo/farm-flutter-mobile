@@ -139,6 +139,11 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
 
   void onCompartmentNameChanged(String value) {
     state.compartment = state.compartment.copyWith(unitNumber: value);
+    emit(
+      state.copyWith(
+        isEditing: true,
+      ),
+    );
   }
 
   void onChangeLocation(
@@ -147,6 +152,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   ) {
     emit(
       state.copyWith(
+        isEditing: true,
         compartment: state.compartment.copyWith(
           polygonArea: polygonArea,
           polygonItems: locations,
@@ -159,6 +165,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   void onAreaTypeChanged(String areaTypeId) {
     emit(
       state.copyWith(
+        isEditing: true,
         compartment: state.compartment
             .clearSpeciesGroupTemplateAndProductGroupTemplate()
             .copyWith(
@@ -180,6 +187,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   }) {
     emit(
       state.copyWith(
+        isEditing: true,
         compartment: state.compartment.copyWith(
           productGroupTemplateId: productGroupId,
           productGroupTemplateName: productGroupName,
@@ -194,6 +202,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   }) {
     emit(
       state.copyWith(
+        isEditing: true,
         compartment: state.compartment.copyWith(
           speciesGroupTemplateId: speciesGroupId,
           speciesGroupTemplateName: speciesGroupName,
@@ -205,6 +214,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   void onCompartmentUnitChanged(String value) {
     emit(
       state.copyWith(
+        isEditing: true,
         compartment: state.compartment.copyWith(unitNumber: value),
       ),
     );
@@ -213,6 +223,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   void onEffectiveAreaChanged(double? value) {
     emit(
       state.copyWith(
+        isEditing: true,
         compartment: state.compartment.copyWith(effectiveArea: value ?? 0),
       ),
     );
@@ -221,6 +232,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   void onEspacementWidthChanged(String? value) {
     emit(
       state.copyWith(
+        isEditing: true,
         compartment: state.compartment.copyWith(
           espacementWidth: double.tryParse(value ?? ''),
         ),
@@ -231,6 +243,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   void onEspacementLengthChanged(String? value) {
     emit(
       state.copyWith(
+        isEditing: true,
         compartment: state.compartment.copyWith(
           espacementLength: double.tryParse(value ?? ''),
         ),
@@ -241,6 +254,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   void onPlannedPlantDateChanged(DateTime? value) {
     emit(
       state.copyWith(
+        isEditing: true,
         compartment: state.compartment.copyWith(
           plannedPlantDT: value?.toString(),
         ),
@@ -251,6 +265,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
   void onSurvivalPercentageDateChanged(double? value) {
     emit(
       state.copyWith(
+        isEditing: true,
         compartment: state.compartment.copyWith(
           survival: value,
         ),
@@ -260,9 +275,19 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
 
   void onRotationChanged(int? value) {
     state.compartment = state.compartment.copyWith(rotationNumber: value);
+    emit(
+      state.copyWith(
+        isEditing: true,
+      ),
+    );
   }
 
   void onMAIChanged(int? value) {
     state.compartment = state.compartment.copyWith(utilMAI: value);
+    emit(
+      state.copyWith(
+        isEditing: true,
+      ),
+    );
   }
 }

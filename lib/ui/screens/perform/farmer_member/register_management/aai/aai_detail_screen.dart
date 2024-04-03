@@ -117,7 +117,7 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !context.read<AAIDetailCubit>().state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {

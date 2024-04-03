@@ -48,15 +48,13 @@ class CompartmentMapDetail extends Object {
   }
 }
 
-class CompartmentMapsSummariesState {
+class CompartmentMapsSummariesState extends BaseState {
   final List<CompartmentMapDetail> listCompartmentMapDetails;
   final CompartmentMapDetail? selectedCompartmentMapDetails;
   final CompartmentMapDetail? compartmentMapDetailByCameraPosition;
   final List<Compartment> listCompartments;
   final Compartment selectedCompartment;
   final String farmId;
-  final bool loading;
-  final Object? error;
   final bool isUpdating;
   final bool isCompletePolygon;
   final List<Marker> editingMarkers;
@@ -88,8 +86,9 @@ class CompartmentMapsSummariesState {
     this.isCompletePolygon = false,
     this.selectedCompartmentMapDetails,
     this.compartmentMapDetailByCameraPosition,
-    this.loading = false,
-    this.error,
+    super.loading,
+    super.error,
+    super.isEditing,
     this.listMarkersHistory = const <List<Marker>>[],
     this.selectedEditedPolyline,
     this.selectedEditedMarker,
@@ -101,6 +100,7 @@ class CompartmentMapsSummariesState {
 
   CompartmentMapsSummariesState copyWith({
     bool? loading,
+    bool? isEditing,
     Object? error,
     Compartment? selectedCompartment,
     String? farmId,
@@ -129,6 +129,7 @@ class CompartmentMapsSummariesState {
       selectedCompartmentMapDetails: selectedCompartmentMapDetails ?? this.selectedCompartmentMapDetails,
       compartmentMapDetailByCameraPosition: compartmentMapDetailByCameraPosition,
       loading: loading ?? this.loading,
+      isEditing: isEditing ?? this.isEditing,
       error: error ?? this.error,
       isUpdating: isUpdating ?? this.isUpdating,
       isCompletePolygon: isCompletePolygon ?? this.isCompletePolygon,
@@ -160,6 +161,7 @@ class CompartmentMapsSummariesState {
       compartmentMapDetailByCameraPosition: compartmentMapDetailByCameraPosition,
       loading: loading,
       error: error,
+      isEditing: isEditing,
       isUpdating: isUpdating,
       isCompletePolygon: isCompletePolygon,
       currentCameraPosition: currentCameraPosition,

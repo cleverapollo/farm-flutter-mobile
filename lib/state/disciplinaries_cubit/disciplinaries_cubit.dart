@@ -61,7 +61,12 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
   }
 
   Future<void> initAddData({SanctionRegister? data}) async {
-    emit(state.copyWith(isLoading: true));
+    emit(
+      state.copyWith(
+        isLoading: true,
+        isEdit: false,
+      ),
+    );
 
     await initConfigData();
 
@@ -176,6 +181,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     emit(
       state.copyWith(
         isSelectWorkerError: false,
+        isEdit: true,
         selectWorker: selectWorker,
         data: state.data?.copyWith(
           workerId: selectWorker.workerId.toString(),
@@ -189,6 +195,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     emit(
       state.copyWith(
         isDisciplinariesIssueError: false,
+        isEdit: true,
         selectIssue: selectIssue,
         data: state.data?.copyWith(
           issueTypeId: selectIssue.issueTypeId,
@@ -202,6 +209,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     emit(
       state.copyWith(
         isDateIssuedError: false,
+        isEdit: true,
         data: state.data?.copyWith(
           dateReceived: dateIssue ?? state.data?.dateReceived,
         ),
@@ -218,6 +226,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
     String? signaturePoint,
   }) {
     emit(state.copyWith(
+      isEdit: true,
       data: state.data?.copyWith(
         campOrCompartment: campOrCompartment ?? state.data?.campOrCompartment,
         descriptionOfSanction: descriptionOfSanction ?? state.data?.descriptionOfSanction,
@@ -232,6 +241,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
   void onSign(String? image, String? point) {
     emit(
       state.copyWith(
+        isEdit: true,
         data: state.data?.copyWith(
           signatureImage: image,
           signaturePoints: point,
@@ -243,6 +253,7 @@ class DisciplinariesCubit extends Cubit<DisciplinariesState> {
 
   void onClearSignaturePad() {
     emit(state.copyWith(
+        isEdit: true,
         data: state.data?.copyWith(
       signatureDate: null,
       signatureImage: null,

@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:cmo/ui/components/select_location/select_location_screen.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
@@ -84,6 +85,7 @@ class FireRegisterDetailCubit extends Cubit<FireRegisterDetailState> {
     emit(
       state.copyWith(
         fireCauseSelect: fireCauseSelect ?? state.fireCauseSelect,
+        isEditing: true,
         fireRegister: state.fireRegister?.copyWith(
           fireRegisterId: null,
           detected: detected ?? state.fireRegister?.date,
@@ -114,7 +116,12 @@ class FireRegisterDetailCubit extends Cubit<FireRegisterDetailState> {
       updateDT: DateTime.now(),
     );
 
-    emit(state.copyWith(firePhotos: state.firePhotos + [firePhoto]));
+    emit(
+      state.copyWith(
+        firePhotos: state.firePhotos + [firePhoto],
+        isEditing: true,
+      ),
+    );
   }
 
   void onRemovePhoto(int? fireRegisterPhotoId) {
@@ -123,6 +130,7 @@ class FireRegisterDetailCubit extends Cubit<FireRegisterDetailState> {
     emit(
       state.copyWith(
         firePhotos: firePhotos,
+        isEditing: true,
       ),
     );
   }

@@ -125,7 +125,7 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !cubit.state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {

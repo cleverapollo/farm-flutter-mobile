@@ -1,6 +1,6 @@
 part of 'aai_detail_cubit.dart';
 
-class AAIDetailState {
+class AAIDetailState extends BaseState {
   AAIDetailState({
     required this.accidentAndIncident,
     required this.isAddNew,
@@ -19,6 +19,9 @@ class AAIDetailState {
     this.isDateReportedError = false,
     this.aaiPhotos = const <AccidentAndIncidentPhoto>[],
     this.removedAAIPhotos = const <AccidentAndIncidentPhoto>[],
+    super.isEditing,
+    super.loading,
+    super.error,
   });
 
   final bool isAddNew;
@@ -40,6 +43,7 @@ class AAIDetailState {
   final List<AccidentAndIncidentPhoto> removedAAIPhotos;
 
   AAIDetailState copyWith({
+    bool? isEditing,
     AccidentAndIncident? accidentAndIncident,
     String? lostTimeInDay,
     List<FarmerWorker>? workers,
@@ -58,6 +62,7 @@ class AAIDetailState {
     List<AccidentAndIncidentPhoto>? removedAAIPhotos,
   }) {
     return AAIDetailState(
+      isEditing: isEditing ?? this.isEditing,
       accidentAndIncident: accidentAndIncident ?? this.accidentAndIncident,
       workers: workers ?? this.workers,
       jobDescriptions: jobDescriptions ?? this.jobDescriptions,

@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
   ) async {
     emit(
       state.copyWith(
+        isEditing: true,
         selectedGroupSchemeMasterSpecies: groupSchemeMasterSpecies,
         filterGroupSchemeMasterSpecies: state.groupSchemeMasterSpecies,
         rteSpecies: state.rteSpecies?.copyWith(
@@ -110,6 +112,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
   void onChangeDateSpotted(DateTime? dateSpotted) {
     emit(
       state.copyWith(
+        isEditing: true,
         rteSpecies: state.rteSpecies?.copyWith(dateSpotted: dateSpotted),
       ),
     );
@@ -118,6 +121,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
   void onChangeComment(String? comment) {
     emit(
       state.copyWith(
+        isEditing: true,
         rteSpecies: state.rteSpecies?.copyWith(
           comment: comment,
         ),
@@ -128,6 +132,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
   void onChangeLocation(LocationModel locationModel) {
     emit(
       state.copyWith(
+        isEditing: true,
         rteSpecies: state.rteSpecies?.copyWith(
           longitude: locationModel.longitude,
           latitude: locationModel.latitude,
@@ -150,7 +155,12 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
       updateDT: DateTime.now(),
     );
 
-    emit(state.copyWith(rtePhotos: state.rtePhotos + [rtePhoto]));
+    emit(
+      state.copyWith(
+        rtePhotos: state.rtePhotos + [rtePhoto],
+        isEditing: true,
+      ),
+    );
   }
 
   void onRemovePhoto(int? rteSpeciesRegisterPhotoId) {
@@ -159,6 +169,7 @@ class RteSpeciesDetailCubit extends HydratedCubit<RteSpeciesDetailState> {
     emit(
       state.copyWith(
         rtePhotos: rtePhotos,
+        isEditing: true,
       ),
     );
   }

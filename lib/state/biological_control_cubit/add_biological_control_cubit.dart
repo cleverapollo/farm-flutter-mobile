@@ -1,5 +1,6 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:cmo/di.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
@@ -70,6 +71,7 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
     emit(
       state.copyWith(
         isSelectControlAgentError: false,
+        isEditing: true,
         agent: state.agent.copyWith(
           biologicalControlAgentTypeId: agentType.biologicalControlAgentTypeId,
           biologicalControlAgentTypeName: agentType.biologicalControlAgentTypeName,
@@ -85,13 +87,21 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
     if (isSelected) {
       emit(
         state.copyWith(
+          isEditing: true,
           agent: state.agent.copyWith(
             carRaisedDate: DateTime.now().toIso8601String(),
           ),
         ),
       );
     } else {
-      emit(state.copyWith(agent: state.agent.clearCARData(carRaised: true)));
+      emit(
+        state.copyWith(
+          isEditing: true,
+          agent: state.agent.clearCARData(
+            carRaised: true,
+          ),
+        ),
+      );
     }
   }
 
@@ -99,19 +109,28 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
     if (isSelected) {
       emit(
         state.copyWith(
+          isEditing: true,
           agent: state.agent.copyWith(
             carClosedDate: DateTime.now().toIso8601String(),
           ),
         ),
       );
     } else {
-      emit(state.copyWith(agent: state.agent.clearCARData(carClosed: true)));
+      emit(
+        state.copyWith(
+          isEditing: true,
+          agent: state.agent.clearCARData(
+            carClosed: true,
+          ),
+        ),
+      );
     }
   }
 
   void onDateReleasedChanged(DateTime? dateTime) {
     emit(
       state.copyWith(
+        isEditing: true,
         agent: state.agent.copyWith(
           dateReleased: dateTime,
         ),
@@ -122,6 +141,7 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
   void onStakeHolderChanged(StakeHolder? stakeHolder) {
     emit(
       state.copyWith(
+        isEditing: true,
         agent: state.agent.copyWith(
           stakeholderId: stakeHolder?.stakeholderId,
           stakeholderName: stakeHolder?.stakeholderName,
@@ -137,6 +157,7 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
     );
 
     emit(state.copyWith(
+        isEditing: true,
         agent: state.agent.copyWith(
           monitoringRequirementId: monitoring?.monitoringRequirementId,
           monitoringRequirementName: monitoring?.monitoringRequirementName,
@@ -148,6 +169,11 @@ class AddBiologicalControlCubit extends Cubit<AddBiologicalControlState> {
   void onCommentChanged(String? comment) {
     state.agent = state.agent.copyWith(
       comment: comment,
+    );
+    emit(
+      state.copyWith(
+        isEditing: true,
+      ),
     );
   }
 

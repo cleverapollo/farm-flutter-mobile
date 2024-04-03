@@ -71,7 +71,7 @@ class _IllegalActivityDetailState extends BaseStatefulWidgetState<IllegalActivit
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !context.read<IllegalActivityDetailCubit>().state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {

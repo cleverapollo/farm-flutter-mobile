@@ -51,7 +51,7 @@ class PetsAndDiseaseAddScreen extends BaseStatefulWidget {
 class _PetsAndDiseaseAddScreenState extends BaseStatefulWidgetState<PetsAndDiseaseAddScreen> {
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !context.read<PetsAndDiseasesDetailCubit>().state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {
@@ -69,7 +69,7 @@ class _PetsAndDiseaseAddScreenState extends BaseStatefulWidgetState<PetsAndDisea
         builder: (context, state) {
           final cubit = context.read<PetsAndDiseasesDetailCubit>();
 
-          if (state.isLoading) {
+          if (state.loading) {
             return const Center(child: CircularProgressIndicator());
           }
 

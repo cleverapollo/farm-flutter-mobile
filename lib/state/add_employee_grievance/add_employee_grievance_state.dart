@@ -1,6 +1,6 @@
 part of 'add_employee_grievance_cubit.dart';
 
-class AddEmployeeGrievanceState {
+class AddEmployeeGrievanceState extends BaseState {
   AddEmployeeGrievanceState({
     required this.employeeGrievance,
     required this.farm,
@@ -8,6 +8,7 @@ class AddEmployeeGrievanceState {
     this.isDataReady = false,
     this.grievanceIssues = const [],
     this.workers = const [],
+    super.isEditing,
   });
 
   final Farm farm;
@@ -20,11 +21,13 @@ class AddEmployeeGrievanceState {
 
   AddEmployeeGrievanceState copyWith({
     bool? isDataReady,
+    bool? isEditing,
     GrievanceRegister? employeeGrievance,
     List<GrievanceIssue>? grievanceIssues,
     List<FarmerWorker>? workers,
   }) {
     return AddEmployeeGrievanceState(
+      isEditing: isEditing ?? this.isEditing,
       isDataReady: isDataReady ?? this.isDataReady,
       employeeGrievance: employeeGrievance ?? this.employeeGrievance,
       grievanceIssues: grievanceIssues ?? this.grievanceIssues,

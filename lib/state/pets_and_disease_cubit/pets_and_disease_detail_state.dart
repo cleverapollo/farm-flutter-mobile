@@ -1,6 +1,6 @@
 part of 'pets_and_disease_detail_cubit.dart';
 
-class PetsAndDiseasesDetailState {
+class PetsAndDiseasesDetailState extends BaseState {
   PetsAndDiseasesDetailState({
     this.petsAndDiseaseTypes = const <PestsAndDiseaseType>[],
     this.pestsAndDiseasesRegisterTreatmentMethods = const <PestsAndDiseasesRegisterTreatmentMethod>[],
@@ -9,7 +9,8 @@ class PetsAndDiseasesDetailState {
     this.petsAndDiseaseRegister,
     this.activeFarm,
     this.isSelectPetTypeError = false,
-    this.isLoading = false,
+    super.loading,
+    super.isEditing,
   });
 
   final PetsAndDiseaseRegister? petsAndDiseaseRegister;
@@ -19,9 +20,10 @@ class PetsAndDiseasesDetailState {
   final List<TreatmentMethod> treatmentMethods;
   final bool isSelectPetTypeError;
   final Farm? activeFarm;
-  final bool isLoading;
+
   PetsAndDiseasesDetailState copyWith({
-    bool? isLoading,
+    bool? loading,
+    bool? isEditing,
     PetsAndDiseaseRegister? petsAndDiseaseRegister,
     List<PestsAndDiseaseType>? petsAndDiseaseTypes,
     List<PestsAndDiseasesRegisterTreatmentMethod>? pestsAndDiseasesRegisterTreatmentMethods,
@@ -39,7 +41,8 @@ class PetsAndDiseasesDetailState {
       treatmentMethods: treatmentMethods ?? this.treatmentMethods,
       isSelectPetTypeError: isSelectPetTypeError ?? this.isSelectPetTypeError,
       activeFarm: activeFarm ?? this.activeFarm,
-      isLoading: isLoading ?? this.isLoading,
+      loading: loading ?? this.loading,
+      isEditing: isEditing ?? this.isEditing,
     );
   }
 }

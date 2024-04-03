@@ -13,7 +13,6 @@ import 'package:cmo/ui/screens/perform/asi/widgets/select_compartment_widget.dar
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_photo_section.dart';
-import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_question/widgets/editable_photo_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
@@ -85,7 +84,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !context.read<AsiDetailCubit>().state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {
@@ -180,7 +179,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
         final currentDate = state.asi.date;
         return CmoFilledButton(
           title: LocaleKeys.save.tr(),
-          loading: state.isLoading,
+          loading: state.loading,
           onTap: () async {
             FocusManager.instance.primaryFocus?.unfocus();
             if (state.asi.latitude == null) {

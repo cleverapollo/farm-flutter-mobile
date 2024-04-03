@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:cmo/di.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
@@ -46,6 +47,7 @@ class IllegalActivityDetailCubit extends Cubit<IllegalActivityDetailState> {
   void onChangeIssueRaised(String value) {
     emit(
       state.copyWith(
+        isEditing: true,
         illegalActivityRegister: state.illegalActivityRegister?.copyWith(
           issueRaised: value,
         ),
@@ -56,6 +58,7 @@ class IllegalActivityDetailCubit extends Cubit<IllegalActivityDetailState> {
   void onClosureDetailChanged(String value) {
     emit(
       state.copyWith(
+        isEditing: true,
         illegalActivityRegister: state.illegalActivityRegister?.copyWith(
           closureDetails: value,
         ),
@@ -66,6 +69,7 @@ class IllegalActivityDetailCubit extends Cubit<IllegalActivityDetailState> {
   void onDateReceivedChanged(DateTime? value) {
     emit(
       state.copyWith(
+        isEditing: true,
         illegalActivityRegister: state.illegalActivityRegister?.copyWith(
           dateReceived: value,
           dateClosed: state.illegalActivityRegister?.dateClosed != null &&
@@ -81,6 +85,7 @@ class IllegalActivityDetailCubit extends Cubit<IllegalActivityDetailState> {
   void onDateClosedChanged(DateTime? value) {
     emit(
       state.copyWith(
+        isEditing: true,
         illegalActivityRegister: state.illegalActivityRegister?.copyWith(
           dateClosed: value,
         ),
@@ -91,6 +96,7 @@ class IllegalActivityDetailCubit extends Cubit<IllegalActivityDetailState> {
   void onCommentChanged(String value) {
     emit(
       state.copyWith(
+        isEditing: true,
         illegalActivityRegister: state.illegalActivityRegister?.copyWith(
           comment: value,
         ),

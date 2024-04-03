@@ -85,7 +85,7 @@ class _StakeHolderDetailScreenState extends BaseStatefulWidgetState<StakeHolderD
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !context.read<StakeholderDetailCubit>().state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {

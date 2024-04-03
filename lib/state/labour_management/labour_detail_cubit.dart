@@ -3,6 +3,7 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
@@ -26,7 +27,12 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   }
 
   Future<void> init() async {
-    emit(state.copyWith(loading: true));
+    emit(
+      state.copyWith(
+        loading: true,
+        isEditing: false,
+      ),
+    );
     try {
       final activeFarm = await configService.getActiveFarm();
       final jobDescriptions = await cmoDatabaseMasterService.getJobDescriptions();
@@ -56,6 +62,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
         farmerWorker: state.farmerWorker.copyWith(
           photo: photoPath,
         ),
+        isEditing: true,
       ),
     );
   }
@@ -64,6 +71,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
     if (dateTime != null) {
       emit(
         state.copyWith(
+          isEditing: true,
           farmerWorker: state.farmerWorker.copyWith(
             dateOfBirth: dateTime,
           ),
@@ -75,6 +83,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   void onChangeFirstName(String? inputValue) {
     emit(
       state.copyWith(
+        isEditing: true,
         farmerWorker: state.farmerWorker.copyWith(
           firstName: inputValue,
         ),
@@ -85,6 +94,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   void onChangeSecondFirstName(String? inputValue) {
     emit(
       state.copyWith(
+        isEditing: true,
         farmerWorker: state.farmerWorker.copyWith(
           secondFirstName: inputValue,
         ),
@@ -95,6 +105,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   void onChangeSurname(String? inputValue) {
     emit(
       state.copyWith(
+        isEditing: true,
         farmerWorker: state.farmerWorker.copyWith(
           surname: inputValue,
         ),
@@ -105,6 +116,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   void onChangeSecondSurname(String? inputValue) {
     emit(
       state.copyWith(
+        isEditing: true,
         farmerWorker: state.farmerWorker.copyWith(
           secondSurname: inputValue,
         ),
@@ -115,6 +127,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   void onChangeIdNumber(String? inputValue) {
     emit(
       state.copyWith(
+        isEditing: true,
         farmerWorker: state.farmerWorker.copyWith(
           idNumber: inputValue,
         ),
@@ -125,6 +138,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   void onChangeDriveLicenseNumber(String? inputValue) {
     emit(
       state.copyWith(
+        isEditing: true,
         farmerWorker: state.farmerWorker.copyWith(
           driverLicenseNumber: inputValue,
         ),
@@ -135,6 +149,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   void onChangePhoneNumber(String? inputValue) {
     emit(
       state.copyWith(
+        isEditing: true,
         farmerWorker: state.farmerWorker.copyWith(
           phoneNumber: inputValue,
         ),
@@ -145,6 +160,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   void onSelectGender(int genderId) {
     emit(
       state.copyWith(
+        isEditing: true,
         farmerWorker: state.farmerWorker.copyWith(
           genderId: genderId,
         ),
@@ -155,6 +171,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   void onSelectForeigner(bool isForeigner) {
     emit(
       state.copyWith(
+        isEditing: true,
         farmerWorker: state.farmerWorker.copyWith(
           isForeigner: isForeigner,
         ),
@@ -165,6 +182,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   void onChangeWorkPermitNumber(String? inputValue) {
     emit(
       state.copyWith(
+        isEditing: true,
         farmerWorker: state.farmerWorker.copyWith(
           workPermitNumber: inputValue,
         ),
@@ -175,6 +193,7 @@ class LabourDetailCubit extends HydratedCubit<LabourDetailState> {
   void onSelectJobDescription(List<JobDescription> selectedJobDescriptions) {
     emit(
       state.copyWith(
+        isEditing: true,
         selectedWorkerJobDescriptions: selectedJobDescriptions
             .map(
               (e) => WorkerJobDescription(

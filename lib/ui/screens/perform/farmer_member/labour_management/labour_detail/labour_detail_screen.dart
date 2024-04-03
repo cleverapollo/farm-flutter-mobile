@@ -75,7 +75,7 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !context.read<LabourDetailCubit>().state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {

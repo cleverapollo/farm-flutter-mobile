@@ -62,6 +62,9 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
   @override
   bool get shouldCheckConnectionSpeed => true;
 
+  @override
+  bool get canPopWithoutWarningDialog => !context.read<CompartmentMapsSummariesCubit>().state.isEditing;
+
   Set<Polyline> generatePolyline() {
     final state = context.read<CompartmentMapsSummariesCubit>().state;
     if (state.isCompletePolygon) {
@@ -329,9 +332,6 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           .toList(),
     );
   }
-
-  @override
-  bool get canPopWithoutWarningDialog => false;
 
   @override
   Widget buildContent(BuildContext context) {

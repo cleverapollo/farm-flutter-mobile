@@ -2,6 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/worker_job_description/worker_job_description.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -88,6 +89,7 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
       state.copyWith(
         accidentAndIncident: state.accidentAndIncident.copyWith(dateRecieved: dateTime),
         isDateReportedError: dateTime == null,
+        isEditing: true,
       ),
     );
   }
@@ -97,6 +99,7 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
       state.copyWith(
         accidentAndIncident: state.accidentAndIncident.copyWith(dateOfIncident: dateTime),
         isDateIncidentError: dateTime == null,
+        isEditing: true,
       ),
     );
     onCalculateLostTimeInDay();
@@ -107,6 +110,7 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
       state.copyWith(
         accidentAndIncident:
             state.accidentAndIncident.copyWith(dateResumeWork: dateTime),
+        isEditing: true,
       ),
     );
 
@@ -116,6 +120,7 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
   void onWorkDisableChanged({bool? workerDisabled}) {
     emit(
       state.copyWith(
+        isEditing: true,
         accidentAndIncident: state.accidentAndIncident.copyWith(
           workerDisabled: workerDisabled,
         ),
@@ -126,6 +131,7 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
   void onCommentChanged(String? comment) {
     emit(
       state.copyWith(
+        isEditing: true,
         accidentAndIncident: state.accidentAndIncident.copyWith(
           comment: comment,
         ),
@@ -138,13 +144,19 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
   ) {
     emit(
       state.copyWith(
+        isEditing: true,
         selectedPropertyDamages: selectedPropertyDamaged,
       ),
     );
   }
 
   void onCalculateLostTimeInDay() {
-    emit(state.copyWith(lostTimeInDay: _calculateTimeLost()));
+    emit(
+      state.copyWith(
+        isEditing: true,
+        lostTimeInDay: _calculateTimeLost(),
+      ),
+    );
   }
 
   Future<void> onWorkerSelected(FarmerWorker? worker) async {
@@ -152,6 +164,7 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
         .getWorkerJobDescriptionByWorkerId(worker?.workerId ?? '');
     emit(
       state.copyWith(
+        isEditing: true,
         workerSelect: worker,
         isWorkerError: worker == null,
         jobDescriptions: jobDescriptions,
@@ -165,38 +178,18 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
     );
   }
 
-  Future<void> onWorkerSelectedByAddNew(FarmerWorker? worker) async {
-    emit(state.copyWith(isDataReady: false));
-    await Future.delayed(const Duration(milliseconds: 1000), () {});
-    final farm = await configService.getActiveFarm();
-    final workers = await cmoDatabaseMasterService
-        .getFarmerWorkersByFarmId(farm?.farmId ?? '');
-
-    emit(state.copyWith(workers: workers));
-
-    final jobDescriptions = await cmoDatabaseMasterService
-        .getWorkerJobDescriptionByWorkerId(worker?.workerId ?? '');
-
-    emit(
-      state.copyWith(
-        isDataReady: true,
-        jobDescriptions: jobDescriptions,
-        accidentAndIncident: state.accidentAndIncident.copyWith(
-          workerId: worker?.workerId,
-          workerName: worker?.firstName,
-          jobDescriptionId: null,
-          jobDescriptionName: null,
-        ),
-      ),
-    );
-  }
-
   void onJobDescriptionSelected(WorkerJobDescription? jobDesc) {
     state.accidentAndIncident = state.accidentAndIncident.copyWith(
       jobDescriptionId: jobDesc?.jobDescriptionId,
       jobDescriptionName: jobDesc?.jobDescriptionName,
     );
-    emit(state.copyWith(jobDescriptionSelect: jobDesc));
+
+    emit(
+      state.copyWith(
+        isEditing: true,
+        jobDescriptionSelect: jobDesc,
+      ),
+    );
   }
 
   String _calculateTimeLost() {
@@ -212,7 +205,12 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
       natureOfInjuryName: selectNatureOfInjury?.natureOfInjuryName,
     );
 
-    emit(state.copyWith(natureOfInjurySelect: selectNatureOfInjury));
+    emit(
+      state.copyWith(
+        natureOfInjurySelect: selectNatureOfInjury,
+        isEditing: true,
+      ),
+    );
   }
 
   void onUpdatePhoto(String base64Image) {
@@ -229,7 +227,12 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
       updateDT: DateTime.now(),
     );
 
-    emit(state.copyWith(aaiPhotos: state.aaiPhotos + [aaiPhoto]));
+    emit(
+      state.copyWith(
+        aaiPhotos: state.aaiPhotos + [aaiPhoto],
+        isEditing: true,
+      ),
+    );
   }
 
   void onRemovePhoto(int? accidentAndIncidentRegisterPhotoId) {
@@ -242,6 +245,7 @@ class AAIDetailCubit extends Cubit<AAIDetailState> {
     emit(
       state.copyWith(
         aaiPhotos: aaiPhotos,
+        isEditing: true,
       ),
     );
   }

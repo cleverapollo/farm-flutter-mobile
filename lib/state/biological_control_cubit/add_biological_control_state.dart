@@ -1,6 +1,6 @@
 part of 'add_biological_control_cubit.dart';
 
-class AddBiologicalControlState {
+class AddBiologicalControlState extends BaseState {
   AddBiologicalControlState({
     required this.agent,
     this.isAddNew = true,
@@ -11,6 +11,7 @@ class AddBiologicalControlState {
     this.agentTypes = const [],
     this.countries = const <Country>[],
     this.isSelectControlAgentError = false,
+    super.isEditing,
   });
 
   final bool isDataReady;
@@ -25,6 +26,7 @@ class AddBiologicalControlState {
 
   AddBiologicalControlState copyWith({
     bool? isDataReady,
+    bool? isEditing,
     BiologicalControlAgent? agent,
     StakeHolder? selectStakeHolder,
     List<StakeHolder>? stakeHolders,
@@ -34,6 +36,7 @@ class AddBiologicalControlState {
     bool? isSelectControlAgentError,
   }) {
     return AddBiologicalControlState(
+      isEditing: isEditing ?? this.isEditing,
       isDataReady: isDataReady ?? this.isDataReady,
       agent: agent ?? this.agent,
       selectStakeHolder: selectStakeHolder ?? this.selectStakeHolder,

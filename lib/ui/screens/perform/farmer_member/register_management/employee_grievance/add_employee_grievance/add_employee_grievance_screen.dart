@@ -101,7 +101,7 @@ class _AddEmployeeGrievanceScreenState extends BaseStatefulWidgetState<AddEmploy
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !cubit.state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {

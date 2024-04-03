@@ -89,7 +89,7 @@ class _AddBiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Add
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !context.read<AddBiologicalControlCubit>().state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {

@@ -1,6 +1,6 @@
 part of 'add_stake_holder_complaint_cubit.dart';
 
-class AddStakeHolderComplaintState {
+class AddStakeHolderComplaintState extends BaseState {
   AddStakeHolderComplaintState({
     required this.farm,
     required this.complaint,
@@ -9,6 +9,7 @@ class AddStakeHolderComplaintState {
     this.stakeholders = const [],
     this.isDateClosedError = false,
     this.dateClosedErrorText,
+    super.isEditing,
   });
 
   final Farm farm;
@@ -21,12 +22,14 @@ class AddStakeHolderComplaintState {
 
   AddStakeHolderComplaintState copyWith({
     bool? isDataReady,
+    bool? isEditing,
     ComplaintsAndDisputesRegister? complaint,
     bool? isDateClosedError,
     String? dateClosedErrorText,
     List<StakeHolder>? stakeholders,
   }) {
     return AddStakeHolderComplaintState(
+      isEditing: isEditing ?? this.isEditing,
       isDataReady: isDataReady ?? this.isDataReady,
       complaint: complaint ?? this.complaint,
       stakeholders: stakeholders ?? this.stakeholders,

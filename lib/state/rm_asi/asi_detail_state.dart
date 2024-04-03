@@ -1,7 +1,8 @@
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 
-class AsiDetailState {
+class AsiDetailState extends BaseState {
   AsiDetailState({
     required this.asi,
     this.types = const <AsiType>[],
@@ -9,7 +10,8 @@ class AsiDetailState {
     this.listAsiPhotos = const <AsiPhoto>[],
     this.removedPhotos = const <AsiPhoto>[],
     this.photoName,
-    this.isLoading = false,
+    super.loading,
+    super.isEditing,
     this.userRole,
   });
 
@@ -21,10 +23,10 @@ class AsiDetailState {
 
   String? photoName;
   Asi asi;
-  final bool isLoading;
 
   AsiDetailState copyWith({
-    bool? isLoading,
+    bool? loading,
+    bool? isEditing,
     List<AsiType>? types,
     List<Compartment>? compartments,
     String? photoName,
@@ -34,7 +36,8 @@ class AsiDetailState {
     UserRoleEnum? userRole,
   }) {
     return AsiDetailState(
-      isLoading: isLoading ?? this.isLoading,
+      loading: loading ?? this.loading,
+      isEditing: isEditing ?? this.isEditing,
       types: types ?? this.types,
       compartments: compartments ?? this.compartments,
       photoName: photoName ?? this.photoName,

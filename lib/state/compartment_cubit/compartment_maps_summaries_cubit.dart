@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -311,6 +312,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     final marker = await MapUtils.generateMarkerFromLatLng(state.currentCameraPosition!.target);
     emit(
       state.copyWith(
+        isEditing: true,
         editingMarkers: state.editingMarkers + [marker],
         temporaryMarkers: state.temporaryMarkers + [marker],
         displayMarkers: await generateMarkerWithDistanceValue(state.temporaryMarkers + [marker]),
@@ -325,6 +327,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     markers.removeLast();
     emit(
       state.copyWith(
+        isEditing: true,
         editingMarkers: markers,
         temporaryMarkers: markers,
         displayMarkers: await generateMarkerWithDistanceValue(markers),
@@ -346,6 +349,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     emit(
       state.copyWith(
         isCompletePolygon: true,
+        isEditing: true,
         compartmentMapDetailByCameraPosition: selectedCompartmentMapDetails,
         selectedCompartmentMapDetails: selectedCompartmentMapDetails,
         displayMarkers: temporaryMarkers,
@@ -374,6 +378,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
             isCleanTemporaryMarkers: false,
           )
           .copyWith(
+            isEditing: true,
             editingMarkers: List<Marker>.from(state.temporaryMarkers),
             listMarkersHistory: List<List<Marker>>.from(state.listMarkersHistory + [state.editingMarkers]),
             isChanged: true,
@@ -387,6 +392,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
       emit(
         state.resetEditingMarkers().copyWith(
           isChanged: false,
+          isEditing: true,
           editingMarkers: listMarkers,
           temporaryMarkers: listMarkers,
           displayMarkers: await generateMarkerWithDistanceValue(listMarkers),
@@ -404,6 +410,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     emit(
       state.resetEditingMarkers().copyWith(
             isChanged: false,
+            isEditing: true,
             listMarkersHistory: newListMarkersHistory,
             temporaryMarkers: listMarkers,
             editingMarkers: listMarkers,

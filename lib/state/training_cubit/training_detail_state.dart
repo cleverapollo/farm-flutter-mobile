@@ -1,6 +1,6 @@
 part of 'training_detail_cubit.dart';
 
-class TrainingDetailState {
+class TrainingDetailState extends BaseState {
   TrainingDetailState({
     required this.training,
     required this.farm,
@@ -13,6 +13,7 @@ class TrainingDetailState {
     this.isDateError = false,
     this.isTrainerNameError = false,
     this.isTraineeNameError = false,
+    super.isEditing,
   });
 
   final bool isDataReady;
@@ -29,6 +30,7 @@ class TrainingDetailState {
 
   TrainingDetailState copyWith({
     bool? isDataReady,
+    bool? isEditing,
     TrainingRegister? training,
     List<TrainingType>? trainingTypes,
     List<FarmerWorker>? workers,
@@ -40,6 +42,7 @@ class TrainingDetailState {
   }) {
     return TrainingDetailState(
       farm: farm,
+      isEditing: isEditing ?? this.isEditing,
       isDataReady: isDataReady ?? this.isDataReady,
       training: training ?? this.training,
       workers: workers ?? this.workers,

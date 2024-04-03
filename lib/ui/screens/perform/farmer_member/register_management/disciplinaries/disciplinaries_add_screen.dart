@@ -39,7 +39,12 @@ class DisciplinariesAddScreen extends BaseStatefulWidget {
   static Future<dynamic> push(BuildContext context, {SanctionRegister? data}) {
     return Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => DisciplinariesAddScreen(data: data)),
+      MaterialPageRoute(
+        builder: (_) => BlocProvider<DisciplinariesCubit>(
+          create: (_) => DisciplinariesCubit()..initAddData(data: data),
+          child: DisciplinariesAddScreen(data: data),
+        ),
+      ),
     );
   }
 
@@ -65,14 +70,12 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !context.read<DisciplinariesCubit>().state.isEdit;
 
   @override
   Widget buildContent(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return BlocProvider<DisciplinariesCubit>(
-      create: (_) => DisciplinariesCubit()..initAddData(data: widget.data),
-      child: Scaffold(
+    return Scaffold(
         appBar: CmoAppBar(
           title: widget.data == null
               ? LocaleKeys.add_disciplinary.tr()
@@ -350,7 +353,6 @@ class _DisciplinariesAddScreenState extends BaseStatefulWidgetState<Disciplinari
             );
           },
         ),
-      ),
     );
   }
 

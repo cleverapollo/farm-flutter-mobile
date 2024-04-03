@@ -1,8 +1,9 @@
 part of 'fire_register_detail_cubit.dart';
 
-class FireRegisterDetailState {
+class FireRegisterDetailState extends BaseState {
   const FireRegisterDetailState({
-    this.loading = false,
+    super.loading,
+    super.isEditing,
     this.fireRegister,
     this.activeFarm,
     this.fireCauseSelect,
@@ -11,7 +12,6 @@ class FireRegisterDetailState {
     this.removedFirePhotos = const <FireRegisterPhoto>[],
   });
 
-  final bool loading;
   final FireRegister? fireRegister;
   final List<FireCause> fireCauses;
   final FireCause? fireCauseSelect;
@@ -21,6 +21,7 @@ class FireRegisterDetailState {
 
   FireRegisterDetailState copyWith({
     bool? loading,
+    bool? isEditing,
     FireRegister? fireRegister,
     List<FireCause>? fireCauses,
     FireCause? fireCauseSelect,
@@ -30,6 +31,7 @@ class FireRegisterDetailState {
   }) {
     return FireRegisterDetailState(
       loading: loading ?? this.loading,
+      isEditing: isEditing ?? this.isEditing,
       fireRegister: fireRegister ?? this.fireRegister,
       activeFarm: activeFarm ?? this.activeFarm,
       fireCauses: fireCauses ?? this.fireCauses,

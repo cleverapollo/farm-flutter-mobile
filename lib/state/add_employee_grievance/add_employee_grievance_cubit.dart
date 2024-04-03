@@ -1,4 +1,5 @@
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:cmo/di.dart';
 import 'package:cmo/ui/snack/snack_helper.dart';
@@ -45,17 +46,28 @@ class AddEmployeeGrievanceCubit extends Cubit<AddEmployeeGrievanceState> {
     state.employeeGrievance = state.employeeGrievance.copyWith(
       actionTaken: value,
     );
+    emit(
+      state.copyWith(
+        isEditing: true,
+      ),
+    );
   }
 
   void onClosureDetailChanged(String value) {
     state.employeeGrievance = state.employeeGrievance.copyWith(
       closureDetails: value,
     );
+    emit(
+      state.copyWith(
+        isEditing: true,
+      ),
+    );
   }
 
   void onDateReceivedChanged(DateTime? value) {
     emit(
       state.copyWith(
+        isEditing: true,
         employeeGrievance: state.employeeGrievance.copyWith(
           dateReceived: value,
         ),
@@ -66,6 +78,7 @@ class AddEmployeeGrievanceCubit extends Cubit<AddEmployeeGrievanceState> {
   void onDateClosedChanged(DateTime? value) {
     emit(
       state.copyWith(
+        isEditing: true,
         employeeGrievance: state.employeeGrievance.copyWith(
           dateClosed: value,
         ),
@@ -76,6 +89,7 @@ class AddEmployeeGrievanceCubit extends Cubit<AddEmployeeGrievanceState> {
   void onGrievanceIssueChanged(GrievanceIssue? issue) {
     emit(
       state.copyWith(
+        isEditing: true,
         employeeGrievance: state.employeeGrievance.copyWith(
           grievanceIssueId: issue?.grievanceIssueId,
           grievanceIssueName: issue?.grievanceIssueName,
@@ -87,6 +101,7 @@ class AddEmployeeGrievanceCubit extends Cubit<AddEmployeeGrievanceState> {
   void onFarmWorkerChanged(FarmerWorker? worker) {
     emit(
       state.copyWith(
+        isEditing: true,
         employeeGrievance: state.employeeGrievance.copyWith(
           workerId: worker?.workerId,
           workerName: worker?.fullName,
@@ -98,6 +113,7 @@ class AddEmployeeGrievanceCubit extends Cubit<AddEmployeeGrievanceState> {
   void onAllocatedChanged(FarmerWorker? worker) {
     emit(
       state.copyWith(
+        isEditing: true,
         employeeGrievance: state.employeeGrievance.copyWith(
           allocatedToUserId: worker?.workerId,
           allocatedToName: worker?.firstName,
@@ -109,6 +125,11 @@ class AddEmployeeGrievanceCubit extends Cubit<AddEmployeeGrievanceState> {
   void onCommentChanged(String? comment) {
     state.employeeGrievance = state.employeeGrievance.copyWith(
       comment: comment,
+    );
+    emit(
+      state.copyWith(
+        isEditing: true,
+      ),
     );
   }
 
