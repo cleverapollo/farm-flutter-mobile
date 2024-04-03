@@ -92,56 +92,80 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
   Future<List<Marker>> generateMarkerWithDistanceValue(
     List<Marker> markers,
   ) async {
+    if(state.isCompletePolygon || state.temporaryMarkers.length < 2) return markers;
     final listMarkers = List<Marker>.from(markers);
-    for (var index = 1; index < markers.length; index++) {
-      final centerPoint = MapUtils.getCenterPositionBetweenTwoMarkers(
-        markers[index - 1],
-        markers[index],
-      );
-
-      final distanceMarker = Marker(
-        markerId: MarkerId('place_name_${centerPoint.latitude}_${centerPoint.longitude}'),
-        position: centerPoint,
-        icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
-          title: '${MapUtils.calculateDistanceBetweenTwoMarkers(
-            markers[index - 1],
-            markers[index],
-          ).toStringAsFixed(2)}km',
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 60,
-            leadingDistribution: TextLeadingDistribution.even,
+    if (state.isAddingNew) {
+      final lastCenterPolyline = markers[markers.length - 1].position;
+      listMarkers.add(
+        Marker(
+          markerId: MarkerId('place_name_${lastCenterPolyline.latitude}_${lastCenterPolyline.longitude}'),
+          position: lastCenterPolyline,
+          icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
+            title: '${MapUtils.calculateDistanceBetweenTwoMarkers(
+              markers[markers.length - 1],
+              markers[markers.length - 2],
+            ).toStringAsFixed(2)}km',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 60,
+              leadingDistribution: TextLeadingDistribution.even,
+            ),
           ),
         ),
       );
-      listMarkers.insert(index - 1, distanceMarker);
+    } else if (state.isUpdating && state.selectedEditedMarker != null) {
+      final selectedMarker = state.selectedEditedMarker;
+      final selectedMarkerIndex = markers.indexWhere((element) => element.markerId == selectedMarker!.markerId);
+      if (selectedMarkerIndex == -1) return markers;
+      var previousIndex = selectedMarkerIndex - 1;
+      var nextIndex = selectedMarkerIndex + 1;
+      if (selectedMarkerIndex == 0) {
+        previousIndex = markers.length - 1;
+        nextIndex = 1;
+      } else if (selectedMarkerIndex == markers.length - 1) {
+        nextIndex = 0;
+      }
+
+      listMarkers.add(
+        Marker(
+          markerId: MarkerId('place_name_${markers[previousIndex].position.latitude}_${markers[previousIndex].position.longitude}'),
+          position: markers[previousIndex].position,
+          icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
+            title: '${MapUtils.calculateDistanceBetweenTwoMarkers(
+              markers[previousIndex],
+              markers[selectedMarkerIndex],
+            ).toStringAsFixed(2)}km',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 60,
+              leadingDistribution: TextLeadingDistribution.even,
+            ),
+          ),
+        ),
+      );
+
+      listMarkers.add(
+        Marker(
+          markerId: MarkerId('place_name_${markers[nextIndex].position.latitude}_${markers[nextIndex].position.longitude}_2'),
+          position: markers[nextIndex].position,
+          icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
+            title: '${MapUtils.calculateDistanceBetweenTwoMarkers(
+              markers[selectedMarkerIndex],
+              markers[nextIndex],
+            ).toStringAsFixed(2)}km',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 60,
+              leadingDistribution: TextLeadingDistribution.even,
+            ),
+          ),
+        ),
+      );
     }
 
-    final lastCenterPolyline = MapUtils.getCenterPositionBetweenTwoMarkers(
-      markers[markers.length - 1],
-      markers[0],
-    );
-
-    listMarkers.add(
-      Marker(
-        markerId: MarkerId(
-            'place_name_${lastCenterPolyline.latitude}_${lastCenterPolyline.longitude}'),
-        position: lastCenterPolyline,
-        icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
-          title: '${MapUtils.calculateDistanceBetweenTwoMarkers(
-            markers[markers.length - 1],
-            markers[0],
-          ).toStringAsFixed(2)}km',
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 60,
-            leadingDistribution: TextLeadingDistribution.even,
-          ),
-        ),
-      ),
-    );
 
     return listMarkers;
   }
@@ -268,12 +292,17 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
             selectedEditedPolyline: polyline,
             editingMarkers: listMarker,
             temporaryMarkers: listMarker,
-            displayMarkers: await generateMarkerWithDistanceValue(listMarker),
           ),
         );
 
       onMoveCameraToCenterPoint(centerLatLng);
       onTapMarker(centerMaker.markerId);
+
+      emit(
+        state.copyWith(
+          displayMarkers: await generateMarkerWithDistanceValue(listMarker),
+        ),
+      );
     }
   }
 
@@ -319,6 +348,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
         isCompletePolygon: true,
         compartmentMapDetailByCameraPosition: selectedCompartmentMapDetails,
         selectedCompartmentMapDetails: selectedCompartmentMapDetails,
+        displayMarkers: temporaryMarkers,
       ),
     );
   }
