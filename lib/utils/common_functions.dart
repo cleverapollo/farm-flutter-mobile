@@ -5,6 +5,19 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 class CommonFunctions {
 
+  static Future<void> openUrl(String? url) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (url.isBlank) {
+      return;
+    }
+
+    if (await canLaunchUrlString(url!)) {
+      await launchUrlString(url);
+    } else {
+      showSnackError(msg:'Could not launch $url');
+    }
+  }
+
   static Future<void> sendEmail(String? email) async {
     FocusManager.instance.primaryFocus?.unfocus();
     if (email.isBlank) {

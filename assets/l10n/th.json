@@ -315,6 +315,8 @@
   "select_all_value_items": "เลือกทั้งหมด {} items",
   "secondary": "วัตถุประสงค์หลัก",
   "selectPhoto": "เลือกรูปถ่าย",
+  "my_groupscheme": "My Groupscheme",
+  "you_dont_have_internet_connection": "You don't have internet connection.",
   "settings": "การตั้งค่า",
   "signOut": "ออกจากระบบ",
   "signature": "ลายเซ็น",

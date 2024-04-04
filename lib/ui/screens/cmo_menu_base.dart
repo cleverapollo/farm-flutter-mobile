@@ -13,6 +13,7 @@ import 'package:cmo/ui/screens/onboarding/login/login_screen.dart';
 import 'package:cmo/ui/screens/perform/compartments/compartment_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/annual_production/annual_production_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_detail/labour_detail_screen.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/my_group_scheme/my_group_scheme_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/register_management.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/add_member/add_member_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/add_audit/audit_add_screen.dart';
@@ -127,6 +128,17 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
             await context.read<DashboardCubit>().refresh();
           },
         ),
+        const SizedBox(height: 7),
+        const _Divider(),
+        const SizedBox(height: 7),
+        _CmoOptionTile(
+          title: LocaleKeys.my_groupscheme.tr(),
+          displayDivider: false,
+          onTap: () {
+            if (context.mounted) Navigator.of(context).pop();
+            MyGroupSchemeScreen.push(context);
+          },
+        ),
       ],
     );
   }
@@ -239,6 +251,7 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
                   ),
                 ),
                 const _Divider(),
+                const SizedBox(height: 7),
                 _menuContent,
                 const SizedBox(height: 7),
                 const _Divider(),
@@ -575,11 +588,14 @@ class _CmoOptionTile extends StatelessWidget {
   const _CmoOptionTile({
     required this.title,
     required this.onTap,
+    this.displayDivider = true,
   });
 
   final String title;
 
   final VoidCallback onTap;
+
+  final bool displayDivider;
 
   @override
   Widget build(BuildContext context) {
@@ -603,7 +619,8 @@ class _CmoOptionTile extends StatelessWidget {
               ],
             ),
           ),
-          const _Divider(),
+          if (displayDivider)
+            const _Divider(),
         ],
       ),
     );

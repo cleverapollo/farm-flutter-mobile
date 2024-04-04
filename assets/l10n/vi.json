@@ -319,6 +319,8 @@
   "select_all_value_items": "Chọn tất cả {} items",
   "secondary": "Mục tiêu phụ",
   "selectPhoto": "Select Photo",
+  "my_groupscheme": "My Groupscheme",
+  "you_dont_have_internet_connection": "You don't have internet connection.",
   "settings": "Settings",
   "signOut": "Sign Out",
   "signature": "Signature",

@@ -37,3 +37,4 @@ export 'pets_and_disease_cubit/pets_and_disease_detail_cubit.dart';
 export 'labour_management/labour_detail_cubit.dart';
 export 'illegal_activity/illegal_activity_detail_cubit.dart';
 export 'illegal_activity/illegal_activity_management_cubit.dart';
+export 'my_group_scheme/my_group_scheme_cubit.dart';
