@@ -288,7 +288,7 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
               labelStyle: context.textStyles.bodyBold.blueDark2,
               text: state.complaint.dateReceived == null
                   ? ''
-                  : convertDateTimeToLunar(state.complaint.dateReceived).yMd(),
+                  : convertDateTimeToLunarString(state.complaint.dateReceived),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -319,7 +319,7 @@ class _AddStakeHolderComplaintScreenState extends BaseStatefulWidgetState<AddSta
               labelStyle: context.textStyles.bodyBold.blueDark2,
               text: state.complaint.dateClosed == null
                   ? ''
-                  : convertDateTimeToLunar(state.complaint.dateClosed).yMd(),
+                  : convertDateTimeToLunarString(state.complaint.dateClosed),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,

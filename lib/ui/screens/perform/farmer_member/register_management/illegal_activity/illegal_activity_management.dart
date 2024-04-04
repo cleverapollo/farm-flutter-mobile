@@ -116,8 +116,8 @@ class _IllegalActivityManagementState extends BaseStatefulWidgetState<IllegalAct
     return {
       LocaleKeys.complaintName.tr(): registerItem.complaintName,
       LocaleKeys.issueRaised.tr(): registerItem.issueRaised,
-      LocaleKeys.dateReceived.tr(): convertDateTimeToLunar(registerItem.dateReceived).ddMMYyyy(),
-      LocaleKeys.dateClosed.tr(): convertDateTimeToLunar(registerItem.dateClosed).ddMMYyyy(),
+      LocaleKeys.dateReceived.tr(): convertDateTimeToLunarString(registerItem.dateReceived),
+      LocaleKeys.dateClosed.tr(): convertDateTimeToLunarString(registerItem.dateClosed),
       LocaleKeys.closureDetails.tr(): registerItem.closureDetails,
       LocaleKeys.general_comments.tr(): registerItem.comment,
     };

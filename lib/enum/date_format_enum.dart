@@ -36,21 +36,21 @@ enum DateFormatEnum {
 
     switch (this) {
       case DateFormatEnum.mmDDYYYYWithSlash:
-        return dateTime.formatWithPattern('MM/DD/YYYY');
+        return dateTime.formatWithPattern('MM/dd/yyyy');
       case DateFormatEnum.ddMMYYYYWithSlash:
-        return dateTime.formatWithPattern('DD/MM/YYYY');
+        return dateTime.formatWithPattern('dd/MM/yyyy');
       case DateFormatEnum.yyyyMMDDWithSlash:
-        return dateTime.formatWithPattern('YYYY/MM/DD');
+        return dateTime.formatWithPattern('yyyy/MM/dd');
       case DateFormatEnum.mmDDYYYYWithDash:
-        return dateTime.formatWithPattern('MM-DD-YYYY');
+        return dateTime.formatWithPattern('MM-dd-yyyy');
       case DateFormatEnum.ddMMYYYYWithDash:
-        return dateTime.formatWithPattern('DD-MM-YYYY');
+        return dateTime.formatWithPattern('dd-MM-yyyy');
       case DateFormatEnum.yyyyMMDDWithDash:
-        return dateTime.formatWithPattern('YYYY-MM-DD');
+        return dateTime.formatWithPattern('yyyy-MM-dd');
       case DateFormatEnum.mmmDDYYYYWithComma:
-        return dateTime.formatWithPattern('MMM DD, YYYY');
+        return dateTime.formatWithPattern('MMM dd, yyyy');
       case DateFormatEnum.ddMMMYYYYWithComma:
-        return dateTime.formatWithPattern('DD MMM, YYYY');
+        return dateTime.formatWithPattern('dd MMM, yyyy');
     }
   }
 }

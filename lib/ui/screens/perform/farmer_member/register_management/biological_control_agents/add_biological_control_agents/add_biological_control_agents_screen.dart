@@ -182,7 +182,7 @@ class _AddBiologicalControlAgentsScreenState extends BaseStatefulWidgetState<Add
               labelStyle: context.textStyles.bodyBold.blueDark3,
               text: state.agent.dateReleased == null
                   ? ''
-                  : convertDateTimeToLunar(state.agent.dateReleased).yMd(),
+                  : convertDateTimeToLunarString(state.agent.dateReleased),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,

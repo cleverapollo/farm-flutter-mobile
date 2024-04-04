@@ -134,14 +134,14 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
             AttributeItem(
               margin: const EdgeInsets.symmetric(horizontal: 24.0),
               child: InputAttributeItem(
-                initialValue: '${state.fireRegister?.areaBurnt ?? ''}',
+                initialValue: (convertAreaUnit(state.fireRegister?.areaBurnt) ?? '').toString(),
                 textStyle: context.textStyles.bodyNormal.blueDark2,
-                labelText: LocaleKeys.areaBurntHa.tr(),
+                labelText: '${LocaleKeys.area_burnt.tr()} ($areaUnit)',
                 labelTextStyle: context.textStyles.bodyNormal.black,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 onChanged: (value) {
                   context.read<FireRegisterDetailCubit>().onDataChange(
-                    areaBurnt: double.tryParse(value) ?? 0,
+                    areaBurnt: areaUnitValue.convertAreaToHa(double.tryParse(value) ?? 0),
                   );
                 },
               ),
@@ -149,14 +149,14 @@ class _AddFireManagementScreenState extends BaseStatefulWidgetState<AddFireManag
             AttributeItem(
               margin: const EdgeInsets.symmetric(horizontal: 24.0),
               child: InputAttributeItem(
-                initialValue: '${state.fireRegister?.commercialAreaLoss ?? ''}',
+                initialValue: (convertAreaUnit(state.fireRegister?.commercialAreaLoss) ?? '').toString(),
                 textStyle: context.textStyles.bodyNormal.blueDark2,
-                labelText: LocaleKeys.commercialAreaLossHa.tr(),
+                labelText: '${LocaleKeys.commercial_area_loss.tr()} ($areaUnit)',
                 labelTextStyle: context.textStyles.bodyNormal.blueDark2,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 onChanged: (value) {
                   context.read<FireRegisterDetailCubit>().onDataChange(
-                    commercialAreaLoss: double.tryParse(value) ?? 0,
+                    commercialAreaLoss: areaUnitValue.convertAreaToHa(double.tryParse(value) ?? 0),
                   );
                 },
               ),

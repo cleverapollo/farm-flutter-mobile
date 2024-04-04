@@ -54,13 +54,16 @@ class DatePickerWidget extends StatelessWidget {
     );
   }
 
-  DateTime? convertDateTimeToLunar(BuildContext context, DateTime? dateTime) {
+  String convertDateTimeToLunar(BuildContext context, DateTime? dateTime) {
     final settingCubit = context.read<SettingsCubit>();
+    DateTime? result;
     if (settingCubit.shouldShowLunarCalendar()) {
-      return DateTimeUtils.convertDateTimeToLunar(dateTime);
+      result = DateTimeUtils.convertDateTimeToLunar(dateTime);
     } else {
-      return dateTime;
+      result = dateTime;
     }
+
+    return settingCubit.state.settingConfig.dateFormatEnum.displayFormat(result);
   }
 
   @override
@@ -93,7 +96,7 @@ class DatePickerWidget extends StatelessWidget {
                     ),
                     if (initialDate != null)
                       Text(
-                        convertDateTimeToLunar(context, initialDate).yMd(),
+                        convertDateTimeToLunar(context, initialDate),
                         maxLines: 3,
                         style: context.textStyles.bodyNormal.blueDark2,
                         textAlign: TextAlign.left,

@@ -317,11 +317,6 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
   }
 
   Widget buildDatePicker({required DateTime? datetime}) {
-    String? currentDate;
-    if (datetime != null) {
-      currentDate = datetime.yMd();
-    }
-
     return DatePickerWidget(
       firstDate: DateTime(2018, 3, 5),
       lastDate: DateTime(DateTime.now().year + 5, 12, 31),
@@ -329,7 +324,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
       onConfirm: _asiDetailCubit.onDateChanged,
       child: BottomSheetSelection(
         hintText: LocaleKeys.date.tr(),
-        value: currentDate,
+        value: convertDateTimeToLunarString(datetime),
         displayHorizontal: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         rightIconData: Padding(

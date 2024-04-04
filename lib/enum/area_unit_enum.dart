@@ -27,4 +27,16 @@ enum AreaUnitEnum {
         return ha * 6.25;
     }
   }
+
+  double? convertAreaToHa(double? area) {
+    if  (area == null) return null;
+    switch (this) {
+      case AreaUnitEnum.ha:
+        return area;
+      case AreaUnitEnum.acres:
+        return area / 2.47105;
+      case AreaUnitEnum.rai:
+        return area / 6.25;
+    }
+  }
 }

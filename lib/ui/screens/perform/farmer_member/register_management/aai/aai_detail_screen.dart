@@ -323,7 +323,7 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
               labelStyle: context.textStyles.bodyBold.blueDark2,
               text: state.accidentAndIncident.dateOfIncident == null
                   ? ''
-                  : convertDateTimeToLunar(state.accidentAndIncident.dateOfIncident).yMd(),
+                  : convertDateTimeToLunarString(state.accidentAndIncident.dateOfIncident),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -355,7 +355,7 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
               labelStyle: context.textStyles.bodyBold.blueDark2,
               text: state.accidentAndIncident.dateRecieved == null
                   ? ''
-                  : convertDateTimeToLunar(state.accidentAndIncident.dateRecieved).yMd(),
+                  : convertDateTimeToLunarString(state.accidentAndIncident.dateRecieved),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -512,7 +512,7 @@ class _AddingAAIScreenState extends BaseStatefulWidgetState<AAIDetailScreen> {
               labelStyle: context.textStyles.bodyNormal.blueDark2,
               text: state.accidentAndIncident.dateResumeWork == null
                   ? ''
-                  : convertDateTimeToLunar(state.accidentAndIncident.dateResumeWork).yMd(),
+                  : convertDateTimeToLunarString(state.accidentAndIncident.dateResumeWork),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,

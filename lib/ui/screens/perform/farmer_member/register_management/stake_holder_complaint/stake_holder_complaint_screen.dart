@@ -142,8 +142,8 @@ class _StakeHolderComplaintScreenState extends BaseStatefulWidgetState<StakeHold
     return {
       LocaleKeys.complaintName.tr(): registerItem.complaintsAndDisputesRegisterName,
       LocaleKeys.issueRaised.tr(): registerItem.issueDescription,
-      LocaleKeys.dateReceived.tr(): convertDateTimeToLunar(registerItem.dateReceived).ddMMYyyy(),
-      LocaleKeys.dateClosed.tr(): convertDateTimeToLunar(registerItem.dateClosed).ddMMYyyy(),
+      LocaleKeys.dateReceived.tr(): convertDateTimeToLunarString(registerItem.dateReceived),
+      LocaleKeys.dateClosed.tr(): convertDateTimeToLunarString(registerItem.dateClosed),
       LocaleKeys.general_comments.tr(): registerItem.comment,
     };
   }

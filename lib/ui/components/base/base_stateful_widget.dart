@@ -1,4 +1,5 @@
 import 'package:cmo/di.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/setting_config/setting_config.dart';
 import 'package:cmo/state/state.dart';
@@ -28,14 +29,16 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
     }
   }
 
+  String? convertDateTimeToLunarString(DateTime? dateTime) {
+    return convertDateTimeFormat(convertDateTimeToLunar(dateTime));
+  }
+
   double? convertAreaUnit(double? ha) {
-    final settingConfig = context.read<SettingsCubit>().state.settingConfig;
-    return settingConfig.areaUnitEnum.convertHaToDisplayAreaUnit(ha);
+    return areaUnitValue.convertHaToDisplayAreaUnit(ha);
   }
 
   double? convertDistanceUnit(double? km) {
-    final settingConfig = context.read<SettingsCubit>().state.settingConfig;
-    return settingConfig.distanceUnitEnum.convertKmToDisplayDistanceUnit(km);
+    return distanceUnitValue.convertKmToDisplayDistanceUnit(km);
   }
 
   String? convertDateTimeFormat(DateTime? dateTime) {
@@ -62,7 +65,11 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
 
   String get areaUnit => context.read<SettingsCubit>().state.settingConfig.areaUnitEnum.valueName;
 
+  AreaUnitEnum get areaUnitValue => context.read<SettingsCubit>().state.settingConfig.areaUnitEnum;
+
   String get distanceUnit => context.read<SettingsCubit>().state.settingConfig.distanceUnitEnum.valueName;
+
+  DistanceUnitEnum get distanceUnitValue => context.read<SettingsCubit>().state.settingConfig.distanceUnitEnum;
 
   @override
   void initState() {

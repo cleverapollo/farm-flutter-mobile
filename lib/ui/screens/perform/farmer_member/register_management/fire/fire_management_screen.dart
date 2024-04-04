@@ -132,10 +132,10 @@ class _FireManagementScreenState extends BaseStatefulWidgetState<FireManagementS
   Map<String, String?> generateInformationMapData(FireRegister registerItem) {
     return {
       LocaleKeys.fireCause.tr(): context.read<FireCubit>().getFireCauseName(registerItem.fireCauseId),
-      LocaleKeys.dateDetected.tr(): convertDateTimeToLunar(registerItem.detected).ddMMYyyy(),
-      LocaleKeys.dateExtinguished.tr(): convertDateTimeToLunar(registerItem.extinguished).ddMMYyyy(),
-      LocaleKeys.areaBurntHa.tr(): registerItem.areaBurnt?.toString(),
-      LocaleKeys.commercialAreaLossHa.tr(): registerItem.commercialAreaLoss?.toString(),
+      LocaleKeys.dateDetected.tr(): convertDateTimeToLunarString(registerItem.detected),
+      LocaleKeys.dateExtinguished.tr(): convertDateTimeToLunarString(registerItem.extinguished),
+      '${LocaleKeys.area_burnt.tr()} ($areaUnit)': areaUnitValue.convertHaToDisplayAreaUnit(registerItem.areaBurnt)?.toStringAsFixed(2),
+      '${LocaleKeys.commercial_area_loss.tr()} ($areaUnit)': areaUnitValue.convertHaToDisplayAreaUnit(registerItem.commercialAreaLoss)?.toStringAsFixed(2),
       LocaleKeys.general_comments.tr(): registerItem.comment,
     };
   }

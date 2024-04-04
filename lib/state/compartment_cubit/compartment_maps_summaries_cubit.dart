@@ -93,6 +93,8 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
   Future<List<Marker>> generateMarkerWithDistanceValue(
     List<Marker> markers,
   ) async {
+    final settingConfig = await configService.getSettingConfig();
+    final distanceUnit = settingConfig.distanceUnitEnum;
     if(state.isCompletePolygon || state.temporaryMarkers.length < 2) return markers;
     final listMarkers = List<Marker>.from(markers);
     if (state.isAddingNew) {
@@ -102,10 +104,12 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
           markerId: MarkerId('place_name_${lastCenterPolyline.latitude}_${lastCenterPolyline.longitude}'),
           position: lastCenterPolyline,
           icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
-            title: '${MapUtils.calculateDistanceBetweenTwoMarkers(
-              markers[markers.length - 1],
-              markers[markers.length - 2],
-            ).toStringAsFixed(2)}km',
+            title: '${distanceUnit.convertKmToDisplayDistanceUnit(
+                  MapUtils.calculateDistanceBetweenTwoMarkers(
+                    markers[markers.length - 1],
+                    markers[markers.length - 2],
+                  ),
+                )!.toStringAsFixed(2)}${distanceUnit.valueName}',
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -133,10 +137,12 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
           markerId: MarkerId('place_name_${markers[previousIndex].position.latitude}_${markers[previousIndex].position.longitude}'),
           position: markers[previousIndex].position,
           icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
-            title: '${MapUtils.calculateDistanceBetweenTwoMarkers(
-              markers[previousIndex],
-              markers[selectedMarkerIndex],
-            ).toStringAsFixed(2)}km',
+            title: '${distanceUnit.convertKmToDisplayDistanceUnit(
+                  MapUtils.calculateDistanceBetweenTwoMarkers(
+                    markers[previousIndex],
+                    markers[selectedMarkerIndex],
+                  ),
+                )!.toStringAsFixed(2)}${distanceUnit.valueName}',
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -152,10 +158,12 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
           markerId: MarkerId('place_name_${markers[nextIndex].position.latitude}_${markers[nextIndex].position.longitude}_2'),
           position: markers[nextIndex].position,
           icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
-            title: '${MapUtils.calculateDistanceBetweenTwoMarkers(
-              markers[selectedMarkerIndex],
-              markers[nextIndex],
-            ).toStringAsFixed(2)}km',
+            title: '${distanceUnit.convertKmToDisplayDistanceUnit(
+                  MapUtils.calculateDistanceBetweenTwoMarkers(
+                    markers[selectedMarkerIndex],
+                    markers[nextIndex],
+                  ),
+                )!.toStringAsFixed(2)}${distanceUnit.valueName}',
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,

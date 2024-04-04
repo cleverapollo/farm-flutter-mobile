@@ -133,8 +133,8 @@ class _TrainingScreenState extends BaseStatefulWidgetState<TrainingScreen> {
   Map<String, String?> generateInformationMapData(TrainingRegister registerItem) {
     return {
       LocaleKeys.training_type.tr(): cubit.getTrainingTypeNameByTrainingTypeId(registerItem.trainingTypeId),
-      LocaleKeys.date.tr(): convertDateTimeToLunar(registerItem.date).yMd(),
-      LocaleKeys.expiry_date.tr(): convertDateTimeToLunar(registerItem.expiryDate).yMd(),
+      LocaleKeys.date.tr(): convertDateTimeToLunarString(registerItem.date),
+      LocaleKeys.expiry_date.tr(): convertDateTimeToLunarString(registerItem.expiryDate),
       LocaleKeys.trainer_name.tr(): registerItem.trainerName,
       LocaleKeys.trainee_name.tr(): cubit.getTotalTrainee(registerItem.trainingRegisterNo),
       LocaleKeys.general_comments.tr(): registerItem.comment,

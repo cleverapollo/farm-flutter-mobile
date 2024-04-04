@@ -105,11 +105,11 @@ class _PetsAndDiseaseScreenState extends BaseStatefulWidgetState<PetsAndDiseaseS
       LocaleKeys.name_pet_disease.tr(): cubit.getPestAndDiseaseTypeName(registerItem),
       LocaleKeys.treatment_methods.tr(): cubit.getTotalTreatmentMethods(registerItem),
       LocaleKeys.numbers_of_outbreaks.tr(): (registerItem.numberOfOutbreaks ?? 0).toString(),
-      LocaleKeys.area_lost.tr(): (registerItem.areaLost ?? 0).toString(),
+      '${LocaleKeys.area_lost.tr()} ($areaUnit)': areaUnitValue.convertHaToDisplayAreaUnit(registerItem.areaLost)?.toStringAsFixed(2),
       LocaleKeys.under_control.tr(): (registerItem.underControl ?? false)
           ? LocaleKeys.yes.tr()
           : LocaleKeys.no.tr(),
-      LocaleKeys.discovered_date.tr(): convertDateTimeToLunar(registerItem.discoveredDate).mmmDdYyyy(),
+      LocaleKeys.discovered_date.tr(): convertDateTimeToLunarString(registerItem.discoveredDate),
       LocaleKeys.general_comments.tr(): registerItem.comment,
     };
   }

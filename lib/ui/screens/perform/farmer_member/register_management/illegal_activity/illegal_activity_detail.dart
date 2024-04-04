@@ -202,7 +202,7 @@ class _IllegalActivityDetailState extends BaseStatefulWidgetState<IllegalActivit
               labelStyle: context.textStyles.bodyBold.blueDark2,
               text: dateReceived == null
                   ? ''
-                  : convertDateTimeToLunar(dateReceived).yMd(),
+                  : convertDateTimeToLunarString(dateReceived),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -234,7 +234,7 @@ class _IllegalActivityDetailState extends BaseStatefulWidgetState<IllegalActivit
               labelStyle: context.textStyles.bodyBold.blueDark2,
               text: state.illegalActivityRegister?.dateClosed == null
                   ? ''
-                  : convertDateTimeToLunar(state.illegalActivityRegister?.dateClosed).yMd(),
+                  : convertDateTimeToLunarString(state.illegalActivityRegister?.dateClosed),
               textStyle: context.textStyles.bodyNormal.blueDark2,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,

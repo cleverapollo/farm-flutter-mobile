@@ -305,7 +305,7 @@ class _LabourDetailScreenState extends BaseStatefulWidgetState<LabourDetailScree
               hintText: '',
               text: state.farmerWorker.dateOfBirth == null
                   ? LocaleKeys.yyyy_mm_dd.tr()
-                  : convertDateTimeToLunar(state.farmerWorker.dateOfBirth).yMd(),
+                  : convertDateTimeToLunarString(state.farmerWorker.dateOfBirth),
               labelText: LocaleKeys.date_of_birth.tr(),
               labelStyle: context.textStyles.bodyBold.blueDark2,
               textStyle: state.farmerWorker.dateOfBirth == null

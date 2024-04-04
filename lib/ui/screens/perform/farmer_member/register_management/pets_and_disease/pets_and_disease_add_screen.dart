@@ -111,9 +111,7 @@ class _PetsAndDiseaseAddScreenState extends BaseStatefulWidgetState<PetsAndDisea
                       AttributeItem(
                         margin: const EdgeInsets.symmetric(horizontal: 24),
                         child: InputAttributeItem(
-                          initialValue:
-                              (state.petsAndDiseaseRegister?.areaLost ?? '')
-                                  .toString(),
+                          initialValue: (convertAreaUnit(state.petsAndDiseaseRegister?.areaLost) ?? '').toString(),
                           textStyle: context.textStyles.bodyNormal.blueDark2,
                           labelText: LocaleKeys.area_lost.tr(),
                           labelTextStyle: context.textStyles.bodyNormal.black,
@@ -121,7 +119,7 @@ class _PetsAndDiseaseAddScreenState extends BaseStatefulWidgetState<PetsAndDisea
                             decimal: true,
                           ),
                           onChanged: (value) {
-                            cubit.onChangeData(areaLost: double.parse(value));
+                            cubit.onChangeData(areaLost: areaUnitValue.convertAreaToHa(double.tryParse(value) ?? 0));
                           },
                         ),
                       ),

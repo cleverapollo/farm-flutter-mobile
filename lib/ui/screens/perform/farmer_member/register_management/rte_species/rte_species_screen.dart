@@ -94,7 +94,7 @@ class _RteSpeciesScreenState extends BaseStatefulWidgetState<RteSpeciesScreen> {
     return {
       LocaleKeys.speciesType.tr(): context.read<RteSpeciesCubit>().getSpeciesTypeName(registerItem),
       LocaleKeys.commonName.tr(): context.read<RteSpeciesCubit>().getCommonName(registerItem),
-      LocaleKeys.dateSpotted.tr(): convertDateTimeToLunar(registerItem.dateSpotted).yMd(),
+      LocaleKeys.dateSpotted.tr(): convertDateTimeToLunarString(registerItem.dateSpotted),
       LocaleKeys.general_comments.tr(): registerItem.comment,
     };
   }
