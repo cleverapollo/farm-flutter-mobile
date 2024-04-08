@@ -8,7 +8,6 @@ part 'species_group_template.g.dart';
 @Collection(ignore: {'copyWith'})
 class SpeciesGroupTemplate with _$SpeciesGroupTemplate {
   const factory SpeciesGroupTemplate({
-    @JsonKey(name: 'LocalId') int? localId,
     @JsonKey(name: 'AreaTypeId') String? areaTypeId,
     @JsonKey(name: 'CreateDT') String? createDT,
     @JsonKey(name: 'GroupSchemeId') int? groupSchemeId,
@@ -28,6 +27,5 @@ class SpeciesGroupTemplate with _$SpeciesGroupTemplate {
   factory SpeciesGroupTemplate.fromJson(Map<String, dynamic> json) =>
       _$SpeciesGroupTemplateFromJson(json);
 
-  @override
-  Id get id => localId ?? Isar.autoIncrement;
+  Id get id => Isar.autoIncrement;
 }

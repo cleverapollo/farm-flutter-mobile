@@ -26,7 +26,6 @@ class CompartmentDetailState extends BaseState {
     this.isSpeciesGroupError = false,
     this.isEffectiveAreaError = false,
     this.isPlantDateError = false,
-    this.compartmentBeforeEdit = const Compartment(),
   });
 
   final bool isDataReady;
@@ -45,7 +44,6 @@ class CompartmentDetailState extends BaseState {
   final bool isEffectiveAreaError;
   final bool isPlantDateError;
   Compartment compartment;
-  Compartment compartmentBeforeEdit;
 
   CompartmentDetailState copyWith({
     bool? loading,
@@ -54,7 +52,6 @@ class CompartmentDetailState extends BaseState {
     String? campId,
     Object? error,
     Compartment? compartment,
-    Compartment? compartmentBeforeEdit,
     List<AreaType>? areaTypes,
     GroupScheme? groupScheme,
     List<ProductGroupTemplate>? productGroupTemplates,
@@ -76,8 +73,6 @@ class CompartmentDetailState extends BaseState {
       isEditing: isEditing ?? this.isEditing,
       error: error ?? this.error,
       compartment: compartment ?? this.compartment,
-      compartmentBeforeEdit:
-          compartmentBeforeEdit ?? this.compartmentBeforeEdit,
       areaTypes: areaTypes ?? this.areaTypes,
       productGroupTemplates: productGroupTemplates ?? this.productGroupTemplates,
       speciesGroupTemplates: speciesGroupTemplates ?? this.speciesGroupTemplates,

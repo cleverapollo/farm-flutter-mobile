@@ -128,7 +128,6 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                                 selector: (state) => state.isCompartmentNameError,
                                 builder: (context, isCompartmentNameError) {
                                   return AttributeItem(
-                                    inactive: isConservationArea,
                                     isShowError: isCompartmentNameError,
                                     errorText: LocaleKeys.compartmentName.tr(),
                                     child: InputAttributeItem(

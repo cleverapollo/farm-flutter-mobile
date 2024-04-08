@@ -172,9 +172,9 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       // Keep delay time for waiting server generate data
       await Future.delayed(const Duration(seconds: 30), () async {
-        await onSyncDataForCompartments();
+        // await onSyncDataForCompartments();
 
-        await subscribeToCompartmentsByFarmId();
+        // await subscribeToCompartmentsByFarmId();
 
         await subscribeToTrickleFeedMasterDataTopic();
 
@@ -462,8 +462,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       if (true == productTemplates?.isNotEmpty) {
         for (final item in productTemplates!) {
-          productTemplateFutures.add(insertProductGroupTemplate(item.copyWith(
-              localId: item.productGroupTemplateId.toIdIsarFromUuid)));
+          productTemplateFutures.add(insertProductGroupTemplate(item));
         }
       }
       await Future.wait(productTemplateFutures);
@@ -475,8 +474,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       if (true == speciesTemplates?.isNotEmpty) {
         for (final item in speciesTemplates!) {
-          speciesTemplateFutures.add(insertSpeciesGroupTemplate(item.copyWith(
-              localId: item.speciesGroupTemplateId.toIdIsarFromUuid)));
+          speciesTemplateFutures.add(insertSpeciesGroupTemplate(item));
         }
       }
       await Future.wait(speciesTemplateFutures);
@@ -486,8 +484,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       final areaTypes = await cmoPerformApiService.fetchAreaTypes();
       if (true == areaTypes?.isNotEmpty) {
         for (final item in areaTypes!) {
-          areaTypeFutures.add(insertAreaType(
-              item.copyWith(localId: item.areaTypeId.toIdIsarFromUuid)));
+          areaTypeFutures.add(insertAreaType(item));
         }
       }
       await Future.wait(areaTypeFutures);
@@ -890,10 +887,6 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     onSyncStatus('Sync Compartments...');
     final result =
         await cmoPerformApiService.getCompartmentsByFarmId(state.farmId ?? '');
-
-    for (final item in result!) {
-      debugPrint(item.managementUnitId?.toIdIsarFromUuid.toString());
-    }
 
     await insertCompartments(result);
   }
@@ -1367,9 +1360,10 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
     final speciesGroupTemplates =
         await cmoDatabaseMasterService.getSpeciesGroupTemplates(groupSchemeId);
 
+    var now = DateTime.now().millisecondsSinceEpoch;
     for (final item in data) {
-      final isExist = await cmoDatabaseMasterService
-          .removeCompartmentByManagementUnitId(item.managementUnitId);
+      // final isExist = await cmoDatabaseMasterService
+      //     .removeCompartmentByManagementUnitId(item.managementUnitId);
 
       final productGroupTemplate = productGroupTemplates.firstWhereOrNull(
           (element) =>
@@ -1380,7 +1374,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
       futures.add(cmoDatabaseMasterService.cacheCompartment(
           item.copyWith(
-              localCompartmentId: item.managementUnitId.toIdIsarFromUuid,
+              localCompartmentId: now++,
               productGroupTemplateName:
                   productGroupTemplate?.productGroupTemplateName,
               speciesGroupTemplateName:

@@ -77,10 +77,11 @@ mixin FarmUploadSummaryMixin {
           final syncedCompartment =
               await cmoPerformApiService.insertUpdatedCompartment(compartment);
           if (syncedCompartment != null) {
-            await cmoDatabaseMasterService.removeCompartment(compartment.id);
             await cmoDatabaseMasterService.cacheCompartment(
               syncedCompartment.copyWith(
                 isMasterdataSynced: true,
+                localCompartmentId: compartment.localCompartmentId,
+                updateDT: DateTime.now(),
                 productGroupTemplateName: compartment.productGroupTemplateName,
                 speciesGroupTemplateName: compartment.speciesGroupTemplateName,
                 espacementWidth: compartment.espacementWidth,

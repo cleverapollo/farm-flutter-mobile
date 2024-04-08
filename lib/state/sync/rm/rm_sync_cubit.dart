@@ -592,8 +592,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     );
 
     logger.d('Get unsynced compartment');
-    final compartments = await cmoDatabaseMasterService
-        .getAllUnsynedCompartmentsByGroupSchemeId(groupSchemeId: groupSchemeId);
+    final compartments = await cmoDatabaseMasterService.getAllUnsynedCompartmentsByGroupSchemeId(groupSchemeId: groupSchemeId);
     if (compartments.isNotBlank) {
       logger.d('Unsynced compartments count: ${compartments.length}');
       for (final compartment in compartments) {
@@ -1041,6 +1040,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     final areaTypes = await cmoDatabaseMasterService.getAreaTypesByGroupSchemeId(groupSchemeId);
     final productGroupTemplates = await cmoDatabaseMasterService.getProductGroupTemplates(groupSchemeId);
     final speciesGroupTemplates = await cmoDatabaseMasterService.getSpeciesGroupTemplates(groupSchemeId);
+    var now = DateTime.now().millisecondsSinceEpoch;
     if (compartments.isNotBlank) {
       for (final compartment in compartments!) {
         final productGroupTemplate = productGroupTemplates.firstWhereOrNull((element) => element.productGroupTemplateId == compartment.productGroupTemplateId);
@@ -1048,7 +1048,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         final areaType = areaTypes.firstWhereOrNull((element) => element.areaTypeId == compartment.areaTypeId);
         await cmoDatabaseMasterService.cacheCompartment(
           compartment.copyWith(
-            localCompartmentId: compartment.managementUnitId.toIdIsarFromUuid,
+            localCompartmentId: now++,
             productGroupTemplateName: productGroupTemplate?.productGroupTemplateName,
             speciesGroupTemplateName: speciesGroupTemplate?.speciesGroupTemplateName,
             areaTypeName: areaType?.areaTypeName,

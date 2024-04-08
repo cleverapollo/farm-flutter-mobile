@@ -18,11 +18,13 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     String farmId, {
     required Compartment compartment,
     String? campId,
-  }) : super(CompartmentDetailState(
+  }) : super(
+          CompartmentDetailState(
             farmId: farmId,
             campId: campId,
             compartment: compartment,
-            compartmentBeforeEdit: compartment)){
+          ),
+        ) {
     fetchData();
   }
 
@@ -73,6 +75,9 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
     final compartment = state.compartment;
 
     if (isConservationArea()) {
+      if (compartment.unitNumber.isBlank) {
+        return LocaleKeys.compartment_name_is_required.tr();
+      }
       if (compartment.polygonArea == null) {
         return LocaleKeys.polygon_area_is_required.tr();
       }
@@ -118,8 +123,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
 
       await cmoDatabaseMasterService.cacheCompartment(
         state.compartment.copyWith(
-          localCompartmentId: state.compartmentBeforeEdit.localCompartmentId ??
-              DateTime.now().millisecondsSinceEpoch,
+          localCompartmentId: state.compartment.localCompartmentId ?? DateTime.now().millisecondsSinceEpoch,
           createDT: state.compartment.createDT ?? DateTime.now(),
           updateDT: DateTime.now(),
           groupSchemeId: groupSchemeId,
@@ -207,15 +211,6 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
           speciesGroupTemplateId: speciesGroupId,
           speciesGroupTemplateName: speciesGroupName,
         ),
-      ),
-    );
-  }
-
-  void onCompartmentUnitChanged(String value) {
-    emit(
-      state.copyWith(
-        isEditing: true,
-        compartment: state.compartment.copyWith(unitNumber: value),
       ),
     );
   }

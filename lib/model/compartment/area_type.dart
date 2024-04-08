@@ -8,7 +8,6 @@ part 'area_type.g.dart';
 @Collection(ignore: {'copyWith'})
 class AreaType with _$AreaType {
   const factory AreaType({
-    @JsonKey(name: 'LocalId') int? localId,
     @JsonKey(name: 'AreaTypeId') String? areaTypeId,
     @JsonKey(name: 'AreaTypeName') String? areaTypeName,
     @JsonKey(name: 'CreateDT') String? createDT,
@@ -23,6 +22,5 @@ class AreaType with _$AreaType {
   factory AreaType.fromJson(Map<String, dynamic> json) =>
       _$AreaTypeFromJson(json);
 
-  @override
-  Id get id => localId ?? Isar.autoIncrement;
+  Id get id => Isar.autoIncrement;
 }
