@@ -157,16 +157,7 @@ class _ASIDetailScreenState extends BaseStatefulWidgetState<ASIDetailScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          buildPhotoSection(),
-          // if (state.listAsiPhotos.isNotBlank)
-          //   ...state.listAsiPhotos.map(
-          //     (asiPhoto) => (asiPhoto.isActive ?? false)
-          //         ? EditablePhotoItem(
-          //             photoDetail: PhotoDetail.fromAsiPhoto(asiPhoto),
-          //             onRemoved: () => _asiDetailCubit.onRemoveAsiPhoto(asiPhoto),
-          //           )
-          //         : const SizedBox.shrink(),
-          //   ),
+          // buildPhotoSection(),
           const SizedBox(height: 80),
         ],
       ),

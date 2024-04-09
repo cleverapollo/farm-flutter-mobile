@@ -665,11 +665,11 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
             ),
           );
 
-          final listAsiPhotos = await cmoDatabaseMasterService.getUnsyncAsiPhotoByAsiRegisterNo(asi.asiRegisterNo);
-          await publishListAsiPhotos(
-            asi: syncedAsi,
-            listAsiPhotos: listAsiPhotos,
-          );
+          // final listAsiPhotos = await cmoDatabaseMasterService.getUnsyncAsiPhotoByAsiRegisterNo(asi.asiRegisterNo);
+          // await publishListAsiPhotos(
+          //   asi: syncedAsi,
+          //   listAsiPhotos: listAsiPhotos,
+          // );
 
           logger.d('Successfully published ASI: ${syncedAsi.asiRegisterId}');
         } else {
@@ -1119,8 +1119,8 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           isDirect: true,
         );
 
-        final listAsiPhotos = await cmoPerformApiService.getRMAsiRegisterPhotosByAsiRegisterId(asi.asiRegisterId);
-        await insertRMAsiPhotos(listAsiPhotos);
+        // final listAsiPhotos = await cmoPerformApiService.getRMAsiRegisterPhotosByAsiRegisterId(asi.asiRegisterId);
+        // await insertRMAsiPhotos(listAsiPhotos);
       }
     }
   }
