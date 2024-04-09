@@ -85,6 +85,16 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
   Widget _buildFarmerMemberMenu() {
     return Column(
       children: [
+        _CmoOptionTile(
+          title: LocaleKeys.my_groupscheme.tr(),
+          displayDivider: false,
+          onTap: () {
+            if (context.mounted) Navigator.of(context).pop();
+            MyGroupSchemeScreen.push(context);
+          },
+        ),
+        const SizedBox(height: 7),
+        const _Divider(),
         SiteManagementPlanSection(),
         const SizedBox(height: 7),
         const _Divider(),
@@ -129,16 +139,6 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
           },
         ),
         const SizedBox(height: 7),
-        const _Divider(),
-        const SizedBox(height: 7),
-        _CmoOptionTile(
-          title: LocaleKeys.my_groupscheme.tr(),
-          displayDivider: false,
-          onTap: () {
-            if (context.mounted) Navigator.of(context).pop();
-            MyGroupSchemeScreen.push(context);
-          },
-        ),
       ],
     );
   }

@@ -862,4 +862,25 @@ class CmoPerformApiService {
 
     return response;
   }
+
+  Future<List<GroupSchemeContentLibrary>?> getGroupSchemeContentLibraries() async {
+    try {
+      final response = await client.get<JsonListData>(
+        '${Env.apiGroupSchemeUrl}GetGroupSchemeContentLibraries',
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data;
+      return data?.map((e) => GroupSchemeContentLibrary.fromJson(e as JsonData)).toList();
+    } catch (e) {
+      logger.d('Cannot getGroupSchemeContentLibraries $e');
+    }
+
+    return null;
+  }
 }

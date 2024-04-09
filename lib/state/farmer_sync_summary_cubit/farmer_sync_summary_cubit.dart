@@ -1323,6 +1323,10 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       logger.d('--insertIllegalActivities start');
       await insertIllegalActivities();
       logger.d('--insertIllegalActivities done');
+
+      logger.d('--insertGroupSchemeContentLibrary start');
+      await insertGroupSchemeContentLibrary();
+      logger.d('--insertGroupSchemeContentLibrary done');
     });
   }
 
@@ -1521,6 +1525,16 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         );
       }
     }
+  }
+
+  Future<void> insertGroupSchemeContentLibrary() async {
+    emit(state.copyWith(syncMessage: 'Syncing GroupScheme Content Libraries...'));
+    final groupSchemeContentLibraries = await cmoPerformApiService.getGroupSchemeContentLibraries();
+
+    await cmoDatabaseMasterService.cacheGroupSchemeContentLibrary(
+      groupSchemeContentLibraries?.first,
+      isDirect: true,
+    );
   }
 
   Future<int?> insertCountry(Message item) async {

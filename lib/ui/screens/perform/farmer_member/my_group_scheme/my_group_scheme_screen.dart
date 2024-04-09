@@ -1,3 +1,4 @@
+import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/state.dart';
@@ -39,20 +40,28 @@ class MyGroupSchemeScreenState extends BaseStatefulWidgetState<MyGroupSchemeScre
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Html(
-              data: html,
-              onLinkTap: (
-                url,
-                attributes,
-                element,
-              ) async {
-                final hasInternet = await NetworkUtils.hasInternet();
-                if (hasInternet) {
-                  print(url);
-                  await CommonFunctions.openUrl(url);
-                } else {
-                  showSnackError(msg: LocaleKeys.you_dont_have_internet_connection.tr());
+            BlocBuilder<MyGroupSchemeCubit, MyGroupSchemeState>(
+              builder: (context, state) {
+                if (state.groupSchemeContentLibrary?.content == null ||
+                    state.groupSchemeContentLibrary!.content.isBlank) {
+                  return const SizedBox.shrink();
                 }
+
+                return Html(
+                  data: state.groupSchemeContentLibrary?.content,
+                  onLinkTap: (
+                    url,
+                    attributes,
+                    element,
+                  ) async {
+                    final hasInternet = await NetworkUtils.hasInternet();
+                    if (hasInternet) {
+                      await CommonFunctions.openUrl(url);
+                    } else {
+                      showSnackError(msg: LocaleKeys.you_dont_have_internet_connection.tr());
+                    }
+                  },
+                );
               },
             ),
           ],
@@ -61,30 +70,3 @@ class MyGroupSchemeScreenState extends BaseStatefulWidgetState<MyGroupSchemeScre
     );
   }
 }
-
-String html = """<div class="EmpowerSnippet">
-    <div class="header">
-        <h1>Documents</h1>
-        <p>Please find some usefule information below</p>
-    </div>
-    <div>
-        <a href="https://vnexpress.net/">Onboarding Document</a>
-    </div>
-    <div>
-        <a href="https://vnexpress.net/">Help Document</a>
-    </div>
-    <div>
-        <a href="https://vnexpress.net/">FSC Standard</a>
-    </div>
-    <div class="header">
-        <h1>Videos</h1>
-        <a href="https://youtube.com/xyz">
-            <img src="https://thumbnail_link.com" alt="" class="snippet_thumbnail">
-            <p>COC Training</p>
-        </a>
-        <a href="https://youtube.com/xys">
-            <img src="https://thumbnail_link2.com" alt="" class="snippet_thumbnail">
-            <p>Chainsaw Training</p>
-        </a>
-    </div>
-</div>""";
