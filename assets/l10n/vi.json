@@ -345,6 +345,8 @@
   "support": "Support",
   "surname": "Surname",
   "survival": "Tỷ lệ sống sót",
+  "action_log": "Action Log",
+  "upcoming": "Upcoming",
   "sync": "Đồng bộ hóa",
   "sync_successfully_completed": "Sync Successfully Completed",
   "syncSummary": "Sync Summary",

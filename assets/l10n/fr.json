@@ -342,6 +342,8 @@
   "support": "Support",
   "surname": "Nom de famille",
   "survival": "Survie",
+  "action_log": "Action Log",
+  "upcoming": "Upcoming",
   "sync": "Synchroniser",
   "sync_successfully_completed": "Sync Successfully Completed",
   "syncSummary": "Résumé de la synchronisation",

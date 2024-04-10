@@ -3,6 +3,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/screens/global_entity.dart';
+import 'package:cmo/ui/screens/perform/action_log/management/action_log_management.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/audit/audit_management_screen.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/member_management_screen.dart';
 import 'package:cmo/ui/screens/perform/stake_holder/stake_holder_management_screen.dart';
@@ -217,15 +218,17 @@ class _ResourceManagerDashboardScreenState extends BaseStatefulWidgetState<Resou
                     ],
                   ),
                   const SizedBox(height: 20),
-                  // Hide it
-                  // CmoCard(
-                  //   content: [
-                  //     CmoCardHeader(title: LocaleKeys.cars.tr()),
-                  //     CmoCardItem(title: LocaleKeys.opened.tr(), value: '5'),
-                  //     CmoCardItem(title: LocaleKeys.overdue.tr(), value: '5'),
-                  //   ],
-                  // ),
-                  // const SizedBox(height: 20),
+                  DashboardItemWidget(
+                    title: LocaleKeys.action_log.tr(),
+                    icon: Assets.icons.icDashboardSync.svg(),
+                    onTap: () => ActionLogManagement.push(context),
+                    listInformationWidget: [
+                      const SizedBox(height: 16,),
+                      CmoCardHeader(title: LocaleKeys.action_log.tr()),
+                      const SizedBox(height: 16,),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
 
                   DashboardItemWidget(
                     title: LocaleKeys.sync.tr(),

@@ -2,6 +2,7 @@ import 'package:cmo/enum/enum.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
+import 'package:cmo/ui/components/custom_widgets/status_filter_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +26,7 @@ class MemberStatusFilter extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child: MemberStatusItem(
+                child: StatusFilterItem(
                   onTap: () {
                     context
                         .read<MemberManagementCubit>()
@@ -37,7 +38,7 @@ class MemberStatusFilter extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: MemberStatusItem(
+                child: StatusFilterItem(
                   onTap: () {
                     context
                         .read<MemberManagementCubit>()
@@ -56,51 +57,3 @@ class MemberStatusFilter extends StatelessWidget {
   }
 }
 
-class MemberStatusItem extends StatelessWidget {
-  const MemberStatusItem({
-    super.key,
-    required this.onTap,
-    required this.isSelected,
-    required this.title,
-    required this.subtitle,
-  });
-
-  final void Function() onTap;
-  final bool isSelected;
-  final String title;
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    final textColor =
-        isSelected ? context.colors.white : context.colors.blueDark2;
-    final backgroundColor =
-        isSelected ? context.colors.blue : context.colors.white;
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              style: context.textStyles.bodyBold.copyWith(
-                color: textColor,
-              ),
-            ),
-            Text(
-              '($subtitle)',
-              style: context.textStyles.bodyNormal.copyWith(
-                color: textColor,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
