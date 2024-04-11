@@ -34,6 +34,7 @@ class DatePickerWidget extends StatelessWidget {
       initialDate: initialDate ?? DateTime.now(),
       firstDate: firstDate,
       lastDate: lastDate,
+      keyboardType: TextInputType.emailAddress,
     );
 
     if (date != null) {

@@ -8,7 +8,7 @@ part 'setting_config.g.dart';
 @freezed
 class SettingConfig with _$SettingConfig {
   const factory SettingConfig({
-    @Default(DateFormatEnum.ddMMYYYYWithSlash) DateFormatEnum dateFormatEnum,
+    @Default(DateFormatEnum.yyyyMMDDWithDash) DateFormatEnum dateFormatEnum,
     @Default(AreaUnitEnum.ha) AreaUnitEnum areaUnitEnum,
     @Default(DistanceUnitEnum.km) DistanceUnitEnum distanceUnitEnum,
   }) = _SettingConfig;
