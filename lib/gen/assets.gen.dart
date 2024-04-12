@@ -111,6 +111,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_close.svg
   SvgGenImage get icClose => const SvgGenImage('assets/icons/ic_close.svg');
 
+  /// File path: assets/icons/ic_close_white.svg
+  SvgGenImage get icCloseWhite =>
+      const SvgGenImage('assets/icons/ic_close_white.svg');
+
   /// File path: assets/icons/ic_comment.svg
   SvgGenImage get icComment => const SvgGenImage('assets/icons/ic_comment.svg');
 
@@ -282,6 +286,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_visible.svg
   SvgGenImage get icVisible => const SvgGenImage('assets/icons/ic_visible.svg');
 
+  /// File path: assets/icons/ic_warning_white.svg
+  SvgGenImage get icWarningWhite =>
+      const SvgGenImage('assets/icons/ic_warning_white.svg');
+
   /// File path: assets/icons/ic_worker_profile.svg
   SvgGenImage get icWorkerProfile =>
       const SvgGenImage('assets/icons/ic_worker_profile.svg');
@@ -318,6 +326,7 @@ class $AssetsIconsGen {
         icCheckCircle,
         icCircleFillBackground,
         icClose,
+        icCloseWhite,
         icComment,
         icDashboardAudit,
         icDashboardMember,
@@ -365,6 +374,7 @@ class $AssetsIconsGen {
         icUser,
         icUsername,
         icVisible,
+        icWarningWhite,
         icWorkerProfile,
         mapPolygonPoint
       ];

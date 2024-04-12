@@ -39,3 +39,4 @@ export 'illegal_activity/illegal_activity_detail_cubit.dart';
 export 'illegal_activity/illegal_activity_management_cubit.dart';
 export 'my_group_scheme/my_group_scheme_cubit.dart';
 export 'action_log/action_log_management_cubit.dart';
+export 'action_log/action_log_detail_cubit.dart';

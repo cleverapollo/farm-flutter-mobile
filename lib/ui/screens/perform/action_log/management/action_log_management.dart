@@ -2,6 +2,7 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/action_log/detail/action_log_detail.dart';
 import 'package:cmo/ui/screens/perform/action_log/widgets/action_log_status_filter.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class _ActionLogManagementState extends BaseStatefulWidgetState<ActionLogManagem
   }
 
   Future<void> onNavigateToDetail() async {
-    // await AddMemberScreen.push(context, farm: farm);
+    await ActionLogDetail.push(context);
     // await context.read<MemberManagementCubit>().refresh();
     // await context.read<DashboardCubit>().getResourceManagerMembers();
   }
