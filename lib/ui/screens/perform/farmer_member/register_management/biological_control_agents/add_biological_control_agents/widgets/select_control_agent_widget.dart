@@ -2,7 +2,7 @@ import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/ui/components/bottom_sheet_selection.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_selection.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/information_text_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';

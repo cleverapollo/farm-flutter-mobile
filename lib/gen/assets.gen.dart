@@ -196,6 +196,9 @@ class $AssetsIconsGen {
   SvgGenImage get icMapViewInactive =>
       const SvgGenImage('assets/icons/ic_map_view_inactive.svg');
 
+  /// File path: assets/icons/ic_members.svg
+  SvgGenImage get icMembers => const SvgGenImage('assets/icons/ic_members.svg');
+
   /// File path: assets/icons/ic_non_selected.svg
   SvgGenImage get icNonSelected =>
       const SvgGenImage('assets/icons/ic_non_selected.svg');
@@ -349,6 +352,7 @@ class $AssetsIconsGen {
         icMail,
         icMapViewActive,
         icMapViewInactive,
+        icMembers,
         icNonSelected,
         icPan,
         icPassword,

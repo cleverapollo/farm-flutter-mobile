@@ -3,7 +3,7 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/components/bottom_sheet_selection.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_selection.dart';
 import 'package:cmo/ui/components/map_center_icon.dart';
 import 'package:cmo/ui/components/radio_item.dart';
 import 'package:cmo/ui/screens/perform/compartments/compartment_detail_screen.dart';

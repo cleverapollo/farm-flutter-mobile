@@ -3,17 +3,15 @@ import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/training_cubit/training_detail_cubit.dart';
-import 'package:cmo/ui/components/bottom_sheet_multiple_selection.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_multiple_selection.dart';
 import 'package:cmo/ui/components/date_picker_widget.dart';
-import 'package:cmo/ui/components/signature_widget.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/training/widgets/trainee_widget.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection/multiple_selection_widget.dart';
 
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
-import 'package:cmo/ui/components/bottom_sheet_selection.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
-import 'package:cmo/utils/helpers.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -330,8 +328,16 @@ class _TrainingDetailScreenState extends BaseStatefulWidgetState<TrainingDetailS
                 );
               },
             ),
-            TraineeWidget(
-              selectedTrainees: state.selectedTrainees,
+            MultipleSelectionWidget(
+              items: state.selectedTrainees
+                  .map(
+                    (e) => BottomSheetMultipleSelectionItem(
+                  item: e,
+                  id: e.workerId,
+                  titleValue: e.fullName,
+                ),
+              )
+                  .toList(),
               onRemove: cubit.onRemoveTrainee,
             ),
           ],

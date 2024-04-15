@@ -1,7 +1,7 @@
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
-import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/register_thumbnail_photo_item.dart';
+import 'package:cmo/ui/components/custom_camera_component/register_thumbnail_photo_item.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -21,16 +21,18 @@ class RegisterPhotoSection extends StatelessWidget {
     required this.navigateToCamera,
     required this.onRemove,
     this.photos = const <RegisterPhotoModel>[],
+    this.margin,
   });
 
   final void Function() navigateToCamera;
   final void Function(int?) onRemove;
   final List<RegisterPhotoModel> photos;
+  final EdgeInsets? margin;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 21),
+      margin: margin ?? const EdgeInsets.symmetric(horizontal: 21),
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       decoration: BoxDecoration(
         border: Border(

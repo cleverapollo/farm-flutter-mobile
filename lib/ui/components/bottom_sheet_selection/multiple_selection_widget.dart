@@ -1,21 +1,21 @@
 import 'package:cmo/gen/assets.gen.dart';
-import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_multiple_selection.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 
-class TraineeWidget extends StatelessWidget {
-  final List<FarmerWorker> selectedTrainees;
-  final void Function(FarmerWorker) onRemove;
+class MultipleSelectionWidget<T> extends StatelessWidget {
+  final List<BottomSheetMultipleSelectionItem<T>> items;
+  final void Function(T) onRemove;
 
-  const TraineeWidget({
+  const MultipleSelectionWidget({
     super.key,
-    this.selectedTrainees = const <FarmerWorker>[],
+    this.items = const [],
     required this.onRemove,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (selectedTrainees.isEmpty) return const SizedBox.shrink();
+    if (items.isEmpty) return const SizedBox.shrink();
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24),
       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -31,11 +31,11 @@ class TraineeWidget extends StatelessWidget {
       child: Wrap(
         spacing: 10,
         runSpacing: 6,
-        children: selectedTrainees
+        children: items
             .map(
-              (trainee) => _TraineeSelectedItem(
-                trainee: trainee,
-                onRemove: () => onRemove(trainee),
+              (element) => _MultipleSelectionItem(
+                title: element.titleValue,
+                onRemove: () => onRemove(element.item),
               ),
             )
             .toList(),
@@ -44,12 +44,12 @@ class TraineeWidget extends StatelessWidget {
   }
 }
 
-class _TraineeSelectedItem extends StatelessWidget {
-  final FarmerWorker trainee;
+class _MultipleSelectionItem extends StatelessWidget {
+  final String? title;
   final void Function() onRemove;
 
-  _TraineeSelectedItem({
-    required this.trainee,
+  _MultipleSelectionItem({
+    required this.title,
     required this.onRemove,
   });
 
@@ -67,9 +67,9 @@ class _TraineeSelectedItem extends StatelessWidget {
           children: [
             Flexible(
               child: Padding(
-              padding: const EdgeInsets.only(right: 12.0),
-              child: Text(
-                  trainee.fullName,
+                padding: const EdgeInsets.only(right: 12.0),
+                child: Text(
+                  title ?? '',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: context.textStyles.bodyBold.white.copyWith(

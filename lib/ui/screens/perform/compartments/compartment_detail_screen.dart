@@ -17,7 +17,7 @@ import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:cmo/ui/components/bottom_sheet_selection.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_selection.dart';
 import 'compartment_maps_summaries_screen.dart';
 
 class CompartmentDetailScreen extends BaseStatefulWidget {

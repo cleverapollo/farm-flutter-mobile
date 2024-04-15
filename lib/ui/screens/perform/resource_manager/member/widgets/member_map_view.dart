@@ -4,7 +4,7 @@ import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/state/member_management/member_management_cubit.dart';
 import 'package:cmo/state/member_management/member_management_state.dart';
-import 'package:cmo/ui/components/bottom_sheet_selection.dart';
+import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_selection.dart';
 import 'package:cmo/ui/components/map_center_icon.dart';
 import 'package:cmo/ui/components/radio_item.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/member/widgets/member_search_view_mode.dart';
