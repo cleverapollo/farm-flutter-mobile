@@ -129,8 +129,10 @@ class AuditCubit extends HydratedCubit<AuditState> {
 
   Future<void> getListSites() async {
     final rmu = await configService.getActiveRegionalManager();
-    final service = cmoDatabaseMasterService;
-    final sites = await service.getFarmByRmuId(rmu?.regionalManagerUnitId);
+    final sites = await cmoDatabaseMasterService.getFarmsByRMUnit(
+      rmu?.regionalManagerUnitId,
+      isCompleted: true,
+    );
     emit(state.copyWith(
       farms: sites,
       filterFarms: sites,

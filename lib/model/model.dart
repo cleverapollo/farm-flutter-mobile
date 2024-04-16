@@ -115,3 +115,6 @@ export 'local_database_status/local_database_status.dart';
 export 'group_scheme_content_library/group_scheme_content_library.dart';
 export 'action_log/action_log.dart';
 export 'action_log/action_log_photo.dart';
+export 'action_log/action_category.dart';
+export 'action_log/action_type.dart';
+export 'action_log/action_raised_by_user.dart';

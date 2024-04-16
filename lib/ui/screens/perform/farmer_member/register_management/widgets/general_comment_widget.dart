@@ -21,6 +21,8 @@ class GeneralCommentWidget extends StatefulWidget {
     this.isTextField = false,
     this.title,
     this.titleTextStyle,
+    this.margin = EdgeInsets.zero,
+    this.padding = EdgeInsets.zero,
 });
 
   final String? initialValue;
@@ -36,6 +38,8 @@ class GeneralCommentWidget extends StatefulWidget {
   final bool isTextField;
   final String? title;
   final TextStyle? titleTextStyle;
+  final EdgeInsets margin;
+  final EdgeInsets padding;
 
   @override
   State<StatefulWidget> createState() => _AddGeneralCommentWidgetState();
@@ -112,6 +116,8 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
     if (widget.shouldShowTitle) {
       return Container(
         height: widget.height,
+        margin: widget.margin,
+        padding: widget.padding,
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(

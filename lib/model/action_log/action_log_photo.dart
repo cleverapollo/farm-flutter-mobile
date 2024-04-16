@@ -8,10 +8,8 @@ part 'action_log_photo.g.dart';
 @Collection(ignore: {'copyWith'})
 class ActionLogPhoto with _$ActionLogPhoto {
   const factory ActionLogPhoto({
-    @JsonKey(name: 'ActionLogPhotoId') int? actionLogPhotoId,
-    @JsonKey(name: 'ActionLogPhotoNo') String? actionLogPhotoNo,
-    @JsonKey(name: 'ActionLogId') String? actionLogId,
-    @JsonKey(name: 'ActionLogNo') String? actionLogNo,
+    @JsonKey(name: 'Id') int? actionLogPhotoId,
+    @JsonKey(name: 'ActionLogId') int? actionLogId,
     @JsonKey(name: 'Photo') String? photo,
     @JsonKey(name: 'PhotoURL') String? photoURL,
     @Default(true)
@@ -27,5 +25,5 @@ class ActionLogPhoto with _$ActionLogPhoto {
   factory ActionLogPhoto.fromJson(Map<String, dynamic> json) =>
       _$ActionLogPhotoFromJson(json);
 
-  Id get id => int.tryParse(actionLogPhotoNo ?? '') ?? Isar.autoIncrement;
+  Id get id => actionLogPhotoId ?? Isar.autoIncrement;
 }

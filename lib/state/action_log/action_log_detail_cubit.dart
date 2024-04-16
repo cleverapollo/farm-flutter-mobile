@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/action_log_status_filter_enum.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
@@ -16,7 +17,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
           ActionLogDetailState(
             actionLog: actionLog ?? ActionLog(
               createDT: DateTime.now(),
-              actionLogNo: DateTime.now().millisecondsSinceEpoch.toString(),
+              actionLogId: DateTime.now().millisecondsSinceEpoch,
             ),
           ),
         ) {
@@ -24,6 +25,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
   }
 
   Future<void> initData() async {
+    final activeUserRole = await configService.getActiveUserRole();
     final activeRmu = await configService.getActiveRegionalManager();
     final rejectReasons = await cmoDatabaseMasterService.getRejectReasons();
     final completedMembers = await cmoDatabaseMasterService.getFarmsByRMUnit(
@@ -32,7 +34,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     );
 
     final selectedReason = rejectReasons.firstWhereOrNull(
-          (element) => element.rejectReasonId == state.actionLog.reasonId,
+          (element) => element.rejectReasonId == state.actionLog.rejectReasonId,
     );
 
     final selectedMembers = completedMembers
@@ -46,6 +48,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     emit(
       state.copyWith(
         activeRMU: activeRmu,
+        activeUserRole: activeUserRole,
         completedMembers: completedMembers,
         rejectReasons: rejectReasons,
         selectedMembers: selectedMembers,
@@ -57,7 +60,35 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
   void changeMajorAction(bool isMajor) {
     emit(
       state.copyWith(
+        isEditing: true,
         actionLog: state.actionLog.copyWith(isMajor: isMajor),
+      ),
+    );
+  }
+
+  void onSelectActionType(ActionType actionType) {
+    emit(
+      state.copyWith(
+        isEditing: true,
+        selectedActionType: actionType,
+      ),
+    );
+  }
+
+  void onSelectActionCategory(ActionCategory category) {
+    emit(
+      state.copyWith(
+        isEditing: true,
+        selectedActionCategory: category,
+      ),
+    );
+  }
+
+  void onSelectRaisedByUser(ActionRaisedByUser user) {
+    emit(
+      state.copyWith(
+        isEditing: true,
+        selectedActionRaisedByUser: user,
       ),
     );
   }
@@ -105,13 +136,10 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
   }
 
   void onUpdatePhoto(String base64Image) {
-    var randomId = generatorInt32Id();
     final photo = ActionLogPhoto(
       isMasterdataSynced: false,
       photo: base64Image,
-      actionLogPhotoNo: DateTime.now().millisecondsSinceEpoch.toString(),
-      actionLogPhotoId: randomId++,
-      actionLogNo: state.actionLog.actionLogNo,
+      actionLogPhotoId: DateTime.now().millisecondsSinceEpoch,
       actionLogId: state.actionLog.actionLogId,
       isActive: true,
       createDT: DateTime.now(),
@@ -146,5 +174,20 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
         selectedReason: reason,
       ),
     );
+  }
+
+  void onChangeActionName(String? actionName) {
+    emit(
+      state.copyWith(
+        isEditing: true,
+        actionLog: state.actionLog.copyWith(
+          actionName: actionName,
+        ),
+      ),
+    );
+  }
+
+  Future<void> onSave() async {
+
   }
 }
