@@ -18,6 +18,8 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
             actionLog: actionLog ?? ActionLog(
               createDT: DateTime.now(),
               actionLogId: DateTime.now().millisecondsSinceEpoch,
+              dateRaised: DateTime.now(),
+              dueDate: DateTime.now(),
             ),
           ),
         ) {

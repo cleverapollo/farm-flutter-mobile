@@ -21,6 +21,14 @@ class $AssetsIconsGen {
   SvgGenImage get icAcceptMap =>
       const SvgGenImage('assets/icons/ic_accept_map.svg');
 
+  /// File path: assets/icons/ic_action_log_close.svg
+  SvgGenImage get icActionLogClose =>
+      const SvgGenImage('assets/icons/ic_action_log_close.svg');
+
+  /// File path: assets/icons/ic_action_log_closed.svg
+  SvgGenImage get icActionLogClosed =>
+      const SvgGenImage('assets/icons/ic_action_log_closed.svg');
+
   /// File path: assets/icons/ic_add.svg
   SvgGenImage get icAdd => const SvgGenImage('assets/icons/ic_add.svg');
 
@@ -305,6 +313,8 @@ class $AssetsIconsGen {
   List<SvgGenImage> get values => [
         icAccept,
         icAcceptMap,
+        icActionLogClose,
+        icActionLogClosed,
         icAdd,
         icAddMorePhoto,
         icAppLogo,

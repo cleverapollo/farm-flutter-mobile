@@ -1,5 +1,6 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/action_log_status_filter_enum.dart';
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/ui/components/base/base_state.dart';
@@ -14,9 +15,73 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
 
   Future<void> initData() async {
     final activeRmu = await configService.getActiveRegionalManager();
+    final activeUserRole = await configService.getActiveUserRole();
+    final closedActions = [
+      ActionLog(
+        dueDate: DateTime.now(),
+        dateRaised: DateTime.now(),
+        actionName:
+            '10.12.1 Waste is collected, transported and disposed of มีการรวบรวม ขนส่ง และกําจัดของเสีย (Template Name)',
+        createDT: DateTime.now(),
+        updateDT: DateTime.now(),
+        actionCategoryId: 'Waste Management',
+        actionCategoryName: 'Waste Management',
+        actionLogId: DateTime.now().millisecondsSinceEpoch,
+        actionTypeId: 'Audit',
+        actionTypeName: 'Audit',
+        isMajor: true,
+        raisedBy: DateTime.now().millisecondsSinceEpoch,
+        raisedByName: 'Zinhle Kunene',
+        rejectReasonName: 'rejectReasonName',
+        rejectReasonId: DateTime.now().millisecondsSinceEpoch,
+        closingDate: DateTime.now(),
+        isClosed: true,
+        closingComment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      ),
+    ];
+
+    final openActions = [
+      ActionLog(
+        dueDate: DateTime.now(),
+        dateRaised: DateTime.now(),
+        actionName: '10.12.1 Waste is collected, transported and disposed of มีการรวบรวม ขนส่ง และกําจัดของเสีย (Template Name)',
+        createDT: DateTime.now(),
+        updateDT: DateTime.now(),
+        actionCategoryId: 'Waste Management',
+        actionCategoryName: 'Waste Management',
+        actionLogId: DateTime.now().millisecondsSinceEpoch,
+        actionTypeId: 'Audit',
+        actionTypeName: 'Audit',
+        isMajor: true,
+        raisedBy: DateTime.now().millisecondsSinceEpoch,
+        raisedByName: 'Zinhle Kunene',
+        rejectReasonName: 'rejectReasonName',
+        rejectReasonId: DateTime.now().millisecondsSinceEpoch,
+      ),
+      ActionLog(
+        dueDate: DateTime.now(),
+        dateRaised: DateTime.now(),
+        actionName: '10.12.1 Waste is collected, transported and disposed of มีการรวบรวม ขนส่ง และกําจัดของเสีย (Template Name)',
+        createDT: DateTime.now(),
+        updateDT: DateTime.now(),
+        actionCategoryId: 'Waste Management',
+        actionCategoryName: 'Waste Management',
+        actionLogId: DateTime.now().millisecondsSinceEpoch,
+        actionTypeId: 'Audit',
+        actionTypeName: 'Audit',
+        isMajor: false,
+        raisedBy: DateTime.now().millisecondsSinceEpoch,
+        raisedByName: 'Zinhle Kunene',
+        rejectReasonName: 'rejectReasonName',
+        rejectReasonId: DateTime.now().millisecondsSinceEpoch,
+      ),
+    ];
     emit(
       state.copyWith(
         activeRMU: activeRmu,
+        activeUserRole: activeUserRole,
+        openActions: openActions,
+        closedActions: closedActions,
       ),
     );
   }

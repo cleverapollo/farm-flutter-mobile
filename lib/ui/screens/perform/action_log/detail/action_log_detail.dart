@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -10,6 +11,7 @@ import 'package:cmo/ui/components/custom_camera_component/custom_camera_screen.d
 import 'package:cmo/ui/components/custom_camera_component/register_photo_section.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_selection.dart';
 import 'package:cmo/ui/components/date_picker_widget.dart';
+import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
 import 'package:cmo/ui/widget/cmo_switch.dart';
@@ -77,69 +79,258 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
           trailing: Assets.icons.icUpdatedCloseButton.svgBlack,
           onTapTrailing: onShowWarningDispose,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 12),
-              isMajorWidget(),
-              AttributeItem(
-                margin: const EdgeInsets.symmetric(horizontal: 24),
-                child: BlocSelector<ActionLogDetailCubit, ActionLogDetailState, DateTime?>(
-                  selector: (state) => state.actionLog.dateRaised,
-                  builder: (context, dateRaised) {
-                    return DatePickerWidget(
-                      lastDate: DateTime.now(),
-                      firstDate: DateTime.now().add(const Duration(days: -Constants.DEFAULT_DAY_DURATION_OFFSET)),
-                      initialDate: dateRaised,
-                      onConfirm: context.read<ActionLogDetailCubit>().onDateRaisedChanged,
-                      title: LocaleKeys.date_raised.tr(),
-                    );
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      const SizedBox(height: 12),
+                      isMajorWidget(),
+                     BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
+                        builder: (context, state) {
+                          return GeneralCommentWidget(
+                            initialValue: state.actionLog.actionName,
+                            margin: const EdgeInsets.symmetric(horizontal: 24),
+                            height: 150,
+                            maxLines: 5,
+                            hintText: '',
+                            title: LocaleKeys.action_name_and_description.tr(),
+                            shouldShowTitle: true,
+                            titleTextStyle: context.textStyles.bodyBold.blueDark2,
+                            textStyle: context.textStyles.bodyNormal.blueDark2,
+                            onChanged: cubit.onChangeActionName,
+                          );
+                        },
+                      ),
+                      BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
+                        builder: (context, state) {
+                          return BottomSheetSelection(
+                            hintText: LocaleKeys.type.tr(),
+                            margin: const EdgeInsets.symmetric(horizontal: 24),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 14,
+                            ),
+                            value: state.selectedActionType?.actionTypeName,
+                            onTap: () async {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              if (state.actionTypes.isBlank) return;
+                              await showCustomBottomSheet<void>(
+                                context,
+                                content: ListView.builder(
+                                  itemCount: state.actionTypes.length,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      onTap: () {
+                                        cubit.onSelectActionType(state.actionTypes[index]);
+                                        Navigator.pop(context);
+                                      },
+                                      title: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                                        child: Text(
+                                          state.actionTypes[index].actionTypeName ?? '',
+                                          style: context.textStyles.bodyBold.blueDark2,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                      BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
+                        builder: (context, state) {
+                          return BottomSheetSelection(
+                            hintText: LocaleKeys.category.tr(),
+                            margin: const EdgeInsets.symmetric(horizontal: 24),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 14,
+                            ),
+                            value: state.selectedActionCategory?.actionCategoryName,
+                            onTap: () async {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              if (state.actionCategories.isBlank) return;
+                              await showCustomBottomSheet<void>(
+                                context,
+                                content: ListView.builder(
+                                  itemCount: state.actionCategories.length,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      onTap: () {
+                                        cubit.onSelectActionCategory(state.actionCategories[index]);
+                                        Navigator.pop(context);
+                                      },
+                                      title: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                                        child: Text(
+                                          state.actionCategories[index].actionCategoryName ?? '',
+                                          style: context.textStyles.bodyBold.blueDark2,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                      BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
+                        builder: (context, state) {
+                          return BottomSheetSelection(
+                            hintText: LocaleKeys.raised_by.tr(),
+                            margin: const EdgeInsets.symmetric(horizontal: 24),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 14,
+                            ),
+                            value: state.selectedActionRaisedByUser?.fullName,
+                            onTap: () async {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              if (state.actionRaisedByUser.isBlank) return;
+                              await showCustomBottomSheet<void>(
+                                context,
+                                content: ListView.builder(
+                                  itemCount: state.actionRaisedByUser.length,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      onTap: () {
+                                        cubit.onSelectRaisedByUser(state.actionRaisedByUser[index]);
+                                        Navigator.pop(context);
+                                      },
+                                      title: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                                        child: Text(
+                                          state.actionRaisedByUser[index].fullName,
+                                          style: context.textStyles.bodyBold.blueDark2,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                      AttributeItem(
+                        margin: const EdgeInsets.symmetric(horizontal: 24),
+                        child: BlocSelector<ActionLogDetailCubit, ActionLogDetailState, DateTime?>(
+                          selector: (state) => state.actionLog.dateRaised,
+                          builder: (context, dateRaised) {
+                            return DatePickerWidget(
+                              lastDate: DateTime.now(),
+                              firstDate: DateTime.now().add(const Duration(days: -Constants.DEFAULT_DAY_DURATION_OFFSET)),
+                              initialDate: dateRaised,
+                              onConfirm: context.read<ActionLogDetailCubit>().onDateRaisedChanged,
+                              title: LocaleKeys.date_raised.tr(),
+                            );
+                          },
+                        ),
+                      ),
+                      AttributeItem(
+                        margin: const EdgeInsets.symmetric(horizontal: 24),
+                        child: BlocSelector<ActionLogDetailCubit, ActionLogDetailState, DateTime?>(
+                          selector: (state) => state.actionLog.dueDate,
+                          builder: (context, dateRaised) {
+                            return DatePickerWidget(
+                              lastDate: DateTime.now(),
+                              firstDate: DateTime.now().add(const Duration(days: -Constants.DEFAULT_DAY_DURATION_OFFSET)),
+                              initialDate: dateRaised,
+                              onConfirm: context.read<ActionLogDetailCubit>().onDueDateChanged,
+                              title: LocaleKeys.due_date.tr(),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      CmoHeaderTile(
+                        title: LocaleKeys.raised_against.tr(),
+                        backgroundColor: context.colors.blueDark2,
+                      ),
+                      selectMemberWidget(),
+                      buildPhotoSection(),
+                      buildSelectReason(),
+                      const SizedBox(height: 12),
+                      BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
+                        builder: (context, state) {
+                          return GeneralCommentWidget(
+                            margin: const EdgeInsets.symmetric(horizontal: 24),
+                            initialValue: state.actionLog.actionName,
+                            height: 150,
+                            maxLines: 5,
+                            hintText: '',
+                            title: LocaleKeys.add_action.tr(),
+                            shouldShowTitle: true,
+                            titleTextStyle: context.textStyles.bodyBold.blueDark2,
+                            textStyle: context.textStyles.bodyNormal.blueDark2,
+                            onChanged: cubit.onChangeActionName,
+                          );
+                        },
+                      ),
+                      SizedBox(height: MediaQuery.of(context).padding.bottom + 50),
+                    ],
+                  ),
+                  BlocSelector<ActionLogDetailCubit, ActionLogDetailState, UserRoleEnum?>(
+                    selector: (state) => state.activeUserRole,
+                    builder: (context, activeUserRole) {
+                      if (activeUserRole == UserRoleEnum.farmerMember) {
+                        return Positioned.fill(
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 60),
+                              color: context.colors.white.withOpacity(0.4),
+                            ),
+                          ),
+                        );
+                      }
+
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: BlocSelector<ActionLogDetailCubit, ActionLogDetailState, UserRoleEnum?>(
+                  selector: (state) => state.activeUserRole,
+                  builder: (context, activeUserRole) {
+                    switch (activeUserRole) {
+                      case UserRoleEnum.farmerMember:
+                        return CmoFilledButton(
+                          title: LocaleKeys.actionTaken.tr(),
+                          onTap: () async {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            await cubit.onSave();
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      case UserRoleEnum.regionalManager:
+                        return CmoFilledButton(
+                          title: LocaleKeys.save.tr(),
+                          onTap: () async {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            await cubit.onSave();
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      default:
+                        return const SizedBox.shrink();
+                    }
                   },
                 ),
               ),
-              AttributeItem(
-                margin: const EdgeInsets.symmetric(horizontal: 24),
-                child: BlocSelector<ActionLogDetailCubit, ActionLogDetailState, DateTime?>(
-                  selector: (state) => state.actionLog.dueDate,
-                  builder: (context, dateRaised) {
-                    return DatePickerWidget(
-                      lastDate: DateTime.now(),
-                      firstDate: DateTime.now().add(const Duration(days: -Constants.DEFAULT_DAY_DURATION_OFFSET)),
-                      initialDate: dateRaised,
-                      onConfirm: context.read<ActionLogDetailCubit>().onDueDateChanged,
-                      title: LocaleKeys.due_date.tr(),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-              CmoHeaderTile(
-                title: LocaleKeys.raised_against.tr(),
-                backgroundColor: context.colors.blueDark2,
-              ),
-              selectMemberWidget(),
-              buildPhotoSection(),
-              buildSelectReason(),
-              // Expanded(
-              //   child: BlocSelector<MemberManagementCubit, MemberManagementState, MemberManagementStatusFilter>(
-              //     selector: (state) => state.statusFilter,
-              //     builder: (context, statusFilter) {
-              //       switch (statusFilter) {
-              //         case MemberManagementStatusFilter.incomplete:
-              //           return MembersListView(
-              //             shouldShowSearchField: false,
-              //             onNavigateToDetail: (farm) =>
-              //                 onNavigateToDetail(farm: farm),
-              //             onRemoveFarm: onRemoveFarm,
-              //           );
-              //         case MemberManagementStatusFilter.complete:
-              //           return completedMemberContent();
-              //       }
-              //     },
-              //   ),
-              // ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

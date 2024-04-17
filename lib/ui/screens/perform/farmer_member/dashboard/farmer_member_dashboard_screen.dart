@@ -1,6 +1,7 @@
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/dashboard/dashboard_cubit.dart';
+import 'package:cmo/ui/screens/perform/action_log/management/action_log_management.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/labour_management/labour_management_screen.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/register_management.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/site_management_plan/site_management_plan_sreen.dart';
@@ -90,6 +91,17 @@ class _FarmerMemberDashboardScreenState
               onTap: () => RegisterManagement.push(context),
               listInformationWidget: [
                 CmoCardHeader(title: LocaleKeys.monitoring.tr()),
+                const SizedBox(height: 16,),
+              ],
+            ),
+            const SizedBox(height: 20),
+            DashboardItemWidget(
+              title: LocaleKeys.action_log.tr(),
+              icon: Assets.icons.icDashboardSync.svg(),
+              onTap: () => ActionLogManagement.push(context),
+              listInformationWidget: [
+                const SizedBox(height: 16,),
+                CmoCardHeader(title: LocaleKeys.action_log.tr()),
                 const SizedBox(height: 16,),
               ],
             ),

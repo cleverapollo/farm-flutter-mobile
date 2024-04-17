@@ -31,6 +31,7 @@ class ActionLog with _$ActionLog {
     @JsonKey(name: 'ClosingDate') DateTime? closingDate,
     @JsonKey(name: 'ClosingComment') String? closingComment,
     @JsonKey(name: 'RaisedBy') int? raisedBy,
+    @JsonKey(name: 'RaisedByName') String? raisedByName,
     @JsonKey(name: 'RejectReasonId') int? rejectReasonId,
     @JsonKey(name: 'RejectReasonName') String? rejectReasonName,
     @Default(false)

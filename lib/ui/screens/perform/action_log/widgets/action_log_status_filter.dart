@@ -34,22 +34,24 @@ class ActionLogStatusFilter extends StatelessWidget {
                   },
                   isSelected: state.statusFilter == ActionLogStatusFilterEnum.open,
                   title: LocaleKeys.open.tr().capitalize()!,
-                  subtitle: '0',
+                  subtitle: state.openActions.length.toString(),
                 ),
               ),
-              Expanded(
-                child: StatusFilterItem(
-                  onTap: () {
-                    context
-                        .read<ActionLogManagementCubit>()
-                        .onFilterGroupChanged(
-                            ActionLogStatusFilterEnum.upcoming);
-                  },
-                  isSelected: state.statusFilter == ActionLogStatusFilterEnum.upcoming,
-                  title: LocaleKeys.upcoming.tr(),
-                  subtitle: '0',
+              if (state.activeUserRole != UserRoleEnum.farmerMember)
+                Expanded(
+                  child: StatusFilterItem(
+                    onTap: () {
+                      context
+                          .read<ActionLogManagementCubit>()
+                          .onFilterGroupChanged(
+                              ActionLogStatusFilterEnum.upcoming);
+                    },
+                    isSelected: state.statusFilter ==
+                        ActionLogStatusFilterEnum.upcoming,
+                    title: LocaleKeys.upcoming.tr(),
+                    subtitle: '0',
+                  ),
                 ),
-              ),
               Expanded(
                 child: StatusFilterItem(
                   onTap: () {
@@ -57,10 +59,9 @@ class ActionLogStatusFilter extends StatelessWidget {
                         .read<ActionLogManagementCubit>()
                         .onFilterGroupChanged(ActionLogStatusFilterEnum.closed);
                   },
-                  isSelected:
-                      state.statusFilter == ActionLogStatusFilterEnum.closed,
+                  isSelected: state.statusFilter == ActionLogStatusFilterEnum.closed,
                   title: LocaleKeys.closed.tr(),
-                  subtitle: '0',
+                  subtitle: state.closedActions.length.toString(),
                 ),
               ),
             ],
