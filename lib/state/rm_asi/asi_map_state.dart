@@ -1,29 +1,30 @@
 import 'package:cmo/model/model.dart';
+import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class AsiMapState {
+class AsiMapState extends BaseState {
   AsiMapState({
     required this.asi,
     this.compartments = const <Compartment>[],
-    this.isLoading = false,
     this.marker,
     this.outlinedCompartment,
     this.currentCameraPosition,
     this.outlineMarker = const <Marker>[],
     this.mapType = MapType.satellite,
+    super.isEditing,
+    super.error,
+    super.loading,
   });
 
   final List<Compartment> compartments;
   final Asi asi;
   final Marker? marker;
-  final bool isLoading;
   final Compartment? outlinedCompartment;
   final CameraPosition? currentCameraPosition;
   final List<Marker> outlineMarker;
   final MapType mapType;
 
   AsiMapState copyWith({
-    bool? isLoading,
     List<Compartment>? compartments,
     Asi? asi,
     Marker? marker,
@@ -33,9 +34,13 @@ class AsiMapState {
     bool isClearMarker = false,
     bool isClearOutlineCompartment = false,
     MapType? mapType,
+    bool? isEditing,
+    bool? loading,
+    Object? error
   }) {
     return AsiMapState(
-      isLoading: isLoading ?? this.isLoading,
+      loading: loading ?? this.loading,
+      isEditing: isEditing ?? this.isEditing,
       mapType: mapType ?? this.mapType,
       compartments: compartments ?? this.compartments,
       asi: asi ?? this.asi,

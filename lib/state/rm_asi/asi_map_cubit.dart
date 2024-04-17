@@ -85,6 +85,7 @@ class AsiMapCubit extends Cubit<AsiMapState> {
   void removeMarker() {
     emit(
       state.copyWith(
+        isEditing: true,
         isClearMarker: true,
         isClearOutlineCompartment: true,
       ),
@@ -101,6 +102,7 @@ class AsiMapCubit extends Cubit<AsiMapState> {
     emit(
       state.copyWith(
         marker: marker,
+        isEditing: true,
         asi: state.asi.copyWith(
           latitude: marker.position.latitude,
           longitude: marker.position.longitude,

@@ -113,7 +113,7 @@ class AsiMapScreenState extends BaseStatefulWidgetState<AsiMapScreen> {
   }
 
   @override
-  bool get canPopWithoutWarningDialog => false;
+  bool get canPopWithoutWarningDialog => !context.read<AsiMapCubit>().state.isEditing;
 
   @override
   Widget buildContent(BuildContext context) {
