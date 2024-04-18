@@ -16,12 +16,23 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
   Future<void> initData() async {
     final activeRmu = await configService.getActiveRegionalManager();
     final activeUserRole = await configService.getActiveUserRole();
+    emit(
+      state.copyWith(
+        activeRMU: activeRmu,
+        activeUserRole: activeUserRole,
+      ),
+    );
+
+    await refresh();
+  }
+
+  Future<void> refresh() async {
     final closedActions = [
       ActionLog(
         dueDate: DateTime.now(),
         dateRaised: DateTime.now(),
         actionName:
-            '10.12.1 Waste is collected, transported and disposed of มีการรวบรวม ขนส่ง และกําจัดของเสีย (Template Name)',
+        '10.12.1 Waste is collected, transported and disposed of มีการรวบรวม ขนส่ง และกําจัดของเสีย (Template Name)',
         createDT: DateTime.now(),
         updateDT: DateTime.now(),
         actionCategoryId: 'Waste Management',
@@ -36,6 +47,7 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
         rejectReasonId: DateTime.now().millisecondsSinceEpoch,
         closingDate: DateTime.now(),
         isClosed: true,
+        actionDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
         closingComment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       ),
     ];
@@ -56,6 +68,7 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
         raisedBy: DateTime.now().millisecondsSinceEpoch,
         raisedByName: 'Zinhle Kunene',
         rejectReasonName: 'rejectReasonName',
+        actionDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
         rejectReasonId: DateTime.now().millisecondsSinceEpoch,
       ),
       ActionLog(
@@ -73,13 +86,13 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
         raisedBy: DateTime.now().millisecondsSinceEpoch,
         raisedByName: 'Zinhle Kunene',
         rejectReasonName: 'rejectReasonName',
+        actionDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
         rejectReasonId: DateTime.now().millisecondsSinceEpoch,
       ),
     ];
+
     emit(
       state.copyWith(
-        activeRMU: activeRmu,
-        activeUserRole: activeUserRole,
         openActions: openActions,
         closedActions: closedActions,
       ),

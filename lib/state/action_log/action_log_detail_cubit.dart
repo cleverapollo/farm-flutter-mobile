@@ -189,6 +189,17 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     );
   }
 
+  void onChangeActionDescription(String? description) {
+    emit(
+      state.copyWith(
+        isEditing: true,
+        actionLog: state.actionLog.copyWith(
+          actionDescription: description,
+        ),
+      ),
+    );
+  }
+
   Future<void> onSave() async {
 
   }

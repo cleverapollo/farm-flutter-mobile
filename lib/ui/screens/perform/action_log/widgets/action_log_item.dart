@@ -46,8 +46,7 @@ class ActionLogItem extends StatelessWidget {
         motion: const ScrollMotion(),
         children: [
           CustomIconSlidableAction(
-            onPressed: (_) async {
-            },
+            onPressed: (_) => onClose?.call(),
             padding: EdgeInsets.zero,
             backgroundColor: context.colors.blue,
             foregroundColor: context.colors.white,

@@ -34,6 +34,7 @@ class ActionLog with _$ActionLog {
     @JsonKey(name: 'RaisedByName') String? raisedByName,
     @JsonKey(name: 'RejectReasonId') int? rejectReasonId,
     @JsonKey(name: 'RejectReasonName') String? rejectReasonName,
+    @JsonKey(name: 'ActionDesc') String? actionDescription,
     @Default(false)
     @JsonKey(name: 'IsMajor') bool? isMajor,
     @Default(false)
