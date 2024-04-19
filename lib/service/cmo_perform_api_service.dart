@@ -779,6 +779,28 @@ class CmoPerformApiService {
     }
   }
 
+  Future<Farm?> getFarmById({
+    String? farmId,
+  }) async {
+    try {
+      final response = await client.get<JsonData>(
+        '${Env.apiGroupSchemeUrl}GetFarmById?farmId=$farmId',
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data;
+      return data == null ? null : Farm.fromJson(data);
+    } catch (e) {
+      logger.d('getFarmSearch $e');
+      return null;
+    }
+  }
+
   Future<List<Farm>?> getRMFarmSearch({String? filterString}) async {
     final response = await client.get<JsonListData>(
       '${Env.apiGroupSchemeUrl}GetRMFarmSearch?filterString=$filterString',

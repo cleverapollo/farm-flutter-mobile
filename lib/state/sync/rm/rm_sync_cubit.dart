@@ -339,11 +339,11 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           var stopwatch = Stopwatch()..start();
           while (!isSyncedSuccess && stopwatch.elapsedMilliseconds < 120000) {
             await Future.delayed(const Duration(milliseconds: 800));
-            final farms = await cmoPerformApiService.getFarmSearch(
-              filterString: farm.farmName,
+            final farms = await cmoPerformApiService.getFarmById(
+              farmId: farm.farmId,
             );
-            final isExist = farms.firstWhereOrNull((element) => element.farmId == farm.farmId);
-            if (isExist != null) {
+            final isExist = farms != null;
+            if (isExist) {
               isSyncedSuccess = true;
             }
           }
