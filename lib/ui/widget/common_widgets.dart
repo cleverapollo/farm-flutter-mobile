@@ -86,7 +86,15 @@ class AttributeItem extends StatelessWidget {
 }
 
 class InactiveWidget extends StatelessWidget {
-  const InactiveWidget({super.key});
+
+  final Color? inactiveColor;
+  final EdgeInsets? margin;
+
+  const InactiveWidget({
+    super.key,
+    this.inactiveColor,
+    this.margin,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +102,8 @@ class InactiveWidget extends StatelessWidget {
       child: GestureDetector(
         onTap: () {},
         child: Container(
-          color: context.colors.grey.withOpacity(0.5),
+          margin: margin ?? EdgeInsets.zero,
+          color: inactiveColor ?? context.colors.grey.withOpacity(0.5),
         ),
       ),
     );

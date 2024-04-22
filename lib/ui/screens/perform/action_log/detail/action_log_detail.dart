@@ -11,6 +11,7 @@ import 'package:cmo/ui/components/custom_camera_component/custom_camera_screen.d
 import 'package:cmo/ui/components/custom_camera_component/register_photo_section.dart';
 import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_selection.dart';
 import 'package:cmo/ui/components/date_picker_widget.dart';
+import 'package:cmo/ui/screens/perform/action_log/close/close_action_log.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
@@ -66,6 +67,18 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
       context,
       onDone: context.read<ActionLogDetailCubit>().onUpdatePhoto,
     );
+  }
+
+  Future<void> onSave() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    final isFarmerMember = cubit.state.activeUserRole?.isFarmerMember ?? false;
+    final actionLog = cubit.state.actionLog;
+    if (isFarmerMember) {
+      await CloseActionLog.push(context, actionLog: actionLog);
+    } else {
+      await cubit.onSave();
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -269,7 +282,7 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                             shouldShowTitle: true,
                             titleTextStyle: context.textStyles.bodyBold.blueDark2,
                             textStyle: context.textStyles.bodyNormal.blueDark2,
-                            onChanged: cubit.onChangeActionName,
+                            onChanged: cubit.onChangeActionDescription,
                           );
                         },
                       ),
@@ -279,15 +292,10 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                   BlocSelector<ActionLogDetailCubit, ActionLogDetailState, UserRoleEnum?>(
                     selector: (state) => state.activeUserRole,
                     builder: (context, activeUserRole) {
-                      if (activeUserRole == UserRoleEnum.farmerMember) {
-                        return Positioned.fill(
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 60),
-                              color: context.colors.white.withOpacity(0.4),
-                            ),
-                          ),
+                      if (activeUserRole?.isFarmerMember ?? false) {
+                        return InactiveWidget(
+                          margin: const EdgeInsets.only(top: 60),
+                          inactiveColor: context.colors.white.withOpacity(0.4),
                         );
                       }
 
@@ -301,31 +309,14 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
               padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: BlocSelector<ActionLogDetailCubit, ActionLogDetailState, UserRoleEnum?>(
-                  selector: (state) => state.activeUserRole,
-                  builder: (context, activeUserRole) {
-                    switch (activeUserRole) {
-                      case UserRoleEnum.farmerMember:
-                        return CmoFilledButton(
-                          title: LocaleKeys.actionTaken.tr(),
-                          onTap: () async {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            await cubit.onSave();
-                            Navigator.of(context).pop();
-                          },
-                        );
-                      case UserRoleEnum.regionalManager:
-                        return CmoFilledButton(
-                          title: LocaleKeys.save.tr(),
-                          onTap: () async {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            await cubit.onSave();
-                            Navigator.of(context).pop();
-                          },
-                        );
-                      default:
-                        return const SizedBox.shrink();
-                    }
+                child: BlocSelector<ActionLogDetailCubit, ActionLogDetailState, bool>(
+                  selector: (state) => state.activeUserRole?.isFarmerMember ?? false,
+                  builder: (context, isFarmerMember) {
+                    final title = isFarmerMember ? LocaleKeys.actionTaken.tr() : LocaleKeys.save.tr();
+                    return CmoFilledButton(
+                      title: title,
+                      onTap: onSave,
+                    );
                   },
                 ),
               ),

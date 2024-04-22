@@ -5,17 +5,6 @@ import 'package:isar/isar.dart';
 part 'action_log.freezed.dart';
 part 'action_log.g.dart';
 
-// [JsonConverter(typeof(LongToStringConverter))]
-// public long? FarmId { get; set; }
-// [JsonConverter(typeof(StringEnumConverter))]
-// public ActionLogNcReasons? NcReason { get; set; }
-// public int GroupSchemeId { get; set; }
-// public string GroupSchemeName { get; set; }
-// public int RegionalManagerUnitId { get; set; }
-// public string RegionalManagerUnitName { get; set; }
-// public string FarmName { get; set; }
-// public string RaisedByName { get; set; }
-
 @freezed
 @Collection(ignore: {'copyWith'})
 class ActionLog with _$ActionLog {
@@ -35,6 +24,8 @@ class ActionLog with _$ActionLog {
     @JsonKey(name: 'RejectReasonId') int? rejectReasonId,
     @JsonKey(name: 'RejectReasonName') String? rejectReasonName,
     @JsonKey(name: 'ActionDesc') String? actionDescription,
+    @JsonKey(name: 'FarmId') String? farmId,
+    @JsonKey(name: 'FarmName') String? farmName,
     @Default(false)
     @JsonKey(name: 'IsMajor') bool? isMajor,
     @Default(false)
@@ -47,9 +38,6 @@ class ActionLog with _$ActionLog {
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
     @ignore
     @JsonKey(name: 'Photos') List<ActionLogPhoto>? photos,
-
-
-    @JsonKey(name: 'Members') List<String>? members,
   }) = _ActionLog;
 
   const ActionLog._();

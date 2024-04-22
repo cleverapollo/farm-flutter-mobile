@@ -1,6 +1,7 @@
 import 'package:cmo/di.dart';
 import 'package:cmo/enum/action_log_status_filter_enum.dart';
 import 'package:cmo/enum/enum.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/ui/components/base/base_state.dart';
@@ -32,7 +33,7 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
         dueDate: DateTime.now(),
         dateRaised: DateTime.now(),
         actionName:
-        '10.12.1 Waste is collected, transported and disposed of มีการรวบรวม ขนส่ง และกําจัดของเสีย (Template Name)',
+        '10.13.1 Waste is collected, transported and disposed of มีการรวบรวม ขนส่ง และกําจัดของเสีย (Template Name)',
         createDT: DateTime.now(),
         updateDT: DateTime.now(),
         actionCategoryId: 'Waste Management',
@@ -74,7 +75,7 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
       ActionLog(
         dueDate: DateTime.now(),
         dateRaised: DateTime.now(),
-        actionName: '10.12.1 Waste is collected, transported and disposed of มีการรวบรวม ขนส่ง และกําจัดของเสีย (Template Name)',
+        actionName: '10.14.1 Waste is collected, transported and disposed of มีการรวบรวม ขนส่ง และกําจัดของเสีย (Template Name)',
         createDT: DateTime.now(),
         updateDT: DateTime.now(),
         actionCategoryId: 'Waste Management',
@@ -97,6 +98,8 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
         closedActions: closedActions,
       ),
     );
+
+    applyFilter();
   }
 
   void onFilterGroupChanged(ActionLogStatusFilterEnum statusFilter) {
@@ -108,19 +111,45 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
     applyFilter();
   }
 
+  Future<void> onSearchTextChanged(String? value) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    emit(
+      state.copyWith(
+        filteringText: value,
+      ),
+    );
+    applyFilter();
+  }
+
   void applyFilter() {
-    List<ActionLog>? filteringItems;
+    var filteringItems = <ActionLog>[];
     switch (state.statusFilter) {
       case ActionLogStatusFilterEnum.open:
-      case ActionLogStatusFilterEnum.upcoming:
+        filteringItems = state.openActions;
+        break;
       case ActionLogStatusFilterEnum.closed:
+        filteringItems = state.closedActions;
+        break;
+      case ActionLogStatusFilterEnum.upcoming:
         break;
     }
 
-    // emit(
-    //   state.copyWith(
-    //     filteringFarms: filteringItems,
-    //   ),
-    // );
+    if (state.filteringText.isNotBlank && state.statusFilter != ActionLogStatusFilterEnum.upcoming) {
+      filteringItems = filteringItems
+          .where(
+            (element) =>
+                element.actionName.isNotBlank &&
+                element.actionName!
+                    .toLowerCase()
+                    .contains(state.filteringText!.toLowerCase()),
+          )
+          .toList();
+    }
+
+    emit(
+      state.copyWith(
+        displayList: filteringItems,
+      ),
+    );
   }
 }

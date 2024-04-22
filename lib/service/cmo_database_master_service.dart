@@ -152,7 +152,12 @@ class CmoDatabaseMasterService {
       GroupSchemeMasterSpeciesSchema,
       AccidentAndIncidentPhotoSchema,
       IllegalActivityRegisterSchema,
-      GroupSchemeContentLibrarySchema
+      GroupSchemeContentLibrarySchema,
+      ActionLogSchema,
+      ActionLogPhotoSchema,
+      ActionCategorySchema,
+      ActionRaisedByUserSchema,
+      ActionTypeSchema
     ];
 
     schemes.sort((first, second) {
@@ -3713,30 +3718,6 @@ class CmoDatabaseMasterService {
         .findAll();
   }
 
-  // Future<List<RMStakeHolder>?> getActiveStakeholderWrappersCountByGroupSchemeId(
-  //     int groupSchemeId) async {
-  //   final db = await _db();
-  //   final groupSchemeStakeHolders = await db.groupSchemeStakeHolders
-  //       .filter()
-  //       .groupSchemeIdEqualTo(groupSchemeId)
-  //       .findAll();
-  //   if (groupSchemeStakeHolders == null) {
-  //     return null;
-  //   }
-  //   final stakeHolders = <RMStakeHolder>[];
-  //   for (final item in groupSchemeStakeHolders) {
-  //     final id = int.tryParse(item.stakeHolderId ?? '');
-  //     if (id == null) {
-  //       continue;
-  //     }
-  //     stakeHolders.addAll(await db.rMStakeHolders
-  //         .filter()
-  //         .stakeHolderIdEqualTo(id.toString())
-  //         .findAll());
-  //   }
-  //   return stakeHolders;
-  // }
-
   Future<List<Worker>> getWorkersByCompanyId(int companyId) async {
     final db = await _db();
     return db.workers
@@ -4665,5 +4646,125 @@ class CmoDatabaseMasterService {
         .isActiveEqualTo(true)
         .hiracTypeIdEqualTo(id)
         .findFirst();
+  }
+
+  Future<int?> cacheActionLog(
+    ActionLog? actionLog, {
+    bool isDirect = false,
+  }) async {
+    if (actionLog == null) return null;
+    final db = await _db();
+    if (isDirect) {
+      return db.actionLogs.put(actionLog);
+    } else {
+      return db.writeTxn(() async {
+        return db.actionLogs.put(actionLog);
+      });
+    }
+  }
+
+  Future<bool> removeActionLog(int? id) async {
+    if (id == null) return false;
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.actionLogs.delete(id);
+    });
+  }
+
+  Future<int?> cacheActionLogPhoto(
+      ActionLogPhoto? photo, {
+        bool isDirect = false,
+      }) async {
+    if (photo == null) return null;
+    final db = await _db();
+    if (isDirect) {
+      return db.actionLogPhotos.put(photo);
+    } else {
+      return db.writeTxn(() async {
+        return db.actionLogPhotos.put(photo);
+      });
+    }
+  }
+
+  Future<bool> removeActionLogPhoto(int id) async {
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.actionLogPhotos.delete(id);
+    });
+  }
+
+  Future<int?> removeAllActionLogPhotosByActionLogId(int? actionLogId) async {
+    if (actionLogId == null) return null;
+    final db = await _db();
+    return db.writeTxn(() async {
+      return db.actionLogPhotos.filter().actionLogIdEqualTo(actionLogId).deleteAll();
+    });
+  }
+
+  Future<int?> cacheActionCategory(
+      ActionCategory? category, {
+        bool isDirect = false,
+      }) async {
+    if (category == null) return null;
+    final db = await _db();
+    if (isDirect) {
+      return db.actionCategorys.put(category);
+    } else {
+      return db.writeTxn(() async {
+        return db.actionCategorys.put(category);
+      });
+    }
+  }
+
+  Future<int?> cacheActionRaisedByUser(
+      ActionRaisedByUser? item, {
+        bool isDirect = false,
+      }) async {
+    if (item == null) return null;
+    final db = await _db();
+    if (isDirect) {
+      return db.actionRaisedByUsers.put(item);
+    } else {
+      return db.writeTxn(() async {
+        return db.actionRaisedByUsers.put(item);
+      });
+    }
+  }
+
+  Future<int?> cacheActionType(
+      ActionType? type, {
+        bool isDirect = false,
+      }) async {
+    if (type == null) return null;
+    final db = await _db();
+    if (isDirect) {
+      return db.actionTypes.put(type);
+    } else {
+      return db.writeTxn(() async {
+        return db.actionTypes.put(type);
+      });
+    }
+  }
+
+  Future<List<ActionLog>> getActionLogs({
+    bool isClosed = false,
+  }) async {
+    final db = await _db();
+    return db.actionLogs
+        .filter()
+        .isClosedEqualTo(isClosed)
+        .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
+        .findAll();
+  }
+
+  Future<List<ActionLogPhoto>> getActionLogPhotosByActionLogId(int? actionLogId) async {
+    final db = await _db();
+    return db.actionLogPhotos
+        .filter()
+        .actionLogIdEqualTo(actionLogId)
+        .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
+        .findAll();
   }
 }

@@ -82,19 +82,58 @@ class CloseActionLogCubit extends Cubit<CloseActionLogState> {
   }
 
   void onRemovePhoto(int? actionLogPhotoId) {
-    final photos = state.photos;
-    photos.removeWhere(
-          (element) => element.actionLogPhotoId == actionLogPhotoId,
-    );
-    emit(
-      state.copyWith(
-        photos: photos,
-        isEditing: true,
-      ),
-    );
+    final removedPhoto = state.photos.firstWhereOrNull((element) => element.actionLogPhotoId == actionLogPhotoId);
+    if (removedPhoto != null) {
+      final photos = List<ActionLogPhoto>.from(state.photos);
+      final removedPhotos = List<ActionLogPhoto>.from(state.removedPhotos);
+      removedPhotos.add(removedPhoto);
+      photos.remove(removedPhoto);
+
+      emit(
+        state.copyWith(
+          photos: photos,
+          removedPhotos: removedPhotos,
+          isEditing: true,
+        ),
+      );
+    }
   }
 
   Future<void> onClose() async {
+    try {
+      emit(state.copyWith(loading: true));
+      final actionLog = state.actionLog.copyWith(
+        updateDT: DateTime.now(),
+        isMasterDataSynced: false,
+        isClosed: true,
+      );
 
+      await cmoDatabaseMasterService.cacheActionLog(actionLog);
+
+      if (state.photos.isNotBlank) {
+        for (final photo in state.photos) {
+          await cmoDatabaseMasterService.cacheActionLogPhoto(photo);
+        }
+      }
+
+      if (state.removedPhotos.isNotBlank) {
+        for (final photo in state.removedPhotos) {
+          if (photo.isMasterdataSynced ?? false) {
+            await cmoDatabaseMasterService.cacheActionLogPhoto(
+              photo.copyWith(
+                isMasterdataSynced: false,
+                isActive: false,
+              ),
+            );
+          } else {
+            await cmoDatabaseMasterService.removeActionLogPhoto(photo.id);
+          }
+        }
+      }
+    } catch (e) {
+      logger.e('Cannot close $e');
+    } finally {
+      emit(state.copyWith(loading: false));
+    }
   }
 }

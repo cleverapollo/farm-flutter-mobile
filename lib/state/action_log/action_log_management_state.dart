@@ -9,6 +9,8 @@ class ActionLogManagementState extends BaseState {
     this.statusFilter = ActionLogStatusFilterEnum.open,
     this.openActions = const <ActionLog>[],
     this.closedActions = const <ActionLog>[],
+    this.displayList = const <ActionLog>[],
+    this.filteringText,
   });
 
   final ResourceManagerUnit? activeRMU;
@@ -16,6 +18,8 @@ class ActionLogManagementState extends BaseState {
   final ActionLogStatusFilterEnum statusFilter;
   final List<ActionLog> openActions;
   final List<ActionLog> closedActions;
+  final List<ActionLog> displayList;
+  final String? filteringText;
 
   ActionLogManagementState copyWith({
     ResourceManagerUnit? activeRMU,
@@ -23,6 +27,8 @@ class ActionLogManagementState extends BaseState {
     ActionLogStatusFilterEnum? statusFilter,
     List<ActionLog>? openActions,
     List<ActionLog>? closedActions,
+    List<ActionLog>? displayList,
+    String? filteringText,
   }) {
     return ActionLogManagementState(
       activeRMU: activeRMU ?? this.activeRMU,
@@ -30,6 +36,8 @@ class ActionLogManagementState extends BaseState {
       statusFilter: statusFilter ?? this.statusFilter,
       openActions: openActions ?? this.openActions,
       closedActions: closedActions ?? this.closedActions,
+      displayList: displayList ?? this.displayList,
+      filteringText: filteringText ?? this.filteringText,
     );
   }
 }

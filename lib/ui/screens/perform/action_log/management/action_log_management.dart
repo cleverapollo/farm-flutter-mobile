@@ -2,9 +2,8 @@ import 'package:cmo/enum/enum.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/model/resource_manager_unit.dart';
-import 'package:cmo/model/user/user_role.dart';
 import 'package:cmo/state/state.dart';
+import 'package:cmo/ui/screens/perform/action_log/close/close_action_log.dart';
 import 'package:cmo/ui/screens/perform/action_log/detail/action_log_detail.dart';
 import 'package:cmo/ui/screens/perform/action_log/widgets/action_log_item.dart';
 import 'package:cmo/ui/screens/perform/action_log/widgets/action_log_status_filter.dart';
@@ -35,23 +34,27 @@ class ActionLogManagement extends BaseStatefulWidget {
 
 class _ActionLogManagementState extends BaseStatefulWidgetState<ActionLogManagement> {
 
-  Future<void> onRemoveFarm() async {
-    // await context.read<MemberManagementCubit>().onRemoveFarm(farm);
-    // await context.read<DashboardCubit>().getResourceManagerMembers();
+  late ActionLogManagementCubit cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    cubit = context.read<ActionLogManagementCubit>();
   }
 
-  void onAudit() {
-    // AuditAddScreen.push(
-    //   context,
-    //   AuditComeFromEnum.menu,
-    //   selectedFarm: farm,
-    // );
+  Future<void> onNavigateToDetail({
+    ActionLog? actionLog,
+  }) async {
+    await ActionLogDetail.push(
+      context,
+      actionLog: actionLog,
+    );
+    await cubit.refresh();
   }
 
-  Future<void> onNavigateToDetail() async {
-    await ActionLogDetail.push(context);
-    // await context.read<MemberManagementCubit>().refresh();
-    // await context.read<DashboardCubit>().getResourceManagerMembers();
+  Future<void> onClose(ActionLog actionLog) async {
+    await CloseActionLog.push(context, actionLog: actionLog);
+    await cubit.refresh();
   }
 
   @override
@@ -73,33 +76,45 @@ class _ActionLogManagementState extends BaseStatefulWidgetState<ActionLogManagem
             children: [
               const ActionLogStatusFilter(),
               const SizedBox(height: 12),
+              BlocSelector<ActionLogManagementCubit, ActionLogManagementState, ActionLogStatusFilterEnum>(
+                selector: (state) => state.statusFilter,
+                builder: (context, statusFilter) {
+                  if (statusFilter == ActionLogStatusFilterEnum.upcoming) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
+                    child: CmoTextField(
+                      name: LocaleKeys.search.tr(),
+                      prefixIcon: Assets.icons.icSearch.svg(),
+                      hintText: LocaleKeys.search.tr(),
+                      onChanged: cubit.onSearchTextChanged,
+                    ),
+                  );
+                },
+              ),
               Expanded(
                 child: BlocBuilder<ActionLogManagementCubit, ActionLogManagementState>(
                   builder: (context, state) {
-                    var displayList = <ActionLog>[];
-                    switch (state.statusFilter) {
-                      case ActionLogStatusFilterEnum.open:
-                        displayList = state.openActions;
-                        break;
-                      case ActionLogStatusFilterEnum.closed:
-                        displayList = state.closedActions;
-                        break;
-                      default:
-                        return const SizedBox.shrink();
-                    }
-
                     return ListView.builder(
-                      itemCount: displayList.length,
+                      itemCount: state.displayList.length,
                       itemBuilder: (context, index) {
-                        return ActionLogItem(
-                          actionLog: displayList[index],
-                          mapData: generateInformationMapData(
-                            displayList[index],
+                        final disableClose = (state.displayList[index].isClosed ?? false) || (state.activeUserRole?.isFarmerMember ?? false);
+                        return InkWell(
+                          onTap: () => onNavigateToDetail(
+                              actionLog: state.displayList[index]),
+                          child: ActionLogItem(
+                            actionLog: state.displayList[index],
+                            mapData: generateInformationMapData(
+                              state.displayList[index],
+                            ),
+                            onClose: disableClose
+                                ? null
+                                : () async {
+                                    await onClose(state.displayList[index]);
+                                  },
                           ),
-
-                          onClose: (displayList[index].isClosed ?? false) ? null : () {
-
-                          },
                         );
                       },
                     );

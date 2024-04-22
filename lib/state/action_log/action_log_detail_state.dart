@@ -11,6 +11,7 @@ class ActionLogDetailState extends BaseState {
     this.selectedMembers = const <Farm>[],
     this.rejectReasons = const <RejectReason>[],
     this.photos = const <ActionLogPhoto>[],
+    this.removedPhotos = const <ActionLogPhoto>[],
     this.actionTypes = const <ActionType>[],
     this.actionCategories = const <ActionCategory>[],
     this.actionRaisedByUser = const <ActionRaisedByUser>[],
@@ -27,6 +28,7 @@ class ActionLogDetailState extends BaseState {
   final List<Farm> selectedMembers;
   final List<RejectReason> rejectReasons;
   final List<ActionLogPhoto> photos;
+  final List<ActionLogPhoto> removedPhotos;
   final List<ActionType> actionTypes;
   final List<ActionCategory> actionCategories;
   final List<ActionRaisedByUser> actionRaisedByUser;
@@ -45,6 +47,7 @@ class ActionLogDetailState extends BaseState {
     List<Farm>? selectedMembers,
     List<RejectReason>? rejectReasons,
     List<ActionLogPhoto>? photos,
+    List<ActionLogPhoto>? removedPhotos,
     List<ActionType>? actionTypes,
     List<ActionCategory>? actionCategories,
     List<ActionRaisedByUser>? actionRaisedByUser,
@@ -64,6 +67,7 @@ class ActionLogDetailState extends BaseState {
       completedMembers: completedMembers ?? this.completedMembers,
       rejectReasons: rejectReasons ?? this.rejectReasons,
       photos: photos ?? this.photos,
+      removedPhotos: removedPhotos ?? this.removedPhotos,
       actionTypes: actionTypes ?? this.actionTypes,
       actionCategories: actionCategories ?? this.actionCategories,
       actionRaisedByUser: actionRaisedByUser ?? this.actionRaisedByUser,

@@ -11,12 +11,14 @@ class CloseActionLogState extends BaseState {
     this.activeFarm,
     this.activeUserRole,
     this.photos = const <ActionLogPhoto>[],
+    this.removedPhotos = const <ActionLogPhoto>[],
   });
 
   final ResourceManagerUnit? activeRMU;
   final Farm? activeFarm;
   final ActionLog actionLog;
   final List<ActionLogPhoto> photos;
+  final List<ActionLogPhoto> removedPhotos;
   final UserRoleEnum? activeUserRole;
 
   CloseActionLogState copyWith({
@@ -27,6 +29,7 @@ class CloseActionLogState extends BaseState {
     bool? isEditing,
     ActionLog? actionLog,
     List<ActionLogPhoto>? photos,
+    List<ActionLogPhoto>? removedPhotos,
     UserRoleEnum? activeUserRole,
   }) {
     return CloseActionLogState(
@@ -38,13 +41,8 @@ class CloseActionLogState extends BaseState {
       isEditing: isEditing ?? this.isEditing,
       actionLog: actionLog ?? this.actionLog,
       photos: photos ?? this.photos,
+      removedPhotos: removedPhotos ?? this.removedPhotos,
     );
   }
 }
 
-extension CloseActionLogStateExtension on CloseActionLogState {
-
-  bool isFarmer() {
-    return activeUserRole == UserRoleEnum.farmerMember;
-  }
-}

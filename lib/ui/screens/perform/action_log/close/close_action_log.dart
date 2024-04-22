@@ -126,7 +126,7 @@ class _CloseActionLogState extends BaseStatefulWidgetState<CloseActionLog> {
                           height: 150,
                           maxLines: 5,
                           hintText: '',
-                          title: state.isFarmer() ? LocaleKeys.action_taken.tr() : LocaleKeys.closing_comment.tr(),
+                          title: (state.activeUserRole?.isFarmerMember ?? false) ? LocaleKeys.action_taken.tr() : LocaleKeys.closing_comment.tr(),
                           shouldShowTitle: true,
                           titleTextStyle: context.textStyles.bodyBold.blueDark2,
                           textStyle: context.textStyles.bodyNormal.blueDark2,
