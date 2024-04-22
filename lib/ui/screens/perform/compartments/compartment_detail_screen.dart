@@ -518,13 +518,13 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                   children: [
                     Text(
                       '${LocaleKeys.stocking.tr()} (SHPa)',
-                      style: context.textStyles.bodyBold.blueDark2,
+                      style: context.textStyles.bodyBold.grey,
                     ),
                   ],
                 ),
                 Text(
                   state.compartment.stockingPercentage != null ? state.compartment.stockingPercentage!.toStringAsFixed(2) : '',
-                  style: context.textStyles.bodyNormal.blueDark2,
+                  style: context.textStyles.bodyNormal.grey,
                 ),
               ],
             ),
@@ -548,13 +548,13 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                   children: [
                     Text(
                       LocaleKeys.total_stocking.tr(),
-                      style: context.textStyles.bodyBold.blueDark2,
+                      style: context.textStyles.bodyBold.grey,
                     ),
                   ],
                 ),
                 Text(
                   state.compartment.totalStocking == null ? '' : state.compartment.totalStocking!.toStringAsFixed(2),
-                  style: context.textStyles.bodyNormal.blueDark2,
+                  style: context.textStyles.bodyNormal.grey,
                 ),
               ],
             ),
