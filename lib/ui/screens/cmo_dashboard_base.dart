@@ -57,6 +57,9 @@ class _CmoDashboardBaseState extends BaseStatefulWidgetState<CmoDashboardBase> {
   bool get canPopWithoutWarningDialog => false;
 
   @override
+  bool get disableBackButton => true;
+
+  @override
   Widget buildContent(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,

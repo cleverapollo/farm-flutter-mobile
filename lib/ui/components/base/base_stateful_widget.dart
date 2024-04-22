@@ -46,6 +46,8 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
     return settingConfig.dateFormatEnum.displayFormat(dateTime);
   }
 
+  bool disableBackButton = false;
+
   bool canPopWithoutWarningDialog = true;
 
   bool shouldCheckConnectionSpeed = false;
@@ -93,6 +95,7 @@ abstract class BaseStatefulWidgetState<T extends BaseStatefulWidget> extends Sta
             child: buildContent(context),
           ),
           onWillPop: () async {
+            if (disableBackButton) return false;
             if (canPopWithoutWarningDialog) {
               return true;
             } else {
