@@ -316,10 +316,6 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
           isMobileNumberError: mobileNumber == null
               ? state.memberDetailSectionState.isMobileNumberError
               : (mobileNumber.isBlank || mobileNumber.length < 8),
-          isEmailError: emailAddress == null
-              ? state.memberDetailSectionState.isEmailError
-              : (state.memberDetailSectionState.emailAddress.isNullOrEmpty ||
-                  !state.memberDetailSectionState.emailAddress.validEmail),
         ),
       ),
     );
@@ -576,9 +572,6 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
           isLastNameError: state.memberDetailSectionState.lastName.isBlank,
           isIdNumberError: state.memberDetailSectionState.idNumber.isBlank || state.memberDetailSectionState.idNumber!.length < 8,
           isMobileNumberError: state.memberDetailSectionState.mobileNumber.isBlank || state.memberDetailSectionState.mobileNumber!.length < 8,
-          isEmailError: state.memberDetailSectionState.emailAddress.isBlank
-              ? false
-              : !state.memberDetailSectionState.emailAddress.validEmail,
         ),
 
         // Step 4 with MemberSiteDetailsState

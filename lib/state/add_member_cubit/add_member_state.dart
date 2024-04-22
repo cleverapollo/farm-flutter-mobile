@@ -74,7 +74,6 @@ class MemberDetailSectionState with _$MemberDetailSectionState {
     @Default(false) bool isLastNameError,
     @Default(false) bool isIdNumberError,
     @Default(false) bool isMobileNumberError,
-    @Default(false) bool isEmailError,
     @Default(true) bool isSectionCollapse,
     Key? sectionKey,
     String? firstName,

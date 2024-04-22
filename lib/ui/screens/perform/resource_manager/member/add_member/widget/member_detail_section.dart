@@ -112,8 +112,6 @@ class MemberDetailSection extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 AttributeItem(
-                  errorText: 'Please enter a valid email format',
-                  isShowError: memberDetailSectionState.isEmailError,
                   child: InputAttributeItem(
                     initialValue: memberDetailSectionState.emailAddress,
                     textStyle: context.textStyles.bodyNormal.black,
