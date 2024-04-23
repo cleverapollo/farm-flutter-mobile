@@ -31,12 +31,15 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     final activeUserRole = await configService.getActiveUserRole();
     final activeRmu = await configService.getActiveRegionalManager();
     final rejectReasons = await cmoDatabaseMasterService.getRejectReasons();
+    final actionTypes = await cmoDatabaseMasterService.getActionTypes();
+    final users = await cmoDatabaseMasterService.getActionRaisedByUsers();
     final completedMembers = await cmoDatabaseMasterService.getFarmsByRMUnit(
       activeRmu?.regionalManagerUnitId,
       isCompleted: true,
     );
 
     final photos = await cmoDatabaseMasterService.getActionLogPhotosByActionLogId(state.actionLog.actionLogId);
+
     final selectedReason = rejectReasons.firstWhereOrNull(
           (element) => element.rejectReasonId == state.actionLog.rejectReasonId,
     );
@@ -55,6 +58,8 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
         activeUserRole: activeUserRole,
         completedMembers: completedMembers,
         rejectReasons: rejectReasons,
+        actionTypes: actionTypes,
+        actionRaisedByUser: users,
         selectedMembers: selectedMembers,
         selectedReason: selectedReason,
         photos: photos,
@@ -77,21 +82,8 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
         isEditing: true,
         selectedActionType: actionType,
         actionLog: state.actionLog.copyWith(
-          actionTypeName: actionType.actionTypeName,
-          actionTypeId: actionType.actionTypeId,
-        ),
-      ),
-    );
-  }
-
-  void onSelectActionCategory(ActionCategory category) {
-    emit(
-      state.copyWith(
-        isEditing: true,
-        selectedActionCategory: category,
-        actionLog: state.actionLog.copyWith(
-          actionCategoryName: category.actionCategoryName,
-          actionCategoryId: category.actionCategoryId,
+          actionTypeName: actionType.actionLogTypeName,
+          actionTypeId: actionType.actionLogTypeId,
         ),
       ),
     );
@@ -133,6 +125,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
       state.copyWith(
         isEditing: true,
         selectedMembers: selectedMembers,
+        haveChangeMember: true,
       ),
     );
   }
@@ -144,6 +137,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
       state.copyWith(
         isEditing: true,
         selectedMembers: selectedMembers,
+        haveChangeMember: true,
       ),
     );
   }
@@ -166,6 +160,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
       state.copyWith(
         photos: state.photos + [photo],
         isEditing: true,
+        haveChangePhoto: true,
       ),
     );
   }
@@ -183,6 +178,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
           photos: photos,
           removedPhotos: removedPhotos,
           isEditing: true,
+          haveChangePhoto: true,
         ),
       );
     }
@@ -217,15 +213,56 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
       state.copyWith(
         isEditing: true,
         actionLog: state.actionLog.copyWith(
-          actionDescription: description,
+          ncAction: description,
         ),
       ),
     );
   }
 
+
+  Future<void> deactivateOldActionLog() async {
+    if (!state.actionLog.isMasterDataSynced) {
+      await cmoDatabaseMasterService.removeActionLog(state.actionLog.id);
+    }
+
+    if (state.haveChangeMember) {
+      await cmoDatabaseMasterService.cacheActionLog(
+        state.actionLog.copyWith(
+          updateDT: DateTime.now(),
+          isMasterDataSynced: false,
+          isActive: false,
+        ),
+      );
+    }
+
+    if (state.haveChangePhoto) {
+      final photos = await cmoDatabaseMasterService.getActionLogPhotosByActionLogId(state.actionLog.actionLogId);
+      for(final photo in photos) {
+        await cmoDatabaseMasterService.cacheActionLogPhoto(
+          photo.copyWith(
+            isMasterdataSynced: false,
+            isActive: false,
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> onSave() async {
     try {
       emit(state.copyWith(loading: true));
+      if (state.actionLog.isMasterDataSynced) {
+        await cmoDatabaseMasterService.cacheActionLog(
+          state.actionLog.copyWith(
+            updateDT: DateTime.now(),
+            isMasterDataSynced: false,
+            isActive: false,
+          ),
+        );
+      } else {
+
+      }
+
       final actionLog = state.actionLog.copyWith(
         updateDT: DateTime.now(),
         isMasterDataSynced: false,
@@ -257,7 +294,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
 
         if (state.removedPhotos.isNotBlank) {
           for (final photo in state.removedPhotos) {
-            if (photo.isMasterdataSynced ?? false) {
+            if (photo.isMasterdataSynced) {
               await cmoDatabaseMasterService.cacheActionLogPhoto(
                 photo.copyWith(
                   isMasterdataSynced: false,

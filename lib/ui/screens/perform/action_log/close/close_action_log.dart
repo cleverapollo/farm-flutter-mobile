@@ -108,7 +108,7 @@ class _CloseActionLogState extends BaseStatefulWidgetState<CloseActionLog> {
                     ),
                     BlocSelector<CloseActionLogCubit, CloseActionLogState,
                         String?>(
-                      selector: (state) => state.actionLog.actionDescription,
+                      selector: (state) => state.actionLog.ncAction,
                       builder: (context, actionDescription) {
                         return Text(
                           actionDescription ?? '',

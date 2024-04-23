@@ -28,69 +28,9 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
   }
 
   Future<void> refresh() async {
-    final closedActions = [
-      ActionLog(
-        dueDate: DateTime.now(),
-        dateRaised: DateTime.now(),
-        actionName:
-        '10.13.1 Waste is collected, transported and disposed of มีการรวบรวม ขนส่ง และกําจัดของเสีย (Template Name)',
-        createDT: DateTime.now(),
-        updateDT: DateTime.now(),
-        actionCategoryId: 'Waste Management',
-        actionCategoryName: 'Waste Management',
-        actionLogId: DateTime.now().millisecondsSinceEpoch,
-        actionTypeId: 'Audit',
-        actionTypeName: 'Audit',
-        isMajor: true,
-        raisedBy: DateTime.now().millisecondsSinceEpoch,
-        raisedByName: 'Zinhle Kunene',
-        rejectReasonName: 'rejectReasonName',
-        rejectReasonId: DateTime.now().millisecondsSinceEpoch,
-        closingDate: DateTime.now(),
-        isClosed: true,
-        actionDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        closingComment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      ),
-    ];
+    final closedActions = <ActionLog>[];
 
-    final openActions = [
-      ActionLog(
-        dueDate: DateTime.now(),
-        dateRaised: DateTime.now(),
-        actionName: '10.12.1 Waste is collected, transported and disposed of มีการรวบรวม ขนส่ง และกําจัดของเสีย (Template Name)',
-        createDT: DateTime.now(),
-        updateDT: DateTime.now(),
-        actionCategoryId: 'Waste Management',
-        actionCategoryName: 'Waste Management',
-        actionLogId: DateTime.now().millisecondsSinceEpoch,
-        actionTypeId: 'Audit',
-        actionTypeName: 'Audit',
-        isMajor: true,
-        raisedBy: DateTime.now().millisecondsSinceEpoch,
-        raisedByName: 'Zinhle Kunene',
-        rejectReasonName: 'rejectReasonName',
-        actionDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        rejectReasonId: DateTime.now().millisecondsSinceEpoch,
-      ),
-      ActionLog(
-        dueDate: DateTime.now(),
-        dateRaised: DateTime.now(),
-        actionName: '10.14.1 Waste is collected, transported and disposed of มีการรวบรวม ขนส่ง และกําจัดของเสีย (Template Name)',
-        createDT: DateTime.now(),
-        updateDT: DateTime.now(),
-        actionCategoryId: 'Waste Management',
-        actionCategoryName: 'Waste Management',
-        actionLogId: DateTime.now().millisecondsSinceEpoch,
-        actionTypeId: 'Audit',
-        actionTypeName: 'Audit',
-        isMajor: false,
-        raisedBy: DateTime.now().millisecondsSinceEpoch,
-        raisedByName: 'Zinhle Kunene',
-        rejectReasonName: 'rejectReasonName',
-        actionDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        rejectReasonId: DateTime.now().millisecondsSinceEpoch,
-      ),
-    ];
+    final openActions = <ActionLog>[];
 
     emit(
       state.copyWith(

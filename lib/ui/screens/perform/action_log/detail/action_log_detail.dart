@@ -121,12 +121,13 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                         builder: (context, state) {
                           return BottomSheetSelection(
                             hintText: LocaleKeys.type.tr(),
+                            displayHorizontal: false,
                             margin: const EdgeInsets.symmetric(horizontal: 24),
                             padding: const EdgeInsets.symmetric(
                               vertical: 12,
                               horizontal: 14,
                             ),
-                            value: state.selectedActionType?.actionTypeName,
+                            value: state.selectedActionType?.actionLogTypeName,
                             onTap: () async {
                               FocusManager.instance.primaryFocus?.unfocus();
                               if (state.actionTypes.isBlank) return;
@@ -143,45 +144,7 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                                       title: Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 24.0),
                                         child: Text(
-                                          state.actionTypes[index].actionTypeName ?? '',
-                                          style: context.textStyles.bodyBold.blueDark2,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
-                        builder: (context, state) {
-                          return BottomSheetSelection(
-                            hintText: LocaleKeys.category.tr(),
-                            margin: const EdgeInsets.symmetric(horizontal: 24),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 14,
-                            ),
-                            value: state.selectedActionCategory?.actionCategoryName,
-                            onTap: () async {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                              if (state.actionCategories.isBlank) return;
-                              await showCustomBottomSheet<void>(
-                                context,
-                                content: ListView.builder(
-                                  itemCount: state.actionCategories.length,
-                                  itemBuilder: (context, index) {
-                                    return ListTile(
-                                      onTap: () {
-                                        cubit.onSelectActionCategory(state.actionCategories[index]);
-                                        Navigator.pop(context);
-                                      },
-                                      title: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                                        child: Text(
-                                          state.actionCategories[index].actionCategoryName ?? '',
+                                          state.actionTypes[index].actionLogTypeName ?? '',
                                           style: context.textStyles.bodyBold.blueDark2,
                                         ),
                                       ),
@@ -197,6 +160,7 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                         builder: (context, state) {
                           return BottomSheetSelection(
                             hintText: LocaleKeys.raised_by.tr(),
+                            displayHorizontal: false,
                             margin: const EdgeInsets.symmetric(horizontal: 24),
                             padding: const EdgeInsets.symmetric(
                               vertical: 12,
@@ -219,7 +183,7 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                                       title: Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 24.0),
                                         child: Text(
-                                          state.actionRaisedByUser[index].fullName,
+                                          state.actionRaisedByUser[index].fullName ?? '',
                                           style: context.textStyles.bodyBold.blueDark2,
                                         ),
                                       ),

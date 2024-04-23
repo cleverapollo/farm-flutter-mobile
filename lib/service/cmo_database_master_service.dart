@@ -155,7 +155,6 @@ class CmoDatabaseMasterService {
       GroupSchemeContentLibrarySchema,
       ActionLogSchema,
       ActionLogPhotoSchema,
-      ActionCategorySchema,
       ActionRaisedByUserSchema,
       ActionTypeSchema
     ];
@@ -4701,21 +4700,6 @@ class CmoDatabaseMasterService {
     });
   }
 
-  Future<int?> cacheActionCategory(
-      ActionCategory? category, {
-        bool isDirect = false,
-      }) async {
-    if (category == null) return null;
-    final db = await _db();
-    if (isDirect) {
-      return db.actionCategorys.put(category);
-    } else {
-      return db.writeTxn(() async {
-        return db.actionCategorys.put(category);
-      });
-    }
-  }
-
   Future<int?> cacheActionRaisedByUser(
       ActionRaisedByUser? item, {
         bool isDirect = false,
@@ -4744,6 +4728,20 @@ class CmoDatabaseMasterService {
         return db.actionTypes.put(type);
       });
     }
+  }
+
+  Future<List<ActionType>> getActionTypes() async {
+    final db = await _db();
+    return db.actionTypes
+        .filter()
+        .isActiveEqualTo(true)
+        .sortByCreateDTDesc()
+        .findAll();
+  }
+
+  Future<List<ActionRaisedByUser>> getActionRaisedByUsers() async {
+    final db = await _db();
+    return db.actionRaisedByUsers.where().findAll();
   }
 
   Future<List<ActionLog>> getActionLogs({

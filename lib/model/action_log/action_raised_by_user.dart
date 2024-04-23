@@ -13,6 +13,9 @@ class ActionRaisedByUser with _$ActionRaisedByUser {
     @JsonKey(name: 'UserEmail') String? userEmail,
     @JsonKey(name: 'FirstName') String? firstName,
     @JsonKey(name: 'LastName') String? lastName,
+    @JsonKey(name: 'FullName') String? fullName,
+    @JsonKey(name: 'PhoneNumber') String? phoneNumber,
+    @JsonKey(name: 'ProfileImage') String? profileImage,
   }) = _ActionRaisedByUser;
 
   const ActionRaisedByUser._();

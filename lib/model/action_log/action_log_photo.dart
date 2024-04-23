@@ -15,7 +15,7 @@ class ActionLogPhoto with _$ActionLogPhoto {
     @Default(true)
     @JsonKey(name: 'IsActive') bool? isActive,
     @Default(false)
-    @JsonKey(name: 'IsMasterdataSynced') bool? isMasterdataSynced,
+    @JsonKey(name: 'IsMasterdataSynced') bool isMasterdataSynced,
     @JsonKey(name: 'CreateDT') DateTime? createDT,
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
   }) = _ActionLogPhoto;

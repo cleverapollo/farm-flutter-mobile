@@ -13,13 +13,13 @@ class ActionLogDetailState extends BaseState {
     this.photos = const <ActionLogPhoto>[],
     this.removedPhotos = const <ActionLogPhoto>[],
     this.actionTypes = const <ActionType>[],
-    this.actionCategories = const <ActionCategory>[],
     this.actionRaisedByUser = const <ActionRaisedByUser>[],
     this.selectedReason,
     this.activeUserRole,
     this.selectedActionType,
-    this.selectedActionCategory,
     this.selectedActionRaisedByUser,
+    this.haveChangeMember = false,
+    this.haveChangePhoto = false,
   });
 
   final ResourceManagerUnit? activeRMU;
@@ -30,18 +30,20 @@ class ActionLogDetailState extends BaseState {
   final List<ActionLogPhoto> photos;
   final List<ActionLogPhoto> removedPhotos;
   final List<ActionType> actionTypes;
-  final List<ActionCategory> actionCategories;
   final List<ActionRaisedByUser> actionRaisedByUser;
   final ActionType? selectedActionType;
-  final ActionCategory? selectedActionCategory;
   final ActionRaisedByUser? selectedActionRaisedByUser;
   final RejectReason? selectedReason;
   final UserRoleEnum? activeUserRole;
+  final bool haveChangePhoto;
+  final bool haveChangeMember;
 
   ActionLogDetailState copyWith({
     ResourceManagerUnit? activeRMU,
     bool? loading,
     bool? isEditing,
+    bool? haveChangeMember,
+    bool? haveChangePhoto,
     ActionLog? actionLog,
     List<Farm>? completedMembers,
     List<Farm>? selectedMembers,
@@ -49,10 +51,8 @@ class ActionLogDetailState extends BaseState {
     List<ActionLogPhoto>? photos,
     List<ActionLogPhoto>? removedPhotos,
     List<ActionType>? actionTypes,
-    List<ActionCategory>? actionCategories,
     List<ActionRaisedByUser>? actionRaisedByUser,
     ActionType? selectedActionType,
-    ActionCategory? selectedActionCategory,
     ActionRaisedByUser? selectedActionRaisedByUser,
     RejectReason? selectedReason,
     UserRoleEnum? activeUserRole,
@@ -61,6 +61,8 @@ class ActionLogDetailState extends BaseState {
       activeRMU: activeRMU ?? this.activeRMU,
       activeUserRole: activeUserRole ?? this.activeUserRole,
       loading: loading ?? this.loading,
+      haveChangeMember: haveChangeMember ?? this.haveChangeMember,
+      haveChangePhoto: haveChangePhoto ?? this.haveChangePhoto,
       isEditing: isEditing ?? this.isEditing,
       actionLog: actionLog ?? this.actionLog,
       selectedMembers: selectedMembers ?? this.selectedMembers,
@@ -69,11 +71,9 @@ class ActionLogDetailState extends BaseState {
       photos: photos ?? this.photos,
       removedPhotos: removedPhotos ?? this.removedPhotos,
       actionTypes: actionTypes ?? this.actionTypes,
-      actionCategories: actionCategories ?? this.actionCategories,
       actionRaisedByUser: actionRaisedByUser ?? this.actionRaisedByUser,
       selectedReason: selectedReason ?? this.selectedReason,
       selectedActionType: selectedActionType ?? this.selectedActionType,
-      selectedActionCategory: selectedActionCategory ?? this.selectedActionCategory,
       selectedActionRaisedByUser: selectedActionRaisedByUser ?? this.selectedActionRaisedByUser,
     );
   }
