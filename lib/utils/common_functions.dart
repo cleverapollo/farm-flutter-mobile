@@ -12,7 +12,7 @@ class CommonFunctions {
     }
 
     if (await canLaunchUrlString(url!)) {
-      await launchUrlString(url);
+      await launchUrlString(url, mode: LaunchMode.externalApplication);
     } else {
       showSnackError(msg:'Could not launch $url');
     }
