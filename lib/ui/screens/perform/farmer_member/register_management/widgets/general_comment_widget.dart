@@ -23,6 +23,7 @@ class GeneralCommentWidget extends StatefulWidget {
     this.titleTextStyle,
     this.margin = EdgeInsets.zero,
     this.padding = EdgeInsets.zero,
+    this.shouldDisplayBorder = true,
 });
 
   final String? initialValue;
@@ -40,6 +41,7 @@ class GeneralCommentWidget extends StatefulWidget {
   final TextStyle? titleTextStyle;
   final EdgeInsets margin;
   final EdgeInsets padding;
+  final bool shouldDisplayBorder;
 
   @override
   State<StatefulWidget> createState() => _AddGeneralCommentWidgetState();
@@ -119,12 +121,14 @@ class _AddGeneralCommentWidgetState extends State<GeneralCommentWidget> {
         margin: widget.margin,
         padding: widget.padding,
         decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: context.colors.blueDark2,
-              width: 2,
-            ),
-          ),
+          border: widget.shouldDisplayBorder
+              ? Border(
+                  bottom: BorderSide(
+                    color: context.colors.blueDark2,
+                    width: 2,
+                  ),
+                )
+              : null,
         ),
         child: Column(
           children: [

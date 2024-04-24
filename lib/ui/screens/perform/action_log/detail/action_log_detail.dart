@@ -76,8 +76,9 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
     if (isFarmerMember) {
       await CloseActionLog.push(context, actionLog: actionLog);
     } else {
-      await cubit.onSave();
-      Navigator.of(context).pop();
+      await cubit.onSave(onSuccess: () {
+        Navigator.of(context).pop();
+      });
     }
   }
 
@@ -103,23 +104,29 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                       isMajorWidget(),
                      BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
                         builder: (context, state) {
-                          return GeneralCommentWidget(
-                            initialValue: state.actionLog.actionName,
+                          return AttributeItem(
+                            isShowError: state.isActionNameError,
                             margin: const EdgeInsets.symmetric(horizontal: 24),
-                            height: 150,
-                            maxLines: 5,
-                            hintText: '',
-                            title: LocaleKeys.action_name_and_description.tr(),
-                            shouldShowTitle: true,
-                            titleTextStyle: context.textStyles.bodyBold.blueDark2,
-                            textStyle: context.textStyles.bodyNormal.blueDark2,
-                            onChanged: cubit.onChangeActionName,
+                            isUnderErrorBorder: true,
+                            child: GeneralCommentWidget(
+                              initialValue: state.actionLog.actionName,
+                              shouldDisplayBorder: false,
+                              height: 150,
+                              maxLines: 5,
+                              hintText: '',
+                              title: LocaleKeys.action_name_and_description.tr(),
+                              shouldShowTitle: true,
+                              titleTextStyle: context.textStyles.bodyBold.blueDark2,
+                              textStyle: context.textStyles.bodyNormal.blueDark2,
+                              onChanged: cubit.onChangeActionName,
+                            ),
                           );
                         },
                       ),
                       BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
                         builder: (context, state) {
                           return BottomSheetSelection(
+                            isShowError: state.isActionTypeError,
                             hintText: LocaleKeys.type.tr(),
                             displayHorizontal: false,
                             margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -159,6 +166,7 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                       BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
                         builder: (context, state) {
                           return BottomSheetSelection(
+                            isShowError: state.isRaisedByError,
                             hintText: LocaleKeys.raised_by.tr(),
                             displayHorizontal: false,
                             margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -237,8 +245,8 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                       BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
                         builder: (context, state) {
                           return GeneralCommentWidget(
-                            margin: const EdgeInsets.symmetric(horizontal: 24),
-                            initialValue: state.actionLog.actionName,
+                            margin: const EdgeInsets.symmetric(horizontal: 26),
+                            initialValue: state.actionLog.ncAction,
                             height: 150,
                             maxLines: 5,
                             hintText: '',
@@ -346,6 +354,7 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
         return Column(
           children: [
             BottomSheetSelection(
+              isShowError: state.isMemberFieldError,
               hintText: LocaleKeys.addMember.tr(),
               hintTextStyle: context.textStyles.bodyBold.blueDark3,
               value: state.selectedMembers.length.toString(),
@@ -433,6 +442,7 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
     return BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
       builder: (context, state) {
         return BottomSheetSelection(
+          isShowError: state.isRejectReasonError,
           hintText: LocaleKeys.nc_reason.tr(),
           hintTextStyle: context.textStyles.bodyBold.blueDark3,
           value: state.selectedReason?.rejectReasonName,

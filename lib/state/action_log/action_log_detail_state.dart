@@ -18,8 +18,11 @@ class ActionLogDetailState extends BaseState {
     this.activeUserRole,
     this.selectedActionType,
     this.selectedActionRaisedByUser,
-    this.haveChangeMember = false,
-    this.haveChangePhoto = false,
+    this.isActionNameError = false,
+    this.isActionTypeError = false,
+    this.isRaisedByError = false,
+    this.isMemberFieldError = false,
+    this.isRejectReasonError = false,
   });
 
   final ResourceManagerUnit? activeRMU;
@@ -35,15 +38,16 @@ class ActionLogDetailState extends BaseState {
   final ActionRaisedByUser? selectedActionRaisedByUser;
   final RejectReason? selectedReason;
   final UserRoleEnum? activeUserRole;
-  final bool haveChangePhoto;
-  final bool haveChangeMember;
+  final bool isActionNameError;
+  final bool isActionTypeError;
+  final bool isRaisedByError;
+  final bool isMemberFieldError;
+  final bool isRejectReasonError;
 
   ActionLogDetailState copyWith({
     ResourceManagerUnit? activeRMU,
     bool? loading,
     bool? isEditing,
-    bool? haveChangeMember,
-    bool? haveChangePhoto,
     ActionLog? actionLog,
     List<Farm>? completedMembers,
     List<Farm>? selectedMembers,
@@ -56,13 +60,16 @@ class ActionLogDetailState extends BaseState {
     ActionRaisedByUser? selectedActionRaisedByUser,
     RejectReason? selectedReason,
     UserRoleEnum? activeUserRole,
+    bool? isActionNameError,
+    bool? isActionTypeError,
+    bool? isRaisedByError,
+    bool? isMemberFieldError,
+    bool? isRejectReasonError,
   }) {
     return ActionLogDetailState(
       activeRMU: activeRMU ?? this.activeRMU,
       activeUserRole: activeUserRole ?? this.activeUserRole,
       loading: loading ?? this.loading,
-      haveChangeMember: haveChangeMember ?? this.haveChangeMember,
-      haveChangePhoto: haveChangePhoto ?? this.haveChangePhoto,
       isEditing: isEditing ?? this.isEditing,
       actionLog: actionLog ?? this.actionLog,
       selectedMembers: selectedMembers ?? this.selectedMembers,
@@ -75,6 +82,11 @@ class ActionLogDetailState extends BaseState {
       selectedReason: selectedReason ?? this.selectedReason,
       selectedActionType: selectedActionType ?? this.selectedActionType,
       selectedActionRaisedByUser: selectedActionRaisedByUser ?? this.selectedActionRaisedByUser,
+      isActionNameError: isActionNameError ?? this.isActionNameError,
+      isActionTypeError: isActionTypeError ?? this.isActionTypeError,
+      isRaisedByError: isRaisedByError ?? this.isRaisedByError,
+      isMemberFieldError: isMemberFieldError ?? this.isMemberFieldError,
+      isRejectReasonError: isRejectReasonError ?? this.isRejectReasonError,
     );
   }
 }

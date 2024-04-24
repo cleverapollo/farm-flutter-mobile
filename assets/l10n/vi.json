@@ -704,5 +704,6 @@
   "syncing_questions": "Đồng bộ Câu hỏi",
   "syncing_area_type": "Đồng bộ Loại Diện tích",
   "syncing_compartments": "Đồng bộ Khu vực",
-  "syncing_asi_type": "Đồng bộ Loại ASI"
+  "syncing_asi_type": "Đồng bộ Loại ASI",
+  "complete_require_fields_message": "Please complete the required field."
 }

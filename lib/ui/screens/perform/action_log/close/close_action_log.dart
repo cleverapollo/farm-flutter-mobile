@@ -87,6 +87,7 @@ class _CloseActionLogState extends BaseStatefulWidgetState<CloseActionLog> {
               SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 12),
                     BlocSelector<CloseActionLogCubit, CloseActionLogState, String?>(

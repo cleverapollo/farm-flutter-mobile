@@ -702,5 +702,6 @@
   "syncing_questions": "ซิงค์ข้อมูลคำถาม",
   "syncing_area_type": "ซิงค์ข้อมูลพื้นที่",
   "syncing_compartments": "ซิงค์ข้อมูลแปลงย่อย",
-  "syncing_asi_type": "ซิงค์ข้อมูล ASI"
+  "syncing_asi_type": "ซิงค์ข้อมูล ASI",
+  "complete_require_fields_message": "Please complete the required field."
 }

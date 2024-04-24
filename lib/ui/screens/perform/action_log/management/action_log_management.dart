@@ -130,7 +130,7 @@ class _ActionLogManagementState extends BaseStatefulWidgetState<ActionLogManagem
 
   Map<String, String?> generateInformationMapData(ActionLog actionLog) {
     return {
-      LocaleKeys.farm.tr(): '',
+      LocaleKeys.farm.tr(): actionLog.farmName,
       LocaleKeys.action_name.tr(): actionLog.actionName,
       LocaleKeys.nc_reason.tr(): actionLog.rejectReasonName,
       LocaleKeys.raised_by.tr(): actionLog.raisedByName,

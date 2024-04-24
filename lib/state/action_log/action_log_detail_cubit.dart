@@ -3,9 +3,11 @@ import 'package:cmo/enum/action_log_status_filter_enum.dart';
 import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
+import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/ui/components/base/base_state.dart';
+import 'package:cmo/ui/snack/snack_helper.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:cmo/ui/components/base/base_state.dart';
@@ -16,12 +18,13 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
   ActionLogDetailCubit(ActionLog? actionLog)
       : super(
           ActionLogDetailState(
-            actionLog: actionLog ?? ActionLog(
-              createDT: DateTime.now(),
-              actionLogId: DateTime.now().millisecondsSinceEpoch,
-              dateRaised: DateTime.now(),
-              dueDate: DateTime.now(),
-            ),
+            actionLog: actionLog ??
+                ActionLog(
+                  createDT: DateTime.now(),
+                  actionLogId: DateTime.now().millisecondsSinceEpoch,
+                  dateRaised: DateTime.now(),
+                  dueDate: DateTime.now(),
+                ),
           ),
         ) {
     initData();
@@ -80,6 +83,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     emit(
       state.copyWith(
         isEditing: true,
+        isActionTypeError: false,
         selectedActionType: actionType,
         actionLog: state.actionLog.copyWith(
           actionTypeName: actionType.actionLogTypeName,
@@ -93,6 +97,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     emit(
       state.copyWith(
         isEditing: true,
+        isRaisedByError: false,
         selectedActionRaisedByUser: user,
         actionLog: state.actionLog.copyWith(
           raisedByName: user.fullName,
@@ -124,8 +129,8 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     emit(
       state.copyWith(
         isEditing: true,
+        isMemberFieldError: false,
         selectedMembers: selectedMembers,
-        haveChangeMember: true,
       ),
     );
   }
@@ -136,8 +141,8 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     emit(
       state.copyWith(
         isEditing: true,
+        isMemberFieldError: false,
         selectedMembers: selectedMembers,
-        haveChangeMember: true,
       ),
     );
   }
@@ -160,7 +165,6 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
       state.copyWith(
         photos: state.photos + [photo],
         isEditing: true,
-        haveChangePhoto: true,
       ),
     );
   }
@@ -178,7 +182,6 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
           photos: photos,
           removedPhotos: removedPhotos,
           isEditing: true,
-          haveChangePhoto: true,
         ),
       );
     }
@@ -189,6 +192,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
       state.copyWith(
         isEditing: true,
         selectedReason: reason,
+        isRejectReasonError: false,
         actionLog: state.actionLog.copyWith(
           rejectReasonName: reason.rejectReasonName,
           rejectReasonId: reason.rejectReasonId,
@@ -201,6 +205,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     emit(
       state.copyWith(
         isEditing: true,
+        isActionNameError: false,
         actionLog: state.actionLog.copyWith(
           actionName: actionName,
         ),
@@ -219,13 +224,36 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     );
   }
 
+  bool onValidateRequiredField() {
+    final isActionNameError = state.actionLog.actionName.isBlank;
+    final isActionTypeError = state.actionLog.actionTypeId == null;
+    final isRaisedByError = state.actionLog.raisedBy == null;
+    final isMemberFieldError = state.selectedMembers.isBlank;
+    final isRejectReasonError = state.actionLog.rejectReasonId == null;
+
+    emit(
+      state.copyWith(
+        isActionNameError: isActionNameError,
+        isActionTypeError: isActionTypeError,
+        isRaisedByError: isRaisedByError,
+        isMemberFieldError: isMemberFieldError,
+        isRejectReasonError: isRejectReasonError,
+      ),
+    );
+
+    return isActionNameError ||
+        isActionTypeError ||
+        isRaisedByError ||
+        isMemberFieldError ||
+        isRejectReasonError;
+  }
 
   Future<void> deactivateOldActionLog() async {
     if (!state.actionLog.isMasterDataSynced) {
       await cmoDatabaseMasterService.removeActionLog(state.actionLog.id);
-    }
-
-    if (state.haveChangeMember) {
+      await cmoDatabaseMasterService
+          .removeAllActionLogPhotosByActionLogId(state.actionLog.id);
+    } else {
       await cmoDatabaseMasterService.cacheActionLog(
         state.actionLog.copyWith(
           updateDT: DateTime.now(),
@@ -233,11 +261,9 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
           isActive: false,
         ),
       );
-    }
 
-    if (state.haveChangePhoto) {
       final photos = await cmoDatabaseMasterService.getActionLogPhotosByActionLogId(state.actionLog.actionLogId);
-      for(final photo in photos) {
+      for (final photo in photos) {
         await cmoDatabaseMasterService.cacheActionLogPhoto(
           photo.copyWith(
             isMasterdataSynced: false,
@@ -248,37 +274,26 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     }
   }
 
-  Future<void> onSave() async {
+  Future<void> onSave({required void Function() onSuccess}) async {
+    if (onValidateRequiredField()) {
+      return;
+    }
+
     try {
       emit(state.copyWith(loading: true));
-      if (state.actionLog.isMasterDataSynced) {
-        await cmoDatabaseMasterService.cacheActionLog(
-          state.actionLog.copyWith(
-            updateDT: DateTime.now(),
-            isMasterDataSynced: false,
-            isActive: false,
-          ),
-        );
-      } else {
-
-      }
-
+      await deactivateOldActionLog();
       final actionLog = state.actionLog.copyWith(
         updateDT: DateTime.now(),
         isMasterDataSynced: false,
       );
 
       var now = DateTime.now().millisecondsSinceEpoch;
-      // await cmoDatabaseMasterService.removeActionLog(actionLog.id);
-      // await cmoDatabaseMasterService.removeAllActionLogPhotosByActionLogId(actionLog.id);
       for(final member in state.selectedMembers) {
         await cmoDatabaseMasterService.cacheActionLog(
           actionLog.copyWith(
             actionLogId: now,
             farmId: member.farmId,
             farmName: member.farmName,
-            updateDT: DateTime.now(),
-            isMasterDataSynced: false,
           ),
         );
 
@@ -287,29 +302,33 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
             await cmoDatabaseMasterService.cacheActionLogPhoto(
               photo.copyWith(
                 actionLogId: now,
+                actionLogPhotoId: DateTime.now().microsecondsSinceEpoch,
               ),
             );
           }
         }
 
-        if (state.removedPhotos.isNotBlank) {
-          for (final photo in state.removedPhotos) {
-            if (photo.isMasterdataSynced) {
-              await cmoDatabaseMasterService.cacheActionLogPhoto(
-                photo.copyWith(
-                  isMasterdataSynced: false,
-                  isActive: false,
-                ),
-              );
-            } else {
-              await cmoDatabaseMasterService.removeActionLogPhoto(photo.id);
-            }
-          }
-        }
-
         now++;
       }
+
+      if (state.removedPhotos.isNotBlank) {
+        for (final photo in state.removedPhotos) {
+          if (photo.isMasterdataSynced) {
+            await cmoDatabaseMasterService.cacheActionLogPhoto(
+              photo.copyWith(
+                isMasterdataSynced: false,
+                isActive: false,
+              ),
+            );
+          } else {
+            await cmoDatabaseMasterService.removeActionLogPhoto(photo.id);
+          }
+        }
+      }
+
+      onSuccess();
     } catch (e) {
+      showSnackError(msg: 'Cannot save action log');
       logger.e('Cannot save $e');
     } finally {
       emit(state.copyWith(loading: false));

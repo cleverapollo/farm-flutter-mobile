@@ -28,9 +28,8 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
   }
 
   Future<void> refresh() async {
-    final closedActions = <ActionLog>[];
-
-    final openActions = <ActionLog>[];
+    final closedActions = await cmoDatabaseMasterService.getActionLogs(isClosed: true);
+    final openActions = await cmoDatabaseMasterService.getActionLogs();
 
     emit(
       state.copyWith(
