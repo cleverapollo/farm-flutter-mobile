@@ -112,12 +112,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: buildInputArea(),
                           ),
-                          const SizedBox(height: 14),
-                          Text(
-                            LocaleKeys.forgotPassword.tr(),
-                            style: context.textStyles.bodyNormal
-                                .copyWith(color: context.colors.blueDark2),
-                          ),
                           const SizedBox(height: 16),
                           CmoFilledButton(
                             title: LocaleKeys.login.tr(),
