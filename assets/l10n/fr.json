@@ -363,6 +363,7 @@
   "closing_comment": "Closing Comment",
   "closing_date": "Closing Date",
   "closing_requirements": "Closing Requirements",
+  "due": "Due",
   "sync": "Synchroniser",
   "sync_successfully_completed": "Sync Successfully Completed",
   "syncSummary": "Résumé de la synchronisation",

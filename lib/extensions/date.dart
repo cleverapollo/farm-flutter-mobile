@@ -41,4 +41,11 @@ extension DateTimeExtensions on DateTime? {
 
     return year;
   }
+
+  bool isSameDate(DateTime? other) {
+    if (this == null || other == null) return false;
+    return this!.year == other.year &&
+        this!.month == other.month &&
+        this!.day == other.day;
+  }
 }

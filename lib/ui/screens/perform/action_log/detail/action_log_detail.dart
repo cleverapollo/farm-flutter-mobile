@@ -224,7 +224,7 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                           selector: (state) => state.actionLog.dueDate,
                           builder: (context, dateRaised) {
                             return DatePickerWidget(
-                              lastDate: DateTime.now(),
+                              lastDate: DateTime.now().add(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
                               firstDate: DateTime.now().add(const Duration(days: -Constants.DEFAULT_DAY_DURATION_OFFSET)),
                               initialDate: dateRaised,
                               onConfirm: context.read<ActionLogDetailCubit>().onDueDateChanged,

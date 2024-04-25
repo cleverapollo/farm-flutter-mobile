@@ -31,10 +31,40 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
     final closedActions = await cmoDatabaseMasterService.getActionLogs(isClosed: true);
     final openActions = await cmoDatabaseMasterService.getActionLogs();
 
+    final dueActionLogs = <ActionLog>[];
+    final overdueActionLogs = <ActionLog>[];
+    final upcomingActionLogs = <ActionLog>[];
+
+    DateTime? overdueDate;
+    DateTime? upcomingDate;
+
+    for (final actionLog in openActions) {
+      if (DateTime.now().isSameDate(actionLog.dueDate)) {
+        dueActionLogs.add(actionLog);
+      } else if (actionLog.dueDate != null) {
+        if (DateTime.now().isAfter(actionLog.dueDate!)) {
+          if (overdueDate == null || overdueDate.isBefore(actionLog.dueDate!)) {
+            overdueDate = actionLog.dueDate;
+          }
+
+          overdueActionLogs.add(actionLog);
+        } else if (DateTime.now().isBefore(actionLog.dueDate!)) {
+          if (upcomingDate == null || upcomingDate.isBefore(actionLog.dueDate!)) {
+            upcomingDate = actionLog.dueDate;
+          }
+
+          upcomingActionLogs.add(actionLog);
+        }
+      }
+    }
+
     emit(
       state.copyWith(
         openActions: openActions,
         closedActions: closedActions,
+        dueActionLogs: dueActionLogs,
+        overdueActionLogs: overdueActionLogs.where((element) => element.dueDate.isSameDate(overdueDate)).toList(),
+        upcomingActionLogs: upcomingActionLogs.where((element) => element.dueDate.isSameDate(upcomingDate)).toList(),
       ),
     );
 

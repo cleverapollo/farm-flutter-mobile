@@ -10,6 +10,9 @@ class ActionLogManagementState extends BaseState {
     this.openActions = const <ActionLog>[],
     this.closedActions = const <ActionLog>[],
     this.displayList = const <ActionLog>[],
+    this.overdueActionLogs = const <ActionLog>[],
+    this.dueActionLogs = const <ActionLog>[],
+    this.upcomingActionLogs = const <ActionLog>[],
     this.filteringText,
   });
 
@@ -20,6 +23,9 @@ class ActionLogManagementState extends BaseState {
   final List<ActionLog> closedActions;
   final List<ActionLog> displayList;
   final String? filteringText;
+  final List<ActionLog> overdueActionLogs;
+  final List<ActionLog> dueActionLogs;
+  final List<ActionLog> upcomingActionLogs;
 
   ActionLogManagementState copyWith({
     ResourceManagerUnit? activeRMU,
@@ -29,6 +35,9 @@ class ActionLogManagementState extends BaseState {
     List<ActionLog>? closedActions,
     List<ActionLog>? displayList,
     String? filteringText,
+    List<ActionLog>? overdueActionLogs,
+    List<ActionLog>? dueActionLogs,
+    List<ActionLog>? upcomingActionLogs,
   }) {
     return ActionLogManagementState(
       activeRMU: activeRMU ?? this.activeRMU,
@@ -38,6 +47,9 @@ class ActionLogManagementState extends BaseState {
       closedActions: closedActions ?? this.closedActions,
       displayList: displayList ?? this.displayList,
       filteringText: filteringText ?? this.filteringText,
+      overdueActionLogs: overdueActionLogs ?? this.overdueActionLogs,
+      dueActionLogs: dueActionLogs ?? this.dueActionLogs,
+      upcomingActionLogs: upcomingActionLogs ?? this.upcomingActionLogs,
     );
   }
 }

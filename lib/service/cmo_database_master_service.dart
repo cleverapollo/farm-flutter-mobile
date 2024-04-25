@@ -4744,6 +4744,14 @@ class CmoDatabaseMasterService {
     return db.actionRaisedByUsers.where().findAll();
   }
 
+  Future<List<ActionLog>> getUnsyncedActionLogs() async {
+    final db = await _db();
+    return db.actionLogs
+        .filter()
+        .isMasterDataSyncedEqualTo(false)
+        .findAll();
+  }
+
   Future<List<ActionLog>> getActionLogs({
     bool isClosed = false,
   }) async {
@@ -4763,6 +4771,14 @@ class CmoDatabaseMasterService {
         .actionLogIdEqualTo(actionLogId)
         .isActiveEqualTo(true)
         .sortByCreateDTDesc()
+        .findAll();
+  }
+
+  Future<List<ActionLogPhoto>> getUnsyncedActionLogPhotosByActionLogId(int? actionLogId) async {
+    final db = await _db();
+    return db.actionLogPhotos
+        .filter()
+        .actionLogIdEqualTo(actionLogId)
         .findAll();
   }
 }

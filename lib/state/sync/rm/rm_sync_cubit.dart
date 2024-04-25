@@ -203,6 +203,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       await Future.delayed(const Duration(seconds: 5), () async {
         await publishASIs();
         await publishAudits();
+        await publishActionLogs();
       });
 
       if (state.errorMessageItems.isNotBlank) {
@@ -733,6 +734,54 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       emit(
         state.copyWith(
           syncMessage: 'No ASI photos to sync',
+        ),
+      );
+    }
+  }
+
+  Future<void> publishActionLogs() async {
+    emit(
+      state.copyWith(
+        syncMessage: 'Uploading Action Logs...',
+      ),
+    );
+
+    logger.d('Get unsynced Action logs');
+    final actionLogs = await cmoDatabaseMasterService.getUnsyncedActionLogs();
+    if (actionLogs.isNotBlank) {
+      logger.d('Unsynced Action Logs count: ${actionLogs.length}');
+      for (final actionLog in actionLogs) {
+        final photos = await cmoDatabaseMasterService.getUnsyncedActionLogPhotosByActionLogId(actionLog.actionLogId);
+
+        final syncedActionLog = await cmoPerformApiService.insertUpdatedActionLog(
+          actionLog.copyWith(
+            photos: photos,
+          ),
+        );
+
+        if (syncedActionLog != null) {
+          await cmoDatabaseMasterService.cacheActionLog(
+            actionLog.copyWith(
+              isMasterDataSynced: true,
+            ),
+          );
+
+          for (final photo in photos) {
+            await cmoDatabaseMasterService.cacheActionLogPhoto(photo.copyWith(isMasterdataSynced: true));
+          }
+          logger.d('Successfully published Action Log: ${syncedActionLog.actionName}');
+        } else {
+          handleErrorMessage(
+            snackErrorMessage: 'Failed to publish Action Log: ${actionLog.actionName}',
+            errorMessage: 'Action Log ${actionLog.actionName}',
+          );
+        }
+      }
+    } else {
+      logger.d('No Action Log to sync');
+      emit(
+        state.copyWith(
+          syncMessage: 'No Action Log to sync',
         ),
       );
     }

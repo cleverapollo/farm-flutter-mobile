@@ -7,6 +7,7 @@ import 'package:cmo/ui/screens/perform/action_log/close/close_action_log.dart';
 import 'package:cmo/ui/screens/perform/action_log/detail/action_log_detail.dart';
 import 'package:cmo/ui/screens/perform/action_log/widgets/action_log_item.dart';
 import 'package:cmo/ui/screens/perform/action_log/widgets/action_log_status_filter.dart';
+import 'package:cmo/ui/screens/perform/action_log/widgets/upcoming_tab.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -97,13 +98,19 @@ class _ActionLogManagementState extends BaseStatefulWidgetState<ActionLogManagem
               Expanded(
                 child: BlocBuilder<ActionLogManagementCubit, ActionLogManagementState>(
                   builder: (context, state) {
+                    if (state.statusFilter == ActionLogStatusFilterEnum.upcoming) {
+                      return UpcomingTab(
+                        settingConfig: context.read<SettingsCubit>().state.settingConfig,
+                        onNavigateToDetail: (actionLog) => onNavigateToDetail(actionLog: actionLog),
+                      );
+                    }
+
                     return ListView.builder(
                       itemCount: state.displayList.length,
                       itemBuilder: (context, index) {
                         final disableClose = (state.displayList[index].isClosed ?? false) || (state.activeUserRole?.isFarmerMember ?? false);
                         return InkWell(
-                          onTap: () => onNavigateToDetail(
-                              actionLog: state.displayList[index]),
+                          onTap: () => onNavigateToDetail(actionLog: state.displayList[index]),
                           child: ActionLogItem(
                             actionLog: state.displayList[index],
                             mapData: generateInformationMapData(

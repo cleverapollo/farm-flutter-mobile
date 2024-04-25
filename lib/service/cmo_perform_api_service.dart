@@ -1002,4 +1002,25 @@ class CmoPerformApiService {
 
     return null;
   }
+
+  Future<ActionLog?> insertUpdatedActionLog(ActionLog actionLog) async {
+    try {
+      final response = await client.post<JsonData>(
+        '${Env.apiGroupSchemeUrl}InsertOrUpdateActionLog',
+        data: actionLog.toJson(),
+        options: Options(headers: {'accessToken': 'true'}),
+      );
+
+      if (response.statusCode != 200) {
+        showSnackError(msg: 'Unknow error: ${response.statusCode}');
+        return null;
+      }
+
+      final data = response.data;
+      return data == null ? null : ActionLog.fromJson(data);
+    } catch (e) {
+      logger.d('Cannot insertUpdatedActionLog $e');
+      return null;
+    }
+  }
 }
