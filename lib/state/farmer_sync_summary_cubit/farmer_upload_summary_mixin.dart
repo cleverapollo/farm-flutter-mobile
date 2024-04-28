@@ -62,6 +62,7 @@ mixin FarmUploadSummaryMixin {
     await _publishBiologicalControlAgentRegisters(); // done
     await _publishCompartment();
     await _publishIllegalActivities();
+    await _publishActionLogs();
   }
 
   Future<void> _publishCompartment() async {
@@ -120,6 +121,45 @@ mixin FarmUploadSummaryMixin {
         }
       } else {
         logger.d('No Illegal Activities to sync');
+      }
+    } catch (error) {
+      logger.e(error);
+    }
+  }
+
+  Future<void> _publishActionLogs() async {
+    onStatus('Uploading Action Logs...');
+    try {
+
+      final actionLogs = await cmoDatabaseMasterService.getUnsyncedActionLogs();
+      logger.d('Unsynced Action Logs count: ${actionLogs.length}');
+      if (actionLogs.isNotBlank) {
+        for (final actionLog in actionLogs) {
+          final photos = await cmoDatabaseMasterService.getUnsyncedActionLogPhotosByActionLogId(actionLog.actionLogId);
+
+          final syncedActionLog = await cmoPerformApiService.insertUpdatedActionLog(
+            actionLog.copyWith(
+              photos: photos,
+            ),
+          );
+
+          if (syncedActionLog != null) {
+            await cmoDatabaseMasterService.cacheActionLog(
+              actionLog.copyWith(
+                isMasterDataSynced: true,
+              ),
+            );
+
+            for (final photo in photos) {
+              await cmoDatabaseMasterService.cacheActionLogPhoto(photo.copyWith(isMasterdataSynced: true));
+            }
+            logger.d('Successfully published Action Log: ${syncedActionLog.actionName}');
+          } else {
+            logger.d('Failed to publish Action Log: ${actionLog.actionName}');
+          }
+        }
+      } else {
+        logger.d('No Action Log to sync...');
       }
     } catch (error) {
       logger.e(error);

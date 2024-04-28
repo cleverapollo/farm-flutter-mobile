@@ -53,3 +53,7 @@ class ActionLogManagementState extends BaseState {
     );
   }
 }
+
+extension ActionLogManagementStateExtension on ActionLogManagementState {
+  int get totalUpcoming => overdueActionLogs.length + dueActionLogs.length + upcomingActionLogs.length;
+}

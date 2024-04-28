@@ -102,6 +102,7 @@ class _ActionLogManagementState extends BaseStatefulWidgetState<ActionLogManagem
                       return UpcomingTab(
                         settingConfig: context.read<SettingsCubit>().state.settingConfig,
                         onNavigateToDetail: (actionLog) => onNavigateToDetail(actionLog: actionLog),
+                        onClose: onClose,
                       );
                     }
 

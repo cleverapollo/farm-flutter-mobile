@@ -1327,6 +1327,18 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       logger.d('--insertGroupSchemeContentLibrary start');
       await insertGroupSchemeContentLibrary();
       logger.d('--insertGroupSchemeContentLibrary done');
+
+      logger.d('--insertActionTypes start');
+      await insertActionTypes();
+      logger.d('--insertActionTypes done');
+
+      logger.d('--insertActionLogRaisedByUser start');
+      await insertActionLogRaisedByUser();
+      logger.d('--insertActionLogRaisedByUser done');
+
+      logger.d('--insertActionLogs start');
+      await insertActionLogs();
+      logger.d('--insertActionLogs done');
     });
   }
 
@@ -1535,6 +1547,64 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
       groupSchemeContentLibraries?.first,
       isDirect: true,
     );
+  }
+
+  Future<void> insertActionTypes() async {
+    emit(state.copyWith(syncMessage: 'Syncing Action Types...'));
+    final actionTypes = await cmoPerformApiService.getActionTypes();
+    if (actionTypes.isNotBlank) {
+      for (final actionType in actionTypes!) {
+        await cmoDatabaseMasterService.cacheActionType(
+          actionType,
+          isDirect: true,
+        );
+      }
+    }
+  }
+
+  Future<void> insertActionLogRaisedByUser() async {
+    emit(state.copyWith(syncMessage: 'Syncing Action Log Raised By User...'));
+    final users = await cmoPerformApiService.getActionLogRaisedByUser();
+    if (users.isNotBlank) {
+      for (final user in users!) {
+        await cmoDatabaseMasterService.cacheActionRaisedByUser(
+          user,
+          isDirect: true,
+        );
+      }
+    }
+  }
+
+  Future<void> insertActionLogs() async {
+    emit(state.copyWith(syncMessage: 'Syncing Action Logs...'));
+    final actionLogs = await cmoPerformApiService.getActionLogs();
+    if (actionLogs.isNotBlank) {
+      for (final actionLog in actionLogs!) {
+        await cmoDatabaseMasterService.cacheActionLog(
+          actionLog.copyWith(
+            isMasterDataSynced: true,
+          ),
+          isDirect: true,
+        );
+
+        await insertActionLogPhotosByActionLogId(actionLog.actionLogId);
+      }
+    }
+  }
+
+  Future<void> insertActionLogPhotosByActionLogId(int? actionLogId) async {
+    emit(state.copyWith(syncMessage: 'Syncing Action Log Photos...'));
+    final photos = await cmoPerformApiService.getActionLogPhotosByActionLogId(actionLogId);
+    if (photos.isNotBlank) {
+      for (final photo in photos!) {
+        await cmoDatabaseMasterService.cacheActionLogPhoto(
+          photo.copyWith(
+            isMasterdataSynced: true,
+          ),
+          isDirect: true,
+        );
+      }
+    }
   }
 
   Future<int?> insertCountry(Message item) async {

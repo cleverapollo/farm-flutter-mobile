@@ -49,7 +49,7 @@ class ActionLogStatusFilter extends StatelessWidget {
                     isSelected: state.statusFilter ==
                         ActionLogStatusFilterEnum.upcoming,
                     title: LocaleKeys.upcoming.tr(),
-                    subtitle: '0',
+                    subtitle: state.totalUpcoming.toString(),
                   ),
                 ),
               Expanded(

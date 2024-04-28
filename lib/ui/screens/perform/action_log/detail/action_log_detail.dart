@@ -281,10 +281,10 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
               padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: BlocSelector<ActionLogDetailCubit, ActionLogDetailState, bool>(
-                  selector: (state) => state.activeUserRole?.isFarmerMember ?? false,
-                  builder: (context, isFarmerMember) {
-                    final title = isFarmerMember ? LocaleKeys.actionTaken.tr() : LocaleKeys.save.tr();
+                child: BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
+                  builder: (context, state) {
+                    if(state.actionLog.isClosed ?? false) return const SizedBox.shrink();
+                    final title = (state.activeUserRole?.isFarmerMember ?? false) ? LocaleKeys.actionTaken.tr() : LocaleKeys.save.tr();
                     return CmoFilledButton(
                       title: title,
                       onTap: onSave,
