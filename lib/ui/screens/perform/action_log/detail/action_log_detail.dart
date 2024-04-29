@@ -220,13 +220,12 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                       ),
                       AttributeItem(
                         margin: const EdgeInsets.symmetric(horizontal: 24),
-                        child: BlocSelector<ActionLogDetailCubit, ActionLogDetailState, DateTime?>(
-                          selector: (state) => state.actionLog.dueDate,
-                          builder: (context, dateRaised) {
+                        child: BlocBuilder<ActionLogDetailCubit, ActionLogDetailState>(
+                          builder: (context, state) {
                             return DatePickerWidget(
-                              lastDate: DateTime.now().add(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
-                              firstDate: DateTime.now().add(const Duration(days: -Constants.DEFAULT_DAY_DURATION_OFFSET)),
-                              initialDate: dateRaised,
+                              firstDate: state.actionLog.dateRaised ?? DateTime.now(),
+                              lastDate: (state.actionLog.dateRaised ?? DateTime.now()).add(Duration(days: state.maxDueDays)),
+                              initialDate: state.actionLog.dueDate,
                               onConfirm: context.read<ActionLogDetailCubit>().onDueDateChanged,
                               title: LocaleKeys.due_date.tr(),
                             );

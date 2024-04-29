@@ -23,7 +23,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
                   createDT: DateTime.now(),
                   actionLogId: DateTime.now().millisecondsSinceEpoch,
                   dateRaised: DateTime.now(),
-                  dueDate: DateTime.now(),
+                  dueDate: DateTime.now().add(const Duration(days: 90)),
                 ),
           ),
         ) {
@@ -74,7 +74,13 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     emit(
       state.copyWith(
         isEditing: true,
-        actionLog: state.actionLog.copyWith(isMajor: isMajor),
+        maxDueDays: isMajor ? 365 : 90,
+        actionLog: state.actionLog.copyWith(
+          isMajor: isMajor,
+          dueDate: (state.actionLog.dateRaised ?? DateTime.now()).add(
+            Duration(days: isMajor ? 365 : 90),
+          ),
+        ),
       ),
     );
   }
@@ -108,21 +114,33 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
   }
 
   void onDateRaisedChanged(DateTime? value) {
-    emit(
-      state.copyWith(
-        isEditing: true,
-          actionLog: state.actionLog.copyWith(dateRaised: value),
-      ),
-    );
+    if (value != null) {
+      emit(
+        state.copyWith(
+          isEditing: true,
+          actionLog: state.actionLog.copyWith(
+            dateRaised: value,
+            dueDate: value.add(
+              Duration(days: state.maxDueDays),
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   void onDueDateChanged(DateTime? value) {
-    emit(
-      state.copyWith(
-        isEditing: true,
-        actionLog: state.actionLog.copyWith(dueDate: value),
-      ),
-    );
+    if (value != null && state.actionLog.dateRaised != null &&
+        value.subtract(Duration(days: state.maxDueDays)).isBefore(state.actionLog.dateRaised!)) {
+      emit(
+        state.copyWith(
+          isEditing: true,
+          actionLog: state.actionLog.copyWith(dueDate: value),
+        ),
+      );
+    } else {
+      showSnackError(msg: 'Due Date must be less than ${state.maxDueDays} days from Date Raised');
+    }
   }
 
   void onSelectMember(List<Farm> selectedMembers) {

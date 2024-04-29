@@ -753,9 +753,12 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       for (final actionLog in actionLogs) {
         final photos = await cmoDatabaseMasterService.getUnsyncedActionLogPhotosByActionLogId(actionLog.actionLogId);
 
-        final syncedActionLog = await cmoPerformApiService.insertUpdatedActionLog(
+        final syncedActionLog =
+            await cmoPerformApiService.insertUpdatedActionLog(
           actionLog.copyWith(
-            photos: photos,
+            photos: photos
+                .map((e) => e.copyWith(photo: e.photo.stringToBase64SyncServer))
+                .toList(),
           ),
         );
 
@@ -1239,6 +1242,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         await cmoDatabaseMasterService.cacheActionLogPhoto(
           photo.copyWith(
             isMasterdataSynced: true,
+            photo: photo.photo.base64SyncServerToString,
           ),
           isDirect: true,
         );

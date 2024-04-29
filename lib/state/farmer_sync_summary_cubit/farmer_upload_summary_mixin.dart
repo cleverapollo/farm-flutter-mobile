@@ -137,9 +137,13 @@ mixin FarmUploadSummaryMixin {
         for (final actionLog in actionLogs) {
           final photos = await cmoDatabaseMasterService.getUnsyncedActionLogPhotosByActionLogId(actionLog.actionLogId);
 
-          final syncedActionLog = await cmoPerformApiService.insertUpdatedActionLog(
+          final syncedActionLog =
+              await cmoPerformApiService.insertUpdatedActionLog(
             actionLog.copyWith(
-              photos: photos,
+              photos: photos
+                  .map((e) =>
+                      e.copyWith(photo: e.photo.stringToBase64SyncServer))
+                  .toList(),
             ),
           );
 

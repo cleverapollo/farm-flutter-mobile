@@ -1600,6 +1600,7 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
         await cmoDatabaseMasterService.cacheActionLogPhoto(
           photo.copyWith(
             isMasterdataSynced: true,
+            photo: photo.photo.base64SyncServerToString,
           ),
           isDirect: true,
         );

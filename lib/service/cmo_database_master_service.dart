@@ -4741,7 +4741,7 @@ class CmoDatabaseMasterService {
 
   Future<List<ActionRaisedByUser>> getActionRaisedByUsers() async {
     final db = await _db();
-    return db.actionRaisedByUsers.where().findAll();
+    return db.actionRaisedByUsers.where().sortByFullName().findAll();
   }
 
   Future<List<ActionLog>> getUnsyncedActionLogs() async {

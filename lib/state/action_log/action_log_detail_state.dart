@@ -23,6 +23,7 @@ class ActionLogDetailState extends BaseState {
     this.isRaisedByError = false,
     this.isMemberFieldError = false,
     this.isRejectReasonError = false,
+    this.maxDueDays = 90,
   });
 
   final ResourceManagerUnit? activeRMU;
@@ -43,6 +44,7 @@ class ActionLogDetailState extends BaseState {
   final bool isRaisedByError;
   final bool isMemberFieldError;
   final bool isRejectReasonError;
+  final int maxDueDays;
 
   ActionLogDetailState copyWith({
     ResourceManagerUnit? activeRMU,
@@ -65,6 +67,7 @@ class ActionLogDetailState extends BaseState {
     bool? isRaisedByError,
     bool? isMemberFieldError,
     bool? isRejectReasonError,
+    int? maxDueDays,
   }) {
     return ActionLogDetailState(
       activeRMU: activeRMU ?? this.activeRMU,
@@ -87,6 +90,7 @@ class ActionLogDetailState extends BaseState {
       isRaisedByError: isRaisedByError ?? this.isRaisedByError,
       isMemberFieldError: isMemberFieldError ?? this.isMemberFieldError,
       isRejectReasonError: isRejectReasonError ?? this.isRejectReasonError,
+      maxDueDays: maxDueDays ?? this.maxDueDays,
     );
   }
 }

@@ -143,6 +143,7 @@ class UpcomingTabActionLogItem extends StatelessWidget {
                   color: context.colors.greyLight1,
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       LocaleKeys.action_name.tr(),
