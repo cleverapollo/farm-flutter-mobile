@@ -31,11 +31,13 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
   }
 
   Future<void> initData() async {
+    final activeUser = await configService.getActiveUser();
     final activeUserRole = await configService.getActiveUserRole();
     final activeRmu = await configService.getActiveRegionalManager();
     final rejectReasons = await cmoDatabaseMasterService.getRejectReasons();
     final actionTypes = await cmoDatabaseMasterService.getActionTypes();
     final users = await cmoDatabaseMasterService.getActionRaisedByUsers();
+
     final completedMembers = await cmoDatabaseMasterService.getFarmsByRMUnit(
       activeRmu?.regionalManagerUnitId,
       isCompleted: true,
@@ -55,6 +57,21 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
         )
         .toList();
 
+    final selectedActionType = actionTypes.firstWhereOrNull((element) => element.actionLogTypeId == state.actionLog.actionTypeId);
+
+    final selectedActionRaisedByUser = users.firstWhereOrNull((element) => element.userId == (state.actionLog.raisedBy ?? activeUser?.userId));
+
+    if (state.actionLog.raisedBy == null) {
+      emit(
+        state.copyWith(
+          actionLog: state.actionLog.copyWith(
+            raisedByName: selectedActionRaisedByUser?.fullName,
+            raisedBy: selectedActionRaisedByUser?.userId,
+          ),
+        ),
+      );
+    }
+
     emit(
       state.copyWith(
         activeRMU: activeRmu,
@@ -65,6 +82,8 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
         actionRaisedByUser: users,
         selectedMembers: selectedMembers,
         selectedReason: selectedReason,
+        selectedActionType: selectedActionType,
+        selectedActionRaisedByUser: selectedActionRaisedByUser,
         photos: photos,
       ),
     );
