@@ -1,15 +1,13 @@
+import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/state/sync/rm/rm_sync_cubit.dart';
-import 'package:cmo/ui/components/sync_summary_component/sync_item_widget.dart';
 import 'package:cmo/ui/screens/perform/resource_manager/sync_summary/widgets/rm_sync_summary_information_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'widgets/rm_sync_summary_indicator.dart';
 
 class ResourceManagerSyncSummaryScreen extends BaseStatefulWidget {
   ResourceManagerSyncSummaryScreen({super.key}) : super(screenName: LocaleKeys.syncSummary.tr());
@@ -20,7 +18,6 @@ class ResourceManagerSyncSummaryScreen extends BaseStatefulWidget {
       MaterialPageRoute(
         builder: (_) => BlocProvider(
           create: (_) => RMSyncCubit(
-            userInfoCubit: context.read<UserInfoCubit>(),
             userDeviceCubit: context.read<UserDeviceCubit>(),
           ),
           child: ResourceManagerSyncSummaryScreen(),

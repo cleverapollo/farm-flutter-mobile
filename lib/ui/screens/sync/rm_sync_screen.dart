@@ -2,11 +2,11 @@ import 'package:cmo/di.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/group_scheme.dart';
+import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/state/sync/rm/rm_sync_cubit.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_alert.dart';
-import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,13 +15,18 @@ class RMSyncScreen extends BaseStatefulWidget {
     super.key,
   }) : super(screenName: 'RMSyncScreen');
 
-  static Future<void> push(BuildContext context) {
+  static Future<void> push(
+    BuildContext context, {
+    required GroupScheme selectedGroupScheme,
+    required ResourceManagerUnit selectedResourceManagerUnit,
+  }) {
     return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => BlocProvider(
           create: (_) => RMSyncCubit(
-            userInfoCubit: context.read<UserInfoCubit>(),
             userDeviceCubit: context.read<UserDeviceCubit>(),
+            selectedGroupScheme: selectedGroupScheme,
+            selectedResourceManagerUnit: selectedResourceManagerUnit,
           ),
           child: const RMSyncScreen(),
         ),

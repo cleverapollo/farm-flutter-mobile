@@ -20,12 +20,19 @@ import 'package:cmo/utils/utils.dart';
 part 'rm_sync_state.dart';
 
 class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
-  RMSyncCubit({required this.userInfoCubit, required this.userDeviceCubit})
-      : super(RMSyncState()) {
+  RMSyncCubit({
+    required this.userDeviceCubit,
+    GroupScheme? selectedGroupScheme,
+    ResourceManagerUnit? selectedResourceManagerUnit,
+  }) : super(
+          RMSyncState(
+            groupScheme: selectedGroupScheme,
+            rmUnit: selectedResourceManagerUnit,
+          ),
+        ) {
     init();
   }
 
-  final UserInfoCubit userInfoCubit;
   final UserDeviceCubit userDeviceCubit;
 
   final String topicRegionalManagerMasterDataSync =
@@ -44,9 +51,19 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   int get rmuId => state.rmUnit!.regionalManagerUnitId!;
 
   Future<void> init() async {
-    final groupScheme = await configService.getActiveGroupScheme();
-    final rmUnit = await configService.getActiveRegionalManager();
     final userInfo = await configService.getActiveUser();
+
+    GroupScheme? groupScheme;
+    ResourceManagerUnit? rmUnit;
+
+    if (state.groupScheme == null) {
+      groupScheme = await configService.getActiveGroupScheme();
+    }
+
+    if (state.rmUnit == null) {
+      rmUnit = await configService.getActiveRegionalManager();
+    }
+
     emit(
       state.copyWith(
         groupScheme: groupScheme,
@@ -109,6 +126,9 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
   }
 
   Future<void> syncOnboarding() async {
+    await configService.setActiveRegionalManager(unit: state.rmUnit!);
+    await configService.setActiveGroupScheme(groupScheme: state.groupScheme!);
+
     try {
       emit(
         state.copyWith(

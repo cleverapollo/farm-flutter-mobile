@@ -91,12 +91,14 @@ class _RMEntityGroupWidgetState extends BaseStatefulWidgetState<RMEntityGroupWid
       return;
     }
 
-    await configService.setActiveRegionalManager(unit: selectedResourceManagerUnit!);
-    await configService.setActiveGroupScheme(groupScheme: selectedGroupScheme!);
     await configService.setActiveUserRole(userRole: UserRoleEnum.regionalManager);
     await context.read<UserInfoCubit>().setActiveUserInfo(isBehave: false);
     if (mounted) {
-      await RMSyncScreen.push(context);
+      await RMSyncScreen.push(
+        context,
+        selectedGroupScheme: selectedGroupScheme!,
+        selectedResourceManagerUnit: selectedResourceManagerUnit!,
+      );
     }
   }
 }
