@@ -23,7 +23,7 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
                   createDT: DateTime.now(),
                   actionLogId: DateTime.now().millisecondsSinceEpoch,
                   dateRaised: DateTime.now(),
-                  dueDate: DateTime.now().add(const Duration(days: 90)),
+                  dueDate: DateTime.now().add(const Duration(days: 365)),
                 ),
           ),
         ) {
@@ -93,11 +93,11 @@ class ActionLogDetailCubit extends Cubit<ActionLogDetailState> {
     emit(
       state.copyWith(
         isEditing: true,
-        maxDueDays: isMajor ? 365 : 90,
+        maxDueDays: isMajor ? 90 : 365,
         actionLog: state.actionLog.copyWith(
           isMajor: isMajor,
           dueDate: (state.actionLog.dateRaised ?? DateTime.now()).add(
-            Duration(days: isMajor ? 365 : 90),
+            Duration(days: isMajor ? 90 : 365),
           ),
         ),
       ),

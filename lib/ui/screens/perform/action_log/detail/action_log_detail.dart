@@ -209,8 +209,8 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                           selector: (state) => state.actionLog.dateRaised,
                           builder: (context, dateRaised) {
                             return DatePickerWidget(
-                              lastDate: DateTime.now(),
-                              firstDate: DateTime.now().add(const Duration(days: -Constants.DEFAULT_DAY_DURATION_OFFSET)),
+                              lastDate: DateTime.now().add(const Duration(days: Constants.DEFAULT_DAY_DURATION_OFFSET)),
+                              firstDate: DateTime.now(),
                               initialDate: dateRaised,
                               onConfirm: context.read<ActionLogDetailCubit>().onDateRaisedChanged,
                               title: LocaleKeys.date_raised.tr(),
