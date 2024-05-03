@@ -53,7 +53,7 @@ class RMSyncScreenState extends BaseStatefulWidgetState<RMSyncScreen> {
   }
 
   Future<void> onSync() async {
-    final alreadyHaveOldData = await configService.alreadyHaveOldData();
+    final alreadyHaveOldData = await context.read<RMSyncCubit>().alreadyHaveOldData();
     if (alreadyHaveOldData) {
       await onShowWarningDialog(
         context,

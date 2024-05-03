@@ -200,19 +200,6 @@ class ConfigService {
     );
   }
 
-  Future<bool> alreadyHaveOldData() async {
-    final currentUsername = await getActiveUser();
-    final currentGS = await getActiveGroupScheme();
-    final currentRMU = await getActiveRegionalManager();
-    final latestLocalDatabaseStatus = await getLocalDatabaseStatus();
-
-    return latestLocalDatabaseStatus?.latestRegionalManagerUnitId ==
-            currentRMU?.regionalManagerUnitId &&
-        latestLocalDatabaseStatus?.latestGroupSchemeId ==
-            currentGS?.groupSchemeId &&
-        latestLocalDatabaseStatus?.latestUserName == currentUsername?.userName;
-  }
-
   Future<bool> setSettingConfig({SettingConfig? settingConfig}) async {
     final sp = await SharedPreferences.getInstance();
     return sp.setString(

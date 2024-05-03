@@ -125,10 +125,20 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     );
   }
 
-  Future<void> syncOnboarding() async {
-    await configService.setActiveRegionalManager(unit: state.rmUnit!);
-    await configService.setActiveGroupScheme(groupScheme: state.groupScheme!);
+  Future<bool> alreadyHaveOldData() async {
+    final currentUsername = await configService.getActiveUser();
+    final currentGS = state.groupScheme;
+    final currentRMU = state.rmUnit;
+    final latestLocalDatabaseStatus = await configService.getLocalDatabaseStatus();
 
+    return latestLocalDatabaseStatus?.latestRegionalManagerUnitId ==
+        currentRMU?.regionalManagerUnitId &&
+        latestLocalDatabaseStatus?.latestGroupSchemeId ==
+            currentGS?.groupSchemeId &&
+        latestLocalDatabaseStatus?.latestUserName == currentUsername?.userName;
+  }
+
+  Future<void> syncOnboarding() async {
     try {
       emit(
         state.copyWith(
@@ -174,6 +184,8 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       logger.d('--RM Sync Onboarding Data done');
       await Future.delayed(const Duration(milliseconds: 500), () {});
       await configService.setRMSynced(isSynced: hasData);
+      await configService.setActiveRegionalManager(unit: state.rmUnit!);
+      await configService.setActiveGroupScheme(groupScheme: state.groupScheme!);
     } catch (e) {
       logger.e(e);
       emit(
