@@ -23,7 +23,7 @@ class ActionLogDetailState extends BaseState {
     this.isRaisedByError = false,
     this.isMemberFieldError = false,
     this.isRejectReasonError = false,
-    this.maxDueDays = 90,
+    this.maxDueDays = 365,
   });
 
   final ResourceManagerUnit? activeRMU;
