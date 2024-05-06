@@ -1223,6 +1223,16 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     }
   }
 
+  Future<void> insertGroupSchemeContentLibrary() async {
+    emit(state.copyWith(syncMessage: 'Syncing GroupScheme Content Libraries...'));
+    final groupSchemeContentLibraries = await cmoPerformApiService.getGroupSchemeContentLibraries();
+
+    await cmoDatabaseMasterService.cacheGroupSchemeContentLibrary(
+      groupSchemeContentLibraries?.first,
+      isDirect: true,
+    );
+  }
+
   Future<void> insertActionTypes() async {
     emit(state.copyWith(syncMessage: 'Syncing Action Types...'));
     final actionTypes = await cmoPerformApiService.getActionTypes();
@@ -1298,6 +1308,10 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         await insertAreaTypes();
         logger.d('--getAreaTypes done');
       }
+
+      logger.d('--insertGroupSchemeContentLibrary start');
+      await insertGroupSchemeContentLibrary();
+      logger.d('--insertGroupSchemeContentLibrary done');
 
       logger.d('--insertCompartmentsByRMUId start');
       await insertCompartmentsByRMUId();

@@ -146,6 +146,16 @@ class _CmoMenuBaseState extends State<CmoMenuBase> {
   Widget _buildResourceManagerMenu() {
     return Column(
       children: [
+        _CmoOptionTile(
+          title: LocaleKeys.my_groupscheme.tr(),
+          displayDivider: false,
+          onTap: () {
+            if (context.mounted) Navigator.of(context).pop();
+            MyGroupSchemeScreen.push(context);
+          },
+        ),
+        const SizedBox(height: 7),
+        const _Divider(),
         _HeaderItem(
           title: LocaleKeys.memberManagement.tr(),
           onTap: () => MemberManagementScreen.push(context),
