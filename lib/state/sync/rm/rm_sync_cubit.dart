@@ -212,9 +212,9 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         ),
       );
 
-
       await publishFarm();
       await publishGroupSchemeStakeholders();
+      await publishActionLogs();
 
       // Keep delay time for waiting server generate data
       emit(
@@ -235,7 +235,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       await Future.delayed(const Duration(seconds: 5), () async {
         await publishASIs();
         await publishAudits();
-        await publishActionLogs();
       });
 
       if (state.errorMessageItems.isNotBlank) {
@@ -784,17 +783,29 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       logger.d('Unsynced Action Logs count: ${actionLogs.length}');
       for (final actionLog in actionLogs) {
         final photos = await cmoDatabaseMasterService.getUnsyncedActionLogPhotosByActionLogId(actionLog.actionLogId);
-
-        final syncedActionLog =
-            await cmoPerformApiService.insertUpdatedActionLog(
-          actionLog.copyWith(
-            photos: photos
-                .map((e) => e.copyWith(photo: e.photo.stringToBase64SyncServer))
-                .toList(),
+        final message = Message(
+          properties: getMessageProperties(),
+          body: jsonEncode(
+            actionLog
+                .copyWith(
+                  photos: photos
+                      .map(
+                        (e) =>
+                            e.copyWith(photo: e.photo.stringToBase64SyncServer),
+                      )
+                      .toList(),
+                )
+                .toJson(),
           ),
         );
 
-        if (syncedActionLog != null) {
+        final isSuccess = await cmoPerformApiService.public(
+          currentClientId: userDeviceId.toString(),
+          topic: 'Cmo.MasterData.ActionLog',
+          messages: [message],
+        );
+
+        if (isSuccess) {
           await cmoDatabaseMasterService.cacheActionLog(
             actionLog.copyWith(
               isMasterDataSynced: true,
@@ -804,7 +815,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
           for (final photo in photos) {
             await cmoDatabaseMasterService.cacheActionLogPhoto(photo.copyWith(isMasterdataSynced: true));
           }
-          logger.d('Successfully published Action Log: ${syncedActionLog.actionName}');
+          logger.d('Successfully published Action Log: ${actionLog.actionName}');
         } else {
           handleErrorMessage(
             snackErrorMessage: 'Failed to publish Action Log: ${actionLog.actionName}',
@@ -820,6 +831,59 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         ),
       );
     }
+  }
+
+  Future<int?> insertActionType(Message item) async {
+    emit(state.copyWith(syncMessage: 'Syncing Action Types...'));
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final actionType = ActionType.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheActionType(
+        actionType,
+        isDirect: true,
+      );
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertActionLog(Message item) async {
+    emit(state.copyWith(syncMessage: 'Syncing Action Logs...'));
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final actionLog = ActionLog.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheActionLog(
+        actionLog.copyWith(
+          isMasterDataSynced: true,
+        ),
+        isDirect: true,
+      );
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
+  }
+
+  Future<int?> insertActionLogPhoto(Message item) async {
+    emit(state.copyWith(syncMessage: 'Syncing Action Log Photos...'));
+    try {
+      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
+      if (bodyJson == null) return null;
+      final photo = ActionLogPhoto.fromJson(bodyJson);
+      return cmoDatabaseMasterService.cacheActionLogPhoto(
+        photo.copyWith(
+          isMasterdataSynced: true,
+          photo: photo.photo.base64SyncServerToString,
+        ),
+        isDirect: true,
+      );
+    } catch (e) {
+      logger.d('insert error: $e');
+    }
+    return null;
   }
 
   Future<int?> insertStakeholder(Message item) async {
@@ -1233,19 +1297,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
     );
   }
 
-  Future<void> insertActionTypes() async {
-    emit(state.copyWith(syncMessage: 'Syncing Action Types...'));
-    final actionTypes = await cmoPerformApiService.getActionTypes();
-    if (actionTypes.isNotBlank) {
-      for (final actionType in actionTypes!) {
-        await cmoDatabaseMasterService.cacheActionType(
-          actionType,
-          isDirect: true,
-        );
-      }
-    }
-  }
-
   Future<void> insertActionLogRaisedByUser() async {
     emit(state.copyWith(syncMessage: 'Syncing Action Log Raised By User...'));
     final users = await cmoPerformApiService.getActionLogRaisedByUser();
@@ -1253,39 +1304,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       for (final user in users!) {
         await cmoDatabaseMasterService.cacheActionRaisedByUser(
           user,
-          isDirect: true,
-        );
-      }
-    }
-  }
-
-  Future<void> insertActionLogs() async {
-    emit(state.copyWith(syncMessage: 'Syncing Action Logs...'));
-    final actionLogs = await cmoPerformApiService.getActionLogs();
-    if (actionLogs.isNotBlank) {
-      for (final actionLog in actionLogs!) {
-        await cmoDatabaseMasterService.cacheActionLog(
-          actionLog.copyWith(
-            isMasterDataSynced: true,
-          ),
-          isDirect: true,
-        );
-
-        await insertActionLogPhotosByActionLogId(actionLog.actionLogId);
-      }
-    }
-  }
-
-  Future<void> insertActionLogPhotosByActionLogId(int? actionLogId) async {
-    emit(state.copyWith(syncMessage: 'Syncing Action Log Photos...'));
-    final photos = await cmoPerformApiService.getActionLogPhotosByActionLogId(actionLogId);
-    if (photos.isNotBlank) {
-      for (final photo in photos!) {
-        await cmoDatabaseMasterService.cacheActionLogPhoto(
-          photo.copyWith(
-            isMasterdataSynced: true,
-            photo: photo.photo.base64SyncServerToString,
-          ),
           isDirect: true,
         );
       }
@@ -1325,17 +1343,9 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
       await insertRMAsiRegisters();
       logger.d('--insertRMAsiRegisters done');
 
-      logger.d('--insertActionTypes start');
-      await insertActionTypes();
-      logger.d('--insertActionTypes done');
-
       logger.d('--insertActionLogRaisedByUser start');
       await insertActionLogRaisedByUser();
       logger.d('--insertActionLogRaisedByUser done');
-
-      logger.d('--insertActionLogs start');
-      await insertActionLogs();
-      logger.d('--insertActionLogs done');
     });
   }
 
@@ -1410,8 +1420,13 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
         final topic = item.header?.originalTopic;
 
-        if (topic ==
-            '${topicRegionalManagerMasterDataSync}SH.$userDeviceId') {
+        if (topic == 'Cmo.MasterDataDeviceSync.ActionLogType.$userDeviceId') {
+          await insertActionType(item);
+        } else if (topic == '${topicRegionalManagerMasterDataSync}ActionLog.$userDeviceId') {
+          await insertActionLog(item);
+        } else if (topic == '${topicRegionalManagerMasterDataSync}ActionLogPhoto.$userDeviceId') {
+          await insertActionLogPhoto(item);
+        } else if (topic == '${topicRegionalManagerMasterDataSync}SH.$userDeviceId') {
           emit(state.copyWith(syncMessage: 'Syncing Stakeholders...'));
           await insertStakeholder(item);
         } else if (topic ==

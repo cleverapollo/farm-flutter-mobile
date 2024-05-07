@@ -11,6 +11,7 @@ class ActionType with _$ActionType {
     @JsonKey(name: 'ActionLogTypeId') int? actionLogTypeId,
     @JsonKey(name: 'ActionLogTypeName') String? actionLogTypeName,
     @JsonKey(name: 'IsActive') bool? isActive,
+    @JsonKey(name: 'ShowInUI') bool? showInUI,
     @JsonKey(name: 'CreateDT') DateTime? createDT,
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
   }) = _ActionType;

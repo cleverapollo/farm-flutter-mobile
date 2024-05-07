@@ -895,30 +895,6 @@ class CmoPerformApiService {
     return null;
   }
 
-  Future<List<ActionType>?> getActionTypes() async {
-    try {
-      final response = await client.get<JsonListData>(
-        '${Env.apiGroupSchemeUrl}GetActionLogTypes',
-        queryParameters: {
-          'isActive': true,
-        },
-        options: Options(headers: {'accessToken': 'true'}),
-      );
-
-      if (response.statusCode != 200) {
-        showSnackError(msg: 'Unknow error: ${response.statusCode}');
-        return null;
-      }
-
-      final data = response.data;
-      return data?.map((e) => ActionType.fromJson(e as JsonData)).toList();
-    } catch (e) {
-      logger.d('Cannot getActionTypes $e');
-    }
-
-    return null;
-  }
-
   Future<List<ActionRaisedByUser>?> getActionLogRaisedByUser() async {
     try {
       final response = await client.get<JsonListData>(
@@ -938,55 +914,6 @@ class CmoPerformApiService {
       return data?.map((e) => ActionRaisedByUser.fromJson(e as JsonData)).toList();
     } catch (e) {
       logger.d('Cannot getActionLogRaisedByUser $e');
-    }
-
-    return null;
-  }
-
-  Future<List<ActionLog>?> getActionLogs() async {
-    try {
-      final response = await client.get<JsonListData>(
-        '${Env.apiGroupSchemeUrl}GetAllActionLogs',
-        queryParameters: {
-          'isActive': true,
-        },
-        options: Options(headers: {'accessToken': 'true'}),
-      );
-
-      if (response.statusCode != 200) {
-        showSnackError(msg: 'Unknow error: ${response.statusCode}');
-        return null;
-      }
-
-      final data = response.data;
-      return data?.map((e) => ActionLog.fromJson(e as JsonData)).toList();
-    } catch (e) {
-      logger.d('Cannot getActionLogs $e');
-    }
-
-    return null;
-  }
-
-  Future<List<ActionLogPhoto>?> getActionLogPhotosByActionLogId(int? actionLogId) async {
-    if (actionLogId == null) return null;
-    try {
-      final response = await client.get<JsonListData>(
-        '${Env.apiGroupSchemeUrl}GetActionLogPhotosByActionLogId',
-        queryParameters: {
-          'actionLogId': actionLogId,
-        },
-        options: Options(headers: {'accessToken': 'true'}),
-      );
-
-      if (response.statusCode != 200) {
-        showSnackError(msg: 'Unknow error: ${response.statusCode}');
-        return null;
-      }
-
-      final data = response.data;
-      return data?.map((e) => ActionLogPhoto.fromJson(e as JsonData)).toList();
-    } catch (e) {
-      logger.d('Cannot getActionLogPhotosByActionLogId $e');
     }
 
     return null;
