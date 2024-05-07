@@ -1541,10 +1541,10 @@ class FarmerSyncSummaryCubit extends Cubit<FarmerSyncSummaryState>
 
   Future<void> insertGroupSchemeContentLibrary() async {
     emit(state.copyWith(syncMessage: 'Syncing GroupScheme Content Libraries...'));
-    final groupSchemeContentLibraries = await cmoPerformApiService.getGroupSchemeContentLibraries();
+    final groupSchemeContentLibraries = await cmoPerformApiService.getGroupSchemeContentLibraries(groupSchemeId);
 
     await cmoDatabaseMasterService.cacheGroupSchemeContentLibrary(
-      groupSchemeContentLibraries?.first,
+      groupSchemeContentLibraries,
       isDirect: true,
     );
   }

@@ -33,18 +33,6 @@ class CmoPerformApiService {
       ),
     );
 
-  Future<String?> _readAccessToken() async {
-    final userRole = await configService.getActiveUserRole();
-    if (userRole == null) return null;
-    if (userRole.isBehave) {
-      return secureStorage.read(
-          key: UserRoleConfig.behaveRole.getAccessTokenKey);
-    } else {
-      return secureStorage.read(
-          key: UserRoleConfig.performRole.getAccessTokenKey);
-    }
-  }
-
   Future<UserAuth?> performLogin(
     String username,
     String password,
@@ -885,10 +873,11 @@ class CmoPerformApiService {
     return response;
   }
 
-  Future<List<GroupSchemeContentLibrary>?> getGroupSchemeContentLibraries() async {
+  Future<GroupSchemeContentLibrary?> getGroupSchemeContentLibraries(int? groupSchemeId) async {
+    if (groupSchemeId == null) return null;
     try {
-      final response = await client.get<JsonListData>(
-        '${Env.apiGroupSchemeUrl}GetGroupSchemeContentLibraries',
+      final response = await client.get<JsonData>(
+        '${Env.apiGroupSchemeUrl}GetGroupSchemeContentLibraryByGroupScheme?groupSchemeId=$groupSchemeId',
         options: Options(headers: {'accessToken': 'true'}),
       );
 
@@ -898,7 +887,7 @@ class CmoPerformApiService {
       }
 
       final data = response.data;
-      return data?.map((e) => GroupSchemeContentLibrary.fromJson(e as JsonData)).toList();
+      return data == null ? null : GroupSchemeContentLibrary.fromJson(data);
     } catch (e) {
       logger.d('Cannot getGroupSchemeContentLibraries $e');
     }

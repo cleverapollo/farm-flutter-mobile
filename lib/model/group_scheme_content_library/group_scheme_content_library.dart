@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'group_scheme_content_library.freezed.dart';
+
 part 'group_scheme_content_library.g.dart';
 
 @freezed
@@ -14,9 +15,9 @@ class GroupSchemeContentLibrary with _$GroupSchemeContentLibrary {
     @JsonKey(name: 'Content') String? content,
     @JsonKey(name: 'CreateDT') DateTime? createDT,
     @JsonKey(name: 'UpdateDT') DateTime? updateDT,
+    @JsonKey(name: 'IsDefault') bool? isDefault,
+    @Default(true) @JsonKey(name: 'IsActive') bool? isActive,
     @Default(true)
-    @JsonKey(name: 'IsActive') bool? isActive,
-    @Default(false)
     @JsonKey(name: 'IsMasterDataSynced') bool? isMasterDataSynced,
   }) = _GroupSchemeContentLibrary;
 
