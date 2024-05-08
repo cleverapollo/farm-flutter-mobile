@@ -6,6 +6,7 @@ import 'package:cmo/env/env.dart';
 import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/l10n/l10n.dart';
+import 'package:cmo/mixix/crud_local_database_mixin.dart';
 import 'package:cmo/model/audit/audit_payload.dart';
 import 'package:cmo/model/model.dart';
 import 'package:cmo/model/resource_manager_unit.dart';
@@ -19,7 +20,7 @@ import 'package:cmo/utils/utils.dart';
 
 part 'rm_sync_state.dart';
 
-class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
+class RMSyncCubit extends BaseSyncCubit<RMSyncState> with CRUDLocalDatabaseMixin {
   RMSyncCubit({
     required this.userDeviceCubit,
     GroupScheme? selectedGroupScheme,
@@ -801,7 +802,7 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
         final isSuccess = await cmoPerformApiService.public(
           currentClientId: userDeviceId.toString(),
-          topic: 'Cmo.MasterData.ActionLog',
+          topic: 'Cmo.MasterData.ActionLog.$groupSchemeId.$userDeviceId',
           messages: [message],
         );
 
@@ -831,59 +832,6 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
         ),
       );
     }
-  }
-
-  Future<int?> insertActionType(Message item) async {
-    emit(state.copyWith(syncMessage: 'Syncing Action Types...'));
-    try {
-      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
-      if (bodyJson == null) return null;
-      final actionType = ActionType.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheActionType(
-        actionType,
-        isDirect: true,
-      );
-    } catch (e) {
-      logger.d('insert error: $e');
-    }
-    return null;
-  }
-
-  Future<int?> insertActionLog(Message item) async {
-    emit(state.copyWith(syncMessage: 'Syncing Action Logs...'));
-    try {
-      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
-      if (bodyJson == null) return null;
-      final actionLog = ActionLog.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheActionLog(
-        actionLog.copyWith(
-          isMasterDataSynced: true,
-        ),
-        isDirect: true,
-      );
-    } catch (e) {
-      logger.d('insert error: $e');
-    }
-    return null;
-  }
-
-  Future<int?> insertActionLogPhoto(Message item) async {
-    emit(state.copyWith(syncMessage: 'Syncing Action Log Photos...'));
-    try {
-      final bodyJson = Json.tryDecode(item.body) as Map<String, dynamic>?;
-      if (bodyJson == null) return null;
-      final photo = ActionLogPhoto.fromJson(bodyJson);
-      return cmoDatabaseMasterService.cacheActionLogPhoto(
-        photo.copyWith(
-          isMasterdataSynced: true,
-          photo: photo.photo.base64SyncServerToString,
-        ),
-        isDirect: true,
-      );
-    } catch (e) {
-      logger.d('insert error: $e');
-    }
-    return null;
   }
 
   Future<int?> insertStakeholder(Message item) async {
@@ -1420,11 +1368,14 @@ class RMSyncCubit extends BaseSyncCubit<RMSyncState> {
 
         final topic = item.header?.originalTopic;
 
-        if (topic == 'Cmo.MasterDataDeviceSync.ActionLogType.$userDeviceId') {
+        if (topic == '${topicRegionalManagerMasterDataSync}ActionLogType.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Action Types...'));
           await insertActionType(item);
         } else if (topic == '${topicRegionalManagerMasterDataSync}ActionLog.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Action Logs...'));
           await insertActionLog(item);
         } else if (topic == '${topicRegionalManagerMasterDataSync}ActionLogPhoto.$userDeviceId') {
+          emit(state.copyWith(syncMessage: 'Syncing Action Log Photos...'));
           await insertActionLogPhoto(item);
         } else if (topic == '${topicRegionalManagerMasterDataSync}SH.$userDeviceId') {
           emit(state.copyWith(syncMessage: 'Syncing Stakeholders...'));

@@ -155,6 +155,7 @@ class _CloseActionLogState extends BaseStatefulWidgetState<CloseActionLog> {
                           FocusManager.instance.primaryFocus?.unfocus();
                           await cubit.onClose();
                           Navigator.of(context).pop();
+                          Navigator.of(context).pop();
                         },
                       );
                     },

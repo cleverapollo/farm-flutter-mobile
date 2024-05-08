@@ -4735,8 +4735,6 @@ class CmoDatabaseMasterService {
     return db.actionTypes
         .filter()
         .isActiveEqualTo(true)
-        .showInUIIsNotNull()
-        .showInUIEqualTo(true)
         .sortByCreateDTDesc()
         .findAll();
   }

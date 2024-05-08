@@ -138,20 +138,21 @@ class _ActionLogDetailState extends BaseStatefulWidgetState<ActionLogDetail> {
                             onTap: () async {
                               FocusManager.instance.primaryFocus?.unfocus();
                               if (state.actionTypes.isBlank) return;
+                              final availableActionTypes = state.actionTypes.where((element) => element.showInUI != null && element.showInUI!).toList();
                               await showCustomBottomSheet<void>(
                                 context,
                                 content: ListView.builder(
-                                  itemCount: state.actionTypes.length,
+                                  itemCount: availableActionTypes.length,
                                   itemBuilder: (context, index) {
                                     return ListTile(
                                       onTap: () {
-                                        cubit.onSelectActionType(state.actionTypes[index]);
+                                        cubit.onSelectActionType(availableActionTypes[index]);
                                         Navigator.pop(context);
                                       },
                                       title: Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 24.0),
                                         child: Text(
-                                          state.actionTypes[index].actionLogTypeName ?? '',
+                                          availableActionTypes[index].actionLogTypeName ?? '',
                                           style: context.textStyles.bodyBold.blueDark2,
                                         ),
                                       ),

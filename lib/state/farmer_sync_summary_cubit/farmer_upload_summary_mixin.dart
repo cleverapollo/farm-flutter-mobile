@@ -137,17 +137,29 @@ mixin FarmUploadSummaryMixin {
         for (final actionLog in actionLogs) {
           final photos = await cmoDatabaseMasterService.getUnsyncedActionLogPhotosByActionLogId(actionLog.actionLogId);
 
-          final syncedActionLog =
-              await cmoPerformApiService.insertUpdatedActionLog(
-            actionLog.copyWith(
-              photos: photos
-                  .map((e) =>
-                      e.copyWith(photo: e.photo.stringToBase64SyncServer))
-                  .toList(),
+          final message = globalMessage.copyWith(
+            body: jsonEncode(
+              actionLog
+                  .copyWith(
+                    photos: photos
+                        .map(
+                          (e) => e.copyWith(
+                            photo: e.photo.stringToBase64SyncServer,
+                          ),
+                        )
+                        .toList(),
+                  )
+                  .toJson(),
             ),
           );
 
-          if (syncedActionLog != null) {
+          final isSuccess = await cmoPerformApiService.public(
+            currentClientId: mUserDeviceId.toString(),
+            topic: topicByFarmIdAndUserDeviceId('ActionLog'),
+            messages: [message],
+          );
+
+          if (isSuccess) {
             await cmoDatabaseMasterService.cacheActionLog(
               actionLog.copyWith(
                 isMasterDataSynced: true,
@@ -157,7 +169,7 @@ mixin FarmUploadSummaryMixin {
             for (final photo in photos) {
               await cmoDatabaseMasterService.cacheActionLogPhoto(photo.copyWith(isMasterdataSynced: true));
             }
-            logger.d('Successfully published Action Log: ${syncedActionLog.actionName}');
+            logger.d('Successfully published Action Log: ${actionLog.actionName}');
           } else {
             logger.d('Failed to publish Action Log: ${actionLog.actionName}');
           }
