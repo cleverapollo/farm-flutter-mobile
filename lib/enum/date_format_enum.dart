@@ -53,4 +53,25 @@ enum DateFormatEnum {
         return dateTime.formatWithPattern('dd MMM, yyyy');
     }
   }
+
+  String hintText() {
+    switch (this) {
+      case DateFormatEnum.mmDDYYYYWithSlash:
+        return 'MM/dd/yyyy';
+      case DateFormatEnum.ddMMYYYYWithSlash:
+        return 'dd/MM/yyyy';
+      case DateFormatEnum.yyyyMMDDWithSlash:
+        return 'yyyy/MM/dd';
+      case DateFormatEnum.mmDDYYYYWithDash:
+        return 'MM-dd-yyyy';
+      case DateFormatEnum.ddMMYYYYWithDash:
+        return 'dd-MM-yyyy';
+      case DateFormatEnum.yyyyMMDDWithDash:
+        return 'yyyy-MM-dd';
+      case DateFormatEnum.mmmDDYYYYWithComma:
+        return 'MMM dd, yyyy';
+      case DateFormatEnum.ddMMMYYYYWithComma:
+        return 'dd MMM, yyyy';
+    }
+  }
 }

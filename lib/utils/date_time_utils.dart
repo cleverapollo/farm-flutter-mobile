@@ -1,3 +1,4 @@
+import 'package:cmo/extensions/string.dart';
 import 'package:lunar/lunar.dart';
 
 const List<int> _leapYearMonths = <int>[1, 3, 5, 7, 8, 10, 12];
@@ -26,5 +27,14 @@ class DateTimeUtils {
       lunarDateTime.getMonth(),
       lunarDateTime.getDay(),
     );
+  }
+
+  static DateTime? validateDateTimeWithYYYYMMDDRegex(String? input) {
+    final regExp = RegExp(r'(19|20)\d{2}\/(0[1-9]|1[1,2])\/(0[1-9]|[12][0-9]|3[01])');
+    final hasMatch = regExp.hasMatch(input ?? '');
+    if (hasMatch && input.isNotBlank) {
+      return DateTime.tryParse(input!);
+    }
+    return null;
   }
 }

@@ -315,6 +315,8 @@
   "save": "Lưu",
   "accept_signature_and_save": "Chấp nhận chữ ký và lưu",
   "required": "Required",
+  "invalid": "Invalid",
+  "select_date": "Select Date",
   "start_audit": "Bắt đầu kiểm tra",
   "search": "Tìm kiếm",
   "search_site": "Tìm kiếm khu vực",

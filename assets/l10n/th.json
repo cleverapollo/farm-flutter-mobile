@@ -311,6 +311,8 @@
   "save": "บันทึก",
   "accept_signature_and_save": "ยอมรับและบันทึก",
   "required": "Required",
+  "invalid": "Invalid",
+  "select_date": "Select Date",
   "start_audit": "เริ่มการออดิท",
   "search": "ค้นหา",
   "search_site": "พิมพ์ชื่อ นามกุล หรือชื่อสำนักงาน หรือสาขา ",

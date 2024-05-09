@@ -312,6 +312,8 @@
   "save": "Enregistrer",
   "accept_signature_and_save": "Accept Signature and Save",
   "required": "Required",
+  "invalid": "Invalid",
+  "select_date": "Select Date",
   "start_audit": "Démarrer l'audit",
   "search": "Rechercher",
   "search_site": "Search Site",
