@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:lunar/lunar.dart';
 
@@ -29,9 +30,12 @@ class DateTimeUtils {
     );
   }
 
-  static DateTime? validateDateTimeWithYYYYMMDDRegex(String? input) {
-    final regExp = RegExp(r'(19|20)\d{2}\/(0[1-9]|1[1,2])\/(0[1-9]|[12][0-9]|3[01])');
-    final hasMatch = regExp.hasMatch(input ?? '');
+  static DateTime? validateDateTimeWithYYYYMMDDRegex(
+    String? input,
+    DateFormatEnum dateFormatEnum,
+  ) {
+    final regexValidate = dateFormatEnum.validateRegex();
+    final hasMatch = regexValidate.hasMatch(input ?? '');
     if (hasMatch && input.isNotBlank) {
       return DateTime.tryParse(input!);
     }

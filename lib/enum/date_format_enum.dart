@@ -74,4 +74,25 @@ enum DateFormatEnum {
         return 'dd MMM, yyyy';
     }
   }
+
+  RegExp validateRegex() {
+    switch (this) {
+      case DateFormatEnum.mmDDYYYYWithSlash:
+        return RegExp(r'(0[1-9]|1[1,2])\/(0[1-9]|[12][0-9]|3[01])\/(19|20)\d{2}');
+      case DateFormatEnum.ddMMYYYYWithSlash:
+        return RegExp(r'(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}');
+      case DateFormatEnum.yyyyMMDDWithSlash:
+        return RegExp(r'(19|20)\d{2}\/(0[1-9]|1[1,2])\/(0[1-9]|[12][0-9]|3[01])');
+      case DateFormatEnum.mmDDYYYYWithDash:
+        return RegExp(r'(0[1-9]|1[1,2])-(0[1-9]|[12][0-9]|3[01])-(19|20)\d{2}');
+      case DateFormatEnum.ddMMYYYYWithDash:
+        return RegExp(r'(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[1,2])-(19|20)\d{2}');
+      case DateFormatEnum.yyyyMMDDWithDash:
+        return RegExp(r'(19|20)\d{2}-(0[1-9]|1[1,2])-(0[1-9]|[12][0-9]|3[01])');
+      case DateFormatEnum.mmmDDYYYYWithComma:
+        return RegExp(r'(0[1-9]|1[1,2]) (0[1-9]|[12][0-9]|3[01]), (19|20)\d{2}');
+      case DateFormatEnum.ddMMMYYYYWithComma:
+        return RegExp(r'(0[1-9]|[12][0-9]|3[01]) (0[1-9]|1[1,2]), (19|20)\d{2}');
+    }
+  }
 }
