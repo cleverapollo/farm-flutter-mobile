@@ -165,12 +165,21 @@ class DashboardCubit extends HydratedCubit<DashboardState> {
     info.onboardedMembersArea = 0;
 
     for (final farm in farms) {
+      final compartments = await cmoDatabaseMasterService.getCompartmentByFarmId(
+        farm.farmId,
+      );
+
+      var totalArea = 0.0;
+      for (final compartment in compartments) {
+        totalArea += compartment.polygonArea ?? 0;
+      }
+
       if (farm.isGroupSchemeMember) {
         info.onboardedMembers = info.onboardedMembers + 1;
-        info.onboardedMembersArea = info.onboardedMembersArea + (farm.farmSize ?? 0);
+        info.onboardedMembersArea = info.onboardedMembersArea + totalArea;
       } else {
         info.incompletedMembers = info.incompletedMembers + 1;
-        info.incompleteMembersArea = info.incompleteMembersArea + (farm.farmSize ?? 0);
+        info.incompleteMembersArea = info.incompleteMembersArea + totalArea;
       }
     }
 
