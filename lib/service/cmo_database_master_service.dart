@@ -4499,6 +4499,17 @@ class CmoDatabaseMasterService {
     return photos.length;
   }
 
+  Future<bool> removeQuestionCommentByQuestionId(int? questionId) async {
+    if (questionId == null) return false;
+    final db = await _db();
+    return db.writeTxn(() {
+      return db.questionComments
+          .filter()
+          .questionIdEqualTo(questionId)
+          .deleteFirst();
+    });
+  }
+
   Future<QuestionComment?> getQuestionCommentByComment(String? comment) async {
     if (comment == null) return null;
     final db = await _db();

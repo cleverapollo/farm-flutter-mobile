@@ -323,6 +323,12 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
         .firstWhereOrNull((e) => e.questionId == question.questionId);
     if (answer == null) return;
 
+    final ncCompliance = state.compliances.firstWhereOrNull(
+          (element) => element.isNC,
+    );
+
+    final isNCCompliance = answer.complianceId == ncCompliance?.complianceId;
+
     if (answer.complianceId == compliance.complianceId) {
       answer = answer.copyWith(
         complianceId: null,
@@ -342,21 +348,16 @@ class AuditListQuestionsCubit extends Cubit<AuditListQuestionsState> {
       );
     }
 
-    // final answerAfterSelect = state.answers.map((e) {
-    //   if (e.questionId != question.questionId) return e;
-    //
-    //   return e.copyWith(
-    //     complianceId: compliance.complianceId,
-    //     questionAnswerId: e.questionAnswerId ?? DateTime.now().millisecondsSinceEpoch,
-    //     isQuestionComplete: 1,
-    //     rejectReasonId: null,
-    //     rejectComment: null,
-    //     longitude: e.longitude,
-    //     latitude: e.latitude,
-    //   );
-    // }).toList();
+    if (!compliance.isNC && isNCCompliance) {
+      answer = answer.copyWith(
+        rejectReasonId: null,
+        rejectComment: null,
+      );
 
-    // emit(state.copyWith(answers: answerAfterSelect));
+      await cmoDatabaseMasterService.removeQuestionCommentByQuestionId(question.questionId);
+      await getListQuestionComment();
+    }
+
     await cmoDatabaseMasterService.cacheQuestionAnswer(answer);
     await getListQuestionAnswers();
     await markQuestionAnswerIsCompleted(question);
