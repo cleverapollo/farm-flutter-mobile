@@ -30,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> checkForUpdate() async {
+    await Future.delayed( const Duration(seconds: 3));
     final shouldUpdate = await appInfoService.checkForUpdate();
     if (shouldUpdate) {
       showUpdateDialog(
@@ -51,7 +52,6 @@ class _SplashScreenState extends State<SplashScreen> {
     // final haveInternet = (await Connectivity().checkConnectivity()) != ConnectivityResult.none;
 
     final isAuthorized = await configService.isAuthorized();
-    await Future.delayed( const Duration(seconds: 3));
     if (isAuthorized) {
       return pushDashboard();
     } else {
