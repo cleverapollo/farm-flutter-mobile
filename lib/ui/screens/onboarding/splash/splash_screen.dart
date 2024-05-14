@@ -45,22 +45,21 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> processWithoutUpdate() async {
-    await context.read<EntityCubit>().init();
 
     await context.read<AuthCubit>().checkFirstLaunch();
 
-    final haveInternet = (await Connectivity().checkConnectivity()) != ConnectivityResult.none;
+    // final haveInternet = (await Connectivity().checkConnectivity()) != ConnectivityResult.none;
 
     final isAuthorized = await configService.isAuthorized();
     await Future.delayed( const Duration(seconds: 3));
     if (isAuthorized) {
       return pushDashboard();
     } else {
-      if (haveInternet) {
-        return logInWithSavedCredentials();
-      } else {
+      // if (haveInternet) {
+      //   return logInWithSavedCredentials();
+      // } else {
         return pushLogin();
-      }
+      // }
     }
   }
 
