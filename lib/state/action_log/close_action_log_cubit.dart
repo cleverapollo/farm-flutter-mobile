@@ -118,7 +118,7 @@ class CloseActionLogCubit extends Cubit<CloseActionLogState> {
 
       if (state.removedPhotos.isNotBlank) {
         for (final photo in state.removedPhotos) {
-          if (photo.isMasterdataSynced ?? false) {
+          if (photo.isMasterdataSynced) {
             await cmoDatabaseMasterService.cacheActionLogPhoto(
               photo.copyWith(
                 isMasterdataSynced: false,
