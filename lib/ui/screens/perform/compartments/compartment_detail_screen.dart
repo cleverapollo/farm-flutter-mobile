@@ -242,7 +242,7 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
                               AttributeItem(
                                 inactive: isConservationArea,
                                 child: BlocSelector<CompartmentDetailCubit, CompartmentDetailState, String?>(
-                                  selector: (state) => state.compartment.plannedPlantDT,
+                                  selector: (state) => state.compartment.plantDT,
                                   builder: (context, plannedDate) {
                                     final plannedDateTime = DateTime.tryParse(plannedDate ?? '');
                                     return DatePickerWidget(

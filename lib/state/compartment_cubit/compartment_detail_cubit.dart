@@ -94,7 +94,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
         return LocaleKeys.product_group_is_required.tr();
       } else if (compartment.speciesGroupTemplateId.isBlank) {
         return LocaleKeys.species_group_is_required.tr();
-      } else if (compartment.plannedPlantDT.isBlank) {
+      } else if (compartment.plantDT.isBlank) {
         return LocaleKeys.planned_plant_date_is_required.tr();
       } else if (compartment.effectiveArea == null) {
         return LocaleKeys.effective_area_is_required.tr();
@@ -251,7 +251,7 @@ class CompartmentDetailCubit extends Cubit<CompartmentDetailState> {
       state.copyWith(
         isEditing: true,
         compartment: state.compartment.copyWith(
-          plannedPlantDT: value?.toString(),
+          plantDT: value?.toString(),
         ),
       ),
     );
