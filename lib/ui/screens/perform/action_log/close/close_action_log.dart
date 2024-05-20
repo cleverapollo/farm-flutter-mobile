@@ -1,26 +1,16 @@
-import 'package:cmo/enum/enum.dart';
-import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
-import 'package:cmo/model/resource_manager_unit.dart';
 import 'package:cmo/state/state.dart';
-import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_multiple_selection.dart';
-import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_selection_with_search.dart';
 import 'package:cmo/ui/components/custom_camera_component/custom_camera_screen.dart';
 import 'package:cmo/ui/components/custom_camera_component/register_photo_section.dart';
-import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_selection.dart';
 import 'package:cmo/ui/components/date_picker_widget.dart';
 import 'package:cmo/ui/screens/perform/farmer_member/register_management/widgets/general_comment_widget.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
-import 'package:cmo/ui/widget/cmo_switch.dart';
 import 'package:cmo/ui/widget/common_widgets.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:cmo/ui/components/bottom_sheet_selection/multiple_selection_widget.dart';
 
 class CloseActionLog extends BaseStatefulWidget{
   const CloseActionLog() : super(screenName: 'CloseActionLog');

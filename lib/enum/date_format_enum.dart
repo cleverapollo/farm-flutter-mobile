@@ -1,4 +1,5 @@
 import 'package:cmo/extensions/extensions.dart';
+import 'package:intl/intl.dart';
 
 enum DateFormatEnum {
   mmDDYYYYWithSlash,
@@ -33,25 +34,34 @@ enum DateFormatEnum {
 
   String displayFormat(DateTime? dateTime) {
     if (dateTime == null) return '';
+    return dateTime.formatWithPattern(getDateTimeFormat());
+  }
 
+  String getDateTimeFormat() {
     switch (this) {
       case DateFormatEnum.mmDDYYYYWithSlash:
-        return dateTime.formatWithPattern('MM/dd/yyyy');
+        return 'MM/dd/yyyy';
       case DateFormatEnum.ddMMYYYYWithSlash:
-        return dateTime.formatWithPattern('dd/MM/yyyy');
+        return 'dd/MM/yyyy';
       case DateFormatEnum.yyyyMMDDWithSlash:
-        return dateTime.formatWithPattern('yyyy/MM/dd');
+        return 'yyyy/MM/dd';
       case DateFormatEnum.mmDDYYYYWithDash:
-        return dateTime.formatWithPattern('MM-dd-yyyy');
+        return 'MM-dd-yyyy';
       case DateFormatEnum.ddMMYYYYWithDash:
-        return dateTime.formatWithPattern('dd-MM-yyyy');
+        return 'dd-MM-yyyy';
       case DateFormatEnum.yyyyMMDDWithDash:
-        return dateTime.formatWithPattern('yyyy-MM-dd');
+        return 'yyyy-MM-dd';
       case DateFormatEnum.mmmDDYYYYWithComma:
-        return dateTime.formatWithPattern('MMM dd, yyyy');
+        return 'MMM dd, yyyy';
       case DateFormatEnum.ddMMMYYYYWithComma:
-        return dateTime.formatWithPattern('dd MMM, yyyy');
+        return 'dd MMM, yyyy';
     }
+  }
+
+  DateTime? parseDateTimeWithFormat(String? dateTimeString) {
+    if (dateTimeString.isBlank) return null;
+    final dateFormat = DateFormat(getDateTimeFormat(), 'EN');
+    return dateFormat.parse(dateTimeString!);
   }
 
   String hintText() {

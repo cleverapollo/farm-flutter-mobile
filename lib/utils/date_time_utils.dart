@@ -35,10 +35,10 @@ class DateTimeUtils {
     DateFormatEnum dateFormatEnum,
   ) {
     final regexValidate = dateFormatEnum.validateRegex();
-    final hasMatch = regexValidate.hasMatch(input ?? '');
-    if (hasMatch && input.isNotBlank) {
-      return DateTime.tryParse(input!);
+    if (regexValidate.hasMatch(input ?? '')) {
+      return dateFormatEnum.parseDateTimeWithFormat(input);
     }
+
     return null;
   }
 }
