@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -134,13 +135,20 @@ class _CloseActionLogState extends BaseStatefulWidgetState<CloseActionLog> {
                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child:  CmoFilledButton(
-                    title: LocaleKeys.close.tr(),
-                    onTap: () async {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      await cubit.onClose();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
+                  child: BlocSelector<CloseActionLogCubit, CloseActionLogState, UserRoleEnum?>(
+                    selector: (state) => state.activeUserRole,
+                    builder: (context, activeUserRole) {
+                      return CmoFilledButton(
+                        title: (activeUserRole?.isFarmerMember ?? false)
+                            ? LocaleKeys.save.tr()
+                            : LocaleKeys.close.tr(),
+                        onTap: () async {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          await cubit.onClose();
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                      );
                     },
                   ),
                 ),

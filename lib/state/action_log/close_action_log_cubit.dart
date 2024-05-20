@@ -105,7 +105,7 @@ class CloseActionLogCubit extends Cubit<CloseActionLogState> {
       final actionLog = state.actionLog.copyWith(
         updateDT: DateTime.now(),
         isMasterDataSynced: false,
-        isClosed: true,
+        isClosed: !(state.activeUserRole?.isFarmerMember ?? false),
       );
 
       await cmoDatabaseMasterService.cacheActionLog(actionLog);
