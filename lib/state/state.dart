@@ -30,7 +30,7 @@ export 'user_device_cubit/user_device_cubit.dart';
 export 'user_info_cubit/user_info_cubit.dart';
 export 'register_management/rte_species/rte_species_cubit.dart';
 export 'register_management/rte_species/rte_species_detail_cubit.dart';
-export 'compartment_cubit/compartment_map_cubit.dart';
+export 'compartment_cubit/compartment_create_new_polygon_cubit.dart';
 export 'fire_cubit/fire_register_detail_cubit.dart';
 export 'compartment_cubit/compartment_maps_summaries_cubit.dart';
 export 'pets_and_disease_cubit/pets_and_disease_detail_cubit.dart';

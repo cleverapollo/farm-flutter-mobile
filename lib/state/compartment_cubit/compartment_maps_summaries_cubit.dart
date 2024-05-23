@@ -1,12 +1,9 @@
-import 'dart:collection';
-import 'dart:convert';
-
 import 'package:cmo/di.dart';
 import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/compartment_cubit/compartment_map_detail.dart';
 import 'package:cmo/ui/components/base/base_state.dart';
 import 'package:cmo/utils/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';

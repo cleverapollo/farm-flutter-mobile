@@ -10,11 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class BaseStatefulWidget extends StatefulWidget {
-  final String screenName;
+  final String? screenName;
 
   const BaseStatefulWidget({
     super.key,
-    required this.screenName,
+    this.screenName,
   });
 }
 

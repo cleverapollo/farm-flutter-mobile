@@ -2,6 +2,7 @@ import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
+import 'package:cmo/state/compartment_cubit/compartment_map_detail.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/components/ignore_pointer_loading.dart';
 import 'package:cmo/ui/components/map_center_icon.dart';
@@ -160,29 +161,27 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
         now++;
       }
 
+      var lastPolyline = Polyline(
+        consumeTapEvents: true,
+        width: 2,
+        polylineId: PolylineId('${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0 $now}'),
+        points: [
+          markers[markers.length - 1].position,
+          markers[0].position,
+        ],
+      );
 
-        var lastPolyline = Polyline(
-          consumeTapEvents: true,
-          width: 2,
-          polylineId: PolylineId(
-              '${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0 $now}'),
-          points: [
-            markers[markers.length - 1].position,
-            markers[0].position,
-          ],
-        );
+      lastPolyline = lastPolyline.copyWith(
+        colorParam: getPolylineColor(lastPolyline),
+        onTapParam: () {
+          context.read<CompartmentMapsSummariesCubit>().onTapPolyline(
+                lastPolyline,
+                onMoveCameraToCenterPoint: moveMapCameraToLocation,
+              );
+        },
+      );
 
-        lastPolyline = lastPolyline.copyWith(
-          colorParam: getPolylineColor(lastPolyline),
-          onTapParam: () {
-            context.read<CompartmentMapsSummariesCubit>().onTapPolyline(
-              lastPolyline,
-              onMoveCameraToCenterPoint: moveMapCameraToLocation,
-            );
-          },
-        );
-
-        polylines.add(lastPolyline);
+      polylines.add(lastPolyline);
 
       return polylines;
     } else if (state.selectedCompartmentMapDetails?.markers != null && state.selectedCompartmentMapDetails!.markers.length <= 2) {
@@ -314,10 +313,6 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     final listMarkers = context
         .read<CompartmentMapsSummariesCubit>()
         .getTemporarySavedMarkers(shouldClearLastItem);
-    if (listMarkers.length <= 1) {
-      return;
-    }
-
     final polygons = listMarkers.map(MapUtils.generateLatLngFromMarker).toList();
     final areaInHa = MapUtils.computeAreaInHa(polygons);
     widget.onSave(

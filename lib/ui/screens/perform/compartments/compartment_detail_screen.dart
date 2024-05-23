@@ -8,6 +8,7 @@ import 'package:cmo/model/model.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_cubit.dart';
 import 'package:cmo/state/compartment_cubit/compartment_detail_state.dart';
 import 'package:cmo/ui/components/date_picker_widget.dart';
+import 'package:cmo/ui/screens/perform/compartments/compartment_create_new_polygon_screen.dart';
 import 'package:cmo/ui/screens/perform/compartments/widgets/espacement_input_widget.dart';
 import 'package:cmo/ui/ui.dart';
 import 'package:cmo/ui/widget/cmo_bottom_sheet.dart';
@@ -78,13 +79,23 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
   }
 
   Future<void> navigateToMapSummaries() async {
-    await CompartmentMapsSummariesScreen.push(
-      context,
-      farmId: context.read<CompartmentDetailCubit>().state.farmId,
-      farmName: widget.farmName,
-      selectedCompartment: context.read<CompartmentDetailCubit>().state.compartment,
-      onSave: _compartmentDetailCubit.onChangeLocation,
-    );
+    if(context.read<CompartmentDetailCubit>().state.compartment.getPolygonLatLng().length < 3) {
+      await CompartmentCreateNewPolygonScreen.push(
+        context,
+        farmId: context.read<CompartmentDetailCubit>().state.farmId,
+        farmName: widget.farmName,
+        selectedCompartment: context.read<CompartmentDetailCubit>().state.compartment,
+        onSave: _compartmentDetailCubit.onChangeLocation,
+      );
+    } else {
+      await CompartmentMapsSummariesScreen.push(
+        context,
+        farmId: context.read<CompartmentDetailCubit>().state.farmId,
+        farmName: widget.farmName,
+        selectedCompartment: context.read<CompartmentDetailCubit>().state.compartment,
+        onSave: _compartmentDetailCubit.onChangeLocation,
+      );
+    }
   }
 
   @override
