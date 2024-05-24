@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import 'upcoming_filter.dart';
+
 enum UpcomingTabStatus { overdue, due, upcoming }
 
 class UpcomingTab extends StatelessWidget {
@@ -25,47 +27,54 @@ class UpcomingTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ActionLogManagementCubit, ActionLogManagementState>(
-      builder: (context, state) {
-        return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: Column(
-            children: state.overdueActionLogs
-                    .map(
-                      (actionLog) => UpcomingTabActionLogItem(
-                        settingConfig: settingConfig,
-                        actionLog: actionLog,
-                        upcomingTabStatus: UpcomingTabStatus.overdue,
-                        onTap: () => onNavigateToDetail(actionLog),
-                        onClose: () => onClose(actionLog),
-                      ),
-                    )
-                    .toList() +
-                state.dueActionLogs
-                    .map(
-                      (actionLog) => UpcomingTabActionLogItem(
-                        settingConfig: settingConfig,
-                        actionLog: actionLog,
-                        upcomingTabStatus: UpcomingTabStatus.due,
-                        onTap: () => onNavigateToDetail(actionLog),
-                        onClose: () => onClose(actionLog),
-                      ),
-                    )
-                    .toList() +
-                state.upcomingActionLogs
-                    .map(
-                      (actionLog) => UpcomingTabActionLogItem(
-                        settingConfig: settingConfig,
-                        actionLog: actionLog,
-                        upcomingTabStatus: UpcomingTabStatus.upcoming,
-                        onTap: () => onNavigateToDetail(actionLog),
-                        onClose: () => onClose(actionLog),
-                      ),
-                    )
-                    .toList(),
+    return Column(
+      children: [
+        const UpcomingFilter(),
+        Expanded(
+          child: BlocBuilder<ActionLogManagementCubit, ActionLogManagementState>(
+            builder: (context, state) {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Column(
+                  children: state.overdueActionLogs
+                          .map(
+                            (actionLog) => UpcomingTabActionLogItem(
+                              settingConfig: settingConfig,
+                              actionLog: actionLog,
+                              upcomingTabStatus: UpcomingTabStatus.overdue,
+                              onTap: () => onNavigateToDetail(actionLog),
+                              onClose: () => onClose(actionLog),
+                            ),
+                          )
+                          .toList() +
+                      state.dueActionLogs
+                          .map(
+                            (actionLog) => UpcomingTabActionLogItem(
+                              settingConfig: settingConfig,
+                              actionLog: actionLog,
+                              upcomingTabStatus: UpcomingTabStatus.due,
+                              onTap: () => onNavigateToDetail(actionLog),
+                              onClose: () => onClose(actionLog),
+                            ),
+                          )
+                          .toList() +
+                      state.upcomingActionLogs
+                          .map(
+                            (actionLog) => UpcomingTabActionLogItem(
+                              settingConfig: settingConfig,
+                              actionLog: actionLog,
+                              upcomingTabStatus: UpcomingTabStatus.upcoming,
+                              onTap: () => onNavigateToDetail(actionLog),
+                              onClose: () => onClose(actionLog),
+                            ),
+                          )
+                          .toList(),
+                ),
+              );
+            },
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 }

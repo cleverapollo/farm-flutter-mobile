@@ -13,7 +13,11 @@ class ActionLogManagementState extends BaseState {
     this.overdueActionLogs = const <ActionLog>[],
     this.dueActionLogs = const <ActionLog>[],
     this.upcomingActionLogs = const <ActionLog>[],
+    this.upcomingActionLogTimeFiltersEnum = const <UpcomingActionLogTimeFilter>[],
+    this.selectedUpcomingActionLogTimeFilter = UpcomingActionLogTimeFilter.day,
     this.filteringText,
+    this.isOpenedUpcomingFilter = false,
+    this.upcomingDateTimeFilter,
   });
 
   final ResourceManagerUnit? activeRMU;
@@ -26,6 +30,10 @@ class ActionLogManagementState extends BaseState {
   final List<ActionLog> overdueActionLogs;
   final List<ActionLog> dueActionLogs;
   final List<ActionLog> upcomingActionLogs;
+  final List<UpcomingActionLogTimeFilter> upcomingActionLogTimeFiltersEnum;
+  final UpcomingActionLogTimeFilter selectedUpcomingActionLogTimeFilter;
+  final DateTime? upcomingDateTimeFilter;
+  final bool isOpenedUpcomingFilter;
 
   ActionLogManagementState copyWith({
     ResourceManagerUnit? activeRMU,
@@ -38,6 +46,10 @@ class ActionLogManagementState extends BaseState {
     List<ActionLog>? overdueActionLogs,
     List<ActionLog>? dueActionLogs,
     List<ActionLog>? upcomingActionLogs,
+    List<UpcomingActionLogTimeFilter>? upcomingActionLogTimeFiltersEnum,
+    UpcomingActionLogTimeFilter? selectedUpcomingActionLogTimeFilter,
+    bool? isOpenedUpcomingFilter,
+    DateTime? upcomingDateTimeFilter,
   }) {
     return ActionLogManagementState(
       activeRMU: activeRMU ?? this.activeRMU,
@@ -50,6 +62,10 @@ class ActionLogManagementState extends BaseState {
       overdueActionLogs: overdueActionLogs ?? this.overdueActionLogs,
       dueActionLogs: dueActionLogs ?? this.dueActionLogs,
       upcomingActionLogs: upcomingActionLogs ?? this.upcomingActionLogs,
+      isOpenedUpcomingFilter: isOpenedUpcomingFilter ?? this.isOpenedUpcomingFilter,
+      upcomingActionLogTimeFiltersEnum: upcomingActionLogTimeFiltersEnum ?? this.upcomingActionLogTimeFiltersEnum,
+      selectedUpcomingActionLogTimeFilter: selectedUpcomingActionLogTimeFilter ?? this.selectedUpcomingActionLogTimeFilter,
+      upcomingDateTimeFilter: upcomingDateTimeFilter ?? this.upcomingDateTimeFilter,
     );
   }
 }

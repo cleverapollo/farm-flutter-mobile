@@ -20,6 +20,8 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
       state.copyWith(
         activeRMU: activeRmu,
         activeUserRole: activeUserRole,
+        upcomingActionLogTimeFiltersEnum: UpcomingActionLogTimeFilter.values,
+        upcomingDateTimeFilter: DateTime.now(),
       ),
     );
 
@@ -64,6 +66,22 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
         dueActionLogs: dueActionLogs,
         overdueActionLogs: overdueActionLogs.where((element) => element.dueDate.isSameDate(overdueDate)).toList(),
         upcomingActionLogs: upcomingActionLogs.where((element) => element.dueDate.isSameDate(upcomingDate)).toList(),
+      ),
+    );
+
+    applyFilter();
+  }
+
+
+  void onTapUpcomingTimeFilterDropdown() {
+    emit(state.copyWith(isOpenedUpcomingFilter: !state.isOpenedUpcomingFilter));
+  }
+
+  void setUpcomingTimeFilter(UpcomingActionLogTimeFilter? filterEnum) {
+    emit(
+      state.copyWith(
+        selectedUpcomingActionLogTimeFilter: filterEnum,
+        isOpenedUpcomingFilter: false,
       ),
     );
 
