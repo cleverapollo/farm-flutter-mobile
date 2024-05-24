@@ -74,12 +74,9 @@ class CompartmentCreateNewPolygonScreenState extends BaseStatefulWidgetState<Com
 
   Set<Polyline> generatePolyline() {
     final state = cubit.state;
-    if (state.isCompletePolygon || state.temporaryMarkers.length < 2) {
-      return <Polyline>{};
-    }
-
-    final markers = state.temporaryMarkers;
+    final markers = state.isCompletePolygon ? state.displayMarkers : state.temporaryMarkers;
     final polylines = <Polyline>{};
+
     if (markers.length < 2) {
       return polylines;
     }
@@ -196,9 +193,7 @@ class CompartmentCreateNewPolygonScreenState extends BaseStatefulWidgetState<Com
   void onTemporarySavedListMarkersOnCompartmentModel({
     bool shouldClearLastItem = true,
   }) {
-    final listMarkers = context
-        .read<CompartmentCreateNewPolygonCubit>()
-        .getTemporarySavedMarkers(shouldClearLastItem);
+    final listMarkers = cubit.getTemporarySavedMarkers(shouldClearLastItem);
     final polygons = listMarkers.map(MapUtils.generateLatLngFromMarker).toList();
     final areaInHa = MapUtils.computeAreaInHa(polygons);
     widget.onSave(
@@ -387,10 +382,12 @@ class CompartmentCreateNewPolygonScreenState extends BaseStatefulWidgetState<Com
                               widget.onSave(
                                 selectedCompartmentMapDetails.getAreaInHa(),
                                 selectedCompartmentMapDetails.markers
-                                    .map((e) => PolygonItem(
-                                  latitude: e.position.latitude,
-                                  longitude: e.position.longitude,
-                                ))
+                                    .map(
+                                      (e) => PolygonItem(
+                                        latitude: e.position.latitude,
+                                        longitude: e.position.longitude,
+                                      ),
+                                    )
                                     .toList(),
                               );
                             }
@@ -406,7 +403,6 @@ class CompartmentCreateNewPolygonScreenState extends BaseStatefulWidgetState<Com
             ),
           ],
         );
-
       },
     );
   }

@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:cmo/ui/components/bottom_sheet_selection/bottom_sheet_selection.dart';
-import 'compartment_maps_summaries_screen.dart';
+import 'compartment_edit_polygon_screen.dart';
 
 class CompartmentDetailScreen extends BaseStatefulWidget {
   final String? farmName;
@@ -88,7 +88,7 @@ class _CompartmentDetailScreenState extends BaseStatefulWidgetState<CompartmentD
         onSave: _compartmentDetailCubit.onChangeLocation,
       );
     } else {
-      await CompartmentMapsSummariesScreen.push(
+      await CompartmentEditPolygonScreen.push(
         context,
         farmId: context.read<CompartmentDetailCubit>().state.farmId,
         farmName: widget.farmName,

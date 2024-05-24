@@ -32,7 +32,7 @@ export 'register_management/rte_species/rte_species_cubit.dart';
 export 'register_management/rte_species/rte_species_detail_cubit.dart';
 export 'compartment_cubit/compartment_create_new_polygon_cubit.dart';
 export 'fire_cubit/fire_register_detail_cubit.dart';
-export 'compartment_cubit/compartment_maps_summaries_cubit.dart';
+export 'compartment_cubit/compartment_edit_polygon_cubit.dart';
 export 'pets_and_disease_cubit/pets_and_disease_detail_cubit.dart';
 export 'labour_management/labour_detail_cubit.dart';
 export 'illegal_activity/illegal_activity_detail_cubit.dart';

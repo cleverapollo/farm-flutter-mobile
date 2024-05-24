@@ -33,15 +33,16 @@ class MapUtils {
     bool draggable = false,
     bool shouldShowCustomIconMarker = true,
   }) async {
+    final markerId = MarkerId('place_name_${position.latitude}_${position.longitude}_${generatorInt32Id()}');
     return Marker(
-      markerId: MarkerId('place_name_${position.latitude}_${position.longitude}_${generatorInt32Id()}'),
+      markerId: markerId,
       position: position,
-      onTap: () => onTap?.call(MarkerId('place_name_${position.latitude}_${position.longitude}')),
+      onTap: () => onTap?.call(markerId),
       draggable: draggable,
       onDrag: (latLng) {
         onDrag?.call(
           latLng,
-          MarkerId('place_name_${position.latitude}_${position.longitude}'),
+          markerId,
         );
       },
       icon: shouldShowCustomIconMarker

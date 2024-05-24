@@ -8,14 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-part 'compartment_maps_summaries_state.dart';
+part 'compartment_edit_polygon_state.dart';
 
-class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState> {
-  CompartmentMapsSummariesCubit({
+class CompartmentEditPolygonCubit extends Cubit<CompartmentEditPolygonState> {
+  CompartmentEditPolygonCubit({
     required Compartment selectedCompartment,
     required String farmId,
   }) : super(
-          CompartmentMapsSummariesState(
+          CompartmentEditPolygonState(
             selectedCompartment: selectedCompartment,
             farmId: farmId,
           ),
@@ -94,29 +94,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
     final distanceUnit = settingConfig.distanceUnitEnum;
     if(state.isCompletePolygon || state.temporaryMarkers.length < 2) return markers;
     final listMarkers = List<Marker>.from(markers);
-    if (state.isAddingNew) {
-      final lastCenterPolyline = markers[markers.length - 1].position;
-      listMarkers.add(
-        Marker(
-          markerId: MarkerId('place_name_${lastCenterPolyline.latitude}_${lastCenterPolyline.longitude}'),
-          position: lastCenterPolyline,
-          icon: await BitmapDescriptorHelper.getBytesFromCanvasDynamic(
-            title: '${distanceUnit.convertKmToDisplayDistanceUnit(
-                  MapUtils.calculateDistanceBetweenTwoMarkers(
-                    markers[markers.length - 1],
-                    markers[markers.length - 2],
-                  ),
-                )!.toStringAsFixed(2)}${distanceUnit.valueName}',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 60,
-              leadingDistribution: TextLeadingDistribution.even,
-            ),
-          ),
-        ),
-      );
-    } else if (state.isUpdating && state.selectedEditedMarker != null) {
+    if (state.isUpdating && state.selectedEditedMarker != null) {
       final selectedMarker = state.selectedEditedMarker;
       final selectedMarkerIndex = markers.indexWhere((element) => element.markerId == selectedMarker!.markerId);
       if (selectedMarkerIndex == -1) return markers;
@@ -178,28 +156,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
 
   Future<void> onCameraMove(CameraPosition cameraPosition, LatLngBounds? visibleRegion) async {
     emit(state.copyWith(currentCameraPosition: cameraPosition));
-    if (state.isAddingNew && !state.isCompletePolygon) {
-      final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
-      if (temporaryMarkers.isNotBlank) {
-        if (temporaryMarkers.length == 1) {
-          temporaryMarkers.add(MapUtils.copyMarkerValue(temporaryMarkers.last));
-        }
-
-        temporaryMarkers[temporaryMarkers.length - 1] = temporaryMarkers[temporaryMarkers.length - 1].copyWith(
-          positionParam: LatLng(
-            cameraPosition.target.latitude,
-            cameraPosition.target.longitude,
-          ),
-        );
-
-        emit(
-          state.copyWith(
-            temporaryMarkers: temporaryMarkers,
-            displayMarkers: await generateMarkerWithDistanceValue(temporaryMarkers),
-          ),
-        );
-      }
-    } else if (state.isUpdating) {
+    if (state.isUpdating) {
       final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
       var selectedMarker = temporaryMarkers.firstWhereOrNull((element) => element.markerId == state.selectedEditedMarker?.markerId);
       if (selectedMarker != null) {
@@ -233,8 +190,7 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
       cameraPosition.target.longitude,
     );
 
-    final compartmentMapDetail =
-        state.listCompartmentMapDetails.firstWhereOrNull(
+    final compartmentMapDetail = state.listCompartmentMapDetails.firstWhereOrNull(
       (element) => MapUtils.checkPositionInsidePolygon(
         latLng: latLng,
         polygon: element.polygons,
@@ -310,56 +266,6 @@ class CompartmentMapsSummariesCubit extends Cubit<CompartmentMapsSummariesState>
         ),
       );
     }
-  }
-
-  Future<void> createNewMarker() async {
-    if (state.currentCameraPosition == null) return;
-    final marker = await MapUtils.generateMarkerFromLatLng(state.currentCameraPosition!.target);
-    emit(
-      state.copyWith(
-        isEditing: true,
-        editingMarkers: state.editingMarkers + [marker],
-        temporaryMarkers: state.temporaryMarkers + [marker],
-        displayMarkers: await generateMarkerWithDistanceValue(state.temporaryMarkers + [marker]),
-        isCompletePolygon: false,
-      ),
-    );
-  }
-
-  Future<void> removePreviousMarker() async {
-    final markers = state.temporaryMarkers;
-    if (markers.isEmpty) return;
-    markers.removeLast();
-    emit(
-      state.copyWith(
-        isEditing: true,
-        editingMarkers: markers,
-        temporaryMarkers: markers,
-        displayMarkers: await generateMarkerWithDistanceValue(markers),
-        isCompletePolygon: false,
-      ),
-    );
-  }
-
-  void onCompletePolygon() {
-    final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
-    temporaryMarkers.removeLast();
-    final selectedCompartmentMapDetails = state.selectedCompartmentMapDetails?.copyWith(
-      markers: temporaryMarkers,
-      polygons: temporaryMarkers
-          .map(MapUtils.generateLatLngFromMarker)
-          .toList(),
-    );
-
-    emit(
-      state.copyWith(
-        isCompletePolygon: true,
-        isEditing: true,
-        compartmentMapDetailByCameraPosition: selectedCompartmentMapDetails,
-        selectedCompartmentMapDetails: selectedCompartmentMapDetails,
-        displayMarkers: temporaryMarkers,
-      ),
-    );
   }
 
   Future<void> editingPolygon() async {

@@ -1,6 +1,6 @@
-part of 'compartment_maps_summaries_cubit.dart';
+part of 'compartment_edit_polygon_cubit.dart';
 
-class CompartmentMapsSummariesState extends BaseState {
+class CompartmentEditPolygonState extends BaseState {
   final List<CompartmentMapDetail> listCompartmentMapDetails;
   final CompartmentMapDetail? selectedCompartmentMapDetails;
   final CompartmentMapDetail? compartmentMapDetailByCameraPosition;
@@ -20,13 +20,11 @@ class CompartmentMapsSummariesState extends BaseState {
   final LatLngBounds? visibleRegion;
   final MapType mapType;
 
-  bool get isAddingNew => selectedCompartment.polygon.isBlank;
-
   bool get isSelectedCompartmentMapDetails =>
       compartmentMapDetailByCameraPosition?.compartment.localCompartmentId ==
       selectedCompartmentMapDetails?.compartment.localCompartmentId;
 
-  CompartmentMapsSummariesState({
+  CompartmentEditPolygonState({
     required this.selectedCompartment,
     required this.farmId,
     this.listCompartments = const <Compartment>[],
@@ -50,7 +48,7 @@ class CompartmentMapsSummariesState extends BaseState {
     this.mapType = MapType.satellite,
   });
 
-  CompartmentMapsSummariesState copyWith({
+  CompartmentEditPolygonState copyWith({
     bool? loading,
     bool? isEditing,
     Object? error,
@@ -73,7 +71,7 @@ class CompartmentMapsSummariesState extends BaseState {
     LatLngBounds? visibleRegion,
     MapType? mapType,
   }) {
-    return CompartmentMapsSummariesState(
+    return CompartmentEditPolygonState(
       farmId: farmId ?? this.farmId,
       selectedCompartment: selectedCompartment ?? this.selectedCompartment,
       listCompartments: listCompartments ?? this.listCompartments,
@@ -98,13 +96,13 @@ class CompartmentMapsSummariesState extends BaseState {
     );
   }
 
-  CompartmentMapsSummariesState resetEditingMarkers({
+  CompartmentEditPolygonState resetEditingMarkers({
     bool isCleanSelectedEditedMarker = true,
     bool isCleanSelectedEditedPolyline = true,
     bool isCleanEditingMarkers = true,
     bool isCleanTemporaryMarkers = true,
   }) {
-    return CompartmentMapsSummariesState(
+    return CompartmentEditPolygonState(
       farmId: farmId,
       selectedCompartment: selectedCompartment,
       listCompartments: listCompartments,

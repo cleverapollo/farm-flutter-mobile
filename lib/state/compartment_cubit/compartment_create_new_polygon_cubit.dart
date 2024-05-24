@@ -243,39 +243,6 @@ class CompartmentCreateNewPolygonCubit extends Cubit<CompartmentCreateNewPolygon
     );
   }
 
-  Future<void> onResetPolygon() async {
-    if (state.listMarkersHistory.length <= 1) {
-      final listMarkers = List<Marker>.from(state.selectedCompartmentMapDetails?.markers ?? []);
-      emit(
-        state.resetEditingMarkers().copyWith(
-          isChanged: false,
-          isEditing: true,
-          editingMarkers: listMarkers,
-          temporaryMarkers: listMarkers,
-          displayMarkers: await generateMarkerWithDistanceValue(listMarkers),
-          listMarkersHistory: [listMarkers],
-        ),
-      );
-
-      return;
-    }
-
-    final newListMarkersHistory = List<List<Marker>>.from(state.listMarkersHistory);
-    final lastListMarkersSnapshot = newListMarkersHistory.last;
-    newListMarkersHistory.removeLast();
-    final listMarkers = List<Marker>.from(lastListMarkersSnapshot);
-    emit(
-      state.resetEditingMarkers().copyWith(
-        isChanged: false,
-        isEditing: true,
-        listMarkersHistory: newListMarkersHistory,
-        temporaryMarkers: listMarkers,
-        editingMarkers: listMarkers,
-        displayMarkers: await generateMarkerWithDistanceValue(listMarkers),
-      ),
-    );
-  }
-
   List<Marker> getTemporarySavedMarkers(bool shouldClearLastItem) {
     final temporaryMarkers = List<Marker>.from(state.temporaryMarkers);
     if (shouldClearLastItem) {
@@ -285,7 +252,6 @@ class CompartmentCreateNewPolygonCubit extends Cubit<CompartmentCreateNewPolygon
     return temporaryMarkers;
   }
 
-
   void onChangeMapType() {
     final currentMapType = state.mapType;
     if (currentMapType == MapType.satellite) {
@@ -293,31 +259,5 @@ class CompartmentCreateNewPolygonCubit extends Cubit<CompartmentCreateNewPolygon
     } else {
       emit(state.copyWith(mapType: MapType.satellite));
     }
-  }
-
-  void onAcceptChanges({
-    required void Function(double?, List<PolygonItem>?) onSave,
-  }) {
-    if (state.selectedCompartmentMapDetails == null) {
-      return;
-    }
-
-    final selectedCompartmentMapDetails =
-    state.selectedCompartmentMapDetails!.copyWith(
-      markers: state.editingMarkers,
-      polygons: state.editingMarkers.map(MapUtils.generateLatLngFromMarker).toList(),
-    );
-
-    onSave(
-      selectedCompartmentMapDetails.getAreaInHa(),
-      selectedCompartmentMapDetails.markers
-          .map(
-            (e) => PolygonItem(
-          latitude: e.position.latitude,
-          longitude: e.position.longitude,
-        ),
-      )
-          .toList(),
-    );
   }
 }

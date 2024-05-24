@@ -10,11 +10,10 @@ import 'package:cmo/ui/ui.dart';
 import 'package:cmo/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
-  CompartmentMapsSummariesScreen({
+class CompartmentEditPolygonScreen extends BaseStatefulWidget {
+  const CompartmentEditPolygonScreen({
     super.key,
     this.farmName,
     required this.farmId,
@@ -26,7 +25,7 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
   final void Function(double?, List<PolygonItem>?) onSave;
 
   @override
-  State<StatefulWidget> createState() => CompartmentMapsSummariesScreenState();
+  State<StatefulWidget> createState() => CompartmentEditPolygonScreenState();
 
   static dynamic push(
       BuildContext context, {
@@ -40,11 +39,11 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider(
-            create: (_) => CompartmentMapsSummariesCubit(
+            create: (_) => CompartmentEditPolygonCubit(
               selectedCompartment: selectedCompartment,
               farmId: farmId,
             ),
-            child: CompartmentMapsSummariesScreen(
+            child: CompartmentEditPolygonScreen(
               farmName: farmName,
               farmId: farmId,
               onSave: onSave,
@@ -56,61 +55,27 @@ class CompartmentMapsSummariesScreen extends BaseStatefulWidget {
   }
 }
 
-class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<CompartmentMapsSummariesScreen> {
+class CompartmentEditPolygonScreenState extends BaseStatefulWidgetState<CompartmentEditPolygonScreen> {
 
   GoogleMapController? mapController;
+
+  late CompartmentEditPolygonCubit cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    cubit = context.read<CompartmentEditPolygonCubit>();
+  }
 
   @override
   bool get shouldCheckConnectionSpeed => true;
 
   @override
-  bool get canPopWithoutWarningDialog => !context.read<CompartmentMapsSummariesCubit>().state.isEditing;
+  bool get canPopWithoutWarningDialog => !cubit.state.isEditing;
 
   Set<Polyline> generatePolyline() {
-    final state = context.read<CompartmentMapsSummariesCubit>().state;
-    if (state.isCompletePolygon) {
-      return <Polyline>{};
-    }
-
-    if (state.isAddingNew) {
-      final markers = state.temporaryMarkers;
-      final polylines = <Polyline>{};
-      if (markers.length < 2) {
-        return polylines;
-      }
-
-      for (var i = 1; i < markers.length; i++) {
-        polylines.add(
-          Polyline(
-            polylineId: PolylineId('${markers[i].markerId.value} ${i - 1}_$i'),
-            points: [
-              markers[i - 1].position,
-              markers[i].position,
-            ],
-            color: context.colors.yellow,
-            width: 2,
-            startCap: Cap.roundCap,
-            endCap: Cap.roundCap,
-          ),
-        );
-      }
-
-      if (state.isCompletePolygon) {
-        polylines.add(
-          Polyline(
-            polylineId: PolylineId('${markers[markers.length - 1].markerId.value} ${markers.length - 1}_0'),
-            points: [
-              markers[markers.length - 1].position,
-              markers[0].position,
-            ],
-            color: context.colors.yellow,
-            width: 2,
-          ),
-        );
-      }
-
-      return polylines;
-    } else if (state.isUpdating) {
+    final state = cubit.state;
+    if (state.isUpdating) {
       final selectedPolyline = state.selectedEditedPolyline;
 
       final markers = state.temporaryMarkers;
@@ -144,13 +109,12 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
             markers[i - 1].position,
             markers[i].position,
           ],
-
         );
 
         polyline = polyline.copyWith(
           colorParam: getPolylineColor(polyline),
           onTapParam: () {
-            context.read<CompartmentMapsSummariesCubit>().onTapPolyline(
+            cubit.onTapPolyline(
                   polyline,
                   onMoveCameraToCenterPoint: moveMapCameraToLocation,
                 );
@@ -174,7 +138,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       lastPolyline = lastPolyline.copyWith(
         colorParam: getPolylineColor(lastPolyline),
         onTapParam: () {
-          context.read<CompartmentMapsSummariesCubit>().onTapPolyline(
+          cubit.onTapPolyline(
                 lastPolyline,
                 onMoveCameraToCenterPoint: moveMapCameraToLocation,
               );
@@ -184,37 +148,13 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
       polylines.add(lastPolyline);
 
       return polylines;
-    } else if (state.selectedCompartmentMapDetails?.markers != null && state.selectedCompartmentMapDetails!.markers.length <= 2) {
-      final markers = state.selectedCompartmentMapDetails!.markers;
-      var now = DateTime.now().microsecondsSinceEpoch;
-      final polylines = <Polyline>{};
-      for (var i = 1; i < markers.length; i++) {
-        final polyline = Polyline(
-          consumeTapEvents: true,
-          width: 2,
-          startCap: Cap.roundCap,
-          endCap: Cap.roundCap,
-          color: context.colors.yellow,
-          polylineId: PolylineId('${markers[i].markerId.value} ${i - 1}_$i $now'),
-          points: [
-            markers[i - 1].position,
-            markers[i].position,
-          ],
-
-        );
-
-        polylines.add(polyline);
-        now++;
-      }
-
-      return polylines;
     }
 
     return <Polyline>{};
   }
 
   Set<Polygon> generatePolygon() {
-    final state = context.read<CompartmentMapsSummariesCubit>().state;
+    final state = cubit.state;
     final polygon = <Polygon>{};
     final visibleRegion = state.visibleRegion;
 
@@ -233,7 +173,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
     }
 
     final selectedPolygon = generatePolygonFromListMarker();
-    if (selectedPolygon != null && !state.isUpdating) {
+    if (selectedPolygon != null) {
       polygon.add(selectedPolygon);
     }
 
@@ -259,11 +199,8 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
   }
 
   Polygon? generatePolygonFromListMarker() {
-    final state = context.read<CompartmentMapsSummariesCubit>().state;
-    if ((state.isAddingNew && !state.isCompletePolygon) ||
-        (state.selectedCompartmentMapDetails?.markers == null ||
-            state.selectedCompartmentMapDetails!.markers.isBlank ||
-            state.selectedCompartmentMapDetails!.markers.length <= 2)) {
+    final state = cubit.state;
+    if (state.isUpdating) {
       return null;
     }
 
@@ -284,34 +221,19 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
   }
 
   Future<void> moveMapCameraToInitLocation() async {
-    final state = context.read<CompartmentMapsSummariesCubit>().state;
-    if (state.isAddingNew) {
-      final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      await mapController?.animateCamera(
-        CameraUpdate.newLatLng(
-          LatLng(
-            position.latitude,
-            position.longitude,
-          ),
-        ),
-      );
-    } else {
-      await mapController?.animateCamera(
-        CameraUpdate.newLatLng(
-          state.selectedCompartmentMapDetails!.centerPoint(),
-        ),
-      );
-    }
+    final state = cubit.state;
+    await mapController?.animateCamera(
+      CameraUpdate.newLatLng(
+        state.selectedCompartmentMapDetails!.centerPoint(),
+      ),
+    );
   }
 
   void onTemporarySavedListMarkersOnCompartmentModel({
     bool shouldClearLastItem = true,
   }) {
     final listMarkers = context
-        .read<CompartmentMapsSummariesCubit>()
+        .read<CompartmentEditPolygonCubit>()
         .getTemporarySavedMarkers(shouldClearLastItem);
     final polygons = listMarkers.map(MapUtils.generateLatLngFromMarker).toList();
     final areaInHa = MapUtils.computeAreaInHa(polygons);
@@ -346,7 +268,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           Expanded(
             child: Stack(
               children: [
-                BlocBuilder<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState>(
+                BlocBuilder<CompartmentEditPolygonCubit, CompartmentEditPolygonState>(
                   builder: (context, state) {
                     return GoogleMap(
                       initialCameraPosition: const CameraPosition(
@@ -361,7 +283,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                       onCameraMove: (position) async {
                         final visibleRegion = await mapController?.getVisibleRegion();
                         await context
-                            .read<CompartmentMapsSummariesCubit>()
+                            .read<CompartmentEditPolygonCubit>()
                             .onCameraMove(
                               position,
                               visibleRegion,
@@ -372,7 +294,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                         MapUtils.checkLocationPermission(
                           onAllowed: () async {
                             await Future.delayed(Duration(seconds: 1)).then((_) async {
-                              await context.read<CompartmentMapsSummariesCubit>().initMapData();
+                              await cubit.initMapData();
                               await moveMapCameraToInitLocation();
                             });
                           },
@@ -385,12 +307,12 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
                   left: 15,
                   bottom: 15,
                   child: MapTypeSwitchButton(
-                    onTap: context.read<CompartmentMapsSummariesCubit>().onChangeMapType,
+                    onTap: cubit.onChangeMapType,
                   ),
                 ),
                 const MapCenterIcon(),
                 Positioned.fill(
-                  child: BlocSelector<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState, bool>(
+                  child: BlocSelector<CompartmentEditPolygonCubit, CompartmentEditPolygonState, bool>(
                     selector: (state) => state.loading,
                     builder: (context, loading) {
                       return loading
@@ -413,10 +335,9 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
   }
 
   Widget instructionMessages() {
-    return BlocBuilder<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState>(
+    return BlocBuilder<CompartmentEditPolygonCubit, CompartmentEditPolygonState>(
       builder: (context, state) {
         var instructionMessage = '';
-
         if (state.isUpdating) {
           instructionMessage = LocaleKeys.select_a_point_or_line_to_edit.tr();
           if (state.selectedEditedMarker != null || state.selectedEditedPolyline != null) {
@@ -435,7 +356,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
   }
 
   Widget compartmentDetailData() {
-    return BlocSelector<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState, CompartmentMapDetail?>(
+    return BlocSelector<CompartmentEditPolygonCubit, CompartmentEditPolygonState, CompartmentMapDetail?>(
       selector: (state) => state.compartmentMapDetailByCameraPosition,
       builder: (context, compartmentMapDetailByCameraPosition) {
         final compartmentName = compartmentMapDetailByCameraPosition?.compartment.unitNumber ?? '';
@@ -465,17 +386,15 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
   }
 
   Widget functionButtons() {
-    return BlocBuilder<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState>(
+    return BlocBuilder<CompartmentEditPolygonCubit, CompartmentEditPolygonState>(
       builder: (context, state) {
         Widget? child;
-        if (state.isAddingNew) {
-          child = addingFunctionButton();
-        } else if (state.isSelectedCompartmentMapDetails && !state.isUpdating) {
+        if (state.isSelectedCompartmentMapDetails && !state.isUpdating) {
           child = Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               InkWell(
-                onTap: context.read<CompartmentMapsSummariesCubit>().editingPolygon,
+                onTap: cubit.editingPolygon,
                 child: Container(
                   alignment: Alignment.center,
                   color: Colors.white,
@@ -497,89 +416,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
         }
 
         return child;
-
       },
-    );
-  }
-
-  Widget addingFunctionButton() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            InkWell(
-              onTap: () {
-                context.read<CompartmentMapsSummariesCubit>().removePreviousMarker();
-                onTemporarySavedListMarkersOnCompartmentModel();
-              },
-              child: Container(
-                alignment: Alignment.center,
-                child: SvgGenImage(Assets.icons.icRefreshMap.path).svg(
-                  height: 68,
-                  width: 68,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            InkWell(
-              onTap: () async {
-                await context.read<CompartmentMapsSummariesCubit>().createNewMarker();
-                onTemporarySavedListMarkersOnCompartmentModel();
-              },
-              child: Container(
-                alignment: Alignment.center,
-                child: SvgGenImage(Assets.icons.icAcceptMap.path).svg(
-                  height: 68,
-                  width: 68,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              Expanded(
-                child: CmoFilledButton(
-                  title: LocaleKeys.complete_polygon.tr(),
-                  onTap: context.read<CompartmentMapsSummariesCubit>().onCompletePolygon,
-                ),
-              ),
-              const SizedBox(width: 24),
-              Expanded(
-                child: BlocSelector<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState, bool>(
-                  selector: (state) => state.isCompletePolygon,
-                  builder: (context, isCompletePolygon) {
-                    return CmoFilledButton(
-                      title: LocaleKeys.next.tr(),
-                      disable: !isCompletePolygon,
-                      onTap: () {
-                        final selectedCompartmentMapDetails = context.read<CompartmentMapsSummariesCubit>().state.selectedCompartmentMapDetails;
-                        if (selectedCompartmentMapDetails != null) {
-                          widget.onSave(
-                            selectedCompartmentMapDetails.getAreaInHa(),
-                            selectedCompartmentMapDetails.markers
-                                .map((e) => PolygonItem(
-                                      latitude: e.position.latitude,
-                                      longitude: e.position.longitude,
-                                    ))
-                                .toList(),
-                          );
-                        }
-
-                        Navigator.of(context).pop();
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -591,7 +428,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           children: [
             InkWell(
               onTap: () {
-                context.read<CompartmentMapsSummariesCubit>().onResetPolygon();
+                cubit.onResetPolygon();
                 onTemporarySavedListMarkersOnCompartmentModel();
               },
               child: Container(
@@ -605,7 +442,7 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
             const SizedBox(width: 16),
             InkWell(
               onTap: () {
-                context.read<CompartmentMapsSummariesCubit>().onUpdateNewPositionMarker();
+                cubit.onUpdateNewPositionMarker();
                 onTemporarySavedListMarkersOnCompartmentModel(shouldClearLastItem: false);
               },
               child: Container(
@@ -624,15 +461,13 @@ class CompartmentMapsSummariesScreenState extends BaseStatefulWidgetState<Compar
           child: Row(
             children: [
               Expanded(
-                child: BlocSelector<CompartmentMapsSummariesCubit, CompartmentMapsSummariesState, bool>(
+                child: BlocSelector<CompartmentEditPolygonCubit, CompartmentEditPolygonState, bool>(
                   selector: (state) => state.isChanged,
                   builder: (context, isChanged) => CmoFilledButton(
                     title: LocaleKeys.accept_changes.tr(),
                     disable: !isChanged,
                     onTap: () {
-                      context
-                          .read<CompartmentMapsSummariesCubit>()
-                          .onAcceptChanges(onSave: widget.onSave);
+                      cubit.onAcceptChanges(onSave: widget.onSave);
                       Navigator.of(context).pop();
                     },
                   ),
