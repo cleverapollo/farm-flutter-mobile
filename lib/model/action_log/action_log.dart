@@ -1,17 +1,11 @@
+import 'package:cmo/enum/enum.dart';
+import 'package:cmo/extensions/extensions.dart';
 import 'package:cmo/model/model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
 
 part 'action_log.freezed.dart';
 part 'action_log.g.dart';
-
-// public int GroupSchemeId { get; set; }
-//
-// public string GroupSchemeName { get; set; }
-//
-// public int RegionalManagerUnitId { get; set; }
-//
-// public string RegionalManagerUnitName { get; set; }
 
 @freezed
 @Collection(ignore: {'copyWith'})
@@ -51,4 +45,19 @@ class ActionLog with _$ActionLog {
   factory ActionLog.fromJson(Map<String, dynamic> json) => _$ActionLogFromJson(json);
 
   Id get id => actionLogId ?? Isar.autoIncrement;
+}
+
+extension ActionLogExtension on ActionLog {
+  UpcomingTabStatus? get upcomingTabStatus {
+    if (dueDate == null) return null;
+    if (DateTime.now().isSameDate(dueDate)) {
+      return UpcomingTabStatus.due;
+    } else if (DateTime.now().isAfter(dueDate!)) {
+      return UpcomingTabStatus.overdue;
+    } else if (DateTime.now().isBefore(dueDate!)) {
+      return UpcomingTabStatus.upcoming;
+    }
+
+    return null;
+  }
 }

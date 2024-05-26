@@ -48,4 +48,33 @@ extension DateTimeExtensions on DateTime? {
         this!.month == other.month &&
         this!.day == other.day;
   }
+
+  DateTime get firstDayOfMonth => DateTime(this!.year, this!.month);
+
+  /// The last day of a given month
+  DateTime get lastDayOfMonth {
+    return DateTime(this!.year, this!.month + 1, 0);
+  }
+
+  DateTime get firstDayOfWeek {
+    /// Handle Daylight Savings by setting hour to 12:00 Noon
+    /// rather than the default of Midnight
+    final day = DateTime.utc(this!.year, this!.month, this!.day, 12);
+
+    /// Weekday is on a 1-7 scale Monday - Sunday,
+    /// This Calendar works from Sunday - Monday
+    final decreaseNum = day.weekday % 7;
+    return this!.subtract(Duration(days: decreaseNum));
+  }
+
+  DateTime get lastDayOfWeek {
+    /// Handle Daylight Savings by setting hour to 12:00 Noon
+    /// rather than the default of Midnight
+    final day = DateTime.utc(this!.year, this!.month, this!.day, 12);
+
+    /// Weekday is on a 1-7 scale Monday - Sunday,
+    /// This Calendar's Week starts on Sunday
+    final increaseNum = day.weekday % 7;
+    return day.add(Duration(days: 7 - increaseNum));
+  }
 }

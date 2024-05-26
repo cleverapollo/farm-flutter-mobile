@@ -1,3 +1,4 @@
+import 'package:cmo/enum/enum.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
 import 'package:cmo/model/model.dart';
@@ -5,14 +6,11 @@ import 'package:cmo/model/setting_config/setting_config.dart';
 import 'package:cmo/state/state.dart';
 import 'package:cmo/ui/components/custom_icon_slidable_action.dart';
 import 'package:cmo/ui/ui.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'upcoming_filter.dart';
-
-enum UpcomingTabStatus { overdue, due, upcoming }
 
 class UpcomingTab extends StatelessWidget {
   final void Function(ActionLog) onNavigateToDetail;
@@ -36,39 +34,16 @@ class UpcomingTab extends StatelessWidget {
               return SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Column(
-                  children: state.overdueActionLogs
-                          .map(
-                            (actionLog) => UpcomingTabActionLogItem(
-                              settingConfig: settingConfig,
-                              actionLog: actionLog,
-                              upcomingTabStatus: UpcomingTabStatus.overdue,
-                              onTap: () => onNavigateToDetail(actionLog),
-                              onClose: () => onClose(actionLog),
-                            ),
-                          )
-                          .toList() +
-                      state.dueActionLogs
-                          .map(
-                            (actionLog) => UpcomingTabActionLogItem(
-                              settingConfig: settingConfig,
-                              actionLog: actionLog,
-                              upcomingTabStatus: UpcomingTabStatus.due,
-                              onTap: () => onNavigateToDetail(actionLog),
-                              onClose: () => onClose(actionLog),
-                            ),
-                          )
-                          .toList() +
-                      state.upcomingActionLogs
-                          .map(
-                            (actionLog) => UpcomingTabActionLogItem(
-                              settingConfig: settingConfig,
-                              actionLog: actionLog,
-                              upcomingTabStatus: UpcomingTabStatus.upcoming,
-                              onTap: () => onNavigateToDetail(actionLog),
-                              onClose: () => onClose(actionLog),
-                            ),
-                          )
-                          .toList(),
+                  children: state.displayList
+                      .map(
+                        (actionLog) => UpcomingTabActionLogItem(
+                          settingConfig: settingConfig,
+                          actionLog: actionLog,
+                          onTap: () => onNavigateToDetail(actionLog),
+                          onClose: () => onClose(actionLog),
+                        ),
+                      )
+                      .toList(),
                 ),
               );
             },
@@ -80,14 +55,12 @@ class UpcomingTab extends StatelessWidget {
 }
 
 class UpcomingTabActionLogItem extends StatelessWidget {
-  final UpcomingTabStatus upcomingTabStatus;
   final ActionLog actionLog;
   final SettingConfig settingConfig;
   final void Function() onTap;
   final void Function() onClose;
 
   const UpcomingTabActionLogItem({
-    required this.upcomingTabStatus,
     required this.actionLog,
     required this.settingConfig,
     required this.onTap,
@@ -174,7 +147,7 @@ class UpcomingTabActionLogItem extends StatelessWidget {
 
   Widget buildTitleWidget(BuildContext context) {
     final date = settingConfig.dateFormatEnum.displayFormat(actionLog.dueDate);
-    switch (upcomingTabStatus) {
+    switch (actionLog.upcomingTabStatus) {
       case UpcomingTabStatus.overdue:
       case UpcomingTabStatus.upcoming:
         return Container(
@@ -184,7 +157,7 @@ class UpcomingTabActionLogItem extends StatelessWidget {
               topRight: Radius.circular(10),
               topLeft: Radius.circular(10),
             ),
-            color: upcomingTabStatus == UpcomingTabStatus.overdue
+            color: actionLog.upcomingTabStatus == UpcomingTabStatus.overdue
                 ? context.colors.blueDark2
                 : context.colors.blue,
           ),
@@ -192,7 +165,7 @@ class UpcomingTabActionLogItem extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  '${upcomingTabStatus == UpcomingTabStatus.overdue ? LocaleKeys.overdue.tr() : LocaleKeys.upcoming.tr()}: $date',
+                  '${actionLog.upcomingTabStatus == UpcomingTabStatus.overdue ? LocaleKeys.overdue.tr() : LocaleKeys.upcoming.tr()}: $date',
                   style: context.textStyles.bodyBold.white,
                 ),
               ),
@@ -221,6 +194,9 @@ class UpcomingTabActionLogItem extends StatelessWidget {
             ],
           ),
         );
+
+      default:
+        return const SizedBox.shrink();
     }
   }
 }

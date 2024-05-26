@@ -10,14 +10,13 @@ class ActionLogManagementState extends BaseState {
     this.openActions = const <ActionLog>[],
     this.closedActions = const <ActionLog>[],
     this.displayList = const <ActionLog>[],
-    this.overdueActionLogs = const <ActionLog>[],
-    this.dueActionLogs = const <ActionLog>[],
-    this.upcomingActionLogs = const <ActionLog>[],
     this.upcomingActionLogTimeFiltersEnum = const <UpcomingActionLogTimeFilter>[],
     this.selectedUpcomingActionLogTimeFilter = UpcomingActionLogTimeFilter.day,
     this.filteringText,
     this.isOpenedUpcomingFilter = false,
-    this.upcomingDateTimeFilter,
+    required this.firstDateUpcomingFilter,
+    required this.lastDateUpcomingFilter,
+    required this.selectedDateUpcomingFilter,
   });
 
   final ResourceManagerUnit? activeRMU;
@@ -27,12 +26,11 @@ class ActionLogManagementState extends BaseState {
   final List<ActionLog> closedActions;
   final List<ActionLog> displayList;
   final String? filteringText;
-  final List<ActionLog> overdueActionLogs;
-  final List<ActionLog> dueActionLogs;
-  final List<ActionLog> upcomingActionLogs;
   final List<UpcomingActionLogTimeFilter> upcomingActionLogTimeFiltersEnum;
   final UpcomingActionLogTimeFilter selectedUpcomingActionLogTimeFilter;
-  final DateTime? upcomingDateTimeFilter;
+  final DateTime selectedDateUpcomingFilter;
+  final DateTime firstDateUpcomingFilter;
+  final DateTime lastDateUpcomingFilter;
   final bool isOpenedUpcomingFilter;
 
   ActionLogManagementState copyWith({
@@ -43,13 +41,12 @@ class ActionLogManagementState extends BaseState {
     List<ActionLog>? closedActions,
     List<ActionLog>? displayList,
     String? filteringText,
-    List<ActionLog>? overdueActionLogs,
-    List<ActionLog>? dueActionLogs,
-    List<ActionLog>? upcomingActionLogs,
     List<UpcomingActionLogTimeFilter>? upcomingActionLogTimeFiltersEnum,
     UpcomingActionLogTimeFilter? selectedUpcomingActionLogTimeFilter,
     bool? isOpenedUpcomingFilter,
-    DateTime? upcomingDateTimeFilter,
+    DateTime? firstDateUpcomingFilter,
+    DateTime? lastDateUpcomingFilter,
+    DateTime? selectedDateUpcomingFilter,
   }) {
     return ActionLogManagementState(
       activeRMU: activeRMU ?? this.activeRMU,
@@ -59,17 +56,12 @@ class ActionLogManagementState extends BaseState {
       closedActions: closedActions ?? this.closedActions,
       displayList: displayList ?? this.displayList,
       filteringText: filteringText ?? this.filteringText,
-      overdueActionLogs: overdueActionLogs ?? this.overdueActionLogs,
-      dueActionLogs: dueActionLogs ?? this.dueActionLogs,
-      upcomingActionLogs: upcomingActionLogs ?? this.upcomingActionLogs,
       isOpenedUpcomingFilter: isOpenedUpcomingFilter ?? this.isOpenedUpcomingFilter,
       upcomingActionLogTimeFiltersEnum: upcomingActionLogTimeFiltersEnum ?? this.upcomingActionLogTimeFiltersEnum,
       selectedUpcomingActionLogTimeFilter: selectedUpcomingActionLogTimeFilter ?? this.selectedUpcomingActionLogTimeFilter,
-      upcomingDateTimeFilter: upcomingDateTimeFilter ?? this.upcomingDateTimeFilter,
+      firstDateUpcomingFilter: firstDateUpcomingFilter ?? this.firstDateUpcomingFilter,
+      lastDateUpcomingFilter: lastDateUpcomingFilter ?? this.lastDateUpcomingFilter,
+      selectedDateUpcomingFilter: selectedDateUpcomingFilter ?? this.selectedDateUpcomingFilter,
     );
   }
-}
-
-extension ActionLogManagementStateExtension on ActionLogManagementState {
-  int get totalUpcoming => overdueActionLogs.length + dueActionLogs.length + upcomingActionLogs.length;
 }

@@ -64,17 +64,6 @@ class _DatePickerWidget extends State<DatePickerWidget> {
     }
   }
 
-  String convertDateTimeToLunar(BuildContext context, DateTime? dateTime) {
-    DateTime? result;
-    if (settingCubit.shouldShowLunarCalendar()) {
-      result = DateTimeUtils.convertDateTimeToLunar(dateTime);
-    } else {
-      result = dateTime;
-    }
-
-    return dateFormatEnum.displayFormat(result);
-  }
-
   Future<void> onShowInputDateTimeDialog() async {
     await showDialog<void>(
       context: context,
@@ -152,7 +141,7 @@ class _DatePickerWidget extends State<DatePickerWidget> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                convertDateTimeToLunar(context, widget.initialDate),
+                                dateFormatEnum.displayFormat(widget.initialDate),
                                 style: context.textStyles.bodyBold.copyWith(
                                   color: context.colors.white,
                                   fontSize: 20,
@@ -225,7 +214,7 @@ class _DatePickerWidget extends State<DatePickerWidget> {
                     ),
                     if (widget.initialDate != null)
                       Text(
-                        convertDateTimeToLunar(context, widget.initialDate),
+                        dateFormatEnum.displayFormat(widget.initialDate),
                         maxLines: 3,
                         style: context.textStyles.bodyNormal.blueDark2,
                         textAlign: TextAlign.left,
