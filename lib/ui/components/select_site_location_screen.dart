@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, use_setters_to_change_properties
 
 import 'package:cmo/env/env.dart';
+import 'package:cmo/extensions/iterable_extensions.dart';
 import 'package:cmo/extensions/string.dart';
 import 'package:cmo/gen/assets.gen.dart';
 import 'package:cmo/l10n/l10n.dart';
@@ -74,7 +75,7 @@ class SelectSiteLocationScreen extends BaseStatefulWidget {
           showResetAcceptIcons: showResetAcceptIcons,
           initAddress: initAddress,
           initLatLng: latLng,
-          hasInternet: hasInternet
+          hasInternet: hasInternet,
         ),
       ),
     );
@@ -320,11 +321,28 @@ class _SelectSiteLocationScreenState extends BaseStatefulWidgetState<SelectSiteL
               ),
             ),
             const SizedBox(height: 12),
-            Center(
-              child: CmoFilledButton(
-                title: widget.showResetAcceptIcons ? LocaleKeys.done.tr() : LocaleKeys.save.tr(),
-                disable: _loading,
-                onTap: () => submit(),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 12,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CmoFilledButton(
+                      title: widget.showResetAcceptIcons ? LocaleKeys.done.tr() : LocaleKeys.save.tr(),
+                      disable: _loading,
+                      onTap: submit,
+                    ),
+                  ),
+                  Expanded(
+                    child: CmoFilledButton(
+                      title: LocaleKeys.open_map.tr(),
+                      disable: _latLong == null,
+                      onTap: () => CommonFunctions.openMap(_latLong!.latitude, _latLong!.longitude),
+                    ),
+                  ),
+                ].withSpaceBetween(width: 16),
               ),
             ),
           ],
