@@ -164,10 +164,8 @@ class ActionLogManagementCubit extends Cubit<ActionLogManagementState> {
       filteringItems = filteringItems
           .where(
             (element) =>
-                element.actionName.isNotBlank &&
-                element.actionName!
-                    .toLowerCase()
-                    .contains(state.filteringText!.toLowerCase()),
+                element.actionName.isNotBlank && element.actionName!.toLowerCase().contains(state.filteringText!.toLowerCase()) ||
+                element.farmName.isNotBlank && element.farmName!.toLowerCase().contains(state.filteringText!.toLowerCase()),
           )
           .toList();
     }
